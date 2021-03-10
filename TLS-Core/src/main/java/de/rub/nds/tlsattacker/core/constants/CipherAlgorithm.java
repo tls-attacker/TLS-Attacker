@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.constants;
@@ -47,7 +46,8 @@ public enum CipherAlgorithm {
     AES_128_CTR(16, 16, 0, 0, "AES/CTR/NoPadding"),
     AES_256_CTR(32, 16, 0, 0, "AES/CTR/NoPadding");
 
-    CipherAlgorithm(int keySize, int nonceBytesFromHandshake, int nonceBytesFromRecord, int blocksize, String javaName) {
+    CipherAlgorithm(int keySize, int nonceBytesFromHandshake, int nonceBytesFromRecord, int blocksize,
+        String javaName) {
         this.keySize = keySize;
         this.javaName = javaName;
         this.nonceBytesFromHandshake = nonceBytesFromHandshake;

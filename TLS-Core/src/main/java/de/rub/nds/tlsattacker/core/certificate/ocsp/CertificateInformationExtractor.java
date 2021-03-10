@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.certificate.ocsp;
@@ -384,13 +383,11 @@ public class CertificateInformationExtractor {
         httpCon.disconnect();
 
         // Recreate TLS certificate length information
-        byte[] certificateWithLength =
-            ArrayConverter.concatenate(
-                ArrayConverter.intToBytes(response.length, HandshakeByteLength.CERTIFICATES_LENGTH), response);
-        ByteArrayInputStream stream =
-            new ByteArrayInputStream(ArrayConverter.concatenate(
-                ArrayConverter.intToBytes(certificateWithLength.length, HandshakeByteLength.CERTIFICATES_LENGTH),
-                certificateWithLength));
+        byte[] certificateWithLength = ArrayConverter
+            .concatenate(ArrayConverter.intToBytes(response.length, HandshakeByteLength.CERTIFICATES_LENGTH), response);
+        ByteArrayInputStream stream = new ByteArrayInputStream(ArrayConverter.concatenate(
+            ArrayConverter.intToBytes(certificateWithLength.length, HandshakeByteLength.CERTIFICATES_LENGTH),
+            certificateWithLength));
 
         // Parse and create a Certificate object
         org.bouncycastle.crypto.tls.Certificate tlsCertificate = org.bouncycastle.crypto.tls.Certificate.parse(stream);

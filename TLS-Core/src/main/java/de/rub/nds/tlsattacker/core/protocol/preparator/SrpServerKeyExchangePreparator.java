@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.preparator;
@@ -92,8 +91,8 @@ public class SrpServerKeyExchangePreparator extends ServerKeyExchangePreparator<
 
         publicKey = helpValue1;
 
-        LOGGER.debug("Server-Public-Key: "
-            + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(publicKey)));
+        LOGGER.debug(
+            "Server-Public-Key: " + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(publicKey)));
         return publicKey;
     }
 
@@ -146,14 +145,15 @@ public class SrpServerKeyExchangePreparator extends ServerKeyExchangePreparator<
     }
 
     private byte[] generateToBeSigned() {
-        byte[] srpParams =
-            ArrayConverter.concatenate(ArrayConverter.intToBytes(msg.getModulusLength().getValue(),
-                HandshakeByteLength.SRP_MODULUS_LENGTH), msg.getModulus().getValue(), ArrayConverter.intToBytes(msg
-                .getGeneratorLength().getValue(), HandshakeByteLength.SRP_GENERATOR_LENGTH), msg.getGenerator()
-                .getValue(), ArrayConverter.intToBytes(msg.getSaltLength().getValue(),
-                HandshakeByteLength.SRP_SALT_LENGTH), msg.getSalt().getValue(), ArrayConverter.intToBytes(msg
-                .getPublicKeyLength().getValue(), HandshakeByteLength.SRP_PUBLICKEY_LENGTH), msg.getPublicKey()
-                .getValue());
+        byte[] srpParams = ArrayConverter.concatenate(
+            ArrayConverter.intToBytes(msg.getModulusLength().getValue(), HandshakeByteLength.SRP_MODULUS_LENGTH),
+            msg.getModulus().getValue(),
+            ArrayConverter.intToBytes(msg.getGeneratorLength().getValue(), HandshakeByteLength.SRP_GENERATOR_LENGTH),
+            msg.getGenerator().getValue(),
+            ArrayConverter.intToBytes(msg.getSaltLength().getValue(), HandshakeByteLength.SRP_SALT_LENGTH),
+            msg.getSalt().getValue(),
+            ArrayConverter.intToBytes(msg.getPublicKeyLength().getValue(), HandshakeByteLength.SRP_PUBLICKEY_LENGTH),
+            msg.getPublicKey().getValue());
         return ArrayConverter.concatenate(msg.getComputations().getClientServerRandom().getValue(), srpParams);
 
     }
@@ -235,13 +235,13 @@ public class SrpServerKeyExchangePreparator extends ServerKeyExchangePreparator<
 
     private void prepareSignatureAndHashAlgorithm(SrpServerKeyExchangeMessage msg) {
         msg.setSignatureAndHashAlgorithm(selectedSignatureHashAlgo.getByteValue());
-        LOGGER.debug("SignatureAlgorithm: "
-            + ArrayConverter.bytesToHexString(msg.getSignatureAndHashAlgorithm().getValue()));
+        LOGGER.debug(
+            "SignatureAlgorithm: " + ArrayConverter.bytesToHexString(msg.getSignatureAndHashAlgorithm().getValue()));
     }
 
     private void prepareClientServerRandom(SrpServerKeyExchangeMessage msg) {
-        msg.getComputations().setClientServerRandom(
-            ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom()));
+        msg.getComputations()
+            .setClientServerRandom(ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom()));
         LOGGER.debug("ClientServerRandom: "
             + ArrayConverter.bytesToHexString(msg.getComputations().getClientServerRandom().getValue()));
     }

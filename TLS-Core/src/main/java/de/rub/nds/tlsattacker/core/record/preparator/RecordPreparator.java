@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.record.preparator;
@@ -55,7 +54,7 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
         compressor.compress(record);
         if (chooser.getSelectedProtocolVersion().isTLS13()
             && record.getContentMessageType() == ProtocolMessageType.CHANGE_CIPHER_SPEC
-            && !record.isAllowEncryptedChangeCipherSpec()) {
+            && !chooser.getConfig().isEncryptChangeCipherSpec()) {
             // The CCS message in TLS 1.3 is an exception that does not get
             // encrypted
             record.prepareComputations();

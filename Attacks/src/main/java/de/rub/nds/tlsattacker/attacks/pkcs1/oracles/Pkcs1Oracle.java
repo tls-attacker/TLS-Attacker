@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.attacks.pkcs1.oracles;
@@ -95,9 +94,9 @@ public abstract class Pkcs1Oracle {
     /**
      * Checks for PKCS conformity - 00 02 padding 00 pms
      *
-     * @param msg
-     * Encrypted message to check for conformity
-     * @return True if PKCS conforming, else false
+     * @param  msg
+     *             Encrypted message to check for conformity
+     * @return     True if PKCS conforming, else false
      */
     public abstract boolean checkPKCSConformity(final byte[] msg) throws OracleException;
 

@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
@@ -40,7 +39,7 @@ public class HeartbeatExtensionParser extends ExtensionParser<HeartbeatExtension
      * Reads the next bytes as the HeartbeatMode of the Extension and writes them in the message
      *
      * @param msg
-     * Message to write in
+     *            Message to write in
      */
     private void parseHeartbeatMode(HeartbeatExtensionMessage msg) {
         msg.setHeartbeatMode(parseByteArrayField(ExtensionByteLength.HEARTBEAT_MODE));

@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.preparator;
@@ -60,8 +59,8 @@ public class FinishedPreparatorTest {
         LOGGER.info(ArrayConverter.bytesToHexString(message.getVerifyData().getValue(), false));
         // TODO Did not check if this is calculated correctly, just made sure it
         // is set
-        assertArrayEquals(ArrayConverter.hexStringToByteArray("232A2CCB976E313AAA8E0F7A"), message.getVerifyData()
-            .getValue());
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("232A2CCB976E313AAA8E0F7A"),
+            message.getVerifyData().getValue());
     }
 
     @Test
@@ -79,9 +78,8 @@ public class FinishedPreparatorTest {
 
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_NULL_SHA256);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
-        context
-            .setMasterSecret(ArrayConverter
-                .hexStringToByteArray("E9BBE684A991D223F49A3CBB675B32355A671C8DA5620291FF911D88C0456DC539BEE2C51FA69F1D1C76EF9875E6DA6C"));
+        context.setMasterSecret(ArrayConverter.hexStringToByteArray(
+            "E9BBE684A991D223F49A3CBB675B32355A671C8DA5620291FF911D88C0456DC539BEE2C51FA69F1D1C76EF9875E6DA6C"));
         context.setPrfAlgorithm(PRFAlgorithm.TLS_PRF_SHA256);
 
         registerPreviousMessages(context, clientHelloHex, serverHelloHex, certificateHex, serverHelloDoneHex,
@@ -110,9 +108,8 @@ public class FinishedPreparatorTest {
 
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_NULL_MD5);
         context.setSelectedProtocolVersion(ProtocolVersion.SSL3);
-        context
-            .setMasterSecret(ArrayConverter
-                .hexStringToByteArray("91709DA9667796D3B0EFB3C0E920279A5F2EB76F4B9C84E2E89A2A4BF236CB8BE64AAA53CA30A3CF29B563B246DF7FFC"));
+        context.setMasterSecret(ArrayConverter.hexStringToByteArray(
+            "91709DA9667796D3B0EFB3C0E920279A5F2EB76F4B9C84E2E89A2A4BF236CB8BE64AAA53CA30A3CF29B563B246DF7FFC"));
 
         registerPreviousMessages(context, clientHelloHex, serverHelloHex, certificateHex, serverHelloDoneHex,
             clientKeyExchangeHex);
@@ -134,8 +131,8 @@ public class FinishedPreparatorTest {
         context.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS13);
         context.setConnection(new OutboundConnection());
-        context.setClientHandshakeTrafficSecret(ArrayConverter
-            .hexStringToByteArray("2E9C9DD264A15D3C1EEC604A7C862934486764F94E35C0BA7E0B9494EAC06E82"));
+        context.setClientHandshakeTrafficSecret(
+            ArrayConverter.hexStringToByteArray("2E9C9DD264A15D3C1EEC604A7C862934486764F94E35C0BA7E0B9494EAC06E82"));
         context.getDigest().setRawBytes(ArrayConverter.hexStringToByteArray("01010101010101010101010101010101"));
         preparator.prepare();
         assertArrayEquals(message.getVerifyData().getValue(),

@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.workflow.factory;
@@ -150,9 +149,11 @@ public class WorkflowConfigurationFactoryTest {
             }
             for (WorkflowTrace trace : list) {
                 if (workflowTracesEqual(trace, newTrace)) {
-                    Assert.fail(MessageFormat.format(
-                        "The WorkflowConfigurationFactory is expected to produce different WorkflowTraces "
-                            + "for each WorkflowTraceType but there is a duplicate pair: {0} {1}", trace, newTrace));
+                    Assert
+                        .fail(MessageFormat.format(
+                            "The WorkflowConfigurationFactory is expected to produce different WorkflowTraces "
+                                + "for each WorkflowTraceType but there is a duplicate pair: {0} {1}",
+                            trace, newTrace));
                 }
             }
             list.add(newTrace);
@@ -211,8 +212,8 @@ public class WorkflowConfigurationFactoryTest {
         messageAction2 = helloWorkflow.getMessageActions().get(2);
 
         Assert.assertEquals(ReceiveAction.class, messageAction1.getClass());
-        Assert.assertEquals(HelloVerifyRequestMessage.class, ((ReceiveAction) messageAction1).getExpectedMessages()
-            .get(0).getClass());
+        Assert.assertEquals(HelloVerifyRequestMessage.class,
+            ((ReceiveAction) messageAction1).getExpectedMessages().get(0).getClass());
         Assert.assertEquals(ClientHelloMessage.class, messageAction2.getMessages().get(0).getClass());
 
         // if (highestProtocolVersion != TLS13)
@@ -256,8 +257,8 @@ public class WorkflowConfigurationFactoryTest {
 
         lastAction = handshakeWorkflow.getLastMessageAction();
 
-        Assert.assertEquals(FinishedMessage.class, lastAction.getMessages().get(lastAction.getMessages().size() - 1)
-            .getClass());
+        Assert.assertEquals(FinishedMessage.class,
+            lastAction.getMessages().get(lastAction.getMessages().size() - 1).getClass());
 
         // Variants
         // if(config.isClientAuthentication())
@@ -333,13 +334,13 @@ public class WorkflowConfigurationFactoryTest {
         messageAction5 = fullWorkflow.getMessageActions().get(5);
 
         Assert.assertEquals(ReceiveAction.class, messageAction3.getClass());
-        Assert.assertEquals(ApplicationMessage.class, ((ReceiveAction) messageAction3).getExpectedMessages().get(0)
-            .getClass());
+        Assert.assertEquals(ApplicationMessage.class,
+            ((ReceiveAction) messageAction3).getExpectedMessages().get(0).getClass());
         Assert.assertEquals(ApplicationMessage.class, messageAction4.getMessages().get(0).getClass());
         Assert.assertEquals(HeartbeatMessage.class, messageAction4.getMessages().get(1).getClass());
         Assert.assertEquals(ReceiveAction.class, messageAction5.getClass());
-        Assert.assertEquals(HeartbeatMessage.class, ((ReceiveAction) messageAction5).getExpectedMessages().get(0)
-            .getClass());
+        Assert.assertEquals(HeartbeatMessage.class,
+            ((ReceiveAction) messageAction5).getExpectedMessages().get(0).getClass());
     }
 
     // @Category(IntegrationTests.class)

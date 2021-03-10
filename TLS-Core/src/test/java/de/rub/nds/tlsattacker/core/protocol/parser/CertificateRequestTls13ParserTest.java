@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.parser;
@@ -30,9 +29,9 @@ public class CertificateRequestTls13ParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { { ArrayConverter.hexStringToByteArray("0d00000401020000"),
-            HandshakeMessageType.CERTIFICATE_REQUEST, 1, ArrayConverter.hexStringToByteArray("02"), 0, new byte[0],
-            ProtocolVersion.TLS13 } });
+        return Arrays.asList(new Object[][] {
+            { ArrayConverter.hexStringToByteArray("0d00000401020000"), HandshakeMessageType.CERTIFICATE_REQUEST, 1,
+                ArrayConverter.hexStringToByteArray("02"), 0, new byte[0], ProtocolVersion.TLS13 } });
     }
 
     private byte[] message;

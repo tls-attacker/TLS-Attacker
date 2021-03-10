@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.dtls;
@@ -41,9 +40,8 @@ public class FragmentManager {
         FragmentKey key = new FragmentKey(fragment.getMessageSeq().getValue(), fragment.getEpoch().getValue());
         FragmentCollector collector = fragments.get(key);
         if (collector == null) {
-            collector =
-                new FragmentCollector(config, fragment.getType().getValue(), fragment.getMessageSeq().getValue(),
-                    fragment.getLength().getValue());
+            collector = new FragmentCollector(config, fragment.getType().getValue(),
+                fragment.getMessageSeq().getValue(), fragment.getLength().getValue());
             fragments.put(key, collector);
         }
         if (collector.wouldAdd(fragment)) {
@@ -115,8 +113,8 @@ public class FragmentManager {
      * Returns the stored fragmented message with the given messageSeq and epoch, as a single combined fragment. Returns
      * null if no message was stored with this messageSeq, or if the message is incomplete.
      * 
-     * @param messageSeq
-     * @param epoch
+     * @param  messageSeq
+     * @param  epoch
      * @return
      */
     public DtlsHandshakeMessageFragment getCombinedMessageFragment(Integer messageSeq, Integer epoch) {

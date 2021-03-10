@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.util;
@@ -79,8 +78,8 @@ public class StaticTicketCrypto {
             mac.init(macKey);
             result = mac.doFinal(plaintext);
         } catch (InvalidKeyException | NoSuchAlgorithmException ex) {
-            LOGGER.warn("Encountered exception while generating the HMAC " + macAlgorithm.name()
-                + " of an encryptedState.");
+            LOGGER.warn(
+                "Encountered exception while generating the HMAC " + macAlgorithm.name() + " of an encryptedState.");
             LOGGER.debug(ex);
             throw new CryptoException("Error while HMAC generation. See Debug-Log for more Information.");
         }

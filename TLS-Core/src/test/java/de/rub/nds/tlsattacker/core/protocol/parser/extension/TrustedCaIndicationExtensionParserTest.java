@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
@@ -32,13 +31,14 @@ import org.junit.runners.Parameterized;
 public class TrustedCaIndicationExtensionParserTest {
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { {
-            ExtensionType.TRUSTED_CA_KEYS,
-            ArrayConverter.hexStringToByteArray("0003000B0009000200050102030405"),
-            0,
-            11,
-            Arrays.asList(new TrustedAuthority((byte) 0, null, null, null), new TrustedAuthority((byte) 2, null, 5,
-                new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05 })), 9 } });
+        return Arrays
+            .asList(
+                new Object[][] {
+                    { ExtensionType.TRUSTED_CA_KEYS,
+                        ArrayConverter.hexStringToByteArray("0003000B0009000200050102030405"), 0, 11,
+                        Arrays.asList(new TrustedAuthority((byte) 0, null, null, null),
+                            new TrustedAuthority((byte) 2, null, 5, new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05 })),
+                        9 } });
     }
 
     private final ExtensionType type;
@@ -87,8 +87,8 @@ public class TrustedCaIndicationExtensionParserTest {
             assertEquals(expectedObject.getIdentifierType().getValue(), actualObject.getIdentifierType().getValue());
             if (expectedObject.getDistinguishedNameLength() != null
                 && expectedObject.getDistinguishedNameLength().getValue() != null) {
-                assertEquals(expectedObject.getDistinguishedNameLength().getValue(), actualObject
-                    .getDistinguishedNameLength().getValue());
+                assertEquals(expectedObject.getDistinguishedNameLength().getValue(),
+                    actualObject.getDistinguishedNameLength().getValue());
             } else {
                 assertNull(actualObject.getDistinguishedNameLength());
             }
@@ -99,8 +99,8 @@ public class TrustedCaIndicationExtensionParserTest {
             }
             if (expectedObject.getDistinguishedName() != null
                 && expectedObject.getDistinguishedName().getValue() != null) {
-                assertArrayEquals(expectedObject.getDistinguishedName().getValue(), actualObject.getDistinguishedName()
-                    .getValue());
+                assertArrayEquals(expectedObject.getDistinguishedName().getValue(),
+                    actualObject.getDistinguishedName().getValue());
             } else {
                 assertNull(actualObject.getDistinguishedName());
             }

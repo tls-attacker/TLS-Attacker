@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.handler;
@@ -25,8 +24,8 @@ public class DtlsHandshakeMessageFragmentHandler extends HandshakeMessageHandler
 
     @Override
     public DtlsHandshakeMessageFragmentParser getParser(byte[] message, int pointer) {
-        return new DtlsHandshakeMessageFragmentParser(pointer, message, tlsContext.getChooser()
-            .getSelectedProtocolVersion(), tlsContext.getConfig());
+        return new DtlsHandshakeMessageFragmentParser(pointer, message,
+            tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext.getConfig());
     }
 
     @Override
@@ -36,7 +35,8 @@ public class DtlsHandshakeMessageFragmentHandler extends HandshakeMessageHandler
 
     @Override
     public ProtocolMessageSerializer getSerializer(DtlsHandshakeMessageFragment message) {
-        return new DtlsHandshakeMessageFragmentSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new DtlsHandshakeMessageFragmentSerializer(message,
+            tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

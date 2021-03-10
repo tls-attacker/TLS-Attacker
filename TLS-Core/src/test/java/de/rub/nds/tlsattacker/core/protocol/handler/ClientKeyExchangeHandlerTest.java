@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.handler;
@@ -71,15 +70,12 @@ public class ClientKeyExchangeHandlerTest {
 
         final MessageDigest md5 = java.security.MessageDigest.getInstance("MD5");
         final MessageDigest sha = java.security.MessageDigest.getInstance("SHA-1");
-        final byte[] shaDigest1 =
-            sha.digest(ArrayConverter.concatenate(ArrayConverter.hexStringToByteArray("41"), preMasterSecret,
-                clientRdm, serverRdm));
-        final byte[] shaDigest2 =
-            sha.digest(ArrayConverter.concatenate(ArrayConverter.hexStringToByteArray("4242"), preMasterSecret,
-                clientRdm, serverRdm));
-        final byte[] shaDigest3 =
-            sha.digest(ArrayConverter.concatenate(ArrayConverter.hexStringToByteArray("434343"), preMasterSecret,
-                clientRdm, serverRdm));
+        final byte[] shaDigest1 = sha.digest(ArrayConverter.concatenate(ArrayConverter.hexStringToByteArray("41"),
+            preMasterSecret, clientRdm, serverRdm));
+        final byte[] shaDigest2 = sha.digest(ArrayConverter.concatenate(ArrayConverter.hexStringToByteArray("4242"),
+            preMasterSecret, clientRdm, serverRdm));
+        final byte[] shaDigest3 = sha.digest(ArrayConverter.concatenate(ArrayConverter.hexStringToByteArray("434343"),
+            preMasterSecret, clientRdm, serverRdm));
         final byte[] md5Digest1 = md5.digest(ArrayConverter.concatenate(preMasterSecret, shaDigest1));
         final byte[] md5Digest2 = md5.digest(ArrayConverter.concatenate(preMasterSecret, shaDigest2));
         final byte[] md5Digest3 = md5.digest(ArrayConverter.concatenate(preMasterSecret, shaDigest3));

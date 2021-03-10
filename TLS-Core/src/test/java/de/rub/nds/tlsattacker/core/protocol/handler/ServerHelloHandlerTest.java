@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.handler;
@@ -94,9 +93,8 @@ public class ServerHelloHandlerTest {
     @Test
     public void testAdjustTLSContextTls13() {
         ServerHelloMessage message = new ServerHelloMessage();
-        context.getConfig().setKeySharePrivate(
-            new BigInteger(ArrayConverter
-                .hexStringToByteArray("03BD8BCA70C19F657E897E366DBE21A466E4924AF6082DBDF573827BCDDE5DEF")));
+        context.getConfig().setKeySharePrivate(new BigInteger(
+            ArrayConverter.hexStringToByteArray("03BD8BCA70C19F657E897E366DBE21A466E4924AF6082DBDF573827BCDDE5DEF")));
         context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
         message.setUnixTime(new byte[] { 0, 1, 2 });
         message.setRandom(new byte[] { 0, 1, 2, 3, 4, 5 });
@@ -104,8 +102,8 @@ public class ServerHelloHandlerTest {
         message.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256.getByteValue());
         message.setSessionId(new byte[] { 6, 6, 6 });
         message.setProtocolVersion(ProtocolVersion.TLS13.getValue());
-        context.setServerKeyShareStoreEntry(new KeyShareStoreEntry(NamedGroup.ECDH_X25519, ArrayConverter
-            .hexStringToByteArray("9c1b0a7421919a73cb57b3a0ad9d6805861a9c47e11df8639d25323b79ce201c")));
+        context.setServerKeyShareStoreEntry(new KeyShareStoreEntry(NamedGroup.ECDH_X25519,
+            ArrayConverter.hexStringToByteArray("9c1b0a7421919a73cb57b3a0ad9d6805861a9c47e11df8639d25323b79ce201c")));
         context.addNegotiatedExtension(ExtensionType.KEY_SHARE);
         context.setRecordLayer(RecordLayerFactory.getRecordLayer(RecordLayerType.RECORD, context));
         handler.adjustTLSContext(message);
@@ -130,11 +128,9 @@ public class ServerHelloHandlerTest {
         message.setSelectedCipherSuite(CipherSuite.TLS_ECCPWD_WITH_AES_128_GCM_SHA256.getByteValue());
         message.setSessionId(new byte[] { 6, 6, 6 });
         message.setProtocolVersion(ProtocolVersion.TLS13.getValue());
-        context
-            .setServerKeyShareStoreEntry(new KeyShareStoreEntry(
-                NamedGroup.BRAINPOOLP256R1,
-                ArrayConverter
-                    .hexStringToByteArray("9EE17F2ECF74028F6C1FD70DA1D05A4A85975D7D270CAA6B8605F1C6EBB875BA87579167408F7C9E77842C2B3F3368A25FD165637E9B5D57760B0B704659B87420669244AA67CB00EA72C09B84A9DB5BB824FC3982428FCD406963AE080E677A48")));
+        context.setServerKeyShareStoreEntry(
+            new KeyShareStoreEntry(NamedGroup.BRAINPOOLP256R1, ArrayConverter.hexStringToByteArray(
+                "9EE17F2ECF74028F6C1FD70DA1D05A4A85975D7D270CAA6B8605F1C6EBB875BA87579167408F7C9E77842C2B3F3368A25FD165637E9B5D57760B0B704659B87420669244AA67CB00EA72C09B84A9DB5BB824FC3982428FCD406963AE080E677A48")));
         context.addNegotiatedExtension(ExtensionType.KEY_SHARE);
         context.setRecordLayer(RecordLayerFactory.getRecordLayer(RecordLayerType.RECORD, context));
         handler.adjustTLSContext(message);

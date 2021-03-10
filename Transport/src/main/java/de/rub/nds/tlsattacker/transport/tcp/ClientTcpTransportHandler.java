@@ -71,9 +71,9 @@ public class ClientTcpTransportHandler extends TcpTransportHandler {
             try {
                 socket = new Socket();
                 socket.setReuseAddress(true);
-                /*
-                 * if (srcPort != null) { socket.bind(new InetSocketAddress(srcPort)); }
-                 */
+                if (srcPort != null && retryFailedSocketInitialization) {
+                    socket.bind(new InetSocketAddress(srcPort));
+                }
                 socket.connect(new InetSocketAddress(hostname, dstPort), (int) connectionTimeout);
                 if (!socket.isConnected()) {
                     throw new ConnectException("Could not connect to " + hostname + ":" + dstPort);

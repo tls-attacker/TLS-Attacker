@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.workflow.action.executor;
@@ -38,9 +37,8 @@ public class SendMessageHelperTest {
     @Before
     public void setUp() throws IOException {
         context = new TlsContext();
-        transportHandler =
-            new StreamTransportHandler(0, 0, ConnectionEndType.CLIENT, new ByteArrayInputStream(new byte[] {}),
-                new ByteArrayOutputStream());
+        transportHandler = new StreamTransportHandler(0, 0, ConnectionEndType.CLIENT,
+            new ByteArrayInputStream(new byte[] {}), new ByteArrayOutputStream());
         context.setTransportHandler(transportHandler);
         context.getTransportHandler().initialize();
         context.setRecordLayer(new TlsRecordLayer(context));
