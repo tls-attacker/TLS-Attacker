@@ -82,14 +82,14 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
         if (message.getTicket().getIdentity() != null) {
             pskSet.setPreSharedKeyIdentity(message.getTicket().getIdentity().getValue());
         } else {
-            LOGGER.warn("No Identity in ticket. Using new byte[] instead");
+            LOGGER.warn("No Identity in ticket. Using new byte[0] instead");
             pskSet.setPreSharedKeyIdentity(new byte[0]);
         }
         pskSet.setTicketAge(getTicketAge());
         if (message.getTicket().getTicketNonce() != null) {
             pskSet.setTicketNonce(message.getTicket().getTicketNonce().getValue());
         } else {
-            LOGGER.warn("No nonce in ticket. Using new byte[] instead");
+            LOGGER.warn("No nonce in ticket. Using new byte[0] instead");
             pskSet.setTicketNonce(new byte[0]);
         }
         // only derive PSK if client finished was already sent, because full handshake transcript is required
@@ -130,7 +130,7 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
             byte[] psk =
                 HKDFunction.expandLabel(hkdfAlgorithm, resumptionMasterSecret, HKDFunction.RESUMPTION,
                     pskSet.getTicketNonce(), macLength);
-            LOGGER.debug("new derived pre-shared-key: " + ArrayConverter.bytesToHexString(psk));
+            LOGGER.debug("New derived pre-shared-key: " + ArrayConverter.bytesToHexString(psk));
             return psk;
 
         } catch (NoSuchAlgorithmException | CryptoException ex) {
