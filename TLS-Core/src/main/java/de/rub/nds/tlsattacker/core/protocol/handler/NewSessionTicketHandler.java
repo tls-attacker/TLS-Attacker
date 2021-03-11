@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.handler;
@@ -115,9 +114,8 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
             LOGGER.debug("Deriving PSK from current session");
             HKDFAlgorithm hkdfAlgorithm =
                 AlgorithmResolver.getHKDFAlgorithm(tlsContext.getChooser().getSelectedCipherSuite());
-            DigestAlgorithm digestAlgo =
-                AlgorithmResolver.getDigestAlgorithm(tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext
-                    .getChooser().getSelectedCipherSuite());
+            DigestAlgorithm digestAlgo = AlgorithmResolver.getDigestAlgorithm(
+                tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext.getChooser().getSelectedCipherSuite());
             int macLength = Mac.getInstance(hkdfAlgorithm.getMacAlgorithm().getJavaName()).getMacLength();
             byte[] resumptionMasterSecret =
                 HKDFunction.deriveSecret(hkdfAlgorithm, digestAlgo.getJavaName(), tlsContext.getMasterSecret(),
@@ -127,9 +125,8 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
             LOGGER.debug("Derived Master Secret: " + ArrayConverter.bytesToHexString(tlsContext.getMasterSecret()));
             LOGGER.debug("Handshake Transcript Raw Bytes: "
                 + ArrayConverter.bytesToHexString(tlsContext.getDigest().getRawBytes()));
-            byte[] psk =
-                HKDFunction.expandLabel(hkdfAlgorithm, resumptionMasterSecret, HKDFunction.RESUMPTION,
-                    pskSet.getTicketNonce(), macLength);
+            byte[] psk = HKDFunction.expandLabel(hkdfAlgorithm, resumptionMasterSecret, HKDFunction.RESUMPTION,
+                pskSet.getTicketNonce(), macLength);
             LOGGER.debug("New derived pre-shared-key: " + ArrayConverter.bytesToHexString(psk));
             return psk;
 
