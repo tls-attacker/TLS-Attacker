@@ -92,7 +92,7 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
             pskSet.setTicketNonce(new byte[0]);
         }
         // only derive PSK if client finished was already sent, because full handshake transcript is required
-        if (tlsContext.getActiveClientKeySetType() != Tls13KeySetType.NONE) {
+        if (tlsContext.getActiveClientKeySetType() == Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS) {
             pskSet.setPreSharedKey(derivePsk(pskSet));
         }
 

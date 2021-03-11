@@ -63,7 +63,6 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
                 if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.SERVER) {
                     adjustApplicationTrafficSecrets();
                     setServerRecordCipher(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS);
-
                 } else {
                     setClientRecordCipher(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS);
                 }
@@ -71,14 +70,15 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
                 || !tlsContext.isExtensionNegotiated(ExtensionType.EARLY_DATA)) {
                 setClientRecordCipher(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
 
-                NewSessionTicketHandler ticketHandler = (NewSessionTicketHandler) HandlerFactory
-                    .getHandshakeHandler(tlsContext, HandshakeMessageType.NEW_SESSION_TICKET);
-
-                if (tlsContext.getPskSets() != null) {
-                    for (PskSet pskSet : tlsContext.getPskSets()) {
-                        // if psk was derived earliers, skip derivation (especially for state reusage helpful)
-                        if (pskSet.getPreSharedKey() == null) {
-                            pskSet.setPreSharedKey(ticketHandler.derivePsk(pskSet));
+                if(tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
+                    NewSessionTicketHandler ticketHandler = (NewSessionTicketHandler) HandlerFactory
+                            .getHandshakeHandler(tlsContext, HandshakeMessageType.NEW_SESSION_TICKET);
+                    if (tlsContext.getPskSets() != null) {
+                        for (PskSet pskSet : tlsContext.getPskSets()) {
+                            // if psk was derived earliers, skip derivation (especially for state reusage helpful)
+                            if (pskSet.getPreSharedKey() == null) {
+                                pskSet.setPreSharedKey(ticketHandler.derivePsk(pskSet));
+                            }
                         }
                     }
                 }
