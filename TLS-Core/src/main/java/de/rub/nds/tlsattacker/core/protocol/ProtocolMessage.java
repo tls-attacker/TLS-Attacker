@@ -14,7 +14,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bool.ModifiableBoolean;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.protocol.handler.TlsMessageHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -120,7 +119,7 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder {
 
     public abstract String toCompactString();
 
-    public abstract TlsMessageHandler getHandler(TlsContext context);
+    public abstract ProtocolMessageHandler<ProtocolMessage> getHandler(TlsContext context);
 
     public boolean addToTypes(List<ProtocolMessageType> protocolMessageTypes) {
         return false;
