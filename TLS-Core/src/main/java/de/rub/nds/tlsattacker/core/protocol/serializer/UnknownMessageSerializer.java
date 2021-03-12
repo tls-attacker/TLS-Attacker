@@ -15,11 +15,9 @@ import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class UnknownMessageSerializer extends ProtocolMessageSerializer<UnknownMessage> {
+public class UnknownMessageSerializer extends TlsMessageSerializer<UnknownMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
-
-    private final UnknownMessage msg;
 
     /**
      * Constructor for the UnknownMessageSerializer
@@ -31,23 +29,22 @@ public class UnknownMessageSerializer extends ProtocolMessageSerializer<UnknownM
      */
     public UnknownMessageSerializer(UnknownMessage message, ProtocolVersion version) {
         super(message, version);
-        this.msg = message;
     }
 
     @Override
     public byte[] serializeProtocolMessageContent() {
         LOGGER.debug("Serializing UnknownMessage");
-        writeCompleteResultingMessage(msg);
+        writeCompleteResultingMessage();
         return getAlreadySerialized();
     }
 
     /**
      * Writes the CompleteResultingMessage of the UnknownMessage into the final byte[]
      */
-    private void writeCompleteResultingMessage(UnknownMessage msg) {
-        appendBytes(msg.getCompleteResultingMessage().getValue());
+    private void writeCompleteResultingMessage() {
+        appendBytes(message.getCompleteResultingMessage().getValue());
         LOGGER.debug("CompleteResultingMessage: "
-            + ArrayConverter.bytesToHexString(msg.getCompleteResultingMessage().getValue()));
+            + ArrayConverter.bytesToHexString(message.getCompleteResultingMessage().getValue()));
     }
 
 }

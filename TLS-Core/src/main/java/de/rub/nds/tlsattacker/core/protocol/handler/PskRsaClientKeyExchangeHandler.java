@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.PskRsaClientKeyExchangePr
 import de.rub.nds.tlsattacker.core.protocol.serializer.PskRsaClientKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-public class PskRsaClientKeyExchangeHandler extends ClientKeyExchangeHandler<PskRsaClientKeyExchangeMessage> {
+public class PskRsaClientKeyExchangeHandler extends RSAClientKeyExchangeHandler<PskRsaClientKeyExchangeMessage> {
 
     public PskRsaClientKeyExchangeHandler(TlsContext tlsContext) {
         super(tlsContext);

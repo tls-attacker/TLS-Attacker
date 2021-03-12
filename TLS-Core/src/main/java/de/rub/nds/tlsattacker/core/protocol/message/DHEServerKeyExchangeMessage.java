@@ -19,7 +19,6 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.DHEServerKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.TlsMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.DHEServerComputations;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.List;
@@ -153,8 +152,8 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     }
 
     @Override
-    public TlsMessageHandler getHandler(TlsContext context) {
-        return new DHEServerKeyExchangeHandler(context);
+    public DHEServerKeyExchangeHandler<? extends DHEServerKeyExchangeMessage> getHandler(TlsContext context) {
+        return new DHEServerKeyExchangeHandler<>(context);
     }
 
     @Override

@@ -46,7 +46,7 @@ public class EmptyClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     }
 
     @Override
-    public TlsMessageHandler getHandler(TlsContext context) {
+    public EmptyClientKeyExchangeHandler getHandler(TlsContext context) {
         return new EmptyClientKeyExchangeHandler(context);
     }
 

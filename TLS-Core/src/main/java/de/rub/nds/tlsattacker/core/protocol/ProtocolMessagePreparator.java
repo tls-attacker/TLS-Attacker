@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
  */
 public abstract class ProtocolMessagePreparator<T extends ProtocolMessage> extends Preparator<T> {
 
-    private final ProtocolMessage message;
+    protected final T message;
 
     public ProtocolMessagePreparator(Chooser chooser, T message) {
         super(chooser, message);

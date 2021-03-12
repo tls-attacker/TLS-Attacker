@@ -10,11 +10,9 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerVerifyMessage;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.SSL2ServerVerifyParser;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.preparator.SSL2ServerVerifyPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.ProtocolMessageSerializer;
+import de.rub.nds.tlsattacker.core.protocol.serializer.HandshakeMessageSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 public class SSL2ServerVerifyHandler extends HandshakeMessageHandler<SSL2ServerVerifyMessage> {
@@ -39,7 +37,7 @@ public class SSL2ServerVerifyHandler extends HandshakeMessageHandler<SSL2ServerV
     }
 
     @Override
-    public ProtocolMessageSerializer<SSL2ServerVerifyMessage> getSerializer(SSL2ServerVerifyMessage message) {
+    public HandshakeMessageSerializer<SSL2ServerVerifyMessage> getSerializer(SSL2ServerVerifyMessage message) {
         // We currently don't send ServerVerify messages, only receive them.
         return null;
     }

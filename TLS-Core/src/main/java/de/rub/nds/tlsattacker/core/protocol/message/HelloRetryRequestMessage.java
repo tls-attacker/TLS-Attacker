@@ -17,7 +17,6 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.handler.HelloRetryRequestHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.TlsMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
@@ -92,7 +91,7 @@ public class HelloRetryRequestMessage extends HandshakeMessage {
     }
 
     @Override
-    public TlsMessageHandler getHandler(TlsContext context) {
+    public HelloRetryRequestHandler getHandler(TlsContext context) {
         return new HelloRetryRequestHandler(context);
     }
 }

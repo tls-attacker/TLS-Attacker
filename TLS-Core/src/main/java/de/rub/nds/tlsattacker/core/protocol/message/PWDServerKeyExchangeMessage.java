@@ -20,7 +20,6 @@ import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.protocol.handler.PWDServerKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.TlsMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.PWDComputations;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
@@ -73,7 +72,7 @@ public class PWDServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     }
 
     @Override
-    public TlsMessageHandler getHandler(TlsContext context) {
+    public PWDServerKeyExchangeHandler getHandler(TlsContext context) {
         return new PWDServerKeyExchangeHandler(context);
     }
 

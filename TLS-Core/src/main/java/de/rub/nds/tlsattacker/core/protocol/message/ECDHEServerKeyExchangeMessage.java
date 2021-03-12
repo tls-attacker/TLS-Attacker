@@ -115,8 +115,8 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     }
 
     @Override
-    public TlsMessageHandler getHandler(TlsContext context) {
-        return new ECDHEServerKeyExchangeHandler(context);
+    public ECDHEServerKeyExchangeHandler<? extends ECDHEServerKeyExchangeMessage> getHandler(TlsContext context) {
+        return new ECDHEServerKeyExchangeHandler<>(context);
     }
 
     @Override

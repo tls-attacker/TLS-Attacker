@@ -18,7 +18,6 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.PskClientKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.TlsMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.PSKPremasterComputations;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.List;
@@ -94,7 +93,7 @@ public class PskClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     }
 
     @Override
-    public TlsMessageHandler getHandler(TlsContext context) {
+    public PskClientKeyExchangeHandler getHandler(TlsContext context) {
         return new PskClientKeyExchangeHandler(context);
     }
 

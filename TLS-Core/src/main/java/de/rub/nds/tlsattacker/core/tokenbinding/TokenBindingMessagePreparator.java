@@ -24,7 +24,7 @@ import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessagePreparator;
+import de.rub.nds.tlsattacker.core.protocol.preparator.TlsMessagePreparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -41,7 +41,7 @@ import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.params.ParametersWithRandom;
 import org.bouncycastle.crypto.signers.ECDSASigner;
 
-public class TokenBindingMessagePreparator extends ProtocolMessagePreparator<TokenBindingMessage> {
+public class TokenBindingMessagePreparator extends TlsMessagePreparator<TokenBindingMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

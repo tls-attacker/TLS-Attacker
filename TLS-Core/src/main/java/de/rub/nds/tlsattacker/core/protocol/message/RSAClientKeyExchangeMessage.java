@@ -48,8 +48,8 @@ public class RSAClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     }
 
     @Override
-    public TlsMessageHandler getHandler(TlsContext context) {
-        return new RSAClientKeyExchangeHandler(context);
+    public RSAClientKeyExchangeHandler<? extends RSAClientKeyExchangeMessage> getHandler(TlsContext context) {
+        return new RSAClientKeyExchangeHandler<>(context);
     }
 
     @Override

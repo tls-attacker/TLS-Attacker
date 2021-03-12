@@ -9,7 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.protocol;
 
-import de.rub.nds.tlsattacker.core.protocol.serializer.ProtocolMessageSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -41,9 +40,6 @@ public abstract class ProtocolMessageHandler<MessageT extends ProtocolMessage> e
      *                The Message for which this context should be adjusted
      */
     public abstract void adjustTLSContext(MessageT message);
-
-    public void adjustTlsContextAfterSerialize(MessageT message) {
-    }
 
     /**
      * Performs additional preparations after parsing the message (e.g. ESNI decryption/parsing).

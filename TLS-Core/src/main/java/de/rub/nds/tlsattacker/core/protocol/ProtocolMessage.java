@@ -119,7 +119,7 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder {
 
     public abstract String toCompactString();
 
-    public abstract ProtocolMessageHandler<ProtocolMessage> getHandler(TlsContext context);
+    public abstract <S extends ProtocolMessage, T extends ProtocolMessageHandler<S>> T getHandler(TlsContext context);
 
     public boolean addToTypes(List<ProtocolMessageType> protocolMessageTypes) {
         return false;

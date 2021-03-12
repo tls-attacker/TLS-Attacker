@@ -9,6 +9,7 @@
 
 package de.rub.nds.tlsattacker.core.dtls;
 
+import de.rub.nds.tlsattacker.core.protocol.handler.HandshakeMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.HandshakeMessageSerializer;
@@ -34,8 +35,8 @@ public class MessageFragmenter {
      * Takes a message and splits it into prepared fragments.
      */
     public List<DtlsHandshakeMessageFragment> fragmentMessage(HandshakeMessage message, TlsContext context) {
-        HandshakeMessageSerializer serializer =
-            (HandshakeMessageSerializer) message.getHandler(context).getSerializer(message);
+        HandshakeMessageHandler<HandshakeMessage> handler = message.getHandler(context);
+        HandshakeMessageSerializer<HandshakeMessage> serializer = handler.getSerializer(message);
         byte[] bytes = serializer.serializeHandshakeMessageContent();
         List<DtlsHandshakeMessageFragment> dtlsFragments =
             generateFragments(message, bytes, maxFragmentLength, context);
@@ -46,8 +47,8 @@ public class MessageFragmenter {
      * Generates a single fragment carrying the contents of the message as payload.
      */
     public DtlsHandshakeMessageFragment wrapInSingleFragment(HandshakeMessage message, TlsContext context) {
-        HandshakeMessageSerializer serializer =
-            (HandshakeMessageSerializer) message.getHandler(context).getSerializer(message);
+        HandshakeMessageHandler<HandshakeMessage> handler = message.getHandler(context);
+        HandshakeMessageSerializer<HandshakeMessage> serializer = handler.getSerializer(message);
         byte[] bytes = serializer.serializeHandshakeMessageContent();
         List<DtlsHandshakeMessageFragment> fragments = generateFragments(message, bytes, bytes.length, context);
         return fragments.get(0);

@@ -16,7 +16,10 @@ import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.parser.HandshakeMessageParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.HandshakeMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EncryptedServerNameIndicationExtensionPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.HandshakeMessageSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
@@ -30,7 +33,7 @@ public abstract class HandshakeMessageHandler<HandshakeMessageT extends Handshak
         super(tlsContext);
     }
 
-    protected void adjustExtensions(HandshakeMessage message) {
+    protected void adjustExtensions(HandshakeMessageT message) {
         if (message.getExtensions() != null) {
             for (ExtensionMessage extension : message.getExtensions()) {
                 ExtensionHandler handler =
@@ -64,4 +67,13 @@ public abstract class HandshakeMessageHandler<HandshakeMessageT extends Handshak
             }
         }
     }
+
+    @Override
+    public abstract HandshakeMessageParser<HandshakeMessageT> getParser(byte[] message, int pointer);
+
+    @Override
+    public abstract HandshakeMessagePreparator<HandshakeMessageT> getPreparator(HandshakeMessageT message);
+
+    @Override
+    public abstract HandshakeMessageSerializer<HandshakeMessageT> getSerializer(HandshakeMessageT message);
 }

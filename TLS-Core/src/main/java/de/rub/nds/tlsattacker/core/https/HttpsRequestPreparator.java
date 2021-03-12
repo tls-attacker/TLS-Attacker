@@ -10,10 +10,10 @@
 package de.rub.nds.tlsattacker.core.https;
 
 import de.rub.nds.tlsattacker.core.https.header.HttpsHeader;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessagePreparator;
+import de.rub.nds.tlsattacker.core.protocol.preparator.TlsMessagePreparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-public class HttpsRequestPreparator extends ProtocolMessagePreparator<HttpsRequestMessage> {
+public class HttpsRequestPreparator extends TlsMessagePreparator<HttpsRequestMessage> {
 
     private final HttpsRequestMessage message;
 

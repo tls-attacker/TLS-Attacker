@@ -11,18 +11,19 @@ package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.Bits;
+import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2HandshakeMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public abstract class SSL2HandshakeMessageParser<T extends SSL2HandshakeMessage> extends TlsMessageParser<T> {
+public abstract class SSL2HandshakeMessageParser<T extends SSL2HandshakeMessage> extends HandshakeMessageParser<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SSL2HandshakeMessageParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
-        super(pointer, array, version, config);
+    public SSL2HandshakeMessageParser(int pointer, byte[] array, HandshakeMessageType type, ProtocolVersion version, Config config) {
+        super(pointer, array, type, version, config);
     }
 
     /**

@@ -360,7 +360,7 @@ public class ClientHelloMessage extends HelloMessage {
     }
 
     @Override
-    public TlsMessageHandler getHandler(TlsContext context) {
+    public ClientHelloHandler getHandler(TlsContext context) {
         return new ClientHelloHandler(context);
     }
 

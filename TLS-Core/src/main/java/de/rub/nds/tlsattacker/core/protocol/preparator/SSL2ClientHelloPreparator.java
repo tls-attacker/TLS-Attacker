@@ -14,7 +14,6 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.SSL2CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
@@ -22,7 +21,7 @@ import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class SSL2ClientHelloPreparator extends ProtocolMessagePreparator<SSL2ClientHelloMessage> {
+public class SSL2ClientHelloPreparator extends HandshakeMessagePreparator<SSL2ClientHelloMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -35,6 +34,11 @@ public class SSL2ClientHelloPreparator extends ProtocolMessagePreparator<SSL2Cli
 
     @Override
     protected void prepareProtocolMessageContents() {
+        prepareHandshakeMessageContents();
+    }
+
+    @Override
+    protected void prepareHandshakeMessageContents() {
         LOGGER.debug("Prepare SSL2ClientHello");
         preparePaddingLength(message);
         prepareType(message);
@@ -49,7 +53,7 @@ public class SSL2ClientHelloPreparator extends ProtocolMessagePreparator<SSL2Cli
         prepareChallengeLength(message);
         prepareCipherSuiteLength(message);
         int length = SSL2ByteLength.CHALLENGE_LENGTH + SSL2ByteLength.CIPHERSUITE_LENGTH + SSL2ByteLength.MESSAGE_TYPE
-            + SSL2ByteLength.SESSIONID_LENGTH;
+                + SSL2ByteLength.SESSIONID_LENGTH;
         length += message.getChallenge().getValue().length;
         length += message.getCipherSuites().getValue().length;
         length += message.getSessionId().getValue().length;

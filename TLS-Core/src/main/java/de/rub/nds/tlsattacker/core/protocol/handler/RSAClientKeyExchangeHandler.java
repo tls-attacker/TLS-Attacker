@@ -15,30 +15,30 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.RSAClientKeyExchangePrepa
 import de.rub.nds.tlsattacker.core.protocol.serializer.RSAClientKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-public class RSAClientKeyExchangeHandler extends ClientKeyExchangeHandler<RSAClientKeyExchangeMessage> {
+public class RSAClientKeyExchangeHandler<T extends RSAClientKeyExchangeMessage> extends ClientKeyExchangeHandler<T> {
 
     public RSAClientKeyExchangeHandler(TlsContext tlsContext) {
         super(tlsContext);
     }
 
     @Override
-    public RSAClientKeyExchangeParser getParser(byte[] message, int pointer) {
-        return new RSAClientKeyExchangeParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
+    public RSAClientKeyExchangeParser<T> getParser(byte[] message, int pointer) {
+        return new RSAClientKeyExchangeParser<>(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
             tlsContext.getConfig());
     }
 
     @Override
-    public RSAClientKeyExchangePreparator getPreparator(RSAClientKeyExchangeMessage message) {
-        return new RSAClientKeyExchangePreparator(tlsContext.getChooser(), message);
+    public RSAClientKeyExchangePreparator<T> getPreparator(T message) {
+        return new RSAClientKeyExchangePreparator<>(tlsContext.getChooser(), message);
     }
 
     @Override
-    public RSAClientKeyExchangeSerializer getSerializer(RSAClientKeyExchangeMessage message) {
-        return new RSAClientKeyExchangeSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
+    public RSAClientKeyExchangeSerializer<T> getSerializer(T message) {
+        return new RSAClientKeyExchangeSerializer<>(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override
-    public void adjustTLSContext(RSAClientKeyExchangeMessage message) {
+    public void adjustTLSContext(T message) {
         adjustPremasterSecret(message);
         adjustMasterSecret(message);
         setRecordCipher();

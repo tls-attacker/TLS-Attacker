@@ -13,14 +13,13 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientMasterKeyMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class SSL2ClientMasterKeyPreparator extends ProtocolMessagePreparator<SSL2ClientMasterKeyMessage> {
+public class SSL2ClientMasterKeyPreparator extends HandshakeMessagePreparator<SSL2ClientMasterKeyMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -39,6 +38,11 @@ public class SSL2ClientMasterKeyPreparator extends ProtocolMessagePreparator<SSL
 
     @Override
     protected void prepareProtocolMessageContents() {
+        prepareHandshakeMessageContents();
+    }
+
+    @Override
+    protected void prepareHandshakeMessageContents() {
         LOGGER.debug("Prepare SSL2ClientMasterKey");
         prepareMessagePaddingLength(message);
         prepareType(message);

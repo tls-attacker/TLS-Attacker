@@ -12,6 +12,7 @@ package de.rub.nds.tlsattacker.core.workflow.action.executor;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.dtls.MessageFragmenter;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
+import de.rub.nds.tlsattacker.core.protocol.handler.TlsMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
@@ -72,7 +73,10 @@ public class SendMessageHelper {
                     recordPosition =
                         flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition, context);
                     if (tlsMessage.getAdjustContext()) {
-                        lastMessage.getHandler(context).adjustTlsContextAfterSerialize(lastMessage);
+                        // TODO: woah - are we handling lastMessage or tlsMessage here?!
+//                        lastMessage.getHandler(context).adjustTlsContextAfterSerialize(lastMessage);
+                        TlsMessageHandler<TlsMessage> tlsMessageHandler = tlsMessage.getHandler(context);
+                        tlsMessageHandler.adjustTlsContextAfterSerialize(tlsMessage);
                     }
                     lastMessage = null;
                 }
@@ -113,15 +117,17 @@ public class SendMessageHelper {
             }
             if (context.getConfig().isCreateIndividualRecords()) {
                 recordPosition = flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition, context);
-                if (protocolMessage.getAdjustContext()) {
-                    protocolMessage.getHandler(context).adjustTlsContextAfterSerialize(protocolMessage);
+                if (protocolMessage instanceof TlsMessage && protocolMessage.getAdjustContext()) {
+                    TlsMessageHandler<TlsMessage> protocolMessageHandler = protocolMessage.getHandler(context);
+                    protocolMessageHandler.adjustTlsContextAfterSerialize((TlsMessage) protocolMessage);
                 }
                 lastMessage = null;
             }
         }
         recordPosition = flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition, context);
-        if (lastMessage != null && lastMessage.getAdjustContext()) {
-            lastMessage.getHandler(context).adjustTlsContextAfterSerialize(lastMessage);
+        if (lastMessage instanceof TlsMessage && lastMessage.getAdjustContext()) {
+            TlsMessageHandler<TlsMessage> handler = lastMessage.getHandler(context);
+            handler.adjustTlsContextAfterSerialize((TlsMessage) lastMessage);
         }
         sendData(messageBytesCollector, context);
         if (context.getConfig().isUseAllProvidedRecords() && recordPosition < records.size()) {
@@ -253,7 +259,11 @@ public class SendMessageHelper {
                     context.increaseDtlsWriteHandshakeMessageSequence();
                 }
             }
-            message.getHandler(context).updateDigest(message);
+
+            if (message instanceof TlsMessage) {
+                TlsMessageHandler<TlsMessage> handler = message.getHandler(context);
+                handler.updateDigest(message);
+            }
             if (message.getAdjustContext()) {
 
                 message.getHandler(context).adjustTLSContext(message);
