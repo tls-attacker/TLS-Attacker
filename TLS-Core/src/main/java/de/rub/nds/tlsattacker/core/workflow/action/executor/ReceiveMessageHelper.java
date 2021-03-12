@@ -38,7 +38,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -315,8 +314,7 @@ public class ReceiveMessageHelper {
     }
 
     private byte[] receiveByteArray(TlsContext context) throws IOException {
-        byte[] received = context.getTransportHandler().fetchData();
-        return received;
+        return context.getTransportHandler().fetchData();
     }
 
     private List<AbstractRecord> parseRecords(byte[] recordBytes, TlsContext context) {
@@ -712,15 +710,14 @@ public class ReceiveMessageHelper {
     }
 
     private byte[] tryToFetchAdditionalBytes(TlsContext context) {
-        byte[] extraBytes = new byte[0];
         try {
-            extraBytes = receiveByteArray(context);
+            return receiveByteArray(context);
         } catch (IOException ex2) {
             LOGGER.warn("Could not receive more Bytes", ex2);
             context.setReceivedTransportHandlerException(true);
-        } finally {
-            return extraBytes;
         }
+
+        return new byte[0];
     }
 
     /**
