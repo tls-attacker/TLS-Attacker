@@ -22,7 +22,8 @@ public abstract class SSL2HandshakeMessageParser<T extends SSL2HandshakeMessage>
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SSL2HandshakeMessageParser(int pointer, byte[] array, HandshakeMessageType type, ProtocolVersion version, Config config) {
+    public SSL2HandshakeMessageParser(int pointer, byte[] array, HandshakeMessageType type, ProtocolVersion version,
+        Config config) {
         super(pointer, array, type, version, config);
     }
 

@@ -53,7 +53,7 @@ public class SSL2ClientHelloPreparator extends HandshakeMessagePreparator<SSL2Cl
         prepareChallengeLength(message);
         prepareCipherSuiteLength(message);
         int length = SSL2ByteLength.CHALLENGE_LENGTH + SSL2ByteLength.CIPHERSUITE_LENGTH + SSL2ByteLength.MESSAGE_TYPE
-                + SSL2ByteLength.SESSIONID_LENGTH;
+            + SSL2ByteLength.SESSIONID_LENGTH;
         length += message.getChallenge().getValue().length;
         length += message.getCipherSuites().getValue().length;
         length += message.getSessionId().getValue().length;
