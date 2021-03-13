@@ -27,7 +27,7 @@ public class KeyUpdatePreparator extends HandshakeMessagePreparator<KeyUpdateMes
 
     @Override
     protected void prepareHandshakeMessageContents() {
-        msg.setRequestUpdate(KeyUpdateRequest.UPDATE_NOT_REQUESTED);
+        msg.setRequestUpdate(msg.getRequestUpdate());
         LOGGER.debug("Preparing KeyUpdate - MessageContent is: " + msg.getRequestUpdate());
     }
 

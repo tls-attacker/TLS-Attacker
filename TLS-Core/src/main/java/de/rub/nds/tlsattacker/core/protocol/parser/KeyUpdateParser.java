@@ -12,7 +12,6 @@ package de.rub.nds.tlsattacker.core.protocol.parser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
@@ -39,8 +38,12 @@ public class KeyUpdateParser extends HandshakeMessageParser<KeyUpdateMessage> {
     }
 
     private void parseUpdateRequest(KeyUpdateMessage msg) {
-        msg.setRequestUpdate(parseIntField(HandshakeByteLength.KEY_UPDATE_LENGTH));
-        LOGGER.debug("KeyUpdateValue: " + msg.getRequestUpdate().getValue());
+
+        if (parseByteField(HandshakeByteLength.KEY_UPDATE_LENGTH) == KeyUpdateRequest.UPDATE_REQUESTED.getValue()) {
+            msg.setRequestUpdate(KeyUpdateRequest.UPDATE_REQUESTED);
+        } else
+            msg.setRequestUpdate(KeyUpdateRequest.UPDATE_NOT_REQUESTED);
+        LOGGER.debug("KeyUpdateValue: " + msg.getRequestUpdate());
 
     }
 

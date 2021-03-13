@@ -9,7 +9,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.message;
 
-import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.KeyUpdateRequest;
@@ -24,8 +23,7 @@ public class KeyUpdateMessage extends HandshakeMessage {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    @HoldsModifiableVariable
-    private KeyUpdateRequest request_update;
+    private KeyUpdateRequest requestUpdate;
 
     @Override
     public ProtocolMessageHandler getHandler(TlsContext context) {
@@ -34,32 +32,28 @@ public class KeyUpdateMessage extends HandshakeMessage {
 
     public KeyUpdateMessage() {
         super(HandshakeMessageType.KEY_UPDATE);
-        this.request_update = KeyUpdateRequest.UPDATE_REQUESTED;
+        this.setIncludeInDigest(false);
+        this.requestUpdate = KeyUpdateRequest.UPDATE_NOT_REQUESTED;
     }
 
     public KeyUpdateMessage(Config tlsConfig) {
         super(tlsConfig, HandshakeMessageType.KEY_UPDATE);
-        this.request_update = KeyUpdateRequest.UPDATE_REQUESTED;
+        this.requestUpdate = KeyUpdateRequest.UPDATE_NOT_REQUESTED;
+        this.setIncludeInDigest(false);
     }
 
-    public KeyUpdateMessage(HandshakeMessageType handshakeMessageType, KeyUpdateRequest request_update) {
+    public KeyUpdateMessage(HandshakeMessageType handshakeMessageType, KeyUpdateRequest requestUpdate) {
         super(handshakeMessageType);
-        this.request_update = request_update;
-    }
-
-    public void setRequestUpdate(int keyupdaterequest) {
-        if (keyupdaterequest == 1) {
-            request_update = KeyUpdateRequest.UPDATE_REQUESTED;
-        } else
-            request_update = KeyUpdateRequest.UPDATE_NOT_REQUESTED;
+        this.requestUpdate = requestUpdate;
+        this.setIncludeInDigest(false);
     }
 
     public void setRequestUpdate(KeyUpdateRequest keyupdaterequest) {
-        request_update = KeyUpdateRequest.UPDATE_REQUESTED;
+        requestUpdate = keyupdaterequest;
     }
 
     public KeyUpdateRequest getRequestUpdate() {
-        return this.request_update;
+        return this.requestUpdate;
     }
 
 }

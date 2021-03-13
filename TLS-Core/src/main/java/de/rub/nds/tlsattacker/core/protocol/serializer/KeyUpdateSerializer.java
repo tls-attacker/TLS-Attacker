@@ -44,8 +44,7 @@ public class KeyUpdateSerializer extends HandshakeMessageSerializer<KeyUpdateMes
 
     private void writeKeyUpdateData(KeyUpdateMessage msg) {
         appendByte(msg.getRequestUpdate().getValue());
-        LOGGER.debug("Serialized KeyUpdate Data: " + msg.getRequestUpdate().getValue() + " ENUM Value: "
-                + msg.getRequestUpdate());
+        LOGGER.debug("Serialized KeyUpdate Value: " + msg.getRequestUpdate());
     }
 
 }

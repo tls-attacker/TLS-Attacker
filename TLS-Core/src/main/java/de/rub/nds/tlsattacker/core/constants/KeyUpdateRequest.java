@@ -17,14 +17,14 @@ public enum KeyUpdateRequest {
     UPDATE_REQUESTED((byte) 1);
 
     @HoldsModifiableVariable
-    private byte request_update;
+    private byte requestUpdate;
 
-    private KeyUpdateRequest(byte request_update) {
-        this.request_update = request_update;
+    private KeyUpdateRequest(byte requestUpdate) {
+        this.requestUpdate = requestUpdate;
     }
 
     public byte getValue() {
-        return request_update;
+        return requestUpdate;
     }
 
 }
