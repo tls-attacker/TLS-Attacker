@@ -160,10 +160,17 @@ public class KeyUpdateHandler extends HandshakeMessageHandler<KeyUpdateMessage> 
                             AlgorithmResolver.getCipher(tlsContext.getChooser().getSelectedCipherSuite()).getKeySize()));
                 }
 
+                RecordCipher recordCipherClient = RecordCipherFactory.getRecordCipher(tlsContext, keySet, tlsContext
+                        .getChooser().getSelectedCipherSuite());
+                tlsContext.getRecordLayer().setRecordCipher(recordCipherClient);
+
+                tlsContext.setWriteSequenceNumber(0);
+                tlsContext.getRecordLayer().updateEncryptionCipher();
+
             } else if (tlsContext.getChooser().getTalkingConnectionEnd() != tlsContext.getChooser()
                     .getConnectionEndType()) {
 
-                if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {
+                if (tlsContext.getChooser().getTalkingConnectionEnd() == ConnectionEndType.SERVER) {
 
                     keySet.setServerWriteIv(HKDFunction.expandLabel(hkdfAlgortihm,
                             tlsContext.getServerApplicationTrafficSecret(), HKDFunction.IV, new byte[0], AEAD_IV_LENGTH));
@@ -182,19 +189,13 @@ public class KeyUpdateHandler extends HandshakeMessageHandler<KeyUpdateMessage> 
                             AlgorithmResolver.getCipher(tlsContext.getChooser().getSelectedCipherSuite()).getKeySize()));
                 }
 
-            }
+                RecordCipher recordCipherClient = RecordCipherFactory.getRecordCipher(tlsContext, keySet, tlsContext
+                        .getChooser().getSelectedCipherSuite());
+                tlsContext.getRecordLayer().setRecordCipher(recordCipherClient);
 
-            RecordCipher recordCipherClient = RecordCipherFactory.getRecordCipher(tlsContext, keySet, tlsContext
-                    .getChooser().getSelectedCipherSuite());
-            tlsContext.getRecordLayer().setRecordCipher(recordCipherClient);
-
-            if (tlsContext.getChooser().getTalkingConnectionEnd() == tlsContext.getChooser().getConnectionEndType()) {
-                tlsContext.setWriteSequenceNumber(0);
-                tlsContext.getRecordLayer().updateEncryptionCipher();
-            } else if (tlsContext.getChooser().getTalkingConnectionEnd() != tlsContext.getChooser()
-                    .getConnectionEndType()) {
                 tlsContext.setReadSequenceNumber(0);
                 tlsContext.getRecordLayer().updateDecryptionCipher();
+
             }
 
         } catch (CryptoException ex) {

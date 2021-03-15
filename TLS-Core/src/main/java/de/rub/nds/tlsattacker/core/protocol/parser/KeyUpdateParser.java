@@ -41,8 +41,9 @@ public class KeyUpdateParser extends HandshakeMessageParser<KeyUpdateMessage> {
 
         if (parseByteField(HandshakeByteLength.KEY_UPDATE_LENGTH) == KeyUpdateRequest.UPDATE_REQUESTED.getValue()) {
             msg.setRequestUpdate(KeyUpdateRequest.UPDATE_REQUESTED);
-        } else
+        } else {
             msg.setRequestUpdate(KeyUpdateRequest.UPDATE_NOT_REQUESTED);
+        }
         LOGGER.debug("KeyUpdateValue: " + msg.getRequestUpdate());
 
     }
