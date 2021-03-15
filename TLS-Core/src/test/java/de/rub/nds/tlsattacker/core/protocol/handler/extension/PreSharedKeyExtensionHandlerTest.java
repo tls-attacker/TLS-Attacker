@@ -37,9 +37,9 @@ public class PreSharedKeyExtensionHandlerTest {
     public void setUp() {
         context = new TlsContext();
 
-        pskSet1 = new PskSet(new byte[] { 0x00 }, new byte[] { 0x00 }, "0", new byte[] { 0x00 },
+        pskSet1 = new PskSet(new byte[] { 0x00 }, new byte[] { 0x00 }, "0", new byte[] { 0x00 }, new byte[] { 0x00 },
             CipherSuite.TLS_DHE_PSK_WITH_AES_128_CBC_SHA);
-        pskSet2 = new PskSet(new byte[] { 0x01 }, new byte[] { 0x01 }, "1", new byte[] { 0x01 },
+        pskSet2 = new PskSet(new byte[] { 0x01 }, new byte[] { 0x01 }, "1", new byte[] { 0x01 }, new byte[] { 0x01 },
             CipherSuite.TLS_DHE_PSK_WITH_3DES_EDE_CBC_SHA);
         List<PskSet> pskSetList = new ArrayList<PskSet>();
         pskSetList.add(pskSet1);
