@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -25,9 +26,9 @@ public class KeyUpdateSerializer extends HandshakeMessageSerializer<KeyUpdateMes
      * Constructor for the FinishedMessageSerializer
      *
      * @param message
-     *            Message that should be serialized
+     * Message that should be serialized
      * @param version
-     *            Version of the Protocol
+     * Version of the Protocol
      */
 
     public KeyUpdateSerializer(KeyUpdateMessage message, ProtocolVersion version) {

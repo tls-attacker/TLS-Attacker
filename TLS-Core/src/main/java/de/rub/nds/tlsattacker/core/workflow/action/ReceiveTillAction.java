@@ -36,6 +36,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloRetryRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.KeyUpdateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.PWDClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.PWDServerKeyExchangeMessage;

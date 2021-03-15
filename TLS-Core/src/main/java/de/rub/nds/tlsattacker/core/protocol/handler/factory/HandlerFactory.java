@@ -38,6 +38,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.HeartbeatMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.HelloRequestHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.HelloRetryRequestHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.HelloVerifyRequestHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.KeyUpdateHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.NewSessionTicketHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.PWDClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.PWDServerKeyExchangeHandler;

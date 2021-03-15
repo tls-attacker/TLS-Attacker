@@ -63,7 +63,6 @@ public class HKDFunction {
 
     public static final String TRAFFICUPD = "traffic upd";
 
-
     private HKDFunction() {
     }
 
