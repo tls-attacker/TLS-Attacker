@@ -70,7 +70,7 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
                 || !tlsContext.isExtensionNegotiated(ExtensionType.EARLY_DATA)) {
                 setClientRecordCipher(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
 
-                if(tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
+                if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
                     NewSessionTicketHandler ticketHandler = (NewSessionTicketHandler) HandlerFactory
                             .getHandshakeHandler(tlsContext, HandshakeMessageType.NEW_SESSION_TICKET);
                     if (tlsContext.getPskSets() != null) {
