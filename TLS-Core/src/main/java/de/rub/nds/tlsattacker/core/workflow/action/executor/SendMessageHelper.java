@@ -266,7 +266,7 @@ public class SendMessageHelper {
             }
             if (message.getAdjustContext()) {
 
-                message.getHandler(context).adjustTLSContext(message);
+                message.getHandler(context).adjustContext(message);
             }
         } catch (AdjustmentException e) {
             LOGGER.warn("Could not adjust TLSContext");

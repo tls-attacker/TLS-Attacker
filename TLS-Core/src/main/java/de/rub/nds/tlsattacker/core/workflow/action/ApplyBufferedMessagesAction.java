@@ -48,7 +48,7 @@ public class ApplyBufferedMessagesAction extends ConnectionBoundAction {
             for (ProtocolMessage msg : messages) {
                 LOGGER.debug("Applying buffered " + msg.toCompactString() + " to context " + ctx);
                 ProtocolMessageHandler h = msg.getHandler(ctx);
-                h.adjustTLSContext(msg);
+                h.adjustContext(msg);
             }
         }
         setExecuted(true);

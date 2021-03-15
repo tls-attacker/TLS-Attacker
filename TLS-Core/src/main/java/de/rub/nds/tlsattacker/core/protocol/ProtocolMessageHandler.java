@@ -34,23 +34,10 @@ public abstract class ProtocolMessageHandler<MessageT extends ProtocolMessage> e
     public abstract ProtocolMessageSerializer<MessageT> getSerializer(MessageT message);
 
     /**
-     * Adjusts the TLS Context according to the received or sending ProtocolMessage
-     *
-     * @param message
-     *                The Message for which this context should be adjusted
-     */
-    public abstract void adjustTLSContext(MessageT message);
-
-    /**
      * Performs additional preparations after parsing the message (e.g. ESNI decryption/parsing).
      *
      * @param message
      */
     public void prepareAfterParse(MessageT message) {
-    }
-
-    @Override
-    public final void adjustContext(MessageT message) {
-        adjustTLSContext(message);
     }
 }

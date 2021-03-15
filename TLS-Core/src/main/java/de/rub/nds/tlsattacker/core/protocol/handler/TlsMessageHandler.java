@@ -54,6 +54,19 @@ public abstract class TlsMessageHandler<MessageT extends TlsMessage> extends Pro
         LOGGER.debug("Included in digest: " + message.toCompactString());
     }
 
+    /**
+     * Adjusts the TLS Context according to the received or sending ProtocolMessage
+     *
+     * @param message
+     *                The Message for which this context should be adjusted
+     */
+    public abstract void adjustTLSContext(MessageT message);
+
+    @Override
+    public final void adjustContext(MessageT message) {
+        adjustTLSContext(message);
+    }
+
     public void adjustTlsContextAfterSerialize(MessageT message) {
     }
 

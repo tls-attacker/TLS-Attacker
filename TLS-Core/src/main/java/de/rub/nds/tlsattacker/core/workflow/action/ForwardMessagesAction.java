@@ -312,8 +312,8 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
     private void applyMessages(TlsContext ctx) {
         for (ProtocolMessage msg : receivedMessages) {
             LOGGER.debug("Applying " + msg.toCompactString() + " to forward context " + ctx);
-            ProtocolMessageHandler h = msg.getHandler(ctx);
-            h.adjustTLSContext(msg);
+            ProtocolMessageHandler<ProtocolMessage> h = msg.getHandler(ctx);
+            h.adjustContext(msg);
         }
     }
 
