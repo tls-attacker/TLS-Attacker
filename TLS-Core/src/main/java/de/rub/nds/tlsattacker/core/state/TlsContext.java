@@ -42,6 +42,7 @@ import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.dtls.FragmentManager;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
+import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
@@ -176,6 +177,11 @@ public class TlsContext {
      * Premaster secret established during the handshake.
      */
     private byte[] preMasterSecret;
+
+    /**
+     * Master secret established during the handshake.
+     */
+    private byte[] resumptionMasterSecret;
 
     /**
      * Client Extended Random used in Extended Random Extension
@@ -1377,6 +1383,10 @@ public class TlsContext {
         return masterSecret;
     }
 
+    public byte[] getResumptionMasterSecret() {
+        return resumptionMasterSecret;
+    }
+
     public CipherSuite getSelectedCipherSuite() {
         return selectedCipherSuite;
     }
@@ -1388,6 +1398,10 @@ public class TlsContext {
     public void setMasterSecret(byte[] masterSecret) {
         keylogfile.writeKey("CLIENT_RANDOM", masterSecret);
         this.masterSecret = masterSecret;
+    }
+
+    public byte[] setResumptionMasterSecret(byte[] resumptionMasterSecret) {
+        return this.resumptionMasterSecret = resumptionMasterSecret;
     }
 
     public void setSelectedCipherSuite(CipherSuite selectedCipherSuite) {

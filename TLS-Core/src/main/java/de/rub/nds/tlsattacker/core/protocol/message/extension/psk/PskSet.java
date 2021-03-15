@@ -47,17 +47,24 @@ public class PskSet implements Serializable {
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] ticketAgeAdd;
 
+    /**
+     * ticket nonce used to derive PSK
+     */
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
+    private byte[] ticketNonce;
+
     private CipherSuite cipherSuite;
 
     public PskSet() {
     }
 
     public PskSet(byte[] preSharedKeyIdentity, byte[] preSharedKey, String ticketAge, byte[] ticketAgeAdd,
-        CipherSuite cipherSuite) {
+        byte[] ticketNonce, CipherSuite cipherSuite) {
         this.preSharedKeyIdentity = preSharedKeyIdentity;
         this.preSharedKey = preSharedKey;
         this.ticketAge = ticketAge;
         this.ticketAgeAdd = ticketAgeAdd;
+        this.ticketNonce = ticketNonce;
         this.cipherSuite = cipherSuite;
     }
 
@@ -121,6 +128,14 @@ public class PskSet implements Serializable {
         this.ticketAgeAdd = ticketAgeAdd;
     }
 
+    public byte[] getTicketNonce() {
+        return ticketNonce;
+    }
+
+    public void setTicketNonce(byte[] ticketNonce) {
+        this.ticketNonce = ticketNonce;
+    }
+
     /**
      * @return the cipherSuite
      */
@@ -143,6 +158,7 @@ public class PskSet implements Serializable {
         hash = 43 * hash + Arrays.hashCode(this.preSharedKey);
         hash = 43 * hash + Objects.hashCode(this.ticketAge);
         hash = 43 * hash + Arrays.hashCode(this.ticketAgeAdd);
+        hash = 43 * hash + Objects.hashCode(this.ticketNonce);
         hash = 43 * hash + Objects.hashCode(this.cipherSuite);
         return hash;
     }
@@ -171,6 +187,10 @@ public class PskSet implements Serializable {
         if (!Arrays.equals(this.ticketAgeAdd, other.ticketAgeAdd)) {
             return false;
         }
+        if (!Arrays.equals(this.ticketNonce, other.ticketNonce)) {
+            return false;
+        }
         return this.cipherSuite == other.cipherSuite;
     }
+
 }

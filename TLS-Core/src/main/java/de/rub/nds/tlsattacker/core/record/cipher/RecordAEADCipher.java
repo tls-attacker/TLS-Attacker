@@ -81,9 +81,9 @@ public class RecordAEADCipher extends RecordCipher {
         byte[] gcmNonce = ArrayConverter.concatenate(aeadSalt, explicitNonce);
 
         // Nonce construction is different for chacha & tls1.3
-        if (version.isTLS13() || cipherAlg == CipherAlgorithm.CHA_CHA_20_POLY1305) {
+        if (version.isTLS13() || cipherAlg == CipherAlgorithm.CHACHA20_POLY1305) {
             gcmNonce = preprocessIv(record.getSequenceNumber().getValue().longValue(), gcmNonce);
-        } else if (cipherAlg == CipherAlgorithm.UNOFFICIAL_CHA_CHA_20_POLY1305) {
+        } else if (cipherAlg == CipherAlgorithm.UNOFFICIAL_CHACHA20_POLY1305) {
             gcmNonce = ArrayConverter.longToUint64Bytes(record.getSequenceNumber().getValue().longValue());
         }
         record.getComputations().setGcmNonce(gcmNonce);
@@ -216,9 +216,9 @@ public class RecordAEADCipher extends RecordCipher {
         byte[] gcmNonce = ArrayConverter.concatenate(salt, explicitNonce);
 
         // Nonce construction is different for chacha & tls1.3
-        if (version.isTLS13() || cipherAlg == CipherAlgorithm.CHA_CHA_20_POLY1305) {
+        if (version.isTLS13() || cipherAlg == CipherAlgorithm.CHACHA20_POLY1305) {
             gcmNonce = preprocessIv(record.getSequenceNumber().getValue().longValue(), gcmNonce);
-        } else if (cipherAlg == CipherAlgorithm.UNOFFICIAL_CHA_CHA_20_POLY1305) {
+        } else if (cipherAlg == CipherAlgorithm.UNOFFICIAL_CHACHA20_POLY1305) {
             gcmNonce = ArrayConverter.longToUint64Bytes(record.getSequenceNumber().getValue().longValue());
         }
         record.getComputations().setGcmNonce(gcmNonce);

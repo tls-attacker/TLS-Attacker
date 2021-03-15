@@ -1217,6 +1217,7 @@
       <xs:element name="preSharedKey" type="xs:string" minOccurs="0"/>
       <xs:element name="ticketAge" type="xs:string" minOccurs="0"/>
       <xs:element name="ticketAgeAdd" type="xs:string" minOccurs="0"/>
+      <xs:element name="ticketNonce" type="xs:string" minOccurs="0"/>
       <xs:element name="cipherSuite" type="cipherSuite" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>

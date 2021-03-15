@@ -16,8 +16,12 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.math.BigInteger;
 import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+
+import de.rub.nds.tlsattacker.util.TimeHelper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -52,7 +56,10 @@ public class PSKIdentityPreparator extends Preparator<PSKIdentity> {
     private byte[] getObfuscatedTicketAge(byte[] ticketAgeAdd, String ticketAge) {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
         LocalDateTime ticketDate = LocalDateTime.parse(ticketAge, dateTimeFormatter);
-        BigInteger difference = BigInteger.valueOf(Duration.between(ticketDate, LocalDateTime.now()).toMillis());
+        long time = TimeHelper.getTime();
+        LocalDateTime dateNow = LocalDateTime.ofInstant(Instant.ofEpochMilli(time), ZoneId.systemDefault());
+
+        BigInteger difference = BigInteger.valueOf(Duration.between(ticketDate, dateNow).toMillis());
         BigInteger addValue = BigInteger.valueOf(ArrayConverter.bytesToLong(ticketAgeAdd));
         BigInteger mod = BigInteger.valueOf(2).pow(32);
         difference = difference.add(addValue);
