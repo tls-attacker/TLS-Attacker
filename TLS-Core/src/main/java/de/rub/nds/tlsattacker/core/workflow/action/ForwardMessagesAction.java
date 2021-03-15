@@ -38,6 +38,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloRetryRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.KeyUpdateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.PWDClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.PWDServerKeyExchangeMessage;
@@ -124,6 +125,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
         @XmlElement(type = ServerHelloMessage.class, name = "ServerHello"),
         @XmlElement(type = AlertMessage.class, name = "Alert"),
         @XmlElement(type = NewSessionTicketMessage.class, name = "NewSessionTicket"),
+        @XmlElement(type = KeyUpdateMessage.class, name = "KeyUpdate"),
         @XmlElement(type = ApplicationMessage.class, name = "Application"),
         @XmlElement(type = ChangeCipherSpecMessage.class, name = "ChangeCipherSpec"),
         @XmlElement(type = SSL2ClientHelloMessage.class, name = "SSL2ClientHello"),
@@ -178,6 +180,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
         @XmlElement(type = ServerHelloMessage.class, name = "ServerHello"),
         @XmlElement(type = AlertMessage.class, name = "Alert"),
         @XmlElement(type = NewSessionTicketMessage.class, name = "NewSessionTicket"),
+        @XmlElement(type = KeyUpdateMessage.class, name = "KeyUpdate"),
         @XmlElement(type = ApplicationMessage.class, name = "Application"),
         @XmlElement(type = ChangeCipherSpecMessage.class, name = "ChangeCipherSpec"),
         @XmlElement(type = SSL2ClientHelloMessage.class, name = "SSL2ClientHello"),
@@ -232,6 +235,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
         @XmlElement(type = ServerHelloMessage.class, name = "ServerHello"),
         @XmlElement(type = AlertMessage.class, name = "Alert"),
         @XmlElement(type = NewSessionTicketMessage.class, name = "NewSessionTicket"),
+        @XmlElement(type = KeyUpdateMessage.class, name = "KeyUpdate"),
         @XmlElement(type = ApplicationMessage.class, name = "Application"),
         @XmlElement(type = ChangeCipherSpecMessage.class, name = "ChangeCipherSpec"),
         @XmlElement(type = SSL2ClientHelloMessage.class, name = "SSL2ClientHello"),
