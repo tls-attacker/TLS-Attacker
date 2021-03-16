@@ -20,16 +20,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.annotation.*;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -44,9 +41,6 @@ import javax.xml.validation.SchemaFactory;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.reflections.Reflections;
-import org.reflections.scanners.TypeAnnotationsScanner;
-import org.reflections.util.ConfigurationBuilder;
 import org.xml.sax.SAXException;
 
 public class WorkflowTraceSerializer {
@@ -57,42 +51,6 @@ public class WorkflowTraceSerializer {
      * context initialization is expensive, we need to do that only once
      */
     private static JAXBContext context;
-//    private static Class<?>[] classListForSchemaGeneration;
-//
-//    private static final List<Class<? extends Annotation>> JAXB2_ANNOTATIONS = new ArrayList<Class<? extends Annotation>>() {
-//        {
-//            add(XmlRootElement.class);
-//            add(XmlType.class);
-//            add(XmlSeeAlso.class);
-//            add(XmlEnum.class);
-//            add(XmlRegistry.class);
-//        }
-//    };
-//
-//    private static Class<?>[] generateClassListForSchemaGeneration() {
-//        List<Class<?>> classes = new ArrayList<>();
-//
-//        Reflections reflections = new Reflections(new ConfigurationBuilder()
-//                .forPackages("de.rub.nds.tlsattacker")
-//                .addScanners(new TypeAnnotationsScanner()));
-//
-//        for (Class<? extends Annotation> jaxbType : JAXB2_ANNOTATIONS) {
-//            Set<Class<?>> annotatedClasses = reflections.getTypesAnnotatedWith(jaxbType);
-//            annotatedClasses.stream()
-//                    .filter(c -> !c.isInterface() && !c.isMemberClass() && !c.isAnonymousClass())
-//                    .forEach(classes::add);
-//        }
-//
-//        Class<?>[] classList = new Class<?>[classes.size()];
-//        return classes.toArray(classList);
-//    }
-//
-//    private static Class<?>[] getClassListForSchemaGeneration() {
-//        if (classListForSchemaGeneration == null) {
-//            classListForSchemaGeneration = generateClassListForSchemaGeneration();
-//        }
-//        return classListForSchemaGeneration;
-//    }
 
     static synchronized JAXBContext getJAXBContext() throws JAXBException, IOException {
         if (context == null) {
