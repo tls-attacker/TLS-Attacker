@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.record.cipher;
@@ -82,9 +81,9 @@ public class RecordAEADCipher extends RecordCipher {
         byte[] gcmNonce = ArrayConverter.concatenate(aeadSalt, explicitNonce);
 
         // Nonce construction is different for chacha & tls1.3
-        if (version.isTLS13() || cipherAlg == CipherAlgorithm.CHA_CHA_20_POLY1305) {
+        if (version.isTLS13() || cipherAlg == CipherAlgorithm.CHACHA20_POLY1305) {
             gcmNonce = preprocessIv(record.getSequenceNumber().getValue().longValue(), gcmNonce);
-        } else if (cipherAlg == CipherAlgorithm.UNOFFICIAL_CHA_CHA_20_POLY1305) {
+        } else if (cipherAlg == CipherAlgorithm.UNOFFICIAL_CHACHA20_POLY1305) {
             gcmNonce = ArrayConverter.longToUint64Bytes(record.getSequenceNumber().getValue().longValue());
         }
         record.getComputations().setGcmNonce(gcmNonce);
@@ -130,9 +129,10 @@ public class RecordAEADCipher extends RecordCipher {
                 additionalPadding = 0;
             }
             record.getComputations().setPadding(new byte[additionalPadding]);
-            record.getComputations().setPlainRecordBytes(
-                ArrayConverter.concatenate(record.getCleanProtocolMessageBytes().getValue(), new byte[] { record
-                    .getContentType().getValue() }, record.getComputations().getPadding().getValue()));
+            record.getComputations()
+                .setPlainRecordBytes(ArrayConverter.concatenate(record.getCleanProtocolMessageBytes().getValue(),
+                    new byte[] { record.getContentType().getValue() },
+                    record.getComputations().getPadding().getValue()));
             // For TLS1.3 we need the length beforehand to compute the
             // authenticatedMetaData
             record.setLength(record.getComputations().getPlainRecordBytes().getValue().length + AEAD_TAG_LENGTH);
@@ -216,9 +216,9 @@ public class RecordAEADCipher extends RecordCipher {
         byte[] gcmNonce = ArrayConverter.concatenate(salt, explicitNonce);
 
         // Nonce construction is different for chacha & tls1.3
-        if (version.isTLS13() || cipherAlg == CipherAlgorithm.CHA_CHA_20_POLY1305) {
+        if (version.isTLS13() || cipherAlg == CipherAlgorithm.CHACHA20_POLY1305) {
             gcmNonce = preprocessIv(record.getSequenceNumber().getValue().longValue(), gcmNonce);
-        } else if (cipherAlg == CipherAlgorithm.UNOFFICIAL_CHA_CHA_20_POLY1305) {
+        } else if (cipherAlg == CipherAlgorithm.UNOFFICIAL_CHACHA20_POLY1305) {
             gcmNonce = ArrayConverter.longToUint64Bytes(record.getSequenceNumber().getValue().longValue());
         }
         record.getComputations().setGcmNonce(gcmNonce);
@@ -234,9 +234,8 @@ public class RecordAEADCipher extends RecordCipher {
         // the decryption
 
         try {
-            byte[] plainRecordBytes =
-                decryptCipher.decrypt(gcmNonce, aeadTagLength * Bits.IN_A_BYTE, additionalAuthenticatedData,
-                    ArrayConverter.concatenate(cipherTextOnly, authenticationTag));
+            byte[] plainRecordBytes = decryptCipher.decrypt(gcmNonce, aeadTagLength * Bits.IN_A_BYTE,
+                additionalAuthenticatedData, ArrayConverter.concatenate(cipherTextOnly, authenticationTag));
 
             record.getComputations().setAuthenticationTagValid(true);
             record.getComputations().setPlainRecordBytes(plainRecordBytes);

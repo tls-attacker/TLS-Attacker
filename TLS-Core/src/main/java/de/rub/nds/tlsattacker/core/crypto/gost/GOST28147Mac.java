@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.crypto.gost;
@@ -120,8 +119,8 @@ public class GOST28147Mac implements Mac, Memoable {
             key = ((KeyParameter) params).getKey();
             workingKey = generateWorkingKey(key);
         } else {
-            throw new IllegalArgumentException("invalid parameter passed to GOST28147 init - "
-                + params.getClass().getName());
+            throw new IllegalArgumentException(
+                "invalid parameter passed to GOST28147 init - " + params.getClass().getName());
         }
     }
 

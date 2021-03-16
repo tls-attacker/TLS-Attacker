@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.https;
@@ -36,9 +35,8 @@ public class HttpsResponseParserTest {
      */
     @Test(expected = ParserException.class)
     public void testParseMessageContentFailed() {
-        HttpsResponseParser parser =
-            new HttpsResponseParser(0, ArrayConverter.hexStringToByteArray("AAAAAAAAAAAAAAAAAAAAAAAA"),
-                ProtocolVersion.TLS12, config);
+        HttpsResponseParser parser = new HttpsResponseParser(0,
+            ArrayConverter.hexStringToByteArray("AAAAAAAAAAAAAAAAAAAAAAAA"), ProtocolVersion.TLS12, config);
         parser.parse();
     }
 
@@ -47,9 +45,8 @@ public class HttpsResponseParserTest {
      */
     @Test
     public void testParseMessageContentSuccess() {
-        String message =
-            "HTTP/1.1 200 OK\r\nDate: Mon, 27 Jul 2009 12:28:53 GMT\r\nServer: Apache/2.2.14 (Win32)\r\n"
-                + "Last-Modified: Wed, 22 Jul 2009 19:15:56 GMT\r\nContent-Length: 88\r\nContent-Type: text/html\r\nConnection: Closed\r\n\r\ntest";
+        String message = "HTTP/1.1 200 OK\r\nDate: Mon, 27 Jul 2009 12:28:53 GMT\r\nServer: Apache/2.2.14 (Win32)\r\n"
+            + "Last-Modified: Wed, 22 Jul 2009 19:15:56 GMT\r\nContent-Length: 88\r\nContent-Type: text/html\r\nConnection: Closed\r\n\r\ntest";
 
         HttpsResponseParser parser =
             new HttpsResponseParser(0, message.getBytes(Charset.forName("UTF-8")), ProtocolVersion.TLS12, config);

@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.state;
@@ -43,6 +42,7 @@ import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.dtls.FragmentManager;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
+import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
@@ -181,6 +181,11 @@ public class TlsContext {
      * Premaster secret established during the handshake.
      */
     private byte[] preMasterSecret;
+
+    /**
+     * Master secret established during the handshake.
+     */
+    private byte[] resumptionMasterSecret;
 
     /**
      * Client Extended Random used in Extended Random Extension
@@ -673,7 +678,7 @@ public class TlsContext {
      * the default connection end in single context scenarios.
      *
      * @param config
-     * The Config for which the TlsContext should be created
+     *               The Config for which the TlsContext should be created
      */
     public TlsContext(Config config) {
         RunningModeType mode = config.getDefaultRunningMode();
@@ -688,8 +693,8 @@ public class TlsContext {
                     init(config, config.getDefaultServerConnection());
                     break;
                 default:
-                    throw new ConfigurationException("Cannot create connection for unknown running mode " + "'" + mode
-                        + "'");
+                    throw new ConfigurationException(
+                        "Cannot create connection for unknown running mode " + "'" + mode + "'");
             }
         }
     }
@@ -1382,6 +1387,10 @@ public class TlsContext {
         return masterSecret;
     }
 
+    public byte[] getResumptionMasterSecret() {
+        return resumptionMasterSecret;
+    }
+
     public CipherSuite getSelectedCipherSuite() {
         return selectedCipherSuite;
     }
@@ -1393,6 +1402,10 @@ public class TlsContext {
     public void setMasterSecret(byte[] masterSecret) {
         keylogfile.writeKey("CLIENT_RANDOM", masterSecret);
         this.masterSecret = masterSecret;
+    }
+
+    public byte[] setResumptionMasterSecret(byte[] resumptionMasterSecret) {
+        return this.resumptionMasterSecret = resumptionMasterSecret;
     }
 
     public void setSelectedCipherSuite(CipherSuite selectedCipherSuite) {
@@ -1669,8 +1682,8 @@ public class TlsContext {
         return certificateStatusRequestExtensionResponderIDList;
     }
 
-    public void setCertificateStatusRequestExtensionResponderIDList(
-        byte[] certificateStatusRequestExtensionResponderIDList) {
+    public void
+        setCertificateStatusRequestExtensionResponderIDList(byte[] certificateStatusRequestExtensionResponderIDList) {
         this.certificateStatusRequestExtensionResponderIDList = certificateStatusRequestExtensionResponderIDList;
     }
 
@@ -1678,8 +1691,8 @@ public class TlsContext {
         return certificateStatusRequestExtensionRequestExtension;
     }
 
-    public void setCertificateStatusRequestExtensionRequestExtension(
-        byte[] certificateStatusRequestExtensionRequestExtension) {
+    public void
+        setCertificateStatusRequestExtensionRequestExtension(byte[] certificateStatusRequestExtensionRequestExtension) {
         this.certificateStatusRequestExtensionRequestExtension = certificateStatusRequestExtensionRequestExtension;
     }
 
@@ -1895,9 +1908,9 @@ public class TlsContext {
     /**
      * Check if the given TLS extension type was proposed by the client.
      *
-     * @param ext
-     * The ExtensionType to check for
-     * @return true if extension was proposed by client, false otherwise
+     * @param  ext
+     *             The ExtensionType to check for
+     * @return     true if extension was proposed by client, false otherwise
      */
     public boolean isExtensionProposed(ExtensionType ext) {
         return proposedExtensionSet.contains(ext);
@@ -1916,7 +1929,7 @@ public class TlsContext {
      * Mark the given TLS extension type as client proposed extension.
      *
      * @param ext
-     * The ExtensionType that is proposed
+     *            The ExtensionType that is proposed
      */
     public void addProposedExtension(ExtensionType ext) {
         proposedExtensionSet.add(ext);
@@ -1925,9 +1938,9 @@ public class TlsContext {
     /**
      * Check if the given TLS extension type was sent by the server.
      *
-     * @param ext
-     * The ExtensionType to check for
-     * @return true if extension was proposed by server, false otherwise
+     * @param  ext
+     *             The ExtensionType to check for
+     * @return     true if extension was proposed by server, false otherwise
      */
     public boolean isExtensionNegotiated(ExtensionType ext) {
         return negotiatedExtensionSet.contains(ext);
@@ -1937,7 +1950,7 @@ public class TlsContext {
      * Mark the given TLS extension type as server negotiated extension.
      *
      * @param ext
-     * The ExtensionType to add
+     *            The ExtensionType to add
      */
     public void addNegotiatedExtension(ExtensionType ext) {
         negotiatedExtensionSet.add(ext);
@@ -1983,8 +1996,8 @@ public class TlsContext {
             }
             transportHandler = TransportHandlerFactory.createTransportHandler(connection);
             if (transportHandler instanceof ClientTcpTransportHandler) {
-                ((ClientTcpTransportHandler) transportHandler).setRetryFailedSocketInitialization(config
-                    .isRetryFailedClientTcpSocketInitialization());
+                ((ClientTcpTransportHandler) transportHandler)
+                    .setRetryFailedSocketInitialization(config.isRetryFailedClientTcpSocketInitialization());
             }
         }
 
@@ -1993,8 +2006,8 @@ public class TlsContext {
         } catch (NullPointerException | NumberFormatException ex) {
             throw new ConfigurationException("Invalid values in " + connection.toString(), ex);
         } catch (IOException ex) {
-            throw new TransportHandlerConnectException("Unable to initialize the transport handler with: "
-                + connection.toString(), ex);
+            throw new TransportHandlerConnectException(
+                "Unable to initialize the transport handler with: " + connection.toString(), ex);
         }
     }
 
@@ -2035,7 +2048,7 @@ public class TlsContext {
 
     /**
      * @param clientEarlyTrafficSecret
-     * the clientEarlyTrafficSecret to set
+     *                                 the clientEarlyTrafficSecret to set
      */
     public void setClientEarlyTrafficSecret(byte[] clientEarlyTrafficSecret) {
         keylogfile.writeKey("CLIENT_EARLY_TRAFFIC_SECRET", clientEarlyTrafficSecret);
@@ -2051,7 +2064,7 @@ public class TlsContext {
 
     /**
      * @param maxEarlyDataSize
-     * the maxEarlyDataSize to set
+     *                         the maxEarlyDataSize to set
      */
     public void setMaxEarlyDataSize(Integer maxEarlyDataSize) {
         this.maxEarlyDataSize = maxEarlyDataSize;
@@ -2066,7 +2079,7 @@ public class TlsContext {
 
     /**
      * @param psk
-     * the psk to set
+     *            the psk to set
      */
     public void setPsk(byte[] psk) {
         this.psk = psk;
@@ -2081,7 +2094,7 @@ public class TlsContext {
 
     /**
      * @param earlySecret
-     * the earlySecret to set
+     *                    the earlySecret to set
      */
     public void setEarlySecret(byte[] earlySecret) {
         this.earlySecret = earlySecret;
@@ -2096,7 +2109,7 @@ public class TlsContext {
 
     /**
      * @param earlyDataCipherSuite
-     * the earlyDataCipherSuite to set
+     *                             the earlyDataCipherSuite to set
      */
     public void setEarlyDataCipherSuite(CipherSuite earlyDataCipherSuite) {
         this.earlyDataCipherSuite = earlyDataCipherSuite;
@@ -2111,7 +2124,7 @@ public class TlsContext {
 
     /**
      * @param earlyDataPSKIdentity
-     * the earlyDataPSKIdentity to set
+     *                             the earlyDataPSKIdentity to set
      */
     public void setEarlyDataPSKIdentity(byte[] earlyDataPSKIdentity) {
         this.earlyDataPSKIdentity = earlyDataPSKIdentity;
@@ -2126,7 +2139,7 @@ public class TlsContext {
 
     /**
      * @param selectedIdentityIndex
-     * the selectedIdentityIndex to set
+     *                              the selectedIdentityIndex to set
      */
     public void setSelectedIdentityIndex(int selectedIdentityIndex) {
         this.selectedIdentityIndex = selectedIdentityIndex;
@@ -2141,7 +2154,7 @@ public class TlsContext {
 
     /**
      * @param clientPskKeyExchangeModes
-     * the clientPskKeyExchangeModes to set
+     *                                  the clientPskKeyExchangeModes to set
      */
     public void setClientPskKeyExchangeModes(List<PskKeyExchangeMode> clientPskKeyExchangeModes) {
         this.clientPskKeyExchangeModes = clientPskKeyExchangeModes;
@@ -2156,7 +2169,7 @@ public class TlsContext {
 
     /**
      * @param pskSets
-     * the pskSets to set
+     *                the pskSets to set
      */
     public void setPskSets(List<PskSet> pskSets) {
         this.pskSets = pskSets;
@@ -2171,7 +2184,7 @@ public class TlsContext {
 
     /**
      * @param activeClientKeySetType
-     * the activeClientKeySetType to set
+     *                               the activeClientKeySetType to set
      */
     public void setActiveClientKeySetType(Tls13KeySetType activeClientKeySetType) {
         this.activeClientKeySetType = activeClientKeySetType;
@@ -2186,7 +2199,7 @@ public class TlsContext {
 
     /**
      * @param activeServerKeySetType
-     * the activeServerKeySetType to set
+     *                               the activeServerKeySetType to set
      */
     public void setActiveServerKeySetType(Tls13KeySetType activeServerKeySetType) {
         this.activeServerKeySetType = activeServerKeySetType;
@@ -2217,7 +2230,7 @@ public class TlsContext {
 
     /**
      * @param earlyDataPsk
-     * the earlyDataPsk to set
+     *                     the earlyDataPsk to set
      */
     public void setEarlyDataPsk(byte[] earlyDataPsk) {
         this.earlyDataPsk = earlyDataPsk;

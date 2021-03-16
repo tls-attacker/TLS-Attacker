@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.forensics.analyzer;
@@ -55,9 +54,8 @@ public class ForensicAnalyzerTest {
     @Test
     @Ignore
     public void getRealWorkflowTraceWithRsaPrivateKey() throws JAXBException, IOException, XMLStreamException {
-        BigInteger rsaPrivateKey =
-            new BigInteger(
-                "144490376376406540965205589156240569211382533466359849946728402570136249818055405537488044194647351959609489426069723713548216483327106438912858757254792530891714061133579603846889282342802418516591741975737381214992723907604280314805065261718449369587056911550617209133141490404695448146483761702254794149121");
+        BigInteger rsaPrivateKey = new BigInteger(
+            "144490376376406540965205589156240569211382533466359849946728402570136249818055405537488044194647351959609489426069723713548216483327106438912858757254792530891714061133579603846889282342802418516591741975737381214992723907604280314805065261718449369587056911550617209133141490404695448146483761702254794149121");
         WorkflowTrace executedWorkflow =
             WorkflowTraceSerializer.read(this.getClass().getResourceAsStream("/raw-trace-55859-4433.xml"));
         ForensicAnalyzer forensicAnalyzer = new ForensicAnalyzer();

@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.certificate.ocsp;
@@ -78,8 +77,8 @@ public class OCSPResponseParser {
 
         // Abort if not an OCSP basic response.
         if (!responseTypeIdentifier.equals(BASIC.getOID())) {
-            throw new NotImplementedException("This response type is not supported. Identifier: "
-                + responseTypeIdentifier);
+            throw new NotImplementedException(
+                "This response type is not supported. Identifier: " + responseTypeIdentifier);
         }
 
         // Parse OCSP basic response object. See RFC 6960 for reference of
@@ -158,8 +157,8 @@ public class OCSPResponseParser {
             for (Asn1Encodable singleCertificateStatusSequence : certificateStatusSequence.getChildren()) {
                 if (singleCertificateStatusSequence instanceof Asn1Sequence) {
                     // Create a new Certificate Status object for each entry
-                    certificateStatusList.add(CertificateStatusParser
-                        .parseCertificateStatus((Asn1Sequence) singleCertificateStatusSequence));
+                    certificateStatusList.add(
+                        CertificateStatusParser.parseCertificateStatus((Asn1Sequence) singleCertificateStatusSequence));
                 }
             }
         }
@@ -228,13 +227,12 @@ public class OCSPResponseParser {
             // Mimic TLS certificate message format with two length values in
             // front of the certificate data
             byte[] certificateSequenceEncoded = asn1Encoder.encode();
-            byte[] certificateSequenceEncodedWithLength =
-                ArrayConverter.concatenate(ArrayConverter.intToBytes(certificateSequenceEncoded.length,
-                    HandshakeByteLength.CERTIFICATES_LENGTH), certificateSequenceEncoded);
-            ByteArrayInputStream stream =
-                new ByteArrayInputStream(ArrayConverter.concatenate(ArrayConverter.intToBytes(
-                    certificateSequenceEncodedWithLength.length, HandshakeByteLength.CERTIFICATES_LENGTH),
-                    certificateSequenceEncodedWithLength));
+            byte[] certificateSequenceEncodedWithLength = ArrayConverter.concatenate(
+                ArrayConverter.intToBytes(certificateSequenceEncoded.length, HandshakeByteLength.CERTIFICATES_LENGTH),
+                certificateSequenceEncoded);
+            ByteArrayInputStream stream = new ByteArrayInputStream(
+                ArrayConverter.concatenate(ArrayConverter.intToBytes(certificateSequenceEncodedWithLength.length,
+                    HandshakeByteLength.CERTIFICATES_LENGTH), certificateSequenceEncodedWithLength));
 
             // And feed the TLS mimicked certificate message into BouncyCastle
             // TLS certificate parser

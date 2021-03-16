@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.attacks;
@@ -177,14 +176,12 @@ public class Main {
                 attacker = new SimpleMitmProxy(simpleMITMProxy, simpleMITMProxy.createConfig());
                 break;
             case PskBruteForcerAttackClientCommandConfig.ATTACK_COMMAND:
-                attacker =
-                    new PskBruteForcerAttackClient(pskBruteForcerAttackClientTest,
-                        pskBruteForcerAttackClientTest.createConfig());
+                attacker = new PskBruteForcerAttackClient(pskBruteForcerAttackClientTest,
+                    pskBruteForcerAttackClientTest.createConfig());
                 break;
             case PskBruteForcerAttackServerCommandConfig.ATTACK_COMMAND:
-                attacker =
-                    new PskBruteForcerAttackServer(pskBruteForcerAttackServerTest,
-                        pskBruteForcerAttackServerTest.createConfig());
+                attacker = new PskBruteForcerAttackServer(pskBruteForcerAttackServerTest,
+                    pskBruteForcerAttackServerTest.createConfig());
                 break;
             case GeneralDrownCommandConfig.COMMAND:
                 attacker = new GeneralDrownAttacker(generalDrownConfig, generalDrownConfig.createConfig());

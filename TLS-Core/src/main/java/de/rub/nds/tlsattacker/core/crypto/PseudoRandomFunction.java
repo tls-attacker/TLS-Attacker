@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.crypto;
@@ -65,17 +64,17 @@ public class PseudoRandomFunction {
     /**
      * Computes PRF output of the provided size using the given mac algorithm
      *
-     * @param prfAlgorithm
-     * PRFAlgorithm
-     * @param secret
-     * The Secret
-     * @param label
-     * The Label
-     * @param seed
-     * The Seed
-     * @param size
-     * The size
-     * @return the Prf output
+     * @param  prfAlgorithm
+     *                                                                PRFAlgorithm
+     * @param  secret
+     *                                                                The Secret
+     * @param  label
+     *                                                                The Label
+     * @param  seed
+     *                                                                The Seed
+     * @param  size
+     *                                                                The size
+     * @return                                                        the Prf output
      * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     public static byte[] compute(PRFAlgorithm prfAlgorithm, byte[] secret, String label, byte[] seed, int size)
@@ -95,25 +94,25 @@ public class PseudoRandomFunction {
                 // versions, it works by default with sha1 and md5
                 return TlsUtils.PRF_legacy(secret, label, seed, size);
             default:
-                throw new UnsupportedOperationException("PRF computation for different"
-                    + " protocol versions is not supported yet");
+                throw new UnsupportedOperationException(
+                    "PRF computation for different" + " protocol versions is not supported yet");
         }
     }
 
     /**
      * PRF computation for TLS 1.2
      *
-     * @param prfAlgorithm
-     * PRFAlgorithm
-     * @param secret
-     * The Secret
-     * @param label
-     * The Label
-     * @param seed
-     * The Seed
-     * @param size
-     * The size
-     * @return the Prf output
+     * @param  prfAlgorithm
+     *                      PRFAlgorithm
+     * @param  secret
+     *                      The Secret
+     * @param  label
+     *                      The Label
+     * @param  seed
+     *                      The Seed
+     * @param  size
+     *                      The size
+     * @return              the Prf output
      */
     private static byte[] computeTls12(byte[] secret, String label, byte[] seed, int size, String macAlgorithm)
         throws CryptoException {

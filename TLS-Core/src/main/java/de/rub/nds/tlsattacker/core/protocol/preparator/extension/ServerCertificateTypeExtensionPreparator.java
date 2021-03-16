@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
@@ -15,8 +14,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerCertificateT
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-public class ServerCertificateTypeExtensionPreparator extends
-    ExtensionPreparator<ServerCertificateTypeExtensionMessage> {
+public class ServerCertificateTypeExtensionPreparator
+    extends ExtensionPreparator<ServerCertificateTypeExtensionMessage> {
 
     private final ServerCertificateTypeExtensionMessage msg;
 
@@ -28,7 +27,8 @@ public class ServerCertificateTypeExtensionPreparator extends
 
     @Override
     public void prepareExtensionContent() {
-        msg.setCertificateTypes(CertificateType.toByteArray(chooser.getConfig().getServerCertificateTypeDesiredTypes()));
+        msg.setCertificateTypes(
+            CertificateType.toByteArray(chooser.getConfig().getServerCertificateTypeDesiredTypes()));
         msg.setCertificateTypesLength(msg.getCertificateTypes().getValue().length);
         msg.setIsClientMessage(chooser.getConfig().isClientCertificateTypeExtensionMessageState());
     }

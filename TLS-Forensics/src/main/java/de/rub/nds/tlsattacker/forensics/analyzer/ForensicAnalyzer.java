@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.forensics.analyzer;
@@ -150,8 +149,8 @@ public class ForensicAnalyzer {
                                 && record.getCompleteRecordBytes().getValue() != null) {
                                 stream.write(record.getCompleteRecordBytes().getValue());
                             } else {
-                                LOGGER
-                                    .warn("Something went terribly wrong. The record does not contain complete record bytes");
+                                LOGGER.warn(
+                                    "Something went terribly wrong. The record does not contain complete record bytes");
                             }
                         } catch (IOException ex) {
                             LOGGER.warn("Could not write to ByteArrayOutputStream.", ex);
@@ -167,7 +166,8 @@ public class ForensicAnalyzer {
 
     public boolean isSupported(WorkflowTrace trace) {
         for (TlsAction action : trace.getTlsActions()) {
-            if (!(action instanceof SendAction || action instanceof ReceiveAction || action instanceof GenericReceiveAction)) {
+            if (!(action instanceof SendAction || action instanceof ReceiveAction
+                || action instanceof GenericReceiveAction)) {
                 return false;
             }
         }

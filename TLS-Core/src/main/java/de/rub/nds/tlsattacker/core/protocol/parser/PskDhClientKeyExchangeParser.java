@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.parser;
@@ -26,13 +25,13 @@ public class PskDhClientKeyExchangeParser extends DHClientKeyExchangeParser<PskD
      * Constructor for the Parser class
      *
      * @param startposition
-     * Position in the array where the ClientKeyExchangeParser is supposed to start parsing
+     *                      Position in the array where the ClientKeyExchangeParser is supposed to start parsing
      * @param array
-     * The byte[] which the ClientKeyExchangeParser is supposed to parse
+     *                      The byte[] which the ClientKeyExchangeParser is supposed to parse
      * @param version
-     * Version of the Protocol
+     *                      Version of the Protocol
      * @param config
-     * A Config used in the current context
+     *                      A Config used in the current context
      */
     public PskDhClientKeyExchangeParser(int startposition, byte[] array, ProtocolVersion version, Config config) {
         super(startposition, array, version, config);
@@ -55,7 +54,7 @@ public class PskDhClientKeyExchangeParser extends DHClientKeyExchangeParser<PskD
      * Reads the next bytes as the PSKIdentityLength and writes them in the message
      *
      * @param msg
-     * Message to write in
+     *            Message to write in
      */
     private void parsePskIdentityLength(PskDhClientKeyExchangeMessage msg) {
         msg.setIdentityLength(parseIntField(HandshakeByteLength.PSK_IDENTITY_LENGTH));
@@ -66,7 +65,7 @@ public class PskDhClientKeyExchangeParser extends DHClientKeyExchangeParser<PskD
      * Reads the next bytes as the PSKIdentity and writes them in the message
      *
      * @param msg
-     * Message to write in
+     *            Message to write in
      */
     private void parsePskIdentity(PskDhClientKeyExchangeMessage msg) {
         msg.setIdentity(parseByteArrayField(msg.getIdentityLength().getValue()));

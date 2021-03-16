@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.dtls;
@@ -60,12 +59,10 @@ public class MessageFragmenter {
         List<DtlsHandshakeMessageFragment> fragments = new LinkedList<>();
         int currentOffset = 0;
         do {
-            byte[] fragmentBytes =
-                Arrays.copyOfRange(handshakeBytes, currentOffset,
-                    Math.min(currentOffset + maxFragmentLength, handshakeBytes.length));
-            DtlsHandshakeMessageFragment fragment =
-                new DtlsHandshakeMessageFragment(message.getHandshakeMessageType(), fragmentBytes, message
-                    .getMessageSequence().getValue(), currentOffset, handshakeBytes.length);
+            byte[] fragmentBytes = Arrays.copyOfRange(handshakeBytes, currentOffset,
+                Math.min(currentOffset + maxFragmentLength, handshakeBytes.length));
+            DtlsHandshakeMessageFragment fragment = new DtlsHandshakeMessageFragment(message.getHandshakeMessageType(),
+                fragmentBytes, message.getMessageSequence().getValue(), currentOffset, handshakeBytes.length);
             fragment.getHandler(context).prepareMessage(fragment);
             fragments.add(fragment);
             currentOffset += maxFragmentLength;

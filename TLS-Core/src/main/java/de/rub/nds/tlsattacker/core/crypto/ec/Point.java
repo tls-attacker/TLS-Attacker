@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.crypto.ec;
@@ -65,9 +64,9 @@ public class Point implements Serializable {
      * preferred over using this constructor.
      *
      * @param x
-     * A FieldElement representing the x-coordinate of the point.
+     *          A FieldElement representing the x-coordinate of the point.
      * @param y
-     * A FieldElement representing the y-coordinate of the point. x and y must be elements of the same field.
+     *          A FieldElement representing the y-coordinate of the point. x and y must be elements of the same field.
      */
     public Point(FieldElement x, FieldElement y) {
         this.fieldX = x;

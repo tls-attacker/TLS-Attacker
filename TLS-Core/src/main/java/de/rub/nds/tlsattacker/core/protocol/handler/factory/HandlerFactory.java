@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.handler.factory;
@@ -38,6 +37,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.HeartbeatMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.HelloRequestHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.HelloRetryRequestHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.HelloVerifyRequestHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.KeyUpdateHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.NewSessionTicketHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.PWDClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.PWDServerKeyExchangeHandler;
@@ -164,6 +164,8 @@ public class HandlerFactory {
                     return new HelloVerifyRequestHandler(context);
                 case NEW_SESSION_TICKET:
                     return new NewSessionTicketHandler(context);
+                case KEY_UPDATE:
+                    return new KeyUpdateHandler(context);
                 case SERVER_HELLO:
                     return new ServerHelloHandler(context);
                 case SERVER_HELLO_DONE:
@@ -186,11 +188,11 @@ public class HandlerFactory {
     /**
      * Returns the correct extension Handler for a specified ExtensionType in a HandshakeMessage
      *
-     * @param context
-     * Current TlsContext
-     * @param type
-     * Type of the Extension
-     * @return Correct ExtensionHandler
+     * @param  context
+     *                 Current TlsContext
+     * @param  type
+     *                 Type of the Extension
+     * @return         Correct ExtensionHandler
      */
     public static ExtensionHandler getExtensionHandler(TlsContext context, ExtensionType type) {
         try {

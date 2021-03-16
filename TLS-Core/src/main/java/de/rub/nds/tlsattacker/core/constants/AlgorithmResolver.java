@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.constants;
@@ -27,11 +26,11 @@ public class AlgorithmResolver {
      * based on MD5 and SHA-1. TLS 1.2 uses per default SHA256 PRF, but allows for definition of further PRFs in
      * specific cipher suites (the last part of a cipher suite string identifies the PRF).
      *
-     * @param protocolVersion
-     * The ProtocolVersion for which the PRFAlgorithm should be returned
-     * @param cipherSuite
-     * The Cipher suite for which the PRFAlgorithm should be returned
-     * @return The selected PRFAlgorithm
+     * @param  protocolVersion
+     *                         The ProtocolVersion for which the PRFAlgorithm should be returned
+     * @param  cipherSuite
+     *                         The Cipher suite for which the PRFAlgorithm should be returned
+     * @return                 The selected PRFAlgorithm
      */
     public static PRFAlgorithm getPRFAlgorithm(ProtocolVersion protocolVersion, CipherSuite cipherSuite) {
         PRFAlgorithm result;
@@ -61,11 +60,11 @@ public class AlgorithmResolver {
      * definition of further digest algorithms in specific cipher suites (the last part of a cipher suite string
      * identifies the digest).
      *
-     * @param protocolVersion
-     * The ProtocolVersion for which the DigestAlgorithm should be returned
-     * @param cipherSuite
-     * The Cipher suite for which the DigestAlgorithm should be returned
-     * @return The selected DigestAlgorithm
+     * @param  protocolVersion
+     *                         The ProtocolVersion for which the DigestAlgorithm should be returned
+     * @param  cipherSuite
+     *                         The Cipher suite for which the DigestAlgorithm should be returned
+     * @return                 The selected DigestAlgorithm
      */
     public static DigestAlgorithm getDigestAlgorithm(ProtocolVersion protocolVersion, CipherSuite cipherSuite) {
         DigestAlgorithm result;
@@ -154,8 +153,8 @@ public class AlgorithmResolver {
         }
         if (cipherSuite == CipherSuite.TLS_FALLBACK_SCSV
             || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV) {
-            throw new UnsupportedOperationException("The CipherSuite:" + cipherSuite.name()
-                + " does not specify a KeyExchangeAlgorithm");
+            throw new UnsupportedOperationException(
+                "The CipherSuite:" + cipherSuite.name() + " does not specify a KeyExchangeAlgorithm");
         }
         LOGGER.warn("The key exchange algorithm in " + cipherSuite.toString() + " is not supported yet.");
         return KeyExchangeAlgorithm.RSA;
@@ -164,7 +163,7 @@ public class AlgorithmResolver {
     /**
      * Returns the certificate type required for the cipher suite
      *
-     * @param suite
+     * @param  suite
      * @return
      */
     public static CertificateKeyType getCertificateKeyType(CipherSuite suite) {
@@ -219,9 +218,9 @@ public class AlgorithmResolver {
      *
      * This function returns a list of public key algorithms needed when running a server with a cipher suite.
      *
-     * @param cipherSuite
-     * The selected CipherSuite
-     * @return The Set of publicKeyAlgorithms
+     * @param  cipherSuite
+     *                     The selected CipherSuite
+     * @return             The Set of publicKeyAlgorithms
      */
     public static Set<PublicKeyAlgorithm> getRequiredKeystoreAlgorithms(CipherSuite cipherSuite) {
         String cipher = cipherSuite.toString().toUpperCase();
@@ -298,15 +297,15 @@ public class AlgorithmResolver {
             return CipherAlgorithm.GOST_28147_CNT;
         } else if (cipher.contains("CHACHA20_POLY1305")) {
             if (cipher.contains("UNOFFICIAL")) {
-                return CipherAlgorithm.UNOFFICIAL_CHA_CHA_20_POLY1305;
+                return CipherAlgorithm.UNOFFICIAL_CHACHA20_POLY1305;
             } else {
-                return CipherAlgorithm.CHA_CHA_20_POLY1305;
+                return CipherAlgorithm.CHACHA20_POLY1305;
             }
         }
         if (cipherSuite == CipherSuite.TLS_FALLBACK_SCSV
             || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV) {
-            throw new UnsupportedOperationException("The CipherSuite:" + cipherSuite.name()
-                + " does not specify a Cipher");
+            throw new UnsupportedOperationException(
+                "The CipherSuite:" + cipherSuite.name() + " does not specify a Cipher");
         }
 
         LOGGER.warn("The cipher algorithm in " + cipherSuite + " is not supported yet. Falling back to NULL.");
@@ -314,18 +313,18 @@ public class AlgorithmResolver {
     }
 
     /**
-     * @param cipherSuite
-     * The Cipher suite for which the BulkCipherAlgorithm should be returned
-     * @return The BulkCipherAlgorithm of the Cipher
+     * @param  cipherSuite
+     *                     The Cipher suite for which the BulkCipherAlgorithm should be returned
+     * @return             The BulkCipherAlgorithm of the Cipher
      */
     public static BulkCipherAlgorithm getBulkCipherAlgorithm(CipherSuite cipherSuite) {
         return BulkCipherAlgorithm.getBulkCipherAlgorithm(cipherSuite);
     }
 
     /**
-     * @param cipherSuite
-     * The Cipher suite for which the CipherType should be selected
-     * @return The CipherType of the Cipher suite
+     * @param  cipherSuite
+     *                     The Cipher suite for which the CipherType should be selected
+     * @return             The CipherType of the Cipher suite
      */
     public static CipherType getCipherType(CipherSuite cipherSuite) {
         String cs = cipherSuite.toString().toUpperCase();
@@ -339,8 +338,8 @@ public class AlgorithmResolver {
         }
         if (cipherSuite == CipherSuite.TLS_FALLBACK_SCSV
             || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV) {
-            throw new UnsupportedOperationException("The CipherSuite:" + cipherSuite.name()
-                + " does not specify a CipherType");
+            throw new UnsupportedOperationException(
+                "The CipherSuite:" + cipherSuite.name() + " does not specify a CipherType");
         }
         throw new UnsupportedOperationException("Cipher suite " + cipherSuite + " is not supported yet.");
     }
@@ -381,15 +380,15 @@ public class AlgorithmResolver {
         }
         if (cipherSuite == CipherSuite.TLS_FALLBACK_SCSV
             || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV) {
-            throw new UnsupportedOperationException("The CipherSuite:" + cipherSuite.name()
-                + " does not specify a MAC-Algorithm");
+            throw new UnsupportedOperationException(
+                "The CipherSuite:" + cipherSuite.name() + " does not specify a MAC-Algorithm");
         }
         if (result != null) {
             LOGGER.debug("Using the following Mac Algorithm: {}", result);
             return result;
         } else {
-            throw new UnsupportedOperationException("The Mac algorithm for cipher " + cipherSuite
-                + " is not supported yet");
+            throw new UnsupportedOperationException(
+                "The Mac algorithm for cipher " + cipherSuite + " is not supported yet");
         }
     }
 

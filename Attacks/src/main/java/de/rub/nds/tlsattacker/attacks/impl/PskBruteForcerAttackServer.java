@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.attacks.impl;
@@ -58,9 +57,8 @@ public class PskBruteForcerAttackServer extends Attacker<PskBruteForcerAttackSer
         }
         CONSOLE.info("The server supports " + suite
             + ". Trying to guess the PSK. This is an online Attack. Depending on the PSK this may take some time...");
-        guessProvider =
-            GuessProviderFactory.createGuessProvider(config.getGuessProviderType(),
-                config.getGuessProviderInputStream());
+        guessProvider = GuessProviderFactory.createGuessProvider(config.getGuessProviderType(),
+            config.getGuessProviderInputStream());
         boolean result = false;
         int counter = 0;
         long startTime = System.currentTimeMillis();
@@ -81,9 +79,7 @@ public class PskBruteForcerAttackServer extends Attacker<PskBruteForcerAttackSer
             if (result) {
                 long stopTime = System.currentTimeMillis();
                 CONSOLE.info("Found the psk in "
-                    + String.format(
-                        "%d min, %d sec",
-                        TimeUnit.MILLISECONDS.toMinutes(stopTime - startTime),
+                    + String.format("%d min, %d sec", TimeUnit.MILLISECONDS.toMinutes(stopTime - startTime),
                         TimeUnit.MILLISECONDS.toSeconds(stopTime - startTime)
                             - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(stopTime - startTime))));
                 CONSOLE.info("Guessed " + counter + " times");
@@ -113,9 +109,8 @@ public class PskBruteForcerAttackServer extends Attacker<PskBruteForcerAttackSer
 
         String clientIdentity = config.getPskIdentity();
         LOGGER.debug("Client Identity: " + clientIdentity);
-        WorkflowTrace trace =
-            new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(WorkflowTraceType.HELLO,
-                RunningModeType.CLIENT);
+        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(WorkflowTraceType.HELLO,
+            RunningModeType.CLIENT);
         State state = new State(tlsConfig, trace);
         WorkflowExecutor executor =
             WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getWorkflowExecutorType(), state);
@@ -123,8 +118,8 @@ public class PskBruteForcerAttackServer extends Attacker<PskBruteForcerAttackSer
         if (WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.SERVER_HELLO, trace)) {
             return state.getTlsContext().getSelectedCipherSuite();
         } else {
-            CONSOLE
-                .info("Did not receive a ServerHello. The Server does not seem to support any of the tested PSK cipher suites.");
+            CONSOLE.info(
+                "Did not receive a ServerHello. The Server does not seem to support any of the tested PSK cipher suites.");
             LOGGER.debug("We tested for the following cipher suites:");
             for (CipherSuite suite : tlsConfig.getDefaultClientSupportedCipherSuites()) {
                 LOGGER.debug(suite.name());
@@ -138,9 +133,8 @@ public class PskBruteForcerAttackServer extends Attacker<PskBruteForcerAttackSer
         tlsConfig.setDefaultClientSupportedCipherSuites(suite);
         tlsConfig.setDefaultSelectedCipherSuite(suite);
         tlsConfig.setDefaultPSKKey(pskGuess);
-        WorkflowTrace trace =
-            new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(WorkflowTraceType.HANDSHAKE,
-                RunningModeType.CLIENT);
+        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig)
+            .createWorkflowTrace(WorkflowTraceType.HANDSHAKE, RunningModeType.CLIENT);
         State state = new State(tlsConfig, trace);
         WorkflowExecutor workflowExecutor =
             WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getWorkflowExecutorType(), state);

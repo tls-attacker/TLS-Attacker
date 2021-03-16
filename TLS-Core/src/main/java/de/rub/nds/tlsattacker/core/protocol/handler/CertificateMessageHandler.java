@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.handler;
@@ -136,9 +135,8 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
                     }
                     cert = parseCertificate(certificatesLength, stream.toByteArray());
                 } else {
-                    cert =
-                        parseCertificate(message.getCertificatesListLength().getValue(), message
-                            .getCertificatesListBytes().getValue());
+                    cert = parseCertificate(message.getCertificatesListLength().getValue(),
+                        message.getCertificatesListBytes().getValue());
                 }
                 if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
                     LOGGER.debug("Setting ClientCertificate in Context");
@@ -178,16 +176,14 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
 
     private Certificate parseCertificate(int lengthBytes, byte[] bytesToParse) {
         try {
-            ByteArrayInputStream stream =
-                new ByteArrayInputStream(ArrayConverter.concatenate(
-                    ArrayConverter.intToBytes(lengthBytes, HandshakeByteLength.CERTIFICATES_LENGTH), bytesToParse));
+            ByteArrayInputStream stream = new ByteArrayInputStream(ArrayConverter.concatenate(
+                ArrayConverter.intToBytes(lengthBytes, HandshakeByteLength.CERTIFICATES_LENGTH), bytesToParse));
             return Certificate.parse(stream);
         } catch (Exception e) {
             // This could really be anything. From classCast exception to
             // Arrayindexoutofbounds
-            LOGGER.warn(
-                "Could not parse Certificate bytes into Certificate object:"
-                    + ArrayConverter.bytesToHexString(bytesToParse, false), e);
+            LOGGER.warn("Could not parse Certificate bytes into Certificate object:"
+                + ArrayConverter.bytesToHexString(bytesToParse, false), e);
             LOGGER.debug(e);
             return null;
         }

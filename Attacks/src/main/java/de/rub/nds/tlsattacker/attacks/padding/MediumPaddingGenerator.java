@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.attacks.padding;
@@ -42,8 +41,8 @@ public class MediumPaddingGenerator extends PaddingVectorGenerator {
 
     /**
      *
-     * @param suite
-     * @param version
+     * @param  suite
+     * @param  version
      * @return
      */
     @Override
@@ -59,8 +58,8 @@ public class MediumPaddingGenerator extends PaddingVectorGenerator {
     /**
      * Create Vectors with Valid Padding but invalid Mac on 3 different Positions
      *
-     * @param suite
-     * @param version
+     * @param  suite
+     * @param  version
      * @return
      */
     List<PaddingVector> createBasicMacVectors(CipherSuite suite, ProtocolVersion version) {
@@ -68,10 +67,12 @@ public class MediumPaddingGenerator extends PaddingVectorGenerator {
         int macSize = AlgorithmResolver.getMacAlgorithm(version, suite).getSize();
         int i = 1;
         for (ByteArrayXorModification modification : createFlippedModifications(macSize)) {
-            vectorList.add(new TripleVector("BasicMac-" + modification.getStartPosition() + "-"
-                + ArrayConverter.bytesToHexString(modification.getXor()), "BasicMac" + i,
-                new ByteArrayExplicitValueModification(new byte[DEFAULT_CIPHERTEXT_LENGTH - macSize
-                    - DEFAULT_PADDING_LENGTH]), modification, null));
+            vectorList.add(new TripleVector(
+                "BasicMac-" + modification.getStartPosition() + "-"
+                    + ArrayConverter.bytesToHexString(modification.getXor()),
+                "BasicMac" + i, new ByteArrayExplicitValueModification(
+                    new byte[DEFAULT_CIPHERTEXT_LENGTH - macSize - DEFAULT_PADDING_LENGTH]),
+                modification, null));
             i++;
         }
 
@@ -81,8 +82,8 @@ public class MediumPaddingGenerator extends PaddingVectorGenerator {
     /**
      * Creates vectors where the first mac byte is missing
      *
-     * @param suite
-     * @param version
+     * @param  suite
+     * @param  version
      * @return
      */
     List<PaddingVector> createMissingMacByteVectors(CipherSuite suite, ProtocolVersion version) {
@@ -104,18 +105,16 @@ public class MediumPaddingGenerator extends PaddingVectorGenerator {
         List<PaddingVector> vectorList = new LinkedList<>();
         byte[] plain = createPaddingBytes(DEFAULT_CIPHERTEXT_LENGTH - 1);
         vectorList.add(createVectorWithPlainData("Plain XF (0xXF=#padding bytes)", "PlainOnlyPadding", plain));
-        plain =
-            new byte[] { (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, };
+        plain = new byte[] { (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+            (byte) 255, };
         vectorList.add(createVectorWithPlainData("Plain FF", "PlainTooMuchPadding", plain));
         return vectorList;
     }
@@ -179,8 +178,8 @@ public class MediumPaddingGenerator extends PaddingVectorGenerator {
 
             vectorList.add(new TripleVector("ValPadInvMac-[" + i + "]0x80-" + applicationLength + "-" + paddingValue,
                 "ValPadInvMacEnd" + i, new ByteArrayExplicitValueModification(new byte[applicationLength]),
-                new ByteArrayXorModification(new byte[] { (byte) 0x80 }, i), new ByteArrayExplicitValueModification(
-                    padding)));
+                new ByteArrayXorModification(new byte[] { (byte) 0x80 }, i),
+                new ByteArrayExplicitValueModification(padding)));
         }
         for (int i = 0; i < paddingValue; i++) {
             padding = createPaddingBytes(paddingValue);

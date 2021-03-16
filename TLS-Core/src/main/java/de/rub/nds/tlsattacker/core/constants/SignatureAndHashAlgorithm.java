@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.constants;
@@ -202,8 +201,8 @@ public enum SignatureAndHashAlgorithm {
                 return algo;
             }
         }
-        throw new UnsupportedOperationException("Requested SignatureHashAlgorithm is not supported. Requested Sign:"
-            + signatureAlgo + " Hash:" + hashAlgo);
+        throw new UnsupportedOperationException(
+            "Requested SignatureHashAlgorithm is not supported. Requested Sign:" + signatureAlgo + " Hash:" + hashAlgo);
     }
 
     public byte[] getByteValue() {
@@ -288,8 +287,8 @@ public enum SignatureAndHashAlgorithm {
                 default:
                     break;
             }
-            signature.setParameter(new PSSParameterSpec(hashName, "MGF1", new MGF1ParameterSpec(hashName), saltLength,
-                1));
+            signature
+                .setParameter(new PSSParameterSpec(hashName, "MGF1", new MGF1ParameterSpec(hashName), saltLength, 1));
         }
     }
 

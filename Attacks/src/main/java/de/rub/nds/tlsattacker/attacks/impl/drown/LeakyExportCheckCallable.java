@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.attacks.impl.drown;
@@ -45,8 +44,9 @@ class LeakyExportCheckCallable implements Callable<Boolean> {
         System.arraycopy(data.getSecretKeyPlain(), 0, masterKey, data.getClearKey().length, secretKeyBytesUsed);
         if (secretKeyBytesUsed < data.getCipherSuite().getSecretKeyByteNumber()) {
             // TODO: Check this, the paper is weird
-            System.arraycopy(data.getSecretKeyEnc(), secretKeyBytesUsed, masterKey, data.getClearKey().length
-                + secretKeyBytesUsed, data.getCipherSuite().getSecretKeyByteNumber() - secretKeyBytesUsed);
+            System.arraycopy(data.getSecretKeyEnc(), secretKeyBytesUsed, masterKey,
+                data.getClearKey().length + secretKeyBytesUsed,
+                data.getCipherSuite().getSecretKeyByteNumber() - secretKeyBytesUsed);
         }
 
         // Use ints for iteration because otherwise the loop condition will be
@@ -87,9 +87,8 @@ class LeakyExportCheckCallable implements Callable<Boolean> {
             decrypted = ServerVerifyChecker.decryptRC4(clientReadKey, data.getEncrypted());
         } else {
             // SSL_CK_RC2_128_CBC_EXPORT40_WITH_MD5
-            decrypted =
-                ServerVerifyChecker.decryptRC2(clientReadKey, data.getEncrypted(), data.getIv(),
-                    data.getPaddingLength());
+            decrypted = ServerVerifyChecker.decryptRC2(clientReadKey, data.getEncrypted(), data.getIv(),
+                data.getPaddingLength());
         }
 
         return ServerVerifyChecker.compareDecrypted(decrypted, data.getClientRandom(), true);

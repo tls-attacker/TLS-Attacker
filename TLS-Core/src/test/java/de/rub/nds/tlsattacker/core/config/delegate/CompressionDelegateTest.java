@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.config.delegate;
@@ -41,8 +40,8 @@ public class CompressionDelegateTest {
         args[0] = "-compression";
         args[1] = "NULL,DEFLATE";
         jcommander.parse(args);
-        assertTrue("NULL should get parsed correctly", delegate.getCompressionMethods()
-            .contains(CompressionMethod.NULL));
+        assertTrue("NULL should get parsed correctly",
+            delegate.getCompressionMethods().contains(CompressionMethod.NULL));
         assertTrue("DEFLATE should get parsed correctly",
             delegate.getCompressionMethods().contains(CompressionMethod.DEFLATE));
     }
@@ -82,12 +81,12 @@ public class CompressionDelegateTest {
         delegate.applyDelegate(config);
         assertTrue("NULL should get parsed correctly",
             config.getDefaultClientSupportedCompressionMethods().contains(CompressionMethod.NULL));
-        assertTrue("DEFLATE should get parsed correctly", config.getDefaultClientSupportedCompressionMethods()
-            .contains(CompressionMethod.DEFLATE));
+        assertTrue("DEFLATE should get parsed correctly",
+            config.getDefaultClientSupportedCompressionMethods().contains(CompressionMethod.DEFLATE));
         assertTrue("NULL should get parsed correctly",
             config.getDefaultServerSupportedCompressionMethods().contains(CompressionMethod.NULL));
-        assertTrue("DEFLATE should get parsed correctly", config.getDefaultServerSupportedCompressionMethods()
-            .contains(CompressionMethod.DEFLATE));
+        assertTrue("DEFLATE should get parsed correctly",
+            config.getDefaultServerSupportedCompressionMethods().contains(CompressionMethod.DEFLATE));
 
     }
 

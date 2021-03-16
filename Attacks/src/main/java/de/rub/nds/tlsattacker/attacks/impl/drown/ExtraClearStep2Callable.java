@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.attacks.impl.drown;
@@ -58,17 +57,15 @@ class ExtraClearStep2Callable implements Callable<BigInteger> {
                 }
 
                 candidateS = candidateS.add(candidateStepS);
-                plaintextCandidate =
-                    ArrayConverter.bigIntegerToByteArray(shiftedOldPlaintext.multiply(candidateS).mod(modulus), lenM,
-                        false);
+                plaintextCandidate = ArrayConverter
+                    .bigIntegerToByteArray(shiftedOldPlaintext.multiply(candidateS).mod(modulus), lenM, false);
             } while ((plaintextCandidate.length > lenM) || (plaintextCandidate[0] != 0x00)
                 || (plaintextCandidate[1] != 0x02));
 
             // Online part: Check if s is really suitable using the oracle
-            byte[] ciphertextCandidate =
-                ArrayConverter.bigIntegerToByteArray(
-                    candidateS.modPow(rsaE, modulus).multiply(new BigInteger(shiftedOldCiphertext)).mod(modulus), lenM,
-                    true);
+            byte[] ciphertextCandidate = ArrayConverter.bigIntegerToByteArray(
+                candidateS.modPow(rsaE, modulus).multiply(new BigInteger(shiftedOldCiphertext)).mod(modulus), lenM,
+                true);
             if (oracle.checkPKCSConformity(ciphertextCandidate)) {
                 return candidateS;
             }
