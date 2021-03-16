@@ -10,6 +10,8 @@
 
 package de.rub.nds.tlsattacker.attacks.padding;
 
+import java.util.LinkedList;
+
 import de.rub.nds.tlsattacker.attacks.constants.PaddingRecordGeneratorType;
 import de.rub.nds.tlsattacker.attacks.padding.vector.PaddingVector;
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -18,11 +20,9 @@ import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.GenericReceiveAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
-import java.util.LinkedList;
 
 /**
  *
@@ -49,9 +49,7 @@ public class ClassicPaddingTraceGenerator extends PaddingTraceGenerator {
                 runningMode);
         if (runningMode == RunningModeType.SERVER) {
             // we assume that the client sends the first application message
-            ApplicationMessage recvMsg = new ApplicationMessage(config);
-            ReceiveAction recvAction = new ReceiveAction(recvMsg);
-            trace.addTlsAction(recvAction);
+            trace.addTlsAction(new GenericReceiveAction());
         }
         ApplicationMessage applicationMessage = new ApplicationMessage(config);
         SendAction sendAction = new SendAction(applicationMessage);

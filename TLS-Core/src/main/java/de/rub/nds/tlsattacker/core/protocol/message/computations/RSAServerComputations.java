@@ -17,8 +17,10 @@ import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.tlsattacker.core.config.Config;
 
 public class RSAServerComputations extends KeyExchangeComputations {
+
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
     private ModifiableBigInteger modulus;
+
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
     private ModifiableBigInteger publicExponent;
 

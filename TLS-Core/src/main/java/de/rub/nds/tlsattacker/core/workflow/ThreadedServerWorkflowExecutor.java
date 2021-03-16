@@ -10,9 +10,6 @@
 
 package de.rub.nds.tlsattacker.core.workflow;
 
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
@@ -23,8 +20,13 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 
 /**
  * Execute a workflow trace for each new connection/socket that connects to the server.
@@ -51,18 +53,18 @@ public class ThreadedServerWorkflowExecutor extends WorkflowExecutor {
         bindPort = config.getDefaultServerConnection().getPort();
         String hostname = config.getDefaultServerConnection().getHostname();
         if (hostname != null) {
-            InetAddress _bindAddr;
+            InetAddress tempBindAddr;
             try {
-                _bindAddr = InetAddress.getByName(hostname);
+                tempBindAddr = InetAddress.getByName(hostname);
             } catch (UnknownHostException e) {
                 LOGGER.error("Failed to resolve bind address {} - Falling back to loopback: {}", hostname, e);
                 // we could also fallback to null, which would be any address
                 // but I think in the case of an error we might just want to
                 // either exit or fallback to a rather closed
                 // option, like loopback
-                _bindAddr = InetAddress.getLoopbackAddress();
+                tempBindAddr = InetAddress.getLoopbackAddress();
             }
-            bindAddr = _bindAddr;
+            bindAddr = tempBindAddr;
             // Java did not allow me to set the bindAddr field in the
             // *single line* try block and the catch block at the same
             // time, because it might already be set...
@@ -107,11 +109,11 @@ public class ThreadedServerWorkflowExecutor extends WorkflowExecutor {
     @Override
     public void executeWorkflow() throws WorkflowExecutionException {
         initialize();
-        String bindaddr_str = "any";
+        String bindaddrStr = "any";
         if (getBoundAddress() != null) {
-            bindaddr_str = getBoundAddress().toString();
+            bindaddrStr = getBoundAddress().toString();
         }
-        LOGGER.info("Listening on {}:{}...", bindaddr_str, getBoundPort());
+        LOGGER.info("Listening on {}:{}...", bindaddrStr, getBoundPort());
         LOGGER.info("--- use SIGINT to shutdown ---");
 
         try {

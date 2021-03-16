@@ -10,15 +10,17 @@
 
 package de.rub.nds.tlsattacker.core.workflow;
 
+import java.io.IOException;
+import java.net.Socket;
+
+import org.apache.logging.log4j.CloseableThreadContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.tcp.ServerTcpTransportHandler;
-import java.io.IOException;
-import java.net.Socket;
-import org.apache.logging.log4j.CloseableThreadContext;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Spawn a new workflow trace for incoming connection.
@@ -40,10 +42,10 @@ public class WorkflowExecutorRunnable implements Runnable {
 
     @Override
     public void run() {
-        String ctx_str = String.format("%s %s", socket.getLocalPort(), socket.getRemoteSocketAddress());
+        String loggingContextString = String.format("%s %s", socket.getLocalPort(), socket.getRemoteSocketAddress());
         // add local port and remote address onto logging thread context
         // see https://logging.apache.org/log4j/2.x/manual/thread-context.html
-        try (final CloseableThreadContext.Instance ctc = CloseableThreadContext.push(ctx_str)) {
+        try (final CloseableThreadContext.Instance ctc = CloseableThreadContext.push(loggingContextString)) {
             this.runInternal();
         } finally {
             parent.clientDone(socket);
@@ -78,9 +80,7 @@ public class WorkflowExecutorRunnable implements Runnable {
     }
 
     protected void initConnectionForState(State state) {
-        // According to an old comment this initialization is a zone of danger:
-        // "Do this post state init only if you know what you are doing."
-        // I guess, be careful down here
+        // Do this post state init only if you know what you are doing.
         TlsContext serverCtx = state.getInboundTlsContexts().get(0);
         AliasedConnection serverCon = serverCtx.getConnection();
         // getting the hostname is slow, so we just set the ip

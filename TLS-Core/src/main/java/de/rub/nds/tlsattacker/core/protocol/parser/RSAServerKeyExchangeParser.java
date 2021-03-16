@@ -46,10 +46,10 @@ public class RSAServerKeyExchangeParser<T extends RSAServerKeyExchangeMessage> e
     @Override
     protected void parseHandshakeMessageContent(RSAServerKeyExchangeMessage msg) {
         LOGGER.debug("Parsing RSAServerKeyExchangeMessage");
-        parseNLength(msg);
-        parseN(msg);
-        parseELength(msg);
-        parseE(msg);
+        parseModulusLength(msg);
+        parseModulus(msg);
+        parsePublicExponentLength(msg);
+        parsePublicExponent(msg);
         // TODO: this.keyExchangeAlgorithm can currently be null, only for test
         // code that needs to be reworked.
         if (this.keyExchangeAlgorithm == null || !this.keyExchangeAlgorithm.isAnon()) {
@@ -61,24 +61,24 @@ public class RSAServerKeyExchangeParser<T extends RSAServerKeyExchangeMessage> e
         }
     }
 
-    private void parseNLength(RSAServerKeyExchangeMessage msg) {
+    private void parseModulusLength(RSAServerKeyExchangeMessage msg) {
         msg.setModulusLength(parseIntField(HandshakeByteLength.RSA_MODULUS_LENGTH));
-        LOGGER.debug("NLength: {}", msg.getModulusLength().getValue());
+        LOGGER.debug("Modulus Length: {}", msg.getModulusLength().getValue());
     }
 
-    private void parseN(RSAServerKeyExchangeMessage msg) {
+    private void parseModulus(RSAServerKeyExchangeMessage msg) {
         msg.setModulus(parseByteArrayField(msg.getModulusLength().getValue()));
-        LOGGER.debug("N: {}", msg.getModulus().getValue());
+        LOGGER.debug("Modulus: {}", msg.getModulus().getValue());
     }
 
-    private void parseELength(RSAServerKeyExchangeMessage msg) {
+    private void parsePublicExponentLength(RSAServerKeyExchangeMessage msg) {
         msg.setPublicKeyLength(parseIntField(HandshakeByteLength.RSA_PUBLICKEY_LENGTH));
-        LOGGER.debug("eLength: {}", msg.getPublicKeyLength().getValue());
+        LOGGER.debug("Public Exponent Length: {}", msg.getPublicKeyLength().getValue());
     }
 
-    private void parseE(RSAServerKeyExchangeMessage msg) {
+    private void parsePublicExponent(RSAServerKeyExchangeMessage msg) {
         msg.setPublicKey(parseByteArrayField(msg.getPublicKeyLength().getValue()));
-        LOGGER.debug("e: {}", msg.getPublicKey().getValue());
+        LOGGER.debug("Public Exponent: {}", msg.getPublicKey().getValue());
     }
 
     /**

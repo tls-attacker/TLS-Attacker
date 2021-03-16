@@ -30,10 +30,10 @@ public class RSAServerKeyExchangeSerializer<T extends RSAServerKeyExchangeMessag
     @Override
     public byte[] serializeHandshakeMessageContent() {
         LOGGER.debug("Serializing RSAServerKeyExchangeMessage");
-        writeNLength(msg);
-        writeN(msg);
-        writeELength(msg);
-        writeE(msg);
+        writeModulusLength(msg);
+        writeModulus(msg);
+        writePublicExponentLength(msg);
+        writePublicExponent(msg);
 
         if (isTLS12() || isDTLS12()) {
             writeSignatureAndHashAlgorithm(msg);
@@ -43,19 +43,19 @@ public class RSAServerKeyExchangeSerializer<T extends RSAServerKeyExchangeMessag
         return getAlreadySerialized();
     }
 
-    private void writeNLength(T msg) {
+    private void writeModulusLength(T msg) {
         appendInt(msg.getModulusLength().getValue(), HandshakeByteLength.RSA_MODULUS_LENGTH);
     }
 
-    private void writeN(T msg) {
+    private void writeModulus(T msg) {
         appendBytes(msg.getModulus().getValue());
     }
 
-    private void writeELength(T msg) {
+    private void writePublicExponentLength(T msg) {
         appendInt(msg.getPublicKeyLength().getValue(), HandshakeByteLength.RSA_PUBLICKEY_LENGTH);
     }
 
-    private void writeE(T msg) {
+    private void writePublicExponent(T msg) {
         appendBytes(msg.getPublicKey().getValue());
     }
 

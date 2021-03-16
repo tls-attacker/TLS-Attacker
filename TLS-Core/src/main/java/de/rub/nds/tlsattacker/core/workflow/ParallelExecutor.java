@@ -51,7 +51,7 @@ public class ParallelExecutor {
 
     private final int reexecutions;
 
-    private ParallelExecutor(int size, int reexecutions, ThreadPoolExecutor executorService) {
+    public ParallelExecutor(int size, int reexecutions, ThreadPoolExecutor executorService) {
         this.executorService = executorService;
         completionService = new ExecutorCompletionService<>(executorService);
         this.reexecutions = reexecutions;
@@ -109,19 +109,19 @@ public class ParallelExecutor {
 
     public List<ITask> bulkExecuteTasks(List<TlsTask> taskList) {
         List<Future<ITask>> futureList = new LinkedList<>();
-        List<ITask> ret = new ArrayList<>(futureList.size());
+        List<ITask> resultList = new ArrayList<>(futureList.size());
         for (TlsTask tlStask : taskList) {
             futureList.add(addTask(tlStask));
         }
         for (Future<ITask> future : futureList) {
             try {
-                ret.add(future.get());
+                resultList.add(future.get());
             } catch (InterruptedException | ExecutionException ex) {
-                ret.add(null);
+                resultList.add(null);
                 throw new RuntimeException("Failed to execute tasks!", ex);
             }
         }
-        return ret;
+        return resultList;
     }
 
     public List<ITask> bulkExecuteTasks(TlsTask... tasks) {
