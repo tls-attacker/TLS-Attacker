@@ -37,6 +37,7 @@ public enum HandshakeMessageType {
     CERTIFICATE_VERIFY((byte) 15),
     CLIENT_KEY_EXCHANGE((byte) 16),
     FINISHED((byte) 20),
+    KEY_UPDATE((byte) 24),
     CERTIFICATE_STATUS((byte) 22),
     SUPPLEMENTAL_DATA((byte) 23),
     MESSAGE_HASH((byte) 254);
