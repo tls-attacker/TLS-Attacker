@@ -12,13 +12,11 @@ package de.rub.nds.tlsattacker.core.workflow.action.executor;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.dtls.MessageFragmenter;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
+import de.rub.nds.tlsattacker.core.protocol.*;
 import de.rub.nds.tlsattacker.core.protocol.handler.TlsMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.TlsMessage;
-import de.rub.nds.tlsattacker.core.protocol.Preparator;
-import de.rub.nds.tlsattacker.core.protocol.Serializer;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.IOException;
@@ -72,11 +70,9 @@ public class SendMessageHelper {
                     && context.getConfig().isFlushOnMessageTypeChange()) {
                     recordPosition =
                         flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition, context);
-                    if (tlsMessage.getAdjustContext()) {
-                        // TODO: woah - are we handling lastMessage or tlsMessage here?!
-//                        lastMessage.getHandler(context).adjustTlsContextAfterSerialize(lastMessage);
-                        TlsMessageHandler<TlsMessage> tlsMessageHandler = tlsMessage.getHandler(context);
-                        tlsMessageHandler.adjustTlsContextAfterSerialize(tlsMessage);
+                    if (lastMessage.getAdjustContext() && lastMessage instanceof TlsMessage) {
+                        TlsMessageHandler<TlsMessage> tlsMessageHandler = lastMessage.getHandler(context);
+                        tlsMessageHandler.adjustTlsContextAfterSerialize((TlsMessage) lastMessage);
                     }
                     lastMessage = null;
                 }
