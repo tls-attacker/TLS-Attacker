@@ -19,11 +19,8 @@ import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.KeyUpdateMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.KeyUpdateParser;
-import de.rub.nds.tlsattacker.core.protocol.parser.ProtocolMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.KeyUpdatePreparator;
-import de.rub.nds.tlsattacker.core.protocol.preparator.ProtocolMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.KeyUpdateSerializer;
-import de.rub.nds.tlsattacker.core.protocol.serializer.ProtocolMessageSerializer;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
@@ -60,19 +57,19 @@ public class KeyUpdateHandler extends HandshakeMessageHandler<KeyUpdateMessage> 
     }
 
     @Override
-    public ProtocolMessageParser getParser(byte[] message, int pointer) {
+    public KeyUpdateParser getParser(byte[] message, int pointer) {
         return new KeyUpdateParser(pointer, message, tlsContext.getChooser().getSelectedProtocolVersion(),
             tlsContext.getConfig());
 
     }
 
     @Override
-    public ProtocolMessagePreparator getPreparator(KeyUpdateMessage message) {
+    public KeyUpdatePreparator getPreparator(KeyUpdateMessage message) {
         return new KeyUpdatePreparator(tlsContext.getChooser(), message);
     }
 
     @Override
-    public ProtocolMessageSerializer getSerializer(KeyUpdateMessage message) {
+    public KeyUpdateSerializer getSerializer(KeyUpdateMessage message) {
         return new KeyUpdateSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
