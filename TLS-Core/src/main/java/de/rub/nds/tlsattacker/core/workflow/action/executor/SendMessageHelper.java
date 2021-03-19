@@ -83,7 +83,7 @@ public class SendMessageHelper {
                 }
             }
 
-            byte[] protocolMessageBytes = handleProtocolMessage(protocolMessage, context, prepareMessages);
+            byte[] protocolMessageBytes = prepareMessage(protocolMessage, prepareMessages, context);
             if (protocolMessage.isGoingToBeSent()) {
                 if (context.getChooser().getSelectedProtocolVersion().isDTLS()) {
                     if (protocolMessage instanceof HandshakeMessage) {
@@ -212,10 +212,6 @@ public class SendMessageHelper {
     private void sendData(MessageBytesCollector collector, TlsContext context) throws IOException {
         context.getTransportHandler().sendData(collector.getRecordBytes());
         collector.flushRecordBytes();
-    }
-
-    private byte[] handleProtocolMessage(ProtocolMessage message, TlsContext context, boolean withPrepare) {
-        return prepareMessage(message, withPrepare, context);
     }
 
     /**
