@@ -13,12 +13,12 @@ package de.rub.nds.tlsattacker.core.protocol;
  * @param <T>
  *            The Object that should be Handled
  */
-public abstract class Handler<T> {
-    public abstract Parser<T> getParser(byte[] message, int pointer);
+public interface Handler<T> {
+    Parser<T> getParser(byte[] message, int pointer);
 
-    public abstract Preparator<T> getPreparator(T message);
+    Preparator<T> getPreparator(T message);
 
-    public abstract Serializer<T> getSerializer(T message);
+    Serializer<T> getSerializer(T message);
 
-    public abstract void adjustContext(T object);
+    void adjustContext(T object);
 }

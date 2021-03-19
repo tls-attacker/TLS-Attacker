@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public abstract class ProtocolMessageHandler<MessageT extends ProtocolMessage> extends Handler<MessageT> {
+public abstract class ProtocolMessageHandler<MessageT extends ProtocolMessage> implements Handler<MessageT> {
     protected static final Logger LOGGER = LogManager.getLogger();
     /**
      * tls context
