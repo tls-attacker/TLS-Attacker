@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.workflow.action;
@@ -87,8 +86,8 @@ public class SendRaccoonCkeAction extends MessageAction implements SendingAction
             LOGGER.info("Sending Raccoon Cke message " + (withNullByte ? "(withNullByte)" : "(withoutNullByte)") + ": "
                 + sending);
         } else {
-            LOGGER.info("Sending Raccoon Cke message " + (withNullByte ? "(withNullByte)" : "(withoutNullByte)")
-                + ": (" + connectionAlias + "): " + sending);
+            LOGGER.info("Sending Raccoon Cke message " + (withNullByte ? "(withNullByte)" : "(withoutNullByte)") + ": ("
+                + connectionAlias + "): " + sending);
         }
 
         try {
@@ -107,9 +106,8 @@ public class SendRaccoonCkeAction extends MessageAction implements SendingAction
 
         DHClientKeyExchangeMessage cke = new DHClientKeyExchangeMessage(state.getConfig());
         Chooser chooser = state.getTlsContext().getChooser();
-        byte[] clientPublicKey =
-            getClientPublicKey(chooser.getServerDhGenerator(), chooser.getServerDhModulus(),
-                chooser.getServerDhPublicKey(), initialSecret, withNullByte);
+        byte[] clientPublicKey = getClientPublicKey(chooser.getServerDhGenerator(), chooser.getServerDhModulus(),
+            chooser.getServerDhPublicKey(), initialSecret, withNullByte);
         cke.setPublicKey(Modifiable.explicit(clientPublicKey));
         return cke;
     }

@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.message;
@@ -105,8 +104,8 @@ public class SupplementalDataMessage extends HandshakeMessage {
             for (SupplementalDataEntry entry : entries) {
                 sb.append("\n   Supplemental Data Type: ").append(entry.getSupplementalDataEntryType().getValue());
                 sb.append("\n   Supplemental Data Length: ").append(entry.getSupplementalDataEntryLength().getValue());
-                sb.append("\n   Supplemental Data : ").append(
-                    ArrayConverter.bytesToHexString(entry.getSupplementalDataEntry().getValue()));
+                sb.append("\n   Supplemental Data : ")
+                    .append(ArrayConverter.bytesToHexString(entry.getSupplementalDataEntry().getValue()));
             }
         } else {
             sb.append("null");

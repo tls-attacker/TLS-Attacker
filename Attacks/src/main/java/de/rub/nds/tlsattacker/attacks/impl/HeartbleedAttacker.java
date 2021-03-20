@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.attacks.impl;
@@ -66,9 +65,8 @@ public class HeartbleedAttacker extends Attacker<HeartbleedCommandConfig> {
     @Override
     public Boolean isVulnerable() {
         Config tlsConfig = getTlsConfig();
-        WorkflowTrace trace =
-            new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(WorkflowTraceType.HELLO,
-                RunningModeType.CLIENT);
+        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(WorkflowTraceType.HELLO,
+            RunningModeType.CLIENT);
         trace.addTlsAction(new SendDynamicClientKeyExchangeAction());
         trace.addTlsAction(new SendAction(new ChangeCipherSpecMessage(), new FinishedMessage()));
         trace.addTlsAction(new ReceiveAction(new ChangeCipherSpecMessage(), new FinishedMessage()));
@@ -90,20 +88,20 @@ public class HeartbleedAttacker extends Attacker<HeartbleedCommandConfig> {
                 WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getWorkflowExecutorType(), state);
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException ex) {
-            LOGGER
-                .info("The TLS protocol flow was not executed completely, follow the debug messages for more information.");
+            LOGGER.info(
+                "The TLS protocol flow was not executed completely, follow the debug messages for more information.");
             LOGGER.debug(ex);
         }
 
         if (WorkflowTraceUtil.didReceiveMessage(ProtocolMessageType.HEARTBEAT, trace)) {
-            LOGGER
-                .info("Vulnerable. The server responds with a heartbeat message, although the client heartbeat message contains an invalid Length value");
+            LOGGER.info(
+                "Vulnerable. The server responds with a heartbeat message, although the client heartbeat message contains an invalid Length value");
             return true;
         } else if (!WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.FINISHED, trace)) {
             return null;
         } else {
-            LOGGER
-                .info("(Most probably) Not vulnerable. The server does not respond with a heartbeat message, it is not vulnerable");
+            LOGGER.info(
+                "(Most probably) Not vulnerable. The server does not respond with a heartbeat message, it is not vulnerable");
             return false;
         }
     }

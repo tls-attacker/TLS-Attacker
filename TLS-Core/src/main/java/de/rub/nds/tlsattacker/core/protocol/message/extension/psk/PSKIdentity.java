@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.message.extension.psk;
@@ -87,7 +86,7 @@ public class PSKIdentity implements Serializable {
 
     /**
      * @param identityConfig
-     * the identityConfig to set
+     *                       the identityConfig to set
      */
     public void setIdentityConfig(byte[] identityConfig) {
         this.identityConfig = identityConfig;
@@ -102,7 +101,7 @@ public class PSKIdentity implements Serializable {
 
     /**
      * @param ticketAgeConfig
-     * the ticketAgeConfig to set
+     *                        the ticketAgeConfig to set
      */
     public void setTicketAgeConfig(String ticketAgeConfig) {
         this.ticketAgeConfig = ticketAgeConfig;
@@ -117,7 +116,7 @@ public class PSKIdentity implements Serializable {
 
     /**
      * @param ticketAgeAddConfig
-     * the ticketAgeAddConfig to set
+     *                           the ticketAgeAddConfig to set
      */
     public void setTicketAgeAddConfig(byte[] ticketAgeAddConfig) {
         this.ticketAgeAddConfig = ticketAgeAddConfig;

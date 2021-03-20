@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.attacks.task;
@@ -32,7 +31,8 @@ public class CcaTask extends TlsTask {
     private final Config tlsConfig;
     private final CcaCertificateManager ccaCertificateManager;
 
-    public CcaTask(CcaVector ccaVector, Config tlsConfig, CcaCertificateManager ccaCertificateManager, int reexecutions) {
+    public CcaTask(CcaVector ccaVector, Config tlsConfig, CcaCertificateManager ccaCertificateManager,
+        int reexecutions) {
         super(reexecutions);
         this.ccaVector = ccaVector;
         this.tlsConfig = tlsConfig;
@@ -48,9 +48,8 @@ public class CcaTask extends TlsTask {
     }
 
     private State prepareState() {
-        WorkflowTrace trace =
-            CcaWorkflowGenerator.generateWorkflow(tlsConfig, ccaCertificateManager, ccaVector.getCcaWorkflowType(),
-                ccaVector.getCcaCertificateType());
+        WorkflowTrace trace = CcaWorkflowGenerator.generateWorkflow(tlsConfig, ccaCertificateManager,
+            ccaVector.getCcaWorkflowType(), ccaVector.getCcaCertificateType());
         State state = new State(tlsConfig, trace);
         return state;
     }

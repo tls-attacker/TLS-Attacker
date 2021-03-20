@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.dtls;
@@ -33,8 +32,8 @@ public class MessageFragmenter {
     /**
      * Takes a message and splits it into prepared fragments.
      *
-     * @param message
-     * @param context
+     * @param  message
+     * @param  context
      * @return
      */
     public List<DtlsHandshakeMessageFragment> fragmentMessage(HandshakeMessage message, TlsContext context) {
@@ -56,8 +55,8 @@ public class MessageFragmenter {
     /**
      * Generates a single fragment carrying the contents of the message as payload.
      *
-     * @param message
-     * @param context
+     * @param  message
+     * @param  context
      * @return
      */
     public DtlsHandshakeMessageFragment wrapInSingleFragment(HandshakeMessage message, TlsContext context) {
@@ -80,9 +79,8 @@ public class MessageFragmenter {
         List<DtlsHandshakeMessageFragment> fragments = new LinkedList<>();
         int currentOffset = 0;
         do {
-            byte[] fragmentBytes =
-                Arrays.copyOfRange(handshakeBytes, currentOffset,
-                    Math.min(currentOffset + maxFragmentLength, handshakeBytes.length));
+            byte[] fragmentBytes = Arrays.copyOfRange(handshakeBytes, currentOffset,
+                Math.min(currentOffset + maxFragmentLength, handshakeBytes.length));
             int sequence;
             if (message.getMessageSequence() != null) {
                 sequence = message.getMessageSequence().getValue();
@@ -91,9 +89,8 @@ public class MessageFragmenter {
                 // message sequence
                 sequence = 0;
             }
-            DtlsHandshakeMessageFragment fragment =
-                new DtlsHandshakeMessageFragment(message.getHandshakeMessageType(), fragmentBytes, sequence,
-                    currentOffset, handshakeBytes.length);
+            DtlsHandshakeMessageFragment fragment = new DtlsHandshakeMessageFragment(message.getHandshakeMessageType(),
+                fragmentBytes, sequence, currentOffset, handshakeBytes.length);
             fragment.getHandler(context).prepareMessage(fragment);
             fragments.add(fragment);
             currentOffset += maxFragmentLength;

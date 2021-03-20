@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.workflow.action;
@@ -122,8 +121,8 @@ public class SendDynamicServerCertificateActionTest {
         // check if the correct amount of messages have been sent
         assertTrue(action.getSendMessages().isEmpty());
         action.execute(state);
-        assertTrue(action.getSendMessages().size() == 1
-            && action.getSendMessages().get(0) instanceof CertificateMessage);
+        assertTrue(
+            action.getSendMessages().size() == 1 && action.getSendMessages().get(0) instanceof CertificateMessage);
     }
 
     @Test

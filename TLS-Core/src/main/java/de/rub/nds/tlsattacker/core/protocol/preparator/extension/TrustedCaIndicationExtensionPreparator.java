@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
@@ -47,8 +46,8 @@ public class TrustedCaIndicationExtensionPreparator extends ExtensionPreparator<
             case KEY_SHA1_HASH:
                 return ExtensionByteLength.TRUSTED_AUTHORITY_HASH;
             case X509_NAME:
-                return (ExtensionByteLength.TRUSTED_AUTHORITY_DISTINGUISHED_NAME_LENGTH + authority
-                    .getDistinguishedNameLength().getValue());
+                return (ExtensionByteLength.TRUSTED_AUTHORITY_DISTINGUISHED_NAME_LENGTH
+                    + authority.getDistinguishedNameLength().getValue());
             case CERT_SHA1_HASH:
                 return ExtensionByteLength.TRUSTED_AUTHORITY_HASH;
             default:

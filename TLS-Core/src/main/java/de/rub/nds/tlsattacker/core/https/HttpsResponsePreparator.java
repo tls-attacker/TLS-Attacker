@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.https;
@@ -33,8 +32,8 @@ public class HttpsResponsePreparator extends ProtocolMessagePreparator<HttpsResp
 
         for (HttpsHeader header : message.getHeader()) {
             if (header instanceof ContentLengthHeader) {
-                ((ContentLengthHeader) header).setConfigLength(message.getResponseContent().getValue()
-                    .getBytes(StandardCharsets.ISO_8859_1).length);
+                ((ContentLengthHeader) header).setConfigLength(
+                    message.getResponseContent().getValue().getBytes(StandardCharsets.ISO_8859_1).length);
             }
             header.getPreparator(chooser).prepare();
         }

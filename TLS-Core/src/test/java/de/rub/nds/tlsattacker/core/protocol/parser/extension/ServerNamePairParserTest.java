@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
@@ -29,8 +28,8 @@ public class ServerNamePairParserTest {
         int rwTestNameLength = 11;
         byte rwTestServerType = 0x00;
 
-        return Arrays.asList(new Object[][] { { rwTestServerNamePairBytes, rwTestServerName, rwTestNameLength,
-            rwTestServerType } });
+        return Arrays.asList(
+            new Object[][] { { rwTestServerNamePairBytes, rwTestServerName, rwTestNameLength, rwTestServerType } });
     }
 
     private final byte[] servernamePairBytes;
@@ -38,7 +37,8 @@ public class ServerNamePairParserTest {
     private final int serverNameLength;
     private final byte serverType;
 
-    public ServerNamePairParserTest(byte[] servernamePairBytes, byte[] serverName, int serverNameLength, byte serverType) {
+    public ServerNamePairParserTest(byte[] servernamePairBytes, byte[] serverName, int serverNameLength,
+        byte serverType) {
         this.servernamePairBytes = servernamePairBytes;
         this.serverName = serverName;
         this.serverNameLength = serverNameLength;

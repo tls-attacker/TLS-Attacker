@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.message;
@@ -92,9 +91,8 @@ public class ServerHelloMessage extends HelloMessage {
             }
             if (tlsConfig.isAddServerNameIndicationExtension()) {
                 ServerNameIndicationExtensionMessage extension = new ServerNameIndicationExtensionMessage();
-                ServerNamePair pair =
-                    new ServerNamePair(tlsConfig.getSniType().getValue(), tlsConfig.getDefaultServerConnection()
-                        .getHostname().getBytes(Charset.forName("US-ASCII")));
+                ServerNamePair pair = new ServerNamePair(tlsConfig.getSniType().getValue(),
+                    tlsConfig.getDefaultServerConnection().getHostname().getBytes(Charset.forName("US-ASCII")));
                 extension.getServerNameList().add(pair);
                 addExtension(extension);
             }
@@ -232,8 +230,8 @@ public class ServerHelloMessage extends HelloMessage {
         }
         if (getProtocolVersion() != null && getProtocolVersion().getValue() != null
             && !ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()).isTLS13()) {
-            sb.append("\n  Server Unix Time: ").append(
-                new Date(ArrayConverter.bytesToLong(getUnixTime().getValue()) * 1000));
+            sb.append("\n  Server Unix Time: ")
+                .append(new Date(ArrayConverter.bytesToLong(getUnixTime().getValue()) * 1000));
         }
         sb.append("\n  Server Unix Time: ");
         if (getProtocolVersion() != null) {

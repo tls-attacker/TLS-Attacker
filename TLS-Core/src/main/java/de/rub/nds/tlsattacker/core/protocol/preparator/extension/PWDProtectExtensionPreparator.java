@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
@@ -73,10 +72,9 @@ public class PWDProtectExtensionPreparator extends ExtensionPreparator<PWDProtec
         BigInteger sharedSecret =
             curve.mult(config.getDefaultServerPWDProtectRandomSecret(), serverPublicKey).getFieldX().getData();
 
-        byte[] key =
-            HKDFunction.expand(hkdfAlgorithm,
-                HKDFunction.extract(hkdfAlgorithm, null, ArrayConverter.bigIntegerToByteArray(sharedSecret)),
-                new byte[0], curve.getModulus().bitLength() / Bits.IN_A_BYTE);
+        byte[] key = HKDFunction.expand(hkdfAlgorithm,
+            HKDFunction.extract(hkdfAlgorithm, null, ArrayConverter.bigIntegerToByteArray(sharedSecret)), new byte[0],
+            curve.getModulus().bitLength() / Bits.IN_A_BYTE);
         LOGGER.debug("Username encryption key: " + ArrayConverter.bytesToHexString(key));
         if (key.length % 16 != 0) {
             LOGGER.warn("PWD key is of incorrect size. Padding to 16 byte");
@@ -87,8 +85,8 @@ public class PWDProtectExtensionPreparator extends ExtensionPreparator<PWDProtec
         SivMode aesSIV = new SivMode();
         byte[] protectedUsername =
             aesSIV.encrypt(ctrKey, macKey, chooser.getClientPWDUsername().getBytes(StandardCharsets.ISO_8859_1));
-        msg.setUsername(ArrayConverter.concatenate(ArrayConverter.bigIntegerToByteArray(clientPublicKey, curve
-            .getModulus().bitLength() / Bits.IN_A_BYTE, true), protectedUsername));
+        msg.setUsername(ArrayConverter.concatenate(ArrayConverter.bigIntegerToByteArray(clientPublicKey,
+            curve.getModulus().bitLength() / Bits.IN_A_BYTE, true), protectedUsername));
         LOGGER.debug("Username: " + ArrayConverter.bytesToHexString(msg.getUsername()));
     }
 

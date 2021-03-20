@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
@@ -26,8 +25,9 @@ public class HeartbeatExtensionParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { { ArrayConverter.hexStringToByteArray("000f000101"),
-            ExtensionType.HEARTBEAT, 1, new byte[] { 1 } } }); // is the
+        return Arrays.asList(new Object[][] {
+            { ArrayConverter.hexStringToByteArray("000f000101"), ExtensionType.HEARTBEAT, 1, new byte[] { 1 } } }); // is
+                                                                                                                    // the
         // same for
         // TLS10 and
         // TLS11
@@ -40,7 +40,8 @@ public class HeartbeatExtensionParserTest {
     private final int extensionLength;
     private final byte[] heartbeatMode;
 
-    public HeartbeatExtensionParserTest(byte[] extension, ExtensionType type, int extensionLength, byte[] heartbeatMode) {
+    public HeartbeatExtensionParserTest(byte[] extension, ExtensionType type, int extensionLength,
+        byte[] heartbeatMode) {
         this.extension = extension;
         this.start = 0;
         this.completeExtension = extension;

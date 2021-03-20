@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.workflow.action;
@@ -387,8 +386,8 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
 
     // TODO: yes, the correct way would be implement equals() for all
     // ProtocolMessages...
-    private boolean
-        checkMessageListsEquals(List<ProtocolMessage> expectedMessages, List<ProtocolMessage> actualMessages) {
+    private boolean checkMessageListsEquals(List<ProtocolMessage> expectedMessages,
+        List<ProtocolMessage> actualMessages) {
         boolean actualEmpty = true;
         boolean expectedEmpty = true;
         if (actualMessages != null && !actualMessages.isEmpty()) {

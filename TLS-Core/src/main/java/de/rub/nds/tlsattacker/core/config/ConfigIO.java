@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.config;
@@ -126,11 +125,11 @@ public class ConfigIO {
     /**
      * Reads the XML from the given inputStream with the provided unmarshaller into a new Config
      * 
-     * @param stream
-     * The stream that provides the XML structure
-     * @param unmarshaller
-     * The unmarshaller that will be used during the parsing
-     * @return Config a new Config that contains the parsed values from the inputStream
+     * @param  stream
+     *                      The stream that provides the XML structure
+     * @param  unmarshaller
+     *                      The unmarshaller that will be used during the parsing
+     * @return              Config a new Config that contains the parsed values from the inputStream
      */
     private static Config read(InputStream stream, Unmarshaller unmarshaller) {
         if (stream == null) {

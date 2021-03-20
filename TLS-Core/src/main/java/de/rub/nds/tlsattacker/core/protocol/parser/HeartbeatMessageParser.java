@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.parser;
@@ -26,11 +25,11 @@ public class HeartbeatMessageParser extends ProtocolMessageParser<HeartbeatMessa
      * Constructor for the Parser class
      *
      * @param startposition
-     * Position in the array where the ProtocolMessageParser is supposed to start parsing
+     *                      Position in the array where the ProtocolMessageParser is supposed to start parsing
      * @param array
-     * The byte[] which the ProtocolMessageParser is supposed to parse
+     *                      The byte[] which the ProtocolMessageParser is supposed to parse
      * @param version
-     * Version of the Protocol
+     *                      Version of the Protocol
      */
     public HeartbeatMessageParser(int startposition, byte[] array, ProtocolVersion version, Config config) {
         super(startposition, array, version, config);
@@ -51,7 +50,7 @@ public class HeartbeatMessageParser extends ProtocolMessageParser<HeartbeatMessa
      * Reads the next bytes as the HeartbeatMessageType and writes them in the message
      *
      * @param msg
-     * Message to write in
+     *            Message to write in
      */
     private void parseHeartbeatMessageType(HeartbeatMessage msg) {
         msg.setHeartbeatMessageType(parseByteField(HeartbeatByteLength.TYPE));
@@ -62,7 +61,7 @@ public class HeartbeatMessageParser extends ProtocolMessageParser<HeartbeatMessa
      * Reads the next bytes as the PayloadLength and writes them in the message
      *
      * @param msg
-     * Message to write in
+     *            Message to write in
      */
     private void parsePayloadLength(HeartbeatMessage msg) {
         msg.setPayloadLength(parseIntField(HeartbeatByteLength.PAYLOAD_LENGTH));
@@ -73,7 +72,7 @@ public class HeartbeatMessageParser extends ProtocolMessageParser<HeartbeatMessa
      * Reads the next bytes as the Payload and writes them in the message
      *
      * @param msg
-     * Message to write in
+     *            Message to write in
      */
     private void parsePayload(HeartbeatMessage msg) {
         msg.setPayload(parseByteArrayField(msg.getPayloadLength().getValue()));
@@ -84,7 +83,7 @@ public class HeartbeatMessageParser extends ProtocolMessageParser<HeartbeatMessa
      * Reads the next bytes as the Padding and writes them in the message
      *
      * @param msg
-     * Message to write in
+     *            Message to write in
      */
     private void parsePadding(HeartbeatMessage msg) {
         msg.setPadding(parseByteArrayField(getBytesLeft()));

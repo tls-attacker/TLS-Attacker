@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
@@ -45,7 +44,7 @@ public class KeyShareEntryParser extends Parser<KeyShareEntry> {
      * Reads the next bytes as the keyShareType of the Extension and writes them in the message
      *
      * @param msg
-     * Message to write in
+     *            Message to write in
      */
     private void parseKeyShareGroup(KeyShareEntry pair) {
         pair.setGroup(parseByteArrayField(ExtensionByteLength.KEY_SHARE_GROUP));
@@ -56,7 +55,7 @@ public class KeyShareEntryParser extends Parser<KeyShareEntry> {
      * Reads the next bytes as the keyShareLength of the Extension and writes them in the message
      *
      * @param msg
-     * Message to write in
+     *            Message to write in
      */
     private void parseKeyShareLength(KeyShareEntry pair) {
         pair.setPublicKeyLength(parseIntField(ExtensionByteLength.KEY_SHARE_LENGTH));
@@ -67,7 +66,7 @@ public class KeyShareEntryParser extends Parser<KeyShareEntry> {
      * Reads the next bytes as the keyShare of the Extension and writes them in the message
      *
      * @param msg
-     * Message to write in
+     *            Message to write in
      */
     private void parseKeyShare(KeyShareEntry pair) {
         pair.setPublicKey(parseByteArrayField(pair.getPublicKeyLength().getValue()));

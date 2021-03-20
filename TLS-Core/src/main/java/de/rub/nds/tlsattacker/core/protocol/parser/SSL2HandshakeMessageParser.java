@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.parser;
@@ -30,7 +29,7 @@ public abstract class SSL2HandshakeMessageParser<T extends SSL2HandshakeMessage>
      * Reads the next bytes as the MessageLength and writes them in the message
      *
      * @param message
-     * Message to write in
+     *                Message to write in
      */
     protected void parseMessageLength(T message) {
         // The "wonderful" SSL2 message length field:
@@ -58,7 +57,7 @@ public abstract class SSL2HandshakeMessageParser<T extends SSL2HandshakeMessage>
      * Reads the next bytes as the Type and writes them in the message
      *
      * @param msg
-     * Message to write in
+     *            Message to write in
      */
     protected void parseType(T msg) {
         msg.setType(parseByteField(SSL2ByteLength.MESSAGE_TYPE));

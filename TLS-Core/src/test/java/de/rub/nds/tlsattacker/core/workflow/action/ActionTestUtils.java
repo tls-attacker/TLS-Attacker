@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.workflow.action;
@@ -39,8 +38,8 @@ public class ActionTestUtils {
      * 
      * @param <T>
      * @param actionClass
-     * the Class to test
-     * @see this.marshalingEmptyActionYieldsMinimalOutput(Class<T>, Logger)
+     *                    the Class to test
+     * @see               this.marshalingEmptyActionYieldsMinimalOutput(Class<T>, Logger)
      */
     public static <T extends TlsAction> void marshalingEmptyActionYieldsMinimalOutput(Class<T> actionClass) {
         marshalingEmptyActionYieldsMinimalOutput(actionClass, LogManager.getLogger(actionClass));
@@ -64,10 +63,10 @@ public class ActionTestUtils {
      * 
      * @param <T>
      * @param actionClass
-     * the Class to test
+     *                    the Class to test
      * @param logger
-     * the logger to which messages are written to
-     * @see this.marshalingEmptyActionYieldsMinimalOutput(Class<T>)
+     *                    the logger to which messages are written to
+     * @see               this.marshalingEmptyActionYieldsMinimalOutput(Class<T>)
      */
     public static <T extends TlsAction> void marshalingEmptyActionYieldsMinimalOutput(Class<T> actionClass,
         Logger logger) {
@@ -114,8 +113,8 @@ public class ActionTestUtils {
      * 
      * @param <T>
      * @param actionClass
-     * the Class to test
-     * @see this.marshalingAndUnmarshalingEmptyObjectYieldsEqualObject(Class<T>, Logger)
+     *                    the Class to test
+     * @see               this.marshalingAndUnmarshalingEmptyObjectYieldsEqualObject(Class<T>, Logger)
      */
     public static <T extends TlsAction> void
         marshalingAndUnmarshalingEmptyObjectYieldsEqualObject(Class<T> actionClass) {
@@ -130,18 +129,18 @@ public class ActionTestUtils {
      * <p>
      * Calling this method is expensive. <b>Should be invoked by tests in
      * 
-     * @param <T>
-     * @Category(SlowTests.class) only</b>
-     * <p>
+     * @param                     <T>
+     * @Category(SlowTests.class)             only</b>
+     *                                        <p>
      * 
-     * @param actionClass
-     * the Class to test
-     * @param logger
-     * to which messages are written to
-     * @see this.marshalingEmptyActionYieldsMinimalOutput(Class<T>)
+     * @param                     actionClass
+     *                                        the Class to test
+     * @param                     logger
+     *                                        to which messages are written to
+     * @see                                   this.marshalingEmptyActionYieldsMinimalOutput(Class<T>)
      */
-    public static <T extends TlsAction> void marshalingAndUnmarshalingEmptyObjectYieldsEqualObject(
-        Class<T> actionClass, Logger logger) {
+    public static <T extends TlsAction> void marshalingAndUnmarshalingEmptyObjectYieldsEqualObject(Class<T> actionClass,
+        Logger logger) {
         try {
             T action = actionClass.newInstance();
             StringWriter writer = new StringWriter();
@@ -168,8 +167,8 @@ public class ActionTestUtils {
      * 
      * @param <T>
      * @param action
-     * an instance of the TlsAction class under test, filled with custom values
-     * @see this.marshalingAndUnmarshalingFilledObjectYieldsEqualObject(Class<T>, Logger)
+     *               an instance of the TlsAction class under test, filled with custom values
+     * @see          this.marshalingAndUnmarshalingFilledObjectYieldsEqualObject(Class<T>, Logger)
      */
     public static <T extends TlsAction> void marshalingAndUnmarshalingFilledObjectYieldsEqualObject(T action) {
         marshalingAndUnmarshalingFilledObjectYieldsEqualObject(action,
@@ -186,10 +185,10 @@ public class ActionTestUtils {
      * 
      * @param <T>
      * @param action
-     * an instance of the TlsAction class under test, filled with custom values
+     *               an instance of the TlsAction class under test, filled with custom values
      * @param logger
-     * the logger to which messages are logged
-     * @see this.marshalingAndUnmarshalingFilledObjectYieldsEqualObject(Class<T>)
+     *               the logger to which messages are logged
+     * @see          this.marshalingAndUnmarshalingFilledObjectYieldsEqualObject(Class<T>)
      */
     public static <T extends TlsAction> void marshalingAndUnmarshalingFilledObjectYieldsEqualObject(T action,
         Logger logger) {

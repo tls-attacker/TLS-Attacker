@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.workflow.filter;
@@ -40,7 +39,7 @@ public abstract class Filter {
      * Apply filter to trace.
      * 
      * @param trace
-     * The workflow trace that should be filtered.
+     *              The workflow trace that should be filtered.
      */
     public abstract void applyFilter(WorkflowTrace trace);
 
@@ -48,10 +47,10 @@ public abstract class Filter {
      * Perform some additional steps after filtering, for example restoring user defined values.
      * 
      * @param trace
-     * Apply post filtering to this workflow trace.
+     *                  Apply post filtering to this workflow trace.
      * @param reference
-     * A reference trace that the postFilter can use. This could be a trace containing original user definitions, for
-     * example.
+     *                  A reference trace that the postFilter can use. This could be a trace containing original user
+     *                  definitions, for example.
      * 
      */
     public void postFilter(WorkflowTrace trace, WorkflowTrace reference) {

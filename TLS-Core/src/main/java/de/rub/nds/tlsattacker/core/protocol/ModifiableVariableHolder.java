@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol;
@@ -36,9 +35,9 @@ public abstract class ModifiableVariableHolder implements Serializable {
     /**
      * Returns a random field representing a modifiable variable from this class
      *
-     * @param random
-     * The RandomNumber generator that should be used
-     * @return A random ModifiableVariableField
+     * @param  random
+     *                The RandomNumber generator that should be used
+     * @return        A random ModifiableVariableField
      */
     public Field getRandomModifiableVariableField(Random random) {
         List<Field> fields = getAllModifiableVariableFields();
@@ -60,9 +59,9 @@ public abstract class ModifiableVariableHolder implements Serializable {
     /**
      * Returns a random modifiable variable holder
      *
-     * @param random
-     * The RandomNumberGenerator that should be used
-     * @return A Random ModifiableVariableHolder
+     * @param  random
+     *                The RandomNumberGenerator that should be used
+     * @return        A Random ModifiableVariableHolder
      */
     public ModifiableVariableHolder getRandomModifiableVariableHolder(Random random) {
         List<ModifiableVariableHolder> holders = getAllModifiableVariableHolders();
