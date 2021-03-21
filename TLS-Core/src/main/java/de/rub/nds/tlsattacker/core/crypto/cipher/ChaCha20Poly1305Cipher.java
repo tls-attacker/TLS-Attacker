@@ -11,6 +11,7 @@
  * "BcChaCha20Poly1305".
  * See RFC7905 for further information.
  */
+
 package de.rub.nds.tlsattacker.core.crypto.cipher;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -40,10 +41,12 @@ public abstract class ChaCha20Poly1305Cipher extends BaseCipher {
 
     private final Poly1305 mac = new Poly1305();
 
-    public ChaCha20Poly1305Cipher(byte[] key) {
+    protected final int IV_LENGTH;
+
+    public ChaCha20Poly1305Cipher(byte[] key, int ivLength) {
         if (key.length != 32) {
             LOGGER.warn("Key for ChaCha20Poly1305 has wrong size. Expected 32 byte but found: " + key.length
-                    + ". Padding/Trimming to 32 Byte.");
+                + ". Padding/Trimming to 32 Byte.");
             if (key.length > 32) {
                 key = Arrays.copyOfRange(key, 0, 32);
             } else {
@@ -55,6 +58,7 @@ public abstract class ChaCha20Poly1305Cipher extends BaseCipher {
             }
         }
         this.key = key;
+        this.IV_LENGTH = ivLength;
     }
 
     @Override
@@ -74,17 +78,17 @@ public abstract class ChaCha20Poly1305Cipher extends BaseCipher {
 
     @Override
     public byte[] decrypt(byte[] iv, int tagLength, byte[] additionalAuthenticatedData, byte[] ciphertext)
-            throws CryptoException {
+        throws CryptoException {
         this.cipher.init(false, new ParametersWithIV(new KeyParameter(this.key, 0, this.key.length),
-                new byte[(tagLength / Bits.IN_A_BYTE) - 1], 0, iv.length));
+            new byte[(tagLength / Bits.IN_A_BYTE) - 1], 0, iv.length));
         int additionalDataLength = additionalAuthenticatedData.length;
         int ciphertextLength = ciphertext.length - (tagLength / Bits.IN_A_BYTE);
 
         byte[] plaintext = new byte[getOutputSize(false, ciphertext.length)];
-        byte[] aadLengthLittleEndian
-                = ArrayConverter.reverseByteOrder(ArrayConverter.longToBytes(Long.valueOf(additionalDataLength), 8));
-        byte[] ciphertextLengthLittleEndian
-                = ArrayConverter.reverseByteOrder(ArrayConverter.longToBytes(Long.valueOf(ciphertextLength), 8));
+        byte[] aadLengthLittleEndian =
+            ArrayConverter.reverseByteOrder(ArrayConverter.longToBytes(Long.valueOf(additionalDataLength), 8));
+        byte[] ciphertextLengthLittleEndian =
+            ArrayConverter.reverseByteOrder(ArrayConverter.longToBytes(Long.valueOf(ciphertextLength), 8));
 
         this.cipher.init(false, new ParametersWithIV(null, iv));
         initMAC();
@@ -118,11 +122,11 @@ public abstract class ChaCha20Poly1305Cipher extends BaseCipher {
     public byte[] encrypt(byte[] iv, int tagLength, byte[] additionAuthenticatedData, byte[] someBytes) {
         if (iv.length != 8) {
             LOGGER.warn("IV for ChaCha20Poly1305 has wrong size. Expected 8 byte but found: " + iv.length
-                    + ". Padding/Trimming to 8 Byte.");
-            if (iv.length > 8) {
-                iv = Arrays.copyOfRange(iv, 0, 8);
+                + ". Padding/Trimming to " + IV_LENGTH + " Byte.");
+            if (iv.length > IV_LENGTH) {
+                iv = Arrays.copyOfRange(iv, 0, IV_LENGTH);
             } else {
-                byte[] tempIv = new byte[8];
+                byte[] tempIv = new byte[IV_LENGTH];
                 for (int i = 0; i < iv.length; i++) {
                     tempIv[i] = iv[i];
                 }
@@ -130,7 +134,7 @@ public abstract class ChaCha20Poly1305Cipher extends BaseCipher {
             }
         }
         this.cipher.init(true, new ParametersWithIV(new KeyParameter(this.key, 0, this.key.length),
-                new byte[(tagLength / Bits.IN_A_BYTE) - 1], 0, iv.length));
+            new byte[(tagLength / Bits.IN_A_BYTE) - 1], 0, iv.length));
         int additionalDataLength = additionAuthenticatedData.length;
         int plaintextLength = someBytes.length;
         byte[] ciphertext = new byte[getOutputSize(true, plaintextLength)];
@@ -138,12 +142,12 @@ public abstract class ChaCha20Poly1305Cipher extends BaseCipher {
         initMAC();
         cipher.processBytes(someBytes, 0, plaintextLength, ciphertext, 0);
 
-        byte[] aadLengthLittleEndian
-                = ArrayConverter.reverseByteOrder(ArrayConverter.longToBytes(Long.valueOf(additionalDataLength), 8));
-        byte[] plaintextLengthLittleEndian
-                = ArrayConverter.reverseByteOrder(ArrayConverter.longToBytes(Long.valueOf(plaintextLength), 8));
-        byte[] aadPlaintextLengthsLittleEndian
-                = ArrayConverter.concatenate(aadLengthLittleEndian, plaintextLengthLittleEndian, 8);
+        byte[] aadLengthLittleEndian =
+            ArrayConverter.reverseByteOrder(ArrayConverter.longToBytes(Long.valueOf(additionalDataLength), 8));
+        byte[] plaintextLengthLittleEndian =
+            ArrayConverter.reverseByteOrder(ArrayConverter.longToBytes(Long.valueOf(plaintextLength), 8));
+        byte[] aadPlaintextLengthsLittleEndian =
+            ArrayConverter.concatenate(aadLengthLittleEndian, plaintextLengthLittleEndian, 8);
 
         if (draftStructure) {
             byte[] macInput = ArrayConverter.concatenate(additionAuthenticatedData, aadLengthLittleEndian);
