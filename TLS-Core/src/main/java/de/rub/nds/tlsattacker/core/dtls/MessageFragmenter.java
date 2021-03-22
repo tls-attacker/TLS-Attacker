@@ -37,12 +37,11 @@ public class MessageFragmenter {
      * @return
      */
     public List<DtlsHandshakeMessageFragment> fragmentMessage(HandshakeMessage message, TlsContext context) {
-        HandshakeMessageSerializer serializer =
-            (HandshakeMessageSerializer) message.getHandler(context).getSerializer(message);
+        ProtocolMessageSerializer serializer = message.getHandler(context).getSerializer(message);
         byte[] bytes;
         if (serializer instanceof HandshakeMessageSerializer) {// This is necessary because of SSL2 messages...
             HandshakeMessageSerializer handshakeMessageSerializer =
-                (HandshakeMessageSerializer) message.getHandler(context).getSerializer(message);
+                (HandshakeMessageSerializer) serializer;
             bytes = handshakeMessageSerializer.serializeHandshakeMessageContent();
         } else {
             bytes = serializer.serializeProtocolMessageContent();
