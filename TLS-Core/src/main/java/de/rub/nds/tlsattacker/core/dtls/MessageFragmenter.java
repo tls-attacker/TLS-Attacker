@@ -40,8 +40,7 @@ public class MessageFragmenter {
         ProtocolMessageSerializer serializer = message.getHandler(context).getSerializer(message);
         byte[] bytes;
         if (serializer instanceof HandshakeMessageSerializer) {// This is necessary because of SSL2 messages...
-            HandshakeMessageSerializer handshakeMessageSerializer =
-                (HandshakeMessageSerializer) serializer;
+            HandshakeMessageSerializer handshakeMessageSerializer = (HandshakeMessageSerializer) serializer;
             bytes = handshakeMessageSerializer.serializeHandshakeMessageContent();
         } else {
             bytes = serializer.serializeProtocolMessageContent();
