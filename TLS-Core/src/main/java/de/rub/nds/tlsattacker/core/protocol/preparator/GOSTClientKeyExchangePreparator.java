@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -47,7 +48,7 @@ import org.bouncycastle.crypto.params.ParametersWithSBox;
 import org.bouncycastle.crypto.params.ParametersWithUKM;
 
 public abstract class GOSTClientKeyExchangePreparator
-        extends ClientKeyExchangePreparator<GOSTClientKeyExchangeMessage> {
+    extends ClientKeyExchangePreparator<GOSTClientKeyExchangeMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -92,13 +93,13 @@ public abstract class GOSTClientKeyExchangePreparator
                 prepareCek();
                 prepareKeyBlob();
             } else {
-                TLSGostKeyTransportBlob transportBlob
-                        = TLSGostKeyTransportBlob.getInstance(msg.getKeyTransportBlob().getValue());
+                TLSGostKeyTransportBlob transportBlob =
+                    TLSGostKeyTransportBlob.getInstance(msg.getKeyTransportBlob().getValue());
                 LOGGER.debug("Received GOST key blob: " + ASN1Dump.dumpAsString(transportBlob, true));
 
                 GostR3410KeyTransport keyBlob = transportBlob.getKeyBlob();
                 if (!Arrays.equals(keyBlob.getTransportParameters().getUkm(),
-                        msg.getComputations().getUkm().getValue())) {
+                    msg.getComputations().getUkm().getValue())) {
                     LOGGER.warn("Client UKM != Server UKM");
                 }
 
@@ -108,7 +109,7 @@ public abstract class GOSTClientKeyExchangePreparator
                 prepareKek(chooser.getServerEcPrivateKey(), publicKey);
 
                 byte[] wrapped = ArrayConverter.concatenate(keyBlob.getSessionEncryptedKey().getEncryptedKey(),
-                        keyBlob.getSessionEncryptedKey().getMacKey());
+                    keyBlob.getSessionEncryptedKey().getMacKey());
 
                 String sboxName = oidMappings.get(keyBlob.getTransportParameters().getEncryptionParamSet());
                 byte[] pms = wrap(false, wrapped, sboxName);
@@ -123,12 +124,12 @@ public abstract class GOSTClientKeyExchangePreparator
         byte[] random = ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
         msg.getComputations().setClientServerRandom(random);
         LOGGER.debug("ClientServerRandom: "
-                + ArrayConverter.bytesToHexString(msg.getComputations().getClientServerRandom().getValue()));
+            + ArrayConverter.bytesToHexString(msg.getComputations().getClientServerRandom().getValue()));
     }
 
     private void prepareUkm() throws NoSuchAlgorithmException {
         DigestAlgorithm digestAlgorithm = AlgorithmResolver.getDigestAlgorithm(chooser.getSelectedProtocolVersion(),
-                chooser.getSelectedCipherSuite());
+            chooser.getSelectedCipherSuite());
         MessageDigest digest = MessageDigest.getInstance(digestAlgorithm.getJavaName());
         byte[] hash = digest.digest(msg.getComputations().getClientServerRandom().getValue());
 
@@ -237,17 +238,17 @@ public abstract class GOSTClientKeyExchangePreparator
     private void prepareKeyBlob() throws IOException {
         try {
             Point ecPoint = Point.createPoint(msg.getComputations().getClientPublicKeyX().getValue(),
-                    msg.getComputations().getClientPublicKeyY().getValue(), chooser.getSelectedGostCurve());
+                msg.getComputations().getClientPublicKeyY().getValue(), chooser.getSelectedGostCurve());
             SubjectPublicKeyInfo ephemeralKey = SubjectPublicKeyInfo
-                    .getInstance(GOSTUtils.generatePublicKey(chooser.getSelectedGostCurve(), ecPoint).getEncoded());
+                .getInstance(GOSTUtils.generatePublicKey(chooser.getSelectedGostCurve(), ecPoint).getEncoded());
 
-            Gost2814789EncryptedKey encryptedKey
-                    = new Gost2814789EncryptedKey(msg.getComputations().getEncryptedKey().getValue(), getMaskKey(),
-                            msg.getComputations().getMacKey().getValue());
-            ASN1ObjectIdentifier paramSet
-                    = new ASN1ObjectIdentifier(msg.getComputations().getEncryptionParamSet().getValue());
-            GostR3410TransportParameters params
-                    = new GostR3410TransportParameters(paramSet, ephemeralKey, msg.getComputations().getUkm().getValue());
+            Gost2814789EncryptedKey encryptedKey =
+                new Gost2814789EncryptedKey(msg.getComputations().getEncryptedKey().getValue(), getMaskKey(),
+                    msg.getComputations().getMacKey().getValue());
+            ASN1ObjectIdentifier paramSet =
+                new ASN1ObjectIdentifier(msg.getComputations().getEncryptionParamSet().getValue());
+            GostR3410TransportParameters params =
+                new GostR3410TransportParameters(paramSet, ephemeralKey, msg.getComputations().getUkm().getValue());
             GostR3410KeyTransport transport = new GostR3410KeyTransport(encryptedKey, params);
             DERSequence proxyKeyBlobs = (DERSequence) DERSequence.getInstance(getProxyKeyBlobs());
             TLSGostKeyTransportBlob blob = new TLSGostKeyTransportBlob(transport, proxyKeyBlobs);
