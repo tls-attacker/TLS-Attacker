@@ -49,7 +49,7 @@ public class ClientUdpTransportHandler extends TransportHandler {
     public void initialize() throws IOException {
         socket = new DatagramSocket();
         socket.connect(new InetSocketAddress(hostname, port));
-        socket.setSoTimeout((int) getTimeout());
+        socket.setSoTimeout(1);
         setStreams(new PushbackInputStream(new UdpInputStream(socket, false)), new UdpOutputStream(socket));
     }
 

@@ -44,7 +44,7 @@ public class ServerUdpTransportHandler extends TransportHandler {
     @Override
     public void initialize() throws IOException {
         socket = new DatagramSocket(port);
-        socket.setSoTimeout((int) getTimeout());
+        socket.setSoTimeout(1);
         setStreams(new PushbackInputStream(new UdpInputStream(socket, true)), new UdpOutputStream(socket));
         // this could be made an option
         waitOnReceive();
