@@ -159,6 +159,10 @@
 
   <xs:element name="helloVerifyRequestMessage" type="helloVerifyRequestMessage"/>
 
+  <xs:element name="httpsRequestMessage" type="httpsRequestMessage"/>
+
+  <xs:element name="httpsResponseMessage" type="httpsResponseMessage"/>
+
   <xs:element name="integerAddModification" type="integerAddModification"/>
 
   <xs:element name="integerExplicitValueModification" type="integerExplicitValueModification"/>
