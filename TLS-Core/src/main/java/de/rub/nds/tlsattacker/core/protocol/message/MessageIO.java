@@ -6,7 +6,6 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import java.io.ByteArrayInputStream;
@@ -39,6 +38,8 @@ public class MessageIO {
         if (context == null) {
             Reflections reflections = new Reflections("de.rub.nds.tlsattacker.core.protocol.message");
             Set<Class<? extends ProtocolMessage>> classes = reflections.getSubTypesOf(ProtocolMessage.class);
+            reflections = new Reflections("de.rub.nds.tlsattacker.core.https");
+            classes.addAll(reflections.getSubTypesOf(ProtocolMessage.class));
             Class<? extends ProtocolMessage>[] classesArray = classes.toArray(new Class[classes.size()]);
             context = JAXBContext.newInstance(classesArray);
         }
@@ -46,7 +47,7 @@ public class MessageIO {
     }
 
     public static void write(File file, ProtocolMessage message)
-        throws FileNotFoundException, JAXBException, IOException {
+            throws FileNotFoundException, JAXBException, IOException {
         if (!file.exists()) {
             file.createNewFile();
         }
@@ -75,7 +76,7 @@ public class MessageIO {
     }
 
     public static ProtocolMessage copyTlsAction(ProtocolMessage message)
-        throws JAXBException, IOException, XMLStreamException {
+            throws JAXBException, IOException, XMLStreamException {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         MessageIO.write(stream, message);
         stream.flush();
