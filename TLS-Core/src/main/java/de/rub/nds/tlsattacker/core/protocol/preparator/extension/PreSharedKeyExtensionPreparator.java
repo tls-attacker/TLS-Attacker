@@ -6,7 +6,6 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -50,7 +49,7 @@ public class PreSharedKeyExtensionPreparator extends ExtensionPreparator<PreShar
     private ClientHelloMessage clientHello;
 
     public PreSharedKeyExtensionPreparator(Chooser chooser, PreSharedKeyExtensionMessage message,
-        ExtensionSerializer<PreSharedKeyExtensionMessage> serializer) {
+            ExtensionSerializer<PreSharedKeyExtensionMessage> serializer) {
         super(chooser, message, serializer);
         msg = message;
     }
@@ -126,8 +125,8 @@ public class PreSharedKeyExtensionPreparator extends ExtensionPreparator<PreShar
 
     private void prepareActualBinders() {
         LOGGER.debug("Preparing binder values to replace dummy bytes");
-        ClientHelloSerializer clientHelloSerializer =
-            new ClientHelloSerializer(clientHello, chooser.getSelectedProtocolVersion());
+        ClientHelloSerializer clientHelloSerializer
+                = new ClientHelloSerializer(clientHello, chooser.getSelectedProtocolVersion());
         byte[] clientHelloBytes = clientHelloSerializer.serialize();
         byte[] relevantBytes = getRelevantBytes(clientHelloBytes);
         calculateBinders(relevantBytes, msg);
@@ -137,8 +136,8 @@ public class PreSharedKeyExtensionPreparator extends ExtensionPreparator<PreShar
     private byte[] getRelevantBytes(byte[] clientHelloBytes) {
         int remainingBytes = clientHelloBytes.length - ExtensionByteLength.PSK_BINDER_LIST_LENGTH;
         for (PSKBinder pskBinder : msg.getBinders()) {
-            remainingBytes =
-                remainingBytes - ExtensionByteLength.PSK_BINDER_LENGTH - pskBinder.getBinderEntryLength().getValue();
+            remainingBytes
+                    = remainingBytes - ExtensionByteLength.PSK_BINDER_LENGTH - pskBinder.getBinderEntryLength().getValue();
         }
 
         byte[] relevantBytes = new byte[remainingBytes];
@@ -154,36 +153,41 @@ public class PreSharedKeyExtensionPreparator extends ExtensionPreparator<PreShar
         LOGGER.debug("Calculating Binders");
         for (int x = 0; x < msg.getBinders().size(); x++) {
             try {
-                HKDFAlgorithm hkdfAlgorithm = AlgorithmResolver.getHKDFAlgorithm(pskSets.get(x).getCipherSuite());
-                Mac mac = Mac.getInstance(hkdfAlgorithm.getMacAlgorithm().getJavaName());
-                DigestAlgorithm digestAlgo =
-                    AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS13, pskSets.get(x).getCipherSuite());
+                if (pskSets.size() > x) {
+                    HKDFAlgorithm hkdfAlgorithm = AlgorithmResolver.getHKDFAlgorithm(pskSets.get(x).getCipherSuite());
+                    Mac mac = Mac.getInstance(hkdfAlgorithm.getMacAlgorithm().getJavaName());
+                    DigestAlgorithm digestAlgo
+                            = AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS13, pskSets.get(x).getCipherSuite());
 
-                byte[] psk = pskSets.get(x).getPreSharedKey();
-                byte[] earlySecret = HKDFunction.extract(hkdfAlgorithm, new byte[0], psk);
-                byte[] binderKey = HKDFunction.deriveSecret(hkdfAlgorithm, digestAlgo.getJavaName(), earlySecret,
-                    HKDFunction.BINDER_KEY_RES, ArrayConverter.hexStringToByteArray(""));
-                byte[] binderFinKey = HKDFunction.expandLabel(hkdfAlgorithm, binderKey, HKDFunction.FINISHED,
-                    new byte[0], mac.getMacLength());
+                    byte[] psk = pskSets.get(x).getPreSharedKey();
+                    byte[] earlySecret = HKDFunction.extract(hkdfAlgorithm, new byte[0], psk);
+                    byte[] binderKey = HKDFunction.deriveSecret(hkdfAlgorithm, digestAlgo.getJavaName(), earlySecret,
+                            HKDFunction.BINDER_KEY_RES, ArrayConverter.hexStringToByteArray(""));
+                    byte[] binderFinKey = HKDFunction.expandLabel(hkdfAlgorithm, binderKey, HKDFunction.FINISHED,
+                            new byte[0], mac.getMacLength());
 
-                chooser.getContext().getDigest().setRawBytes(relevantBytes);
-                SecretKeySpec keySpec = new SecretKeySpec(binderFinKey, mac.getAlgorithm());
-                mac.init(keySpec);
-                mac.update(
-                    chooser.getContext().getDigest().digest(ProtocolVersion.TLS13, pskSets.get(x).getCipherSuite()));
-                byte[] binderVal = mac.doFinal();
-                chooser.getContext().getDigest().setRawBytes(new byte[0]);
+                    chooser.getContext().getDigest().setRawBytes(relevantBytes);
+                    SecretKeySpec keySpec = new SecretKeySpec(binderFinKey, mac.getAlgorithm());
+                    mac.init(keySpec);
+                    mac.update(
+                            chooser.getContext().getDigest().digest(ProtocolVersion.TLS13, pskSets.get(x).getCipherSuite()));
+                    byte[] binderVal = mac.doFinal();
+                    chooser.getContext().getDigest().setRawBytes(new byte[0]);
 
-                LOGGER.debug("Using PSK:" + ArrayConverter.bytesToHexString(psk));
-                LOGGER.debug("Calculated Binder:" + ArrayConverter.bytesToHexString(binderVal));
+                    LOGGER.debug("Using PSK:" + ArrayConverter.bytesToHexString(psk));
+                    LOGGER.debug("Calculated Binder:" + ArrayConverter.bytesToHexString(binderVal));
 
-                msg.getBinders().get(x).setBinderEntry(binderVal);
-                // First entry = PSK for early Data
-                if (x == 0) {
-                    chooser.getContext().setEarlyDataPsk(psk);
+                    msg.getBinders().get(x).setBinderEntry(binderVal);
+                    // First entry = PSK for early Data
+                    if (x == 0) {
+                        chooser.getContext().setEarlyDataPsk(psk);
+                    }
+                } else {
+                    LOGGER.warn("Skipping BinderCalculation as Config has not enough PSK sets");
                 }
             } catch (NoSuchAlgorithmException | InvalidKeyException | CryptoException ex) {
                 throw new PreparationException("Could not calculate Binders", ex);
+
             }
         }
     }
@@ -196,8 +200,7 @@ public class PreSharedKeyExtensionPreparator extends ExtensionPreparator<PreShar
     }
 
     /**
-     * @param clientHello
-     *                    the clientHello to set
+     * @param clientHello the clientHello to set
      */
     public void setClientHello(ClientHelloMessage clientHello) {
         this.clientHello = clientHello;
