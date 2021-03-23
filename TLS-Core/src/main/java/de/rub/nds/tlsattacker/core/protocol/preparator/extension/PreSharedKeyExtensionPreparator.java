@@ -140,13 +140,17 @@ public class PreSharedKeyExtensionPreparator extends ExtensionPreparator<PreShar
             remainingBytes =
                 remainingBytes - ExtensionByteLength.PSK_BINDER_LENGTH - pskBinder.getBinderEntryLength().getValue();
         }
+        if (remainingBytes > 0) {
+            byte[] relevantBytes = new byte[remainingBytes];
 
-        byte[] relevantBytes = new byte[remainingBytes];
+            System.arraycopy(clientHelloBytes, 0, relevantBytes, 0, remainingBytes);
 
-        System.arraycopy(clientHelloBytes, 0, relevantBytes, 0, remainingBytes);
-
-        LOGGER.debug("Relevant Bytes:" + ArrayConverter.bytesToHexString(relevantBytes));
-        return relevantBytes;
+            LOGGER.debug("Relevant Bytes:" + ArrayConverter.bytesToHexString(relevantBytes));
+            return relevantBytes;
+        } else {
+            // This can happen if the client hello degenerates
+            return new byte[0];
+        }
     }
 
     private void calculateBinders(byte[] relevantBytes, PreSharedKeyExtensionMessage msg) {
