@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.workflow.task.ITask;
 import de.rub.nds.tlsattacker.core.workflow.task.StateExecutionServerTask;
 import de.rub.nds.tlsattacker.core.workflow.task.StateExecutionTask;
 import de.rub.nds.tlsattacker.core.workflow.task.TlsTask;
@@ -34,7 +33,6 @@ public class ParallelExecutor {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private final ThreadPoolExecutor executorService;
-    private final CompletionService<ITask> completionService;
     private Callable<Integer> timeoutAction;
 
     private final int size;
@@ -44,7 +42,6 @@ public class ParallelExecutor {
 
     public ParallelExecutor(int size, int reexecutions) {
         executorService = new ThreadPoolExecutor(size, size, 10, TimeUnit.DAYS, new LinkedBlockingDeque<Runnable>());
-        completionService = new ExecutorCompletionService<>(executorService);
         this.reexecutions = reexecutions;
         this.size = size;
         if (reexecutions < 0) {
@@ -55,7 +52,6 @@ public class ParallelExecutor {
     public ParallelExecutor(int size, int reexecutions, ThreadFactory factory) {
         executorService =
             new ThreadPoolExecutor(size, size, 5, TimeUnit.MINUTES, new LinkedBlockingDeque<Runnable>(), factory);
-        completionService = new ExecutorCompletionService<>(executorService);
         this.reexecutions = reexecutions;
         this.size = size;
         if (reexecutions < 0) {
@@ -63,19 +59,19 @@ public class ParallelExecutor {
         }
     }
 
-    public Future addTask(TlsTask task) {
+    private Future addTask(TlsTask task) {
         if (executorService.isShutdown()) {
             throw new RuntimeException("Cannot add Tasks to already shutdown executor");
         }
-        Future<?> submit = completionService.submit(task);
+        Future<?> submit = executorService.submit(task);
         return submit;
     }
 
-    public Future addClientStateTask(State state) {
+    private Future addClientStateTask(State state) {
         return addTask(new StateExecutionTask(state, reexecutions));
     }
 
-    public Future addServerStateTask(State state, ServerSocket socket) {
+    private Future addServerStateTask(State state, ServerSocket socket) {
         return addTask(new StateExecutionServerTask(state, socket, reexecutions));
     }
 
@@ -125,41 +121,46 @@ public class ParallelExecutor {
     }
 
     /**
-     * Creates a new thread monitoring the completionService. If the last {@link TlsTask} was finished more than 20
-     * seconds ago, the function assiged to {@link ParallelExecutor#timeoutAction } is executed.
+     * Creates a new thread monitoring the executorService. If the last {@link TlsTask} was finished more than
+     * 
+     * @param timeout
+     * milliseconds ago, the function assiged to {@link ParallelExecutor#timeoutAction } is executed.
      *
      * The {@link ParallelExecutor#timeoutAction } function can, for example, try to restart the client/server, so that
      * the remaining {@link TlsTask}s can be finished.
      */
-    public void armTimeoutAction() {
+    public void armTimeoutAction(int timeout) {
         if (timeoutAction == null) {
             LOGGER.warn("No TimeoutAction set, this won't do anything");
             return;
         }
 
         new Thread(() -> {
-            while (!shouldShutdown) {
-                try {
-                    Future<ITask> task = completionService.poll(20, TimeUnit.SECONDS);
-                    if (task != null) {
-                        continue;
-                    }
+            monitorExecution(timeout);
+        }).start();
+    }
 
-                    LOGGER.debug("Timeout");
-                    if (executorService.getQueue().size() > 0) {
-                        try {
-                            int exitCode = timeoutAction.call();
-                            if (exitCode != 0) {
-                                throw new RuntimeException("TimeoutAction did terminate with code " + exitCode);
-                            }
-                        } catch (Exception e) {
-                            LOGGER.warn("TimeoutAction did not succeed", e);
-                        }
+    private void monitorExecution(int timeout) {
+        long timeoutTime = System.currentTimeMillis() + timeout;
+        long lastCompletedCount = 0;
+        while (!shouldShutdown) {
+            long completedCount = executorService.getCompletedTaskCount();
+            if (executorService.getActiveCount() == 0 || completedCount != lastCompletedCount) {
+                timeoutTime = System.currentTimeMillis() + timeout;
+                lastCompletedCount = completedCount;
+            } else if (System.currentTimeMillis() > timeoutTime) {
+                LOGGER.debug("Timeout");
+                try {
+                    int exitCode = timeoutAction.call();
+                    if (exitCode != 0) {
+                        throw new RuntimeException("TimeoutAction did terminate with code " + exitCode);
                     }
-                } catch (InterruptedException ignored) {
+                    timeoutTime = System.currentTimeMillis() + timeout;
+                } catch (Exception e) {
+                    LOGGER.warn("TimeoutAction did not succeed", e);
                 }
             }
-        }).start();
+        }
     }
 
     public int getReexecutions() {
