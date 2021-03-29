@@ -14,9 +14,14 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
+import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import java.io.Serializable;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+@XmlAccessorType(XmlAccessType.FIELD)
 public class TrustedAuthority extends ModifiableVariableHolder implements Serializable {
 
     @ModifiableVariableProperty
@@ -29,8 +34,13 @@ public class TrustedAuthority extends ModifiableVariableHolder implements Serial
     private ModifiableByteArray distinguishedName;
 
     private byte identifierTypeConfig;
+
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] sha1HashConfig;
+
     private Integer distinguishedNameLengthConfig;
+
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] distinguishedNameConfig;
 
     public TrustedAuthority() {
