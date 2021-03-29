@@ -57,8 +57,8 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
     public void adjustTlsContextAfterSerialize(ChangeCipherSpecMessage message) {
 
         if (tlsContext.getTalkingConnectionEndType() == tlsContext.getChooser().getConnectionEndType()) {
-            tlsContext.setWriteSequenceNumber(0);
             if (!tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
+                tlsContext.setWriteSequenceNumber(0);
                 tlsContext.getRecordLayer().updateEncryptionCipher();
                 tlsContext.getRecordLayer().updateCompressor();
                 tlsContext.increaseDtlsWriteEpoch();

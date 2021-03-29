@@ -121,13 +121,14 @@ public class ParallelExecutor {
     }
 
     /**
-     * Creates a new thread monitoring the executorService. If the last {@link TlsTask} was finished more than
+     * Creates a new thread monitoring the executorService. If the time since the last {@link TlsTask} was finished
+     * exceeds the timeout, the function assiged to {@link ParallelExecutor#timeoutAction } is executed. The
+     * {@link ParallelExecutor#timeoutAction } function can, for example, try to restart the client/server, so that the
+     * remaining {@link TlsTask}s can be finished.
      * 
      * @param timeout
-     * milliseconds ago, the function assiged to {@link ParallelExecutor#timeoutAction } is executed.
+     *                The timeout in milliseconds
      *
-     * The {@link ParallelExecutor#timeoutAction } function can, for example, try to restart the client/server, so that
-     * the remaining {@link TlsTask}s can be finished.
      */
     public void armTimeoutAction(int timeout) {
         if (timeoutAction == null) {
