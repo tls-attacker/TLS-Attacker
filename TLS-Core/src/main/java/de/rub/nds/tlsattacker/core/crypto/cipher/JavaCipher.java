@@ -208,7 +208,8 @@ class JavaCipher extends BaseCipher {
             }
             return result;
         } catch (IllegalStateException | IllegalBlockSizeException | BadPaddingException | NoSuchAlgorithmException
-            | InvalidAlgorithmParameterException | InvalidKeyException | NoSuchPaddingException ex) {
+            | InvalidAlgorithmParameterException | InvalidKeyException | NoSuchPaddingException
+            | IllegalArgumentException ex) {
             throw new CryptoException("Could not decrypt data", ex);
         }
     }

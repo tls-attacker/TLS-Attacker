@@ -1353,9 +1353,9 @@
     <xs:complexContent>
       <xs:extension base="modifiableVariableHolder">
         <xs:sequence>
+          <xs:element name="alpnEntryLength" type="modifiableInteger" minOccurs="0"/>
           <xs:element name="alpnEntry" type="modifiableString" minOccurs="0"/>
           <xs:element name="alpnEntryConfig" type="xs:string" minOccurs="0"/>
-          <xs:element name="alpnEntryLength" type="modifiableInteger" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>

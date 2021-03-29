@@ -56,7 +56,8 @@ public class RecordDecryptor extends Decryptor {
     public void decrypt(Record record) {
         LOGGER.debug("Decrypting Record");
         RecordCipher recordCipher;
-        if (context.getChooser().getSelectedProtocolVersion().isDTLS()) {
+        if (context.getChooser().getSelectedProtocolVersion().isDTLS() && record.getEpoch() != null
+            && record.getEpoch().getValue() != null) {
             recordCipher = getRecordCipher(record.getEpoch().getValue());
         } else {
             recordCipher = getRecordMostRecentCipher();
