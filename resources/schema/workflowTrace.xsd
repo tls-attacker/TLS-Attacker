@@ -1572,13 +1572,14 @@
     <xs:complexContent>
       <xs:extension base="modifiableVariableHolder">
         <xs:sequence>
-          <xs:element name="distinguishedName" type="modifiableByteArray" minOccurs="0"/>
-          <xs:element name="distinguishedNameConfig" type="xs:base64Binary" minOccurs="0"/>
-          <xs:element name="distinguishedNameLength" type="modifiableInteger" minOccurs="0"/>
           <xs:element name="identifierType" type="modifiableByte" minOccurs="0"/>
-          <xs:element name="identifierTypeConfig" type="xs:byte"/>
           <xs:element name="sha1Hash" type="modifiableByteArray" minOccurs="0"/>
-          <xs:element name="sha1HashConfig" type="xs:base64Binary" minOccurs="0"/>
+          <xs:element name="distinguishedNameLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="distinguishedName" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="identifierTypeConfig" type="xs:byte"/>
+          <xs:element name="sha1HashConfig" type="xs:string" minOccurs="0"/>
+          <xs:element name="distinguishedNameLengthConfig" type="xs:int" minOccurs="0"/>
+          <xs:element name="distinguishedNameConfig" type="xs:string" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
