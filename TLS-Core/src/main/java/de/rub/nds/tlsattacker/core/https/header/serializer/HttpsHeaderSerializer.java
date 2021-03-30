@@ -30,5 +30,4 @@ public class HttpsHeaderSerializer extends Serializer<HttpsHeader> {
         appendBytes("\r\n".getBytes());
         return getAlreadySerialized();
     }
-
 }
