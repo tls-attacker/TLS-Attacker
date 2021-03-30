@@ -143,7 +143,7 @@ public class PreSharedKeyExtensionPreparator extends ExtensionPreparator<PreShar
         if (remainingBytes > 0) {
             byte[] relevantBytes = new byte[remainingBytes];
 
-            System.arraycopy(clientHelloBytes, 0, relevantBytes, 0, remainingBytes);
+            System.arraycopy(clientHelloBytes, 0, relevantBytes, 0, Math.min(remainingBytes, clientHelloBytes.length));
 
             LOGGER.debug("Relevant Bytes:" + ArrayConverter.bytesToHexString(relevantBytes));
             return relevantBytes;
