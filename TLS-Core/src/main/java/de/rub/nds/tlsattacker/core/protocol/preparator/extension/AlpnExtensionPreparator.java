@@ -44,13 +44,6 @@ public class AlpnExtensionPreparator extends ExtensionPreparator<AlpnExtensionMe
             for (String alpnProtocol : alpnStringList) {
                 alpnEntryList.add(new AlpnEntry(alpnProtocol));
             }
-            msg.setAlpnEntryList(alpnEntryList);
-            setEntryListBytes(alpnEntryList);
-            LOGGER.debug("Prepared the ALPN Extension with announced protocols "
-                + ArrayConverter.bytesToHexString(msg.getProposedAlpnProtocols()));
-            msg.setProposedAlpnProtocolsLength(msg.getProposedAlpnProtocols().getValue().length);
-            LOGGER.debug("Prepared the ALPN Extension with announced protocols length "
-                + msg.getProposedAlpnProtocolsLength().getValue());
         } else {
             if (chooser.getConfig().isEnforceSettings()) {
                 alpnEntryList.add(new AlpnEntry(chooser.getConfig().getDefaultSelectedAlpnProtocol()));
@@ -70,11 +63,15 @@ public class AlpnExtensionPreparator extends ExtensionPreparator<AlpnExtensionMe
                     alpnEntryList.add(new AlpnEntry(chooser.getConfig().getDefaultSelectedAlpnProtocol()));
                     LOGGER.debug("Cannot choose protocol the client supported. Enforcing server choice");
                 }
-                msg.setAlpnEntryList(alpnEntryList);
-                setEntryListBytes(alpnEntryList);
-                msg.setProposedAlpnProtocolsLength(msg.getProposedAlpnProtocols().getValue().length);
             }
         }
+        msg.setAlpnEntryList(alpnEntryList);
+        setEntryListBytes(alpnEntryList);
+        LOGGER.debug("Prepared the ALPN Extension with announced protocols "
+            + ArrayConverter.bytesToHexString(msg.getProposedAlpnProtocols()));
+        msg.setProposedAlpnProtocolsLength(msg.getProposedAlpnProtocols().getValue().length);
+        LOGGER.debug("Prepared the ALPN Extension with announced protocols length "
+            + msg.getProposedAlpnProtocolsLength().getValue());
     }
 
     private void setEntryListBytes(List<AlpnEntry> alpnEntryList) {
