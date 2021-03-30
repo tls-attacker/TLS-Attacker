@@ -67,21 +67,39 @@ public class PWDProtectExtensionPreparator extends ExtensionPreparator<PWDProtec
             throw new CryptoException("Missing HKDF algorithm for curves larger than 384 bits");
         }
 
-        BigInteger clientPublicKey =
-            curve.mult(config.getDefaultServerPWDProtectRandomSecret(), generator).getFieldX().getData();
-        BigInteger sharedSecret =
-            curve.mult(config.getDefaultServerPWDProtectRandomSecret(), serverPublicKey).getFieldX().getData();
+        Point multedPoint = curve.mult(config.getDefaultServerPWDProtectRandomSecret(), generator);
+        BigInteger clientPublicKey;
+        if (!multedPoint.isAtInfinity()) {
+            clientPublicKey = multedPoint.getFieldX().getData();
+        } else {
+            LOGGER.warn("Computed intermediate value as point in infinity. Using Zero instead for X value");
+            clientPublicKey = BigInteger.ZERO;
+        }
+        Point sharedPoint = curve.mult(config.getDefaultServerPWDProtectRandomSecret(), serverPublicKey);
+        BigInteger sharedSecret;
+        if (!sharedPoint.isAtInfinity()) {
+            sharedSecret =
+                curve.mult(config.getDefaultServerPWDProtectRandomSecret(), serverPublicKey).getFieldX().getData();
+        } else {
+            LOGGER.warn("Computed shared secet as point in infinity. Using Zero instead for X value");
+            sharedSecret = BigInteger.ZERO;
+        }
 
         byte[] key = HKDFunction.expand(hkdfAlgorithm,
             HKDFunction.extract(hkdfAlgorithm, null, ArrayConverter.bigIntegerToByteArray(sharedSecret)), new byte[0],
             curve.getModulus().bitLength() / Bits.IN_A_BYTE);
         LOGGER.debug("Username encryption key: " + ArrayConverter.bytesToHexString(key));
-        if (key.length % 16 != 0) {
-            LOGGER.warn("PWD key is of incorrect size. Padding to 16 byte");
-            key = Arrays.copyOf(key, 16);
-        }
+
         byte[] ctrKey = Arrays.copyOfRange(key, 0, key.length / 2);
         byte[] macKey = Arrays.copyOfRange(key, key.length / 2, key.length);
+        if (ctrKey.length != 16 && ctrKey.length != 24 && ctrKey.length != 32) {
+            LOGGER.warn("PWD ctrkey is of incorrect size. Padding to 16 byte");
+            ctrKey = Arrays.copyOf(ctrKey, 16);
+        }
+        if (macKey.length != 16 && macKey.length != 24 && macKey.length != 32) {
+            LOGGER.warn("PWD macKey is of incorrect size. Padding to 16 byte");
+            macKey = Arrays.copyOf(macKey, 16);
+        }
         SivMode aesSIV = new SivMode();
         byte[] protectedUsername =
             aesSIV.encrypt(ctrKey, macKey, chooser.getClientPWDUsername().getBytes(StandardCharsets.ISO_8859_1));
