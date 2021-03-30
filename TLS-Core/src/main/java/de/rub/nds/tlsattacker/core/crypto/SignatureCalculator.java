@@ -95,7 +95,7 @@ public class SignatureCalculator {
             instance.update(toBeSigned);
             return instance.sign();
         } catch (SignatureException | InvalidKeyException | NoSuchAlgorithmException
-            | InvalidAlgorithmParameterException ex) {
+            | InvalidAlgorithmParameterException | IllegalArgumentException ex) {
             throw new CryptoException("Could not sign Data", ex);
         }
     }
