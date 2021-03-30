@@ -77,26 +77,34 @@ public class SrpClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         BigInteger serverPublicKey, BigInteger clientPublicKey, byte[] salt, byte[] identity, byte[] password) {
         // PremasterSecret: (ServerPublicKey -(k * g^x))^(ClientPrivatKey +(u *
         // x)) % modulus
-        BigInteger u = calculateU(clientPublicKey, serverPublicKey, modulus);
-        LOGGER.debug("Intermediate Value U" + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(u)));
-        BigInteger k = calculateSRP6Multiplier(modulus, generator);
-        BigInteger x = calculateX(salt, identity, password);
-        LOGGER.debug("Intermediate Value X" + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(x)));
-        BigInteger helpValue1 = generator.modPow(x, modulus);
-        LOGGER.debug(
-            "Intermediate Value V" + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(helpValue1)));
-        BigInteger helpValue2 = k.multiply(helpValue1);
-        BigInteger helpValue3 = helpValue2.mod(modulus);
-        // helpValue1 = helpValue2.subtract(serverPublicKey);
-        helpValue1 = serverPublicKey.subtract(helpValue3);
-        helpValue2 = helpValue1.mod(modulus);
-        helpValue3 = u.multiply(x);
-        helpValue1 = helpValue3.mod(modulus);
-        helpValue3 = privateKey.add(helpValue1);
-        helpValue1 = helpValue3.mod(modulus);
-        helpValue3 = helpValue2.modPow(helpValue1, modulus);
+        if (modulus.compareTo(BigInteger.ZERO) == 1) {
 
-        return ArrayConverter.bigIntegerToByteArray(helpValue3);
+            BigInteger u = calculateU(clientPublicKey, serverPublicKey, modulus);
+            LOGGER.debug(
+                "Intermediate Value U" + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(u)));
+            BigInteger k = calculateSRP6Multiplier(modulus, generator);
+            BigInteger x = calculateX(salt, identity, password);
+            LOGGER.debug(
+                "Intermediate Value X" + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(x)));
+            BigInteger helpValue1 = generator.modPow(x, modulus);
+            LOGGER.debug("Intermediate Value V"
+                + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(helpValue1)));
+            BigInteger helpValue2 = k.multiply(helpValue1);
+            BigInteger helpValue3 = helpValue2.mod(modulus);
+            // helpValue1 = helpValue2.subtract(serverPublicKey);
+            helpValue1 = serverPublicKey.subtract(helpValue3);
+            helpValue2 = helpValue1.mod(modulus);
+            helpValue3 = u.multiply(x);
+            helpValue1 = helpValue3.mod(modulus);
+            helpValue3 = privateKey.add(helpValue1);
+            helpValue1 = helpValue3.mod(modulus);
+            helpValue3 = helpValue2.modPow(helpValue1, modulus);
+
+            return ArrayConverter.bigIntegerToByteArray(helpValue3);
+        } else {
+            LOGGER.warn("Modulus is smaller than zero, using new byte[0] as the pms");
+            return new byte[0];
+        }
     }
 
     private byte[] calculatePremasterSecretServer(BigInteger modulus, BigInteger generator, BigInteger serverPrivateKey,
