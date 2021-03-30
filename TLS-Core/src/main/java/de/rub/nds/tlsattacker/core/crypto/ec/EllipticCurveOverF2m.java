@@ -212,7 +212,11 @@ public class EllipticCurveOverF2m extends EllipticCurve {
         FieldElementF2m gamma;
         FieldElementF2m z;
         Random randNum = new Random(0);
+        // TODO Fix DIRTY hack
+        // Reminder: This can run into an infinite loop
+        int dirtyHackCounter = 0;
         do {
+            dirtyHackCounter++;
             BigInteger tauData = new BigInteger(32, randNum);
             FieldElementF2m tau = new FieldElementF2m(tauData, beta.getModulus());
             FieldElementF2m w = new FieldElementF2m(beta.getData(), beta.getModulus());
@@ -228,6 +232,9 @@ public class EllipticCurveOverF2m extends EllipticCurve {
                 return null;
             }
             gamma = (FieldElementF2m) z.mult(z).add(z);
+            if (dirtyHackCounter > 1000) {
+                break;
+            }
         } while (gamma.getData().equals(BigInteger.ZERO));
         return z;
     }
