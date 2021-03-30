@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action.executor;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
@@ -31,12 +32,12 @@ public class SendMessageHelper {
     }
 
     public MessageActionResult sendMessages(List<ProtocolMessage> messages, List<AbstractRecord> records,
-            TlsContext context) throws IOException {
+        TlsContext context) throws IOException {
         return sendMessages(messages, records, context, true);
     }
 
     public MessageActionResult sendMessages(List<ProtocolMessage> messages, List<AbstractRecord> records,
-            TlsContext context, boolean prepareMessages) throws IOException {
+        TlsContext context, boolean prepareMessages) throws IOException {
         List<DtlsHandshakeMessageFragment> fragmentMessages = new LinkedList<>();
         context.setTalkingConnectionEndType(context.getChooser().getConnectionEndType());
         if (records == null) {
@@ -60,7 +61,7 @@ public class SendMessageHelper {
             }
             ProtocolMessage message = messages.get(i);
             if (message.getProtocolMessageType() != lastType && lastMessage != null
-                    && context.getConfig().isFlushOnMessageTypeChange()) {
+                && context.getConfig().isFlushOnMessageTypeChange()) {
                 recordPosition = flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition, context);
                 if (message.getAdjustContext()) {
                     lastMessage.getHandler(context).adjustTlsContextAfterSerialize(lastMessage);
@@ -85,10 +86,10 @@ public class SendMessageHelper {
                         }
                         for (DtlsHandshakeMessageFragment fragment : messageFragments) {
                             messageBytesCollector
-                                    .appendProtocolMessageBytes(fragment.getCompleteResultingMessage().getValue());
+                                .appendProtocolMessageBytes(fragment.getCompleteResultingMessage().getValue());
                             fragmentMessages.add(fragment);
-                            recordPosition
-                                    = flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition, context);
+                            recordPosition =
+                                flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition, context);
                         }
                     } else {
                         messageBytesCollector.appendProtocolMessageBytes(protocolMessageBytes);
@@ -120,8 +121,8 @@ public class SendMessageHelper {
                     List<AbstractRecord> emptyRecords = new LinkedList<>();
                     emptyRecords.add(record);
                     messageBytesCollector.appendRecordBytes(
-                            context.getRecordLayer().prepareRecords(messageBytesCollector.getProtocolMessageBytesStream(),
-                                    record.getContentMessageType(), emptyRecords));
+                        context.getRecordLayer().prepareRecords(messageBytesCollector.getProtocolMessageBytesStream(),
+                            record.getContentMessageType(), emptyRecords));
                     sendData(messageBytesCollector, context);
                 }
                 current++;
@@ -152,17 +153,17 @@ public class SendMessageHelper {
     }
 
     private int flushBytesToRecords(MessageBytesCollector collector, ProtocolMessageType type,
-            List<AbstractRecord> records, int recordPosition, TlsContext context) {
+        List<AbstractRecord> records, int recordPosition, TlsContext context) {
         int length = collector.getProtocolMessageBytesStream().length;
         List<AbstractRecord> toFillList = getEnoughRecords(length, recordPosition, records, context);
         collector.appendRecordBytes(
-                context.getRecordLayer().prepareRecords(collector.getProtocolMessageBytesStream(), type, toFillList));
+            context.getRecordLayer().prepareRecords(collector.getProtocolMessageBytesStream(), type, toFillList));
         collector.flushProtocolMessageBytes();
         return recordPosition + toFillList.size();
     }
 
     private List<AbstractRecord> getEnoughRecords(int length, int position, List<AbstractRecord> records,
-            TlsContext context) {
+        TlsContext context) {
         List<AbstractRecord> toFillList = new LinkedList<>();
         int recordLength = 0;
         while (recordLength < length) {
@@ -191,12 +192,14 @@ public class SendMessageHelper {
     }
 
     /**
-     * Sends all messageBytes in the MessageByteCollector with the specified
-     * TransportHandler
+     * Sends all messageBytes in the MessageByteCollector with the specified TransportHandler
      *
-     * @param handler TransportHandler to send the Data with
-     * @param messageBytesCollector MessageBytes to send
-     * @throws IOException Thrown if something goes wrong while sending
+     * @param  handler
+     *                               TransportHandler to send the Data with
+     * @param  messageBytesCollector
+     *                               MessageBytes to send
+     * @throws IOException
+     *                               Thrown if something goes wrong while sending
      */
     private void sendData(MessageBytesCollector collector, TlsContext context) throws IOException {
         context.getTransportHandler().sendData(collector.getRecordBytes());
