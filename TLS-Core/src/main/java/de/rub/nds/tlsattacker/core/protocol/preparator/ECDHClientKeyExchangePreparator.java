@@ -57,6 +57,10 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
                 LOGGER.warn("Computed null shared point. Using basepoint instead");
                 sharedPoint = curve.getBasePoint();
             }
+            if (sharedPoint.isAtInfinity()) {
+                LOGGER.warn("Computed shared secrets as point in infinity. Using new byte[1] as PMS");
+                return new byte[1];
+            }
             int elementLength = ArrayConverter.bigIntegerToByteArray(sharedPoint.getFieldX().getModulus()).length;
             return ArrayConverter.bigIntegerToNullPaddedByteArray(sharedPoint.getFieldX().getData(), elementLength);
         }
