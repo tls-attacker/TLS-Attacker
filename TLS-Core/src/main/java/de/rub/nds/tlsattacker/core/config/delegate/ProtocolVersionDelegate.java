@@ -15,8 +15,11 @@ import de.rub.nds.tlsattacker.core.config.converters.ProtocolVersionConverter;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configurator;
 
@@ -54,6 +57,9 @@ public class ProtocolVersionDelegate extends Delegate {
             config.setWorkflowExecutorType(WorkflowExecutorType.DTLS);
             config.setFinishWithCloseNotify(true);
             config.setIgnoreRetransmittedCss(true);
+            List<ActionOption> actionOptions = new ArrayList<>();
+            actionOptions.add(ActionOption.CHECK_ONLY_EXPECTED);
+            config.setMessageFactoryActionOptions(actionOptions);
         }
 
         if (config.getDefaultClientConnection() == null) {
