@@ -11,6 +11,8 @@ package de.rub.nds.tlsattacker.attacks.connectivity;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
+import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
@@ -21,7 +23,9 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.AsciiAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveTillAction;
+import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAsciiAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
@@ -100,6 +104,32 @@ public class ConnectivityChecker {
                 for (ProtocolMessage message : receiveTillAction.getReceivedMessages()) {
                     if (message instanceof ServerHelloMessage || message instanceof ServerHelloDoneMessage
                             || message instanceof SSL2ServerHelloMessage) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    public boolean speaksDTls(Config config) {
+        WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
+        WorkflowTrace trace = factory.createTlsEntryWorkflowtrace(config.getDefaultClientConnection());
+        trace.addTlsAction(new SendAction(new ClientHelloMessage(config)));
+        ReceiveAction reveiceAction = new ReceiveAction(new HelloVerifyRequestMessage(config));
+        trace.addTlsAction(reveiceAction);
+        State state = new State(config, trace);
+        WorkflowExecutor executor = WorkflowExecutorFactory.createWorkflowExecutor(state.getConfig()
+                .getWorkflowExecutorType(), state);
+        executor.executeWorkflow();
+        if (reveiceAction.getRecords().size() > 0) {
+            if (reveiceAction.getRecords().get(0) instanceof Record) {
+                return true;
+            } else {
+                for (ProtocolMessage message : reveiceAction.getReceivedMessages()) {
+                    if (message instanceof HelloVerifyRequestMessage || message instanceof ServerHelloMessage) {
                         return true;
                     }
                 }
