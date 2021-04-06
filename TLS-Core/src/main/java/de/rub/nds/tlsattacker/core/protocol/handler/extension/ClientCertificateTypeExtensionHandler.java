@@ -53,8 +53,12 @@ public class ClientCertificateTypeExtensionHandler extends ExtensionHandler<Clie
                     CertificateType.getCertificateType(message.getCertificateTypes().getValue()[0]));
             }
         } else {
-            context.setClientCertificateTypeDesiredTypes(
-                CertificateType.getCertificateTypesAsList(message.getCertificateTypes().getValue()));
+            if (message.getCertificateTypes() != null) {
+                context.setClientCertificateTypeDesiredTypes(
+                    CertificateType.getCertificateTypesAsList(message.getCertificateTypes().getValue()));
+            } else {
+                LOGGER.warn("Null CertificateTypes - not adjusting");
+            }
         }
     }
 
