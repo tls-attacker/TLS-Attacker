@@ -41,7 +41,7 @@ public class XmlSerialisationTest {
             trace.addTlsAction(new ReceiveAction(message));
             File f = folder.newFile();
             WorkflowTraceSerializer.write(f, trace);
-            WorkflowTrace newWorkflowTrace = WorkflowTraceSerializer.read(new FileInputStream(f));
+            WorkflowTrace newWorkflowTrace = WorkflowTraceSerializer.secureRead(new FileInputStream(f));
             assertTrue(newWorkflowTrace.getTlsActions().size() == 2);
 
             assertTrue("Message failed: " + message.getClass().getName(),
@@ -68,7 +68,7 @@ public class XmlSerialisationTest {
             trace.addTlsAction(new ReceiveAction(message));
             File f = folder.newFile();
             WorkflowTraceSerializer.write(f, trace);
-            WorkflowTrace newWorkflowTrace = WorkflowTraceSerializer.read(new FileInputStream(f));
+            WorkflowTrace newWorkflowTrace = WorkflowTraceSerializer.secureRead(new FileInputStream(f));
             assertTrue(newWorkflowTrace.getTlsActions().size() == 2);
 
             assertTrue("Extension failed: " + extension.getClass().getName(),
