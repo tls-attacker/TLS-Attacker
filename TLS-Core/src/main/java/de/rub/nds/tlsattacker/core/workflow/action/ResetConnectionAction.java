@@ -68,6 +68,7 @@ public class ResetConnectionAction extends ConnectionBoundAction {
         tlsContext.setDtlsWriteEpoch(0);
         tlsContext.setDtlsCssManager(new CssManager(state.getConfig()));
         tlsContext.setDtlsFragmentManager(new FragmentManager(state.getConfig()));
+        tlsContext.getDtlsReceivedHandshakeMessageSequences().clear();
 
         LOGGER.info("Reopening Connection");
         try {
