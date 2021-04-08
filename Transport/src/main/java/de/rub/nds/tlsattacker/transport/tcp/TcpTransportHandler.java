@@ -23,7 +23,7 @@ import org.apache.logging.log4j.Logger;
 
 public abstract class TcpTransportHandler extends TransportHandler {
 
-    private static final Logger LOGGER = (Logger) LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger();
 
     protected Socket socket;
 
