@@ -9,8 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.protocol;
 
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-
 public class ParserResult {
 
     private ProtocolMessage message;

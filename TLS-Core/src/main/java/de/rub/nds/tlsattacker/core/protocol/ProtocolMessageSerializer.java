@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol;
 
 public abstract class ProtocolMessageSerializer<T extends ProtocolMessage> extends Serializer<T> {
+
     protected final T message;
 
     public ProtocolMessageSerializer(T message) {

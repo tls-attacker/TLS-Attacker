@@ -14,6 +14,7 @@ package de.rub.nds.tlsattacker.core.protocol;
  *            The Object that should be Handled
  */
 public interface Handler<T> {
+
     Parser<T> getParser(byte[] message, int pointer);
 
     Preparator<T> getPreparator(T message);

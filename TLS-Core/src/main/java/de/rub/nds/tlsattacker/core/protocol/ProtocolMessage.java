@@ -25,6 +25,7 @@ import java.util.Random;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class ProtocolMessage extends ModifiableVariableHolder {
+
     @XmlTransient
     protected boolean goingToBeSentDefault = true;
     @XmlTransient
@@ -123,5 +124,5 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder {
 
     public boolean addToTypes(List<ProtocolMessageType> protocolMessageTypes) {
         return false;
-    };
+    }
 }
