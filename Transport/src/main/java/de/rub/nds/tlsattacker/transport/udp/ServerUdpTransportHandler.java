@@ -6,7 +6,6 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.transport.udp;
 
 import de.rub.nds.tlsattacker.transport.Connection;
@@ -36,7 +35,7 @@ public class ServerUdpTransportHandler extends UdpTransportHandler {
         setStreams(new PushbackInputStream(new UdpInputStream(socket, true)), new UdpOutputStream(socket));
         srcPort = socket.getLocalPort();
         dstPort = socket.getPort();
-
+        cachedSocketState = null;
         // this could be made an option
         waitOnReceive();
     }

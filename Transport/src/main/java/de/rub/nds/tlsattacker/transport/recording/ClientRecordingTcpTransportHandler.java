@@ -25,6 +25,7 @@ public class ClientRecordingTcpTransportHandler extends ClientTcpTransportHandle
 
     @Override
     public void initialize() throws IOException {
+        cachedSocketState = null;
         super.initialize();
     }
 

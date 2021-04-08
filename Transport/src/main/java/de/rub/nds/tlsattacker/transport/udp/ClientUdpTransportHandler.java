@@ -47,6 +47,7 @@ public class ClientUdpTransportHandler extends UdpTransportHandler {
         socket.setSoTimeout((int) timeout);
         srcPort = socket.getLocalPort();
         dstPort = socket.getPort();
+        cachedSocketState = null;
         setStreams(new PushbackInputStream(new UdpInputStream(socket, false)), new UdpOutputStream(socket));
     }
 

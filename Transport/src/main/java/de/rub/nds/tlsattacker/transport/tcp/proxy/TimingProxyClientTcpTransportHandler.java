@@ -82,7 +82,7 @@ public class TimingProxyClientTcpTransportHandler extends ClientTcpTransportHand
     public void initialize() throws IOException {
         controlSocket = new Socket();
         controlSocket.connect(new InetSocketAddress(proxyControlHostName, proxyControlPort), (int) connectionTimeout);
-
+        cachedSocketState = null;
         super.initialize();
 
         /* tell the proxy where the real server is */

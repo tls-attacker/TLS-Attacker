@@ -56,6 +56,7 @@ public class StreamTransportHandler extends TransportHandler {
 
     @Override
     public void initialize() throws IOException {
+        cachedSocketState = null;
         setStreams(new PushbackInputStream(timeoutableInputStream), outputStream);
     }
 
