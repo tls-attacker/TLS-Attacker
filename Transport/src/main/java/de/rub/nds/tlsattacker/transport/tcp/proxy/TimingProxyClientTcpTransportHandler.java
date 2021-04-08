@@ -35,12 +35,10 @@ public class TimingProxyClientTcpTransportHandler extends ClientTcpTransportHand
         this.proxyDataPort = connection.getProxyDataPort();
         this.proxyControlHostName = connection.getProxyControlHostname();
         this.proxyControlPort = connection.getProxyControlPort();
-        setIsInStreamTerminating(false);
     }
 
     public TimingProxyClientTcpTransportHandler(long firstTimeout, long timeout, String hostname, int port) {
         super(firstTimeout, timeout, hostname, port);
-        setIsInStreamTerminating(false);
     }
 
     @Override

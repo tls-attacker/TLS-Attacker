@@ -28,13 +28,13 @@ public class ClientUdpTransportHandler extends UdpTransportHandler {
     private final String hostname;
 
     public ClientUdpTransportHandler(Connection connection) {
-        super(connection.getFirstTimeout(), connection.getTimeout(), ConnectionEndType.CLIENT, false);
+        super(connection.getFirstTimeout(), connection.getTimeout(), ConnectionEndType.CLIENT);
         this.hostname = connection.getHostname();
         this.port = connection.getPort();
     }
 
     public ClientUdpTransportHandler(long firstTimeout, long timeout, String hostname, int port) {
-        super(firstTimeout, timeout, ConnectionEndType.CLIENT, false);
+        super(firstTimeout, timeout, ConnectionEndType.CLIENT);
         this.hostname = hostname;
         this.port = port;
     }

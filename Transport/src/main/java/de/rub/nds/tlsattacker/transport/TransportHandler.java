@@ -40,23 +40,10 @@ public abstract class TransportHandler {
 
     protected SocketState cachedSocketState = null;
 
-    /**
-     * True {@link inStream} is expected to reach the End of Stream, meaning read will return -1.
-     */
-    private boolean isInStreamTerminating = true;
-
     public TransportHandler(Connection con) {
         this.firstTimeout = con.getFirstTimeout();
         this.type = con.getLocalConnectionEndType();
         this.timeout = con.getTimeout();
-        this.isInStreamTerminating = false;
-    }
-
-    public TransportHandler(long firstTimeout, long timeout, ConnectionEndType type, boolean isInStreamTerminating) {
-        this.firstTimeout = firstTimeout;
-        this.timeout = timeout;
-        this.type = type;
-        this.isInStreamTerminating = isInStreamTerminating;
     }
 
     public TransportHandler(long firstTimeout, long timeout, ConnectionEndType type) {
@@ -150,11 +137,4 @@ public abstract class TransportHandler {
 
     public abstract void setTimeout(long timeout);
 
-    public final void setIsInStreamTerminating(boolean isInStreamTerminating) {
-        this.isInStreamTerminating = isInStreamTerminating;
-    }
-
-    public final boolean isIsInStreamTerminating() {
-        return isInStreamTerminating;
-    }
 }

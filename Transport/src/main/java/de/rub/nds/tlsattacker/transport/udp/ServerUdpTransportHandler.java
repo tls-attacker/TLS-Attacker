@@ -26,7 +26,7 @@ public class ServerUdpTransportHandler extends UdpTransportHandler {
     }
 
     public ServerUdpTransportHandler(long firstTimeout, long timeout, int port) {
-        super(firstTimeout, timeout, ConnectionEndType.SERVER, false);
+        super(firstTimeout, timeout, ConnectionEndType.SERVER);
         this.port = port;
     }
 

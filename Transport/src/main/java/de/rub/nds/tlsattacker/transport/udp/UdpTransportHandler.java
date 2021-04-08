@@ -33,10 +33,6 @@ public abstract class UdpTransportHandler extends TransportHandler {
         super(con);
     }
 
-    public UdpTransportHandler(long firstTimeout, long timeout, ConnectionEndType type, boolean isInStreamTerminating) {
-        super(firstTimeout, timeout, type, isInStreamTerminating);
-    }
-
     public UdpTransportHandler(long firstTimeout, long timeout, ConnectionEndType type) {
         super(firstTimeout, timeout, type);
     }
