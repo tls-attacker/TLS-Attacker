@@ -19,7 +19,7 @@ import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class DHEServerKeyExchangeHandler extends ServerKeyExchangeHandler<DHEServerKeyExchangeMessage> {
+public class DHEServerKeyExchangeHandler<T extends DHEServerKeyExchangeMessage> extends ServerKeyExchangeHandler<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -28,24 +28,24 @@ public class DHEServerKeyExchangeHandler extends ServerKeyExchangeHandler<DHESer
     }
 
     @Override
-    public DHEServerKeyExchangeParser getParser(byte[] message, int pointer) {
-        return new DHEServerKeyExchangeParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
+    public DHEServerKeyExchangeParser<T> getParser(byte[] message, int pointer) {
+        return new DHEServerKeyExchangeParser<T>(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
             AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite()),
             tlsContext.getConfig());
     }
 
     @Override
-    public DHEServerKeyExchangePreparator getPreparator(DHEServerKeyExchangeMessage message) {
-        return new DHEServerKeyExchangePreparator(tlsContext.getChooser(), message);
+    public DHEServerKeyExchangePreparator<T> getPreparator(T message) {
+        return new DHEServerKeyExchangePreparator<T>(tlsContext.getChooser(), message);
     }
 
     @Override
-    public DHEServerKeyExchangeSerializer getSerializer(DHEServerKeyExchangeMessage message) {
-        return new DHEServerKeyExchangeSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
+    public DHEServerKeyExchangeSerializer<T> getSerializer(T message) {
+        return new DHEServerKeyExchangeSerializer<T>(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override
-    public void adjustTLSContext(DHEServerKeyExchangeMessage message) {
+    public void adjustTLSContext(T message) {
         adjustDhGenerator(message);
         adjustDhModulus(message);
         adjustServerPublicKey(message);
@@ -54,22 +54,22 @@ public class DHEServerKeyExchangeHandler extends ServerKeyExchangeHandler<DHESer
         }
     }
 
-    private void adjustDhGenerator(DHEServerKeyExchangeMessage message) {
+    private void adjustDhGenerator(T message) {
         tlsContext.setServerDhGenerator(new BigInteger(1, message.getGenerator().getValue()));
         LOGGER.debug("Dh Generator: " + tlsContext.getServerDhGenerator());
     }
 
-    private void adjustDhModulus(DHEServerKeyExchangeMessage message) {
+    private void adjustDhModulus(T message) {
         tlsContext.setServerDhModulus(new BigInteger(1, message.getModulus().getValue()));
         LOGGER.debug("Dh Modulus: " + tlsContext.getServerDhModulus());
     }
 
-    private void adjustServerPublicKey(DHEServerKeyExchangeMessage message) {
+    private void adjustServerPublicKey(T message) {
         tlsContext.setServerDhPublicKey(new BigInteger(1, message.getPublicKey().getValue()));
         LOGGER.debug("Server PublicKey: " + tlsContext.getServerDhPublicKey());
     }
 
-    private void adjustServerPrivateKey(DHEServerKeyExchangeMessage message) {
+    private void adjustServerPrivateKey(T message) {
         tlsContext.setServerDhPrivateKey(message.getComputations().getPrivateKey().getValue());
         LOGGER.debug("Server PrivateKey: " + tlsContext.getServerDhPrivateKey());
     }

@@ -109,12 +109,13 @@ public abstract class AbstractRecord extends ModifiableVariableHolder {
             ModifiableVariableFactory.safelySetValue(this.completeRecordBytes, completeRecordBytes);
     }
 
-    public abstract AbstractRecordPreparator getRecordPreparator(Chooser chooser, Encryptor encryptor,
-        RecordCompressor compressor, ProtocolMessageType type);
+    public abstract AbstractRecordPreparator<? extends AbstractRecord> getRecordPreparator(Chooser chooser,
+        Encryptor encryptor, RecordCompressor compressor, ProtocolMessageType type);
 
-    public abstract AbstractRecordParser getRecordParser(int startposition, byte[] array, ProtocolVersion version);
+    public abstract AbstractRecordParser<? extends AbstractRecord> getRecordParser(int startposition, byte[] array,
+        ProtocolVersion version);
 
-    public abstract AbstractRecordSerializer getRecordSerializer();
+    public abstract AbstractRecordSerializer<? extends AbstractRecord> getRecordSerializer();
 
     public abstract void adjustContext(TlsContext context);
 

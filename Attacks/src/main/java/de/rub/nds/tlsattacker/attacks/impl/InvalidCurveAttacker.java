@@ -378,7 +378,7 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
             if (!task.isHasError()) {
                 foundExecutedAsPlanned = true;
                 if (!(WorkflowTraceUtil.getLastReceivedMessage(trace) != null
-                    && WorkflowTraceUtil.getLastReceivedMessage(trace).isHandshakeMessage()
+                    && WorkflowTraceUtil.getLastReceivedMessage(trace) instanceof HandshakeMessage
                     && ((HandshakeMessage) WorkflowTraceUtil.getLastReceivedMessage(trace)).getHandshakeMessageType()
                         == HandshakeMessageType.FINISHED)) {
                     LOGGER.info("Received no finished Message using secret" + task.getAppliedSecret());

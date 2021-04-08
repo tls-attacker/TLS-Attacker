@@ -11,10 +11,12 @@ package de.rub.nds.tlsattacker.core.workflow.action.executor;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.dtls.MessageFragmenter;
-import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
+import de.rub.nds.tlsattacker.core.protocol.*;
+import de.rub.nds.tlsattacker.core.protocol.handler.TlsMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.TlsMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.IOException;
@@ -56,34 +58,45 @@ public class SendMessageHelper {
             records = new LinkedList<>();
         }
         for (int i = 0; i < messages.size(); i++) {
-            if (context.getConfig().isPreserveMessageRecordRelation() && i < preservedRecords.size()) {
-                records.add(preservedRecords.get(i));
-            }
-            ProtocolMessage message = messages.get(i);
-            if (message.getProtocolMessageType() != lastType && lastMessage != null
-                && context.getConfig().isFlushOnMessageTypeChange()) {
-                recordPosition = flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition, context);
-                if (message.getAdjustContext()) {
-                    lastMessage.getHandler(context).adjustTlsContextAfterSerialize(lastMessage);
+            ProtocolMessage protocolMessage = messages.get(i);
+
+            if (protocolMessage instanceof TlsMessage) {
+                TlsMessage tlsMessage = (TlsMessage) protocolMessage;
+
+                if (context.getConfig().isPreserveMessageRecordRelation() && i < preservedRecords.size()) {
+                    records.add(preservedRecords.get(i));
                 }
-                lastMessage = null;
-            }
-            lastMessage = message;
-            lastType = message.getProtocolMessageType();
-            if (prepareMessages) {
-                LOGGER.debug("Preparing " + message.toCompactString());
+                if (tlsMessage.getProtocolMessageType() != lastType && lastMessage != null
+                    && context.getConfig().isFlushOnMessageTypeChange()) {
+                    recordPosition =
+                        flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition, context);
+                    if (lastMessage.getAdjustContext() && lastMessage instanceof TlsMessage) {
+                        TlsMessageHandler<TlsMessage> tlsMessageHandler = lastMessage.getHandler(context);
+                        tlsMessageHandler.adjustTlsContextAfterSerialize((TlsMessage) lastMessage);
+                    }
+                    lastMessage = null;
+                }
+                lastMessage = tlsMessage;
+                lastType = tlsMessage.getProtocolMessageType();
+                if (prepareMessages) {
+                    LOGGER.debug("Preparing " + tlsMessage.toCompactString());
+                }
             }
 
-            byte[] protocolMessageBytes = handleProtocolMessage(message, context, prepareMessages);
-            if (message.isGoingToBeSent()) {
+            byte[] protocolMessageBytes = prepareMessage(protocolMessage, prepareMessages, context);
+            if (protocolMessage.isGoingToBeSent()) {
                 if (context.getChooser().getSelectedProtocolVersion().isDTLS()) {
-                    if (message.isHandshakeMessage()) {
+                    if (protocolMessage instanceof HandshakeMessage) {
+                        HandshakeMessage handshakeMessage = (HandshakeMessage) protocolMessage;
                         List<DtlsHandshakeMessageFragment> messageFragments;
-                        if (message.isDtlsHandshakeMessageFragment()) {
-                            messageFragments = Collections.singletonList((DtlsHandshakeMessageFragment) message);
+
+                        if (handshakeMessage.isDtlsHandshakeMessageFragment()) {
+                            messageFragments =
+                                Collections.singletonList((DtlsHandshakeMessageFragment) handshakeMessage);
                         } else {
-                            messageFragments = fragmenter.fragmentMessage((HandshakeMessage) message, context);
+                            messageFragments = fragmenter.fragmentMessage(handshakeMessage, context);
                         }
+
                         for (DtlsHandshakeMessageFragment fragment : messageFragments) {
                             messageBytesCollector
                                 .appendProtocolMessageBytes(fragment.getCompleteResultingMessage().getValue());
@@ -100,15 +113,17 @@ public class SendMessageHelper {
             }
             if (context.getConfig().isCreateIndividualRecords()) {
                 recordPosition = flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition, context);
-                if (message.getAdjustContext()) {
-                    message.getHandler(context).adjustTlsContextAfterSerialize(message);
+                if (protocolMessage instanceof TlsMessage && protocolMessage.getAdjustContext()) {
+                    TlsMessageHandler<TlsMessage> protocolMessageHandler = protocolMessage.getHandler(context);
+                    protocolMessageHandler.adjustTlsContextAfterSerialize((TlsMessage) protocolMessage);
                 }
                 lastMessage = null;
             }
         }
         recordPosition = flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition, context);
-        if (lastMessage != null && lastMessage.getAdjustContext()) {
-            lastMessage.getHandler(context).adjustTlsContextAfterSerialize(lastMessage);
+        if (lastMessage instanceof TlsMessage && lastMessage.getAdjustContext()) {
+            TlsMessageHandler<TlsMessage> handler = lastMessage.getHandler(context);
+            handler.adjustTlsContextAfterSerialize((TlsMessage) lastMessage);
         }
         sendData(messageBytesCollector, context);
         if (context.getConfig().isUseAllProvidedRecords() && recordPosition < records.size()) {
@@ -189,21 +204,67 @@ public class SendMessageHelper {
     /**
      * Sends all messageBytes in the MessageByteCollector with the specified TransportHandler
      *
-     * @param  handler
-     *                               TransportHandler to send the Data with
-     * @param  messageBytesCollector
-     *                               MessageBytes to send
+     * @param  collector
+     *                     MessageBytes to send
      * @throws IOException
-     *                               Thrown if something goes wrong while sending
+     *                     Thrown if something goes wrong while sending
      */
     private void sendData(MessageBytesCollector collector, TlsContext context) throws IOException {
         context.getTransportHandler().sendData(collector.getRecordBytes());
         collector.flushRecordBytes();
     }
 
-    private byte[] handleProtocolMessage(ProtocolMessage message, TlsContext context, boolean withPrepare) {
-        ProtocolMessageHandler handler = message.getHandler(context);
-        byte[] protocolMessageBytes = handler.prepareMessage(message, withPrepare);
-        return protocolMessageBytes;
+    /**
+     * Prepare message for sending. This method invokes before and after method hooks.
+     *
+     * @param  message
+     *                 The Message that should be prepared
+     * @return         message in bytes
+     */
+    public static byte[] prepareMessage(ProtocolMessage message, TlsContext context) {
+        return prepareMessage(message, true, context);
+    }
+
+    /**
+     * Prepare message for sending. This method invokes before and after method hooks.
+     *
+     * @param  message
+     *                     The message that should be prepared
+     * @param  withPrepare
+     *                     if the prepare function should be called or only the rest
+     * @return             message in bytes
+     */
+    public static byte[] prepareMessage(ProtocolMessage message, boolean withPrepare, TlsContext context) {
+        if (withPrepare) {
+            Preparator<ProtocolMessage> preparator = message.getHandler(context).getPreparator(message);
+            preparator.prepare();
+            preparator.afterPrepare();
+            Serializer<ProtocolMessage> serializer = message.getHandler(context).getSerializer(message);
+            byte[] completeMessage = serializer.serialize();
+            message.setCompleteResultingMessage(completeMessage);
+        }
+        try {
+            if (message.getAdjustContext()) {
+                if (context.getConfig().getDefaultSelectedProtocolVersion().isDTLS()
+                    && (message instanceof HandshakeMessage)
+                    && !((HandshakeMessage) message).isDtlsHandshakeMessageFragment()) {
+                    context.increaseDtlsWriteHandshakeMessageSequence();
+                }
+            }
+
+            if (message instanceof TlsMessage) {
+                TlsMessageHandler<TlsMessage> handler = message.getHandler(context);
+                handler.updateDigest(message);
+            }
+            if (message.getAdjustContext()) {
+
+                message.getHandler(context).adjustContext(message);
+            }
+        } catch (AdjustmentException e) {
+            LOGGER.warn("Could not adjust TLSContext");
+            LOGGER.debug(e);
+        }
+
+        return message.getCompleteResultingMessage().getValue();
     }
 }

@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class UnknownMessageParser extends ProtocolMessageParser<UnknownMessage> {
+public class UnknownMessageParser extends TlsMessageParser<UnknownMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

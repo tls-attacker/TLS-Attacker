@@ -19,30 +19,30 @@ import java.math.BigInteger;
 /**
  * Handler for DH and DHE ClientKeyExchange messages
  */
-public class DHClientKeyExchangeHandler extends ClientKeyExchangeHandler<DHClientKeyExchangeMessage> {
+public class DHClientKeyExchangeHandler<T extends DHClientKeyExchangeMessage> extends ClientKeyExchangeHandler<T> {
 
     public DHClientKeyExchangeHandler(TlsContext tlsContext) {
         super(tlsContext);
     }
 
     @Override
-    public DHClientKeyExchangeParser getParser(byte[] message, int pointer) {
-        return new DHClientKeyExchangeParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
+    public DHClientKeyExchangeParser<T> getParser(byte[] message, int pointer) {
+        return new DHClientKeyExchangeParser<T>(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
             tlsContext.getConfig());
     }
 
     @Override
-    public DHClientKeyExchangePreparator getPreparator(DHClientKeyExchangeMessage message) {
-        return new DHClientKeyExchangePreparator(tlsContext.getChooser(), message);
+    public DHClientKeyExchangePreparator<T> getPreparator(T message) {
+        return new DHClientKeyExchangePreparator<T>(tlsContext.getChooser(), message);
     }
 
     @Override
-    public DHClientKeyExchangeSerializer getSerializer(DHClientKeyExchangeMessage message) {
-        return new DHClientKeyExchangeSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
+    public DHClientKeyExchangeSerializer<T> getSerializer(T message) {
+        return new DHClientKeyExchangeSerializer<T>(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override
-    public void adjustTLSContext(DHClientKeyExchangeMessage message) {
+    public void adjustTLSContext(T message) {
         adjustPremasterSecret(message);
         adjustMasterSecret(message);
         adjustClientPublicKey(message);
@@ -50,7 +50,7 @@ public class DHClientKeyExchangeHandler extends ClientKeyExchangeHandler<DHClien
         spawnNewSession();
     }
 
-    private void adjustClientPublicKey(DHClientKeyExchangeMessage message) {
+    private void adjustClientPublicKey(T message) {
         tlsContext.setClientDhPublicKey(new BigInteger(message.getPublicKey().getValue()));
     }
 }

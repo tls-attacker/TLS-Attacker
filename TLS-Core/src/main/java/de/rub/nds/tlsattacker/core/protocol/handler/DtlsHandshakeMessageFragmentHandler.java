@@ -13,7 +13,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment
 import de.rub.nds.tlsattacker.core.protocol.parser.DtlsHandshakeMessageFragmentParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.DtlsHandshakeMessageFragmentPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.DtlsHandshakeMessageFragmentSerializer;
-import de.rub.nds.tlsattacker.core.protocol.serializer.ProtocolMessageSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 public class DtlsHandshakeMessageFragmentHandler extends HandshakeMessageHandler<DtlsHandshakeMessageFragment> {
@@ -34,7 +33,7 @@ public class DtlsHandshakeMessageFragmentHandler extends HandshakeMessageHandler
     }
 
     @Override
-    public ProtocolMessageSerializer getSerializer(DtlsHandshakeMessageFragment message) {
+    public DtlsHandshakeMessageFragmentSerializer getSerializer(DtlsHandshakeMessageFragment message) {
         return new DtlsHandshakeMessageFragmentSerializer(message,
             tlsContext.getChooser().getSelectedProtocolVersion());
     }

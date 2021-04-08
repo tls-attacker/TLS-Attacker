@@ -7,44 +7,20 @@
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
-package de.rub.nds.tlsattacker.core.protocol.parser;
+package de.rub.nds.tlsattacker.core.protocol;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- * An abstract Parser class for ProtocolMessages
- *
- * @param <T>
- *            Type of the HandshakeMessages to parse
- */
 public abstract class ProtocolMessageParser<T extends ProtocolMessage> extends Parser<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
+    protected final Config config;
 
-    private final ProtocolVersion version;
-
-    private final Config config;
-
-    /**
-     * Constructor for the Parser class
-     *
-     * @param pointer
-     *                Position in the array where the ProtocolMessageParser is supposed to start parsing
-     * @param array
-     *                The byte[] which the ProtocolMessageParser is supposed to parse
-     * @param version
-     *                Version of the Protocol
-     * @param config
-     *                A Config used in the current context
-     */
-    public ProtocolMessageParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
-        super(pointer, array);
-        this.version = version;
+    public ProtocolMessageParser(int startposition, byte[] array, Config config) {
+        super(startposition, array);
         this.config = config;
     }
 
@@ -67,10 +43,6 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage> extends P
         msg.setCompleteResultingMessage(getAlreadyParsed());
         LOGGER.debug(
             "CompleteResultMessage: " + ArrayConverter.bytesToHexString(msg.getCompleteResultingMessage().getValue()));
-    }
-
-    protected ProtocolVersion getVersion() {
-        return version;
     }
 
     protected Config getConfig() {

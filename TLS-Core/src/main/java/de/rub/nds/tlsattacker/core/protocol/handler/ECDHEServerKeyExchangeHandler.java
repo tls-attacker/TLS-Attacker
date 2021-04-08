@@ -35,24 +35,24 @@ public class ECDHEServerKeyExchangeHandler<T extends ECDHEServerKeyExchangeMessa
     }
 
     @Override
-    public ECDHEServerKeyExchangeParser getParser(byte[] message, int pointer) {
-        return new ECDHEServerKeyExchangeParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
+    public ECDHEServerKeyExchangeParser<T> getParser(byte[] message, int pointer) {
+        return new ECDHEServerKeyExchangeParser<T>(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
             AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite()),
             tlsContext.getConfig());
     }
 
     @Override
-    public ECDHEServerKeyExchangePreparator getPreparator(ECDHEServerKeyExchangeMessage message) {
-        return new ECDHEServerKeyExchangePreparator(tlsContext.getChooser(), message);
+    public ECDHEServerKeyExchangePreparator<T> getPreparator(T message) {
+        return new ECDHEServerKeyExchangePreparator<T>(tlsContext.getChooser(), message);
     }
 
     @Override
-    public ECDHEServerKeyExchangeSerializer getSerializer(ECDHEServerKeyExchangeMessage message) {
-        return new ECDHEServerKeyExchangeSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
+    public ECDHEServerKeyExchangeSerializer<T> getSerializer(T message) {
+        return new ECDHEServerKeyExchangeSerializer<T>(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override
-    public void adjustTLSContext(ECDHEServerKeyExchangeMessage message) {
+    public void adjustTLSContext(T message) {
         adjustECParameter(message);
         if (message.getComputations() != null) {
             tlsContext.setServerEcPrivateKey(message.getComputations().getPrivateKey().getValue());

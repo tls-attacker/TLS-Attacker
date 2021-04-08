@@ -19,11 +19,8 @@ public class DtlsHandshakeMessageFragmentSerializer extends HandshakeMessageSeri
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final DtlsHandshakeMessageFragment fragment;
-
     public DtlsHandshakeMessageFragmentSerializer(DtlsHandshakeMessageFragment message, ProtocolVersion version) {
         super(message, version);
-        fragment = message;
     }
 
     @Override
@@ -31,7 +28,7 @@ public class DtlsHandshakeMessageFragmentSerializer extends HandshakeMessageSeri
         writeMessageSequence();
         writeFragmentOffset();
         writeFragmentLength();
-        appendBytes(fragment.getContent().getValue());
+        appendBytes(message.getContent().getValue());
         return getAlreadySerialized();
     }
 
@@ -39,23 +36,23 @@ public class DtlsHandshakeMessageFragmentSerializer extends HandshakeMessageSeri
      * Writes the sequenceNumber of the HandshakeMessage into the final byte[]
      */
     private void writeMessageSequence() {
-        appendInt(fragment.getMessageSeq().getValue(), HandshakeByteLength.DTLS_MESSAGE_SEQUENCE);
-        LOGGER.debug("SequenceNumber: " + fragment.getMessageSeq().getValue());
+        appendInt(message.getMessageSeq().getValue(), HandshakeByteLength.DTLS_MESSAGE_SEQUENCE);
+        LOGGER.debug("SequenceNumber: " + message.getMessageSeq().getValue());
     }
 
     /**
      * Writes the FragmentOffset of the HandshakeMessage into the final byte[]
      */
     private void writeFragmentOffset() {
-        appendInt(fragment.getFragmentOffset().getValue(), HandshakeByteLength.DTLS_FRAGMENT_OFFSET);
-        LOGGER.debug("FragmentOffset: " + fragment.getFragmentOffset().getValue());
+        appendInt(message.getFragmentOffset().getValue(), HandshakeByteLength.DTLS_FRAGMENT_OFFSET);
+        LOGGER.debug("FragmentOffset: " + message.getFragmentOffset().getValue());
     }
 
     /**
      * Writes the FragmentLength of the HandshakeMessage into the final byte[]
      */
     private void writeFragmentLength() {
-        appendInt(fragment.getFragmentLength().getValue(), HandshakeByteLength.DTLS_FRAGMENT_LENGTH);
-        LOGGER.debug("FragmentLength: " + fragment.getFragmentLength().getValue());
+        appendInt(message.getFragmentLength().getValue(), HandshakeByteLength.DTLS_FRAGMENT_LENGTH);
+        LOGGER.debug("FragmentLength: " + message.getFragmentLength().getValue());
     }
 }
