@@ -71,4 +71,8 @@ public class FakeTransportHandler extends TransportHandler {
             opened = false;
     }
 
+    @Override
+    public void setTimeout(long timeout) {
+    }
+
 }

@@ -33,7 +33,6 @@ public class ServerUdpTransportHandler extends UdpTransportHandler {
     @Override
     public void initialize() throws IOException {
         socket = new DatagramSocket(port);
-        socket.setSoTimeout((int) getTimeout());
         setStreams(new PushbackInputStream(new UdpInputStream(socket, true)), new UdpOutputStream(socket));
         srcPort = socket.getLocalPort();
         dstPort = socket.getPort();
@@ -51,7 +50,6 @@ public class ServerUdpTransportHandler extends UdpTransportHandler {
             try {
                 Thread.sleep(1);
             } catch (InterruptedException e) {
-                ;
             }
         }
     }

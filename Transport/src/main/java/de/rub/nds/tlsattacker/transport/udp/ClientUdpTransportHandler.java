@@ -17,9 +17,13 @@ import de.rub.nds.tlsattacker.transport.udp.stream.UdpOutputStream;
 import java.io.IOException;
 import java.io.PushbackInputStream;
 import java.net.DatagramSocket;
-import java.net.InetSocketAddress;
+import java.net.InetAddress;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ClientUdpTransportHandler extends UdpTransportHandler {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final String hostname;
 
@@ -37,9 +41,10 @@ public class ClientUdpTransportHandler extends UdpTransportHandler {
 
     @Override
     public void initialize() throws IOException {
+        LOGGER.debug("Initializing ClientUdpTransportHandler host: {}, port: {}", hostname, port);
         socket = new DatagramSocket();
-        socket.connect(new InetSocketAddress(hostname, port));
-        socket.setSoTimeout((int) getTimeout());
+        socket.connect(InetAddress.getByName(hostname), port);
+        socket.setSoTimeout((int) timeout);
         srcPort = socket.getLocalPort();
         dstPort = socket.getPort();
         setStreams(new PushbackInputStream(new UdpInputStream(socket, false)), new UdpOutputStream(socket));

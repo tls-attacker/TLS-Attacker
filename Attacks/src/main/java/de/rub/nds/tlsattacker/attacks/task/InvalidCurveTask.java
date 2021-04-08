@@ -9,22 +9,17 @@
 
 package de.rub.nds.tlsattacker.attacks.task;
 
-import de.rub.nds.tlsattacker.attacks.exception.FingerprintExtractionException;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.attacks.util.response.ResponseExtractor;
 import de.rub.nds.tlsattacker.attacks.util.response.ResponseFingerprint;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
-import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.DefaultWorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
-import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.core.workflow.task.TlsTask;
 import de.rub.nds.tlsattacker.transport.socket.SocketState;
 import java.io.IOException;
-import java.util.LinkedList;
+import java.util.logging.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -65,6 +60,7 @@ public class InvalidCurveTask extends TlsTask {
             }
 
             if (!state.getWorkflowTrace().executedAsPlanned()) {
+                LOGGER.debug("Not executed as planned!");
                 return false;
             }
             fingerprint = ResponseExtractor.getFingerprint(getState());

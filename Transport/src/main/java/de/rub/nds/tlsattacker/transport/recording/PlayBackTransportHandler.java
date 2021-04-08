@@ -79,4 +79,9 @@ public class PlayBackTransportHandler extends TransportHandler {
     public boolean isClosed() throws IOException {
         return closed;
     }
+
+    @Override
+    public void setTimeout(long timeout) {
+        // DO NOTHING
+    }
 }
