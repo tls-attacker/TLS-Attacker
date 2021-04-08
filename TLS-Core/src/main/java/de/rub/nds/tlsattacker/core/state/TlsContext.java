@@ -69,17 +69,21 @@ import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
 
 import de.rub.nds.tlsattacker.transport.socket.SocketState;
 import de.rub.nds.tlsattacker.transport.tcp.ClientTcpTransportHandler;
 import org.bouncycastle.crypto.tls.Certificate;
 
+@XmlAccessorType(XmlAccessType.FIELD)
 public class TlsContext {
 
     /**
      * TLS-Attacker related configurations.
      */
+    @XmlTransient
     private Config config;
 
     private List<Session> sessionList;

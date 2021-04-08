@@ -2,7 +2,7 @@ Test a MITM workflow trace
 
 # Given this config:
 <config>
-    <runningMode>MITM</runningMode>
+    <defaultRunningMode>MITM</defaultRunningMode>
 </config>
 
 # And this input trace
