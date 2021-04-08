@@ -72,7 +72,7 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
 
                 if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
                     NewSessionTicketHandler ticketHandler = (NewSessionTicketHandler) HandlerFactory
-                            .getHandshakeHandler(tlsContext, HandshakeMessageType.NEW_SESSION_TICKET);
+                        .getHandshakeHandler(tlsContext, HandshakeMessageType.NEW_SESSION_TICKET);
                     if (tlsContext.getPskSets() != null) {
                         for (PskSet pskSet : tlsContext.getPskSets()) {
                             // if psk was derived earliers, skip derivation (especially for state reusage helpful)

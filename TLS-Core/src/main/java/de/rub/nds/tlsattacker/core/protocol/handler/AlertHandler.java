@@ -18,7 +18,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class AlertHandler extends ProtocolMessageHandler<AlertMessage> {
+public class AlertHandler extends TlsMessageHandler<AlertMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

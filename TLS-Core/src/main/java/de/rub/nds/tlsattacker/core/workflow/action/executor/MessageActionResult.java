@@ -10,7 +10,7 @@
 package de.rub.nds.tlsattacker.core.workflow.action.executor;
 
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -35,8 +35,7 @@ public class MessageActionResult {
      * Generates an empty MessageActionResult, that is, a result whose list fields are empty.
      */
     public MessageActionResult() {
-        this(new LinkedList<AbstractRecord>(), new LinkedList<ProtocolMessage>(),
-            new LinkedList<DtlsHandshakeMessageFragment>());
+        this(new LinkedList<>(), new LinkedList<>(), new LinkedList<>());
     }
 
     public List<AbstractRecord> getRecordList() {

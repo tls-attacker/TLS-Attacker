@@ -9,10 +9,10 @@
 
 package de.rub.nds.tlsattacker.core.https;
 
-import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.TlsMessageHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-public class HttpsResponseHandler extends ProtocolMessageHandler<HttpsResponseMessage> {
+public class HttpsResponseHandler extends TlsMessageHandler<HttpsResponseMessage> {
 
     public HttpsResponseHandler(TlsContext tlsContext) {
         super(tlsContext);

@@ -9,7 +9,7 @@
 
 package de.rub.nds.tlsattacker.core.certificate.transparency;
 
-import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
+import de.rub.nds.tlsattacker.core.protocol.Parser;
 import org.bouncycastle.crypto.tls.Certificate;
 
 public class SignedCertificateTimestampListParser extends Parser<SignedCertificateTimestampList> {

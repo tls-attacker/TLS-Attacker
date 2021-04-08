@@ -19,7 +19,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.ECCUtilsBCWrapper;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
-import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
+import de.rub.nds.tlsattacker.core.protocol.Serializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayInputStream;
@@ -80,7 +80,7 @@ public class TokenbindingMessagePreparatorTest {
     @Test
     public void testPrepareProtocolMessageContents() throws Exception {
         preparator.prepare();
-        Serializer serializer = new TokenBindingMessageSerializer(message, ProtocolVersion.TLS12);
+        TokenBindingMessageSerializer serializer = new TokenBindingMessageSerializer(message, ProtocolVersion.TLS12);
         byte[] serialize = serializer.serialize();
         TokenBindingMessageParser selfParser =
             new TokenBindingMessageParser(0, serialize, ProtocolVersion.TLS12, config);

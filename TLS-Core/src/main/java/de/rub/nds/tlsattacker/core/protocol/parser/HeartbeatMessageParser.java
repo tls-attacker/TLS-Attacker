@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class HeartbeatMessageParser extends ProtocolMessageParser<HeartbeatMessage> {
+public class HeartbeatMessageParser extends TlsMessageParser<HeartbeatMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

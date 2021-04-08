@@ -10,7 +10,7 @@
 package de.rub.nds.tlsattacker.core.https.header;
 
 import de.rub.nds.tlsattacker.core.https.header.preparator.LocationHeaderPreparator;
-import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
+import de.rub.nds.tlsattacker.core.protocol.Preparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 public class LocationHeader extends HttpsHeader {
@@ -19,7 +19,7 @@ public class LocationHeader extends HttpsHeader {
     }
 
     @Override
-    public Preparator getPreparator(Chooser chooser) {
+    public LocationHeaderPreparator getPreparator(Chooser chooser) {
         return new LocationHeaderPreparator(chooser, this);
     }
 
