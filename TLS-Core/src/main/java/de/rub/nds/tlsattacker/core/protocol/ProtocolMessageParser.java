@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -33,15 +34,15 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage> extends P
     protected abstract T parseMessageContent();
 
     /**
-     * Reads the next bytes as the CompleteResultingMessage and writes them in
-     * the message
+     * Reads the next bytes as the CompleteResultingMessage and writes them in the message
      *
-     * @param msg Message to write in
+     * @param msg
+     *            Message to write in
      */
     private void parseCompleteResultingMessage(ProtocolMessage msg) {
         msg.setCompleteResultingMessage(getAlreadyParsed());
         LOGGER.debug(
-                "CompleteResultMessage: " + ArrayConverter.bytesToHexString(msg.getCompleteResultingMessage().getValue()));
+            "CompleteResultMessage: " + ArrayConverter.bytesToHexString(msg.getCompleteResultingMessage().getValue()));
     }
 
     protected Config getConfig() {
