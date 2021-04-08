@@ -12,7 +12,8 @@ package de.rub.nds.tlsattacker.core.workflow;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.TlsMessage;
 import de.rub.nds.tlsattacker.core.workflow.action.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,14 +31,14 @@ public class WorkflowTraceMutator {
         @Nonnull ProtocolMessageType type, @Nullable ProtocolMessage replaceMessage) {
         if (replaceMessage != null) {
             messageList.replaceAll(e -> {
-                if (e.getProtocolMessageType() == type) {
+                if (e instanceof TlsMessage && ((TlsMessage) e).getProtocolMessageType() == type) {
                     return replaceMessage;
                 }
                 return e;
             });
         } else {
             messageList.removeIf(m -> {
-                if (m.getProtocolMessageType() == type) {
+                if (m instanceof TlsMessage && ((TlsMessage) m).getProtocolMessageType() == type) {
                     return true;
                 }
                 return false;
@@ -49,14 +50,14 @@ public class WorkflowTraceMutator {
         @Nonnull HandshakeMessageType type, @Nullable ProtocolMessage replaceMessage) {
         if (replaceMessage != null) {
             messageList.replaceAll(e -> {
-                if (e.isHandshakeMessage() && ((HandshakeMessage) e).getHandshakeMessageType() == type) {
+                if (e instanceof HandshakeMessage && ((HandshakeMessage) e).getHandshakeMessageType() == type) {
                     return replaceMessage;
                 }
                 return e;
             });
         } else {
             messageList.removeIf(m -> {
-                if (m.isHandshakeMessage() && ((HandshakeMessage) m).getHandshakeMessageType() == type) {
+                if (m instanceof HandshakeMessage && ((HandshakeMessage) m).getHandshakeMessageType() == type) {
                     return true;
                 }
                 return false;
@@ -103,7 +104,7 @@ public class WorkflowTraceMutator {
     }
 
     public static void replaceReceivingMessage(@Nonnull WorkflowTrace trace, @Nonnull ProtocolMessageType type,
-        @Nullable ProtocolMessage replaceMessage) throws WorkflowTraceMutationException {
+        @Nullable TlsMessage replaceMessage) throws WorkflowTraceMutationException {
         List<ReceivingAction> receivingActions = WorkflowTraceUtil.getReceivingActionsForMessage(type, trace);
         List<ReceivingAction> deleteActions = new ArrayList<>();
         for (ReceivingAction i : receivingActions) {
@@ -114,7 +115,7 @@ public class WorkflowTraceMutator {
                     deleteActions.add(i);
                 }
             } else if (i instanceof ReceiveTillAction) {
-                ProtocolMessage message = ((ReceiveTillAction) i).getWaitTillMessage();
+                TlsMessage message = ((ReceiveTillAction) i).getWaitTillMessage();
                 if (message.getProtocolMessageType() == type) {
                     if (replaceMessage == null) {
                         throw new WorkflowTraceMutationException(
@@ -131,7 +132,7 @@ public class WorkflowTraceMutator {
     }
 
     public static void replaceReceivingMessage(@Nonnull WorkflowTrace trace, @Nonnull HandshakeMessageType type,
-        @Nullable ProtocolMessage replaceMessage) throws WorkflowTraceMutationException {
+        @Nullable TlsMessage replaceMessage) throws WorkflowTraceMutationException {
         List<ReceivingAction> receivingActions = WorkflowTraceUtil.getReceivingActionsForMessage(type, trace);
         List<ReceivingAction> deleteActions = new ArrayList<>();
         for (ReceivingAction i : receivingActions) {
@@ -142,7 +143,7 @@ public class WorkflowTraceMutator {
                     deleteActions.add(i);
                 }
             } else if (i instanceof ReceiveTillAction) {
-                ProtocolMessage message = ((ReceiveTillAction) i).getWaitTillMessage();
+                TlsMessage message = ((ReceiveTillAction) i).getWaitTillMessage();
                 if (message.isHandshakeMessage() && ((HandshakeMessage) message).getHandshakeMessageType() == type) {
                     if (replaceMessage == null) {
                         throw new WorkflowTraceMutationException(
@@ -235,7 +236,7 @@ public class WorkflowTraceMutator {
 
         for (ProtocolMessage i : messages) {
             if (type instanceof HandshakeMessageType) {
-                if (!i.isHandshakeMessage()) {
+                if (!(i instanceof HandshakeMessage)) {
                     continue;
                 }
                 if (((HandshakeMessage) i).getHandshakeMessageType() == type) {
@@ -246,7 +247,7 @@ public class WorkflowTraceMutator {
                     break;
                 }
             } else {
-                if (i.getProtocolMessageType() == type) {
+                if (i instanceof TlsMessage && ((TlsMessage) i).getProtocolMessageType() == type) {
                     messageIndex = messages.indexOf(i);
                     if (messageIndex == 0 && mode == WorkflowTruncationMode.AT) {
                         actionIndex -= 1;

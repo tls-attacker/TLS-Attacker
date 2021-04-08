@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class UnknownMessagePreparator extends ProtocolMessagePreparator<UnknownMessage> {
+public class UnknownMessagePreparator extends TlsMessagePreparator<UnknownMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

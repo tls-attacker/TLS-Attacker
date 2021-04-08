@@ -15,7 +15,8 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.TlsMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
@@ -240,7 +241,9 @@ public class SendAction extends MessageAction implements SendingAction {
     public List<ProtocolMessageType> getGoingToSendProtocolMessageTypes() {
         List<ProtocolMessageType> protocolMessageTypes = new ArrayList<>();
         for (ProtocolMessage msg : messages) {
-            protocolMessageTypes.add(msg.getProtocolMessageType());
+            if (msg instanceof TlsMessage) {
+                protocolMessageTypes.add(((TlsMessage) msg).getProtocolMessageType());
+            }
         }
         return protocolMessageTypes;
     }
@@ -249,7 +252,7 @@ public class SendAction extends MessageAction implements SendingAction {
     public List<HandshakeMessageType> getGoingToSendHandshakeMessageTypes() {
         List<HandshakeMessageType> handshakeMessageTypes = new ArrayList<>();
         for (ProtocolMessage msg : messages) {
-            if (msg.isHandshakeMessage()) {
+            if (msg instanceof HandshakeMessage) {
                 handshakeMessageTypes.add(((HandshakeMessage) msg).getHandshakeMessageType());
             }
         }

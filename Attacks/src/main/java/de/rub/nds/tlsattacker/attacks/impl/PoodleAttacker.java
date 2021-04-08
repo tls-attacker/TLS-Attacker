@@ -65,5 +65,4 @@ public class PoodleAttacker extends Attacker<PoodleCommandConfig> {
         }
         return cbcs;
     }
-
 }

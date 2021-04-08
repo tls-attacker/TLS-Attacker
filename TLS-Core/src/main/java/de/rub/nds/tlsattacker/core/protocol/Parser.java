@@ -7,7 +7,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
-package de.rub.nds.tlsattacker.core.protocol.parser;
+package de.rub.nds.tlsattacker.core.protocol;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
@@ -148,7 +148,7 @@ public abstract class Parser<T> {
             byte b = parseByteField(1);
             stream.write(b);
             if (b == endSequence) {
-                return new String(stream.toByteArray());
+                return stream.toString();
             }
         }
     }

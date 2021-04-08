@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
@@ -22,13 +23,19 @@ public class SSL2ClientHelloParser extends SSL2HandshakeMessageParser<SSL2Client
     private static final Logger LOGGER = LogManager.getLogger();
 
     public SSL2ClientHelloParser(int pointer, byte[] message, ProtocolVersion version, Config config) {
-        super(pointer, message, version, config);
+        super(pointer, message, HandshakeMessageType.SSL2_CLIENT_HELLO, version, config);
     }
 
     @Override
     protected SSL2ClientHelloMessage parseMessageContent() {
         LOGGER.debug("Parsing SSL2ClientHello");
-        SSL2ClientHelloMessage msg = new SSL2ClientHelloMessage();
+        SSL2ClientHelloMessage msg = createHandshakeMessage();
+        parseHandshakeMessageContent(msg);
+        return msg;
+    }
+
+    @Override
+    protected void parseHandshakeMessageContent(SSL2ClientHelloMessage msg) {
         parseMessageLength(msg);
         parseType(msg);
         parseProtocolVersion(msg);
@@ -38,7 +45,11 @@ public class SSL2ClientHelloParser extends SSL2HandshakeMessageParser<SSL2Client
         parseCipherSuites(msg);
         parseSessionID(msg);
         parseChallenge(msg);
-        return msg;
+    }
+
+    @Override
+    protected SSL2ClientHelloMessage createHandshakeMessage() {
+        return new SSL2ClientHelloMessage();
     }
 
     /**

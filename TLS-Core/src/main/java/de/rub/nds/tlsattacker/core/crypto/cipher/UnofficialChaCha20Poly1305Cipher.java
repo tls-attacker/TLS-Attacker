@@ -9,14 +9,9 @@
 
 package de.rub.nds.tlsattacker.core.crypto.cipher;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.Bits;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.engines.ChaChaEngine;
-import org.bouncycastle.crypto.params.KeyParameter;
-import org.bouncycastle.crypto.params.ParametersWithIV;
-import org.bouncycastle.util.Arrays;
 
 /**
  * TLS-AEAD-Cipher "Chacha20Poly1305", based on BouncyCastle's classes for the initial draft version See

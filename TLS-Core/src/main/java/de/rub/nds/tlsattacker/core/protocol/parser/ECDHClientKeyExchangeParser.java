@@ -38,7 +38,7 @@ public class ECDHClientKeyExchangeParser<T extends ECDHClientKeyExchangeMessage>
     }
 
     @Override
-    protected void parseHandshakeMessageContent(ECDHClientKeyExchangeMessage msg) {
+    protected void parseHandshakeMessageContent(T msg) {
         LOGGER.debug("Parsing ECDHClientKeyExchangeMessage");
         parseSerializedPublicKeyLength(msg);
         parseSerializedPublicKey(msg);

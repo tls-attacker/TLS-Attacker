@@ -15,11 +15,9 @@ import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ApplicationMessageSerializer extends ProtocolMessageSerializer<ApplicationMessage> {
+public class ApplicationMessageSerializer extends TlsMessageSerializer<ApplicationMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
-
-    private final ApplicationMessage msg;
 
     /**
      * Constructor for the ApplicationMessageSerializer
@@ -31,22 +29,21 @@ public class ApplicationMessageSerializer extends ProtocolMessageSerializer<Appl
      */
     public ApplicationMessageSerializer(ApplicationMessage message, ProtocolVersion version) {
         super(message, version);
-        this.msg = message;
     }
 
     @Override
     public byte[] serializeProtocolMessageContent() {
         LOGGER.debug("Serializing ApplicationMessage");
-        writeData(msg);
+        writeData();
         return getAlreadySerialized();
     }
 
     /**
      * Writes the data of the ApplicationMessage into the final byte[]
      */
-    private void writeData(ApplicationMessage msg) {
-        appendBytes(msg.getData().getValue());
-        LOGGER.debug("Data: " + ArrayConverter.bytesToHexString(msg.getData().getValue()));
+    private void writeData() {
+        appendBytes(message.getData().getValue());
+        LOGGER.debug("Data: " + ArrayConverter.bytesToHexString(message.getData().getValue()));
     }
 
 }

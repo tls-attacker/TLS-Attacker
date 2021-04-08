@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ApplicationMessageParser extends ProtocolMessageParser<ApplicationMessage> {
+public class ApplicationMessageParser extends TlsMessageParser<ApplicationMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

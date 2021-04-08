@@ -74,5 +74,4 @@ public class DeepCopyBufferedRecordsAction extends CopyContextFieldAction {
 
         dst.setRecordBuffer(recordBuffer);
     }
-
 }

@@ -39,18 +39,18 @@ public class BlobRecord extends AbstractRecord {
     }
 
     @Override
-    public AbstractRecordPreparator getRecordPreparator(Chooser chooser, Encryptor encryptor,
-        RecordCompressor compressor, ProtocolMessageType type) {
+    public BlobRecordPreparator getRecordPreparator(Chooser chooser, Encryptor encryptor, RecordCompressor compressor,
+        ProtocolMessageType type) {
         return new BlobRecordPreparator(chooser, this, encryptor, type, compressor);
     }
 
     @Override
-    public AbstractRecordParser getRecordParser(int startposition, byte[] array, ProtocolVersion version) {
+    public BlobRecordParser getRecordParser(int startposition, byte[] array, ProtocolVersion version) {
         return new BlobRecordParser(startposition, array, version);
     }
 
     @Override
-    public AbstractRecordSerializer getRecordSerializer() {
+    public BlobRecordSerializer getRecordSerializer() {
         return new BlobRecordSerializer(this);
     }
 

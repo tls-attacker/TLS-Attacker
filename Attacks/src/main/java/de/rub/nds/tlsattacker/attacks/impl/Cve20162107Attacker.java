@@ -25,7 +25,8 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.TlsMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -130,17 +131,25 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
         }
         ProtocolMessage lm = WorkflowTraceUtil.getLastReceivedMessage(trace);
         lastMessages.add(lm);
-        if (lm.getProtocolMessageType() == ProtocolMessageType.ALERT) {
+
+        if (!(lm instanceof TlsMessage)) {
+            LOGGER.warn("  Last message was not a TLS message. Received {}", lm.getClass().getName());
+            return false;
+        }
+
+        TlsMessage tlsMessage = (TlsMessage) lm;
+
+        if (tlsMessage.getProtocolMessageType() == ProtocolMessageType.ALERT) {
             AlertMessage am = ((AlertMessage) lm);
             LOGGER.info("  Last protocol message: Alert ({},{}) [{},{}]",
                 AlertLevel.getAlertLevel(am.getLevel().getValue()),
                 AlertDescription.getAlertDescription(am.getDescription().getValue()), am.getLevel().getValue(),
                 am.getDescription().getValue());
         } else {
-            LOGGER.info("  Last protocol message: {}", lm.getProtocolMessageType());
+            LOGGER.info("  Last protocol message: {}", tlsMessage.getProtocolMessageType());
         }
 
-        if (lm.getProtocolMessageType() == ProtocolMessageType.ALERT
+        if (tlsMessage.getProtocolMessageType() == ProtocolMessageType.ALERT
             && AlertDescription.getAlertDescription(((AlertMessage) lm).getDescription().getValue())
                 == AlertDescription.RECORD_OVERFLOW) {
             LOGGER.info("  Vulnerable");
