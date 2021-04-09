@@ -872,6 +872,8 @@ public class Config implements Serializable {
 
     private Boolean ignoreRetransmittedCss = false;
 
+    private Boolean addRetransmissionsToWorkflowTrace = false;
+
     private int maxRetransmissions = 3;
 
     /**
@@ -3050,6 +3052,14 @@ public class Config implements Serializable {
 
     public void setIgnoreRetransmittedCss(Boolean ignoreRetransmittedCss) {
         this.ignoreRetransmittedCss = ignoreRetransmittedCss;
+    }
+
+    public Boolean isAddRetransmissionsToWorkflowTrace() {
+        return addRetransmissionsToWorkflowTrace;
+    }
+
+    public void setAddRetransmissionsToWorkflowTrace(Boolean addRetransmissionsToWorkflowTrace) {
+        this.addRetransmissionsToWorkflowTrace = addRetransmissionsToWorkflowTrace;
     }
 
     public int getMaxRetransmissions() {

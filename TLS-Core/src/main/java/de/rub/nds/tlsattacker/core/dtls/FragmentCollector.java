@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.dtls;
 
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.IllegalDtlsFragmentException;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.serializer.DtlsHandshakeMessageFragmentSerializer;
@@ -61,6 +62,9 @@ public class FragmentCollector {
                 this.messageLength = fragment.getLength().getValue();
                 this.messageSeq = fragment.getMessageSeq().getValue();
                 this.type = fragment.getType().getValue();
+                interpreted = false;
+            }
+            if (interpreted && config.isAddRetransmissionsToWorkflowTrace()) {
                 interpreted = false;
             }
             fragmentStream.insertByteArray(fragment.getContent().getValue(), fragment.getFragmentOffset().getValue());
