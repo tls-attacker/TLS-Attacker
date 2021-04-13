@@ -211,6 +211,7 @@
                             </goals>
                             <configuration>
                                 <outputDirectory>${project.parent.basedir}/apps/lib</outputDirectory>
+                                <useBaseVersion>false</useBaseVersion>
                                 <!--Ensures only runnable dependencies are included-->
                                 <includeScope>compile</includeScope>
                             </configuration>
