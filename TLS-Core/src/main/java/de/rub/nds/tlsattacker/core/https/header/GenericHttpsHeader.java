@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.https.header;
 
 import de.rub.nds.modifiablevariable.util.IllegalStringAdapter;
 import de.rub.nds.tlsattacker.core.https.header.preparator.GenericHttpsHeaderPreparator;
-import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
+import de.rub.nds.tlsattacker.core.protocol.Preparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -51,7 +51,7 @@ public class GenericHttpsHeader extends HttpsHeader {
     }
 
     @Override
-    public Preparator getPreparator(Chooser chooser) {
+    public GenericHttpsHeaderPreparator getPreparator(Chooser chooser) {
         return new GenericHttpsHeaderPreparator(chooser, this);
     }
 }

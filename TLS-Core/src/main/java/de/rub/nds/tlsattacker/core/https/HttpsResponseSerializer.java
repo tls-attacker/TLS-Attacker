@@ -12,12 +12,12 @@ package de.rub.nds.tlsattacker.core.https;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.https.header.HttpsHeader;
 import de.rub.nds.tlsattacker.core.https.header.serializer.HttpsHeaderSerializer;
-import de.rub.nds.tlsattacker.core.protocol.serializer.ProtocolMessageSerializer;
 import java.nio.charset.StandardCharsets;
+import de.rub.nds.tlsattacker.core.protocol.serializer.TlsMessageSerializer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class HttpsResponseSerializer extends ProtocolMessageSerializer<HttpsResponseMessage> {
+public class HttpsResponseSerializer extends TlsMessageSerializer<HttpsResponseMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

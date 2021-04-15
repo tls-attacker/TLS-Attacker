@@ -10,8 +10,8 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.List;
@@ -50,7 +50,7 @@ public class ApplyBufferedMessagesAction extends ConnectionBoundAction {
             for (ProtocolMessage msg : messages) {
                 LOGGER.debug("Applying buffered " + msg.toCompactString() + " to context " + ctx);
                 ProtocolMessageHandler h = msg.getHandler(ctx);
-                h.adjustTLSContext(msg);
+                h.adjustContext(msg);
             }
         }
         setExecuted(true);

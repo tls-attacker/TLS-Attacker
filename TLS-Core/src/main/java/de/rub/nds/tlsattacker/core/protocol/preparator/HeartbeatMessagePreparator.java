@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class HeartbeatMessagePreparator extends ProtocolMessagePreparator<HeartbeatMessage> {
+public class HeartbeatMessagePreparator extends TlsMessagePreparator<HeartbeatMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

@@ -19,8 +19,8 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ServerHelloHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.TlsMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.AlpnExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CachedInfoExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestExtensionMessage;
@@ -57,7 +57,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Date;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.*;
 
 @XmlRootElement
 public class ServerHelloMessage extends HelloMessage {
@@ -74,7 +74,7 @@ public class ServerHelloMessage extends HelloMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByte selectedCompressionMethod;
 
-    private boolean autoSetHelloRetryModeInKeyShare = true;
+    private Boolean autoSetHelloRetryModeInKeyShare = true;
 
     public ServerHelloMessage(Config tlsConfig) {
         super(tlsConfig, HandshakeMessageType.SERVER_HELLO);
@@ -287,7 +287,7 @@ public class ServerHelloMessage extends HelloMessage {
     }
 
     @Override
-    public ProtocolMessageHandler getHandler(TlsContext context) {
+    public ServerHelloHandler getHandler(TlsContext context) {
         return new ServerHelloHandler(context);
     }
 
@@ -295,11 +295,11 @@ public class ServerHelloMessage extends HelloMessage {
         return HELLO_RETRY_REQUEST_RANDOM;
     }
 
-    public boolean isAutoSetHelloRetryModeInKeyShare() {
+    public Boolean isAutoSetHelloRetryModeInKeyShare() {
         return autoSetHelloRetryModeInKeyShare;
     }
 
-    public void setAutoSetHelloRetryModeInKeyShare(boolean autoSetHelloRetryModeInKeyShare) {
+    public void setAutoSetHelloRetryModeInKeyShare(Boolean autoSetHelloRetryModeInKeyShare) {
         this.autoSetHelloRetryModeInKeyShare = autoSetHelloRetryModeInKeyShare;
     }
 

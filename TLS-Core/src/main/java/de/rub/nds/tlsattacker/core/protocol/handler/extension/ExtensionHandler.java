@@ -34,11 +34,11 @@ public abstract class ExtensionHandler<MessageT extends ExtensionMessage> {
         this.context = context;
     }
 
-    public abstract ExtensionParser getParser(byte[] message, int pointer, Config config);
+    public abstract ExtensionParser<MessageT> getParser(byte[] message, int pointer, Config config);
 
-    public abstract ExtensionPreparator getPreparator(MessageT message);
+    public abstract ExtensionPreparator<MessageT> getPreparator(MessageT message);
 
-    public abstract ExtensionSerializer getSerializer(MessageT message);
+    public abstract ExtensionSerializer<MessageT> getSerializer(MessageT message);
 
     /**
      * Adjusts the TLS Context according to the received or sending ProtocolMessage

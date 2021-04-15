@@ -18,7 +18,7 @@ import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class PskDheServerKeyExchangeHandler extends ServerKeyExchangeHandler<PskDheServerKeyExchangeMessage> {
+public class PskDheServerKeyExchangeHandler extends DHEServerKeyExchangeHandler<PskDheServerKeyExchangeMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

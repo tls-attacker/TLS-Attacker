@@ -30,9 +30,9 @@ public class CipherWrapper {
         if (cipherAlg == CipherAlgorithm.GOST_28147_CNT) {
             return new GOST28147Cipher(GOSTUtils.getGostSpec(cipherSuite), keySet.getWriteKey(connectionEndType),
                 keySet.getWriteIv(connectionEndType));
-        } else if (cipherAlg == CipherAlgorithm.CHA_CHA_20_POLY1305) {
+        } else if (cipherAlg == CipherAlgorithm.CHACHA20_POLY1305) {
             return new StandardizedChaCha20Poly1305Cipher(keySet.getWriteKey(connectionEndType));
-        } else if (cipherAlg == CipherAlgorithm.UNOFFICIAL_CHA_CHA_20_POLY1305) {
+        } else if (cipherAlg == CipherAlgorithm.UNOFFICIAL_CHACHA20_POLY1305) {
             return new UnofficialChaCha20Poly1305Cipher(keySet.getWriteKey(connectionEndType));
         } else if (cipherAlg.getJavaName() != null) {
             return new JavaCipher(cipherAlg, keySet.getWriteKey(connectionEndType),
@@ -51,9 +51,9 @@ public class CipherWrapper {
         if (cipherAlg == CipherAlgorithm.GOST_28147_CNT) {
             return new GOST28147Cipher(GOSTUtils.getGostSpec(cipherSuite), keySet.getReadKey(connectionEndType),
                 keySet.getReadIv(connectionEndType));
-        } else if (cipherAlg == CipherAlgorithm.CHA_CHA_20_POLY1305) {
+        } else if (cipherAlg == CipherAlgorithm.CHACHA20_POLY1305) {
             return new StandardizedChaCha20Poly1305Cipher(keySet.getReadKey(connectionEndType));
-        } else if (cipherAlg == CipherAlgorithm.UNOFFICIAL_CHA_CHA_20_POLY1305) {
+        } else if (cipherAlg == CipherAlgorithm.UNOFFICIAL_CHACHA20_POLY1305) {
             return new UnofficialChaCha20Poly1305Cipher(keySet.getReadKey(connectionEndType));
         } else if (cipherAlg.getJavaName() != null) {
             return new JavaCipher(cipherAlg, keySet.getReadKey(connectionEndType),

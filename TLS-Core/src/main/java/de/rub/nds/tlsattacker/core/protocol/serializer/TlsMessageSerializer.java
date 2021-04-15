@@ -10,13 +10,14 @@
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageSerializer;
+import de.rub.nds.tlsattacker.core.protocol.message.TlsMessage;
 
 /**
  * @param <T>
  *            The ProtocolMessage that should be serialized
  */
-public abstract class ProtocolMessageSerializer<T extends ProtocolMessage> extends Serializer<T> {
+public abstract class TlsMessageSerializer<T extends TlsMessage> extends ProtocolMessageSerializer<T> {
 
     protected ProtocolVersion version;
 
@@ -28,14 +29,9 @@ public abstract class ProtocolMessageSerializer<T extends ProtocolMessage> exten
      * @param version
      *                Version of the Protocol
      */
-    public ProtocolMessageSerializer(T message, ProtocolVersion version) {
+    public TlsMessageSerializer(T message, ProtocolVersion version) {
+        super(message);
         this.version = version;
     }
 
-    @Override
-    protected final byte[] serializeBytes() {
-        return serializeProtocolMessageContent();
-    }
-
-    public abstract byte[] serializeProtocolMessageContent();
 }
