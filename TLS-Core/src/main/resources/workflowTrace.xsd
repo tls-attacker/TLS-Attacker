@@ -3131,7 +3131,6 @@
 
   <xs:complexType name="transportHandler" abstract="true">
     <xs:sequence>
-      <xs:element name="isInStreamTerminating" type="xs:boolean"/>
       <xs:element name="timeout" type="xs:long"/>
     </xs:sequence>
   </xs:complexType>
