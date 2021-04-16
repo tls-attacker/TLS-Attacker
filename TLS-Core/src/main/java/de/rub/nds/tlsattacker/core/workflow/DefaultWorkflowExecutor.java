@@ -88,6 +88,9 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
 
             try {
                 action.execute(state);
+            } catch (UnsupportedOperationException E) {
+                LOGGER.warn("Unsupported operation!", E);
+                state.setExecutionException(E);
             } catch (PreparationException | WorkflowExecutionException ex) {
                 state.setExecutionException(ex);
                 throw new WorkflowExecutionException("Problem while executing Action:" + action.toString(), ex);
