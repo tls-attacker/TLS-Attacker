@@ -39,19 +39,20 @@ public class DtlsCloseConnectionAction extends MessageAction implements SendingA
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private boolean withEpochZero = false;
+    private int epoch = 0;
 
     public DtlsCloseConnectionAction() {
         super();
     }
 
-    public DtlsCloseConnectionAction(boolean withEpochZero) {
+    public DtlsCloseConnectionAction(int epoch) {
         super();
-        this.withEpochZero = withEpochZero;
+        this.epoch = epoch;
     }
 
-    public DtlsCloseConnectionAction(String connectionAlias) {
+    public DtlsCloseConnectionAction(String connectionAlias, int epoch) {
         super(connectionAlias);
+        this.epoch = epoch;
     }
 
     @Override
@@ -61,9 +62,7 @@ public class DtlsCloseConnectionAction extends MessageAction implements SendingA
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
         }
-        if (withEpochZero) {
-            tlsContext.setDtlsWriteEpoch(0);
-        }
+        tlsContext.setDtlsWriteEpoch(epoch);
         messages = new LinkedList<>();
         AlertMessage alertMessage = new AlertMessage();
         alertMessage.setConfig(AlertLevel.FATAL, AlertDescription.CLOSE_NOTIFY);

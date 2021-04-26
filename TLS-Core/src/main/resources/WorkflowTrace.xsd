@@ -2879,7 +2879,7 @@
     <xs:complexContent>
       <xs:extension base="messageAction">
         <xs:sequence>
-          <xs:element name="withEpochZero" type="xs:boolean"/>
+          <xs:element name="epoch" type="xs:int"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>

@@ -13,15 +13,21 @@ import de.rub.nds.tlsattacker.core.config.ConfigIO;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.record.AbstractRecord;
+import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.action.DtlsCloseConnectionAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceivingAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendingAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.SendMessageHelper;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.File;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -59,7 +65,6 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
             ctx.initRecordLayer();
         }
 
-        // Warum reset, wenn nichts bisher ausgeführt?
         state.getWorkflowTrace().reset();
         int numTlsContexts = allTlsContexts.size();
         List<TlsAction> tlsActions = state.getWorkflowTrace().getTlsActions();
@@ -67,8 +72,6 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
         // ------------------------------------------
 
         int retransmissions = 0;
-        boolean exec_err = false;
-        int errorAction = -1;
         for (int i = 0; i < tlsActions.size(); i++) {
 
             // TODO: in multi ctx scenarios, how to handle earlyCleanShutdown ?
@@ -77,12 +80,32 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
                 break;
             }
 
-            // Führe Action aus
             TlsAction action = tlsActions.get(i);
-            try {
-                action.execute(state);
-            } catch (PreparationException | WorkflowExecutionException ex) {
-                throw new WorkflowExecutionException("Problem while executing Action:" + action.toString(), ex);
+            if (!action.isExecuted()) {
+                try {
+                    action.execute(state);
+                } catch (PreparationException | WorkflowExecutionException ex) {
+                    throw new WorkflowExecutionException("Problem while executing Action:" + action.toString(), ex);
+                }
+            } else {
+                try {
+                    if (action instanceof SendingAction) {
+
+                        SendMessageHelper sendMessageHelper = new SendMessageHelper();
+                        for (AbstractRecord record : ((SendingAction) action).getSendRecords()) {
+                            ((Record) record).setSequenceNumber(((Record) record).getSequenceNumber().getValue()
+                                    .add(BigInteger.ONE));
+                        }
+                        sendMessageHelper.sendRecords(((SendingAction) action).getSendRecords(), state.getTlsContext());
+
+                    } else if (action instanceof ReceivingAction) {
+
+                        action.execute(state);
+
+                    }
+                } catch (IOException | PreparationException | WorkflowExecutionException ex) {
+                    throw new WorkflowExecutionException("Problem while executing Action:" + action.toString(), ex);
+                }
             }
 
             if ((state.getConfig().isStopActionsAfterFatal() && isReceivedFatalAlert())) {
@@ -93,55 +116,44 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
                 LOGGER.debug("Skipping all Actions, received IO Exception, StopActionsAfterIOException active");
                 break;
             }
+
             if (!action.executedAsPlanned()) {
-                // Nutze diesen Flag für Retransmissions an/aus
                 if (config.isStopTraceAfterUnexpected()) {
                     LOGGER.debug("Skipping all Actions, action did not execute as planned.");
                     break;
                 } else if (retransmissions == config.getMaxRetransmissions()) {
                     break;
                 } else {
-                    // Aktuelle Action
-                    action.reset();
-                    // Davorherige Action
-                    int j = i - 1;
+                    int j = i;
                     for (; j >= 0; j--) {
-                        if (!(tlsActions.get(j) instanceof SendingAction)) {
+                        if (tlsActions.get(j) instanceof ReceivingAction) {
                             tlsActions.get(j).reset();
                         } else {
                             break;
                         }
+
                     }
                     for (; j >= 0; j--) {
-                        if (!(tlsActions.get(j) instanceof ReceivingAction)) {
-                            tlsActions.get(j).reset();
-                        } else {
+                        if (tlsActions.get(j) instanceof ReceivingAction) {
                             i = j;
                             break;
                         }
+
                     }
                     retransmissions++;
-                    // Merke Action mit Fehler
-                    errorAction = i;
-                    exec_err = true;
                 }
-            } else if (errorAction == i && exec_err) {
-                retransmissions = 0;
-                errorAction = -1;
-                exec_err = false;
             }
         }
 
-        // Close with Notify, if execution error
-        if (exec_err && config.isFinishWithCloseNotify()) {
-            TlsAction action = tlsActions.get(tlsActions.size() - 1);
-            try {
-                action.execute(state);
-            } catch (PreparationException | WorkflowExecutionException ex) {
-                throw new WorkflowExecutionException("Problem while executing Action:" + action.toString(), ex);
+        // Close Notify mit allen Epochs
+        if (config.isFinishWithCloseNotify() && config.getHighestProtocolVersion().isDTLS()) {
+            for (int epoch = state.getTlsContext().getDtlsWriteEpoch(); epoch >= 0; epoch--) {
+                DtlsCloseConnectionAction closeConnectionAction = new DtlsCloseConnectionAction(state
+                        .getWorkflowTrace().getConnections().get(0).getAlias(), epoch);
+                closeConnectionAction.getActionOptions().add(ActionOption.MAY_FAIL);
+                closeConnectionAction.execute(state);
             }
         }
-
         // ------------------------------------------
 
         if (state.getConfig().isWorkflowExecutorShouldClose()) {

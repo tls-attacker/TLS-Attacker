@@ -868,8 +868,6 @@ public class Config implements Serializable {
 
     private Boolean finishWithCloseNotify = false;
 
-    private Boolean safelyFinishWithCloseNotify = false;
-
     private Boolean ignoreRetransmittedCss = false;
 
     private Boolean addRetransmissionsToWorkflowTrace = false;
@@ -3036,14 +3034,6 @@ public class Config implements Serializable {
 
     public void setFinishWithCloseNotify(Boolean finishWithCloseNotify) {
         this.finishWithCloseNotify = finishWithCloseNotify;
-    }
-
-    public Boolean isSafelyFinishWithCloseNotify() {
-        return safelyFinishWithCloseNotify;
-    }
-
-    public void setSafelyFinishWithCloseNotify(Boolean safelyFinishWithCloseNotify) {
-        this.safelyFinishWithCloseNotify = safelyFinishWithCloseNotify;
     }
 
     public Boolean isIgnoreRetransmittedCss() {

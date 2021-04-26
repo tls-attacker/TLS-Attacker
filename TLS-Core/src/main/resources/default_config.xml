@@ -988,7 +988,6 @@ A9 DA F4 93 96 CF 12 EC  47 EF A7 A0 D3 88 2F 8B
     <stopReceivingAfterFatal>false</stopReceivingAfterFatal>
     <stopActionsAfterFatal>false</stopActionsAfterFatal>
     <finishWithCloseNotify>false</finishWithCloseNotify>
-    <safelyFinishWithCloseNotify>false</safelyFinishWithCloseNotify>
     <ignoreRetransmittedCss>false</ignoreRetransmittedCss>
     <addRetransmissionsToWorkflowTrace>false</addRetransmissionsToWorkflowTrace>
     <maxRetransmissions>3</maxRetransmissions>
