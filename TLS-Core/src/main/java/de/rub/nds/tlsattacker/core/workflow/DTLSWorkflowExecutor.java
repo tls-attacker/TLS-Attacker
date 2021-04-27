@@ -135,11 +135,11 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
                     }
                     for (; j >= 0; j--) {
                         if (tlsActions.get(j) instanceof ReceivingAction) {
-                            i = j;
                             break;
                         }
 
                     }
+                    i = j;
                     retransmissions++;
                 }
             }
