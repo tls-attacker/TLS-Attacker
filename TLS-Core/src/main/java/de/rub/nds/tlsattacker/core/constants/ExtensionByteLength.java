@@ -292,6 +292,11 @@ public class ExtensionByteLength {
      */
     public static final int COOKIE_LENGTH = 2;
 
+    /**
+     * RecordSizeLimit length in the RecordSizeLimitExtension
+     */
+    public static final int RECORD_SIZE_LIMIT_LENGTH = 2;
+
     private ExtensionByteLength() {
     }
 }
