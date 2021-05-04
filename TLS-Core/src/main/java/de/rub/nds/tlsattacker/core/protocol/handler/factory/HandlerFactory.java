@@ -84,6 +84,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.PWDProtectExtensio
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.PaddingExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.PasswordSaltExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.PreSharedKeyExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.RecordSizeLimitExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.RenegotiationInfoExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ServerAuthzExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ServerCertificateTypeExtensionHandler;
@@ -230,6 +231,8 @@ public class HandlerFactory {
                     return new KeyShareExtensionHandler(context, type);
                 case MAX_FRAGMENT_LENGTH:
                     return new MaxFragmentLengthExtensionHandler(context);
+                case RECORD_SIZE_LIMIT:
+                    return new RecordSizeLimitExtensionHandler(context);
                 case PADDING:
                     return new PaddingExtensionHandler(context);
                 case PRE_SHARED_KEY:
