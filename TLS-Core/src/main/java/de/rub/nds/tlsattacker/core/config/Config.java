@@ -526,6 +526,11 @@ public class Config implements Serializable {
     private Boolean addMaxFragmentLengthExtension = false;
 
     /**
+     * If we generate ClientHello with the RecordSizeLimit extension
+     */
+    private Boolean addRecordSizeLimitExtension = false;
+
+    /**
      * If we generate ClientHello with the ServerNameIndication extension
      */
     private Boolean addServerNameIndicationExtension = false;
@@ -981,6 +986,12 @@ public class Config implements Serializable {
     private ProtocolVersion defaultHighestClientProtocolVersion = ProtocolVersion.TLS12;
 
     private MaxFragmentLength defaultMaxFragmentLength = MaxFragmentLength.TWO_12;
+
+    /**
+     * RecordSizeLimit extension (RFC 8449) suggests the limit for TLS 1.2 (and earlier) to be 2^14 bytes and for TLS
+     * 1.3 2^14 + 1 bytes. We opt to go for the lowest value here which is 2^14 bytes.
+     */
+    private Integer defaultRecordSizeLimit = 0x4000;
 
     private HeartbeatMode defaultHeartbeatMode = HeartbeatMode.PEER_ALLOWED_TO_SEND;
 
@@ -2173,6 +2184,14 @@ public class Config implements Serializable {
         this.defaultMaxFragmentLength = defaultMaxFragmentLength;
     }
 
+    public Integer getDefaultRecordSizeLimit() {
+        return defaultRecordSizeLimit;
+    }
+
+    public Integer setDefaultRecordSizeLimit(int defaultRecordSizeLimit) {
+        this.defaultRecordSizeLimit = defaultRecordSizeLimit;
+    }
+
     public SignatureAndHashAlgorithm getDefaultSelectedSignatureAndHashAlgorithm() {
         return defaultSelectedSignatureAndHashAlgorithm;
     }
@@ -2615,6 +2634,14 @@ public class Config implements Serializable {
 
     public void setAddMaxFragmentLengthExtension(Boolean addMaxFragmentLengthExtension) {
         this.addMaxFragmentLengthExtension = addMaxFragmentLengthExtension;
+    }
+
+    public Boolean isAddRecordSizeLimitExtension() {
+        return addRecordSizeLimitExtension;
+    }
+
+    public void setAddRecordSizeLimitExtension(Boolean addRecordSizeLimitExtension) {
+        this.addRecordSizeLimitExtension = addRecordSizeLimitExtension;
     }
 
     public Boolean isAddServerNameIndicationExtension() {

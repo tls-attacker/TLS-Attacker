@@ -81,6 +81,10 @@ public abstract class Chooser {
 
     public abstract MaxFragmentLength getMaxFragmentLength();
 
+    public abstract Integer getClientRecordSizeLimit();
+
+    public abstract Integer getServerRecordSizeLimit();
+
     public abstract Integer getMaxEarlyDataSize();
 
     public abstract HeartbeatMode getHeartbeatMode();

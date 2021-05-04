@@ -273,8 +273,6 @@ public class TlsContext {
 
     private HeartbeatMode heartbeatMode;
 
-    private MaxFragmentLength maxFragmentLength;
-
     private SignatureAndHashAlgorithm selectedSigHashAlgorithm;
 
     private boolean cachedInfoExtensionClientState;
@@ -663,6 +661,16 @@ public class TlsContext {
     private Long esniNotAfter;
 
     private List<ExtensionType> esniExtensions;
+
+    /**
+     * Both methods of limiting record size as defined in RFC 3546 (MaximumFragmentLength extension) and RFC 8449
+     * (RecordSizeLimit extension). TODO: how to handle these concurrently?
+     */
+    private MaxFragmentLength maxFragmentLength;
+
+    private Integer clientRecordSizeLimit;
+
+    private Integer serverRecordSizeLimit;
 
     public TlsContext() {
         this(Config.createConfig());
@@ -1246,6 +1254,22 @@ public class TlsContext {
 
     public void setMaxFragmentLength(MaxFragmentLength maxFragmentLength) {
         this.maxFragmentLength = maxFragmentLength;
+    }
+
+    public Integer getClientRecordSizeLimit() {
+        return clientRecordSizeLimit;
+    }
+
+    public void setClientRecordSizeLimit(Integer recordSizeLimit) {
+        this.clientRecordSizeLimit = recordSizeLimit;
+    }
+
+    public Integer getServerRecordSizeLimit() {
+        return serverRecordSizeLimit;
+    }
+
+    public void setServerRecordSizeLimit(Integer recordSizeLimit) {
+        this.serverRecordSizeLimit = recordSizeLimit;
     }
 
     public HeartbeatMode getHeartbeatMode() {

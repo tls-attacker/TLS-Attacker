@@ -154,6 +154,24 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
+    public Integer getClientRecordSizeLimit() {
+        if (context.getClientRecordSizeLimit() != null) {
+            return context.getClientRecordSizeLimit();
+        } else {
+            return config.getDefaultRecordSizeLimit();
+        }
+    }
+
+    @Override
+    public Integer getServerRecordSizeLimit() {
+        if (context.getServerRecordSizeLimit() != null) {
+            return context.getServerRecordSizeLimit();
+        } else {
+            return config.getDefaultRecordSizeLimit();
+        }
+    }
+
+    @Override
     public HeartbeatMode getHeartbeatMode() {
         if (context.getHeartbeatMode() != null) {
             return context.getHeartbeatMode();
