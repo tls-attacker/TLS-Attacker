@@ -2188,7 +2188,7 @@ public class Config implements Serializable {
         return defaultRecordSizeLimit;
     }
 
-    public Integer setDefaultRecordSizeLimit(int defaultRecordSizeLimit) {
+    public void setDefaultRecordSizeLimit(Integer defaultRecordSizeLimit) {
         this.defaultRecordSizeLimit = defaultRecordSizeLimit;
     }
 
