@@ -99,7 +99,21 @@ public class RecordSizeLimitDelegateTest {
         Config config = Config.createConfig();
         args = new String[2];
         args[0] = "-record_size_limit";
-        args[1] = "66000";
+        args[1] = "65536";
+        final Integer defaultRecordSizeLimitBefore = config.getDefaultRecordSizeLimit();
+        assertFalse(config.isAddRecordSizeLimitExtension());
+        jcommander.parse(args);
+        delegate.applyDelegate(config);
+        assertTrue(config.getDefaultRecordSizeLimit() == defaultRecordSizeLimitBefore);
+        assertFalse(config.isAddRecordSizeLimitExtension());
+    }
+
+    @Test
+    public void testApplyDelegateNegative() {
+        Config config = Config.createConfig();
+        args = new String[2];
+        args[0] = "-record_size_limit";
+        args[1] = "-1";
         final Integer defaultRecordSizeLimitBefore = config.getDefaultRecordSizeLimit();
         assertFalse(config.isAddRecordSizeLimitExtension());
         jcommander.parse(args);
