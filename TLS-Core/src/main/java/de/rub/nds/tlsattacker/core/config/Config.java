@@ -39,6 +39,7 @@ import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.PskKeyExchangeMode;
+import de.rub.nds.tlsattacker.core.constants.RecordSizeLimit;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.constants.SSL2CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
@@ -987,11 +988,7 @@ public class Config implements Serializable {
 
     private MaxFragmentLength defaultMaxFragmentLength = MaxFragmentLength.TWO_12;
 
-    /**
-     * RecordSizeLimit extension (RFC 8449) suggests the limit for TLS 1.2 (and earlier) to be 2^14 bytes and for TLS
-     * 1.3 2^14 + 1 bytes. We opt to go for the lowest value here which is 2^14 bytes.
-     */
-    private Integer defaultRecordSizeLimit = 0x4000;
+    private Integer recordSizeLimit = RecordSizeLimit.DEFAULT_RECORD_SIZE_LIMIT;
 
     private HeartbeatMode defaultHeartbeatMode = HeartbeatMode.PEER_ALLOWED_TO_SEND;
 
@@ -2184,12 +2181,12 @@ public class Config implements Serializable {
         this.defaultMaxFragmentLength = defaultMaxFragmentLength;
     }
 
-    public Integer getDefaultRecordSizeLimit() {
-        return defaultRecordSizeLimit;
+    public Integer getRecordSizeLimit() {
+        return recordSizeLimit;
     }
 
-    public void setDefaultRecordSizeLimit(Integer defaultRecordSizeLimit) {
-        this.defaultRecordSizeLimit = defaultRecordSizeLimit;
+    public void setRecordSizeLimit(Integer recordSizeLimit) {
+        this.recordSizeLimit = recordSizeLimit;
     }
 
     public SignatureAndHashAlgorithm getDefaultSelectedSignatureAndHashAlgorithm() {

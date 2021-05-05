@@ -158,7 +158,7 @@ public class DefaultChooser extends Chooser {
         if (context.getClientRecordSizeLimit() != null) {
             return context.getClientRecordSizeLimit();
         } else {
-            return config.getDefaultRecordSizeLimit();
+            return config.getRecordSizeLimit();
         }
     }
 
@@ -167,7 +167,7 @@ public class DefaultChooser extends Chooser {
         if (context.getServerRecordSizeLimit() != null) {
             return context.getServerRecordSizeLimit();
         } else {
-            return config.getDefaultRecordSizeLimit();
+            return config.getRecordSizeLimit();
         }
     }
 

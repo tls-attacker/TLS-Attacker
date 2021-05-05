@@ -49,6 +49,6 @@ public class RecordSizeLimitDelegate extends Delegate {
         }
 
         config.setAddRecordSizeLimitExtension(true);
-        config.setDefaultRecordSizeLimit(recordSizeLimit);
+        config.setRecordSizeLimit(recordSizeLimit);
     }
 }
