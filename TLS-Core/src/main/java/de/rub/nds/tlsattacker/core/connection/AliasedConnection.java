@@ -26,7 +26,7 @@ public abstract class AliasedConnection extends Connection implements Aliasable 
     public static final String DEFAULT_CONNECTION_ALIAS = "defaultConnection";
     public static final TransportHandlerType DEFAULT_TRANSPORT_HANDLER_TYPE = TransportHandlerType.TCP;
     public static final Integer DEFAULT_TIMEOUT = 1000;
-    public static final Integer DEFAULT_CONNECTION_TIMEOUT = 60000;
+    public static final Integer DEFAULT_CONNECTION_TIMEOUT = 8000;
     public static final Integer DEFAULT_FIRST_TIMEOUT = DEFAULT_TIMEOUT;
     public static final String DEFAULT_HOSTNAME = "localhost";
     public static final String DEFAULT_IP = "127.0.0.1";
