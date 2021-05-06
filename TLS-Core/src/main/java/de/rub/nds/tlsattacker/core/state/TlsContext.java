@@ -2596,28 +2596,28 @@ public class TlsContext {
             return config.getDefaultMaxRecordData();
         }
 
-        // recordSizeLimit will be chosen based on the following order:
+        // recordDataSizeLimit will be chosen based on the following order:
         // (1) the context value for targetConnectionEndType
         // (2) the explicitly configured default value
         // (3) config.getDefaultMaxRecordData() implicitly
-        Integer recordSizeLimit = 0;
+        Integer recordDataSizeLimit = 0;
         if (targetConnectionEndType == ConnectionEndType.CLIENT) {
-            recordSizeLimit = chooser.getClientRecordSizeLimit();
+            recordDataSizeLimit = chooser.getClientRecordSizeLimit();
         }
         if (targetConnectionEndType == ConnectionEndType.SERVER) {
-            recordSizeLimit = chooser.getServerRecordSizeLimit();
+            recordDataSizeLimit = chooser.getServerRecordSizeLimit();
         }
         // for TLS 1.3, record_size_limit covers the whole TLSInnerPlaintext
         // -> we need to reserve space for the content type (1 byte) and possibly additional padding
         if (chooser.getSelectedProtocolVersion().isTLS13()) {
-            recordSizeLimit -= 1;
-            config.getDefaultAdditionalPadding();
+            recordDataSizeLimit -= 1;
+            recordDataSizeLimit -= config.getDefaultAdditionalPadding();
         }
         // poorly configured combination of record_size_limit and TLS 1.3 additional padding results in default
-        if (recordSizeLimit <= 0) {
+        if (recordDataSizeLimit <= 0) {
             return config.getDefaultMaxRecordData();
         }
 
-        return recordSizeLimit;
+        return recordDataSizeLimit;
     }
 }
