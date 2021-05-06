@@ -36,7 +36,8 @@ public class RecordSizeLimitExtensionPreparator extends ExtensionPreparator<Reco
         if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
             message.setRecordSizeLimit(ArrayConverter.intToBytes(chooser.getClientRecordSizeLimit(),
                 ExtensionByteLength.RECORD_SIZE_LIMIT_LENGTH));
-        } else {
+        }
+        if (chooser.getConnectionEndType() == ConnectionEndType.SERVER) {
             message.setRecordSizeLimit(ArrayConverter.intToBytes(chooser.getServerRecordSizeLimit(),
                 ExtensionByteLength.RECORD_SIZE_LIMIT_LENGTH));
         }
