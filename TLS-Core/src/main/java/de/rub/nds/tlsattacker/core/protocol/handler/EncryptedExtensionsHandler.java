@@ -9,6 +9,7 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
@@ -60,6 +61,19 @@ public class EncryptedExtensionsHandler extends HandshakeMessageHandler<Encrypte
                 handler.adjustTLSContext(extension);
             }
         }
+        // executes even if record_size_limit was (contrary to the specification) not sent with encrypted extensions
+        adjustConflictingExtensions();
     }
 
+    private void adjustConflictingExtensions() {
+        // RFC 8449 says 'A client MUST treat receipt of both "max_fragment_length" and "record_size_limit" as a fatal
+        // error, and it SHOULD generate an "illegal_parameter" alert.', ignoring that for now and disabling
+        // max_fragment_length
+        if (tlsContext.isExtensionNegotiated(ExtensionType.MAX_FRAGMENT_LENGTH)
+            && tlsContext.isExtensionNegotiated(ExtensionType.RECORD_SIZE_LIMIT)) {
+            LOGGER.warn(
+                "Found max_fragment_length and record_size_limit extensions, disabling max_fragment_length in context");
+            tlsContext.setMaxFragmentLength(null);
+        }
+    }
 }
