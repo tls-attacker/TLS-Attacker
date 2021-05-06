@@ -2818,7 +2818,6 @@
       <xs:element name="serverSupportedSignatureAndHashAlgorithms" type="signatureAndHashAlgorithm" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="clientSupportedSignatureAndHashAlgorithms" type="signatureAndHashAlgorithm" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="heartbeatMode" type="heartbeatMode" minOccurs="0"/>
-      <xs:element name="maxFragmentLength" type="maxFragmentLength" minOccurs="0"/>
       <xs:element name="selectedSigHashAlgorithm" type="signatureAndHashAlgorithm" minOccurs="0"/>
       <xs:element name="cachedInfoExtensionClientState" type="xs:boolean"/>
       <xs:element name="cachedInfoExtensionObjects" type="cachedObject" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
@@ -2955,6 +2954,9 @@
       <xs:element name="esniNotBefore" type="xs:long" minOccurs="0"/>
       <xs:element name="esniNotAfter" type="xs:long" minOccurs="0"/>
       <xs:element name="esniExtensions" type="extensionType" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="maxFragmentLength" type="maxFragmentLength" minOccurs="0"/>
+      <xs:element name="clientRecordSizeLimit" type="xs:int" minOccurs="0"/>
+      <xs:element name="serverRecordSizeLimit" type="xs:int" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -2994,6 +2996,12 @@
   </xs:complexType>
 
   <xs:complexType name="recordLayer" abstract="true">
+    <xs:sequence>
+      <xs:element name="recordCipher" type="recordCipher" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="recordCipher" abstract="true">
     <xs:sequence/>
   </xs:complexType>
 
@@ -4590,15 +4598,6 @@
     </xs:restriction>
   </xs:simpleType>
 
-  <xs:simpleType name="maxFragmentLength">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="TWO_9"/>
-      <xs:enumeration value="TWO_10"/>
-      <xs:enumeration value="TWO_11"/>
-      <xs:enumeration value="TWO_12"/>
-    </xs:restriction>
-  </xs:simpleType>
-
   <xs:simpleType name="certificateType">
     <xs:restriction base="xs:string">
       <xs:enumeration value="X509"/>
@@ -4741,6 +4740,15 @@
       <xs:enumeration value="VERSION_FF01"/>
       <xs:enumeration value="VERSION_FF02"/>
       <xs:enumeration value="VERSION_FF03"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="maxFragmentLength">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="TWO_9"/>
+      <xs:enumeration value="TWO_10"/>
+      <xs:enumeration value="TWO_11"/>
+      <xs:enumeration value="TWO_12"/>
     </xs:restriction>
   </xs:simpleType>
 
