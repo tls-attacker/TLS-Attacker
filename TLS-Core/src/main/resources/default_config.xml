@@ -1018,7 +1018,6 @@
     <defaultHighestClientProtocolVersion>TLS12</defaultHighestClientProtocolVersion>
     <defaultMaxFragmentLength>TWO_12</defaultMaxFragmentLength>
     <defaultMaxRecordData>16384</defaultMaxRecordData>
-    <recordSizeLimit>16384</recordSizeLimit>
     <defaultHeartbeatMode>PEER_ALLOWED_TO_SEND</defaultHeartbeatMode>
     <defaultClientSupportedCompressionMethods>
         <defaultClientSupportedCompressionMethod>NULL</defaultClientSupportedCompressionMethod>

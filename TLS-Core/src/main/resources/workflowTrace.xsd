@@ -2955,8 +2955,8 @@
       <xs:element name="esniNotAfter" type="xs:long" minOccurs="0"/>
       <xs:element name="esniExtensions" type="extensionType" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="maxFragmentLength" type="maxFragmentLength" minOccurs="0"/>
-      <xs:element name="clientRecordSizeLimit" type="xs:int" minOccurs="0"/>
-      <xs:element name="serverRecordSizeLimit" type="xs:int" minOccurs="0"/>
+      <xs:element name="outboundRecordSizeLimit" type="xs:int" minOccurs="0"/>
+      <xs:element name="inboundRecordSizeLimit" type="xs:int" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
 

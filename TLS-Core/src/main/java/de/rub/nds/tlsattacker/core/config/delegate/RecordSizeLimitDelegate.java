@@ -20,7 +20,7 @@ public class RecordSizeLimitDelegate extends Delegate {
     private static final Logger LOGGER = LogManager.getLogger();
 
     @Parameter(names = "-record_size_limit",
-        description = "Record size limit definition for the TLS extension described in RFC 8449 (0 < value < 65536)")
+        description = "Record size limit to be advertised in the corresponding TLS extension (0 < value < 65536)")
     private Integer recordSizeLimit = null;
 
     public RecordSizeLimitDelegate() {
@@ -49,6 +49,6 @@ public class RecordSizeLimitDelegate extends Delegate {
         }
 
         config.setAddRecordSizeLimitExtension(true);
-        config.setRecordSizeLimit(recordSizeLimit);
+        config.setInboundRecordSizeLimit(recordSizeLimit);
     }
 }

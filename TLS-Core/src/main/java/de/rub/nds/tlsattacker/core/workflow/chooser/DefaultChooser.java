@@ -154,24 +154,6 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public Integer getClientRecordSizeLimit() {
-        if (context.getClientRecordSizeLimit() != null) {
-            return context.getClientRecordSizeLimit();
-        } else {
-            return config.getRecordSizeLimit();
-        }
-    }
-
-    @Override
-    public Integer getServerRecordSizeLimit() {
-        if (context.getServerRecordSizeLimit() != null) {
-            return context.getServerRecordSizeLimit();
-        } else {
-            return config.getRecordSizeLimit();
-        }
-    }
-
-    @Override
     public HeartbeatMode getHeartbeatMode() {
         if (context.getHeartbeatMode() != null) {
             return context.getHeartbeatMode();
@@ -1167,6 +1149,26 @@ public class DefaultChooser extends Chooser {
             return context.getExtensionCookie();
         } else {
             return config.getDefaultExtensionCookie();
+        }
+    }
+
+    @Override
+    public Integer getOutboundRecordSizeLimit() {
+        if (context.getOutboundRecordSizeLimit() != null) {
+            return context.getOutboundRecordSizeLimit();
+        } else {
+            return config.getDefaultMaxRecordData();
+        }
+    }
+
+    @Override
+    public Integer getInboundRecordSizeLimit() {
+        if (context.getInboundRecordSizeLimit() != null) {
+            return context.getInboundRecordSizeLimit();
+        } else if (config.getInboundRecordSizeLimit() != null) {
+            return config.getInboundRecordSizeLimit();
+        } else {
+            return config.getDefaultMaxRecordData();
         }
     }
 }

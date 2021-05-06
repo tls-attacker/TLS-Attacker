@@ -26,47 +26,29 @@ public class RecordSizeLimitExtensionPreparatorTest {
 
     private Config config;
     private TlsContext context;
-    private RecordSizeLimitExtensionPreparator preparator;
     private RecordSizeLimitExtensionMessage message;
+    private RecordSizeLimitExtensionPreparator preparator;
 
     @Before
     public void setUp() {
         config = Config.createConfig();
+        context = new TlsContext(config);
         message = new RecordSizeLimitExtensionMessage();
+        preparator = new RecordSizeLimitExtensionPreparator(context.getChooser(), message,
+            new RecordSizeLimitExtensionSerializer(message));
     }
 
     /**
      * Test of prepare method, of class RecordSizeLimitExtensionPreparator.
      */
     @Test
-    public void testPreparatorClient() {
-        config.setDefaultRunningMode(RunningModeType.CLIENT);
-        context = new TlsContext(config);
-        preparator =
-            new RecordSizeLimitExtensionPreparator(ChooserFactory.getChooser(ChooserType.DEFAULT, context, config),
-                message, new RecordSizeLimitExtensionSerializer(message));
-        context.setClientRecordSizeLimit(1337);
+    public void testPreparator() {
+        context.setOutboundRecordSizeLimit(1337);
 
         preparator.prepare();
 
         assertArrayEquals(new byte[] { (byte) 0x05, (byte) 0x39 }, message.getRecordSizeLimit().getValue());
-        assertArrayEquals(ArrayConverter.intToBytes(context.getClientRecordSizeLimit(), 2),
-            message.getRecordSizeLimit().getValue());
-    }
-
-    @Test
-    public void testPreparatorServer() {
-        config.setDefaultRunningMode(RunningModeType.SERVER);
-        context = new TlsContext(config);
-        preparator =
-            new RecordSizeLimitExtensionPreparator(ChooserFactory.getChooser(ChooserType.DEFAULT, context, config),
-                message, new RecordSizeLimitExtensionSerializer(message));
-        context.setServerRecordSizeLimit(1337);
-
-        preparator.prepare();
-
-        assertArrayEquals(new byte[] { (byte) 0x05, (byte) 0x39 }, message.getRecordSizeLimit().getValue());
-        assertArrayEquals(ArrayConverter.intToBytes(context.getServerRecordSizeLimit(), 2),
+        assertArrayEquals(ArrayConverter.intToBytes(context.getOutboundRecordSizeLimit(), 2),
             message.getRecordSizeLimit().getValue());
     }
 }

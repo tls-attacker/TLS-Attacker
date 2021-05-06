@@ -72,12 +72,12 @@ public class RecordSizeLimitDelegateTest {
         args = new String[2];
         args[0] = "-record_size_limit";
         args[1] = "1337";
-        assertFalse(config.getRecordSizeLimit() == 1337);
+        assertFalse(config.getInboundRecordSizeLimit() == 1337);
         assertFalse(config.isAddRecordSizeLimitExtension());
         jcommander.parse(args);
         delegate.applyDelegate(config);
         assertTrue(config.isAddRecordSizeLimitExtension());
-        assertTrue(config.getRecordSizeLimit() == 1337);
+        assertTrue(config.getInboundRecordSizeLimit() == 1337);
     }
 
     @Test
@@ -86,11 +86,11 @@ public class RecordSizeLimitDelegateTest {
         args = new String[2];
         args[0] = "-record_size_limit";
         args[1] = "0";
-        final Integer recordSizeLimitBefore = config.getRecordSizeLimit();
+        final Integer recordSizeLimitBefore = config.getInboundRecordSizeLimit();
         assertFalse(config.isAddRecordSizeLimitExtension());
         jcommander.parse(args);
         delegate.applyDelegate(config);
-        assertTrue(config.getRecordSizeLimit() == recordSizeLimitBefore);
+        assertTrue(config.getInboundRecordSizeLimit() == recordSizeLimitBefore);
         assertFalse(config.isAddRecordSizeLimitExtension());
     }
 
@@ -100,11 +100,11 @@ public class RecordSizeLimitDelegateTest {
         args = new String[2];
         args[0] = "-record_size_limit";
         args[1] = "65536";
-        final Integer recordSizeLimitBefore = config.getRecordSizeLimit();
+        final Integer recordSizeLimitBefore = config.getInboundRecordSizeLimit();
         assertFalse(config.isAddRecordSizeLimitExtension());
         jcommander.parse(args);
         delegate.applyDelegate(config);
-        assertTrue(config.getRecordSizeLimit() == recordSizeLimitBefore);
+        assertTrue(config.getInboundRecordSizeLimit() == recordSizeLimitBefore);
         assertFalse(config.isAddRecordSizeLimitExtension());
     }
 
@@ -114,11 +114,11 @@ public class RecordSizeLimitDelegateTest {
         args = new String[2];
         args[0] = "-record_size_limit";
         args[1] = "-1";
-        final Integer recordSizeLimitBefore = config.getRecordSizeLimit();
+        final Integer recordSizeLimitBefore = config.getInboundRecordSizeLimit();
         assertFalse(config.isAddRecordSizeLimitExtension());
         jcommander.parse(args);
         delegate.applyDelegate(config);
-        assertTrue(config.getRecordSizeLimit() == recordSizeLimitBefore);
+        assertTrue(config.getInboundRecordSizeLimit() == recordSizeLimitBefore);
         assertFalse(config.isAddRecordSizeLimitExtension());
     }
 

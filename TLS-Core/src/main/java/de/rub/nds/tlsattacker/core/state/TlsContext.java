@@ -673,9 +673,9 @@ public class TlsContext {
      */
     private MaxFragmentLength maxFragmentLength;
 
-    private Integer clientRecordSizeLimit;
+    private Integer outboundRecordSizeLimit;
 
-    private Integer serverRecordSizeLimit;
+    private Integer inboundRecordSizeLimit;
 
     public TlsContext() {
         this(Config.createConfig());
@@ -1259,22 +1259,6 @@ public class TlsContext {
 
     public void setMaxFragmentLength(MaxFragmentLength maxFragmentLength) {
         this.maxFragmentLength = maxFragmentLength;
-    }
-
-    public Integer getClientRecordSizeLimit() {
-        return clientRecordSizeLimit;
-    }
-
-    public void setClientRecordSizeLimit(Integer recordSizeLimit) {
-        this.clientRecordSizeLimit = recordSizeLimit;
-    }
-
-    public Integer getServerRecordSizeLimit() {
-        return serverRecordSizeLimit;
-    }
-
-    public void setServerRecordSizeLimit(Integer recordSizeLimit) {
-        this.serverRecordSizeLimit = recordSizeLimit;
     }
 
     public HeartbeatMode getHeartbeatMode() {
@@ -2559,6 +2543,27 @@ public class TlsContext {
         this.receivedMessageWithWrongTls13KeyType = receivedMessageWithWrongTls13KeyType;
     }
 
+    public Integer getOutboundRecordSizeLimit() {
+        return outboundRecordSizeLimit;
+    }
+
+    public void setOutboundRecordSizeLimit(Integer recordSizeLimit) {
+        this.outboundRecordSizeLimit = recordSizeLimit;
+    }
+
+    public Integer getInboundRecordSizeLimit() {
+        return inboundRecordSizeLimit;
+    }
+
+    public void setInboundRecordSizeLimit(Integer recordSizeLimit) {
+        this.inboundRecordSizeLimit = recordSizeLimit;
+    }
+
+    public boolean isRecordSizeLimitExtensionActive() {
+        return outboundRecordSizeLimit != null || inboundRecordSizeLimit != null
+            || config.getInboundRecordSizeLimit() != null;
+    }
+
     public Boolean isRecordEncryptionActive() {
         if (this.recordLayer == null) {
             return false;
@@ -2567,57 +2572,50 @@ public class TlsContext {
         return !(this.recordLayer.getRecordCipher() instanceof RecordNullCipher);
     }
 
-    public Integer getOutgoingRecordDataSizeLimit() {
-        return getRecordDataSizeLimit(chooser.getMyConnectionPeer());
+    public Integer getOutboundMaxRecordDataSize() {
+        return getMaxRecordDataSize(chooser.getOutboundRecordSizeLimit());
     }
 
-    public Integer getIncomingRecordDataSizeLimit() {
-        return getRecordDataSizeLimit(connection.getLocalConnectionEndType());
+    public Integer getInboundMaxRecordDataSize() {
+        return getMaxRecordDataSize(chooser.getInboundRecordSizeLimit());
     }
 
     /**
-     * Calculates the record data size limit for the target connection end type with respect to extensions and the
+     * Calculates the record data size limit for the current connection direction with respect to extensions and the
      * current encryption status.
      *
      * Disclaimer: this is not 100% accurate for TLS 1.3 since the actual padding length can be slightly different
      * (compared to configured additional padding length) depending on the ciphers block size. I don't think it is
      * necessary to introduce this additional complexity. Revisit if we run into problems with an implementation.
      *
-     * @return the record data size limit for the target connection end type
+     * @param  recordSizeLimit
+     *                         the record_size_limit extension value for the current connection direction
+     *
+     * @return                 the record data size limit for the target connection end type
      */
-    private Integer getRecordDataSizeLimit(ConnectionEndType targetConnectionEndType) {
+    private Integer getMaxRecordDataSize(Integer recordSizeLimit) {
         // max_fragment_length extension applies to all records if record_size_limit extension is not active
-        if (maxFragmentLength != null && clientRecordSizeLimit == null && serverRecordSizeLimit == null) {
+        if (!isRecordSizeLimitExtensionActive() && maxFragmentLength != null) {
             return MaxFragmentLength.getIntegerRepresentation(maxFragmentLength);
         }
 
         // record_size_limit extension applies only to encrypted records
-        if (!isRecordEncryptionActive()) {
+        if (!isRecordSizeLimitExtensionActive() || !isRecordEncryptionActive()) {
             return config.getDefaultMaxRecordData();
         }
 
-        // recordDataSizeLimit will be chosen based on the following order:
-        // (1) the context value for targetConnectionEndType
-        // (2) the explicitly configured default value
-        // (3) config.getDefaultMaxRecordData() implicitly
-        Integer recordDataSizeLimit = 0;
-        if (targetConnectionEndType == ConnectionEndType.CLIENT) {
-            recordDataSizeLimit = chooser.getClientRecordSizeLimit();
-        }
-        if (targetConnectionEndType == ConnectionEndType.SERVER) {
-            recordDataSizeLimit = chooser.getServerRecordSizeLimit();
-        }
+        Integer maxRecordDataSize = recordSizeLimit;
         // for TLS 1.3, record_size_limit covers the whole TLSInnerPlaintext
         // -> we need to reserve space for the content type (1 byte) and possibly additional padding
         if (chooser.getSelectedProtocolVersion().isTLS13()) {
-            recordDataSizeLimit -= 1;
-            recordDataSizeLimit -= config.getDefaultAdditionalPadding();
+            maxRecordDataSize -= 1;
+            maxRecordDataSize -= config.getDefaultAdditionalPadding();
         }
-        // poorly configured combination of record_size_limit and TLS 1.3 additional padding results in default
-        if (recordDataSizeLimit <= 0) {
+        // poorly configured combination of record_size_limit extension and TLS 1.3 additional padding -> default
+        if (maxRecordDataSize <= 0) {
             return config.getDefaultMaxRecordData();
         }
 
-        return recordDataSizeLimit;
+        return maxRecordDataSize;
     }
 }

@@ -81,10 +81,6 @@ public abstract class Chooser {
 
     public abstract MaxFragmentLength getMaxFragmentLength();
 
-    public abstract Integer getClientRecordSizeLimit();
-
-    public abstract Integer getServerRecordSizeLimit();
-
     public abstract Integer getMaxEarlyDataSize();
 
     public abstract HeartbeatMode getHeartbeatMode();
@@ -314,4 +310,8 @@ public abstract class Chooser {
     public abstract List<String> getProposedAlpnProtocols();
 
     public abstract byte[] getLastClientHello();
+
+    public abstract Integer getOutboundRecordSizeLimit();
+
+    public abstract Integer getInboundRecordSizeLimit();
 }

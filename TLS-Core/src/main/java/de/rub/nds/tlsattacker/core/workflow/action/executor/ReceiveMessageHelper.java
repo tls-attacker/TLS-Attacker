@@ -142,9 +142,9 @@ public class ReceiveMessageHelper {
         for (AbstractRecord record : result.getRecordList()) {
             if (record.getCleanProtocolMessageBytes() != null) {
                 final int recordDataSize = record.getCleanProtocolMessageBytes().getValue().length;
-                if (recordDataSize > context.getIncomingRecordDataSizeLimit()) {
-                    LOGGER.warn("Received record with size (" + recordDataSize + ") greater than negotiated limit ("
-                        + context.getIncomingRecordDataSizeLimit() + ")");
+                if (recordDataSize > context.getInboundMaxRecordDataSize()) {
+                    LOGGER.warn("Received record with size (" + recordDataSize + ") greater than advertised limit ("
+                        + context.getInboundMaxRecordDataSize() + ")");
                 }
             }
         }

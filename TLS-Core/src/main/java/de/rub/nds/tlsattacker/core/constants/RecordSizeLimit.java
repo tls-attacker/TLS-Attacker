@@ -21,5 +21,5 @@ public class RecordSizeLimit {
      * RFC 8449 suggests the limit for TLS 1.2 (and earlier) to be 2^14 bytes and for TLS 1.3 2^14 + 1 bytes. We opt to
      * go for the lowest common value here which is 2^14 bytes.
      */
-    public static final Integer DEFAULT_RECORD_DATA_SIZE_LIMIT = 16384;
+    public static final Integer DEFAULT_MAX_RECORD_DATA_SIZE = 16384;
 }

@@ -984,9 +984,9 @@ public class Config implements Serializable {
      */
     private MaxFragmentLength defaultMaxFragmentLength = MaxFragmentLength.TWO_12;
 
-    private Integer defaultMaxRecordData = RecordSizeLimit.DEFAULT_RECORD_DATA_SIZE_LIMIT;
+    private Integer defaultMaxRecordData = RecordSizeLimit.DEFAULT_MAX_RECORD_DATA_SIZE;
 
-    private Integer recordSizeLimit = RecordSizeLimit.DEFAULT_RECORD_DATA_SIZE_LIMIT;
+    private Integer inboundRecordSizeLimit;
 
     private HeartbeatMode defaultHeartbeatMode = HeartbeatMode.PEER_ALLOWED_TO_SEND;
 
@@ -2179,12 +2179,12 @@ public class Config implements Serializable {
         this.defaultMaxFragmentLength = defaultMaxFragmentLength;
     }
 
-    public Integer getRecordSizeLimit() {
-        return recordSizeLimit;
+    public Integer getInboundRecordSizeLimit() {
+        return inboundRecordSizeLimit;
     }
 
-    public void setRecordSizeLimit(Integer recordSizeLimit) {
-        this.recordSizeLimit = recordSizeLimit;
+    public void setInboundRecordSizeLimit(Integer inboundRecordSizeLimit) {
+        this.inboundRecordSizeLimit = inboundRecordSizeLimit;
     }
 
     public SignatureAndHashAlgorithm getDefaultSelectedSignatureAndHashAlgorithm() {
