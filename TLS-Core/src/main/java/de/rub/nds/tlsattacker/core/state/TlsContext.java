@@ -52,6 +52,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.SNIEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.RequestItemV2;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
+import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayer;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerFactory;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
@@ -1270,6 +1271,60 @@ public class TlsContext {
 
     public void setServerRecordSizeLimit(Integer recordSizeLimit) {
         this.serverRecordSizeLimit = recordSizeLimit;
+    }
+
+    public Boolean isRecordEncryptionActive() {
+        if (this.recordLayer == null) {
+            return false;
+        }
+
+        return !(this.recordLayer.getRecordCipher() instanceof RecordNullCipher);
+    }
+
+    /**
+     * Decides on the outgoing record data size limit with respect to extensions and the current encryption status
+     *
+     * @return the outgoing record data size limit
+     */
+    public Integer getOutgoingRecordDataSizeLimit() {
+        // max_fragment_length extension should be ignored if record_size_limit extension is present
+        if (maxFragmentLength != null && clientRecordSizeLimit == null && serverRecordSizeLimit == null) {
+            return MaxFragmentLength.getIntegerRepresentation(maxFragmentLength);
+        }
+
+        // record_size_limit extension applies only to encrypted records
+        if (isRecordEncryptionActive() && getChooser().getMyConnectionPeer() == ConnectionEndType.CLIENT) {
+            return getChooser().getClientRecordSizeLimit();
+        }
+        if (isRecordEncryptionActive() && getChooser().getMyConnectionPeer() == ConnectionEndType.SERVER) {
+            return getChooser().getServerRecordSizeLimit();
+        }
+
+        // all unencrypted records (if max_fragment_length extension is not present)
+        return config.getDefaultMaxRecordData();
+    }
+
+    /**
+     * Decides on the incoming record data size limit with respect to extensions and the current encryption status
+     *
+     * @return the incoming record data size limit
+     */
+    public Integer getIncomingRecordDataSizeLimit() {
+        // max_fragment_length extension should be ignored if record_size_limit extension is present
+        if (maxFragmentLength != null && clientRecordSizeLimit == null && serverRecordSizeLimit == null) {
+            return MaxFragmentLength.getIntegerRepresentation(maxFragmentLength);
+        }
+
+        // record_size_limit extension applies only to encrypted records
+        if (isRecordEncryptionActive() && connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
+            return getChooser().getClientRecordSizeLimit();
+        }
+        if (isRecordEncryptionActive() && connection.getLocalConnectionEndType() == ConnectionEndType.SERVER) {
+            return getChooser().getServerRecordSizeLimit();
+        }
+
+        // all unencrypted records (if max_fragment_length extension is not present)
+        return config.getDefaultMaxRecordData();
     }
 
     public HeartbeatMode getHeartbeatMode() {

@@ -148,6 +148,18 @@ public class ReceiveMessageHelper {
             result = processUngroupedRecords(tempRecords, context);
         }
 
+        // RFC 8449 says "A TLS endpoint that receives a record larger than its advertised limit MUST generate a
+        // fatal "record_overflow" alert", ignoring that for now
+        for (AbstractRecord record : result.getRecordList()) {
+            if (record.getCleanProtocolMessageBytes() != null) {
+                final int recordDataSize = record.getCleanProtocolMessageBytes().getValue().length;
+                if (recordDataSize > context.getIncomingRecordDataSizeLimit()) {
+                    LOGGER.warn("Received record with size (" + recordDataSize + ") greater than negotiated limit ("
+                        + context.getIncomingRecordDataSizeLimit() + ")");
+                }
+            }
+        }
+
         return result;
     }
 

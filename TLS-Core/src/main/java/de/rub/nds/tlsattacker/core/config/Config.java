@@ -305,11 +305,6 @@ public class Config implements Serializable {
     private Integer prefferedCertDssKeySize = 2048;
 
     /**
-     * MaxFragmentLength in MaxFragmentLengthExtension
-     */
-    private MaxFragmentLength maxFragmentLength = MaxFragmentLength.TWO_9;
-
-    /**
      * Determine if CCS should be encrypted in TLS 1.3 if encryption is set up for record layer
      */
     private Boolean encryptChangeCipherSpecTls13 = false;
@@ -881,11 +876,6 @@ public class Config implements Serializable {
     private Integer heartbeatPaddingLength = 256;
 
     /**
-     * How much data we should put into a record by default
-     */
-    private Integer defaultMaxRecordData = 16384;
-
-    /**
      * How much padding bytes should be send by default
      */
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
@@ -986,7 +976,15 @@ public class Config implements Serializable {
 
     private ProtocolVersion defaultHighestClientProtocolVersion = ProtocolVersion.TLS12;
 
+    /**
+     * Various methods of limiting record/fragment size as defined in RFC 3546 (MaximumFragmentLength extension) and RFC
+     * 8449 (RecordSizeLimit extension). TODO: should we rename defaultMaxRecordData? recordSizeLimit only applies to
+     * encrypted records, so defaultMaxRecordData will take effect for all unencrypted records. in this sense, renaming
+     * it to defaultRecordSizeLimit would not be accurate.
+     */
     private MaxFragmentLength defaultMaxFragmentLength = MaxFragmentLength.TWO_12;
+
+    private Integer defaultMaxRecordData = 16384;
 
     private Integer recordSizeLimit = RecordSizeLimit.DEFAULT_RECORD_SIZE_LIMIT;
 
@@ -2512,14 +2510,6 @@ public class Config implements Serializable {
 
     public void setWorkflowInput(String workflowInput) {
         this.workflowInput = workflowInput;
-    }
-
-    public MaxFragmentLength getMaxFragmentLength() {
-        return maxFragmentLength;
-    }
-
-    public void setMaxFragmentLength(MaxFragmentLength maxFragmentLengthConfig) {
-        this.maxFragmentLength = maxFragmentLengthConfig;
     }
 
     public NamedGroup getDefaultSelectedNamedGroup() {

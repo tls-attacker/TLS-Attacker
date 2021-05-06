@@ -40,6 +40,7 @@ public class MaxFragmentLengthExtensionHandler extends ExtensionHandler<MaxFragm
             LOGGER.warn("Unknown MaxFragmentLength:" + ArrayConverter.bytesToHexString(maxFragmentLengthBytes));
         } else {
             context.setMaxFragmentLength(length);
+            context.getConfig().setAddMaxFragmentLengthExtension(Boolean.TRUE);
         }
     }
 

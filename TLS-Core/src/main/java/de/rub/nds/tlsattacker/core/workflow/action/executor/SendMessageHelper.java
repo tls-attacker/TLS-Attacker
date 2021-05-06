@@ -177,9 +177,7 @@ public class SendMessageHelper {
             }
             AbstractRecord record = records.get(position);
             toFillList.add(record);
-            if (record.getMaxRecordLengthConfig() == null) {
-                record.setMaxRecordLengthConfig(context.getConfig().getDefaultMaxRecordData());
-            }
+            record.setMaxRecordLengthConfig(context.getOutgoingRecordDataSizeLimit());
             recordLength += record.getMaxRecordLengthConfig();
             position++;
         }

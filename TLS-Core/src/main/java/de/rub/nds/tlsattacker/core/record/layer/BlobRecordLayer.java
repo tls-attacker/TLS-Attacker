@@ -112,6 +112,11 @@ public class BlobRecordLayer extends RecordLayer {
     }
 
     @Override
+    public RecordCipher getRecordCipher() {
+        return cipher;
+    }
+
+    @Override
     public void updateEncryptionCipher() {
         encryptor.addNewRecordCipher(cipher);
     }

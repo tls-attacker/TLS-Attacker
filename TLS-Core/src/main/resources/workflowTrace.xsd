@@ -785,6 +785,7 @@
                   <xs:element name="GreaseExtension" type="greaseExtensionMessage"/>
                   <xs:element name="HeartbeatExtension" type="heartbeatExtensionMessage"/>
                   <xs:element name="MaxFragmentLengthExtension" type="maxFragmentLengthExtensionMessage"/>
+                  <xs:element name="RecordSizeLimitExtension" type="recordSizeLimitExtensionMessage"/>
                   <xs:element name="PaddingExtension" type="paddingExtensionMessage"/>
                   <xs:element name="RenegotiationInfoExtension" type="renegotiationInfoExtensionMessage"/>
                   <xs:element name="ServerNameIndicationExtension" type="serverNameIndicationExtensionMessage"/>
@@ -1088,6 +1089,16 @@
       <xs:extension base="extensionMessage">
         <xs:sequence>
           <xs:element name="maxFragmentLength" type="modifiableByteArray" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="recordSizeLimitExtensionMessage">
+    <xs:complexContent>
+      <xs:extension base="extensionMessage">
+        <xs:sequence>
+          <xs:element name="recordSizeLimit" type="modifiableByteArray" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -3674,6 +3685,7 @@
       <xs:enumeration value="EXTENDED_MASTER_SECRET"/>
       <xs:enumeration value="TOKEN_BINDING"/>
       <xs:enumeration value="CACHED_INFO"/>
+      <xs:enumeration value="RECORD_SIZE_LIMIT"/>
       <xs:enumeration value="PWD_PROTECT"/>
       <xs:enumeration value="PWD_CLEAR"/>
       <xs:enumeration value="PASSWORD_SALT"/>

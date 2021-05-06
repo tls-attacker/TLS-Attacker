@@ -53,6 +53,8 @@ public class RecordSizeLimitExtensionHandler extends ExtensionHandler<RecordSize
             LOGGER.debug("Setting ServerRecordSizeLimit: " + recordSizeLimit);
             context.setServerRecordSizeLimit(recordSizeLimit);
         }
+        // on receival of a record_size_limit extension, we answer with one ourselves
+        context.getConfig().setAddRecordSizeLimitExtension(Boolean.TRUE);
     }
 
     @Override

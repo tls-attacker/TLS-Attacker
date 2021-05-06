@@ -810,7 +810,6 @@
     <sniType>HOST_NAME</sniType>
     <prefferedCertRsaKeySize>2048</prefferedCertRsaKeySize>
     <prefferedCertDssKeySize>2048</prefferedCertDssKeySize>
-    <maxFragmentLength>TWO_9</maxFragmentLength>
     <encryptChangeCipherSpecTls13>false</encryptChangeCipherSpecTls13>
     <tlsSessionTicket></tlsSessionTicket>
     <defaultClientRenegotiationInfo></defaultClientRenegotiationInfo>
@@ -877,6 +876,7 @@
     <addEllipticCurveExtension>true</addEllipticCurveExtension>
     <addHeartbeatExtension>false</addHeartbeatExtension>
     <addMaxFragmentLengthExtension>false</addMaxFragmentLengthExtension>
+    <addRecordSizeLimitExtension>false</addRecordSizeLimitExtension>
     <addServerNameIndicationExtension>false</addServerNameIndicationExtension>
     <addSignatureAndHashAlgorithmsExtension>true</addSignatureAndHashAlgorithmsExtension>
     <addSupportedVersionsExtension>false</addSupportedVersionsExtension>
@@ -962,7 +962,6 @@
     </clientCertificateTypes>
     <heartbeatPayloadLength>256</heartbeatPayloadLength>
     <heartbeatPaddingLength>256</heartbeatPaddingLength>
-    <defaultMaxRecordData>16384</defaultMaxRecordData>
     <defaultPaddingExtensionBytes>00 00 00 00 00 00</defaultPaddingExtensionBytes>
     <dtlsDefaultCookieLength>20</dtlsDefaultCookieLength>
     <dtlsMaximumFragmentLength>1400</dtlsMaximumFragmentLength>
@@ -1018,6 +1017,8 @@
     <defaultSelectedProtocolVersion>TLS12</defaultSelectedProtocolVersion>
     <defaultHighestClientProtocolVersion>TLS12</defaultHighestClientProtocolVersion>
     <defaultMaxFragmentLength>TWO_12</defaultMaxFragmentLength>
+    <defaultMaxRecordData>16384</defaultMaxRecordData>
+    <recordSizeLimit>16384</recordSizeLimit>
     <defaultHeartbeatMode>PEER_ALLOWED_TO_SEND</defaultHeartbeatMode>
     <defaultClientSupportedCompressionMethods>
         <defaultClientSupportedCompressionMethod>NULL</defaultClientSupportedCompressionMethod>

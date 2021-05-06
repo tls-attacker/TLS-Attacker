@@ -197,7 +197,7 @@ public class DefaultChooserTest {
     @Test
     public void testGetMaxFragmentLength() {
         config.setDefaultMaxFragmentLength(MaxFragmentLength.TWO_9);
-        assertEquals(MaxFragmentLength.TWO_9, config.getMaxFragmentLength());
+        assertEquals(MaxFragmentLength.TWO_9, config.getDefaultMaxFragmentLength());
         assertEquals(MaxFragmentLength.TWO_9, chooser.getMaxFragmentLength());
         context.setMaxFragmentLength(MaxFragmentLength.TWO_11);
         assertEquals(MaxFragmentLength.TWO_11, chooser.getMaxFragmentLength());

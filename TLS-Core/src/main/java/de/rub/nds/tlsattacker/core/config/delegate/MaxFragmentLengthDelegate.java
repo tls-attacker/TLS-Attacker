@@ -35,7 +35,7 @@ public class MaxFragmentLengthDelegate extends Delegate {
     public void applyDelegate(Config config) {
         if (maxFragmentLength != null) {
             config.setAddMaxFragmentLengthExtension(true);
-            config.setMaxFragmentLength(MaxFragmentLength.getMaxFragmentLength(maxFragmentLength.byteValue())); // TODO
+            config.setDefaultMaxFragmentLength(MaxFragmentLength.getMaxFragmentLength(maxFragmentLength.byteValue())); // TODO
         } // Converter
     }
 }
