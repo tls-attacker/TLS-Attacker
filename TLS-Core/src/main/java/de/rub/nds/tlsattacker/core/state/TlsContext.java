@@ -1277,60 +1277,6 @@ public class TlsContext {
         this.serverRecordSizeLimit = recordSizeLimit;
     }
 
-    public Boolean isRecordEncryptionActive() {
-        if (this.recordLayer == null) {
-            return false;
-        }
-
-        return !(this.recordLayer.getRecordCipher() instanceof RecordNullCipher);
-    }
-
-    /**
-     * Decides on the outgoing record data size limit with respect to extensions and the current encryption status
-     *
-     * @return the outgoing record data size limit
-     */
-    public Integer getOutgoingRecordDataSizeLimit() {
-        // max_fragment_length extension should be ignored if record_size_limit extension is present
-        if (maxFragmentLength != null && clientRecordSizeLimit == null && serverRecordSizeLimit == null) {
-            return MaxFragmentLength.getIntegerRepresentation(maxFragmentLength);
-        }
-
-        // record_size_limit extension applies only to encrypted records
-        if (isRecordEncryptionActive() && getChooser().getMyConnectionPeer() == ConnectionEndType.CLIENT) {
-            return getChooser().getClientRecordSizeLimit();
-        }
-        if (isRecordEncryptionActive() && getChooser().getMyConnectionPeer() == ConnectionEndType.SERVER) {
-            return getChooser().getServerRecordSizeLimit();
-        }
-
-        // all unencrypted records (if max_fragment_length extension is not present)
-        return config.getDefaultMaxRecordData();
-    }
-
-    /**
-     * Decides on the incoming record data size limit with respect to extensions and the current encryption status
-     *
-     * @return the incoming record data size limit
-     */
-    public Integer getIncomingRecordDataSizeLimit() {
-        // max_fragment_length extension should be ignored if record_size_limit extension is present
-        if (maxFragmentLength != null && clientRecordSizeLimit == null && serverRecordSizeLimit == null) {
-            return MaxFragmentLength.getIntegerRepresentation(maxFragmentLength);
-        }
-
-        // record_size_limit extension applies only to encrypted records
-        if (isRecordEncryptionActive() && connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
-            return getChooser().getClientRecordSizeLimit();
-        }
-        if (isRecordEncryptionActive() && connection.getLocalConnectionEndType() == ConnectionEndType.SERVER) {
-            return getChooser().getServerRecordSizeLimit();
-        }
-
-        // all unencrypted records (if max_fragment_length extension is not present)
-        return config.getDefaultMaxRecordData();
-    }
-
     public HeartbeatMode getHeartbeatMode() {
         return heartbeatMode;
     }
@@ -2611,5 +2557,67 @@ public class TlsContext {
 
     public void setReceivedMessageWithWrongTls13KeyType(boolean receivedMessageWithWrongTls13KeyType) {
         this.receivedMessageWithWrongTls13KeyType = receivedMessageWithWrongTls13KeyType;
+    }
+
+    public Boolean isRecordEncryptionActive() {
+        if (this.recordLayer == null) {
+            return false;
+        }
+
+        return !(this.recordLayer.getRecordCipher() instanceof RecordNullCipher);
+    }
+
+    public Integer getOutgoingRecordDataSizeLimit() {
+        return getRecordDataSizeLimit(chooser.getMyConnectionPeer());
+    }
+
+    public Integer getIncomingRecordDataSizeLimit() {
+        return getRecordDataSizeLimit(connection.getLocalConnectionEndType());
+    }
+
+    /**
+     * Calculates the record data size limit for the target connection end type with respect to extensions and the
+     * current encryption status.
+     *
+     * Disclaimer: this is not 100% accurate for TLS 1.3 since the actual padding length can be slightly different
+     * (compared to configured additional padding length) depending on the ciphers block size. I don't think it is
+     * necessary to introduce this additional complexity. Revisit if we run into problems with an implementation.
+     *
+     * @return the record data size limit for the target connection end type
+     */
+    private Integer getRecordDataSizeLimit(ConnectionEndType targetConnectionEndType) {
+        // max_fragment_length extension applies to all records if record_size_limit extension is not active
+        if (maxFragmentLength != null && clientRecordSizeLimit == null && serverRecordSizeLimit == null) {
+            return MaxFragmentLength.getIntegerRepresentation(maxFragmentLength);
+        }
+
+        // record_size_limit extension applies only to encrypted records
+        if (!isRecordEncryptionActive()) {
+            return config.getDefaultMaxRecordData();
+        }
+
+        // recordSizeLimit will be chosen based on the following order:
+        // (1) the context value for targetConnectionEndType
+        // (2) the explicitly configured default value
+        // (3) config.getDefaultMaxRecordData() implicitly
+        Integer recordSizeLimit = 0;
+        if (targetConnectionEndType == ConnectionEndType.CLIENT) {
+            recordSizeLimit = chooser.getClientRecordSizeLimit();
+        }
+        if (targetConnectionEndType == ConnectionEndType.SERVER) {
+            recordSizeLimit = chooser.getServerRecordSizeLimit();
+        }
+        // for TLS 1.3, record_size_limit covers the whole TLSInnerPlaintext
+        // -> we need to reserve space for the content type (1 byte) and possibly additional padding
+        if (chooser.getSelectedProtocolVersion().isTLS13()) {
+            recordSizeLimit -= 1;
+            config.getDefaultAdditionalPadding();
+        }
+        // poorly configured combination of record_size_limit and TLS 1.3 additional padding results in default
+        if (recordSizeLimit <= 0) {
+            return config.getDefaultMaxRecordData();
+        }
+
+        return recordSizeLimit;
     }
 }

@@ -984,9 +984,9 @@ public class Config implements Serializable {
      */
     private MaxFragmentLength defaultMaxFragmentLength = MaxFragmentLength.TWO_12;
 
-    private Integer defaultMaxRecordData = 16384;
+    private Integer defaultMaxRecordData = RecordSizeLimit.DEFAULT_RECORD_DATA_SIZE_LIMIT;
 
-    private Integer recordSizeLimit = RecordSizeLimit.DEFAULT_RECORD_SIZE_LIMIT;
+    private Integer recordSizeLimit = RecordSizeLimit.DEFAULT_RECORD_DATA_SIZE_LIMIT;
 
     private HeartbeatMode defaultHeartbeatMode = HeartbeatMode.PEER_ALLOWED_TO_SEND;
 
