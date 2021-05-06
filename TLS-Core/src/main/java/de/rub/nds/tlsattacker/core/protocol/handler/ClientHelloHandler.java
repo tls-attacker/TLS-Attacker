@@ -73,6 +73,7 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
             adjustDTLSCookie(message);
         }
         adjustExtensions(message);
+        adjustConflictingExtensions();
         adjustRandomContext(message);
         if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()
             && tlsContext.isExtensionNegotiated(ExtensionType.EARLY_DATA)) {
@@ -218,6 +219,18 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
         } catch (NoSuchAlgorithmException ex) {
             LOGGER.error("Unable to generate KeySet - unknown algorithm");
             throw new WorkflowExecutionException(ex.toString());
+        }
+    }
+
+    private void adjustConflictingExtensions() {
+        // RFC 8449 says 'A server that supports the "record_size_limit" extension MUST ignore a "max_fragment_length"
+        // that appears in a ClientHello if both extensions appear.'
+        if (tlsContext.isExtensionProposed(ExtensionType.MAX_FRAGMENT_LENGTH)
+            && tlsContext.isExtensionProposed(ExtensionType.RECORD_SIZE_LIMIT)) {
+            LOGGER.debug(
+                "Found max_fragment_length and record_size_limit extensions, disabling max_fragment_length in context");
+            tlsContext.getConfig().setAddMaxFragmentLengthExtension(Boolean.FALSE);
+            tlsContext.setMaxFragmentLength(null);
         }
     }
 }

@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
@@ -99,6 +100,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                 tlsContext.setMasterSecret(session.getMasterSecret());
                 setRecordCipher();
             }
+            adjustConflictingExtensions();
         } else {
             adjustHelloRetryDigest(message);
         }
@@ -372,6 +374,18 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                 "Complete resulting digest: " + ArrayConverter.bytesToHexString(tlsContext.getDigest().getRawBytes()));
         } catch (NoSuchAlgorithmException ex) {
             LOGGER.error(ex);
+        }
+    }
+
+    private void adjustConflictingExtensions() {
+        // RFC 8449 says 'A client MUST treat receipt of both "max_fragment_length" and "record_size_limit" as a fatal
+        // error, and it SHOULD generate an "illegal_parameter" alert.', ignoring that for now and disabling
+        // max_fragment_length
+        if (tlsContext.isExtensionNegotiated(ExtensionType.MAX_FRAGMENT_LENGTH)
+            && tlsContext.isExtensionNegotiated(ExtensionType.RECORD_SIZE_LIMIT)) {
+            LOGGER.warn(
+                "Found max_fragment_length and record_size_limit extensions, disabling max_fragment_length in context");
+            tlsContext.setMaxFragmentLength(null);
         }
     }
 }
