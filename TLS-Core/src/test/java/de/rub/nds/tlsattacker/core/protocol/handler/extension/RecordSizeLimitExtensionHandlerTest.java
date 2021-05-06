@@ -40,8 +40,11 @@ public class RecordSizeLimitExtensionHandlerTest {
         RecordSizeLimitExtensionMessage msg = new RecordSizeLimitExtensionMessage();
         msg.setRecordSizeLimit(new byte[] { (byte) 0x05, (byte) 0x39 });
         context.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
+        assertNull(context.getClientRecordSizeLimit());
+        assertNull(context.getServerRecordSizeLimit());
         handler.adjustTLSContext(msg);
         assertTrue(context.getClientRecordSizeLimit() == 1337);
+        assertNull(context.getServerRecordSizeLimit());
     }
 
     @Test
@@ -49,7 +52,10 @@ public class RecordSizeLimitExtensionHandlerTest {
         RecordSizeLimitExtensionMessage msg = new RecordSizeLimitExtensionMessage();
         msg.setRecordSizeLimit(new byte[] { (byte) 0x05, (byte) 0x39 });
         context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
+        assertNull(context.getClientRecordSizeLimit());
+        assertNull(context.getServerRecordSizeLimit());
         handler.adjustTLSContext(msg);
+        assertNull(context.getClientRecordSizeLimit());
         assertTrue(context.getServerRecordSizeLimit() == 1337);
     }
 
@@ -58,7 +64,20 @@ public class RecordSizeLimitExtensionHandlerTest {
         RecordSizeLimitExtensionMessage msg = new RecordSizeLimitExtensionMessage();
         msg.setRecordSizeLimit(new byte[] { (byte) 0x05, (byte) 0x39, (byte) 0x00 });
         context.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
+        assertNull(context.getClientRecordSizeLimit());
+        assertNull(context.getServerRecordSizeLimit());
         handler.adjustTLSContext(msg);
+    }
+
+    public void testAdjustTLSContextSizeTooSmall() {
+        RecordSizeLimitExtensionMessage msg = new RecordSizeLimitExtensionMessage();
+        msg.setRecordSizeLimit(new byte[] { (byte) 0x00, (byte) 0x2A });
+        context.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
+        assertNull(context.getClientRecordSizeLimit());
+        assertNull(context.getServerRecordSizeLimit());
+        handler.adjustTLSContext(msg);
+        assertNull(context.getClientRecordSizeLimit());
+        assertNull(context.getServerRecordSizeLimit());
     }
 
     /**
