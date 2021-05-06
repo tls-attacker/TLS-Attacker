@@ -18,6 +18,7 @@ import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.SendMessageHelper;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import java.io.IOException;
 import java.util.LinkedList;
@@ -65,7 +66,7 @@ public class EarlyCcsAction extends TlsAction {
         }
         message.setAdjustContext(Modifiable.explicit(false));
         ClientKeyExchangeHandler handler = (ClientKeyExchangeHandler) message.getHandler(state.getTlsContext());
-        byte[] protocolMessageBytes = handler.prepareMessage(message);
+        byte[] protocolMessageBytes = SendMessageHelper.prepareMessage(message, state.getTlsContext());
         if (targetOpenssl100) {
             handler.adjustPremasterSecret(message);
             handler.adjustMasterSecret(message);

@@ -18,7 +18,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipherSpecMessage> {
+public class ChangeCipherSpecHandler extends TlsMessageHandler<ChangeCipherSpecMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -57,8 +57,8 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
     public void adjustTlsContextAfterSerialize(ChangeCipherSpecMessage message) {
 
         if (tlsContext.getTalkingConnectionEndType() == tlsContext.getChooser().getConnectionEndType()) {
-            tlsContext.setWriteSequenceNumber(0);
             if (!tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
+                tlsContext.setWriteSequenceNumber(0);
                 tlsContext.getRecordLayer().updateEncryptionCipher();
                 tlsContext.getRecordLayer().updateCompressor();
                 tlsContext.increaseDtlsWriteEpoch();

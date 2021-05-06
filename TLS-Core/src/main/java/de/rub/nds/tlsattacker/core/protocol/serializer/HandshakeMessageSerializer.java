@@ -22,14 +22,9 @@ import org.apache.logging.log4j.Logger;
  * @param <T>
  *            Type of the HandshakeMessages to serialize
  */
-public abstract class HandshakeMessageSerializer<T extends HandshakeMessage> extends ProtocolMessageSerializer<T> {
+public abstract class HandshakeMessageSerializer<T extends HandshakeMessage> extends TlsMessageSerializer<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
-
-    /**
-     * The message that should be serialized
-     */
-    private final T msg;
 
     /**
      * Constructor for the HandshakeMessageSerializer
@@ -41,27 +36,26 @@ public abstract class HandshakeMessageSerializer<T extends HandshakeMessage> ext
      */
     public HandshakeMessageSerializer(T message, ProtocolVersion version) {
         super(message, version);
-        this.msg = message;
     }
 
     /**
      * Writes the Type of the HandshakeMessage into the final byte[]
      */
     private void writeType() {
-        appendByte(msg.getType().getValue());
-        LOGGER.debug("Type: " + msg.getType().getValue());
+        appendByte(message.getType().getValue());
+        LOGGER.debug("Type: " + message.getType().getValue());
     }
 
     /**
      * Writes the message length of the HandshakeMessage into the final byte[]
      */
     private void writeLength() {
-        appendInt(msg.getLength().getValue(), HandshakeByteLength.MESSAGE_LENGTH_FIELD);
-        LOGGER.debug("Length: " + msg.getLength().getValue());
+        appendInt(message.getLength().getValue(), HandshakeByteLength.MESSAGE_LENGTH_FIELD);
+        LOGGER.debug("Length: " + message.getLength().getValue());
     }
 
     @Override
-    public final byte[] serializeProtocolMessageContent() {
+    public byte[] serializeProtocolMessageContent() {
         writeType();
         writeLength();
         serializeHandshakeMessageContent();
@@ -76,15 +70,15 @@ public abstract class HandshakeMessageSerializer<T extends HandshakeMessage> ext
      * @return True if the message has an ExtensionLength field
      */
     protected boolean hasExtensionLengthField() {
-        return msg.getExtensionsLength() != null;
+        return message.getExtensionsLength() != null;
     }
 
     /**
      * Writes the ExtensionLength field of the message into the final byte[]
      */
     protected void writeExtensionLength() {
-        appendInt(msg.getExtensionsLength().getValue(), HandshakeByteLength.EXTENSION_LENGTH);
-        LOGGER.debug("ExtensionLength: " + msg.getExtensionsLength().getValue());
+        appendInt(message.getExtensionsLength().getValue(), HandshakeByteLength.EXTENSION_LENGTH);
+        LOGGER.debug("ExtensionLength: " + message.getExtensionsLength().getValue());
     }
 
     /**
@@ -93,15 +87,15 @@ public abstract class HandshakeMessageSerializer<T extends HandshakeMessage> ext
      * @return True if the message has Extensions
      */
     protected boolean hasExtensions() {
-        return msg.getExtensionBytes() != null;
+        return message.getExtensionBytes() != null;
     }
 
     /**
      * Writes the ExtensionBytes of the message into the final byte[]
      */
     protected void writeExtensionBytes() {
-        appendBytes(msg.getExtensionBytes().getValue());
-        LOGGER.debug("ExtensionBytes: " + ArrayConverter.bytesToHexString(msg.getExtensionBytes().getValue()));
+        appendBytes(message.getExtensionBytes().getValue());
+        LOGGER.debug("ExtensionBytes: " + ArrayConverter.bytesToHexString(message.getExtensionBytes().getValue()));
     }
 
 }

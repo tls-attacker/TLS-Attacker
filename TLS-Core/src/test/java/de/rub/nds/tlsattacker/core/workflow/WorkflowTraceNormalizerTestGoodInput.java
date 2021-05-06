@@ -150,5 +150,4 @@ public class WorkflowTraceNormalizerTestGoodInput {
         }
 
     }
-
 }

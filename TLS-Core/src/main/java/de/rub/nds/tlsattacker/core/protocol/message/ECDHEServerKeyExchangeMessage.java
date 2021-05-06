@@ -20,7 +20,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.ECDHEServerKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.TlsMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.ECDHEServerComputations;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.List;
@@ -115,8 +115,8 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     }
 
     @Override
-    public ProtocolMessageHandler getHandler(TlsContext context) {
-        return new ECDHEServerKeyExchangeHandler(context);
+    public ECDHEServerKeyExchangeHandler<? extends ECDHEServerKeyExchangeMessage> getHandler(TlsContext context) {
+        return new ECDHEServerKeyExchangeHandler<>(context);
     }
 
     @Override
