@@ -91,6 +91,9 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                 if (tlsContext.getTalkingConnectionEndType() != tlsContext.getChooser().getConnectionEndType()) {
                     setServerRecordCipher();
                 }
+            } else {
+                // for TLS 1.3, conflicting extensions are handled in encrypted extensions handler
+                adjustConflictingExtensions();
             }
             adjustPRF(message);
             if (tlsContext.hasSession(tlsContext.getChooser().getServerSessionId())) {
@@ -373,6 +376,18 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                 "Complete resulting digest: " + ArrayConverter.bytesToHexString(tlsContext.getDigest().getRawBytes()));
         } catch (NoSuchAlgorithmException ex) {
             LOGGER.error(ex);
+        }
+    }
+
+    private void adjustConflictingExtensions() {
+        // RFC 8449 says 'A client MUST treat receipt of both "max_fragment_length" and "record_size_limit" as a fatal
+        // error, and it SHOULD generate an "illegal_parameter" alert.', ignoring that for now and disabling
+        // max_fragment_length
+        if (tlsContext.isExtensionNegotiated(ExtensionType.MAX_FRAGMENT_LENGTH)
+            && tlsContext.isExtensionNegotiated(ExtensionType.RECORD_SIZE_LIMIT)) {
+            LOGGER.warn(
+                "Found max_fragment_length and record_size_limit extensions, disabling max_fragment_length in context");
+            tlsContext.setMaxFragmentLength(null);
         }
     }
 }
