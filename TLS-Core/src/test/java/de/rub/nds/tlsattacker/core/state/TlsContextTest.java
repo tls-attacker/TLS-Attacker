@@ -31,12 +31,16 @@ public class TlsContextTest {
 
     private Config config;
 
+    private TlsContext context;
+
     private KeySet testKeySet;
 
     @Before
     public void setUp() {
         config = Config.createConfig();
         config.setRecordLayerType(RecordLayerType.RECORD);
+        context = new TlsContext(config);
+        context.setRecordLayer(new TlsRecordLayer(context));
 
         Security.addProvider(new BouncyCastleProvider());
         testKeySet = new KeySet();
@@ -49,7 +53,7 @@ public class TlsContextTest {
         testKeySet.setServerWriteMacSecret(new byte[0]);
     }
 
-    private void activateEncryptionInContext(TlsContext context) {
+    private void activateEncryptionInContext() {
         context.setConnection(new OutboundConnection());
         context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_GCM_SHA256);
@@ -63,9 +67,6 @@ public class TlsContextTest {
      */
     @Test
     public void testGetOutboundMaxRecordDataSizeEncryptionInactiveNoExtensions() {
-        TlsContext context = new TlsContext(config);
-        context.setRecordLayer(new TlsRecordLayer(context));
-
         final Integer result = context.getOutboundMaxRecordDataSize();
         assertTrue(result == config.getDefaultMaxRecordData());
         assertNull(context.getOutboundRecordSizeLimit());
@@ -75,9 +76,7 @@ public class TlsContextTest {
 
     @Test
     public void testGetOutboundMaxRecordDataSizeEncryptionActiveNoExtensions() {
-        TlsContext context = new TlsContext(config);
-        context.setRecordLayer(new TlsRecordLayer(context));
-        activateEncryptionInContext(context);
+        activateEncryptionInContext();
 
         final Integer result = context.getOutboundMaxRecordDataSize();
         assertTrue(result == config.getDefaultMaxRecordData());
@@ -88,8 +87,6 @@ public class TlsContextTest {
 
     @Test
     public void testGetOutboundMaxRecordDataSizeEncryptionInactiveMaxFragmentLength() {
-        TlsContext context = new TlsContext(config);
-        context.setRecordLayer(new TlsRecordLayer(context));
         context.setMaxFragmentLength(MaxFragmentLength.TWO_11);
 
         final Integer result = context.getOutboundMaxRecordDataSize();
@@ -100,9 +97,7 @@ public class TlsContextTest {
 
     @Test
     public void testGetOutboundMaxRecordDataSizeEncryptionActiveMaxFragmentLength() {
-        TlsContext context = new TlsContext(config);
-        context.setRecordLayer(new TlsRecordLayer(context));
-        activateEncryptionInContext(context);
+        activateEncryptionInContext();
         context.setMaxFragmentLength(MaxFragmentLength.TWO_11);
 
         final Integer result = context.getOutboundMaxRecordDataSize();
@@ -113,9 +108,7 @@ public class TlsContextTest {
 
     @Test
     public void testGetOutboundMaxRecordDataSizeRecordSizeLimitTLS12() {
-        TlsContext context = new TlsContext(config);
-        context.setRecordLayer(new TlsRecordLayer(context));
-        activateEncryptionInContext(context);
+        activateEncryptionInContext();
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         context.setOutboundRecordSizeLimit(1337);
 
@@ -127,9 +120,7 @@ public class TlsContextTest {
 
     @Test
     public void testGetOutboundMaxRecordDataSizeRecordSizeLimitTLS13() {
-        TlsContext context = new TlsContext(config);
-        context.setRecordLayer(new TlsRecordLayer(context));
-        activateEncryptionInContext(context);
+        activateEncryptionInContext();
         context.setSelectedProtocolVersion(ProtocolVersion.TLS13);
         config.setDefaultAdditionalPadding(42);
         context.setOutboundRecordSizeLimit(1337);
@@ -142,9 +133,7 @@ public class TlsContextTest {
 
     @Test
     public void testGetOutboundMaxRecordDataSizeRecordSizeLimitInvalidConfig() {
-        TlsContext context = new TlsContext(config);
-        context.setRecordLayer(new TlsRecordLayer(context));
-        activateEncryptionInContext(context);
+        activateEncryptionInContext();
         context.setSelectedProtocolVersion(ProtocolVersion.TLS13);
         config.setDefaultAdditionalPadding(42);
         context.setOutboundRecordSizeLimit(42);
@@ -160,9 +149,6 @@ public class TlsContextTest {
      */
     @Test
     public void testGetInboundMaxRecordDataSizeEncryptionInactiveNoExtensions() {
-        TlsContext context = new TlsContext(config);
-        context.setRecordLayer(new TlsRecordLayer(context));
-
         final Integer result = context.getInboundMaxRecordDataSize();
         assertTrue(result == config.getDefaultMaxRecordData());
         assertNull(context.getOutboundRecordSizeLimit());
@@ -172,9 +158,7 @@ public class TlsContextTest {
 
     @Test
     public void testGetInboundMaxRecordDataSizeEncryptionActiveNoExtensions() {
-        TlsContext context = new TlsContext(config);
-        context.setRecordLayer(new TlsRecordLayer(context));
-        activateEncryptionInContext(context);
+        activateEncryptionInContext();
 
         final Integer result = context.getInboundMaxRecordDataSize();
         assertTrue(result == config.getDefaultMaxRecordData());
@@ -185,8 +169,6 @@ public class TlsContextTest {
 
     @Test
     public void testGetInboundMaxRecordDataSizeEncryptionInactiveMaxFragmentLength() {
-        TlsContext context = new TlsContext(config);
-        context.setRecordLayer(new TlsRecordLayer(context));
         context.setMaxFragmentLength(MaxFragmentLength.TWO_11);
 
         final Integer result = context.getInboundMaxRecordDataSize();
@@ -197,9 +179,7 @@ public class TlsContextTest {
 
     @Test
     public void testGetInboundMaxRecordDataSizeEncryptionActiveMaxFragmentLength() {
-        TlsContext context = new TlsContext(config);
-        context.setRecordLayer(new TlsRecordLayer(context));
-        activateEncryptionInContext(context);
+        activateEncryptionInContext();
         context.setMaxFragmentLength(MaxFragmentLength.TWO_11);
 
         final Integer result = context.getInboundMaxRecordDataSize();
@@ -210,9 +190,7 @@ public class TlsContextTest {
 
     @Test
     public void testGetInboundMaxRecordDataSizeRecordSizeLimitTLS12() {
-        TlsContext context = new TlsContext(config);
-        context.setRecordLayer(new TlsRecordLayer(context));
-        activateEncryptionInContext(context);
+        activateEncryptionInContext();
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         context.setInboundRecordSizeLimit(123);
 
@@ -224,9 +202,7 @@ public class TlsContextTest {
 
     @Test
     public void testGetInboundMaxRecordDataSizeRecordSizeLimitTLS13() {
-        TlsContext context = new TlsContext(config);
-        context.setRecordLayer(new TlsRecordLayer(context));
-        activateEncryptionInContext(context);
+        activateEncryptionInContext();
         context.setSelectedProtocolVersion(ProtocolVersion.TLS13);
         config.setDefaultAdditionalPadding(42);
         context.setInboundRecordSizeLimit(123);
@@ -239,9 +215,7 @@ public class TlsContextTest {
 
     @Test
     public void testGetInboundMaxRecordDataSizeRecordSizeLimitInvalidConfig() {
-        TlsContext context = new TlsContext(config);
-        context.setRecordLayer(new TlsRecordLayer(context));
-        activateEncryptionInContext(context);
+        activateEncryptionInContext();
         context.setSelectedProtocolVersion(ProtocolVersion.TLS13);
         config.setDefaultAdditionalPadding(123);
         context.setInboundRecordSizeLimit(123);
