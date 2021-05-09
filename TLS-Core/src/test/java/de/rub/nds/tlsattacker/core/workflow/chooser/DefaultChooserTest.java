@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Random;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
@@ -823,5 +824,34 @@ public class DefaultChooserTest {
     public void testGetPWDPassword() {
         config.setDefaultPWDPassword("Jake");
         assertEquals("Jake", chooser.getPWDPassword());
+    }
+
+    /**
+     * Test of getInboundRecordSizeLimit method, of class DefaultChooser.
+     */
+    @Test
+    public void testGetInboundRecordSizeLimit() {
+        config.setDefaultMaxRecordData(1337);
+        assertTrue(config.getDefaultMaxRecordData() == 1337);
+        assertNull(config.getInboundRecordSizeLimit());
+        assertNull(context.getInboundRecordSizeLimit());
+        assertTrue(chooser.getInboundRecordSizeLimit() == 1337);
+        config.setInboundRecordSizeLimit(42);
+        assertTrue(chooser.getInboundRecordSizeLimit() == 42);
+        context.setInboundRecordSizeLimit(1234);
+        assertTrue(chooser.getInboundRecordSizeLimit() == 1234);
+    }
+
+    /**
+     * Test of getOutboundRecordSizeLimit method, of class DefaultChooser.
+     */
+    @Test
+    public void testGetOutboundRecordSizeLimit() {
+        config.setDefaultMaxRecordData(1337);
+        assertTrue(config.getDefaultMaxRecordData() == 1337);
+        assertNull(context.getOutboundRecordSizeLimit());
+        assertTrue(chooser.getOutboundRecordSizeLimit() == 1337);
+        context.setOutboundRecordSizeLimit(1234);
+        assertTrue(chooser.getOutboundRecordSizeLimit() == 1234);
     }
 }
