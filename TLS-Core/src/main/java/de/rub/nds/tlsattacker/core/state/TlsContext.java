@@ -2565,7 +2565,7 @@ public class TlsContext {
     }
 
     public Boolean isRecordEncryptionActive() {
-        if (this.recordLayer == null) {
+        if (this.recordLayer == null || this.recordLayer.getRecordCipher() == null) {
             return false;
         }
 
