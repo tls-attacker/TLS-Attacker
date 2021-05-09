@@ -37,7 +37,6 @@ public class RecordSizeLimitDelegate extends Delegate {
     @Override
     public void applyDelegate(Config config) {
         if (recordSizeLimit == null) {
-            // "-record_size_limit" not specified
             return;
         }
 
@@ -50,5 +49,11 @@ public class RecordSizeLimitDelegate extends Delegate {
 
         config.setAddRecordSizeLimitExtension(true);
         config.setInboundRecordSizeLimit(recordSizeLimit);
+
+        // record_size_limit and max_fragment_length are not meant to be used simultaneously
+        if (config.isAddMaxFragmentLengthExtension()) {
+            LOGGER
+                .warn("Configured to send record_size_limit and max_fragment_length simultaneously, resuming anyways");
+        }
     }
 }

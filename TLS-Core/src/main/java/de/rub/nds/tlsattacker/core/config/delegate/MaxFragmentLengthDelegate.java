@@ -33,9 +33,17 @@ public class MaxFragmentLengthDelegate extends Delegate {
 
     @Override
     public void applyDelegate(Config config) {
-        if (maxFragmentLength != null) {
-            config.setAddMaxFragmentLengthExtension(true);
-            config.setDefaultMaxFragmentLength(MaxFragmentLength.getMaxFragmentLength(maxFragmentLength.byteValue())); // TODO
-        } // Converter
+        if (maxFragmentLength == null) {
+            return;
+        }
+
+        config.setAddMaxFragmentLengthExtension(true);
+        config.setDefaultMaxFragmentLength(MaxFragmentLength.getMaxFragmentLength(maxFragmentLength.byteValue()));
+
+        // record_size_limit and max_fragment_length are not meant to be used simultaneously
+        if (config.isAddRecordSizeLimitExtension()) {
+            LOGGER
+                .warn("Configured to send record_size_limit and max_fragment_length simultaneously, resuming anyways");
+        }
     }
 }
