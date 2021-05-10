@@ -41,7 +41,6 @@ public class RecordSizeLimitDelegate extends Delegate {
         }
 
         // lower bound here is set to zero instead of MIN_RECORD_SIZE_LIMIT to be able to experiment
-        // TODO: decide if this is a good idea
         if (recordSizeLimit <= 0 || recordSizeLimit > MAX_RECORD_SIZE_LIMIT) {
             LOGGER.debug("-record_size_limit value (" + recordSizeLimit + ") is out of bounds, ignoring.");
             return;

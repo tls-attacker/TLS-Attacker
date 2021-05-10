@@ -669,7 +669,7 @@ public class TlsContext {
 
     /**
      * Both methods of limiting record size as defined in RFC 3546 (MaximumFragmentLength extension) and RFC 8449
-     * (RecordSizeLimit extension). TODO: how to handle these concurrently?
+     * (RecordSizeLimit extension)
      */
     private MaxFragmentLength maxFragmentLength;
 

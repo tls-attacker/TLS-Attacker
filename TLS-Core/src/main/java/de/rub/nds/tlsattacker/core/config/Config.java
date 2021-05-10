@@ -977,10 +977,8 @@ public class Config implements Serializable {
     private ProtocolVersion defaultHighestClientProtocolVersion = ProtocolVersion.TLS12;
 
     /**
-     * Various methods of limiting record/fragment size as defined in RFC 3546 (MaximumFragmentLength extension) and RFC
-     * 8449 (RecordSizeLimit extension). TODO: should we rename defaultMaxRecordData? recordSizeLimit only applies to
-     * encrypted records, so defaultMaxRecordData will take effect for all unencrypted records. in this sense, renaming
-     * it to defaultRecordSizeLimit would not be accurate.
+     * Both methods of limiting record size as defined in RFC 3546 (MaximumFragmentLength extension) and RFC 8449
+     * (RecordSizeLimit extension)
      */
     private MaxFragmentLength defaultMaxFragmentLength = MaxFragmentLength.TWO_12;
 

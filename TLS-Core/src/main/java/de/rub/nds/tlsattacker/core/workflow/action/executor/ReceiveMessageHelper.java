@@ -139,6 +139,7 @@ public class ReceiveMessageHelper {
         // RFC 8449 says "A TLS endpoint that receives a record larger than its advertised limit MUST generate a
         // fatal "record_overflow" alert", ignoring that for now. We might also want to see what happens here if we
         // advertise a really small record_size_limit value.
+        // TODO: is this the right place to check record sizes?
         for (AbstractRecord record : result.getRecordList()) {
             if (record.getCleanProtocolMessageBytes() != null) {
                 final int recordDataSize = record.getCleanProtocolMessageBytes().getValue().length;
