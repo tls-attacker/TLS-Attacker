@@ -2573,16 +2573,10 @@ public class TlsContext {
     }
 
     public Integer getOutboundMaxRecordDataSize() {
-        // chooser might be null here
-        chooser = getChooser();
-
         return getMaxRecordDataSize(chooser.getOutboundRecordSizeLimit());
     }
 
     public Integer getInboundMaxRecordDataSize() {
-        // chooser might be null here
-        chooser = getChooser();
-
         return getMaxRecordDataSize(chooser.getInboundRecordSizeLimit());
     }
 

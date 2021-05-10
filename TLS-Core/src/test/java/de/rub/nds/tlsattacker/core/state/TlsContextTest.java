@@ -41,6 +41,7 @@ public class TlsContextTest {
         config.setRecordLayerType(RecordLayerType.RECORD);
         context = new TlsContext(config);
         context.setRecordLayer(new TlsRecordLayer(context));
+        assertNotNull(context.getChooser());
 
         Security.addProvider(new BouncyCastleProvider());
         testKeySet = new KeySet();
