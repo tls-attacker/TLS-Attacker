@@ -38,6 +38,10 @@ public class BlobRecord extends AbstractRecord {
         super(config);
     }
 
+    public BlobRecord(Integer maxRecordLengthConfig) {
+        super(maxRecordLengthConfig);
+    }
+
     @Override
     public BlobRecordPreparator getRecordPreparator(Chooser chooser, Encryptor encryptor, RecordCompressor compressor,
         ProtocolMessageType type) {

@@ -130,10 +130,7 @@ public class SendMessageHelper {
             int current = 0;
             for (AbstractRecord record : records) {
                 if (current >= recordPosition) {
-                    // if max record length has the config default value, it might need to be adjusted according to
-                    // context
-                    if (record.getMaxRecordLengthConfig() == null
-                        || record.getMaxRecordLengthConfig() == context.getConfig().getDefaultMaxRecordData()) {
+                    if (record.getMaxRecordLengthConfig() == null) {
                         record.setMaxRecordLengthConfig(context.getOutboundMaxRecordDataSize());
                     }
                     List<AbstractRecord> emptyRecords = new LinkedList<>();
@@ -195,9 +192,7 @@ public class SendMessageHelper {
             }
             AbstractRecord record = records.get(position);
             toFillList.add(record);
-            // if max record length has the config default value, it might need to be adjusted according to context
-            if (record.getMaxRecordLengthConfig() == null
-                || record.getMaxRecordLengthConfig() == context.getConfig().getDefaultMaxRecordData()) {
+            if (record.getMaxRecordLengthConfig() == null) {
                 record.setMaxRecordLengthConfig(context.getOutboundMaxRecordDataSize());
             }
             recordLength += record.getMaxRecordLengthConfig();
