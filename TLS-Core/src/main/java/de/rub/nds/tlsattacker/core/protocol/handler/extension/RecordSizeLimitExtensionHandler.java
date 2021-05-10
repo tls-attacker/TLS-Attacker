@@ -39,14 +39,11 @@ public class RecordSizeLimitExtensionHandler extends ExtensionHandler<RecordSize
         Integer recordSizeLimit = ArrayConverter.bytesToInt(recordSizeLimitBytes);
         if (recordSizeLimit < RecordSizeLimit.MIN_RECORD_SIZE_LIMIT) {
             LOGGER.warn("RecordSizeLimit is smaller than allowed (" + recordSizeLimit + "), resuming anyway");
-            // return;
         }
 
         if (context.getTalkingConnectionEndType() == context.getChooser().getMyConnectionPeer()) {
             LOGGER.debug("Setting OutboundRecordSizeLimit: " + recordSizeLimit);
             context.setOutboundRecordSizeLimit(recordSizeLimit);
-            // on receival of a record_size_limit extension, we answer with one ourselves
-            context.getConfig().setAddRecordSizeLimitExtension(Boolean.TRUE);
         } else {
             LOGGER.debug("Setting InboundRecordSizeLimit: " + recordSizeLimit);
             context.setInboundRecordSizeLimit(recordSizeLimit);

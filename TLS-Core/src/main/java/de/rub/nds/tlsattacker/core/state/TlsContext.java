@@ -2573,14 +2573,14 @@ public class TlsContext {
     }
 
     public Integer getOutboundMaxRecordDataSize() {
-        // chooser might be null here (?)
+        // chooser might be null here
         chooser = getChooser();
 
         return getMaxRecordDataSize(chooser.getOutboundRecordSizeLimit());
     }
 
     public Integer getInboundMaxRecordDataSize() {
-        // chooser might be null here (?)
+        // chooser might be null here
         chooser = getChooser();
 
         return getMaxRecordDataSize(chooser.getInboundRecordSizeLimit());
@@ -2618,7 +2618,8 @@ public class TlsContext {
             maxRecordDataSize -= config.getDefaultAdditionalPadding();
         }
         // poorly configured combination of record_size_limit extension and TLS 1.3 additional padding -> default
-        if (maxRecordDataSize <= 0) {
+        // TODO: should this return zero?
+        if (maxRecordDataSize < 0) {
             return config.getDefaultMaxRecordData();
         }
 

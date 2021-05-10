@@ -38,10 +38,8 @@ public class MaxFragmentLengthExtensionHandlerTest {
     public void testAdjustTLSContext() {
         MaxFragmentLengthExtensionMessage msg = new MaxFragmentLengthExtensionMessage();
         msg.setMaxFragmentLength(new byte[] { 1 });
-        assertFalse(context.getConfig().isAddMaxFragmentLengthExtension());
         handler.adjustTLSContext(msg);
         assertTrue(context.getMaxFragmentLength() == MaxFragmentLength.TWO_9);
-        assertTrue(context.getConfig().isAddMaxFragmentLengthExtension());
     }
 
     @Test

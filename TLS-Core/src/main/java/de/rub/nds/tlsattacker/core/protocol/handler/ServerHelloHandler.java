@@ -85,16 +85,12 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         adjustSelectedCipherSuite(message);
         adjustServerRandom(message);
         adjustExtensions(message);
+        adjustConflictingExtensions();
         if (!message.isTls13HelloRetryRequest()) {
             if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
                 adjustHandshakeTrafficSecrets();
                 if (tlsContext.getTalkingConnectionEndType() != tlsContext.getChooser().getConnectionEndType()) {
                     setServerRecordCipher();
-                }
-            } else {
-                // for TLS 1.3, conflicting extensions are handled in encrypted extensions handler
-                if (tlsContext.getTalkingConnectionEndType() == tlsContext.getChooser().getMyConnectionPeer()) {
-                    adjustConflictingExtensions();
                 }
             }
             adjustPRF(message);
@@ -382,14 +378,16 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
     }
 
     private void adjustConflictingExtensions() {
-        // RFC 8449 says 'A client MUST treat receipt of both "max_fragment_length" and "record_size_limit" as a fatal
-        // error, and it SHOULD generate an "illegal_parameter" alert.', ignoring that for now and disabling
-        // max_fragment_length
-        if (tlsContext.isExtensionNegotiated(ExtensionType.MAX_FRAGMENT_LENGTH)
-            && tlsContext.isExtensionNegotiated(ExtensionType.RECORD_SIZE_LIMIT)) {
-            LOGGER.warn(
-                "Found max_fragment_length and record_size_limit extensions, disabling max_fragment_length in context");
-            tlsContext.setMaxFragmentLength(null);
+        if (tlsContext.getTalkingConnectionEndType() == tlsContext.getChooser().getMyConnectionPeer()) {
+            // for TLS 1.3, this is handled in encrypted extensions
+            if (!tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
+                // RFC 8449 says 'A client MUST treat receipt of both "max_fragment_length" and "record_size_limit" as a
+                // fatal error, and it SHOULD generate an "illegal_parameter" alert.', ignoring that for now
+                if (tlsContext.isExtensionNegotiated(ExtensionType.MAX_FRAGMENT_LENGTH)
+                    && tlsContext.isExtensionNegotiated(ExtensionType.RECORD_SIZE_LIMIT)) {
+                    LOGGER.warn("Server sent max_fragment_length AND record_size_limit extensions");
+                }
+            }
         }
     }
 }

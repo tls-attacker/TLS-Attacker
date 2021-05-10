@@ -47,11 +47,9 @@ public class RecordSizeLimitExtensionHandlerTest {
         msg.setRecordSizeLimit(new byte[] { (byte) 0x05, (byte) 0x39 });
         assertNull(context.getOutboundRecordSizeLimit());
         assertNull(context.getInboundRecordSizeLimit());
-        assertFalse(context.getConfig().isAddRecordSizeLimitExtension());
         handler.adjustTLSContext(msg);
         assertTrue(context.getOutboundRecordSizeLimit() == 1337);
         assertNull(context.getInboundRecordSizeLimit());
-        assertTrue(context.getConfig().isAddRecordSizeLimitExtension());
     }
 
     @Test
@@ -62,11 +60,9 @@ public class RecordSizeLimitExtensionHandlerTest {
         msg.setRecordSizeLimit(new byte[] { (byte) 0x05, (byte) 0x39 });
         assertNull(context.getOutboundRecordSizeLimit());
         assertNull(context.getInboundRecordSizeLimit());
-        assertFalse(context.getConfig().isAddRecordSizeLimitExtension());
         handler.adjustTLSContext(msg);
         assertNull(context.getOutboundRecordSizeLimit());
         assertTrue(context.getInboundRecordSizeLimit() == 1337);
-        assertFalse(context.getConfig().isAddRecordSizeLimitExtension());
     }
 
     @Test(expected = AdjustmentException.class)

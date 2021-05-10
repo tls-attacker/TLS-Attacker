@@ -39,9 +39,8 @@ public class MaxFragmentLengthExtensionHandler extends ExtensionHandler<MaxFragm
         if (length == null) {
             LOGGER.warn("Unknown MaxFragmentLength:" + ArrayConverter.bytesToHexString(maxFragmentLengthBytes));
         } else {
+            LOGGER.debug("Setting MaxFragmentLength: " + length.getValue());
             context.setMaxFragmentLength(length);
-            // on receival of a max_fragment_length extension, we answer with one ourselves
-            context.getConfig().setAddMaxFragmentLengthExtension(Boolean.TRUE);
         }
     }
 
