@@ -11,13 +11,9 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.ChooserType;
-import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RecordSizeLimitExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.RecordSizeLimitExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
-import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,12 +39,12 @@ public class RecordSizeLimitExtensionPreparatorTest {
      */
     @Test
     public void testPreparator() {
-        context.setOutboundRecordSizeLimit(1337);
+        context.setInboundRecordSizeLimit(1337);
 
         preparator.prepare();
 
         assertArrayEquals(new byte[] { (byte) 0x05, (byte) 0x39 }, message.getRecordSizeLimit().getValue());
-        assertArrayEquals(ArrayConverter.intToBytes(context.getOutboundRecordSizeLimit(), 2),
+        assertArrayEquals(ArrayConverter.intToBytes(context.getInboundRecordSizeLimit(), 2),
             message.getRecordSizeLimit().getValue());
     }
 }

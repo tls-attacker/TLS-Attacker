@@ -61,8 +61,9 @@ public class EncryptedExtensionsHandler extends HandshakeMessageHandler<Encrypte
                 handler.adjustTLSContext(extension);
             }
         }
-        // executes even if record_size_limit was (contrary to the specification) not sent with encrypted extensions
-        adjustConflictingExtensions();
+        if (tlsContext.getTalkingConnectionEndType() == tlsContext.getChooser().getMyConnectionPeer()) {
+            adjustConflictingExtensions();
+        }
     }
 
     private void adjustConflictingExtensions() {

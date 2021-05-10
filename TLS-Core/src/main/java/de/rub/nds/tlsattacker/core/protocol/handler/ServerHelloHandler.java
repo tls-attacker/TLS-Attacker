@@ -93,7 +93,9 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                 }
             } else {
                 // for TLS 1.3, conflicting extensions are handled in encrypted extensions handler
-                adjustConflictingExtensions();
+                if (tlsContext.getTalkingConnectionEndType() == tlsContext.getChooser().getMyConnectionPeer()) {
+                    adjustConflictingExtensions();
+                }
             }
             adjustPRF(message);
             if (tlsContext.hasSession(tlsContext.getChooser().getServerSessionId())) {

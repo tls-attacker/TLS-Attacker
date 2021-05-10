@@ -14,7 +14,6 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RecordSizeLimitExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.RecordSizeLimitExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -32,8 +31,9 @@ public class RecordSizeLimitExtensionPreparator extends ExtensionPreparator<Reco
 
     @Override
     public void prepareExtensionContent() {
-        LOGGER.debug("Preparing RecordSizeLimitExtensionMessage");
-        message.setRecordSizeLimit(ArrayConverter.intToBytes(chooser.getOutboundRecordSizeLimit(),
-            ExtensionByteLength.RECORD_SIZE_LIMIT_LENGTH));
+        final int recordSizeLimit = chooser.getInboundRecordSizeLimit();
+        LOGGER.debug("Preparing RecordSizeLimitExtensionMessage with " + recordSizeLimit);
+        message.setRecordSizeLimit(
+            ArrayConverter.intToBytes(recordSizeLimit, ExtensionByteLength.RECORD_SIZE_LIMIT_LENGTH));
     }
 }

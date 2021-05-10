@@ -73,7 +73,6 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
             adjustDTLSCookie(message);
         }
         adjustExtensions(message);
-        adjustConflictingExtensions();
         adjustRandomContext(message);
         if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()
             && tlsContext.isExtensionNegotiated(ExtensionType.EARLY_DATA)) {
@@ -85,6 +84,10 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
             }
         }
         tlsContext.setLastClientHello(message.getCompleteResultingMessage().getValue());
+
+        if (tlsContext.getTalkingConnectionEndType() == tlsContext.getChooser().getMyConnectionPeer()) {
+            adjustConflictingExtensions();
+        }
     }
 
     private boolean isCookieFieldSet(ClientHelloMessage message) {
