@@ -90,7 +90,7 @@ public class ServerHelloMessage extends HelloMessage {
             if (tlsConfig.isAddMaxFragmentLengthExtension()) {
                 addExtension(new MaxFragmentLengthExtensionMessage());
             }
-            if (tlsConfig.isAddRecordSizeLimitExtension()) {
+            if (tlsConfig.isAddRecordSizeLimitExtension() && !tlsConfig.getHighestProtocolVersion().isTLS13()) {
                 addExtension(new RecordSizeLimitExtensionMessage());
             }
             if (tlsConfig.isAddServerNameIndicationExtension()) {
