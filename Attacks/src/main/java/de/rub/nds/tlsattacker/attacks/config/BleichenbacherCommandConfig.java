@@ -195,7 +195,7 @@ public class BleichenbacherCommandConfig extends AttackConfig {
         this.numberOfIterations = mapListDepth;
     }
 
-    public CipherSuiteDelegate getCiphersuiteDelegate() {
+    public CipherSuiteDelegate getCipherSuiteDelegate() {
         return ciphersuiteDelegate;
     }
 
