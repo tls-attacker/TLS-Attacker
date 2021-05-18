@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -27,16 +27,15 @@ public class CertificateStatusRequestExtensionParserTest {
     /**
      * Parameterized set up of the test vector.
      *
-     * @return test vector (extensionType, extensionLength, extensionPayload,
-     *         expectedBytes)
+     * @return test vector (extensionType, extensionLength, extensionPayload, expectedBytes)
      */
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] {
-                { ExtensionType.STATUS_REQUEST, ArrayConverter.hexStringToByteArray("000500050100000000"), 5, 0, 1, 0,
-                        new byte[0], 0, new byte[0] },
-                { ExtensionType.STATUS_REQUEST, ArrayConverter.hexStringToByteArray("0005000701000102000103"), 7, 0, 1,
-                        1, new byte[] { 0x02 }, 1, new byte[] { 0x03 } } });
+            { ExtensionType.STATUS_REQUEST, ArrayConverter.hexStringToByteArray("000500050100000000"), 5, 0, 1, 0,
+                new byte[0], 0, new byte[0] },
+            { ExtensionType.STATUS_REQUEST, ArrayConverter.hexStringToByteArray("0005000701000102000103"), 7, 0, 1, 1,
+                new byte[] { 0x02 }, 1, new byte[] { 0x03 } } });
     }
 
     private final ExtensionType extensionType;
@@ -52,8 +51,8 @@ public class CertificateStatusRequestExtensionParserTest {
     private CertificateStatusRequestExtensionMessage message;
 
     public CertificateStatusRequestExtensionParserTest(ExtensionType extensionType, byte[] expectedBytes,
-            int extensionLength, int startParsing, int certificateStatusRequestType, int responderIDListLength,
-            byte[] responderIDList, int requestExtensionLength, byte[] requestExtension) {
+        int extensionLength, int startParsing, int certificateStatusRequestType, int responderIDListLength,
+        byte[] responderIDList, int requestExtensionLength, byte[] requestExtension) {
         this.extensionType = extensionType;
         this.expectedBytes = expectedBytes;
         this.extensionLength = extensionLength;

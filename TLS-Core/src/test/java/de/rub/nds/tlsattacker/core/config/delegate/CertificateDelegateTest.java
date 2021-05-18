@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.JCommander;
@@ -138,8 +138,7 @@ public class CertificateDelegateTest {
      */
     @Test
     public void testApplyDelegate() throws NoSuchAlgorithmException, CertificateException, IOException,
-            InvalidKeyException, KeyStoreException, NoSuchProviderException, SignatureException,
-            OperatorCreationException {
+        InvalidKeyException, KeyStoreException, NoSuchProviderException, SignatureException, OperatorCreationException {
         KeyStore store = KeyStoreGenerator.createKeyStore(KeyStoreGenerator.createRSAKeyPair(1024, random), random);
         File keyStoreFile = folder.newFile("key.store");
         store.store(new FileOutputStream(keyStoreFile), "password".toCharArray());
@@ -157,7 +156,7 @@ public class CertificateDelegateTest {
         Config config = Config.createConfig();
         config.setDefaultExplicitCertificateKeyPair(null);
         delegate.applyDelegate(config);
-        assertNotNull("Ceritifcate could not be loaded", config.getDefaultExplicitCertificateKeyPair());
+        assertNotNull("Certificate could not be loaded", config.getDefaultExplicitCertificateKeyPair());
     }
 
     @Test

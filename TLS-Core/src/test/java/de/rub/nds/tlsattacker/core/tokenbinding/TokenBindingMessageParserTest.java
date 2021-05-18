@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.tokenbinding;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -29,8 +29,8 @@ public class TokenBindingMessageParserTest {
 
     @Before
     public void setUp() {
-        toParse = ArrayConverter
-                .hexStringToByteArray("00890002004140cf5e4044bfbb1a32467d030e860b716aaf9ba3a8de9d25235b377d18dd223e9dc3cc0b0afd115a4c6ec8d026800424516c66f3f25fc12f0cce205856e27910270040636328a37f1d393a3e94c7a45b522fd20eeb87435cade5b714c6a95b28fba126a44a3d1c933aaba0d6aa095d86dbf05bdc368ea591a6082f77f8eda85538f2c70000");
+        toParse = ArrayConverter.hexStringToByteArray(
+            "00890002004140cf5e4044bfbb1a32467d030e860b716aaf9ba3a8de9d25235b377d18dd223e9dc3cc0b0afd115a4c6ec8d026800424516c66f3f25fc12f0cce205856e27910270040636328a37f1d393a3e94c7a45b522fd20eeb87435cade5b714c6a95b28fba126a44a3d1c933aaba0d6aa095d86dbf05bdc368ea591a6082f77f8eda85538f2c70000");
         version = ProtocolVersion.TLS12;
     }
 

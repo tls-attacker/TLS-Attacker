@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks.padding;
 
 import de.rub.nds.modifiablevariable.bytearray.ByteArrayExplicitValueModification;
@@ -14,7 +14,7 @@ import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.modifiablevariable.bytearray.ByteArrayXorModification;
 import de.rub.nds.tlsattacker.attacks.padding.vector.PaddingVector;
 import de.rub.nds.tlsattacker.attacks.padding.vector.PlainPaddingVector;
-import de.rub.nds.tlsattacker.attacks.padding.vector.TrippleVector;
+import de.rub.nds.tlsattacker.attacks.padding.vector.TripleVector;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -32,15 +32,14 @@ public class VeryShortPaddingGenerator extends PaddingVectorGenerator {
      */
     static final int DEFAULT_CIPHERTEXT_LENGTH = 80;
     /**
-     * Default padding length for the construction of modified encrypted
-     * plaintexts
+     * Default padding length for the construction of modified encrypted plaintexts
      */
     static final int DEFAULT_PADDING_LENGTH = 4;
 
     /**
      *
-     * @param suite
-     * @param version
+     * @param  suite
+     * @param  version
      * @return
      */
     @Override
@@ -56,16 +55,15 @@ public class VeryShortPaddingGenerator extends PaddingVectorGenerator {
         byte[] plain = createPaddingBytes(DEFAULT_CIPHERTEXT_LENGTH - 1);
         vectorList.add(createVectorWithPlainData("Plain XF (0xXF=#padding bytes)", "PlainOnlyPadding", plain));
         plain = new byte[] { (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, };
+            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+            (byte) 255, };
         vectorList.add(createVectorWithPlainData("Plain FF", "PlainTooMuchPadding", plain));
         return vectorList;
     }
@@ -85,9 +83,9 @@ public class VeryShortPaddingGenerator extends PaddingVectorGenerator {
         // valid mac
         byte[] padding = createPaddingBytes(paddingValue);
         padding[0] ^= 0x80; // flip first padding byte highest bit
-        vectorList.add(new TrippleVector("InvPadValMac-[0]-" + applicationLength + "-" + paddingValue, "InvPadValMac",
-                new ByteArrayExplicitValueModification(new byte[applicationLength]), null,
-                new ByteArrayExplicitValueModification(padding)));
+        vectorList.add(new TripleVector("InvPadValMac-[0]-" + applicationLength + "-" + paddingValue, "InvPadValMac",
+            new ByteArrayExplicitValueModification(new byte[applicationLength]), null,
+            new ByteArrayExplicitValueModification(padding)));
         return vectorList;
     }
 
@@ -95,9 +93,9 @@ public class VeryShortPaddingGenerator extends PaddingVectorGenerator {
         List<PaddingVector> vectorList = new LinkedList<>();
         // invalid mac
         byte[] padding = createPaddingBytes(paddingValue);
-        vectorList.add(new TrippleVector("ValPadInvMac-[0]-" + applicationLength + "-" + paddingValue, "valPadInvMac",
-                new ByteArrayExplicitValueModification(new byte[applicationLength]), new ByteArrayXorModification(
-                        new byte[] { 0x01 }, 0), new ByteArrayExplicitValueModification(padding)));
+        vectorList.add(new TripleVector("ValPadInvMac-[0]-" + applicationLength + "-" + paddingValue, "valPadInvMac",
+            new ByteArrayExplicitValueModification(new byte[applicationLength]),
+            new ByteArrayXorModification(new byte[] { 0x01 }, 0), new ByteArrayExplicitValueModification(padding)));
         return vectorList;
     }
 
@@ -114,6 +112,6 @@ public class VeryShortPaddingGenerator extends PaddingVectorGenerator {
 
     private PaddingVector createVectorWithPlainData(String name, String identifier, byte[] plain) {
         return new PlainPaddingVector(name, identifier,
-                (ByteArrayExplicitValueModification) ByteArrayModificationFactory.explicitValue(plain));
+            (ByteArrayExplicitValueModification) ByteArrayModificationFactory.explicitValue(plain));
     }
 }

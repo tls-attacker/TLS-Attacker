@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -31,23 +31,22 @@ import static org.junit.Assert.fail;
 public class ActionTestUtils {
 
     /**
-     * Verify that the given TlsACtion can be marshaled to minimal output.
+     * Verify that the given TlsAction can be marshaled to minimal output.
      * <p>
-     * Same as this.marshalingEmptyActionYieldsMinimalOutput(Class<T>, Logger),
-     * but sets the logger automatically.
+     * Same as this.marshalingEmptyActionYieldsMinimalOutput(Class<T>, Logger), but sets the logger automatically.
      * <p>
      * 
      * @param <T>
      * @param actionClass
-     *            the Class to test
-     * @see this.marshalingEmptyActionYieldsMinimalOutput(Class<T>, Logger)
+     *                    the Class to test
+     * @see               this.marshalingEmptyActionYieldsMinimalOutput(Class<T>, Logger)
      */
     public static <T extends TlsAction> void marshalingEmptyActionYieldsMinimalOutput(Class<T> actionClass) {
         marshalingEmptyActionYieldsMinimalOutput(actionClass, LogManager.getLogger(actionClass));
     }
 
     /**
-     * Verify that the given TlsACtion can be marshaled to minimal output.
+     * Verify that the given TlsAction can be marshaled to minimal output.
      * <p>
      * Test has two purposes
      * <ol>
@@ -55,24 +54,22 @@ public class ActionTestUtils {
      * <li>Verify that marshaling of an empty instance yields minimal output</li>
      * </ol>
      * <p>
-     * If this test fails and the output shows a "wrong" class name, i.e.
-     * TlsAction, check that a proper @XmlElement() annotation for the class
-     * exists for the WorkflowTrace.tlsActions field. You can be sure that it's
-     * missing if you see xmlns:xsi schema values in the output.
+     * If this test fails and the output shows a "wrong" class name, i.e. TlsAction, check that a proper @XmlElement()
+     * annotation for the class exists for the WorkflowTrace.tlsActions field. You can be sure that it's missing if you
+     * see xmlns:xsi schema values in the output.
      * <p>
-     * Calling this method is expensive, since it goes through the whole
-     * normalize/filter/serialize procedure. <b>Should be invoked by tests in
-     * Category(SlowTests.class) only</b>
+     * Calling this method is expensive, since it goes through the whole normalize/filter/serialize procedure. <b>Should
+     * be invoked by tests in Category(SlowTests.class) only</b>
      * 
      * @param <T>
      * @param actionClass
-     *            the Class to test
+     *                    the Class to test
      * @param logger
-     *            the logger to which messages are written to
-     * @see this.marshalingEmptyActionYieldsMinimalOutput(Class<T>)
+     *                    the logger to which messages are written to
+     * @see               this.marshalingEmptyActionYieldsMinimalOutput(Class<T>)
      */
     public static <T extends TlsAction> void marshalingEmptyActionYieldsMinimalOutput(Class<T> actionClass,
-            Logger logger) {
+        Logger logger) {
         try {
             WorkflowTrace trace = new WorkflowTrace();
             T action = actionClass.newInstance();
@@ -82,12 +79,12 @@ public class ActionTestUtils {
                 xmlName = xmlName.substring(0, xmlName.length() - 6);
             } else {
                 logger.warn("The action under test does not follow naming convention. " + xmlName
-                        + " does not end with string 'Action'");
+                    + " does not end with string 'Action'");
             }
             StringBuilder sb = new StringBuilder("");
             sb.append(
-                    "<ta:workflowTrace xmlns:ta=\"http://nds.rub.de/tlsattacker\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">")
-                    .append(System.lineSeparator());
+                "<ta:workflowTrace xmlns:ta=\"http://nds.rub.de/tlsattacker\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">")
+                .append(System.lineSeparator());
             sb.append("    <").append(xmlName).append("/>").append(System.lineSeparator());
             sb.append("</ta:workflowTrace>").append(System.lineSeparator());
             String expected = sb.toString();
@@ -108,45 +105,42 @@ public class ActionTestUtils {
     }
 
     /**
-     * Verify that unmarshal(marshal(TlsAction)) for empty action equals
-     * original action.
+     * Verify that unmarshal(marshal(TlsAction)) for empty action equals original action.
      * <p>
-     * Same as
-     * this.marshalingAndUnmarshalingEmptyObjectYieldsEqualObject(Class<T>,
-     * Logger), but sets the logger automatically.
+     * Same as this.marshalingAndUnmarshalingEmptyObjectYieldsEqualObject(Class<T>, Logger), but sets the logger
+     * automatically.
      * <p>
      * 
      * @param <T>
      * @param actionClass
-     *            the Class to test
-     * @see this.marshalingAndUnmarshalingEmptyObjectYieldsEqualObject(Class<T>,
-     *      Logger)
+     *                    the Class to test
+     * @see               this.marshalingAndUnmarshalingEmptyObjectYieldsEqualObject(Class<T>, Logger)
      */
-    public static <T extends TlsAction> void marshalingAndUnmarshalingEmptyObjectYieldsEqualObject(Class<T> actionClass) {
+    public static <T extends TlsAction> void
+        marshalingAndUnmarshalingEmptyObjectYieldsEqualObject(Class<T> actionClass) {
         marshalingAndUnmarshalingEmptyObjectYieldsEqualObject(actionClass, LogManager.getLogger(actionClass));
     }
 
     /**
-     * Verify that unmarshal(marshal(TlsAction)) for empty action equals
-     * original action.
+     * Verify that unmarshal(marshal(TlsAction)) for empty action equals original action.
      * <p>
-     * "Empty" action refers to a TlsAction instance initialized with empty
-     * constructor and without any additional values set.
+     * "Empty" action refers to a TlsAction instance initialized with empty constructor and without any additional
+     * values set.
      * <p>
      * Calling this method is expensive. <b>Should be invoked by tests in
      * 
-     * @param <T>
-     * @Category(SlowTests.class) only</b>
-     *                            <p>
+     * @param                     <T>
+     * @Category(SlowTests.class)             only</b>
+     *                                        <p>
      * 
-     * @param actionClass
-     *            the Class to test
-     * @param logger
-     *            to which messages are written to
-     * @see this.marshalingEmptyActionYieldsMinimalOutput(Class<T>)
+     * @param                     actionClass
+     *                                        the Class to test
+     * @param                     logger
+     *                                        to which messages are written to
+     * @see                                   this.marshalingEmptyActionYieldsMinimalOutput(Class<T>)
      */
-    public static <T extends TlsAction> void marshalingAndUnmarshalingEmptyObjectYieldsEqualObject(
-            Class<T> actionClass, Logger logger) {
+    public static <T extends TlsAction> void marshalingAndUnmarshalingEmptyObjectYieldsEqualObject(Class<T> actionClass,
+        Logger logger) {
         try {
             T action = actionClass.newInstance();
             StringWriter writer = new StringWriter();
@@ -165,49 +159,39 @@ public class ActionTestUtils {
     }
 
     /**
-     * Verify that unmarshal(marshal(TlsAction)) for non-empty action equals
-     * original action.
+     * Verify that unmarshal(marshal(TlsAction)) for non-empty action equals original action.
      * <p>
-     * Same as
-     * this.marshalingAndUnmarshalingFilledObjectYieldsEqualObject(Class<T>,
-     * Logger), but sets the logger automatically.
+     * Same as this.marshalingAndUnmarshalingFilledObjectYieldsEqualObject(Class<T>, Logger), but sets the logger
+     * automatically.
      * <p>
      * 
      * @param <T>
      * @param action
-     *            an instance of the TlsAction class under test, filled with
-     *            custom values
-     * @see 
-     *      this.marshalingAndUnmarshalingFilledObjectYieldsEqualObject(Class<T>,
-     *      Logger)
+     *               an instance of the TlsAction class under test, filled with custom values
+     * @see          this.marshalingAndUnmarshalingFilledObjectYieldsEqualObject(Class<T>, Logger)
      */
     public static <T extends TlsAction> void marshalingAndUnmarshalingFilledObjectYieldsEqualObject(T action) {
         marshalingAndUnmarshalingFilledObjectYieldsEqualObject(action,
-                LogManager.getLogger(action.getClass().getName()));
+            LogManager.getLogger(action.getClass().getName()));
     }
 
     /**
-     * Verify that unmarshal(marshal(TlsAction)) for non-empty action equals
-     * original action.
+     * Verify that unmarshal(marshal(TlsAction)) for non-empty action equals original action.
      * <p>
-     * "Non-empty" or "filled" action refers to a TlsAction instance which has
-     * some custom values set.
+     * "Non-empty" or "filled" action refers to a TlsAction instance which has some custom values set.
      * <p>
-     * Calling this method is expensive. <b>Should be invoked by tests in
-     * Category(SlowTests.class) only</b>
+     * Calling this method is expensive. <b>Should be invoked by tests in Category(SlowTests.class) only</b>
      * <p>
      * 
      * @param <T>
      * @param action
-     *            an instance of the TlsAction class under test, filled with
-     *            custom values
+     *               an instance of the TlsAction class under test, filled with custom values
      * @param logger
-     *            the logger to which messages are logged
-     * @see 
-     *      this.marshalingAndUnmarshalingFilledObjectYieldsEqualObject(Class<T>)
+     *               the logger to which messages are logged
+     * @see          this.marshalingAndUnmarshalingFilledObjectYieldsEqualObject(Class<T>)
      */
     public static <T extends TlsAction> void marshalingAndUnmarshalingFilledObjectYieldsEqualObject(T action,
-            Logger logger) {
+        Logger logger) {
         StringWriter writer = new StringWriter();
 
         action.filter();

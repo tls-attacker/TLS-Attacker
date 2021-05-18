@@ -1,17 +1,19 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.*;
+import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.PWDClientKeyExchangeMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,7 +31,7 @@ public class PWDClientKeyExchangeParser extends ClientKeyExchangeParser<PWDClien
     }
 
     public PWDClientKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version,
-            KeyExchangeAlgorithm keyExchangeAlgorithm, Config config) {
+        KeyExchangeAlgorithm keyExchangeAlgorithm, Config config) {
         super(pointer, array, version, config);
         this.version = version;
         this.keyExchangeAlgorithm = keyExchangeAlgorithm;
@@ -51,7 +53,7 @@ public class PWDClientKeyExchangeParser extends ClientKeyExchangeParser<PWDClien
 
     private void parseElementLength(PWDClientKeyExchangeMessage msg) {
         msg.setElementLength(parseIntField(HandshakeByteLength.PWD_ELEMENT_LENGTH));
-        LOGGER.debug("ElementLegnth: " + msg.getElementLength().getValue());
+        LOGGER.debug("ElementLength: " + msg.getElementLength().getValue());
     }
 
     private void parseElement(PWDClientKeyExchangeMessage msg) {

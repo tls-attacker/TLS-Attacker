@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.JCommander;
@@ -42,9 +42,9 @@ public class EllipticCurveDelegateTest {
         args[1] = "ANSIX962_COMPRESSED_PRIME,UNCOMPRESSED";
         jcommander.parse(args);
         assertTrue("UNCOMPRESSED should get parsed correctly",
-                delegate.getPointFormats().contains(ECPointFormat.UNCOMPRESSED));
+            delegate.getPointFormats().contains(ECPointFormat.UNCOMPRESSED));
         assertTrue("ANSIX962_COMPRESSED_PRIME should get parsed correctly",
-                delegate.getPointFormats().contains(ECPointFormat.ANSIX962_COMPRESSED_PRIME));
+            delegate.getPointFormats().contains(ECPointFormat.ANSIX962_COMPRESSED_PRIME));
     }
 
     @Test(expected = ParameterException.class)
@@ -65,7 +65,7 @@ public class EllipticCurveDelegateTest {
         supportedPointFormats.add(ECPointFormat.UNCOMPRESSED);
         delegate.setPointFormats(supportedPointFormats);
         assertTrue("PointFormats setter is not working correctly",
-                delegate.getPointFormats().equals(supportedPointFormats));
+            delegate.getPointFormats().equals(supportedPointFormats));
     }
 
     /**
@@ -98,8 +98,8 @@ public class EllipticCurveDelegateTest {
         LinkedList<NamedGroup> supportedNamedCurves = new LinkedList<>();
         supportedNamedCurves.add(NamedGroup.BRAINPOOLP384R1);
         delegate.setNamedGroups(supportedNamedCurves);
-        assertTrue("NamedCurves setter is not working correctly", delegate.getNamedGroups()
-                .equals(supportedNamedCurves));
+        assertTrue("NamedCurves setter is not working correctly",
+            delegate.getNamedGroups().equals(supportedNamedCurves));
     }
 
     /**
@@ -119,17 +119,17 @@ public class EllipticCurveDelegateTest {
         jcommander.parse(args);
         delegate.applyDelegate(config);
         assertTrue("SECP192R1 should get parsed correctly",
-                config.getDefaultClientNamedGroups().contains(NamedGroup.SECP192R1));
+            config.getDefaultClientNamedGroups().contains(NamedGroup.SECP192R1));
         assertTrue("SECP256R1 should get parsed correctly",
-                config.getDefaultClientNamedGroups().contains(NamedGroup.SECP192R1));
+            config.getDefaultClientNamedGroups().contains(NamedGroup.SECP192R1));
         assertTrue("UNCOMPRESSED should get parsed correctly",
-                config.getDefaultClientSupportedPointFormats().contains(ECPointFormat.UNCOMPRESSED));
-        assertTrue("ANSIX962_COMPRESSED_PRIME should get parsed correctly", config
-                .getDefaultClientSupportedPointFormats().contains(ECPointFormat.ANSIX962_COMPRESSED_PRIME));
+            config.getDefaultClientSupportedPointFormats().contains(ECPointFormat.UNCOMPRESSED));
+        assertTrue("ANSIX962_COMPRESSED_PRIME should get parsed correctly",
+            config.getDefaultClientSupportedPointFormats().contains(ECPointFormat.ANSIX962_COMPRESSED_PRIME));
         assertTrue("UNCOMPRESSED should get parsed correctly",
-                config.getDefaultServerSupportedPointFormats().contains(ECPointFormat.UNCOMPRESSED));
-        assertTrue("ANSIX962_COMPRESSED_PRIME should get parsed correctly", config
-                .getDefaultServerSupportedPointFormats().contains(ECPointFormat.ANSIX962_COMPRESSED_PRIME));
+            config.getDefaultServerSupportedPointFormats().contains(ECPointFormat.UNCOMPRESSED));
+        assertTrue("ANSIX962_COMPRESSED_PRIME should get parsed correctly",
+            config.getDefaultServerSupportedPointFormats().contains(ECPointFormat.ANSIX962_COMPRESSED_PRIME));
 
     }
 

@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow;
 
 import java.io.File;
@@ -16,19 +16,17 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.SchemaOutputResolver;
 import javax.xml.transform.Result;
 import javax.xml.transform.stream.StreamResult;
-
 import org.apache.commons.lang3.StringUtils;
 
 public class WorkflowTraceSchemaGenerator {
 
-    private final static String ROOT_NS = "";
+    private static final String ROOT_NS = "";
 
-    private final static String NO_NS = "__NO__NS";
+    private static final String NO_NS = "__NO__NS";
 
     public static void main(String[] args) {
         try {
@@ -66,15 +64,15 @@ public class WorkflowTraceSchemaGenerator {
         public Result createOutput(String namespaceURI, String suggestedFileName) throws IOException {
             String ns = StringUtils.isBlank(namespaceURI) ? NO_NS : namespaceURI;
             schemaWriters.put(ns, new StringWriter());
-            String systemId = mapSystemIds(ns, suggestedFileName);
+            String systemId = mapSystemIds();
             systemIds.put(ns, systemId);
             StreamResult result = new StreamResult(schemaWriters.get(ns));
             result.setSystemId(systemId);
             return result;
         }
 
-        private static String mapSystemIds(String ns, String suggestedFileName) {
-            return "WorkflowTrace.xsd";
+        public static String mapSystemIds() {
+            return "workflowTrace.xsd";
         }
 
         public Map<String, StringWriter> getSchemaWriters() {

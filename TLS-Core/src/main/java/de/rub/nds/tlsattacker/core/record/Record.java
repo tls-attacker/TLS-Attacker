@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.record;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -43,8 +43,7 @@ public class Record extends AbstractRecord {
     private ModifiableByteArray protocolVersion;
 
     /**
-     * total length of the protocol message (handshake, alert..) included in the
-     * record layer
+     * total length of the protocol message (handshake, alert..) included in the record layer
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger length;
@@ -53,10 +52,9 @@ public class Record extends AbstractRecord {
     private ModifiableInteger epoch;
 
     /**
-     * This is the implicit sequence number in TLS and also the explicit
-     * sequence number in DTLS This could also have been a seperate field within
-     * the computations struct but i chose to only keep one of them as the whole
-     * situation is already complicated enough
+     * This is the implicit sequence number in TLS and also the explicit sequence number in DTLS This could also have
+     * been a separate field within the computations struct but i chose to only keep one of them as the whole situation
+     * is already complicated enough
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
     private ModifiableBigInteger sequenceNumber;
@@ -86,20 +84,20 @@ public class Record extends AbstractRecord {
         this.length = length;
     }
 
-    public void setContentType(ModifiableByte contentType) {
-        this.contentType = contentType;
-    }
-
-    public void setProtocolVersion(ModifiableByteArray protocolVersion) {
-        this.protocolVersion = protocolVersion;
-    }
-
     public void setLength(int length) {
         this.length = ModifiableVariableFactory.safelySetValue(this.length, length);
     }
 
+    public void setContentType(ModifiableByte contentType) {
+        this.contentType = contentType;
+    }
+
     public void setContentType(byte contentType) {
         this.contentType = ModifiableVariableFactory.safelySetValue(this.contentType, contentType);
+    }
+
+    public void setProtocolVersion(ModifiableByteArray protocolVersion) {
+        this.protocolVersion = protocolVersion;
     }
 
     public void setProtocolVersion(byte[] array) {
@@ -132,7 +130,7 @@ public class Record extends AbstractRecord {
 
     @Override
     public RecordPreparator getRecordPreparator(Chooser chooser, Encryptor encryptor, RecordCompressor compressor,
-            ProtocolMessageType type) {
+        ProtocolMessageType type) {
         return new RecordPreparator(chooser, this, encryptor, type, compressor);
     }
 
@@ -170,7 +168,7 @@ public class Record extends AbstractRecord {
     @Override
     public String toString() {
         return "Record{" + "contentType=" + contentType + ", protocolVersion=" + protocolVersion + ", length=" + length
-                + '}';
+            + '}';
     }
 
     @Override
@@ -217,5 +215,4 @@ public class Record extends AbstractRecord {
         }
         return true;
     }
-
 }

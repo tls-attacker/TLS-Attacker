@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks.pkcs1;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -76,12 +76,11 @@ public class Pkcs1Attack {
     }
 
     /**
-     * @param m
+     * @param  m
      *            original message to be changed
-     * @param si
+     * @param  si
      *            factor
-     * @return (m*si) mod N, or (m*si^e) mod N, depending on the oracle type, in
-     *         a byte array
+     * @return    (m*si) mod N, or (m*si^e) mod N, depending on the oracle type, in a byte array
      */
     protected byte[] prepareMsg(BigInteger m, BigInteger si) {
         byte[] msg;
@@ -91,11 +90,11 @@ public class Pkcs1Attack {
     }
 
     /**
-     * @param m
+     * @param  m
      *            original message to be changed
-     * @param si
+     * @param  si
      *            factor
-     * @return (m*si) mod N, or (m*si^e) mod N, depending on the oracle type
+     * @return    (m*si) mod N, or (m*si^e) mod N, depending on the oracle type
      */
     protected BigInteger multiply(BigInteger m, BigInteger si) {
         BigInteger tmp;
@@ -115,8 +114,8 @@ public class Pkcs1Attack {
 
     /**
      *
-     * @param message
-     * @param si
+     * @param  message
+     * @param  si
      * @return
      */
     protected boolean queryOracle(BigInteger message, BigInteger si) {
@@ -127,7 +126,7 @@ public class Pkcs1Attack {
 
     /**
      *
-     * @param message
+     * @param  message
      * @return
      */
     protected boolean queryOracle(BigInteger message) {

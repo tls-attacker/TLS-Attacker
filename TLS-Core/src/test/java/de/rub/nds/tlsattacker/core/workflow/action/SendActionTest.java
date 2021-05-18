@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -43,7 +43,7 @@ public class SendActionTest {
 
     @Before
     public void setUp() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
-            InvalidAlgorithmParameterException, CryptoException {
+        InvalidAlgorithmParameterException, CryptoException {
         AlertMessage alert = new AlertMessage(Config.createConfig());
         alert.setConfig(AlertLevel.FATAL, AlertDescription.DECRYPT_ERROR);
         alert.setDescription(AlertDescription.DECODE_ERROR.getValue());
@@ -57,8 +57,8 @@ public class SendActionTest {
         tlsContext = state.getTlsContext();
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
         tlsContext.setRecordLayer(new TlsRecordLayer(tlsContext));
-        tlsContext.getRecordLayer().setRecordCipher(
-                new RecordBlockCipher(tlsContext, KeySetGenerator.generateKeySet(tlsContext)));
+        tlsContext.getRecordLayer()
+            .setRecordCipher(new RecordBlockCipher(tlsContext, KeySetGenerator.generateKeySet(tlsContext)));
         tlsContext.setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
     }
 
@@ -72,7 +72,7 @@ public class SendActionTest {
     @Test
     public void testExecute() {
         action.execute(state);
-        action.executedAsPlanned(); // TODO check faketransporthandler
+        action.executedAsPlanned(); // TODO check fake transport handler
         assertTrue(action.isExecuted());
     }
 

@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -16,8 +16,7 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 
 /**
- * This extension is defined in RFC-ietf-tls-rfc4492bis-17 Also known as
- * "supported_groups" extension
+ * This extension is defined in RFC-ietf-tls-rfc4492bis-17 Also known as "supported_groups" extension
  */
 public class EllipticCurvesExtensionMessage extends ExtensionMessage {
 
@@ -39,16 +38,16 @@ public class EllipticCurvesExtensionMessage extends ExtensionMessage {
         this.supportedGroupsLength = ModifiableVariableFactory.safelySetValue(supportedGroupsLength, length);
     }
 
+    public void setSupportedGroupsLength(ModifiableInteger supportedGroupsLength) {
+        this.supportedGroupsLength = supportedGroupsLength;
+    }
+
     public ModifiableByteArray getSupportedGroups() {
         return supportedGroups;
     }
 
     public void setSupportedGroups(byte[] array) {
         supportedGroups = ModifiableVariableFactory.safelySetValue(supportedGroups, array);
-    }
-
-    public void setSupportedGroupsLength(ModifiableInteger supportedGroupsLength) {
-        this.supportedGroupsLength = supportedGroupsLength;
     }
 
     public void setSupportedGroups(ModifiableByteArray supportedGroups) {

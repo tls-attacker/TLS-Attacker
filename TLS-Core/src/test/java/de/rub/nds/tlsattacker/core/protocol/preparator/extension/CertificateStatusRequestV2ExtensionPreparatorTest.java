@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestV2ExtensionMessage;
@@ -45,7 +45,7 @@ public class CertificateStatusRequestV2ExtensionPreparatorTest {
         context.getConfig().setStatusRequestV2RequestList(list);
 
         CertificateStatusRequestV2ExtensionPreparator preparator = new CertificateStatusRequestV2ExtensionPreparator(
-                context.getChooser(), msg, new CertificateStatusRequestV2ExtensionSerializer(msg));
+            context.getChooser(), msg, new CertificateStatusRequestV2ExtensionSerializer(msg));
         preparator.prepare();
 
         CertificateStatusRequestV2ExtensionParserTest.assertRequestItemV2List(list, msg.getStatusRequestList());

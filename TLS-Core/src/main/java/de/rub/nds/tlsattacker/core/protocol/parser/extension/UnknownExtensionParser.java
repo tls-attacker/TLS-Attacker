@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -29,10 +29,12 @@ public class UnknownExtensionParser extends ExtensionParser<UnknownExtensionMess
         } else {
             if (getBytesLeft() < message.getExtensionLength().getValue()) {
                 message.setExtensionData(parseByteArrayField(getBytesLeft()));
-                LOGGER.debug("ExtensionData: " + ArrayConverter.bytesToHexString(message.getExtensionData().getValue()));
+                LOGGER
+                    .debug("ExtensionData: " + ArrayConverter.bytesToHexString(message.getExtensionData().getValue()));
             } else {
                 message.setExtensionData(parseByteArrayField(message.getExtensionLength().getValue()));
-                LOGGER.debug("ExtensionData: " + ArrayConverter.bytesToHexString(message.getExtensionData().getValue()));
+                LOGGER
+                    .debug("ExtensionData: " + ArrayConverter.bytesToHexString(message.getExtensionData().getValue()));
             }
             message.setDataConfig(message.getExtensionData().getValue());
         }

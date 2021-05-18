@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.config;
 
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
@@ -45,7 +45,7 @@ public class TlsConfigIOTest {
     public void testEmptyConfig() {
         InputStream stream = Config.class.getResourceAsStream("/test_empty_config.xml");
         exception.expect(IllegalArgumentException.class);
-        exception.expectMessage("no XML is given");
+        exception.expectMessage("Stream cannot be null");
         Config config = Config.createConfig(stream);
     }
 
@@ -54,7 +54,7 @@ public class TlsConfigIOTest {
         InputStream stream = Config.class.getResourceAsStream("/test_incomplete_config.xml");
         Config config = Config.createConfig(stream);
         assertNotNull(config);
-        assertTrue(config.getDefaultClientSupportedCiphersuites().size() == 1);
+        assertTrue(config.getDefaultClientSupportedCipherSuites().size() == 1);
     }
 
     @Test

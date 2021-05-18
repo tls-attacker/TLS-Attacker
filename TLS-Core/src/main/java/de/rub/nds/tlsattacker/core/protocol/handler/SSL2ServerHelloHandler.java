@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -35,7 +35,7 @@ public class SSL2ServerHelloHandler extends HandshakeMessageHandler<SSL2ServerHe
     @Override
     public SSL2ServerHelloParser getParser(byte[] message, int pointer) {
         return new SSL2ServerHelloParser(message, pointer, tlsContext.getChooser().getSelectedProtocolVersion(),
-                tlsContext.getConfig());
+            tlsContext.getConfig());
     }
 
     @Override
@@ -53,16 +53,17 @@ public class SSL2ServerHelloHandler extends HandshakeMessageHandler<SSL2ServerHe
         LOGGER.debug("SSL2 bytesToParse:" + ArrayConverter.bytesToHexString(bytesToParse, false));
 
         try {
-            byte[] concatenated = ArrayConverter.concatenate(ArrayConverter.intToBytes(lengthBytes
-                    + HandshakeByteLength.CERTIFICATES_LENGTH, HandshakeByteLength.CERTIFICATES_LENGTH), ArrayConverter
-                    .intToBytes(lengthBytes, HandshakeByteLength.CERTIFICATES_LENGTH), bytesToParse);
+            byte[] concatenated = ArrayConverter.concatenate(
+                ArrayConverter.intToBytes(lengthBytes + HandshakeByteLength.CERTIFICATES_LENGTH,
+                    HandshakeByteLength.CERTIFICATES_LENGTH),
+                ArrayConverter.intToBytes(lengthBytes, HandshakeByteLength.CERTIFICATES_LENGTH), bytesToParse);
             LOGGER.debug("SSL2 concatenated:" + ArrayConverter.bytesToHexString(concatenated, false));
             ByteArrayInputStream stream = new ByteArrayInputStream(concatenated);
             return Certificate.parse(stream);
-        } catch (IOException | IllegalArgumentException E) {
+        } catch (IOException | IllegalArgumentException e) {
             LOGGER.warn("Could not parse Certificate bytes into Certificate object:\n"
-                    + ArrayConverter.bytesToHexString(bytesToParse, false));
-            LOGGER.debug(E);
+                + ArrayConverter.bytesToHexString(bytesToParse, false));
+            LOGGER.debug(e);
             return null;
         }
     }
@@ -73,8 +74,8 @@ public class SSL2ServerHelloHandler extends HandshakeMessageHandler<SSL2ServerHe
         if (serverRandom != null) {
             tlsContext.setServerRandom(serverRandom);
         }
-        Certificate cert = parseCertificate(message.getCertificateLength().getValue(), message.getCertificate()
-                .getValue());
+        Certificate cert =
+            parseCertificate(message.getCertificateLength().getValue(), message.getCertificate().getValue());
         LOGGER.debug("Setting ServerCertificate in Context");
         tlsContext.setServerCertificate(cert);
 

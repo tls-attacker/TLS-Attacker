@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -23,8 +23,8 @@ import org.junit.Test;
 public class RequestItemV2SerializerTest {
 
     private final RequestItemV2 item = new RequestItemV2(1, 14, 7, 3, new byte[] { 0x01, 0x02, 0x03 });
-    private final List<ResponderId> respIdList = Arrays.asList(new ResponderId(5, new byte[] { 0x01, 0x02, 0x03, 0x04,
-            0x05 }));
+    private final List<ResponderId> respIdList =
+        Arrays.asList(new ResponderId(5, new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05 }));
     private final byte[] respIdListBytes = new byte[] { 0x00, 0x05, 0x01, 0x02, 0x03, 0x04, 0x05 };
     private final byte[] expectedBytes = ArrayConverter.hexStringToByteArray("01000E0007000501020304050003010203");
 

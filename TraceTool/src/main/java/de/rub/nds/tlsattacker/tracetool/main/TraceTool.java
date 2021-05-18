@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.tracetool.main;
 
 import com.beust.jcommander.JCommander;
@@ -33,8 +33,8 @@ import org.apache.logging.log4j.Logger;
  * <ul>
  * <li>Generate trace templates for common workflows (in XML)</li>
  * <li>Apply filters to workflow trace inputs</li>
- * <li>Verify if a workflow trace is normalized, i.e. well defined for
- * standalone execution without the need of an additional Configuration</li>
+ * <li>Verify if a workflow trace is normalized, i.e. well defined for standalone execution without the need of an
+ * additional Configuration</li>
  * </ul>
  */
 public class TraceTool {
@@ -85,7 +85,7 @@ public class TraceTool {
             }
         } catch (ConfigurationException ce) {
             LOGGER.error("Encountered a ConfigurationException aborting. " + ce.getLocalizedMessage()
-                    + " - See debug messages for more details.");
+                + " - See debug messages for more details.");
             LOGGER.debug(ce.getLocalizedMessage(), ce);
             throw ce;
         } catch (ParameterException pe) {

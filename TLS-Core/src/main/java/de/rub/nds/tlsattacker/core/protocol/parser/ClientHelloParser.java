@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -16,7 +16,6 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.context.MessageParserBoundaryVerificationContext;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -28,14 +27,13 @@ public class ClientHelloParser extends HelloMessageParser<ClientHelloMessage> {
      * Constructor for the Parser class
      *
      * @param pointer
-     *            Position in the array where the HelloMessageParser is supposed
-     *            to start parsing
+     *                Position in the array where the HelloMessageParser is supposed to start parsing
      * @param array
-     *            The byte[] which the HelloMessageParser is supposed to parse
+     *                The byte[] which the HelloMessageParser is supposed to parse
      * @param version
-     *            Version of the Protocol
+     *                Version of the Protocol
      * @param config
-     *            A Config used in the current context
+     *                A Config used in the current context
      */
     public ClientHelloParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
         super(pointer, array, HandshakeMessageType.CLIENT_HELLO, version, config);
@@ -63,7 +61,7 @@ public class ClientHelloParser extends HelloMessageParser<ClientHelloMessage> {
             parseExtensionLength(msg);
             if (hasExtensions(msg)) {
                 pushContext(new MessageParserBoundaryVerificationContext(msg.getExtensionsLength().getValue(),
-                        "Extension Length", getPointer(), getConfig().isThrowExceptionOnParserContextViolation()));
+                    "Extension Length", getPointer(), getConfig().isThrowExceptionOnParserContextViolation()));
                 parseExtensionBytes(msg);
                 popContext();
 
@@ -77,8 +75,7 @@ public class ClientHelloParser extends HelloMessageParser<ClientHelloMessage> {
     }
 
     /**
-     * Reads the next bytes as the CypherSuiteLength and writes them in the
-     * message
+     * Reads the next bytes as the CypherSuiteLength and writes them in the message
      *
      * @param msg
      *            Message to write in
@@ -100,8 +97,7 @@ public class ClientHelloParser extends HelloMessageParser<ClientHelloMessage> {
     }
 
     /**
-     * Reads the next bytes as the CompressionLength and writes them in the
-     * message
+     * Reads the next bytes as the CompressionLength and writes them in the message
      *
      * @param msg
      *            Message to write in

@@ -1,18 +1,18 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks.config;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.CipherSuiteDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.StarttlsDelegate;
@@ -38,7 +38,7 @@ public class Cve20162107CommandConfig extends AttackConfig {
     @ParametersDelegate
     private ClientDelegate clientDelegate;
     @ParametersDelegate
-    private CiphersuiteDelegate cipherSuiteDelegate;
+    private CipherSuiteDelegate cipherSuiteDelegate;
     @ParametersDelegate
     private StarttlsDelegate starttlsDelegate;
 
@@ -53,7 +53,7 @@ public class Cve20162107CommandConfig extends AttackConfig {
         versions.add(ProtocolVersion.TLS11);
         versions.add(ProtocolVersion.TLS12);
         clientDelegate = new ClientDelegate();
-        cipherSuiteDelegate = new CiphersuiteDelegate();
+        cipherSuiteDelegate = new CipherSuiteDelegate();
         starttlsDelegate = new StarttlsDelegate();
         addDelegate(clientDelegate);
         addDelegate(cipherSuiteDelegate);
@@ -107,11 +107,11 @@ public class Cve20162107CommandConfig extends AttackConfig {
             cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA256);
             cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA);
             cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA256);
-            config.setDefaultClientSupportedCiphersuites(cipherSuites);
+            config.setDefaultClientSupportedCipherSuites(cipherSuites);
         }
-        for (CipherSuite suite : config.getDefaultClientSupportedCiphersuites()) {
+        for (CipherSuite suite : config.getDefaultClientSupportedCipherSuites()) {
             if (!suite.isCBC()) {
-                throw new ConfigurationException("This attack only works with CBC Ciphersuites");
+                throw new ConfigurationException("This attack only works with CBC cipher suites");
             }
 
         }

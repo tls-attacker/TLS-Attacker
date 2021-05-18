@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.PskRsaClientKeyExchangeMessage;
@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.PskRsaClientKeyExchangePr
 import de.rub.nds.tlsattacker.core.protocol.serializer.PskRsaClientKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-public class PskRsaClientKeyExchangeHandler extends ClientKeyExchangeHandler<PskRsaClientKeyExchangeMessage> {
+public class PskRsaClientKeyExchangeHandler extends RSAClientKeyExchangeHandler<PskRsaClientKeyExchangeMessage> {
 
     public PskRsaClientKeyExchangeHandler(TlsContext tlsContext) {
         super(tlsContext);
@@ -24,7 +24,7 @@ public class PskRsaClientKeyExchangeHandler extends ClientKeyExchangeHandler<Psk
     @Override
     public PskRsaClientKeyExchangeParser getParser(byte[] message, int pointer) {
         return new PskRsaClientKeyExchangeParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
-                tlsContext.getConfig());
+            tlsContext.getConfig());
     }
 
     @Override

@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.record.layer;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
@@ -75,16 +75,16 @@ public class TlsRecordLayer extends RecordLayer {
         int dataPointer = 0;
         while (dataPointer != rawRecordData.length) {
             try {
-                RecordParser parser = new RecordParser(dataPointer, rawRecordData, tlsContext.getChooser()
-                        .getSelectedProtocolVersion());
+                RecordParser parser =
+                    new RecordParser(dataPointer, rawRecordData, tlsContext.getChooser().getSelectedProtocolVersion());
                 Record record = parser.parse();
                 records.add(record);
                 if (dataPointer == parser.getPointer()) {
                     throw new ParserException("Ran into infinite Loop while parsing HttpsHeader");
                 }
                 dataPointer = parser.getPointer();
-            } catch (ParserException E) {
-                throw new ParserException("Could not parse provided Data as Record", E);
+            } catch (ParserException e) {
+                throw new ParserException("Could not parse provided Data as Record", e);
             }
         }
         LOGGER.debug("The protocol message(s) were collected from {} record(s). ", records.size());
@@ -97,19 +97,19 @@ public class TlsRecordLayer extends RecordLayer {
         int dataPointer = 0;
         while (dataPointer != rawRecordData.length) {
             try {
-                RecordParser parser = new RecordParser(dataPointer, rawRecordData, tlsContext.getChooser()
-                        .getSelectedProtocolVersion());
+                RecordParser parser =
+                    new RecordParser(dataPointer, rawRecordData, tlsContext.getChooser().getSelectedProtocolVersion());
                 Record record = parser.parse();
                 records.add(record);
                 if (dataPointer == parser.getPointer()) {
                     throw new ParserException("Ran into infinite Loop while parsing Records");
                 }
                 dataPointer = parser.getPointer();
-            } catch (ParserException E) {
+            } catch (ParserException e) {
                 LOGGER.debug("Could not parse Record, parsing as Blob");
-                LOGGER.trace(E);
-                BlobRecordParser blobParser = new BlobRecordParser(dataPointer, rawRecordData, tlsContext.getChooser()
-                        .getSelectedProtocolVersion());
+                LOGGER.trace(e);
+                BlobRecordParser blobParser = new BlobRecordParser(dataPointer, rawRecordData,
+                    tlsContext.getChooser().getSelectedProtocolVersion());
                 AbstractRecord record = blobParser.parse();
                 records.add(record);
                 if (dataPointer == blobParser.getPointer()) {
@@ -124,9 +124,9 @@ public class TlsRecordLayer extends RecordLayer {
 
     @Override
     public byte[] prepareRecords(byte[] data, ProtocolMessageType contentType, List<AbstractRecord> records) {
-        CleanRecordByteSeperator seperator = new CleanRecordByteSeperator(records, tlsContext.getConfig()
-                .getDefaultMaxRecordData(), 0, data);
-        records = seperator.parse();
+        CleanRecordByteSeperator separator =
+            new CleanRecordByteSeperator(records, tlsContext.getConfig().getDefaultMaxRecordData(), 0, data);
+        records = separator.parse();
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         boolean useRecordType = false;
         if (contentType == null) {
@@ -137,8 +137,8 @@ public class TlsRecordLayer extends RecordLayer {
                 contentType = record.getContentMessageType();
             }
 
-            AbstractRecordPreparator preparator = record.getRecordPreparator(tlsContext.getChooser(), encryptor,
-                    compressor, contentType);
+            AbstractRecordPreparator preparator =
+                record.getRecordPreparator(tlsContext.getChooser(), encryptor, compressor, contentType);
             preparator.prepare();
             AbstractRecordSerializer serializer = record.getRecordSerializer();
             try {
@@ -175,10 +175,11 @@ public class TlsRecordLayer extends RecordLayer {
     public void decryptAndDecompressRecord(AbstractRecord record) {
         if (record instanceof Record) {
             if (!tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()
-                    || (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13() && record
-                            .getContentMessageType() == ProtocolMessageType.APPLICATION_DATA)) {
+                || (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()
+                    && record.getContentMessageType() == ProtocolMessageType.APPLICATION_DATA)) {
                 decryptor.decrypt(record);
                 decompressor.decompress(record);
+                ((Record) record).getComputations().setUsedTls13KeySetType(tlsContext.getActiveKeySetTypeRead());
             } else {
                 // Do not decrypt the record
                 record.prepareComputations();
@@ -210,13 +211,21 @@ public class TlsRecordLayer extends RecordLayer {
     }
 
     @Override
-    public void resetEncryptorCipher() {
-        encryptor.resetRecordCipher();
+    public void resetEncryptor() {
+        encryptor.removeAllCiphers();
     }
 
     @Override
-    public void resetDecryptorCipher() {
-        decryptor.resetRecordCipher();
+    public void resetDecryptor() {
+        decryptor.removeAllCiphers();
+    }
+
+    public Encryptor getEncryptor() {
+        return encryptor;
+    }
+
+    public Decryptor getDecryptor() {
+        return decryptor;
     }
 
 }

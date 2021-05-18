@@ -1,20 +1,19 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.util;
 
 public class Time {
 
     /**
-     * Unix time means number of seconds since 1970, in GMT time zone.
-     * Date.getTime() returns number of milliseconds since 1970 in GMT, thus we
-     * convert it to seconds.
+     * Unix time means number of seconds since 1970, in GMT time zone. Date.getTime() returns number of milliseconds
+     * since 1970 in GMT, thus we convert it to seconds.
      * 
      * @return unix time
      */

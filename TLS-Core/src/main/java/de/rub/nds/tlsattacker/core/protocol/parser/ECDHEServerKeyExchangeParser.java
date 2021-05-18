@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -32,22 +32,20 @@ public class ECDHEServerKeyExchangeParser<T extends ECDHEServerKeyExchangeMessag
      * Constructor for the Parser class
      *
      * @param pointer
-     *            Position in the array where the ServerKeyExchangeParser is
-     *            supposed to start parsing
+     *                Position in the array where the ServerKeyExchangeParser is supposed to start parsing
      * @param array
-     *            The byte[] which the ServerKeyExchangeParser is supposed to
-     *            parse
+     *                The byte[] which the ServerKeyExchangeParser is supposed to parse
      * @param version
-     *            Version of the Protocol
+     *                Version of the Protocol
      * @param config
-     *            A Config used in the current context
+     *                A Config used in the current context
      */
     public ECDHEServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
         this(pointer, array, version, null, config);
     }
 
     public ECDHEServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version,
-            KeyExchangeAlgorithm keyExchangeAlgorithm, Config config) {
+        KeyExchangeAlgorithm keyExchangeAlgorithm, Config config) {
         super(pointer, array, HandshakeMessageType.SERVER_KEY_EXCHANGE, version, config);
         this.version = version;
         this.keyExchangeAlgorithm = keyExchangeAlgorithm;
@@ -104,8 +102,7 @@ public class ECDHEServerKeyExchangeParser<T extends ECDHEServerKeyExchangeMessag
     }
 
     /**
-     * Reads the next bytes as the SerializedPublicKeyLength and writes them in
-     * the message
+     * Reads the next bytes as the SerializedPublicKeyLength and writes them in the message
      *
      * @param msg
      *            Message to write in
@@ -116,8 +113,7 @@ public class ECDHEServerKeyExchangeParser<T extends ECDHEServerKeyExchangeMessag
     }
 
     /**
-     * Reads the next bytes as the SerializedPublicKey and writes them in the
-     * message
+     * Reads the next bytes as the SerializedPublicKey and writes them in the message
      *
      * @param msg
      *            Message to write in
@@ -146,8 +142,7 @@ public class ECDHEServerKeyExchangeParser<T extends ECDHEServerKeyExchangeMessag
     }
 
     /**
-     * Reads the next bytes as the SignatureAndHashAlgorithm and writes them in
-     * the message
+     * Reads the next bytes as the SignatureAndHashAlgorithm and writes them in the message
      *
      * @param msg
      *            Message to write in
@@ -155,12 +150,11 @@ public class ECDHEServerKeyExchangeParser<T extends ECDHEServerKeyExchangeMessag
     private void parseSignatureAndHashAlgorithm(ECDHEServerKeyExchangeMessage msg) {
         msg.setSignatureAndHashAlgorithm(parseByteArrayField(HandshakeByteLength.SIGNATURE_HASH_ALGORITHM));
         LOGGER.debug("SignatureAndHashAlgorithm: "
-                + ArrayConverter.bytesToHexString(msg.getSignatureAndHashAlgorithm().getValue()));
+            + ArrayConverter.bytesToHexString(msg.getSignatureAndHashAlgorithm().getValue()));
     }
 
     /**
-     * Reads the next bytes as the SignatureLength and writes them in the
-     * message
+     * Reads the next bytes as the SignatureLength and writes them in the message
      *
      * @param msg
      *            Message to write in

@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.record.compressor.compression;
 
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
@@ -16,8 +16,8 @@ import java.util.zip.Inflater;
 
 public class DeflateCompression extends CompressionAlgorithm {
 
-    private final static int MAX_COMPRESSION_TEXT_LENGTH = 0x4400;
-    private final static int MAX_PLAIN_TEXT_LENGTH = 0x4000;
+    private static final int MAX_COMPRESSION_TEXT_LENGTH = 0x4400;
+    private static final int MAX_PLAIN_TEXT_LENGTH = 0x4000;
     private Boolean secondPacketFlagCompression;
     private Boolean secondPacketFlagDecompression;
 

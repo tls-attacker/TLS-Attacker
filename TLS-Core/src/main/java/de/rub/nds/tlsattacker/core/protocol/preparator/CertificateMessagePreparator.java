@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -72,7 +72,7 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
             case OPEN_PGP:
                 throw new UnsupportedOperationException("We do not support OpenPGP keys");
             case RAW_PUBLIC_KEY:
-                LOGGER.debug("Adjusting context for RAW PUBLIC KEY ceritifate message");
+                LOGGER.debug("Adjusting context for RAW PUBLIC KEY certificate message");
                 try {
                     // We currently only support this extension only very
                     // limited. Only secp256r1 is supported.
@@ -86,18 +86,18 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
                     }
                     // TODO this needs to be adjusted for different curves
                     asn1OutputStream.writeObject(new DLSequence(new ASN1Encodable[] {
-                            new DLSequence(new ASN1Encodable[] { new ASN1ObjectIdentifier("1.2.840.10045.2.1"),
-                                    new ASN1ObjectIdentifier("1.2.840.10045.3.1.7") }),
-                            new DERBitString(PointFormatter.formatToByteArray(NamedGroup.SECP256R1, ecPointToEncode,
-                                    ECPointFormat.UNCOMPRESSED)) }));
+                        new DLSequence(new ASN1Encodable[] { new ASN1ObjectIdentifier("1.2.840.10045.2.1"),
+                            new ASN1ObjectIdentifier("1.2.840.10045.3.1.7") }),
+                        new DERBitString(PointFormatter.formatToByteArray(NamedGroup.SECP256R1, ecPointToEncode,
+                            ECPointFormat.UNCOMPRESSED)) }));
                     asn1OutputStream.flush();
                     asn1OutputStream.close();
                     msg.setCertificatesListBytes(byteArrayOutputStream.toByteArray());
                     msg.setCertificatesListLength(msg.getCertificatesListBytes().getValue().length);
 
                     byteArrayOutputStream.close();
-                } catch (Exception E) {
-                    LOGGER.warn("Could write RAW PublicKey. Not writing anything", E);
+                } catch (Exception e) {
+                    LOGGER.warn("Could write RAW PublicKey. Not writing anything", e);
                     msg.setCertificatesListBytes(new byte[0]);
                     msg.setCertificatesListLength(msg.getCertificatesListBytes().getValue().length);
                 }
@@ -108,14 +108,14 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
                 if (pairList == null) {
                     CertificateKeyPair selectedCertificateKeyPair;
                     if (chooser.getConfig().isAutoSelectCertificate()) {
-                        selectedCertificateKeyPair = CertificateByteChooser.getInstance().chooseCertificateKeyPair(
-                                chooser);
+                        selectedCertificateKeyPair =
+                            CertificateByteChooser.getInstance().chooseCertificateKeyPair(chooser);
                     } else {
                         selectedCertificateKeyPair = chooser.getConfig().getDefaultExplicitCertificateKeyPair();
                     }
                     msg.setCertificateKeyPair(selectedCertificateKeyPair);
                     byte[] certBytes = selectedCertificateKeyPair.getCertificateBytes();
-                    if (certBytes.length >= 3 && selectedCertificateKeyPair.isCertificateParseable()) {
+                    if (certBytes.length >= 3 && selectedCertificateKeyPair.isCertificateParsable()) {
                         pairList = new LinkedList<>();
                         try {
                             Certificate cert = Certificate.parse(new ByteArrayInputStream(certBytes));
@@ -126,7 +126,7 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
                             prepareFromPairList(msg);
                         } catch (IOException ex) {
                             throw new PreparationException(
-                                    "Could not parse a parseable certificate, this should never happen", ex);
+                                "Could not parse a parsable certificate, this should never happen", ex);
                         }
 
                     } else {
@@ -138,7 +138,7 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
                 }
 
                 LOGGER.debug("CertificatesListBytes: "
-                        + ArrayConverter.bytesToHexString(msg.getCertificatesListBytes().getValue()));
+                    + ArrayConverter.bytesToHexString(msg.getCertificatesListBytes().getValue()));
                 break;
             default:
                 throw new UnsupportedOperationException("Unsupported CertificateType");
@@ -151,8 +151,8 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
         for (CertificatePair pair : msg.getCertificatesList()) {
             CertificatePairPreparator preparator = new CertificatePairPreparator(chooser, pair);
             preparator.prepare();
-            CertificatePairSerializer serializer = new CertificatePairSerializer(pair,
-                    chooser.getSelectedProtocolVersion());
+            CertificatePairSerializer serializer =
+                new CertificatePairSerializer(pair, chooser.getSelectedProtocolVersion());
             try {
                 stream.write(serializer.serialize());
             } catch (IOException ex) {
@@ -175,8 +175,8 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
     private void prepareRequestContextLength(CertificateMessage msg) {
         msg.setRequestContextLength(msg.getRequestContext().getValue().length);
         LOGGER.debug("RequestContextLength: " + msg.getRequestContextLength().getValue());
-        byte[] encodedCert = CertificateByteChooser.getInstance().chooseCertificateKeyPair(chooser)
-                .getCertificateBytes();
+        byte[] encodedCert =
+            CertificateByteChooser.getInstance().chooseCertificateKeyPair(chooser).getCertificateBytes();
         msg.setCertificatesListBytes(encodedCert);
         msg.setCertificatesListLength(msg.getCertificatesListBytes().getValue().length);
     }

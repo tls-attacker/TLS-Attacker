@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.certificate;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -58,9 +58,9 @@ public class CertificateAdapterTest {
 
         // Initialize certificate generating objects
         X509v1CertificateBuilder certificateBuilder = new JcaX509v1CertificateBuilder(new X500Principal("CN=Test"),
-                BigInteger.ONE, startDate, endDate, new X500Principal("CN=Test"), publicKey);
-        ContentSigner contentSigner = new JcaContentSignerBuilder("SHA1withRSA").setProvider(
-                new org.bouncycastle.jce.provider.BouncyCastleProvider()).build(privK);
+            BigInteger.ONE, startDate, endDate, new X500Principal("CN=Test"), publicKey);
+        ContentSigner contentSigner = new JcaContentSignerBuilder("SHA1withRSA")
+            .setProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider()).build(privK);
 
         // Create certificate
         X509CertificateHolder certHolder = certificateBuilder.build(contentSigner);
@@ -70,8 +70,7 @@ public class CertificateAdapterTest {
     private final CertificateAdapter certificateAdapter = new CertificateAdapter();
 
     /**
-     * Tests if marshal() creates the correct HexString corresponding to a given
-     * certificate.
+     * Tests if marshal() creates the correct HexString corresponding to a given certificate.
      *
      * @throws IOException
      * @throws Exception
@@ -86,8 +85,7 @@ public class CertificateAdapterTest {
     }
 
     /**
-     * Tests if unmarshal() correctly throws an exception on an invalid input
-     * string.
+     * Tests if unmarshal() correctly throws an exception on an invalid input string.
      *
      * @throws Exception
      */
@@ -97,8 +95,7 @@ public class CertificateAdapterTest {
     }
 
     /**
-     * Tests if marshal() correctly throws an exception on an invalid input
-     * certificate.
+     * Tests if marshal() correctly throws an exception on an invalid input certificate.
      *
      * @throws Exception
      */
@@ -108,8 +105,8 @@ public class CertificateAdapterTest {
     }
 
     /**
-     * Tests if unmarshal() is the reverse function of marshal(), i.e. for a
-     * certificate c checks if marshal(c) = marshal(unmarshal(marshal(c)))
+     * Tests if unmarshal() is the reverse function of marshal(), i.e. for a certificate c checks if marshal(c) =
+     * marshal(unmarshal(marshal(c)))
      *
      * @throws java.lang.Exception
      */

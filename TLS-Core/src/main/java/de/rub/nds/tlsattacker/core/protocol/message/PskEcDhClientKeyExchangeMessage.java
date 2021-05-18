@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -15,7 +15,7 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.ECDHClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.PskEcDhClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -23,7 +23,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class PskEcDhClientKeyExchangeMessage extends ECDHClientKeyExchangeMessage {
 
-    @ModifiableVariableProperty(format = ModifiableVariableProperty.Format.PKCS1, type = ModifiableVariableProperty.Type.PUBLIC_KEY)
+    @ModifiableVariableProperty(format = ModifiableVariableProperty.Format.PKCS1,
+        type = ModifiableVariableProperty.Type.PUBLIC_KEY)
     private ModifiableByteArray identity;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
@@ -81,7 +82,7 @@ public class PskEcDhClientKeyExchangeMessage extends ECDHClientKeyExchangeMessag
     }
 
     @Override
-    public ProtocolMessageHandler getHandler(TlsContext context) {
+    public ECDHClientKeyExchangeHandler<PskEcDhClientKeyExchangeMessage> getHandler(TlsContext context) {
         return new PskEcDhClientKeyExchangeHandler(context);
     }
 

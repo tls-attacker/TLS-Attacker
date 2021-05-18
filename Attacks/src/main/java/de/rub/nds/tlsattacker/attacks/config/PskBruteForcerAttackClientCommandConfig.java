@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks.config;
 
 import com.beust.jcommander.Parameter;
@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.attacks.bruteforce.GuessProviderType;
 import de.rub.nds.tlsattacker.attacks.config.delegate.AttackDelegate;
 import de.rub.nds.tlsattacker.attacks.exception.WordlistNotFoundException;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.CipherSuiteDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ServerDelegate;
 import java.io.File;
@@ -38,10 +38,11 @@ public class PskBruteForcerAttackClientCommandConfig extends AttackConfig {
     @ParametersDelegate
     private AttackDelegate attackDelegate;
     @ParametersDelegate
-    private CiphersuiteDelegate ciphersuiteDelegate;
+    private CipherSuiteDelegate ciphersuiteDelegate;
     @Parameter(names = "-guessProviderType", description = "Chooses how the BruteForcer will choose the keys to guess")
     private GuessProviderType guessProviderType = GuessProviderType.INCREMENTING;
-    @Parameter(names = "-guessProviderInputFile", description = "Set the path to an input file which can be used in the guess provider eg. a path to a wordlist")
+    @Parameter(names = "-guessProviderInputFile",
+        description = "Set the path to an input file which can be used in the guess provider eg. a path to a wordlist")
     private String guessProviderInputFile = null;
 
     /**
@@ -52,7 +53,7 @@ public class PskBruteForcerAttackClientCommandConfig extends AttackConfig {
         super(delegate);
         serverDelegate = new ServerDelegate();
         attackDelegate = new AttackDelegate();
-        ciphersuiteDelegate = new CiphersuiteDelegate();
+        ciphersuiteDelegate = new CipherSuiteDelegate();
         addDelegate(serverDelegate);
         addDelegate(attackDelegate);
         addDelegate(ciphersuiteDelegate);
@@ -96,7 +97,7 @@ public class PskBruteForcerAttackClientCommandConfig extends AttackConfig {
         if (this.guessProviderInputFile == null) {
             if (guessProviderType == GuessProviderType.WORDLIST) {
                 return (PskBruteForcerAttackClientCommandConfig.class.getClassLoader()
-                        .getResourceAsStream("psk_common_passwords.txt"));
+                    .getResourceAsStream("psk_common_passwords.txt"));
             } else {
                 return System.in;
             }

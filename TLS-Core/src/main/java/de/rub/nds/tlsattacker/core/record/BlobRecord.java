@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.record;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -24,9 +24,8 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
- * A Blob Record is not a record in a conventional sense but is rather a non
- * exisiting record and represents just a collection of bytes. Is used for
- * unparseable Records and for SSLv2
+ * A Blob Record is not a record in a conventional sense but is rather a non existing record and represents just a
+ * collection of bytes. Is used for unparseable Records and for SSLv2
  */
 public class BlobRecord extends AbstractRecord {
 
@@ -40,18 +39,18 @@ public class BlobRecord extends AbstractRecord {
     }
 
     @Override
-    public AbstractRecordPreparator getRecordPreparator(Chooser chooser, Encryptor encryptor,
-            RecordCompressor compressor, ProtocolMessageType type) {
+    public BlobRecordPreparator getRecordPreparator(Chooser chooser, Encryptor encryptor, RecordCompressor compressor,
+        ProtocolMessageType type) {
         return new BlobRecordPreparator(chooser, this, encryptor, type, compressor);
     }
 
     @Override
-    public AbstractRecordParser getRecordParser(int startposition, byte[] array, ProtocolVersion version) {
+    public BlobRecordParser getRecordParser(int startposition, byte[] array, ProtocolVersion version) {
         return new BlobRecordParser(startposition, array, version);
     }
 
     @Override
-    public AbstractRecordSerializer getRecordSerializer() {
+    public BlobRecordSerializer getRecordSerializer() {
         return new BlobRecordSerializer(this);
     }
 

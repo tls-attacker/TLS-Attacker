@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
@@ -24,8 +24,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class ClientCertificateTypeExtensionHandlerTest {
-    private final List<CertificateType> certList = Arrays.asList(CertificateType.OPEN_PGP, CertificateType.X509,
-            CertificateType.RAW_PUBLIC_KEY);
+    private final List<CertificateType> certList =
+        Arrays.asList(CertificateType.OPEN_PGP, CertificateType.X509, CertificateType.RAW_PUBLIC_KEY);
     private ClientCertificateTypeExtensionHandler handler;
     private TlsContext context;
 
@@ -47,16 +47,19 @@ public class ClientCertificateTypeExtensionHandlerTest {
 
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[0], 0, context.getConfig()) instanceof ClientCertificateTypeExtensionParser);
+        assertTrue(
+            handler.getParser(new byte[0], 0, context.getConfig()) instanceof ClientCertificateTypeExtensionParser);
     }
 
     @Test
     public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new ClientCertificateTypeExtensionMessage()) instanceof ClientCertificateTypeExtensionPreparator);
+        assertTrue(handler.getPreparator(
+            new ClientCertificateTypeExtensionMessage()) instanceof ClientCertificateTypeExtensionPreparator);
     }
 
     @Test
     public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new ClientCertificateTypeExtensionMessage()) instanceof ClientCertificateTypeExtensionSerializer);
+        assertTrue(handler.getSerializer(
+            new ClientCertificateTypeExtensionMessage()) instanceof ClientCertificateTypeExtensionSerializer);
     }
 }

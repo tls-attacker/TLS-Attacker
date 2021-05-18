@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -16,8 +16,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class RSAClientKeyExchangeSerializer<T extends RSAClientKeyExchangeMessage> extends
-        ClientKeyExchangeSerializer<T> {
+public class RSAClientKeyExchangeSerializer<T extends RSAClientKeyExchangeMessage>
+    extends ClientKeyExchangeSerializer<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -27,9 +27,9 @@ public class RSAClientKeyExchangeSerializer<T extends RSAClientKeyExchangeMessag
      * Constructor for the RSAClientKeyExchangeSerializer
      *
      * @param message
-     *            Message that should be serialized
+     *                Message that should be serialized
      * @param version
-     *            Version of the Protocol
+     *                Version of the Protocol
      */
     public RSAClientKeyExchangeSerializer(T message, ProtocolVersion version) {
         super(message, version);
@@ -42,7 +42,7 @@ public class RSAClientKeyExchangeSerializer<T extends RSAClientKeyExchangeMessag
         if (!version.isSSL()) {
             writeSerializedPublicKeyLength(msg);
         }
-        writeSerializedPublickey(msg);
+        writeSerializedPublicKey(msg);
         return getAlreadySerialized();
     }
 
@@ -50,19 +50,17 @@ public class RSAClientKeyExchangeSerializer<T extends RSAClientKeyExchangeMessag
         if (!version.isSSL()) {
             writeSerializedPublicKeyLength(msg);
         }
-        writeSerializedPublickey(msg);
+        writeSerializedPublicKey(msg);
         return getAlreadySerialized();
     }
 
     /**
-     * Writes the SerializedPublicKeyLength of the RSAClientKeyExchangeMessage
-     * into the final byte[]. For RSA, PublicKeyLength actually is the length of
-     * the encrypted premaster secret.
+     * Writes the SerializedPublicKeyLength of the RSAClientKeyExchangeMessage into the final byte[]. For RSA,
+     * PublicKeyLength actually is the length of the encrypted premaster secret.
      *
-     * RFC 5246 states that "the RSA-encrypted PreMasterSecret in a
-     * ClientKeyExchange is preceded by two length bytes. These bytes are
-     * redundant in the case of RSA because the EncryptedPreMasterSecret is the
-     * only data in the ClientKeyExchange".
+     * RFC 5246 states that "the RSA-encrypted PreMasterSecret in a ClientKeyExchange is preceded by two length bytes.
+     * These bytes are redundant in the case of RSA because the EncryptedPreMasterSecret is the only data in the
+     * ClientKeyExchange".
      */
     private void writeSerializedPublicKeyLength(T msg) {
         appendInt(msg.getPublicKeyLength().getValue(), HandshakeByteLength.ENCRYPTED_PREMASTER_SECRET_LENGTH);
@@ -70,11 +68,10 @@ public class RSAClientKeyExchangeSerializer<T extends RSAClientKeyExchangeMessag
     }
 
     /**
-     * Writes the SerializedPublicKey of the RSAClientKeyExchangeMessage into
-     * the final byte[]. For RSA, the PublicKey field actually contains the
-     * encrypted premaster secret.
+     * Writes the SerializedPublicKey of the RSAClientKeyExchangeMessage into the final byte[]. For RSA, the PublicKey
+     * field actually contains the encrypted premaster secret.
      */
-    private void writeSerializedPublickey(T msg) {
+    private void writeSerializedPublicKey(T msg) {
         appendBytes(msg.getPublicKey().getValue());
         LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
     }

@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.modifiablevariable.util.BadRandom;
@@ -60,8 +60,8 @@ public class RecordedWorkflowTest {
 
             tlsServer = new BasicTlsServer(ks, KeyStoreGenerator.PASSWORD, "TLS", 4555);
         } catch (IOException | InvalidKeyException | KeyManagementException | KeyStoreException
-                | NoSuchAlgorithmException | NoSuchProviderException | SignatureException | UnrecoverableKeyException
-                | CertificateException | OperatorCreationException ex) {
+            | NoSuchAlgorithmException | NoSuchProviderException | SignatureException | UnrecoverableKeyException
+            | CertificateException | OperatorCreationException ex) {
             Logger.getLogger(RecordedWorkflowTest.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         tlsServer.start();
@@ -89,17 +89,17 @@ public class RecordedWorkflowTest {
      * @throws java.security.SignatureException
      */
     // TODO
-    public void testFullWorkflowDeterminsitcWorkflow() throws IOException, NoSuchAlgorithmException, KeyStoreException,
-            CertificateException, UnrecoverableKeyException, KeyManagementException, KeyManagementException,
-            InvalidKeyException, NoSuchProviderException, SignatureException, OperatorCreationException,
-            KeyManagementException {
+    public void testFullWorkflowDeterministicWorkflow()
+        throws IOException, NoSuchAlgorithmException, KeyStoreException, CertificateException,
+        UnrecoverableKeyException, KeyManagementException, KeyManagementException, InvalidKeyException,
+        NoSuchProviderException, SignatureException, OperatorCreationException, KeyManagementException {
         Config c = Config.createConfig();
         c.setDefaultSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
-        c.setDefaultClientSupportedCiphersuites(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
+        c.setDefaultClientSupportedCipherSuites(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
         c.setWorkflowExecutorShouldOpen(false);
-        WorkflowTrace trace = new WorkflowConfigurationFactory(c).createWorkflowTrace(WorkflowTraceType.FULL,
-                RunningModeType.CLIENT);
-        transportHandler = new ClientRecordingTcpTransportHandler(1000, "localhost", 4555);
+        WorkflowTrace trace =
+            new WorkflowConfigurationFactory(c).createWorkflowTrace(WorkflowTraceType.FULL, RunningModeType.CLIENT);
+        transportHandler = new ClientRecordingTcpTransportHandler(1000, 1000, "localhost", 4555);
         transportHandler.initialize();
         State state = new State(c, trace);
         state.getTlsContext().setTransportHandler(transportHandler);

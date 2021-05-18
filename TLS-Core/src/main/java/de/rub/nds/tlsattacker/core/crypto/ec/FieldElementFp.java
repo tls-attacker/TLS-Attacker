@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.crypto.ec;
 
 import java.io.Serializable;
@@ -18,8 +18,7 @@ import java.math.BigInteger;
 public class FieldElementFp extends FieldElement implements Serializable {
 
     /**
-     * Instantiates the element data in the field F_modulus. With modulus being
-     * a prime number.
+     * Instantiates the element data in the field F_modulus. With modulus being a prime number.
      */
     public FieldElementFp(BigInteger data, BigInteger modulus) {
         super(data.mod(modulus), modulus);

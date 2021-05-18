@@ -1,13 +1,15 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks.impl.drown;
+
+import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.attacks.config.BaseDrownCommandConfig;
@@ -15,7 +17,6 @@ import de.rub.nds.tlsattacker.attacks.constants.DrownVulnerabilityType;
 import de.rub.nds.tlsattacker.attacks.impl.Attacker;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -72,15 +73,16 @@ abstract class BaseDrownAttacker extends Attacker<BaseDrownCommandConfig> {
                 CONSOLE.error("Server is vulnerable to the full Special DROWN attack");
                 return true;
             case SSL2:
-                CONSOLE.warn("Server supports SSL2, but not any weak ciphersuites, so is not vulnerable to DROWN");
+                CONSOLE.warn("Server supports SSL2, but not any weak cipher suites, so is not vulnerable to DROWN");
                 return false;
             case NONE:
                 return false;
             case UNKNOWN:
                 CONSOLE.info("Could not execute Workflow, check previous messages or increase log level");
                 return null;
+            default:
+                return null;
         }
-        return null;
     }
 
     public abstract DrownVulnerabilityType getDrownVulnerabilityType();

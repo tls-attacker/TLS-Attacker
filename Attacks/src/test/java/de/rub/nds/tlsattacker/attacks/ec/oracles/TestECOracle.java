@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks.ec.oracles;
 
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
@@ -37,7 +37,7 @@ public class TestECOracle extends ECOracle {
     }
 
     @Override
-    public boolean checkSecretCorrectnes(Point ecPoint, BigInteger guessedSecret) {
+    public boolean checkSecretCorrectness(Point ecPoint, BigInteger guessedSecret) {
         numberOfQueries++;
         if (numberOfQueries % 100 == 0) {
             LOGGER.debug("Number of queries so far: {}", numberOfQueries);
@@ -47,7 +47,7 @@ public class TestECOracle extends ECOracle {
         if (result.isAtInfinity()) {
             return false;
         } else {
-            return (result.getX().getData().compareTo(guessedSecret) == 0);
+            return (result.getFieldX().getData().compareTo(guessedSecret) == 0);
         }
     }
 

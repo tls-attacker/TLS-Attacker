@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.JCommander;
@@ -136,7 +136,7 @@ public class GeneralDelegateTest {
     @Test
     public void testApplyDelegate() {
         // Just check that applyDelegate does not throw an Exception
-        // TODO check that loglevel gets set
+        // TODO check that logLevel gets set
         Config config = Config.createConfig();
         delegate.setKeylogfile("abc");
         delegate.applyDelegate(config);

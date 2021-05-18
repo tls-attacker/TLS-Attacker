@@ -1,19 +1,19 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.constants;
 
 import com.google.common.collect.Sets;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.certificate.CertificateKeyPair;
 import de.rub.nds.tlsattacker.core.exceptions.UnknownSignatureAndHashAlgorithm;
-
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.Signature;
 import java.security.spec.MGF1ParameterSpec;
@@ -23,13 +23,13 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Construction of a hash and signature algorithm. Very confusing, consists of
- * two bytes, the first is hash algorithm: {HashAlgorithm, SignatureAlgorithm}
+ * Construction of a hash and signature algorithm. Very confusing, consists of two bytes, the first is hash algorithm:
+ * {HashAlgorithm, SignatureAlgorithm}
  */
 public enum SignatureAndHashAlgorithm {
     ANONYMOUS_NONE(0x0000),
@@ -72,13 +72,30 @@ public enum SignatureAndHashAlgorithm {
     RSA_PSS_PSS_SHA512(0x080b),
     GOSTR34102001_GOSTR3411(0xEDED),
     GOSTR34102012_256_GOSTR34112012_256(0xEEEE),
-    GOSTR34102012_512_GOSTR34112012_512(0xEFEF);
+    GOSTR34102012_512_GOSTR34112012_512(0xEFEF),
+
+    // GREASE constants
+    GREASE_00(0x0A0A),
+    GREASE_01(0x1A1A),
+    GREASE_02(0x2A2A),
+    GREASE_03(0x3A3A),
+    GREASE_04(0x4A4A),
+    GREASE_05(0x5A5A),
+    GREASE_06(0x6A6A),
+    GREASE_07(0x7A7A),
+    GREASE_08(0x8A8A),
+    GREASE_09(0x9A9A),
+    GREASE_10(0xAAAA),
+    GREASE_11(0xBABA),
+    GREASE_12(0xCACA),
+    GREASE_13(0xDADA),
+    GREASE_14(0xEAEA),
+    GREASE_15(0xFAFA);
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     public static List<? extends SignatureAndHashAlgorithm> getImplemented() {
         List<SignatureAndHashAlgorithm> algoList = new LinkedList<>();
-        algoList.add(DSA_MD5);
         algoList.add(DSA_SHA1);
         algoList.add(DSA_SHA224);
         algoList.add(DSA_SHA256);
@@ -90,12 +107,14 @@ public enum SignatureAndHashAlgorithm {
         algoList.add(RSA_SHA256);
         algoList.add(RSA_SHA384);
         algoList.add(RSA_SHA512);
-        algoList.add(ECDSA_MD5);
         algoList.add(ECDSA_SHA1);
         algoList.add(ECDSA_SHA224);
         algoList.add(ECDSA_SHA256);
         algoList.add(ECDSA_SHA384);
         algoList.add(ECDSA_SHA512);
+        algoList.add(RSA_PSS_RSAE_SHA256);
+        algoList.add(RSA_PSS_RSAE_SHA384);
+        algoList.add(RSA_PSS_RSAE_SHA512);
         algoList.add(GOSTR34102001_GOSTR3411);
         algoList.add(GOSTR34102012_256_GOSTR34112012_256);
         algoList.add(GOSTR34102012_512_GOSTR34112012_512);
@@ -117,6 +136,12 @@ public enum SignatureAndHashAlgorithm {
         algos.add(SignatureAndHashAlgorithm.RSA_PSS_RSAE_SHA384);
         algos.add(SignatureAndHashAlgorithm.RSA_PSS_RSAE_SHA512);
         return algos;
+    }
+
+    public static List<SignatureAndHashAlgorithm> getImplementedTls13SignatureAndHashAlgorithms() {
+        return getTls13SignatureAndHashAlgorithms().stream()
+            .filter(algorithm -> SignatureAndHashAlgorithm.getImplemented().contains(algorithm))
+            .collect(Collectors.toList());
     }
 
     private int value;
@@ -170,14 +195,14 @@ public enum SignatureAndHashAlgorithm {
     }
 
     public static SignatureAndHashAlgorithm getSignatureAndHashAlgorithm(SignatureAlgorithm signatureAlgo,
-            HashAlgorithm hashAlgo) {
+        HashAlgorithm hashAlgo) {
         for (SignatureAndHashAlgorithm algo : values()) {
             if (algo.getHashAlgorithm() == hashAlgo && algo.getSignatureAlgorithm() == signatureAlgo) {
                 return algo;
             }
         }
-        throw new UnsupportedOperationException("Requested SignatureHashAlgorithm is not supported. Requested Sign:"
-                + signatureAlgo + " Hash:" + hashAlgo);
+        throw new UnsupportedOperationException(
+            "Requested SignatureHashAlgorithm is not supported. Requested Sign:" + signatureAlgo + " Hash:" + hashAlgo);
     }
 
     public byte[] getByteValue() {
@@ -259,16 +284,51 @@ public enum SignatureAndHashAlgorithm {
                     break;
                 case NONE:
                     break;
+                default:
+                    break;
             }
+            signature
+                .setParameter(new PSSParameterSpec(hashName, "MGF1", new MGF1ParameterSpec(hashName), saltLength, 1));
+        }
+    }
 
-            signature.setParameter(new PSSParameterSpec(hashName, "MGF1", new MGF1ParameterSpec(hashName), saltLength,
-                    1));
+    public boolean suitedForSigningTls13Messages() {
+        switch (this) {
+            case ECDSA_SHA256:
+            case ECDSA_SHA384:
+            case ECDSA_SHA512:
+            case RSA_PSS_PSS_SHA256:
+            case RSA_PSS_PSS_SHA384:
+            case RSA_PSS_PSS_SHA512:
+            case RSA_PSS_RSAE_SHA256:
+            case RSA_PSS_RSAE_SHA384:
+            case RSA_PSS_RSAE_SHA512:
+            case ED25519:
+            case ED448:
+                return true;
+
+            default:
+                return false;
+        }
+    }
+
+    public boolean suitedForSigningTls13Certs() {
+        switch (this) {
+            case RSA_SHA256:
+            case RSA_SHA384:
+            case RSA_SHA512:
+            case RSA_SHA1:
+            case ECDSA_SHA1:
+                return true;
+
+            default:
+                return suitedForSigningTls13Messages();
         }
     }
 
     public static SignatureAndHashAlgorithm forCertificateKeyPair(CertificateKeyPair keyPair, Chooser chooser) {
-        Sets.SetView<SignatureAndHashAlgorithm> intersection = Sets.intersection(
-                Sets.newHashSet(chooser.getClientSupportedSignatureAndHashAlgorithms()),
+        Sets.SetView<SignatureAndHashAlgorithm> intersection =
+            Sets.intersection(Sets.newHashSet(chooser.getClientSupportedSignatureAndHashAlgorithms()),
                 Sets.newHashSet(chooser.getServerSupportedSignatureAndHashAlgorithms()));
         List<SignatureAndHashAlgorithm> algorithms = new ArrayList<>(intersection);
         List<SignatureAndHashAlgorithm> clientPreferredHash = new ArrayList<>(algorithms);
@@ -322,8 +382,11 @@ public enum SignatureAndHashAlgorithm {
                         }
                     }
                     break;
+                default:
+                    // we skip the default case to find an algorithm in the next
+                    // iteration
+                    ;
             }
-
             if (found) {
                 break;
             }
@@ -335,5 +398,9 @@ public enum SignatureAndHashAlgorithm {
         }
 
         return sigHashAlgo;
+    }
+
+    public boolean isGrease() {
+        return this.name().startsWith("GREASE");
     }
 }

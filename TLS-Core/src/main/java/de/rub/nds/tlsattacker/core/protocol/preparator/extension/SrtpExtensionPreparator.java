@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -25,7 +25,7 @@ public class SrtpExtensionPreparator extends ExtensionPreparator<SrtpExtensionMe
     private final SrtpExtensionMessage msg;
 
     public SrtpExtensionPreparator(Chooser chooser, SrtpExtensionMessage message,
-            ExtensionSerializer<SrtpExtensionMessage> serializer) {
+        ExtensionSerializer<SrtpExtensionMessage> serializer) {
         super(chooser, message, serializer);
         msg = message;
     }
@@ -34,16 +34,16 @@ public class SrtpExtensionPreparator extends ExtensionPreparator<SrtpExtensionMe
     public void prepareExtensionContent() {
         ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
         for (SrtpProtectionProfiles profile : chooser.getConfig()
-                .getSecureRealTimeTransportProtocolProtectionProfiles()) {
+            .getSecureRealTimeTransportProtocolProtectionProfiles()) {
             byteStream.write(profile.getMinor());
             byteStream.write(profile.getMajor());
         }
         msg.setSrtpProtectionProfiles(byteStream.toByteArray());
         LOGGER.debug("Prepared the SRTP extension with protection profiles "
-                + ArrayConverter.bytesToHexString(msg.getSrtpProtectionProfiles()));
+            + ArrayConverter.bytesToHexString(msg.getSrtpProtectionProfiles()));
         msg.setSrtpProtectionProfilesLength(msg.getSrtpProtectionProfiles().getValue().length);
         LOGGER.debug("Prepared the SRTP extension with protection profiles length "
-                + msg.getSrtpProtectionProfilesLength().getValue());
+            + msg.getSrtpProtectionProfilesLength().getValue());
 
         if (chooser.getConfig().getSecureRealTimeTransportProtocolMasterKeyIdentifier().length != 0) {
             msg.setSrtpMki(chooser.getConfig().getSecureRealTimeTransportProtocolMasterKeyIdentifier());

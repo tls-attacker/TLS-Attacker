@@ -1,20 +1,22 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.record;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
+import java.io.Serializable;
 import java.util.Objects;
 
-public class RecordCryptoComputations {
+public class RecordCryptoComputations implements Serializable {
 
     /**
      * The key used for the symmetric cipher
@@ -32,12 +34,12 @@ public class RecordCryptoComputations {
     private ModifiableByteArray mac;
 
     /**
-     * The implicit part of the nonce for aead taken from the keyblock
+     * The implicit part of the nonce for aead taken from the keyBlock
      */
     private ModifiableByteArray aeadSalt;
 
     /**
-     * The eplicit nonce for aead which is transmitted in plain in each message
+     * The explicit nonce for aead which is transmitted in plain in each message
      */
     private ModifiableByteArray explicitNonce;
 
@@ -52,8 +54,7 @@ public class RecordCryptoComputations {
     private ModifiableByteArray padding;
 
     /**
-     * The number of padding bytes which should be added beyond the required
-     * padding
+     * The number of padding bytes which should be added beyond the required padding
      */
     private ModifiableInteger additionalPaddingLength;
 
@@ -68,8 +69,7 @@ public class RecordCryptoComputations {
     private ModifiableByteArray authenticatedNonMetaData;
 
     /**
-     * The pure ciphertext part of the record. The output from the negotaited
-     * cipher
+     * The pure ciphertext part of the record. The output from the negotiated cipher
      */
     private ModifiableByteArray ciphertext;
 
@@ -79,8 +79,7 @@ public class RecordCryptoComputations {
     private ModifiableByteArray cbcInitialisationVector;
 
     /**
-     * The data over which the hmacs/tags are computed which are not explicitly
-     * transmitted.
+     * The data over which the HMACs/tags are computed which are not explicitly transmitted.
      */
     private ModifiableByteArray authenticatedMetaData;
 
@@ -91,6 +90,8 @@ public class RecordCryptoComputations {
     private Boolean macValid = null;
 
     private Boolean authenticationTagValid = null;
+
+    private Tls13KeySetType usedTls13KeySetType = Tls13KeySetType.NONE;
 
     public RecordCryptoComputations() {
     }
@@ -164,8 +165,8 @@ public class RecordCryptoComputations {
     }
 
     public void setCbcInitialisationVector(byte[] initialisationVector) {
-        this.cbcInitialisationVector = ModifiableVariableFactory.safelySetValue(this.cbcInitialisationVector,
-                initialisationVector);
+        this.cbcInitialisationVector =
+            ModifiableVariableFactory.safelySetValue(this.cbcInitialisationVector, initialisationVector);
     }
 
     public ModifiableByteArray getAuthenticatedMetaData() {
@@ -177,8 +178,8 @@ public class RecordCryptoComputations {
     }
 
     public void setAuthenticatedMetaData(byte[] authenticatedMetaData) {
-        this.authenticatedMetaData = ModifiableVariableFactory.safelySetValue(this.authenticatedMetaData,
-                authenticatedMetaData);
+        this.authenticatedMetaData =
+            ModifiableVariableFactory.safelySetValue(this.authenticatedMetaData, authenticatedMetaData);
     }
 
     public ModifiableByteArray getAuthenticatedNonMetaData() {
@@ -190,8 +191,8 @@ public class RecordCryptoComputations {
     }
 
     public void setAuthenticatedNonMetaData(byte[] authenticatedNonMetaData) {
-        this.authenticatedNonMetaData = ModifiableVariableFactory.safelySetValue(this.authenticatedNonMetaData,
-                authenticatedNonMetaData);
+        this.authenticatedNonMetaData =
+            ModifiableVariableFactory.safelySetValue(this.authenticatedNonMetaData, authenticatedNonMetaData);
     }
 
     public ModifiableInteger getAdditionalPaddingLength() {
@@ -203,8 +204,8 @@ public class RecordCryptoComputations {
     }
 
     public void setAdditionalPaddingLength(Integer paddingLength) {
-        this.additionalPaddingLength = ModifiableVariableFactory.safelySetValue(this.additionalPaddingLength,
-                paddingLength);
+        this.additionalPaddingLength =
+            ModifiableVariableFactory.safelySetValue(this.additionalPaddingLength, paddingLength);
     }
 
     public Boolean getPaddingValid() {
@@ -382,6 +383,14 @@ public class RecordCryptoComputations {
             return false;
         }
         return true;
+    }
+
+    public Tls13KeySetType getUsedTls13KeySetType() {
+        return usedTls13KeySetType;
+    }
+
+    public void setUsedTls13KeySetType(Tls13KeySetType usedTls13KeySetType) {
+        this.usedTls13KeySetType = usedTls13KeySetType;
     }
 
 }

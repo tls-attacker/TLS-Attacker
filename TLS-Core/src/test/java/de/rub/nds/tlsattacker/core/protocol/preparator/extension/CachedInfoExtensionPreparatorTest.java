@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CachedInfoExtensionMessage;
@@ -26,8 +26,8 @@ public class CachedInfoExtensionPreparatorTest {
     private TlsContext context;
     private CachedInfoExtensionMessage msg;
     private CachedInfoExtensionPreparator preparator;
-    private final List<CachedObject> cachedObjectsClient = Arrays.asList(new CachedObject((byte) 1, 2, new byte[] {
-            0x01, 0x02 }));
+    private final List<CachedObject> cachedObjectsClient =
+        Arrays.asList(new CachedObject((byte) 1, 2, new byte[] { 0x01, 0x02 }));
     private final List<CachedObject> cachedObjectsServer = Arrays.asList(new CachedObject((byte) 0x02, null, null));
     private final int cachedObjectClientLength = 4;
     private final int cachedObjectServerLength = 1;
@@ -36,8 +36,8 @@ public class CachedInfoExtensionPreparatorTest {
     public void setUp() {
         context = new TlsContext();
         msg = new CachedInfoExtensionMessage();
-        preparator = new CachedInfoExtensionPreparator(context.getChooser(), msg,
-                new CachedInfoExtensionSerializer(msg));
+        preparator =
+            new CachedInfoExtensionPreparator(context.getChooser(), msg, new CachedInfoExtensionSerializer(msg));
     }
 
     @Test
@@ -63,11 +63,11 @@ public class CachedInfoExtensionPreparatorTest {
             CachedObject expectedObject = expected.get(i);
             CachedObject actualObject = actual.get(i);
 
-            assertEquals(expectedObject.getCachedInformationType().getValue(), actualObject.getCachedInformationType()
-                    .getValue());
+            assertEquals(expectedObject.getCachedInformationType().getValue(),
+                actualObject.getCachedInformationType().getValue());
             if (expectedObject.getHashValueLength() != null && expectedObject.getHashValueLength().getValue() != null) {
-                assertEquals(expectedObject.getHashValueLength().getValue(), actualObject.getHashValueLength()
-                        .getValue());
+                assertEquals(expectedObject.getHashValueLength().getValue(),
+                    actualObject.getHashValueLength().getValue());
             } else {
                 assertNull(actualObject.getHashValueLength());
             }

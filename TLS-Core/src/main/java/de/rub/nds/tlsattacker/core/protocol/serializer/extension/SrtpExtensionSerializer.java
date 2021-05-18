@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
@@ -23,7 +23,8 @@ public class SrtpExtensionSerializer extends ExtensionSerializer<SrtpExtensionMe
 
     @Override
     public byte[] serializeExtensionContent() {
-        appendInt(msg.getSrtpProtectionProfilesLength().getValue(), ExtensionByteLength.SRTP_PROTECTION_PROFILES_LENGTH);
+        appendInt(msg.getSrtpProtectionProfilesLength().getValue(),
+            ExtensionByteLength.SRTP_PROTECTION_PROFILES_LENGTH);
         appendBytes(msg.getSrtpProtectionProfiles().getValue());
         appendInt(msg.getSrtpMkiLength().getValue(), ExtensionByteLength.SRTP_MASTER_KEY_IDENTIFIER_LENGTH);
         if (msg.getSrtpMkiLength().getValue() != 0) {

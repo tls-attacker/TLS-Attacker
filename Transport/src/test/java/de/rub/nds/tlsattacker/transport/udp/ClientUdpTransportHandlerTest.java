@@ -1,20 +1,20 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * <p>Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
+ * <p>Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.transport.udp;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -33,8 +33,8 @@ public class ClientUdpTransportHandlerTest {
     @Test
     public void testSendData() throws Exception {
         try (DatagramSocket testSocket = new DatagramSocket()) {
-            ClientUdpTransportHandler udpTH = new ClientUdpTransportHandler(1, localhost.getHostName(),
-                    testSocket.getLocalPort());
+            ClientUdpTransportHandler udpTH =
+                new ClientUdpTransportHandler(1, 1, localhost.getHostName(), testSocket.getLocalPort());
             testSocket.setSoTimeout(1);
 
             udpTH.initialize();
@@ -57,8 +57,8 @@ public class ClientUdpTransportHandlerTest {
     @Test
     public void testFetchData() throws Exception {
         try (DatagramSocket testSocket = new DatagramSocket()) {
-            ClientUdpTransportHandler udpTH = new ClientUdpTransportHandler(1, localhost.getHostName(),
-                    testSocket.getLocalPort());
+            ClientUdpTransportHandler udpTH =
+                new ClientUdpTransportHandler(1, 1, localhost.getHostName(), testSocket.getLocalPort());
 
             udpTH.initialize();
             testSocket.connect(localhost, udpTH.getLocalPort());
@@ -89,7 +89,7 @@ public class ClientUdpTransportHandlerTest {
 
     @Test
     public void testFetchTimeout() throws Exception {
-        ClientUdpTransportHandler udpTH = new ClientUdpTransportHandler(1, localhost.getHostName(), 12345);
+        ClientUdpTransportHandler udpTH = new ClientUdpTransportHandler(1, 1, localhost.getHostName(), 12345);
         udpTH.initialize();
         udpTH.setTimeout(1);
 

@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.record.cipher;
 
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
@@ -41,7 +41,7 @@ public class RecordStreamCipherTest {
     }
 
     // TODO check why cipher.contains("WITH_NULL") in
-    // AlgorithmResolver.getCipherType(suite) is always assocaited with STREAM
+    // AlgorithmResolver.getCipherType(suite) is always associated with STREAM
     @Test
     public void testConstructors() throws NoSuchAlgorithmException, CryptoException {
         // This test just checks that the init() method will not break
@@ -51,9 +51,9 @@ public class RecordStreamCipherTest {
         AliasedConnection[] connections = new AliasedConnection[] { new InboundConnection(), new OutboundConnection() };
         for (CipherSuite suite : CipherSuite.values()) {
             if (!suite.isGrease() && !suite.isSCSV() && !suite.name().contains("WITH_NULL_NULL")
-                    && !suite.name().contains("CHACHA20_POLY1305") && !suite.name().contains("RABBIT")
-                    && AlgorithmResolver.getCipherType(suite) == CipherType.STREAM
-                    && !suite.name().contains("FORTEZZA") && !suite.name().contains("ARIA")) {
+                && !suite.name().contains("CHACHA20_POLY1305") && !suite.name().contains("RABBIT")
+                && AlgorithmResolver.getCipherType(suite) == CipherType.STREAM && !suite.name().contains("FORTEZZA")
+                && !suite.name().contains("ARIA")) {
                 context.setSelectedCipherSuite(suite);
                 for (AliasedConnection con : connections) {
                     context.setConnection(con);
@@ -66,8 +66,8 @@ public class RecordStreamCipherTest {
                         }
                         context.setSelectedProtocolVersion(version);
                         @SuppressWarnings("unused")
-                        RecordStreamCipher cipher = new RecordStreamCipher(context,
-                                KeySetGenerator.generateKeySet(context));
+                        RecordStreamCipher cipher =
+                            new RecordStreamCipher(context, KeySetGenerator.generateKeySet(context));
                     }
                 }
             }

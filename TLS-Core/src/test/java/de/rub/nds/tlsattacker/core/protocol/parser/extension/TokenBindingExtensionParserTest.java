@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -29,9 +29,9 @@ public class TokenBindingExtensionParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { { ExtensionType.TOKEN_BINDING,
-                new byte[] { 0x00, 0x18, 0x00, 0x04, 0x00, 0x0d, 0x01, 0x02 }, 4, TokenBindingVersion.DRAFT_13, 1,
-                new byte[] { TokenBindingKeyParameters.ECDSAP256.getValue() } } });
+        return Arrays.asList(new Object[][] {
+            { ExtensionType.TOKEN_BINDING, new byte[] { 0x00, 0x18, 0x00, 0x04, 0x00, 0x0d, 0x01, 0x02 }, 4,
+                TokenBindingVersion.DRAFT_13, 1, new byte[] { TokenBindingKeyParameters.ECDSAP256.getValue() } } });
     }
 
     private final ExtensionType extensionType;
@@ -44,7 +44,7 @@ public class TokenBindingExtensionParserTest {
     private TokenBindingExtensionMessage message;
 
     public TokenBindingExtensionParserTest(ExtensionType extensionType, byte[] extensionBytes, int extensionLength,
-            TokenBindingVersion tokenbindingVersion, int parameterLength, byte[] keyParameter) {
+        TokenBindingVersion tokenbindingVersion, int parameterLength, byte[] keyParameter) {
         this.extensionType = extensionType;
         this.extensionBytes = extensionBytes;
         this.extensionLength = extensionLength;

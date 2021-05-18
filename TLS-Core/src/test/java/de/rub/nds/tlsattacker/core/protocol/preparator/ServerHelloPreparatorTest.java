@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -41,8 +41,7 @@ public class ServerHelloPreparatorTest {
     }
 
     /**
-     * Test of prepareHandshakeMessageContents method, of class
-     * ServerHelloPreparator.
+     * Test of prepareHandshakeMessageContents method, of class ServerHelloPreparator.
      */
     @Test
     public void testPrepare() {
@@ -52,12 +51,12 @@ public class ServerHelloPreparatorTest {
         suiteList.add(CipherSuite.TLS_DHE_DSS_WITH_AES_256_CBC_SHA256);
         suiteList.add(CipherSuite.TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256);
         suiteList.add(CipherSuite.TLS_DHE_PSK_WITH_AES_128_GCM_SHA256);
-        context.setClientSupportedCiphersuites(suiteList);
+        context.setClientSupportedCipherSuites(suiteList);
         List<CipherSuite> ourSuiteList = new LinkedList<>();
         ourSuiteList.add(CipherSuite.TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256);
         List<CompressionMethod> ourCompressionList = new LinkedList<>();
         ourCompressionList.add(CompressionMethod.LZS);
-        context.getConfig().setDefaultClientSupportedCiphersuites(ourSuiteList);
+        context.getConfig().setDefaultClientSupportedCipherSuites(ourSuiteList);
         context.getConfig().setDefaultServerSupportedCompressionMethods(ourCompressionList);
         context.setHighestClientProtocolVersion(ProtocolVersion.TLS11);
         List<CompressionMethod> compressionList = new LinkedList<>();
@@ -69,9 +68,10 @@ public class ServerHelloPreparatorTest {
         assertArrayEquals(ProtocolVersion.TLS11.getValue(), message.getProtocolVersion().getValue());
         assertArrayEquals(ArrayConverter.longToUint32Bytes(12345l), message.getUnixTime().getValue());
         LOGGER.info(ArrayConverter.bytesToHexString(message.getRandom().getValue()));
-        assertArrayEquals(ArrayConverter.concatenate(ArrayConverter.longToUint32Bytes(12345l),
+        assertArrayEquals(
+            ArrayConverter.concatenate(ArrayConverter.longToUint32Bytes(12345l),
                 ArrayConverter.hexStringToByteArray("60B420BB3851D9D47ACB933DBE70399BF6C92DA33AF01D4FB770E98C")),
-                message.getRandom().getValue());
+            message.getRandom().getValue());
         assertArrayEquals(ArrayConverter.hexStringToByteArray("000102030405"), message.getSessionId().getValue());
         assertTrue(6 == message.getSessionIdLength().getValue());
         assertTrue(message.getExtensionBytes().getValue().length == 0);

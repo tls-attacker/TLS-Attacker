@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -39,8 +39,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 /**
- * Find the files for this test at
- * src/test/resources/workflow_trace_serialization_tests-positive
+ * Find the files for this test at src/test/resources/workflow_trace_serialization_tests-positive
  */
 @Category(SlowTests.class)
 @RunWith(Parameterized.class)
@@ -56,7 +55,8 @@ public class WorkflowTraceNormalizerTestGoodInput {
      */
     @Parameters
     public static Collection<Object[]> data() {
-        File testVectorDir = new File(WorkflowTraceNormalizerTestGoodInput.class.getResource(TEST_VECTOR_DIR).getFile());
+        File testVectorDir =
+            new File(WorkflowTraceNormalizerTestGoodInput.class.getResource(TEST_VECTOR_DIR).getFile());
 
         Collection<Object[]> testVectors = new ArrayList<>();
         for (File tv : testVectorDir.listFiles()) {
@@ -104,7 +104,7 @@ public class WorkflowTraceNormalizerTestGoodInput {
         assertNotNull(trace);
         normalizer.normalize(trace, config);
         String actual = WorkflowTraceSerializer.write(trace).trim();
-        assertEquals("Normalized output should be fine", actual, expectedNormalizedXml);
+        assertEquals("Normalized output should be fine", expectedNormalizedXml, actual);
 
         filter = new DefaultFilter(config);
         filter.applyFilter(trace);
@@ -114,8 +114,7 @@ public class WorkflowTraceNormalizerTestGoodInput {
     }
 
     /**
-     * Loads a test vector from file. Have a look at the test vectors to see the
-     * required format.
+     * Loads a test vector from file. Have a look at the test vectors to see the required format.
      *
      * @param testVectorPath
      */
@@ -144,12 +143,11 @@ public class WorkflowTraceNormalizerTestGoodInput {
         }
 
         try {
-            trace = WorkflowTraceSerializer.read(new ByteArrayInputStream(traceInputXml.getBytes(StandardCharsets.UTF_8
-                    .name())));
+            trace = WorkflowTraceSerializer
+                .read(new ByteArrayInputStream(traceInputXml.getBytes(StandardCharsets.UTF_8.name())));
         } catch (JAXBException | IOException | XMLStreamException | DataBindingException ex) {
             LOGGER.error("Could not load workflow trace from test file " + testVectorPath + ": " + ex);
         }
 
     }
-
 }

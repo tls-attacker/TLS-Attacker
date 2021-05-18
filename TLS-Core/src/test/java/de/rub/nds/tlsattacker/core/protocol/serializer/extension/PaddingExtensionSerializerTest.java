@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
@@ -24,8 +24,7 @@ public class PaddingExtensionSerializerTest {
     /**
      * Parameterized set up of the test vector.
      *
-     * @return test vector (extensionType, extensionLength, extensionPayload,
-     *         expectedBytes)
+     * @return test vector (extensionType, extensionLength, extensionPayload, expectedBytes)
      */
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
@@ -40,7 +39,7 @@ public class PaddingExtensionSerializerTest {
     private PaddingExtensionMessage message;
 
     public PaddingExtensionSerializerTest(ExtensionType extensionType, int extensionLength, byte[] extensionPayload,
-            byte[] expectedBytes, int startParsing) {
+        byte[] expectedBytes, int startParsing) {
         this.extensionType = extensionType;
         this.extensionLength = extensionLength;
         this.extensionPayload = extensionPayload;

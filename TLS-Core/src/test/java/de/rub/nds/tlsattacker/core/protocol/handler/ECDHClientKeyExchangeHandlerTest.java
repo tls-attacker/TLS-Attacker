@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -58,7 +58,8 @@ public class ECDHClientKeyExchangeHandlerTest {
      */
     @Test
     public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new ECDHClientKeyExchangeMessage()) instanceof ECDHClientKeyExchangePreparator);
+        assertTrue(
+            handler.getPreparator(new ECDHClientKeyExchangeMessage()) instanceof ECDHClientKeyExchangePreparator);
     }
 
     /**
@@ -66,12 +67,14 @@ public class ECDHClientKeyExchangeHandlerTest {
      */
     @Test
     public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new ECDHClientKeyExchangeMessage()) instanceof ECDHClientKeyExchangeSerializer);
+        assertTrue(
+            handler.getSerializer(new ECDHClientKeyExchangeMessage()) instanceof ECDHClientKeyExchangeSerializer);
     }
 
     /**
      * Test of adjustTLSContext method, of class ECDHClientKeyExchangeHandler.
      */
+    @SuppressWarnings("SpellCheckingInspection")
     @Test
     public void testAdjustTLSContext() {
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
@@ -81,9 +84,9 @@ public class ECDHClientKeyExchangeHandlerTest {
         // set server ECDH-parameters
         context.getConfig().setDefaultSelectedNamedGroup(NamedGroup.SECP192R1);
         context.setSelectedGroup(NamedGroup.SECP192R1);
-        context.setServerEcPublicKey(Point.createPoint(new BigInteger(
-                "1336698681267683560144780033483217462176613397209956026562"), new BigInteger(
-                "4390496211885670837594012513791855863576256216444143941964"), NamedGroup.SECP192R1));
+        context.setServerEcPublicKey(
+            Point.createPoint(new BigInteger("1336698681267683560144780033483217462176613397209956026562"),
+                new BigInteger("4390496211885670837594012513791855863576256216444143941964"), NamedGroup.SECP192R1));
         context.getConfig().setDefaultClientEcPrivateKey(new BigInteger("3"));
         context.getConfig().setDefaultServerEcPrivateKey(new BigInteger("3"));
         context.setRecordLayer(new TlsRecordLayer(context));
@@ -92,11 +95,11 @@ public class ECDHClientKeyExchangeHandlerTest {
         prep.prepare();
         handler.adjustTLSContext(message);
         assertArrayEquals(ArrayConverter.hexStringToByteArray("273CF78A3DB2E37EE97935DEF45E3C82F126807C31A498E9"),
-                context.getPreMasterSecret());
+            context.getPreMasterSecret());
         assertArrayEquals(
-                ArrayConverter
-                        .hexStringToByteArray("5686D5F789AEDC43162480112E94C7C60F1292B1C5D688AE58F237BD054594775B94AC5F0B18A01B808ADBBE78BCC8C7"),
-                context.getMasterSecret());
+            ArrayConverter.hexStringToByteArray(
+                "5686D5F789AEDC43162480112E94C7C60F1292B1C5D688AE58F237BD054594775B94AC5F0B18A01B808ADBBE78BCC8C7"),
+            context.getMasterSecret());
 
     }
 }

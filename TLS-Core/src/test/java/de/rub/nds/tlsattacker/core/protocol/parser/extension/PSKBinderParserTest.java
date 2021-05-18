@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -25,14 +25,10 @@ public class PSKBinderParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays
-                .asList(new Object[][] { {
-                        0,
-                        ArrayConverter
-                                .hexStringToByteArray("2034c8ead79d29168694fcbff00106f86005ddf0a6480ea86cf06d8440752b62f9"),
-                        32,
-                        ArrayConverter
-                                .hexStringToByteArray("34c8ead79d29168694fcbff00106f86005ddf0a6480ea86cf06d8440752b62f9") } });
+        return Arrays.asList(new Object[][] { { 0,
+            ArrayConverter.hexStringToByteArray("2034c8ead79d29168694fcbff00106f86005ddf0a6480ea86cf06d8440752b62f9"),
+            32, ArrayConverter
+                .hexStringToByteArray("34c8ead79d29168694fcbff00106f86005ddf0a6480ea86cf06d8440752b62f9") } });
     }
 
     private final int startPosition;
@@ -42,7 +38,8 @@ public class PSKBinderParserTest {
     private PSKBinderParser parser;
     private PSKBinder pskBinder;
 
-    public PSKBinderParserTest(int startPosition, byte[] pskBinderBytes, int pskBinderEntryLength, byte[] pskBinderEntry) {
+    public PSKBinderParserTest(int startPosition, byte[] pskBinderBytes, int pskBinderEntryLength,
+        byte[] pskBinderEntry) {
 
         this.startPosition = startPosition;
         this.pskBinderBytes = pskBinderBytes;

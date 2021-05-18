@@ -1,19 +1,22 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import de.rub.nds.modifiablevariable.ModifiableVariable;
 import de.rub.nds.modifiablevariable.ModificationFilter;
 import de.rub.nds.modifiablevariable.VariableModification;
 import de.rub.nds.modifiablevariable.integer.IntegerAddModification;
-import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
+import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
@@ -34,8 +37,6 @@ import org.apache.logging.log4j.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -63,11 +64,11 @@ public class ClientHelloTest {
     public ClientHelloTest() throws Exception {
         writer = new StringWriter();
         context = JAXBContext.newInstance(ExtensionMessage.class, WorkflowTrace.class, ClientHelloMessage.class,
-                ModificationFilter.class, IntegerAddModification.class, VariableModification.class,
-                ModifiableVariable.class, SendAction.class, ReceiveAction.class, TlsAction.class);
+            ModificationFilter.class, IntegerAddModification.class, VariableModification.class,
+            ModifiableVariable.class, SendAction.class, ReceiveAction.class, TlsAction.class);
         m = context.createMarshaller();
         m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        m.setAdapter(new ByteArrayAdapter());
+        m.setAdapter(new UnformattedByteArrayAdapter());
     }
 
     @Before
@@ -85,6 +86,7 @@ public class ClientHelloTest {
      *
      * @throws JAXBException
      */
+    @SuppressWarnings("SpellCheckingInspection")
     @Test
     public void simpleSerialization() throws JAXBException {
         ClientHelloMessage cl = new ClientHelloMessage(Config.createConfig());

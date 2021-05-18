@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks.config;
 
 import com.beust.jcommander.Parameter;
@@ -15,9 +15,7 @@ import de.rub.nds.tlsattacker.attacks.config.delegate.AttackDelegate;
 import de.rub.nds.tlsattacker.attacks.ec.ICEAttacker;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.converters.BigIntegerConverter;
-import de.rub.nds.tlsattacker.core.config.converters.NamedGroupConverter;
-import de.rub.nds.tlsattacker.core.config.converters.PointFormatConverter;
-import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.CipherSuiteDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
@@ -25,7 +23,6 @@ import de.rub.nds.tlsattacker.core.config.delegate.StarttlsDelegate;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurveOverFp;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.math.BigInteger;
@@ -42,13 +39,15 @@ public class InvalidCurveAttackConfig extends AttackConfig {
      */
     public static final String ATTACK_COMMAND = "invalid_curve";
 
-    @Parameter(names = "-named_curve", description = "Named curve to be used", converter = NamedGroupConverter.class)
+    @Parameter(names = "-named_curve", description = "Named curve to be used")
     private NamedGroup namedGroup = NamedGroup.SECP256R1;
 
-    @Parameter(names = "-additional_equations", description = "Additional equations used when attacking Oracle JSSE server (needed because of a faulty JSSE implementation).")
+    @Parameter(names = "-additional_equations",
+        description = "Additional equations used when attacking Oracle JSSE server (needed because of a faulty JSSE implementation).")
     private int additionalEquations = 3;
 
-    @Parameter(names = "-server_type", description = "Allows to switch between a normal vulnerable server type and an Oracle server type (for oracle a slightly different algorithm is needed).")
+    @Parameter(names = "-server_type",
+        description = "Allows to switch between a normal vulnerable server type and an Oracle server type (for oracle a slightly different algorithm is needed).")
     private ICEAttacker.ServerType serverType = ICEAttacker.ServerType.NORMAL;
 
     /**
@@ -64,25 +63,32 @@ public class InvalidCurveAttackConfig extends AttackConfig {
     private int keyOffset = 0;
 
     // These are for scanning only
-    @Parameter(names = "-premaster_secret", description = "Premaster Secret String (use 0x at the beginning for a hex value)", hidden = true, converter = BigIntegerConverter.class)
+    @Parameter(names = "-premaster_secret",
+        description = "Premaster Secret String (use 0x at the beginning for a hex value)", hidden = true,
+        converter = BigIntegerConverter.class)
     private BigInteger premasterSecret;
 
-    @Parameter(names = "-public_point_base_x", hidden = true, description = "Public key point coordinate X sent to the server (use 0x at the beginning for a hex value)", converter = BigIntegerConverter.class)
-    private BigInteger publicPointBaseX = new BigInteger(
-            "b70bf043c144935756f8f4578c369cf960ee510a5a0f90e93a373a21f0d1397f", 16);
+    @Parameter(names = "-public_point_base_x", hidden = true,
+        description = "Public key point coordinate X sent to the server (use 0x at the beginning for a hex value)",
+        converter = BigIntegerConverter.class)
+    private BigInteger publicPointBaseX =
+        new BigInteger("b70bf043c144935756f8f4578c369cf960ee510a5a0f90e93a373a21f0d1397f", 16);
 
-    @Parameter(names = "-public_point_base_y", hidden = true, description = "Public key point coordinate Y sent to the server (use 0x at the beginning for a hex value)", converter = BigIntegerConverter.class)
-    private BigInteger publicPointBaseY = new BigInteger(
-            "4a2e0ded57a5156bb82eb4314c37fd4155395a7e51988af289cce531b9c17192", 16);
+    @Parameter(names = "-public_point_base_y", hidden = true,
+        description = "Public key point coordinate Y sent to the server (use 0x at the beginning for a hex value)",
+        converter = BigIntegerConverter.class)
+    private BigInteger publicPointBaseY =
+        new BigInteger("4a2e0ded57a5156bb82eb4314c37fd4155395a7e51988af289cce531b9c17192", 16);
 
-    @Parameter(names = "-ephemeral", description = "If set to true, the attack with ephemeral cipher suites (ECDHE) is attempted.")
+    @Parameter(names = "-ephemeral",
+        description = "If set to true, the attack with ephemeral cipher suites (ECDHE) is attempted.")
     private boolean ephemeral = false;
 
     @ParametersDelegate
     private ClientDelegate clientDelegate;
 
     @ParametersDelegate
-    private CiphersuiteDelegate ciphersuiteDelegate;
+    private CipherSuiteDelegate ciphersuiteDelegate;
 
     @ParametersDelegate
     private ProtocolVersionDelegate protocolVersionDelegate;
@@ -100,16 +106,18 @@ public class InvalidCurveAttackConfig extends AttackConfig {
 
     private boolean curveTwistAttack = false;
 
-    @Parameter(names = "-curve_twist_d", hidden = true, description = "Non quadratic residue used to obtain twisted curve", converter = BigIntegerConverter.class)
+    @Parameter(names = "-curve_twist_d", hidden = true,
+        description = "Non quadratic residue used to obtain twisted curve", converter = BigIntegerConverter.class)
     private BigInteger curveTwistD;
 
     /**
      * Ignore server's preferences and use the specified PointFormat instead
      */
-    @Parameter(names = "-point_format", description = "The format used for the public key", converter = PointFormatConverter.class)
+    @Parameter(names = "-point_format", description = "The format used for the public key")
     private ECPointFormat pointCompressionFormat = ECPointFormat.UNCOMPRESSED;
 
-    @Parameter(names = "-renegotiation", description = "If set to true, the attack will be carried out in a renegotiation handshake")
+    @Parameter(names = "-renegotiation",
+        description = "If set to true, the attack will be carried out in a renegotiation handshake")
     private boolean attackInRenegotiation = false;
 
     /**
@@ -119,7 +127,7 @@ public class InvalidCurveAttackConfig extends AttackConfig {
     public InvalidCurveAttackConfig(GeneralDelegate delegate) {
         super(delegate);
         clientDelegate = new ClientDelegate();
-        ciphersuiteDelegate = new CiphersuiteDelegate();
+        ciphersuiteDelegate = new CipherSuiteDelegate();
         protocolVersionDelegate = new ProtocolVersionDelegate();
         attackDelegate = new AttackDelegate();
         starttlsDelegate = new StarttlsDelegate();
@@ -292,7 +300,7 @@ public class InvalidCurveAttackConfig extends AttackConfig {
 
     /**
      * @param curveTwistAttack
-     *            the curveTwistAttack to set
+     *                         the curveTwistAttack to set
      */
     public void setCurveTwistAttack(boolean curveTwistAttack) {
         this.curveTwistAttack = curveTwistAttack;
@@ -307,7 +315,7 @@ public class InvalidCurveAttackConfig extends AttackConfig {
 
     /**
      * @param twistedCurve
-     *            the twistedCurve to set
+     *                     the twistedCurve to set
      */
     public void setTwistedCurve(EllipticCurveOverFp twistedCurve) {
         this.twistedCurve = twistedCurve;
@@ -355,7 +363,7 @@ public class InvalidCurveAttackConfig extends AttackConfig {
         config.setAddEllipticCurveExtension(true);
         config.setAddServerNameIndicationExtension(true);
         config.setAddRenegotiationInfoExtension(true);
-        config.setDefaultClientSupportedCiphersuites(cipherSuites);
+        config.setDefaultClientSupportedCipherSuites(cipherSuites);
         List<NamedGroup> namedCurves = new LinkedList<>();
         namedCurves.add(namedGroup);
         config.setDefaultClientNamedGroups(namedCurves);
@@ -372,7 +380,7 @@ public class InvalidCurveAttackConfig extends AttackConfig {
 
     /**
      * @param curveTwistD
-     *            the curveTwistD to set
+     *                    the curveTwistD to set
      */
     public void setCurveTwistD(BigInteger curveTwistD) {
         this.curveTwistD = curveTwistD;
@@ -387,7 +395,7 @@ public class InvalidCurveAttackConfig extends AttackConfig {
 
     /**
      * @param pointCompressionFormat
-     *            the pointCompressionFormat to set
+     *                               the pointCompressionFormat to set
      */
     public void setPointCompressionFormat(ECPointFormat pointCompressionFormat) {
         this.pointCompressionFormat = pointCompressionFormat;
@@ -402,7 +410,7 @@ public class InvalidCurveAttackConfig extends AttackConfig {
 
     /**
      * @param attackInRenegotiation
-     *            the attackInRenegotiation to set
+     *                              the attackInRenegotiation to set
      */
     public void setAttackInRenegotiation(boolean attackInRenegotiation) {
         this.attackInRenegotiation = attackInRenegotiation;

@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -24,13 +24,13 @@ public class AlpnExtensionParser extends ExtensionParser<AlpnExtensionMessage> {
 
     @Override
     public void parseExtensionMessageContent(AlpnExtensionMessage msg) {
-        msg.setAlpnExtensionLength(parseIntField(ExtensionByteLength.ALPN_EXTENSION_LENGTH));
-        byte[] anouncedProtocols = parseByteArrayField(msg.getAlpnExtensionLength().getValue());
-        msg.setAlpnAnnouncedProtocols(anouncedProtocols);
+        msg.setProposedAlpnProtocolsLength(parseIntField(ExtensionByteLength.ALPN_EXTENSION_LENGTH));
+        byte[] proposedProtocol = parseByteArrayField(msg.getProposedAlpnProtocolsLength().getValue());
+        msg.setProposedAlpnProtocols(proposedProtocol);
         List<AlpnEntry> entryList = new LinkedList<>();
         int pointer = 0;
-        while (pointer < anouncedProtocols.length) {
-            AlpnEntryParser parser = new AlpnEntryParser(pointer, anouncedProtocols);
+        while (pointer < proposedProtocol.length) {
+            AlpnEntryParser parser = new AlpnEntryParser(pointer, proposedProtocol);
             entryList.add(parser.parse());
             pointer = parser.getPointer();
         }

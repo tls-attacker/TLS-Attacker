@@ -1,16 +1,15 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks.impl;
 
-import java.util.LinkedList;
-import java.util.List;
+import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 
 import de.rub.nds.tlsattacker.attacks.actions.EarlyCcsAction;
 import de.rub.nds.tlsattacker.attacks.config.EarlyCCSCommandConfig;
@@ -22,7 +21,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -35,7 +34,8 @@ import de.rub.nds.tlsattacker.core.workflow.action.ChangeMasterSecretAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
-import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
+import java.util.LinkedList;
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -59,7 +59,7 @@ public class EarlyCCSAttacker extends Attacker<EarlyCCSCommandConfig> {
          *
          */
         OPENSSL_1_0_1
-    };
+    }
 
     /**
      *
@@ -90,20 +90,21 @@ public class EarlyCCSAttacker extends Attacker<EarlyCCSCommandConfig> {
                 return false;
             case UNKNOWN:
                 return null;
+            default:
+                return null;
         }
-        return null;
     }
 
     /**
      *
-     * @param targetVersion
+     * @param  targetVersion
      * @return
      */
     public boolean checkTargetVersion(TargetVersion targetVersion) {
         Config tlsConfig = getTlsConfig();
         tlsConfig.setFiltersKeepUserSettings(false);
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(tlsConfig);
-        WorkflowTrace workflowTrace = factory.createTlsEntryWorkflowtrace(tlsConfig.getDefaultClientConnection());
+        WorkflowTrace workflowTrace = factory.createTlsEntryWorkflowTrace(tlsConfig.getDefaultClientConnection());
 
         workflowTrace.addTlsAction(new SendAction(new ClientHelloMessage(tlsConfig)));
 
@@ -133,8 +134,8 @@ public class EarlyCCSAttacker extends Attacker<EarlyCCSCommandConfig> {
         workflowTrace.addTlsAction(new ReceiveAction(messageList));
 
         State state = new State(tlsConfig, workflowTrace);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
-                tlsConfig.getWorkflowExecutorType(), state);
+        WorkflowExecutor workflowExecutor =
+            WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getWorkflowExecutorType(), state);
         workflowExecutor.executeWorkflow();
         if (WorkflowTraceUtil.didReceiveMessage(ProtocolMessageType.ALERT, workflowTrace)) {
             CONSOLE.info("Not vulnerable (definitely), Alert message found");

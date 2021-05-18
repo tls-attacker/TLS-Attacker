@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.crypto.ec;
 
 import java.io.Serializable;
@@ -16,24 +16,22 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * An element of a galois field F_{2^m}.<br />
- * Please notice that every element in the field (and the redcution polynomial
- * that defines the field) is represented by a binary polynomial.<br />
- * These polynomials are represented by BigInteger bit-strings, where the i-th
- * bit represents the i-th coefficient.
+ * Please notice that every element in the field (and the reduction polynomial that defines the field) is represented by
+ * a binary polynomial.<br />
+ * These polynomials are represented by BigInteger bit-strings, where the i-th bit represents the i-th coefficient.
  */
 public class FieldElementF2m extends FieldElement implements Serializable {
 
-    private final static Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * Instantiates an element of a galois field F{2^m}.
      *
      * @param data
-     *            The binary polynomial representing the element.<br />
-     *            The degree must be smaller than the reduction polynomial's
-     *            degree.
+     *                The binary polynomial representing the element.<br />
+     *                The degree must be smaller than the reduction polynomial's degree.
      * @param modulus
-     *            The binary reduction polynomial defining the field.
+     *                The binary reduction polynomial defining the field.
      */
     public FieldElementF2m(BigInteger data, BigInteger modulus) {
         super(data, modulus);
@@ -55,11 +53,11 @@ public class FieldElementF2m extends FieldElement implements Serializable {
         // Binary polynomial school book multiplication.
 
         BigInteger thisData = this.getData();
-        BigInteger fData = f.getData();
+        BigInteger fieldData = f.getData();
         BigInteger tmp = new BigInteger("0");
 
-        for (int i = 0; i < fData.bitLength(); i++) {
-            if (fData.testBit(i)) {
+        for (int i = 0; i < fieldData.bitLength(); i++) {
+            if (fieldData.testBit(i)) {
                 tmp = tmp.xor(thisData.shiftLeft(i));
             }
         }
@@ -71,9 +69,8 @@ public class FieldElementF2m extends FieldElement implements Serializable {
     @Override
     public FieldElement addInv() {
         /*
-         * The characteristic of F_{2^m} is 2. Therefore every element is it's
-         * own additive inverse. Like this.subtract(), this method is probably
-         * never needed.
+         * The characteristic of F_{2^m} is 2. Therefore every element is it's own additive inverse. Like
+         * this.subtract(), this method is probably never needed.
          */
         return this;
     }
@@ -102,10 +99,10 @@ public class FieldElementF2m extends FieldElement implements Serializable {
             BigInteger q = division[0];
 
             // t = t2 - (t1 * q)
-            FieldElementF2m t1Polynomial = new FieldElementF2m(t1, this.getModulus());
-            FieldElementF2m qPolynomial = new FieldElementF2m(q, this.getModulus());
+            FieldElementF2m pointT1Polynomial = new FieldElementF2m(t1, this.getModulus());
+            FieldElementF2m pointQPolynomial = new FieldElementF2m(q, this.getModulus());
 
-            BigInteger t = t1Polynomial.mult(qPolynomial).getData();
+            BigInteger t = pointT1Polynomial.mult(pointQPolynomial).getData();
             t = this.reduce(t);
             t = t2.xor(t);
 
@@ -126,9 +123,9 @@ public class FieldElementF2m extends FieldElement implements Serializable {
      * q * p + r = f.
      *
      * @param f
-     *            A BigInteger representing a binary polynomial.
+     *          A BigInteger representing a binary polynomial.
      * @param p
-     *            A BigInteger representing a binary polynomial.
+     *          A BigInteger representing a binary polynomial.
      *
      */
     private BigInteger[] polynomialDivision(BigInteger f, BigInteger p) {
@@ -152,7 +149,7 @@ public class FieldElementF2m extends FieldElement implements Serializable {
      * Returns f mod this.getModulus().
      *
      * @param f
-     *            A BigInteger representing a binary polynomial.
+     *          A BigInteger representing a binary polynomial.
      */
     private BigInteger reduce(BigInteger f) {
         return this.polynomialDivision(f, this.getModulus())[1];

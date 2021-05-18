@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.factory;
 
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
@@ -15,9 +15,95 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.protocol.handler.*;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.*;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedRandomExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.handler.AlertHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.ApplicationMessageHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.CertificateMessageHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.CertificateRequestHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.CertificateStatusHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.CertificateVerifyHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.ChangeCipherSpecHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.ClientHelloHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.ClientKeyExchangeHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.DHClientKeyExchangeHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.DHEServerKeyExchangeHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.ECDHClientKeyExchangeHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.ECDHEServerKeyExchangeHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.EncryptedExtensionsHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.EndOfEarlyDataHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.FinishedHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.GOSTClientKeyExchangeHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.HandshakeMessageHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.HeartbeatMessageHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.HelloRequestHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.HelloRetryRequestHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.HelloVerifyRequestHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.KeyUpdateHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.NewSessionTicketHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.PWDClientKeyExchangeHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.PWDServerKeyExchangeHandler;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.PskClientKeyExchangeHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.PskDhClientKeyExchangeHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.PskDheServerKeyExchangeHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.PskEcDhClientKeyExchangeHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.PskEcDheServerKeyExchangeHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.PskRsaClientKeyExchangeHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.PskServerKeyExchangeHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.RSAClientKeyExchangeHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.ServerHelloDoneHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.ServerHelloHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.SrpClientKeyExchangeHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.SrpServerKeyExchangeHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.SupplementalDataHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.UnknownHandshakeHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.UnknownMessageHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.AlpnExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.CachedInfoExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.CertificateStatusRequestExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.CertificateStatusRequestV2ExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.CertificateTypeExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.ClientAuthzExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.ClientCertificateTypeExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.ClientCertificateUrlExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.CookieExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.EarlyDataExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.EcPointFormatExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.EllipticCurvesExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.EncryptThenMacExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.EncryptedServerNameIndicationExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtendedMasterSecretExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtendedRandomExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.GreaseExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.HeartbeatExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.KeyShareExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.MaxFragmentLengthExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.PSKKeyExchangeModesExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.PWDClearExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.PWDProtectExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.PaddingExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.PasswordSaltExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.PreSharedKeyExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.RenegotiationInfoExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.ServerAuthzExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.ServerCertificateTypeExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.ServerNameIndicationExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.SessionTicketTlsExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.SignatureAndHashAlgorithmsExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.SignedCertificateTimestampExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.SrpExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.SrtpExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.SupportedVersionsExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.TokenBindingExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.TruncatedHmacExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.TrustedCaIndicationExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.UnknownExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.UserMappingExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.message.ClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,8 +112,8 @@ public class HandlerFactory {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public static ProtocolMessageHandler getHandler(TlsContext context, ProtocolMessageType protocolType,
-            HandshakeMessageType handshakeType) {
+    public static ProtocolMessageHandler<? extends ProtocolMessage> getHandler(TlsContext context,
+        ProtocolMessageType protocolType, HandshakeMessageType handshakeType) {
         if (protocolType == null) {
             throw new RuntimeException("Cannot retrieve Handler, ProtocolMessageType is null");
         }
@@ -47,14 +133,15 @@ public class HandlerFactory {
                 default:
                     return new UnknownMessageHandler(context, protocolType);
             }
-        } catch (UnsupportedOperationException E) {
+        } catch (UnsupportedOperationException e) {
             // Could not get the correct handler, getting an
             // unknownMessageHandler instead(always successful)
             return new UnknownHandshakeHandler(context);
         }
     }
 
-    public static HandshakeMessageHandler getHandshakeHandler(TlsContext context, HandshakeMessageType type) {
+    public static HandshakeMessageHandler<? extends HandshakeMessage> getHandshakeHandler(TlsContext context,
+        HandshakeMessageType type) {
         try {
             switch (type) {
                 case CERTIFICATE:
@@ -83,6 +170,8 @@ public class HandlerFactory {
                     return new HelloVerifyRequestHandler(context);
                 case NEW_SESSION_TICKET:
                     return new NewSessionTicketHandler(context);
+                case KEY_UPDATE:
+                    return new KeyUpdateHandler(context);
                 case SERVER_HELLO:
                     return new ServerHelloHandler(context);
                 case SERVER_HELLO_DONE:
@@ -92,28 +181,26 @@ public class HandlerFactory {
                 case SUPPLEMENTAL_DATA:
                     return new SupplementalDataHandler(context);
                 case UNKNOWN:
+                default:
                     return new UnknownHandshakeHandler(context);
             }
-        } catch (UnsupportedOperationException E) {
-            LOGGER.debug("Could not retrieve correct Handler, returning UnknownHandshakeHandler", E);
+        } catch (UnsupportedOperationException e) {
+            LOGGER.debug("Could not retrieve correct Handler, returning UnknownHandshakeHandler", e);
         }
         return new UnknownHandshakeHandler(context);
     }
 
     /**
-     * Returns the correct extension Handler for a specified ExtensionType in a
-     * HandshakeMessage
+     * Returns the correct extension Handler for a specified ExtensionType in a HandshakeMessage
      *
-     * @param context
-     *            Current TlsContext
-     * @param type
-     *            Type of the Extension
-     * @param handshakeMessageType
-     *            The HandshakeMessageType which contains the Extension
-     * @return Correct ExtensionHandler
+     * @param  context
+     *                 Current TlsContext
+     * @param  type
+     *                 Type of the Extension
+     * @return         Correct ExtensionHandler
      */
-    public static ExtensionHandler getExtensionHandler(TlsContext context, ExtensionType type,
-            HandshakeMessageType handshakeMessageType) {
+    public static ExtensionHandler<? extends ExtensionMessage> getExtensionHandler(TlsContext context,
+        ExtensionType type) {
         try {
             switch (type) {
                 case ALPN:
@@ -146,9 +233,6 @@ public class HandlerFactory {
                     return new ExtendedRandomExtensionHandler(context);
                 case KEY_SHARE_OLD:
                 case KEY_SHARE:
-                    if (handshakeMessageType == HandshakeMessageType.HELLO_RETRY_REQUEST) {
-                        return new HrrKeyShareExtensionHandler(context);
-                    }
                     return new KeyShareExtensionHandler(context, type);
                 case MAX_FRAGMENT_LENGTH:
                     return new MaxFragmentLengthExtensionHandler(context);
@@ -198,17 +282,37 @@ public class HandlerFactory {
                     return new PWDClearExtensionHandler(context);
                 case PASSWORD_SALT:
                     return new PasswordSaltExtensionHandler(context);
+                case COOKIE:
+                    return new CookieExtensionHandler(context);
+                case GREASE_00:
+                case GREASE_01:
+                case GREASE_02:
+                case GREASE_03:
+                case GREASE_04:
+                case GREASE_05:
+                case GREASE_06:
+                case GREASE_07:
+                case GREASE_08:
+                case GREASE_09:
+                case GREASE_10:
+                case GREASE_11:
+                case GREASE_12:
+                case GREASE_13:
+                case GREASE_14:
+                case GREASE_15:
+                    return new GreaseExtensionHandler(context);
                 default:
                     throw new UnsupportedOperationException(type.name() + " Extension are not supported yet");
             }
 
-        } catch (UnsupportedOperationException E) {
-            LOGGER.debug("Could not retrieve correct Handler, returning UnknownExtensionHandler", E);
+        } catch (UnsupportedOperationException e) {
+            LOGGER.debug("Could not retrieve correct Handler, returning UnknownExtensionHandler", e);
         }
         return new UnknownExtensionHandler(context);
     }
 
-    private static ClientKeyExchangeHandler getClientKeyExchangeHandler(TlsContext context) {
+    private static ClientKeyExchangeHandler<? extends ClientKeyExchangeMessage>
+        getClientKeyExchangeHandler(TlsContext context) {
         CipherSuite cs = context.getChooser().getSelectedCipherSuite();
         KeyExchangeAlgorithm algorithm = AlgorithmResolver.getKeyExchangeAlgorithm(cs);
         switch (algorithm) {
@@ -247,13 +351,8 @@ public class HandlerFactory {
         }
     }
 
-    private static HandshakeMessageHandler getServerKeyExchangeHandler(TlsContext context) {// TODO
-        // there
-        // should
-        // be
-        // a
-        // server
-        // keyexchangeHandler
+    private static HandshakeMessageHandler<? extends HandshakeMessage> getServerKeyExchangeHandler(TlsContext context) {
+        // TODO: There should be a server KeyExchangeHandler
         CipherSuite cs = context.getChooser().getSelectedCipherSuite();
         KeyExchangeAlgorithm algorithm = AlgorithmResolver.getKeyExchangeAlgorithm(cs);
         switch (algorithm) {
@@ -262,7 +361,7 @@ public class HandlerFactory {
             case ECDH_RSA:
             case ECDHE_RSA:
             case ECDH_ANON:
-                return new ECDHEServerKeyExchangeHandler(context);
+                return new ECDHEServerKeyExchangeHandler<>(context);
             case DHE_DSS:
             case DHE_RSA:
             case DH_ANON:

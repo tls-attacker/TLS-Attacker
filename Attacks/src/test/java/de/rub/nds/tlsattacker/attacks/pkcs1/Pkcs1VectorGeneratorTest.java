@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks.pkcs1;
 
 import de.rub.nds.tlsattacker.attacks.config.BleichenbacherCommandConfig;
@@ -27,7 +27,7 @@ public class Pkcs1VectorGeneratorTest {
     @Test
     public void testGeneratePlainPkcs1Vectors() {
         List<Pkcs1Vector> vectors = Pkcs1VectorGenerator.generatePlainPkcs1Vectors(2048,
-                BleichenbacherCommandConfig.Type.FAST, ProtocolVersion.TLS12);
+            BleichenbacherCommandConfig.Type.FAST, ProtocolVersion.TLS12);
         Assert.assertNotNull(vectors);
         Assert.assertEquals("11 PKCS#1 vectors should be generated", 12, vectors.size());
     }

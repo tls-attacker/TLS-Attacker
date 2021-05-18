@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.crypto.gost;
 
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
@@ -25,7 +25,7 @@ import org.bouncycastle.util.Memoable;
 
 /*
  * LICENSE
- * Copyright (c) 2000 - 2018 The Legion of the Bouncy Castle Inc. (https://www.bouncycastle.org)
+ * <p>Copyright (c) 2000 - 2018 The Legion of the Bouncy Castle Inc. (https://www.bouncycastle.org)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software
  * and associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -57,13 +57,12 @@ public class GOST28147Mac implements Mac, Memoable {
 
     //
     // This is default S-box - E_A.
-    private byte S[] = { 0x9, 0x6, 0x3, 0x2, 0x8, 0xB, 0x1, 0x7, 0xA, 0x4, 0xE, 0xF, 0xC, 0x0, 0xD, 0x5, 0x3, 0x7, 0xE,
-            0x9, 0x8, 0xA, 0xF, 0x0, 0x5, 0x2, 0x6, 0xC, 0xB, 0x4, 0xD, 0x1, 0xE, 0x4, 0x6, 0x2, 0xB, 0x3, 0xD, 0x8,
-            0xC, 0xF, 0x5, 0xA, 0x0, 0x7, 0x1, 0x9, 0xE, 0x7, 0xA, 0xC, 0xD, 0x1, 0x3, 0x9, 0x0, 0x2, 0xB, 0x4, 0xF,
-            0x8, 0x5, 0x6, 0xB, 0x5, 0x1, 0x9, 0x8, 0xD, 0xF, 0x0, 0xE, 0x4, 0x2, 0x3, 0xC, 0x7, 0xA, 0x6, 0x3, 0xA,
-            0xD, 0xC, 0x1, 0x2, 0x0, 0xB, 0x7, 0x5, 0x9, 0x4, 0x8, 0xF, 0xE, 0x6, 0x1, 0xD, 0x2, 0x9, 0x7, 0xA, 0x6,
-            0x0, 0x8, 0xC, 0x4, 0x5, 0xF, 0x3, 0xB, 0xE, 0xB, 0xA, 0xF, 0x5, 0x0, 0xC, 0xE, 0x8, 0x6, 0x2, 0x3, 0x9,
-            0x1, 0x7, 0xD, 0x4 };
+    private byte[] sbox = { 0x9, 0x6, 0x3, 0x2, 0x8, 0xB, 0x1, 0x7, 0xA, 0x4, 0xE, 0xF, 0xC, 0x0, 0xD, 0x5, 0x3, 0x7,
+        0xE, 0x9, 0x8, 0xA, 0xF, 0x0, 0x5, 0x2, 0x6, 0xC, 0xB, 0x4, 0xD, 0x1, 0xE, 0x4, 0x6, 0x2, 0xB, 0x3, 0xD, 0x8,
+        0xC, 0xF, 0x5, 0xA, 0x0, 0x7, 0x1, 0x9, 0xE, 0x7, 0xA, 0xC, 0xD, 0x1, 0x3, 0x9, 0x0, 0x2, 0xB, 0x4, 0xF, 0x8,
+        0x5, 0x6, 0xB, 0x5, 0x1, 0x9, 0x8, 0xD, 0xF, 0x0, 0xE, 0x4, 0x2, 0x3, 0xC, 0x7, 0xA, 0x6, 0x3, 0xA, 0xD, 0xC,
+        0x1, 0x2, 0x0, 0xB, 0x7, 0x5, 0x9, 0x4, 0x8, 0xF, 0xE, 0x6, 0x1, 0xD, 0x2, 0x9, 0x7, 0xA, 0x6, 0x0, 0x8, 0xC,
+        0x4, 0x5, 0xF, 0x3, 0xB, 0xE, 0xB, 0xA, 0xF, 0x5, 0x0, 0xC, 0xE, 0x8, 0x6, 0x2, 0x3, 0x9, 0x1, 0x7, 0xD, 0x4 };
 
     public GOST28147Mac() {
         mac = new byte[blockSize];
@@ -88,9 +87,9 @@ public class GOST28147Mac implements Mac, Memoable {
             throw new IllegalArgumentException("Key length invalid. Key needs to be 32 byte - 256 bit!!!");
         }
 
-        int key[] = new int[8];
+        int[] key = new int[8];
         for (int i = 0; i != 8; i++) {
-            key[i] = bytesToint(userKey, i * 4);
+            key[i] = bytesToInt(userKey, i * 4);
         }
 
         return key;
@@ -112,7 +111,7 @@ public class GOST28147Mac implements Mac, Memoable {
 
         if (params instanceof ParametersWithSBox) {
             ParametersWithSBox param = (ParametersWithSBox) params;
-            System.arraycopy(param.getSBox(), 0, this.S, 0, param.getSBox().length);
+            System.arraycopy(param.getSBox(), 0, this.sbox, 0, param.getSBox().length);
             params = param.getParameters();
         }
 
@@ -120,8 +119,8 @@ public class GOST28147Mac implements Mac, Memoable {
             key = ((KeyParameter) params).getKey();
             workingKey = generateWorkingKey(key);
         } else {
-            throw new IllegalArgumentException("invalid parameter passed to GOST28147 init - "
-                    + params.getClass().getName());
+            throw new IllegalArgumentException(
+                "invalid parameter passed to GOST28147 init - " + params.getClass().getName());
         }
     }
 
@@ -138,14 +137,14 @@ public class GOST28147Mac implements Mac, Memoable {
 
         // S-box replacing
 
-        int om = S[0 + ((cm >> (0 * 4)) & 0xF)] << (0 * 4);
-        om += S[16 + ((cm >> (1 * 4)) & 0xF)] << (1 * 4);
-        om += S[32 + ((cm >> (2 * 4)) & 0xF)] << (2 * 4);
-        om += S[48 + ((cm >> (3 * 4)) & 0xF)] << (3 * 4);
-        om += S[64 + ((cm >> (4 * 4)) & 0xF)] << (4 * 4);
-        om += S[80 + ((cm >> (5 * 4)) & 0xF)] << (5 * 4);
-        om += S[96 + ((cm >> (6 * 4)) & 0xF)] << (6 * 4);
-        om += S[112 + ((cm >> (7 * 4)) & 0xF)] << (7 * 4);
+        int om = sbox[0 + ((cm >> (0 * 4)) & 0xF)] << (0 * 4);
+        om += sbox[16 + ((cm >> (1 * 4)) & 0xF)] << (1 * 4);
+        om += sbox[32 + ((cm >> (2 * 4)) & 0xF)] << (2 * 4);
+        om += sbox[48 + ((cm >> (3 * 4)) & 0xF)] << (3 * 4);
+        om += sbox[64 + ((cm >> (4 * 4)) & 0xF)] << (4 * 4);
+        om += sbox[80 + ((cm >> (5 * 4)) & 0xF)] << (5 * 4);
+        om += sbox[96 + ((cm >> (6 * 4)) & 0xF)] << (6 * 4);
+        om += sbox[112 + ((cm >> (7 * 4)) & 0xF)] << (7 * 4);
 
         return om << 11 | om >>> (32 - 11); // 11-leftshift
     }
@@ -155,7 +154,7 @@ public class GOST28147Mac implements Mac, Memoable {
             processedBytes = 0;
             try {
                 SecretKeySpec spec = new SecretKeySpec(key, meshCipher.getAlgorithm());
-                meshCipher.init(Cipher.DECRYPT_MODE, spec, new GOST28147ParameterSpec(S));
+                meshCipher.init(Cipher.DECRYPT_MODE, spec, new GOST28147ParameterSpec(sbox));
                 key = meshCipher.doFinal(GOST28147Cipher.C);
                 workingKey = generateWorkingKey(key);
             } catch (GeneralSecurityException e) {
@@ -164,38 +163,40 @@ public class GOST28147Mac implements Mac, Memoable {
         }
         processedBytes += 8;
 
-        int N1, N2, tmp; // tmp -> for saving N1
-        N1 = bytesToint(in, 0);
-        N2 = bytesToint(in, 4);
+        int n1;
+        int n2;
+        int tmp; // tmp -> for saving n1
+        n1 = bytesToInt(in, 0);
+        n2 = bytesToInt(in, 4);
 
-        for (int k = 0; k < 2; k++) // 1-16 steps
-        {
+        // 1-16 steps
+        for (int k = 0; k < 2; k++) {
             for (int j = 0; j < 8; j++) {
-                tmp = N1;
-                N1 = N2 ^ gost28147_mainStep(N1, workingKey[j]); // CM2
-                N2 = tmp;
+                tmp = n1;
+                n1 = n2 ^ gost28147_mainStep(n1, workingKey[j]); // CM2
+                n2 = tmp;
             }
         }
 
-        intTobytes(N1, out, 0);
-        intTobytes(N2, out, 4);
+        intToBytes(n1, out, 0);
+        intToBytes(n2, out, 4);
     }
 
     // array of bytes to type int
-    private int bytesToint(byte[] in, int inOff) {
+    private int bytesToInt(byte[] in, int inOff) {
         return ((in[inOff + 3] << 24) & 0xff000000) + ((in[inOff + 2] << 16) & 0xff0000)
-                + ((in[inOff + 1] << 8) & 0xff00) + (in[inOff] & 0xff);
+            + ((in[inOff + 1] << 8) & 0xff00) + (in[inOff] & 0xff);
     }
 
     // int to array of bytes
-    private void intTobytes(int num, byte[] out, int outOff) {
+    private void intToBytes(int num, byte[] out, int outOff) {
         out[outOff + 3] = (byte) (num >>> 24);
         out[outOff + 2] = (byte) (num >>> 16);
         out[outOff + 1] = (byte) (num >>> 8);
         out[outOff] = (byte) num;
     }
 
-    private byte[] CM5func(byte[] buf, int bufOff, byte[] mac) {
+    private byte[] cm5Func(byte[] buf, int bufOff, byte[] mac) {
         byte[] sum = new byte[buf.length - bufOff];
 
         System.arraycopy(buf, bufOff, sum, 0, mac.length);
@@ -215,10 +216,10 @@ public class GOST28147Mac implements Mac, Memoable {
             if (firstStep) {
                 firstStep = false;
                 if (macIV != null) {
-                    sumbuf = CM5func(buf, 0, macIV);
+                    sumbuf = cm5Func(buf, 0, macIV);
                 }
             } else {
-                sumbuf = CM5func(buf, 0, mac);
+                sumbuf = cm5Func(buf, 0, mac);
             }
 
             gost28147MacFunc(sumbuf, mac);
@@ -244,10 +245,10 @@ public class GOST28147Mac implements Mac, Memoable {
             if (firstStep) {
                 firstStep = false;
                 if (macIV != null) {
-                    sumbuf = CM5func(buf, 0, macIV);
+                    sumbuf = cm5Func(buf, 0, macIV);
                 }
             } else {
-                sumbuf = CM5func(buf, 0, mac);
+                sumbuf = cm5Func(buf, 0, mac);
             }
 
             gost28147MacFunc(sumbuf, mac);
@@ -257,7 +258,7 @@ public class GOST28147Mac implements Mac, Memoable {
             inOff += gapLen;
 
             while (len > blockSize) {
-                sumbuf = CM5func(in, inOff, mac);
+                sumbuf = cm5Func(in, inOff, mac);
                 gost28147MacFunc(sumbuf, mac);
 
                 len -= blockSize;
@@ -283,7 +284,7 @@ public class GOST28147Mac implements Mac, Memoable {
         if (firstStep) {
             firstStep = false;
         } else {
-            sumbuf = CM5func(buf, 0, mac);
+            sumbuf = cm5Func(buf, 0, mac);
         }
 
         gost28147MacFunc(sumbuf, mac);
@@ -309,11 +310,6 @@ public class GOST28147Mac implements Mac, Memoable {
     }
 
     @Override
-    public Memoable copy() {
-        return new GOST28147Mac(this);
-    }
-
-    @Override
     public void reset(Memoable other) {
         GOST28147Mac t = (GOST28147Mac) other;
 
@@ -323,7 +319,7 @@ public class GOST28147Mac implements Mac, Memoable {
 
         System.arraycopy(t.buf, 0, buf, 0, t.buf.length);
         System.arraycopy(t.mac, 0, mac, 0, t.mac.length);
-        System.arraycopy(t.S, 0, S, 0, t.S.length);
+        System.arraycopy(t.sbox, 0, sbox, 0, t.sbox.length);
 
         if (t.key != null) {
             System.arraycopy(t.key, 0, key, 0, t.key.length);
@@ -334,6 +330,11 @@ public class GOST28147Mac implements Mac, Memoable {
         if (t.macIV != null) {
             System.arraycopy(t.macIV, 0, macIV, 0, t.macIV.length);
         }
+    }
+
+    @Override
+    public Memoable copy() {
+        return new GOST28147Mac(this);
     }
 
 }

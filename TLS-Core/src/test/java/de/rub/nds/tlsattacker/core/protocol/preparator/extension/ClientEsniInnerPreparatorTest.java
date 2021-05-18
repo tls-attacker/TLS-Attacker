@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import static org.junit.Assert.assertArrayEquals;
@@ -58,8 +58,8 @@ public class ClientEsniInnerPreparatorTest {
         int resultServerNameListLength = clientEsniInner.getServerNameListLength().getValue();
         int expectedServerNameListLength = 18;
         byte[] resultServerNameListBytes = clientEsniInner.getServerNameListBytes().getValue();
-        byte[] expectedServerNameListBytes = ArrayConverter
-                .hexStringToByteArray("00000f62617a2e6578616d706c652e636f6d");
+        byte[] expectedServerNameListBytes =
+            ArrayConverter.hexStringToByteArray("00000f62617a2e6578616d706c652e636f6d");
         byte[] resultPadding = clientEsniInner.getPadding().getValue();
         byte[] expectedPadding = new byte[240];
 

@@ -1,13 +1,15 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.config.delegate;
+
+import static org.apache.commons.lang3.StringUtils.join;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
@@ -32,7 +34,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import static org.apache.commons.lang3.StringUtils.join;
 import org.bouncycastle.crypto.tls.Certificate;
 
 public class CertificateDelegate extends Delegate {
@@ -116,7 +117,7 @@ public class CertificateDelegate extends Delegate {
             }
         }
         if (certificate != null) {
-            LOGGER.debug("Loading ceritificate");
+            LOGGER.debug("Loading certificate");
             try {
                 Certificate cert = PemUtil.readCertificate(new File(certificate));
                 if (privateKey != null) {
@@ -139,7 +140,7 @@ public class CertificateDelegate extends Delegate {
             return;
         } else if (!missingParameters.isEmpty()) {
             throw new ParameterException("The following parameters are required for loading a" + " keystore: "
-                    + join(mandatoryParameters.keySet()));
+                + join(mandatoryParameters.keySet()));
         }
         try {
             ConnectionEndType type;
@@ -162,7 +163,7 @@ public class CertificateDelegate extends Delegate {
             pair.adjustInConfig(config, type);
             config.setAutoSelectCertificate(false);
         } catch (UnrecoverableKeyException | KeyStoreException | IOException | NoSuchAlgorithmException
-                | CertificateException ex) {
+            | CertificateException ex) {
             throw new ConfigurationException("Could not load private Key from Keystore", ex);
         }
     }

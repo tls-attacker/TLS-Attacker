@@ -1,39 +1,33 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks.impl;
 
-/**
- * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
- * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
- *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
- */
+import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
+
 import de.rub.nds.tlsattacker.attacks.config.AttackConfig;
 import de.rub.nds.tlsattacker.attacks.connectivity.ConnectivityChecker;
 import de.rub.nds.tlsattacker.core.config.Config;
-import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * @param <AttConfig>
+ * @param <AttConfigT>
  */
-public abstract class Attacker<AttConfig extends AttackConfig> {
+public abstract class Attacker<AttConfigT extends AttackConfig> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      *
      */
-    protected AttConfig config;
+    protected AttConfigT config;
 
     private final Config baseConfig;
 
@@ -42,7 +36,7 @@ public abstract class Attacker<AttConfig extends AttackConfig> {
      * @param config
      * @param baseConfig
      */
-    public Attacker(AttConfig config, Config baseConfig) {
+    public Attacker(AttConfigT config, Config baseConfig) {
         this.config = config;
         this.baseConfig = baseConfig;
     }
@@ -93,7 +87,7 @@ public abstract class Attacker<AttConfig extends AttackConfig> {
      *
      * @return
      */
-    public AttConfig getConfig() {
+    public AttConfigT getConfig() {
         return config;
     }
 

@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -33,7 +33,7 @@ public class NewSessionTicketParser extends HandshakeMessageParser<NewSessionTic
         if (getVersion().isTLS13()) {
             parseLifetime(msg);
             parseAgeAdd(msg);
-            parseNonceLenght(msg);
+            parseNonceLength(msg);
             parseNonce(msg);
             parseIdentityLength(msg);
             parseIdentity(msg);
@@ -65,7 +65,7 @@ public class NewSessionTicketParser extends HandshakeMessageParser<NewSessionTic
         LOGGER.debug("TicketAgeAdd:" + ArrayConverter.bytesToHexString(msg.getTicket().getTicketAgeAdd().getValue()));
     }
 
-    private void parseNonceLenght(NewSessionTicketMessage msg) {
+    private void parseNonceLength(NewSessionTicketMessage msg) {
         msg.getTicket().setTicketNonceLength(parseIntField(HandshakeByteLength.TICKET_NONCE_LENGTH));
         LOGGER.debug("TicketNonceLength: " + msg.getTicket().getTicketNonceLength().getValue());
     }

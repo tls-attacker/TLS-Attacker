@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.record.cipher;
 
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
@@ -35,12 +35,13 @@ public class RecordCipherFactory {
                         return new RecordBlockCipher(context, keySet);
                     case STREAM:
                         return new RecordStreamCipher(context, keySet);
+                    default:
+                        LOGGER.warn("UnknownCipherType:" + type.name());
+                        return new RecordNullCipher(context);
                 }
-                LOGGER.warn("UnknownCipherType:" + type.name());
-                return new RecordNullCipher(context);
             }
-        } catch (Exception E) {
-            LOGGER.debug("Could not create RecordCipher from the current Context! Creating null Cipher", E);
+        } catch (Exception e) {
+            LOGGER.debug("Could not create RecordCipher from the current Context! Creating null Cipher", e);
             return new RecordNullCipher(context);
         }
     }

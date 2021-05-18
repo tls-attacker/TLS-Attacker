@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.constants;
 
 public class ExtensionByteLength {
@@ -27,8 +27,7 @@ public class ExtensionByteLength {
     public static final int EC_POINT_FORMATS = 1;
 
     /**
-     * Supported Elliptic Curves length field of the elliptic curve extension
-     * message
+     * Supported Elliptic Curves length field of the elliptic curve extension message
      */
     public static final int SUPPORTED_GROUPS = 2;
     /**
@@ -40,7 +39,7 @@ public class ExtensionByteLength {
      */
     public static final int MAX_FRAGMENT = 1;
     /**
-     * ServernameType length in the ServerNameIndicationExtension
+     * ServerNameType length in the ServerNameIndicationExtension
      */
     public static final int SERVER_NAME_TYPE = 1;
     /**
@@ -56,19 +55,19 @@ public class ExtensionByteLength {
      */
     public static final int EXTENDED_RANDOM_LENGTH = 2;
     /**
-     * KeyShareGroup length in the KeySahreExtension
+     * KeyShareGroup length in the KeyShareExtension
      */
     public static final int KEY_SHARE_GROUP = 2;
     /**
-     * KeyShare length in the KeySahreExtension
+     * KeyShare length in the KeyShareExtension
      */
     public static final int KEY_SHARE_LENGTH = 2;
     /**
-     * KeyShareListLength in the KeySahreExtension
+     * KeyShareListLength in the KeyShareExtension
      */
     public static final int KEY_SHARE_LIST_LENGTH = 2;
     /**
-     * KeyExchangeModes length in the PSKKeyExchgangeModesExtension
+     * KeyExchangeModes length in the PSKKeyExchangeModesExtension
      */
     public static final int PSK_KEY_EXCHANGE_MODES_LENGTH = 1;
     /**
@@ -100,13 +99,11 @@ public class ExtensionByteLength {
      */
     public static final int MAX_EARLY_DATA_SIZE_LENGTH = 4;
     /**
-     * Length of the Signature and HashAlgorithm Length field of the
-     * SignatureAndHashAlgorithms Extension
+     * Length of the Signature and HashAlgorithm Length field of the SignatureAndHashAlgorithms Extension
      */
     public static final int SIGNATURE_AND_HASH_ALGORITHMS_LENGTH = 2;
     /**
-     * Supported Protocol Versions length field of the
-     * SupportedVersionsExtension message
+     * Supported Protocol Versions length field of the SupportedVersionsExtension message
      */
     public static final int SUPPORTED_PROTOCOL_VERSIONS_LENGTH = 1;
 
@@ -155,12 +152,12 @@ public class ExtensionByteLength {
     public static final int SRP_IDENTIFIER_LENGTH = 1;
 
     /**
-     * Length of the SRTP extension master key identifier lengthfield
+     * Length of the SRTP extension master key identifier length field
      */
     public static final int SRTP_MASTER_KEY_IDENTIFIER_LENGTH = 1;
 
     /**
-     * Length of the SRTP extension protection profiles lengthfield length
+     * Length of the SRTP extension protection profiles length field length
      */
     public static final int SRTP_PROTECTION_PROFILES_LENGTH = 2;
 
@@ -210,7 +207,7 @@ public class ExtensionByteLength {
     public static final int TRUSTED_AUTHORITY_HASH = 20;
 
     /**
-     * Length of the trusted ca indication distinguished name lengthfield
+     * Length of the trusted ca indication distinguished name length field
      */
     public static final int TRUSTED_AUTHORITY_DISTINGUISHED_NAME_LENGTH = 2;
 
@@ -251,8 +248,7 @@ public class ExtensionByteLength {
     /**
      * PASSWORD_SALT length field of the password_salt extension message
      *
-     * Note that the field has a different length than the salt field in the
-     * ServerKeyExchange for some reason
+     * Note that the field has a different length than the salt field in the ServerKeyExchange for some reason
      */
     public static final int PASSWORD_SALT = 2;
 
@@ -282,15 +278,19 @@ public class ExtensionByteLength {
     public static final int NONCE = 16;
 
     /**
-     * PaddedLength in the ClientEsniInner of the
-     * EncryptedServerNameIndicationExtension
+     * PaddedLength in the ClientEsniInner of the EncryptedServerNameIndicationExtension
      */
-    public static final int PADDED_LEMGTH = 2;
+    public static final int PADDED_LENGTH = 2;
 
     /**
-     * recordDdigestLength in EncryptedServerNameIndicationExtension
+     * recordDigestLength in EncryptedServerNameIndicationExtension
      */
     public static final int RECORD_DIGEST_LENGTH = 2;
+
+    /**
+     * cookieLength in the CookieExtension
+     */
+    public static final int COOKIE_LENGTH = 2;
 
     private ExtensionByteLength() {
     }

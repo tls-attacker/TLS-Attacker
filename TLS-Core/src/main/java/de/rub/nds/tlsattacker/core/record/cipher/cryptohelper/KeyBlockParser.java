@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.record.cipher.cryptohelper;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -14,13 +14,13 @@ import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CipherType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
+import de.rub.nds.tlsattacker.core.protocol.Parser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class KeyBlockParser extends Parser<KeySet> {
 
-    private final static Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * sequence Number length in byte
@@ -52,7 +52,7 @@ public class KeyBlockParser extends Parser<KeySet> {
         parseClientWriteKey(keys);
         parseServerWriteKey(keys);
         if ((AlgorithmResolver.getCipherType(suite) == CipherType.BLOCK && !version.usesExplicitIv())
-                || suite.isSteamCipherWithIV()) {
+            || suite.isSteamCipherWithIV()) {
             parseClientWriteIvBlock(keys);
             parseServerWriteIvBlock(keys);
         } else if (AlgorithmResolver.getCipherType(suite) == CipherType.AEAD) {

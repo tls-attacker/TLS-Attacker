@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks.ec.oracles;
 
 import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
@@ -36,25 +36,23 @@ public abstract class ECOracle {
     protected EllipticCurve curve;
 
     /**
-     * Takes an ec point and a guessed secret and returns true, in case the
-     * secret was guessed correctly.
+     * Takes an ec point and a guessed secret and returns true, in case the secret was guessed correctly.
      *
-     * @param ecPoint
-     *            The Point
-     * @param guessedSecret
-     *            The guessed Secret
-     * @return True if the secret is guessed correctly
+     * @param  ecPoint
+     *                       The Point
+     * @param  guessedSecret
+     *                       The guessed Secret
+     * @return               True if the secret is guessed correctly
      */
-    public abstract boolean checkSecretCorrectnes(Point ecPoint, BigInteger guessedSecret);
+    public abstract boolean checkSecretCorrectness(Point ecPoint, BigInteger guessedSecret);
 
     /**
-     * Sends the oracle a request with a guessed secret key resulting from the
-     * attack. The oracle responds with true, in case the guessed key was
-     * correct.
+     * Sends the oracle a request with a guessed secret key resulting from the attack. The oracle responds with true, in
+     * case the guessed key was correct.
      *
-     * @param guessedSecret
-     *            The guessed Secret
-     * @return True if the Solution is correct
+     * @param  guessedSecret
+     *                       The guessed Secret
+     * @return               True if the Solution is correct
      */
     public abstract boolean isFinalSolutionCorrect(BigInteger guessedSecret);
 

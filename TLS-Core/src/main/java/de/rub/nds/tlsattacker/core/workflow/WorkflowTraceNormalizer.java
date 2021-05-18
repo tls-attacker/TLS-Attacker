@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -38,11 +38,11 @@ public class WorkflowTraceNormalizer {
      * Merge in default values from Config if necessary.
      *
      * @param trace
-     *            The trace that should be normalized
+     *               The trace that should be normalized
      * @param config
-     *            The config that is used
+     *               The config that is used
      * @param mode
-     *            The mode the Trace is ran in
+     *               The mode the Trace is ran in
      */
     public void normalize(WorkflowTrace trace, Config config, RunningModeType mode) {
         List<AliasedConnection> traceConnections = trace.getConnections();
@@ -71,8 +71,8 @@ public class WorkflowTraceNormalizer {
                     break;
                 default:
                     throw new ConfigurationException("No connections defined in workflow trace and "
-                            + "default configuration for this running mode (" + mode + ") is not "
-                            + "supported. Please define some connections in the workflow trace.\n");
+                        + "default configuration for this running mode (" + mode + ") is not "
+                        + "supported. Please define some connections in the workflow trace.\n");
             }
         }
 
@@ -90,7 +90,7 @@ public class WorkflowTraceNormalizer {
             ConnectionEndType localConEndType = traceCon.getLocalConnectionEndType();
             if (null == localConEndType) {
                 throw new ConfigurationException("WorkflowTrace defines a connection with an"
-                        + "empty localConnectionEndType. Don't know how to handle this!");
+                    + "empty localConnectionEndType. Don't know how to handle this!");
             } else {
                 switch (traceCon.getLocalConnectionEndType()) {
                     case CLIENT:
@@ -100,9 +100,9 @@ public class WorkflowTraceNormalizer {
                         traceCon.normalize(defaultInCon);
                         break;
                     default:
-                        throw new ConfigurationException("WorkflowTrace defines a connection with an"
-                                + "unknown localConnectionEndType (" + localConEndType + "). Don't know "
-                                + "how to handle this!");
+                        throw new ConfigurationException(
+                            "WorkflowTrace defines a connection with an" + "unknown localConnectionEndType ("
+                                + localConEndType + "). Don't know " + "how to handle this!");
                 }
             }
         }
@@ -135,35 +135,33 @@ public class WorkflowTraceNormalizer {
     }
 
     /**
-     * Assert that a workflow trace is "well defined". A well defined workflow
-     * trace contains one or more Connections and zero or more TlsActions which
-     * refer to defined Connections only (i.e. the alias must match a known
-     * connection alias).
+     * Assert that a workflow trace is "well defined". A well defined workflow trace contains one or more Connections
+     * and zero or more TlsActions which refer to defined Connections only (i.e. the alias must match a known connection
+     * alias).
      *
-     * TODO: There could be a AliasedConnection.assertProperlyPrepared() method
-     * that we can call here. This would be a "self test" of the Connection
-     * object to check that all values are set and in expected range.
+     * TODO: There could be a AliasedConnection.assertProperlyPrepared() method that we can call here. This would be a
+     * "self test" of the Connection object to check that all values are set and in expected range.
      *
      * @param trace
-     *            The WorkflowTrace to check
+     *              The WorkflowTrace to check
      */
     public void assertNormalizedWorkflowTrace(WorkflowTrace trace) {
         List<AliasedConnection> connections = trace.getConnections();
         if ((connections == null) || (connections.isEmpty())) {
-            throw new ConfigurationException("Workflow trace not well defined. "
-                    + "Trace does not define any connections.");
+            throw new ConfigurationException(
+                "Workflow trace not well defined. " + "Trace does not define any connections.");
         }
 
         List<String> knownAliases = new ArrayList<>();
         for (AliasedConnection con : connections) {
             String conAlias = con.getAlias();
             if ((conAlias == null) || (conAlias.isEmpty())) {
-                throw new ConfigurationException("Workflow trace not well defined. "
-                        + "Trace contains connections with empty alias");
+                throw new ConfigurationException(
+                    "Workflow trace not well defined. " + "Trace contains connections with empty alias");
             }
             if (knownAliases.contains(conAlias)) {
-                throw new ConfigurationException("Workflow trace not well defined. "
-                        + "Trace contains connections with the same alias");
+                throw new ConfigurationException(
+                    "Workflow trace not well defined. " + "Trace contains connections with the same alias");
             }
             knownAliases.add(conAlias);
         }
@@ -177,8 +175,8 @@ public class WorkflowTraceNormalizer {
 
             if (!knownAliases.containsAll(action.getAllAliases())) {
                 throw new ConfigurationException("Workflow trace not well defined. "
-                        + "Trace has action with reference to unknown connection alias, action: "
-                        + action.toCompactString() + ", known aliases: " + knownAliases);
+                    + "Trace has action with reference to unknown connection alias, action: " + action.toCompactString()
+                    + ", known aliases: " + knownAliases);
             }
         }
     }

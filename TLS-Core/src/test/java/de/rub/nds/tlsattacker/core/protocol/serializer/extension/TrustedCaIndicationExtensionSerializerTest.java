@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
@@ -37,7 +37,7 @@ public class TrustedCaIndicationExtensionSerializerTest {
     private final int trustedAuthoritiesLength;
 
     public TrustedCaIndicationExtensionSerializerTest(ExtensionType type, byte[] extensionBytes, int startposition,
-            int extensionLength, List<TrustedAuthority> trustedAuthoritiesList, int trustedAuthoritiesLength) {
+        int extensionLength, List<TrustedAuthority> trustedAuthoritiesList, int trustedAuthoritiesLength) {
         this.type = type;
         this.extensionBytes = extensionBytes;
         this.startposition = startposition;

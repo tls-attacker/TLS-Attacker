@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -57,7 +57,7 @@ public class RemBufferedChExtensionsActionTest {
 
     @Before
     public void setUp() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
-            InvalidAlgorithmParameterException {
+        InvalidAlgorithmParameterException {
 
         expected = new ArrayList();
         expected.add(ExtensionType.EC_POINT_FORMATS);
@@ -75,9 +75,9 @@ public class RemBufferedChExtensionsActionTest {
         config.setAddRenegotiationInfoExtension(false);
         config.setAddSignatureAndHashAlgorithmsExtension(false);
         config.setDefaultClientNamedGroups(NamedGroup.SECP192R1, NamedGroup.SECP256R1, NamedGroup.SECP384R1,
-                NamedGroup.SECP521R1);
+            NamedGroup.SECP521R1);
         config.setDefaultServerNamedGroups(NamedGroup.SECP192R1, NamedGroup.SECP256R1, NamedGroup.SECP384R1,
-                NamedGroup.SECP521R1);
+            NamedGroup.SECP521R1);
         action = new RemBufferedChExtensionsAction();
         trace = new WorkflowTrace();
         trace.addTlsAction(action);
@@ -186,7 +186,7 @@ public class RemBufferedChExtensionsActionTest {
 
     @Test
     @Category(SlowTests.class)
-    public void marshalingAndUnmarshaclingEmptyObjectYieldsEqualObject() {
+    public void marshalingAndUnmarshalingEmptyObjectYieldsEqualObject() {
         ActionTestUtils.marshalingAndUnmarshalingEmptyObjectYieldsEqualObject(RemBufferedChExtensionsAction.class);
     }
 

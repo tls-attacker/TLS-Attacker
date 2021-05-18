@@ -1,18 +1,18 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks.config;
 
 import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.CertificateDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.CipherSuiteDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.MitmDelegate;
 import org.apache.logging.log4j.LogManager;
@@ -34,7 +34,7 @@ public class SimpleMitmProxyCommandConfig extends AttackConfig {
     private MitmDelegate mitmDelegate;
 
     @ParametersDelegate
-    private CiphersuiteDelegate ciphersuiteDelegate;
+    private CipherSuiteDelegate ciphersuiteDelegate;
 
     @ParametersDelegate
     private CertificateDelegate certificateDelegate;
@@ -46,7 +46,7 @@ public class SimpleMitmProxyCommandConfig extends AttackConfig {
     public SimpleMitmProxyCommandConfig(GeneralDelegate delegate) {
         super(delegate);
         mitmDelegate = new MitmDelegate();
-        ciphersuiteDelegate = new CiphersuiteDelegate();
+        ciphersuiteDelegate = new CipherSuiteDelegate();
         certificateDelegate = new CertificateDelegate();
         addDelegate(mitmDelegate);
         addDelegate(ciphersuiteDelegate);

@@ -1,20 +1,19 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
-import java.util.LinkedList;
-import java.util.List;
+package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.EsniDnsKeyRecordVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
+import java.util.LinkedList;
+import java.util.List;
 
 public class EsniKeyRecord {
 
@@ -25,7 +24,7 @@ public class EsniKeyRecord {
     private int paddedLength;
     private long notBefore;
     private long notAfter;
-    private List<ExtensionMessage> extensions = new LinkedList();;
+    private List<ExtensionMessage> extensions = new LinkedList();
 
     public EsniDnsKeyRecordVersion getVersion() {
         return version;

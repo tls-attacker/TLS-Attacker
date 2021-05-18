@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -29,15 +29,15 @@ public class PWDProtectExtensionPreparatorTest {
         context = new TlsContext();
         message = new PWDProtectExtensionMessage();
         preparator = new PWDProtectExtensionPreparator(context.getChooser(), message,
-                new PWDProtectExtensionSerializer(message));
+            new PWDProtectExtensionSerializer(message));
     }
 
     @Test
     public void testPreparator() {
         context.setClientPWDUsername("jens");
         preparator.prepare();
-        byte[] encryptedUsername = ArrayConverter
-                .hexStringToByteArray("DA87739AC04C2A6D222FC15E31C471451DE3FE7E78B6E3485CA21E12BFE1CB4C4191D4CD9257145CBFA26DFCA1839C1588D0F1F6");
+        byte[] encryptedUsername = ArrayConverter.hexStringToByteArray(
+            "DA87739AC04C2A6D222FC15E31C471451DE3FE7E78B6E3485CA21E12BFE1CB4C4191D4CD9257145CBFA26DFCA1839C1588D0F1F6");
         assertArrayEquals(ExtensionType.PWD_PROTECT.getValue(), message.getExtensionType().getValue());
         assertArrayEquals(encryptedUsername, message.getUsername().getValue());
         assertEquals(52 + 1, (long) message.getExtensionLength().getValue());

@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message.computations;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -23,7 +23,8 @@ public class RSAClientComputations extends KeyExchangeComputations {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.KEY_MATERIAL)
     private ModifiableByteArray premasterSecretProtocolVersion;
 
-    @ModifiableVariableProperty(format = ModifiableVariableProperty.Format.PKCS1, type = ModifiableVariableProperty.Type.KEY_MATERIAL)
+    @ModifiableVariableProperty(format = ModifiableVariableProperty.Format.PKCS1,
+        type = ModifiableVariableProperty.Type.KEY_MATERIAL)
     private ModifiableByteArray plainPaddedPremasterSecret;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PADDING)
@@ -41,8 +42,8 @@ public class RSAClientComputations extends KeyExchangeComputations {
     }
 
     public void setPlainPaddedPremasterSecret(byte[] value) {
-        this.plainPaddedPremasterSecret = ModifiableVariableFactory.safelySetValue(this.plainPaddedPremasterSecret,
-                value);
+        this.plainPaddedPremasterSecret =
+            ModifiableVariableFactory.safelySetValue(this.plainPaddedPremasterSecret, value);
     }
 
     public ModifiableByteArray getPadding() {
@@ -66,8 +67,8 @@ public class RSAClientComputations extends KeyExchangeComputations {
     }
 
     public void setPremasterSecretProtocolVersion(byte[] premasterSecretProtocolVersion) {
-        this.premasterSecretProtocolVersion = ModifiableVariableFactory.safelySetValue(
-                this.premasterSecretProtocolVersion, premasterSecretProtocolVersion);
+        this.premasterSecretProtocolVersion = ModifiableVariableFactory
+            .safelySetValue(this.premasterSecretProtocolVersion, premasterSecretProtocolVersion);
     }
 
     @Override

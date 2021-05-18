@@ -47,5 +47,5 @@
             <goals>
                 <goal>site</goal>
             </goals>
-        </action>
+    </action>
 </actions>

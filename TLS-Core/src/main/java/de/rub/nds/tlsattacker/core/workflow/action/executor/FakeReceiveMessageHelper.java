@@ -1,15 +1,15 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action.executor;
 
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.ArrayList;
@@ -37,7 +37,7 @@ public class FakeReceiveMessageHelper extends ReceiveMessageHelper {
 
     @Override
     public MessageActionResult receiveMessages(TlsContext context) {
-        return receiveMessages(new LinkedList<ProtocolMessage>(), context);
+        return receiveMessages(new LinkedList<>(), context);
     }
 
     @Override

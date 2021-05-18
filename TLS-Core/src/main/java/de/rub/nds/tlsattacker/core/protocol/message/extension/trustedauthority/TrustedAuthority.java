@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -37,7 +37,7 @@ public class TrustedAuthority extends ModifiableVariableHolder implements Serial
     }
 
     public TrustedAuthority(byte preparatorIdentifierType, byte[] preparatorSha1Hash,
-            Integer preparatorDistinguishedNameLength, byte[] preparatorDistinguishedName) {
+        Integer preparatorDistinguishedNameLength, byte[] preparatorDistinguishedName) {
         this.identifierTypeConfig = preparatorIdentifierType;
         this.sha1HashConfig = preparatorSha1Hash;
         this.distinguishedNameLengthConfig = preparatorDistinguishedNameLength;
@@ -77,8 +77,8 @@ public class TrustedAuthority extends ModifiableVariableHolder implements Serial
     }
 
     public void setDistinguishedNameLength(int distinguishedNameLength) {
-        this.distinguishedNameLength = ModifiableVariableFactory.safelySetValue(this.distinguishedNameLength,
-                distinguishedNameLength);
+        this.distinguishedNameLength =
+            ModifiableVariableFactory.safelySetValue(this.distinguishedNameLength, distinguishedNameLength);
     }
 
     public ModifiableByteArray getDistinguishedName() {

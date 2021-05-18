@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -46,8 +46,7 @@ public class KeyShareExtensionHandlerTest {
     }
 
     /**
-     * Test of adjustTLSContext method, of class KeyShareExtensionHandler.
-     * Group: ECDH_X25519
+     * Test of adjustTLSContext method, of class KeyShareExtensionHandler. Group: ECDH_X25519
      */
     @Test
     public void testAdjustTLSContext() {
@@ -56,11 +55,10 @@ public class KeyShareExtensionHandlerTest {
         context.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
         KeyShareExtensionMessage msg = new KeyShareExtensionMessage();
         List<KeyShareEntry> pairList = new LinkedList<>();
-        KeyShareEntry pair = new KeyShareEntry(NamedGroup.ECDH_X25519,
-                new BigInteger(ArrayConverter
-                        .hexStringToByteArray("03BD8BCA70C19F657E897E366DBE21A466E4924AF6082DBDF573827BCDDE5DEF")));
-        pair.setPublicKey(ArrayConverter
-                .hexStringToByteArray("9c1b0a7421919a73cb57b3a0ad9d6805861a9c47e11df8639d25323b79ce201c"));
+        KeyShareEntry pair = new KeyShareEntry(NamedGroup.ECDH_X25519, new BigInteger(
+            ArrayConverter.hexStringToByteArray("03BD8BCA70C19F657E897E366DBE21A466E4924AF6082DBDF573827BCDDE5DEF")));
+        pair.setPublicKey(
+            ArrayConverter.hexStringToByteArray("9c1b0a7421919a73cb57b3a0ad9d6805861a9c47e11df8639d25323b79ce201c"));
         pair.setGroup(NamedGroup.ECDH_X25519.getValue());
         pairList.add(pair);
         msg.setKeyShareList(pairList);
@@ -68,8 +66,8 @@ public class KeyShareExtensionHandlerTest {
         assertNotNull(context.getServerKeyShareStoreEntry());
         KeyShareStoreEntry entry = context.getServerKeyShareStoreEntry();
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("9c1b0a7421919a73cb57b3a0ad9d6805861a9c47e11df8639d25323b79ce201c"),
-                entry.getPublicKey());
+            ArrayConverter.hexStringToByteArray("9c1b0a7421919a73cb57b3a0ad9d6805861a9c47e11df8639d25323b79ce201c"),
+            entry.getPublicKey());
         assertTrue(entry.getGroup() == NamedGroup.ECDH_X25519);
     }
 
@@ -78,7 +76,8 @@ public class KeyShareExtensionHandlerTest {
      */
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[] { 0, 2, 3, }, 0, context.getConfig()) instanceof KeyShareExtensionParser);
+        assertTrue(
+            handler.getParser(new byte[] { 0, 2, 3, }, 0, context.getConfig()) instanceof KeyShareExtensionParser);
     }
 
     /**

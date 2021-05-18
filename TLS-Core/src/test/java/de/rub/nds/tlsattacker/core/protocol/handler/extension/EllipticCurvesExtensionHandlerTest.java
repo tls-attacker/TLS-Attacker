@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
@@ -56,7 +56,8 @@ public class EllipticCurvesExtensionHandlerTest {
      */
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[] { 1, 2 }, 0, context.getConfig()) instanceof EllipticCurvesExtensionParser);
+        assertTrue(
+            handler.getParser(new byte[] { 1, 2 }, 0, context.getConfig()) instanceof EllipticCurvesExtensionParser);
     }
 
     /**
@@ -64,7 +65,8 @@ public class EllipticCurvesExtensionHandlerTest {
      */
     @Test
     public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new EllipticCurvesExtensionMessage()) instanceof EllipticCurvesExtensionPreparator);
+        assertTrue(
+            handler.getPreparator(new EllipticCurvesExtensionMessage()) instanceof EllipticCurvesExtensionPreparator);
     }
 
     /**
@@ -72,7 +74,8 @@ public class EllipticCurvesExtensionHandlerTest {
      */
     @Test
     public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new EllipticCurvesExtensionMessage()) instanceof EllipticCurvesExtensionSerializer);
+        assertTrue(
+            handler.getSerializer(new EllipticCurvesExtensionMessage()) instanceof EllipticCurvesExtensionSerializer);
     }
 
 }

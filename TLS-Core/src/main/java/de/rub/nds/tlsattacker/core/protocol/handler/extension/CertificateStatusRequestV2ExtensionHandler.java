@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -16,8 +16,8 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.CertificateStat
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.CertificateStatusRequestV2ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-public class CertificateStatusRequestV2ExtensionHandler extends
-        ExtensionHandler<CertificateStatusRequestV2ExtensionMessage> {
+public class CertificateStatusRequestV2ExtensionHandler
+    extends ExtensionHandler<CertificateStatusRequestV2ExtensionMessage> {
 
     public CertificateStatusRequestV2ExtensionHandler(TlsContext context) {
         super(context);
@@ -29,14 +29,14 @@ public class CertificateStatusRequestV2ExtensionHandler extends
     }
 
     @Override
-    public CertificateStatusRequestV2ExtensionPreparator getPreparator(
-            CertificateStatusRequestV2ExtensionMessage message) {
+    public CertificateStatusRequestV2ExtensionPreparator
+        getPreparator(CertificateStatusRequestV2ExtensionMessage message) {
         return new CertificateStatusRequestV2ExtensionPreparator(context.getChooser(), message, getSerializer(message));
     }
 
     @Override
-    public CertificateStatusRequestV2ExtensionSerializer getSerializer(
-            CertificateStatusRequestV2ExtensionMessage message) {
+    public CertificateStatusRequestV2ExtensionSerializer
+        getSerializer(CertificateStatusRequestV2ExtensionMessage message) {
         return new CertificateStatusRequestV2ExtensionSerializer(message);
     }
 

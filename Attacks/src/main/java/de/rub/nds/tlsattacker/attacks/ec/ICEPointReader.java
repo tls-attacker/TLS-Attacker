@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks.ec;
 
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
@@ -31,20 +31,19 @@ public class ICEPointReader {
     private static final Logger LOGGER = LogManager.getLogger();
 
     /**
-     * Reads points for the attack on elliptic curves from a file specific for
-     * this named curve
+     * Reads points for the attack on elliptic curves from a file specific for this named curve
      *
-     * @param group
-     *            The NamedCurve as a String
-     * @return the deserialized Points
+     * @param  group
+     *               The NamedCurve as a String
+     * @return       the deserialized Points
      */
     public static List<ICEPoint> readPoints(NamedGroup group) {
         EllipticCurve curve = CurveFactory.getCurve(group);
         String namedCurveLow = group.name().toLowerCase();
         String fileName = "points_" + namedCurveLow + ".txt";
 
-        BufferedReader br = new BufferedReader(new InputStreamReader(ICEPointReader.class.getClassLoader()
-                .getResourceAsStream(fileName)));
+        BufferedReader br = new BufferedReader(
+            new InputStreamReader(ICEPointReader.class.getClassLoader().getResourceAsStream(fileName)));
         String line;
         List<ICEPoint> points = new LinkedList<>();
         try {
@@ -57,12 +56,12 @@ public class ICEPointReader {
                     points.add(new ICEPoint(x, y, curve, order));
                 }
             }
-            Collections.sort(points, new ICEPointCopmparator());
+            Collections.sort(points, new ICEPointComparator());
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Using the following curves and points");
                 for (ICEPoint p : points) {
-                    LOGGER.debug(p.getOrder() + " , " + p.getX().getData().toString(16) + " , "
-                            + p.getY().getData().toString(16));
+                    LOGGER.debug(p.getOrder() + " , " + p.getFieldX().getData().toString(16) + " , "
+                        + p.getFieldY().getData().toString(16));
                 }
             }
             return points;

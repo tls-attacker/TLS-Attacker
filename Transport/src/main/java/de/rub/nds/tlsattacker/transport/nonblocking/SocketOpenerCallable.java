@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.transport.nonblocking;
 
 import java.io.IOException;
@@ -37,8 +37,8 @@ public class SocketOpenerCallable implements Callable<Socket> {
                 if (socket.isConnected()) {
                     return socket;
                 }
-            } catch (IOException E) {
-                LOGGER.debug(E);
+            } catch (IOException e) {
+                LOGGER.debug(e);
                 return null;
             }
         }

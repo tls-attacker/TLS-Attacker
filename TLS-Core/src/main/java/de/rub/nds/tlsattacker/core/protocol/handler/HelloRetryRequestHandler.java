@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -55,15 +55,15 @@ public class HelloRetryRequestHandler extends HandshakeMessageHandler<HelloRetry
     @Override
     public void adjustTLSContext(HelloRetryRequestMessage message) {
         adjustProtocolVersion(message);
-        adjustSelectedCiphersuite(message);
+        adjustSelectedCipherSuite(message);
         if (message.getExtensions() != null) {
             for (ExtensionMessage extension : message.getExtensions()) {
                 HandshakeMessageType handshakeMessageType = HandshakeMessageType.HELLO_RETRY_REQUEST;
                 if (extension instanceof KeyShareExtensionMessage) {
                     handshakeMessageType = HandshakeMessageType.CLIENT_HELLO;
                 }
-                ExtensionHandler handler = HandlerFactory.getExtensionHandler(tlsContext,
-                        extension.getExtensionTypeConstant(), handshakeMessageType);
+                ExtensionHandler handler =
+                    HandlerFactory.getExtensionHandler(tlsContext, extension.getExtensionTypeConstant());
                 handler.adjustTLSContext(extension);
             }
         }
@@ -76,11 +76,11 @@ public class HelloRetryRequestHandler extends HandshakeMessageHandler<HelloRetry
             LOGGER.debug("Set SelectedProtocolVersion in Context to " + version.name());
         } else {
             LOGGER.warn("Did not Adjust ProtocolVersion since version is undefined "
-                    + ArrayConverter.bytesToHexString(message.getProtocolVersion().getValue()));
+                + ArrayConverter.bytesToHexString(message.getProtocolVersion().getValue()));
         }
     }
 
-    private void adjustSelectedCiphersuite(HelloRetryRequestMessage message) {
+    private void adjustSelectedCipherSuite(HelloRetryRequestMessage message) {
         CipherSuite suite = CipherSuite.getCipherSuite(message.getSelectedCipherSuite().getValue());
         tlsContext.setSelectedCipherSuite(suite);
         if (suite != null) {

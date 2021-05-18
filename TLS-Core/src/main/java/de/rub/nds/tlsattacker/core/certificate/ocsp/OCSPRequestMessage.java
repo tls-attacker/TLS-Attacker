@@ -1,13 +1,17 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.certificate.ocsp;
+
+import static de.rub.nds.tlsattacker.core.certificate.ocsp.OCSPResponseTypes.ACCEPTABLE_RESPONSES;
+import static de.rub.nds.tlsattacker.core.certificate.ocsp.OCSPResponseTypes.BASIC;
+import static de.rub.nds.tlsattacker.core.certificate.ocsp.OCSPResponseTypes.NONCE;
 
 import de.rub.nds.asn1.Asn1Encodable;
 import de.rub.nds.asn1.encoder.Asn1Encoder;
@@ -19,14 +23,11 @@ import de.rub.nds.asn1.model.Asn1ObjectIdentifier;
 import de.rub.nds.asn1.model.Asn1PrimitiveOctetString;
 import de.rub.nds.asn1.model.Asn1Sequence;
 import de.rub.nds.tlsattacker.core.certificate.ObjectIdentifierTranslator;
-import org.apache.commons.lang3.NotImplementedException;
-
 import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
-
-import static de.rub.nds.tlsattacker.core.certificate.ocsp.OCSPResponseTypes.*;
+import org.apache.commons.lang3.NotImplementedException;
 
 public class OCSPRequestMessage {
 
@@ -38,9 +39,9 @@ public class OCSPRequestMessage {
     BigInteger nonce;
 
     // see RFC 6960: TBSRequest -> [2] requestExtensions
-    private final static int EXTENSION_ASN1_EXPLICIT_OFFSET = 2;
-    private final static int NONCE_RANDOM_SEED = 42;
-    private final static int NONCE_LENGTH_BIT = 128;
+    private static final int EXTENSION_ASN1_EXPLICIT_OFFSET = 2;
+    private static final int NONCE_RANDOM_SEED = 42;
+    private static final int NONCE_LENGTH_BIT = 128;
 
     boolean extensionsSet = false;
 
@@ -116,9 +117,6 @@ public class OCSPRequestMessage {
     }
 
     public void addToRequest(byte[] issuerNameHashValue, byte[] issuerKeyHashValue, BigInteger serialNumberValue) {
-        Asn1Sequence request = new Asn1Sequence();
-        Asn1Sequence reqCert = new Asn1Sequence();
-        Asn1Sequence hashAlgorithm = new Asn1Sequence();
         Asn1Null hashAlgorithmFiller = new Asn1Null();
         Asn1ObjectIdentifier hashAlgorithmId = new Asn1ObjectIdentifier();
         Asn1PrimitiveOctetString issuerNameHash = new Asn1PrimitiveOctetString();
@@ -129,6 +127,9 @@ public class OCSPRequestMessage {
         issuerNameHash.setValue(issuerNameHashValue);
         issuerKeyHash.setValue(issuerKeyHashValue);
         hashAlgorithmId.setValue(ObjectIdentifierTranslator.translate("SHA1"));
+        Asn1Sequence request = new Asn1Sequence();
+        Asn1Sequence reqCert = new Asn1Sequence();
+        Asn1Sequence hashAlgorithm = new Asn1Sequence();
 
         hashAlgorithm.addChild(hashAlgorithmId);
         hashAlgorithm.addChild(hashAlgorithmFiller);
@@ -172,9 +173,8 @@ public class OCSPRequestMessage {
 
             nonceOctetString.setValue(nonce.toByteArray());
             encapsulatingOctetString.addChild(nonceOctetString);
-        }
-        // Acceptable Responses
-        else if (extensionOid.equals(ACCEPTABLE_RESPONSES.getOID())) {
+        } else if (extensionOid.equals(ACCEPTABLE_RESPONSES.getOID())) {
+            // Acceptable Responses
             Asn1Sequence oidSequence = new Asn1Sequence();
             Asn1ObjectIdentifier acceptedResponseOid = new Asn1ObjectIdentifier();
             // OCSP Basic Response

@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks.impl;
 
 import de.rub.nds.modifiablevariable.VariableModification;
@@ -18,7 +18,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -34,8 +34,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Executes a poodle attack. It logs an error in case the tested server is
- * vulnerable to poodle.
+ * Executes a poodle attack. It logs an error in case the tested server is vulnerable to poodle.
  */
 public class TLSPoodleAttacker extends Attacker<TLSPoodleCommandConfig> {
 
@@ -62,8 +61,8 @@ public class TLSPoodleAttacker extends Attacker<TLSPoodleCommandConfig> {
     @Override
     public Boolean isVulnerable() {
         Config tlsConfig = getTlsConfig();
-        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(
-                WorkflowTraceType.HANDSHAKE, RunningModeType.CLIENT);
+        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig)
+            .createWorkflowTrace(WorkflowTraceType.HANDSHAKE, RunningModeType.CLIENT);
 
         ModifiableByteArray padding = new ModifiableByteArray();
         // https://mta.openssl.org/pipermail/openssl-announce/2018-March/000119.html
@@ -86,8 +85,8 @@ public class TLSPoodleAttacker extends Attacker<TLSPoodleCommandConfig> {
         State state = new State(tlsConfig, trace);
 
         try {
-            WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
-                    tlsConfig.getWorkflowExecutorType(), state);
+            WorkflowExecutor workflowExecutor =
+                WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getWorkflowExecutorType(), state);
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException ex) {
             LOGGER.info("Not possible to finalize the defined workflow");
@@ -95,7 +94,8 @@ public class TLSPoodleAttacker extends Attacker<TLSPoodleCommandConfig> {
             return null;
         }
         if (state.getTlsContext().isReceivedFatalAlert()) {
-            LOGGER.info("NOT Vulnerable. The modified message padding was identified, the server correctly responds with an alert message");
+            LOGGER.info(
+                "NOT Vulnerable. The modified message padding was identified, the server correctly responds with an alert message");
             return false;
         } else if (WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.FINISHED, trace)) {
             LOGGER.info("Vulnerable (definitely), Finished message found");

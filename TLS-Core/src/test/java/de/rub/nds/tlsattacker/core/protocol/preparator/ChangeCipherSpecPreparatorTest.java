@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
@@ -29,12 +29,11 @@ public class ChangeCipherSpecPreparatorTest {
     }
 
     /**
-     * Test of prepareProtocolMessageContents method, of class
-     * ChangeCipherSpecPreparator.
+     * Test of prepareProtocolMessageContents method, of class ChangeCipherSpecPreparator.
      */
     @Test
     public void testPrepare() {
         preparator.prepare();
-        assertTrue(message.getCcsProtocolType().getValue() == 1);
+        assertTrue(message.getCcsProtocolType().getValue()[0] == 1);
     }
 }

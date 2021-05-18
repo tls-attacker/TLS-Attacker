@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -55,22 +55,22 @@ public class FinishedPreparator extends HandshakeMessagePreparator<FinishedMessa
     private byte[] computeVerifyData() throws CryptoException {
         if (chooser.getSelectedProtocolVersion().isTLS13()) {
             try {
-                HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(chooser.getSelectedCipherSuite());
-                Mac mac = Mac.getInstance(hkdfAlgortihm.getMacAlgorithm().getJavaName());
+                HKDFAlgorithm hkdfAlgorithm = AlgorithmResolver.getHKDFAlgorithm(chooser.getSelectedCipherSuite());
+                Mac mac = Mac.getInstance(hkdfAlgorithm.getMacAlgorithm().getJavaName());
                 byte[] finishedKey;
                 LOGGER.debug("Connection End: " + chooser.getConnectionEndType());
                 if (chooser.getConnectionEndType() == ConnectionEndType.SERVER) {
-                    finishedKey = HKDFunction.expandLabel(hkdfAlgortihm, chooser.getServerHandshakeTrafficSecret(),
-                            HKDFunction.FINISHED, new byte[0], mac.getMacLength());
+                    finishedKey = HKDFunction.expandLabel(hkdfAlgorithm, chooser.getServerHandshakeTrafficSecret(),
+                        HKDFunction.FINISHED, new byte[0], mac.getMacLength());
                 } else {
-                    finishedKey = HKDFunction.expandLabel(hkdfAlgortihm, chooser.getClientHandshakeTrafficSecret(),
-                            HKDFunction.FINISHED, new byte[0], mac.getMacLength());
+                    finishedKey = HKDFunction.expandLabel(hkdfAlgorithm, chooser.getClientHandshakeTrafficSecret(),
+                        HKDFunction.FINISHED, new byte[0], mac.getMacLength());
                 }
                 LOGGER.debug("Finished key: " + ArrayConverter.bytesToHexString(finishedKey));
                 SecretKeySpec keySpec = new SecretKeySpec(finishedKey, mac.getAlgorithm());
                 mac.init(keySpec);
-                mac.update(chooser.getContext().getDigest()
-                        .digest(chooser.getSelectedProtocolVersion(), chooser.getSelectedCipherSuite()));
+                mac.update(chooser.getContext().getDigest().digest(chooser.getSelectedProtocolVersion(),
+                    chooser.getSelectedCipherSuite()));
                 return mac.doFinal();
             } catch (NoSuchAlgorithmException | InvalidKeyException ex) {
                 throw new CryptoException(ex);
@@ -88,19 +88,19 @@ public class FinishedPreparator extends HandshakeMessagePreparator<FinishedMessa
             LOGGER.trace("Using PRF:" + prfAlgorithm.name());
             byte[] masterSecret = chooser.getMasterSecret();
             LOGGER.debug("Using MasterSecret:" + ArrayConverter.bytesToHexString(masterSecret));
-            byte[] handshakeMessageHash = chooser.getContext().getDigest()
-                    .digest(chooser.getSelectedProtocolVersion(), chooser.getSelectedCipherSuite());
+            byte[] handshakeMessageHash = chooser.getContext().getDigest().digest(chooser.getSelectedProtocolVersion(),
+                chooser.getSelectedCipherSuite());
             LOGGER.debug("Using HandshakeMessage Hash:" + ArrayConverter.bytesToHexString(handshakeMessageHash));
 
             String label;
             if (chooser.getConnectionEndType() == ConnectionEndType.SERVER) {
-                // TODO put this in seperate config option
+                // TODO put this in separate config option
                 label = PseudoRandomFunction.SERVER_FINISHED_LABEL;
             } else {
                 label = PseudoRandomFunction.CLIENT_FINISHED_LABEL;
             }
             byte[] res = PseudoRandomFunction.compute(prfAlgorithm, masterSecret, label, handshakeMessageHash,
-                    HandshakeByteLength.VERIFY_DATA);
+                HandshakeByteLength.VERIFY_DATA);
             return res;
         }
     }

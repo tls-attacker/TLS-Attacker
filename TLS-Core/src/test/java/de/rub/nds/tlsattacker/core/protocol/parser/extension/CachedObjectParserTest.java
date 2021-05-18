@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.core.constants.CachedInfoType;
@@ -26,13 +26,12 @@ public class CachedObjectParserTest {
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] {
-                { ConnectionEndType.SERVER, CachedInfoType.CERT, null, null, new byte[] { 0x01 } },
-                { ConnectionEndType.SERVER, CachedInfoType.CERT_REQ, null, null, new byte[] { 0x02 } },
-                { ConnectionEndType.CLIENT, CachedInfoType.CERT, 6, new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06 },
-                        new byte[] { 0x01, 0x06, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06 } },
-                { ConnectionEndType.CLIENT, CachedInfoType.CERT_REQ, 6,
-                        new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06 },
-                        new byte[] { 0x02, 0x06, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06 } } });
+            { ConnectionEndType.SERVER, CachedInfoType.CERT, null, null, new byte[] { 0x01 } },
+            { ConnectionEndType.SERVER, CachedInfoType.CERT_REQ, null, null, new byte[] { 0x02 } },
+            { ConnectionEndType.CLIENT, CachedInfoType.CERT, 6, new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06 },
+                new byte[] { 0x01, 0x06, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06 } },
+            { ConnectionEndType.CLIENT, CachedInfoType.CERT_REQ, 6, new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06 },
+                new byte[] { 0x02, 0x06, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06 } } });
     }
 
     private final ConnectionEndType speakingEndType;
@@ -42,7 +41,7 @@ public class CachedObjectParserTest {
     private final byte[] cachedObjectBytes;
 
     public CachedObjectParserTest(ConnectionEndType speakingEndType, CachedInfoType infoType, Integer hashLength,
-            byte[] hash, byte[] cachedObjectBytes) {
+        byte[] hash, byte[] cachedObjectBytes) {
         this.speakingEndType = speakingEndType;
         this.infoType = infoType;
         this.hashLength = hashLength;

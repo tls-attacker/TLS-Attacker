@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -30,18 +30,15 @@ import org.apache.logging.log4j.Logger;
  * Remove cipher from cipher suite list of a buffered ClientHello message.
  *
  * <p>
- * This allows changing a ClientHello message in transit, i.e. in MiTM workflows
- * that want to remove proposed cipher suites.
+ * This allows changing a ClientHello message in transit, i.e. in MiTM workflows that want to remove proposed cipher
+ * suites.
  *
  * <p>
- * This action assumes that the first message in the message buffer is a
- * ClientHello.
+ * This action assumes that the first message in the message buffer is a ClientHello.
  *
  * <p>
- * Note: This action is currently needed because fresh (ClientHello) messages
- * cannot be fully prepared from context, but partially rely on config values.
- * Thus preventing us to modify values in context and re-creating a CH for
- * forwarding.
+ * Note: This action is currently needed because fresh (ClientHello) messages cannot be fully prepared from context, but
+ * partially rely on config values. Thus preventing us to modify values in context and re-creating a CH for forwarding.
  *
  */
 public class RemBufferedChCiphersAction extends ConnectionBoundAction {
@@ -86,19 +83,19 @@ public class RemBufferedChCiphersAction extends ConnectionBoundAction {
     }
 
     private void removeCiphers(TlsContext ctx, ClientHelloMessage ch) {
-        String msg_name = ch.toCompactString();
+        String msgName = ch.toCompactString();
 
         if (ch.getCipherSuites() == null) {
-            LOGGER.debug("No cipher suites found in " + msg_name + ". Nothing to do.");
+            LOGGER.debug("No cipher suites found in " + msgName + ". Nothing to do.");
             return;
         }
 
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Original cipher suites in " + msg_name + ":\n" + summarizeCiphers(ch));
+            LOGGER.debug("Original cipher suites in " + msgName + ":\n" + summarizeCiphers(ch));
         }
 
         byte[] ciphersBytes = ch.getCipherSuites().getValue();
-        List<CipherSuite> ciphers = CipherSuite.getCiphersuites(ciphersBytes);
+        List<CipherSuite> ciphers = CipherSuite.getCipherSuites(ciphersBytes);
         int origCiphersLength = ciphersBytes.length;
         ByteArrayOutputStream newCiphersBytes = new ByteArrayOutputStream();
         CipherSuite type;
@@ -120,7 +117,7 @@ public class RemBufferedChCiphersAction extends ConnectionBoundAction {
         ch.setCipherSuiteLength(newSuitesLength);
 
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Modified cipher suites in " + msg_name + ":\n" + summarizeCiphers(ch));
+            LOGGER.debug("Modified cipher suites in " + msgName + ":\n" + summarizeCiphers(ch));
         }
 
     }
@@ -150,8 +147,7 @@ public class RemBufferedChCiphersAction extends ConnectionBoundAction {
     /**
      * Summarize the extension data for pretty printing.
      *
-     * @return a summary of the extension information contained in the CH
-     *         message
+     * @return a summary of the extension information contained in the CH message
      */
     public String summarizeCiphers(ClientHelloMessage ch) {
         StringBuilder sb = new StringBuilder();
@@ -159,7 +155,7 @@ public class RemBufferedChCiphersAction extends ConnectionBoundAction {
         sb.append("\ncipher suite bytes:");
         sb.append(ArrayConverter.bytesToHexString(ch.getCipherSuites().getValue()));
         sb.append("\nreadable cipher suite list:\n");
-        for (CipherSuite cs : CipherSuite.getCiphersuites(ch.getCipherSuites().getValue())) {
+        for (CipherSuite cs : CipherSuite.getCipherSuites(ch.getCipherSuites().getValue())) {
             sb.append(cs.name()).append("\n");
         }
         return sb.toString();

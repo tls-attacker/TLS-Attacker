@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -19,12 +19,12 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.HeartbeatMessageHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.TlsMessageHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class HeartbeatMessage extends ProtocolMessage {
+public class HeartbeatMessage extends TlsMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     ModifiableByte heartbeatMessageType;
@@ -57,8 +57,8 @@ public class HeartbeatMessage extends ProtocolMessage {
     }
 
     public void setHeartbeatMessageType(byte heartbeatMessageType) {
-        this.heartbeatMessageType = ModifiableVariableFactory.safelySetValue(this.heartbeatMessageType,
-                heartbeatMessageType);
+        this.heartbeatMessageType =
+            ModifiableVariableFactory.safelySetValue(this.heartbeatMessageType, heartbeatMessageType);
     }
 
     public ModifiableInteger getPayloadLength() {
@@ -130,11 +130,11 @@ public class HeartbeatMessage extends ProtocolMessage {
 
     @Override
     public String toCompactString() {
-        return "Heartbeat";
+        return "HEARTBEAT";
     }
 
     @Override
-    public ProtocolMessageHandler getHandler(TlsContext context) {
+    public TlsMessageHandler getHandler(TlsContext context) {
         return new HeartbeatMessageHandler(context);
     }
 }

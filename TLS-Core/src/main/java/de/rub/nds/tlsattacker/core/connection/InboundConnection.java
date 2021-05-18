@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.connection;
 
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -39,16 +39,7 @@ public class InboundConnection extends AliasedConnection {
     }
 
     public InboundConnection(InboundConnection other) {
-        this.alias = other.alias;
-        this.hostname = other.hostname;
-        this.ip = other.ip;
-        this.port = other.port;
-        this.proxyDataHostname = other.proxyDataHostname;
-        this.proxyDataPort = other.proxyDataPort;
-        this.proxyControlHostname = other.proxyControlHostname;
-        this.proxyControlPort = other.proxyControlPort;
-        this.timeout = other.timeout;
-        this.transportHandlerType = other.transportHandlerType;
+        super(other);
     }
 
     @Override
@@ -58,24 +49,17 @@ public class InboundConnection extends AliasedConnection {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("InboundConnection{");
-        sb.append(" alias=").append(alias);
-        sb.append(" port=").append(port);
-        sb.append(" proxyDataHost=").append(proxyDataHostname);
-        sb.append(" proxyDataPort=").append(proxyDataPort);
-        sb.append(" proxyControlHost=").append(proxyControlHostname);
-        sb.append(" proxyControlPort=").append(proxyControlPort);
-        sb.append(" type=").append(transportHandlerType);
-        sb.append(" timeout=").append(timeout);
-        sb.append("}");
+        StringBuilder sb = new StringBuilder("InboundConnection{ ");
+        addProperties(sb);
+        sb.append(" }");
         return sb.toString();
     }
 
     @Override
     public String toCompactString() {
-        StringBuilder sb = new StringBuilder("InboundConnection[");
-        sb.append(alias);
-        sb.append(":").append(port).append("]");
+        StringBuilder sb = new StringBuilder("InboundConnection[ ");
+        addCompactProperties(sb);
+        sb.append(" ]");
         return sb.toString();
     }
 

@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
@@ -35,7 +35,8 @@ public class ServerHelloDoneSerializerTest {
     private int length;
     private ProtocolVersion version;
 
-    public ServerHelloDoneSerializerTest(byte[] message, HandshakeMessageType type, int length, ProtocolVersion version) {
+    public ServerHelloDoneSerializerTest(byte[] message, HandshakeMessageType type, int length,
+        ProtocolVersion version) {
         this.message = message;
         this.start = 0;
         this.expectedPart = message;
@@ -45,8 +46,7 @@ public class ServerHelloDoneSerializerTest {
     }
 
     /**
-     * Test of serializeHandshakeMessageContent method, of class
-     * ServerHelloDoneSerializer.
+     * Test of serializeHandshakeMessageContent method, of class ServerHelloDoneSerializer.
      */
     @Test
     public void testSerializeHandshakeMessageContent() {

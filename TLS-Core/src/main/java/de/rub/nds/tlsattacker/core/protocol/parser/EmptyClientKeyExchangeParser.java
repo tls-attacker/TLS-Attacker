@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -23,13 +23,11 @@ public class EmptyClientKeyExchangeParser<T extends EmptyClientKeyExchangeMessag
      * Constructor for the Parser class
      *
      * @param startposition
-     *            Position in the array where the ClientKeyExchangeParser is
-     *            supposed to start parsing
+     *                      Position in the array where the ClientKeyExchangeParser is supposed to start parsing
      * @param array
-     *            The byte[] which the ClientKeyExchangeParser is supposed to
-     *            parse
+     *                      The byte[] which the ClientKeyExchangeParser is supposed to parse
      * @param version
-     *            Version of the Protocol
+     *                      Version of the Protocol
      * @param config
      */
     public EmptyClientKeyExchangeParser(int startposition, byte[] array, ProtocolVersion version, Config config) {

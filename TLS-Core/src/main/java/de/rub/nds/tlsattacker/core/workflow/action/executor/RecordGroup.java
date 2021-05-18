@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action.executor;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
@@ -24,13 +24,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * A RecordGroup comprises records which should be decrypted/processed together.
- * They share the following characteristics: 1. they are of the same type (blob
- * or real records); 2. they use the same cipher state (for DTLS, this means
- * they have the same epoch); 3. their content is of the same type.
+ * A RecordGroup comprises records which should be decrypted/processed together. They share the following
+ * characteristics: 1. they are of the same type (blob or real records); 2. they use the same cipher state (for DTLS,
+ * this means they have the same epoch); 3. their content is of the same type.
  *
- * The class also provides functionality for grouping records into RecordGroups,
- * decrypting and parsing them.
+ * The class also provides functionality for grouping records into RecordGroups, decrypting and parsing them.
  */
 public class RecordGroup {
 
@@ -48,18 +46,30 @@ public class RecordGroup {
 
         RecordGroup group = new RecordGroup();
         recordGroups.add(group);
-        for (AbstractRecord record : records) {
-            if (!group.addRecord(record)) {
-                group = new RecordGroup();
-                recordGroups.add(group);
-                group.addRecord(record);
-            }
-        }
+        splitIntoGroups(recordGroups, group, records);
 
         return recordGroups;
     }
 
-    private final List<AbstractRecord> records;
+    static final void mergeRecordsIntoGroups(List<RecordGroup> preGrouped, List<AbstractRecord> newRecords) {
+        if (!newRecords.isEmpty()) {
+            RecordGroup lastGroup = preGrouped.get(preGrouped.size() - 1);
+            splitIntoGroups(preGrouped, lastGroup, newRecords);
+        }
+    }
+
+    private static void splitIntoGroups(List<RecordGroup> recordGroups, RecordGroup startingGroup,
+        List<AbstractRecord> records) {
+        for (AbstractRecord record : records) {
+            if (!startingGroup.addRecord(record)) {
+                startingGroup = new RecordGroup();
+                recordGroups.add(startingGroup);
+                startingGroup.addRecord(record);
+            }
+        }
+    }
+
+    private List<AbstractRecord> records;
 
     private RecordGroup() {
         records = new LinkedList<>();
@@ -70,7 +80,7 @@ public class RecordGroup {
     }
 
     public ProtocolMessageType getProtocolMessageType() {
-        if (!records.isEmpty()) {
+        if (!records.isEmpty() && records.get(0).getContentMessageType() != null) {
             return ProtocolMessageType.getContentType(records.get(0).getContentMessageType().getValue());
         }
         return null;
@@ -107,12 +117,24 @@ public class RecordGroup {
         return stream.toByteArray();
     }
 
+    public void decryptRecord(TlsContext context, int recordIndex) {
+
+        context.getRecordLayer().decryptAndDecompressRecord(getRecords().get(recordIndex));
+
+    }
+
+    @Deprecated
     public void decryptRecords(TlsContext context) {
         for (AbstractRecord record : getRecords()) {
             context.getRecordLayer().decryptAndDecompressRecord(record);
         }
     }
 
+    public void adjustContextForRecord(TlsContext context, int recordIndex) {
+        getRecords().get(recordIndex).adjustContext(context);
+    }
+
+    @Deprecated
     public void adjustContext(TlsContext context) {
         for (AbstractRecord record : getRecords()) {
             record.adjustContext(context);
@@ -125,7 +147,7 @@ public class RecordGroup {
             isFitting = true;
         } else {
             if (Objects.equals(record.getContentMessageType(), getProtocolMessageType())
-                    && record.getClass().equals(records.get(0).getClass())) {
+                && record.getClass().equals(records.get(0).getClass())) {
                 if (getDtlsEpoch() != null) {
                     if (Objects.equals(getRecordEpoch(record), getDtlsEpoch())) {
                         isFitting = true;
@@ -142,6 +164,10 @@ public class RecordGroup {
         return isFitting;
     }
 
+    public void removeFromGroup(List<AbstractRecord> toRemove) {
+        records.removeAll(toRemove);
+    }
+
     public boolean areAllRecordsValid() {
         for (AbstractRecord record : records) {
             if (isRecordInvalid(record)) {
@@ -154,10 +180,9 @@ public class RecordGroup {
     private boolean isRecordInvalid(AbstractRecord record) {
         if (record instanceof Record) {
             RecordCryptoComputations computations = ((Record) record).getComputations();
-            if (computations != null
-                    && (Objects.equals(computations.getMacValid(), Boolean.FALSE)
-                            || Objects.equals(computations.getPaddingValid(), Boolean.FALSE) || Objects.equals(
-                            computations.getAuthenticationTagValid(), Boolean.FALSE))) {
+            if (computations != null && (Objects.equals(computations.getMacValid(), Boolean.FALSE)
+                || Objects.equals(computations.getPaddingValid(), Boolean.FALSE)
+                || Objects.equals(computations.getAuthenticationTagValid(), Boolean.FALSE))) {
                 return true;
             }
         }
@@ -165,9 +190,8 @@ public class RecordGroup {
     }
 
     /**
-     * If the parsed record group contains invalid records we need to seperate
-     * them into smaller groups and only parse them one by one to make sure we
-     * can respect invalidAsUnknown flags
+     * If the parsed record group contains invalid records we need to separate them into smaller groups and only parse
+     * them one by one to make sure we can respect invalidAsUnknown flags
      *
      * @return
      */
@@ -179,7 +203,7 @@ public class RecordGroup {
         } else {
             List<AbstractRecord> recordList = new LinkedList<>();
             Boolean valid = null;
-            for (AbstractRecord record : recordList) {
+            for (AbstractRecord record : records) {
                 boolean tempValid = isRecordInvalid(record);
                 if (valid == null || Objects.equals(tempValid, valid)) {
                     valid = tempValid;

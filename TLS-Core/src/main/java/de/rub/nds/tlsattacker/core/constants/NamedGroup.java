@@ -1,31 +1,23 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.constants;
 
 import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
 import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.nio.ByteBuffer;
 import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.ECPublicKey;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -67,8 +59,8 @@ public enum NamedGroup {
     FFDHE6144(new byte[] { (byte) 1, (byte) 3 }, "FFDHE6144", 6144),
     FFDHE8192(new byte[] { (byte) 1, (byte) 4 }, "FFDHE8192", 8192),
     EXPLICIT_PRIME(new byte[] { (byte) 0xFF, (byte) 1 }, "UNDEFINED", 0),
-    EXPLICIT_CHAR2(new byte[] { (byte) 0xFF, (byte) 2 }, "UNDEFINED", 0),
     // GREASE constants
+    EXPLICIT_CHAR2(new byte[] { (byte) 0xFF, (byte) 2 }, "UNDEFINED", 0),
     GREASE_00(new byte[] { (byte) 0x0A, (byte) 0x0A }, "GREASE", null),
     GREASE_01(new byte[] { (byte) 0x1A, (byte) 0x1A }, "GREASE", null),
     GREASE_02(new byte[] { (byte) 0x2A, (byte) 0x2A }, "GREASE", null),
@@ -99,7 +91,7 @@ public enum NamedGroup {
     private static final Map<Integer, NamedGroup> MAP;
 
     private static final Set<NamedGroup> tls13Groups = new HashSet<>(Arrays.asList(ECDH_X25519, ECDH_X448, FFDHE2048,
-            FFDHE3072, FFDHE4096, FFDHE6144, FFDHE8192, SECP256R1, SECP384R1, SECP521R1));
+        FFDHE3072, FFDHE4096, FFDHE6144, FFDHE8192, SECP256R1, SECP384R1, SECP521R1));
 
     private NamedGroup(byte[] value, String javaName, Integer coordinateSizeInBit) {
         this.value = value;
@@ -153,13 +145,13 @@ public enum NamedGroup {
                 try {
                     EllipticCurve tlsAttackerCurve = CurveFactory.getCurve(group);
                     if (publicKey.getParams().getGenerator().getAffineX()
-                            .equals(tlsAttackerCurve.getBasePoint().getX().getData())
-                            && publicKey.getParams().getGenerator().getAffineY()
-                                    .equals(tlsAttackerCurve.getBasePoint().getY().getData())) {
+                        .equals(tlsAttackerCurve.getBasePoint().getFieldX().getData())
+                        && publicKey.getParams().getGenerator().getAffineY()
+                            .equals(tlsAttackerCurve.getBasePoint().getFieldY().getData())) {
                         return group;
                     }
-                } catch (UnsupportedOperationException E) {
-                    LOGGER.debug("Could not test " + group.name() + " not completly integrated");
+                } catch (UnsupportedOperationException e) {
+                    LOGGER.debug("Could not test " + group.name() + " not completely integrated");
                 }
             }
         }
@@ -173,13 +165,13 @@ public enum NamedGroup {
                 try {
                     EllipticCurve tlsAttackerCurve = CurveFactory.getCurve(group);
                     if (privateKey.getParams().getGenerator().getAffineX()
-                            .equals(tlsAttackerCurve.getBasePoint().getX().getData())
-                            && privateKey.getParams().getGenerator().getAffineY()
-                                    .equals(tlsAttackerCurve.getBasePoint().getY().getData())) {
+                        .equals(tlsAttackerCurve.getBasePoint().getFieldX().getData())
+                        && privateKey.getParams().getGenerator().getAffineY()
+                            .equals(tlsAttackerCurve.getBasePoint().getFieldY().getData())) {
                         return group;
                     }
-                } catch (UnsupportedOperationException E) {
-                    LOGGER.debug("Could not test " + group.name() + " not completly integrated");
+                } catch (UnsupportedOperationException e) {
+                    LOGGER.debug("Could not test " + group.name() + " not completely integrated");
                 }
             }
         }
@@ -213,25 +205,36 @@ public enum NamedGroup {
         }
 
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        ObjectOutputStream os = new ObjectOutputStream(bytes);
-        os.writeObject(groups.toArray(new NamedGroup[groups.size()]));
+        for (NamedGroup i : groups) {
+            bytes.write(i.getValue());
+        }
 
         return bytes.toByteArray();
     }
 
-    public static NamedGroup[] namedGroupsFromByteArray(byte[] sourceBytes) throws IOException, ClassNotFoundException {
+    public static List<NamedGroup> namedGroupsFromByteArray(byte[] sourceBytes) {
         if (sourceBytes == null || sourceBytes.length == 0) {
-            return new NamedGroup[0];
+            return new ArrayList<>();
         }
 
         if (sourceBytes.length % NamedGroup.LENGTH != 0) {
-            throw new IllegalArgumentException("Failed to convert byte array. "
-                    + "Source array size is not a multiple of destination type size.");
+            throw new IllegalArgumentException(
+                "Failed to convert byte array. " + "Source array size is not a multiple of destination type size.");
         }
 
-        ByteArrayInputStream in = new ByteArrayInputStream(sourceBytes);
-        ObjectInputStream is = new ObjectInputStream(in);
-        NamedGroup[] groups = (NamedGroup[]) is.readObject();
+        int pointer = 0;
+        List<NamedGroup> groups = new ArrayList<>();
+        while (pointer < sourceBytes.length) {
+            byte[] value = new byte[4];
+            value[2] = sourceBytes[pointer];
+            value[3] = sourceBytes[pointer + 1];
+            pointer += 2;
+            NamedGroup group = MAP.get(ByteBuffer.wrap(value).getInt());
+            if (group != null) {
+                groups.add(group);
+            }
+        }
+
         return groups;
     }
 

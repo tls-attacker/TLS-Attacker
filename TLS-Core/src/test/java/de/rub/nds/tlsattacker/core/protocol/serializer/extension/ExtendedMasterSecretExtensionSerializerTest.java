@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
@@ -32,7 +32,7 @@ public class ExtendedMasterSecretExtensionSerializerTest {
     private ExtendedMasterSecretExtensionMessage message;
 
     public ExtendedMasterSecretExtensionSerializerTest(ExtensionType extensionType, int extensionLength,
-            byte[] expectedBytes, int startParsing) {
+        byte[] expectedBytes, int startParsing) {
         this.extensionType = extensionType;
         this.extensionLength = extensionLength;
         this.expectedBytes = expectedBytes;

@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -35,8 +35,12 @@ public class SignatureAndHashAlgorithmsExtensionMessage extends ExtensionMessage
     }
 
     public void setSignatureAndHashAlgorithmsLength(int length) {
-        this.signatureAndHashAlgorithmsLength = ModifiableVariableFactory.safelySetValue(
-                this.signatureAndHashAlgorithmsLength, length);
+        this.signatureAndHashAlgorithmsLength =
+            ModifiableVariableFactory.safelySetValue(this.signatureAndHashAlgorithmsLength, length);
+    }
+
+    public void setSignatureAndHashAlgorithmsLength(ModifiableInteger signatureAndHashAlgorithmsLength) {
+        this.signatureAndHashAlgorithmsLength = signatureAndHashAlgorithmsLength;
     }
 
     public ModifiableByteArray getSignatureAndHashAlgorithms() {
@@ -44,12 +48,8 @@ public class SignatureAndHashAlgorithmsExtensionMessage extends ExtensionMessage
     }
 
     public void setSignatureAndHashAlgorithms(byte[] array) {
-        this.signatureAndHashAlgorithms = ModifiableVariableFactory.safelySetValue(this.signatureAndHashAlgorithms,
-                array);
-    }
-
-    public void setSignatureAndHashAlgorithmsLength(ModifiableInteger signatureAndHashAlgorithmsLength) {
-        this.signatureAndHashAlgorithmsLength = signatureAndHashAlgorithmsLength;
+        this.signatureAndHashAlgorithms =
+            ModifiableVariableFactory.safelySetValue(this.signatureAndHashAlgorithms, array);
     }
 
     public void setSignatureAndHashAlgorithms(ModifiableByteArray signatureAndHashAlgorithms) {

@@ -1,18 +1,18 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message.extension.psk;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
+import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import java.io.Serializable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -21,11 +21,11 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class PSKIdentity implements Serializable {
 
-    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] identityConfig;
 
     private String ticketAgeConfig;
-    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] ticketAgeAddConfig;
 
     private ModifiableInteger identityLength;
@@ -54,8 +54,8 @@ public class PSKIdentity implements Serializable {
     }
 
     public void setObfuscatedTicketAge(byte[] obfuscatedTicketAge) {
-        this.obfuscatedTicketAge = ModifiableVariableFactory.safelySetValue(this.obfuscatedTicketAge,
-                obfuscatedTicketAge);
+        this.obfuscatedTicketAge =
+            ModifiableVariableFactory.safelySetValue(this.obfuscatedTicketAge, obfuscatedTicketAge);
     }
 
     public ModifiableByteArray getObfuscatedTicketAge() {
@@ -83,7 +83,7 @@ public class PSKIdentity implements Serializable {
 
     /**
      * @param identityConfig
-     *            the identityConfig to set
+     *                       the identityConfig to set
      */
     public void setIdentityConfig(byte[] identityConfig) {
         this.identityConfig = identityConfig;
@@ -98,7 +98,7 @@ public class PSKIdentity implements Serializable {
 
     /**
      * @param ticketAgeConfig
-     *            the ticketAgeConfig to set
+     *                        the ticketAgeConfig to set
      */
     public void setTicketAgeConfig(String ticketAgeConfig) {
         this.ticketAgeConfig = ticketAgeConfig;
@@ -113,7 +113,7 @@ public class PSKIdentity implements Serializable {
 
     /**
      * @param ticketAgeAddConfig
-     *            the ticketAgeAddConfig to set
+     *                           the ticketAgeAddConfig to set
      */
     public void setTicketAgeAddConfig(byte[] ticketAgeAddConfig) {
         this.ticketAgeAddConfig = ticketAgeAddConfig;

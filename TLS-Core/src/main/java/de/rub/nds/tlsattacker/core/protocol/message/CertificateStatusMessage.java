@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.asn1.parser.ParserException;
@@ -19,12 +19,10 @@ import de.rub.nds.tlsattacker.core.certificate.ocsp.OCSPResponseParser;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.CertificateStatusHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.io.IOException;
 
 public class CertificateStatusMessage extends HandshakeMessage {
 
@@ -81,8 +79,8 @@ public class CertificateStatusMessage extends HandshakeMessage {
     }
 
     public void setCertificateStatusType(int certificateStatusType) {
-        this.certificateStatusType = ModifiableVariableFactory.safelySetValue(this.certificateStatusType,
-                certificateStatusType);
+        this.certificateStatusType =
+            ModifiableVariableFactory.safelySetValue(this.certificateStatusType, certificateStatusType);
     }
 
     public void setCertificateStatusType(ModifiableInteger certificateStatusType) {

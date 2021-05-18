@@ -1,23 +1,22 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
-import de.rub.nds.tlsattacker.core.workflow.action.MessageAction.MessageActionDirection;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -46,7 +45,7 @@ public class BufferedSendAction extends MessageAction implements SendingAction {
             throw new WorkflowExecutionException("Action already executed!");
         }
         messages = tlsContext.getMessageBuffer();
-        tlsContext.setMessageBuffer(new LinkedList<ProtocolMessage>());
+        tlsContext.setMessageBuffer(new LinkedList<>());
         String sending = getReadableString(messages);
         if (connectionAlias.equals(AliasedConnection.DEFAULT_CONNECTION_ALIAS)) {
             LOGGER.info("Sending messages: " + sending);
@@ -55,16 +54,16 @@ public class BufferedSendAction extends MessageAction implements SendingAction {
         }
 
         try {
-            MessageActionResult result = sendMessageHelper
-                    .sendMessages(messages, fragments, records, tlsContext, false);
+            MessageActionResult result =
+                sendMessageHelper.sendMessages(messages, fragments, records, tlsContext, false);
             messages = new ArrayList<>(result.getMessageList());
             records = new ArrayList<>(result.getRecordList());
             if (result.getMessageFragmentList() != null) {
                 fragments = new ArrayList<>(result.getMessageFragmentList());
             }
             setExecuted(true);
-        } catch (IOException E) {
-            LOGGER.debug(E);
+        } catch (IOException e) {
+            LOGGER.debug(e);
             setExecuted(getActionOptions().contains(ActionOption.MAY_FAIL));
         }
     }

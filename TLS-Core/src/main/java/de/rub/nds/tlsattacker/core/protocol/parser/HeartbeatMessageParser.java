@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class HeartbeatMessageParser extends ProtocolMessageParser<HeartbeatMessage> {
+public class HeartbeatMessageParser extends TlsMessageParser<HeartbeatMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -25,13 +25,11 @@ public class HeartbeatMessageParser extends ProtocolMessageParser<HeartbeatMessa
      * Constructor for the Parser class
      *
      * @param startposition
-     *            Position in the array where the ProtocolMessageParser is
-     *            supposed to start parsing
+     *                      Position in the array where the ProtocolMessageParser is supposed to start parsing
      * @param array
-     *            The byte[] which the ProtocolMessageParser is supposed to
-     *            parse
+     *                      The byte[] which the ProtocolMessageParser is supposed to parse
      * @param version
-     *            Version of the Protocol
+     *                      Version of the Protocol
      */
     public HeartbeatMessageParser(int startposition, byte[] array, ProtocolVersion version, Config config) {
         super(startposition, array, version, config);
@@ -49,8 +47,7 @@ public class HeartbeatMessageParser extends ProtocolMessageParser<HeartbeatMessa
     }
 
     /**
-     * Reads the next bytes as the HearbeatMessageType and writes them in the
-     * message
+     * Reads the next bytes as the HeartbeatMessageType and writes them in the message
      *
      * @param msg
      *            Message to write in

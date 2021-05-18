@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
@@ -37,10 +37,10 @@ public class PreSharedKeyExtensionHandlerTest {
     public void setUp() {
         context = new TlsContext();
 
-        pskSet1 = new PskSet(new byte[] { 0x00 }, new byte[] { 0x00 }, "0", new byte[] { 0x00 },
-                CipherSuite.TLS_DHE_PSK_WITH_AES_128_CBC_SHA);
-        pskSet2 = new PskSet(new byte[] { 0x01 }, new byte[] { 0x01 }, "1", new byte[] { 0x01 },
-                CipherSuite.TLS_DHE_PSK_WITH_3DES_EDE_CBC_SHA);
+        pskSet1 = new PskSet(new byte[] { 0x00 }, new byte[] { 0x00 }, "0", new byte[] { 0x00 }, new byte[] { 0x00 },
+            CipherSuite.TLS_DHE_PSK_WITH_AES_128_CBC_SHA);
+        pskSet2 = new PskSet(new byte[] { 0x01 }, new byte[] { 0x01 }, "1", new byte[] { 0x01 }, new byte[] { 0x01 },
+            CipherSuite.TLS_DHE_PSK_WITH_3DES_EDE_CBC_SHA);
         List<PskSet> pskSetList = new ArrayList<PskSet>();
         pskSetList.add(pskSet1);
         pskSetList.add(pskSet2);
@@ -98,11 +98,13 @@ public class PreSharedKeyExtensionHandlerTest {
 
     @Test
     public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new PreSharedKeyExtensionMessage()) instanceof PreSharedKeyExtensionPreparator);
+        assertTrue(
+            handler.getPreparator(new PreSharedKeyExtensionMessage()) instanceof PreSharedKeyExtensionPreparator);
     }
 
     @Test
     public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new PreSharedKeyExtensionMessage()) instanceof PreSharedKeyExtensionSerializer);
+        assertTrue(
+            handler.getSerializer(new PreSharedKeyExtensionMessage()) instanceof PreSharedKeyExtensionSerializer);
     }
 }

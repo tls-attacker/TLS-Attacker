@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks.task;
 
 import de.rub.nds.tlsattacker.attacks.util.response.ResponseExtractor;
@@ -33,7 +33,7 @@ public class FingerPrintTask extends TlsTask {
     }
 
     public FingerPrintTask(State state, long additionalTimeout, boolean increasingTimeout, int reexecutions,
-            long additionalTcpTimeout) {
+        long additionalTcpTimeout) {
         super(reexecutions, additionalTimeout, increasingTimeout, additionalTcpTimeout);
         this.state = state;
     }
@@ -41,8 +41,8 @@ public class FingerPrintTask extends TlsTask {
     @Override
     public boolean execute() {
         try {
-            WorkflowExecutor executor = WorkflowExecutorFactory.createWorkflowExecutor(state.getConfig()
-                    .getWorkflowExecutorType(), state);
+            WorkflowExecutor executor =
+                WorkflowExecutorFactory.createWorkflowExecutor(state.getConfig().getWorkflowExecutorType(), state);
             executor.executeWorkflow();
 
             if (!state.getWorkflowTrace().executedAsPlanned()) {

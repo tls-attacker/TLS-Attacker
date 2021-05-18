@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -25,7 +25,7 @@ public class AlertParserTest {
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] { { new byte[] { 1, 2 }, 0, new byte[] { 1, 2 }, (byte) 1, (byte) 2 },
-                { new byte[] { 4, 3 }, 0, new byte[] { 4, 3 }, (byte) 4, (byte) 3 } });
+            { new byte[] { 4, 3 }, 0, new byte[] { 4, 3 }, (byte) 4, (byte) 3 } });
     }
 
     private final byte[] message;

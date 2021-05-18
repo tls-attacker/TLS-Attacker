@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -52,45 +52,45 @@ public class NewSessionTicketPreparator extends HandshakeMessagePreparator<NewSe
     private void prepareTicket(NewSessionTicketMessage msg) {
         Config cfg = chooser.getConfig();
         msg.prepareTicket();
-        SessionTicket newticket = msg.getTicket();
-        newticket.setKeyName(cfg.getSessionTicketKeyName());
+        SessionTicket newTicket = msg.getTicket();
+        newTicket.setKeyName(cfg.getSessionTicketKeyName());
 
-        byte[] keyaes = cfg.getSessionTicketKeyAES();
+        byte[] keyAES = cfg.getSessionTicketKeyAES();
 
         byte[] iv = new byte[16];
         RandomHelper.getRandom().nextBytes(iv);
-        newticket.setIV(iv);
+        newTicket.setIV(iv);
 
-        StatePlaintext plainstate = generateStatePlaintext();
-        StatePlaintextSerializer plaintextSerializer = new StatePlaintextSerializer(plainstate);
-        byte[] plainstateSerialized = plaintextSerializer.serialize();
+        StatePlaintext plainState = generateStatePlaintext();
+        StatePlaintextSerializer plaintextSerializer = new StatePlaintextSerializer(plainState);
+        byte[] plainStateSerialized = plaintextSerializer.serialize();
         byte[] encryptedState;
         try {
-            encryptedState = StaticTicketCrypto.encrypt(CipherAlgorithm.AES_128_CBC, plainstateSerialized, keyaes,
-                    newticket.getIV().getValue());
-        } catch (CryptoException E) {
+            encryptedState = StaticTicketCrypto.encrypt(CipherAlgorithm.AES_128_CBC, plainStateSerialized, keyAES,
+                newTicket.getIV().getValue());
+        } catch (CryptoException e) {
             LOGGER.warn("Could not encrypt SessionState. Using empty byte[]");
-            LOGGER.debug(E);
+            LOGGER.debug(e);
             encryptedState = new byte[0];
         }
-        newticket.setEncryptedState(encryptedState);
+        newTicket.setEncryptedState(encryptedState);
 
-        byte[] keyhmac = cfg.getSessionTicketKeyHMAC();
+        byte[] keyHMAC = cfg.getSessionTicketKeyHMAC();
         // Mac(Name + IV + TicketLength + Ticket)
-        byte[] macinput = ArrayConverter.concatenate(cfg.getSessionTicketKeyName(), iv,
-                ArrayConverter.intToBytes(encryptedState.length, HandshakeByteLength.ENCRYPTED_STATE_LENGTH),
-                encryptedState);
+        byte[] macInput = ArrayConverter.concatenate(cfg.getSessionTicketKeyName(), iv,
+            ArrayConverter.intToBytes(encryptedState.length, HandshakeByteLength.ENCRYPTED_STATE_LENGTH),
+            encryptedState);
         byte[] hmac;
         try {
-            hmac = StaticTicketCrypto.generateHMAC(MacAlgorithm.HMAC_SHA256, macinput, keyhmac);
+            hmac = StaticTicketCrypto.generateHMAC(MacAlgorithm.HMAC_SHA256, macInput, keyHMAC);
         } catch (CryptoException ex) {
             LOGGER.warn("Could generate HMAC. Using empty byte[]");
             LOGGER.debug(ex);
             hmac = new byte[0];
         }
-        newticket.setMAC(hmac);
+        newTicket.setMAC(hmac);
 
-        SessionTicketSerializer sessionTicketSerializer = new SessionTicketSerializer(newticket);
+        SessionTicketSerializer sessionTicketSerializer = new SessionTicketSerializer(newTicket);
         byte[] sessionTicketSerialized = sessionTicketSerializer.serialize();
         msg.setTicketLength(sessionTicketSerialized.length);
         LOGGER.debug("Ticket: " + msg.getTicket().toString());
@@ -109,27 +109,26 @@ public class NewSessionTicketPreparator extends HandshakeMessagePreparator<NewSe
     }
 
     /**
-     * Generates the StatePlaintext for the SessionTicket, mayby put this as
-     * static function in the StatePlaintext class for better testing/debugging
+     * Generates the StatePlaintext for the SessionTicket, maybe put this as static function in the StatePlaintext class
+     * for better testing/debugging
      *
-     * @return A struct with Stateinformation defined in
-     *         https://tools.ietf.org/html/rfc5077#section-4
+     * @return A struct with State information defined in https://tools.ietf.org/html/rfc5077#section-4
      */
     private StatePlaintext generateStatePlaintext() {
-        StatePlaintext plainstate = new StatePlaintext();
-        plainstate.setCipherSuite(chooser.getSelectedCipherSuite().getValue());
-        plainstate.setCompressionMethod(chooser.getSelectedCompressionMethod().getValue());
-        plainstate.setMasterSecret(chooser.getMasterSecret());
-        plainstate.setProtocolVersion(chooser.getSelectedProtocolVersion().getValue());
+        StatePlaintext plainState = new StatePlaintext();
+        plainState.setCipherSuite(chooser.getSelectedCipherSuite().getValue());
+        plainState.setCompressionMethod(chooser.getSelectedCompressionMethod().getValue());
+        plainState.setMasterSecret(chooser.getMasterSecret());
+        plainState.setProtocolVersion(chooser.getSelectedProtocolVersion().getValue());
 
         long timestamp = TimeHelper.getTime() / 1000;
-        plainstate.setTimestamp(timestamp);
+        plainState.setTimestamp(timestamp);
 
         switch (chooser.getConfig().getClientAuthenticationType()) {
             case ANONYMOUS:
-                plainstate.setClientAuthenticationType(ClientAuthenticationType.ANONYMOUS.getValue());
-                plainstate.setClientAuthenticationData(new byte[0]);
-                plainstate.setClientAuthenticationDataLength(0);
+                plainState.setClientAuthenticationType(ClientAuthenticationType.ANONYMOUS.getValue());
+                plainState.setClientAuthenticationData(new byte[0]);
+                plainState.setClientAuthenticationDataLength(0);
                 break;
             case CERTIFICATE_BASED:
                 throw new UnsupportedOperationException("Certificate based ClientAuthentication is not supported");
@@ -139,7 +138,7 @@ public class NewSessionTicketPreparator extends HandshakeMessagePreparator<NewSe
                 throw new UnsupportedOperationException("Unknown ClientAuthenticationType");
         }
 
-        return plainstate;
+        return plainState;
     }
 
     private void prepareTicketTls13(NewSessionTicketMessage msg) {

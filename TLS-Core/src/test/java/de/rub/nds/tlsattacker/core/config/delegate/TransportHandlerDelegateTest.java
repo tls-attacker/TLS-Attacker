@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.JCommander;
@@ -34,8 +34,7 @@ public class TransportHandlerDelegateTest {
     }
 
     /**
-     * Test of getTransportHandlerType method, of class
-     * TransportHandlerDelegate.
+     * Test of getTransportHandlerType method, of class TransportHandlerDelegate.
      */
     @Test
     public void testGetTransportHandlerType() {
@@ -56,8 +55,7 @@ public class TransportHandlerDelegateTest {
     }
 
     /**
-     * Test of setTransportHandlerType method, of class
-     * TransportHandlerDelegate.
+     * Test of setTransportHandlerType method, of class TransportHandlerDelegate.
      */
     @Test
     public void testSetTransportHandlerType() {

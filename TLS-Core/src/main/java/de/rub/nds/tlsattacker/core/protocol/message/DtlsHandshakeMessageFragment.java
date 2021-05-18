@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -45,15 +45,15 @@ public class DtlsHandshakeMessageFragment extends HandshakeMessage {
 
     public DtlsHandshakeMessageFragment() {
         super(HandshakeMessageType.UNKNOWN);
-        IS_INCLUDE_IN_DIGEST_DEFAULT = false;
-        ADJUST_CONTEXT_DEFAULT = false;
+        isIncludeInDigestDefault = false;
+        adjustContextDefault = false;
     }
 
     public DtlsHandshakeMessageFragment(HandshakeMessageType handshakeMessageType, byte[] fragmentContentConfig,
-            int messageSequenceConfig, int offsetConfig, int handshakeMessageLengthConfig) {
+        int messageSequenceConfig, int offsetConfig, int handshakeMessageLengthConfig) {
         super(handshakeMessageType);
-        IS_INCLUDE_IN_DIGEST_DEFAULT = false;
-        ADJUST_CONTEXT_DEFAULT = false;
+        isIncludeInDigestDefault = false;
+        adjustContextDefault = false;
         this.handshakeMessageTypeConfig = handshakeMessageType;
         this.fragmentContentConfig = fragmentContentConfig;
         this.messageSequenceConfig = messageSequenceConfig;
@@ -63,16 +63,22 @@ public class DtlsHandshakeMessageFragment extends HandshakeMessage {
 
     public DtlsHandshakeMessageFragment(Config tlsConfig) {
         super(tlsConfig, HandshakeMessageType.UNKNOWN);
-        IS_INCLUDE_IN_DIGEST_DEFAULT = false;
-        ADJUST_CONTEXT_DEFAULT = false;
+        isIncludeInDigestDefault = false;
+        adjustContextDefault = false;
         this.maxFragmentLengthConfig = tlsConfig.getDtlsMaximumFragmentLength();
     }
 
     public DtlsHandshakeMessageFragment(Config tlsConfig, int maxFragmentLengthConfig) {
         super(tlsConfig, HandshakeMessageType.UNKNOWN);
-        IS_INCLUDE_IN_DIGEST_DEFAULT = false;
-        ADJUST_CONTEXT_DEFAULT = false;
+        isIncludeInDigestDefault = false;
+        adjustContextDefault = false;
         this.maxFragmentLengthConfig = maxFragmentLengthConfig;
+    }
+
+    public DtlsHandshakeMessageFragment(HandshakeMessageType handshakeMessageType) {
+        super(handshakeMessageType);
+        isIncludeInDigestDefault = false;
+        adjustContextDefault = false;
     }
 
     @Override

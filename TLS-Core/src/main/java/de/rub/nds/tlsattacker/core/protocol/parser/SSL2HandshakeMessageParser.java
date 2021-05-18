@@ -1,35 +1,37 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.Bits;
+import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2HandshakeMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public abstract class SSL2HandshakeMessageParser<T extends SSL2HandshakeMessage> extends ProtocolMessageParser<T> {
+public abstract class SSL2HandshakeMessageParser<T extends SSL2HandshakeMessage> extends HandshakeMessageParser<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SSL2HandshakeMessageParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
-        super(pointer, array, version, config);
+    public SSL2HandshakeMessageParser(int pointer, byte[] array, HandshakeMessageType type, ProtocolVersion version,
+        Config config) {
+        super(pointer, array, type, version, config);
     }
 
     /**
      * Reads the next bytes as the MessageLength and writes them in the message
      *
      * @param message
-     *            Message to write in
+     *                Message to write in
      */
     protected void parseMessageLength(T message) {
         // The "wonderful" SSL2 message length field:

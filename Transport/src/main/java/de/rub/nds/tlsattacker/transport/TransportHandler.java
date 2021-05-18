@@ -1,27 +1,32 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.transport;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PushbackInputStream;
 import java.net.SocketException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public abstract class TransportHandler {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     protected long timeout;
+
+    protected long firstTimeout;
+
+    private boolean firstReceived;
 
     protected OutputStream outStream;
 
@@ -32,18 +37,26 @@ public abstract class TransportHandler {
     private final ConnectionEndType type;
 
     /**
-     * True {@link inStream} is expected to reach the End of Stream, meaning
-     * read will return -1.
+     * True {@link inStream} is expected to reach the End of Stream, meaning read will return -1.
      */
     private boolean isInStreamTerminating = true;
 
-    public TransportHandler(long timeout, ConnectionEndType type, boolean isInStreamTerminating) {
+    public TransportHandler(Connection con) {
+        this.firstTimeout = con.getFirstTimeout();
+        this.type = con.getLocalConnectionEndType();
+        this.timeout = con.getTimeout();
+        this.isInStreamTerminating = false;
+    }
+
+    public TransportHandler(long firstTimeout, long timeout, ConnectionEndType type, boolean isInStreamTerminating) {
+        this.firstTimeout = firstTimeout;
         this.timeout = timeout;
         this.type = type;
         this.isInStreamTerminating = isInStreamTerminating;
     }
 
-    public TransportHandler(long timeout, ConnectionEndType type) {
+    public TransportHandler(long firstTimeout, long timeout, ConnectionEndType type) {
+        this.firstTimeout = firstTimeout;
         this.timeout = timeout;
         this.type = type;
     }
@@ -55,7 +68,7 @@ public abstract class TransportHandler {
     /**
      * Reads the specified amount of data from the stream
      *
-     * @param amountOfData
+     * @param  amountOfData
      * @return
      */
     public byte[] fetchData(int amountOfData) throws IOException {
@@ -67,9 +80,14 @@ public abstract class TransportHandler {
         return stream.toByteArray();
     }
 
+    @SuppressWarnings({ "checkstyle:EmptyCatchBlock", "CheckStyle" })
     public byte[] fetchData() throws IOException {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        long minTimeMillies = System.currentTimeMillis() + timeout;
+        long minTimeMillies = System.currentTimeMillis();
+        if (firstReceived)
+            minTimeMillies += timeout;
+        else
+            minTimeMillies += firstTimeout;
         while ((System.currentTimeMillis() < minTimeMillies) && (stream.toByteArray().length == 0)) {
             if (inStream.available() != 0) {
                 while (inStream.available() != 0) {
@@ -79,30 +97,33 @@ public abstract class TransportHandler {
             } else {
                 if (isInStreamTerminating) {
                     try {
-                        // dont ask - the java api does not allow this
+                        // don't ask - the java api does not allow this
                         // otherwise...
                         Thread.sleep(1);
                         int read = inStream.read();
                         if (read == -1) {
                             // TCP FIN
+                            firstReceived = true;
                             return stream.toByteArray();
                         }
                         inStream.unread(read);
 
-                    } catch (SocketException E) {
+                    } catch (SocketException e) {
                         // TCP RST received
+                        firstReceived = true;
                         return stream.toByteArray();
-                    } catch (Exception E) {
+                    } catch (Exception _) {
                     }
                 }
             }
         }
+        firstReceived = true;
         return stream.toByteArray();
     }
 
     public void sendData(byte[] data) throws IOException {
         if (!initialized) {
-            throw new IOException("Transporthandler is not initalized!");
+            throw new IOException("Transport handler is not initialized!");
         }
         outStream.write(data);
         outStream.flush();
@@ -130,12 +151,11 @@ public abstract class TransportHandler {
         this.timeout = timeout;
     }
 
-    public void setIsInStreamTerminating(boolean isInStreamTerminating) {
+    public final void setIsInStreamTerminating(boolean isInStreamTerminating) {
         this.isInStreamTerminating = isInStreamTerminating;
     }
 
-    public boolean isIsInStreamTerminating() {
+    public final boolean isIsInStreamTerminating() {
         return isInStreamTerminating;
     }
-
 }

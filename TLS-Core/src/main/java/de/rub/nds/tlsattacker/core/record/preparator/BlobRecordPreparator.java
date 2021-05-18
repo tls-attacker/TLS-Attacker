@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.record.preparator;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class BlobRecordPreparator extends AbstractRecordPreparator {
+public class BlobRecordPreparator extends AbstractRecordPreparator<BlobRecord> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -26,7 +26,7 @@ public class BlobRecordPreparator extends AbstractRecordPreparator {
     private final RecordCompressor compressor;
 
     public BlobRecordPreparator(Chooser chooser, BlobRecord record, Encryptor encryptor, ProtocolMessageType type,
-            RecordCompressor compressor) {
+        RecordCompressor compressor) {
         super(chooser, record, type);
         this.record = record;
         this.encryptor = encryptor;

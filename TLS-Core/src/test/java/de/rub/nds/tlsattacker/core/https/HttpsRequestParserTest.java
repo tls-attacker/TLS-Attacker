@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.https;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -30,26 +30,24 @@ public class HttpsRequestParserTest {
     }
 
     /**
-     * Test of parseMessageContent method, of class HttpsRequestParser with an
-     * invalid request.
+     * Test of parseMessageContent method, of class HttpsRequestParser with an invalid request.
      */
     @Test(expected = ParserException.class)
     public void testParseMessageContentFailed() {
         HttpsRequestParser parser = new HttpsRequestParser(0,
-                ArrayConverter.hexStringToByteArray("AAAAAAAAAAAAAAAAAAAAAAAA"), ProtocolVersion.TLS12, config);
+            ArrayConverter.hexStringToByteArray("AAAAAAAAAAAAAAAAAAAAAAAA"), ProtocolVersion.TLS12, config);
         parser.parse();
     }
 
     /**
-     * Test of parseMessageContent method, of class HttpsRequestParser with an
-     * valid request.
+     * Test of parseMessageContent method, of class HttpsRequestParser with an valid request.
      */
     @Test
     public void testParseMessageContentSuccess() {
         String message = "GET /index.html HTTP/1.1\r\nUser-Agent: Test\r\nHost: www.rub.de\r\n\r\n";
 
-        HttpsRequestParser parser = new HttpsRequestParser(0, message.getBytes(Charset.forName("UTF-8")),
-                ProtocolVersion.TLS12, config);
+        HttpsRequestParser parser =
+            new HttpsRequestParser(0, message.getBytes(Charset.forName("UTF-8")), ProtocolVersion.TLS12, config);
         HttpsRequestMessage parsedMessage = parser.parse();
 
         assertEquals(parsedMessage.getRequestType().getValue(), "GET");

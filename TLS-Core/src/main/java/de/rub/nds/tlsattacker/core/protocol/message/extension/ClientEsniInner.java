@@ -1,17 +1,13 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
-import java.io.Serializable;
-import java.util.LinkedList;
-import java.util.List;
+package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -20,6 +16,9 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
+import java.io.Serializable;
+import java.util.LinkedList;
+import java.util.List;
 
 public class ClientEsniInner extends ModifiableVariableHolder implements Serializable {
 
@@ -63,8 +62,8 @@ public class ClientEsniInner extends ModifiableVariableHolder implements Seriali
     }
 
     public void setServerNameListBytes(byte[] serverNameListBytes) {
-        this.serverNameListBytes = ModifiableVariableFactory.safelySetValue(this.serverNameListBytes,
-                serverNameListBytes);
+        this.serverNameListBytes =
+            ModifiableVariableFactory.safelySetValue(this.serverNameListBytes, serverNameListBytes);
     }
 
     public ModifiableByteArray getPadding() {
@@ -88,8 +87,8 @@ public class ClientEsniInner extends ModifiableVariableHolder implements Seriali
     }
 
     public void setServerNameListLength(int serverNameListLength) {
-        this.serverNameListLength = ModifiableVariableFactory.safelySetValue(this.serverNameListLength,
-                serverNameListLength);
+        this.serverNameListLength =
+            ModifiableVariableFactory.safelySetValue(this.serverNameListLength, serverNameListLength);
     }
 
     public List<ServerNamePair> getServerNameList() {

@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.constants.NameType;
@@ -35,8 +35,7 @@ public class ServerNameIndicationExtensionHandlerTest {
     }
 
     /**
-     * Test of adjustTLSContext method, of class
-     * ServerNameIndicationExtensionHandler.
+     * Test of adjustTLSContext method, of class ServerNameIndicationExtensionHandler.
      */
     @Test
     public void testAdjustTLSContext() {
@@ -72,25 +71,26 @@ public class ServerNameIndicationExtensionHandlerTest {
      */
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[] { 0, 2, 3, }, 0, context.getConfig()) instanceof ServerNameIndicationExtensionParser);
+        assertTrue(handler.getParser(new byte[] { 0, 2, 3, }, 0,
+            context.getConfig()) instanceof ServerNameIndicationExtensionParser);
     }
 
     /**
-     * Test of getPreparator method, of class
-     * ServerNameIndicationExtensionHandler.
+     * Test of getPreparator method, of class ServerNameIndicationExtensionHandler.
      */
     @Test
     public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new ServerNameIndicationExtensionMessage()) instanceof ServerNameIndicationExtensionPreparator);
+        assertTrue(handler.getPreparator(
+            new ServerNameIndicationExtensionMessage()) instanceof ServerNameIndicationExtensionPreparator);
     }
 
     /**
-     * Test of getSerializer method, of class
-     * ServerNameIndicationExtensionHandler.
+     * Test of getSerializer method, of class ServerNameIndicationExtensionHandler.
      */
     @Test
     public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new ServerNameIndicationExtensionMessage()) instanceof ServerNameIndicationExtensionSerializer);
+        assertTrue(handler.getSerializer(
+            new ServerNameIndicationExtensionMessage()) instanceof ServerNameIndicationExtensionSerializer);
     }
 
 }

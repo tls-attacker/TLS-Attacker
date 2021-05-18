@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -46,7 +46,7 @@ public class SrpExtensionHandler extends ExtensionHandler<SRPExtensionMessage> {
     public void adjustTLSExtensionContext(SRPExtensionMessage message) {
         context.setSecureRemotePasswordExtensionIdentifier(message.getSrpIdentifier().getValue());
         LOGGER.debug("Adjusted the TLSContext secure remote password extension identifier to "
-                + ArrayConverter.bytesToHexString(context.getSecureRemotePasswordExtensionIdentifier()));
+            + ArrayConverter.bytesToHexString(context.getSecureRemotePasswordExtensionIdentifier()));
     }
 
 }

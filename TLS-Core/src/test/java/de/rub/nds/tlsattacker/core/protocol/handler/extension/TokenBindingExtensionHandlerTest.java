@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
@@ -28,8 +28,8 @@ public class TokenBindingExtensionHandlerTest {
 
     private final TokenBindingVersion tokenbindingVersion = TokenBindingVersion.DRAFT_13;
 
-    private final TokenBindingKeyParameters[] keyParameter = new TokenBindingKeyParameters[] {
-            TokenBindingKeyParameters.RSA2048_PSS, TokenBindingKeyParameters.ECDSAP256 };
+    private final TokenBindingKeyParameters[] keyParameter =
+        new TokenBindingKeyParameters[] { TokenBindingKeyParameters.RSA2048_PSS, TokenBindingKeyParameters.ECDSAP256 };
     private final byte[] keyParameterByteArrayRepresentation = new byte[] { 0x01, 0x02 };
     private TlsContext context;
     private TokenBindingExtensionHandler handler;
@@ -48,10 +48,8 @@ public class TokenBindingExtensionHandlerTest {
         handler.adjustTLSContext(message);
 
         assertEquals(tokenbindingVersion, context.getTokenBindingVersion());
-        assertArrayEquals(
-                keyParameter,
-                context.getTokenBindingKeyParameters().toArray(
-                        new TokenBindingKeyParameters[context.getTokenBindingKeyParameters().size()]));
+        assertArrayEquals(keyParameter, context.getTokenBindingKeyParameters()
+            .toArray(new TokenBindingKeyParameters[context.getTokenBindingKeyParameters().size()]));
     }
 
     @Test
@@ -61,12 +59,14 @@ public class TokenBindingExtensionHandlerTest {
 
     @Test
     public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new TokenBindingExtensionMessage()) instanceof TokenBindingExtensionPreparator);
+        assertTrue(
+            handler.getPreparator(new TokenBindingExtensionMessage()) instanceof TokenBindingExtensionPreparator);
     }
 
     @Test
     public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new TokenBindingExtensionMessage()) instanceof TokenBindingExtensionSerializer);
+        assertTrue(
+            handler.getSerializer(new TokenBindingExtensionMessage()) instanceof TokenBindingExtensionSerializer);
     }
 
 }

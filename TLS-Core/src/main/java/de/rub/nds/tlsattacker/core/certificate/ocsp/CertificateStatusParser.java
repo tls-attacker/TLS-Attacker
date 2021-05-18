@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.certificate.ocsp;
 
 import de.rub.nds.asn1.Asn1Encodable;
@@ -22,8 +22,8 @@ import de.rub.nds.asn1.model.Asn1PrimitiveGeneralizedTime;
 import de.rub.nds.asn1.model.Asn1PrimitiveOctetString;
 import de.rub.nds.asn1.model.Asn1Sequence;
 import de.rub.nds.tlsattacker.core.util.Asn1ToolInitializer;
-
 import java.math.BigInteger;
+import java.security.cert.CertificateParsingException;
 import java.util.List;
 
 public class CertificateStatusParser {
@@ -46,12 +46,10 @@ public class CertificateStatusParser {
         Asn1Sequence requestInformation = (Asn1Sequence) certStatusSeq.getChildren().get(0);
 
         /*
-         * At first, get information about the processed request. This MAY
-         * differ from the original request sometimes, as some responders don't
-         * need all values to match to give a response for a given certificate.
-         * DigiCert's OCSP responder, for example, also accepts an invalid
-         * issuerKeyHash in a request if the other values match up and returns
-         * the correct one in the response.
+         * At first, get information about the processed request. This MAY differ from the original request sometimes,
+         * as some responders don't need all values to match to give a response for a given certificate. DigiCert's OCSP
+         * responder, for example, also accepts an invalid issuerKeyHash in a request if the other values match up and
+         * returns the correct one in the response.
          */
 
         Asn1Sequence hashAlgorithmSequence = (Asn1Sequence) requestInformation.getChildren().get(0);
@@ -83,10 +81,8 @@ public class CertificateStatusParser {
         }
 
         /*
-         * And here comes the revocation status. ASN.1 Tool has no support for
-         * parsing Implicit types yet and therefore returns either Null or
-         * EndOfContent for a 'good' status, so we treat them both as good
-         * status.
+         * And here comes the revocation status. ASN.1 Tool has no support for parsing Implicit types yet and therefore
+         * returns either Null or EndOfContent for a 'good' status, so we treat them both as good status.
          */
 
         Asn1Encodable certStatusObject = certStatusSeq.getChildren().get(1);
@@ -94,11 +90,9 @@ public class CertificateStatusParser {
         // Good status
         if (certStatusObject instanceof Asn1Null || certStatusObject instanceof Asn1EndOfContent) {
             certificateStatusValue = 0; // good, not revoked
-        }
-
-        // Time of next update (offset 0), revoked (offset 1) or unknown
-        // (offset 2) status
-        else if (certStatusObject instanceof Asn1Explicit) {
+        } else if (certStatusObject instanceof Asn1Explicit) {
+            // Time of next update (offset 0), revoked (offset 1) or unknown
+            // (offset 2) status
             Asn1Explicit certStatusExplicitObject = (Asn1Explicit) certStatusObject;
             switch (certStatusExplicitObject.getOffset()) {
                 case 1:
@@ -116,12 +110,15 @@ public class CertificateStatusParser {
                 case 2:
                     certificateStatusValue = 2; // unknown
                     break;
+                default:
+                    certificateStatusValue = 2; // unknown
+                    break;
             }
         }
 
         // After the status comes the mandatory timeOfLastUpdate
-        Asn1PrimitiveGeneralizedTime timeOfLastUpdateObject = (Asn1PrimitiveGeneralizedTime) certStatusSeq
-                .getChildren().get(2);
+        Asn1PrimitiveGeneralizedTime timeOfLastUpdateObject =
+            (Asn1PrimitiveGeneralizedTime) certStatusSeq.getChildren().get(2);
         timeOfLastUpdate = timeOfLastUpdateObject.getValue();
 
         // And at last, optional tags for lastUpdate and extensions
@@ -132,10 +129,13 @@ public class CertificateStatusParser {
 
                 switch (nextExplicitObject.getOffset()) {
                     case 0:
-                        timeOfNextUpdate = ((Asn1PrimitiveGeneralizedTime) nextExplicitObject.getChildren().get(0))
-                                .getValue();
+                        timeOfNextUpdate =
+                            ((Asn1PrimitiveGeneralizedTime) nextExplicitObject.getChildren().get(0)).getValue();
                         break;
                     case 1:
+                        // TODO: Add support for singleExtensions here.
+                        break;
+                    default:
                         // TODO: Add support for singleExtensions here.
                         break;
                 }

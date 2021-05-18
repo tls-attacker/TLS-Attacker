@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -130,14 +130,14 @@ public class FinishedHandlerTest {
         assertEquals(0, context.getReadSequenceNumber());
 
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("F8FAD34AEB9E4A8A3233A5F3C01D9E7B25CFAA4CBD7E255426A39B5EA8AE9840"),
-                context.getClientApplicationTrafficSecret());
+            ArrayConverter.hexStringToByteArray("F8FAD34AEB9E4A8A3233A5F3C01D9E7B25CFAA4CBD7E255426A39B5EA8AE9840"),
+            context.getClientApplicationTrafficSecret());
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("2FC28A45C71076589231CE9095D933E120AFD9F38895CFE2EC8A56B89FBCEF33"),
-                context.getServerApplicationTrafficSecret());
+            ArrayConverter.hexStringToByteArray("2FC28A45C71076589231CE9095D933E120AFD9F38895CFE2EC8A56B89FBCEF33"),
+            context.getServerApplicationTrafficSecret());
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("9AD9F506B33C740C483E54321EBE59268F7D588356F07ADED4149164D0A18FCA"),
-                context.getMasterSecret());
+            ArrayConverter.hexStringToByteArray("9AD9F506B33C740C483E54321EBE59268F7D588356F07ADED4149164D0A18FCA"),
+            context.getMasterSecret());
 
     }
 
@@ -246,14 +246,14 @@ public class FinishedHandlerTest {
         assertEquals(99, context.getReadSequenceNumber());
 
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("F8FAD34AEB9E4A8A3233A5F3C01D9E7B25CFAA4CBD7E255426A39B5EA8AE9840"),
-                context.getClientApplicationTrafficSecret());
+            ArrayConverter.hexStringToByteArray("F8FAD34AEB9E4A8A3233A5F3C01D9E7B25CFAA4CBD7E255426A39B5EA8AE9840"),
+            context.getClientApplicationTrafficSecret());
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("2FC28A45C71076589231CE9095D933E120AFD9F38895CFE2EC8A56B89FBCEF33"),
-                context.getServerApplicationTrafficSecret());
+            ArrayConverter.hexStringToByteArray("2FC28A45C71076589231CE9095D933E120AFD9F38895CFE2EC8A56B89FBCEF33"),
+            context.getServerApplicationTrafficSecret());
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("9AD9F506B33C740C483E54321EBE59268F7D588356F07ADED4149164D0A18FCA"),
-                context.getMasterSecret());
+            ArrayConverter.hexStringToByteArray("9AD9F506B33C740C483E54321EBE59268F7D588356F07ADED4149164D0A18FCA"),
+            context.getMasterSecret());
     }
 
     @Test
@@ -326,14 +326,14 @@ public class FinishedHandlerTest {
         assertEquals(99, context.getReadSequenceNumber());
 
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("F8FAD34AEB9E4A8A3233A5F3C01D9E7B25CFAA4CBD7E255426A39B5EA8AE9840"),
-                context.getClientApplicationTrafficSecret());
+            ArrayConverter.hexStringToByteArray("F8FAD34AEB9E4A8A3233A5F3C01D9E7B25CFAA4CBD7E255426A39B5EA8AE9840"),
+            context.getClientApplicationTrafficSecret());
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("2FC28A45C71076589231CE9095D933E120AFD9F38895CFE2EC8A56B89FBCEF33"),
-                context.getServerApplicationTrafficSecret());
+            ArrayConverter.hexStringToByteArray("2FC28A45C71076589231CE9095D933E120AFD9F38895CFE2EC8A56B89FBCEF33"),
+            context.getServerApplicationTrafficSecret());
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("9AD9F506B33C740C483E54321EBE59268F7D588356F07ADED4149164D0A18FCA"),
-                context.getMasterSecret());
+            ArrayConverter.hexStringToByteArray("9AD9F506B33C740C483E54321EBE59268F7D588356F07ADED4149164D0A18FCA"),
+            context.getMasterSecret());
 
     }
 

@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.socket;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -80,10 +80,8 @@ public class TlsAttackerSocketTest {
     public void testSend_String() throws IOException {
         socket.send("test");
         byte[] sentBytes = transportHandler.getSendByte();
-        assertArrayEquals(
-                sentBytes,
-                ArrayConverter.concatenate(new byte[] { 0x17, 0x03, 0x03, 0x00, 0x04 },
-                        "test".getBytes(Charset.forName("ASCII"))));
+        assertArrayEquals(sentBytes, ArrayConverter.concatenate(new byte[] { 0x17, 0x03, 0x03, 0x00, 0x04 },
+            "test".getBytes(Charset.forName("ASCII"))));
     }
 
     /**
@@ -116,7 +114,7 @@ public class TlsAttackerSocketTest {
     @Test
     public void testReceiveString() throws Exception {
         transportHandler.setFetchableByte(ArrayConverter.concatenate(new byte[] { 0x17, 0x03, 0x03, 0x00, 0x04 },
-                "test".getBytes(Charset.forName("ASCII"))));
+            "test".getBytes(Charset.forName("ASCII"))));
         String receivedString = socket.receiveString();
         assertEquals("test", receivedString);
     }

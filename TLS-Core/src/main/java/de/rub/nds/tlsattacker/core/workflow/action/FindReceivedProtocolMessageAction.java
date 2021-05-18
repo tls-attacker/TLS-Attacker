@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
@@ -20,9 +20,8 @@ import org.apache.logging.log4j.Logger;
 /**
  * Check if a protocol message of given type was received.
  *
- * Checks all protocol message that were received during workflow execution so
- * far. Result is stored in "found" field. Prints "Found Type.name (Type.value)"
- * for the first message found and quits. Prints nothing if no message of given
+ * Checks all protocol message that were received during workflow execution so far. Result is stored in "found" field.
+ * Prints "Found Type.name (Type.value)" for the first message found and quits. Prints nothing if no message of given
  * type was received.
  */
 public class FindReceivedProtocolMessageAction extends ConnectionBoundAction {

@@ -1,136 +1,50 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<tlsConfig>
+<config>
+    <defaultHandshakeSecret>00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00</defaultHandshakeSecret>
+    <throwExceptionOnParserContextViolation>false</throwExceptionOnParserContextViolation>
+    <preferredCertificateSignatureType>RSA</preferredCertificateSignatureType>
+    <preferredCertificateSignatureGroup>SECP256R1</preferredCertificateSignatureGroup>
+    <autoSelectCertificate>true</autoSelectCertificate>
+    <defaultExplicitCertificateKeyPair>
+        <certPublicKeyType>RSA</certPublicKeyType>
+        <certSignatureType>RSA</certSignatureType>
+        <certificateBytes>00 03 97 00 03 94 30 82 03 90 30 82 02 78 A0 03 02 01 02 02 09 00 A6 50 C0 07 94 04 9F CD 30 0D 06 09 2A 86 48 86 F7 0D 01 01 0B 05 00 30 5C 31 0B 30 09 06 03 55 04 06 13 02 41 55 31 13 30 11 06 03 55 04 08 0C 0A 53 6F 6D 65 2D 53 74 61 74 65 31 21 30 1F 06 03 55 04 0A 0C 18 49 6E 74 65 72 6E 65 74 20 57 69 64 67 69 74 73 20 50 74 79 20 4C 74 64 31 15 30 13 06 03 55 04 03 0C 0C 54 4C 53 2D 41 74 74 61 63 6B 65 72 30 20 17 0D 31 37 30 37 31 33 31 32 35 33 31 38 5A 18 0F 32 31 31 37 30 36 31 39 31 32 35 33 31 38 5A 30 5C 31 0B 30 09 06 03 55 04 06 13 02 41 55 31 13 30 11 06 03 55 04 08 0C 0A 53 6F 6D 65 2D 53 74 61 74 65 31 21 30 1F 06 03 55 04 0A 0C 18 49 6E 74 65 72 6E 65 74 20 57 69 64 67 69 74 73 20 50 74 79 20 4C 74 64 31 15 30 13 06 03 55 04 03 0C 0C 54 4C 53 2D 41 74 74 61 63 6B 65 72 30 82 01 22 30 0D 06 09 2A 86 48 86 F7 0D 01 01 01 05 00 03 82 01 0F 00 30 82 01 0A 02 82 01 01 00 C8 82 0D 6C 3C E8 4C 84 30 F6 83 5A BF C7 D7 A9 12 E1 66 4F 44 57 87 51 F3 76 50 1A 8C 68 47 6C 30 72 D9 19 C5 D3 9B D0 DB E0 80 E7 1D B8 3B D4 AB 2F 2F 9B DE 3D FF B0 08 0F 51 0A 5F 69 29 C1 96 55 1F 2B 3C 36 9B E0 51 05 4C 87 75 73 19 55 58 FD 28 20 35 93 4D C8 6E DA B8 D4 B1 B7 F5 55 E5 B2 FE E7 27 53 84 A7 56 EF 86 CB 86 79 3B 5D 13 33 F0 97 32 03 CB 96 96 67 66 E6 55 CD 2C CC AE 19 40 E4 49 4B 8E 9F B5 27 95 93 B7 5A FD 0B 37 82 43 E5 1A 88 F6 EB 88 DE F5 22 A8 CD 5C 6C 08 22 86 A0 42 69 A2 87 97 60 FC BA 45 00 5D 7F 26 72 DD 22 88 09 D4 72 74 F0 FE 0E A5 53 1C 2B D9 53 66 C0 5B F6 9E DC 0F 3C 31 89 86 6E DC A0 C5 7A DC CA 93 25 0A E7 8D 9E AC A0 39 3A 95 FF 99 52 FC 47 FB 76 79 DD 38 03 E6 A7 A6 FA 77 18 61 E3 D9 9E 4B 55 1A 40 84 66 8B 11 1B 7E EF 7D 02 03 01 00 01 A3 53 30 51 30 1D 06 03 55 1D 0E 04 16 04 14 E7 A9 2F E5 54 3A EE 2F F7 59 2F 80 0A C6 E6 65 41 E3 26 8B 30 1F 06 03 55 1D 23 04 18 30 16 80 14 E7 A9 2F E5 54 3A EE 2F F7 59 2F 80 0A C6 E6 65 41 E3 26 8B 30 0F 06 03 55 1D 13 01 01 FF 04 05 30 03 01 01 FF 30 0D 06 09 2A 86 48 86 F7 0D 01 01 0B 05 00 03 82 01 01 00 0D 5C 11 E2 8C F1 9D 1B C1 7E 4F F5 43 69 51 68 57 0A A7 DB 85 B3 EC B8 54 05 39 2A 0E DA FE 4F 09 7E E4 68 5B 72 85 E3 D9 B8 69 D2 32 57 16 1C A6 5E 20 B5 E6 A5 85 D3 3D A5 CD 65 3A F8 12 43 31 81 32 C9 F6 4A 47 6E C0 8B A8 04 86 B3 E4 39 F7 65 63 5A 7E A8 A9 69 B3 AB D8 65 00 36 D7 4C 5F C4 A0 45 89 E9 AC 8D C3 BE 27 08 74 3A 6C FE 3B 45 1E 37 40 F7 35 F1 56 D6 DC 7F FC 8A 2C 85 2C D4 E3 97 B9 42 46 1C 2F CA 88 4C 7A FB 7E BE F7 91 8D 6A AE F1 F0 D2 57 E9 59 75 4C 46 65 77 9F A0 E3 25 3E F2 BE DB BD 5B E5 DA 60 0A 0A 68 E5 1D 2D 1C 12 5C 4E 19 86 69 A6 BC 71 5E 8F 38 84 E9 C3 EF F3 9D 40 83 8A DA 4B 1F 38 31 3F 62 86 AA 39 5D C6 DE A9 DA F4 93 96 CF 12 EC 47 EF A7 A0 D3 88 2F 8B 84 D9 AE EF FB 25 2C 6B 81 A5 66 60 96 05 FB FD 3F 0D 17 E5 B1 24 01 49 2A 1A</certificateBytes>
+        <RsaPublicKey>
+            <publicExponent>65537</publicExponent>
+            <modulus>25311792238044219946174684693224603884785773358330971609415825404567987089738069857630011723336937795827963868604847118759739071441983186580158833210553280838765514351236797316564714837320618887805126341832834827826790060810763662161735652692660340953325435378344445537136408926502767545150207605087601783216982476527090447255508303291994973748877217756699811604529317375418362425978959405980207726316912995165050065189202729278788324244413992973017231054259638764128689366135764356716715140925548909967670376902528818677308871053953559814432449223427664069339511214707847837366043835739060653160903099571514118172541</modulus>
+        </RsaPublicKey>
+        <RsaPrivateKey>
+            <modulus>25311792238044219946174684693224603884785773358330971609415825404567987089738069857630011723336937795827963868604847118759739071441983186580158833210553280838765514351236797316564714837320618887805126341832834827826790060810763662161735652692660340953325435378344445537136408926502767545150207605087601783216982476527090447255508303291994973748877217756699811604529317375418362425978959405980207726316912995165050065189202729278788324244413992973017231054259638764128689366135764356716715140925548909967670376902528818677308871053953559814432449223427664069339511214707847837366043835739060653160903099571514118172541</modulus>
+            <privateExponent>15874858421354831201422373086128612745111153124913833804748747602178280564406425154617488927847142136837462790351481317765255581632968169400556456985418488827925888221598273953686611745401672309465708043217648197631331184971921491765473252248751361737713587292004390571935209364268173007740802648762007661253254661694353602685239350183219876383969245059520622897526828073822681994419744648185400986499062312630392385618231497966730037670361639244062483305891646041343885072158127929403028249239589737831073084456798375448844113695963693837622356344855176327289719518978665114515326513514352049909912072269175924872321</privateExponent>
+        </RsaPrivateKey>
+    </defaultExplicitCertificateKeyPair>
+    <autoAdjustSignatureAndHashAlgorithm>true</autoAdjustSignatureAndHashAlgorithm>
+    <preferredHashAlgorithm>SHA256</preferredHashAlgorithm>
+    <outputFilters>
+        <outputFilter>DEFAULT</outputFilter>
+    </outputFilters>
+    <applyFiltersInPlace>false</applyFiltersInPlace>
+    <filtersKeepUserSettings>true</filtersKeepUserSettings>
+    <reorderReceivedDtlsRecords>true</reorderReceivedDtlsRecords>
+    <highestProtocolVersion>TLS12</highestProtocolVersion>
     <defaultClientConnection>
         <alias>client</alias>
-        <port>8002</port>
-        <hostname>testHostname</hostname>
-    </defaultClientConnection>      
-    <highestProtocolVersion>TLS12</highestProtocolVersion>
-    <alias>default</alias>
-    <password>password</password>
+        <port>443</port>
+        <hostname>localhost</hostname>
+    </defaultClientConnection>
+    <receiveFinalTcpSocketStateWithTimeout>false</receiveFinalTcpSocketStateWithTimeout>
+    <retryFailedClientTcpSocketInitialization>false</retryFailedClientTcpSocketInitialization>
+    <defaultServerConnection>
+        <alias>server</alias>
+        <port>443</port>
+        <hostname>localhost</hostname>
+    </defaultServerConnection>
+    <defaultRunningMode>CLIENT</defaultRunningMode>
     <clientAuthentication>false</clientAuthentication>
-    <sessionResumption>false</sessionResumption>
-    <renegotiation>false</renegotiation>
-    <supportedSignatureAndHashAlgorithms>
-        <hashAlgorithm>SHA512</hashAlgorithm>
-        <signatureAlgorithm>RSA</signatureAlgorithm>
-    </supportedSignatureAndHashAlgorithms>
-    <supportedSignatureAndHashAlgorithms>
-        <hashAlgorithm>SHA384</hashAlgorithm>
-        <signatureAlgorithm>RSA</signatureAlgorithm>
-    </supportedSignatureAndHashAlgorithms>
-    <supportedSignatureAndHashAlgorithms>
-        <hashAlgorithm>SHA256</hashAlgorithm>
-        <signatureAlgorithm>RSA</signatureAlgorithm>
-    </supportedSignatureAndHashAlgorithms>
-    <supportedSignatureAndHashAlgorithms>
-        <hashAlgorithm>SHA224</hashAlgorithm>
-        <signatureAlgorithm>RSA</signatureAlgorithm>
-    </supportedSignatureAndHashAlgorithms>
-    <supportedSignatureAndHashAlgorithms>
-        <hashAlgorithm>SHA1</hashAlgorithm>
-        <signatureAlgorithm>RSA</signatureAlgorithm>
-    </supportedSignatureAndHashAlgorithms>
-    <supportedSignatureAndHashAlgorithms>
-        <hashAlgorithm>MD5</hashAlgorithm>
-        <signatureAlgorithm>RSA</signatureAlgorithm>
-    </supportedSignatureAndHashAlgorithms>
-    <fuzzingMode>false</fuzzingMode>
-    <defaultClientSupportedCiphersuites>TLS_RSA_WITH_3DES_EDE_CBC_SHA</defaultClientSupportedCiphersuites>
-    <supportedCompressionMethods>NULL</supportedCompressionMethods>
-    <dynamicWorkflow>false</dynamicWorkflow>
-    <pointFormats>UNCOMPRESSED</pointFormats>
-    <namedCurves>SECP192R1</namedCurves>
-    <namedCurves>SECP256R1</namedCurves>
-    <namedCurves>SECP384R1</namedCurves>
-    <namedCurves>SECP521R1</namedCurves>
-    <heartbeatMode>PEER_ALLOWED_TO_SEND</heartbeatMode>
-    <sniHostname>localhost</sniHostname>
-    <sniType>HOST_NAME</sniType>
-    <sniHostnameFatal>false</sniHostnameFatal>
-    <serverPort>443</serverPort>
-    <maxFragmentLength>TWO_9</maxFragmentLength>
-    <TLSSessionTicket></TLSSessionTicket>
-    <defaultRenegotiationInfo></defaultRenegotiationInfo>
-    <defaultSignedCertificateTimestamp></defaultSignedCertificateTimestamp>
-    <defaultTokenBindingVersion>DRAFT_13</defaultTokenBindingVersion>
-    <defaultTokenBindingKeyParameters>ECDSAP256</defaultTokenBindingKeyParameters>
-    <defaultTokenBindingKeyParameters>RSA2048_PKCS1_5</defaultTokenBindingKeyParameters>
-    <defaultTokenBindingKeyParameters>RSA2048_PSS</defaultTokenBindingKeyParameters>
-    <tlsTimeout>400</tlsTimeout>
-    <timeout>1000</timeout>
-    <transportHandlerType>TCP</transportHandlerType>
-    <verifyWorkflow>false</verifyWorkflow>
-    <serverSendsApplicationData>false</serverSendsApplicationData>
-    <addECPointFormatExtension>true</addECPointFormatExtension>
-    <addEllipticCurveExtension>true</addEllipticCurveExtension>
-    <addHeartbeatExtension>false</addHeartbeatExtension>
-    <addMaxFragmentLengthExtenstion>false</addMaxFragmentLengthExtenstion>
-    <addServerNameIndicationExtension>false</addServerNameIndicationExtension>
-    <addSignatureAndHashAlgrorithmsExtension>false</addSignatureAndHashAlgrorithmsExtension>
-    <addPaddingExtension>false</addPaddingExtension>
-    <addExtendedMasterSecretExtension>false</addExtendedMasterSecretExtension>
-    <addSessionTicketTLSExtension>false</addSessionTicketTLSExtension>
-    <addSignedCertificateTimestampExtension>false</addSignedCertificateTimestampExtension>
-    <addRenegotiationInfoExtension>false</addRenegotiationInfoExtension>
-    <addTokenBindingExtension>false</addTokenBindingExtension>
-    <sessionId></sessionId>
-    <updateTimestamps>true</updateTimestamps>
-    <distinguishedNames></distinguishedNames>
-    <enforceSettings>false</enforceSettings>
-    <doDTLSRetransmits>false</doDTLSRetransmits>
-    <fixedDHModulus>
-FF FF FF FF FF FF FF FF  C9 0F DA A2 21 68 C2 34
-C4 C6 62 8B 80 DC 1C D1  29 02 4E 08 8A 67 CC 74
-02 0B BE A6 3B 13 9B 22  51 4A 08 79 8E 34 04 DD
-EF 95 19 B3 CD 3A 43 1B  30 2B 0A 6D F2 5F 14 37
-4F E1 35 6D 6D 51 C2 45  E4 85 B5 76 62 5E 7E C6
-F4 4C 42 E9 A6 37 ED 6B  0B FF 5C B6 F4 06 B7 ED
-EE 38 6B FB 5A 89 9F A5  AE 9F 24 11 7C 4B 1F E6
-49 28 66 51 EC E4 5B 3D  C2 00 7C B8 A1 63 BF 05
-98 DA 48 36 1C 55 D3 9A  69 16 3F A8 FD 24 CF 5F
-83 65 5D 23 DC A3 AD 96  1C 62 F3 56 20 85 52 BB
-9E D5 29 07 70 96 96 6D  67 0C 35 4E 4A BC 98 04
-F1 74 6C 08 CA 18 21 7C  32 90 5E 46 2E 36 CE 3B
-E3 9E 77 2C 18 0E 86 03  9B 27 83 A2 EC 07 A2 8F
-B5 C5 5D F0 6F 4C 52 C9  DE 2B CB F6 95 58 17 18
-39 95 49 7C EA 95 6A E5  15 D2 26 18 98 FA 05 10
-15 72 8E 5A 8A AC AA 68  FF FF FF FF FF FF FF FF
-</fixedDHModulus>
-    <fixedDHg>02</fixedDHg>
-    <defaultApplicationMessageData>Test</defaultApplicationMessageData>
-    <waitOnlyForExpectedDTLS>true</waitOnlyForExpectedDTLS>
-    <clientCertificateTypes>RSA_SIGN</clientCertificateTypes>
-    <heartbeatPayloadLength>256</heartbeatPayloadLength>
-    <heartbeatMinPaddingLength>16</heartbeatMinPaddingLength>
-    <heartbeatMaxPaddingLength>256</heartbeatMaxPaddingLength>
-    <defaultDTLSCookieLength>6</defaultDTLSCookieLength>
-    <defaultMaxRecordData>1048576</defaultMaxRecordData>
-    <defaultPaddingExtensionBytes>AAAAAAAA</defaultPaddingExtensionBytes>
-    <executorType>TLS</executorType>
-    <flushOnMessageTypeChange>true</flushOnMessageTypeChange>
-    <createRecordsDynamically>true</createRecordsDynamically>
-    <createIndividualRecords>true</createIndividualRecords>
-    <recordLayerType>RECORD</recordLayerType>
-    <stripWorkflowtracesBeforeSaving>false</stripWorkflowtracesBeforeSaving>
-    <quickReceive>true</quickReceive>
-    <defaultSelectedCipherSuite>TLS_RSA_WITH_AES_128_CBC_SHA</defaultSelectedCipherSuite>
-    <defaultSelectedSignatureAndHashAlgorithm>
-        <hashAlgorithm>SHA1</hashAlgorithm>
-        <signatureAlgorithm>RSA</signatureAlgorithm>
-    </defaultSelectedSignatureAndHashAlgorithm>
-    <defaultLastRecordProtocolVersion>TLS10</defaultLastRecordProtocolVersion>
-    <defaultSelectedProtocolVersion>TLS12</defaultSelectedProtocolVersion>
-    <defaultHighestClientProtocolVersion>TLS12</defaultHighestClientProtocolVersion>
-    <defaultMaxFragmentLength>TWO_12</defaultMaxFragmentLength>
-    <defaultHeartbeatMode>PEER_ALLOWED_TO_SEND</defaultHeartbeatMode>
-    <defaultMasterSecret></defaultMasterSecret>
-    <defaultPreMasterSecret></defaultPreMasterSecret>
-    <defaultClientRandom></defaultClientRandom>
-    <defaultServerRandom></defaultServerRandom>
-    <defaultClientSessionId></defaultClientSessionId>
-    <defaultServerSessionId></defaultServerSessionId>
-    <defaultSelectedCompressionMethod>NULL</defaultSelectedCompressionMethod>
-    <defaultDtlsCookie></defaultDtlsCookie>
-    <defaultPRFAlgorithm>TLS_PRF_LEGACY</defaultPRFAlgorithm>
-</tlsConfig>
+    <defaultClientSupportedCipherSuites>
+        <defaultClientSupportedCipherSuite>TLS_RSA_WITH_3DES_EDE_CBC_SHA</defaultClientSupportedCipherSuite>
+    </defaultClientSupportedCipherSuites>
+    <defaultServerSupportedCipherSuites>
+        <defaultServerSupportedCipherSuite>TLS_RSA_WITH_3DES_EDE_CBC_SHA</defaultServerSupportedCipherSuite>
+    </defaultServerSupportedCipherSuites>
+</config>

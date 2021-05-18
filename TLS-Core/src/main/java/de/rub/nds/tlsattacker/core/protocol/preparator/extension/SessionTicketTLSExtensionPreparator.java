@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -23,20 +23,19 @@ public class SessionTicketTLSExtensionPreparator extends ExtensionPreparator<Ses
     private final SessionTicketTLSExtensionMessage message;
 
     public SessionTicketTLSExtensionPreparator(Chooser chooser, SessionTicketTLSExtensionMessage message,
-            SessionTicketTLSExtensionSerializer serializer) {
+        SessionTicketTLSExtensionSerializer serializer) {
         super(chooser, message, serializer);
         this.message = message;
     }
 
     /**
-     * Parses the content of a SessionTicketTLSExtensionMessage of the
-     * TLSContext
+     * Parses the content of a SessionTicketTLSExtensionMessage of the TLSContext
      */
     @Override
     public void prepareExtensionContent() {
-        message.setTicket(chooser.getConfig().getTlsSessionTicket());
+        message.setTicket(chooser.getSessionTicketTLS());
         LOGGER.debug("Prepared the SessionTicketTLSExtension with Ticket "
-                + ArrayConverter.bytesToHexString(message.getTicket().getValue()));
+            + ArrayConverter.bytesToHexString(message.getTicket().getValue()));
     }
 
 }

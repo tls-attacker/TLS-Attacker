@@ -1,26 +1,24 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
-
-import java.util.LinkedList;
-import java.util.List;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientEsniInner;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
-import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
+import de.rub.nds.tlsattacker.core.protocol.Parser;
+import java.util.LinkedList;
+import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ClientEsniInnerParser extends Parser<ClientEsniInner> {
 
@@ -42,44 +40,44 @@ public class ClientEsniInnerParser extends Parser<ClientEsniInner> {
         return clientEsniInner;
     }
 
-    private void parseClientNonce(ClientEsniInner clientEsniInne) {
+    private void parseClientNonce(ClientEsniInner clientEsniInner) {
         byte[] clientNonce = parseByteArrayField(ExtensionByteLength.NONCE);
-        clientEsniInne.setClientNonce(clientNonce);
-        LOGGER.debug("clientNonce: " + ArrayConverter.bytesToHexString(clientEsniInne.getClientNonce().getValue()));
+        clientEsniInner.setClientNonce(clientNonce);
+        LOGGER.debug("clientNonce: " + ArrayConverter.bytesToHexString(clientEsniInner.getClientNonce().getValue()));
 
     }
 
-    private void parseServerNameListLength(ClientEsniInner clientEsniInne) {
+    private void parseServerNameListLength(ClientEsniInner clientEsniInner) {
         int serverNameListLength = parseIntField(ExtensionByteLength.SERVER_NAME_LIST);
-        clientEsniInne.setServerNameListLength(serverNameListLength);
-        LOGGER.debug("serverNameListLength: " + clientEsniInne.getServerNameListLength().getValue());
+        clientEsniInner.setServerNameListLength(serverNameListLength);
+        LOGGER.debug("serverNameListLength: " + clientEsniInner.getServerNameListLength().getValue());
     }
 
-    private void parseServerNameListByte(ClientEsniInner clientEsniInne) {
-        byte[] serverNameListByte = parseByteArrayField(clientEsniInne.getServerNameListLength().getValue());
-        clientEsniInne.setServerNameListBytes(serverNameListByte);
+    private void parseServerNameListByte(ClientEsniInner clientEsniInner) {
+        byte[] serverNameListByte = parseByteArrayField(clientEsniInner.getServerNameListLength().getValue());
+        clientEsniInner.setServerNameListBytes(serverNameListByte);
         LOGGER.debug("serverNameListByte: "
-                + ArrayConverter.bytesToHexString(clientEsniInne.getServerNameListBytes().getValue()));
+            + ArrayConverter.bytesToHexString(clientEsniInner.getServerNameListBytes().getValue()));
     }
 
-    private void parsePadding(ClientEsniInner clientEsniInne) {
+    private void parsePadding(ClientEsniInner clientEsniInner) {
         byte[] padding = parseByteArrayField(this.getBytesLeft());
-        clientEsniInne.setPadding(padding);
-        LOGGER.debug("padding: " + ArrayConverter.bytesToHexString(clientEsniInne.getPadding().getValue()));
+        clientEsniInner.setPadding(padding);
+        LOGGER.debug("padding: " + ArrayConverter.bytesToHexString(clientEsniInner.getPadding().getValue()));
     }
 
-    private void parseServerNameList(ClientEsniInner clientEsniInne) {
+    private void parseServerNameList(ClientEsniInner clientEsniInner) {
         int position = 0;
         List<ServerNamePair> serverNamePairList = new LinkedList<>();
-        while (position < clientEsniInne.getServerNameListLength().getValue()) {
-            ServerNamePairParser parser = new ServerNamePairParser(position, clientEsniInne.getServerNameListBytes()
-                    .getValue());
+        while (position < clientEsniInner.getServerNameListLength().getValue()) {
+            ServerNamePairParser parser =
+                new ServerNamePairParser(position, clientEsniInner.getServerNameListBytes().getValue());
             serverNamePairList.add(parser.parse());
             if (position == parser.getPointer()) {
                 throw new ParserException("Ran into infinite Loop while parsing ServerNamePair");
             }
             position = parser.getPointer();
         }
-        clientEsniInne.setServerNameList(serverNamePairList);
+        clientEsniInner.setServerNameList(serverNamePairList);
     }
 }

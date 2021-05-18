@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
@@ -16,52 +16,51 @@ import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.HRRKeyShareExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.parser.HandshakeMessageParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.HandshakeMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EncryptedServerNameIndicationExtensionPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.HandshakeMessageSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
- * @param <ProtocolMessage>
- *            The ProtocolMessage that should be handled
+ * @param <HandshakeMessageT>
+ *                            The ProtocolMessage that should be handled
  */
-public abstract class HandshakeMessageHandler<ProtocolMessage extends HandshakeMessage> extends
-        ProtocolMessageHandler<ProtocolMessage> {
+public abstract class HandshakeMessageHandler<HandshakeMessageT extends HandshakeMessage>
+    extends TlsMessageHandler<HandshakeMessageT> {
 
     public HandshakeMessageHandler(TlsContext tlsContext) {
         super(tlsContext);
     }
 
-    protected void adjustExtensions(ProtocolMessage message, HandshakeMessageType handshakeMessageType) {
+    protected void adjustExtensions(HandshakeMessageT message) {
         if (message.getExtensions() != null) {
             for (ExtensionMessage extension : message.getExtensions()) {
-                if (extension instanceof HRRKeyShareExtensionMessage) { // TODO
-                    // fix
-                    // design
-                    // flaw
-                    handshakeMessageType = HandshakeMessageType.HELLO_RETRY_REQUEST;
-                }
-                ExtensionHandler handler = HandlerFactory.getExtensionHandler(tlsContext,
-                        extension.getExtensionTypeConstant(), handshakeMessageType);
+                ExtensionHandler handler =
+                    HandlerFactory.getExtensionHandler(tlsContext, extension.getExtensionTypeConstant());
                 handler.adjustTLSContext(extension);
+
             }
         }
     }
 
     @Override
-    public void prepareAfterParse(ProtocolMessage handshakeMessage) {
-        super.prepareAfterParse(handshakeMessage);
-        if (handshakeMessage.getExtensions() != null) {
-            for (ExtensionMessage extensionMessage : handshakeMessage.getExtensions()) {
+    public void prepareAfterParse(HandshakeMessageT message) {
+        super.prepareAfterParse(message);
 
-                HandshakeMessageType handshakeMessageType = handshakeMessage.getHandshakeMessageType();
-                ExtensionHandler extensionHhandler = HandlerFactory.getExtensionHandler(tlsContext,
-                        extensionMessage.getExtensionTypeConstant(), handshakeMessageType);
+        if (message.getExtensions() != null) {
+            for (ExtensionMessage extensionMessage : message.getExtensions()) {
+                HandshakeMessageType handshakeMessageType = message.getHandshakeMessageType();
+
+                ExtensionHandler extensionHandler =
+                    HandlerFactory.getExtensionHandler(tlsContext, extensionMessage.getExtensionTypeConstant());
 
                 if (extensionMessage instanceof EncryptedServerNameIndicationExtensionMessage) {
-                    EncryptedServerNameIndicationExtensionPreparator preparator = (EncryptedServerNameIndicationExtensionPreparator) extensionHhandler
+                    EncryptedServerNameIndicationExtensionPreparator preparator =
+                        (EncryptedServerNameIndicationExtensionPreparator) extensionHandler
                             .getPreparator(extensionMessage);
-                    if (handshakeMessage instanceof ClientHelloMessage) {
-                        preparator.setClientHelloMessage((ClientHelloMessage) handshakeMessage);
+                    if (message instanceof ClientHelloMessage) {
+                        preparator.setClientHelloMessage((ClientHelloMessage) message);
                     }
                     preparator.prepareAfterParse();
                 }
@@ -69,4 +68,12 @@ public abstract class HandshakeMessageHandler<ProtocolMessage extends HandshakeM
         }
     }
 
+    @Override
+    public abstract HandshakeMessageParser<HandshakeMessageT> getParser(byte[] message, int pointer);
+
+    @Override
+    public abstract HandshakeMessagePreparator<HandshakeMessageT> getPreparator(HandshakeMessageT message);
+
+    @Override
+    public abstract HandshakeMessageSerializer<HandshakeMessageT> getSerializer(HandshakeMessageT message);
 }

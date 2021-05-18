@@ -1,22 +1,23 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.record.cipher;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.crypto.cipher.CipherWrapper;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
+import de.rub.nds.tlsattacker.core.protocol.Parser;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
@@ -78,9 +79,12 @@ public class RecordAEADCipher extends RecordCipher {
 
     private byte[] prepareEncryptionGcmNonce(byte[] aeadSalt, byte[] explicitNonce, Record record) {
         byte[] gcmNonce = ArrayConverter.concatenate(aeadSalt, explicitNonce);
-        if (version.isTLS13() || bulkCipherAlg == BulkCipherAlgorithm.CHACHA20_POLY1305) {
-            // Nonce construction is different for chacha & tls1.3
+
+        // Nonce construction is different for chacha & tls1.3
+        if (version.isTLS13() || cipherAlg == CipherAlgorithm.CHACHA20_POLY1305) {
             gcmNonce = preprocessIv(record.getSequenceNumber().getValue().longValue(), gcmNonce);
+        } else if (cipherAlg == CipherAlgorithm.UNOFFICIAL_CHACHA20_POLY1305) {
+            gcmNonce = ArrayConverter.longToUint64Bytes(record.getSequenceNumber().getValue().longValue());
         }
         record.getComputations().setGcmNonce(gcmNonce);
         gcmNonce = record.getComputations().getGcmNonce().getValue();
@@ -125,9 +129,10 @@ public class RecordAEADCipher extends RecordCipher {
                 additionalPadding = 0;
             }
             record.getComputations().setPadding(new byte[additionalPadding]);
-            record.getComputations().setPlainRecordBytes(
-                    ArrayConverter.concatenate(record.getCleanProtocolMessageBytes().getValue(), new byte[] { record
-                            .getContentType().getValue() }, record.getComputations().getPadding().getValue()));
+            record.getComputations()
+                .setPlainRecordBytes(ArrayConverter.concatenate(record.getCleanProtocolMessageBytes().getValue(),
+                    new byte[] { record.getContentType().getValue() },
+                    record.getComputations().getPadding().getValue()));
             // For TLS1.3 we need the length beforehand to compute the
             // authenticatedMetaData
             record.setLength(record.getComputations().getPlainRecordBytes().getValue().length + AEAD_TAG_LENGTH);
@@ -141,26 +146,26 @@ public class RecordAEADCipher extends RecordCipher {
         byte[] gcmNonce = prepareEncryptionGcmNonce(aeadSalt, explicitNonce, record);
 
         LOGGER.debug("Encrypting AEAD with the following IV: {}", ArrayConverter.bytesToHexString(gcmNonce));
-        byte[] additionalAuthenticatedData = collectAdditionalAuthenticatedData(record, context.getChooser()
-                .getSelectedProtocolVersion());
+        byte[] additionalAuthenticatedData =
+            collectAdditionalAuthenticatedData(record, context.getChooser().getSelectedProtocolVersion());
         record.getComputations().setAuthenticatedMetaData(additionalAuthenticatedData);
         additionalAuthenticatedData = record.getComputations().getAuthenticatedMetaData().getValue();
 
         LOGGER.debug("Encrypting AEAD with the following AAD: {}",
-                ArrayConverter.bytesToHexString(additionalAuthenticatedData));
+            ArrayConverter.bytesToHexString(additionalAuthenticatedData));
 
         byte[] plainBytes = record.getComputations().getPlainRecordBytes().getValue();
-        byte[] wholeCipherText = encryptCipher.encrypt(gcmNonce, aeadTagLength * Bits.IN_A_BYTE,
-                additionalAuthenticatedData, plainBytes);
-        if (aeadTagLength >= wholeCipherText.length) {
+        byte[] wholeCipherText =
+            encryptCipher.encrypt(gcmNonce, aeadTagLength * Bits.IN_A_BYTE, additionalAuthenticatedData, plainBytes);
+        if (aeadTagLength > wholeCipherText.length) {
             throw new CryptoException("Could not encrypt data. Supposed Tag is longer than the ciphertext");
         }
         byte[] onlyCiphertext = Arrays.copyOfRange(wholeCipherText, 0, wholeCipherText.length - aeadTagLength);
 
         record.getComputations().setAuthenticatedNonMetaData(onlyCiphertext);
 
-        byte[] authenticationTag = Arrays.copyOfRange(wholeCipherText, wholeCipherText.length - aeadTagLength,
-                wholeCipherText.length);
+        byte[] authenticationTag =
+            Arrays.copyOfRange(wholeCipherText, wholeCipherText.length - aeadTagLength, wholeCipherText.length);
 
         record.getComputations().setAuthenticationTag(authenticationTag);
         authenticationTag = record.getComputations().getAuthenticationTag().getValue();
@@ -172,6 +177,12 @@ public class RecordAEADCipher extends RecordCipher {
         // TODO our own authentication tags are always valid
         record.getComputations().setAuthenticationTagValid(true);
 
+    }
+
+    @Override
+    public void encrypt(BlobRecord br) throws CryptoException {
+        LOGGER.debug("Encrypting BlobRecord");
+        br.setProtocolMessageBytes(encryptCipher.encrypt(br.getCleanProtocolMessageBytes().getValue()));
     }
 
     @Override
@@ -194,18 +205,21 @@ public class RecordAEADCipher extends RecordCipher {
         record.getComputations().setCiphertext(cipherTextOnly);
         record.getComputations().setAuthenticatedNonMetaData(record.getComputations().getCiphertext().getValue());
 
-        byte[] additionalAuthenticatedData = collectAdditionalAuthenticatedData(record, context.getChooser()
-                .getSelectedProtocolVersion());
+        byte[] additionalAuthenticatedData =
+            collectAdditionalAuthenticatedData(record, context.getChooser().getSelectedProtocolVersion());
         record.getComputations().setAuthenticatedMetaData(additionalAuthenticatedData);
         additionalAuthenticatedData = record.getComputations().getAuthenticatedMetaData().getValue();
 
         LOGGER.debug("Decrypting AEAD with the following AAD: {}",
-                ArrayConverter.bytesToHexString(additionalAuthenticatedData));
+            ArrayConverter.bytesToHexString(additionalAuthenticatedData));
 
         byte[] gcmNonce = ArrayConverter.concatenate(salt, explicitNonce);
-        if (version.isTLS13() || bulkCipherAlg == BulkCipherAlgorithm.CHACHA20_POLY1305) {
-            // Nonce construction is different for chacha & tls1.3
+
+        // Nonce construction is different for chacha & tls1.3
+        if (version.isTLS13() || cipherAlg == CipherAlgorithm.CHACHA20_POLY1305) {
             gcmNonce = preprocessIv(record.getSequenceNumber().getValue().longValue(), gcmNonce);
+        } else if (cipherAlg == CipherAlgorithm.UNOFFICIAL_CHACHA20_POLY1305) {
+            gcmNonce = ArrayConverter.longToUint64Bytes(record.getSequenceNumber().getValue().longValue());
         }
         record.getComputations().setGcmNonce(gcmNonce);
         gcmNonce = record.getComputations().getGcmNonce().getValue();
@@ -216,12 +230,12 @@ public class RecordAEADCipher extends RecordCipher {
 
         record.getComputations().setAuthenticationTag(authenticationTag);
         authenticationTag = record.getComputations().getAuthenticationTag().getValue();
-        // TODO it would be better if we had a seperate CM implementation to do
+        // TODO it would be better if we had a separate CM implementation to do
         // the decryption
 
         try {
             byte[] plainRecordBytes = decryptCipher.decrypt(gcmNonce, aeadTagLength * Bits.IN_A_BYTE,
-                    additionalAuthenticatedData, ArrayConverter.concatenate(cipherTextOnly, authenticationTag));
+                additionalAuthenticatedData, ArrayConverter.concatenate(cipherTextOnly, authenticationTag));
 
             record.getComputations().setAuthenticationTagValid(true);
             record.getComputations().setPlainRecordBytes(plainRecordBytes);
@@ -247,22 +261,16 @@ public class RecordAEADCipher extends RecordCipher {
             } else {
                 record.setCleanProtocolMessageBytes(plainRecordBytes);
             }
-        } catch (CryptoException E) {
-            LOGGER.warn("Tag invalid", E);
+        } catch (CryptoException e) {
+            LOGGER.warn("Tag invalid", e);
             record.getComputations().setAuthenticationTagValid(false);
-            throw new CryptoException(E);
+            throw new CryptoException(e);
         }
     }
 
     @Override
-    public void encrypt(BlobRecord br) throws CryptoException {
-        LOGGER.debug("Encrypting BlobRecord");
-        br.setProtocolMessageBytes(encryptCipher.encrypt(br.getCleanProtocolMessageBytes().getValue()));
-    }
-
-    @Override
     public void decrypt(BlobRecord br) throws CryptoException {
-        LOGGER.debug("Derypting BlobRecord");
+        LOGGER.debug("Decrypting BlobRecord");
         br.setCleanProtocolMessageBytes(decryptCipher.decrypt(br.getProtocolMessageBytes().getValue()));
 
     }

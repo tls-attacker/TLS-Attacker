@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.supplementaldata;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -25,7 +25,7 @@ public class SupplementalDataEntryParserTest {
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] { { ArrayConverter.hexStringToByteArray("4002000a0008010005aaaaaaaaaa"),
-                16386, 10, ArrayConverter.hexStringToByteArray("0008010005aaaaaaaaaa") } });
+            16386, 10, ArrayConverter.hexStringToByteArray("0008010005aaaaaaaaaa") } });
     }
 
     private int supplementalDataEntryType;
@@ -34,7 +34,7 @@ public class SupplementalDataEntryParserTest {
     private byte[] supplementalDataTestEntry;
 
     public SupplementalDataEntryParserTest(byte[] supplementalDataTestEntry, int supplementalDataEntryType,
-            int supplementalDataEntryLength, byte[] supplementalDataEntry) {
+        int supplementalDataEntryLength, byte[] supplementalDataEntry) {
         this.supplementalDataEntryType = supplementalDataEntryType;
         this.supplementalDataEntryLength = supplementalDataEntryLength;
         this.supplementalDataEntry = supplementalDataEntry;

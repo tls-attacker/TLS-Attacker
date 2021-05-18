@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -41,7 +41,7 @@ public class HelloVerifyRequestParser extends HandshakeMessageParser<HelloVerify
 
     private void parseProtocolVersion(HelloVerifyRequestMessage msg) {
         msg.setProtocolVersion(parseByteArrayField(HandshakeByteLength.VERSION));
-        LOGGER.debug("ProtcolVersion: " + ArrayConverter.bytesToHexString(msg.getProtocolVersion().getValue()));
+        LOGGER.debug("ProtocolVersion: " + ArrayConverter.bytesToHexString(msg.getProtocolVersion().getValue()));
     }
 
     private void parseCookieLength(HelloVerifyRequestMessage msg) {

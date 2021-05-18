@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
@@ -42,9 +42,9 @@ public abstract class CopyContextFieldAction extends TlsAction {
      * Invoked on action execution to perform the actual copy operation.
      * 
      * @param srcContext
-     *            source context
+     *                   source context
      * @param dstContext
-     *            destination context
+     *                   destination context
      */
     protected abstract void copyField(TlsContext srcContext, TlsContext dstContext);
 
@@ -115,11 +115,11 @@ public abstract class CopyContextFieldAction extends TlsAction {
     public void assertAliasesSetProperly() throws ConfigurationException {
         if ((srcConnectionAlias == null) || (srcConnectionAlias.isEmpty())) {
             throw new WorkflowExecutionException("Can't execute " + this.getClass().getSimpleName()
-                    + " with empty src alias (if using XML: add <from/>)");
+                + " with empty src alias (if using XML: add <from/>)");
         }
         if ((dstConnectionAlias == null) || (dstConnectionAlias.isEmpty())) {
-            throw new WorkflowExecutionException("Can't execute " + this.getClass().getSimpleName()
-                    + " with empty dst alias (if using XML: add <to/>)");
+            throw new WorkflowExecutionException(
+                "Can't execute " + this.getClass().getSimpleName() + " with empty dst alias (if using XML: add <to/>)");
         }
     }
 }

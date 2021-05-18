@@ -1,18 +1,18 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.tracetool.config;
 
 import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.TLSDelegateConfig;
-import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.CipherSuiteDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ConfigOutputDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.FilterDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
@@ -49,7 +49,7 @@ public class TraceToolCommandConfig extends TLSDelegateConfig {
     @ParametersDelegate
     private RunningModeDelegate runningModeDelegate;
     @ParametersDelegate
-    private CiphersuiteDelegate ciphersuiteDelegate;
+    private CipherSuiteDelegate ciphersuiteDelegate;
 
     public TraceToolCommandConfig(GeneralDelegate delegate) {
         super(delegate);
@@ -60,7 +60,7 @@ public class TraceToolCommandConfig extends TLSDelegateConfig {
         this.filterDelegate = new FilterDelegate();
         this.configOutputDelegate = new ConfigOutputDelegate();
         this.listDelegate = new ListDelegate();
-        this.ciphersuiteDelegate = new CiphersuiteDelegate();
+        this.ciphersuiteDelegate = new CipherSuiteDelegate();
         this.runningModeDelegate = new RunningModeDelegate();
         addDelegate(protocolVersionDelegate);
         addDelegate(ciphersuiteDelegate);

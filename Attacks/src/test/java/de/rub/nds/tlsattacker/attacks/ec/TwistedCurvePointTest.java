@@ -1,17 +1,16 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks.ec;
 
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
-import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
 import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurveOverFp;
 import de.rub.nds.tlsattacker.core.crypto.ec.FieldElementFp;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
@@ -69,18 +68,19 @@ public class TwistedCurvePointTest {
 
     private boolean isOrderCorrect(TwistedCurvePoint invP) {
         if (invP.getIntendedNamedGroup() == NamedGroup.ECDH_X25519
-                || invP.getIntendedNamedGroup() == NamedGroup.ECDH_X448) {
+            || invP.getIntendedNamedGroup() == NamedGroup.ECDH_X448) {
             RFC7748Curve rfcCurve = (RFC7748Curve) CurveFactory.getCurve(invP.getIntendedNamedGroup());
             Point montgPoint = rfcCurve.getPoint(invP.getPublicPointBaseX(), invP.getPublicPointBaseY());
             Point weierPoint = rfcCurve.toWeierstrass(montgPoint);
-            BigInteger transformedX = weierPoint.getX().getData().multiply(invP.getD()).mod(rfcCurve.getModulus());
+            BigInteger transformedX =
+                weierPoint.getFieldX().getData().multiply(invP.getPointD()).mod(rfcCurve.getModulus());
 
-            EllipticCurveOverFp intendedCurve = ((RFC7748Curve) CurveFactory.getCurve(invP.getIntendedNamedGroup()))
-                    .getWeierstrassEquivalent();
-            BigInteger modA = intendedCurve.getA().getData().multiply(invP.getD().pow(2))
-                    .mod(intendedCurve.getModulus());
-            BigInteger modB = intendedCurve.getB().getData().multiply(invP.getD().pow(3))
-                    .mod(intendedCurve.getModulus());
+            EllipticCurveOverFp intendedCurve =
+                ((RFC7748Curve) CurveFactory.getCurve(invP.getIntendedNamedGroup())).getWeierstrassEquivalent();
+            BigInteger modA =
+                intendedCurve.getFieldA().getData().multiply(invP.getPointD().pow(2)).mod(intendedCurve.getModulus());
+            BigInteger modB =
+                intendedCurve.getFieldB().getData().multiply(invP.getPointD().pow(3)).mod(intendedCurve.getModulus());
             EllipticCurveOverFp twistedCurve = new EllipticCurveOverFp(modA, modB, intendedCurve.getModulus());
             Point point = Point.createPoint(transformedX, invP.getPublicPointBaseY(), invP.getIntendedNamedGroup());
 
@@ -91,15 +91,15 @@ public class TwistedCurvePointTest {
                 }
             }
         } else {
-            EllipticCurveOverFp intendedCurve = (EllipticCurveOverFp) CurveFactory.getCurve(invP
-                    .getIntendedNamedGroup());
-            BigInteger modA = intendedCurve.getA().getData().multiply(invP.getD().pow(2))
-                    .mod(intendedCurve.getModulus());
-            BigInteger modB = intendedCurve.getB().getData().multiply(invP.getD().pow(3))
-                    .mod(intendedCurve.getModulus());
+            EllipticCurveOverFp intendedCurve =
+                (EllipticCurveOverFp) CurveFactory.getCurve(invP.getIntendedNamedGroup());
+            BigInteger modA =
+                intendedCurve.getFieldA().getData().multiply(invP.getPointD().pow(2)).mod(intendedCurve.getModulus());
+            BigInteger modB =
+                intendedCurve.getFieldB().getData().multiply(invP.getPointD().pow(3)).mod(intendedCurve.getModulus());
             EllipticCurveOverFp twistedCurve = new EllipticCurveOverFp(modA, modB, intendedCurve.getModulus());
 
-            BigInteger modX = invP.getPublicPointBaseX().multiply(invP.getD()).mod(twistedCurve.getModulus());
+            BigInteger modX = invP.getPublicPointBaseX().multiply(invP.getPointD()).mod(twistedCurve.getModulus());
             FieldElementFp bX = new FieldElementFp(modX, twistedCurve.getModulus());
             FieldElementFp bY = new FieldElementFp(invP.getPublicPointBaseY(), twistedCurve.getModulus());
             Point point = new Point(bX, bY);

@@ -1,13 +1,15 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks.impl;
+
+import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.attacks.bruteforce.GuessProvider;
@@ -24,7 +26,6 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
-import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -49,16 +50,15 @@ public class PskBruteForcerAttackServer extends Attacker<PskBruteForcerAttackSer
 
     @Override
     public void executeAttack() {
-        CONSOLE.info("Connecting to the Server to find a PSK ciphersuite he supports...");
-        CipherSuite suite = getSupportedPskCiphersuite();
+        CONSOLE.info("Connecting to the Server to find a PSK cipher suite he supports...");
+        CipherSuite suite = getSupportedPskCipherSuite();
         if (suite == null) {
             CONSOLE.info("Stopping attack");
         }
-        CONSOLE.info("The server supports "
-                + suite
-                + ". Trying to guess the PSK. This is an online Attack. Depending on the PSK this may take some time...");
+        CONSOLE.info("The server supports " + suite
+            + ". Trying to guess the PSK. This is an online Attack. Depending on the PSK this may take some time...");
         guessProvider = GuessProviderFactory.createGuessProvider(config.getGuessProviderType(),
-                config.getGuessProviderInputStream());
+            config.getGuessProviderInputStream());
         boolean result = false;
         int counter = 0;
         long startTime = System.currentTimeMillis();
@@ -77,14 +77,11 @@ public class PskBruteForcerAttackServer extends Attacker<PskBruteForcerAttackSer
             }
             result = executeProtocolFlowToServer(suite, guessedPsk);
             if (result) {
-                long stopStime = System.currentTimeMillis();
+                long stopTime = System.currentTimeMillis();
                 CONSOLE.info("Found the psk in "
-                        + String.format(
-                                "%d min, %d sec",
-                                TimeUnit.MILLISECONDS.toMinutes(stopStime - startTime),
-                                TimeUnit.MILLISECONDS.toSeconds(stopStime - startTime)
-                                        - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(stopStime
-                                                - startTime))));
+                    + String.format("%d min, %d sec", TimeUnit.MILLISECONDS.toMinutes(stopTime - startTime),
+                        TimeUnit.MILLISECONDS.toSeconds(stopTime - startTime)
+                            - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(stopTime - startTime))));
                 CONSOLE.info("Guessed " + counter + " times");
             }
         }
@@ -97,7 +94,7 @@ public class PskBruteForcerAttackServer extends Attacker<PskBruteForcerAttackSer
     @Override
     public Boolean isVulnerable() {
         CONSOLE.info("Connecting to the Server...");
-        boolean supportsPsk = getSupportedPskCiphersuite() != null;
+        boolean supportsPsk = getSupportedPskCipherSuite() != null;
         if (supportsPsk) {
             CONSOLE.info("Maybe vulnerable - server supports PSK");
             return null;
@@ -107,23 +104,24 @@ public class PskBruteForcerAttackServer extends Attacker<PskBruteForcerAttackSer
         }
     }
 
-    private CipherSuite getSupportedPskCiphersuite() {
+    private CipherSuite getSupportedPskCipherSuite() {
         Config tlsConfig = getTlsConfig();
 
         String clientIdentity = config.getPskIdentity();
         LOGGER.debug("Client Identity: " + clientIdentity);
         WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(WorkflowTraceType.HELLO,
-                RunningModeType.CLIENT);
+            RunningModeType.CLIENT);
         State state = new State(tlsConfig, trace);
-        WorkflowExecutor executor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getWorkflowExecutorType(),
-                state);
+        WorkflowExecutor executor =
+            WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getWorkflowExecutorType(), state);
         executor.executeWorkflow();
         if (WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.SERVER_HELLO, trace)) {
             return state.getTlsContext().getSelectedCipherSuite();
         } else {
-            CONSOLE.info("Did not receive a ServerHello. The Server does not seem to support any of the tested PSK cipher suites.");
+            CONSOLE.info(
+                "Did not receive a ServerHello. The Server does not seem to support any of the tested PSK cipher suites.");
             LOGGER.debug("We tested for the following cipher suites:");
-            for (CipherSuite suite : tlsConfig.getDefaultClientSupportedCiphersuites()) {
+            for (CipherSuite suite : tlsConfig.getDefaultClientSupportedCipherSuites()) {
                 LOGGER.debug(suite.name());
             }
             return null;
@@ -132,14 +130,14 @@ public class PskBruteForcerAttackServer extends Attacker<PskBruteForcerAttackSer
 
     private boolean executeProtocolFlowToServer(CipherSuite suite, byte[] pskGuess) {
         Config tlsConfig = getTlsConfig();
-        tlsConfig.setDefaultClientSupportedCiphersuites(suite);
+        tlsConfig.setDefaultClientSupportedCipherSuites(suite);
         tlsConfig.setDefaultSelectedCipherSuite(suite);
         tlsConfig.setDefaultPSKKey(pskGuess);
-        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(
-                WorkflowTraceType.HANDSHAKE, RunningModeType.CLIENT);
+        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig)
+            .createWorkflowTrace(WorkflowTraceType.HANDSHAKE, RunningModeType.CLIENT);
         State state = new State(tlsConfig, trace);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
-                tlsConfig.getWorkflowExecutorType(), state);
+        WorkflowExecutor workflowExecutor =
+            WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getWorkflowExecutorType(), state);
         workflowExecutor.executeWorkflow();
         if (state.getWorkflowTrace().executedAsPlanned()) {
             CONSOLE.info("PSK " + ArrayConverter.bytesToHexString(pskGuess));

@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.https.header.parser;
 
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
@@ -18,7 +18,7 @@ import de.rub.nds.tlsattacker.core.https.header.HostHeader;
 import de.rub.nds.tlsattacker.core.https.header.HttpsHeader;
 import de.rub.nds.tlsattacker.core.https.header.LocationHeader;
 import de.rub.nds.tlsattacker.core.https.header.TokenBindingHeader;
-import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
+import de.rub.nds.tlsattacker.core.protocol.Parser;
 
 public class HttpsHeaderParser extends Parser<HttpsHeader> {
 
@@ -35,8 +35,8 @@ public class HttpsHeaderParser extends Parser<HttpsHeader> {
             throw new ParserException("Could not parse " + parsedLine + " as HttpsHeader");
         }
         String headerName = split[0];
-        String headerValue = parsedLine.replaceFirst(split[0] + ":", "").replaceAll("\n", "").replaceAll("\r", "")
-                .trim();
+        String headerValue =
+            parsedLine.replaceFirst(split[0] + ":", "").replaceAll("\n", "").replaceAll("\r", "").trim();
         switch (headerName) {
             case "Host":
                 header = new HostHeader();

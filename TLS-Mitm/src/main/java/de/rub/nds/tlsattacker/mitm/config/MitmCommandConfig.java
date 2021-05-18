@@ -1,21 +1,20 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.mitm.config;
 
 import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.tlsattacker.core.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.core.config.delegate.CertificateDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.CipherSuiteDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ConfigOutputDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ExecutorTypeDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.NamedGroupsDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.FilterDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.HeartbeatDelegate;
@@ -23,6 +22,7 @@ import de.rub.nds.tlsattacker.core.config.delegate.ListDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.MaxFragmentLengthDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.MitmDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.MitmWorkflowTypeDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.NamedGroupsDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.SignatureAndHashAlgorithmDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.TimeoutDelegate;
@@ -39,7 +39,7 @@ public class MitmCommandConfig extends TLSDelegateConfig {
     public static final String COMMAND = "mitm";
 
     @ParametersDelegate
-    private CiphersuiteDelegate ciphersuiteDelegate;
+    private CipherSuiteDelegate ciphersuiteDelegate;
     @ParametersDelegate
     private ProtocolVersionDelegate protocolVersionDelegate;
     @ParametersDelegate
@@ -75,7 +75,7 @@ public class MitmCommandConfig extends TLSDelegateConfig {
 
     public MitmCommandConfig(GeneralDelegate delegate) {
         super(delegate);
-        this.ciphersuiteDelegate = new CiphersuiteDelegate();
+        this.ciphersuiteDelegate = new CipherSuiteDelegate();
         this.heartbeatDelegate = new HeartbeatDelegate();
         this.ellipticCurveDelegate = new NamedGroupsDelegate();
         this.protocolVersionDelegate = new ProtocolVersionDelegate();

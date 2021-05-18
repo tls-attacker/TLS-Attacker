@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.https;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
@@ -22,7 +22,7 @@ import de.rub.nds.tlsattacker.core.https.header.HostHeader;
 import de.rub.nds.tlsattacker.core.https.header.HttpsHeader;
 import de.rub.nds.tlsattacker.core.https.header.LocationHeader;
 import de.rub.nds.tlsattacker.core.https.header.TokenBindingHeader;
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.TlsMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.LinkedList;
 import java.util.List;
@@ -30,7 +30,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
 
-public class HttpsResponseMessage extends ProtocolMessage {
+public class HttpsResponseMessage extends TlsMessage {
 
     private ModifiableString responseProtocol;
 
@@ -39,12 +39,12 @@ public class HttpsResponseMessage extends ProtocolMessage {
     private ModifiableString responseContent;
     @XmlElementWrapper
     @XmlElements(value = { @XmlElement(type = GenericHttpsHeader.class, name = "HttpsHeader"),
-            @XmlElement(type = ContentLengthHeader.class, name = "ContentLengthHeader"),
-            @XmlElement(type = DateHeader.class, name = "DateHeader"),
-            @XmlElement(type = ExpiresHeader.class, name = "ExpiresHeader"),
-            @XmlElement(type = LocationHeader.class, name = "LocationHeader"),
-            @XmlElement(type = HostHeader.class, name = "HostHeader"),
-            @XmlElement(type = TokenBindingHeader.class, name = "TokenBindingHeader") })
+        @XmlElement(type = ContentLengthHeader.class, name = "ContentLengthHeader"),
+        @XmlElement(type = DateHeader.class, name = "DateHeader"),
+        @XmlElement(type = ExpiresHeader.class, name = "ExpiresHeader"),
+        @XmlElement(type = LocationHeader.class, name = "LocationHeader"),
+        @XmlElement(type = HostHeader.class, name = "HostHeader"),
+        @XmlElement(type = TokenBindingHeader.class, name = "TokenBindingHeader") })
     @HoldsModifiableVariable
     private List<HttpsHeader> header;
 

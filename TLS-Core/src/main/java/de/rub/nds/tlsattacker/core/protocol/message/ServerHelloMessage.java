@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -19,24 +19,54 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ServerHelloHandler;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.*;
+import de.rub.nds.tlsattacker.core.protocol.handler.TlsMessageHandler;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.AlpnExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.CachedInfoExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestV2ExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateTypeExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientAuthzExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateTypeExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateUrlExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ECPointFormatExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptThenMacExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNameIndicationExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedRandomExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.HeartbeatExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.MaxFragmentLengthExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.PreSharedKeyExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.RenegotiationInfoExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.SRPExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerAuthzExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerCertificateTypeExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicationExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.SignedCertificateTimestampExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.SrtpExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.SupportedVersionsExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.TokenBindingExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.TruncatedHmacExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.TrustedCaIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Date;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.*;
 
 @XmlRootElement
 public class ServerHelloMessage extends HelloMessage {
 
     private static final byte[] HELLO_RETRY_REQUEST_RANDOM = new byte[] { (byte) 0xCF, (byte) 0x21, (byte) 0xAD,
-            (byte) 0x74, (byte) 0xE5, (byte) 0x9A, (byte) 0x61, (byte) 0x11, (byte) 0xBE, (byte) 0x1D, (byte) 0x8C,
-            (byte) 0x02, (byte) 0x1E, (byte) 0x65, (byte) 0xB8, (byte) 0x91, (byte) 0xC2, (byte) 0xA2, (byte) 0x11,
-            (byte) 0x16, (byte) 0x7A, (byte) 0xBB, (byte) 0x8C, (byte) 0x5E, (byte) 0x07, (byte) 0x9E, (byte) 0x09,
-            (byte) 0xE2, (byte) 0xC8, (byte) 0xA8, (byte) 0x33, (byte) 0x9C };
+        (byte) 0x74, (byte) 0xE5, (byte) 0x9A, (byte) 0x61, (byte) 0x11, (byte) 0xBE, (byte) 0x1D, (byte) 0x8C,
+        (byte) 0x02, (byte) 0x1E, (byte) 0x65, (byte) 0xB8, (byte) 0x91, (byte) 0xC2, (byte) 0xA2, (byte) 0x11,
+        (byte) 0x16, (byte) 0x7A, (byte) 0xBB, (byte) 0x8C, (byte) 0x5E, (byte) 0x07, (byte) 0x9E, (byte) 0x09,
+        (byte) 0xE2, (byte) 0xC8, (byte) 0xA8, (byte) 0x33, (byte) 0x9C };
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByteArray selectedCipherSuite;
@@ -44,10 +74,12 @@ public class ServerHelloMessage extends HelloMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByte selectedCompressionMethod;
 
+    private Boolean autoSetHelloRetryModeInKeyShare = true;
+
     public ServerHelloMessage(Config tlsConfig) {
         super(tlsConfig, HandshakeMessageType.SERVER_HELLO);
         if (!tlsConfig.getHighestProtocolVersion().isSSL()
-                || (tlsConfig.getHighestProtocolVersion().isSSL() && tlsConfig.isAddExtensionsInSSL())) {
+            || (tlsConfig.getHighestProtocolVersion().isSSL() && tlsConfig.isAddExtensionsInSSL())) {
             if (tlsConfig.isAddHeartbeatExtension()) {
                 addExtension(new HeartbeatExtensionMessage());
             }
@@ -60,8 +92,8 @@ public class ServerHelloMessage extends HelloMessage {
             if (tlsConfig.isAddServerNameIndicationExtension()) {
                 ServerNameIndicationExtensionMessage extension = new ServerNameIndicationExtensionMessage();
                 ServerNamePair pair = new ServerNamePair();
-                pair.setServerNameConfig(tlsConfig.getDefaultServerConnection().getHostname()
-                        .getBytes(Charset.forName("US-ASCII")));
+                pair.setServerNameConfig(
+                    tlsConfig.getDefaultServerConnection().getHostname().getBytes(Charset.forName("US-ASCII")));
                 extension.getServerNameList().add(pair);
                 addExtension(extension);
             }
@@ -176,8 +208,8 @@ public class ServerHelloMessage extends HelloMessage {
     }
 
     public void setSelectedCompressionMethod(byte value) {
-        this.selectedCompressionMethod = ModifiableVariableFactory
-                .safelySetValue(this.selectedCompressionMethod, value);
+        this.selectedCompressionMethod =
+            ModifiableVariableFactory.safelySetValue(this.selectedCompressionMethod, value);
     }
 
     public Boolean isTls13HelloRetryRequest() {
@@ -198,9 +230,9 @@ public class ServerHelloMessage extends HelloMessage {
             sb.append("null");
         }
         if (getProtocolVersion() != null && getProtocolVersion().getValue() != null
-                && !ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()).isTLS13()) {
-            sb.append("\n  Server Unix Time: ").append(
-                    new Date(ArrayConverter.bytesToLong(getUnixTime().getValue()) * 1000));
+            && !ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()).isTLS13()) {
+            sb.append("\n  Server Unix Time: ")
+                .append(new Date(ArrayConverter.bytesToLong(getUnixTime().getValue()) * 1000));
         }
         sb.append("\n  Server Unix Time: ");
         if (getProtocolVersion() != null) {
@@ -256,7 +288,26 @@ public class ServerHelloMessage extends HelloMessage {
     }
 
     @Override
-    public ProtocolMessageHandler getHandler(TlsContext context) {
+    public ServerHelloHandler getHandler(TlsContext context) {
         return new ServerHelloHandler(context);
+    }
+
+    public static byte[] getHelloRetryRequestRandom() {
+        return HELLO_RETRY_REQUEST_RANDOM;
+    }
+
+    public Boolean isAutoSetHelloRetryModeInKeyShare() {
+        return autoSetHelloRetryModeInKeyShare;
+    }
+
+    public void setAutoSetHelloRetryModeInKeyShare(Boolean autoSetHelloRetryModeInKeyShare) {
+        this.autoSetHelloRetryModeInKeyShare = autoSetHelloRetryModeInKeyShare;
+    }
+
+    public boolean setRetryRequestModeInKeyShare() {
+        if (Boolean.TRUE.equals(isTls13HelloRetryRequest()) && autoSetHelloRetryModeInKeyShare) {
+            return true;
+        }
+        return false;
     }
 }

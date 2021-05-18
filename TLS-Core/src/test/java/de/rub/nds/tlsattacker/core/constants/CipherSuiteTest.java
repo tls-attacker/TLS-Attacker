@@ -1,16 +1,16 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.constants;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.exceptions.UnknownCiphersuiteException;
+import de.rub.nds.tlsattacker.core.exceptions.UnknownCipherSuiteException;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -31,28 +31,26 @@ public class CipherSuiteTest {
     }
 
     /**
-     * Test of getCiphersuites method, of class CipherSuite. size of Array % 2
-     * == 0
+     * Test of getCipherSuites method, of class CipherSuite. size of Array % 2 == 0
      */
     @Test
     public void testPrepare1() {
         List<CipherSuite> cipherSuites = new LinkedList<>();
         byte[] values = ArrayConverter.hexStringToByteArray("00010002");
-        cipherSuites = CipherSuite.getCiphersuites(values);
+        cipherSuites = CipherSuite.getCipherSuites(values);
         assertEquals(2, cipherSuites.size());
         assertArrayEquals(ArrayConverter.hexStringToByteArray("0001"), cipherSuites.get(0).getByteValue());
         assertArrayEquals(ArrayConverter.hexStringToByteArray("0002"), cipherSuites.get(1).getByteValue());
     }
 
     /**
-     * Test of getCiphersuites method, of class CipherSuite. size of Array % 2
-     * != 0
+     * Test of getCipherSuites method, of class CipherSuite. size of Array % 2 != 0
      */
-    @Test(expected = UnknownCiphersuiteException.class)
+    @Test(expected = UnknownCipherSuiteException.class)
     public void testPrepare2() {
         List<CipherSuite> cipherSuites = new LinkedList<>();
         byte[] values = ArrayConverter.hexStringToByteArray("0001000200");
-        cipherSuites = CipherSuite.getCiphersuites(values);
+        cipherSuites = CipherSuite.getCipherSuites(values);
         assertEquals(2, cipherSuites.size());
         assertArrayEquals(ArrayConverter.hexStringToByteArray("0001"), cipherSuites.get(0).getByteValue());
         assertArrayEquals(ArrayConverter.hexStringToByteArray("0002"), cipherSuites.get(1).getByteValue());

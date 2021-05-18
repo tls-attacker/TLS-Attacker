@@ -1,20 +1,20 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.https;
 
 import de.rub.nds.tlsattacker.core.https.header.ContentLengthHeader;
 import de.rub.nds.tlsattacker.core.https.header.HttpsHeader;
-import de.rub.nds.tlsattacker.core.protocol.preparator.ProtocolMessagePreparator;
+import de.rub.nds.tlsattacker.core.protocol.preparator.TlsMessagePreparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-public class HttpsResponsePreparator extends ProtocolMessagePreparator<HttpsResponseMessage> {
+public class HttpsResponsePreparator extends TlsMessagePreparator<HttpsResponseMessage> {
 
     private final HttpsResponseMessage message;
 
@@ -32,7 +32,7 @@ public class HttpsResponsePreparator extends ProtocolMessagePreparator<HttpsResp
         for (HttpsHeader header : message.getHeader()) {
             if (header instanceof ContentLengthHeader) {
                 ((ContentLengthHeader) header)
-                        .setConfigLength(message.getResponseContent().getValue().getBytes().length);
+                    .setConfigLength(message.getResponseContent().getValue().getBytes().length);
             }
             header.getPreparator(chooser).prepare();
         }

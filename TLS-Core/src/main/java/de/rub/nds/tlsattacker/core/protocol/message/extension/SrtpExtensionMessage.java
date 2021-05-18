@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -42,8 +42,8 @@ public class SrtpExtensionMessage extends ExtensionMessage {
     }
 
     public void setSrtpProtectionProfiles(byte[] srtpProtectionProfiles) {
-        this.srtpProtectionProfiles = ModifiableVariableFactory.safelySetValue(this.srtpProtectionProfiles,
-                srtpProtectionProfiles);
+        this.srtpProtectionProfiles =
+            ModifiableVariableFactory.safelySetValue(this.srtpProtectionProfiles, srtpProtectionProfiles);
     }
 
     public ModifiableInteger getSrtpProtectionProfilesLength() {
@@ -55,8 +55,8 @@ public class SrtpExtensionMessage extends ExtensionMessage {
     }
 
     public void setSrtpProtectionProfilesLength(int srtpProtectionProfilesLength) {
-        this.srtpProtectionProfilesLength = ModifiableVariableFactory.safelySetValue(this.srtpProtectionProfilesLength,
-                srtpProtectionProfilesLength);
+        this.srtpProtectionProfilesLength =
+            ModifiableVariableFactory.safelySetValue(this.srtpProtectionProfilesLength, srtpProtectionProfilesLength);
     }
 
     public ModifiableByteArray getSrtpMki() {

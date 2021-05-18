@@ -1,19 +1,19 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
-import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
+import de.rub.nds.tlsattacker.core.protocol.Parser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -41,8 +41,7 @@ public class KeyShareEntryParser extends Parser<KeyShareEntry> {
     }
 
     /**
-     * Reads the next bytes as the keyShareType of the Extension and writes them
-     * in the message
+     * Reads the next bytes as the keyShareType of the Extension and writes them in the message
      *
      * @param msg
      *            Message to write in
@@ -53,8 +52,7 @@ public class KeyShareEntryParser extends Parser<KeyShareEntry> {
     }
 
     /**
-     * Reads the next bytes as the keyShareLength of the Extension and writes
-     * them in the message
+     * Reads the next bytes as the keyShareLength of the Extension and writes them in the message
      *
      * @param msg
      *            Message to write in
@@ -65,8 +63,7 @@ public class KeyShareEntryParser extends Parser<KeyShareEntry> {
     }
 
     /**
-     * Reads the next bytes as the keyShare of the Extension and writes them in
-     * the message
+     * Reads the next bytes as the keyShare of the Extension and writes them in the message
      *
      * @param msg
      *            Message to write in

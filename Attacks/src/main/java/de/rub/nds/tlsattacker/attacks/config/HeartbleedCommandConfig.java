@@ -1,18 +1,18 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks.config;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.CipherSuiteDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
@@ -38,7 +38,7 @@ public class HeartbleedCommandConfig extends AttackConfig {
     @ParametersDelegate
     private ClientDelegate clientDelegate;
     @ParametersDelegate
-    private CiphersuiteDelegate ciphersuiteDelegate;
+    private CipherSuiteDelegate ciphersuiteDelegate;
     @ParametersDelegate
     private ProtocolVersionDelegate protocolVersionDelegate;
     @ParametersDelegate
@@ -51,7 +51,7 @@ public class HeartbleedCommandConfig extends AttackConfig {
     public HeartbleedCommandConfig(GeneralDelegate delegate) {
         super(delegate);
         clientDelegate = new ClientDelegate();
-        ciphersuiteDelegate = new CiphersuiteDelegate();
+        ciphersuiteDelegate = new CipherSuiteDelegate();
         protocolVersionDelegate = new ProtocolVersionDelegate();
         starttlsDelegate = new StarttlsDelegate();
         addDelegate(clientDelegate);
@@ -103,7 +103,7 @@ public class HeartbleedCommandConfig extends AttackConfig {
         config.setStopReceivingAfterFatal(true);
         config.setEarlyStop(true);
         boolean containsEc = false;
-        for (CipherSuite suite : config.getDefaultClientSupportedCiphersuites()) {
+        for (CipherSuite suite : config.getDefaultClientSupportedCipherSuites()) {
             KeyExchangeAlgorithm keyExchangeAlgorithm = AlgorithmResolver.getKeyExchangeAlgorithm(suite);
             if (keyExchangeAlgorithm != null && keyExchangeAlgorithm.name().toUpperCase().contains("EC")) {
                 containsEc = true;

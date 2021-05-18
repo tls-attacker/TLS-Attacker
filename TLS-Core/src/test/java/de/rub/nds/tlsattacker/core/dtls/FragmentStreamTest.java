@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.dtls;
 
 import org.junit.After;
@@ -57,7 +57,7 @@ public class FragmentStreamTest {
         assertArrayEquals(new byte[] { 1, 2, 3, 4, 5, 6 }, completeStream);
         completeStream = stream.getCompleteFilledStream((byte) 0xFF);
         assertArrayEquals(new byte[] { 1, 2, 3, 4, 5, 6, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF },
-                completeStream);
+            completeStream);
 
         stream.insertByteArray(new byte[] { 7, 8, 9, 10 }, 6);
         assertTrue(stream.isComplete(10));

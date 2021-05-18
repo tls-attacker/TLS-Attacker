@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -16,13 +16,12 @@ import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-
-public class SSL2ClientHelloPreparator extends ProtocolMessagePreparator<SSL2ClientHelloMessage> {
+public class SSL2ClientHelloPreparator extends HandshakeMessagePreparator<SSL2ClientHelloMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -35,11 +34,16 @@ public class SSL2ClientHelloPreparator extends ProtocolMessagePreparator<SSL2Cli
 
     @Override
     protected void prepareProtocolMessageContents() {
+        prepareHandshakeMessageContents();
+    }
+
+    @Override
+    protected void prepareHandshakeMessageContents() {
         LOGGER.debug("Prepare SSL2ClientHello");
         preparePaddingLength(message);
         prepareType(message);
         prepareProtocolVersion(message);
-        // By Default we just set a fixed value with ssl2 ciphersuites
+        // By Default we just set a fixed value with ssl2 cipher suites
         prepareCipherSuites(message);
         byte[] challenge = new byte[16];
         chooser.getContext().getRandom().nextBytes(challenge);
@@ -49,7 +53,7 @@ public class SSL2ClientHelloPreparator extends ProtocolMessagePreparator<SSL2Cli
         prepareChallengeLength(message);
         prepareCipherSuiteLength(message);
         int length = SSL2ByteLength.CHALLENGE_LENGTH + SSL2ByteLength.CIPHERSUITE_LENGTH + SSL2ByteLength.MESSAGE_TYPE
-                + SSL2ByteLength.SESSIONID_LENGTH;
+            + SSL2ByteLength.SESSIONID_LENGTH;
         length += message.getChallenge().getValue().length;
         length += message.getCipherSuites().getValue().length;
         length += message.getSessionId().getValue().length;
@@ -81,7 +85,7 @@ public class SSL2ClientHelloPreparator extends ProtocolMessagePreparator<SSL2Cli
                 }
             } catch (IOException ex) {
                 throw new PreparationException(
-                        "Could not prepare SSL2ClientHello. Failed to write Ciphersuites into message", ex);
+                    "Could not prepare SSL2ClientHello. Failed to write Cipher suites into message", ex);
             }
         }
         message.setCipherSuites(cipherStream.toByteArray());

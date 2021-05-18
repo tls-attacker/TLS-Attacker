@@ -1,28 +1,26 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.workflow.task.StateExecutionServerTask;
 import de.rub.nds.tlsattacker.core.workflow.task.StateExecutionTask;
 import de.rub.nds.tlsattacker.core.workflow.task.TlsTask;
+
+import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
-import java.util.concurrent.LinkedBlockingDeque;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -34,14 +32,15 @@ public class ParallelExecutor {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final ExecutorService executorService;
+    private final ThreadPoolExecutor executorService;
+    private Callable<Integer> timeoutAction;
 
     private final int size;
+    private boolean shouldShutdown = false;
 
     private final int reexecutions;
 
     public ParallelExecutor(int size, int reexecutions) {
-
         executorService = new ThreadPoolExecutor(size, size, 10, TimeUnit.DAYS, new LinkedBlockingDeque<Runnable>());
         this.reexecutions = reexecutions;
         this.size = size;
@@ -51,8 +50,8 @@ public class ParallelExecutor {
     }
 
     public ParallelExecutor(int size, int reexecutions, ThreadFactory factory) {
-        executorService = new ThreadPoolExecutor(size, size, 5, TimeUnit.MINUTES, new LinkedBlockingDeque<Runnable>(),
-                factory);
+        executorService =
+            new ThreadPoolExecutor(size, size, 5, TimeUnit.MINUTES, new LinkedBlockingDeque<Runnable>(), factory);
         this.reexecutions = reexecutions;
         this.size = size;
         if (reexecutions < 0) {
@@ -60,7 +59,7 @@ public class ParallelExecutor {
         }
     }
 
-    public Future addTask(TlsTask task) {
+    private Future addTask(TlsTask task) {
         if (executorService.isShutdown()) {
             throw new RuntimeException("Cannot add Tasks to already shutdown executor");
         }
@@ -68,14 +67,18 @@ public class ParallelExecutor {
         return submit;
     }
 
-    public Future addStateTask(State state) {
+    private Future addClientStateTask(State state) {
         return addTask(new StateExecutionTask(state, reexecutions));
     }
 
-    public void bulkExecuteStateTasks(List<State> stateList) {
+    private Future addServerStateTask(State state, ServerSocket socket) {
+        return addTask(new StateExecutionServerTask(state, socket, reexecutions));
+    }
+
+    public void bulkExecuteClientStateTasks(List<State> stateList) {
         List<Future> futureList = new LinkedList<>();
         for (State state : stateList) {
-            futureList.add(addStateTask(state));
+            futureList.add(addClientStateTask(state));
         }
         for (Future future : futureList) {
             try {
@@ -86,8 +89,8 @@ public class ParallelExecutor {
         }
     }
 
-    public void bulkExecuteStateTasks(State... states) {
-        this.bulkExecuteStateTasks(new ArrayList<>(Arrays.asList(states)));
+    public void bulkExecuteClientStateTasks(State... states) {
+        this.bulkExecuteClientStateTasks(new ArrayList<>(Arrays.asList(states)));
     }
 
     public void bulkExecuteTasks(List<TlsTask> taskList) {
@@ -113,10 +116,63 @@ public class ParallelExecutor {
     }
 
     public void shutdown() {
+        shouldShutdown = true;
         executorService.shutdown();
+    }
+
+    /**
+     * Creates a new thread monitoring the executorService. If the time since the last {@link TlsTask} was finished
+     * exceeds the timeout, the function assiged to {@link ParallelExecutor#timeoutAction } is executed. The
+     * {@link ParallelExecutor#timeoutAction } function can, for example, try to restart the client/server, so that the
+     * remaining {@link TlsTask}s can be finished.
+     * 
+     * @param timeout
+     *                The timeout in milliseconds
+     *
+     */
+    public void armTimeoutAction(int timeout) {
+        if (timeoutAction == null) {
+            LOGGER.warn("No TimeoutAction set, this won't do anything");
+            return;
+        }
+
+        new Thread(() -> {
+            monitorExecution(timeout);
+        }).start();
+    }
+
+    private void monitorExecution(int timeout) {
+        long timeoutTime = System.currentTimeMillis() + timeout;
+        long lastCompletedCount = 0;
+        while (!shouldShutdown) {
+            long completedCount = executorService.getCompletedTaskCount();
+            if (executorService.getActiveCount() == 0 || completedCount != lastCompletedCount) {
+                timeoutTime = System.currentTimeMillis() + timeout;
+                lastCompletedCount = completedCount;
+            } else if (System.currentTimeMillis() > timeoutTime) {
+                LOGGER.debug("Timeout");
+                try {
+                    int exitCode = timeoutAction.call();
+                    if (exitCode != 0) {
+                        throw new RuntimeException("TimeoutAction did terminate with code " + exitCode);
+                    }
+                    timeoutTime = System.currentTimeMillis() + timeout;
+                } catch (Exception e) {
+                    LOGGER.warn("TimeoutAction did not succeed", e);
+                }
+            }
+        }
     }
 
     public int getReexecutions() {
         return reexecutions;
+    }
+
+    public Callable<Integer> getTimeoutAction() {
+        return timeoutAction;
+    }
+
+    public void setTimeoutAction(Callable<Integer> timeoutAction) {
+        this.timeoutAction = timeoutAction;
     }
 }

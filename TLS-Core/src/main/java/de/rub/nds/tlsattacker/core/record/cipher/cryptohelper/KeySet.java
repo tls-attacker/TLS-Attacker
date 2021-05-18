@@ -1,19 +1,18 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-package de.rub.nds.tlsattacker.core.record.cipher.cryptohelper;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+package de.rub.nds.tlsattacker.core.record.cipher.cryptohelper;
 
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class KeySet {
 
@@ -142,7 +141,7 @@ public class KeySet {
 
     /**
      * @param keySetType
-     *            the keySetType to set
+     *                   the keySetType to set
      */
     public void setKeySetType(Tls13KeySetType keySetType) {
         this.keySetType = keySetType;

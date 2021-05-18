@@ -1,15 +1,19 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeCipherSuiteAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeClientRandomAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
@@ -230,5 +234,46 @@ public class WorkflowTraceTest {
     public void testSetName() {
         trace.setName("testName");
         assertEquals("testName", trace.getName());
+    }
+
+    @Test
+    public void testGetFirstReceivedMessage() {
+        SendAction sClientHello = new SendAction();
+        sClientHello.setMessages(new ClientHelloMessage());
+
+        SendAction sHeartbeat = new SendAction();
+        sHeartbeat.setMessages(new HeartbeatMessage());
+
+        AlertMessage am = new AlertMessage();
+        ServerHelloMessage shm = new ServerHelloMessage();
+
+        ReceiveAction rca = new ReceiveAction();
+        ReceiveAction sha = new ReceiveAction();
+
+        rca.setMessages(am);
+        sha.setMessages(shm);
+
+        trace.addTlsActions(sClientHello, rca, sHeartbeat, sha);
+        assertEquals(am, trace.getFirstReceivedMessage(AlertMessage.class));
+        assertEquals(shm, trace.getFirstReceivedMessage(ServerHelloMessage.class));
+    }
+
+    @Test
+    public void testGetFirstSendMessage() {
+        ReceiveAction rcvAlertMessage = new ReceiveAction();
+        rcvAlertMessage.setMessages(new AlertMessage());
+
+        ReceiveAction rcvServerHello = new ReceiveAction();
+        rcvServerHello.setMessages(new ServerHelloMessage());
+
+        ClientHelloMessage ch = new ClientHelloMessage(config);
+        HeartbeatMessage hb = new HeartbeatMessage();
+
+        SendAction sch = new SendAction(ch);
+        SendAction shb = new SendAction(hb);
+
+        trace.addTlsActions(sch, rcvAlertMessage, shb, rcvServerHello);
+        assertEquals(ch, trace.getFirstSendMessage(ClientHelloMessage.class));
+        assertEquals(hb, trace.getFirstSendMessage(HeartbeatMessage.class));
     }
 }

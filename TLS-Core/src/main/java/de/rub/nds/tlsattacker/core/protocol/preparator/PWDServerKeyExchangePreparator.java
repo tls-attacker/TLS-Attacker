@@ -1,16 +1,18 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.*;
+import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
+import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
 import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
 import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurveOverFp;
@@ -65,9 +67,8 @@ public class PWDServerKeyExchangePreparator extends ServerKeyExchangePreparator<
         Point passwordElement = PWDComputations.computePasswordElement(chooser, curve);
         msg.getComputations().setPasswordElement(passwordElement);
 
-        LOGGER.debug("PasswordElement.x: "
-                + ArrayConverter.bytesToHexString(ArrayConverter
-                        .bigIntegerToByteArray(passwordElement.getX().getData())));
+        LOGGER.debug("PasswordElement.x: " + ArrayConverter
+            .bytesToHexString(ArrayConverter.bigIntegerToByteArray(passwordElement.getFieldX().getData())));
     }
 
     protected NamedGroup selectNamedGroup(PWDServerKeyExchangeMessage msg) {
@@ -153,12 +154,12 @@ public class PWDServerKeyExchangePreparator extends ServerKeyExchangePreparator<
 
     protected void prepareScalarElement(PWDServerKeyExchangeMessage msg) {
         EllipticCurve curve = CurveFactory.getCurve(selectNamedGroup(msg));
-        PWDComputations.PWDKeyMaterial keyMaterial = PWDComputations.generateKeyMaterial(curve, msg.getComputations()
-                .getPasswordElement(), chooser);
+        PWDComputations.PWDKeyMaterial keyMaterial =
+            PWDComputations.generateKeyMaterial(curve, msg.getComputations().getPasswordElement(), chooser);
 
         msg.getComputations().setPrivateKeyScalar(keyMaterial.privateKeyScalar);
         LOGGER.debug("Private: "
-                + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(keyMaterial.privateKeyScalar)));
+            + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(keyMaterial.privateKeyScalar)));
 
         prepareScalar(msg, keyMaterial.scalar);
         prepareScalarLength(msg);
@@ -179,7 +180,7 @@ public class PWDServerKeyExchangePreparator extends ServerKeyExchangePreparator<
 
     protected void prepareElement(PWDServerKeyExchangeMessage msg, Point element) {
         byte[] serializedElement = PointFormatter.formatToByteArray(chooser.getConfig().getDefaultSelectedNamedGroup(),
-                element, chooser.getConfig().getDefaultSelectedPointFormat());
+            element, chooser.getConfig().getDefaultSelectedPointFormat());
         msg.setElement(serializedElement);
         LOGGER.debug("Element: " + ArrayConverter.bytesToHexString(serializedElement));
     }

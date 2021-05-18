@@ -1,24 +1,26 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks.config;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.tlsattacker.attacks.config.delegate.ProxyDelegate;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.config.delegate.*;
-
+import de.rub.nds.tlsattacker.core.config.delegate.CipherSuiteDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.StarttlsDelegate;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import java.util.LinkedList;
 import java.util.List;
-
-import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 
 /**
  *
@@ -30,7 +32,8 @@ public class Lucky13CommandConfig extends AttackConfig {
     @Parameter(names = "-measurements", description = "Number of timing measurement iterations")
     private Integer measurements = 100;
 
-    @Parameter(names = "-mona_file", description = "File output for Mona timing lib. If set, the output is generated and written.")
+    @Parameter(names = "-mona_file",
+        description = "File output for Mona timing lib. If set, the output is generated and written.")
     private String monaFile;
 
     @Parameter(names = "-mona_jar", description = "Location of the ReportingTool.jar file.")
@@ -39,13 +42,14 @@ public class Lucky13CommandConfig extends AttackConfig {
     @Parameter(names = "-paddings", description = "Paddings to check for differences, column separated.")
     private String paddings = "0,255";
 
-    @Parameter(names = "-blocks", description = "Number of blocks to encrypt (default is set to the value from the Lucky 13 paper, Section 3)")
+    @Parameter(names = "-blocks",
+        description = "Number of blocks to encrypt (default is set to the value from the Lucky 13 paper, Section 3)")
     private Integer blocks = 18;
 
     @ParametersDelegate
     private ClientDelegate clientDelegate;
     @ParametersDelegate
-    private CiphersuiteDelegate ciphersuiteDelegate;
+    private CipherSuiteDelegate ciphersuiteDelegate;
     @ParametersDelegate
     private ProtocolVersionDelegate protocolVersionDelegate;
     @ParametersDelegate
@@ -60,7 +64,7 @@ public class Lucky13CommandConfig extends AttackConfig {
     public Lucky13CommandConfig(GeneralDelegate delegate) {
         super(delegate);
         clientDelegate = new ClientDelegate();
-        ciphersuiteDelegate = new CiphersuiteDelegate();
+        ciphersuiteDelegate = new CipherSuiteDelegate();
         protocolVersionDelegate = new ProtocolVersionDelegate();
         starttlsDelegate = new StarttlsDelegate();
         proxyDelegate = new ProxyDelegate();
@@ -129,16 +133,14 @@ public class Lucky13CommandConfig extends AttackConfig {
         Config config = super.createConfig();
         if (ciphersuiteDelegate.getCipherSuites() == null) {
             /*
-             * No explicit cipher suites are set. Use the default cipher suites
-             * for this attack
+             * No explicit cipher suites are set. Use the default cipher suites for this attack
              */
             List<CipherSuite> suiteList = new LinkedList<>();
             suiteList.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
-            config.setDefaultServerSupportedCiphersuites(suiteList);
-            config.setDefaultClientSupportedCiphersuites(suiteList);
+            config.setDefaultServerSupportedCipherSuites(suiteList);
+            config.setDefaultClientSupportedCipherSuites(suiteList);
             config.setDefaultSelectedCipherSuite(suiteList.get(0));
         }
         return config;
     }
-
 }

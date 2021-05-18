@@ -1,19 +1,19 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.client.config;
 
 import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.core.config.delegate.CertificateDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.CipherSuiteDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.CompressionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ConfigOutputDelegate;
@@ -38,7 +38,7 @@ public class ClientCommandConfig extends TLSDelegateConfig {
     public static final String COMMAND = "client";
 
     @ParametersDelegate
-    private CiphersuiteDelegate ciphersuiteDelegate;
+    private CipherSuiteDelegate ciphersuiteDelegate;
     @ParametersDelegate
     private CompressionDelegate compressionDelegate;
     @ParametersDelegate
@@ -76,7 +76,7 @@ public class ClientCommandConfig extends TLSDelegateConfig {
 
     public ClientCommandConfig(GeneralDelegate delegate) {
         super(delegate);
-        this.ciphersuiteDelegate = new CiphersuiteDelegate();
+        this.ciphersuiteDelegate = new CipherSuiteDelegate();
         this.maxFragmentLengthDelegate = new MaxFragmentLengthDelegate();
         this.ellipticCurveDelegate = new NamedGroupsDelegate();
         this.protocolVersionDelegate = new ProtocolVersionDelegate();

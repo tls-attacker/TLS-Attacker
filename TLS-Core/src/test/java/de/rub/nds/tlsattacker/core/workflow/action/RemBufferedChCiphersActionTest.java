@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -55,7 +55,7 @@ public class RemBufferedChCiphersActionTest {
 
     @Before
     public void setUp() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
-            InvalidAlgorithmParameterException {
+        InvalidAlgorithmParameterException {
 
         expected = new ArrayList();
         expected.add(CipherSuite.TLS_AES_128_CCM_SHA256);
@@ -66,7 +66,7 @@ public class RemBufferedChCiphersActionTest {
         expectedLength = 8;
 
         Config config = Config.createConfig();
-        config.setDefaultClientSupportedCiphersuites(expected);
+        config.setDefaultClientSupportedCipherSuites(expected);
 
         action = new RemBufferedChCiphersAction();
         trace = new WorkflowTrace();
@@ -156,7 +156,7 @@ public class RemBufferedChCiphersActionTest {
 
     @Test
     @Category(SlowTests.class)
-    public void marshalingAndUnmarshaclingEmptyObjectYieldsEqualObject() {
+    public void marshalingAndUnmarshalingEmptyObjectYieldsEqualObject() {
         ActionTestUtils.marshalingAndUnmarshalingEmptyObjectYieldsEqualObject(RemBufferedChCiphersAction.class);
     }
 

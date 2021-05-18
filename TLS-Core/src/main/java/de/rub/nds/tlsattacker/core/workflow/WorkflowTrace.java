@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
@@ -14,6 +14,8 @@ import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.TlsMessage;
 import de.rub.nds.tlsattacker.core.workflow.action.*;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import java.io.ByteArrayInputStream;
@@ -26,6 +28,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -40,7 +43,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * A wrapper class over a list of protocol expectedMessages.
  */
-@XmlRootElement
+@XmlRootElement(name = "workflowTrace")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class WorkflowTrace implements Serializable {
 
@@ -49,15 +52,13 @@ public class WorkflowTrace implements Serializable {
     /**
      * Copy a workflow trace.
      *
-     * TODO: This should be replaced by a better copy method. Using
-     * serialization is slow and needs some additional "tweaks", i.e. we have to
-     * manually restore important fields marked as XmlTransient. This problem
-     * arises because the classes are configured for nice JAXB output, and not
-     * for copying/storing full objects.
+     * TODO: This should be replaced by a better copy method. Using serialization is slow and needs some additional
+     * "tweaks", i.e. we have to manually restore important fields marked as XmlTransient. This problem arises because
+     * the classes are configured for nice JAXB output, and not for copying/storing full objects.
      *
-     * @param orig
-     *            the original WorkflowTrace object to copy
-     * @return a copy of the original WorkflowTrace
+     * @param  orig
+     *              the original WorkflowTrace object to copy
+     * @return      a copy of the original WorkflowTrace
      */
     public static WorkflowTrace copy(WorkflowTrace orig) {
         WorkflowTrace copy = null;
@@ -81,70 +82,72 @@ public class WorkflowTrace implements Serializable {
     }
 
     @XmlElements(value = { @XmlElement(type = AliasedConnection.class, name = "AliasedConnection"),
-            @XmlElement(type = InboundConnection.class, name = "InboundConnection"),
-            @XmlElement(type = OutboundConnection.class, name = "OutboundConnection") })
+        @XmlElement(type = InboundConnection.class, name = "InboundConnection"),
+        @XmlElement(type = OutboundConnection.class, name = "OutboundConnection") })
     private List<AliasedConnection> connections = new ArrayList<>();
 
     @HoldsModifiableVariable
     @XmlElements(value = { @XmlElement(type = ActivateEncryptionAction.class, name = "ActivateEncryption"),
-            @XmlElement(type = ApplyBufferedMessagesAction.class, name = "ApplyBufferedMessages"),
-            @XmlElement(type = BufferedGenericReceiveAction.class, name = "BufferedGenericReceive"),
-            @XmlElement(type = BufferedSendAction.class, name = "BufferedSend"),
-            @XmlElement(type = ChangeCipherSuiteAction.class, name = "ChangeCipherSuite"),
-            @XmlElement(type = ChangeClientRandomAction.class, name = "ChangeClientRandom"),
-            @XmlElement(type = ChangeCompressionAction.class, name = "ChangeCompression"),
-            @XmlElement(type = ChangeContextValueAction.class, name = "ChangeContextValue"),
-            @XmlElement(type = ChangeMasterSecretAction.class, name = "ChangeMasterSecret"),
-            @XmlElement(type = ChangePreMasterSecretAction.class, name = "ChangePreMasterSecret"),
-            @XmlElement(type = ChangeDefaultPreMasterSecretAction.class, name = "ChangeDefaultPreMasterSecret"),
-            @XmlElement(type = ChangeProtocolVersionAction.class, name = "ChangeProtocolVersion"),
-            @XmlElement(type = ChangeServerRandomAction.class, name = "ChangeServerRandom"),
-            @XmlElement(type = ClearBuffersAction.class, name = "ClearBuffers"),
-            @XmlElement(type = ConnectionBoundAction.class, name = "ConnectionBound"),
-            @XmlElement(type = CopyBufferedMessagesAction.class, name = "CopyBufferedMessages"),
-            @XmlElement(type = CopyBufferedRecordsAction.class, name = "CopyBufferedRecords"),
-            @XmlElement(type = CopyBuffersAction.class, name = "CopyBuffers"),
-            @XmlElement(type = CopyClientRandomAction.class, name = "CopyClientRandom"),
-            @XmlElement(type = CopyContextFieldAction.class, name = "CopyContextField"),
-            @XmlElement(type = CopyPreMasterSecretAction.class, name = "CopyPreMasterSecret"),
-            @XmlElement(type = CopyServerRandomAction.class, name = "CopyServerRandom"),
-            @XmlElement(type = DeactivateEncryptionAction.class, name = "DeactivateEncryption"),
-            @XmlElement(type = DeepCopyBufferedMessagesAction.class, name = "DeepCopyBufferedMessages"),
-            @XmlElement(type = DeepCopyBufferedRecordsAction.class, name = "DeepCopyBufferedRecords"),
-            @XmlElement(type = DeepCopyBuffersAction.class, name = "DeepCopyBuffers"),
-            @XmlElement(type = DtlsCloseConnectionAction.class, name = "DtlsCloseConnection"),
-            @XmlElement(type = EsniKeyDnsRequestAction.class, name = "EsniKeyDnsRequest"),
-            @XmlElement(type = FindReceivedProtocolMessageAction.class, name = "FindReceivedProtocolMessage"),
-            @XmlElement(type = ForwardMessagesAction.class, name = "ForwardMessages"),
-            @XmlElement(type = ForwardMessagesWithPrepareAction.class, name = "ForwardMessagesWithPrepare"),
-            @XmlElement(type = ForwardRecordsAction.class, name = "ForwardRecords"),
-            @XmlElement(type = GenericReceiveAction.class, name = "GenericReceive"),
-            @XmlElement(type = ReceiveTillAction.class, name = "ReceiveTill"),
-            @XmlElement(type = MultiReceiveAction.class, name = "MultiReceive"),
-            @XmlElement(type = PopAndSendAction.class, name = "PopAndSend"),
-            @XmlElement(type = PopAndSendMessageAction.class, name = "PopAndSendMessage"),
-            @XmlElement(type = PopAndSendRecordAction.class, name = "PopAndSendRecord"),
-            @XmlElement(type = PopBuffersAction.class, name = "PopBuffers"),
-            @XmlElement(type = PopBufferedMessageAction.class, name = "PopBufferedMessage"),
-            @XmlElement(type = PopBufferedRecordAction.class, name = "PopBufferedRecord"),
-            @XmlElement(type = PrintLastHandledApplicationDataAction.class, name = "PrintLastHandledApplicationData"),
-            @XmlElement(type = PrintProposedExtensionsAction.class, name = "PrintProposedExtensions"),
-            @XmlElement(type = PrintSecretsAction.class, name = "PrintSecrets"),
-            @XmlElement(type = ReceiveAction.class, name = "Receive"),
-            @XmlElement(type = RemBufferedChCiphersAction.class, name = "RemBufferedChCiphers"),
-            @XmlElement(type = RemBufferedChExtensionsAction.class, name = "RemBufferedChExtensions"),
-            @XmlElement(type = RenegotiationAction.class, name = "Renegotiation"),
-            @XmlElement(type = ResetConnectionAction.class, name = "ResetConnection"),
-            @XmlElement(type = SendAction.class, name = "Send"),
-            @XmlElement(type = SendDynamicClientKeyExchangeAction.class, name = "SendDynamicClientKeyExchange"),
-            @XmlElement(type = SendDynamicServerKeyExchangeAction.class, name = "SendDynamicServerKeyExchange"),
-            @XmlElement(type = SendDynamicServerCertificateAction.class, name = "SendDynamicCertificate"),
-            @XmlElement(type = SendRaccoonCkeAction.class, name = "SendRaccoonCke"),
-            @XmlElement(type = WaitAction.class, name = "Wait"),
-            @XmlElement(type = SendAsciiAction.class, name = "SendAscii"),
-            @XmlElement(type = FlushSessionCacheAction.class, name = "FlushSessionCache"),
-            @XmlElement(type = GenericReceiveAsciiAction.class, name = "GenericReceiveAscii"),
-            @XmlElement(type = ReceiveAsciiAction.class, name = "ReceiveAscii") })
+        @XmlElement(type = ApplyBufferedMessagesAction.class, name = "ApplyBufferedMessages"),
+        @XmlElement(type = BufferedGenericReceiveAction.class, name = "BufferedGenericReceive"),
+        @XmlElement(type = BufferedSendAction.class, name = "BufferedSend"),
+        @XmlElement(type = ChangeCipherSuiteAction.class, name = "ChangeCipherSuite"),
+        @XmlElement(type = ChangeClientRandomAction.class, name = "ChangeClientRandom"),
+        @XmlElement(type = ChangeCompressionAction.class, name = "ChangeCompression"),
+        @XmlElement(type = ChangeContextValueAction.class, name = "ChangeContextValue"),
+        @XmlElement(type = ChangeMasterSecretAction.class, name = "ChangeMasterSecret"),
+        @XmlElement(type = ChangePreMasterSecretAction.class, name = "ChangePreMasterSecret"),
+        @XmlElement(type = ChangeDefaultPreMasterSecretAction.class, name = "ChangeDefaultPreMasterSecret"),
+        @XmlElement(type = ChangeProtocolVersionAction.class, name = "ChangeProtocolVersion"),
+        @XmlElement(type = ChangeServerRandomAction.class, name = "ChangeServerRandom"),
+        @XmlElement(type = ClearBuffersAction.class, name = "ClearBuffers"),
+        @XmlElement(type = ConnectionBoundAction.class, name = "ConnectionBound"),
+        @XmlElement(type = CopyBufferedMessagesAction.class, name = "CopyBufferedMessages"),
+        @XmlElement(type = CopyBufferedRecordsAction.class, name = "CopyBufferedRecords"),
+        @XmlElement(type = CopyBuffersAction.class, name = "CopyBuffers"),
+        @XmlElement(type = CopyClientRandomAction.class, name = "CopyClientRandom"),
+        @XmlElement(type = CopyContextFieldAction.class, name = "CopyContextField"),
+        @XmlElement(type = CopyPreMasterSecretAction.class, name = "CopyPreMasterSecret"),
+        @XmlElement(type = CopyServerRandomAction.class, name = "CopyServerRandom"),
+        @XmlElement(type = DeactivateEncryptionAction.class, name = "DeactivateEncryption"),
+        @XmlElement(type = DeepCopyBufferedMessagesAction.class, name = "DeepCopyBufferedMessages"),
+        @XmlElement(type = DeepCopyBufferedRecordsAction.class, name = "DeepCopyBufferedRecords"),
+        @XmlElement(type = DeepCopyBuffersAction.class, name = "DeepCopyBuffers"),
+        @XmlElement(type = DtlsCloseConnectionAction.class, name = "DtlsCloseConnection"),
+        @XmlElement(type = EsniKeyDnsRequestAction.class, name = "EsniKeyDnsRequest"),
+        @XmlElement(type = FindReceivedProtocolMessageAction.class, name = "FindReceivedProtocolMessage"),
+        @XmlElement(type = ForwardMessagesAction.class, name = "ForwardMessages"),
+        @XmlElement(type = ForwardMessagesWithPrepareAction.class, name = "ForwardMessagesWithPrepare"),
+        @XmlElement(type = ForwardRecordsAction.class, name = "ForwardRecords"),
+        @XmlElement(type = GenericReceiveAction.class, name = "GenericReceive"),
+        @XmlElement(type = ReceiveTillAction.class, name = "ReceiveTill"),
+        @XmlElement(type = MultiReceiveAction.class, name = "MultiReceive"),
+        @XmlElement(type = PopAndSendAction.class, name = "PopAndSend"),
+        @XmlElement(type = PopAndSendMessageAction.class, name = "PopAndSendMessage"),
+        @XmlElement(type = PopAndSendRecordAction.class, name = "PopAndSendRecord"),
+        @XmlElement(type = PopBuffersAction.class, name = "PopBuffers"),
+        @XmlElement(type = PopBufferedMessageAction.class, name = "PopBufferedMessage"),
+        @XmlElement(type = PopBufferedRecordAction.class, name = "PopBufferedRecord"),
+        @XmlElement(type = PrintLastHandledApplicationDataAction.class, name = "PrintLastHandledApplicationData"),
+        @XmlElement(type = PrintProposedExtensionsAction.class, name = "PrintProposedExtensions"),
+        @XmlElement(type = PrintSecretsAction.class, name = "PrintSecrets"),
+        @XmlElement(type = ReceiveAction.class, name = "Receive"),
+        @XmlElement(type = RemBufferedChCiphersAction.class, name = "RemBufferedChCiphers"),
+        @XmlElement(type = RemBufferedChExtensionsAction.class, name = "RemBufferedChExtensions"),
+        @XmlElement(type = RenegotiationAction.class, name = "Renegotiation"),
+        @XmlElement(type = ResetRecordCipherListsAction.class, name = "ResetRecordCipherLists"),
+        @XmlElement(type = ResetConnectionAction.class, name = "ResetConnection"),
+        @XmlElement(type = SendAction.class, name = "Send"),
+        @XmlElement(type = SendDynamicClientKeyExchangeAction.class, name = "SendDynamicClientKeyExchange"),
+        @XmlElement(type = SendDynamicServerKeyExchangeAction.class, name = "SendDynamicServerKeyExchange"),
+        @XmlElement(type = SendDynamicServerCertificateAction.class, name = "SendDynamicCertificate"),
+        @XmlElement(type = SendRaccoonCkeAction.class, name = "SendRaccoonCke"),
+        @XmlElement(type = SetEncryptChangeCipherSpecConfigAction.class, name = "SetEncryptChangeCipherSpecConfig"),
+        @XmlElement(type = WaitAction.class, name = "Wait"),
+        @XmlElement(type = SendAsciiAction.class, name = "SendAscii"),
+        @XmlElement(type = FlushSessionCacheAction.class, name = "FlushSessionCache"),
+        @XmlElement(type = GenericReceiveAsciiAction.class, name = "GenericReceiveAscii"),
+        @XmlElement(type = ReceiveAsciiAction.class, name = "ReceiveAscii") })
     private List<TlsAction> tlsActions = new ArrayList<>();
 
     private String name = null;
@@ -186,6 +189,11 @@ public class WorkflowTrace implements Serializable {
         tlsActions.add(action);
     }
 
+    public void addTlsAction(int position, TlsAction action) {
+        dirty = true;
+        tlsActions.add(position, action);
+    }
+
     public void addTlsActions(TlsAction... actions) {
         addTlsActions(Arrays.asList(actions));
     }
@@ -194,11 +202,6 @@ public class WorkflowTrace implements Serializable {
         for (TlsAction action : actions) {
             addTlsAction(action);
         }
-    }
-
-    public void addTlsAction(int position, TlsAction action) {
-        dirty = true;
-        tlsActions.add(position, action);
     }
 
     public TlsAction removeTlsAction(int index) {
@@ -220,12 +223,11 @@ public class WorkflowTrace implements Serializable {
     }
 
     /**
-     * Set connections of the workflow trace. Use only if you know what you are
-     * doing. Unless you are manually configuring workflow traces (say for MiTM
-     * or unit tests), there shouldn't be any need to call this method.
+     * Set connections of the workflow trace. Use only if you know what you are doing. Unless you are manually
+     * configuring workflow traces (say for MiTM or unit tests), there shouldn't be any need to call this method.
      *
      * @param connections
-     *            new connection to use with this workflow trace
+     *                    new connection to use with this workflow trace
      */
     public void setConnections(List<AliasedConnection> connections) {
         dirty = true;
@@ -233,12 +235,11 @@ public class WorkflowTrace implements Serializable {
     }
 
     /**
-     * Add a connection to the workflow trace. Use only if you know what you are
-     * doing. Unless you are manually configuring workflow traces (say for MiTM
-     * or unit tests), there shouldn't be any need to call this method.
+     * Add a connection to the workflow trace. Use only if you know what you are doing. Unless you are manually
+     * configuring workflow traces (say for MiTM or unit tests), there shouldn't be any need to call this method.
      *
      * @param connection
-     *            new connection to add to the workflow trace
+     *                   new connection to add to the workflow trace
      */
     public void addConnection(AliasedConnection connection) {
         dirty = true;
@@ -278,8 +279,7 @@ public class WorkflowTrace implements Serializable {
     /**
      * Get the last TlsAction of the workflow trace.
      *
-     * @return the last TlsAction of the workflow trace. Null if no actions are
-     *         defined
+     * @return the last TlsAction of the workflow trace. Null if no actions are defined
      */
     public TlsAction getLastAction() {
         int size = tlsActions.size();
@@ -292,8 +292,7 @@ public class WorkflowTrace implements Serializable {
     /**
      * Get the last MessageAction of the workflow trace.
      *
-     * @return the last MessageAction of the workflow trace. Null if no message
-     *         actions are defined
+     * @return the last MessageAction of the workflow trace. Null if no message actions are defined
      */
     public MessageAction getLastMessageAction() {
         for (int i = tlsActions.size() - 1; i >= 0; i--) {
@@ -307,8 +306,7 @@ public class WorkflowTrace implements Serializable {
     /**
      * Get the last SendingAction of the workflow trace.
      *
-     * @return the last SendingAction of the workflow trace. Null if no sending
-     *         actions are defined
+     * @return the last SendingAction of the workflow trace. Null if no sending actions are defined
      */
     public SendingAction getLastSendingAction() {
         for (int i = tlsActions.size() - 1; i >= 0; i--) {
@@ -322,8 +320,7 @@ public class WorkflowTrace implements Serializable {
     /**
      * Get the last ReceivingActionAction of the workflow trace.
      *
-     * @return the last ReceivingActionAction of the workflow trace. Null if no
-     *         receiving actions are defined
+     * @return the last ReceivingActionAction of the workflow trace. Null if no receiving actions are defined
      */
     public ReceivingAction getLastReceivingAction() {
         for (int i = tlsActions.size() - 1; i >= 0; i--) {
@@ -337,8 +334,7 @@ public class WorkflowTrace implements Serializable {
     /**
      * Get the first MessageAction of the workflow trace.
      *
-     * @return the first MessageAction of the workflow trace. Null if no message
-     *         actions are defined
+     * @return the first MessageAction of the workflow trace. Null if no message actions are defined
      */
     public MessageAction getFirstMessageAction() {
         for (int i = 0; i < tlsActions.size(); i++) {
@@ -352,8 +348,7 @@ public class WorkflowTrace implements Serializable {
     /**
      * Get the first SendingAction of the workflow trace.
      *
-     * @return the first SendingAction of the workflow trace. Null if no sending
-     *         actions are defined
+     * @return the first SendingAction of the workflow trace. Null if no sending actions are defined
      */
     public SendingAction getFirstSendingAction() {
         for (int i = 0; i < tlsActions.size(); i++) {
@@ -367,8 +362,7 @@ public class WorkflowTrace implements Serializable {
     /**
      * Get the first ReceivingActionAction of the workflow trace.
      *
-     * @return the first ReceivingActionAction of the workflow trace. Null if no
-     *         receiving actions are defined
+     * @return the first ReceivingActionAction of the workflow trace. Null if no receiving actions are defined
      */
     public ReceivingAction getFirstReceivingAction() {
         for (int i = 0; i < tlsActions.size(); i++) {
@@ -457,4 +451,61 @@ public class WorkflowTrace implements Serializable {
         this.dirty = dirty;
     }
 
+    public <T extends TlsAction> T getFirstAction(Class<T> actionCls) {
+        List<TlsAction> actions = this.getTlsActions();
+        for (TlsAction action : actions) {
+            if (action.getClass().equals(actionCls)) {
+                return actionCls.cast(action);
+            }
+        }
+        return null;
+    }
+
+    public <T extends TlsMessage> T getFirstReceivedMessage(Class<T> msgClass) {
+        List<ProtocolMessage> messageList = WorkflowTraceUtil.getAllReceivedMessages(this);
+        messageList =
+            messageList.stream().filter(i -> msgClass.isAssignableFrom(i.getClass())).collect(Collectors.toList());
+
+        if (messageList.isEmpty()) {
+            return null;
+        } else {
+            return (T) messageList.get(0);
+        }
+    }
+
+    public <T extends TlsMessage> T getLastReceivedMessage(Class<T> msgClass) {
+        List<ProtocolMessage> messageList = WorkflowTraceUtil.getAllReceivedMessages(this);
+        messageList =
+            messageList.stream().filter(i -> msgClass.isAssignableFrom(i.getClass())).collect(Collectors.toList());
+
+        if (messageList.isEmpty()) {
+            return null;
+        } else {
+            return (T) messageList.get(messageList.size() - 1);
+        }
+    }
+
+    public <T extends TlsMessage> T getFirstSendMessage(Class<T> msgClass) {
+        List<ProtocolMessage> messageList = WorkflowTraceUtil.getAllSendMessages(this);
+        messageList =
+            messageList.stream().filter(i -> msgClass.isAssignableFrom(i.getClass())).collect(Collectors.toList());
+
+        if (messageList.isEmpty()) {
+            return null;
+        } else {
+            return (T) messageList.get(0);
+        }
+    }
+
+    public <T extends TlsMessage> T getLastSendMessage(Class<T> msgClass) {
+        List<ProtocolMessage> messageList = WorkflowTraceUtil.getAllSendMessages(this);
+        messageList =
+            messageList.stream().filter(i -> msgClass.isAssignableFrom(i.getClass())).collect(Collectors.toList());
+
+        if (messageList.isEmpty()) {
+            return null;
+        } else {
+            return (T) messageList.get(messageList.size() - 1);
+        }
+    }
 }

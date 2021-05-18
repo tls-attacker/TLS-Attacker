@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -30,11 +30,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * @param <Message>
- *            The ClientKeyExchangeMessage that should be Handled
+ * @param <MessageT>
+ *                   The ClientKeyExchangeMessage that should be Handled
  */
-public abstract class ClientKeyExchangeHandler<Message extends ClientKeyExchangeMessage> extends
-        HandshakeMessageHandler<Message> {
+public abstract class ClientKeyExchangeHandler<MessageT extends ClientKeyExchangeMessage>
+    extends HandshakeMessageHandler<MessageT> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -56,28 +56,27 @@ public abstract class ClientKeyExchangeHandler<Message extends ClientKeyExchange
         Chooser chooser = tlsContext.getChooser();
         if (chooser.getSelectedProtocolVersion() == ProtocolVersion.SSL3) {
             LOGGER.debug("Calculate SSL MasterSecret with Client and Server Nonces, which are: "
-                    + ArrayConverter.bytesToHexString(message.getComputations().getClientServerRandom().getValue()));
-            return SSLUtils.calculateMasterSecretSSL3(chooser.getPreMasterSecret(), message.getComputations()
-                    .getClientServerRandom().getValue());
+                + ArrayConverter.bytesToHexString(message.getComputations().getClientServerRandom().getValue()));
+            return SSLUtils.calculateMasterSecretSSL3(chooser.getPreMasterSecret(),
+                message.getComputations().getClientServerRandom().getValue());
         } else {
             PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(chooser.getSelectedProtocolVersion(),
-                    chooser.getSelectedCipherSuite());
+                chooser.getSelectedCipherSuite());
             if (chooser.isUseExtendedMasterSecret()) {
                 LOGGER.debug("Calculating ExtendedMasterSecret");
                 byte[] sessionHash = tlsContext.getDigest().digest(chooser.getSelectedProtocolVersion(),
-                        chooser.getSelectedCipherSuite());
+                    chooser.getSelectedCipherSuite());
                 LOGGER.debug("Premastersecret: " + ArrayConverter.bytesToHexString(chooser.getPreMasterSecret()));
 
                 LOGGER.debug("SessionHash: " + ArrayConverter.bytesToHexString(sessionHash));
                 byte[] extendedMasterSecret = PseudoRandomFunction.compute(prfAlgorithm, chooser.getPreMasterSecret(),
-                        PseudoRandomFunction.EXTENDED_MASTER_SECRET_LABEL, sessionHash,
-                        HandshakeByteLength.MASTER_SECRET);
+                    PseudoRandomFunction.EXTENDED_MASTER_SECRET_LABEL, sessionHash, HandshakeByteLength.MASTER_SECRET);
                 return extendedMasterSecret;
             } else {
                 LOGGER.debug("Calculating MasterSecret");
                 byte[] masterSecret = PseudoRandomFunction.compute(prfAlgorithm, chooser.getPreMasterSecret(),
-                        PseudoRandomFunction.MASTER_SECRET_LABEL, message.getComputations().getClientServerRandom()
-                                .getValue(), HandshakeByteLength.MASTER_SECRET);
+                    PseudoRandomFunction.MASTER_SECRET_LABEL,
+                    message.getComputations().getClientServerRandom().getValue(), HandshakeByteLength.MASTER_SECRET);
                 return masterSecret;
             }
         }
@@ -102,8 +101,8 @@ public abstract class ClientKeyExchangeHandler<Message extends ClientKeyExchange
     }
 
     protected void spawnNewSession() {
-        Session session = new Session(tlsContext.getChooser().getServerSessionId(), tlsContext.getChooser()
-                .getMasterSecret());
+        Session session =
+            new Session(tlsContext.getChooser().getServerSessionId(), tlsContext.getChooser().getMasterSecret());
         tlsContext.addNewSession(session);
         LOGGER.debug("Spawning new resumable Session");
     }

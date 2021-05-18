@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks.impl;
 
 import de.rub.nds.tlsattacker.attacks.config.PoodleCommandConfig;
@@ -48,7 +48,7 @@ public class PoodleAttacker extends Attacker<PoodleCommandConfig> {
     public Boolean isVulnerable() {
         Config tlsConfig = getTlsConfig();
         tlsConfig.setHighestProtocolVersion(ProtocolVersion.SSL3);
-        tlsConfig.setDefaultClientSupportedCiphersuites(getCbcCiphers());
+        tlsConfig.setDefaultClientSupportedCipherSuites(getCbcCiphers());
         tlsConfig.setWorkflowTraceType(WorkflowTraceType.HELLO);
         State state = new State(tlsConfig);
         DefaultWorkflowExecutor executor = new DefaultWorkflowExecutor(state);
@@ -65,5 +65,4 @@ public class PoodleAttacker extends Attacker<PoodleCommandConfig> {
         }
         return cbcs;
     }
-
 }

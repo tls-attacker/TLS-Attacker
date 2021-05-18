@@ -1,24 +1,26 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.modifiablevariable.util.Modifiable;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PSKBinder;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PSKIdentity;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -51,7 +53,7 @@ public class PreSharedKeyExtensionMessage extends ExtensionMessage {
         identities = new LinkedList<>();
         binders = new LinkedList<>();
         if (config.getDefaultPskSets().size() > 0) {
-            copyPskSets(config.getDefaultPskSets());
+            copyPskSets(config.getDefaultPskSets(), config.isLimitPsksToOne());
         }
     }
 
@@ -104,7 +106,7 @@ public class PreSharedKeyExtensionMessage extends ExtensionMessage {
 
     /**
      * @param selectedIdentity
-     *            the selectedIdentity to set
+     *                         the selectedIdentity to set
      */
     public void setSelectedIdentity(ModifiableInteger selectedIdentity) {
         this.selectedIdentity = selectedIdentity;
@@ -123,7 +125,7 @@ public class PreSharedKeyExtensionMessage extends ExtensionMessage {
 
     /**
      * @param identityListBytes
-     *            the identityListBytes to set
+     *                          the identityListBytes to set
      */
     public void setIdentityListBytes(ModifiableByteArray identityListBytes) {
         this.identityListBytes = identityListBytes;
@@ -142,7 +144,7 @@ public class PreSharedKeyExtensionMessage extends ExtensionMessage {
 
     /**
      * @param binderListBytes
-     *            the binderListBytes to set
+     *                        the binderListBytes to set
      */
     public void setBinderListBytes(ModifiableByteArray binderListBytes) {
         this.binderListBytes = binderListBytes;
@@ -152,11 +154,16 @@ public class PreSharedKeyExtensionMessage extends ExtensionMessage {
         this.binderListBytes = ModifiableVariableFactory.safelySetValue(this.binderListBytes, binderListBytes);
     }
 
-    private void copyPskSets(List<PskSet> pskSets) {
+    private void copyPskSets(List<PskSet> pskSets, boolean limitPsksToOne) {
         identities = new LinkedList<>();
         binders = new LinkedList<>();
 
-        for (int x = 0; x < pskSets.size(); x++) {
+        int pskLimit = pskSets.size();
+        if (limitPsksToOne) {
+            pskLimit = 1;
+        }
+
+        for (int x = 0; x < pskLimit; x++) {
             PSKIdentity pskIdentity = new PSKIdentity();
             pskIdentity.setIdentityConfig(pskSets.get(x).getPreSharedKeyIdentity());
             pskIdentity.setTicketAgeAddConfig(pskSets.get(x).getTicketAgeAdd());
@@ -173,7 +180,7 @@ public class PreSharedKeyExtensionMessage extends ExtensionMessage {
     public void getEntries(Chooser chooser) {
         // use PskSets from context if no psk sets were given in config before
         if (chooser.getPskSets().size() > 0) {
-            copyPskSets(chooser.getPskSets());
+            copyPskSets(chooser.getPskSets(), chooser.getConfig().isLimitPsksToOne());
         }
     }
 }

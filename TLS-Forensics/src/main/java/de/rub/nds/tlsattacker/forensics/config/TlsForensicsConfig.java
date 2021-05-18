@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.forensics.config;
 
 import com.beust.jcommander.Parameter;
@@ -18,7 +18,8 @@ public class TlsForensicsConfig {
     @Parameter(names = "-workflow", description = "The Workflow which should be analyzed", required = true)
     private String workflowInput = null;
 
-    @Parameter(names = "-key", description = "The private key of the Server used (RSA only). Otherwise we cannot decrypt after the CKE/CCS")
+    @Parameter(names = "-key",
+        description = "The private key of the Server used (RSA only). Otherwise we cannot decrypt after the CKE/CCS")
     private String keyFile = null;
 
     @Parameter(names = "-debug", description = "Enables debug mode")

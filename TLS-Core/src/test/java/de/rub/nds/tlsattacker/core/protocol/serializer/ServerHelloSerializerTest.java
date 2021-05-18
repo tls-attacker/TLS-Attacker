@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -29,44 +29,29 @@ public class ServerHelloSerializerTest {
     // TODO should reuse parser tests
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays
-                .asList(new Object[][] {
-                        {
-                                ArrayConverter
-                                        .hexStringToByteArray("020000480303378f93cbcafda4c9ba43dafb49ab847ba1ae86a29d2679e7b9aac8e25c207e01200919fe8a189912807ee0621a45f4e6440a297f13574d2229fdbc96427b0e2d10002f000000"),
-                                HandshakeMessageType.SERVER_HELLO.getValue(),
-                                72,
-                                ProtocolVersion.TLS12.getValue(),
-                                new byte[] { (byte) 0x37, (byte) 0x8f, (byte) 0x93, (byte) 0xcb },
-                                ArrayConverter
-                                        .hexStringToByteArray("378f93cbcafda4c9ba43dafb49ab847ba1ae86a29d2679e7b9aac8e25c207e01"),
-                                32,
-                                ArrayConverter
-                                        .hexStringToByteArray("0919fe8a189912807ee0621a45f4e6440a297f13574d2229fdbc96427b0e2d10"),
-                                CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA.getByteValue(),
-                                CompressionMethod.NULL.getValue(), 0 },
-                        {
-                                ArrayConverter
-                                        .hexStringToByteArray("020000460303378f93cbcafda4c9ba43dafb49ab847ba1ae86a29d2679e7b9aac8e25c207e01200919fe8a189912807ee0621a45f4e6440a297f13574d2229fdbc96427b0e2d10002f00"),
-                                HandshakeMessageType.SERVER_HELLO.getValue(),
-                                70,
-                                ProtocolVersion.TLS12.getValue(),
-                                new byte[] { (byte) 0x37, (byte) 0x8f, (byte) 0x93, (byte) 0xcb },
-                                ArrayConverter
-                                        .hexStringToByteArray("378f93cbcafda4c9ba43dafb49ab847ba1ae86a29d2679e7b9aac8e25c207e01"),
-                                32,
-                                ArrayConverter
-                                        .hexStringToByteArray("0919fe8a189912807ee0621a45f4e6440a297f13574d2229fdbc96427b0e2d10"),
-                                CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA.getByteValue(),
-                                CompressionMethod.NULL.getValue(), null } });
+        return Arrays.asList(new Object[][] { { ArrayConverter.hexStringToByteArray(
+            "020000480303378f93cbcafda4c9ba43dafb49ab847ba1ae86a29d2679e7b9aac8e25c207e01200919fe8a189912807ee0621a45f4e6440a297f13574d2229fdbc96427b0e2d10002f000000"),
+            HandshakeMessageType.SERVER_HELLO.getValue(), 72, ProtocolVersion.TLS12.getValue(),
+            new byte[] { (byte) 0x37, (byte) 0x8f, (byte) 0x93, (byte) 0xcb },
+            ArrayConverter.hexStringToByteArray("378f93cbcafda4c9ba43dafb49ab847ba1ae86a29d2679e7b9aac8e25c207e01"), 32,
+            ArrayConverter.hexStringToByteArray("0919fe8a189912807ee0621a45f4e6440a297f13574d2229fdbc96427b0e2d10"),
+            CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA.getByteValue(), CompressionMethod.NULL.getValue(), 0 },
+            { ArrayConverter.hexStringToByteArray(
+                "020000460303378f93cbcafda4c9ba43dafb49ab847ba1ae86a29d2679e7b9aac8e25c207e01200919fe8a189912807ee0621a45f4e6440a297f13574d2229fdbc96427b0e2d10002f00"),
+                HandshakeMessageType.SERVER_HELLO.getValue(), 70, ProtocolVersion.TLS12.getValue(),
+                new byte[] { (byte) 0x37, (byte) 0x8f, (byte) 0x93, (byte) 0xcb },
+                ArrayConverter.hexStringToByteArray("378f93cbcafda4c9ba43dafb49ab847ba1ae86a29d2679e7b9aac8e25c207e01"),
+                32,
+                ArrayConverter.hexStringToByteArray("0919fe8a189912807ee0621a45f4e6440a297f13574d2229fdbc96427b0e2d10"),
+                CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA.getByteValue(), CompressionMethod.NULL.getValue(), null } });
     }
 
     private ServerHelloMessage helloMessage;
     private byte[] message;
 
     public ServerHelloSerializerTest(byte[] message, byte messageType, int messageLength, byte[] protocolVersion,
-            byte[] unixTime, byte[] random, int sessionIdLength, byte[] sessionID, byte[] selectedCiphersuite,
-            byte selectedCompression, Integer extensionLength) {
+        byte[] unixTime, byte[] random, int sessionIdLength, byte[] sessionID, byte[] selectedCiphersuite,
+        byte selectedCompression, Integer extensionLength) {
         this.message = message;
         helloMessage = new ServerHelloMessage();
         helloMessage.setType(messageType);

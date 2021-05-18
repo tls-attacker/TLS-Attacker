@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.util;
 
 import de.rub.nds.modifiablevariable.util.BadRandom;
@@ -46,8 +46,7 @@ public class BasicTlsServer extends Thread {
     private volatile boolean initialized;
 
     public BasicTlsServer(KeyStore keyStore, String password, String protocol, int port) throws KeyStoreException,
-            IOException, NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException,
-            KeyManagementException {
+        IOException, NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException, KeyManagementException {
 
         this.port = port;
 
@@ -66,7 +65,7 @@ public class BasicTlsServer extends Thread {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Provider: " + sslContext.getProvider());
             LOGGER.debug("Supported cipher suites ("
-                    + sslContext.getServerSocketFactory().getSupportedCipherSuites().length + ")");
+                + sslContext.getServerSocketFactory().getSupportedCipherSuites().length + ")");
             for (String c : sslContext.getServerSocketFactory().getSupportedCipherSuites()) {
                 LOGGER.debug(" " + c);
             }
@@ -118,7 +117,7 @@ public class BasicTlsServer extends Thread {
         // ((SSLServerSocket)
         // serverSocket).setEnabledCipherSuites(cipherSuites);
         // }
-        LOGGER.debug("Presetup successful");
+        LOGGER.debug("Pre-setup successful");
         initialized = true;
     }
 

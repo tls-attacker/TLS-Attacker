@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -33,7 +33,7 @@ public class HeartbeatExtensionHandler extends ExtensionHandler<HeartbeatExtensi
     public void adjustTLSExtensionContext(HeartbeatExtensionMessage message) {
         byte[] heartbeatMode = message.getHeartbeatMode().getValue();
         if (heartbeatMode.length != 1) {
-            throw new AdjustmentException("Cannot set Heartbeatmode to a resonable Value");
+            throw new AdjustmentException("Cannot set HeartbeatMode to a reasonable Value");
         }
         HeartbeatMode mode = HeartbeatMode.getHeartbeatMessageType(heartbeatMode[0]);
         if (mode == null) {

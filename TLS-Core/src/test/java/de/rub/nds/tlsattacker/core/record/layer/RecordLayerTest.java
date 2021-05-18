@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.record.layer;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -87,12 +87,12 @@ public class RecordLayerTest {
     @Test
     public void testParseRecordsSoftly() {
         // TLS record bytes
-        byte[] unparsedRecord = { 0x16, 0x03, 0x03, 0x00, 0x0A, 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
-                0x09 };
+        byte[] unparsedRecord =
+            { 0x16, 0x03, 0x03, 0x00, 0x0A, 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09 };
         // wrong length for payload in order to create ParserException and parse
         // the bytes as Blob
-        byte[] unparsedBlob = { 0x16, 0x03, 0x03, 0x00, 0x1A, 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
-                0x09 };
+        byte[] unparsedBlob =
+            { 0x16, 0x03, 0x03, 0x00, 0x1A, 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09 };
         byte[] unparsedRecordThenBlob = new byte[unparsedRecord.length + unparsedBlob.length];
         System.arraycopy(unparsedRecord, 0, unparsedRecordThenBlob, 0, unparsedRecord.length);
         System.arraycopy(unparsedBlob, 0, unparsedRecordThenBlob, unparsedRecord.length, unparsedBlob.length);

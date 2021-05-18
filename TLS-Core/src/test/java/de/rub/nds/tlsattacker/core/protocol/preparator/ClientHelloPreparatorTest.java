@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -38,8 +38,7 @@ public class ClientHelloPreparatorTest {
 
     // TODO Test with extensions
     /**
-     * Test of prepareHandshakeMessageContents method, of class
-     * ClientHelloPreparator.
+     * Test of prepareHandshakeMessageContents method, of class ClientHelloPreparator.
      */
     @Test
     public void testPrepareNoCookie() {
@@ -50,7 +49,7 @@ public class ClientHelloPreparatorTest {
         List<CompressionMethod> methodList = new LinkedList<>();
         methodList.add(CompressionMethod.DEFLATE);
         methodList.add(CompressionMethod.NULL);
-        context.getConfig().setDefaultClientSupportedCiphersuites(cipherSuiteList);
+        context.getConfig().setDefaultClientSupportedCipherSuites(cipherSuiteList);
         context.getConfig().setDefaultClientSupportedCompressionMethods(methodList);
         context.getConfig().setHighestProtocolVersion(ProtocolVersion.TLS11);
         context.getConfig().setDefaultClientSessionId(new byte[] { 0, 1, 2, 3 });
@@ -78,7 +77,7 @@ public class ClientHelloPreparatorTest {
         List<CompressionMethod> methodList = new LinkedList<>();
         methodList.add(CompressionMethod.DEFLATE);
         methodList.add(CompressionMethod.NULL);
-        context.getConfig().setDefaultClientSupportedCiphersuites(cipherSuiteList);
+        context.getConfig().setDefaultClientSupportedCipherSuites(cipherSuiteList);
         context.getConfig().setDefaultClientSupportedCompressionMethods(methodList);
         context.getConfig().setDefaultSelectedProtocolVersion(ProtocolVersion.DTLS10);
         context.getConfig().setHighestProtocolVersion(ProtocolVersion.DTLS10);
@@ -109,7 +108,7 @@ public class ClientHelloPreparatorTest {
         List<CompressionMethod> methodList = new LinkedList<>();
         methodList.add(CompressionMethod.DEFLATE);
         methodList.add(CompressionMethod.NULL);
-        context.getConfig().setDefaultClientSupportedCiphersuites(cipherSuiteList);
+        context.getConfig().setDefaultClientSupportedCipherSuites(cipherSuiteList);
         context.getConfig().setDefaultClientSupportedCompressionMethods(methodList);
         context.getConfig().setHighestProtocolVersion(ProtocolVersion.DTLS12);
         context.getConfig().setDefaultSelectedProtocolVersion(ProtocolVersion.DTLS12);
@@ -140,7 +139,7 @@ public class ClientHelloPreparatorTest {
         List<CompressionMethod> methodList = new LinkedList<>();
         methodList.add(CompressionMethod.DEFLATE);
         methodList.add(CompressionMethod.NULL);
-        context.getConfig().setDefaultClientSupportedCiphersuites(cipherSuiteList);
+        context.getConfig().setDefaultClientSupportedCipherSuites(cipherSuiteList);
         context.getConfig().setDefaultClientSupportedCompressionMethods(methodList);
         context.getConfig().setHighestProtocolVersion(ProtocolVersion.TLS11);
         context.setClientSessionId(new byte[] { 0, 1, 2, 3 });

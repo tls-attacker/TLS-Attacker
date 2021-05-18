@@ -1,22 +1,22 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.https;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.https.header.HttpsHeader;
 import de.rub.nds.tlsattacker.core.https.header.serializer.HttpsHeaderSerializer;
-import de.rub.nds.tlsattacker.core.protocol.serializer.ProtocolMessageSerializer;
+import de.rub.nds.tlsattacker.core.protocol.serializer.TlsMessageSerializer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class HttpsRequestSerializer extends ProtocolMessageSerializer<HttpsRequestMessage> {
+public class HttpsRequestSerializer extends TlsMessageSerializer<HttpsRequestMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -31,7 +31,7 @@ public class HttpsRequestSerializer extends ProtocolMessageSerializer<HttpsReque
     public byte[] serializeProtocolMessageContent() {
         StringBuilder builder = new StringBuilder();
         builder.append(message.getRequestType().getValue()).append(" ").append(message.getRequestPath().getValue())
-                .append(" ").append(message.getRequestProtocol().getValue()).append("\r\n");
+            .append(" ").append(message.getRequestProtocol().getValue()).append("\r\n");
         for (HttpsHeader header : message.getHeader()) {
             HttpsHeaderSerializer serializer = new HttpsHeaderSerializer(header);
             builder.append(new String(serializer.serialize()));

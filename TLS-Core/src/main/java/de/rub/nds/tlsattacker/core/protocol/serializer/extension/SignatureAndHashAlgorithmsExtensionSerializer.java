@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -15,8 +15,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAl
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class SignatureAndHashAlgorithmsExtensionSerializer extends
-        ExtensionSerializer<SignatureAndHashAlgorithmsExtensionMessage> {
+public class SignatureAndHashAlgorithmsExtensionSerializer
+    extends ExtensionSerializer<SignatureAndHashAlgorithmsExtensionMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -29,7 +29,7 @@ public class SignatureAndHashAlgorithmsExtensionSerializer extends
 
     @Override
     public byte[] serializeExtensionContent() {
-        LOGGER.debug("Serializing SigantureAndHashAlgorithmsExtensionMessage");
+        LOGGER.debug("Serializing SignatureAndHashAlgorithmsExtensionMessage");
         writeSignatureAndHashAlgorithmsLength(msg);
         writeSignatureAndHashAlgorithms(msg);
         return getAlreadySerialized();
@@ -37,13 +37,13 @@ public class SignatureAndHashAlgorithmsExtensionSerializer extends
 
     private void writeSignatureAndHashAlgorithmsLength(SignatureAndHashAlgorithmsExtensionMessage msg) {
         appendInt(msg.getSignatureAndHashAlgorithmsLength().getValue(),
-                ExtensionByteLength.SIGNATURE_AND_HASH_ALGORITHMS);
+            ExtensionByteLength.SIGNATURE_AND_HASH_ALGORITHMS);
         LOGGER.debug("SignatureAndHashAlgorithmsLength: " + msg.getSignatureAndHashAlgorithmsLength().getValue());
     }
 
     private void writeSignatureAndHashAlgorithms(SignatureAndHashAlgorithmsExtensionMessage msg) {
         appendBytes(msg.getSignatureAndHashAlgorithms().getValue());
         LOGGER.debug("SignatureAndHashAlgorithms: "
-                + ArrayConverter.bytesToHexString(msg.getSignatureAndHashAlgorithms().getValue()));
+            + ArrayConverter.bytesToHexString(msg.getSignatureAndHashAlgorithms().getValue()));
     }
 }

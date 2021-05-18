@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.transport.tcp.timing;
 
 import java.io.IOException;
@@ -33,7 +33,7 @@ public class TimingClientTcpTransportHandlerTest {
      */
     @Test(expected = IOException.class)
     public void testCloseConnection() throws IOException {
-        handler = new TimingClientTcpTransportHandler(100, "localhost", 0);
+        handler = new TimingClientTcpTransportHandler(100, 100, "localhost", 0);
         handler.closeConnection();
     }
 
@@ -49,7 +49,8 @@ public class TimingClientTcpTransportHandlerTest {
             serverSocketChannel = ServerSocketChannel.open();
             serverSocketChannel.socket().bind(new InetSocketAddress(0));
             serverSocketChannel.configureBlocking(false);
-            handler = new TimingClientTcpTransportHandler(100, "localhost", serverSocketChannel.socket().getLocalPort());
+            handler =
+                new TimingClientTcpTransportHandler(100, 100, "localhost", serverSocketChannel.socket().getLocalPort());
             handler.initialize();
             SocketChannel acceptChannel = serverSocketChannel.accept();
             assertNotNull(acceptChannel);
@@ -72,7 +73,8 @@ public class TimingClientTcpTransportHandlerTest {
             serverSocketChannel = ServerSocketChannel.open();
             serverSocketChannel.socket().bind(new InetSocketAddress(0));
             serverSocketChannel.configureBlocking(false);
-            handler = new TimingClientTcpTransportHandler(100, "localhost", serverSocketChannel.socket().getLocalPort());
+            handler =
+                new TimingClientTcpTransportHandler(100, 100, "localhost", serverSocketChannel.socket().getLocalPort());
             handler.initialize();
             SocketChannel acceptChannel = serverSocketChannel.accept();
             assertNotNull(acceptChannel);

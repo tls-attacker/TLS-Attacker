@@ -1,17 +1,17 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.ArrayList;
@@ -23,13 +23,13 @@ import java.util.Set;
 public class MessageActionFactory {
 
     public static MessageAction createAction(Config tlsConfig, AliasedConnection connection,
-            ConnectionEndType sendingConnectionEndType, ProtocolMessage... protocolMessages) {
+        ConnectionEndType sendingConnectionEndType, ProtocolMessage... protocolMessages) {
         return createAction(tlsConfig, connection, sendingConnectionEndType,
-                new ArrayList<>(Arrays.asList(protocolMessages)));
+            new ArrayList<>(Arrays.asList(protocolMessages)));
     }
 
     public static MessageAction createAction(Config tlsConfig, AliasedConnection connection,
-            ConnectionEndType sendingConnectionEnd, List<ProtocolMessage> protocolMessages) {
+        ConnectionEndType sendingConnectionEnd, List<ProtocolMessage> protocolMessages) {
         MessageAction action;
         if (connection.getLocalConnectionEndType() == sendingConnectionEnd) {
             action = new SendAction(protocolMessages);
@@ -41,7 +41,7 @@ public class MessageActionFactory {
     }
 
     public static AsciiAction createAsciiAction(AliasedConnection connection, ConnectionEndType sendingConnectionEnd,
-            String message, String encoding) {
+        String message, String encoding) {
         AsciiAction action;
         if (connection.getLocalConnectionEndType() == sendingConnectionEnd) {
             action = new SendAsciiAction(message, encoding);

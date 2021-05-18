@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow.task;
 
 import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
@@ -35,7 +35,8 @@ public abstract class TlsTask implements ITask, Callable<ITask> {
         this.additionalTcpTimeout = 5000;
     }
 
-    public TlsTask(int reexecutions, long additionalSleepTime, boolean increasingSleepTimes, long additionalTcpTimeout) {
+    public TlsTask(int reexecutions, long additionalSleepTime, boolean increasingSleepTimes,
+        long additionalTcpTimeout) {
         this.reexecutions = reexecutions;
         this.additionalSleepTime = additionalSleepTime;
         this.increasingSleepTimes = increasingSleepTimes;
@@ -44,7 +45,7 @@ public abstract class TlsTask implements ITask, Callable<ITask> {
 
     @Override
     public ITask call() {
-        Exception exception = null;
+        Throwable exception = null;
         long sleepTime = 0;
         for (int i = 0; i < reexecutions + 1; i++) {
             try {
@@ -61,7 +62,7 @@ public abstract class TlsTask implements ITask, Callable<ITask> {
                     }
                     hasError = true;
                 }
-            } catch (TransportHandlerConnectException E) {
+            } catch (TransportHandlerConnectException e) {
                 LOGGER.warn("Could not connect to target. Sleep and Retry");
                 try {
                     Thread.sleep(additionalTcpTimeout);
@@ -69,17 +70,23 @@ public abstract class TlsTask implements ITask, Callable<ITask> {
                     LOGGER.error("Interrupted during sleep", ex);
                 }
                 hasError = true;
-                exception = E;
-            } catch (Exception E) {
-                LOGGER.error("Encountered an exception during the execution", E);
+                exception = e;
+            } catch (Exception e) {
                 hasError = true;
                 if (increasingSleepTimes) {
                     sleepTime += additionalSleepTime;
                 }
-                exception = E;
+                exception = e;
             }
             if (i < reexecutions) {
-                this.reset();
+                try {
+                    this.reset();
+                } catch (Throwable e) {
+                    LOGGER.error("Could not reset state!", e);
+                    hasError = true;
+                    exception = e;
+                    break;
+                }
             }
         }
         if (hasError) {

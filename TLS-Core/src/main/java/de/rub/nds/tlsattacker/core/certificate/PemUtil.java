@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.certificate;
 
 import java.io.ByteArrayOutputStream;
@@ -116,8 +116,8 @@ public class PemUtil {
         }
     }
 
-    public static Certificate readCertificate(InputStream stream) throws FileNotFoundException, CertificateException,
-            IOException {
+    public static Certificate readCertificate(InputStream stream)
+        throws FileNotFoundException, CertificateException, IOException {
         CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
         Collection<? extends java.security.cert.Certificate> certs = certFactory.generateCertificates(stream);
         java.security.cert.Certificate sunCert = (java.security.cert.Certificate) certs.toArray()[0];
@@ -149,8 +149,8 @@ public class PemUtil {
             PrivateKeyInfo privKeyInfo = (PrivateKeyInfo) obj;
             JcaPEMKeyConverter converter = new JcaPEMKeyConverter();
             return converter.getPrivateKey(privKeyInfo);
-        } catch (Exception E) {
-            throw new IOException("Could not read private key", E);
+        } catch (Exception e) {
+            throw new IOException("Could not read private key", e);
         } finally {
             stream.close();
             reader.close();
@@ -172,8 +172,8 @@ public class PemUtil {
             SubjectPublicKeyInfo publicKeyInfo = (SubjectPublicKeyInfo) obj;
             JcaPEMKeyConverter converter = new JcaPEMKeyConverter();
             return converter.getPublicKey(publicKeyInfo);
-        } catch (Exception E) {
-            throw new IOException("Could not read public key", E);
+        } catch (Exception e) {
+            throw new IOException("Could not read public key", e);
         } finally {
             stream.close();
             reader.close();

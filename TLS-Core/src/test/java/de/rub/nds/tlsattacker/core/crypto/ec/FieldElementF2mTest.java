@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.crypto.ec;
 
 import java.math.BigInteger;
@@ -29,8 +29,8 @@ public class FieldElementF2mTest {
     @Before
     public void setUp() {
         /*
-         * x^3 + x + 1 has no roots over F_2 and it's degree is less than 4.
-         * This implies that it is irreducible over F_2[x].
+         * x^3 + x + 1 has no roots over F_2 and it's degree is less than 4. This implies that it is irreducible over
+         * F_2[x].
          */
         modulus = new BigInteger("1011", 2);
         p1 = new FieldElementF2m(new BigInteger("101", 2), modulus);

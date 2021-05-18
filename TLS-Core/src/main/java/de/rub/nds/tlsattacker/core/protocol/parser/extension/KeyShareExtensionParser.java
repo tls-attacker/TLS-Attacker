@@ -1,17 +1,18 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
@@ -26,17 +27,32 @@ public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMe
 
     private List<KeyShareEntry> entryList;
 
+    private boolean helloRetryRequestHint = false;
+
     public KeyShareExtensionParser(int startposition, byte[] array, Config config) {
         super(startposition, array, config);
     }
 
     @Override
     public void parseExtensionMessageContent(KeyShareExtensionMessage msg) {
-        LOGGER.debug("Parsing KeyShareExtensionMessage");
+        if (helloRetryRequestHint) {
+            parseHRRKeyShare(msg);
+        } else {
+            parseRegularKeyShare(msg);
+        }
+        msg.setRetryRequestMode(helloRetryRequestHint);
+    }
+
+    @Override
+    protected KeyShareExtensionMessage createExtensionMessage() {
+        return new KeyShareExtensionMessage();
+    }
+
+    private void parseRegularKeyShare(KeyShareExtensionMessage msg) {
+        LOGGER.debug("Parsing KeyShareExtensionMessage as regular KeyShareExtension");
         parseKeyShareListLength(msg);
-        LOGGER.debug("Parsing KeyShareExtensionMessage");
-        if (msg.getKeyShareListLength().getValue() + ExtensionByteLength.KEY_SHARE_LIST_LENGTH == msg
-                .getExtensionLength().getValue()) {
+        if (msg.getKeyShareListLength().getValue() + ExtensionByteLength.KEY_SHARE_LIST_LENGTH
+            == msg.getExtensionLength().getValue()) {
             parseKeyShareListBytes(msg);
         } else {
             msg.setKeyShareListLength(msg.getExtensionLength().getValue());
@@ -57,14 +73,17 @@ public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMe
         parseKeyShareList(msg);
     }
 
-    @Override
-    protected KeyShareExtensionMessage createExtensionMessage() {
-        return new KeyShareExtensionMessage();
+    private void parseHRRKeyShare(KeyShareExtensionMessage msg) {
+        LOGGER.debug("Parsing KeyShareExtensionMessage as HelloRetryRequest KeyShareExtension");
+        msg.setKeyShareListBytes(parseByteArrayField(NamedGroup.LENGTH));
+        entryList = new LinkedList<>();
+        KeyShareEntryParser parser = new KeyShareEntryParser(0, msg.getKeyShareListBytes().getValue());
+        entryList.add(parser.parse());
+        parseKeyShareList(msg);
     }
 
     /**
-     * Reads the next bytes as the keySahreListLength of the Extension and
-     * writes them in the message
+     * Reads the next bytes as the keyShareListLength of the Extension and writes them in the message
      *
      * @param msg
      *            Message to write in
@@ -75,8 +94,7 @@ public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMe
     }
 
     /**
-     * Reads the next bytes as the keyShareListBytes of the Extension and writes
-     * them in the message
+     * Reads the next bytes as the keyShareListBytes of the Extension and writes them in the message
      *
      * @param msg
      *            Message to write in
@@ -87,13 +105,20 @@ public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMe
     }
 
     /**
-     * Reads the next bytes as the keyShareList of the Extension and writes them
-     * in the message
+     * Reads the next bytes as the keyShareList of the Extension and writes them in the message
      *
      * @param msg
      *            Message to write in
      */
     private void parseKeyShareList(KeyShareExtensionMessage msg) {
         msg.setKeyShareList(entryList);
+    }
+
+    public boolean isHelloRetryRequestHint() {
+        return helloRetryRequestHint;
+    }
+
+    public void setHelloRetryRequestHint(boolean helloRetryRequestHint) {
+        this.helloRetryRequestHint = helloRetryRequestHint;
     }
 }

@@ -1,21 +1,25 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.AlpnExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.alpn.AlpnEntry;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.AlpnExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.AlpnExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.AlpnExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import static org.junit.Assert.assertArrayEquals;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.util.LinkedList;
+import java.util.List;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,12 +40,17 @@ public class AlpnExtensionHandlerTest {
     @Test
     public void testAdjustTLSContext() {
         AlpnExtensionMessage msg = new AlpnExtensionMessage();
-        msg.setAlpnExtensionLength(announcedProtocolsLength);
-        msg.setAlpnAnnouncedProtocols(announcedProtocols);
-
+        msg.setProposedAlpnProtocolsLength(announcedProtocolsLength);
+        msg.setProposedAlpnProtocols(announcedProtocols);
+        List<AlpnEntry> alpnEntryList = new LinkedList<>();
+        alpnEntryList.add(new AlpnEntry(new String(announcedProtocols)));
+        alpnEntryList.get(0).setAlpnEntry(new String(announcedProtocols));
+        msg.setAlpnEntryList(alpnEntryList);
+        context.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
         handler.adjustTLSContext(msg);
-
-        assertArrayEquals(announcedProtocols, context.getAlpnAnnouncedProtocols());
+        List<String> alpnStringList = new LinkedList<>();
+        alpnStringList.add(new String(announcedProtocols));
+        assertEquals(alpnStringList, context.getProposedAlpnProtocols());
     }
 
     @Test

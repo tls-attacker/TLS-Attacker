@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -30,12 +30,12 @@ public class ClientCertificateTypeExtensionParserTest {
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] {
-                { ExtensionType.CLIENT_CERTIFICATE_TYPE, ArrayConverter.hexStringToByteArray("0013000100"), 1, 0, null,
-                        Arrays.asList(CertificateType.X509), false },
-                { ExtensionType.CLIENT_CERTIFICATE_TYPE, ArrayConverter.hexStringToByteArray("001300020100"), 2, 0, 1,
-                        Arrays.asList(CertificateType.X509), true },
-                { ExtensionType.CLIENT_CERTIFICATE_TYPE, ArrayConverter.hexStringToByteArray("00130003020100"), 3, 0,
-                        2, Arrays.asList(CertificateType.OPEN_PGP, CertificateType.X509), true } });
+            { ExtensionType.CLIENT_CERTIFICATE_TYPE, ArrayConverter.hexStringToByteArray("0013000100"), 1, 0, null,
+                Arrays.asList(CertificateType.X509), false },
+            { ExtensionType.CLIENT_CERTIFICATE_TYPE, ArrayConverter.hexStringToByteArray("001300020100"), 2, 0, 1,
+                Arrays.asList(CertificateType.X509), true },
+            { ExtensionType.CLIENT_CERTIFICATE_TYPE, ArrayConverter.hexStringToByteArray("00130003020100"), 3, 0, 2,
+                Arrays.asList(CertificateType.OPEN_PGP, CertificateType.X509), true } });
     }
 
     private final ExtensionType extensionType;
@@ -49,8 +49,8 @@ public class ClientCertificateTypeExtensionParserTest {
     private ClientCertificateTypeExtensionMessage msg;
 
     public ClientCertificateTypeExtensionParserTest(ExtensionType extensionType, byte[] expectedBytes,
-            int extensionLength, int startParsing, Integer certificateTypesLength,
-            List<CertificateType> certificateTypes, boolean isClientState) {
+        int extensionLength, int startParsing, Integer certificateTypesLength, List<CertificateType> certificateTypes,
+        boolean isClientState) {
         this.extensionType = extensionType;
         this.expectedBytes = expectedBytes;
         this.extensionLength = extensionLength;

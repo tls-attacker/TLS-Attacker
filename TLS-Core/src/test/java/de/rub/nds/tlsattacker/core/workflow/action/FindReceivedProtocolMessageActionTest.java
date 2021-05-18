@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.util.BadRandom;
@@ -88,10 +88,10 @@ public class FindReceivedProtocolMessageActionTest {
 
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
         WorkflowTrace trace = factory.createWorkflowTrace(WorkflowTraceType.HELLO, RunningModeType.CLIENT);
-        FindReceivedProtocolMessageAction action_find_handshake = new FindReceivedProtocolMessageAction(
-                ProtocolMessageType.HANDSHAKE);
-        FindReceivedProtocolMessageAction action_find_app_data = new FindReceivedProtocolMessageAction(
-                ProtocolMessageType.APPLICATION_DATA);
+        FindReceivedProtocolMessageAction action_find_handshake =
+            new FindReceivedProtocolMessageAction(ProtocolMessageType.HANDSHAKE);
+        FindReceivedProtocolMessageAction action_find_app_data =
+            new FindReceivedProtocolMessageAction(ProtocolMessageType.APPLICATION_DATA);
         trace.addTlsAction(action_find_handshake);
         trace.addTlsAction(action_find_app_data);
 
@@ -114,14 +114,12 @@ public class FindReceivedProtocolMessageActionTest {
             LOGGER.info("Killing server...");
             tlsServer.shutdown();
             LOGGER.info("Done.");
-        } catch (NoSuchAlgorithmException | CertificateException | IOException | InvalidKeyException
-                | KeyStoreException | NoSuchProviderException | SignatureException | UnrecoverableKeyException
-                | KeyManagementException ex) {
+        } catch (NoSuchAlgorithmException | CertificateException | IOException | InvalidKeyException | KeyStoreException
+            | NoSuchProviderException | SignatureException | UnrecoverableKeyException | KeyManagementException ex) {
             fail();
         }
 
         assertTrue(action_find_handshake.isFound());
         assertFalse(action_find_app_data.isFound());
     }
-
 }

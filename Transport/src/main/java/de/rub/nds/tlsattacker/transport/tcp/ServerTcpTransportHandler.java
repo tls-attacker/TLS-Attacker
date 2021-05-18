@@ -1,46 +1,53 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.transport.tcp;
 
+import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import de.rub.nds.tlsattacker.transport.TransportHandler;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.IOException;
 import java.io.PushbackInputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class ServerTcpTransportHandler extends TransportHandler {
+public class ServerTcpTransportHandler extends TcpTransportHandler {
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private ServerSocket serverSocket;
-    private Socket socket;
-    private final int port;
+    private int port;
     /**
-     * If true, don't create a new ServerSocket and just use the given socket.
-     * Useful for spawning server TransportHandler from an externally managed
-     * ServerSocket.
+     * If true, don't create a new ServerSocket and just use the given socket. Useful for spawning server
+     * TransportHandler from an externally managed ServerSocket.
      */
     private boolean externalServerSocket = false;
 
-    public ServerTcpTransportHandler(long timeout, int port) {
-        super(timeout, ConnectionEndType.SERVER);
+    public ServerTcpTransportHandler(Connection con) {
+        super(con);
+        this.port = con.getPort();
+    }
+
+    public ServerTcpTransportHandler(long firstTimeout, long timeout, int port) {
+        super(firstTimeout, timeout, ConnectionEndType.SERVER);
         this.port = port;
     }
 
-    public ServerTcpTransportHandler(long timeout, ServerSocket serverSocket) throws IOException {
-        super(timeout, ConnectionEndType.SERVER);
+    public ServerTcpTransportHandler(long firstTimeout, long timeout, ServerSocket serverSocket) throws IOException {
+        super(firstTimeout, timeout, ConnectionEndType.SERVER);
         this.port = serverSocket.getLocalPort();
         this.serverSocket = serverSocket;
     }
 
-    public ServerTcpTransportHandler(long timeout, Socket socket) throws IOException {
-        super(timeout, ConnectionEndType.SERVER);
+    public ServerTcpTransportHandler(Connection con, Socket socket) throws IOException {
+        super(con);
         this.port = socket.getLocalPort();
         this.socket = socket;
         socket.setSoTimeout(1);
@@ -74,6 +81,9 @@ public class ServerTcpTransportHandler extends TransportHandler {
             socket = serverSocket.accept();
             socket.setSoTimeout(1);
         }
+        srcPort = socket.getLocalPort();
+        dstPort = socket.getPort();
+        LOGGER.info("Connection established from ports {} -> {}", srcPort, dstPort);
         setStreams(new PushbackInputStream(socket.getInputStream()), socket.getOutputStream());
     }
 
@@ -95,7 +105,7 @@ public class ServerTcpTransportHandler extends TransportHandler {
             }
             return false;
         } else {
-            throw new IOException("Transporthandler is not initalized!");
+            throw new IOException("TransportHandler is not initialized!");
         }
     }
 
@@ -110,11 +120,35 @@ public class ServerTcpTransportHandler extends TransportHandler {
         }
     }
 
-    public int getPort() {
-        if (serverSocket != null) {
-            return serverSocket.getLocalPort();
+    @Override
+    public Integer getSrcPort() {
+        if (isInitialized()) {
+            return socket.getLocalPort();
         } else {
             return port;
         }
+    }
+
+    @Override
+    public void setSrcPort(int port) {
+        if (isInitialized()) {
+            throw new RuntimeException("Cannot change server port of uninitialized TransportHandler");
+        } else {
+            this.port = port;
+        }
+    }
+
+    @Override
+    public Integer getDstPort() {
+        if (!isInitialized()) {
+            throw new RuntimeException("Cannot access client port of uninitialized TransportHandler");
+        } else {
+            return socket.getPort();
+        }
+    }
+
+    @Override
+    public void setDstPort(int port) {
+        throw new RuntimeException("A ServerTransportHandler cannot set the client port");
     }
 }

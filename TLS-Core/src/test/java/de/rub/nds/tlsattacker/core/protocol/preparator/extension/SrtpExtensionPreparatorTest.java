@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
@@ -27,8 +27,8 @@ public class SrtpExtensionPreparatorTest {
     private SrtpExtensionPreparator preparator;
     private SrtpExtensionMessage msg;
     private final List<SrtpProtectionProfiles> profiles = Arrays.asList(
-            SrtpProtectionProfiles.SRTP_AES128_CM_HMAC_SHA1_80, SrtpProtectionProfiles.SRTP_AES128_CM_HMAC_SHA1_32,
-            SrtpProtectionProfiles.SRTP_NULL_HMAC_SHA1_80, SrtpProtectionProfiles.SRTP_NULL_HMAC_SHA1_32);
+        SrtpProtectionProfiles.SRTP_AES128_CM_HMAC_SHA1_80, SrtpProtectionProfiles.SRTP_AES128_CM_HMAC_SHA1_32,
+        SrtpProtectionProfiles.SRTP_NULL_HMAC_SHA1_80, SrtpProtectionProfiles.SRTP_NULL_HMAC_SHA1_32);
     private final int profilesLength = 8;
     private final byte[] profilesAsBytes = new byte[] { 0x00, 0x01, 0x00, 0x02, 0x00, 0x05, 0x00, 0x06 };
     private final byte[] mki = new byte[] {};

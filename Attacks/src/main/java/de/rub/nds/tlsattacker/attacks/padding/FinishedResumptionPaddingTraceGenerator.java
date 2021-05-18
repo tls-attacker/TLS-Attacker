@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks.padding;
 
 import de.rub.nds.tlsattacker.attacks.constants.PaddingRecordGeneratorType;
@@ -37,13 +37,13 @@ public class FinishedResumptionPaddingTraceGenerator extends PaddingTraceGenerat
 
     /**
      *
-     * @param config
+     * @param  config
      * @return
      */
     @Override
     public WorkflowTrace getPaddingOracleWorkflowTrace(Config config, PaddingVector vector) {
-        WorkflowTrace trace = new WorkflowConfigurationFactory(config).createWorkflowTrace(
-                WorkflowTraceType.FULL_RESUMPTION, RunningModeType.CLIENT);
+        WorkflowTrace trace = new WorkflowConfigurationFactory(config)
+            .createWorkflowTrace(WorkflowTraceType.FULL_RESUMPTION, RunningModeType.CLIENT);
         SendAction sendAction = (SendAction) trace.getLastSendingAction();
         LinkedList<AbstractRecord> recordList = new LinkedList<>();
         recordList.add(new Record(config));

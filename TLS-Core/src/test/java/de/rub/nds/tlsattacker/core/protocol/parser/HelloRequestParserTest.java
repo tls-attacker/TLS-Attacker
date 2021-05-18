@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -35,7 +35,8 @@ public class HelloRequestParserTest {
     private final int length;
     private final Config config = Config.createConfig();
 
-    public HelloRequestParserTest(byte[] message, int start, byte[] expectedPart, HandshakeMessageType type, int length) {
+    public HelloRequestParserTest(byte[] message, int start, byte[] expectedPart, HandshakeMessageType type,
+        int length) {
         this.message = message;
         this.type = type;
         this.length = length;

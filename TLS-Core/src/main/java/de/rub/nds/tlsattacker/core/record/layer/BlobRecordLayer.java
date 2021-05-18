@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.record.layer;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
@@ -86,13 +86,13 @@ public class BlobRecordLayer extends RecordLayer {
 
     @Override
     public byte[] prepareRecords(byte[] data, ProtocolMessageType contentType, List<AbstractRecord> records) {
-        CleanRecordByteSeperator seperator = new CleanRecordByteSeperator(records, context.getConfig()
-                .getDefaultMaxRecordData(), 0, data);
-        records = seperator.parse();
+        CleanRecordByteSeperator separator =
+            new CleanRecordByteSeperator(records, context.getConfig().getDefaultMaxRecordData(), 0, data);
+        records = separator.parse();
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         for (AbstractRecord record : records) {
-            AbstractRecordPreparator preparator = record.getRecordPreparator(context.getChooser(), encryptor,
-                    compressor, contentType);
+            AbstractRecordPreparator preparator =
+                record.getRecordPreparator(context.getChooser(), encryptor, compressor, contentType);
             preparator.prepare();
             AbstractRecordSerializer serializer = record.getRecordSerializer();
             try {
@@ -137,13 +137,13 @@ public class BlobRecordLayer extends RecordLayer {
     }
 
     @Override
-    public void resetEncryptorCipher() {
-        encryptor.resetRecordCipher();
+    public void resetEncryptor() {
+        encryptor.removeAllCiphers();
     }
 
     @Override
-    public void resetDecryptorCipher() {
-        decryptor.resetRecordCipher();
+    public void resetDecryptor() {
+        decryptor.removeAllCiphers();
     }
 
 }

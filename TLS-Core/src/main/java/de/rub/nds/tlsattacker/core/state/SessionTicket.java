@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.state;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -139,7 +139,7 @@ public class SessionTicket extends ModifiableVariableHolder implements Serializa
 
     /**
      * @param identity
-     *            the identity to set
+     *                 the identity to set
      */
     public void setIdentity(ModifiableByteArray identity) {
         this.identity = identity;
@@ -147,7 +147,7 @@ public class SessionTicket extends ModifiableVariableHolder implements Serializa
 
     /**
      * @param identity
-     *            the identity to set
+     *                 the identity to set
      */
     public void setIdentity(byte[] identity) {
         this.identity = ModifiableVariableFactory.safelySetValue(this.identity, identity);
@@ -162,7 +162,7 @@ public class SessionTicket extends ModifiableVariableHolder implements Serializa
 
     /**
      * @param ticketAgeAdd
-     *            the ticketAgeAdd to set
+     *                     the ticketAgeAdd to set
      */
     public void setTicketAgeAdd(ModifiableByteArray ticketAgeAdd) {
         this.ticketAgeAdd = ticketAgeAdd;
@@ -170,7 +170,7 @@ public class SessionTicket extends ModifiableVariableHolder implements Serializa
 
     /**
      * @param ticketAgeAdd
-     *            the ticketAgeAdd to set
+     *                     the ticketAgeAdd to set
      */
     public void setTicketAgeAdd(byte[] ticketAgeAdd) {
         this.ticketAgeAdd = ModifiableVariableFactory.safelySetValue(this.ticketAgeAdd, ticketAgeAdd);
@@ -185,7 +185,7 @@ public class SessionTicket extends ModifiableVariableHolder implements Serializa
 
     /**
      * @param ticketNonce
-     *            the ticketNonce to set
+     *                    the ticketNonce to set
      */
     public void setTicketNonce(ModifiableByteArray ticketNonce) {
         this.ticketNonce = ticketNonce;
@@ -193,7 +193,7 @@ public class SessionTicket extends ModifiableVariableHolder implements Serializa
 
     /**
      * @param ticketNonce
-     *            the ticketNonce to set
+     *                    the ticketNonce to set
      */
     public void setTicketNonce(byte[] ticketNonce) {
         this.ticketNonce = ModifiableVariableFactory.safelySetValue(this.ticketNonce, ticketNonce);
@@ -208,7 +208,7 @@ public class SessionTicket extends ModifiableVariableHolder implements Serializa
 
     /**
      * @param identityLength
-     *            the identityLength to set
+     *                       the identityLength to set
      */
     public void setIdentityLength(ModifiableInteger identityLength) {
         this.identityLength = identityLength;
@@ -216,7 +216,7 @@ public class SessionTicket extends ModifiableVariableHolder implements Serializa
 
     /**
      * @param identityLength
-     *            the identityLength to set
+     *                       the identityLength to set
      */
     public void setIdentityLength(int identityLength) {
         this.identityLength = ModifiableVariableFactory.safelySetValue(this.identityLength, identityLength);
@@ -231,7 +231,7 @@ public class SessionTicket extends ModifiableVariableHolder implements Serializa
 
     /**
      * @param ticketNonceLength
-     *            the ticketNonceLength to set
+     *                          the ticketNonceLength to set
      */
     public void setTicketNonceLength(ModifiableInteger ticketNonceLength) {
         this.ticketNonceLength = ticketNonceLength;
@@ -239,7 +239,7 @@ public class SessionTicket extends ModifiableVariableHolder implements Serializa
 
     /**
      * @param ticketNonceLength
-     *            the ticketNonceLength to set
+     *                          the ticketNonceLength to set
      */
     public void setTicketNonceLength(int ticketNonceLength) {
         this.ticketNonceLength = ModifiableVariableFactory.safelySetValue(this.ticketNonceLength, ticketNonceLength);

@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -16,7 +16,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class DHClientKeyExchangeSerializer<T extends DHClientKeyExchangeMessage> extends ClientKeyExchangeSerializer<T> {
+public class DHClientKeyExchangeSerializer<T extends DHClientKeyExchangeMessage>
+    extends ClientKeyExchangeSerializer<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -26,9 +27,9 @@ public class DHClientKeyExchangeSerializer<T extends DHClientKeyExchangeMessage>
      * Constructor for the DHClientKeyExchangeSerializer
      *
      * @param message
-     *            Message that should be serialized
+     *                Message that should be serialized
      * @param version
-     *            Version of the Protocol
+     *                Version of the Protocol
      */
     public DHClientKeyExchangeSerializer(T message, ProtocolVersion version) {
         super(message, version);
@@ -50,8 +51,7 @@ public class DHClientKeyExchangeSerializer<T extends DHClientKeyExchangeMessage>
     }
 
     /**
-     * Writes the SerializedPublicKeyLength of the DHClientKeyExchangeMessage
-     * into the final byte[]
+     * Writes the SerializedPublicKeyLength of the DHClientKeyExchangeMessage into the final byte[]
      */
     private void writeSerializedPublicKeyLength(T msg) {
         appendInt(msg.getPublicKeyLength().getValue(), HandshakeByteLength.DH_PUBLICKEY_LENGTH);
@@ -59,8 +59,7 @@ public class DHClientKeyExchangeSerializer<T extends DHClientKeyExchangeMessage>
     }
 
     /**
-     * Writes the SerializedPublicKey of the DHClientKeyExchangeMessage into the
-     * final byte[]
+     * Writes the SerializedPublicKey of the DHClientKeyExchangeMessage into the final byte[]
      */
     private void writeSerializedPublicKey(T msg) {
         appendBytes(msg.getPublicKey().getValue());

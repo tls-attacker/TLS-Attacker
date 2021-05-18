@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.constants.AuthzDataFormat;
@@ -19,7 +19,7 @@ public class ServerAuthzExtensionPreparator extends ExtensionPreparator<ServerAu
     private final ServerAuthzExtensionMessage msg;
 
     public ServerAuthzExtensionPreparator(Chooser chooser, ServerAuthzExtensionMessage message,
-            ExtensionSerializer<ServerAuthzExtensionMessage> serializer) {
+        ExtensionSerializer<ServerAuthzExtensionMessage> serializer) {
         super(chooser, message, serializer);
         msg = message;
     }
@@ -27,7 +27,8 @@ public class ServerAuthzExtensionPreparator extends ExtensionPreparator<ServerAu
     @Override
     public void prepareExtensionContent() {
         msg.setAuthzFormatListLength(chooser.getConfig().getServerAuthzExtensionDataFormat().size());
-        msg.setAuthzFormatList(AuthzDataFormat.listToByteArray(chooser.getConfig().getServerAuthzExtensionDataFormat()));
+        msg.setAuthzFormatList(
+            AuthzDataFormat.listToByteArray(chooser.getConfig().getServerAuthzExtensionDataFormat()));
     }
 
 }

@@ -1,18 +1,16 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.config.converters.NamedGroupConverter;
-import de.rub.nds.tlsattacker.core.config.converters.PointFormatConverter;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import java.util.Collections;
@@ -20,9 +18,9 @@ import java.util.List;
 
 public class NamedGroupsDelegate extends Delegate {
 
-    @Parameter(names = "-point_formats", description = "Sets the elliptic curve point formats, divided by a comma", converter = PointFormatConverter.class)
+    @Parameter(names = "-point_formats", description = "Sets the elliptic curve point formats, divided by a comma")
     private List<ECPointFormat> pointFormats = null;
-    @Parameter(names = "-named_group", description = "Named groups to be used, divided by a comma", converter = NamedGroupConverter.class)
+    @Parameter(names = "-named_group", description = "Named groups to be used, divided by a comma")
     private List<NamedGroup> namedGroups = null;
 
     public NamedGroupsDelegate() {

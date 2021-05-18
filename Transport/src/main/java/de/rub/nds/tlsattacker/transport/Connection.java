@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.transport;
 
 import java.io.Serializable;
@@ -28,6 +28,8 @@ public abstract class Connection implements Serializable {
     protected String proxyControlHostname = null;
     protected TransportHandlerType transportHandlerType = null;
     protected Integer timeout = null;
+    protected Integer firstTimeout = null;
+    protected Integer connectionTimeout = null;
 
     public Connection() {
     }
@@ -43,7 +45,7 @@ public abstract class Connection implements Serializable {
 
     public Connection(Connection other) {
         port = other.port;
-        this.ip = other.ip;
+        ip = other.ip;
         hostname = other.hostname;
         proxyDataPort = other.proxyDataPort;
         proxyDataHostname = other.proxyDataHostname;
@@ -51,6 +53,8 @@ public abstract class Connection implements Serializable {
         proxyControlHostname = other.proxyControlHostname;
         transportHandlerType = other.transportHandlerType;
         timeout = other.timeout;
+        firstTimeout = other.firstTimeout;
+        connectionTimeout = other.connectionTimeout;
     }
 
     public String getIp() {
@@ -125,9 +129,24 @@ public abstract class Connection implements Serializable {
         return timeout;
     }
 
+    public void setFirstTimeout(Integer firstTimeout) {
+        this.firstTimeout = firstTimeout;
+    }
+
+    public Integer getFirstTimeout() {
+        return firstTimeout;
+    }
+
+    public Integer getConnectionTimeout() {
+        return connectionTimeout;
+    }
+
+    public void setConnectionTimeout(Integer connectionTimeout) {
+        this.connectionTimeout = connectionTimeout;
+    }
+
     /**
-     * Get the connection end type of the connection end. This must be
-     * implemented by all children.
+     * Get the connection end type of the connection end. This must be implemented by all children.
      *
      * @return the connection end type of the connection end.
      */
@@ -190,4 +209,19 @@ public abstract class Connection implements Serializable {
         return true;
     }
 
+    protected void addProperties(StringBuilder sb) {
+        sb.append("host=").append(hostname);
+        sb.append(" port=").append(port);
+        sb.append(" proxyDataHost=").append(proxyDataHostname);
+        sb.append(" proxyDataPort=").append(proxyDataPort);
+        sb.append(" proxyControlHost=").append(proxyControlHostname);
+        sb.append(" proxyControlPort=").append(proxyControlPort);
+        sb.append(" type=").append(transportHandlerType);
+        sb.append(" firstTimeout=").append(firstTimeout);
+        sb.append(" timeout=").append(timeout);
+    }
+
+    protected void addCompactProperties(StringBuilder sb) {
+        sb.append(hostname).append(":").append(port);
+    }
 }

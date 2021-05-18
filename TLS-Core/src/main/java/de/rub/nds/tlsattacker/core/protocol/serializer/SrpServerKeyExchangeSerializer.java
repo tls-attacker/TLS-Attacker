@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -26,9 +26,9 @@ public class SrpServerKeyExchangeSerializer extends ServerKeyExchangeSerializer<
      * Constructor for the SRPServerKeyExchangeSerializer
      *
      * @param message
-     *            Message that should be serialized
+     *                Message that should be serialized
      * @param version
-     *            Version of the Protocol
+     *                Version of the Protocol
      */
     public SrpServerKeyExchangeSerializer(SrpServerKeyExchangeMessage message, ProtocolVersion version) {
         super(message, version);
@@ -55,8 +55,7 @@ public class SrpServerKeyExchangeSerializer extends ServerKeyExchangeSerializer<
     }
 
     /**
-     * Writes the nLength of the SrpServerKeyExchangeMessage into the final
-     * byte[]
+     * Writes the nLength of the SrpServerKeyExchangeMessage into the final byte[]
      */
     private void writeModulusLength(SrpServerKeyExchangeMessage msg) {
         appendInt(msg.getModulusLength().getValue(), HandshakeByteLength.SRP_MODULUS_LENGTH);
@@ -72,8 +71,7 @@ public class SrpServerKeyExchangeSerializer extends ServerKeyExchangeSerializer<
     }
 
     /**
-     * Writes the saltLength of the SrpServerKeyExchangeMessage into the final
-     * byte[]
+     * Writes the saltLength of the SrpServerKeyExchangeMessage into the final byte[]
      */
     private void writeSaltLength(SrpServerKeyExchangeMessage msg) {
         appendInt(msg.getSaltLength().getValue(), HandshakeByteLength.SRP_SALT_LENGTH);
@@ -89,8 +87,7 @@ public class SrpServerKeyExchangeSerializer extends ServerKeyExchangeSerializer<
     }
 
     /**
-     * Writes the gLength of the SrpServerKeyExchangeMessage into the final
-     * byte[]
+     * Writes the gLength of the SrpServerKeyExchangeMessage into the final byte[]
      */
     private void writeGeneratorLength(SrpServerKeyExchangeMessage msg) {
         appendInt(msg.getGeneratorLength().getValue(), HandshakeByteLength.SRP_GENERATOR_LENGTH);
@@ -106,8 +103,7 @@ public class SrpServerKeyExchangeSerializer extends ServerKeyExchangeSerializer<
     }
 
     /**
-     * Writes the SerializedPublicKeyLength of the SrpServerKeyExchangeMessage
-     * into the final byte[]
+     * Writes the SerializedPublicKeyLength of the SrpServerKeyExchangeMessage into the final byte[]
      */
     private void writeSerializedPublicKeyLength(SrpServerKeyExchangeMessage msg) {
         appendInt(msg.getPublicKeyLength().getValue(), HandshakeByteLength.SRP_PUBLICKEY_LENGTH);
@@ -115,8 +111,7 @@ public class SrpServerKeyExchangeSerializer extends ServerKeyExchangeSerializer<
     }
 
     /**
-     * Writes the SerializedPublicKey of the SrpServerKeyExchangeMessage into
-     * the final byte[]
+     * Writes the SerializedPublicKey of the SrpServerKeyExchangeMessage into the final byte[]
      */
     private void writeSerializedPublicKey(SrpServerKeyExchangeMessage msg) {
         appendBytes(msg.getPublicKey().getValue());
@@ -124,13 +119,12 @@ public class SrpServerKeyExchangeSerializer extends ServerKeyExchangeSerializer<
     }
 
     /**
-     * Writes the SignatureAndHashalgorithm of the SrpServerKeyExchangeMessage
-     * into the final byte[]
+     * Writes the SignatureAndHashalgorithm of the SrpServerKeyExchangeMessage into the final byte[]
      */
     private void writeSignatureAndHashAlgorithm(SrpServerKeyExchangeMessage msg) {
         appendBytes(msg.getSignatureAndHashAlgorithm().getValue());
-        LOGGER.debug("SignatureAndHaslAlgorithm: "
-                + ArrayConverter.bytesToHexString(msg.getSignatureAndHashAlgorithm().getValue()));
+        LOGGER.debug("SignatureAndHashAlgorithm: "
+            + ArrayConverter.bytesToHexString(msg.getSignatureAndHashAlgorithm().getValue()));
     }
 
     private boolean isTLS12() {
@@ -142,8 +136,7 @@ public class SrpServerKeyExchangeSerializer extends ServerKeyExchangeSerializer<
     }
 
     /**
-     * Writes the SignatureLength of the SrpServerKeyExchangeMessage into the
-     * final byte[]
+     * Writes the SignatureLength of the SrpServerKeyExchangeMessage into the final byte[]
      */
     private void writeSignatureLength(SrpServerKeyExchangeMessage msg) {
         appendInt(msg.getSignatureLength().getValue(), HandshakeByteLength.SIGNATURE_LENGTH);
@@ -151,8 +144,7 @@ public class SrpServerKeyExchangeSerializer extends ServerKeyExchangeSerializer<
     }
 
     /**
-     * Writes the Signature of the SrpServerKeyExchangeMessage into the final
-     * byte[]
+     * Writes the Signature of the SrpServerKeyExchangeMessage into the final byte[]
      */
     private void writeSignature(SrpServerKeyExchangeMessage msg) {
         appendBytes(msg.getSignature().getValue());

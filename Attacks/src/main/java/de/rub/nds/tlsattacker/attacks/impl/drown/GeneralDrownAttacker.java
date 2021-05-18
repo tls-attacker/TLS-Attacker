@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks.impl.drown;
 
 import de.rub.nds.tlsattacker.attacks.config.GeneralDrownCommandConfig;
@@ -52,17 +52,18 @@ public class GeneralDrownAttacker extends BaseDrownAttacker {
     @Override
     public DrownVulnerabilityType getDrownVulnerabilityType() {
         Config tlsConfig = getTlsConfig();
-        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(
-                WorkflowTraceType.SSL2_HELLO, RunningModeType.CLIENT);
+        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig)
+            .createWorkflowTrace(WorkflowTraceType.SSL2_HELLO, RunningModeType.CLIENT);
         trace.addTlsAction(new SendAction(new SSL2ClientMasterKeyMessage()));
         trace.addTlsAction(new ReceiveAction(new SSL2ServerVerifyMessage()));
         State state = new State(tlsConfig, trace);
         try {
-            WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
-                    tlsConfig.getWorkflowExecutorType(), state);
+            WorkflowExecutor workflowExecutor =
+                WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getWorkflowExecutorType(), state);
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException ex) {
-            LOGGER.info("The SSL protocol flow was not executed completely, follow the debug messages for more information.");
+            LOGGER.info(
+                "The SSL protocol flow was not executed completely, follow the debug messages for more information.");
             LOGGER.debug(ex);
             return DrownVulnerabilityType.UNKNOWN;
         }
@@ -73,21 +74,21 @@ public class GeneralDrownAttacker extends BaseDrownAttacker {
         }
 
         // See if export ciphers are announced
-        SSL2ServerHelloMessage serverHello = (SSL2ServerHelloMessage) WorkflowTraceUtil.getFirstReceivedMessage(
-                HandshakeMessageType.SSL2_SERVER_HELLO, trace);
-        List<SSL2CipherSuite> serverCipherSuites = SSL2CipherSuite.getCiphersuites(serverHello.getCipherSuites()
-                .getValue());
+        SSL2ServerHelloMessage serverHello = (SSL2ServerHelloMessage) WorkflowTraceUtil
+            .getFirstReceivedMessage(HandshakeMessageType.SSL2_SERVER_HELLO, trace);
+        List<SSL2CipherSuite> serverCipherSuites =
+            SSL2CipherSuite.getCipherSuites(serverHello.getCipherSuites().getValue());
         for (SSL2CipherSuite cipherSuite : serverCipherSuites) {
             if (cipherSuite.isWeak()) {
-                LOGGER.debug("Declaring host as vulnerable based on weak ciphersuite in ServerHello.");
+                LOGGER.debug("Declaring host as vulnerable based on weak cipher suite in ServerHello.");
                 return DrownVulnerabilityType.GENERAL;
             }
         }
 
         // See if server supports export ciphers even though they have not
         // been announced (CVE-2015-3197)
-        SSL2ServerVerifyMessage message = (SSL2ServerVerifyMessage) WorkflowTraceUtil.getFirstReceivedMessage(
-                HandshakeMessageType.SSL2_SERVER_VERIFY, trace);
+        SSL2ServerVerifyMessage message = (SSL2ServerVerifyMessage) WorkflowTraceUtil
+            .getFirstReceivedMessage(HandshakeMessageType.SSL2_SERVER_VERIFY, trace);
         if (message != null && ServerVerifyChecker.check(message, state.getTlsContext(), false)) {
             LOGGER.debug("Declaring host as vulnerable based on export cipher suite selection (CVE-2015-3197).");
             return DrownVulnerabilityType.GENERAL;

@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.connection.Aliasable;
@@ -29,9 +29,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * TlsAction that can be executed in a WorkflowTrace. The TlsAction is the basic
- * building block for WorkflowTraces. A WorkflowTrace is a list of TLSActions.
- * Executing a WorkflowTrace means iterating through this list and calling
+ * TlsAction that can be executed in a WorkflowTrace. The TlsAction is the basic building block for WorkflowTraces. A
+ * WorkflowTrace is a list of TLSActions. Executing a WorkflowTrace means iterating through this list and calling
  * execute() on each TlsAction.
  *
  */
@@ -93,7 +92,7 @@ public abstract class TlsAction implements Serializable, Aliasable {
      * Add default values from given defaultAction and initialize empty fields.
      *
      * @param defaultAction
-     *            Not needed / not evaluated
+     *                      Not needed / not evaluated
      */
     public void normalize(TlsAction defaultAction) {
         // We don't need any defaults
@@ -109,7 +108,7 @@ public abstract class TlsAction implements Serializable, Aliasable {
      * Filter empty fields and default values given in defaultAction.
      *
      * @param defaultAction
-     *            Not needed / not evaluated
+     *                      Not needed / not evaluated
      */
     public void filter(TlsAction defaultAction) {
     }
@@ -178,6 +177,10 @@ public abstract class TlsAction implements Serializable, Aliasable {
 
     public final void setActionOptions(Set<ActionOption> actionOptions) {
         this.actionOptions = actionOptions;
+    }
+
+    public final void addActionOption(ActionOption option) {
+        this.actionOptions.add(option);
     }
 
 }

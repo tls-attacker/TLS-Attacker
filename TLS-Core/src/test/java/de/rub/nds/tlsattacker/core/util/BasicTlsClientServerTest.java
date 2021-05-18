@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.util;
 
 import de.rub.nds.modifiablevariable.util.BadRandom;
@@ -66,7 +66,7 @@ public class BasicTlsClientServerTest {
 
             LOGGER.info("Starting test client");
             BasicTlsClient client = new BasicTlsClient("localhost", tlsServer.getPort(), ProtocolVersion.TLS12,
-                    CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
+                CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
             client.setRetryConnect(false);
             Thread clientThread = new Thread(client);
             clientThread.start();
@@ -80,9 +80,9 @@ public class BasicTlsClientServerTest {
             LOGGER.info("Killing server...");
             tlsServer.shutdown();
             LOGGER.info("Done.");
-        } catch (NoSuchAlgorithmException | CertificateException | IOException | InvalidKeyException
-                | KeyStoreException | NoSuchProviderException | SignatureException | UnrecoverableKeyException
-                | KeyManagementException | InterruptedException ex) {
+        } catch (NoSuchAlgorithmException | CertificateException | IOException | InvalidKeyException | KeyStoreException
+            | NoSuchProviderException | SignatureException | UnrecoverableKeyException | KeyManagementException
+            | InterruptedException ex) {
             fail();
         }
     }

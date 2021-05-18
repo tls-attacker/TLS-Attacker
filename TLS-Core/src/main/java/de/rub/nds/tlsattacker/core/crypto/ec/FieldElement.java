@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.crypto.ec;
 
 import java.io.Serializable;
@@ -18,18 +18,17 @@ import javax.xml.bind.annotation.XmlAccessorType;
 /**
  * Can be used to store elements of a galois field.<br />
  * The attribute data should contain some BigInteger representing the element.<br />
- * The attribute modulus should contain some BigInteger that may be used to
- * identify the field (and for calculations).<br />
+ * The attribute modulus should contain some BigInteger that may be used to identify the field (and for
+ * calculations).<br />
  *
- * All arithmetic operations are performed within the laws of the specified
- * field.
+ * All arithmetic operations are performed within the laws of the specified field.
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class FieldElement implements Serializable {
 
     /*
-     * FieldElement objects are immutable. This should make deep copies in the
-     * methods of the EllipticCurve class unnecessary.
+     * FieldElement objects are immutable. This should make deep copies in the methods of the EllipticCurve class
+     * unnecessary.
      */
     private final BigInteger data;
     private final BigInteger modulus;
@@ -43,7 +42,7 @@ public abstract class FieldElement implements Serializable {
      * Returns this + f.
      *
      * @param f
-     *            An element of the field, which this is an element of.
+     *          An element of the field, which this is an element of.
      */
     public abstract FieldElement add(FieldElement f);
 
@@ -51,7 +50,7 @@ public abstract class FieldElement implements Serializable {
      * Returns this - f. <br />
      *
      * @param f
-     *            An element of the field, which this is an element of.
+     *          An element of the field, which this is an element of.
      */
     public FieldElement subtract(FieldElement f) {
         f = f.addInv();
@@ -62,7 +61,7 @@ public abstract class FieldElement implements Serializable {
      * Returns this * f.<br />
      *
      * @param f
-     *            An element of the field, which this is an element of.
+     *          An element of the field, which this is an element of.
      */
     public abstract FieldElement mult(FieldElement f);
 
@@ -70,7 +69,7 @@ public abstract class FieldElement implements Serializable {
      * Returns this * f^-1.<br />
      *
      * @param f
-     *            An element of the field, which this is an element of.
+     *          An element of the field, which this is an element of.
      */
     public FieldElement divide(FieldElement f) {
         f = f.multInv();

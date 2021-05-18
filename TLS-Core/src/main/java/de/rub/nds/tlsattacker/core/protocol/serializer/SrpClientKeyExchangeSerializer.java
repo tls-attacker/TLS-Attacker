@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -26,9 +26,9 @@ public class SrpClientKeyExchangeSerializer extends ClientKeyExchangeSerializer<
      * Constructor for the DHClientKeyExchangeSerializer
      *
      * @param message
-     *            Message that should be serialized
+     *                Message that should be serialized
      * @param version
-     *            Version of the Protocol
+     *                Version of the Protocol
      */
     public SrpClientKeyExchangeSerializer(SrpClientKeyExchangeMessage message, ProtocolVersion version) {
         super(message, version);
@@ -44,8 +44,7 @@ public class SrpClientKeyExchangeSerializer extends ClientKeyExchangeSerializer<
     }
 
     /**
-     * Writes the SerializedPublicKeyLength of the SrpClientKeyExchangeMessage
-     * into the final byte[]
+     * Writes the SerializedPublicKeyLength of the SrpClientKeyExchangeMessage into the final byte[]
      */
     private void writeSerializedPublicKeyLength(SrpClientKeyExchangeMessage msg) {
         appendInt(msg.getPublicKeyLength().getValue(), HandshakeByteLength.SRP_PUBLICKEY_LENGTH);
@@ -53,8 +52,7 @@ public class SrpClientKeyExchangeSerializer extends ClientKeyExchangeSerializer<
     }
 
     /**
-     * Writes the SerializedPublicKey of the SrpClientKeyExchangeMessage into
-     * the final byte[]
+     * Writes the SerializedPublicKey of the SrpClientKeyExchangeMessage into the final byte[]
      */
     private void writeSerializedPublicKey(SrpClientKeyExchangeMessage msg) {
         appendBytes(msg.getPublicKey().getValue());

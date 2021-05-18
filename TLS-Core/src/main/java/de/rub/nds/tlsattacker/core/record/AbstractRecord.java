@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.record;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -30,8 +30,8 @@ public abstract class AbstractRecord extends ModifiableVariableHolder {
     private ModifiableByteArray completeRecordBytes;
 
     /**
-     * protocol message bytes transported in the record as seen on the transport
-     * layer if encrypption is active this is encrypted if not its plaintext
+     * protocol message bytes transported in the record as seen on the transport layer if encryption is active this is
+     * encrypted if not its plaintext
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.CIPHERTEXT)
     private ModifiableByteArray protocolMessageBytes;
@@ -68,8 +68,8 @@ public abstract class AbstractRecord extends ModifiableVariableHolder {
     }
 
     public void setCleanProtocolMessageBytes(byte[] cleanProtocolMessageBytes) {
-        this.cleanProtocolMessageBytes = ModifiableVariableFactory.safelySetValue(this.cleanProtocolMessageBytes,
-                cleanProtocolMessageBytes);
+        this.cleanProtocolMessageBytes =
+            ModifiableVariableFactory.safelySetValue(this.cleanProtocolMessageBytes, cleanProtocolMessageBytes);
     }
 
     public void setCleanProtocolMessageBytes(ModifiableByteArray cleanProtocolMessageBytes) {
@@ -105,16 +105,17 @@ public abstract class AbstractRecord extends ModifiableVariableHolder {
     }
 
     public void setCompleteRecordBytes(byte[] completeRecordBytes) {
-        this.completeRecordBytes = ModifiableVariableFactory.safelySetValue(this.completeRecordBytes,
-                completeRecordBytes);
+        this.completeRecordBytes =
+            ModifiableVariableFactory.safelySetValue(this.completeRecordBytes, completeRecordBytes);
     }
 
-    public abstract AbstractRecordPreparator getRecordPreparator(Chooser chooser, Encryptor encryptor,
-            RecordCompressor compressor, ProtocolMessageType type);
+    public abstract AbstractRecordPreparator<? extends AbstractRecord> getRecordPreparator(Chooser chooser,
+        Encryptor encryptor, RecordCompressor compressor, ProtocolMessageType type);
 
-    public abstract AbstractRecordParser getRecordParser(int startposition, byte[] array, ProtocolVersion version);
+    public abstract AbstractRecordParser<? extends AbstractRecord> getRecordParser(int startposition, byte[] array,
+        ProtocolVersion version);
 
-    public abstract AbstractRecordSerializer getRecordSerializer();
+    public abstract AbstractRecordSerializer<? extends AbstractRecord> getRecordSerializer();
 
     public abstract void adjustContext(TlsContext context);
 

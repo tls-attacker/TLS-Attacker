@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
@@ -42,7 +42,7 @@ public class CachedInfoExtensionSerializerTest {
     private CachedInfoExtensionMessage msg;
 
     public CachedInfoExtensionSerializerTest(ExtensionType type, ConnectionEndType isClientState, int cachedInfoLength,
-            byte[] cachedInfoBytes, List<CachedObject> cachedObjectList, byte[] extensionBytes, int extensionLength) {
+        byte[] cachedInfoBytes, List<CachedObject> cachedObjectList, byte[] extensionBytes, int extensionLength) {
         this.type = type;
         this.isClientState = isClientState;
         this.cachedInfoLength = cachedInfoLength;
@@ -65,8 +65,8 @@ public class CachedInfoExtensionSerializerTest {
         msg.setExtensionLength(extensionLength);
         msg.setCachedInfoLength(cachedInfoLength);
 
-        CachedInfoExtensionPreparator preparator = new CachedInfoExtensionPreparator(new TlsContext().getChooser(),
-                msg, new CachedInfoExtensionSerializer(msg));
+        CachedInfoExtensionPreparator preparator = new CachedInfoExtensionPreparator(new TlsContext().getChooser(), msg,
+            new CachedInfoExtensionSerializer(msg));
         preparator.prepare();
 
         assertArrayEquals(extensionBytes, serializer.serialize());

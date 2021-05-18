@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -25,22 +25,20 @@ public class ECDHClientKeyExchangeParser<T extends ECDHClientKeyExchangeMessage>
      * Constructor for the Parser class
      *
      * @param startposition
-     *            Position in the array where the ClientKeyExchangeParser is
-     *            supposed to start parsing
+     *                      Position in the array where the ClientKeyExchangeParser is supposed to start parsing
      * @param array
-     *            The byte[] which the ClientKeyExchangeParser is supposed to
-     *            parse
+     *                      The byte[] which the ClientKeyExchangeParser is supposed to parse
      * @param version
-     *            Version of the Protocol
+     *                      Version of the Protocol
      * @param config
-     *            A Config used in the current context
+     *                      A Config used in the current context
      */
     public ECDHClientKeyExchangeParser(int startposition, byte[] array, ProtocolVersion version, Config config) {
         super(startposition, array, version, config);
     }
 
     @Override
-    protected void parseHandshakeMessageContent(ECDHClientKeyExchangeMessage msg) {
+    protected void parseHandshakeMessageContent(T msg) {
         LOGGER.debug("Parsing ECDHClientKeyExchangeMessage");
         parseSerializedPublicKeyLength(msg);
         parseSerializedPublicKey(msg);
@@ -57,8 +55,7 @@ public class ECDHClientKeyExchangeParser<T extends ECDHClientKeyExchangeMessage>
     }
 
     /**
-     * Reads the next bytes as the SerializedPublicKeyLength and writes them in
-     * the message
+     * Reads the next bytes as the SerializedPublicKeyLength and writes them in the message
      *
      * @param msg
      *            Message to write in
@@ -69,8 +66,7 @@ public class ECDHClientKeyExchangeParser<T extends ECDHClientKeyExchangeMessage>
     }
 
     /**
-     * Reads the next bytes as the SerializedPublicKey and writes them in the
-     * message
+     * Reads the next bytes as the SerializedPublicKey and writes them in the message
      *
      * @param msg
      *            Message to write in

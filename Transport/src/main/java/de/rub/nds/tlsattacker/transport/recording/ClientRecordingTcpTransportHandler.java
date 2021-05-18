@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.transport.recording;
 
 import de.rub.nds.modifiablevariable.util.RandomHelper;
@@ -17,8 +17,8 @@ public class ClientRecordingTcpTransportHandler extends ClientTcpTransportHandle
 
     private final Recording recording;
 
-    public ClientRecordingTcpTransportHandler(long timeout, String hostname, int port) {
-        super(timeout, hostname, port);
+    public ClientRecordingTcpTransportHandler(long firstTimeout, long timeout, String hostname, int port) {
+        super(firstTimeout, timeout, hostname, port);
         RandomHelper.getRandom().setSeed(0);
         recording = new Recording(0);
     }

@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -26,7 +26,7 @@ public class AlpnExtensionPreparatorTest {
     private AlpnExtensionPreparator preparator;
     private AlpnExtensionMessage msg;
     private final String announcedProtocols = "h2";
-    private final byte announcedProtocolsLength = 2;
+    private final byte proposedAlpnProtocolLength = 2;
     private final int ALPNExtensionLength = 3;
     private byte[] protocolsWithLength;
 
@@ -35,20 +35,20 @@ public class AlpnExtensionPreparatorTest {
         context = new TlsContext();
         msg = new AlpnExtensionMessage(Config.createConfig());
         preparator = new AlpnExtensionPreparator(context.getChooser(), msg, new AlpnExtensionSerializer(msg));
-        protocolsWithLength = ArrayConverter.concatenate(new byte[] { announcedProtocolsLength },
-                announcedProtocols.getBytes());
+        protocolsWithLength =
+            ArrayConverter.concatenate(new byte[] { proposedAlpnProtocolLength }, announcedProtocols.getBytes());
     }
 
     @Test
     public void testPreparator() {
 
-        context.getConfig().setAlpnAnnouncedProtocols(new String[] { announcedProtocols });
+        context.getConfig().setDefaultProposedAlpnProtocols(new String[] { announcedProtocols });
 
         preparator.prepare();
 
         assertArrayEquals(ExtensionType.ALPN.getValue(), msg.getExtensionType().getValue());
-        assertEquals(ALPNExtensionLength, (long) msg.getAlpnExtensionLength().getValue());
-        assertArrayEquals(protocolsWithLength, msg.getAlpnAnnouncedProtocols().getValue());
+        assertEquals(ALPNExtensionLength, (long) msg.getProposedAlpnProtocolsLength().getValue());
+        assertArrayEquals(protocolsWithLength, msg.getProposedAlpnProtocols().getValue());
     }
 
 }

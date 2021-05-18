@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.JCommander;
@@ -34,8 +34,7 @@ public class SignatureAndHashAlgorithmDelegateTest {
     }
 
     /**
-     * Test of getSignatureAndHashAlgorithms method, of class
-     * SignatureAndHashAlgorithmDelegate.
+     * Test of getSignatureAndHashAlgorithms method, of class SignatureAndHashAlgorithmDelegate.
      */
     @Test
     public void testGetSignatureAndHashAlgorithms() {
@@ -57,8 +56,7 @@ public class SignatureAndHashAlgorithmDelegateTest {
     }
 
     /**
-     * Test of setSignatureAndHashAlgorithms method, of class
-     * SignatureAndHashAlgorithmDelegate.
+     * Test of setSignatureAndHashAlgorithms method, of class SignatureAndHashAlgorithmDelegate.
      */
     @Test
     public void testSetSignatureAndHashAlgorithms() {
@@ -80,13 +78,13 @@ public class SignatureAndHashAlgorithmDelegateTest {
         delegate.setSignatureAndHashAlgorithms(null);
         jcommander.parse(args);
         config.setAddSignatureAndHashAlgorithmsExtension(false);
-        assertFalse(config.isAddSignatureAndHashAlgrorithmsExtension());
+        assertFalse(config.isAddSignatureAndHashAlgorithmsExtension());
         delegate.applyDelegate(config);
-        assertTrue(config.isAddSignatureAndHashAlgrorithmsExtension());
-        assertTrue(config.getDefaultClientSupportedSignatureAndHashAlgorithms().contains(
-                SignatureAndHashAlgorithm.RSA_SHA512));
-        assertTrue(config.getDefaultClientSupportedSignatureAndHashAlgorithms().contains(
-                SignatureAndHashAlgorithm.DSA_SHA512));
+        assertTrue(config.isAddSignatureAndHashAlgorithmsExtension());
+        assertTrue(config.getDefaultClientSupportedSignatureAndHashAlgorithms()
+            .contains(SignatureAndHashAlgorithm.RSA_SHA512));
+        assertTrue(config.getDefaultClientSupportedSignatureAndHashAlgorithms()
+            .contains(SignatureAndHashAlgorithm.DSA_SHA512));
     }
 
     @Test

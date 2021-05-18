@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.constants.AuthzDataFormat;
@@ -26,7 +26,7 @@ public class ClientAuthzExtensionPreparatorTest {
     private ClientAuthzExtensionMessage msg;
     private ClientAuthzExtensionPreparator preparator;
     private final List<AuthzDataFormat> authzFormatList = Arrays.asList(AuthzDataFormat.X509_ATTR_CERT,
-            AuthzDataFormat.SAML_ASSERTION, AuthzDataFormat.X509_ATTR_CERT_URL, AuthzDataFormat.SAML_ASSERTION_URL);
+        AuthzDataFormat.SAML_ASSERTION, AuthzDataFormat.X509_ATTR_CERT_URL, AuthzDataFormat.SAML_ASSERTION_URL);
     private final byte[] authzFormatListAsBytes = new byte[] { 0x00, 0x01, 0x02, 0x03 };
     private final int authzFormatListLength = 4;
 
@@ -36,8 +36,8 @@ public class ClientAuthzExtensionPreparatorTest {
         context.getConfig().setClientAuthzExtensionDataFormat(authzFormatList);
 
         msg = new ClientAuthzExtensionMessage();
-        preparator = new ClientAuthzExtensionPreparator(context.getChooser(), msg, new ClientAuthzExtensionSerializer(
-                msg));
+        preparator =
+            new ClientAuthzExtensionPreparator(context.getChooser(), msg, new ClientAuthzExtensionSerializer(msg));
 
         preparator.prepare();
 

@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
@@ -37,7 +37,7 @@ public class ChangeServerRandomActionTest {
 
     @Before
     public void setUp() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
-            InvalidAlgorithmParameterException, CryptoException {
+        InvalidAlgorithmParameterException, CryptoException {
         action = new ChangeServerRandomAction(new byte[] { 0, 1 });
         WorkflowTrace trace = new WorkflowTrace();
         trace.addTlsAction(action);
@@ -47,8 +47,8 @@ public class ChangeServerRandomActionTest {
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
         tlsContext.setRecordLayer(new TlsRecordLayer(tlsContext));
 
-        tlsContext.getRecordLayer().setRecordCipher(
-                new RecordBlockCipher(tlsContext, KeySetGenerator.generateKeySet(tlsContext)));
+        tlsContext.getRecordLayer()
+            .setRecordCipher(new RecordBlockCipher(tlsContext, KeySetGenerator.generateKeySet(tlsContext)));
     }
 
     @After

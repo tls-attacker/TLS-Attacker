@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.crypto.ec;
 
 import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
@@ -23,9 +23,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 /**
  * Can be used to store a point of an elliptic curve.
  *
- * Affine points store their x and y coordinates. The projective z-coordinate
- * (equal to 1) will not be stored. The point at infinity [0:1:0] (the only
- * point with z-coordinate 0) does not store any of it's coordinates.
+ * Affine points store their x and y coordinates. The projective z-coordinate (equal to 1) will not be stored. The point
+ * at infinity [0:1:0] (the only point with z-coordinate 0) does not store any of it's coordinates.
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -41,15 +40,14 @@ public class Point implements Serializable {
     }
 
     /*
-     * Point objects are immutable. This should make deep copies in the methods
-     * of the EllipticCurve class unnecessary.
+     * Point objects are immutable. This should make deep copies in the methods of the EllipticCurve class unnecessary.
      */
     @XmlElements(value = { @XmlElement(type = FieldElementF2m.class, name = "xFieldElementF2m"),
-            @XmlElement(type = FieldElementFp.class, name = "xFieldElementFp") })
-    private final FieldElement x;
+        @XmlElement(type = FieldElementFp.class, name = "xFieldElementFp") })
+    private final FieldElement fieldX;
     @XmlElements(value = { @XmlElement(type = FieldElementF2m.class, name = "yFieldElementF2m"),
-            @XmlElement(type = FieldElementFp.class, name = "yFieldElementFp") })
-    private final FieldElement y;
+        @XmlElement(type = FieldElementFp.class, name = "yFieldElementFp") })
+    private final FieldElement fieldY;
     private final boolean infinity;
 
     /**
@@ -57,48 +55,45 @@ public class Point implements Serializable {
      */
     public Point() {
         this.infinity = true;
-        this.x = null;
-        this.y = null;
+        this.fieldX = null;
+        this.fieldY = null;
     }
 
     /**
-     * Instantiates an affine point with coordinates x and y. Calling
-     * EllipticCurve.getPoint() should always be preferred over using this
-     * constructor.
+     * Instantiates an affine point with coordinates x and y. Calling EllipticCurve.getPoint() should always be
+     * preferred over using this constructor.
      *
      * @param x
-     *            A FieldElement representing the x-coordinate of the point.
+     *          A FieldElement representing the x-coordinate of the point.
      * @param y
-     *            A FieldElement representing the y-coordinate of the point. x
-     *            and y must be elements of the same field.
+     *          A FieldElement representing the y-coordinate of the point. x and y must be elements of the same field.
      */
     public Point(FieldElement x, FieldElement y) {
-        this.x = x;
-        this.y = y;
+        this.fieldX = x;
+        this.fieldY = y;
         this.infinity = false;
     }
 
     /**
-     * Returns true if the point is the point at infinity. Returns false if the
-     * point is an affine point.
+     * Returns true if the point is the point at infinity. Returns false if the point is an affine point.
      */
     public boolean isAtInfinity() {
         return this.infinity;
     }
 
-    public FieldElement getX() {
-        return this.x;
+    public FieldElement getFieldX() {
+        return this.fieldX;
     }
 
-    public FieldElement getY() {
-        return this.y;
+    public FieldElement getFieldY() {
+        return this.fieldY;
     }
 
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 89 * hash + Objects.hashCode(this.x);
-        hash = 89 * hash + Objects.hashCode(this.y);
+        hash = 89 * hash + Objects.hashCode(this.fieldX);
+        hash = 89 * hash + Objects.hashCode(this.fieldY);
         hash = 89 * hash + (this.infinity ? 1 : 0);
         return hash;
     }
@@ -118,10 +113,10 @@ public class Point implements Serializable {
         if (this.infinity != other.infinity) {
             return false;
         }
-        if (!Objects.equals(this.x, other.x)) {
+        if (!Objects.equals(this.fieldX, other.fieldX)) {
             return false;
         }
-        if (!Objects.equals(this.y, other.y)) {
+        if (!Objects.equals(this.fieldY, other.fieldY)) {
             return false;
         }
         return true;
@@ -132,7 +127,7 @@ public class Point implements Serializable {
         if (this.isAtInfinity()) {
             return "Point: Infinity";
         } else {
-            return "Point: (" + this.getX().toString() + ", " + this.getY().toString() + ")";
+            return "Point: (" + this.getFieldX().toString() + ", " + this.getFieldY().toString() + ")";
         }
     }
 }

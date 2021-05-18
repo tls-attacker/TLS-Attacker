@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.exceptions;
 
 public class TransportHandlerConnectException extends RuntimeException {
@@ -18,15 +18,15 @@ public class TransportHandlerConnectException extends RuntimeException {
         super(string);
     }
 
-    public TransportHandlerConnectException(String string, Throwable thrwbl) {
-        super(string, thrwbl);
+    public TransportHandlerConnectException(String string, Throwable throwable) {
+        super(string, throwable);
     }
 
-    public TransportHandlerConnectException(Throwable thrwbl) {
-        super(thrwbl);
+    public TransportHandlerConnectException(Throwable throwable) {
+        super(throwable);
     }
 
-    public TransportHandlerConnectException(String string, Throwable thrwbl, boolean bln, boolean bln1) {
-        super(string, thrwbl, bln, bln1);
+    public TransportHandlerConnectException(String string, Throwable throwable, boolean bln, boolean bln1) {
+        super(string, throwable, bln, bln1);
     }
 }

@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.transport.stream;
 
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -24,9 +24,9 @@ public class StreamTransportHandler extends TransportHandler {
 
     private boolean closed = false;
 
-    public StreamTransportHandler(long timeout, ConnectionEndType type, InputStream inputStream,
-            OutputStream outputStream) {
-        super(timeout, type);
+    public StreamTransportHandler(long firstTimeout, long timeout, ConnectionEndType type, InputStream inputStream,
+        OutputStream outputStream) {
+        super(firstTimeout, timeout, type);
         this.inputStream = inputStream;
         this.outputStream = outputStream;
     }
@@ -36,13 +36,13 @@ public class StreamTransportHandler extends TransportHandler {
         if (isInitialized()) {
             try {
                 inputStream.close();
-            } catch (IOException E) {
+            } catch (IOException e) {
                 throw new IOException("Could not close StreamTransportHandler");
             }
 
             try {
                 inputStream.close();
-            } catch (IOException E) {
+            } catch (IOException e) {
                 throw new IOException("Could not close StreamTransportHandler");
             }
         } else {

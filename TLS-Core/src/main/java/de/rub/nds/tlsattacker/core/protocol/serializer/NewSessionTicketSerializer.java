@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -27,9 +27,9 @@ public class NewSessionTicketSerializer extends HandshakeMessageSerializer<NewSe
      * Constructor for the NewSessionTicketMessageSerializer
      *
      * @param message
-     *            Message that should be serialized
+     *                Message that should be serialized
      * @param version
-     *            Version of the Protocol
+     *                Version of the Protocol
      */
     public NewSessionTicketSerializer(NewSessionTicketMessage message, ProtocolVersion version) {
         super(message, version);
@@ -50,7 +50,7 @@ public class NewSessionTicketSerializer extends HandshakeMessageSerializer<NewSe
             writeExtensions();
         } else {
             throw new UnsupportedOperationException(
-                    "NewSessionTicket message is currently not supported for not TLS 1.3");
+                "NewSessionTicket message is currently not supported for not TLS 1.3");
         }
 
         return getAlreadySerialized();
@@ -58,28 +58,27 @@ public class NewSessionTicketSerializer extends HandshakeMessageSerializer<NewSe
 
     private void writeLifetimeHint(NewSessionTicketMessage msg) {
         appendBytes(ArrayConverter.longToBytes(msg.getTicketLifetimeHint().getValue(),
-                HandshakeByteLength.NEWSESSIONTICKET_LIFETIMEHINT_LENGTH));
+            HandshakeByteLength.NEWSESSIONTICKET_LIFETIMEHINT_LENGTH));
         LOGGER.debug("LifetimeHint: "
-                + ArrayConverter.bytesToHexString(ArrayConverter.longToBytes(msg.getTicketLifetimeHint().getValue(),
-                        HandshakeByteLength.NEWSESSIONTICKET_LIFETIMEHINT_LENGTH)));
+            + ArrayConverter.bytesToHexString(ArrayConverter.longToBytes(msg.getTicketLifetimeHint().getValue(),
+                HandshakeByteLength.NEWSESSIONTICKET_LIFETIMEHINT_LENGTH)));
     }
 
     private void writeTicketLength(NewSessionTicketMessage msg) {
         appendBytes(ArrayConverter.intToBytes(msg.getTicketLength().getValue(),
-                HandshakeByteLength.NEWSESSIONTICKET_TICKET_LENGTH));
-        LOGGER.debug("TicketLength: "
-                + ArrayConverter.bytesToHexString(ArrayConverter.intToBytes(msg.getTicketLength().getValue(),
-                        HandshakeByteLength.NEWSESSIONTICKET_TICKET_LENGTH)));
+            HandshakeByteLength.NEWSESSIONTICKET_TICKET_LENGTH));
+        LOGGER.debug("TicketLength: " + ArrayConverter.bytesToHexString(ArrayConverter
+            .intToBytes(msg.getTicketLength().getValue(), HandshakeByteLength.NEWSESSIONTICKET_TICKET_LENGTH)));
     }
 
     private void writeTicket(NewSessionTicketMessage msg) {
         appendBytes(msg.getTicket().getKeyName().getValue());
-        LOGGER.debug("Keyname: " + ArrayConverter.bytesToHexString(msg.getTicket().getKeyName().getValue()));
+        LOGGER.debug("Key name: " + ArrayConverter.bytesToHexString(msg.getTicket().getKeyName().getValue()));
         appendBytes(msg.getTicket().getIV().getValue());
         LOGGER.debug("IV: " + ArrayConverter.bytesToHexString(msg.getTicket().getIV().getValue()));
         appendBytes(msg.getTicket().getEncryptedState().getValue());
-        LOGGER.debug("EncryptedState: "
-                + ArrayConverter.bytesToHexString(msg.getTicket().getEncryptedState().getValue()));
+        LOGGER.debug(
+            "EncryptedState: " + ArrayConverter.bytesToHexString(msg.getTicket().getEncryptedState().getValue()));
         appendBytes(msg.getTicket().getMAC().getValue());
         LOGGER.debug("MAC: " + ArrayConverter.bytesToHexString(msg.getTicket().getMAC().getValue()));
     }
@@ -91,7 +90,7 @@ public class NewSessionTicketSerializer extends HandshakeMessageSerializer<NewSe
 
     private void writeTicketNonceLength(NewSessionTicketMessage msg) {
         appendBytes(ArrayConverter.intToBytes(msg.getTicket().getTicketNonceLength().getValue(),
-                HandshakeByteLength.TICKET_NONCE_LENGTH));
+            HandshakeByteLength.TICKET_NONCE_LENGTH));
         LOGGER.debug("TicketNonceLength: " + msg.getTicket().getTicketNonceLength().getValue());
     }
 
@@ -102,7 +101,7 @@ public class NewSessionTicketSerializer extends HandshakeMessageSerializer<NewSe
 
     private void writeTicketIdentityLength(NewSessionTicketMessage msg) {
         appendBytes(ArrayConverter.intToBytes(msg.getTicket().getIdentityLength().getValue(),
-                ExtensionByteLength.PSK_IDENTITY_LENGTH));
+            ExtensionByteLength.PSK_IDENTITY_LENGTH));
         LOGGER.debug("TicketIdentityLength: " + msg.getTicket().getIdentityLength().getValue());
     }
 

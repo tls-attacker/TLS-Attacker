@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -26,9 +26,9 @@ public class PskRsaClientKeyExchangeSerializer extends RSAClientKeyExchangeSeria
      * Constructor for the PSKRSAClientKeyExchangeSerializer
      *
      * @param message
-     *            Message that should be serialized
+     *                Message that should be serialized
      * @param version
-     *            Version of the Protocol
+     *                Version of the Protocol
      */
     public PskRsaClientKeyExchangeSerializer(PskRsaClientKeyExchangeMessage message, ProtocolVersion version) {
         super(message, version);
@@ -45,8 +45,7 @@ public class PskRsaClientKeyExchangeSerializer extends RSAClientKeyExchangeSeria
     }
 
     /**
-     * Writes the SerializedPublicKeyLength of the
-     * PskRsaClientKeyExchangeMessage into the final byte[]
+     * Writes the SerializedPublicKeyLength of the PskRsaClientKeyExchangeMessage into the final byte[]
      */
     private void writePSKIdentityLength(PskRsaClientKeyExchangeMessage msg) {
         appendInt(msg.getIdentityLength().getValue(), HandshakeByteLength.PSK_IDENTITY_LENGTH);
@@ -54,8 +53,7 @@ public class PskRsaClientKeyExchangeSerializer extends RSAClientKeyExchangeSeria
     }
 
     /**
-     * Writes the SerializedPublicKey of the PskRsaClientKeyExchangeMessage into
-     * the final byte[]
+     * Writes the SerializedPublicKey of the PskRsaClientKeyExchangeMessage into the final byte[]
      */
     private void writePSKIdentity(PskRsaClientKeyExchangeMessage msg) {
         appendBytes(msg.getIdentity().getValue());

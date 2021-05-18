@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.crypto;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -24,8 +24,7 @@ import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.tls.TlsUtils;
 
 /**
- * Pseudo random function computation for TLS 1.0 - 1.2 (for TLS 1.0, bouncy
- * castle TlsUtils are used)
+ * Pseudo random function computation for TLS 1.0 - 1.2 (for TLS 1.0, bouncy castle TlsUtils are used)
  */
 public class PseudoRandomFunction {
 
@@ -65,21 +64,21 @@ public class PseudoRandomFunction {
     /**
      * Computes PRF output of the provided size using the given mac algorithm
      *
-     * @param prfAlgorithm
-     *            PRFAlogirhtm
-     * @param secret
-     *            The Secret
-     * @param label
-     *            The Label
-     * @param seed
-     *            The Seed
-     * @param size
-     *            The size
-     * @return the Prf output
+     * @param  prfAlgorithm
+     *                                                                PRFAlgorithm
+     * @param  secret
+     *                                                                The Secret
+     * @param  label
+     *                                                                The Label
+     * @param  seed
+     *                                                                The Seed
+     * @param  size
+     *                                                                The size
+     * @return                                                        the Prf output
      * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     public static byte[] compute(PRFAlgorithm prfAlgorithm, byte[] secret, String label, byte[] seed, int size)
-            throws CryptoException {
+        throws CryptoException {
         if (prfAlgorithm == null) {
             LOGGER.warn("Trying to compute PRF without specified PRF algorithm. Using TLS 1.0/TLS 1.1 as default.");
             prfAlgorithm = PRFAlgorithm.TLS_PRF_LEGACY;
@@ -95,28 +94,28 @@ public class PseudoRandomFunction {
                 // versions, it works by default with sha1 and md5
                 return TlsUtils.PRF_legacy(secret, label, seed, size);
             default:
-                throw new UnsupportedOperationException("PRF computation for different"
-                        + " protocol versions is not supported yet");
+                throw new UnsupportedOperationException(
+                    "PRF computation for different" + " protocol versions is not supported yet");
         }
     }
 
     /**
      * PRF computation for TLS 1.2
      *
-     * @param prfAlgorithm
-     *            PRFAlogirhtm
-     * @param secret
-     *            The Secret
-     * @param label
-     *            The Label
-     * @param seed
-     *            The Seed
-     * @param size
-     *            The size
-     * @return the Prf output
+     * @param  prfAlgorithm
+     *                      PRFAlgorithm
+     * @param  secret
+     *                      The Secret
+     * @param  label
+     *                      The Label
+     * @param  seed
+     *                      The Seed
+     * @param  size
+     *                      The size
+     * @return              the Prf output
      */
     private static byte[] computeTls12(byte[] secret, String label, byte[] seed, int size, String macAlgorithm)
-            throws CryptoException {
+        throws CryptoException {
         try {
             byte[] labelSeed = ArrayConverter.concatenate(label.getBytes(Charset.forName("ASCII")), seed);
             SecretKeySpec keySpec = null;
@@ -133,7 +132,7 @@ public class PseudoRandomFunction {
                         field.setAccessible(true);
                         field.set(keySpec, new byte[0]);
                     } catch (NoSuchFieldException | IllegalAccessException | IllegalArgumentException
-                            | SecurityException ex) {
+                        | SecurityException ex) {
                         throw new CryptoException("Could not access KeySpec with empty Key", ex);
                     }
                 } catch (java.lang.IllegalArgumentException ex) {

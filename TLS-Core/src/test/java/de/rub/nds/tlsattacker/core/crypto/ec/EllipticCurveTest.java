@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.crypto.ec;
 
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
@@ -20,14 +20,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Testing EllipticCurve, CurveFactory, ElllipticCurveOverFp and
- * EllipticCurveOverF2m
+ * Testing EllipticCurve, CurveFactory, EllipticCurveOverFp and EllipticCurveOverF2m
  */
 public class EllipticCurveTest {
     /*
-     * Please notice that these tests can provide correctness only in a
-     * probabilistic sense. (Though with a very high probability, since the
-     * curve parameters are very large.)
+     * Please notice that these tests can provide correctness only in a probabilistic sense. (Though with a very high
+     * probability, since the curve parameters are very large.)
      */
 
     private Random rnd;
@@ -41,7 +39,7 @@ public class EllipticCurveTest {
 
     @Test
     public void test() {
-        final int implemented = 30;
+        final int implemented = 46;
         int counter = 0;
 
         for (NamedGroup name : NamedGroup.values()) {
@@ -75,8 +73,8 @@ public class EllipticCurveTest {
 
         // Constructing a point, that is not on the curve, to ensure that the
         // first test was no false positive.
-        BigInteger x = basePoint.getX().getData();
-        BigInteger y = basePoint.getY().getData();
+        BigInteger x = basePoint.getFieldX().getData();
+        BigInteger y = basePoint.getFieldY().getData();
         BigInteger wrongX = x.add(BigInteger.ONE);
         Point wrongPoint = curve.getPoint(wrongX, y);
 
@@ -157,10 +155,10 @@ public class EllipticCurveTest {
     }
 
     private void testDecompression(EllipticCurve curve, Point basePoint) {
-        Point decompressed = curve.createAPointOnCurve(basePoint.getX().getData());
+        Point decompressed = curve.createAPointOnCurve(basePoint.getFieldX().getData());
 
-        // two points share the same x-coordinate - apply inverse if neccessary
-        if (!decompressed.getY().getData().equals(basePoint.getY().getData())) {
+        // two points share the same x-coordinate - apply inverse if necessary
+        if (!decompressed.getFieldY().getData().equals(basePoint.getFieldY().getData())) {
             decompressed = curve.inverse(decompressed);
         }
         assertEquals(decompressed, basePoint);

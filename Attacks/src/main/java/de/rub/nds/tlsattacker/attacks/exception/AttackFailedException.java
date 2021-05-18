@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks.exception;
 
 /**
@@ -21,7 +21,6 @@ public class AttackFailedException extends RuntimeException {
     }
 
     /**
-     *
      * @param message
      */
     public AttackFailedException(String message) {
@@ -29,7 +28,6 @@ public class AttackFailedException extends RuntimeException {
     }
 
     /**
-     *
      * @param message
      * @param cause
      */
@@ -38,7 +36,6 @@ public class AttackFailedException extends RuntimeException {
     }
 
     /**
-     *
      * @param cause
      */
     public AttackFailedException(Throwable cause) {
@@ -46,13 +43,13 @@ public class AttackFailedException extends RuntimeException {
     }
 
     /**
-     *
      * @param message
      * @param cause
      * @param enableSuppression
      * @param writableStackTrace
      */
-    public AttackFailedException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    public AttackFailedException(String message, Throwable cause, boolean enableSuppression,
+        boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 

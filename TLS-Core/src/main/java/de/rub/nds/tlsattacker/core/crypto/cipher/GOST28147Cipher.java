@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.crypto.cipher;
 
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
@@ -19,16 +19,15 @@ import javax.crypto.spec.SecretKeySpec;
 import org.bouncycastle.jcajce.spec.GOST28147ParameterSpec;
 
 /**
- * GOST 28147-89 counter mode as defined in RFC 5830 with CryptoPro key meshing
- * as defined in RFC 4357.
+ * GOST 28147-89 counter mode as defined in RFC 5830 with CryptoPro key meshing as defined in RFC 4357.
  */
 public class GOST28147Cipher extends BaseCipher {
 
-    public static final byte[] C = { (byte) 0x69, (byte) 0x00, (byte) 0x72, (byte) 0x22, (byte) 0x64, (byte) 0xC9,
-            (byte) 0x04, (byte) 0x23, (byte) 0x8D, (byte) 0x3A, (byte) 0xDB, (byte) 0x96, (byte) 0x46, (byte) 0xE9,
-            (byte) 0x2A, (byte) 0xC4, (byte) 0x18, (byte) 0xFE, (byte) 0xAC, (byte) 0x94, (byte) 0x00, (byte) 0xED,
-            (byte) 0x07, (byte) 0x12, (byte) 0xC0, (byte) 0x86, (byte) 0xDC, (byte) 0xC2, (byte) 0xEF, (byte) 0x4C,
-            (byte) 0xA9, (byte) 0x2B };
+    public static final byte[] C =
+        { (byte) 0x69, (byte) 0x00, (byte) 0x72, (byte) 0x22, (byte) 0x64, (byte) 0xC9, (byte) 0x04, (byte) 0x23,
+            (byte) 0x8D, (byte) 0x3A, (byte) 0xDB, (byte) 0x96, (byte) 0x46, (byte) 0xE9, (byte) 0x2A, (byte) 0xC4,
+            (byte) 0x18, (byte) 0xFE, (byte) 0xAC, (byte) 0x94, (byte) 0x00, (byte) 0xED, (byte) 0x07, (byte) 0x12,
+            (byte) 0xC0, (byte) 0x86, (byte) 0xDC, (byte) 0xC2, (byte) 0xEF, (byte) 0x4C, (byte) 0xA9, (byte) 0x2B };
 
     private final CipherAlgorithm algorithm = CipherAlgorithm.GOST_28147_CNT;
 
@@ -86,8 +85,8 @@ public class GOST28147Cipher extends BaseCipher {
         int z = wrappedIv.getInt();
 
         y += 0x01010101; // C2
-        int zTemp = z + 0x01010104; // C1
-        z = zTemp >= 0 && z < 0 ? zTemp + 1 : zTemp;
+        int tmpZ = z + 0x01010104; // C1
+        z = tmpZ >= 0 && z < 0 ? tmpZ + 1 : tmpZ;
 
         wrappedIv.putInt(0, y);
         wrappedIv.putInt(4, z);
@@ -107,8 +106,8 @@ public class GOST28147Cipher extends BaseCipher {
     }
 
     @Override
-    public byte[] decrypt(byte[] someBytes) throws CryptoException {
-        return encrypt(someBytes);
+    public byte[] encrypt(byte[] iv, int tagLength, byte[] additionAuthenticatedData, byte[] someBytes) {
+        throw new UnsupportedOperationException("Can only be used as a stream cipher!");
     }
 
     @Override
@@ -117,23 +116,23 @@ public class GOST28147Cipher extends BaseCipher {
     }
 
     @Override
-    public byte[] decrypt(byte[] iv, byte[] someBytes) {
-        return encrypt(iv, someBytes);
-    }
-
-    @Override
     public byte[] encrypt(byte[] iv, int tagLength, byte[] someBytes) {
         throw new UnsupportedOperationException("Can only be used as a stream cipher!");
     }
 
     @Override
-    public byte[] decrypt(byte[] iv, int tagLength, byte[] someBytes) {
-        return encrypt(iv, tagLength, someBytes);
+    public byte[] decrypt(byte[] someBytes) throws CryptoException {
+        return encrypt(someBytes);
     }
 
     @Override
-    public byte[] encrypt(byte[] iv, int tagLength, byte[] additionAuthenticatedData, byte[] someBytes) {
-        throw new UnsupportedOperationException("Can only be used as a stream cipher!");
+    public byte[] decrypt(byte[] iv, byte[] someBytes) {
+        return encrypt(iv, someBytes);
+    }
+
+    @Override
+    public byte[] decrypt(byte[] iv, int tagLength, byte[] someBytes) {
+        return encrypt(iv, tagLength, someBytes);
     }
 
     @Override

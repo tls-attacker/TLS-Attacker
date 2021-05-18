@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -32,7 +32,7 @@ public class CachedObject extends ModifiableVariableHolder {
     byte[] hashValueConfig;
 
     public CachedObject(byte preparatorCachedInformationType, Integer preparatorHashValueLength,
-            byte[] preparatorHashValue) {
+        byte[] preparatorHashValue) {
         this.cachedInformationTypeConfig = preparatorCachedInformationType;
         this.hashValueLengthConfig = preparatorHashValueLength;
         this.hashValueConfig = preparatorHashValue;
@@ -50,8 +50,8 @@ public class CachedObject extends ModifiableVariableHolder {
     }
 
     public void setCachedInformationType(byte cachedInformationType) {
-        this.cachedInformationType = ModifiableVariableFactory.safelySetValue(this.cachedInformationType,
-                cachedInformationType);
+        this.cachedInformationType =
+            ModifiableVariableFactory.safelySetValue(this.cachedInformationType, cachedInformationType);
     }
 
     public ModifiableInteger getHashValueLength() {
@@ -82,8 +82,8 @@ public class CachedObject extends ModifiableVariableHolder {
         return cachedInformationTypeConfig;
     }
 
-    public void setCachedInformationTypeConfig(byte CachedInformationTypeConfig) {
-        this.cachedInformationTypeConfig = CachedInformationTypeConfig;
+    public void setCachedInformationTypeConfig(byte cachedInformationTypeConfig) {
+        this.cachedInformationTypeConfig = cachedInformationTypeConfig;
     }
 
     public Integer getHashValueLengthConfig() {

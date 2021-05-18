@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.modifiablevariable.singlebyte.ByteExplicitValueModification;
@@ -92,7 +92,7 @@ public class WorkflowTraceSerializerTest {
         LOGGER.debug(new String(os.toByteArray()));
 
         Assert.assertArrayEquals("The serialized workflows have to be equal", serializedWorkflow.getBytes(),
-                os.toByteArray());
+            os.toByteArray());
     }
 
     @Test
@@ -111,10 +111,9 @@ public class WorkflowTraceSerializerTest {
     }
 
     /**
-     * Verify that serialized/XML with default connection end looks as expected.
-     * If there is no custom connection end defined in the workflow trace, the
-     * default connection end from the config should be used. The default
-     * connection end should not appear in the serialized workflow trace.
+     * Verify that serialized/XML with default connection end looks as expected. If there is no custom connection end
+     * defined in the workflow trace, the default connection end from the config should be used. The default connection
+     * end should not appear in the serialized workflow trace.
      */
     @Test
     public void serializeWithSingleConnectionTest() {
@@ -149,7 +148,7 @@ public class WorkflowTraceSerializerTest {
             DefaultNormalizeFilter.normalizeAndFilter(trace, config);
             String actual = WorkflowTraceSerializer.write(trace);
             LOGGER.info(actual);
-            Assert.assertEquals(actual, expected);
+            Assert.assertEquals(expected, actual);
 
         } catch (JAXBException | IOException ex) {
             LOGGER.error(ex.getLocalizedMessage(), ex);
@@ -158,8 +157,7 @@ public class WorkflowTraceSerializerTest {
     }
 
     /**
-     * Verify that serialized/XML representation with single custom connection
-     * end looks as expected.
+     * Verify that serialized/XML representation with single custom connection end looks as expected.
      */
     @Test
     public void serializeWithSingleCustomConnectionTest() {
@@ -208,8 +206,7 @@ public class WorkflowTraceSerializerTest {
     }
 
     /**
-     * Verify that serialized/XML representation with multiple connection ends
-     * looks as expected.
+     * Verify that serialized/XML representation with multiple connection ends looks as expected.
      */
     @Test
     public void serializeWithMultipleCustomConnectionTest() {

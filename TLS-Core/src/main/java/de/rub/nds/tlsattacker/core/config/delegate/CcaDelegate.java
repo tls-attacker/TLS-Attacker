@@ -1,17 +1,16 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
 import de.rub.nds.tlsattacker.core.config.Config;
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.security.cert.CertificateEncodingException;
@@ -22,17 +21,18 @@ import java.security.cert.X509Certificate;
 public class CcaDelegate extends Delegate {
 
     @Parameter(names = "-certificatePath", description = "ASN.1 PEM encoded client certificate used for basic "
-            + "authentication bypass testing. Required for basic CCA test cases.")
+        + "authentication bypass testing. Required for basic CCA test cases.")
     private String clientCertificatePath;
     @Parameter(names = "-certificateInputDirectory", description = "Path to directory that contains root certificates "
-            + "for CCA test cases. Required for further CCA tests.")
+        + "for CCA test cases. Required for further CCA tests.")
     private String certificateInputDirectory;
     @Parameter(names = "-certificateOutputDirectory", description = "Path to directory to which certificates generated "
-            + "for test cases are written. Required for further CCA tests.")
+        + "for test cases are written. Required for further CCA tests.")
     private String certificateOutputDirectory;
-    @Parameter(names = "-keyDirectory", description = "Path to directory containing pre generated keys for certificates "
-            + "that will be generated, as well as the keys to the root certificates. Keys for root certificates need to "
-            + "have the same name as the certificate. Required for further CCA tests.")
+    @Parameter(names = "-keyDirectory",
+        description = "Path to directory containing pre generated keys for "
+            + "certificates that will be generated, as well as the keys to the root certificates. Keys for root "
+            + "certificates need to have the same name as the certificate. Required for further CCA tests.")
     private String keyDirectory;
 
     public CcaDelegate() {

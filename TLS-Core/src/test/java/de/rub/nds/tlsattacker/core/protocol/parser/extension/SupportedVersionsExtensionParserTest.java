@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -27,10 +27,9 @@ public class SupportedVersionsExtensionParserTest {
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] { {
-                ArrayConverter.hexStringToByteArray("002B000D0C000203000301030203037F14"), 0,
-                ArrayConverter.hexStringToByteArray("002B000D0C000203000301030203037F14"),
-                ExtensionType.SUPPORTED_VERSIONS, 13, 12,
-                ArrayConverter.hexStringToByteArray("000203000301030203037F14") } });
+            ArrayConverter.hexStringToByteArray("002B000D0C000203000301030203037F14"), 0,
+            ArrayConverter.hexStringToByteArray("002B000D0C000203000301030203037F14"), ExtensionType.SUPPORTED_VERSIONS,
+            13, 12, ArrayConverter.hexStringToByteArray("000203000301030203037F14") } });
     }
 
     private final byte[] extension;
@@ -42,7 +41,7 @@ public class SupportedVersionsExtensionParserTest {
     private final byte[] versionList;
 
     public SupportedVersionsExtensionParserTest(byte[] extension, int start, byte[] completeExtension,
-            ExtensionType type, int extensionLength, int versionListLength, byte[] versionList) {
+        ExtensionType type, int extensionLength, int versionListLength, byte[] versionList) {
         this.extension = extension;
         this.start = start;
         this.completeExtension = completeExtension;
@@ -53,13 +52,12 @@ public class SupportedVersionsExtensionParserTest {
     }
 
     /**
-     * Test of parseExtensionMessageContent method, of class
-     * SupportedVersionsExtensionParser.
+     * Test of parseExtensionMessageContent method, of class SupportedVersionsExtensionParser.
      */
     @Test
     public void testParseExtensionMessageContent() {
-        SupportedVersionsExtensionParser parser = new SupportedVersionsExtensionParser(start, extension,
-                Config.createConfig());
+        SupportedVersionsExtensionParser parser =
+            new SupportedVersionsExtensionParser(start, extension, Config.createConfig());
         SupportedVersionsExtensionMessage msg = parser.parse();
         assertArrayEquals(msg.getExtensionBytes().getValue(), completeExtension);
         assertArrayEquals(type.getValue(), msg.getExtensionType().getValue());

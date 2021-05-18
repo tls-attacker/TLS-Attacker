@@ -1,16 +1,16 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
+import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
@@ -23,9 +23,9 @@ public class ChangeServerRandomAction extends ConnectionBoundAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] newValue = null;
-    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] oldValue = null;
 
     public ChangeServerRandomAction(byte[] newValue) {
@@ -58,7 +58,7 @@ public class ChangeServerRandomAction extends ConnectionBoundAction {
         oldValue = tlsContext.getServerRandom();
         tlsContext.setServerRandom(newValue);
         LOGGER.info("Changed ServerRandom from " + ArrayConverter.bytesToHexString(oldValue) + " to "
-                + ArrayConverter.bytesToHexString(newValue));
+            + ArrayConverter.bytesToHexString(newValue));
         setExecuted(true);
     }
 

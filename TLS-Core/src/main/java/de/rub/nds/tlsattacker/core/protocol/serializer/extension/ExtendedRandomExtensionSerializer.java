@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -16,8 +16,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Class which serializes the Extended Random Extension for Usage as in
- * Handshake Messages, as defined as in
+ * Class which serializes the Extended Random Extension for Usage as in Handshake Messages, as defined as in
  * https://tools.ietf.org/html/draft-rescorla-tls-extended-random-02
  */
 public class ExtendedRandomExtensionSerializer extends ExtensionSerializer<ExtendedRandomExtensionMessage> {
@@ -45,7 +44,7 @@ public class ExtendedRandomExtensionSerializer extends ExtensionSerializer<Exten
 
     private void writeExtendedRandom(ExtendedRandomExtensionMessage msg) {
         appendBytes(message.getExtendedRandom().getValue());
-        LOGGER.debug("Serialized Extended Random: "
-                + ArrayConverter.bytesToHexString(msg.getExtendedRandom().getValue()));
+        LOGGER.debug(
+            "Serialized Extended Random: " + ArrayConverter.bytesToHexString(msg.getExtendedRandom().getValue()));
     }
 }

@@ -1,24 +1,24 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.config.converters.SignatureAndHashAlgorithmConverter;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import java.util.Collections;
 import java.util.List;
 
 public class SignatureAndHashAlgorithmDelegate extends Delegate {
 
-    @Parameter(names = "-signature_hash_algo", description = "Supported Signature and Hash Algorithms seperated by comma eg. RSA-SHA512,DSA-SHA512", converter = SignatureAndHashAlgorithmConverter.class)
+    @Parameter(names = "-signature_hash_algo",
+        description = "Supported Signature and Hash Algorithms separated by comma eg. RSA-SHA512,DSA-SHA512")
     private List<SignatureAndHashAlgorithm> signatureAndHashAlgorithms = null;
 
     public SignatureAndHashAlgorithmDelegate() {

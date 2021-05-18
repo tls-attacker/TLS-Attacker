@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -31,15 +31,13 @@ public class SupplementalDataParser extends HandshakeMessageParser<SupplementalD
      * Constructor for the Parser class
      *
      * @param pointer
-     *            Position in the array where the HandshakeMessageParser is
-     *            supposed to start parsing
+     *                Position in the array where the HandshakeMessageParser is supposed to start parsing
      * @param array
-     *            The byte[] which the HandshakeMessageParser is supposed to
-     *            parse
+     *                The byte[] which the HandshakeMessageParser is supposed to parse
      * @param version
-     *            The Version for which this message should be parsed
+     *                The Version for which this message should be parsed
      * @param config
-     *            A Config used in the current context
+     *                A Config used in the current context
      */
     public SupplementalDataParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
         super(pointer, array, HandshakeMessageType.SUPPLEMENTAL_DATA, version, config);
@@ -65,16 +63,16 @@ public class SupplementalDataParser extends HandshakeMessageParser<SupplementalD
 
     private void parseSupplementalDataBytes(SupplementalDataMessage msg) {
         msg.setSupplementalDataBytes(parseByteArrayField(msg.getSupplementalDataLength().getValue()));
-        LOGGER.debug("SupplementalDataBytes: "
-                + ArrayConverter.bytesToHexString(msg.getSupplementalDataBytes().getValue()));
+        LOGGER.debug(
+            "SupplementalDataBytes: " + ArrayConverter.bytesToHexString(msg.getSupplementalDataBytes().getValue()));
     }
 
     private void parseSupplementalDataEntries(SupplementalDataMessage msg) {
         int pointer = 0;
         List<SupplementalDataEntry> entryList = new LinkedList<>();
         while (pointer < msg.getSupplementalDataLength().getValue()) {
-            SupplementalDataEntryParser parser = new SupplementalDataEntryParser(pointer, msg
-                    .getSupplementalDataBytes().getValue());
+            SupplementalDataEntryParser parser =
+                new SupplementalDataEntryParser(pointer, msg.getSupplementalDataBytes().getValue());
             entryList.add(parser.parse());
             if (pointer == parser.getPointer()) {
                 throw new ParserException("Ran into infinite Loop while parsing SupplementalDataEntries");

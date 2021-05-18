@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
@@ -38,7 +38,7 @@ public class WorkflowExecutorRunnable implements Runnable {
     public void run() {
         LOGGER.info("Spawning workflow on socket " + socket);
         // Currently, WorkflowTraces cannot be copied with external modules
-        // if they define custome actions. This is because copying relies
+        // if they define custom actions. This is because copying relies
         // on serialization, and actions from other packages are unknown
         // to the WorkflowTrace/JAXB context (sigh).
         // General problem: external actions cannot be serialized.
@@ -53,15 +53,15 @@ public class WorkflowExecutorRunnable implements Runnable {
         // execution. Let's hope this is true in practice ;)
         State state = new State(globalState.getConfig(), localTrace);
 
-        // Do this post state init only if you know what yout are doing.
+        // Do this post state init only if you know what you are doing.
         TlsContext serverCtx = state.getInboundTlsContexts().get(0);
         AliasedConnection serverCon = serverCtx.getConnection();
         serverCon.setHostname(socket.getInetAddress().getHostAddress());
         serverCon.setPort(socket.getLocalPort());
-        long timeout = new Long(serverCon.getTimeout());
+
         ServerTcpTransportHandler th;
         try {
-            th = new ServerTcpTransportHandler(timeout, socket);
+            th = new ServerTcpTransportHandler(serverCon, socket);
         } catch (IOException ex) {
             LOGGER.error("Could not prepare TransportHandler for " + socket);
             LOGGER.error("Aborting workflow trace execution on " + socket);
@@ -69,7 +69,7 @@ public class WorkflowExecutorRunnable implements Runnable {
         }
         serverCtx.setTransportHandler(th);
 
-        LOGGER.info("Exectuting workflow for " + socket + " (" + serverCtx + ")");
+        LOGGER.info("Executing workflow for " + socket + " (" + serverCtx + ")");
         WorkflowExecutor workflowExecutor = new DefaultWorkflowExecutor(state);
         workflowExecutor.executeWorkflow();
         LOGGER.info("Workflow execution done on " + socket + " (" + serverCtx + ")");

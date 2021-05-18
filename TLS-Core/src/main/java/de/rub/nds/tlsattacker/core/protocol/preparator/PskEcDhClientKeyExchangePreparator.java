@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -22,8 +22,8 @@ import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class PskEcDhClientKeyExchangePreparator extends
-        ECDHClientKeyExchangePreparator<PskEcDhClientKeyExchangeMessage> {
+public class PskEcDhClientKeyExchangePreparator
+    extends ECDHClientKeyExchangePreparator<PskEcDhClientKeyExchangeMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -52,7 +52,7 @@ public class PskEcDhClientKeyExchangePreparator extends
             outputStream.write(premasterSecret);
             LOGGER.debug("PremasterSecret: dhValue" + Arrays.toString(premasterSecret));
             outputStream.write(ArrayConverter.intToBytes(chooser.getConfig().getDefaultPSKKey().length,
-                    HandshakeByteLength.PSK_LENGTH));
+                HandshakeByteLength.PSK_LENGTH));
             outputStream.write(chooser.getConfig().getDefaultPSKKey());
         } catch (IOException ex) {
             LOGGER.warn("Encountered exception while writing to ByteArrayOutputStream.");

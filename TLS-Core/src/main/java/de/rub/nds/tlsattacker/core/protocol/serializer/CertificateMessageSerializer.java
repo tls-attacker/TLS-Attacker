@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -26,9 +26,9 @@ public class CertificateMessageSerializer extends HandshakeMessageSerializer<Cer
      * Constructor for the CertificateMessageSerializer
      *
      * @param message
-     *            Message that should be serialized
+     *                Message that should be serialized
      * @param version
-     *            Version of the Protocol
+     *                Version of the Protocol
      */
     public CertificateMessageSerializer(CertificateMessage message, ProtocolVersion version) {
         super(message, version);
@@ -43,13 +43,12 @@ public class CertificateMessageSerializer extends HandshakeMessageSerializer<Cer
             writeRequestContext(msg);
         }
         writeCertificatesListLength(msg);
-        wirteCertificatesListBytes(msg);
+        writeCertificatesListBytes(msg);
         return getAlreadySerialized();
     }
 
     /**
-     * Writes the RequestContextLength of the CertificateMessage into the final
-     * byte[]
+     * Writes the RequestContextLength of the CertificateMessage into the final byte[]
      */
     private void writeRequestContextLength(CertificateMessage msg) {
         appendInt(msg.getRequestContextLength().getValue(), HandshakeByteLength.CERTIFICATE_REQUEST_CONTEXT_LENGTH);
@@ -65,8 +64,7 @@ public class CertificateMessageSerializer extends HandshakeMessageSerializer<Cer
     }
 
     /**
-     * Writes the CertificateLength of the CertificateMessage into the final
-     * byte[]
+     * Writes the CertificateLength of the CertificateMessage into the final byte[]
      */
     private void writeCertificatesListLength(CertificateMessage msg) {
         appendInt(msg.getCertificatesListLength().getValue(), HandshakeByteLength.CERTIFICATES_LENGTH);
@@ -76,10 +74,10 @@ public class CertificateMessageSerializer extends HandshakeMessageSerializer<Cer
     /**
      * Writes the Certificate of the CertificateMessage into the final byte[]
      */
-    private void wirteCertificatesListBytes(CertificateMessage msg) {
+    private void writeCertificatesListBytes(CertificateMessage msg) {
         appendBytes(msg.getCertificatesListBytes().getValue());
-        LOGGER.debug("certificatesListBytes: "
-                + ArrayConverter.bytesToHexString(msg.getCertificatesListBytes().getValue()));
+        LOGGER.debug(
+            "certificatesListBytes: " + ArrayConverter.bytesToHexString(msg.getCertificatesListBytes().getValue()));
     }
 
 }

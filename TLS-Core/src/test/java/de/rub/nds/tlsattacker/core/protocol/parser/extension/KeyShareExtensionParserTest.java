@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -26,18 +26,14 @@ public class KeyShareExtensionParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays
-                .asList(new Object[][] { {
-                        ArrayConverter
-                                .hexStringToByteArray("002800260024001D00202a981db6cdd02a06c1763102c9e741365ac4e6f72b3176a6bd6a3523d3ec0f4c"),
-                        0,
-                        ArrayConverter
-                                .hexStringToByteArray("002800260024001D00202a981db6cdd02a06c1763102c9e741365ac4e6f72b3176a6bd6a3523d3ec0f4c"),
-                        ExtensionType.KEY_SHARE_OLD,
-                        38,
-                        36,
-                        ArrayConverter
-                                .hexStringToByteArray("001D00202a981db6cdd02a06c1763102c9e741365ac4e6f72b3176a6bd6a3523d3ec0f4c") } });
+        return Arrays.asList(new Object[][] { {
+            ArrayConverter.hexStringToByteArray(
+                "002800260024001D00202a981db6cdd02a06c1763102c9e741365ac4e6f72b3176a6bd6a3523d3ec0f4c"),
+            0,
+            ArrayConverter.hexStringToByteArray(
+                "002800260024001D00202a981db6cdd02a06c1763102c9e741365ac4e6f72b3176a6bd6a3523d3ec0f4c"),
+            ExtensionType.KEY_SHARE_OLD, 38, 36, ArrayConverter
+                .hexStringToByteArray("001D00202a981db6cdd02a06c1763102c9e741365ac4e6f72b3176a6bd6a3523d3ec0f4c") } });
     }
 
     private byte[] extension;
@@ -49,7 +45,7 @@ public class KeyShareExtensionParserTest {
     private byte[] ksListBytes;
 
     public KeyShareExtensionParserTest(byte[] extension, int start, byte[] completeExtension, ExtensionType type,
-            int extensionLength, int ksListLength, byte[] ksListBytes) {
+        int extensionLength, int ksListLength, byte[] ksListBytes) {
         this.extension = extension;
         this.start = start;
         this.completeExtension = completeExtension;
@@ -60,8 +56,7 @@ public class KeyShareExtensionParserTest {
     }
 
     /**
-     * Test of parseExtensionMessageContent method, of class
-     * KeyShareExtensionParser.
+     * Test of parseExtensionMessageContent method, of class KeyShareExtensionParser.
      */
     @Test
     public void testParseExtensionMessageContent() {

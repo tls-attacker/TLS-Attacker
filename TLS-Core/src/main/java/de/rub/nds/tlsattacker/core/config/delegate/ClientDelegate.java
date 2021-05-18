@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
@@ -23,12 +23,12 @@ import org.bouncycastle.util.IPAddress;
 
 public class ClientDelegate extends Delegate {
 
-    private final static int DEFAULT_HTTPS_PORT = 443;
+    private static final int DEFAULT_HTTPS_PORT = 443;
 
     @Parameter(names = "-connect", required = true, description = "Who to connect to. Syntax: localhost:4433")
     private String host = null;
 
-    @Parameter(names = "-server_name", description = "Servername for the SNI extension.")
+    @Parameter(names = "-server_name", description = "Server name for the SNI extension.")
     private String sniHostname = null;
 
     public ClientDelegate() {

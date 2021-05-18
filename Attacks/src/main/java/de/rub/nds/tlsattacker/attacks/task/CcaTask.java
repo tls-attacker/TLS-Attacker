@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks.task;
 
 import de.rub.nds.tlsattacker.attacks.cca.CcaCertificateManager;
@@ -18,10 +18,9 @@ import de.rub.nds.tlsattacker.core.workflow.DefaultWorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.task.TlsTask;
+import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.io.IOException;
 
 public class CcaTask extends TlsTask {
 
@@ -32,7 +31,8 @@ public class CcaTask extends TlsTask {
     private final Config tlsConfig;
     private final CcaCertificateManager ccaCertificateManager;
 
-    public CcaTask(CcaVector ccaVector, Config tlsConfig, CcaCertificateManager ccaCertificateManager, int reexecutions) {
+    public CcaTask(CcaVector ccaVector, Config tlsConfig, CcaCertificateManager ccaCertificateManager,
+        int reexecutions) {
         super(reexecutions);
         this.ccaVector = ccaVector;
         this.tlsConfig = tlsConfig;
@@ -40,7 +40,7 @@ public class CcaTask extends TlsTask {
     }
 
     public CcaTask(CcaVector ccaVector, Config tlsConfig, CcaCertificateManager ccaCertificateManager,
-            long additionalTimeout, boolean increasingTimeout, int reexecutions, long additionalTcpTimeout) {
+        long additionalTimeout, boolean increasingTimeout, int reexecutions, long additionalTcpTimeout) {
         super(reexecutions, additionalTimeout, increasingTimeout, additionalTcpTimeout);
         this.ccaVector = ccaVector;
         this.tlsConfig = tlsConfig;
@@ -49,7 +49,7 @@ public class CcaTask extends TlsTask {
 
     private State prepareState() {
         WorkflowTrace trace = CcaWorkflowGenerator.generateWorkflow(tlsConfig, ccaCertificateManager,
-                ccaVector.getCcaWorkflowType(), ccaVector.getCcaCertificateType());
+            ccaVector.getCcaWorkflowType(), ccaVector.getCcaCertificateType());
         State state = new State(tlsConfig, trace);
         return state;
     }

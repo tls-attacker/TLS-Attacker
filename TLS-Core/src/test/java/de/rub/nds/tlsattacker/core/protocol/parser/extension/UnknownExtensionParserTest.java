@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -30,17 +30,16 @@ public class UnknownExtensionParserTest {
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] {
-                { ArrayConverter.hexStringToByteArray("00230000"), ArrayConverter.hexStringToByteArray("00230000"),
-                        ArrayConverter.hexStringToByteArray("0023"), 0, null, },
-                { ArrayConverter.hexStringToByteArray("000f000101"), ArrayConverter.hexStringToByteArray("000f000101"),
-                        ArrayConverter.hexStringToByteArray("000f"), 1, ArrayConverter.hexStringToByteArray("01"), },
-                { ArrayConverter.hexStringToByteArray("000f00010100"),
-                        ArrayConverter.hexStringToByteArray("000f000101"), ArrayConverter.hexStringToByteArray("000f"),
-                        1, ArrayConverter.hexStringToByteArray("01"), },
-                { ArrayConverter.hexStringToByteArray("00000000"), ArrayConverter.hexStringToByteArray("00000000"),
-                        ArrayConverter.hexStringToByteArray("0000"), 0, null, },
-                { ArrayConverter.hexStringToByteArray("0000FFFF"), ArrayConverter.hexStringToByteArray("0000FFFF"),
-                        ArrayConverter.hexStringToByteArray("0000"), 0xFFFF, null, } });
+            { ArrayConverter.hexStringToByteArray("00230000"), ArrayConverter.hexStringToByteArray("00230000"),
+                ArrayConverter.hexStringToByteArray("0023"), 0, null, },
+            { ArrayConverter.hexStringToByteArray("000f000101"), ArrayConverter.hexStringToByteArray("000f000101"),
+                ArrayConverter.hexStringToByteArray("000f"), 1, ArrayConverter.hexStringToByteArray("01"), },
+            { ArrayConverter.hexStringToByteArray("000f00010100"), ArrayConverter.hexStringToByteArray("000f000101"),
+                ArrayConverter.hexStringToByteArray("000f"), 1, ArrayConverter.hexStringToByteArray("01"), },
+            { ArrayConverter.hexStringToByteArray("00000000"), ArrayConverter.hexStringToByteArray("00000000"),
+                ArrayConverter.hexStringToByteArray("0000"), 0, null, },
+            { ArrayConverter.hexStringToByteArray("0000FFFF"), ArrayConverter.hexStringToByteArray("0000FFFF"),
+                ArrayConverter.hexStringToByteArray("0000"), 0xFFFF, null, } });
     }
 
     private final byte[] array;

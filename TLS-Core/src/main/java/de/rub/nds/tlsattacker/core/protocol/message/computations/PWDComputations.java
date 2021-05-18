@@ -1,17 +1,24 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message.computations;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.*;
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.Bits;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
 import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
@@ -24,7 +31,6 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import javax.xml.bind.annotation.XmlTransient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.Digest;
@@ -38,10 +44,11 @@ public class PWDComputations extends KeyExchangeComputations {
     /**
      * Computes the password element for TLS_ECCPWD according to RFC 8492
      *
-     * @param chooser
-     * @param curve
-     *            The curve that the generated point should fall on
+     * @param  chooser
+     * @param  curve
+     *                         The curve that the generated point should fall on
      * @return
+     *
      * @throws CryptoException
      */
     public static Point computePasswordElement(Chooser chooser, EllipticCurve curve) throws CryptoException {
@@ -62,7 +69,7 @@ public class PWDComputations extends KeyExchangeComputations {
             digest.doFinal(base, 0);
         } else {
             base = StaticTicketCrypto.generateHMAC(MacAlgorithm.HMAC_SHA256,
-                    (chooser.getClientPWDUsername() + chooser.getPWDPassword()).getBytes(), salt);
+                (chooser.getClientPWDUsername() + chooser.getPWDPassword()).getBytes(), salt);
         }
 
         boolean found = false;
@@ -81,7 +88,7 @@ public class PWDComputations extends KeyExchangeComputations {
         do {
             counter++;
             byte[] seedInput = ArrayConverter.concatenate(base, ArrayConverter.intToBytes(counter, 1),
-                    ArrayConverter.bigIntegerToByteArray(prime));
+                ArrayConverter.bigIntegerToByteArray(prime));
             byte[] seed = StaticTicketCrypto.generateHMAC(randomFunction, seedInput, new byte[4]);
             byte[] tmp = prf(chooser, seed, context, n);
             BigInteger tmpX = new BigInteger(1, tmp).mod(prime.subtract(BigInteger.ONE)).add(BigInteger.ONE);
@@ -104,7 +111,7 @@ public class PWDComputations extends KeyExchangeComputations {
         // use the lsb of the saved seed and Y to determine which of the two
         // possible roots should be used
         int lsbSeed = savedSeed[0] & 1;
-        int lsbY = createdPoint.getY().getData().getLowestSetBit() == 0 ? 1 : 0;
+        int lsbY = createdPoint.getFieldY().getData().getLowestSetBit() == 0 ? 1 : 0;
         if (lsbSeed == lsbY) {
             createdPoint = curve.inverse(createdPoint);
         }
@@ -126,24 +133,23 @@ public class PWDComputations extends KeyExchangeComputations {
     /**
      * Calculates the prf output for the dragonfly password element
      *
-     * Note that in the RFC, the order of secret and seed is actually switched
-     * (the seed is used as the secret in the prf and the context as the
-     * seed/message). It is unclear if the author intentionally switched the
-     * order of the arguments compared to the TLS RFC or if this is actually
-     * intentional.
+     * Note that in the RFC, the order of secret and seed is actually switched (the seed is used as the secret in the
+     * prf and the context as the seed/message). It is unclear if the author intentionally switched the order of the
+     * arguments compared to the TLS RFC or if this is actually intentional.
      *
-     * @param chooser
-     * @param seed
-     * @param context
-     * @param outlen
+     * @param  chooser
+     * @param  seed
+     * @param  context
+     * @param  outlen
      * @return
+     *
      * @throws CryptoException
      */
     protected static byte[] prf(Chooser chooser, byte[] seed, byte[] context, int outlen) throws CryptoException {
         if (chooser.getSelectedProtocolVersion().isTLS13()) {
-            HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(chooser.getSelectedCipherSuite());
+            HKDFAlgorithm hkdfAlgorithm = AlgorithmResolver.getHKDFAlgorithm(chooser.getSelectedCipherSuite());
             DigestAlgorithm digestAlgo = AlgorithmResolver.getDigestAlgorithm(chooser.getSelectedProtocolVersion(),
-                    chooser.getSelectedCipherSuite());
+                chooser.getSelectedCipherSuite());
             MessageDigest hashFunction = null;
             try {
                 hashFunction = MessageDigest.getInstance(digestAlgo.getJavaName());
@@ -153,15 +159,15 @@ public class PWDComputations extends KeyExchangeComputations {
             hashFunction.update(context);
             byte[] hashValue = hashFunction.digest();
 
-            return HKDFunction.expandLabel(hkdfAlgortihm, seed, "TLS-PWD Hunting And Pecking", hashValue, outlen);
+            return HKDFunction.expandLabel(hkdfAlgorithm, seed, "TLS-PWD Hunting And Pecking", hashValue, outlen);
         } else {
             PRFAlgorithm prf = AlgorithmResolver.getPRFAlgorithm(chooser.getSelectedProtocolVersion(),
-                    chooser.getSelectedCipherSuite());
+                chooser.getSelectedCipherSuite());
             if (prf != null) {
                 return PseudoRandomFunction.compute(prf, seed, "TLS-PWD Hunting And Pecking", context, outlen);
             } else {
                 LOGGER.warn("Could not select prf for " + chooser.getSelectedProtocolVersion() + " and "
-                        + chooser.getSelectedCipherSuite());
+                    + chooser.getSelectedCipherSuite());
                 return new byte[outlen];
             }
         }
@@ -172,12 +178,12 @@ public class PWDComputations extends KeyExchangeComputations {
         PWDKeyMaterial keyMaterial = new PWDKeyMaterial();
         if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
             mask = new BigInteger(1, chooser.getConfig().getDefaultClientPWDMask()).mod(curve.getBasePointOrder());
-            keyMaterial.privateKeyScalar = new BigInteger(1, chooser.getConfig().getDefaultClientPWDPrivate())
-                    .mod(curve.getBasePointOrder());
+            keyMaterial.privateKeyScalar =
+                new BigInteger(1, chooser.getConfig().getDefaultClientPWDPrivate()).mod(curve.getBasePointOrder());
         } else {
             mask = new BigInteger(1, chooser.getConfig().getDefaultServerPWDMask()).mod(curve.getBasePointOrder());
-            keyMaterial.privateKeyScalar = new BigInteger(1, chooser.getConfig().getDefaultServerPWDPrivate())
-                    .mod(curve.getBasePointOrder());
+            keyMaterial.privateKeyScalar =
+                new BigInteger(1, chooser.getConfig().getDefaultServerPWDPrivate()).mod(curve.getBasePointOrder());
         }
 
         keyMaterial.scalar = mask.add(keyMaterial.privateKeyScalar).mod(curve.getBasePointOrder());
@@ -192,8 +198,7 @@ public class PWDComputations extends KeyExchangeComputations {
     private Point passwordElement;
 
     /**
-     * private secret used to calculate the premaster secret and part of the
-     * scalar that gets send to the peer
+     * private secret used to calculate the premaster secret and part of the scalar that gets send to the peer
      */
     private BigInteger privateKeyScalar;
 

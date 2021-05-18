@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
@@ -47,15 +47,14 @@ public class ReceiveAsciiActionTest {
     @Test
     public void testExecute() throws Exception {
         ((FakeTransportHandler) tlsContext.getTransportHandler())
-                .setFetchableByte(new byte[] { 0x15, 0x03, 0x02, 0x01 });
+            .setFetchableByte(new byte[] { 0x15, 0x03, 0x02, 0x01 });
 
         action.execute(state);
         assertTrue(action.isExecuted());
     }
 
     /**
-     * Test of WorkflowExecutionException of execute method, of class
-     * ReceiveAsciiAction.
+     * Test of WorkflowExecutionException of execute method, of class ReceiveAsciiAction.
      */
     @Test(expected = WorkflowExecutionException.class)
     public void testExecuteWorkflowExecutionException() {

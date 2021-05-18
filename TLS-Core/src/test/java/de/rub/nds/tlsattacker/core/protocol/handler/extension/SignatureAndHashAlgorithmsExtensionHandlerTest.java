@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
@@ -32,8 +32,7 @@ public class SignatureAndHashAlgorithmsExtensionHandlerTest {
     }
 
     /**
-     * Test of adjustTLSContext method, of class
-     * SignatureAndHashAlgorithmsExtensionHandler.
+     * Test of adjustTLSContext method, of class SignatureAndHashAlgorithmsExtensionHandler.
      */
     @Test
     public void testAdjustTLSContext() {
@@ -41,35 +40,37 @@ public class SignatureAndHashAlgorithmsExtensionHandlerTest {
         msg.setSignatureAndHashAlgorithms(new byte[] { 0, 0 });
         handler.adjustTLSContext(msg);
         assertTrue(context.getClientSupportedSignatureAndHashAlgorithms().size() == 1);
-        assertTrue(context.getClientSupportedSignatureAndHashAlgorithms().get(0).getHashAlgorithm() == HashAlgorithm.NONE);
-        assertTrue(context.getClientSupportedSignatureAndHashAlgorithms().get(0).getSignatureAlgorithm() == SignatureAlgorithm.ANONYMOUS);
+        assertTrue(
+            context.getClientSupportedSignatureAndHashAlgorithms().get(0).getHashAlgorithm() == HashAlgorithm.NONE);
+        assertTrue(context.getClientSupportedSignatureAndHashAlgorithms().get(0).getSignatureAlgorithm()
+            == SignatureAlgorithm.ANONYMOUS);
     }
 
     /**
-     * Test of getParser method, of class
-     * SignatureAndHashAlgorithmsExtensionHandler.
+     * Test of getParser method, of class SignatureAndHashAlgorithmsExtensionHandler.
      */
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[] { 0, 2 }, 0, context.getConfig()) instanceof SignatureAndHashAlgorithmsExtensionParser);
+        assertTrue(handler.getParser(new byte[] { 0, 2 }, 0,
+            context.getConfig()) instanceof SignatureAndHashAlgorithmsExtensionParser);
     }
 
     /**
-     * Test of getPreparator method, of class
-     * SignatureAndHashAlgorithmsExtensionHandler.
+     * Test of getPreparator method, of class SignatureAndHashAlgorithmsExtensionHandler.
      */
     @Test
     public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new SignatureAndHashAlgorithmsExtensionMessage()) instanceof SignatureAndHashAlgorithmsExtensionPreparator);
+        assertTrue(handler.getPreparator(
+            new SignatureAndHashAlgorithmsExtensionMessage()) instanceof SignatureAndHashAlgorithmsExtensionPreparator);
     }
 
     /**
-     * Test of getSerializer method, of class
-     * SignatureAndHashAlgorithmsExtensionHandler.
+     * Test of getSerializer method, of class SignatureAndHashAlgorithmsExtensionHandler.
      */
     @Test
     public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new SignatureAndHashAlgorithmsExtensionMessage()) instanceof SignatureAndHashAlgorithmsExtensionSerializer);
+        assertTrue(handler.getSerializer(
+            new SignatureAndHashAlgorithmsExtensionMessage()) instanceof SignatureAndHashAlgorithmsExtensionSerializer);
     }
 
 }

@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -25,9 +25,9 @@ import org.junit.runners.Parameterized;
 public class ClientAuthzExtensionParserTest {
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { { ExtensionType.CLIENT_AUTHZ,
-                ArrayConverter.hexStringToByteArray("000700050400010203"), 5, 0, 4,
-                ArrayConverter.hexStringToByteArray("00010203") } });
+        return Arrays.asList(
+            new Object[][] { { ExtensionType.CLIENT_AUTHZ, ArrayConverter.hexStringToByteArray("000700050400010203"), 5,
+                0, 4, ArrayConverter.hexStringToByteArray("00010203") } });
     }
 
     private final ExtensionType extensionType;
@@ -40,7 +40,7 @@ public class ClientAuthzExtensionParserTest {
     private ClientAuthzExtensionMessage msg;
 
     public ClientAuthzExtensionParserTest(ExtensionType extensionType, byte[] expectedBytes, int extensionLength,
-            int startParsing, int authzFormatListLength, byte[] authzFormatList) {
+        int startParsing, int authzFormatListLength, byte[] authzFormatList) {
         this.extensionType = extensionType;
         this.expectedBytes = expectedBytes;
         this.extensionLength = extensionLength;

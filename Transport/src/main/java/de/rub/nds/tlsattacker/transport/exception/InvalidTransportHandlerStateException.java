@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.transport.exception;
 
 public class InvalidTransportHandlerStateException extends Exception {
@@ -18,16 +18,16 @@ public class InvalidTransportHandlerStateException extends Exception {
         super(string);
     }
 
-    public InvalidTransportHandlerStateException(String string, Throwable thrwbl) {
-        super(string, thrwbl);
+    public InvalidTransportHandlerStateException(String string, Throwable throwable) {
+        super(string, throwable);
     }
 
-    public InvalidTransportHandlerStateException(Throwable thrwbl) {
-        super(thrwbl);
+    public InvalidTransportHandlerStateException(Throwable throwable) {
+        super(throwable);
     }
 
-    public InvalidTransportHandlerStateException(String string, Throwable thrwbl, boolean bln, boolean bln1) {
-        super(string, thrwbl, bln, bln1);
+    public InvalidTransportHandlerStateException(String string, Throwable throwable, boolean bln, boolean bln1) {
+        super(string, throwable, bln, bln1);
     }
 
 }

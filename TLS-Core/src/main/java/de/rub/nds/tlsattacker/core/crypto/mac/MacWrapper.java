@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.crypto.mac;
 
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
@@ -25,7 +25,7 @@ import org.bouncycastle.crypto.params.ParametersWithSBox;
 public class MacWrapper {
 
     public static WrappedMac getMac(ProtocolVersion version, CipherSuite cipherSuite, byte[] key)
-            throws NoSuchAlgorithmException {
+        throws NoSuchAlgorithmException {
         MacAlgorithm macAlg = AlgorithmResolver.getMacAlgorithm(version, cipherSuite);
         if (macAlg == MacAlgorithm.HMAC_GOSTR3411) {
             GOST3411Digest digest = new GOST3411Digest();
@@ -34,8 +34,8 @@ public class MacWrapper {
             GOST3411_2012_256Digest digest = new GOST3411_2012_256Digest();
             return new ContinuousMac(new HMac(digest), digest, new KeyParameter(key));
         } else if (macAlg == MacAlgorithm.IMIT_GOST28147) {
-            ParametersWithSBox parameters = new ParametersWithSBox(new KeyParameter(key),
-                    GOSTUtils.getGostSBox(cipherSuite));
+            ParametersWithSBox parameters =
+                new ParametersWithSBox(new KeyParameter(key), GOSTUtils.getGostSBox(cipherSuite));
             return new ContinuousMac(new GOST28147Mac(), parameters);
         } else if (macAlg.getJavaName() != null) {
             return new JavaMac(macAlg.getJavaName(), key);

@@ -1,17 +1,21 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.*;
+import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.PWDServerKeyExchangeMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,7 +33,7 @@ public class PWDServerKeyExchangeParser extends ServerKeyExchangeParser<PWDServe
     }
 
     public PWDServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version,
-            KeyExchangeAlgorithm keyExchangeAlgorithm, Config config) {
+        KeyExchangeAlgorithm keyExchangeAlgorithm, Config config) {
         super(pointer, array, HandshakeMessageType.SERVER_KEY_EXCHANGE, version, config);
         this.version = version;
         this.keyExchangeAlgorithm = keyExchangeAlgorithm;
@@ -75,7 +79,7 @@ public class PWDServerKeyExchangeParser extends ServerKeyExchangeParser<PWDServe
 
     private void parseElementLength(PWDServerKeyExchangeMessage msg) {
         msg.setElementLength(parseIntField(HandshakeByteLength.PWD_ELEMENT_LENGTH));
-        LOGGER.debug("ElementLegnth: " + msg.getElementLength().getValue());
+        LOGGER.debug("ElementLength: " + msg.getElementLength().getValue());
     }
 
     private void parseElement(PWDServerKeyExchangeMessage msg) {

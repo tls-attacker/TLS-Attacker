@@ -1,22 +1,21 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.state;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import javax.xml.bind.DatatypeConverter;
 import java.io.File;
 import java.io.FileWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import javax.xml.bind.DatatypeConverter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class Keylogfile {
     private static final Logger LOGGER = LogManager.getLogger();
@@ -45,8 +44,9 @@ public class Keylogfile {
 
     public void writeKey(String identifier, byte[] key) {
         synchronized (Keylogfile.class) {
-            if (!this.writeKeylog)
+            if (!this.writeKeylog) {
                 return;
+            }
 
             try {
                 File f = new File(this.path);
@@ -57,7 +57,7 @@ public class Keylogfile {
 
                 FileWriter fw = new FileWriter(this.path, true);
                 fw.write(identifier + " " + DatatypeConverter.printHexBinary(context.getClientRandom()) + " "
-                        + DatatypeConverter.printHexBinary(key) + "\n");
+                    + DatatypeConverter.printHexBinary(key) + "\n");
                 fw.close();
             } catch (Exception e) {
                 LOGGER.error(e);

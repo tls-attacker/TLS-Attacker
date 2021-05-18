@@ -1,17 +1,18 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2;
+
+import static de.rub.nds.modifiablevariable.ModifiableVariableFactory.safelySetValue;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
-import static de.rub.nds.modifiablevariable.ModifiableVariableFactory.safelySetValue;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
@@ -45,8 +46,8 @@ public class RequestItemV2 implements Serializable {
     }
 
     public RequestItemV2(Integer preparatorRequestType, Integer preparatorRequestLength,
-            Integer preparatorResponderIdListLength, Integer preparatorRequestExtensionLength,
-            byte[] preparatorRequestExtensions) {
+        Integer preparatorResponderIdListLength, Integer preparatorRequestExtensionLength,
+        byte[] preparatorRequestExtensions) {
         this.requestTypeConfig = preparatorRequestType;
         this.requestLengthConfig = preparatorRequestLength;
         this.responderIdListLengthConfig = preparatorResponderIdListLength;
@@ -75,8 +76,8 @@ public class RequestItemV2 implements Serializable {
     }
 
     public void setResponderIdListLength(int responderIdListLength) {
-        this.responderIdListLength = ModifiableVariableFactory.safelySetValue(this.responderIdListLength,
-                responderIdListLength);
+        this.responderIdListLength =
+            ModifiableVariableFactory.safelySetValue(this.responderIdListLength, responderIdListLength);
     }
 
     public List<ResponderId> getResponderIdList() {
@@ -96,8 +97,8 @@ public class RequestItemV2 implements Serializable {
     }
 
     public void setRequestExtensionsLength(int requestExtensionsLength) {
-        this.requestExtensionsLength = ModifiableVariableFactory.safelySetValue(this.requestExtensionsLength,
-                requestExtensionsLength);
+        this.requestExtensionsLength =
+            ModifiableVariableFactory.safelySetValue(this.requestExtensionsLength, requestExtensionsLength);
     }
 
     public ModifiableByteArray getRequestExtensions() {
@@ -121,8 +122,8 @@ public class RequestItemV2 implements Serializable {
     }
 
     public void setResponderIdListBytes(byte[] responderIdListBytes) {
-        this.responderIdListBytes = ModifiableVariableFactory.safelySetValue(this.responderIdListBytes,
-                responderIdListBytes);
+        this.responderIdListBytes =
+            ModifiableVariableFactory.safelySetValue(this.responderIdListBytes, responderIdListBytes);
     }
 
     public ModifiableInteger getRequestLength() {

@@ -1,25 +1,26 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
-import de.rub.nds.tlsattacker.core.workflow.action.MessageAction.MessageActionDirection;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import java.io.IOException;
@@ -51,9 +52,8 @@ public class SendDynamicClientKeyExchangeAction extends MessageAction implements
             throw new WorkflowExecutionException("Action already executed!");
         }
         messages = new LinkedList<>();
-        messages.add(new WorkflowConfigurationFactory(state.getConfig())
-                .createClientKeyExchangeMessage(AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser()
-                        .getSelectedCipherSuite())));
+        messages.add(new WorkflowConfigurationFactory(state.getConfig()).createClientKeyExchangeMessage(
+            AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite())));
         String sending = getReadableString(messages);
         if (hasDefaultAlias()) {
             LOGGER.info("Sending DynamicKeyExchange: " + sending);
@@ -69,9 +69,9 @@ public class SendDynamicClientKeyExchangeAction extends MessageAction implements
                 fragments = new ArrayList<>(result.getMessageFragmentList());
             }
             setExecuted(true);
-        } catch (IOException E) {
+        } catch (IOException e) {
             tlsContext.setReceivedTransportHandlerException(true);
-            LOGGER.debug(E);
+            LOGGER.debug(e);
             setExecuted(getActionOptions().contains(ActionOption.MAY_FAIL));
         }
     }
@@ -227,4 +227,21 @@ public class SendDynamicClientKeyExchangeAction extends MessageAction implements
         return hash;
     }
 
+    @Override
+    public List<ProtocolMessageType> getGoingToSendProtocolMessageTypes() {
+        return new ArrayList<ProtocolMessageType>() {
+            {
+                add(ProtocolMessageType.HANDSHAKE);
+            }
+        };
+    }
+
+    @Override
+    public List<HandshakeMessageType> getGoingToSendHandshakeMessageTypes() {
+        return new ArrayList<HandshakeMessageType>() {
+            {
+                add(HandshakeMessageType.CLIENT_KEY_EXCHANGE);
+            }
+        };
+    }
 }

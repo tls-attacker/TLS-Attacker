@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -17,87 +17,90 @@ import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class SSL2ClientMasterKeySerializer extends ProtocolMessageSerializer<SSL2ClientMasterKeyMessage> {
+public class SSL2ClientMasterKeySerializer extends HandshakeMessageSerializer<SSL2ClientMasterKeyMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final SSL2ClientMasterKeyMessage msg;
-
     public SSL2ClientMasterKeySerializer(SSL2ClientMasterKeyMessage message, ProtocolVersion version) {
         super(message, version);
-        this.msg = message;
     }
 
     @Override
     public byte[] serializeProtocolMessageContent() {
-        LOGGER.debug("Serializing SSL2ClientMasterKey");
-        writeMessageLength(msg);
-        writeType(msg);
-        writeCipherKind(msg);
-        writeClearKeyLength(msg);
-        writeEncryptedKeyLength(msg);
-        writeKeyArgLength(msg);
-        writeClearKeyData(msg);
-        writeEncryptedKeyData(msg);
-        writeKeyArgData(msg);
+        serializeHandshakeMessageContent();
         return getAlreadySerialized();
     }
 
-    private void writeEncryptedKeyData(SSL2ClientMasterKeyMessage msg) {
-        byte[] encryptedKeyData = msg.getEncryptedKeyData().getValue();
+    @Override
+    public byte[] serializeHandshakeMessageContent() {
+        LOGGER.debug("Serializing SSL2ClientMasterKey");
+        writeMessageLength();
+        writeType();
+        writeCipherKind();
+        writeClearKeyLength();
+        writeEncryptedKeyLength();
+        writeKeyArgLength();
+        writeClearKeyData();
+        writeEncryptedKeyData();
+        writeKeyArgData();
+        return getAlreadySerialized();
+    }
+
+    private void writeEncryptedKeyData() {
+        byte[] encryptedKeyData = message.getEncryptedKeyData().getValue();
         appendBytes(encryptedKeyData);
         LOGGER.debug("EncryptedKey: " + ArrayConverter.bytesToHexString(encryptedKeyData));
     }
 
-    private void writeClearKeyData(SSL2ClientMasterKeyMessage msg) {
-        byte[] clearKeyData = msg.getClearKeyData().getValue();
+    private void writeClearKeyData() {
+        byte[] clearKeyData = message.getClearKeyData().getValue();
         appendBytes(clearKeyData);
         LOGGER.debug("ClearKey: " + ArrayConverter.bytesToHexString(clearKeyData));
     }
 
-    private void writeEncryptedKeyLength(SSL2ClientMasterKeyMessage msg) {
-        int length = msg.getEncryptedKeyLength().getValue();
+    private void writeEncryptedKeyLength() {
+        int length = message.getEncryptedKeyLength().getValue();
         appendInt(length, SSL2ByteLength.ENCRYPTED_KEY_LENGTH);
         LOGGER.debug("EncryptedKeyLength: " + length);
     }
 
-    public void writeKeyArgData(SSL2ClientMasterKeyMessage msg) {
-        byte[] keyArgData = msg.getKeyArgData().getValue();
+    public void writeKeyArgData() {
+        byte[] keyArgData = message.getKeyArgData().getValue();
         appendBytes(keyArgData);
         LOGGER.debug("KeyArg: " + ArrayConverter.bytesToHexString(keyArgData));
     }
 
-    private void writeKeyArgLength(SSL2ClientMasterKeyMessage msg) {
-        int length = msg.getKeyArgLength().getValue();
+    private void writeKeyArgLength() {
+        int length = message.getKeyArgLength().getValue();
         appendInt(length, SSL2ByteLength.KEY_ARG_LENGTH);
         LOGGER.debug("EncryptedKeyLength: " + length);
     }
 
-    private void writeClearKeyLength(SSL2ClientMasterKeyMessage msg) {
-        int length = msg.getClearKeyLength().getValue();
+    private void writeClearKeyLength() {
+        int length = message.getClearKeyLength().getValue();
         appendInt(length, SSL2ByteLength.CLEAR_KEY_LENGTH);
         LOGGER.debug("ClearKeyLength: " + length);
     }
 
     // TODO: Consider de-duplicating vs. SSL2ClientHelloSerializer.
-    private void writeMessageLength(SSL2ClientMasterKeyMessage msg) {
-        if (msg.getPaddingLength().getValue() != 0) {
+    private void writeMessageLength() {
+        if (message.getPaddingLength().getValue() != 0) {
             throw new UnsupportedOperationException("Long record headers are not supported");
         }
-        appendInt(msg.getMessageLength().getValue() ^ 0x8000, SSL2ByteLength.LENGTH);
-        LOGGER.debug("MessageLength: " + msg.getMessageLength().getValue());
+        appendInt(message.getMessageLength().getValue() ^ 0x8000, SSL2ByteLength.LENGTH);
+        LOGGER.debug("MessageLength: " + message.getMessageLength().getValue());
     }
 
     /**
      * Writes the Type of the SSL2ClientHello into the final byte[]
      */
-    private void writeType(SSL2ClientMasterKeyMessage msg) {
-        appendByte(msg.getType().getValue());
-        LOGGER.debug("Type: " + msg.getType().getValue());
+    private void writeType() {
+        appendByte(message.getType().getValue());
+        LOGGER.debug("Type: " + message.getType().getValue());
     }
 
-    private void writeCipherKind(SSL2ClientMasterKeyMessage msg) {
-        byte[] cipherKindValue = msg.getCipherKind().getValue();
+    private void writeCipherKind() {
+        byte[] cipherKindValue = message.getCipherKind().getValue();
         appendBytes(cipherKindValue);
         LOGGER.debug("CipherKind: " + Arrays.toString(cipherKindValue));
     }

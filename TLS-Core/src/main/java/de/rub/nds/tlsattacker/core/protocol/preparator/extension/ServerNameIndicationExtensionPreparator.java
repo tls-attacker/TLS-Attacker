@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ServerNameIndicationExtensionSerializer;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ServerNamePairSerializier;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ServerNamePairSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -29,7 +29,7 @@ public class ServerNameIndicationExtensionPreparator extends ExtensionPreparator
     private ByteArrayOutputStream stream;
 
     public ServerNameIndicationExtensionPreparator(Chooser chooser, ServerNameIndicationExtensionMessage message,
-            ServerNameIndicationExtensionSerializer serializer) {
+        ServerNameIndicationExtensionSerializer serializer) {
         super(chooser, message, serializer);
         this.msg = message;
     }
@@ -41,7 +41,7 @@ public class ServerNameIndicationExtensionPreparator extends ExtensionPreparator
         for (ServerNamePair pair : msg.getServerNameList()) {
             ServerNamePairPreparator preparator = new ServerNamePairPreparator(chooser, pair);
             preparator.prepare();
-            ServerNamePairSerializier serializer = new ServerNamePairSerializier(pair);
+            ServerNamePairSerializer serializer = new ServerNamePairSerializer(pair);
             try {
                 stream.write(serializer.serialize());
             } catch (IOException ex) {
@@ -54,7 +54,8 @@ public class ServerNameIndicationExtensionPreparator extends ExtensionPreparator
 
     private void prepareServerNameListBytes(ServerNameIndicationExtensionMessage msg) {
         msg.setServerNameListBytes(stream.toByteArray());
-        LOGGER.debug("ServerNameListBytes: " + ArrayConverter.bytesToHexString(msg.getServerNameListBytes().getValue()));
+        LOGGER
+            .debug("ServerNameListBytes: " + ArrayConverter.bytesToHexString(msg.getServerNameListBytes().getValue()));
     }
 
     private void prepareServerNameListLength(ServerNameIndicationExtensionMessage msg) {

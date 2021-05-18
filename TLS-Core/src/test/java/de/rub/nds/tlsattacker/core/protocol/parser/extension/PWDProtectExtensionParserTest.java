@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -27,15 +27,14 @@ public class PWDProtectExtensionParserTest {
     /**
      * Generate test data for the parser and serializer
      *
-     * Note that the "username" is not actually an encrypted byte string in this
-     * test. The parser and serializer don't really care about that. This is
-     * just to test if the field is extracted correctly. The actual
+     * Note that the "username" is not actually an encrypted byte string in this test. The parser and serializer don't
+     * really care about that. This is just to test if the field is extracted correctly. The actual
      * encryption/decryption is done by the handler/preparator.
      */
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] { { ArrayConverter.hexStringToByteArray("001d00050466726564"), 0,
-                ExtensionType.PWD_PROTECT, 5, 4, ArrayConverter.hexStringToByteArray("66726564") } });
+            ExtensionType.PWD_PROTECT, 5, 4, ArrayConverter.hexStringToByteArray("66726564") } });
     }
 
     private final byte[] expectedBytes;
@@ -46,7 +45,7 @@ public class PWDProtectExtensionParserTest {
     private final byte[] username;
 
     public PWDProtectExtensionParserTest(byte[] expectedBytes, int start, ExtensionType type, int extensionLength,
-            int usernameLength, byte[] username) {
+        int usernameLength, byte[] username) {
         this.expectedBytes = expectedBytes;
         this.start = start;
         this.type = type;

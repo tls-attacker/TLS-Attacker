@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow.chooser;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -81,13 +81,15 @@ public abstract class Chooser {
 
     public abstract MaxFragmentLength getMaxFragmentLength();
 
+    public abstract Integer getMaxEarlyDataSize();
+
     public abstract HeartbeatMode getHeartbeatMode();
 
     public abstract boolean isUseExtendedMasterSecret();
 
     public abstract List<CompressionMethod> getClientSupportedCompressions();
 
-    public abstract List<CipherSuite> getClientSupportedCiphersuites();
+    public abstract List<CipherSuite> getClientSupportedCipherSuites();
 
     public abstract List<SignatureAndHashAlgorithm> getServerSupportedSignatureAndHashAlgorithms();
 
@@ -120,6 +122,8 @@ public abstract class Chooser {
     public abstract byte[] getServerSessionId();
 
     public abstract byte[] getDtlsCookie();
+
+    public abstract byte[] getExtensionCookie();
 
     public abstract TransportHandler getTransportHandler();
 
@@ -295,11 +299,15 @@ public abstract class Chooser {
 
     public abstract List<KeyShareStoreEntry> getEsniServerKeyShareEntries();
 
-    public abstract List<CipherSuite> getEsniServerCiphersuites();
+    public abstract List<CipherSuite> getEsniServerCipherSuites();
 
     public abstract Integer getEsniPaddedLength();
 
     public abstract Long getEsniNotBefore();
 
     public abstract Long getEsniNotAfter();
+
+    public abstract List<String> getProposedAlpnProtocols();
+
+    public abstract byte[] getLastClientHello();
 }

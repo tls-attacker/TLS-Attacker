@@ -1,16 +1,16 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks.pkcs1.oracles;
 
 import de.rub.nds.tlsattacker.attacks.pkcs1.BleichenbacherWorkflowGenerator;
-import de.rub.nds.tlsattacker.attacks.constants.BleichenbacherWorkflowType;
+import de.rub.nds.tlsattacker.attacks.pkcs1.BleichenbacherWorkflowType;
 import de.rub.nds.tlsattacker.attacks.util.response.EqualityError;
 import de.rub.nds.tlsattacker.attacks.util.response.FingerPrintChecker;
 import de.rub.nds.tlsattacker.attacks.util.response.ResponseExtractor;
@@ -54,9 +54,9 @@ public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
      * @param type
      */
     public RealDirectMessagePkcs1Oracle(PublicKey pubKey, Config config, ResponseFingerprint validResponseContent,
-            ResponseFingerprint invalidResponseContent, BleichenbacherWorkflowType type) {
+        ResponseFingerprint invalidResponseContent, BleichenbacherWorkflowType type) {
         this.publicKey = (RSAPublicKey) pubKey;
-        this.blockSize = MathHelper.intceildiv(publicKey.getModulus().bitLength(), Bits.IN_A_BYTE);
+        this.blockSize = MathHelper.intCeilDiv(publicKey.getModulus().bitLength(), Bits.IN_A_BYTE);
         this.validResponseContent = validResponseContent;
         this.invalidResponseContent = invalidResponseContent;
         this.type = type;
@@ -71,8 +71,8 @@ public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
         tlsConfig.setWorkflowExecutorShouldClose(false);
         WorkflowTrace trace = BleichenbacherWorkflowGenerator.generateWorkflow(tlsConfig, type, msg);
         State state = new State(tlsConfig, trace);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(state.getConfig()
-                .getWorkflowExecutorType(), state);
+        WorkflowExecutor workflowExecutor =
+            WorkflowExecutorFactory.createWorkflowExecutor(state.getConfig().getWorkflowExecutorType(), state);
 
         numberOfQueries++;
         if (numberOfQueries % 1000 == 0) {
@@ -88,7 +88,8 @@ public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
                 if (validResponseContent != null) {
                     conform = FingerPrintChecker.checkEquality(fingerprint, validResponseContent) == EqualityError.NONE;
                 } else if (invalidResponseContent != null) {
-                    conform = FingerPrintChecker.checkEquality(fingerprint, invalidResponseContent) != EqualityError.NONE;
+                    conform =
+                        FingerPrintChecker.checkEquality(fingerprint, invalidResponseContent) != EqualityError.NONE;
                 }
             }
 
@@ -103,7 +104,8 @@ public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
             ResponseFingerprint fingerprint = ResponseExtractor.getFingerprint(state);
             return fingerprint;
         } else {
-            LOGGER.debug("Could not execute Workflow. Something went wrong... Check the debug output for more information");
+            LOGGER.debug(
+                "Could not execute Workflow. Something went wrong... Check the debug output for more information");
         }
         return null;
     }

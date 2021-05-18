@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.record.cipher;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.crypto.cipher.CipherWrapper;
 import de.rub.nds.tlsattacker.core.crypto.mac.MacWrapper;
 import de.rub.nds.tlsattacker.core.crypto.mac.WrappedMac;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
+import de.rub.nds.tlsattacker.core.protocol.Parser;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.RecordCryptoComputations;
@@ -89,12 +89,13 @@ public class RecordStreamCipher extends RecordCipher {
         record.setLength(cleanBytes.length + AlgorithmResolver.getMacAlgorithm(version, cipherSuite).getSize());
 
         computations.setAuthenticatedMetaData(collectAdditionalAuthenticatedData(record, version));
-        computations.setMac(calculateMac(ArrayConverter.concatenate(computations.getAuthenticatedMetaData().getValue(),
-                computations.getAuthenticatedNonMetaData().getValue()), context.getConnection()
-                .getLocalConnectionEndType()));
+        computations.setMac(calculateMac(
+            ArrayConverter.concatenate(computations.getAuthenticatedMetaData().getValue(),
+                computations.getAuthenticatedNonMetaData().getValue()),
+            context.getConnection().getLocalConnectionEndType()));
 
         computations.setPlainRecordBytes(ArrayConverter.concatenate(record.getCleanProtocolMessageBytes().getValue(),
-                computations.getMac().getValue()));
+            computations.getMac().getValue()));
 
         computations.setCiphertext(encryptCipher.encrypt(record.getComputations().getPlainRecordBytes().getValue()));
 
@@ -104,9 +105,15 @@ public class RecordStreamCipher extends RecordCipher {
     }
 
     @Override
+    public void encrypt(BlobRecord br) throws CryptoException {
+        LOGGER.debug("Encrypting BlobRecord");
+        br.setProtocolMessageBytes(encryptCipher.encrypt(br.getCleanProtocolMessageBytes().getValue()));
+    }
+
+    @Override
     public void decrypt(Record record) throws CryptoException {
         if (record.getComputations() == null) {
-            LOGGER.warn("Record computations are not preapred.");
+            LOGGER.warn("Record computations are not prepared.");
             record.prepareComputations();
         }
         LOGGER.debug("Decrypting Record");
@@ -129,21 +136,15 @@ public class RecordStreamCipher extends RecordCipher {
         byte[] hmac = parser.parseByteArrayField(readMac.getMacLength());
         record.getComputations().setMac(hmac);
         byte[] calculatedHmac = calculateMac(
-                ArrayConverter.concatenate(record.getComputations().getAuthenticatedMetaData().getValue(), record
-                        .getComputations().getAuthenticatedNonMetaData().getValue()),
-                context.getTalkingConnectionEndType());
+            ArrayConverter.concatenate(record.getComputations().getAuthenticatedMetaData().getValue(),
+                record.getComputations().getAuthenticatedNonMetaData().getValue()),
+            context.getTalkingConnectionEndType());
         record.getComputations().setMacValid(Arrays.equals(hmac, calculatedHmac));
     }
 
     @Override
-    public void encrypt(BlobRecord br) throws CryptoException {
-        LOGGER.debug("Encrypting BlobRecord");
-        br.setProtocolMessageBytes(encryptCipher.encrypt(br.getCleanProtocolMessageBytes().getValue()));
-    }
-
-    @Override
     public void decrypt(BlobRecord br) throws CryptoException {
-        LOGGER.debug("Derypting BlobRecord");
+        LOGGER.debug("Decrypting BlobRecord");
         br.setProtocolMessageBytes(decryptCipher.decrypt(br.getCleanProtocolMessageBytes().getValue()));
     }
 

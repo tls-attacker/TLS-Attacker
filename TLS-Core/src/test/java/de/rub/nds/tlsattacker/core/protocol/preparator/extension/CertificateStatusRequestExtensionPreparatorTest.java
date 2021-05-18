@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestType;
@@ -21,7 +21,8 @@ import org.junit.Test;
 
 public class CertificateStatusRequestExtensionPreparatorTest {
 
-    private final CertificateStatusRequestType certificateStatusRequestExtensionRequestType = CertificateStatusRequestType.OCSP;
+    private final CertificateStatusRequestType certificateStatusRequestExtensionRequestType =
+        CertificateStatusRequestType.OCSP;
     private final byte[] certificateStatusRequestExtensionResponderIDList = new byte[] { 0x01 };
     private final int responderIDListLength = 1;
     private final byte[] certificateStatusRequestExtensionRequestExtension = new byte[] { 0x02 };
@@ -35,23 +36,23 @@ public class CertificateStatusRequestExtensionPreparatorTest {
         context = new TlsContext();
         msg = new CertificateStatusRequestExtensionMessage();
         preparator = new CertificateStatusRequestExtensionPreparator(context.getChooser(), msg,
-                new CertificateStatusRequestExtensionSerializer(msg));
+            new CertificateStatusRequestExtensionSerializer(msg));
     }
 
     @Test
     public void testPreparator() {
-        context.getConfig().setCertificateStatusRequestExtensionRequestType(
-                certificateStatusRequestExtensionRequestType);
-        context.getConfig().setCertificateStatusRequestExtensionResponderIDList(
-                certificateStatusRequestExtensionResponderIDList);
-        context.getConfig().setCertificateStatusRequestExtensionRequestExtension(
-                certificateStatusRequestExtensionRequestExtension);
+        context.getConfig()
+            .setCertificateStatusRequestExtensionRequestType(certificateStatusRequestExtensionRequestType);
+        context.getConfig()
+            .setCertificateStatusRequestExtensionResponderIDList(certificateStatusRequestExtensionResponderIDList);
+        context.getConfig()
+            .setCertificateStatusRequestExtensionRequestExtension(certificateStatusRequestExtensionRequestExtension);
 
         preparator.prepare();
 
         assertArrayEquals(ExtensionType.STATUS_REQUEST.getValue(), msg.getExtensionType().getValue());
-        assertEquals(certificateStatusRequestExtensionRequestType.getCertificateStatusRequestValue(), (long) msg
-                .getCertificateStatusRequestType().getValue());
+        assertEquals(certificateStatusRequestExtensionRequestType.getCertificateStatusRequestValue(),
+            (long) msg.getCertificateStatusRequestType().getValue());
         assertEquals(responderIDListLength, (long) msg.getResponderIDListLength().getValue());
         assertArrayEquals(certificateStatusRequestExtensionResponderIDList, msg.getResponderIDList().getValue());
         assertEquals(requestExtensionLength, (long) msg.getRequestExtensionLength().getValue());

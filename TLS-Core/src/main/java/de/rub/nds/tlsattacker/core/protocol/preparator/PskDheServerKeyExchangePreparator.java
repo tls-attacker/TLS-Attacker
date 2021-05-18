@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -54,7 +54,8 @@ public class PskDheServerKeyExchangePreparator extends DHEServerKeyExchangePrepa
 
     protected void setComputedPskDhGenerator(PskDheServerKeyExchangeMessage msg) {
         msg.getComputations().setGenerator(chooser.getPSKGenerator());
-        LOGGER.debug("Generator used for Computations: " + msg.getComputations().getGenerator().getValue().toString(16));
+        LOGGER
+            .debug("Generator used for Computations: " + msg.getComputations().getGenerator().getValue().toString(16));
     }
 
     private void preparePskPublicKey(PskDheServerKeyExchangeMessage msg) {

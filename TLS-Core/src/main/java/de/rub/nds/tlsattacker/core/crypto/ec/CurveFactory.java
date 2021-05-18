@@ -1,27 +1,35 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.crypto.ec;
 
 import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class CurveFactory {
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * Returns a named elliptic curve.
      *
-     * @param name
-     *            The name of the curve, that should be returned.
-     * @return EllipticCurve for the provided NamedGroup
+     * @param  name
+     *              The name of the curve, that should be returned.
+     * @return      EllipticCurve for the provided NamedGroup
      */
     public static EllipticCurve getCurve(NamedGroup name) {
+        if (name.isGrease()) {
+            LOGGER.warn("Using a GREASE elliptic curve. Falling back to a SECP256R1 curve.");
+            return new EllipticCurveSECP256R1();
+        }
+
         switch (name) {
             case BRAINPOOLP256R1:
                 return new EllipticCurveBrainpoolP256R1();
@@ -84,8 +92,8 @@ public class CurveFactory {
             case ECDH_X448:
                 return new EllipticCurveX448();
             default:
-                throw new UnsupportedOperationException("The provided group '" + name
-                        + "' is not supported by this method.");
+                throw new UnsupportedOperationException(
+                    "The provided group '" + name + "' is not supported by this method.");
 
         }
     }
@@ -93,8 +101,8 @@ public class CurveFactory {
     /**
      * Returns a named gost curve.
      *
-     * @param curve
-     *            The name of the curve, that should be returned.
+     * @param  curve
+     *               The name of the curve, that should be returned.
      * @return
      */
     public static EllipticCurve getCurve(GOSTCurve curve) {

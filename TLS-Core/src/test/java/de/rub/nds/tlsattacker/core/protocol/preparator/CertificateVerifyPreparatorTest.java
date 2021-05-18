@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -54,29 +54,27 @@ public class CertificateVerifyPreparatorTest {
     }
 
     /**
-     * Test for correct generation of CertificateVerify.signature for SSLv3 with
-     * empty secret and no handshake_messages. From RFC 6101:
+     * Test for correct generation of CertificateVerify.signature for SSLv3 with empty secret and no handshake_messages.
+     * From RFC 6101:
      *
      * 5.6.8. Certificate Verify
      *
-     * This message is used to provide explicit verification of a client
-     * certificate. This message is only sent following any client certificate
-     * that has signing capability (i.e., all certificates except those
-     * containing fixed Diffie-Hellman parameters).
+     * This message is used to provide explicit verification of a client certificate. This message is only sent
+     * following any client certificate that has signing capability (i.e., all certificates except those containing
+     * fixed Diffie-Hellman parameters).
      *
      * struct { Signature signature; } CertificateVerify;
      *
-     * CertificateVerify.signature.md5_hash MD5(master_secret + pad_2 +
-     * MD5(handshake_messages + master_secret + pad_1));
-     * Certificate.signature.sha_hash SHA(master_secret + pad_2 +
-     * SHA(handshake_messages + master_secret + pad_1));
+     * CertificateVerify.signature.md5_hash MD5(master_secret + pad_2 + MD5(handshake_messages + master_secret +
+     * pad_1)); Certificate.signature.sha_hash SHA(master_secret + pad_2 + SHA(handshake_messages + master_secret +
+     * pad_1));
      *
      * pad_1: This is identical to the pad_1 defined in Section 5.2.3.1.
      *
      * pad_2: This is identical to the pad_2 defined in Section 5.2.3.1.
      *
-     * Here, handshake_messages refers to all handshake messages starting at
-     * client hello up to but not including this message.
+     * Here, handshake_messages refers to all handshake messages starting at client hello up to but not including this
+     * message.
      *
      * .......
      *
@@ -106,12 +104,12 @@ public class CertificateVerifyPreparatorTest {
     }
 
     /**
-     * Test of prepareHandshakeMessageContents method, of class
-     * CertificateVerifyPreparator.
+     * Test of prepareHandshakeMessageContents method, of class CertificateVerifyPreparator.
      *
      * @throws java.security.NoSuchAlgorithmException
      */
     // @Test
+    @SuppressWarnings("SpellCheckingInspection")
     public void testPrepareRSA() throws NoSuchAlgorithmException {
         List<SignatureAndHashAlgorithm> algoList = new LinkedList<>();
         algoList.add(SignatureAndHashAlgorithm.ECDSA_NONE);
@@ -121,12 +119,11 @@ public class CertificateVerifyPreparatorTest {
         context.getConfig().setDefaultClientSupportedSignatureAndHashAlgorithms(algoList);
         preparator.prepare();
         assertArrayEquals(new byte[] { 1, 1, }, message.getSignatureHashAlgorithm().getValue());
-        // TODO I dont check if the signature is correctly calcualted or
+        // TODO I don't check if the signature is correctly calculated or
         // calculated over the correct values
-        assertArrayEquals(
-                ArrayConverter
-                        .hexStringToByteArray("479FB09700E855666B1D65C9C5B0D279088A0573A7FDA4F59E5816E7869CA7753F7648143F9A7DB86534D33EEA9ED40BB8FE052F5BAF1D9BE52502B57B6B5661F9A4DC077D4AC0714F5768D7319C6E3862BD6EFA2F85E464B54E8A89FC19FD2090E53DA05D5556E74A7EE31CD217A510620BD61F24F5CDFEF5ACDFE060B9F37E"),
-                message.getSignature().getValue());
+        assertArrayEquals(ArrayConverter.hexStringToByteArray(
+            "479FB09700E855666B1D65C9C5B0D279088A0573A7FDA4F59E5816E7869CA7753F7648143F9A7DB86534D33EEA9ED40BB8FE052F5BAF1D9BE52502B57B6B5661F9A4DC077D4AC0714F5768D7319C6E3862BD6EFA2F85E464B54E8A89FC19FD2090E53DA05D5556E74A7EE31CD217A510620BD61F24F5CDFEF5ACDFE060B9F37E"),
+            message.getSignature().getValue());
         assertTrue(message.getSignatureLength().getValue() == 128);
     }
 

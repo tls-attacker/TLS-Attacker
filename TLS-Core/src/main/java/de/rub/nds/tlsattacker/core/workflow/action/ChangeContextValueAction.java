@@ -1,40 +1,40 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlSeeAlso;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
- * This action allows to change a value of the {@link TlsContext}. The field
- * that should be changed is referenced by a string.
+ * This action allows to change a value of the {@link TlsContext}. The field that should be changed is referenced by a
+ * string.
  *
- * WARNING: This might not work for every field inside the context, especially
- * when the WorkflowTrace is copied. There might be
- * serialization/deserialization issues with the types used in the
- * {@link TlsContext}.
+ * WARNING: This might not work for every field inside the context, especially when the WorkflowTrace is copied. There
+ * might be serialization/deserialization issues with the types used in the {@link TlsContext}.
  *
  * @param <T>
  *            Object type of the field inside the {@link TlsContext}
  */
+@XmlSeeAlso(TlsContext.class)
 public class ChangeContextValueAction<T> extends ConnectionBoundAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -87,13 +87,13 @@ public class ChangeContextValueAction<T> extends ConnectionBoundAction {
             if (!isUsesList()) {
                 oldValue = (T) field.get(tlsContext);
                 field.set(tlsContext, this.newValue);
-                LOGGER.info(String.format("Changed %s from %s to %s", this.fieldName, oldValue == null ? "null"
-                        : oldValue.toString(), newValue.toString()));
+                LOGGER.info(String.format("Changed %s from %s to %s", this.fieldName,
+                    oldValue == null ? "null" : oldValue.toString(), newValue.toString()));
             } else {
                 oldValueList = (List<T>) field.get(tlsContext);
                 field.set(tlsContext, this.newValueList);
-                LOGGER.info(String.format("Changed %s from %s to %s", this.fieldName, oldValueList == null ? "null"
-                        : oldValueList.toString(), newValueList.toString()));
+                LOGGER.info(String.format("Changed %s from %s to %s", this.fieldName,
+                    oldValueList == null ? "null" : oldValueList.toString(), newValueList.toString()));
             }
 
             setExecuted(true);
@@ -139,8 +139,9 @@ public class ChangeContextValueAction<T> extends ConnectionBoundAction {
             if (this.newValue != null && other.newValue != null) {
                 int length = Array.getLength(this.newValue);
                 int length2 = Array.getLength(other.newValue);
-                if (length != length2)
+                if (length != length2) {
                     return false;
+                }
 
                 for (int i = 0; i < length; i++) {
                     if (!Array.get(this.newValue, i).equals(Array.get(other.newValue, i))) {
@@ -151,8 +152,9 @@ public class ChangeContextValueAction<T> extends ConnectionBoundAction {
             if (this.oldValue != null && other.oldValue != null) {
                 int length = Array.getLength(this.oldValue);
                 int length2 = Array.getLength(other.oldValue);
-                if (length != length2)
+                if (length != length2) {
                     return false;
+                }
 
                 for (int i = 0; i < length; i++) {
                     if (!Array.get(this.oldValue, i).equals(Array.get(other.oldValue, i))) {
@@ -160,10 +162,12 @@ public class ChangeContextValueAction<T> extends ConnectionBoundAction {
                     }
                 }
             }
-            if (this.oldValue == null && other.oldValue != null)
+            if (this.oldValue == null && other.oldValue != null) {
                 return false;
-            if (this.newValue == null && other.newValue != null)
+            }
+            if (this.newValue == null && other.newValue != null) {
                 return false;
+            }
             return true;
         }
 
@@ -171,7 +175,7 @@ public class ChangeContextValueAction<T> extends ConnectionBoundAction {
             return Objects.equals(this.oldValue, other.oldValue) && Objects.equals(this.newValue, other.newValue);
         } else {
             return this.newValueList.equals(other.newValueList)
-                    && (this.oldValueList == other.oldValueList || this.oldValueList.equals(other.oldValueList));
+                && (this.oldValueList == other.oldValueList || this.oldValueList.equals(other.oldValueList));
         }
     }
 

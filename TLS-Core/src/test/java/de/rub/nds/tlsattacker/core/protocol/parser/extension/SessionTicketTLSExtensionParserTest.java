@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -31,8 +31,8 @@ public class SessionTicketTLSExtensionParserTest {
      */
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { { ExtensionType.SESSION_TICKET, 0, new byte[0],
-                ArrayConverter.hexStringToByteArray("00230000"), 0 } });
+        return Arrays.asList(new Object[][] {
+            { ExtensionType.SESSION_TICKET, 0, new byte[0], ArrayConverter.hexStringToByteArray("00230000"), 0 } });
     }
 
     private final ExtensionType extensionType;
@@ -53,7 +53,7 @@ public class SessionTicketTLSExtensionParserTest {
      * @param startParsing
      */
     public SessionTicketTLSExtensionParserTest(ExtensionType extensionType, int extensionLength, byte[] sessionTicket,
-            byte[] expectedBytes, int startParsing) {
+        byte[] expectedBytes, int startParsing) {
         this.extensionType = extensionType;
         this.extensionLength = extensionLength;
         this.sessionTicket = sessionTicket;
@@ -70,8 +70,7 @@ public class SessionTicketTLSExtensionParserTest {
     }
 
     /**
-     * Tests the parseExtensionMessageContent method of the
-     * SessionTicketTLSExtensionParser.
+     * Tests the parseExtensionMessageContent method of the SessionTicketTLSExtensionParser.
      */
 
     @Test

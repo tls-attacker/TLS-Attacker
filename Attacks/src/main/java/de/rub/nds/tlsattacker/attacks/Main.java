@@ -1,25 +1,54 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks;
+
+import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.JCommander.Builder;
 import com.beust.jcommander.ParameterException;
-import de.rub.nds.tlsattacker.attacks.config.*;
+import de.rub.nds.tlsattacker.attacks.config.BleichenbacherCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.Cve20162107CommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.EarlyCCSCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.EarlyFinishedCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.GeneralDrownCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.HeartbleedCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.InvalidCurveAttackConfig;
+import de.rub.nds.tlsattacker.attacks.config.Lucky13CommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.PaddingOracleCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.PoodleCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.PskBruteForcerAttackClientCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.PskBruteForcerAttackServerCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.SimpleMitmProxyCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.SpecialDrownCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.TLSPoodleCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.delegate.GeneralAttackDelegate;
-import de.rub.nds.tlsattacker.attacks.impl.*;
-import de.rub.nds.tlsattacker.attacks.impl.drown.*;
+import de.rub.nds.tlsattacker.attacks.impl.Attacker;
+import de.rub.nds.tlsattacker.attacks.impl.BleichenbacherAttacker;
+import de.rub.nds.tlsattacker.attacks.impl.Cve20162107Attacker;
+import de.rub.nds.tlsattacker.attacks.impl.EarlyCCSAttacker;
+import de.rub.nds.tlsattacker.attacks.impl.EarlyFinishedAttacker;
+import de.rub.nds.tlsattacker.attacks.impl.HeartbleedAttacker;
+import de.rub.nds.tlsattacker.attacks.impl.InvalidCurveAttacker;
+import de.rub.nds.tlsattacker.attacks.impl.Lucky13Attacker;
+import de.rub.nds.tlsattacker.attacks.impl.PaddingOracleAttacker;
+import de.rub.nds.tlsattacker.attacks.impl.PoodleAttacker;
+import de.rub.nds.tlsattacker.attacks.impl.PskBruteForcerAttackClient;
+import de.rub.nds.tlsattacker.attacks.impl.PskBruteForcerAttackServer;
+import de.rub.nds.tlsattacker.attacks.impl.SimpleMitmProxy;
+import de.rub.nds.tlsattacker.attacks.impl.TLSPoodleAttacker;
+import de.rub.nds.tlsattacker.attacks.impl.drown.GeneralDrownAttacker;
+import de.rub.nds.tlsattacker.attacks.impl.drown.SpecialDrownAttacker;
 import de.rub.nds.tlsattacker.core.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -42,12 +71,12 @@ public class Main {
         BleichenbacherCommandConfig bleichenbacherTest = new BleichenbacherCommandConfig(generalDelegate);
         builder.addCommand(BleichenbacherCommandConfig.ATTACK_COMMAND, bleichenbacherTest);
 
-        PskBruteForcerAttackServerCommandConfig pskBruteForcerAttackServerTest = new PskBruteForcerAttackServerCommandConfig(
-                generalDelegate);
+        PskBruteForcerAttackServerCommandConfig pskBruteForcerAttackServerTest =
+            new PskBruteForcerAttackServerCommandConfig(generalDelegate);
         builder.addCommand(PskBruteForcerAttackServerCommandConfig.ATTACK_COMMAND, pskBruteForcerAttackServerTest);
 
-        PskBruteForcerAttackClientCommandConfig pskBruteForcerAttackClientTest = new PskBruteForcerAttackClientCommandConfig(
-                generalDelegate);
+        PskBruteForcerAttackClientCommandConfig pskBruteForcerAttackClientTest =
+            new PskBruteForcerAttackClientCommandConfig(generalDelegate);
         builder.addCommand(PskBruteForcerAttackClientCommandConfig.ATTACK_COMMAND, pskBruteForcerAttackClientTest);
 
         InvalidCurveAttackConfig ellipticTest = new InvalidCurveAttackConfig(generalDelegate);
@@ -77,8 +106,8 @@ public class Main {
         PoodleCommandConfig poodle = new PoodleCommandConfig(generalDelegate);
         builder.addCommand(PoodleCommandConfig.ATTACK_COMMAND, poodle);
 
-        SimpleMitmProxyCommandConfig simpleMitmProxy = new SimpleMitmProxyCommandConfig(generalDelegate);
-        builder.addCommand(SimpleMitmProxyCommandConfig.ATTACK_COMMAND, simpleMitmProxy);
+        SimpleMitmProxyCommandConfig simpleMITMProxy = new SimpleMitmProxyCommandConfig(generalDelegate);
+        builder.addCommand(SimpleMitmProxyCommandConfig.ATTACK_COMMAND, simpleMITMProxy);
 
         GeneralDrownCommandConfig generalDrownConfig = new GeneralDrownCommandConfig(generalDelegate);
         builder.addCommand(GeneralDrownCommandConfig.COMMAND, generalDrownConfig);
@@ -144,15 +173,15 @@ public class Main {
                 attacker = new PoodleAttacker(poodle, poodle.createConfig());
                 break;
             case SimpleMitmProxyCommandConfig.ATTACK_COMMAND:
-                attacker = new SimpleMitmProxy(simpleMitmProxy, simpleMitmProxy.createConfig());
+                attacker = new SimpleMitmProxy(simpleMITMProxy, simpleMITMProxy.createConfig());
                 break;
             case PskBruteForcerAttackClientCommandConfig.ATTACK_COMMAND:
                 attacker = new PskBruteForcerAttackClient(pskBruteForcerAttackClientTest,
-                        pskBruteForcerAttackClientTest.createConfig());
+                    pskBruteForcerAttackClientTest.createConfig());
                 break;
             case PskBruteForcerAttackServerCommandConfig.ATTACK_COMMAND:
                 attacker = new PskBruteForcerAttackServer(pskBruteForcerAttackServerTest,
-                        pskBruteForcerAttackServerTest.createConfig());
+                    pskBruteForcerAttackServerTest.createConfig());
                 break;
             case GeneralDrownCommandConfig.COMMAND:
                 attacker = new GeneralDrownAttacker(generalDrownConfig, generalDrownConfig.createConfig());
@@ -180,7 +209,7 @@ public class Main {
                 } else {
                     CONSOLE.warn("Vulnerable: Uncertain");
                 }
-            } catch (UnsupportedOperationException E) {
+            } catch (UnsupportedOperationException e) {
                 LOGGER.info("The selected attacker is currently not implemented");
             }
         }

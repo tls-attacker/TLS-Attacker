@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -27,8 +27,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * This handler processes the KeyShare extensions in ClientHello and ServerHello
- * messages, as defined in
+ * This handler processes the KeyShare extensions in ClientHello and ServerHello messages, as defined in
  * https://tools.ietf.org/html/draft-ietf-tls-tls13-21#section-4.2.7
  */
 public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtensionMessage> {
@@ -40,7 +39,7 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
     public KeyShareExtensionHandler(TlsContext context, ExtensionType type) {
         super(context);
         if (type != ExtensionType.KEY_SHARE && type != ExtensionType.KEY_SHARE_OLD) {
-            throw new RuntimeException("Trying to initalize KeyShareExtensionHandler with an illegal ExtensionType");
+            throw new RuntimeException("Trying to initialize KeyShareExtensionHandler with an illegal ExtensionType");
         }
         this.type = type;
     }
@@ -62,6 +61,19 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
 
     @Override
     public void adjustTLSExtensionContext(KeyShareExtensionMessage message) {
+        if (message.isRetryRequestMode()) {
+            adjustRetryRequestKeyShare(message);
+        } else {
+            List<KeyShareStoreEntry> ksEntryList = createKeyShareStoreEntries(message);
+            if (context.getTalkingConnectionEndType() == ConnectionEndType.SERVER) {
+                adjustServerKeyShareStore(ksEntryList);
+            } else {
+                context.setClientKeyShareStoreEntryList(ksEntryList);
+            }
+        }
+    }
+
+    private List<KeyShareStoreEntry> createKeyShareStoreEntries(KeyShareExtensionMessage message) {
         List<KeyShareStoreEntry> ksEntryList = new LinkedList<>();
         for (KeyShareEntry pair : message.getKeyShareList()) {
             NamedGroup type = NamedGroup.getNamedGroup(pair.getGroup().getValue());
@@ -70,24 +82,32 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
                     ksEntryList.add(new KeyShareStoreEntry(type, pair.getPublicKey().getValue()));
                 } else {
                     LOGGER.warn("Empty KeyShare - Setting only selected KeyShareType: to "
-                            + ArrayConverter.bytesToHexString(pair.getGroup()));
+                        + ArrayConverter.bytesToHexString(pair.getGroup()));
                     context.setSelectedGroup(type);
                 }
             } else {
                 LOGGER.warn("Unknown KS Type:" + ArrayConverter.bytesToHexString(pair.getPublicKey().getValue()));
             }
         }
-        if (context.getTalkingConnectionEndType() == ConnectionEndType.SERVER) {
-            // The server has only one key
-            if (ksEntryList.size() > 0) {
-                context.setServerKeyShareStoreEntry(new KeyShareStoreEntry(ksEntryList.get(0).getGroup(), ksEntryList
-                        .get(0).getPublicKey()));
-                NamedGroup selectedGroup = context.getServerKeyShareStoreEntry().getGroup();
-                LOGGER.debug("Setting selected NamedGroup in context to " + selectedGroup);
-                context.setSelectedGroup(selectedGroup);
-            }
-        } else {
-            context.setClientKeyShareStoreEntryList(ksEntryList);
+        return ksEntryList;
+    }
+
+    private void adjustServerKeyShareStore(List<KeyShareStoreEntry> ksEntryList) {
+        // The server has only one key
+        if (ksEntryList.size() > 0) {
+            context.setServerKeyShareStoreEntry(
+                new KeyShareStoreEntry(ksEntryList.get(0).getGroup(), ksEntryList.get(0).getPublicKey()));
+            NamedGroup selectedGroup = context.getServerKeyShareStoreEntry().getGroup();
+            LOGGER.debug("Setting selected NamedGroup in context to " + selectedGroup);
+            context.setSelectedGroup(selectedGroup);
+        }
+    }
+
+    private void adjustRetryRequestKeyShare(KeyShareExtensionMessage message) {
+        if (message.getKeyShareList().size() > 0) {
+            NamedGroup selectedGroup = message.getKeyShareList().get(0).getGroupConfig();
+            LOGGER.debug("Setting selected NamedGroup from HelloRetryRequest in context to " + selectedGroup);
+            context.setSelectedGroup(selectedGroup);
         }
     }
 }

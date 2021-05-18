@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -26,15 +26,13 @@ public class CertificateVerifyParser extends HandshakeMessageParser<CertificateV
      * Constructor for the Parser class
      *
      * @param pointer
-     *            Position in the array where the HandshakeMessageParser is
-     *            supposed to start parsing
+     *                Position in the array where the HandshakeMessageParser is supposed to start parsing
      * @param array
-     *            The byte[] which the HandshakeMessageParser is supposed to
-     *            parse
+     *                The byte[] which the HandshakeMessageParser is supposed to parse
      * @param version
-     *            Version of the Protocol
+     *                Version of the Protocol
      * @param config
-     *            A Config used in the current context
+     *                A Config used in the current context
      */
     public CertificateVerifyParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
         super(pointer, array, HandshakeMessageType.CERTIFICATE_VERIFY, version, config);
@@ -56,21 +54,19 @@ public class CertificateVerifyParser extends HandshakeMessageParser<CertificateV
     }
 
     /**
-     * Reads the next bytes as the SignatureHashAlgorithm and writes them in the
-     * message
+     * Reads the next bytes as the SignatureHashAlgorithm and writes them in the message
      *
      * @param msg
      *            Message to write in
      */
     private void parseSignatureHashAlgorithm(CertificateVerifyMessage msg) {
         msg.setSignatureHashAlgorithm(parseByteArrayField(HandshakeByteLength.SIGNATURE_HASH_ALGORITHM));
-        LOGGER.debug("SignatureHashAlgorithm: "
-                + ArrayConverter.bytesToHexString(msg.getSignatureHashAlgorithm().getValue()));
+        LOGGER.debug(
+            "SignatureHashAlgorithm: " + ArrayConverter.bytesToHexString(msg.getSignatureHashAlgorithm().getValue()));
     }
 
     /**
-     * Reads the next bytes as the SignatureLength and writes them in the
-     * message
+     * Reads the next bytes as the SignatureLength and writes them in the message
      *
      * @param msg
      *            Message to write in
@@ -88,7 +84,7 @@ public class CertificateVerifyParser extends HandshakeMessageParser<CertificateV
      */
     private void parseSignature(CertificateVerifyMessage msg) {
         msg.setSignature(parseByteArrayField(msg.getSignatureLength().getValue()));
-        LOGGER.debug("Signatur: " + ArrayConverter.bytesToHexString(msg.getSignature().getValue()));
+        LOGGER.debug("signature: " + ArrayConverter.bytesToHexString(msg.getSignature().getValue()));
     }
 
 }

@@ -1,19 +1,18 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks.bruteforce;
 
 /**
- * An IncrementingGuessProvider is a GuessProvider which tries all byte[]
- * sequences in a growing order. Starting by an empty byte[] and then continuing
- * the sequence with th byte[] size increased by 1. It would then try 00, 01,
- * 02, ..., FF and continue with 00 00, 00 01, 00 02 , ... to FF, FF and so on.
+ * An IncrementingGuessProvider is a GuessProvider which tries all byte[] sequences in a growing order. Starting by an
+ * empty byte[] and then continuing the sequence with th byte[] size increased by 1. It would then try 00, 01, 02, ...,
+ * FF and continue with 00 00, 00 01, 00 02 , ... to FF, FF and so on.
  */
 public class IncrementingGuessProvider extends GuessProvider {
 

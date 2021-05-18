@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.util;
 
 import de.rub.nds.modifiablevariable.util.ModifiableVariableAnalyzer;
@@ -21,15 +21,14 @@ import org.junit.Test;
 public class ModifiableVariableAnalyzerTest {
 
     /**
-     * Test of getAllModifiableVariableFields method, of class
-     * ModifiableVariableAnalyzer.
+     * Test of getAllModifiableVariableFields method, of class ModifiableVariableAnalyzer.
      */
     @Test
     public void testGetAllModifiableVariableFields() {
         ClientHelloMessage chm = new ClientHelloMessage(Config.createConfig());
-        String[] fieldNames = { "compressionLength", "cipherSuiteLength", "cipherSuites", "compressions",
-                "protocolVersion", "unixTime", "random", "sessionIdLength", "sessionId", "type",
-                "completeResultingMessage" };
+        String[] fieldNames =
+            { "compressionLength", "cipherSuiteLength", "cipherSuites", "compressions", "protocolVersion", "unixTime",
+                "random", "sessionIdLength", "sessionId", "type", "completeResultingMessage" };
         List<Field> fields = ModifiableVariableAnalyzer.getAllModifiableVariableFields(chm);
         for (String fn : fieldNames) {
             assertTrue(containsFieldName(fn, fields));
@@ -38,8 +37,7 @@ public class ModifiableVariableAnalyzerTest {
     }
 
     /**
-     * Test of getRandomModifiableVariableField method, of class
-     * ModifiableVariableAnalyzer.
+     * Test of getRandomModifiableVariableField method, of class ModifiableVariableAnalyzer.
      */
     @Test
     public void testGetRandomModifiableVariableField() {

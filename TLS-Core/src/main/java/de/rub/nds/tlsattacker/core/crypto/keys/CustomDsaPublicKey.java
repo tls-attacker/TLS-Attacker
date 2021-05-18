@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.crypto.keys;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -25,25 +25,25 @@ import org.apache.logging.log4j.Logger;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CustomDsaPublicKey extends CustomPublicKey implements DSAPublicKey {
 
-    private final static Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger();
 
-    private BigInteger p;
-    private BigInteger q;
-    private BigInteger g;
+    private BigInteger dsaP;
+    private BigInteger dsaQ;
+    private BigInteger dsaG;
 
     private BigInteger publicKey;
 
-    public CustomDsaPublicKey(BigInteger p, BigInteger q, BigInteger g, BigInteger publicKey) {
-        this.p = p;
-        this.q = q;
-        this.g = g;
+    public CustomDsaPublicKey(BigInteger dsaP, BigInteger dsaQ, BigInteger dsaG, BigInteger publicKey) {
+        this.dsaP = dsaP;
+        this.dsaQ = dsaQ;
+        this.dsaG = dsaG;
         this.publicKey = publicKey;
     }
 
     private CustomDsaPublicKey() {
-        p = null;
-        q = null;
-        g = null;
+        dsaP = null;
+        dsaQ = null;
+        dsaG = null;
         publicKey = null;
     }
 
@@ -55,15 +55,15 @@ public class CustomDsaPublicKey extends CustomPublicKey implements DSAPublicKey 
         } else {
             switch (ownerOfKey) {
                 case CLIENT:
-                    context.setClientDsaGenerator(g);
-                    context.setClientDsaPrimeP(p);
-                    context.setClientDsaPrimeQ(q);
+                    context.setClientDsaGenerator(dsaG);
+                    context.setClientDsaPrimeP(dsaP);
+                    context.setClientDsaPrimeQ(dsaQ);
                     context.setClientDsaPublicKey(publicKey);
                     break;
                 case SERVER:
-                    context.setServerDsaGenerator(g);
-                    context.setServerDsaPrimeP(p);
-                    context.setServerDsaPrimeQ(q);
+                    context.setServerDsaGenerator(dsaG);
+                    context.setServerDsaPrimeP(dsaP);
+                    context.setServerDsaPrimeQ(dsaQ);
                     context.setServerDsaPublicKey(publicKey);
                     break;
                 default:
@@ -72,16 +72,16 @@ public class CustomDsaPublicKey extends CustomPublicKey implements DSAPublicKey 
         }
     }
 
-    public BigInteger getP() {
-        return p;
+    public BigInteger getDsaP() {
+        return dsaP;
     }
 
-    public BigInteger getQ() {
-        return q;
+    public BigInteger getDsaQ() {
+        return dsaQ;
     }
 
-    public BigInteger getG() {
-        return g;
+    public BigInteger getDsaG() {
+        return dsaG;
     }
 
     @Override
@@ -91,7 +91,7 @@ public class CustomDsaPublicKey extends CustomPublicKey implements DSAPublicKey 
 
     @Override
     public DSAParams getParams() {
-        return new DSAParameterSpec(p, q, g);
+        return new DSAParameterSpec(dsaP, dsaQ, dsaG);
     }
 
     @Override
@@ -116,15 +116,15 @@ public class CustomDsaPublicKey extends CustomPublicKey implements DSAPublicKey 
         } else {
             switch (ownerOfKey) {
                 case CLIENT:
-                    config.setDefaultClientDsaGenerator(g);
-                    config.setDefaultClientDsaPrimeP(p);
-                    config.setDefaultClientDsaPrimeQ(q);
+                    config.setDefaultClientDsaGenerator(dsaG);
+                    config.setDefaultClientDsaPrimeP(dsaP);
+                    config.setDefaultClientDsaPrimeQ(dsaQ);
                     config.setDefaultClientDsaPublicKey(publicKey);
                     break;
                 case SERVER:
-                    config.setDefaultServerDsaGenerator(g);
-                    config.setDefaultServerDsaPrimeP(p);
-                    config.setDefaultServerDsaPrimeQ(q);
+                    config.setDefaultServerDsaGenerator(dsaG);
+                    config.setDefaultServerDsaPrimeP(dsaP);
+                    config.setDefaultServerDsaPrimeQ(dsaQ);
                     config.setDefaultServerDsaPublicKey(publicKey);
                     break;
                 default:
@@ -136,9 +136,9 @@ public class CustomDsaPublicKey extends CustomPublicKey implements DSAPublicKey 
     @Override
     public int hashCode() {
         int hash = 3;
-        hash = 59 * hash + Objects.hashCode(this.p);
-        hash = 59 * hash + Objects.hashCode(this.q);
-        hash = 59 * hash + Objects.hashCode(this.g);
+        hash = 59 * hash + Objects.hashCode(this.dsaP);
+        hash = 59 * hash + Objects.hashCode(this.dsaQ);
+        hash = 59 * hash + Objects.hashCode(this.dsaG);
         hash = 59 * hash + Objects.hashCode(this.publicKey);
         return hash;
     }
@@ -155,28 +155,28 @@ public class CustomDsaPublicKey extends CustomPublicKey implements DSAPublicKey 
             return false;
         }
         final CustomDsaPublicKey other = (CustomDsaPublicKey) obj;
-        if (!Objects.equals(this.p, other.p)) {
+        if (!Objects.equals(this.dsaP, other.dsaP)) {
             return false;
         }
-        if (!Objects.equals(this.q, other.q)) {
+        if (!Objects.equals(this.dsaQ, other.dsaQ)) {
             return false;
         }
-        if (!Objects.equals(this.g, other.g)) {
+        if (!Objects.equals(this.dsaG, other.dsaG)) {
             return false;
         }
         return Objects.equals(this.publicKey, other.publicKey);
     }
 
-    public void setP(BigInteger p) {
-        this.p = p;
+    public void setDsaP(BigInteger dsaP) {
+        this.dsaP = dsaP;
     }
 
-    public void setQ(BigInteger q) {
-        this.q = q;
+    public void setDsaQ(BigInteger dsaQ) {
+        this.dsaQ = dsaQ;
     }
 
-    public void setG(BigInteger g) {
-        this.g = g;
+    public void setDsaG(BigInteger dsaG) {
+        this.dsaG = dsaG;
     }
 
     public void setPublicKey(BigInteger publicKey) {
@@ -184,7 +184,7 @@ public class CustomDsaPublicKey extends CustomPublicKey implements DSAPublicKey 
     }
 
     @Override
-    public int keysize() {
-        return p.bitLength();
+    public int keySize() {
+        return dsaP.bitLength();
     }
 }

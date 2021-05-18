@@ -1,19 +1,19 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.socket;
 
 import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
@@ -40,10 +40,10 @@ public class TlsAttackerSocket {
     /**
      * Sends without encryption etc
      *
-     * @param bytes
-     *            The raw bytes which should be send
+     * @param  bytes
+     *                             The raw bytes which should be send
      * @throws java.io.IOException
-     *             If something goes wrong during Transmission
+     *                             If something goes wrong during Transmission
      */
     public void sendRawBytes(byte[] bytes) throws IOException {
         state.getTlsContext().getTransportHandler().sendData(bytes);
@@ -52,9 +52,9 @@ public class TlsAttackerSocket {
     /**
      * Listens without Encryption etc
      *
-     * @return The Raw received Bytes
+     * @return                     The Raw received Bytes
      * @throws java.io.IOException
-     *             If something goes wrong during the receive
+     *                             If something goes wrong during the receive
      */
     public byte[] receiveRawBytes() throws IOException {
         return state.getTlsContext().getTransportHandler().fetchData();
@@ -64,7 +64,7 @@ public class TlsAttackerSocket {
      * Sends a String as ApplicationMessages
      *
      * @param string
-     *            The String which should be send in ApplicationMessages
+     *               The String which should be send in ApplicationMessages
      */
     public void send(String string) {
         send(string.getBytes(Charset.defaultCharset()));
@@ -74,7 +74,7 @@ public class TlsAttackerSocket {
      * Sends bytes as ApplicationMessages
      *
      * @param bytes
-     *            ApplicationMessages to send
+     *              ApplicationMessages to send
      */
     public void send(byte[] bytes) {
         ApplicationMessage message = new ApplicationMessage();
@@ -95,12 +95,18 @@ public class TlsAttackerSocket {
         } while (actuallyRead > 0);
     }
 
+    public void send(ProtocolMessage message) {
+        SendAction action = new SendAction(message);
+        action.setConnectionAlias(state.getTlsContext().getConnection().getAlias());
+        action.execute(state);
+    }
+
     /**
      * Receives bytes and decrypts ApplicationMessage contents
      *
-     * @return Received bytes The bytes which are received
+     * @return                     Received bytes The bytes which are received
      * @throws java.io.IOException
-     *             If something goes wrong during the receive
+     *                             If something goes wrong during the receive
      */
     public byte[] receiveBytes() throws IOException {
         ReceiveAction action = new ReceiveAction(new ApplicationMessage());
@@ -122,21 +128,14 @@ public class TlsAttackerSocket {
     }
 
     /**
-     * Receives bytes and decrypts ApplicationMessage contents in converts them
-     * to Strings
+     * Receives bytes and decrypts ApplicationMessage contents in converts them to Strings
      *
-     * @return The received String
+     * @return                     The received String
      * @throws java.io.IOException
-     *             If something goes wrong during the receive
+     *                             If something goes wrong during the receive
      */
     public String receiveString() throws IOException {
         return new String(receiveBytes(), Charset.defaultCharset());
-    }
-
-    public void send(ProtocolMessage message) {
-        SendAction action = new SendAction(message);
-        action.setConnectionAlias(state.getTlsContext().getConnection().getAlias());
-        action.execute(state);
     }
 
     public void close() throws IOException {

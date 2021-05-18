@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -40,8 +40,8 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
         prepareCipherSuite();
         prepareCompressionMethod();
         if (!chooser.getConfig().getHighestProtocolVersion().isSSL()
-                || (chooser.getConfig().getHighestProtocolVersion().isSSL() && chooser.getConfig()
-                        .isAddExtensionsInSSL())) {
+            || (chooser.getConfig().getHighestProtocolVersion().isSSL()
+                && chooser.getConfig().isAddExtensionsInSSL())) {
             prepareExtensions();
             prepareExtensionLength();
         }
@@ -52,8 +52,8 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
             msg.setSelectedCipherSuite(chooser.getConfig().getDefaultSelectedCipherSuite().getByteValue());
         } else {
             CipherSuite selectedSuite = null;
-            for (CipherSuite suite : chooser.getConfig().getDefaultServerSupportedCiphersuites()) {
-                if (chooser.getClientSupportedCiphersuites().contains(suite)) {
+            for (CipherSuite suite : chooser.getConfig().getDefaultServerSupportedCipherSuites()) {
+                if (chooser.getClientSupportedCipherSuites().contains(suite)) {
                     selectedSuite = suite;
                     break;
                 }
@@ -64,7 +64,8 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
             }
             msg.setSelectedCipherSuite(selectedSuite.getByteValue());
         }
-        LOGGER.debug("SelectedCipherSuite: " + ArrayConverter.bytesToHexString(msg.getSelectedCipherSuite().getValue()));
+        LOGGER
+            .debug("SelectedCipherSuite: " + ArrayConverter.bytesToHexString(msg.getSelectedCipherSuite().getValue()));
     }
 
     private void prepareCompressionMethod() {
@@ -109,7 +110,7 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
             msg.setProtocolVersion(ourVersion.getValue());
         } else {
             if (chooser.getHighestClientProtocolVersion().isDTLS()
-                    && chooser.getConfig().getHighestProtocolVersion().isDTLS()) {
+                && chooser.getConfig().getHighestProtocolVersion().isDTLS()) {
                 // We both want dtls
                 if (intRepresentationClientVersion <= intRepresentationOurVersion) {
                     msg.setProtocolVersion(ourVersion.getValue());
@@ -118,7 +119,7 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
                 }
             }
             if (!chooser.getHighestClientProtocolVersion().isDTLS()
-                    && !chooser.getConfig().getHighestProtocolVersion().isDTLS()) {
+                && !chooser.getConfig().getHighestProtocolVersion().isDTLS()) {
                 // We both want tls
                 if (intRepresentationClientVersion >= intRepresentationOurVersion) {
                     msg.setProtocolVersion(ourVersion.getValue());

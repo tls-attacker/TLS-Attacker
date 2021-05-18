@@ -1,23 +1,25 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ECDHEServerKeyExchangeSerializer<T extends ECDHEServerKeyExchangeMessage> extends
-        ServerKeyExchangeSerializer<T> {
+public class ECDHEServerKeyExchangeSerializer<T extends ECDHEServerKeyExchangeMessage>
+    extends ServerKeyExchangeSerializer<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -27,9 +29,9 @@ public class ECDHEServerKeyExchangeSerializer<T extends ECDHEServerKeyExchangeMe
      * Constructor for the ECDHServerKeyExchangerSerializer
      *
      * @param message
-     *            Message that should be serialized
+     *                Message that should be serialized
      * @param version
-     *            Version of the Protocol
+     *                Version of the Protocol
      */
     public ECDHEServerKeyExchangeSerializer(T message, ProtocolVersion version) {
         super(message, version);
@@ -45,9 +47,17 @@ public class ECDHEServerKeyExchangeSerializer<T extends ECDHEServerKeyExchangeMe
         writeSerializedPublicKey(msg);
         if (isTLS12() || isDTLS12()) {
             writeSignatureAndHashAlgorithm(msg);
+            SignatureAndHashAlgorithm sigHashAlg =
+                SignatureAndHashAlgorithm.getSignatureAndHashAlgorithm(msg.getSignatureAndHashAlgorithm().getValue());
+            if (sigHashAlg == null || sigHashAlg.getSignatureAlgorithm() != SignatureAlgorithm.ANONYMOUS) {
+                writeSignatureLength(msg);
+                writeSignature(msg);
+            }
+        } else {
+            writeSignatureLength(msg);
+            writeSignature(msg);
         }
-        writeSignatureLength(msg);
-        writeSignature(msg);
+
         return getAlreadySerialized();
     }
 
@@ -60,8 +70,7 @@ public class ECDHEServerKeyExchangeSerializer<T extends ECDHEServerKeyExchangeMe
     }
 
     /**
-     * Writes the CurveType of the ECDHEServerKeyExchangeMessage into the final
-     * byte[]
+     * Writes the CurveType of the ECDHEServerKeyExchangeMessage into the final byte[]
      */
     private void writeCurveType(T msg) {
         appendByte(msg.getGroupType().getValue());
@@ -69,8 +78,7 @@ public class ECDHEServerKeyExchangeSerializer<T extends ECDHEServerKeyExchangeMe
     }
 
     /**
-     * Writes the NamedCurve of the ECDHEServerKeyExchangeMessage into the final
-     * byte[]
+     * Writes the NamedCurve of the ECDHEServerKeyExchangeMessage into the final byte[]
      */
     private void writeNamedGroup(T msg) {
         appendBytes(msg.getNamedGroup().getValue());
@@ -78,8 +86,7 @@ public class ECDHEServerKeyExchangeSerializer<T extends ECDHEServerKeyExchangeMe
     }
 
     /**
-     * Writes the SerializedPublicKeyLength of the ECDHEServerKeyExchangeMessage
-     * into the final byte[]
+     * Writes the SerializedPublicKeyLength of the ECDHEServerKeyExchangeMessage into the final byte[]
      */
     private void writeSerializedPublicKeyLength(T msg) {
         appendInt(msg.getPublicKeyLength().getValue(), HandshakeByteLength.ECDHE_PARAM_LENGTH);
@@ -87,8 +94,7 @@ public class ECDHEServerKeyExchangeSerializer<T extends ECDHEServerKeyExchangeMe
     }
 
     /**
-     * Writes the SerializedPublicKey of the ECDHEServerKeyExchangeMessage into
-     * the final byte[]
+     * Writes the SerializedPublicKey of the ECDHEServerKeyExchangeMessage into the final byte[]
      */
     private void writeSerializedPublicKey(T msg) {
         appendBytes(msg.getPublicKey().getValue());
@@ -104,18 +110,16 @@ public class ECDHEServerKeyExchangeSerializer<T extends ECDHEServerKeyExchangeMe
     }
 
     /**
-     * Writes the SignatureAndHashAlgorithm of the ECDHEServerKeyExchangeMessage
-     * into the final byte[]
+     * Writes the SignatureAndHashAlgorithm of the ECDHEServerKeyExchangeMessage into the final byte[]
      */
     private void writeSignatureAndHashAlgorithm(T msg) {
         appendBytes(msg.getSignatureAndHashAlgorithm().getValue());
-        LOGGER.debug("SignatureAndHaslAlgorithm: "
-                + ArrayConverter.bytesToHexString(msg.getSignatureAndHashAlgorithm().getValue()));
+        LOGGER.debug("SignatureAndHashAlgorithm: "
+            + ArrayConverter.bytesToHexString(msg.getSignatureAndHashAlgorithm().getValue()));
     }
 
     /**
-     * Writes the SignatureLength of the ECDHEServerKeyExchangeMessage into the
-     * final byte[]
+     * Writes the SignatureLength of the ECDHEServerKeyExchangeMessage into the final byte[]
      */
     private void writeSignatureLength(T msg) {
         appendInt(msg.getSignatureLength().getValue(), HandshakeByteLength.SIGNATURE_LENGTH);
@@ -123,8 +127,7 @@ public class ECDHEServerKeyExchangeSerializer<T extends ECDHEServerKeyExchangeMe
     }
 
     /**
-     * Writes the Signature of the ECDHEServerKeyExchangeMessage into the final
-     * byte[]
+     * Writes the Signature of the ECDHEServerKeyExchangeMessage into the final byte[]
      */
     private void writeSignature(T msg) {
         appendBytes(msg.getSignature().getValue());

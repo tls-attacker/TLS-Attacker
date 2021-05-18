@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.dtls;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -31,7 +31,7 @@ public class FragmentCollectorTest {
     }
 
     /**
-     * Test that addFragment is successful. (Does not throw an excpetion
+     * Test that addFragment is successful. (Does not throw an exception
      */
     @Test
     public void testAddTrue() {
@@ -71,7 +71,7 @@ public class FragmentCollectorTest {
      * Test isMessageComplete when all fragments are inserted disorderly.
      */
     @Test
-    public void testIsMessageCompleteDisordelyTrue() {
+    public void testIsMessageCompleteDisorderlyTrue() {
         collector.addFragment(fragment(0, 0, 2, 0));
         collector.addFragment(fragment(0, 8, 2, 0));
         collector.addFragment(fragment(0, 5, 3, 0));
@@ -80,11 +80,10 @@ public class FragmentCollectorTest {
     }
 
     /**
-     * Test isMessageComplete when all fragments are inserted disorderly with
-     * overlap.
+     * Test isMessageComplete when all fragments are inserted disorderly with overlap.
      */
     @Test
-    public void testIsMessageCompleteTrueDisordelyOverlap() {
+    public void testIsMessageCompleteTrueDisorderlyOverlap() {
         collector.addFragment(fragment(0, 5, 3, 0));
         collector.addFragment(fragment(0, 7, 3, 0));
         collector.addFragment(fragment(0, 0, 3, 0));
@@ -93,11 +92,10 @@ public class FragmentCollectorTest {
     }
 
     /**
-     * Test isMessageComplete when all fragments are inserted disorderly with
-     * overlap a few bytes are missing.
+     * Test isMessageComplete when all fragments are inserted disorderly with overlap a few bytes are missing.
      */
     @Test
-    public void testIsMessageCompleteFalseDisordelyOverlap() {
+    public void testIsMessageCompleteFalseDisorderlyOverlap() {
         collector.addFragment(fragment(0, 6, 3, 0));
         collector.addFragment(fragment(0, 0, 7, 0));
         assertFalse(collector.isMessageComplete());
@@ -121,8 +119,7 @@ public class FragmentCollectorTest {
     }
 
     /**
-     * Test isFitting for fragment which has the same type as a previously added
-     * fragment.
+     * Test isFitting for fragment which has the same type as a previously added fragment.
      */
     @Test
     public void testIsFittingTrue() {
@@ -136,7 +133,7 @@ public class FragmentCollectorTest {
      * Test buildCombinedFragment in the usual case.
      */
     @Test
-    public void testbuildCombinedFragment() {
+    public void testBuildCombinedFragment() {
         byte[] original = ArrayConverter.hexStringToByteArray("123456789A123456789A");
         collector.addFragment(fragmentOfMsg(0, 0, 3, original, 0));
         collector.addFragment(fragmentOfMsg(0, 3, 5, original, 0));
@@ -146,11 +143,10 @@ public class FragmentCollectorTest {
     }
 
     /**
-     * Test buildCombinedFragment when fragments have been inserted disorderly
-     * with overlaps.
+     * Test buildCombinedFragment when fragments have been inserted disorderly with overlaps.
      */
     @Test
-    public void testbuildCombinedFragmentDisorderlyOverlap() {
+    public void testBuildCombinedFragmentDisorderlyOverlap() {
         byte[] original = ArrayConverter.hexStringToByteArray("123456789A123456789A");
         collector.addFragment(fragmentOfMsg(0, 5, 5, original, 0));
         collector.addFragment(fragmentOfMsg(0, 0, 3, original, 0));
@@ -163,7 +159,7 @@ public class FragmentCollectorTest {
      * Test buildCombinedFragment when not all bytes have been received.
      */
     @Test
-    public void testbuildCombinedFragmentIncomplete() {
+    public void testBuildCombinedFragmentIncomplete() {
         byte[] original = ArrayConverter.hexStringToByteArray("123456789A123456789A");
         collector.addFragment(fragmentOfMsg(0, 0, 5, original, 0));
         collector.addFragment(fragmentOfMsg(0, 6, 4, original, 0));
@@ -173,11 +169,10 @@ public class FragmentCollectorTest {
     }
 
     /**
-     * Test buildCombinedFragment after adding an unfitting fragment, with only
-     * fitting set to false.
+     * Test buildCombinedFragment after adding an unfitting fragment, with only fitting set to false.
      */
     @Test
-    public void testbuildCombinedFragmentAddUnfitting() {
+    public void testBuildCombinedFragmentAddUnfitting() {
         Config config = Config.createConfig();
         config.setAcceptOnlyFittingDtlsFragments(false);
         collector = new FragmentCollector(config, (byte) 0, 6, 10);

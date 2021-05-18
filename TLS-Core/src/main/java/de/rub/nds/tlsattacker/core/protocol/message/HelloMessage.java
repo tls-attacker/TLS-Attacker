@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -15,6 +15,9 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 
 public abstract class HelloMessage extends HandshakeMessage {
 
@@ -73,12 +76,24 @@ public abstract class HelloMessage extends HandshakeMessage {
         this.protocolVersion = protocolVersion;
     }
 
+    public void setProtocolVersion(byte[] array) {
+        this.protocolVersion = ModifiableVariableFactory.safelySetValue(this.protocolVersion, array);
+    }
+
     public void setUnixTime(ModifiableByteArray unixTime) {
         this.unixTime = unixTime;
     }
 
+    public void setUnixTime(byte[] unixTime) {
+        this.unixTime = ModifiableVariableFactory.safelySetValue(this.unixTime, unixTime);
+    }
+
     public void setRandom(ModifiableByteArray random) {
         this.random = random;
+    }
+
+    public void setRandom(byte[] random) {
+        this.random = ModifiableVariableFactory.safelySetValue(this.random, random);
     }
 
     public ModifiableInteger getSessionIdLength() {
@@ -89,28 +104,16 @@ public abstract class HelloMessage extends HandshakeMessage {
         this.sessionIdLength = sessionIdLength;
     }
 
-    public void setSessionId(ModifiableByteArray sessionId) {
-        this.sessionId = sessionId;
-    }
-
-    public void setRandom(byte[] random) {
-        this.random = ModifiableVariableFactory.safelySetValue(this.random, random);
-    }
-
-    public void setSessionId(byte[] sessionId) {
-        this.sessionId = ModifiableVariableFactory.safelySetValue(this.sessionId, sessionId);
-    }
-
-    public void setUnixTime(byte[] unixTime) {
-        this.unixTime = ModifiableVariableFactory.safelySetValue(this.unixTime, unixTime);
-    }
-
     public void setSessionIdLength(int sessionIdLength) {
         this.sessionIdLength = ModifiableVariableFactory.safelySetValue(this.sessionIdLength, sessionIdLength);
     }
 
-    public void setProtocolVersion(byte[] array) {
-        this.protocolVersion = ModifiableVariableFactory.safelySetValue(this.protocolVersion, array);
+    public void setSessionId(ModifiableByteArray sessionId) {
+        this.sessionId = sessionId;
+    }
+
+    public void setSessionId(byte[] sessionId) {
+        this.sessionId = ModifiableVariableFactory.safelySetValue(this.sessionId, sessionId);
     }
 
 }

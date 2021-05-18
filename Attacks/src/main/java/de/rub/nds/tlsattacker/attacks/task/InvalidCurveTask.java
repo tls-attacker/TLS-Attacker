@@ -1,31 +1,24 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks.task;
 
-import de.rub.nds.tlsattacker.attacks.exception.FingerprintExtractionException;
 import de.rub.nds.tlsattacker.attacks.util.response.ResponseExtractor;
 import de.rub.nds.tlsattacker.attacks.util.response.ResponseFingerprint;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
-import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.workflow.DefaultWorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
-import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.core.workflow.task.TlsTask;
 import de.rub.nds.tlsattacker.transport.socket.SocketState;
 import java.io.IOException;
-import java.util.LinkedList;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -58,8 +51,8 @@ public class InvalidCurveTask extends TlsTask {
     @Override
     public boolean execute() {
         try {
-            WorkflowExecutor executor = WorkflowExecutorFactory.createWorkflowExecutor(state.getConfig()
-                    .getWorkflowExecutorType(), state);
+            WorkflowExecutor executor =
+                WorkflowExecutorFactory.createWorkflowExecutor(state.getConfig().getWorkflowExecutorType(), state);
             executor.executeWorkflow();
 
             if (getState().getTlsContext().getServerEcPublicKey() != null) {

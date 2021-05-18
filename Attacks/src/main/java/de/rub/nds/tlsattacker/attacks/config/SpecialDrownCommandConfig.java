@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks.config;
 
 import com.beust.jcommander.Parameter;
@@ -24,18 +24,19 @@ public class SpecialDrownCommandConfig extends BaseDrownCommandConfig {
 
     public static final String COMMAND = "specialDrown";
 
-    @Parameter(names = "-oracleType", description = "The oracle to use, i.e. the "
-            + "variant of Special DROWN to be executed", required = true)
+    @Parameter(names = "-oracleType",
+        description = "The oracle to use, i.e. the " + "variant of Special DROWN to be executed", required = true)
     private OracleType oracleType = OracleType.EXTRA_CLEAR;
-    @Parameter(names = "-checkDataFile", description = "Path of the state file for "
-            + "'leaky export' oracle vulnerability check")
+    @Parameter(names = "-checkDataFile",
+        description = "Path of the state file for " + "'leaky export' oracle vulnerability check")
     private String checkDataFilePath;
     @Parameter(names = "-genCheckData", description = "Generate state file for 'leaky export' vulnerability check")
     private boolean genCheckData;
     @Parameter(names = "-analyzeCheckData", description = "Analyze given state file for "
-            + "'leaky export' oracle vulnerability check, this might take a long time")
+        + "'leaky export' oracle vulnerability check, this might take a long time")
     private boolean analyzeCheckData;
-    @Parameter(names = "-ssl2Cipher", description = "Name of the SSLv2 cipher suite to be used in the attack", required = true)
+    @Parameter(names = "-ssl2Cipher", description = "Name of the SSLv2 cipher suite to be used in the attack",
+        required = true)
     private SSL2CipherSuite cipherSuite = SSL2CipherSuite.SSL_CK_RC4_128_WITH_MD5;
 
     public SpecialDrownCommandConfig(GeneralDelegate delegate) {

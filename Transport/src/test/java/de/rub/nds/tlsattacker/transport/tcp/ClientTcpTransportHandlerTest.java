@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.transport.tcp;
 
 import java.io.IOException;
@@ -33,7 +33,7 @@ public class ClientTcpTransportHandlerTest {
      */
     @Test(expected = IOException.class)
     public void testCloseConnection() throws IOException {
-        handler = new ClientTcpTransportHandler(100, "localhost", 0);
+        handler = new ClientTcpTransportHandler(100, 100, "localhost", 0);
         handler.closeConnection();
     }
 
@@ -49,7 +49,7 @@ public class ClientTcpTransportHandlerTest {
             serverSocketChannel = ServerSocketChannel.open();
             serverSocketChannel.socket().bind(new InetSocketAddress(0));
             serverSocketChannel.configureBlocking(false);
-            handler = new ClientTcpTransportHandler(100, "localhost", serverSocketChannel.socket().getLocalPort());
+            handler = new ClientTcpTransportHandler(100, 100, "localhost", serverSocketChannel.socket().getLocalPort());
             handler.initialize();
             SocketChannel acceptChannel = serverSocketChannel.accept();
             assertNotNull(acceptChannel);
@@ -72,7 +72,7 @@ public class ClientTcpTransportHandlerTest {
             serverSocketChannel = ServerSocketChannel.open();
             serverSocketChannel.socket().bind(new InetSocketAddress(0));
             serverSocketChannel.configureBlocking(false);
-            handler = new ClientTcpTransportHandler(100, "localhost", serverSocketChannel.socket().getLocalPort());
+            handler = new ClientTcpTransportHandler(100, 100, "localhost", serverSocketChannel.socket().getLocalPort());
             handler.initialize();
             SocketChannel acceptChannel = serverSocketChannel.accept();
             assertNotNull(acceptChannel);

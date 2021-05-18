@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.client.main;
 
 import de.rub.nds.modifiablevariable.util.BadRandom;
@@ -100,9 +100,8 @@ public class TlsClientTest {
             CONSOLE.info("Testing RSA");
             testExecuteWorkflows(PublicKeyAlgorithm.RSA, tlsServer.getPort());
             tlsServer.shutdown();
-        } catch (NoSuchAlgorithmException | CertificateException | IOException | InvalidKeyException
-                | KeyStoreException | NoSuchProviderException | SignatureException | UnrecoverableKeyException
-                | KeyManagementException ex) {
+        } catch (NoSuchAlgorithmException | CertificateException | IOException | InvalidKeyException | KeyStoreException
+            | NoSuchProviderException | SignatureException | UnrecoverableKeyException | KeyManagementException ex) {
             LOGGER.warn(ex);
             fail();
         }
@@ -122,8 +121,8 @@ public class TlsClientTest {
             testExecuteWorkflows(PublicKeyAlgorithm.EC, tlsServer.getPort());
             tlsServer.shutdown();
         } catch (NoSuchAlgorithmException | KeyStoreException | IOException | CertificateException
-                | UnrecoverableKeyException | KeyManagementException | InvalidKeyException | NoSuchProviderException
-                | SignatureException ex) {
+            | UnrecoverableKeyException | KeyManagementException | InvalidKeyException | NoSuchProviderException
+            | SignatureException ex) {
             LOGGER.warn(ex);
             fail(); // Todo
         }
@@ -169,18 +168,18 @@ public class TlsClientTest {
             Set<PublicKeyAlgorithm> requiredAlgorithms = AlgorithmResolver.getRequiredKeystoreAlgorithms(cs);
             requiredAlgorithms.remove(algorithm);
             final boolean serverSupportsCipherSuite = serverList.contains(cs.toString());
-            final boolean cipherSuiteIsSupportedByProtocolVersion = cs.isSupportedInProtocol(config
-                    .getHighestProtocolVersion());
+            final boolean cipherSuiteIsSupportedByProtocolVersion =
+                cs.isSupportedInProtocol(config.getHighestProtocolVersion());
             if (serverSupportsCipherSuite && cipherSuiteIsSupportedByProtocolVersion && requiredAlgorithms.isEmpty()) {
-                LinkedList<CipherSuite> cslist = new LinkedList<>();
-                cslist.add(cs);
-                config.setDefaultClientSupportedCiphersuites(cslist);
+                LinkedList<CipherSuite> csList = new LinkedList<>();
+                csList.add(cs);
+                config.setDefaultClientSupportedCipherSuites(csList);
                 config.setDefaultSelectedCipherSuite(cs);
                 boolean result = testExecuteWorkflow(config);
-                CONSOLE.info("Testing " + config.getHighestProtocolVersion().name() + ": " + cs.name() + " Succes:"
-                        + result);
+                CONSOLE.info(
+                    "Testing " + config.getHighestProtocolVersion().name() + ": " + cs.name() + " Success:" + result);
                 collector.checkThat(" " + config.getHighestProtocolVersion().name() + ":" + cs.name() + " failed.",
-                        result, is(true));
+                    result, is(true));
             }
         }
     }
@@ -189,8 +188,8 @@ public class TlsClientTest {
         config.setWorkflowTraceType(WorkflowTraceType.HANDSHAKE);
         State state = new State(config);
 
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
-                config.getWorkflowExecutorType(), state);
+        WorkflowExecutor workflowExecutor =
+            WorkflowExecutorFactory.createWorkflowExecutor(config.getWorkflowExecutorType(), state);
 
         try {
             workflowExecutor.executeWorkflow();
@@ -220,20 +219,19 @@ public class TlsClientTest {
 
         AliasedConnection con = config.getDefaultClientConnection();
         WorkflowTrace trace = new WorkflowTrace();
-        trace.addTlsAction(MessageActionFactory.createAction(config, con, ConnectionEndType.CLIENT,
-                new ClientHelloMessage(config)));
+        trace.addTlsAction(
+            MessageActionFactory.createAction(config, con, ConnectionEndType.CLIENT, new ClientHelloMessage(config)));
         trace.addTlsAction(MessageActionFactory.createAction(config, con, ConnectionEndType.SERVER,
-                new ServerHelloMessage(config), new CertificateMessage(config), new ServerHelloDoneMessage(config)));
+            new ServerHelloMessage(config), new CertificateMessage(config), new ServerHelloDoneMessage(config)));
 
         trace.addTlsAction(MessageActionFactory.createAction(config, con, ConnectionEndType.CLIENT,
-                new RSAClientKeyExchangeMessage(config), new ChangeCipherSpecMessage(config), new FinishedMessage(
-                        config)));
+            new RSAClientKeyExchangeMessage(config), new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
         trace.addTlsAction(MessageActionFactory.createAction(config, con, ConnectionEndType.SERVER,
-                new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
+            new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
 
         State state = new State(config, trace);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
-                config.getWorkflowExecutorType(), state);
+        WorkflowExecutor workflowExecutor =
+            WorkflowExecutorFactory.createWorkflowExecutor(config.getWorkflowExecutorType(), state);
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException E) {

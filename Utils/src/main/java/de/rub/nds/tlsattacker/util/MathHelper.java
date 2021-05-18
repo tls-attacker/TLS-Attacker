@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.util;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -15,38 +15,38 @@ import java.util.List;
 
 public class MathHelper {
 
-    public static BigInteger intfloordiv(BigInteger c, BigInteger d) {
+    public static BigInteger intFloorDiv(BigInteger c, BigInteger d) {
         return (c.subtract(c.mod(d))).divide(d);
     }
 
-    public static BigInteger intceildiv(BigInteger c, BigInteger d) {
-        if (c.mod(d).equals(BigInteger.ZERO)) {
-            return intfloordiv(c, d);
-        } else {
-            return intfloordiv(c, d).add(BigInteger.ONE);
-        }
-    }
-
-    public static int intfloordiv(int c, int d) {
+    public static int intFloorDiv(int c, int d) {
         return (c - (c % d)) / d;
     }
 
-    public static int intceildiv(int c, int d) {
-        if ((c % d) == 0) {
-            return intfloordiv(c, d);
+    public static BigInteger intCeilDiv(BigInteger c, BigInteger d) {
+        if (c.mod(d).equals(BigInteger.ZERO)) {
+            return intFloorDiv(c, d);
         } else {
-            return intfloordiv(c, d) + 1;
+            return intFloorDiv(c, d).add(BigInteger.ONE);
+        }
+    }
+
+    public static int intCeilDiv(int c, int d) {
+        if ((c % d) == 0) {
+            return intFloorDiv(c, d);
+        } else {
+            return intFloorDiv(c, d) + 1;
         }
     }
 
     /**
-     * @param u
-     *            The u parameter
-     * @param v
-     *            The v parameter
-     * @return (c,r,s) such that c = r u + s v
+     * @param  u
+     *           The u parameter
+     * @param  v
+     *           The v parameter
+     * @return   (c,r,s) such that c = r u + s v
      */
-    public static BigIntegerTripple extendedEuclid(BigInteger u, BigInteger v) {
+    public static BigIntegerTriple extendedEuclid(BigInteger u, BigInteger v) {
         BigInteger r = BigInteger.ONE;
         BigInteger s = BigInteger.ZERO;
         BigInteger c = u;
@@ -66,11 +66,11 @@ public class MathHelper {
             v3 = t3;
         }
 
-        return new BigIntegerTripple(c, r, s);
+        return new BigIntegerTriple(c, r, s);
     }
 
     public static BigInteger gcd(BigInteger u, BigInteger v) {
-        return extendedEuclid(u, v).a;
+        return extendedEuclid(u, v).bigA;
     }
 
     public static BigInteger inverseMod(BigInteger a, BigInteger p) {
@@ -78,7 +78,7 @@ public class MathHelper {
             throw new RuntimeException("does not exist");
         }
 
-        BigInteger b = extendedEuclid(a, p).b;
+        BigInteger b = extendedEuclid(a, p).bigB;
         while (b.compareTo(BigInteger.ZERO) < 0) {
             b = b.add(p);
         }
@@ -88,59 +88,57 @@ public class MathHelper {
     /**
      * Computes Chinese Reminder Theorem: x == congs[i] mod moduli[i]
      * 
-     * @param congs
-     *            A BigInteger[] of congestions
-     * @param moduli
-     *            A BigInteger[] of moduli
-     * @return Chinese Reminder Theorem: x == congs[i] mod moduli[i]
+     * @param  congs
+     *                A BigInteger[] of congestions
+     * @param  moduli
+     *                A BigInteger[] of moduli
+     * @return        Chinese Reminder Theorem: x == congs[i] mod moduli[i]
      */
-    public static BigInteger CRT(BigInteger[] congs, BigInteger[] moduli) {
+    public static BigInteger crt(BigInteger[] congs, BigInteger[] moduli) {
 
         BigInteger prodModuli = BigInteger.ONE;
         for (BigInteger mod : moduli) {
             prodModuli = prodModuli.multiply(mod);
         }
 
-        BigInteger[] M = new BigInteger[moduli.length];
+        BigInteger[] modulus = new BigInteger[moduli.length];
         for (int i = 0; i < moduli.length; i++) {
-            M[i] = prodModuli.divide(moduli[i]);
+            modulus[i] = prodModuli.divide(moduli[i]);
         }
 
-        BigInteger retval = BigInteger.ZERO;
+        BigInteger retVal = BigInteger.ZERO;
         for (int i = 0; i < moduli.length; i++) {
             // get s value from EEA
-            BigInteger tmp = extendedEuclid(moduli[i], M[i]).c;
-            retval = retval.add(congs[i].multiply(tmp).multiply(M[i]).mod(prodModuli));
+            BigInteger tmp = extendedEuclid(moduli[i], modulus[i]).bigC;
+            retVal = retVal.add(congs[i].multiply(tmp).multiply(modulus[i]).mod(prodModuli));
         }
-        return retval.mod(prodModuli);
+        return retVal.mod(prodModuli);
     }
 
     /**
      * Computes Chinese Reminder Theorem: x == congs[i] mod moduli[i]
      * 
-     * @param congs
-     *            A BigInteger[] of congestions
-     * @param moduli
-     *            A BigInteger[] of moduli
-     * @return Chinese Reminder Theorem: x == congs[i] mod moduli[i]
+     * @param  congs
+     *                A BigInteger[] of congestions
+     * @param  moduli
+     *                A BigInteger[] of moduli
+     * @return        Chinese Reminder Theorem: x == congs[i] mod moduli[i]
      */
-    public static BigInteger CRT(List<BigInteger> congs, List<BigInteger> moduli) {
+    public static BigInteger crt(List<BigInteger> congs, List<BigInteger> moduli) {
         BigInteger[] cs = ArrayConverter.convertListToArray(congs);
         BigInteger[] ms = ArrayConverter.convertListToArray(moduli);
-        return CRT(cs, ms);
+        return crt(cs, ms);
     }
 
     /**
-     * Computes BigInteger sqrt root of a number (floor value). From:
-     * http://stackoverflow
-     * .com/questions/4407839/how-can-i-find-the-square-root-
-     * of-a-java-biginteger
+     * Computes BigInteger sqrt root of a number (floor value). From: http://stackoverflow
+     * .com/questions/4407839/how-can-i-find-the-square-root- of-a-java-biginteger
      * 
-     * @param x
-     *            The x Value
-     * @return BigInteger sqrt root of a number
+     * @param  x
+     *                                  The x Value
+     * @return                          BigInteger sqrt root of a number
      * @throws IllegalArgumentException
-     *             If x is negative
+     *                                  If x is negative
      */
     public static BigInteger bigIntSqRootFloor(BigInteger x) throws IllegalArgumentException {
         if (x.compareTo(BigInteger.ZERO) < 0) {
@@ -152,24 +150,24 @@ public class MathHelper {
             return x;
         } // end if
         BigInteger two = BigInteger.valueOf(2L);
-        BigInteger y;
-        // starting with y = x / 2 avoids magnitude issues with x squared
-        for (y = x.divide(two); y.compareTo(x.divide(y)) > 0; y = ((x.divide(y)).add(y)).divide(two))
-            ;
+        BigInteger y = x.divide(two);
+        // while y>x/y
+        while (y.compareTo(x.divide(y)) > 0) {
+            // y=(x/y+y)/2
+            y = ((x.divide(y)).add(y)).divide(two);
+        }
         return y;
     } // end bigIntSqRootFloor
 
     /**
-     * Computes BigInteger sqrt root of a number (ceil value). From:
-     * http://stackoverflow
-     * .com/questions/4407839/how-can-i-find-the-square-root-
-     * of-a-java-biginteger
+     * Computes BigInteger sqrt root of a number (ceil value). From: http://stackoverflow
+     * .com/questions/4407839/how-can-i-find-the-square-root- of-a-java-biginteger
      * 
-     * @param x
-     *            The x Value
-     * @return BigInteger sqrt root of a number (ceil value)
+     * @param  x
+     *                                  The x Value
+     * @return                          BigInteger sqrt root of a number (ceil value)
      * @throws IllegalArgumentException
-     *             If x is negative
+     *                                  If x is negative
      */
     public static BigInteger bigIntSqRootCeil(BigInteger x) throws IllegalArgumentException {
         if (x.compareTo(BigInteger.ZERO) < 0) {
@@ -181,10 +179,12 @@ public class MathHelper {
             return x;
         } // end if
         BigInteger two = BigInteger.valueOf(2L);
-        BigInteger y;
-        // starting with y = x / 2 avoids magnitude issues with x squared
-        for (y = x.divide(two); y.compareTo(x.divide(y)) > 0; y = ((x.divide(y)).add(y)).divide(two))
-            ;
+        BigInteger y = x.divide(two);
+        // while y>x/y
+        while (y.compareTo(x.divide(y)) > 0) {
+            // y=(x/y+y)/2
+            y = ((x.divide(y)).add(y)).divide(two);
+        }
         if (x.compareTo(y.multiply(y)) == 0) {
             return y;
         } else {
@@ -196,28 +196,28 @@ public class MathHelper {
 
     }
 
-    public static class BigIntegerTripple {
+    public static class BigIntegerTriple {
 
-        private final BigInteger a;
-        private final BigInteger b;
-        private final BigInteger c;
+        private final BigInteger bigA;
+        private final BigInteger bigB;
+        private final BigInteger bigC;
 
-        public BigIntegerTripple(BigInteger a, BigInteger b, BigInteger c) {
-            this.a = a;
-            this.b = b;
-            this.c = c;
+        public BigIntegerTriple(BigInteger a, BigInteger b, BigInteger c) {
+            this.bigA = a;
+            this.bigB = b;
+            this.bigC = c;
         }
 
-        public BigInteger getA() {
-            return a;
+        public BigInteger getBigA() {
+            return bigA;
         }
 
-        public BigInteger getB() {
-            return b;
+        public BigInteger getBigB() {
+            return bigB;
         }
 
-        public BigInteger getC() {
-            return c;
+        public BigInteger getBigC() {
+            return bigC;
         }
     }
 }
