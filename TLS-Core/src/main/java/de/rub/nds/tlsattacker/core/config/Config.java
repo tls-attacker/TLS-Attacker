@@ -905,8 +905,8 @@ public class Config implements Serializable {
     private Boolean flushOnMessageTypeChange = true;
 
     /**
-     * <<<<<<< HEAD If there is not enough space in the defined fragments, new fragments are dynamically added if not
-     * set, protocolmessage bytes that wont fit are discarded
+     * If there is not enough space in the defined fragments, new fragments are dynamically added if not set,
+     * protocolmessage bytes that wont fit are discarded
      */
     private Boolean createFragmentsDynamically = true;
 
@@ -955,7 +955,7 @@ public class Config implements Serializable {
 
     private Boolean finishWithCloseNotify = false;
 
-    private Boolean ignoreRetransmittedCss = false;
+    private Boolean ignoreRetransmittedCcs = false;
 
     private Boolean addRetransmissionsToWorkflowTrace = false;
 
@@ -3184,12 +3184,12 @@ public class Config implements Serializable {
         this.finishWithCloseNotify = finishWithCloseNotify;
     }
 
-    public Boolean isIgnoreRetransmittedCss() {
-        return ignoreRetransmittedCss;
+    public Boolean isIgnoreRetransmittedCcs() {
+        return ignoreRetransmittedCcs;
     }
 
-    public void setIgnoreRetransmittedCss(Boolean ignoreRetransmittedCss) {
-        this.ignoreRetransmittedCss = ignoreRetransmittedCss;
+    public void setIgnoreRetransmittedCss(Boolean ignoreRetransmittedCcs) {
+        this.ignoreRetransmittedCcs = ignoreRetransmittedCcs;
     }
 
     public Boolean isAddRetransmissionsToWorkflowTrace() {

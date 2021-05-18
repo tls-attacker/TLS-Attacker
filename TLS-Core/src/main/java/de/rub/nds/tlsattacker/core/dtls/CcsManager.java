@@ -22,32 +22,32 @@ import org.apache.logging.log4j.Logger;
  *
  * @author Nurullah Erinola - nurullah.erinola@rub.de
  */
-public class CssManager {
+public class CcsManager {
 
-    private static final Logger LOGGER = LogManager.getLogger(CssManager.class);
+    private static final Logger LOGGER = LogManager.getLogger(CcsManager.class);
 
     private Config config;
 
-    private Map<CssKey, CssCollector> cssMessages;
+    private Map<CcsKey, CcsCollector> cssMessages;
 
-    public CssManager(Config config) {
+    public CcsManager(Config config) {
         cssMessages = new HashMap<>();
         this.config = config;
     }
 
     public void addCssMessage(AbstractRecord record, Integer epoch) {
-        CssKey key = new CssKey(epoch);
-        CssCollector collector = cssMessages.get(key);
+        CcsKey key = new CcsKey(epoch);
+        CcsCollector collector = cssMessages.get(key);
         if (collector == null) {
-            collector = new CssCollector();
+            collector = new CcsCollector();
             cssMessages.put(key, collector);
         }
         collector.addCssRecord(record);
     }
 
     public byte[] getUninterpretedCssMessages(Integer epoch) {
-        CssKey key = new CssKey(epoch);
-        CssCollector collector = cssMessages.get(key);
+        CcsKey key = new CcsKey(epoch);
+        CcsCollector collector = cssMessages.get(key);
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         if (!collector.isInterpreted()) {
             collector.setInterpreted(true);

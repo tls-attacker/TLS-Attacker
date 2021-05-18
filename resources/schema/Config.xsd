@@ -395,7 +395,7 @@
       <xs:element name="stopReceivingAfterFatal" type="xs:boolean" minOccurs="0"/>
       <xs:element name="stopActionsAfterFatal" type="xs:boolean" minOccurs="0"/>
       <xs:element name="finishWithCloseNotify" type="xs:boolean" minOccurs="0"/>
-      <xs:element name="ignoreRetransmittedCss" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="ignoreRetransmittedCcs" type="xs:boolean" minOccurs="0"/>
       <xs:element name="addRetransmissionsToWorkflowTrace" type="xs:boolean" minOccurs="0"/>
       <xs:element name="maxRetransmissions" type="xs:int" minOccurs="0"/>
       <xs:element name="stopReceivingAfterWarning" type="xs:boolean" minOccurs="0"/>

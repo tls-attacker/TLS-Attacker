@@ -13,11 +13,11 @@ package de.rub.nds.tlsattacker.core.dtls;
  *
  * @author Nurullah Erinola - nurullah.erinola@rub.de
  */
-public class CssKey {
+public class CcsKey {
 
     private Integer epoch;
 
-    public CssKey(Integer epoch) {
+    public CcsKey(Integer epoch) {
         super();
         this.epoch = epoch;
     }
@@ -45,7 +45,7 @@ public class CssKey {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        CssKey other = (CssKey) obj;
+        CcsKey other = (CcsKey) obj;
         if (epoch == null) {
             if (other.epoch != null) {
                 return false;

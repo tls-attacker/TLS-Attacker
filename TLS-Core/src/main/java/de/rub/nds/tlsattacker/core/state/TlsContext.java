@@ -39,7 +39,7 @@ import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
 import de.rub.nds.tlsattacker.core.crypto.MessageDigestCollector;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
-import de.rub.nds.tlsattacker.core.dtls.CssManager;
+import de.rub.nds.tlsattacker.core.dtls.CcsManager;
 import de.rub.nds.tlsattacker.core.dtls.FragmentManager;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
@@ -522,7 +522,7 @@ public class TlsContext {
      */
     private FragmentManager globalDtlsFragmentManager;
 
-    private CssManager globalDtlsCssManager;
+    private CcsManager globalDtlsCcsManager;
 
     /**
      * supported protocol versions
@@ -729,7 +729,7 @@ public class TlsContext {
         fragmentBuffer = new LinkedList<>();
         dtlsReceivedHandshakeMessageSequences = new LinkedList<>();
         globalDtlsFragmentManager = new FragmentManager(config);
-        globalDtlsCssManager = new CssManager(config);
+        globalDtlsCcsManager = new CcsManager(config);
         keylogfile = new Keylogfile(this);
     }
 
@@ -1364,12 +1364,12 @@ public class TlsContext {
         return this.globalDtlsFragmentManager = globalDtlsFragmentManager;
     }
 
-    public CssManager getDtlsCssManager() {
-        return globalDtlsCssManager;
+    public CcsManager getDtlsCcsManager() {
+        return globalDtlsCcsManager;
     }
 
-    public CssManager setDtlsCssManager(CssManager globalDtlsCssManager) {
-        return this.globalDtlsCssManager = globalDtlsCssManager;
+    public CcsManager setDtlsCcsManager(CcsManager globalDtlsCcsManager) {
+        return this.globalDtlsCcsManager = globalDtlsCcsManager;
     }
 
     public List<CipherSuite> getClientSupportedCipherSuites() {

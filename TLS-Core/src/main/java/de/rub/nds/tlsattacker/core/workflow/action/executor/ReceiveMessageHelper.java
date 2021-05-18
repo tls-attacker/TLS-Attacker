@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.dtls.CssManager;
+import de.rub.nds.tlsattacker.core.dtls.CcsManager;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.dtls.FragmentManager;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
@@ -395,8 +395,8 @@ public class ReceiveMessageHelper {
 
                 } else if (context.getChooser().getSelectedProtocolVersion().isDTLS()
                     && subGroup.getProtocolMessageType() == ProtocolMessageType.CHANGE_CIPHER_SPEC
-                    && context.getConfig().isIgnoreRetransmittedCss()) {
-                    CssManager cssManager = context.getDtlsCssManager();
+                    && context.getConfig().isIgnoreRetransmittedCcs()) {
+                    CcsManager cssManager = context.getDtlsCcsManager();
                     for (AbstractRecord record : subGroup.getRecords()) {
                         cssManager.addCssMessage(record, subGroup.getDtlsEpoch());
                     }

@@ -10,7 +10,7 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
-import de.rub.nds.tlsattacker.core.dtls.CssManager;
+import de.rub.nds.tlsattacker.core.dtls.CcsManager;
 import de.rub.nds.tlsattacker.core.dtls.FragmentManager;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
@@ -66,7 +66,7 @@ public class ResetConnectionAction extends ConnectionBoundAction {
         tlsContext.setDtlsWriteHandshakeMessageSequence(0);
         tlsContext.setDtlsReceiveEpoch(0);
         tlsContext.setDtlsWriteEpoch(0);
-        tlsContext.setDtlsCssManager(new CssManager(state.getConfig()));
+        tlsContext.setDtlsCcsManager(new CcsManager(state.getConfig()));
         tlsContext.setDtlsFragmentManager(new FragmentManager(state.getConfig()));
         tlsContext.getDtlsReceivedHandshakeMessageSequences().clear();
 

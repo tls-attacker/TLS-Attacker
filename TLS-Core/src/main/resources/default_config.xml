@@ -979,7 +979,7 @@
     <stopReceivingAfterFatal>false</stopReceivingAfterFatal>
     <stopActionsAfterFatal>false</stopActionsAfterFatal>
     <finishWithCloseNotify>false</finishWithCloseNotify>
-    <ignoreRetransmittedCss>false</ignoreRetransmittedCss>
+    <ignoreRetransmittedCcs>false</ignoreRetransmittedCcs>
     <addRetransmissionsToWorkflowTrace>false</addRetransmissionsToWorkflowTrace>
     <maxRetransmissions>3</maxRetransmissions>
     <stopReceivingAfterWarning>false</stopReceivingAfterWarning>

@@ -17,13 +17,13 @@ import java.util.List;
  *
  * @author Nurullah Erinola - nurullah.erinola@rub.de
  */
-public class CssCollector {
+public class CcsCollector {
 
     private List<AbstractRecord> records;
 
     private boolean interpreted = false;
 
-    public CssCollector() {
+    public CcsCollector() {
         records = new ArrayList<AbstractRecord>();
     }
 
