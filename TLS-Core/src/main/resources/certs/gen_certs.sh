@@ -18,7 +18,7 @@ openssl req -key attacker_dsa_ca_key.pem -new -x509 -days 2000 -out attacker_dsa
 rm attacker_dsa_cap.pem
 
 #root-CA ecdsa
-openssl ecparam -name secp521r1 -genkey -out attacker_ecdsa_ca_key.pem
+openssl ecparam -name secp256r1 -genkey -out attacker_ecdsa_ca_key.pem
 openssl req -key attacker_ecdsa_ca_key.pem -new -x509 -days 2000 -out attacker_ecdsa_ca.pem -subj "/C=DE/ST=NRW/L=Bochum/O=RUB/OU=NDS"
 
 #gen dh_dsa and dh_rsa keys and pems
@@ -87,7 +87,4 @@ done
 rm attacker_rsa_ca.srl
 rm attacker_dsa_ca.srl
 rm attacker_ecdsa_ca.srl
-rm attacker_rsa_ca_key.pem
-rm attacker_dsa_ca_key.pem
-rm attacker_ecdsa_ca_key.pem
 rm v3.ext
