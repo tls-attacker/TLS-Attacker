@@ -79,6 +79,9 @@ public abstract class HandshakeMessage extends TlsMessage {
     protected boolean isIncludeInDigestDefault = true;
 
     @XmlTransient
+    protected boolean isRetranmissionDefault = false;
+
+    @XmlTransient
     protected final HandshakeMessageType handshakeMessageType;
 
     /**
@@ -91,6 +94,9 @@ public abstract class HandshakeMessage extends TlsMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.BEHAVIOR_SWITCH)
     private ModifiableBoolean includeInDigest = null;
+
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.NONE)
+    private ModifiableBoolean retransmission = null;
 
     /**
      * List of extensions
@@ -242,6 +248,13 @@ public abstract class HandshakeMessage extends TlsMessage {
         return includeInDigest.getValue();
     }
 
+    public boolean isRetransmission() {
+        if (retransmission == null) {
+            return isRetranmissionDefault;
+        }
+        return retransmission.getValue();
+    }
+
     public void setType(ModifiableByte type) {
         this.type = type;
     }
@@ -278,6 +291,18 @@ public abstract class HandshakeMessage extends TlsMessage {
         return this.includeInDigest;
     }
 
+    public void setRetransmission(ModifiableBoolean retransmission) {
+        this.retransmission = retransmission;
+    }
+
+    public void setRetransmission(boolean retransmission) {
+        this.retransmission = ModifiableVariableFactory.safelySetValue(this.retransmission, retransmission);
+    }
+
+    public ModifiableBoolean isRetransmissionModifiableBoolean() {
+        return this.retransmission;
+    }
+
     public ModifiableInteger getMessageSequence() {
         return messageSequence;
     }
@@ -311,7 +336,12 @@ public abstract class HandshakeMessage extends TlsMessage {
 
     @Override
     public String toCompactString() {
-        return handshakeMessageType.getName();
+        StringBuilder sb = new StringBuilder();
+        sb.append(handshakeMessageType.getName());
+        if (isRetransmission()) {
+            sb.append(" (retransmission)");
+        }
+        return sb.toString();
     }
 
     @Override
