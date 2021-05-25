@@ -792,6 +792,7 @@
           <xs:element name="type" type="modifiableByte" minOccurs="0"/>
           <xs:element name="length" type="modifiableInteger" minOccurs="0"/>
           <xs:element name="includeInDigest" type="modifiableBoolean" minOccurs="0"/>
+          <xs:element name="retransmission" type="modifiableBoolean" minOccurs="0"/>
           <xs:element name="extensions" minOccurs="0">
             <xs:complexType>
               <xs:sequence>
