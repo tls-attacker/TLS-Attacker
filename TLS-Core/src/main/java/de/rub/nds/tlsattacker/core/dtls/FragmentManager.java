@@ -92,7 +92,6 @@ public class FragmentManager {
                             + key.getEpoch());
                     } else {
                         handshakeFragmentList.add(fragmentCollector.buildCombinedFragment());
-                        fragmentCollector.setInterpreted(true);
                     }
                 }
             }

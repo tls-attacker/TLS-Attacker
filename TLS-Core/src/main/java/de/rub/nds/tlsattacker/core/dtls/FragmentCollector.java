@@ -33,6 +33,8 @@ public class FragmentCollector {
 
     private boolean interpreted = false;
 
+    private boolean retransmission = false;
+
     private final Config config;
 
     private FragmentStream fragmentStream;
@@ -65,6 +67,7 @@ public class FragmentCollector {
             }
             if (interpreted && config.isAddRetransmissionsToWorkflowTrace()) {
                 interpreted = false;
+                retransmission = true;
             }
             fragmentStream.insertByteArray(fragment.getContent().getValue(), fragment.getFragmentOffset().getValue());
         } else {
@@ -141,7 +144,8 @@ public class FragmentCollector {
         message.setContent(getCombinedContent());
         DtlsHandshakeMessageFragmentSerializer serializer = new DtlsHandshakeMessageFragmentSerializer(message, null);
         message.setCompleteResultingMessage(serializer.serialize());
-        this.setInterpreted(interpreted);
+        message.setRetransmission(retransmission);
+        interpreted = true;
         return message;
     }
 
@@ -176,5 +180,23 @@ public class FragmentCollector {
      */
     public void setInterpreted(boolean interpreted) {
         this.interpreted = interpreted;
+    }
+
+    /**
+     * Returns true if the message from this fragment stream is a retransmission
+     *
+     * @return
+     */
+    public boolean isRetransmission() {
+        return retransmission;
+    }
+
+    /**
+     * Marks this message as retransmission
+     *
+     * @param retransmission
+     */
+    public void setRetransmission(boolean retransmission) {
+        this.retransmission = retransmission;
     }
 }

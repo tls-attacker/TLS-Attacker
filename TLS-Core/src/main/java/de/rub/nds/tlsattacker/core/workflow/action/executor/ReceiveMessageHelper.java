@@ -381,6 +381,7 @@ public class ReceiveMessageHelper {
                                 convertDtlsFragmentToCleanTlsBytes(fragment), subGroup.getProtocolMessageType(),
                                 context, false,
                                 subGroup.areAllRecordsValid() || context.getConfig().getParseInvalidRecordNormally());
+                            ((HandshakeMessage) parsedMessages.get(0)).setRetransmission(fragment.isRetransmission());
                             messages.addAll(parsedMessages);
                         }
                     } else {
