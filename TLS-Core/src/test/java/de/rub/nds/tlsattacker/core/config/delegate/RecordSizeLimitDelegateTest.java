@@ -73,7 +73,6 @@ public class RecordSizeLimitDelegateTest {
         args = new String[2];
         args[0] = "-record_size_limit";
         args[1] = "1337";
-        assertNull(config.getInboundRecordSizeLimit());
         assertFalse(config.isAddRecordSizeLimitExtension());
         jcommander.parse(args);
         delegate.applyDelegate(config);
@@ -87,11 +86,9 @@ public class RecordSizeLimitDelegateTest {
         args = new String[2];
         args[0] = "-record_size_limit";
         args[1] = "0";
-        assertNull(config.getInboundRecordSizeLimit());
         assertFalse(config.isAddRecordSizeLimitExtension());
         jcommander.parse(args);
         delegate.applyDelegate(config);
-        assertNull(config.getInboundRecordSizeLimit());
         assertFalse(config.isAddRecordSizeLimitExtension());
     }
 
@@ -101,11 +98,9 @@ public class RecordSizeLimitDelegateTest {
         args = new String[2];
         args[0] = "-record_size_limit";
         args[1] = "65536";
-        assertNull(config.getInboundRecordSizeLimit());
         assertFalse(config.isAddRecordSizeLimitExtension());
         jcommander.parse(args);
         delegate.applyDelegate(config);
-        assertNull(config.getInboundRecordSizeLimit());
         assertFalse(config.isAddRecordSizeLimitExtension());
     }
 
@@ -115,11 +110,9 @@ public class RecordSizeLimitDelegateTest {
         args = new String[2];
         args[0] = "-record_size_limit";
         args[1] = "-1";
-        assertNull(config.getInboundRecordSizeLimit());
         assertFalse(config.isAddRecordSizeLimitExtension());
         jcommander.parse(args);
         delegate.applyDelegate(config);
-        assertNull(config.getInboundRecordSizeLimit());
         assertFalse(config.isAddRecordSizeLimitExtension());
     }
 

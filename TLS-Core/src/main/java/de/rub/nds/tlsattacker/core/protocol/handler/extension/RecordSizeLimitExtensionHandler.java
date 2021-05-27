@@ -44,9 +44,6 @@ public class RecordSizeLimitExtensionHandler extends ExtensionHandler<RecordSize
         if (context.getTalkingConnectionEndType() == context.getChooser().getMyConnectionPeer()) {
             LOGGER.debug("Setting OutboundRecordSizeLimit: " + recordSizeLimit);
             context.setOutboundRecordSizeLimit(recordSizeLimit);
-        } else {
-            LOGGER.debug("Setting InboundRecordSizeLimit: " + recordSizeLimit);
-            context.setInboundRecordSizeLimit(recordSizeLimit);
         }
     }
 

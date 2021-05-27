@@ -73,7 +73,7 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
             adjustDTLSCookie(message);
         }
         adjustExtensions(message);
-        adjustConflictingExtensions();
+        warnOnConflictingExtensions();
         adjustRandomContext(message);
         if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()
             && tlsContext.isExtensionNegotiated(ExtensionType.EARLY_DATA)) {
@@ -222,13 +222,13 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
         }
     }
 
-    private void adjustConflictingExtensions() {
+    private void warnOnConflictingExtensions() {
         if (tlsContext.getTalkingConnectionEndType() == tlsContext.getChooser().getMyConnectionPeer()) {
-            // RFC 8449 says 'A server that supports the "record_size_limit" extension MUST ignore a
-            // "max_fragment_length" that appears in a ClientHello if both extensions appear.', this happens implicitly
-            // when determining max record data size
             if (tlsContext.isExtensionProposed(ExtensionType.MAX_FRAGMENT_LENGTH)
                 && tlsContext.isExtensionProposed(ExtensionType.RECORD_SIZE_LIMIT)) {
+                // RFC 8449 says 'A server that supports the "record_size_limit" extension MUST ignore a
+                // "max_fragment_length" that appears in a ClientHello if both extensions appear.', this happens
+                // implicitly when determining max record data size
                 LOGGER.warn("Client sent max_fragment_length AND record_size_limit extensions");
             }
         }

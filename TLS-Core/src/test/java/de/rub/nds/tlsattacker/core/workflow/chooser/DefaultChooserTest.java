@@ -832,14 +832,12 @@ public class DefaultChooserTest {
     @Test
     public void testGetInboundRecordSizeLimit() {
         config.setDefaultMaxRecordData(1337);
+        config.setInboundRecordSizeLimit(null);
         assertTrue(config.getDefaultMaxRecordData() == 1337);
         assertNull(config.getInboundRecordSizeLimit());
-        assertNull(context.getInboundRecordSizeLimit());
         assertTrue(chooser.getInboundRecordSizeLimit() == 1337);
         config.setInboundRecordSizeLimit(42);
         assertTrue(chooser.getInboundRecordSizeLimit() == 42);
-        context.setInboundRecordSizeLimit(1234);
-        assertTrue(chooser.getInboundRecordSizeLimit() == 1234);
     }
 
     /**

@@ -223,12 +223,10 @@ public class RecordGroup {
 
     public void checkRecordDataSize(TlsContext context, int recordIndex) {
         final AbstractRecord record = getRecords().get(recordIndex);
-        // RFC 8449 says "A TLS endpoint that receives a record larger than its advertised limit MUST generate a fatal
-        // "record_overflow" alert", ignoring that for now. We might also want to see what happens here if we advertise
-        // a really small record_size_limit value.
         if (record.getCleanProtocolMessageBytes() != null) {
             final int recordDataSize = record.getCleanProtocolMessageBytes().getValue().length;
             if (recordDataSize > context.getInboundMaxRecordDataSize()) {
+                // this is supposed to result in a fatal error, just warning for now
                 LOGGER.warn("Received record with size (" + recordDataSize + ") greater than advertised limit ("
                     + context.getInboundMaxRecordDataSize() + ")");
             }

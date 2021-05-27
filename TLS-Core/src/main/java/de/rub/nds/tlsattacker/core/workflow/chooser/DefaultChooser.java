@@ -1163,9 +1163,7 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public Integer getInboundRecordSizeLimit() {
-        if (context.getInboundRecordSizeLimit() != null) {
-            return context.getInboundRecordSizeLimit();
-        } else if (config.getInboundRecordSizeLimit() != null) {
+        if (config.getInboundRecordSizeLimit() != null) {
             return config.getInboundRecordSizeLimit();
         } else {
             return config.getDefaultMaxRecordData();

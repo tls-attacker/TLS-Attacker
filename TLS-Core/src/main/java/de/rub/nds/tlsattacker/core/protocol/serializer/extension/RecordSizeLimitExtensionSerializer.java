@@ -28,12 +28,12 @@ public class RecordSizeLimitExtensionSerializer extends ExtensionSerializer<Reco
     @Override
     public byte[] serializeExtensionContent() {
         LOGGER.debug("Serializing RecordSizeLimitExtensionMessage");
-        serializeRecordSizeLimit(this.message);
+        serializeRecordSizeLimit();
 
         return getAlreadySerialized();
     }
 
-    private void serializeRecordSizeLimit(RecordSizeLimitExtensionMessage message) {
+    private void serializeRecordSizeLimit() {
         appendBytes(message.getRecordSizeLimit().getValue());
         LOGGER.debug("RecordSizeLimit: " + ArrayConverter.bytesToHexString(message.getRecordSizeLimit().getValue()));
     }

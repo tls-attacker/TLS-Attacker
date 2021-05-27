@@ -76,10 +76,14 @@ import javax.xml.bind.annotation.XmlTransient;
 
 import de.rub.nds.tlsattacker.transport.socket.SocketState;
 import de.rub.nds.tlsattacker.transport.tcp.ClientTcpTransportHandler;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.tls.Certificate;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class TlsContext {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * TLS-Attacker related configurations.
@@ -674,8 +678,6 @@ public class TlsContext {
     private MaxFragmentLength maxFragmentLength;
 
     private Integer outboundRecordSizeLimit;
-
-    private Integer inboundRecordSizeLimit;
 
     public TlsContext() {
         this(Config.createConfig());
@@ -2551,17 +2553,8 @@ public class TlsContext {
         this.outboundRecordSizeLimit = recordSizeLimit;
     }
 
-    public Integer getInboundRecordSizeLimit() {
-        return inboundRecordSizeLimit;
-    }
-
-    public void setInboundRecordSizeLimit(Integer recordSizeLimit) {
-        this.inboundRecordSizeLimit = recordSizeLimit;
-    }
-
     public boolean isRecordSizeLimitExtensionActive() {
-        return outboundRecordSizeLimit != null || inboundRecordSizeLimit != null
-            || config.getInboundRecordSizeLimit() != null;
+        return outboundRecordSizeLimit != null || config.isAddRecordSizeLimitExtension();
     }
 
     public Boolean isRecordEncryptionActive() {
@@ -2611,10 +2604,10 @@ public class TlsContext {
             maxRecordDataSize -= 1;
             maxRecordDataSize -= config.getDefaultAdditionalPadding();
         }
-        // poorly configured combination of record_size_limit extension and TLS 1.3 additional padding -> default
-        // TODO: should this return zero?
+        // poorly configured combination of record_size_limit extension and TLS 1.3 additional padding
         if (maxRecordDataSize < 0) {
-            return config.getDefaultMaxRecordData();
+            LOGGER.warn("Calculated record data size limit is too low (" + maxRecordDataSize + "), setting to zero");
+            return 0;
         }
 
         return maxRecordDataSize;

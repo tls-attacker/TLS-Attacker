@@ -46,23 +46,8 @@ public class RecordSizeLimitExtensionHandlerTest {
         RecordSizeLimitExtensionMessage msg = new RecordSizeLimitExtensionMessage();
         msg.setRecordSizeLimit(new byte[] { (byte) 0x05, (byte) 0x39 });
         assertNull(context.getOutboundRecordSizeLimit());
-        assertNull(context.getInboundRecordSizeLimit());
         handler.adjustTLSContext(msg);
         assertTrue(context.getOutboundRecordSizeLimit() == 1337);
-        assertNull(context.getInboundRecordSizeLimit());
-    }
-
-    @Test
-    public void testAdjustTLSContextConnectionLocal() {
-        context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
-
-        RecordSizeLimitExtensionMessage msg = new RecordSizeLimitExtensionMessage();
-        msg.setRecordSizeLimit(new byte[] { (byte) 0x05, (byte) 0x39 });
-        assertNull(context.getOutboundRecordSizeLimit());
-        assertNull(context.getInboundRecordSizeLimit());
-        handler.adjustTLSContext(msg);
-        assertNull(context.getOutboundRecordSizeLimit());
-        assertTrue(context.getInboundRecordSizeLimit() == 1337);
     }
 
     @Test(expected = AdjustmentException.class)
@@ -70,7 +55,6 @@ public class RecordSizeLimitExtensionHandlerTest {
         RecordSizeLimitExtensionMessage msg = new RecordSizeLimitExtensionMessage();
         msg.setRecordSizeLimit(new byte[] { (byte) 0x05, (byte) 0x39, (byte) 0x00 });
         assertNull(context.getOutboundRecordSizeLimit());
-        assertNull(context.getInboundRecordSizeLimit());
         handler.adjustTLSContext(msg);
     }
 
@@ -78,10 +62,8 @@ public class RecordSizeLimitExtensionHandlerTest {
         RecordSizeLimitExtensionMessage msg = new RecordSizeLimitExtensionMessage();
         msg.setRecordSizeLimit(new byte[] { (byte) 0x00, (byte) 0x2A });
         assertNull(context.getOutboundRecordSizeLimit());
-        assertNull(context.getInboundRecordSizeLimit());
         handler.adjustTLSContext(msg);
         assertNull(context.getOutboundRecordSizeLimit());
-        assertNull(context.getInboundRecordSizeLimit());
     }
 
     /**

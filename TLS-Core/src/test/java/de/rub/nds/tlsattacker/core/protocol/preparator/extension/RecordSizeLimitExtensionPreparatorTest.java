@@ -39,12 +39,12 @@ public class RecordSizeLimitExtensionPreparatorTest {
      */
     @Test
     public void testPreparator() {
-        context.setInboundRecordSizeLimit(1337);
+        config.setInboundRecordSizeLimit(1337);
 
         preparator.prepare();
 
         assertArrayEquals(new byte[] { (byte) 0x05, (byte) 0x39 }, message.getRecordSizeLimit().getValue());
-        assertArrayEquals(ArrayConverter.intToBytes(context.getInboundRecordSizeLimit(), 2),
+        assertArrayEquals(ArrayConverter.intToBytes(config.getInboundRecordSizeLimit(), 2),
             message.getRecordSizeLimit().getValue());
     }
 }
