@@ -1169,4 +1169,22 @@ public class DefaultChooser extends Chooser {
             return config.getDefaultMaxRecordData();
         }
     }
+
+    @Override
+    public Integer getOutboundMaxRecordDataSize() {
+        if (context != null) {
+            return context.getOutboundMaxRecordDataSize();
+        } else {
+            return config.getDefaultMaxRecordData();
+        }
+    }
+
+    @Override
+    public Integer getInboundMaxRecordDataSize() {
+        if (context != null) {
+            return context.getInboundMaxRecordDataSize();
+        } else {
+            return config.getDefaultMaxRecordData();
+        }
+    }
 }

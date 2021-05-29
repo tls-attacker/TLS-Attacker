@@ -314,4 +314,8 @@ public abstract class Chooser {
     public abstract Integer getOutboundRecordSizeLimit();
 
     public abstract Integer getInboundRecordSizeLimit();
+
+    public abstract Integer getOutboundMaxRecordDataSize();
+
+    public abstract Integer getInboundMaxRecordDataSize();
 }

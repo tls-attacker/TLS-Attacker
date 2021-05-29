@@ -125,7 +125,7 @@ public class TlsRecordLayer extends RecordLayer {
     @Override
     public byte[] prepareRecords(byte[] data, ProtocolMessageType contentType, List<AbstractRecord> records) {
         CleanRecordByteSeperator separator =
-            new CleanRecordByteSeperator(records, tlsContext.getOutboundMaxRecordDataSize(), 0, data);
+            new CleanRecordByteSeperator(records, tlsContext.getChooser().getOutboundMaxRecordDataSize(), 0, data);
         records = separator.parse();
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         boolean useRecordType = false;
@@ -198,7 +198,7 @@ public class TlsRecordLayer extends RecordLayer {
 
     @Override
     public AbstractRecord getFreshRecord() {
-        return new Record(tlsContext.getOutboundMaxRecordDataSize());
+        return new Record(tlsContext.getChooser().getOutboundMaxRecordDataSize());
     }
 
     @Override
