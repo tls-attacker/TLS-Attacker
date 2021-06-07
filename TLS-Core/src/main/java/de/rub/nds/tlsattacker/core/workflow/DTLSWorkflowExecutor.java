@@ -108,8 +108,8 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
 
                         SendMessageHelper sendMessageHelper = new SendMessageHelper();
                         for (AbstractRecord record : ((SendingAction) action).getSendRecords()) {
-                            ((Record) record).setSequenceNumber(
-                                ((Record) record).getSequenceNumber().getValue().add(BigInteger.ONE));
+                            ((Record) record)
+                                .setSequenceNumber(BigInteger.valueOf(state.getTlsContext().getWriteSequenceNumber()));
                             state.getTlsContext().increaseWriteSequenceNumber();
                         }
                         sendMessageHelper.sendRecords(((SendingAction) action).getSendRecords(), state.getTlsContext());
