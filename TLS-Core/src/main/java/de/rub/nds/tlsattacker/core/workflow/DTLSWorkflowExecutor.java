@@ -165,7 +165,6 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
             }
         }
 
-        // Close Notify mit allen Epochs
         if (config.isFinishWithCloseNotify() && config.getHighestProtocolVersion().isDTLS()) {
             for (int epoch = state.getTlsContext().getDtlsWriteEpoch(); epoch >= 0; epoch--) {
                 DtlsCloseConnectionAction closeConnectionAction =
@@ -174,6 +173,7 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
                 closeConnectionAction.execute(state);
             }
         }
+        
         // ------------------------------------------
 
         for (TlsContext ctx : allTlsContexts) {
