@@ -558,7 +558,7 @@ public class ReceiveMessageHelper {
                     if (exCorrectMsg instanceof ParserException && !failedToReceiveMoreRecords) {
                         throw new ParserException();
                     }
-                    LOGGER.error("Could not parse Message as a CorrectMessage");
+                    LOGGER.warn("Could not parse Message as a CorrectMessage");
                     LOGGER.debug(exCorrectMsg);
                     try {
                         if (typeFromRecord == ProtocolMessageType.HANDSHAKE) {
