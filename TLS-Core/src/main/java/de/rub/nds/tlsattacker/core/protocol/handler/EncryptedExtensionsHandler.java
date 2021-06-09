@@ -69,7 +69,6 @@ public class EncryptedExtensionsHandler extends HandshakeMessageHandler<Encrypte
         if (tlsContext.getTalkingConnectionEndType() == tlsContext.getChooser().getMyConnectionPeer()) {
             if (tlsContext.isExtensionNegotiated(ExtensionType.MAX_FRAGMENT_LENGTH)
                 && tlsContext.isExtensionNegotiated(ExtensionType.RECORD_SIZE_LIMIT)) {
-                // this is supposed to result in a fatal error, just warning for now
                 LOGGER.warn("Server sent max_fragment_length AND record_size_limit extensions");
             }
         }
