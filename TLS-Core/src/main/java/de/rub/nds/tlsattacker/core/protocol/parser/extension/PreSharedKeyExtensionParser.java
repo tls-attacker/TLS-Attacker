@@ -35,7 +35,7 @@ public class PreSharedKeyExtensionParser extends ExtensionParser<PreSharedKeyExt
     public void parseExtensionMessageContent(PreSharedKeyExtensionMessage msg) {
         LOGGER.debug("Parsing PreSharedKeyExtensionMessage");
         // Client -> Server
-        if (super.getBytesLeft() > 2) {
+        if (msg.getExtensionLength().getValue() > 2) {
             parsePreSharedKeyIdentityListLength(msg);
             parsePreSharedKeyIdentityListBytes(msg);
             parsePreSharedKeyBinderListLength(msg);
