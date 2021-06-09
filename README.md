@@ -127,10 +127,7 @@ State state = new State(config, trace);
 DefaultWorkflowExecutor executor = new DefaultWorkflowExecutor(state);
 executor.executeWorkflow();
 ```
-TLS-Attacker uses the concept of WorkflowTraces to define a "TLS message flow". A WorkflowTrace consists of a list of actions which are then executed one after the other.
-Although for a typical "TLS message flow" only SendAction's and ReceiveAction's are needed, the framework does not
- stop here and implements a lot of different other actions
-which can be used to execute even more arbitrary message flows. A list of currently implemented actions with explanations can be found in the Wiki.
+TLS-Attacker uses the concept of WorkflowTraces to define a "TLS message flow". A WorkflowTrace consists of a list of actions which are then executed one after the other. Although for a typical "TLS message flow" only SendAction's and ReceiveAction's are needed, the framework does not stop here and implements a lot of different other actions which can be used to execute even more arbitrary message flows. A list of currently implemented actions with explanations can be found in the Wiki.
 
 We know many of you hate Java. Therefore, you can also use an XML structure and run your customized TLS protocol from XML:
 ```xml
@@ -180,10 +177,7 @@ Given this XML structure is located in TLS-Attacker/apps/workflow.xml, you would
 $ java -jar TLS-Client.jar -connect [host]:[port] -workflow_input workflow.xml
 ```
 ## Modifiable Variables
-TLS-Attacker uses the concept of Modifiable Variables to allow runtime modifications to predefined Workflows
-. Modifiable variables allow one to set modifications to basic types after or before their values are actually set
-. When their actual values are determined and one tries to access the value via getters the original value will be
- returned in a modified form accordingly. More details on this concept can be found at https://github.com/tls-attacker/ModifiableVariable. 
+TLS-Attacker uses the concept of Modifiable Variables to allow runtime modifications to predefined Workflows. Modifiable variables allow one to set modifications to basic types after or before their values are actually set. When their actual values are determined and one tries to access the value via getters the original value will be returned in a modified form accordingly. More details on this concept can be found at https://github.com/tls-attacker/ModifiableVariable. 
 
 ```java
 ModifiableInteger i = new ModifiableInteger();
