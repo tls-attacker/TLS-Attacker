@@ -661,9 +661,12 @@ public enum CipherSuite {
             return version == ProtocolVersion.TLS13;
         }
 
-        if (this.name().endsWith("256") || this.name().endsWith("384") || this.isCCM() || this.isCCM_8()
-            && !this.name().contains("IDEA") && !this.name().contains("_DES") && !this.isExportSymmetricCipher()) {
+        if (this.name().endsWith("256") || this.name().endsWith("384") || this.isCCM() || this.isCCM_8()) {
             return (version == ProtocolVersion.TLS12);
+        }
+        if ((this.name().contains("IDEA") || this.name().contains("_DES") || this.isExportSymmetricCipher())
+            && version == ProtocolVersion.TLS12) {
+            return false;
         }
         return true;
     }

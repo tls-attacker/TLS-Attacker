@@ -20,8 +20,9 @@
 
     <distributionManagement>
         <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <id>rub-nexus</id>
+            <name>TLS-Attacker Internal Repository</name>
+            <url>https://hydrogen.cloud.nds.rub.de/nexus/repository/maven-snapshots/</url>
         </snapshotRepository>
         <repository>
             <id>ossrh</id>
@@ -157,7 +158,7 @@
         <dependency>
             <groupId>de.rub.nds</groupId>
             <artifactId>ModifiableVariable</artifactId>
-            <version>3.1.0</version>
+            <version>3.1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.reflections</groupId>
@@ -172,7 +173,7 @@
         <dependency>
             <groupId>de.rub.nds</groupId>
             <artifactId>X509Attacker</artifactId>
-            <version>1.2.0</version>
+            <version>1.2.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
     <build>
@@ -479,6 +480,11 @@
                     <additionalparam>-Xdoclint:none</additionalparam>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>3.0.0-M1</version>
+        </plugin>
         </plugins>
     </reporting>
     <properties>
