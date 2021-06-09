@@ -158,7 +158,7 @@ public class SerializationFullTest {
         }
         LOGGER.info(builder.toString());
         try {
-            trace = WorkflowTraceSerializer.read(new FileInputStream(f));
+            trace = WorkflowTraceSerializer.secureRead(new FileInputStream(f));
         } catch (XMLStreamException ex) {
             fail();
         }
