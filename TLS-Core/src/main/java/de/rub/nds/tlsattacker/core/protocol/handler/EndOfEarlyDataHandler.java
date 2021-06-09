@@ -14,11 +14,8 @@ import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.EndOfEarlyDataMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.EndOfEarlyDataParser;
-import de.rub.nds.tlsattacker.core.protocol.parser.ProtocolMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.EndOfEarlyDataPreparator;
-import de.rub.nds.tlsattacker.core.protocol.preparator.ProtocolMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.EndOfEarlyDataSerializer;
-import de.rub.nds.tlsattacker.core.protocol.serializer.ProtocolMessageSerializer;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
@@ -38,17 +35,17 @@ public class EndOfEarlyDataHandler extends HandshakeMessageHandler<EndOfEarlyDat
     }
 
     @Override
-    public ProtocolMessageParser getParser(byte[] message, int pointer) {
+    public EndOfEarlyDataParser getParser(byte[] message, int pointer) {
         return new EndOfEarlyDataParser(pointer, message, tlsContext.getLastRecordVersion(), tlsContext.getConfig());
     }
 
     @Override
-    public ProtocolMessagePreparator getPreparator(EndOfEarlyDataMessage message) {
+    public EndOfEarlyDataPreparator getPreparator(EndOfEarlyDataMessage message) {
         return new EndOfEarlyDataPreparator(tlsContext.getChooser(), message);
     }
 
     @Override
-    public ProtocolMessageSerializer getSerializer(EndOfEarlyDataMessage message) {
+    public EndOfEarlyDataSerializer getSerializer(EndOfEarlyDataMessage message) {
         return new EndOfEarlyDataSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 

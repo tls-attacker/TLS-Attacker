@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PSKBinder;
-import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
+import de.rub.nds.tlsattacker.core.protocol.Serializer;
 
 public class PSKBinderSerializer extends Serializer<PSKBinder> {
 

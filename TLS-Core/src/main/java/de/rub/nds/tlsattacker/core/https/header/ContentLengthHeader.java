@@ -12,7 +12,7 @@ package de.rub.nds.tlsattacker.core.https.header;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.https.header.preparator.ContentLengthHeaderPreparator;
-import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
+import de.rub.nds.tlsattacker.core.protocol.Preparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -27,7 +27,7 @@ public class ContentLengthHeader extends HttpsHeader {
     }
 
     @Override
-    public Preparator getPreparator(Chooser chooser) {
+    public ContentLengthHeaderPreparator getPreparator(Chooser chooser) {
         return new ContentLengthHeaderPreparator(chooser, this);
     }
 

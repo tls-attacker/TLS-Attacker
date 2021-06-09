@@ -10,19 +10,19 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientMasterKeyMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.ProtocolMessageParser;
+import de.rub.nds.tlsattacker.core.protocol.parser.HandshakeMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.SSL2ClientMasterKeyPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.SSL2ClientMasterKeySerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-public class SSL2ClientMasterKeyHandler extends ProtocolMessageHandler<SSL2ClientMasterKeyMessage> {
+public class SSL2ClientMasterKeyHandler extends HandshakeMessageHandler<SSL2ClientMasterKeyMessage> {
 
     public SSL2ClientMasterKeyHandler(TlsContext context) {
         super(context);
     }
 
     @Override
-    public ProtocolMessageParser<SSL2ClientMasterKeyMessage> getParser(byte[] message, int pointer) {
+    public HandshakeMessageParser<SSL2ClientMasterKeyMessage> getParser(byte[] message, int pointer) {
         // We currently don't receive ClientMasterKey messages, only send them.
         return null;
     }

@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class AlertParser extends ProtocolMessageParser<AlertMessage> {
+public class AlertParser extends TlsMessageParser<AlertMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

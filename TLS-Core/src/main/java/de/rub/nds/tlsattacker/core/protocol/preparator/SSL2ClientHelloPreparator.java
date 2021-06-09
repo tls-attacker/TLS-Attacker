@@ -21,7 +21,7 @@ import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class SSL2ClientHelloPreparator extends ProtocolMessagePreparator<SSL2ClientHelloMessage> {
+public class SSL2ClientHelloPreparator extends HandshakeMessagePreparator<SSL2ClientHelloMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -34,6 +34,11 @@ public class SSL2ClientHelloPreparator extends ProtocolMessagePreparator<SSL2Cli
 
     @Override
     protected void prepareProtocolMessageContents() {
+        prepareHandshakeMessageContents();
+    }
+
+    @Override
+    protected void prepareHandshakeMessageContents() {
         LOGGER.debug("Prepare SSL2ClientHello");
         preparePaddingLength(message);
         prepareType(message);

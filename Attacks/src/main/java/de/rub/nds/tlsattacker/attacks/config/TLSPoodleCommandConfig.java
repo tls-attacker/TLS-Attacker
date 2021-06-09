@@ -108,5 +108,4 @@ public class TLSPoodleCommandConfig extends AttackConfig {
         config.setAddEllipticCurveExtension(containsEc);
         return config;
     }
-
 }

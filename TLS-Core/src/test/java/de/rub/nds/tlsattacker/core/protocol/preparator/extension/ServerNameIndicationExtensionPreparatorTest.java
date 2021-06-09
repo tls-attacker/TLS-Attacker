@@ -84,5 +84,4 @@ public class ServerNameIndicationExtensionPreparatorTest {
             serverPrep.getObject().getServerNameListBytes().getValue());
         assertEquals(12, (long) serverPrep.getObject().getServerNameListLength().getOriginalValue());
     }
-
 }

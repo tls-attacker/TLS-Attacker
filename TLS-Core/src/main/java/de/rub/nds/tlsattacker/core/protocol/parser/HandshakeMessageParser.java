@@ -24,6 +24,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParserFact
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.KeyShareExtensionParser;
 import java.util.LinkedList;
 import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -33,7 +34,7 @@ import org.apache.logging.log4j.Logger;
  * @param <T>
  *            Type of the HandshakeMessages to parse
  */
-public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends ProtocolMessageParser<T> {
+public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends TlsMessageParser<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

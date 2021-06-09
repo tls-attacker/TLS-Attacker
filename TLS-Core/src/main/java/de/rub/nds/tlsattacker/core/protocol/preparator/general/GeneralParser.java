@@ -9,7 +9,7 @@
 
 package de.rub.nds.tlsattacker.core.protocol.preparator.general;
 
-import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
+import de.rub.nds.tlsattacker.core.protocol.Parser;
 
 /**
  *

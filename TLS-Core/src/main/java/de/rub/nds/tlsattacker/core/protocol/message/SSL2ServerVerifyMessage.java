@@ -15,7 +15,6 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ServerVerifyHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
@@ -42,7 +41,7 @@ public class SSL2ServerVerifyMessage extends SSL2HandshakeMessage {
     }
 
     @Override
-    public ProtocolMessageHandler<SSL2ServerVerifyMessage> getHandler(TlsContext context) {
+    public SSL2ServerVerifyHandler getHandler(TlsContext context) {
         return new SSL2ServerVerifyHandler(context);
     }
 

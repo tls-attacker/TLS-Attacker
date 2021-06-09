@@ -9,8 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.config;
 
-import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSchemaGenerator;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;

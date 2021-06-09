@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
@@ -44,7 +44,7 @@ public class BufferedSendAction extends MessageAction implements SendingAction {
             throw new WorkflowExecutionException("Action already executed!");
         }
         messages = tlsContext.getMessageBuffer();
-        tlsContext.setMessageBuffer(new LinkedList<ProtocolMessage>());
+        tlsContext.setMessageBuffer(new LinkedList<>());
         String sending = getReadableString(messages);
         if (connectionAlias.equals(AliasedConnection.DEFAULT_CONNECTION_ALIAS)) {
             LOGGER.info("Sending messages: " + sending);

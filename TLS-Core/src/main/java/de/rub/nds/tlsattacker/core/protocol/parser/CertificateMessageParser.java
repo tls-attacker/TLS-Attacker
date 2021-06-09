@@ -147,5 +147,4 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
         }
         msg.setCertificatesListAsEntry(entryList);
     }
-
 }
