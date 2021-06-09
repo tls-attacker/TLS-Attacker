@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlSeeAlso;
 
+import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -35,6 +36,7 @@ import org.apache.logging.log4j.Logger;
  *            Object type of the field inside the {@link TlsContext}
  */
 @XmlSeeAlso(TlsContext.class)
+@XmlRootElement
 public class ChangeContextValueAction<T> extends ConnectionBoundAction {
 
     private static final Logger LOGGER = LogManager.getLogger();

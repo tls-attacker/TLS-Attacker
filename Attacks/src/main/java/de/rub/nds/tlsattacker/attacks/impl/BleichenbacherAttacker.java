@@ -63,6 +63,8 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
 
     private List<VectorResponse> fingerprintPairList;
 
+    private boolean selfShutdown = false;
+
     /**
      * @param bleichenbacherConfig
      * @param baseConfig
@@ -70,6 +72,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
     public BleichenbacherAttacker(BleichenbacherCommandConfig bleichenbacherConfig, Config baseConfig) {
         super(bleichenbacherConfig, baseConfig);
         executor = new ParallelExecutor(1, 3);
+        selfShutdown = true;
     }
 
     /**
@@ -81,6 +84,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         ParallelExecutor executor) {
         super(bleichenbacherConfig, baseConfig);
         this.executor = executor;
+        selfShutdown = false;
     }
 
     /**
@@ -150,6 +154,9 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         }
         if (error != EqualityError.NONE) {
             CONSOLE.info("Found a vulnerability with " + config.getWorkflowType().getDescription());
+        }
+        if (selfShutdown && !config.isExecuteAttack()) {
+            executor.shutdown();
         }
         return error;
     }
@@ -298,6 +305,9 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         attacker.attack();
         BigInteger solution = attacker.getSolution();
         CONSOLE.info(solution.toString(16));
+        if (selfShutdown) {
+            executor.shutdown();
+        }
     }
 
     private ResponseFingerprint extractValidFingerprint(RSAPublicKey publicKey, ProtocolVersion version) {

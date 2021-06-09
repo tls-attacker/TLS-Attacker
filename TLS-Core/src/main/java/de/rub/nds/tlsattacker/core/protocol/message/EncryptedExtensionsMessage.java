@@ -14,7 +14,9 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.EncryptedExtensionsHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import javax.xml.bind.annotation.XmlRootElement;
 
+@XmlRootElement
 public class EncryptedExtensionsMessage extends HandshakeMessage {
 
     public EncryptedExtensionsMessage() {

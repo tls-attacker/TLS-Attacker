@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
+import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,6 +25,7 @@ import org.apache.logging.log4j.Logger;
  * Prints "Found Type.name (Type.value)" for the first message found and quits. Prints nothing if no message of given
  * type was received.
  */
+@XmlRootElement
 public class FindReceivedProtocolMessageAction extends ConnectionBoundAction {
 
     private static final Logger LOGGER = LogManager.getLogger();

@@ -13,14 +13,13 @@ import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.modifiablevariable.util.Modifiable;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PSKBinder;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PSKIdentity;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -183,4 +182,17 @@ public class PreSharedKeyExtensionMessage extends ExtensionMessage {
             copyPskSets(chooser.getPskSets(), chooser.getConfig().isLimitPsksToOne());
         }
     }
+
+    @Override
+    public List<ModifiableVariableHolder> getAllModifiableVariableHolders() {
+        List<ModifiableVariableHolder> allModifiableVariableHolders = super.getAllModifiableVariableHolders();
+        if (binders != null) {
+            allModifiableVariableHolders.addAll(binders);
+        }
+        if (identities != null) {
+            allModifiableVariableHolders.addAll(binders);
+        }
+        return allModifiableVariableHolders;
+    }
+
 }

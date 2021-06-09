@@ -26,6 +26,9 @@ public class PointFormatter {
 
     public static byte[] formatToByteArray(NamedGroup group, Point point, ECPointFormat format) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        if (point.isAtInfinity()) {
+            return new byte[1];
+        }
         int elementLength = ArrayConverter.bigIntegerToByteArray(point.getFieldX().getModulus()).length;
         if (group != NamedGroup.ECDH_X448 && group != NamedGroup.ECDH_X25519) {
             switch (format) {
@@ -74,6 +77,9 @@ public class PointFormatter {
 
     public static byte[] toRawFormat(Point point) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        if (point.isAtInfinity()) {
+            return new byte[1];
+        }
         int elementLength = ArrayConverter.bigIntegerToByteArray(point.getFieldX().getModulus()).length;
         try {
             stream.write(ArrayConverter.bigIntegerToNullPaddedByteArray(point.getFieldX().getData(), elementLength));

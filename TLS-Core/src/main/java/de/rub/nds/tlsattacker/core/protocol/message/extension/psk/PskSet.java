@@ -9,6 +9,7 @@
 
 package de.rub.nds.tlsattacker.core.protocol.message.extension.psk;
 
+import de.rub.nds.modifiablevariable.util.IllegalStringAdapter;
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import java.io.Serializable;
@@ -39,6 +40,7 @@ public class PskSet implements Serializable {
     /**
      * TicketAge value to be used to generate the obfuscated ticket age for the given PSKs
      */
+    @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String ticketAge;
 
     /**

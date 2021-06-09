@@ -68,11 +68,23 @@ public class CertificateRequestHandler extends HandshakeMessageHandler<Certifica
     private void adjustServerSupportedSignatureAndHashAlgorithms(CertificateRequestMessage message) {
         List<SignatureAndHashAlgorithm> algoList;
         if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
-            algoList =
-                convertSignatureAndHashAlgorithms(message.getExtension(SignatureAndHashAlgorithmsExtensionMessage.class)
-                    .getSignatureAndHashAlgorithms().getValue());
+            SignatureAndHashAlgorithmsExtensionMessage extension =
+                message.getExtension(SignatureAndHashAlgorithmsExtensionMessage.class);
+            if (extension != null) {
+                algoList = convertSignatureAndHashAlgorithms(extension.getSignatureAndHashAlgorithms().getValue());
+            } else {
+                if (message.getSignatureHashAlgorithms() != null) {
+                    algoList = convertSignatureAndHashAlgorithms(message.getSignatureHashAlgorithms().getValue());
+                } else {
+                    algoList = new LinkedList<>();
+                }
+            }
         } else {
-            algoList = convertSignatureAndHashAlgorithms(message.getSignatureHashAlgorithms().getValue());
+            if (message.getSignatureHashAlgorithms() != null) {
+                algoList = convertSignatureAndHashAlgorithms(message.getSignatureHashAlgorithms().getValue());
+            } else {
+                algoList = new LinkedList<>();
+            }
         }
         tlsContext.setServerSupportedSignatureAndHashAlgorithms(algoList);
         LOGGER.debug("Set ServerSupportedSignatureAndHashAlgorithms to " + algoList.toString());

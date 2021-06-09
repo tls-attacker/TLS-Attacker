@@ -810,10 +810,10 @@ public class DefaultChooserTest {
         byte[] salt2 = ArrayConverter.hexStringToByteArray("FF");
         context.setServerPWDSalt(null);
         config.setDefaultServerPWDSalt(salt);
-        assertEquals(salt, config.getDefaultServerPWDSalt());
-        assertEquals(null, chooser.getServerPWDSalt());
+        assertArrayEquals(salt, config.getDefaultServerPWDSalt());
+        assertArrayEquals(salt, chooser.getServerPWDSalt());
         context.setServerPWDSalt(salt2);
-        assertEquals(salt2, chooser.getServerPWDSalt());
+        assertArrayEquals(salt2, chooser.getServerPWDSalt());
     }
 
     /**

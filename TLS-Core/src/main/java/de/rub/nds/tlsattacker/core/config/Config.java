@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.config;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.IllegalStringAdapter;
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.certificate.CertificateKeyPair;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
@@ -78,15 +79,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementDecl;
 import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlList;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.apache.logging.log4j.LogManager;
@@ -376,8 +373,10 @@ public class Config implements Serializable {
      */
     @XmlElement(name = "defaultProposedAlpnProtocol")
     @XmlElementWrapper
+    @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private List<String> defaultProposedAlpnProtocols;
 
+    @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String defaultSelectedAlpnProtocol = AlpnProtocol.HTTP_2.getConstant();
 
     /**
@@ -622,11 +621,13 @@ public class Config implements Serializable {
     /**
      * Default cookie value to use if addHttpsCookie is true.
      */
+    @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String defaultHttpsCookieName = "tls-attacker";
 
     /**
      * Default cookie value to use if addHttpsCookie is true.
      */
+    @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String defaultHttpsCookieValue = "42130912812";
 
     /**
@@ -861,6 +862,7 @@ public class Config implements Serializable {
 
     private GOSTCurve defaultSelectedGostCurve = GOSTCurve.GostR3410_2001_CryptoPro_XchB;
 
+    @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String defaultApplicationMessageData = "Test";
 
     @XmlElement(name = "clientCertificateType")
@@ -1145,6 +1147,7 @@ public class Config implements Serializable {
      * requestPath to use in LocationHeader if none is saved during the connection, e.g. no received HttpsRequestMessage
      * or httpsParsing is disabled
      */
+    @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String defaultHttpsRequestPath = "/";
 
     private StarttlsType starttlsType = StarttlsType.NONE;
@@ -1191,6 +1194,7 @@ public class Config implements Serializable {
     /**
      * Use username from the example of RFC8492
      */
+    @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String defaultClientPWDUsername = "fred";
 
     /**
@@ -1209,6 +1213,7 @@ public class Config implements Serializable {
     /**
      * Use password from the example of RFC8492
      */
+    @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String defaultPWDPassword = "barney";
 
     /**
@@ -3560,7 +3565,7 @@ public class Config implements Serializable {
     }
 
     public byte[] getDefaultServerPWDSalt() {
-        return defaultServerPWDSalt;
+        return Arrays.copyOf(defaultServerPWDSalt, defaultServerPWDSalt.length);
     }
 
     public void setDefaultServerPWDSalt(byte[] salt) {
@@ -3584,7 +3589,7 @@ public class Config implements Serializable {
     }
 
     public byte[] getDefaultServerPWDPrivate() {
-        return defaultServerPWDPrivate;
+        return Arrays.copyOf(defaultServerPWDPrivate, defaultServerPWDPrivate.length);
     }
 
     public void setDefaultServerPWDPrivate(byte[] defaultServerPWDPrivate) {
@@ -3592,7 +3597,7 @@ public class Config implements Serializable {
     }
 
     public byte[] getDefaultServerPWDMask() {
-        return defaultServerPWDMask;
+        return Arrays.copyOf(defaultServerPWDMask, defaultServerPWDMask.length);
     }
 
     public void setDefaultServerPWDMask(byte[] defaultServerPWDMask) {
@@ -3600,7 +3605,7 @@ public class Config implements Serializable {
     }
 
     public byte[] getDefaultClientPWDPrivate() {
-        return defaultClientPWDPrivate;
+        return Arrays.copyOf(defaultClientPWDPrivate, defaultClientPWDPrivate.length);
     }
 
     public void setDefaultClientPWDPrivate(byte[] defaultClientPWDPrivate) {
@@ -3608,7 +3613,7 @@ public class Config implements Serializable {
     }
 
     public byte[] getDefaultClientPWDMask() {
-        return defaultClientPWDMask;
+        return Arrays.copyOf(defaultClientPWDMask, defaultClientPWDMask.length);
     }
 
     public void setDefaultClientPWDMask(byte[] defaultClientPWDMask) {
@@ -3700,7 +3705,7 @@ public class Config implements Serializable {
     }
 
     public byte[] getDefaultEsniClientNonce() {
-        return defaultEsniClientNonce;
+        return Arrays.copyOf(defaultEsniClientNonce, defaultEsniClientNonce.length);
     }
 
     public void setDefaultEsniClientNonce(byte[] defaultEsniClientNonce) {
@@ -3708,7 +3713,7 @@ public class Config implements Serializable {
     }
 
     public byte[] getDefaultEsniServerNonce() {
-        return defaultEsniServerNonce;
+        return Arrays.copyOf(defaultEsniServerNonce, defaultEsniServerNonce.length);
     }
 
     public void setDefaultEsniServerNonce(byte[] defaultEsniServerNonce) {
@@ -3716,7 +3721,7 @@ public class Config implements Serializable {
     }
 
     public byte[] getDefaultEsniRecordBytes() {
-        return defaultEsniRecordBytes;
+        return Arrays.copyOf(defaultEsniRecordBytes, defaultEsniRecordBytes.length);
     }
 
     public void setDefaultEsniRecordBytes(byte[] defaultEsniRecordBytes) {
@@ -3732,7 +3737,7 @@ public class Config implements Serializable {
     }
 
     public byte[] getDefaultEsniRecordChecksum() {
-        return defaultEsniRecordChecksum;
+        return Arrays.copyOf(defaultEsniRecordChecksum, defaultEsniRecordChecksum.length);
     }
 
     public void setDefaultEsniRecordChecksum(byte[] defaultEsniRecordChecksum) {
@@ -3872,7 +3877,7 @@ public class Config implements Serializable {
     }
 
     public byte[] getDefaultLastClientHello() {
-        return defaultLastClientHello;
+        return Arrays.copyOf(defaultLastClientHello, defaultLastClientHello.length);
     }
 
     public void setDefaultLastClientHello(byte[] defaultLastClientHello) {

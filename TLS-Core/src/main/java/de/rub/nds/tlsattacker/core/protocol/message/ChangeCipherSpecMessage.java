@@ -23,7 +23,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class ChangeCipherSpecMessage extends TlsMessage {
 
     @ModifiableVariableProperty
-    ModifiableByteArray ccsProtocolType;
+    private ModifiableByteArray ccsProtocolType;
 
     public ChangeCipherSpecMessage(Config tlsConfig) {
         super();

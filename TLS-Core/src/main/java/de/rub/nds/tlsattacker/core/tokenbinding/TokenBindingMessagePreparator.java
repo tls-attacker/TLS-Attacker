@@ -85,6 +85,7 @@ public class TokenBindingMessagePreparator extends TlsMessagePreparator<TokenBin
             message.setModulusLength(message.getModulus().getValue().length);
             message.setPublicExponent(chooser.getConfig().getDefaultTokenBindingRsaPublicKey().toByteArray());
             message.setPublicExponentLength(message.getPublicExponent().getValue().length);
+            message.setSignature(new byte[0]);
         }
         TokenBindingMessageSerializer serializer =
             new TokenBindingMessageSerializer(message, chooser.getSelectedProtocolVersion());

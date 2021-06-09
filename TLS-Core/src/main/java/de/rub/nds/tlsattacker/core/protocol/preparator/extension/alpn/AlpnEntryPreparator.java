@@ -12,6 +12,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension.alpn;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.alpn.AlpnEntry;
 import de.rub.nds.tlsattacker.core.protocol.Preparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import java.nio.charset.StandardCharsets;
 
 public class AlpnEntryPreparator extends Preparator<AlpnEntry> {
 
@@ -25,7 +26,7 @@ public class AlpnEntryPreparator extends Preparator<AlpnEntry> {
     @Override
     public void prepare() {
         entry.setAlpnEntry(entry.getAlpnEntryConfig());
-        entry.setAlpnEntryLength(entry.getAlpnEntry().getValue().getBytes().length);
+        entry.setAlpnEntryLength(entry.getAlpnEntry().getValue().getBytes(StandardCharsets.ISO_8859_1).length);
     }
 
 }

@@ -14,6 +14,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import java.util.LinkedList;
@@ -35,6 +36,12 @@ public class CachedInfoExtensionMessage extends ExtensionMessage {
     public CachedInfoExtensionMessage() {
         super(ExtensionType.CACHED_INFO);
         cachedInfo = new LinkedList<>();
+    }
+
+    public CachedInfoExtensionMessage(Config config) {
+        super(ExtensionType.CACHED_INFO);
+        cachedInfo = new LinkedList<>();
+        cachedInfo.addAll(config.getCachedObjectList());
     }
 
     public ModifiableInteger getCachedInfoLength() {

@@ -81,8 +81,13 @@ public class SrpServerKeyExchangePreparator extends ServerKeyExchangePreparator<
         BigInteger publicKey;
         BigInteger k = calculateSRP6Multiplier(modulus, generator);
         BigInteger x = calculateX(salt, identity, password);
-        BigInteger v = generator.modPow(x, modulus);
-
+        BigInteger v;
+        if (modulus.compareTo(BigInteger.ZERO) >= 0) {
+            v = generator.modPow(x, modulus);
+        } else {
+            LOGGER.warn("Modulus is zero or negative. Using publicKey=0.");
+            return BigInteger.ZERO;
+        }
         BigInteger helpValue1 = k.multiply(v);
         BigInteger helpValue2 = helpValue1.mod(modulus);
         helpValue1 = generator.modPow(privateKey, modulus);

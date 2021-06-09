@@ -17,12 +17,16 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ClientMasterKeyHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.RSAClientComputations;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 @SuppressWarnings("serial")
+@XmlRootElement
 public class SSL2ClientMasterKeyMessage extends SSL2HandshakeMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
@@ -181,4 +185,14 @@ public class SSL2ClientMasterKeyMessage extends SSL2HandshakeMessage {
         }
         return sb.toString();
     }
+
+    @Override
+    public List<ModifiableVariableHolder> getAllModifiableVariableHolders() {
+        List<ModifiableVariableHolder> allModifiableVariableHolders = super.getAllModifiableVariableHolders();
+        if (computations != null) {
+            allModifiableVariableHolders.add(computations);
+        }
+        return allModifiableVariableHolders;
+    }
+
 }

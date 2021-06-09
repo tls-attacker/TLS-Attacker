@@ -19,7 +19,7 @@ import java.io.Serializable;
 
 public class ServerNamePair extends ModifiableVariableHolder implements Serializable {
 
-    private byte serverNameTypeConfig;
+    private Byte serverNameTypeConfig;
     private byte[] serverNameConfig;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
@@ -31,7 +31,12 @@ public class ServerNamePair extends ModifiableVariableHolder implements Serializ
     @ModifiableVariableProperty
     private ModifiableByteArray serverName;
 
-    public ServerNamePair() {
+    private ServerNamePair() {
+    }
+
+    public ServerNamePair(Byte typeConfig, byte[] serverNameConfig) {
+        this.serverNameTypeConfig = typeConfig;
+        this.serverNameConfig = serverNameConfig;
     }
 
     public ModifiableByte getServerNameType() {

@@ -15,11 +15,15 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.DHClientKeyExchangePrepar
 import de.rub.nds.tlsattacker.core.protocol.serializer.DHClientKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.math.BigInteger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Handler for DH and DHE ClientKeyExchange messages
  */
 public class DHClientKeyExchangeHandler<T extends DHClientKeyExchangeMessage> extends ClientKeyExchangeHandler<T> {
+
+    private Logger LOGGER = LogManager.getLogger();
 
     public DHClientKeyExchangeHandler(TlsContext tlsContext) {
         super(tlsContext);
@@ -50,7 +54,11 @@ public class DHClientKeyExchangeHandler<T extends DHClientKeyExchangeMessage> ex
         spawnNewSession();
     }
 
-    private void adjustClientPublicKey(T message) {
-        tlsContext.setClientDhPublicKey(new BigInteger(message.getPublicKey().getValue()));
+    private void adjustClientPublicKey(DHClientKeyExchangeMessage message) {
+        if (message.getPublicKey().getValue().length == 0) {
+            LOGGER.debug("Empty DH Key");
+        } else {
+            tlsContext.setClientDhPublicKey(new BigInteger(message.getPublicKey().getValue()));
+        }
     }
 }

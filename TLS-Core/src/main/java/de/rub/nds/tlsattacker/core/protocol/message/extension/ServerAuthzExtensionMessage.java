@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 
 /**
@@ -21,11 +22,15 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 public class ServerAuthzExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty
-    ModifiableInteger authzFormatListLength;
+    private ModifiableInteger authzFormatListLength;
     @ModifiableVariableProperty
-    ModifiableByteArray authzFormatList;
+    private ModifiableByteArray authzFormatList;
 
     public ServerAuthzExtensionMessage() {
+        super(ExtensionType.SERVER_AUTHZ);
+    }
+
+    public ServerAuthzExtensionMessage(Config config) {
         super(ExtensionType.SERVER_AUTHZ);
     }
 
