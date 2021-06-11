@@ -1,6 +1,6 @@
 # TLS-Attacker
 
-[![release](https://img.shields.io/badge/Release-v3.6.0-blue.svg)](https://github.com/tls-attacker/TLS-Attacker/releases)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/tls-attacker/TLS-Attacker)
 ![licence](https://img.shields.io/badge/License-Apachev2-brightgreen.svg)
 [![Build Status](https://hydrogen.cloud.nds.rub.de/buildStatus/icon.svg?job=TLS-Attacker)](https://hydrogen.cloud.nds.rub.de/job/TLS-Attacker/)
 
