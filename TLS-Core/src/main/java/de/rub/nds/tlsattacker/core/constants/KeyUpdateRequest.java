@@ -9,22 +9,18 @@
 
 package de.rub.nds.tlsattacker.core.constants;
 
-import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
-import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
-
 public enum KeyUpdateRequest {
 
     UPDATE_NOT_REQUESTED((byte) 0),
     UPDATE_REQUESTED((byte) 1);
 
-    private ModifiableByte requestUpdate;
+    private byte value;
 
-    private KeyUpdateRequest(byte requestUpdate) {
-        this.requestUpdate = ModifiableVariableFactory.safelySetValue(this.requestUpdate, requestUpdate);
+    private KeyUpdateRequest(byte value) {
+        this.value = value;
     }
 
     public byte getValue() {
-        return requestUpdate.getValue();
+        return value;
     }
-
 }

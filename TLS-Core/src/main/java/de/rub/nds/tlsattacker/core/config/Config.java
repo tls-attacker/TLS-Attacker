@@ -34,6 +34,7 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
 import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
+import de.rub.nds.tlsattacker.core.constants.KeyUpdateRequest;
 import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
 import de.rub.nds.tlsattacker.core.constants.NameType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
@@ -304,6 +305,11 @@ public class Config implements Serializable {
      * MaxFragmentLength in MaxFragmentLengthExtension
      */
     private MaxFragmentLength maxFragmentLength = MaxFragmentLength.TWO_9;
+
+    /**
+     * Determine if a KeyUpdate should be requested from peer
+     */
+    private KeyUpdateRequest defaultKeyUpdateRequestMode = KeyUpdateRequest.UPDATE_NOT_REQUESTED;
 
     /**
      * Determine if CCS should be encrypted in TLS 1.3 if encryption is set up for record layer
@@ -3922,5 +3928,13 @@ public class Config implements Serializable {
 
     public void setEncryptChangeCipherSpec(Boolean encryptChangeCipherSpec) {
         this.encryptChangeCipherSpecTls13 = encryptChangeCipherSpec;
+    }
+
+    public KeyUpdateRequest getDefaultKeyUpdateRequestMode() {
+        return defaultKeyUpdateRequestMode;
+    }
+
+    public void setDefaultKeyUpdateRequestMode(KeyUpdateRequest defaultKeyUpdateRequestMode) {
+        this.defaultKeyUpdateRequestMode = defaultKeyUpdateRequestMode;
     }
 }

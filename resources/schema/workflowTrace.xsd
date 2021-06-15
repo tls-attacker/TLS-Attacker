@@ -2302,7 +2302,7 @@
     <xs:complexContent>
       <xs:extension base="handshakeMessage">
         <xs:sequence>
-          <xs:element name="requestUpdate" type="keyUpdateRequest" minOccurs="0"/>
+          <xs:element name="requestMode" type="modifiableByte" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -4539,13 +4539,6 @@
       <xs:enumeration value="GREASE_15"/>
       <xs:enumeration value="TLS_GOSTR341112_256_WITH_28147_CNT_IMIT"/>
       <xs:enumeration value="TLS_GOSTR341112_256_WITH_NULL_GOSTR3411"/>
-    </xs:restriction>
-  </xs:simpleType>
-
-  <xs:simpleType name="keyUpdateRequest">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="UPDATE_NOT_REQUESTED"/>
-      <xs:enumeration value="UPDATE_REQUESTED"/>
     </xs:restriction>
   </xs:simpleType>
 
