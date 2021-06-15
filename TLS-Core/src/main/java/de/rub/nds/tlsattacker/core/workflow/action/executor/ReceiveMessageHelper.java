@@ -779,7 +779,6 @@ public class ReceiveMessageHelper {
      */
     private boolean recordGroupIndicatesWrongTls13KeySet(List<ProtocolMessage> parsedMessages,
         RecordGroup recordGroup) {
-        // todo: once KeyUpdate is implemented, check if it counts as HS message
         Set<Tls13KeySetType> expectedKeyTypes = new HashSet<>();
         for (ProtocolMessage msg : parsedMessages) {
             if (!(msg instanceof TlsMessage)) {
@@ -788,7 +787,7 @@ public class ReceiveMessageHelper {
 
             switch (((TlsMessage) msg).getProtocolMessageType()) {
                 case HANDSHAKE:
-                    if (msg instanceof NewSessionTicketMessage) {
+                    if (msg instanceof NewSessionTicketMessage || msg instanceof KeyUpdateMessage) {
                         expectedKeyTypes.add(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS);
                     } else if (msg instanceof ClientHelloMessage || msg instanceof ServerHelloMessage) {
                         expectedKeyTypes.add(Tls13KeySetType.NONE);
