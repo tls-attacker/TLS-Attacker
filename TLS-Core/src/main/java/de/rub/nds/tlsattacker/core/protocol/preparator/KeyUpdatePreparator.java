@@ -9,7 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.tlsattacker.core.constants.KeyUpdateRequest;
 import de.rub.nds.tlsattacker.core.protocol.message.KeyUpdateMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
@@ -27,8 +26,10 @@ public class KeyUpdatePreparator extends HandshakeMessagePreparator<KeyUpdateMes
 
     @Override
     protected void prepareHandshakeMessageContents() {
-        msg.setRequestUpdate(msg.getRequestUpdate());
-        LOGGER.debug("Preparing KeyUpdate - MessageContent is: " + msg.getRequestUpdate());
+        if (msg.getRequestMode() == null) {
+            msg.setRequestMode(chooser.getConfig().getDefaultKeyUpdateRequestMode());
+        }
+        LOGGER.debug("Preparing KeyUpdate - MessageContent is: " + msg.getRequestMode().getValue());
     }
 
 }

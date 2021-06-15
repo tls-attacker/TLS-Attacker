@@ -811,6 +811,7 @@
     <prefferedCertRsaKeySize>2048</prefferedCertRsaKeySize>
     <prefferedCertDssKeySize>2048</prefferedCertDssKeySize>
     <maxFragmentLength>TWO_9</maxFragmentLength>
+    <defaultKeyUpdateRequestMode>UPDATE_NOT_REQUESTED</defaultKeyUpdateRequestMode>
     <encryptChangeCipherSpecTls13>false</encryptChangeCipherSpecTls13>
     <tlsSessionTicket></tlsSessionTicket>
     <defaultClientRenegotiationInfo></defaultClientRenegotiationInfo>
