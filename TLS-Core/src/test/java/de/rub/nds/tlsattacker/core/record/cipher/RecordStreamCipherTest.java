@@ -449,13 +449,13 @@ public class RecordStreamCipherTest {
     }
 
     @Test
-    public void testEncryptSSL310SHA() throws CryptoException, NoSuchAlgorithmException {
+    public void testEncryptTLS11SHA() throws CryptoException, NoSuchAlgorithmException {
         /* Outbound for Clients, Inbound for Servers */
         context.setConnection(new OutboundConnection());
         /* Sets the Ciphersuit for the Handshake */
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_RC4_128_SHA);
         /* Sets the SSL/TLS version */
-        context.setSelectedProtocolVersion(ProtocolVersion.SSL3);
+        context.setSelectedProtocolVersion(ProtocolVersion.TLS11);
 
         /* Sets the data that should be encrypted later */
         byte[] data = ArrayConverter
@@ -485,7 +485,7 @@ public class RecordStreamCipherTest {
         record.prepareComputations();
         /* sequence numbers are 64-bits long */
         record.setSequenceNumber(new BigInteger("0"));
-        record.setProtocolVersion(ProtocolVersion.SSL3.getValue());
+        record.setProtocolVersion(ProtocolVersion.TLS11.getValue());
         record.setCleanProtocolMessageBytes(data);
 
         /* the cipher is computed over the plaintext(data) and the mac
@@ -493,29 +493,15 @@ public class RecordStreamCipherTest {
         cipher.encrypt(record);
 
         /* tests the meta data of the record
-        the MAC is computed
-   from the MAC secret, the sequence number, the message length, the
-   message contents, and two fixed-character strings.  The message type
-   field is necessary to ensure that messages intended for one SSL
-   record layer client are not redirected to another.  The sequence
-   number ensures that attempts to delete or reorder messages will be
-   detected.  Since sequence numbers are 64 bits long, they should never
-   overflow.  Messages from one party cannot be inserted into the
-   other's output, since they use independent MAC secrets.  Similarly,
-   the server-write and client-write keys are independent so stream
-   cipher keys are used only once.
          * the MAC is computed from the MAC secret,
          * the sequence number,                  00 00 00 00 00 00 00 00 ---+
          * the type field,                                            16 ---+
-         * the protocol version,                                   00 10 ---+---> authenticated meta data ---+
-         * the message length,                                                                               |
+         * the protocol version,                                   03 02 ---+---> authenticated meta data ---+
+         * the message length,                                     00 10 ---+                                |
          * the message contents,                          01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 ---+---> HMAC ---> hash
          * and two fixed character strings                                                  opad and ipad ---+
          *  .*/
-        System.out.println(record.getComputations().getAuthenticatedMetaData());
-        System.out.println(record.getComputations().getAuthenticatedNonMetaData());
-        System.out.println(record.getCleanProtocolMessageBytes());
-        assertArrayEquals(ArrayConverter.hexStringToByteArray("0000000000000000160010"), record.getComputations()
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603020010"), record.getComputations()
                 .getAuthenticatedMetaData().getValue());
 
         /* tests the encryption key */
@@ -527,20 +513,842 @@ public class RecordStreamCipherTest {
                 record.getComputations().getMacKey().getValue());
 
         /* tests the mac only*/
-        assertArrayEquals(ArrayConverter.hexStringToByteArray("740b1374aac883ec9171730684b9f7bf84c56cc1"), record
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("bd1d22bbebb5b506c4ce9807f6432c7f78291d75"), record
                 .getComputations().getMac().getValue());
 
         /* tests the given plaintext + mac of the plaintext */
-        assertArrayEquals(ArrayConverter.hexStringToByteArray("010101010101010101010101010101017e9f01ddf2c70841a74f087e82bfe2e90e8d12ec"),
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("01010101010101010101010101010101bd1d22bbebb5b506c4ce9807f6432c7f78291d75"),
                 record.getComputations().getPlainRecordBytes().getValue());
 
         /* tests the encryption */
         assertArrayEquals(ArrayConverter
-                        .hexStringToByteArray("805264444f48ea5b98a0ceb3884c2ef71bd2a4c4e785acf6aeecfbce2111d3174b1e37f0"),
+                        .hexStringToByteArray("805264444f48ea5b98a0ceb3884c2ef7d85087a2fef711b1cd6d6bb755ed1d813dba3869"),
                 record.getComputations().getCiphertext().getValue());
 
         /* tests protocol message bytes encrypted */
-        assertArrayEquals(ArrayConverter.hexStringToByteArray("805264444f48ea5b98a0ceb3884c2ef71bd2a4c4e785acf6aeecfbce2111d3174b1e37f0"),
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("805264444f48ea5b98a0ceb3884c2ef7d85087a2fef711b1cd6d6bb755ed1d813dba3869"),
+                record.getProtocolMessageBytes().getValue());
+    }
+
+    @Test
+    public void testDecryptTLS11SHA() throws CryptoException {
+        context.setConnection(new InboundConnection());
+        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_RC4_128_SHA);
+        context.setSelectedProtocolVersion(ProtocolVersion.TLS11);
+
+        byte[] data = ArrayConverter
+                .hexStringToByteArray("805264444f48ea5b98a0ceb3884c2ef7d85087a2fef711b1cd6d6bb755ed1d813dba3869");
+
+        KeySet keySet = new KeySet();
+        keySet.setClientWriteKey(ArrayConverter
+                .hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"));
+        keySet.setClientWriteMacSecret(ArrayConverter
+                .hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"));
+        keySet.setClientWriteIv(new byte[8]);
+        keySet.setServerWriteIv(new byte[8]); // ServerSide is not used
+        keySet.setServerWriteKey(new byte[16]); // ServerSide is not used
+        keySet.setServerWriteMacSecret(new byte[20]); // ServerSide is not used
+
+        RecordStreamCipher plaintext = new RecordStreamCipher(context,
+                keySet);
+
+        Record record = new Record();
+        record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
+        record.prepareComputations();
+        record.setSequenceNumber(new BigInteger("0"));
+        record.setProtocolVersion(ProtocolVersion.TLS11.getValue());
+        record.setProtocolMessageBytes(data);
+
+        plaintext.decrypt(record);
+
+        /* tests the meta data of the record
+         * the MAC is computed from the MAC secret,
+         * the sequence number,                  00 00 00 00 00 00 00 00 ---+
+         * the type field,                                            16 ---+
+         * the protocol version,                                   03 02 ---+---> authenticated meta data ---+
+         * the message length,                                     00 10 ---+                                |
+         * the message contents,                          01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 ---+---> HMAC ---> hash
+         * and two fixed character strings                                                  opad and ipad ---+
+         *  .*/
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603020010"), record.getComputations()
+                .getAuthenticatedMetaData().getValue());
+
+        /* tests the decryption key */
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
+                record.getComputations().getCipherKey().getValue());
+
+        /* tests the mac key */
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
+                record.getComputations().getMacKey().getValue());
+
+        /* tests the decryption only */
+        assertArrayEquals(ArrayConverter
+                        .hexStringToByteArray("01010101010101010101010101010101"),
+                record.getCleanProtocolMessageBytes().getValue());
+
+        /* tests the mac only*/
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("bd1d22bbebb5b506c4ce9807f6432c7f78291d75"), record
+                .getComputations().getMac().getValue());
+
+        /* tests the given plaintext + mac of the plaintext */
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("01010101010101010101010101010101bd1d22bbebb5b506c4ce9807f6432c7f78291d75"),
+                record.getComputations().getPlainRecordBytes().getValue());
+
+        /* tests protocol message bytes encrypted */
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("805264444f48ea5b98a0ceb3884c2ef7d85087a2fef711b1cd6d6bb755ed1d813dba3869"),
+                record.getProtocolMessageBytes().getValue());
+    }
+
+    @Test
+    public void testEncryptTLSv11MD5() throws CryptoException, NoSuchAlgorithmException {
+        /* Outbound for Clients, Inbound for Servers */
+        context.setConnection(new OutboundConnection());
+        /* Sets the Ciphersuit for the Handshake */
+        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_RC4_128_MD5);
+        /* Sets the SSL/TLS version */
+        context.setSelectedProtocolVersion(ProtocolVersion.TLS11);
+
+        /* Sets the data that should be encrypted later */
+        byte[] data = ArrayConverter
+                .hexStringToByteArray("01010101010101010101010101010101");
+
+        /* Sets a new keySet
+        a keySet contains the negotiated keys out of the pseudorandom bit stream*/
+        KeySet keySet = new KeySet();
+        /* Since we're on the client side we're setting EncWriteClient and MacWriteClient only
+         * Note that we have to consider the key length for the rc4 cipher since it can be used with different lengths
+         * rc4 can have a key length from 40 bit up to 256 bit
+         * First we're generating the keys for RC4 with SHA*/
+        keySet.setClientWriteKey(ArrayConverter
+                .hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"));
+        /*The key length for HMAC-SHA are 20 bytes*/
+        keySet.setClientWriteMacSecret(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"));
+        keySet.setClientWriteIv(new byte[8]);           // RC4 is not a block cipher so we don't need an iv
+        keySet.setServerWriteIv(new byte[8]);           // ServerSide is not used
+        keySet.setServerWriteKey(new byte[16]);         // ServerSide is not used
+        keySet.setServerWriteMacSecret(new byte[20]);   // ServerSide is not used
+
+        RecordStreamCipher cipher = new RecordStreamCipher(context,
+                keySet);
+
+        Record record = new Record();
+        record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
+        record.prepareComputations();
+        /* sequence numbers are 64-bits long */
+        record.setSequenceNumber(new BigInteger("0"));
+        record.setProtocolVersion(ProtocolVersion.TLS11.getValue());
+        record.setCleanProtocolMessageBytes(data);
+
+        /* the cipher is computed over the plaintext(data) and the mac
+         * the mac is computed over the AuthenticatedMetaData + plaintext + LocalConnectionEndType*/
+        cipher.encrypt(record);
+
+        /* tests the meta data of the record
+         * the MAC is computed from the MAC secret,
+         * the sequence number,                  00 00 00 00 00 00 00 00 ---+
+         * the type field,                                            16 ---+
+         * the protocol version,                                   03 02 ---+---> authenticated meta data ---+
+         * the message length,                                     00 10 ---+                                |
+         * the message contents,                          01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 ---+---> HMAC ---> hash
+         * and two fixed character strings                                                  opad and ipad ---+
+         *  .*/
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603020010"), record.getComputations()
+                .getAuthenticatedMetaData().getValue());
+
+        /* tests the encryption key */
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
+                record.getComputations().getCipherKey().getValue());
+
+        /* tests the mac key */
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
+                record.getComputations().getMacKey().getValue());
+
+        /* tests the mac only*/
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("6f4fb670f37ce1e18038ca2d6c4e4162"), record
+                .getComputations().getMac().getValue());
+
+        /* tests the given plaintext + mac of the plaintext */
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("010101010101010101010101010101016f4fb670f37ce1e18038ca2d6c4e4162"),
+                record.getComputations().getPlainRecordBytes().getValue());
+
+        /* tests the encryption */
+        assertArrayEquals(ArrayConverter
+                        .hexStringToByteArray("805264444f48ea5b98a0ceb3884c2ef70a021369e63e4556899b399dcfe0709c"),
+                record.getComputations().getCiphertext().getValue());
+
+        /* tests protocol message bytes encrypted */
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("805264444f48ea5b98a0ceb3884c2ef70a021369e63e4556899b399dcfe0709c"),
+                record.getProtocolMessageBytes().getValue());
+    }
+
+    @Test
+    public void testDecryptTLSv11MD5() throws CryptoException {
+        context.setConnection(new InboundConnection());
+        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_RC4_128_MD5);
+        context.setSelectedProtocolVersion(ProtocolVersion.TLS11);
+
+        byte[] data = ArrayConverter
+                .hexStringToByteArray("805264444f48ea5b98a0ceb3884c2ef70a021369e63e4556899b399dcfe0709c");
+
+        KeySet keySet = new KeySet();
+        keySet.setClientWriteKey(ArrayConverter
+                .hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"));
+        keySet.setClientWriteMacSecret(ArrayConverter
+                .hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"));
+        keySet.setClientWriteIv(new byte[8]);
+        keySet.setServerWriteIv(new byte[8]); // ServerSide is not used
+        keySet.setServerWriteKey(new byte[16]); // ServerSide is not used
+        keySet.setServerWriteMacSecret(new byte[20]); // ServerSide is not used
+
+        RecordStreamCipher plaintext = new RecordStreamCipher(context,
+                keySet);
+
+        Record record = new Record();
+        record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
+        record.prepareComputations();
+        record.setSequenceNumber(new BigInteger("0"));
+        record.setProtocolVersion(ProtocolVersion.TLS11.getValue());
+        record.setProtocolMessageBytes(data);
+
+        plaintext.decrypt(record);
+
+        /* tests the meta data of the record
+         * the MAC is computed from the MAC secret,
+         * the sequence number,                  00 00 00 00 00 00 00 00 ---+
+         * the type field,                                            16 ---+
+         * the protocol version,                                   03 02 ---+---> authenticated meta data ---+
+         * the message length,                                     00 10 ---+                                |
+         * the message contents,                          01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 ---+---> HMAC ---> hash
+         * and two fixed character strings                                                  opad and ipad ---+
+         *  .*/
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603020010"), record.getComputations()
+                .getAuthenticatedMetaData().getValue());
+
+        /* tests the decryption key */
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
+                record.getComputations().getCipherKey().getValue());
+
+        /* tests the mac key */
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
+                record.getComputations().getMacKey().getValue());
+
+        /* tests the decryption only */
+        assertArrayEquals(ArrayConverter
+                        .hexStringToByteArray("01010101010101010101010101010101"),
+                record.getCleanProtocolMessageBytes().getValue());
+
+        /* tests the mac only*/
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("6f4fb670f37ce1e18038ca2d6c4e4162"), record
+                .getComputations().getMac().getValue());
+
+        /* tests the given plaintext + mac of the plaintext */
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("010101010101010101010101010101016f4fb670f37ce1e18038ca2d6c4e4162"),
+                record.getComputations().getPlainRecordBytes().getValue());
+
+        /* tests protocol message bytes encrypted */
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("805264444f48ea5b98a0ceb3884c2ef70a021369e63e4556899b399dcfe0709c"),
+                record.getProtocolMessageBytes().getValue());
+    }
+
+    @Test
+    public void testEncryptTLS12SHA() throws CryptoException, NoSuchAlgorithmException {
+        /* Outbound for Clients, Inbound for Servers */
+        context.setConnection(new OutboundConnection());
+        /* Sets the Ciphersuit for the Handshake */
+        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_RC4_128_SHA);
+        /* Sets the SSL/TLS version */
+        context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
+
+        /* Sets the data that should be encrypted later */
+        byte[] data = ArrayConverter
+                .hexStringToByteArray("01010101010101010101010101010101");
+
+        /* Sets a new keySet
+        a keySet contains the negotiated keys out of the pseudorandom bit stream*/
+        KeySet keySet = new KeySet();
+        /* Since we're on the client side we're setting EncWriteClient and MacWriteClient only
+         * Note that we have to consider the key length for the rc4 cipher since it can be used with different lengths
+         * rc4 can have a key length from 40 bit up to 256 bit
+         * First we're generating the keys for RC4 with SHA*/
+        keySet.setClientWriteKey(ArrayConverter
+                .hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"));
+        /*The key length for HMAC-SHA are 20 bytes*/
+        keySet.setClientWriteMacSecret(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"));
+        keySet.setClientWriteIv(new byte[8]);           // RC4 is not a block cipher so we don't need an iv
+        keySet.setServerWriteIv(new byte[8]);           // ServerSide is not used
+        keySet.setServerWriteKey(new byte[16]);         // ServerSide is not used
+        keySet.setServerWriteMacSecret(new byte[20]);   // ServerSide is not used
+
+        RecordStreamCipher cipher = new RecordStreamCipher(context,
+                keySet);
+
+        Record record = new Record();
+        record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
+        record.prepareComputations();
+        /* sequence numbers are 64-bits long */
+        record.setSequenceNumber(new BigInteger("0"));
+        record.setProtocolVersion(ProtocolVersion.TLS12.getValue());
+        record.setCleanProtocolMessageBytes(data);
+
+        /* the cipher is computed over the plaintext(data) and the mac
+         * the mac is computed over the AuthenticatedMetaData + plaintext + LocalConnectionEndType*/
+        cipher.encrypt(record);
+
+        /* tests the meta data of the record
+         * the MAC is computed from the MAC secret,
+         * the sequence number,                  00 00 00 00 00 00 00 00 ---+
+         * the type field,                                            16 ---+
+         * the protocol version,                                   03 03 ---+---> authenticated meta data ---+
+         * the message length,                                     00 10 ---+                                |
+         * the message contents,                          01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 ---+---> HMAC ---> hash
+         * and two fixed character strings                                                  opad and ipad ---+
+         *  .*/
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603030010"), record.getComputations()
+                .getAuthenticatedMetaData().getValue());
+
+        /* tests the encryption key */
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
+                record.getComputations().getCipherKey().getValue());
+
+        /* tests the mac key */
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
+                record.getComputations().getMacKey().getValue());
+
+        /* tests the mac only*/
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("cc0c3e4421441b9b88bfcd06628c2db994887b78"), record
+                .getComputations().getMac().getValue());
+
+        /* tests the given plaintext + mac of the plaintext */
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("01010101010101010101010101010101cc0c3e4421441b9b88bfcd06628c2db994887b78"),
+                record.getComputations().getPlainRecordBytes().getValue());
+
+        /* tests the encryption */
+        assertArrayEquals(ArrayConverter
+                        .hexStringToByteArray("805264444f48ea5b98a0ceb3884c2ef7a9419b5d3406bf2c811c3eb6c1221c47d11b5e64"),
+                record.getComputations().getCiphertext().getValue());
+
+        /* tests protocol message bytes encrypted */
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("805264444f48ea5b98a0ceb3884c2ef7a9419b5d3406bf2c811c3eb6c1221c47d11b5e64"),
+                record.getProtocolMessageBytes().getValue());
+    }
+
+    @Test
+    public void testDecryptTLS12SHA() throws CryptoException {
+        context.setConnection(new InboundConnection());
+        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_RC4_128_SHA);
+        context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
+
+        byte[] data = ArrayConverter
+                .hexStringToByteArray("805264444f48ea5b98a0ceb3884c2ef7a9419b5d3406bf2c811c3eb6c1221c47d11b5e64");
+
+        KeySet keySet = new KeySet();
+        keySet.setClientWriteKey(ArrayConverter
+                .hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"));
+        keySet.setClientWriteMacSecret(ArrayConverter
+                .hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"));
+        keySet.setClientWriteIv(new byte[8]);
+        keySet.setServerWriteIv(new byte[8]); // ServerSide is not used
+        keySet.setServerWriteKey(new byte[16]); // ServerSide is not used
+        keySet.setServerWriteMacSecret(new byte[20]); // ServerSide is not used
+
+        RecordStreamCipher plaintext = new RecordStreamCipher(context,
+                keySet);
+
+        Record record = new Record();
+        record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
+        record.prepareComputations();
+        record.setSequenceNumber(new BigInteger("0"));
+        record.setProtocolVersion(ProtocolVersion.TLS12.getValue());
+        record.setProtocolMessageBytes(data);
+
+        plaintext.decrypt(record);
+
+        /* tests the meta data of the record
+         * the MAC is computed from the MAC secret,
+         * the sequence number,                  00 00 00 00 00 00 00 00 ---+
+         * the type field,                                            16 ---+
+         * the protocol version,                                   03 03 ---+---> authenticated meta data ---+
+         * the message length,                                     00 10 ---+                                |
+         * the message contents,                          01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 ---+---> HMAC ---> hash
+         * and two fixed character strings                                                  opad and ipad ---+
+         *  .*/
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603030010"), record.getComputations()
+                .getAuthenticatedMetaData().getValue());
+
+        /* tests the decryption key */
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
+                record.getComputations().getCipherKey().getValue());
+
+        /* tests the mac key */
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
+                record.getComputations().getMacKey().getValue());
+
+        /* tests the decryption only */
+        assertArrayEquals(ArrayConverter
+                        .hexStringToByteArray("01010101010101010101010101010101"),
+                record.getCleanProtocolMessageBytes().getValue());
+
+        /* tests the mac only*/
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("cc0c3e4421441b9b88bfcd06628c2db994887b78"), record
+                .getComputations().getMac().getValue());
+
+        /* tests the given plaintext + mac of the plaintext */
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("01010101010101010101010101010101cc0c3e4421441b9b88bfcd06628c2db994887b78"),
+                record.getComputations().getPlainRecordBytes().getValue());
+
+        /* tests protocol message bytes encrypted */
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("805264444f48ea5b98a0ceb3884c2ef7a9419b5d3406bf2c811c3eb6c1221c47d11b5e64"),
+                record.getProtocolMessageBytes().getValue());
+    }
+
+    @Test
+    public void testEncryptTLSv12MD5() throws CryptoException, NoSuchAlgorithmException {
+        /* Outbound for Clients, Inbound for Servers */
+        context.setConnection(new OutboundConnection());
+        /* Sets the Ciphersuit for the Handshake */
+        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_RC4_128_MD5);
+        /* Sets the SSL/TLS version */
+        context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
+
+        /* Sets the data that should be encrypted later */
+        byte[] data = ArrayConverter
+                .hexStringToByteArray("01010101010101010101010101010101");
+
+        /* Sets a new keySet
+        a keySet contains the negotiated keys out of the pseudorandom bit stream*/
+        KeySet keySet = new KeySet();
+        /* Since we're on the client side we're setting EncWriteClient and MacWriteClient only
+         * Note that we have to consider the key length for the rc4 cipher since it can be used with different lengths
+         * rc4 can have a key length from 40 bit up to 256 bit
+         * First we're generating the keys for RC4 with SHA*/
+        keySet.setClientWriteKey(ArrayConverter
+                .hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"));
+        /*The key length for HMAC-SHA are 20 bytes*/
+        keySet.setClientWriteMacSecret(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"));
+        keySet.setClientWriteIv(new byte[8]);           // RC4 is not a block cipher so we don't need an iv
+        keySet.setServerWriteIv(new byte[8]);           // ServerSide is not used
+        keySet.setServerWriteKey(new byte[16]);         // ServerSide is not used
+        keySet.setServerWriteMacSecret(new byte[20]);   // ServerSide is not used
+
+        RecordStreamCipher cipher = new RecordStreamCipher(context,
+                keySet);
+
+        Record record = new Record();
+        record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
+        record.prepareComputations();
+        /* sequence numbers are 64-bits long */
+        record.setSequenceNumber(new BigInteger("0"));
+        record.setProtocolVersion(ProtocolVersion.TLS12.getValue());
+        record.setCleanProtocolMessageBytes(data);
+
+        /* the cipher is computed over the plaintext(data) and the mac
+         * the mac is computed over the AuthenticatedMetaData + plaintext + LocalConnectionEndType*/
+        cipher.encrypt(record);
+
+        /* tests the meta data of the record
+         * the MAC is computed from the MAC secret,
+         * the sequence number,                  00 00 00 00 00 00 00 00 ---+
+         * the type field,                                            16 ---+
+         * the protocol version,                                   03 03 ---+---> authenticated meta data ---+
+         * the message length,                                     00 10 ---+                                |
+         * the message contents,                          01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 ---+---> HMAC ---> hash
+         * and two fixed character strings                                                  opad and ipad ---+
+         *  .*/
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603030010"), record.getComputations()
+                .getAuthenticatedMetaData().getValue());
+
+        /* tests the encryption key */
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
+                record.getComputations().getCipherKey().getValue());
+
+        /* tests the mac key */
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
+                record.getComputations().getMacKey().getValue());
+
+        /* tests the mac only*/
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("bdd777a2be5c827b520f27027a1a279b"), record
+                .getComputations().getMac().getValue());
+
+        /* tests the given plaintext + mac of the plaintext */
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("01010101010101010101010101010101bdd777a2be5c827b520f27027a1a279b"),
+                record.getComputations().getPlainRecordBytes().getValue());
+
+        /* tests the encryption */
+        assertArrayEquals(ArrayConverter
+                        .hexStringToByteArray("805264444f48ea5b98a0ceb3884c2ef7d89ad2bbab1e26cc5bacd4b2d9b41665"),
+                record.getComputations().getCiphertext().getValue());
+
+        /* tests protocol message bytes encrypted */
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("805264444f48ea5b98a0ceb3884c2ef7d89ad2bbab1e26cc5bacd4b2d9b41665"),
+                record.getProtocolMessageBytes().getValue());
+    }
+
+    @Test
+    public void testDecryptTLSv12MD5() throws CryptoException {
+        context.setConnection(new InboundConnection());
+        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_RC4_128_MD5);
+        context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
+
+        byte[] data = ArrayConverter
+                .hexStringToByteArray("805264444f48ea5b98a0ceb3884c2ef7d89ad2bbab1e26cc5bacd4b2d9b41665");
+
+        KeySet keySet = new KeySet();
+        keySet.setClientWriteKey(ArrayConverter
+                .hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"));
+        keySet.setClientWriteMacSecret(ArrayConverter
+                .hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"));
+        keySet.setClientWriteIv(new byte[8]);
+        keySet.setServerWriteIv(new byte[8]); // ServerSide is not used
+        keySet.setServerWriteKey(new byte[16]); // ServerSide is not used
+        keySet.setServerWriteMacSecret(new byte[20]); // ServerSide is not used
+
+        RecordStreamCipher plaintext = new RecordStreamCipher(context,
+                keySet);
+
+        Record record = new Record();
+        record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
+        record.prepareComputations();
+        record.setSequenceNumber(new BigInteger("0"));
+        record.setProtocolVersion(ProtocolVersion.TLS12.getValue());
+        record.setProtocolMessageBytes(data);
+
+        plaintext.decrypt(record);
+
+        /* tests the meta data of the record
+         * the MAC is computed from the MAC secret,
+         * the sequence number,                  00 00 00 00 00 00 00 00 ---+
+         * the type field,                                            16 ---+
+         * the protocol version,                                   03 02 ---+---> authenticated meta data ---+
+         * the message length,                                     00 10 ---+                                |
+         * the message contents,                          01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 ---+---> HMAC ---> hash
+         * and two fixed character strings                                                  opad and ipad ---+
+         *  .*/
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603030010"), record.getComputations()
+                .getAuthenticatedMetaData().getValue());
+
+        /* tests the decryption key */
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
+                record.getComputations().getCipherKey().getValue());
+
+        /* tests the mac key */
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
+                record.getComputations().getMacKey().getValue());
+
+        /* tests the decryption only */
+        assertArrayEquals(ArrayConverter
+                        .hexStringToByteArray("01010101010101010101010101010101"),
+                record.getCleanProtocolMessageBytes().getValue());
+
+        /* tests the mac only*/
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("bdd777a2be5c827b520f27027a1a279b"), record
+                .getComputations().getMac().getValue());
+
+        /* tests the given plaintext + mac of the plaintext */
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("01010101010101010101010101010101bdd777a2be5c827b520f27027a1a279b"),
+                record.getComputations().getPlainRecordBytes().getValue());
+
+        /* tests protocol message bytes encrypted */
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("805264444f48ea5b98a0ceb3884c2ef7d89ad2bbab1e26cc5bacd4b2d9b41665"),
+                record.getProtocolMessageBytes().getValue());
+    }
+
+    @Test
+    public void testEncryptTLS13SHA() throws CryptoException, NoSuchAlgorithmException {
+        /* Outbound for Clients, Inbound for Servers */
+        context.setConnection(new OutboundConnection());
+        /* Sets the Ciphersuit for the Handshake */
+        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_RC4_128_SHA);
+        /* Sets the SSL/TLS version */
+        context.setSelectedProtocolVersion(ProtocolVersion.TLS13);
+
+        /* Sets the data that should be encrypted later */
+        byte[] data = ArrayConverter
+                .hexStringToByteArray("01010101010101010101010101010101");
+
+        /* Sets a new keySet
+        a keySet contains the negotiated keys out of the pseudorandom bit stream*/
+        KeySet keySet = new KeySet();
+        /* Since we're on the client side we're setting EncWriteClient and MacWriteClient only
+         * Note that we have to consider the key length for the rc4 cipher since it can be used with different lengths
+         * rc4 can have a key length from 40 bit up to 256 bit
+         * First we're generating the keys for RC4 with SHA*/
+        keySet.setClientWriteKey(ArrayConverter
+                .hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"));
+        /*The key length for HMAC-SHA are 20 bytes*/
+        keySet.setClientWriteMacSecret(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"));
+        keySet.setClientWriteIv(new byte[8]);           // RC4 is not a block cipher so we don't need an iv
+        keySet.setServerWriteIv(new byte[8]);           // ServerSide is not used
+        keySet.setServerWriteKey(new byte[16]);         // ServerSide is not used
+        keySet.setServerWriteMacSecret(new byte[20]);   // ServerSide is not used
+
+        RecordStreamCipher cipher = new RecordStreamCipher(context,
+                keySet);
+
+        Record record = new Record();
+        record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
+        record.prepareComputations();
+        /* sequence numbers are 64-bits long */
+        //record.setSequenceNumber(new BigInteger("0"));
+        record.setProtocolVersion(ProtocolVersion.TLS13.getValue());
+        record.setCleanProtocolMessageBytes(data);
+        /* the cipher is computed over the plaintext(data) and the mac
+         * the mac is computed over the AuthenticatedMetaData + plaintext + LocalConnectionEndType*/
+        cipher.encrypt(record);
+
+        /* tests the meta data of the record
+         * the MAC is computed from the MAC secret,
+         * the type field,                                            16 ---+
+         * the protocol version,                                   03 04 ---+---> authenticated meta data ---+
+         * the message length,                                     00 24 ---+                                |
+         * the message contents,                          01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 ---+---> HMAC ---> hash
+         * and two fixed character strings                                                  opad and ipad ---+
+         *  .*/
+        System.out.println(record.getComputations().getAuthenticatedMetaData());
+        System.out.println(record.getLength());
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("1603040024"), record.getComputations()
+                .getAuthenticatedMetaData().getValue());
+
+        /* tests the encryption key */
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
+                record.getComputations().getCipherKey().getValue());
+
+        /* tests the mac key */
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
+                record.getComputations().getMacKey().getValue());
+
+        /* tests the mac only*/
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("5496933488aeecb5af1063b930724490dc6a10e2"), record
+                .getComputations().getMac().getValue());
+
+        /* tests the given plaintext + mac of the plaintext */
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("010101010101010101010101010101015496933488aeecb5af1063b930724490dc6a10e2"),
+                record.getComputations().getPlainRecordBytes().getValue());
+
+        /* tests the encryption */
+        assertArrayEquals(ArrayConverter
+                        .hexStringToByteArray("805264444f48ea5b98a0ceb3884c2ef731db362d9dec4802a6b3900993dc756e99f935fe"),
+                record.getComputations().getCiphertext().getValue());
+
+        /* tests protocol message bytes encrypted */
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("805264444f48ea5b98a0ceb3884c2ef731db362d9dec4802a6b3900993dc756e99f935fe"),
+                record.getProtocolMessageBytes().getValue());
+    }
+
+    @Test
+    public void testDecryptTLS13SHA() throws CryptoException {
+        context.setConnection(new InboundConnection());
+        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_RC4_128_SHA);
+        context.setSelectedProtocolVersion(ProtocolVersion.TLS13);
+
+        byte[] data = ArrayConverter
+                .hexStringToByteArray("805264444f48ea5b98a0ceb3884c2ef731db362d9dec4802a6b3900993dc756e99f935fe");
+
+        KeySet keySet = new KeySet();
+        keySet.setClientWriteKey(ArrayConverter
+                .hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"));
+        keySet.setClientWriteMacSecret(ArrayConverter
+                .hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"));
+        keySet.setClientWriteIv(new byte[8]);
+        keySet.setServerWriteIv(new byte[8]); // ServerSide is not used
+        keySet.setServerWriteKey(new byte[16]); // ServerSide is not used
+        keySet.setServerWriteMacSecret(new byte[20]); // ServerSide is not used
+
+        RecordStreamCipher plaintext = new RecordStreamCipher(context,
+                keySet);
+
+        Record record = new Record();
+        record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
+        record.prepareComputations();
+        //record.setSequenceNumber(new BigInteger("0"));
+        record.setProtocolVersion(ProtocolVersion.TLS13.getValue());
+        record.setProtocolMessageBytes(data);
+        plaintext.decrypt(record);
+
+        /* tests the meta data of the record
+         * the MAC is computed from the MAC secret,
+         * the type field,                                            16 ---+
+         * the protocol version,                                   03 04 ---+---> authenticated meta data ---+
+         * the message length,                                     00 24 ---+                                |
+         * the message contents,                          01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 ---+---> HMAC ---> hash
+         * and two fixed character strings                                                  opad and ipad ---+
+         *  .*/
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("1603040024"), record.getComputations()
+                .getAuthenticatedMetaData().getValue());
+
+        /* tests the decryption key */
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
+                record.getComputations().getCipherKey().getValue());
+
+        /* tests the mac key */
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
+                record.getComputations().getMacKey().getValue());
+
+        /* tests the decryption only */
+        assertArrayEquals(ArrayConverter
+                        .hexStringToByteArray("01010101010101010101010101010101"),
+                record.getCleanProtocolMessageBytes().getValue());
+
+        /* tests the mac only*/
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("5496933488aeecb5af1063b930724490dc6a10e2"), record
+                .getComputations().getMac().getValue());
+
+        /* tests the given plaintext + mac of the plaintext */
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("010101010101010101010101010101015496933488aeecb5af1063b930724490dc6a10e2"),
+                record.getComputations().getPlainRecordBytes().getValue());
+
+        /* tests protocol message bytes encrypted */
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("805264444f48ea5b98a0ceb3884c2ef731db362d9dec4802a6b3900993dc756e99f935fe"),
+                record.getProtocolMessageBytes().getValue());
+    }
+
+    @Test
+    public void testEncryptTLSv13MD5() throws CryptoException, NoSuchAlgorithmException {
+        /* Outbound for Clients, Inbound for Servers */
+        context.setConnection(new OutboundConnection());
+        /* Sets the Ciphersuit for the Handshake */
+        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_RC4_128_MD5);
+        /* Sets the SSL/TLS version */
+        context.setSelectedProtocolVersion(ProtocolVersion.TLS13);
+
+        /* Sets the data that should be encrypted later */
+        byte[] data = ArrayConverter
+                .hexStringToByteArray("01010101010101010101010101010101");
+
+        /* Sets a new keySet
+        a keySet contains the negotiated keys out of the pseudorandom bit stream*/
+        KeySet keySet = new KeySet();
+        /* Since we're on the client side we're setting EncWriteClient and MacWriteClient only
+         * Note that we have to consider the key length for the rc4 cipher since it can be used with different lengths
+         * rc4 can have a key length from 40 bit up to 256 bit
+         * First we're generating the keys for RC4 with SHA*/
+        keySet.setClientWriteKey(ArrayConverter
+                .hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"));
+        /*The key length for HMAC-SHA are 20 bytes*/
+        keySet.setClientWriteMacSecret(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"));
+        keySet.setClientWriteIv(new byte[8]);           // RC4 is not a block cipher so we don't need an iv
+        keySet.setServerWriteIv(new byte[8]);           // ServerSide is not used
+        keySet.setServerWriteKey(new byte[16]);         // ServerSide is not used
+        keySet.setServerWriteMacSecret(new byte[20]);   // ServerSide is not used
+
+        RecordStreamCipher cipher = new RecordStreamCipher(context,
+                keySet);
+
+        Record record = new Record();
+        record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
+        record.prepareComputations();
+        /* sequence numbers are 64-bits long */
+        //record.setSequenceNumber(new BigInteger("0"));
+        record.setProtocolVersion(ProtocolVersion.TLS13.getValue());
+        record.setCleanProtocolMessageBytes(data);
+
+        /* the cipher is computed over the plaintext(data) and the mac
+         * the mac is computed over the AuthenticatedMetaData + plaintext + LocalConnectionEndType*/
+        cipher.encrypt(record);
+
+        /* tests the meta data of the record
+         * the MAC is computed from the MAC secret,
+         * the type field,                                            16 ---+
+         * the protocol version,                                   03 04 ---+---> authenticated meta data ---+
+         * the message length,                                     00 20 ---+                                |
+         * the message contents,                          01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 ---+---> HMAC ---> hash
+         * and two fixed character strings                                                  opad and ipad ---+
+         *  .*/
+        System.out.println(record.getComputations().getAuthenticatedMetaData());
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("1603040020"), record.getComputations()
+                .getAuthenticatedMetaData().getValue());
+
+        /* tests the encryption key */
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
+                record.getComputations().getCipherKey().getValue());
+
+        /* tests the mac key */
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
+                record.getComputations().getMacKey().getValue());
+
+        /* tests the mac only*/
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("6287e1c26db9dc1c5a9d544572a729c6"), record
+                .getComputations().getMac().getValue());
+
+        /* tests the given plaintext + mac of the plaintext */
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("010101010101010101010101010101016287e1c26db9dc1c5a9d544572a729c6"),
+                record.getComputations().getPlainRecordBytes().getValue());
+
+        /* tests the encryption */
+        assertArrayEquals(ArrayConverter
+                        .hexStringToByteArray("805264444f48ea5b98a0ceb3884c2ef707ca44db78fb78ab533ea7f5d1091838"),
+                record.getComputations().getCiphertext().getValue());
+
+        /* tests protocol message bytes encrypted */
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("805264444f48ea5b98a0ceb3884c2ef707ca44db78fb78ab533ea7f5d1091838"),
+                record.getProtocolMessageBytes().getValue());
+    }
+
+    @Test
+    public void testDecryptTLSv13MD5() throws CryptoException {
+        context.setConnection(new InboundConnection());
+        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_RC4_128_MD5);
+        context.setSelectedProtocolVersion(ProtocolVersion.TLS13);
+
+        byte[] data = ArrayConverter
+                .hexStringToByteArray("805264444f48ea5b98a0ceb3884c2ef707ca44db78fb78ab533ea7f5d1091838");
+
+        KeySet keySet = new KeySet();
+        keySet.setClientWriteKey(ArrayConverter
+                .hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"));
+        keySet.setClientWriteMacSecret(ArrayConverter
+                .hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"));
+        keySet.setClientWriteIv(new byte[8]);
+        keySet.setServerWriteIv(new byte[8]); // ServerSide is not used
+        keySet.setServerWriteKey(new byte[16]); // ServerSide is not used
+        keySet.setServerWriteMacSecret(new byte[20]); // ServerSide is not used
+
+        RecordStreamCipher plaintext = new RecordStreamCipher(context,
+                keySet);
+
+        Record record = new Record();
+        record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
+        record.prepareComputations();
+        record.setSequenceNumber(new BigInteger("0"));
+        record.setProtocolVersion(ProtocolVersion.TLS13.getValue());
+        record.setProtocolMessageBytes(data);
+
+        plaintext.decrypt(record);
+
+        /* tests the meta data of the record
+         * the MAC is computed from the MAC secret,
+         * the sequence number,                  00 00 00 00 00 00 00 00 ---+
+         * the type field,                                            16 ---+
+         * the protocol version,                                   03 02 ---+---> authenticated meta data ---+
+         * the message length,                                     00 10 ---+                                |
+         * the message contents,                          01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 ---+---> HMAC ---> hash
+         * and two fixed character strings                                                  opad and ipad ---+
+         *  .*/
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603030010"), record.getComputations()
+                .getAuthenticatedMetaData().getValue());
+
+        /* tests the decryption key */
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
+                record.getComputations().getCipherKey().getValue());
+
+        /* tests the mac key */
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
+                record.getComputations().getMacKey().getValue());
+
+        /* tests the decryption only */
+        assertArrayEquals(ArrayConverter
+                        .hexStringToByteArray("01010101010101010101010101010101"),
+                record.getCleanProtocolMessageBytes().getValue());
+
+        /* tests the mac only*/
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("6287e1c26db9dc1c5a9d544572a729c6"), record
+                .getComputations().getMac().getValue());
+
+        /* tests the given plaintext + mac of the plaintext */
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("010101010101010101010101010101016287e1c26db9dc1c5a9d544572a729c6"),
+                record.getComputations().getPlainRecordBytes().getValue());
+
+        /* tests protocol message bytes encrypted */
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("805264444f48ea5b98a0ceb3884c2ef707ca44db78fb78ab533ea7f5d1091838"),
                 record.getProtocolMessageBytes().getValue());
     }
 }
