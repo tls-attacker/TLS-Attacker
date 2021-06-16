@@ -255,6 +255,11 @@ public class Config implements Serializable {
     private List<NamedGroup> defaultClientNamedGroups;
 
     /**
+     * Custom clientSupportedNamed groups Modified by Parimitha Technologies Pvt.Ltd.
+     */
+    private List<NamedGroup> customClientNamedGroups;
+
+    /**
      * Default clientSupportedNamed groups
      */
     @XmlElement(name = "defaultServerNamedGroup")
@@ -1352,6 +1357,7 @@ public class Config implements Serializable {
         clientCertificateTypes = new LinkedList<>();
         clientCertificateTypes.add(ClientCertificateType.RSA_SIGN);
         supportedVersions = new LinkedList<>();
+        customClientNamedGroups = new LinkedList<>();
         supportedVersions.add(ProtocolVersion.TLS13);
         defaultTokenBindingKeyParameters = new LinkedList<>();
         defaultTokenBindingKeyParameters.add(TokenBindingKeyParameters.ECDSAP256);
@@ -2235,6 +2241,21 @@ public class Config implements Serializable {
 
     public final void setDefaultClientNamedGroups(NamedGroup... defaultClientNamedGroups) {
         this.defaultClientNamedGroups = new ArrayList(Arrays.asList(defaultClientNamedGroups));
+    }
+
+    /**
+     * Added by Parimitha Technologies Pvt.Ltd.
+     */
+    public List<NamedGroup> getCustomClientNamedGroups() {
+        return customClientNamedGroups;
+    }
+
+    public void setCustomClientNamedGroups(List<NamedGroup> customClientNamedGroups) {
+        this.customClientNamedGroups = customClientNamedGroups;
+    }
+
+    public final void setCustomClientNamedGroups(NamedGroup... customClientNamedGroups) {
+        this.customClientNamedGroups = new ArrayList(Arrays.asList(customClientNamedGroups));
     }
 
     public List<NamedGroup> getDefaultServerNamedGroups() {

@@ -48,10 +48,23 @@ public class KeyShareExtensionMessage extends ExtensionMessage {
     public KeyShareExtensionMessage(Config tlsConfig) {
         super(ExtensionType.KEY_SHARE);
         keyShareList = new LinkedList<>();
-        for (NamedGroup group : tlsConfig.getDefaultClientKeyShareNamedGroups()) {
-            if (NamedGroup.getImplemented().contains(group)) {
-                KeyShareEntry keyShareEntry = new KeyShareEntry(group, tlsConfig.getKeySharePrivate());
-                keyShareList.add(keyShareEntry);
+
+        /**
+         * Added by Parimitha Technologies Pvt.Ltd.
+         */
+        if (tlsConfig.getCustomClientNamedGroups().size() > 0) {
+            for (NamedGroup group : tlsConfig.getCustomClientNamedGroups()) {
+                if (group.isTls13()) {
+                    KeyShareEntry keyShareEntry = new KeyShareEntry(group, tlsConfig.getKeySharePrivate());
+                    keyShareList.add(keyShareEntry);
+                }
+            }
+        } else {
+            for (NamedGroup group : tlsConfig.getDefaultClientKeyShareNamedGroups()) {
+                if (group.isTls13() && NamedGroup.getImplemented().contains(group)) {
+                    KeyShareEntry keyShareEntry = new KeyShareEntry(group, tlsConfig.getKeySharePrivate());
+                    keyShareList.add(keyShareEntry);
+                }
             }
         }
     }
