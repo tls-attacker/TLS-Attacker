@@ -143,6 +143,10 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
      */
     public List<VectorResponse> createVectorResponseList() {
         RSAPublicKey publicKey = getServerPublicKey();
+        if (publicKey == null) {
+            LOGGER.fatal("Could not retrieve PublicKey from Server - is the Server running?");
+            throw new OracleUnstableException("Fatal Extraction error");
+        }
         List<TlsTask> taskList = new LinkedList<>();
         List<FingerprintTaskVectorPair> stateVectorPairList = new LinkedList<>();
         for (Pkcs1Vector vector : Pkcs1VectorGenerator.generatePkcs1Vectors(publicKey, config.getType(),
