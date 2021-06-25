@@ -68,7 +68,7 @@ public class CcaDelegate extends Delegate {
     }
 
     public Boolean clientCertificateSupplied() {
-        return getClientCertificate() != null;
+        return clientCertificatePath != null && getClientCertificate() != null;
     }
 
     public Boolean directoriesSupplied() {
