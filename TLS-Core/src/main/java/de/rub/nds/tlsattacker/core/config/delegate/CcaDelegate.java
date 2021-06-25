@@ -42,25 +42,26 @@ public class CcaDelegate extends Delegate {
         FileInputStream fileInputStream = null;
         X509Certificate x509Certificate = null;
         if (this.clientCertificatePath == null) {
-            LOGGER.error("Certificate path not supplied.");
-        }
-        try {
-
-            CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
-            fileInputStream = new FileInputStream(this.clientCertificatePath);
-            x509Certificate = (X509Certificate) certificateFactory.generateCertificate(fileInputStream);
-
-        } catch (FileNotFoundException e) {
-            LOGGER.error("Couldn't find client certificate." + e);
-        } catch (CertificateException ce) {
-            LOGGER.error("Error while generating certificate from clientCertificatePath input." + ce);
-        }
-
-        if (x509Certificate != null) {
+            LOGGER.debug("Certificate path not supplied.");
+        } else {
             try {
-                return x509Certificate.getEncoded();
-            } catch (CertificateEncodingException cee) {
-                LOGGER.error("Couldn't encode clientCertificate into byte array." + cee);
+
+                CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
+                fileInputStream = new FileInputStream(this.clientCertificatePath);
+                x509Certificate = (X509Certificate) certificateFactory.generateCertificate(fileInputStream);
+
+            } catch (FileNotFoundException e) {
+                LOGGER.error("Couldn't find client certificate." + e);
+            } catch (CertificateException ce) {
+                LOGGER.error("Error while generating certificate from clientCertificatePath input." + ce);
+            }
+
+            if (x509Certificate != null) {
+                try {
+                    return x509Certificate.getEncoded();
+                } catch (CertificateEncodingException cee) {
+                    LOGGER.error("Couldn't encode clientCertificate into byte array." + cee);
+                }
             }
         }
         return null;
