@@ -85,7 +85,7 @@ public class RecordStreamCipherTest {
         context.setConnection(new OutboundConnection());
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_RC4_128_SHA);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS10);
-
+        /**/
         byte[] data = ArrayConverter
                 .hexStringToByteArray("01010101010101010101010101010101");
 
