@@ -2044,7 +2044,7 @@ public class RecordStreamCipherTest {
     @Test
     public void testEncryptTLS13SHA() throws CryptoException, NoSuchAlgorithmException {
         /* Please notice :
-         * RC4 is not implemented in TLS version 1.3!
+         * RC4 is not defined in TLS version 1.3!
          * Those tests are for test purposes only to check if the undefined behavior is working.
          * */
 
@@ -2114,7 +2114,7 @@ public class RecordStreamCipherTest {
     @Test
     public void testDecryptTLS13SHA() throws CryptoException {
         /* Please notice :
-         * RC4 is not implemented in TLS version 1.3!
+         * RC4 is not defined in TLS version 1.3!
          * Those tests are for test purposes only to check if the undefined behavior is working.
          * */
 
@@ -2179,7 +2179,7 @@ public class RecordStreamCipherTest {
     @Test
     public void testEncryptTLSv13MD5() throws CryptoException, NoSuchAlgorithmException {
         /* Please notice :
-         * RC4 is not implemented in TLS version 1.3!
+         * RC4 is not defined in TLS version 1.3!
          * Those tests are for test purposes only to check if the undefined behavior is working.
          * */
 
@@ -2247,7 +2247,7 @@ public class RecordStreamCipherTest {
     @Test
     public void testDecryptTLSv13MD5() throws CryptoException {
         /* Please notice :
-         * RC4 is not implemented in TLS version 1.3!
+         * RC4 is not defined in TLS version 1.3!
          * Those tests are for test purposes only to check if the undefined behavior is working.
          * */
 
