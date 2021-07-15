@@ -95,10 +95,10 @@ public class PseudoRandomFunction {
                 // prf legacy is the prf computation function for older protocol
                 // versions, it works by default with sha1 and md5
                 return computeTls10(secret, label, seed, size);
-                //return TlsUtils.PRF_legacy(secret, label, seed, size);
+            //return TlsUtils.PRF_legacy(secret, label, seed, size);
             default:
                 throw new UnsupportedOperationException(
-                    "PRF computation for different" + " protocol versions is not supported yet");
+                        "PRF computation for different" + " protocol versions is not supported yet");
         }
     }
 
@@ -183,7 +183,7 @@ public class PseudoRandomFunction {
             while (pseudoRandomBitStream.length < size) {
                 ai = hmac.p_hash(secret, ai);
                 pseudoRandomBitStream = ArrayConverter.concatenate(pseudoRandomBitStream,
-                    hmac.p_hash(secret, ArrayConverter.concatenate(ai, labelSeed)));
+                        hmac.p_hash(secret, ArrayConverter.concatenate(ai, labelSeed)));
             }
 
             return Arrays.copyOf(pseudoRandomBitStream, size);

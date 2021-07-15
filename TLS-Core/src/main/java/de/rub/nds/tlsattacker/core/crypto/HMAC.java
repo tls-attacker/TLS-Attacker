@@ -86,7 +86,7 @@ public class HMAC {
      * @param secret the hmac key
      *
      * @param data the data that is going to be hashed
-    **/
+     **/
     public void init(byte[] secret, byte[] data) throws NoSuchAlgorithmException {
         switch (this.macAlgorithm) {
             case HMAC_SHA1:
@@ -157,23 +157,23 @@ public class HMAC {
     }
 
     /*
-    * RFC 5246 5. HMAC and the Pseudorandom Function
-    * p_hash is a data expansion function.
-    * By taking a secret and a seed as input, a data expansion function produces an output of arbitrary length.
-    * In here p_hash only computes one round of pseudo random bits (one use of the hmac)
-    * To expand the secret, one can implement a PRF with p_hash as follows:
-    * P_hash(secret, seed) = HMAC_hash(secret, A(1) + seed) +
-    *                        HMAC_hash(secret, A(2) + seed) +
-    *                        HMAC_hash(secret, A(3) + seed) + ...
-    * where + indicates concatenation.
-    * A() is defined as:
-    * A(0) = seed
-    * A(i) = HMAC_hash(secret, A(i-1))
-    * TLS's PRF is created by applying P_hash to the secret as:
-    *   PRF(secret, label, seed) = P_<hash>(secret, label + seed)
-    *
-    * The PseudoRandomFunction class takes use of the p_hash function.
-    * */
+     * RFC 5246 5. HMAC and the Pseudorandom Function
+     * p_hash is a data expansion function.
+     * By taking a secret and a seed as input, a data expansion function produces an output of arbitrary length.
+     * In here p_hash only computes one round of pseudo random bits (one use of the hmac)
+     * To expand the secret, one can implement a PRF with p_hash as follows:
+     * P_hash(secret, seed) = HMAC_hash(secret, A(1) + seed) +
+     *                        HMAC_hash(secret, A(2) + seed) +
+     *                        HMAC_hash(secret, A(3) + seed) + ...
+     * where + indicates concatenation.
+     * A() is defined as:
+     * A(0) = seed
+     * A(i) = HMAC_hash(secret, A(i-1))
+     * TLS's PRF is created by applying P_hash to the secret as:
+     *   PRF(secret, label, seed) = P_<hash>(secret, label + seed)
+     *
+     * The PseudoRandomFunction class takes use of the p_hash function.
+     * */
     /**
      * p_hash is a data expansion function as described in RFC 5246 5. HMAC and the Pseudorandom Function
      *
@@ -191,10 +191,10 @@ public class HMAC {
     }
 
     /*
-    * This function pads a specific byte to an byte array.
-    * Has the byte array the same length as the length parameter of the function, the byte array will be returned without padding.
-    * Is the byte array bigger than the length parameter the bytearray is hashed and returned.
-    * */
+     * This function pads a specific byte to an byte array.
+     * Has the byte array the same length as the length parameter of the function, the byte array will be returned without padding.
+     * Is the byte array bigger than the length parameter the bytearray is hashed and returned.
+     * */
     private byte[] padding(byte[] bytes, int length, byte pad) throws NoSuchAlgorithmException {
         if (bytes.length < length) {
             byte[] bytesPadded = new byte[length];
@@ -213,8 +213,8 @@ public class HMAC {
     }
 
     /*
-    * XOR's two byte arrays and returns the result
-    * */
+     * XOR's two byte arrays and returns the result
+     * */
     private byte[] xorBytes(byte[] a1, byte[] a2) {
         int length;
         if (a1.length > a2.length) {
@@ -230,8 +230,8 @@ public class HMAC {
     }
 
     /*
-    * Hashes an array of bytes
-    * */
+     * Hashes an array of bytes
+     * */
     private byte[] hash(byte[] bytes) throws NoSuchAlgorithmException {
         Security.addProvider(new BouncyCastleProvider());
         MessageDigest digest = null;
