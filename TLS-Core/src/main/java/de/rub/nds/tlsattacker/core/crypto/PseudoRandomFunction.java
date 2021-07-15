@@ -10,18 +10,18 @@
 package de.rub.nds.tlsattacker.core.crypto;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import java.lang.reflect.Field;
+
 import java.nio.charset.Charset;
-import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.tls.TlsUtils;
+
 
 /**
  * Pseudo random function computation for TLS 1.0 - 1.2 (for TLS 1.0, bouncy castle TlsUtils are used)
@@ -77,32 +77,84 @@ public class PseudoRandomFunction {
      * @return                                                        the Prf output
      * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
-    public static byte[] compute(PRFAlgorithm prfAlgorithm, byte[] secret, String label, byte[] seed, int size)
-        throws CryptoException {
+    public static byte[] compute(PRFAlgorithm prfAlgorithm, byte[] secret, String label, byte[] seed, int size) throws CryptoException {
         if (prfAlgorithm == null) {
             LOGGER.warn("Trying to compute PRF without specified PRF algorithm. Using TLS 1.0/TLS 1.1 as default.");
             prfAlgorithm = PRFAlgorithm.TLS_PRF_LEGACY;
         }
         switch (prfAlgorithm) {
             case TLS_PRF_SHA256:
+                return computeTls12(secret, label, seed, size, MacAlgorithm.HMAC_SHA256);
             case TLS_PRF_SHA384:
+                return computeTls12(secret, label, seed, size, MacAlgorithm.HMAC_SHA384);
             case TLS_PRF_GOSTR3411:
+                return computeTls12(secret, label, seed, size, MacAlgorithm.HMAC_GOSTR3411);
             case TLS_PRF_GOSTR3411_2012_256:
-                return computeTls12(secret, label, seed, size, prfAlgorithm.getMacAlgorithm().getJavaName());
+                return computeTls12(secret, label, seed, size, MacAlgorithm.HMAC_GOSTR3411_2012_256);
             case TLS_PRF_LEGACY:
                 // prf legacy is the prf computation function for older protocol
                 // versions, it works by default with sha1 and md5
-                return TlsUtils.PRF_legacy(secret, label, seed, size);
+                return computeTls10(secret, label, seed, size);
+                //return TlsUtils.PRF_legacy(secret, label, seed, size);
             default:
                 throw new UnsupportedOperationException(
                     "PRF computation for different" + " protocol versions is not supported yet");
         }
     }
 
+    private static byte[] computeTls10(byte[] secret, String label, byte[] seed, int size) throws CryptoException {
+        try {
+            byte[] labelSeed = ArrayConverter.concatenate(label.getBytes(Charset.forName("ASCII")), seed);
+            HMAC hmac_md5 = new HMAC(MacAlgorithm.HMAC_MD5);
+            HMAC hamc_sha1 = new HMAC(MacAlgorithm.HMAC_SHA1);
+
+            int length;
+            int s_half = (secret.length + 1) / 2;
+            byte[] s1 = new byte[s_half];
+            byte[] s2 = new byte[s_half];
+            System.arraycopy(secret, 0, s1, 0, s_half);
+            System.arraycopy(secret, secret.length - s_half, s2, 0, s_half);
+
+            byte[] extendedSecret_md5 = new byte[0];
+            byte[] extendedSecret_sha1 = new byte[0];
+
+            byte[] ai = labelSeed;
+
+            while (extendedSecret_md5.length < size) {
+                ai = hmac_md5.p_hash(s1, ai);
+                extendedSecret_md5 = ArrayConverter.concatenate(extendedSecret_md5,
+                        hmac_md5.p_hash(s1, ArrayConverter.concatenate(ai, labelSeed)));
+            }
+
+            ai = labelSeed;
+            while (extendedSecret_sha1.length < size) {
+                ai = hamc_sha1.p_hash(s2, ai);
+                extendedSecret_sha1 = ArrayConverter.concatenate(extendedSecret_sha1,
+                        hamc_sha1.p_hash(s2, ArrayConverter.concatenate(ai, labelSeed)));
+            }
+
+            if (extendedSecret_md5.length > extendedSecret_sha1.length) {
+                length = extendedSecret_sha1.length;
+            } else {
+                length = extendedSecret_md5.length;
+            }
+
+            byte[] pseudoRandomBitStream = new byte[length];
+
+            for (int i = 0; i < length; i++) {
+                pseudoRandomBitStream[i] = (byte) (extendedSecret_md5[i] ^ extendedSecret_sha1[i]);
+            }
+
+            return Arrays.copyOf(pseudoRandomBitStream, size);
+        } catch (NoSuchAlgorithmException ex) {
+            throw new CryptoException(ex);
+        }
+    }
+
     /**
      * PRF computation for TLS 1.2
-     *
-     * @param  prfAlgorithm
+     *s
+     * @param  macAlgorithm
      *                      PRFAlgorithm
      * @param  secret
      *                      The Secret
@@ -114,61 +166,32 @@ public class PseudoRandomFunction {
      *                      The size
      * @return              the Prf output
      */
-    private static byte[] computeTls12(byte[] secret, String label, byte[] seed, int size, String macAlgorithm)
-        throws CryptoException {
+    private static byte[] computeTls12(byte[] secret, String label, byte[] seed, int size, MacAlgorithm macAlgorithm) throws CryptoException {
         try {
             byte[] labelSeed = ArrayConverter.concatenate(label.getBytes(Charset.forName("ASCII")), seed);
-            SecretKeySpec keySpec = null;
+            HMAC hmac = new HMAC(macAlgorithm);
 
             if (secret == null || secret.length == 0) {
-                try {
-                    // empty key, but we still want to try to compute the
-                    // SecretKeySpec
-                    // Create an object using a fake key and then change that
-                    // key back to a zero key with reflections
-                    keySpec = new SecretKeySpec(new byte[] { 0, 0 }, macAlgorithm);
-                    try {
-                        Field field = keySpec.getClass().getDeclaredField("key");
-                        field.setAccessible(true);
-                        field.set(keySpec, new byte[0]);
-                    } catch (NoSuchFieldException | IllegalAccessException | IllegalArgumentException
-                        | SecurityException ex) {
-                        throw new CryptoException("Could not access KeySpec with empty Key", ex);
-                    }
-                } catch (java.lang.IllegalArgumentException ex) {
-                    throw new CryptoException("Could not tls12_prf output without Secret", ex);
-                }
-            } else {
-                keySpec = new SecretKeySpec(secret, macAlgorithm);
+                // empty key, but we still want to try to compute the
+                // SecretKeySpec
+                hmac.setSecret(new byte[0]);
             }
 
-            Mac mac = Mac.getInstance(macAlgorithm);
-            mac.init(keySpec);
-
-            byte[] out = new byte[0];
-
+            byte[] pseudoRandomBitStream = new byte[0];
             byte[] ai = labelSeed;
-            byte[] buf;
-            byte[] buf2;
-            while (out.length < size) {
-                mac.update(ai);
-                buf = mac.doFinal();
-                ai = buf;
-                mac.update(ai);
-                mac.update(labelSeed);
-                buf2 = mac.doFinal();
-                if (buf2.length == 0) {
-                    throw new CryptoException("Could not Calc PRF output. Mac length is zero!");
-                }
-                out = ArrayConverter.concatenate(out, buf2);
+
+            while (pseudoRandomBitStream.length < size) {
+                ai = hmac.p_hash(secret, ai);
+                pseudoRandomBitStream = ArrayConverter.concatenate(pseudoRandomBitStream,
+                    hmac.p_hash(secret, ArrayConverter.concatenate(ai, labelSeed)));
             }
-            return Arrays.copyOf(out, size);
-        } catch (NoSuchAlgorithmException | InvalidKeyException ex) {
+
+            return Arrays.copyOf(pseudoRandomBitStream, size);
+        } catch (NoSuchAlgorithmException ex) {
             throw new CryptoException(ex);
         }
     }
 
     private PseudoRandomFunction() {
-
     }
 }

@@ -61,7 +61,6 @@ public class PseudoRandomFunctionTest {
 
         byte[] result1 = TlsUtils.PRF(mockedTlsContext, secret, label, seed, size);
         byte[] result2 = PseudoRandomFunction.compute(PRFAlgorithm.TLS_PRF_SHA256, secret, label, seed, size);
-
         assertArrayEquals(result1, result2);
 
         new Expectations() {
