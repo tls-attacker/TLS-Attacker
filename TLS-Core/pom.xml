@@ -45,7 +45,7 @@
                     <groupId>org.apiguardian</groupId>
                     <artifactId>apiguardian-api</artifactId>
                 </exclusion>
-				<exclusion>
+		<exclusion>
                     <groupId>jakarta.xml.bind</groupId>
                     <artifactId>jakarta.xml.bind-api</artifactId>
                 </exclusion>
