@@ -17,10 +17,9 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.Security;
 
-
 /**
  * HMAC provides a base for implementing the PRF for TLS1.0 and TLS1.2
- * */
+ */
 public class HMAC {
     private byte[] opad;
     private byte[] ipad;
@@ -32,7 +31,8 @@ public class HMAC {
     /**
      * Creates an hmac instance.
      *
-     * @param macAlgorithm sets the hash algorithm for the prf
+     * @param macAlgorithm
+     *                     sets the hash algorithm for the prf
      */
     public HMAC(MacAlgorithm macAlgorithm) {
         this.opad = new byte[0];
@@ -40,7 +40,7 @@ public class HMAC {
         this.macAlgorithm = macAlgorithm;
     }
 
-    /*Implements getter amd setter methods*/
+    /* Implements getter amd setter methods */
     public void setSecret(byte[] newSecret) {
         this.secret = newSecret;
     }
@@ -80,12 +80,14 @@ public class HMAC {
     }
 
     /**
-     * Initializes the hmac with a secret and data that is to be hashed later on.
-     * It also makes sure that the key, the ipad and opad have the same length by padding.
+     * Initializes the hmac with a secret and data that is to be hashed later on. It also makes sure that the key, the
+     * ipad and opad have the same length by padding.
      *
-     * @param secret the hmac key
+     * @param secret
+     *               the hmac key
      *
-     * @param data the data that is going to be hashed
+     * @param data
+     *               the data that is going to be hashed
      **/
     public void init(byte[] secret, byte[] data) throws NoSuchAlgorithmException {
         switch (this.macAlgorithm) {
@@ -113,13 +115,12 @@ public class HMAC {
                 this.data = data;
                 break;
         }
-
     }
 
     /**
      * Computes the hmac and returnes it.
      *
-     * @return the computed hmac of the hmac instance
+     * @return                          the computed hmac of the hmac instance
      *
      * @throws NoSuchAlgorithmException
      *
@@ -127,7 +128,7 @@ public class HMAC {
     public byte[] compute() throws NoSuchAlgorithmException {
         Security.addProvider(new BouncyCastleProvider());
         MessageDigest digest = null;
-        //decides wich hash for the hmac should be used
+        // decides which hash for the hmac should be used
         switch (this.macAlgorithm) {
             case HMAC_SHA1:
                 digest = MessageDigest.getInstance("SHA-1");
@@ -150,38 +151,33 @@ public class HMAC {
             default:
                 throw new UnsupportedOperationException("Hash algorithm is not supported");
         }
-        //hmac = hmac_<hash>(<hash>(secret XOR opad) || <hash>(secret XOR ipad || data))
+        // hmac = hmac_<hash>(<hash>(secret XOR opad) || <hash>(secret XOR ipad || data))
         byte[] hash = digest.digest(ArrayConverter.concatenate(xorBytes(this.secret, this.ipad), this.data));
         this.hmac = digest.digest(ArrayConverter.concatenate(xorBytes(this.secret, this.opad), hash));
         return this.hmac;
     }
 
     /*
-     * RFC 5246 5. HMAC and the Pseudorandom Function
-     * p_hash is a data expansion function.
-     * By taking a secret and a seed as input, a data expansion function produces an output of arbitrary length.
-     * In here p_hash only computes one round of pseudo random bits (one use of the hmac)
-     * To expand the secret, one can implement a PRF with p_hash as follows:
-     * P_hash(secret, seed) = HMAC_hash(secret, A(1) + seed) +
-     *                        HMAC_hash(secret, A(2) + seed) +
-     *                        HMAC_hash(secret, A(3) + seed) + ...
-     * where + indicates concatenation.
-     * A() is defined as:
-     * A(0) = seed
-     * A(i) = HMAC_hash(secret, A(i-1))
-     * TLS's PRF is created by applying P_hash to the secret as:
-     *   PRF(secret, label, seed) = P_<hash>(secret, label + seed)
+     * RFC 5246 5. HMAC and the Pseudorandom Function p_hash is a data expansion function. By taking a secret and a seed
+     * as input, a data expansion function produces an output of arbitrary length. In here, p_hash only computes one
+     * round of pseudo random bits (one use of the hmac) To expand the secret, one can implement a PRF with p_hash as
+     * follows: P_hash(secret, seed) = HMAC_hash(secret, A(1) + seed) + HMAC_hash(secret, A(2) + seed) +
+     * HMAC_hash(secret, A(3) + seed) + ... where + indicates concatenation. A() is defined as: A(0) = seed A(i) =
+     * HMAC_hash(secret, A(i-1)) TLS's PRF is created by applying P_hash to the secret as: PRF(secret, label, seed) =
+     * P_<hash>(secret, label + seed)
      *
      * The PseudoRandomFunction class takes use of the p_hash function.
-     * */
+     */
     /**
      * p_hash is a data expansion function as described in RFC 5246 5. HMAC and the Pseudorandom Function
      *
-     * @param secret the hmac key
+     * @param  secret
+     *                                  the hmac key
      *
-     * @param data the data that is going to be hashed
+     * @param  data
+     *                                  the data that is going to be hashed
      *
-     * @return returns a computation of the hmac instance
+     * @return                          returns a computation of the hmac instance
      *
      * @throws NoSuchAlgorithmException
      */
@@ -191,10 +187,10 @@ public class HMAC {
     }
 
     /*
-     * This function pads a specific byte to an byte array.
-     * Has the byte array the same length as the length parameter of the function, the byte array will be returned without padding.
-     * Is the byte array bigger than the length parameter the bytearray is hashed and returned.
-     * */
+     * This function pads a specific byte to a byte array. Has the byte array the same length as the length parameter of
+     * the function, the byte array will be returned without padding. Is the byte array bigger than the length
+     * parameter, the byte array is hashed and returned.
+     */
     private byte[] padding(byte[] bytes, int length, byte pad) throws NoSuchAlgorithmException {
         if (bytes.length < length) {
             byte[] bytesPadded = new byte[length];
@@ -208,22 +204,17 @@ public class HMAC {
         } else if (bytes.length == length) {
             return bytes;
         } else {
-            return hash(bytes);
+            byte[] hash = hash(bytes);
+            return padding(hash, length, pad);
         }
     }
 
     /*
      * XOR's two byte arrays and returns the result
-     * */
+     */
     private byte[] xorBytes(byte[] a1, byte[] a2) {
-        int length;
-        if (a1.length > a2.length) {
-            length = a2.length;
-        } else {
-            length = a1.length;
-        }
-        byte[] a3 = new byte[length];
-        for (int i = 0; i < length; i++) {
+        byte[] a3 = new byte[a1.length];
+        for (int i = 0; i < a1.length; i++) {
             a3[i] = (byte) (a1[i] ^ a2[i]);
         }
         return a3;
@@ -231,8 +222,8 @@ public class HMAC {
 
     /*
      * Hashes an array of bytes
-     * */
-    private byte[] hash(byte[] bytes) throws NoSuchAlgorithmException {
+     */
+    public byte[] hash(byte[] bytes) throws NoSuchAlgorithmException {
         Security.addProvider(new BouncyCastleProvider());
         MessageDigest digest = null;
         switch (this.macAlgorithm) {

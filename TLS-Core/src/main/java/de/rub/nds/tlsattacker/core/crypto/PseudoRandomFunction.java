@@ -62,55 +62,51 @@ public class PseudoRandomFunction {
     /**
      * Computes the PRF output for SSL3 of the provided size
      *
-     * @param master_secret             the master secret
+     * @param  master_secret
+     *                                  the master secret
      *
-     * @param client_random             the client random
+     * @param  client_random
+     *                                  the client random
      *
-     * @param server_random             the server random
+     * @param  server_random
+     *                                  the server random
      *
-     * @param size                      the size of the key block
+     * @param  size
+     *                                  the size of the key block
      *
      * @return                          the key block as pseudo random bit stream
      * @throws NoSuchAlgorithmException
      */
-    public static byte[] computeSSL3(byte[] master_secret, byte[] client_random, byte[] server_random, int size) throws NoSuchAlgorithmException {
+    public static byte[] computeSSL3(byte[] master_secret, byte[] client_random, byte[] server_random, int size)
+        throws NoSuchAlgorithmException {
         HMAC md5 = new HMAC(MacAlgorithm.HMAC_MD5);
         HMAC sha = new HMAC(MacAlgorithm.HMAC_SHA1);
 
         byte[] output_md5;
         byte[] output_sha;
         byte[] pseudoRandomBitStream = new byte[0];
-        byte[] salt_byte = {0x41};
-        byte[] salt = {0x41};
+        byte[] salt_byte = { 0x41 };
+        byte[] salt = { 0x41 };
 
         /*
-        To generate the key material, compute
-        pseudoRandomBitStream =
-            MD5(master_secret + SHA(`A' + master_secret +
-                                  ServerHello.random +
-                                  ClientHello.random)) +
-            MD5(master_secret + SHA(`BB' + master_secret +
-                                  ServerHello.random +
-                                  ClientHello.random)) +
-            MD5(master_secret + SHA(`CCC' + master_secret +
-                                  ServerHello.random +
-                                  ClientHello.random)) + [...];
-         until enough output has been generated.
+         * To generate the key material, compute pseudoRandomBitStream = MD5(master_secret + SHA(`A' + master_secret +
+         * ServerHello.random + ClientHello.random)) + MD5(master_secret + SHA(`BB' + master_secret + ServerHello.random
+         * + ClientHello.random)) + MD5(master_secret + SHA(`CCC' + master_secret + ServerHello.random +
+         * ClientHello.random)) + [...]; until enough output has been generated.
          */
-        while (pseudoRandomBitStream.length < size){
-            output_sha = sha.hash(ArrayConverter.concatenate
-                            (salt, master_secret, server_random, client_random));
+        while (pseudoRandomBitStream.length < size) {
+            output_sha = sha.hash(ArrayConverter.concatenate(salt, master_secret, server_random, client_random));
             output_md5 = md5.hash(ArrayConverter.concatenate(master_secret, output_sha));
 
             pseudoRandomBitStream = ArrayConverter.concatenate(pseudoRandomBitStream, output_md5);
 
             /*
-            Adds another byte to the salt and increments the howl salt array by one bit afterwards
-            as in the command above described
+             * Adds another byte to the salt and increments the howl salt array by one bit afterwards as in the command
+             * above described
              */
             salt = ArrayConverter.concatenate(salt, salt_byte);
             salt_byte[0] += 0x01;
-            for(int j = 0; j < salt.length; j++){
+            for (int j = 0; j < salt.length; j++) {
                 salt[j] += 0x01;
             }
         }
@@ -133,7 +129,8 @@ public class PseudoRandomFunction {
      * @return                                                        the Prf output
      * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
-    public static byte[] compute(PRFAlgorithm prfAlgorithm, byte[] secret, String label, byte[] seed, int size) throws CryptoException {
+    public static byte[] compute(PRFAlgorithm prfAlgorithm, byte[] secret, String label, byte[] seed, int size)
+        throws CryptoException {
         if (prfAlgorithm == null) {
             LOGGER.warn("Trying to compute PRF without specified PRF algorithm. Using TLS 1.0/TLS 1.1 as default.");
             prfAlgorithm = PRFAlgorithm.TLS_PRF_LEGACY;
@@ -153,7 +150,7 @@ public class PseudoRandomFunction {
                 return computeTls10(secret, label, seed, size);
             default:
                 throw new UnsupportedOperationException(
-                        "PRF computation for different" + " protocol versions is not supported yet");
+                    "PRF computation for different" + " protocol versions is not supported yet");
         }
     }
 
@@ -161,8 +158,9 @@ public class PseudoRandomFunction {
         try {
             byte[] labelSeed = ArrayConverter.concatenate(label.getBytes(Charset.forName("ASCII")), seed);
             HMAC hmac_md5 = new HMAC(MacAlgorithm.HMAC_MD5);
-            HMAC hamc_sha1 = new HMAC(MacAlgorithm.HMAC_SHA1);
+            HMAC hmac_sha1 = new HMAC(MacAlgorithm.HMAC_SHA1);
 
+            int length;
             int s_half = (secret.length + 1) / 2;
             byte[] s1 = new byte[s_half];
             byte[] s2 = new byte[s_half];
@@ -175,31 +173,37 @@ public class PseudoRandomFunction {
             byte[] ai = labelSeed;
 
             /*
-            Expands the first half of the secret with the p_hash function, which uses md5
+             * Expands the first half of the secret with the p_hash function, which uses md5
              */
             while (extendedSecret_md5.length < size) {
                 ai = hmac_md5.p_hash(s1, ai);
                 extendedSecret_md5 = ArrayConverter.concatenate(extendedSecret_md5,
-                        hmac_md5.p_hash(s1, ArrayConverter.concatenate(ai, labelSeed)));
+                    hmac_md5.p_hash(s1, ArrayConverter.concatenate(ai, labelSeed)));
             }
 
             ai = labelSeed;
 
             /*
-            Expands the second half of the secret with the p_hash function, which uses sha1
+             * Expands the second half of the secret with the p_hash function, which uses sha1
              */
             while (extendedSecret_sha1.length < size) {
-                ai = hamc_sha1.p_hash(s2, ai);
+                ai = hmac_sha1.p_hash(s2, ai);
                 extendedSecret_sha1 = ArrayConverter.concatenate(extendedSecret_sha1,
-                        hamc_sha1.p_hash(s2, ArrayConverter.concatenate(ai, labelSeed)));
+                    hmac_sha1.p_hash(s2, ArrayConverter.concatenate(ai, labelSeed)));
             }
 
-            byte[] pseudoRandomBitStream = new byte[extendedSecret_md5.length];
+            if (extendedSecret_md5.length > extendedSecret_sha1.length) {
+                length = extendedSecret_sha1.length;
+            } else {
+                length = extendedSecret_md5.length;
+            }
+
+            byte[] pseudoRandomBitStream = new byte[length];
 
             /*
-            Produces the key block (pseudo random bit stream) by xoring the extended secrets
+             * Produces the key block (pseudo random bit stream) by xoring the extended secrets
              */
-            for (int i = 0; i < extendedSecret_md5.length; i++) {
+            for (int i = 0; i < length; i++) {
                 pseudoRandomBitStream[i] = (byte) (extendedSecret_md5[i] ^ extendedSecret_sha1[i]);
             }
 
@@ -210,8 +214,8 @@ public class PseudoRandomFunction {
     }
 
     /**
-     * PRF computation for TLS 1.2
-     *s
+     * PRF computation for TLS 1.2 s
+     * 
      * @param  macAlgorithm
      *                      PRFAlgorithm
      * @param  secret
@@ -224,7 +228,8 @@ public class PseudoRandomFunction {
      *                      The size of the pseudo random bit stream
      * @return              the key block material
      */
-    private static byte[] computeTls12(byte[] secret, String label, byte[] seed, int size, MacAlgorithm macAlgorithm) throws CryptoException {
+    private static byte[] computeTls12(byte[] secret, String label, byte[] seed, int size, MacAlgorithm macAlgorithm)
+        throws CryptoException {
         try {
             byte[] labelSeed = ArrayConverter.concatenate(label.getBytes(Charset.forName("ASCII")), seed);
             HMAC hmac = new HMAC(macAlgorithm);
@@ -239,12 +244,12 @@ public class PseudoRandomFunction {
             byte[] ai = labelSeed;
 
             /*
-            Expands the secret to produce the key block (pseudo random bit stream)
+             * Expands the secret to produce the key block (pseudo random bit stream)
              */
             while (pseudoRandomBitStream.length < size) {
                 ai = hmac.p_hash(secret, ai);
                 pseudoRandomBitStream = ArrayConverter.concatenate(pseudoRandomBitStream,
-                        hmac.p_hash(secret, ArrayConverter.concatenate(ai, labelSeed)));
+                    hmac.p_hash(secret, ArrayConverter.concatenate(ai, labelSeed)));
             }
 
             return Arrays.copyOf(pseudoRandomBitStream, size);

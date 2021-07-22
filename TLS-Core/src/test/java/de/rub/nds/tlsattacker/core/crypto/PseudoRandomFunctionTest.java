@@ -10,9 +10,11 @@
 package de.rub.nds.tlsattacker.core.crypto;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 
+import java.nio.charset.Charset;
 import java.security.NoSuchAlgorithmException;
 import java.security.Security;
 import java.util.Random;
@@ -117,6 +119,14 @@ public class PseudoRandomFunctionTest {
         byte[] result2 = PseudoRandomFunction.compute(PRFAlgorithm.TLS_PRF_LEGACY, secret, label, seed, size);
 
         assertArrayEquals(result1, result2);
+
+        String new_label = "extended master secret";
+
+        result1 = TlsUtils.PRF_legacy(secret, new_label, seed, size);
+
+        result2 = PseudoRandomFunction.compute(PRFAlgorithm.TLS_PRF_LEGACY, secret, new_label, seed, size);
+
+        assertArrayEquals(result1, result2);
     }
 
     @Test
@@ -126,8 +136,8 @@ public class PseudoRandomFunctionTest {
         byte[] server_random = ArrayConverter.hexStringToByteArray(StringUtils.repeat("03", 32));
 
         byte[] result1 = PseudoRandomFunction.computeSSL3(master_secret, client_random, server_random, 48);
-        byte[] result2 = ArrayConverter.hexStringToByteArray
-                ("24d8e8797e3a106b7752b22cbf8829acf27c8f1e2630e9c2d3442f991e7736288d696027c06fd118f1c59311a66039a0");
+        byte[] result2 = ArrayConverter.hexStringToByteArray(
+            "24d8e8797e3a106b7752b22cbf8829acf27c8f1e2630e9c2d3442f991e7736288d696027c06fd118f1c59311a66039a0");
 
         assertArrayEquals(result1, result2);
     }
