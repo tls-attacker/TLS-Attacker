@@ -84,6 +84,7 @@ public class ClientKeyExchangeHandlerTest {
         byte[] calculatedMasterSecret = handler.calculateMasterSecret(message);
 
         Assert.assertArrayEquals(expectedMasterSecret, calculatedMasterSecret);
+
     }
 
 }
