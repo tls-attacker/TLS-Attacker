@@ -226,7 +226,6 @@ public class RecordGroup {
         if (record.getCleanProtocolMessageBytes() != null) {
             final int recordDataSize = record.getCleanProtocolMessageBytes().getValue().length;
             if (recordDataSize > context.getChooser().getInboundMaxRecordDataSize()) {
-                // this is supposed to result in a fatal error, just warning for now
                 LOGGER.warn("Received record with size (" + recordDataSize + ") greater than advertised limit ("
                     + context.getChooser().getInboundMaxRecordDataSize() + ")");
             }
