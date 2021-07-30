@@ -170,7 +170,6 @@
       <xs:element name="sniType" type="nameType" minOccurs="0"/>
       <xs:element name="prefferedCertRsaKeySize" type="xs:int" minOccurs="0"/>
       <xs:element name="prefferedCertDssKeySize" type="xs:int" minOccurs="0"/>
-      <xs:element name="maxFragmentLength" type="maxFragmentLength" minOccurs="0"/>
       <xs:element name="defaultKeyUpdateRequestMode" type="keyUpdateRequest" minOccurs="0"/>
       <xs:element name="encryptChangeCipherSpecTls13" type="xs:boolean" minOccurs="0"/>
       <xs:element name="tlsSessionTicket" type="xs:string" minOccurs="0"/>
@@ -275,6 +274,7 @@
       <xs:element name="addEllipticCurveExtension" type="xs:boolean" minOccurs="0"/>
       <xs:element name="addHeartbeatExtension" type="xs:boolean" minOccurs="0"/>
       <xs:element name="addMaxFragmentLengthExtension" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="addRecordSizeLimitExtension" type="xs:boolean" minOccurs="0"/>
       <xs:element name="addServerNameIndicationExtension" type="xs:boolean" minOccurs="0"/>
       <xs:element name="addSignatureAndHashAlgorithmsExtension" type="xs:boolean" minOccurs="0"/>
       <xs:element name="addSupportedVersionsExtension" type="xs:boolean" minOccurs="0"/>
@@ -379,7 +379,6 @@
       </xs:element>
       <xs:element name="heartbeatPayloadLength" type="xs:int" minOccurs="0"/>
       <xs:element name="heartbeatPaddingLength" type="xs:int" minOccurs="0"/>
-      <xs:element name="defaultMaxRecordData" type="xs:int" minOccurs="0"/>
       <xs:element name="defaultPaddingExtensionBytes" type="xs:string" minOccurs="0"/>
       <xs:element name="dtlsDefaultCookieLength" type="xs:int" minOccurs="0"/>
       <xs:element name="dtlsMaximumFragmentLength" type="xs:int" minOccurs="0"/>
@@ -426,6 +425,8 @@
       <xs:element name="defaultSelectedProtocolVersion" type="protocolVersion" minOccurs="0"/>
       <xs:element name="defaultHighestClientProtocolVersion" type="protocolVersion" minOccurs="0"/>
       <xs:element name="defaultMaxFragmentLength" type="maxFragmentLength" minOccurs="0"/>
+      <xs:element name="defaultMaxRecordData" type="xs:int" minOccurs="0"/>
+      <xs:element name="inboundRecordSizeLimit" type="xs:int" minOccurs="0"/>
       <xs:element name="defaultHeartbeatMode" type="heartbeatMode" minOccurs="0"/>
       <xs:element name="defaultClientSupportedCompressionMethods" minOccurs="0">
         <xs:complexType>
@@ -1894,15 +1895,6 @@
     </xs:restriction>
   </xs:simpleType>
 
-  <xs:simpleType name="maxFragmentLength">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="TWO_9"/>
-      <xs:enumeration value="TWO_10"/>
-      <xs:enumeration value="TWO_11"/>
-      <xs:enumeration value="TWO_12"/>
-    </xs:restriction>
-  </xs:simpleType>
-
   <xs:simpleType name="keyUpdateRequest">
     <xs:restriction base="xs:string">
       <xs:enumeration value="UPDATE_NOT_REQUESTED"/>
@@ -2079,6 +2071,15 @@
     </xs:restriction>
   </xs:simpleType>
 
+  <xs:simpleType name="maxFragmentLength">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="TWO_9"/>
+      <xs:enumeration value="TWO_10"/>
+      <xs:enumeration value="TWO_11"/>
+      <xs:enumeration value="TWO_12"/>
+    </xs:restriction>
+  </xs:simpleType>
+
   <xs:simpleType name="compressionMethod">
     <xs:restriction base="xs:string">
       <xs:enumeration value="NULL"/>
@@ -2212,6 +2213,7 @@
       <xs:enumeration value="EXTENDED_MASTER_SECRET"/>
       <xs:enumeration value="TOKEN_BINDING"/>
       <xs:enumeration value="CACHED_INFO"/>
+      <xs:enumeration value="RECORD_SIZE_LIMIT"/>
       <xs:enumeration value="PWD_PROTECT"/>
       <xs:enumeration value="PWD_CLEAR"/>
       <xs:enumeration value="PASSWORD_SALT"/>

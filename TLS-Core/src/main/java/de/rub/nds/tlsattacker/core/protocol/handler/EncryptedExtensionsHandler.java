@@ -9,6 +9,7 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
@@ -59,7 +60,17 @@ public class EncryptedExtensionsHandler extends HandshakeMessageHandler<Encrypte
                     HandlerFactory.getExtensionHandler(tlsContext, extension.getExtensionTypeConstant());
                 handler.adjustTLSContext(extension);
             }
+
+            warnOnConflictingExtensions();
         }
     }
 
+    private void warnOnConflictingExtensions() {
+        if (tlsContext.getTalkingConnectionEndType() == tlsContext.getChooser().getMyConnectionPeer()) {
+            if (tlsContext.isExtensionNegotiated(ExtensionType.MAX_FRAGMENT_LENGTH)
+                && tlsContext.isExtensionNegotiated(ExtensionType.RECORD_SIZE_LIMIT)) {
+                LOGGER.warn("Server sent max_fragment_length AND record_size_limit extensions");
+            }
+        }
+    }
 }

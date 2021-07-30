@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.EncryptedExtensionsHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.RecordSizeLimitExtensionMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -25,6 +26,9 @@ public class EncryptedExtensionsMessage extends HandshakeMessage {
 
     public EncryptedExtensionsMessage(Config config) {
         super(config, HandshakeMessageType.ENCRYPTED_EXTENSIONS);
+        if (config.isAddRecordSizeLimitExtension()) {
+            addExtension(new RecordSizeLimitExtensionMessage());
+        }
     }
 
     @Override

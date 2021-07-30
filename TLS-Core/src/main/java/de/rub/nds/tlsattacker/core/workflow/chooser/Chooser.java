@@ -310,4 +310,12 @@ public abstract class Chooser {
     public abstract List<String> getProposedAlpnProtocols();
 
     public abstract byte[] getLastClientHello();
+
+    public abstract Integer getOutboundRecordSizeLimit();
+
+    public abstract Integer getInboundRecordSizeLimit();
+
+    public abstract Integer getOutboundMaxRecordDataSize();
+
+    public abstract Integer getInboundMaxRecordDataSize();
 }
