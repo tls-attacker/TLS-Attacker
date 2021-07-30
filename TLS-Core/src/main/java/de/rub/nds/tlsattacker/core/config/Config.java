@@ -303,11 +303,6 @@ public class Config implements Serializable {
     private Integer prefferedCertDssKeySize = 2048;
 
     /**
-     * MaxFragmentLength in MaxFragmentLengthExtension
-     */
-    private MaxFragmentLength maxFragmentLength = MaxFragmentLength.TWO_9;
-
-    /**
      * Determine if a KeyUpdate should be requested from peer
      */
     private KeyUpdateRequest defaultKeyUpdateRequestMode = KeyUpdateRequest.UPDATE_NOT_REQUESTED;

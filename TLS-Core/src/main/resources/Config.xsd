@@ -170,7 +170,6 @@
       <xs:element name="sniType" type="nameType" minOccurs="0"/>
       <xs:element name="prefferedCertRsaKeySize" type="xs:int" minOccurs="0"/>
       <xs:element name="prefferedCertDssKeySize" type="xs:int" minOccurs="0"/>
-      <xs:element name="maxFragmentLength" type="maxFragmentLength" minOccurs="0"/>
       <xs:element name="defaultKeyUpdateRequestMode" type="keyUpdateRequest" minOccurs="0"/>
       <xs:element name="encryptChangeCipherSpecTls13" type="xs:boolean" minOccurs="0"/>
       <xs:element name="tlsSessionTicket" type="xs:string" minOccurs="0"/>
@@ -1896,15 +1895,6 @@
     </xs:restriction>
   </xs:simpleType>
 
-  <xs:simpleType name="maxFragmentLength">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="TWO_9"/>
-      <xs:enumeration value="TWO_10"/>
-      <xs:enumeration value="TWO_11"/>
-      <xs:enumeration value="TWO_12"/>
-    </xs:restriction>
-  </xs:simpleType>
-
   <xs:simpleType name="keyUpdateRequest">
     <xs:restriction base="xs:string">
       <xs:enumeration value="UPDATE_NOT_REQUESTED"/>
@@ -2078,6 +2068,15 @@
       <xs:enumeration value="UNCOMPRESSED"/>
       <xs:enumeration value="ANSIX962_COMPRESSED_PRIME"/>
       <xs:enumeration value="ANSIX962_COMPRESSED_CHAR2"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="maxFragmentLength">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="TWO_9"/>
+      <xs:enumeration value="TWO_10"/>
+      <xs:enumeration value="TWO_11"/>
+      <xs:enumeration value="TWO_12"/>
     </xs:restriction>
   </xs:simpleType>
 
