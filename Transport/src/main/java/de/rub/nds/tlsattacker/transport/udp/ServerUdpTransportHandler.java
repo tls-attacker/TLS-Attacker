@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.transport.udp;
@@ -27,18 +26,17 @@ public class ServerUdpTransportHandler extends UdpTransportHandler {
     }
 
     public ServerUdpTransportHandler(long firstTimeout, long timeout, int port) {
-        super(firstTimeout, timeout, ConnectionEndType.SERVER, false);
+        super(firstTimeout, timeout, ConnectionEndType.SERVER);
         this.port = port;
     }
 
     @Override
     public void initialize() throws IOException {
         socket = new DatagramSocket(port);
-        socket.setSoTimeout((int) getTimeout());
         setStreams(new PushbackInputStream(new UdpInputStream(socket, true)), new UdpOutputStream(socket));
         srcPort = socket.getLocalPort();
         dstPort = socket.getPort();
-
+        cachedSocketState = null;
         // this could be made an option
         waitOnReceive();
     }
@@ -52,7 +50,6 @@ public class ServerUdpTransportHandler extends UdpTransportHandler {
             try {
                 Thread.sleep(1);
             } catch (InterruptedException e) {
-                ;
             }
         }
     }

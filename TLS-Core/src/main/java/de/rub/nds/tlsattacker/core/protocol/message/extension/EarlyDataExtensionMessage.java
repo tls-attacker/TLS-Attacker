@@ -1,17 +1,17 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 
 /**
@@ -32,6 +32,10 @@ public class EarlyDataExtensionMessage extends ExtensionMessage {
         this.newSessionTicketExtension = newSessionTicketExtension;
     }
 
+    public EarlyDataExtensionMessage(Config config) {
+        super(ExtensionType.EARLY_DATA);
+    }
+
     /**
      * @return the max_early_data_size
      */
@@ -41,7 +45,7 @@ public class EarlyDataExtensionMessage extends ExtensionMessage {
 
     /**
      * @param maxEarlyDataSize
-     * the maxEarlyDataSize to set
+     *                         the maxEarlyDataSize to set
      */
     public void setMaxEarlyDataSize(ModifiableInteger maxEarlyDataSize) {
         this.maxEarlyDataSize = maxEarlyDataSize;

@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.transport.recording;
@@ -43,6 +42,7 @@ public class PlayBackTransportHandler extends TransportHandler {
 
     @Override
     public void initialize() throws IOException {
+        cachedSocketState = null;
         RandomHelper.getRandom().setSeed(recording.getSeed());
     }
 
@@ -79,5 +79,10 @@ public class PlayBackTransportHandler extends TransportHandler {
     @Override
     public boolean isClosed() throws IOException {
         return closed;
+    }
+
+    @Override
+    public void setTimeout(long timeout) {
+        // DO NOTHING
     }
 }

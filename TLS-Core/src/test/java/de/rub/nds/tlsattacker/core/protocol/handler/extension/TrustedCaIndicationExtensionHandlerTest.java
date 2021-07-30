@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
@@ -27,9 +26,9 @@ import org.junit.Test;
 
 public class TrustedCaIndicationExtensionHandlerTest {
 
-    private final List<TrustedAuthority> trustedAuthorities = Arrays.asList(new TrustedAuthority((byte) 0,
-        new byte[] {}, 0, new byte[] {}), new TrustedAuthority((byte) 2, new byte[] {}, 5, new byte[] { 0x01, 0x02,
-        0x03, 0x04, 0x05 }));
+    private final List<TrustedAuthority> trustedAuthorities =
+        Arrays.asList(new TrustedAuthority((byte) 0, new byte[] {}, 0, new byte[] {}),
+            new TrustedAuthority((byte) 2, new byte[] {}, 5, new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05 }));
     private TrustedCaIndicationExtensionHandler handler;
     private TlsContext context;
 
@@ -56,17 +55,20 @@ public class TrustedCaIndicationExtensionHandlerTest {
 
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[0], 0, context.getConfig()) instanceof TrustedCaIndicationExtensionParser);
+        assertTrue(
+            handler.getParser(new byte[0], 0, context.getConfig()) instanceof TrustedCaIndicationExtensionParser);
     }
 
     @Test
     public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new TrustedCaIndicationExtensionMessage()) instanceof TrustedCaIndicationExtensionPreparator);
+        assertTrue(handler.getPreparator(
+            new TrustedCaIndicationExtensionMessage()) instanceof TrustedCaIndicationExtensionPreparator);
     }
 
     @Test
     public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new TrustedCaIndicationExtensionMessage()) instanceof TrustedCaIndicationExtensionSerializer);
+        assertTrue(handler.getSerializer(
+            new TrustedCaIndicationExtensionMessage()) instanceof TrustedCaIndicationExtensionSerializer);
     }
 
     public void assertTrustedAuthorityList(List<TrustedAuthority> expected, List<TrustedAuthority> actual) {
@@ -75,11 +77,11 @@ public class TrustedCaIndicationExtensionHandlerTest {
             TrustedAuthority actualObject = actual.get(i);
 
             assertEquals(expectedObject.getIdentifierType().getValue(), actualObject.getIdentifierType().getValue());
-            assertEquals(expectedObject.getDistinguishedNameLength().getValue(), actualObject
-                .getDistinguishedNameLength().getValue());
+            assertEquals(expectedObject.getDistinguishedNameLength().getValue(),
+                actualObject.getDistinguishedNameLength().getValue());
             assertArrayEquals(expectedObject.getSha1Hash().getValue(), actualObject.getSha1Hash().getValue());
-            assertArrayEquals(expectedObject.getDistinguishedName().getValue(), actualObject.getDistinguishedName()
-                .getValue());
+            assertArrayEquals(expectedObject.getDistinguishedName().getValue(),
+                actualObject.getDistinguishedName().getValue());
         }
     }
 

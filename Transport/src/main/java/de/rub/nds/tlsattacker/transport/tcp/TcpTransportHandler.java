@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.transport.tcp;
@@ -19,8 +18,12 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public abstract class TcpTransportHandler extends TransportHandler {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     protected Socket socket;
 
@@ -30,10 +33,6 @@ public abstract class TcpTransportHandler extends TransportHandler {
 
     public TcpTransportHandler(Connection con) {
         super(con);
-    }
-
-    public TcpTransportHandler(long firstTimeout, long timeout, ConnectionEndType type, boolean isInStreamTerminating) {
-        super(firstTimeout, timeout, type, isInStreamTerminating);
     }
 
     public TcpTransportHandler(long firstTimeout, long timeout, ConnectionEndType type) {
@@ -48,7 +47,11 @@ public abstract class TcpTransportHandler extends TransportHandler {
      */
     public SocketState getSocketState(boolean withTimeout) {
         try {
+            if (cachedSocketState != null) {
+                return cachedSocketState;
+            }
             if (inStream == null) {
+
                 return SocketState.UNAVAILABLE;
             }
             if (inStream.available() > 0) {
@@ -76,6 +79,15 @@ public abstract class TcpTransportHandler extends TransportHandler {
             return SocketState.SOCKET_EXCEPTION;
         } catch (IOException ex) {
             return SocketState.IO_EXCEPTION;
+        }
+    }
+
+    @Override
+    public void setTimeout(long timeout) {
+        try {
+            socket.setSoTimeout((int) timeout);
+        } catch (SocketException ex) {
+            LOGGER.error("Could not adjust socket timeout", ex);
         }
     }
 

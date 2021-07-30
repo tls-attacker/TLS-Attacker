@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.workflow.action;
@@ -17,6 +16,7 @@ import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.nio.charset.Charset;
 import java.util.Objects;
+import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,6 +24,7 @@ import org.apache.logging.log4j.Logger;
  * A simple action to print the last handled application data to console. Per default, this prints the raw byte values
  * of the application data as a hex string. An charset for simple encoding can be given to get readable output
  */
+@XmlRootElement
 public class PrintLastHandledApplicationDataAction extends ConnectionBoundAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -81,7 +82,7 @@ public class PrintLastHandledApplicationDataAction extends ConnectionBoundAction
      * found in StandardCharsets
      *
      * @param stringEncoding
-     * The encoding that should be used
+     *                       The encoding that should be used
      *
      */
     public void setStringEncoding(String stringEncoding) {

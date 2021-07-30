@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.preparator;
@@ -20,7 +19,7 @@ import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class SSL2ClientMasterKeyPreparator extends ProtocolMessagePreparator<SSL2ClientMasterKeyMessage> {
+public class SSL2ClientMasterKeyPreparator extends HandshakeMessagePreparator<SSL2ClientMasterKeyMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -39,6 +38,11 @@ public class SSL2ClientMasterKeyPreparator extends ProtocolMessagePreparator<SSL
 
     @Override
     protected void prepareProtocolMessageContents() {
+        prepareHandshakeMessageContents();
+    }
+
+    @Override
+    protected void prepareHandshakeMessageContents() {
         LOGGER.debug("Prepare SSL2ClientMasterKey");
         prepareMessagePaddingLength(message);
         prepareType(message);
@@ -130,9 +134,8 @@ public class SSL2ClientMasterKeyPreparator extends ProtocolMessagePreparator<SSL
     }
 
     protected void preparePlainPaddedPremasterSecret(SSL2ClientMasterKeyMessage msg) {
-        msg.getComputations().setPlainPaddedPremasterSecret(
-            ArrayConverter.concatenate(new byte[] { 0x00, 0x02 }, padding, new byte[] { 0x00 }, msg.getComputations()
-                .getPremasterSecret().getValue()));
+        msg.getComputations().setPlainPaddedPremasterSecret(ArrayConverter.concatenate(new byte[] { 0x00, 0x02 },
+            padding, new byte[] { 0x00 }, msg.getComputations().getPremasterSecret().getValue()));
         LOGGER.debug("PlainPaddedPremasterSecret: "
             + ArrayConverter.bytesToHexString(msg.getComputations().getPlainPaddedPremasterSecret().getValue()));
     }
@@ -162,7 +165,11 @@ public class SSL2ClientMasterKeyPreparator extends ProtocolMessagePreparator<SSL
         int unpaddedLength = message.getComputations().getPremasterSecret().getValue().length;
 
         int randomByteLength = keyByteLength - unpaddedLength - 3;
-        padding = new byte[randomByteLength];
+        if (randomByteLength >= 0) {
+            padding = new byte[randomByteLength];
+        } else {
+            padding = new byte[0]; // randomByteLength could be negative
+        }
         chooser.getContext().getRandom().nextBytes(padding);
         ArrayConverter.makeArrayNonZero(padding);
         preparePadding(message);
@@ -173,9 +180,8 @@ public class SSL2ClientMasterKeyPreparator extends ProtocolMessagePreparator<SSL
         BigInteger biPaddedPremasterSecret = new BigInteger(1, paddedPremasterSecret);
         BigInteger biEncrypted =
             biPaddedPremasterSecret.modPow(chooser.getServerRSAPublicKey(), chooser.getServerRsaModulus());
-        encryptedPremasterSecret =
-            ArrayConverter.bigIntegerToByteArray(biEncrypted, chooser.getServerRsaModulus().bitLength()
-                / Bits.IN_A_BYTE, true);
+        encryptedPremasterSecret = ArrayConverter.bigIntegerToByteArray(biEncrypted,
+            chooser.getServerRsaModulus().bitLength() / Bits.IN_A_BYTE, true);
         prepareEncryptedKeyData(message);
         prepareEncryptedKeyDataLength(message);
     }

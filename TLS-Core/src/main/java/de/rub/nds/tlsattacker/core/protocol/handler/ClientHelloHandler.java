@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.handler;
@@ -17,7 +16,6 @@ import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
@@ -150,8 +148,8 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
 
     private List<CipherSuite> convertCipherSuites(byte[] bytesToConvert) {
         if (bytesToConvert.length % 2 != 0) {
-            LOGGER.warn("Cannot convert:" + ArrayConverter.bytesToHexString(bytesToConvert, false)
-                + " to a List<CipherSuite>");
+            LOGGER.warn(
+                "Cannot convert:" + ArrayConverter.bytesToHexString(bytesToConvert, false) + " to a List<CipherSuite>");
             return null;
         }
         List<CipherSuite> list = new LinkedList<>();
@@ -186,9 +184,8 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
     private void adjustEarlyTrafficSecret() throws CryptoException {
         HKDFAlgorithm hkdfAlgorithm =
             AlgorithmResolver.getHKDFAlgorithm(tlsContext.getChooser().getEarlyDataCipherSuite());
-        DigestAlgorithm digestAlgo =
-            AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS13, tlsContext.getChooser()
-                .getEarlyDataCipherSuite());
+        DigestAlgorithm digestAlgo = AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS13,
+            tlsContext.getChooser().getEarlyDataCipherSuite());
 
         byte[] earlySecret = HKDFunction.extract(hkdfAlgorithm, new byte[0], tlsContext.getChooser().getEarlyDataPsk());
         tlsContext.setEarlySecret(earlySecret);
@@ -204,12 +201,10 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
             tlsContext.setActiveClientKeySetType(Tls13KeySetType.EARLY_TRAFFIC_SECRETS);
             LOGGER.debug("Setting cipher for client to use early secrets");
 
-            KeySet clientKeySet =
-                KeySetGenerator.generateKeySet(tlsContext, ProtocolVersion.TLS13,
-                    tlsContext.getActiveClientKeySetType());
-            RecordCipher recordCipherClient =
-                RecordCipherFactory.getRecordCipher(tlsContext, clientKeySet, tlsContext.getChooser()
-                    .getEarlyDataCipherSuite());
+            KeySet clientKeySet = KeySetGenerator.generateKeySet(tlsContext, ProtocolVersion.TLS13,
+                tlsContext.getActiveClientKeySetType());
+            RecordCipher recordCipherClient = RecordCipherFactory.getRecordCipher(tlsContext, clientKeySet,
+                tlsContext.getChooser().getEarlyDataCipherSuite());
             tlsContext.getRecordLayer().setRecordCipher(recordCipherClient);
 
             if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {

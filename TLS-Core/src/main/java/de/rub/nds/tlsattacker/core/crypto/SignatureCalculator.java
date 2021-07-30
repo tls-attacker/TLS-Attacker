@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.crypto;
@@ -13,6 +12,7 @@ package de.rub.nds.tlsattacker.core.crypto;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.BadRandom;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
@@ -54,8 +54,8 @@ public class SignatureCalculator {
             case GOSTR34102012_512:
                 return generateGost12Signature(chooser, toBeSigned, algorithm);
             default:
-                throw new UnsupportedOperationException("Unknown SignatureAlgorithm:"
-                    + algorithm.getSignatureAlgorithm().name());
+                throw new UnsupportedOperationException(
+                    "Unknown SignatureAlgorithm:" + algorithm.getSignatureAlgorithm().name());
         }
     }
 
@@ -67,17 +67,21 @@ public class SignatureCalculator {
             || chooser.getSelectedProtocolVersion() == ProtocolVersion.TLS10
             || chooser.getSelectedProtocolVersion() == ProtocolVersion.TLS11
             || chooser.getSelectedProtocolVersion() == ProtocolVersion.DTLS10) {
-            if (AlgorithmResolver.getKeyExchangeAlgorithm(chooser.getSelectedCipherSuite()).name().contains("RSA")) {
-                algoName = "NONEwithRSA";
-                toBeSigned = ArrayConverter.concatenate(MD5Utils.md5(toBeSigned), SHA1Utils.sha1(toBeSigned));
-            } else if (AlgorithmResolver.getKeyExchangeAlgorithm(chooser.getSelectedCipherSuite()).name()
-                .contains("ECDSA")) {
-                algoName = "SHA1withECDSA";
-            } else if (AlgorithmResolver.getKeyExchangeAlgorithm(chooser.getSelectedCipherSuite()).name()
-                .contains("DSS")) {
-                algoName = "SHA1withDSA";
+            KeyExchangeAlgorithm keyExchangeAlgorithm =
+                AlgorithmResolver.getKeyExchangeAlgorithm(chooser.getSelectedCipherSuite());
+            if (keyExchangeAlgorithm != null) {
+                if (keyExchangeAlgorithm.name().contains("RSA")) {
+                    algoName = "NONEwithRSA";
+                    toBeSigned = ArrayConverter.concatenate(MD5Utils.md5(toBeSigned), SHA1Utils.sha1(toBeSigned));
+                } else if (keyExchangeAlgorithm.name().contains("ECDSA")) {
+                    algoName = "SHA1withECDSA";
+                } else if (keyExchangeAlgorithm.name().contains("DSS")) {
+                    algoName = "SHA1withDSA";
+                } else {
+                    throw new UnsupportedOperationException("Cipher suite not supported - Check Debug Log");
+                }
             } else {
-                throw new UnsupportedOperationException("Cipher suite not supported - Check Debug Log");
+                algoName = algorithm.getJavaName();
             }
         } else {
             algoName = algorithm.getJavaName();
@@ -91,7 +95,7 @@ public class SignatureCalculator {
             instance.update(toBeSigned);
             return instance.sign();
         } catch (SignatureException | InvalidKeyException | NoSuchAlgorithmException
-            | InvalidAlgorithmParameterException ex) {
+            | InvalidAlgorithmParameterException | IllegalArgumentException ex) {
             throw new CryptoException("Could not sign Data", ex);
         }
     }
@@ -108,9 +112,8 @@ public class SignatureCalculator {
         return generateSignature(key, toBeSigned, algorithm, chooser.getContext().getBadSecureRandom(), chooser);
     }
 
-    public static byte[]
-        generateECDSASignature(Chooser chooser, byte[] toBeSigned, SignatureAndHashAlgorithm algorithm)
-            throws CryptoException {
+    public static byte[] generateECDSASignature(Chooser chooser, byte[] toBeSigned, SignatureAndHashAlgorithm algorithm)
+        throws CryptoException {
         ECPrivateKey key = KeyGenerator.getECPrivateKey(chooser);
         return generateSignature(key, toBeSigned, algorithm, chooser.getContext().getBadSecureRandom(), chooser);
     }

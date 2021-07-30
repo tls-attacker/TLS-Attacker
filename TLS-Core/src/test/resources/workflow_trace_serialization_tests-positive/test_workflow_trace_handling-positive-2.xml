@@ -1,6 +1,6 @@
 # Given this config:
 <config>
-    <defaulRunningMode>CLIENT</defaulRunningMode>
+    <defaultRunningMode>CLIENT</defaultRunningMode>
     <defaultClientConnection>
         <alias>client</alias>
         <port>443</port>

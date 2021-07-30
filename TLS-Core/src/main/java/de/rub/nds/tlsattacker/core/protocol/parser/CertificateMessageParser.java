@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.parser;
@@ -36,13 +35,13 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
      * Constructor for the Parser class
      *
      * @param startposition
-     * Position in the array where the HandshakeMessageParser is supposed to start parsing
+     *                      Position in the array where the HandshakeMessageParser is supposed to start parsing
      * @param array
-     * The byte[] which the HandshakeMessageParser is supposed to parse
+     *                      The byte[] which the HandshakeMessageParser is supposed to parse
      * @param version
-     * Version of the Protocol
+     *                      Version of the Protocol
      * @param config
-     * A Config used in the current context
+     *                      A Config used in the current context
      */
     public CertificateMessageParser(int startposition, byte[] array, ProtocolVersion version, Config config) {
         super(startposition, array, HandshakeMessageType.CERTIFICATE, version, config);
@@ -71,7 +70,7 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
      * Reads the next bytes as the RequestContextLength and writes them in the message
      *
      * @param msg
-     * Message to write in
+     *            Message to write in
      */
     private void parseRequestContextLength(CertificateMessage msg) {
         msg.setRequestContextLength(parseIntField(HandshakeByteLength.CERTIFICATE_REQUEST_CONTEXT_LENGTH));
@@ -82,7 +81,7 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
      * Reads the next bytes as the requestContextBytes and writes them in the message
      *
      * @param msg
-     * Message to write in
+     *            Message to write in
      */
     private void parseRequestContextBytes(CertificateMessage msg) {
         msg.setRequestContext(parseByteArrayField(msg.getRequestContextLength().getValue()));
@@ -93,7 +92,7 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
      * Reads the next bytes as the CertificateLength and writes them in the message
      *
      * @param msg
-     * Message to write in
+     *            Message to write in
      */
     private void parseCertificatesListLength(CertificateMessage msg) {
         msg.setCertificatesListLength(parseIntField(HandshakeByteLength.CERTIFICATES_LENGTH));
@@ -104,7 +103,7 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
      * Reads the next bytes as the CertificateBytes and writes them in the message
      *
      * @param msg
-     * Message to write in
+     *            Message to write in
      */
     private void parseCertificateListBytes(CertificateMessage msg) {
         msg.setCertificatesListBytes(parseByteArrayField(msg.getCertificatesListLength().getValue()));
@@ -115,7 +114,7 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
      * Reads the bytes from the CertificateListBytes and writes them in the CertificateList
      *
      * @param msg
-     * Message to write in
+     *            Message to write in
      */
     private void parseCertificateList(CertificateMessage msg) {
         int position = 0;
@@ -136,9 +135,8 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
             List<ExtensionMessage> extensionMessages = new LinkedList<>();
             int pointer = 0;
             while (pointer < pair.getExtensionsLength().getValue()) {
-                ExtensionParser parser =
-                    ExtensionParserFactory.getExtensionParser(pair.getExtensions().getValue(), pointer,
-                        this.getConfig());
+                ExtensionParser parser = ExtensionParserFactory.getExtensionParser(pair.getExtensions().getValue(),
+                    pointer, this.getConfig());
                 extensionMessages.add(parser.parse());
                 if (pointer == parser.getPointer()) {
                     throw new ParserException("Ran into infinite Loop while parsing CertificateExtensions");
@@ -149,5 +147,4 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
         }
         msg.setCertificatesListAsEntry(entryList);
     }
-
 }

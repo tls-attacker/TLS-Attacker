@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
@@ -21,7 +20,7 @@ import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.PWDComputations;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
-import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
+import de.rub.nds.tlsattacker.core.protocol.Preparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import org.apache.logging.log4j.LogManager;
@@ -68,9 +67,8 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
             ArrayConverter.bigIntegerToByteArray(keyMaterial.element.getFieldY().getData(), curveSize, true),
             ArrayConverter.intToBytes(serializedScalar.length, 1), serializedScalar));
         LOGGER.debug("KeyShare: " + ArrayConverter.bytesToHexString(entry.getPublicKey().getValue()));
-        LOGGER.debug("PasswordElement.x: "
-            + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(passwordElement.getFieldX()
-                .getData())));
+        LOGGER.debug("PasswordElement.x: " + ArrayConverter
+            .bytesToHexString(ArrayConverter.bigIntegerToByteArray(passwordElement.getFieldX().getData())));
     }
 
     private void prepareKeyShare() {
@@ -85,17 +83,16 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
         if (entry.getGroupConfig().isStandardCurve() || entry.getGroupConfig().isGrease()) {
             Point ecPublicKey = KeyShareCalculator.createPublicKey(entry.getGroupConfig(), entry.getPrivateKey());
             // TODO We currently just use the default point format
-            byte[] serializedPoint =
-                PointFormatter.formatToByteArray(entry.getGroupConfig(), ecPublicKey, chooser.getConfig()
-                    .getDefaultSelectedPointFormat());
+            byte[] serializedPoint = PointFormatter.formatToByteArray(entry.getGroupConfig(), ecPublicKey,
+                chooser.getConfig().getDefaultSelectedPointFormat());
             entry.setPublicKey(serializedPoint);
         } else if (entry.getGroupConfig().isCurve() && !entry.getGroupConfig().isStandardCurve()) {
             byte[] publicKey =
                 KeyShareCalculator.createMontgomeryKeyShare(entry.getGroupConfig(), entry.getPrivateKey());
             entry.setPublicKey(publicKey);
         } else {
-            throw new UnsupportedOperationException("The group \"" + entry.getGroupConfig().name()
-                + "\" is not supported yet");
+            throw new UnsupportedOperationException(
+                "The group \"" + entry.getGroupConfig().name() + "\" is not supported yet");
         }
         LOGGER.debug("KeyShare: " + ArrayConverter.bytesToHexString(entry.getPublicKey().getValue()));
     }

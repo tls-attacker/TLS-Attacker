@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.config.delegate;
@@ -99,8 +98,8 @@ public class EllipticCurveDelegateTest {
         LinkedList<NamedGroup> supportedNamedCurves = new LinkedList<>();
         supportedNamedCurves.add(NamedGroup.BRAINPOOLP384R1);
         delegate.setNamedGroups(supportedNamedCurves);
-        assertTrue("NamedCurves setter is not working correctly", delegate.getNamedGroups()
-            .equals(supportedNamedCurves));
+        assertTrue("NamedCurves setter is not working correctly",
+            delegate.getNamedGroups().equals(supportedNamedCurves));
     }
 
     /**
@@ -125,12 +124,12 @@ public class EllipticCurveDelegateTest {
             config.getDefaultClientNamedGroups().contains(NamedGroup.SECP192R1));
         assertTrue("UNCOMPRESSED should get parsed correctly",
             config.getDefaultClientSupportedPointFormats().contains(ECPointFormat.UNCOMPRESSED));
-        assertTrue("ANSIX962_COMPRESSED_PRIME should get parsed correctly", config
-            .getDefaultClientSupportedPointFormats().contains(ECPointFormat.ANSIX962_COMPRESSED_PRIME));
+        assertTrue("ANSIX962_COMPRESSED_PRIME should get parsed correctly",
+            config.getDefaultClientSupportedPointFormats().contains(ECPointFormat.ANSIX962_COMPRESSED_PRIME));
         assertTrue("UNCOMPRESSED should get parsed correctly",
             config.getDefaultServerSupportedPointFormats().contains(ECPointFormat.UNCOMPRESSED));
-        assertTrue("ANSIX962_COMPRESSED_PRIME should get parsed correctly", config
-            .getDefaultServerSupportedPointFormats().contains(ECPointFormat.ANSIX962_COMPRESSED_PRIME));
+        assertTrue("ANSIX962_COMPRESSED_PRIME should get parsed correctly",
+            config.getDefaultServerSupportedPointFormats().contains(ECPointFormat.ANSIX962_COMPRESSED_PRIME));
 
     }
 

@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.workflow;
@@ -86,7 +85,7 @@ public class WorkflowTraceSerializerTest {
         String serializedWorkflow = new String(os.toByteArray());
 
         ByteArrayInputStream bis = new ByteArrayInputStream(serializedWorkflow.getBytes());
-        WorkflowTrace wt = WorkflowTraceSerializer.read(bis);
+        WorkflowTrace wt = WorkflowTraceSerializer.secureRead(bis);
 
         os = new ByteArrayOutputStream();
         WorkflowTraceSerializer.write(os, wt);

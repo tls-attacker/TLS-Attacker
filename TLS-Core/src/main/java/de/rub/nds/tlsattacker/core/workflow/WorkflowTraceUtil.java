@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.workflow;
@@ -14,7 +13,8 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.TlsMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.workflow.action.*;
@@ -196,14 +196,16 @@ public class WorkflowTraceUtil {
     private static List<ProtocolMessage> filterMessageList(List<ProtocolMessage> messages, ProtocolMessageType type) {
         List<ProtocolMessage> returnedMessages = new LinkedList<>();
         for (ProtocolMessage protocolMessage : messages) {
-            if (protocolMessage.getProtocolMessageType() == type) {
+            if (protocolMessage instanceof TlsMessage
+                && ((TlsMessage) protocolMessage).getProtocolMessageType() == type) {
                 returnedMessages.add(protocolMessage);
             }
         }
         return returnedMessages;
     }
 
-    private static List<HandshakeMessage> filterMessageList(List<HandshakeMessage> messages, HandshakeMessageType type) {
+    private static List<HandshakeMessage> filterMessageList(List<HandshakeMessage> messages,
+        HandshakeMessageType type) {
         List<HandshakeMessage> returnedMessages = new LinkedList<>();
         for (HandshakeMessage handshakeMessage : messages) {
             if (handshakeMessage.getHandshakeMessageType() == type) {
@@ -226,7 +228,7 @@ public class WorkflowTraceUtil {
     public static List<HandshakeMessage> filterHandshakeMessagesFromList(List<ProtocolMessage> messages) {
         List<HandshakeMessage> returnedMessages = new LinkedList<>();
         for (ProtocolMessage protocolMessage : messages) {
-            if (protocolMessage.isHandshakeMessage()) {
+            if (protocolMessage instanceof HandshakeMessage) {
                 returnedMessages.add((HandshakeMessage) protocolMessage);
             }
         }
@@ -246,7 +248,7 @@ public class WorkflowTraceUtil {
     public static List<ProtocolMessage> getAllReceivedMessages(WorkflowTrace trace, ProtocolMessageType type) {
         List<ProtocolMessage> receivedMessage = new LinkedList<>();
         for (ProtocolMessage message : getAllReceivedMessages(trace)) {
-            if (message.getProtocolMessageType() == type) {
+            if (message instanceof TlsMessage && ((TlsMessage) message).getProtocolMessageType() == type) {
                 receivedMessage.add(message);
             }
         }
@@ -265,7 +267,11 @@ public class WorkflowTraceUtil {
         WorkflowTrace trace) {
         List<ProtocolMessage> receivedMessages = getAllReceivedMessages(trace);
         for (ProtocolMessage message : receivedMessages) {
-            if (message.getProtocolMessageType() == protocolMessageType) {
+            if (!(message instanceof TlsMessage)) {
+                continue;
+            }
+
+            if (((TlsMessage) message).getProtocolMessageType() == protocolMessageType) {
                 return true;
             }
             if (message instanceof HandshakeMessage) {

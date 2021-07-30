@@ -1,18 +1,16 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
-import de.rub.nds.modifiablevariable.bool.ModifiableBoolean;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -21,8 +19,8 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ServerHelloHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.TlsMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.AlpnExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CachedInfoExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestExtensionMessage;
@@ -59,7 +57,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Date;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.*;
 
 @XmlRootElement
 public class ServerHelloMessage extends HelloMessage {
@@ -76,7 +74,7 @@ public class ServerHelloMessage extends HelloMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByte selectedCompressionMethod;
 
-    private boolean autoSetHelloRetryModeInKeyShare = true;
+    private Boolean autoSetHelloRetryModeInKeyShare = true;
 
     public ServerHelloMessage(Config tlsConfig) {
         super(tlsConfig, HandshakeMessageType.SERVER_HELLO);
@@ -93,9 +91,8 @@ public class ServerHelloMessage extends HelloMessage {
             }
             if (tlsConfig.isAddServerNameIndicationExtension()) {
                 ServerNameIndicationExtensionMessage extension = new ServerNameIndicationExtensionMessage();
-                ServerNamePair pair = new ServerNamePair();
-                pair.setServerNameConfig(tlsConfig.getDefaultServerConnection().getHostname()
-                    .getBytes(Charset.forName("US-ASCII")));
+                ServerNamePair pair = new ServerNamePair(tlsConfig.getSniType().getValue(),
+                    tlsConfig.getDefaultServerConnection().getHostname().getBytes(Charset.forName("US-ASCII")));
                 extension.getServerNameList().add(pair);
                 addExtension(extension);
             }
@@ -233,8 +230,8 @@ public class ServerHelloMessage extends HelloMessage {
         }
         if (getProtocolVersion() != null && getProtocolVersion().getValue() != null
             && !ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()).isTLS13()) {
-            sb.append("\n  Server Unix Time: ").append(
-                new Date(ArrayConverter.bytesToLong(getUnixTime().getValue()) * 1000));
+            sb.append("\n  Server Unix Time: ")
+                .append(new Date(ArrayConverter.bytesToLong(getUnixTime().getValue()) * 1000));
         }
         sb.append("\n  Server Unix Time: ");
         if (getProtocolVersion() != null) {
@@ -290,7 +287,7 @@ public class ServerHelloMessage extends HelloMessage {
     }
 
     @Override
-    public ProtocolMessageHandler getHandler(TlsContext context) {
+    public ServerHelloHandler getHandler(TlsContext context) {
         return new ServerHelloHandler(context);
     }
 
@@ -298,11 +295,11 @@ public class ServerHelloMessage extends HelloMessage {
         return HELLO_RETRY_REQUEST_RANDOM;
     }
 
-    public boolean isAutoSetHelloRetryModeInKeyShare() {
+    public Boolean isAutoSetHelloRetryModeInKeyShare() {
         return autoSetHelloRetryModeInKeyShare;
     }
 
-    public void setAutoSetHelloRetryModeInKeyShare(boolean autoSetHelloRetryModeInKeyShare) {
+    public void setAutoSetHelloRetryModeInKeyShare(Boolean autoSetHelloRetryModeInKeyShare) {
         this.autoSetHelloRetryModeInKeyShare = autoSetHelloRetryModeInKeyShare;
     }
 

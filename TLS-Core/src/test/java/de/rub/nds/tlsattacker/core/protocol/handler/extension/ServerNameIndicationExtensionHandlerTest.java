@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
@@ -42,9 +41,9 @@ public class ServerNameIndicationExtensionHandlerTest {
     public void testAdjustTLSContext() {
         ServerNameIndicationExtensionMessage msg = new ServerNameIndicationExtensionMessage();
         List<ServerNamePair> pairList = new LinkedList<>();
-        ServerNamePair pair = new ServerNamePair();
-        pair.setServerName("localhost".getBytes());
-        pair.setServerNameType(NameType.HOST_NAME.getValue());
+        ServerNamePair pair = new ServerNamePair(NameType.HOST_NAME.getValue(), "localhost".getBytes());
+        pair.setServerName(pair.getServerNameConfig());
+        pair.setServerNameType(pair.getServerNameTypeConfig());
         pairList.add(pair);
         msg.setServerNameList(pairList);
         handler.adjustTLSContext(msg);
@@ -58,9 +57,9 @@ public class ServerNameIndicationExtensionHandlerTest {
     public void testUndefinedAdjustTLSContext() {
         ServerNameIndicationExtensionMessage msg = new ServerNameIndicationExtensionMessage();
         List<ServerNamePair> pairList = new LinkedList<>();
-        ServerNamePair pair = new ServerNamePair();
-        pair.setServerName("localhost".getBytes());
-        pair.setServerNameType((byte) 99);
+        ServerNamePair pair = new ServerNamePair((byte) 99, "localhost".getBytes());
+        pair.setServerName(pair.getServerNameConfig());
+        pair.setServerNameType(pair.getServerNameTypeConfig());
         pairList.add(pair);
         msg.setServerNameList(pairList);
         handler.adjustTLSContext(msg);
@@ -72,7 +71,8 @@ public class ServerNameIndicationExtensionHandlerTest {
      */
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[] { 0, 2, 3, }, 0, context.getConfig()) instanceof ServerNameIndicationExtensionParser);
+        assertTrue(handler.getParser(new byte[] { 0, 2, 3, }, 0,
+            context.getConfig()) instanceof ServerNameIndicationExtensionParser);
     }
 
     /**
@@ -80,7 +80,8 @@ public class ServerNameIndicationExtensionHandlerTest {
      */
     @Test
     public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new ServerNameIndicationExtensionMessage()) instanceof ServerNameIndicationExtensionPreparator);
+        assertTrue(handler.getPreparator(
+            new ServerNameIndicationExtensionMessage()) instanceof ServerNameIndicationExtensionPreparator);
     }
 
     /**
@@ -88,7 +89,8 @@ public class ServerNameIndicationExtensionHandlerTest {
      */
     @Test
     public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new ServerNameIndicationExtensionMessage()) instanceof ServerNameIndicationExtensionSerializer);
+        assertTrue(handler.getSerializer(
+            new ServerNameIndicationExtensionMessage()) instanceof ServerNameIndicationExtensionSerializer);
     }
 
 }

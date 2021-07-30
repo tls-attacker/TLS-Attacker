@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
@@ -47,9 +46,7 @@ public class ClientEsniInnerPreparatorTest {
 
         ClientEsniInner clientEsniInner = new ClientEsniInner();
         ClientEsniInnerPreparator clientEsniInnerPreparator = new ClientEsniInnerPreparator(chooser, clientEsniInner);
-        ServerNamePair pair = new ServerNamePair();
-        pair.setServerNameTypeConfig(nameType);
-        pair.setServerNameConfig(hostName.getBytes(StandardCharsets.UTF_8));
+        ServerNamePair pair = new ServerNamePair(nameType, hostName.getBytes(StandardCharsets.UTF_8));
         clientEsniInner.getServerNameList().add(pair);
         context.setEsniPaddedLength(260);
 

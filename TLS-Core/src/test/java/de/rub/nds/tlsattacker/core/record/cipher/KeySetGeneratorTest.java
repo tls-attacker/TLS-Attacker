@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.record.cipher;
@@ -42,8 +41,7 @@ public class KeySetGeneratorTest {
      */
     @Test
     // @Category(IntegrationTests.class)
-        public
-        void testGenerateKeySet() {
+    public void testGenerateKeySet() {
         for (CipherSuite suite : CipherSuite.getImplemented()) {
             for (ProtocolVersion version : ProtocolVersion.values()) {
                 try {
@@ -64,5 +62,4 @@ public class KeySetGeneratorTest {
             }
         }
     }
-
 }

@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.tokenbinding;
@@ -25,7 +24,7 @@ import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.protocol.preparator.ProtocolMessagePreparator;
+import de.rub.nds.tlsattacker.core.protocol.preparator.TlsMessagePreparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -42,7 +41,7 @@ import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.params.ParametersWithRandom;
 import org.bouncycastle.crypto.signers.ECDSASigner;
 
-public class TokenBindingMessagePreparator extends ProtocolMessagePreparator<TokenBindingMessage> {
+public class TokenBindingMessagePreparator extends TlsMessagePreparator<TokenBindingMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -66,8 +65,8 @@ public class TokenBindingMessagePreparator extends ProtocolMessagePreparator<Tok
             message.setPoint(PointFormatter.toRawFormat(publicKey));
             message.setPointLength(message.getPoint().getValue().length);
             ParametersWithRandom params =
-                new ParametersWithRandom(new ECPrivateKeyParameters(privateKey, generateEcParameters()), new BadRandom(
-                    new Random(0), new byte[0]));
+                new ParametersWithRandom(new ECPrivateKeyParameters(privateKey, generateEcParameters()),
+                    new BadRandom(new Random(0), new byte[0]));
             ECDSASigner signer = new ECDSASigner();
             signer.init(true, params);
             MessageDigest dig = null;
@@ -86,6 +85,7 @@ public class TokenBindingMessagePreparator extends ProtocolMessagePreparator<Tok
             message.setModulusLength(message.getModulus().getValue().length);
             message.setPublicExponent(chooser.getConfig().getDefaultTokenBindingRsaPublicKey().toByteArray());
             message.setPublicExponentLength(message.getPublicExponent().getValue().length);
+            message.setSignature(new byte[0]);
         }
         TokenBindingMessageSerializer serializer =
             new TokenBindingMessageSerializer(message, chooser.getSelectedProtocolVersion());
@@ -100,9 +100,8 @@ public class TokenBindingMessagePreparator extends ProtocolMessagePreparator<Tok
     private ECDomainParameters generateEcParameters() {
         NamedGroup[] groups = new NamedGroup[] { NamedGroup.SECP256R1 };
         ECPointFormat[] formats = new ECPointFormat[] { ECPointFormat.UNCOMPRESSED };
-        InputStream is =
-            new ByteArrayInputStream(ArrayConverter.concatenate(
-                new byte[] { EllipticCurveType.NAMED_CURVE.getValue() }, NamedGroup.SECP256R1.getValue()));
+        InputStream is = new ByteArrayInputStream(ArrayConverter
+            .concatenate(new byte[] { EllipticCurveType.NAMED_CURVE.getValue() }, NamedGroup.SECP256R1.getValue()));
         ECDomainParameters ecParams;
         try {
             ecParams = ECCUtilsBCWrapper.readECParameters(groups, formats, is);

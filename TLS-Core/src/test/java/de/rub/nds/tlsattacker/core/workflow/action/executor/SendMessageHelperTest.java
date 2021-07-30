@@ -1,17 +1,16 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.workflow.action.executor;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.TlsMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
@@ -38,9 +37,8 @@ public class SendMessageHelperTest {
     @Before
     public void setUp() throws IOException {
         context = new TlsContext();
-        transportHandler =
-            new StreamTransportHandler(0, 0, ConnectionEndType.CLIENT, new ByteArrayInputStream(new byte[] {}),
-                new ByteArrayOutputStream());
+        transportHandler = new StreamTransportHandler(0, 0, ConnectionEndType.CLIENT,
+            new ByteArrayInputStream(new byte[] {}), new ByteArrayOutputStream());
         context.setTransportHandler(transportHandler);
         context.getTransportHandler().initialize();
         context.setRecordLayer(new TlsRecordLayer(context));
@@ -64,10 +62,9 @@ public class SendMessageHelperTest {
         r.setMaxRecordLengthConfig(0);
         List<AbstractRecord> recordList = new LinkedList<>();
         recordList.add(r);
-        helper.sendMessages(new LinkedList<ProtocolMessage>(), recordList, context);
+        helper.sendMessages(new LinkedList<>(), recordList, context);
         assertArrayEquals(new byte[] { 22, 03, 03, 0, 0 },
             ((ByteArrayOutputStream) transportHandler.getOutputStream()).toByteArray());
 
     }
-
 }

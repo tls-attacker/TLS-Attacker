@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.parser;
@@ -17,7 +16,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class UnknownMessageParser extends ProtocolMessageParser<UnknownMessage> {
+public class UnknownMessageParser extends TlsMessageParser<UnknownMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -29,14 +28,15 @@ public class UnknownMessageParser extends ProtocolMessageParser<UnknownMessage> 
      * Constructor for the Parser class
      *
      * @param startposition
-     * Position in the array where the ProtocolMessageParser is supposed to start parsing
+     *                                 Position in the array where the ProtocolMessageParser is supposed to start
+     *                                 parsing
      * @param array
-     * The byte[] which the ProtocolMessageParser is supposed to parse
+     *                                 The byte[] which the ProtocolMessageParser is supposed to parse
      * @param version
-     * Version of the Protocol
+     *                                 Version of the Protocol
      * @param recordContentMessageType
      * @param config
-     * A Config used in the current context
+     *                                 A Config used in the current context
      */
     public UnknownMessageParser(int startposition, byte[] array, ProtocolVersion version,
         ProtocolMessageType recordContentMessageType, Config config) {

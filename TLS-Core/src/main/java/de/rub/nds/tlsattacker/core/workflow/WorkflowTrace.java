@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.workflow;
@@ -15,7 +14,8 @@ import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.TlsMessage;
 import de.rub.nds.tlsattacker.core.workflow.action.*;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import java.io.ByteArrayInputStream;
@@ -56,9 +56,9 @@ public class WorkflowTrace implements Serializable {
      * "tweaks", i.e. we have to manually restore important fields marked as XmlTransient. This problem arises because
      * the classes are configured for nice JAXB output, and not for copying/storing full objects.
      *
-     * @param orig
-     * the original WorkflowTrace object to copy
-     * @return a copy of the original WorkflowTrace
+     * @param  orig
+     *              the original WorkflowTrace object to copy
+     * @return      a copy of the original WorkflowTrace
      */
     public static WorkflowTrace copy(WorkflowTrace orig) {
         WorkflowTrace copy = null;
@@ -68,7 +68,7 @@ public class WorkflowTrace implements Serializable {
         try {
             String origTraceStr = WorkflowTraceSerializer.write(orig);
             InputStream is = new ByteArrayInputStream(origTraceStr.getBytes(StandardCharsets.UTF_8.name()));
-            copy = WorkflowTraceSerializer.read(is);
+            copy = WorkflowTraceSerializer.insecureRead(is);
         } catch (JAXBException | IOException | XMLStreamException ex) {
             throw new ConfigurationException("Could not copy workflow trace: " + ex);
         }
@@ -226,7 +226,7 @@ public class WorkflowTrace implements Serializable {
      * configuring workflow traces (say for MiTM or unit tests), there shouldn't be any need to call this method.
      *
      * @param connections
-     * new connection to use with this workflow trace
+     *                    new connection to use with this workflow trace
      */
     public void setConnections(List<AliasedConnection> connections) {
         dirty = true;
@@ -238,7 +238,7 @@ public class WorkflowTrace implements Serializable {
      * configuring workflow traces (say for MiTM or unit tests), there shouldn't be any need to call this method.
      *
      * @param connection
-     * new connection to add to the workflow trace
+     *                   new connection to add to the workflow trace
      */
     public void addConnection(AliasedConnection connection) {
         dirty = true;
@@ -460,7 +460,7 @@ public class WorkflowTrace implements Serializable {
         return null;
     }
 
-    public <T extends ProtocolMessage> T getFirstReceivedMessage(Class<T> msgClass) {
+    public <T extends TlsMessage> T getFirstReceivedMessage(Class<T> msgClass) {
         List<ProtocolMessage> messageList = WorkflowTraceUtil.getAllReceivedMessages(this);
         messageList =
             messageList.stream().filter(i -> msgClass.isAssignableFrom(i.getClass())).collect(Collectors.toList());
@@ -472,7 +472,7 @@ public class WorkflowTrace implements Serializable {
         }
     }
 
-    public <T extends ProtocolMessage> T getLastReceivedMessage(Class<T> msgClass) {
+    public <T extends TlsMessage> T getLastReceivedMessage(Class<T> msgClass) {
         List<ProtocolMessage> messageList = WorkflowTraceUtil.getAllReceivedMessages(this);
         messageList =
             messageList.stream().filter(i -> msgClass.isAssignableFrom(i.getClass())).collect(Collectors.toList());
@@ -484,7 +484,7 @@ public class WorkflowTrace implements Serializable {
         }
     }
 
-    public <T extends ProtocolMessage> T getFirstSendMessage(Class<T> msgClass) {
+    public <T extends TlsMessage> T getFirstSendMessage(Class<T> msgClass) {
         List<ProtocolMessage> messageList = WorkflowTraceUtil.getAllSendMessages(this);
         messageList =
             messageList.stream().filter(i -> msgClass.isAssignableFrom(i.getClass())).collect(Collectors.toList());
@@ -496,7 +496,7 @@ public class WorkflowTrace implements Serializable {
         }
     }
 
-    public <T extends ProtocolMessage> T getLastSendMessage(Class<T> msgClass) {
+    public <T extends TlsMessage> T getLastSendMessage(Class<T> msgClass) {
         List<ProtocolMessage> messageList = WorkflowTraceUtil.getAllSendMessages(this);
         messageList =
             messageList.stream().filter(i -> msgClass.isAssignableFrom(i.getClass())).collect(Collectors.toList());

@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
@@ -19,6 +18,7 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
 import java.util.LinkedList;
 import java.util.List;
@@ -102,4 +102,12 @@ public class KeyShareExtensionMessage extends ExtensionMessage {
     public void setRetryRequestMode(ModifiableBoolean retryRequestMode) {
         this.retryRequestMode = retryRequestMode;
     }
+
+    @Override
+    public List<ModifiableVariableHolder> getAllModifiableVariableHolders() {
+        List<ModifiableVariableHolder> allModifiableVariableHolders = super.getAllModifiableVariableHolders();
+        allModifiableVariableHolders.addAll(keyShareList);
+        return allModifiableVariableHolders;
+    }
+
 }

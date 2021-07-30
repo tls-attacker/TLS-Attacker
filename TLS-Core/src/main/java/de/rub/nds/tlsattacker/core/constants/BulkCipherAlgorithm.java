@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.constants;
@@ -32,12 +31,13 @@ public enum BulkCipherAlgorithm {
     CHACHA20_POLY1305,
     GOST28147,
     AES;
+
     private static final Logger LOGGER = LogManager.getLogger();
 
     /**
-     * @param cipherSuite
-     * The CipherSuite to choose the BulkCipherAlgorithm from
-     * @return The BulkCipherAlgorithm of the cipher suite
+     * @param  cipherSuite
+     *                     The CipherSuite to choose the BulkCipherAlgorithm from
+     * @return             The BulkCipherAlgorithm of the cipher suite
      */
     public static BulkCipherAlgorithm getBulkCipherAlgorithm(CipherSuite cipherSuite) {
         String cipher = cipherSuite.toString().toUpperCase();
@@ -104,8 +104,8 @@ public enum BulkCipherAlgorithm {
         } else if (cipher.contains("CHACHA20_POLY1305")) {
             return CHACHA20_POLY1305;
         }
-        throw new UnsupportedOperationException("The cipher algorithm from " + cipherAlgorithm.name()
-            + " is not supported yet.");
+        throw new UnsupportedOperationException(
+            "The cipher algorithm from " + cipherAlgorithm.name() + " is not supported yet.");
     }
 
     public String getJavaName() {

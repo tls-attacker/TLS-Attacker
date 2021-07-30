@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
@@ -36,7 +35,6 @@ public class ClientUdpTransportHandlerTest {
         try (DatagramSocket testSocket = new DatagramSocket()) {
             ClientUdpTransportHandler udpTH =
                 new ClientUdpTransportHandler(1, 1, localhost.getHostName(), testSocket.getLocalPort());
-            testSocket.setSoTimeout(1);
 
             udpTH.initialize();
 
@@ -92,7 +90,6 @@ public class ClientUdpTransportHandlerTest {
     public void testFetchTimeout() throws Exception {
         ClientUdpTransportHandler udpTH = new ClientUdpTransportHandler(1, 1, localhost.getHostName(), 12345);
         udpTH.initialize();
-        udpTH.setTimeout(1);
 
         byte[] rxData;
         rxData = udpTH.fetchData();

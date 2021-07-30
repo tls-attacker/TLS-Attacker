@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.parser;
@@ -33,15 +32,15 @@ public class DHEServerKeyExchangeParser<T extends DHEServerKeyExchangeMessage> e
      * Constructor for the Parser class
      *
      * @param pointer
-     * Position in the array where the ServerKeyExchangeParser is supposed to start parsing
+     *                             Position in the array where the ServerKeyExchangeParser is supposed to start parsing
      * @param array
-     * The byte[] which the ServerKeyExchangeParser is supposed to parse
+     *                             The byte[] which the ServerKeyExchangeParser is supposed to parse
      * @param version
-     * Version of the Protocol
+     *                             Version of the Protocol
      * @param keyExchangeAlgorithm
-     * The selected key exchange algorithm (affects which fields are present).
+     *                             The selected key exchange algorithm (affects which fields are present).
      * @param config
-     * A Config used in the current context
+     *                             A Config used in the current context
      */
     public DHEServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version,
         KeyExchangeAlgorithm keyExchangeAlgorithm, Config config) {
@@ -94,7 +93,7 @@ public class DHEServerKeyExchangeParser<T extends DHEServerKeyExchangeMessage> e
      * Reads the next bytes as the pLength and writes them in the message
      *
      * @param msg
-     * Message to write in
+     *            Message to write in
      */
     private void parsePLength(DHEServerKeyExchangeMessage msg) {
         msg.setModulusLength(parseIntField(HandshakeByteLength.DH_MODULUS_LENGTH));
@@ -105,7 +104,7 @@ public class DHEServerKeyExchangeParser<T extends DHEServerKeyExchangeMessage> e
      * Reads the next bytes as P and writes them in the message
      *
      * @param msg
-     * Message to write in
+     *            Message to write in
      */
     private void parseP(DHEServerKeyExchangeMessage msg) {
         msg.setModulus(parseByteArrayField(msg.getModulusLength().getValue()));
@@ -116,7 +115,7 @@ public class DHEServerKeyExchangeParser<T extends DHEServerKeyExchangeMessage> e
      * Reads the next bytes as the gLength and writes them in the message
      *
      * @param msg
-     * Message to write in
+     *            Message to write in
      */
     private void parseGLength(DHEServerKeyExchangeMessage msg) {
         msg.setGeneratorLength(parseIntField(HandshakeByteLength.DH_GENERATOR_LENGTH));
@@ -127,7 +126,7 @@ public class DHEServerKeyExchangeParser<T extends DHEServerKeyExchangeMessage> e
      * Reads the next bytes as G and writes them in the message
      *
      * @param msg
-     * Message to write in
+     *            Message to write in
      */
     private void parseG(DHEServerKeyExchangeMessage msg) {
         msg.setGenerator(parseByteArrayField(msg.getGeneratorLength().getValue()));
@@ -138,7 +137,7 @@ public class DHEServerKeyExchangeParser<T extends DHEServerKeyExchangeMessage> e
      * Reads the next bytes as the SerializedPublicKeyLength and writes them in the message
      *
      * @param msg
-     * Message to write in
+     *            Message to write in
      */
     private void parseSerializedPublicKeyLength(DHEServerKeyExchangeMessage msg) {
         msg.setPublicKeyLength(parseIntField(HandshakeByteLength.DH_PUBLICKEY_LENGTH));
@@ -149,7 +148,7 @@ public class DHEServerKeyExchangeParser<T extends DHEServerKeyExchangeMessage> e
      * Reads the next bytes as the SerializedPublicKey and writes them in the message
      *
      * @param msg
-     * Message to write in
+     *            Message to write in
      */
     private void parseSerializedPublicKey(DHEServerKeyExchangeMessage msg) {
         msg.setPublicKey(parseByteArrayField(msg.getPublicKeyLength().getValue()));
@@ -178,7 +177,7 @@ public class DHEServerKeyExchangeParser<T extends DHEServerKeyExchangeMessage> e
      * Reads the next bytes as the SignatureAndHashAlgorithm and writes them in the message
      *
      * @param msg
-     * Message to write in
+     *            Message to write in
      */
     private void parseSignatureAndHashAlgorithm(DHEServerKeyExchangeMessage msg) {
         msg.setSignatureAndHashAlgorithm(parseByteArrayField(HandshakeByteLength.SIGNATURE_HASH_ALGORITHM));
@@ -190,7 +189,7 @@ public class DHEServerKeyExchangeParser<T extends DHEServerKeyExchangeMessage> e
      * Reads the next bytes as the SignatureLength and writes them in the message
      *
      * @param msg
-     * Message to write in
+     *            Message to write in
      */
     private void parseSignatureLength(DHEServerKeyExchangeMessage msg) {
         msg.setSignatureLength(parseIntField(HandshakeByteLength.SIGNATURE_LENGTH));
@@ -201,7 +200,7 @@ public class DHEServerKeyExchangeParser<T extends DHEServerKeyExchangeMessage> e
      * Reads the next bytes as the Signature and writes them in the message
      *
      * @param msg
-     * Message to write in
+     *            Message to write in
      */
     private void parseSignature(DHEServerKeyExchangeMessage msg) {
         msg.setSignature(parseByteArrayField(msg.getSignatureLength().getValue()));

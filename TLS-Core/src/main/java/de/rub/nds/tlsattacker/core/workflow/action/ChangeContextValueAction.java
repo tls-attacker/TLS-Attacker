@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.workflow.action;
@@ -20,6 +19,9 @@ import java.util.List;
 import java.util.Objects;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlSeeAlso;
+
+import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -31,8 +33,10 @@ import org.apache.logging.log4j.Logger;
  * might be serialization/deserialization issues with the types used in the {@link TlsContext}.
  *
  * @param <T>
- * Object type of the field inside the {@link TlsContext}
+ *            Object type of the field inside the {@link TlsContext}
  */
+@XmlSeeAlso(TlsContext.class)
+@XmlRootElement
 public class ChangeContextValueAction<T> extends ConnectionBoundAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -85,13 +89,13 @@ public class ChangeContextValueAction<T> extends ConnectionBoundAction {
             if (!isUsesList()) {
                 oldValue = (T) field.get(tlsContext);
                 field.set(tlsContext, this.newValue);
-                LOGGER.info(String.format("Changed %s from %s to %s", this.fieldName, oldValue == null ? "null"
-                    : oldValue.toString(), newValue.toString()));
+                LOGGER.info(String.format("Changed %s from %s to %s", this.fieldName,
+                    oldValue == null ? "null" : oldValue.toString(), newValue.toString()));
             } else {
                 oldValueList = (List<T>) field.get(tlsContext);
                 field.set(tlsContext, this.newValueList);
-                LOGGER.info(String.format("Changed %s from %s to %s", this.fieldName, oldValueList == null ? "null"
-                    : oldValueList.toString(), newValueList.toString()));
+                LOGGER.info(String.format("Changed %s from %s to %s", this.fieldName,
+                    oldValueList == null ? "null" : oldValueList.toString(), newValueList.toString()));
             }
 
             setExecuted(true);

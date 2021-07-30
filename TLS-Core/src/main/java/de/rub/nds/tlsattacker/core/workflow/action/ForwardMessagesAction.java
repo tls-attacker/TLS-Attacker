@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.workflow.action;
@@ -17,51 +16,9 @@ import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.https.HttpsRequestMessage;
 import de.rub.nds.tlsattacker.core.https.HttpsResponseMessage;
-import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
-import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.CertificateStatusMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.EncryptedExtensionsMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.EndOfEarlyDataMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.GOSTClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.HelloRequestMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.HelloRetryRequestMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PWDClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PWDServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PskClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PskDhClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PskDheServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PskEcDhClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PskEcDheServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PskRsaClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PskServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientMasterKeyMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerVerifyMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.SrpClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.SrpServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.SupplementalDataMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.UnknownHandshakeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
@@ -80,10 +37,12 @@ import java.util.Set;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+@XmlRootElement
 public class ForwardMessagesAction extends TlsAction implements ReceivingAction, SendingAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -105,6 +64,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
     @HoldsModifiableVariable
     @XmlElementWrapper
     @XmlElements(value = { @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
+        @XmlElement(type = TlsMessage.class, name = "TlsMessage"),
         @XmlElement(type = CertificateMessage.class, name = "Certificate"),
         @XmlElement(type = CertificateVerifyMessage.class, name = "CertificateVerify"),
         @XmlElement(type = CertificateRequestMessage.class, name = "CertificateRequest"),
@@ -125,6 +85,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
         @XmlElement(type = ServerHelloMessage.class, name = "ServerHello"),
         @XmlElement(type = AlertMessage.class, name = "Alert"),
         @XmlElement(type = NewSessionTicketMessage.class, name = "NewSessionTicket"),
+        @XmlElement(type = KeyUpdateMessage.class, name = "KeyUpdate"),
         @XmlElement(type = ApplicationMessage.class, name = "Application"),
         @XmlElement(type = ChangeCipherSpecMessage.class, name = "ChangeCipherSpec"),
         @XmlElement(type = SSL2ClientHelloMessage.class, name = "SSL2ClientHello"),
@@ -162,6 +123,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
     @XmlElementWrapper
     @HoldsModifiableVariable
     @XmlElements(value = { @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
+        @XmlElement(type = TlsMessage.class, name = "TlsMessage"),
         @XmlElement(type = CertificateMessage.class, name = "Certificate"),
         @XmlElement(type = CertificateVerifyMessage.class, name = "CertificateVerify"),
         @XmlElement(type = CertificateRequestMessage.class, name = "CertificateRequest"),
@@ -179,6 +141,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
         @XmlElement(type = ServerHelloMessage.class, name = "ServerHello"),
         @XmlElement(type = AlertMessage.class, name = "Alert"),
         @XmlElement(type = NewSessionTicketMessage.class, name = "NewSessionTicket"),
+        @XmlElement(type = KeyUpdateMessage.class, name = "KeyUpdate"),
         @XmlElement(type = ApplicationMessage.class, name = "Application"),
         @XmlElement(type = ChangeCipherSpecMessage.class, name = "ChangeCipherSpec"),
         @XmlElement(type = SSL2ClientHelloMessage.class, name = "SSL2ClientHello"),
@@ -216,6 +179,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
     @HoldsModifiableVariable
     @XmlElementWrapper
     @XmlElements(value = { @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
+        @XmlElement(type = TlsMessage.class, name = "TlsMessage"),
         @XmlElement(type = CertificateMessage.class, name = "Certificate"),
         @XmlElement(type = CertificateVerifyMessage.class, name = "CertificateVerify"),
         @XmlElement(type = CertificateRequestMessage.class, name = "CertificateRequest"),
@@ -233,6 +197,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
         @XmlElement(type = ServerHelloMessage.class, name = "ServerHello"),
         @XmlElement(type = AlertMessage.class, name = "Alert"),
         @XmlElement(type = NewSessionTicketMessage.class, name = "NewSessionTicket"),
+        @XmlElement(type = KeyUpdateMessage.class, name = "KeyUpdate"),
         @XmlElement(type = ApplicationMessage.class, name = "Application"),
         @XmlElement(type = ChangeCipherSpecMessage.class, name = "ChangeCipherSpec"),
         @XmlElement(type = SSL2ClientHelloMessage.class, name = "SSL2ClientHello"),
@@ -352,8 +317,8 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
     private void applyMessages(TlsContext ctx) {
         for (ProtocolMessage msg : receivedMessages) {
             LOGGER.debug("Applying " + msg.toCompactString() + " to forward context " + ctx);
-            ProtocolMessageHandler h = msg.getHandler(ctx);
-            h.adjustTLSContext(msg);
+            ProtocolMessageHandler<ProtocolMessage> h = msg.getHandler(ctx);
+            h.adjustContext(msg);
         }
     }
 
@@ -385,8 +350,8 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
 
     // TODO: yes, the correct way would be implement equals() for all
     // ProtocolMessages...
-    private boolean
-        checkMessageListsEquals(List<ProtocolMessage> expectedMessages, List<ProtocolMessage> actualMessages) {
+    private boolean checkMessageListsEquals(List<ProtocolMessage> expectedMessages,
+        List<ProtocolMessage> actualMessages) {
         boolean actualEmpty = true;
         boolean expectedEmpty = true;
         if (actualMessages != null && !actualMessages.isEmpty()) {
@@ -629,25 +594,31 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
 
     @Override
     public List<ProtocolMessageType> getGoingToReceiveProtocolMessageTypes() {
-        if (this.messages == null)
+        if (this.messages == null) {
             return new ArrayList<>();
+        }
 
         List<ProtocolMessageType> types = new ArrayList<>();
         for (ProtocolMessage msg : messages) {
-            types.add(msg.getProtocolMessageType());
+            if (!(msg instanceof TlsMessage)) {
+                continue;
+            }
+            types.add(((TlsMessage) msg).getProtocolMessageType());
         }
         return types;
     }
 
     @Override
     public List<HandshakeMessageType> getGoingToReceiveHandshakeMessageTypes() {
-        if (this.messages == null)
+        if (this.messages == null) {
             return new ArrayList<>();
+        }
 
         List<HandshakeMessageType> types = new ArrayList<>();
         for (ProtocolMessage msg : messages) {
-            if (!msg.isHandshakeMessage())
+            if (!(msg instanceof HandshakeMessage)) {
                 continue;
+            }
             types.add(((HandshakeMessage) msg).getHandshakeMessageType());
         }
         return types;

@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
@@ -48,16 +47,13 @@ public class ClientEsniInnerSerializerTest {
         clientEsniInner = new ClientEsniInner();
         clientEsniInnerPreparator = new ClientEsniInnerPreparator(chooser, clientEsniInner);
         clientEsniInnerSerializer = new ClientEsniInnerSerializer(clientEsniInner);
-        ServerNamePair pair = new ServerNamePair();
-        pair.setServerNameTypeConfig(nameType);
-        pair.setServerNameConfig(hostname.getBytes(StandardCharsets.UTF_8));
+        ServerNamePair pair = new ServerNamePair(nameType, hostname.getBytes(StandardCharsets.UTF_8));
         clientEsniInner.getServerNameList().add(pair);
 
         clientEsniInnerPreparator.prepare();
         byte[] resultBytes = clientEsniInnerSerializer.serialize();
-        byte[] expectedBytes =
-            ArrayConverter
-                .hexStringToByteArray("A7284C9A52F15C13644B947261774657001200000F62617A2E6578616D706C652E636F6D000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
+        byte[] expectedBytes = ArrayConverter.hexStringToByteArray(
+            "A7284C9A52F15C13644B947261774657001200000F62617A2E6578616D706C652E636F6D000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
         assertArrayEquals(expectedBytes, resultBytes);
     }
 }

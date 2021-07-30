@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
@@ -28,7 +27,7 @@ public class SessionTicketTlsExtensionHandler extends ExtensionHandler<SessionTi
      * Constructor
      *
      * @param context
-     * The TlsContext which the Handler should adjust
+     *                The TlsContext which the Handler should adjust
      */
     public SessionTicketTlsExtensionHandler(TlsContext context) {
         super(context);
@@ -52,8 +51,8 @@ public class SessionTicketTlsExtensionHandler extends ExtensionHandler<SessionTi
     @Override
     public void adjustTLSExtensionContext(SessionTicketTLSExtensionMessage message) {
         if (message.getExtensionLength().getValue() > 65535) {
-            LOGGER.warn("The SessionTLS ticket length shouldn't exceed 2 bytes as defined in RFC 4507. "
-                + "Length was " + message.getExtensionLength().getValue());
+            LOGGER.warn("The SessionTLS ticket length shouldn't exceed 2 bytes as defined in RFC 4507. " + "Length was "
+                + message.getExtensionLength().getValue());
         }
         context.setSessionTicketTLS(message.getTicket().getValue());
         LOGGER

@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
@@ -20,8 +19,8 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class SignedCertificateTimestampExtensionHandler extends
-    ExtensionHandler<SignedCertificateTimestampExtensionMessage> {
+public class SignedCertificateTimestampExtensionHandler
+    extends ExtensionHandler<SignedCertificateTimestampExtensionMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -29,7 +28,7 @@ public class SignedCertificateTimestampExtensionHandler extends
      * Constructor
      *
      * @param context
-     * A Chooser
+     *                A Chooser
      */
     public SignedCertificateTimestampExtensionHandler(TlsContext context) {
         super(context);
@@ -38,11 +37,11 @@ public class SignedCertificateTimestampExtensionHandler extends
     /**
      * Returns a new SignedCertificateTimestampExtensionParser
      *
-     * @param message
-     * Message which holds the extensions
-     * @param pointer
-     * Startposition of the extension
-     * @return A SignedCertificateTimestampExtensionParser
+     * @param  message
+     *                 Message which holds the extensions
+     * @param  pointer
+     *                 Startposition of the extension
+     * @return         A SignedCertificateTimestampExtensionParser
      */
     @Override
     public SignedCertificateTimestampExtensionParser getParser(byte[] message, int pointer, Config config) {
@@ -52,26 +51,26 @@ public class SignedCertificateTimestampExtensionHandler extends
     /**
      * Returns a new SignedCertificateTimestampExtensionPreparator
      *
-     * @param message
-     * A SignedCertificateTimestampExtensionMessage
-     * @return A SignedCertificateTimestampExtensionPreparator
+     * @param  message
+     *                 A SignedCertificateTimestampExtensionMessage
+     * @return         A SignedCertificateTimestampExtensionPreparator
      */
     @Override
-    public SignedCertificateTimestampExtensionPreparator getPreparator(
-        SignedCertificateTimestampExtensionMessage message) {
+    public SignedCertificateTimestampExtensionPreparator
+        getPreparator(SignedCertificateTimestampExtensionMessage message) {
         return new SignedCertificateTimestampExtensionPreparator(context.getChooser(), message, getSerializer(message));
     }
 
     /**
      * Returns a new SignedCertificateTimestampExtensionSerializer
      *
-     * @param message
-     * A SignedCertificateTimestampExtensionMessage
-     * @return A SignedCertificateTimestampExtensionSerializer
+     * @param  message
+     *                 A SignedCertificateTimestampExtensionMessage
+     * @return         A SignedCertificateTimestampExtensionSerializer
      */
     @Override
-    public SignedCertificateTimestampExtensionSerializer getSerializer(
-        SignedCertificateTimestampExtensionMessage message) {
+    public SignedCertificateTimestampExtensionSerializer
+        getSerializer(SignedCertificateTimestampExtensionMessage message) {
         return new SignedCertificateTimestampExtensionSerializer(message);
     }
 
@@ -79,7 +78,7 @@ public class SignedCertificateTimestampExtensionHandler extends
      * Parses the content of a SignedCertificateTimestampExtensionMessage to the actual Chooser
      *
      * @param message
-     * A SingedCertificateTimestampExtensionMessage
+     *                A SingedCertificateTimestampExtensionMessage
      */
     @Override
     public void adjustTLSExtensionContext(SignedCertificateTimestampExtensionMessage message) {

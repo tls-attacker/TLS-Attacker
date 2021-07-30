@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.workflow;
@@ -17,7 +16,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
@@ -93,6 +92,10 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
                 if (!config.isSkipExecutedActions() || !action.isExecuted()) {
                     action.execute(state);
                 }
+                action.execute(state);
+            } catch (UnsupportedOperationException E) {
+                LOGGER.warn("Unsupported operation!", E);
+                state.setExecutionException(E);
             } catch (PreparationException | WorkflowExecutionException ex) {
                 state.setExecutionException(ex);
                 throw new WorkflowExecutionException("Problem while executing Action:" + action.toString(), ex);

@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.attacks.impl;
@@ -18,7 +17,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
@@ -73,13 +72,13 @@ public class EarlyFinishedAttacker extends Attacker<EarlyFinishedCommandConfig> 
         workflowTrace.addTlsAction(new SendDynamicClientKeyExchangeAction(connection.getAlias()));
         List<ProtocolMessage> messages = new LinkedList<>();
         messages.add(new ChangeCipherSpecMessage(tlsConfig));
-        workflowTrace.addTlsAction(MessageActionFactory.createAction(tlsConfig, connection, ConnectionEndType.CLIENT,
-            messages));
+        workflowTrace
+            .addTlsAction(MessageActionFactory.createAction(tlsConfig, connection, ConnectionEndType.CLIENT, messages));
         messages = new LinkedList<>();
         messages.add(new ChangeCipherSpecMessage(tlsConfig));
         messages.add(new FinishedMessage(tlsConfig));
-        workflowTrace.addTlsAction(MessageActionFactory.createAction(tlsConfig, connection, ConnectionEndType.SERVER,
-            messages));
+        workflowTrace
+            .addTlsAction(MessageActionFactory.createAction(tlsConfig, connection, ConnectionEndType.SERVER, messages));
 
         State state = new State(tlsConfig, workflowTrace);
         WorkflowExecutor workflowExecutor =

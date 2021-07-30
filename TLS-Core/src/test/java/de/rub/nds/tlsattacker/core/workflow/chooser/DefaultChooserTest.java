@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.workflow.chooser;
@@ -86,7 +85,8 @@ public class DefaultChooserTest {
     @Test
     public void testGetSelectedSigHashAlgorithm() {
         config.setDefaultSelectedSignatureAndHashAlgorithm(SignatureAndHashAlgorithm.RSA_PSS_PSS_SHA256);
-        assertEquals(config.getDefaultSelectedSignatureAndHashAlgorithm(), SignatureAndHashAlgorithm.RSA_PSS_PSS_SHA256);
+        assertEquals(config.getDefaultSelectedSignatureAndHashAlgorithm(),
+            SignatureAndHashAlgorithm.RSA_PSS_PSS_SHA256);
         assertEquals(chooser.getSelectedSigHashAlgorithm(), SignatureAndHashAlgorithm.RSA_PSS_PSS_SHA256);
         context.setSelectedSignatureAndHashAlgorithm(SignatureAndHashAlgorithm.DSA_SHA1);
         assertEquals(chooser.getSelectedSigHashAlgorithm(), SignatureAndHashAlgorithm.DSA_SHA1);
@@ -278,7 +278,8 @@ public class DefaultChooserTest {
             config.getDefaultServerSupportedSignatureAndHashAlgorithms());
         assertEquals(serverSupportedSignatureAndHashAlgorithms, chooser.getServerSupportedSignatureAndHashAlgorithms());
         context.setServerSupportedSignatureAndHashAlgorithms(serverSupportedSignatureAndHashAlgorithms2);
-        assertEquals(serverSupportedSignatureAndHashAlgorithms2, chooser.getServerSupportedSignatureAndHashAlgorithms());
+        assertEquals(serverSupportedSignatureAndHashAlgorithms2,
+            chooser.getServerSupportedSignatureAndHashAlgorithms());
     }
 
     /**
@@ -809,10 +810,10 @@ public class DefaultChooserTest {
         byte[] salt2 = ArrayConverter.hexStringToByteArray("FF");
         context.setServerPWDSalt(null);
         config.setDefaultServerPWDSalt(salt);
-        assertEquals(salt, config.getDefaultServerPWDSalt());
-        assertEquals(null, chooser.getServerPWDSalt());
+        assertArrayEquals(salt, config.getDefaultServerPWDSalt());
+        assertArrayEquals(salt, chooser.getServerPWDSalt());
         context.setServerPWDSalt(salt2);
-        assertEquals(salt2, chooser.getServerPWDSalt());
+        assertArrayEquals(salt2, chooser.getServerPWDSalt());
     }
 
     /**

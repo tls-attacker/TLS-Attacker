@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.certificate.transparency;
@@ -91,9 +90,8 @@ public class SignedCertificateTimestampSignature {
         outputStream.write(SignedCertificateTimestampVersion.encodeVersion(sct.getVersion()));
 
         // signature type
-        byte signatureType =
-            SignedCertificateTimestampSignatureType
-                .encodeVersion(SignedCertificateTimestampSignatureType.CERTIFICATE_TIMESTAMP);
+        byte signatureType = SignedCertificateTimestampSignatureType
+            .encodeVersion(SignedCertificateTimestampSignatureType.CERTIFICATE_TIMESTAMP);
         outputStream.write(signatureType);
 
         // timestamp
@@ -130,11 +128,11 @@ public class SignedCertificateTimestampSignature {
      * 6962 Section 3.2 for more information on how to construct a precertificate entry:
      * https://tools.ietf.org/html/rfc6962#section-3.2
      *
-     * @param leafCertificate
-     * The leaf certificate
-     * @param issuerCertificate
-     * The issuer certificate
-     * @return Precertificate as DER-encoded byte[]
+     * @param  leafCertificate
+     *                           The leaf certificate
+     * @param  issuerCertificate
+     *                           The issuer certificate
+     * @return                   Precertificate as DER-encoded byte[]
      */
     private byte[] convertToPreCertificate(Certificate leafCertificate, Certificate issuerCertificate)
         throws IOException {
@@ -176,8 +174,8 @@ public class SignedCertificateTimestampSignature {
         Extensions extensions = originalTbsCertificate.getExtensions();
         for (ASN1ObjectIdentifier objectIdentifier : extensions.getExtensionOIDs()) {
             if (!ExtensionObjectIdentifier.PRECERTIFICATE_POISON.equals(objectIdentifier.getId())
-                && !ExtensionObjectIdentifier.SIGNED_CERTIFICATE_TIMESTAMP_LIST.getOID().equals(
-                    objectIdentifier.getId())) {
+                && !ExtensionObjectIdentifier.SIGNED_CERTIFICATE_TIMESTAMP_LIST.getOID()
+                    .equals(objectIdentifier.getId())) {
                 Extension extension = extensions.getExtension(objectIdentifier);
                 extensionList.add(extension);
             }

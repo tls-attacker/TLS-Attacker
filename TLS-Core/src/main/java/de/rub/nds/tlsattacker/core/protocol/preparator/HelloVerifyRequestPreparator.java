@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.preparator;
@@ -37,7 +36,12 @@ public class HelloVerifyRequestPreparator extends HandshakeMessagePreparator<Hel
     }
 
     private byte[] generateCookie() {
-        byte[] cookie = new byte[chooser.getConfig().getDtlsDefaultCookieLength()];
+        int cookieLength = chooser.getConfig().getDtlsDefaultCookieLength();
+        if (cookieLength > 256) {
+            LOGGER.warn("Cookie length is greater than 256. Returning it mod 256");
+            cookieLength = cookieLength % 256;
+        }
+        byte[] cookie = new byte[cookieLength];
         chooser.getContext().getRandom().nextBytes(cookie);
         return cookie;
     }

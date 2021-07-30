@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.crypto.cipher;
@@ -31,9 +30,9 @@ public class CipherWrapper {
         if (cipherAlg == CipherAlgorithm.GOST_28147_CNT) {
             return new GOST28147Cipher(GOSTUtils.getGostSpec(cipherSuite), keySet.getWriteKey(connectionEndType),
                 keySet.getWriteIv(connectionEndType));
-        } else if (cipherAlg == CipherAlgorithm.CHA_CHA_20_POLY1305) {
+        } else if (cipherAlg == CipherAlgorithm.CHACHA20_POLY1305) {
             return new StandardizedChaCha20Poly1305Cipher(keySet.getWriteKey(connectionEndType));
-        } else if (cipherAlg == CipherAlgorithm.UNOFFICIAL_CHA_CHA_20_POLY1305) {
+        } else if (cipherAlg == CipherAlgorithm.UNOFFICIAL_CHACHA20_POLY1305) {
             return new UnofficialChaCha20Poly1305Cipher(keySet.getWriteKey(connectionEndType));
         } else if (cipherAlg.getJavaName() != null) {
             return new JavaCipher(cipherAlg, keySet.getWriteKey(connectionEndType),
@@ -52,9 +51,9 @@ public class CipherWrapper {
         if (cipherAlg == CipherAlgorithm.GOST_28147_CNT) {
             return new GOST28147Cipher(GOSTUtils.getGostSpec(cipherSuite), keySet.getReadKey(connectionEndType),
                 keySet.getReadIv(connectionEndType));
-        } else if (cipherAlg == CipherAlgorithm.CHA_CHA_20_POLY1305) {
+        } else if (cipherAlg == CipherAlgorithm.CHACHA20_POLY1305) {
             return new StandardizedChaCha20Poly1305Cipher(keySet.getReadKey(connectionEndType));
-        } else if (cipherAlg == CipherAlgorithm.UNOFFICIAL_CHA_CHA_20_POLY1305) {
+        } else if (cipherAlg == CipherAlgorithm.UNOFFICIAL_CHACHA20_POLY1305) {
             return new UnofficialChaCha20Poly1305Cipher(keySet.getReadKey(connectionEndType));
         } else if (cipherAlg.getJavaName() != null) {
             return new JavaCipher(cipherAlg, keySet.getReadKey(connectionEndType),

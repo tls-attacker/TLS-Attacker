@@ -1,17 +1,17 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PWDClearExtensionMessage;
+import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -39,7 +39,7 @@ public class PWDClearExtensionSerializer extends ExtensionSerializer<PWDClearExt
     }
 
     private void writeUsername(PWDClearExtensionMessage msg) {
-        appendBytes(msg.getUsername().getValue().getBytes());
+        appendBytes(msg.getUsername().getValue().getBytes(StandardCharsets.ISO_8859_1));
         LOGGER.debug("Username: " + msg.getUsername().getValue());
     }
 }

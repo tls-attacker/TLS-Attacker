@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
@@ -141,13 +140,17 @@ public class PreSharedKeyExtensionPreparator extends ExtensionPreparator<PreShar
             remainingBytes =
                 remainingBytes - ExtensionByteLength.PSK_BINDER_LENGTH - pskBinder.getBinderEntryLength().getValue();
         }
+        if (remainingBytes > 0) {
+            byte[] relevantBytes = new byte[remainingBytes];
 
-        byte[] relevantBytes = new byte[remainingBytes];
+            System.arraycopy(clientHelloBytes, 0, relevantBytes, 0, Math.min(remainingBytes, clientHelloBytes.length));
 
-        System.arraycopy(clientHelloBytes, 0, relevantBytes, 0, remainingBytes);
-
-        LOGGER.debug("Relevant Bytes:" + ArrayConverter.bytesToHexString(relevantBytes));
-        return relevantBytes;
+            LOGGER.debug("Relevant Bytes:" + ArrayConverter.bytesToHexString(relevantBytes));
+            return relevantBytes;
+        } else {
+            // This can happen if the client hello degenerates
+            return new byte[0];
+        }
     }
 
     private void calculateBinders(byte[] relevantBytes, PreSharedKeyExtensionMessage msg) {
@@ -155,38 +158,41 @@ public class PreSharedKeyExtensionPreparator extends ExtensionPreparator<PreShar
         LOGGER.debug("Calculating Binders");
         for (int x = 0; x < msg.getBinders().size(); x++) {
             try {
-                HKDFAlgorithm hkdfAlgorithm = AlgorithmResolver.getHKDFAlgorithm(pskSets.get(x).getCipherSuite());
-                Mac mac = Mac.getInstance(hkdfAlgorithm.getMacAlgorithm().getJavaName());
-                DigestAlgorithm digestAlgo =
-                    AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS13, pskSets.get(x).getCipherSuite());
+                if (pskSets.size() > x) {
+                    HKDFAlgorithm hkdfAlgorithm = AlgorithmResolver.getHKDFAlgorithm(pskSets.get(x).getCipherSuite());
+                    Mac mac = Mac.getInstance(hkdfAlgorithm.getMacAlgorithm().getJavaName());
+                    DigestAlgorithm digestAlgo =
+                        AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS13, pskSets.get(x).getCipherSuite());
 
-                byte[] psk = pskSets.get(x).getPreSharedKey();
-                byte[] earlySecret = HKDFunction.extract(hkdfAlgorithm, new byte[0], psk);
-                byte[] binderKey =
-                    HKDFunction.deriveSecret(hkdfAlgorithm, digestAlgo.getJavaName(), earlySecret,
+                    byte[] psk = pskSets.get(x).getPreSharedKey();
+                    byte[] earlySecret = HKDFunction.extract(hkdfAlgorithm, new byte[0], psk);
+                    byte[] binderKey = HKDFunction.deriveSecret(hkdfAlgorithm, digestAlgo.getJavaName(), earlySecret,
                         HKDFunction.BINDER_KEY_RES, ArrayConverter.hexStringToByteArray(""));
-                byte[] binderFinKey =
-                    HKDFunction.expandLabel(hkdfAlgorithm, binderKey, HKDFunction.FINISHED, new byte[0],
-                        mac.getMacLength());
+                    byte[] binderFinKey = HKDFunction.expandLabel(hkdfAlgorithm, binderKey, HKDFunction.FINISHED,
+                        new byte[0], mac.getMacLength());
 
-                chooser.getContext().getDigest().setRawBytes(relevantBytes);
-                SecretKeySpec keySpec = new SecretKeySpec(binderFinKey, mac.getAlgorithm());
-                mac.init(keySpec);
-                mac.update(chooser.getContext().getDigest()
-                    .digest(ProtocolVersion.TLS13, pskSets.get(x).getCipherSuite()));
-                byte[] binderVal = mac.doFinal();
-                chooser.getContext().getDigest().setRawBytes(new byte[0]);
+                    chooser.getContext().getDigest().setRawBytes(relevantBytes);
+                    SecretKeySpec keySpec = new SecretKeySpec(binderFinKey, mac.getAlgorithm());
+                    mac.init(keySpec);
+                    mac.update(chooser.getContext().getDigest().digest(ProtocolVersion.TLS13,
+                        pskSets.get(x).getCipherSuite()));
+                    byte[] binderVal = mac.doFinal();
+                    chooser.getContext().getDigest().setRawBytes(new byte[0]);
 
-                LOGGER.debug("Using PSK:" + ArrayConverter.bytesToHexString(psk));
-                LOGGER.debug("Calculated Binder:" + ArrayConverter.bytesToHexString(binderVal));
+                    LOGGER.debug("Using PSK:" + ArrayConverter.bytesToHexString(psk));
+                    LOGGER.debug("Calculated Binder:" + ArrayConverter.bytesToHexString(binderVal));
 
-                msg.getBinders().get(x).setBinderEntry(binderVal);
-                // First entry = PSK for early Data
-                if (x == 0) {
-                    chooser.getContext().setEarlyDataPsk(psk);
+                    msg.getBinders().get(x).setBinderEntry(binderVal);
+                    // First entry = PSK for early Data
+                    if (x == 0) {
+                        chooser.getContext().setEarlyDataPsk(psk);
+                    }
+                } else {
+                    LOGGER.warn("Skipping BinderCalculation as Config has not enough PSK sets");
                 }
             } catch (NoSuchAlgorithmException | InvalidKeyException | CryptoException ex) {
                 throw new PreparationException("Could not calculate Binders", ex);
+
             }
         }
     }
@@ -200,7 +206,7 @@ public class PreSharedKeyExtensionPreparator extends ExtensionPreparator<PreShar
 
     /**
      * @param clientHello
-     * the clientHello to set
+     *                    the clientHello to set
      */
     public void setClientHello(ClientHelloMessage clientHello) {
         this.clientHello = clientHello;

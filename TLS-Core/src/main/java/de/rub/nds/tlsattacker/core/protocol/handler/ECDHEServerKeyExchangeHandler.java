@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.handler;
@@ -26,7 +25,8 @@ import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ECDHEServerKeyExchangeHandler<T extends ECDHEServerKeyExchangeMessage> extends ServerKeyExchangeHandler<T> {
+public class ECDHEServerKeyExchangeHandler<T extends ECDHEServerKeyExchangeMessage>
+    extends ServerKeyExchangeHandler<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -35,24 +35,24 @@ public class ECDHEServerKeyExchangeHandler<T extends ECDHEServerKeyExchangeMessa
     }
 
     @Override
-    public ECDHEServerKeyExchangeParser getParser(byte[] message, int pointer) {
-        return new ECDHEServerKeyExchangeParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
+    public ECDHEServerKeyExchangeParser<T> getParser(byte[] message, int pointer) {
+        return new ECDHEServerKeyExchangeParser<T>(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
             AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite()),
             tlsContext.getConfig());
     }
 
     @Override
-    public ECDHEServerKeyExchangePreparator getPreparator(ECDHEServerKeyExchangeMessage message) {
-        return new ECDHEServerKeyExchangePreparator(tlsContext.getChooser(), message);
+    public ECDHEServerKeyExchangePreparator<T> getPreparator(T message) {
+        return new ECDHEServerKeyExchangePreparator<T>(tlsContext.getChooser(), message);
     }
 
     @Override
-    public ECDHEServerKeyExchangeSerializer getSerializer(ECDHEServerKeyExchangeMessage message) {
-        return new ECDHEServerKeyExchangeSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
+    public ECDHEServerKeyExchangeSerializer<T> getSerializer(T message) {
+        return new ECDHEServerKeyExchangeSerializer<T>(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override
-    public void adjustTLSContext(ECDHEServerKeyExchangeMessage message) {
+    public void adjustTLSContext(T message) {
         adjustECParameter(message);
         if (message.getComputations() != null) {
             tlsContext.setServerEcPrivateKey(message.getComputations().getPrivateKey().getValue());

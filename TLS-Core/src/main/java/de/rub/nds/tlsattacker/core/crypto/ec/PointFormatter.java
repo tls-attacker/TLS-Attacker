@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.crypto.ec;
@@ -27,16 +26,19 @@ public class PointFormatter {
 
     public static byte[] formatToByteArray(NamedGroup group, Point point, ECPointFormat format) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        if (point.isAtInfinity()) {
+            return new byte[1];
+        }
         int elementLength = ArrayConverter.bigIntegerToByteArray(point.getFieldX().getModulus()).length;
         if (group != NamedGroup.ECDH_X448 && group != NamedGroup.ECDH_X25519) {
             switch (format) {
                 case UNCOMPRESSED:
                     stream.write(0x04);
                     try {
-                        stream.write(ArrayConverter.bigIntegerToNullPaddedByteArray(point.getFieldX().getData(),
-                            elementLength));
-                        stream.write(ArrayConverter.bigIntegerToNullPaddedByteArray(point.getFieldY().getData(),
-                            elementLength));
+                        stream.write(
+                            ArrayConverter.bigIntegerToNullPaddedByteArray(point.getFieldX().getData(), elementLength));
+                        stream.write(
+                            ArrayConverter.bigIntegerToNullPaddedByteArray(point.getFieldY().getData(), elementLength));
                     } catch (IOException ex) {
                         throw new PreparationException("Could not serialize ec point", ex);
                     }
@@ -51,8 +53,8 @@ public class PointFormatter {
                         stream.write(0x02);
                     }
                     try {
-                        stream.write(ArrayConverter.bigIntegerToNullPaddedByteArray(point.getFieldX().getData(),
-                            elementLength));
+                        stream.write(
+                            ArrayConverter.bigIntegerToNullPaddedByteArray(point.getFieldX().getData(), elementLength));
                     } catch (IOException ex) {
                         throw new PreparationException("Could not serialize ec point", ex);
                     }
@@ -75,6 +77,9 @@ public class PointFormatter {
 
     public static byte[] toRawFormat(Point point) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        if (point.isAtInfinity()) {
+            return new byte[1];
+        }
         int elementLength = ArrayConverter.bigIntegerToByteArray(point.getFieldX().getModulus()).length;
         try {
             stream.write(ArrayConverter.bigIntegerToNullPaddedByteArray(point.getFieldX().getData(), elementLength));
@@ -89,8 +94,8 @@ public class PointFormatter {
      * Tries to read the first N byte[] as a point of the curve of the form x|y. If the byte[] has enough bytes the base
      * point of the named group is returned
      *
-     * @param group
-     * @param pointBytes
+     * @param  group
+     * @param  pointBytes
      * @return
      */
     public static Point fromRawFormat(NamedGroup group, byte[] pointBytes) {

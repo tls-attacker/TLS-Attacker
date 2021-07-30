@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 /**
  * TLS-AEAD-Cipher "Chacha20Poly1305", based on BouncyCastle's class
@@ -42,7 +41,9 @@ public abstract class ChaCha20Poly1305Cipher extends BaseCipher {
 
     private final Poly1305 mac = new Poly1305();
 
-    public ChaCha20Poly1305Cipher(byte[] key) {
+    protected final int IV_LENGTH;
+
+    public ChaCha20Poly1305Cipher(byte[] key, int ivLength) {
         if (key.length != 32) {
             LOGGER.warn("Key for ChaCha20Poly1305 has wrong size. Expected 32 byte but found: " + key.length
                 + ". Padding/Trimming to 32 Byte.");
@@ -57,6 +58,7 @@ public abstract class ChaCha20Poly1305Cipher extends BaseCipher {
             }
         }
         this.key = key;
+        this.IV_LENGTH = ivLength;
     }
 
     @Override
@@ -118,6 +120,19 @@ public abstract class ChaCha20Poly1305Cipher extends BaseCipher {
 
     @Override
     public byte[] encrypt(byte[] iv, int tagLength, byte[] additionAuthenticatedData, byte[] someBytes) {
+        if (iv.length != 8) {
+            LOGGER.warn("IV for ChaCha20Poly1305 has wrong size. Expected 8 byte but found: " + iv.length
+                + ". Padding/Trimming to " + IV_LENGTH + " Byte.");
+            if (iv.length > IV_LENGTH) {
+                iv = Arrays.copyOfRange(iv, 0, IV_LENGTH);
+            } else {
+                byte[] tempIv = new byte[IV_LENGTH];
+                for (int i = 0; i < iv.length; i++) {
+                    tempIv[i] = iv[i];
+                }
+                iv = tempIv;
+            }
+        }
         this.cipher.init(true, new ParametersWithIV(new KeyParameter(this.key, 0, this.key.length),
             new byte[(tagLength / Bits.IN_A_BYTE) - 1], 0, iv.length));
         int additionalDataLength = additionAuthenticatedData.length;

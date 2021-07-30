@@ -1,20 +1,19 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.transport.udp.stream;
 
+import de.rub.nds.tlsattacker.transport.udp.ServerUdpTransportHandler;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.SocketTimeoutException;
 
 public class UdpInputStream extends InputStream {
 
@@ -86,16 +85,12 @@ public class UdpInputStream extends InputStream {
      */
     private DatagramPacket receive() throws IOException {
         DatagramPacket packet = new DatagramPacket(dataBuffer, BUFFER_SIZE);
-        try {
-            socket.receive(packet);
-            index = 0;
-            packetSize = packet.getLength();
+        socket.receive(packet);
+        index = 0;
+        packetSize = packet.getLength();
 
-            if (connectOnReceive && !socket.isConnected()) {
-                socket.connect(packet.getSocketAddress());
-            }
-        } catch (SocketTimeoutException e) {
-            packet = null;
+        if (connectOnReceive && !socket.isConnected()) {
+            socket.connect(packet.getSocketAddress());
         }
 
         return packet;

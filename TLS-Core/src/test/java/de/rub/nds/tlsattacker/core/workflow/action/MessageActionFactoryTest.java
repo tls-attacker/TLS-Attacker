@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.workflow.action;
@@ -16,7 +15,7 @@ import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.LinkedList;
 import java.util.List;
@@ -48,21 +47,17 @@ public class MessageActionFactoryTest {
      */
     @Test
     public void testCreateActionOne() {
-        MessageAction action =
-            MessageActionFactory.createAction(config, clientConnection, ConnectionEndType.CLIENT, new AlertMessage(
-                config));
+        MessageAction action = MessageActionFactory.createAction(config, clientConnection, ConnectionEndType.CLIENT,
+            new AlertMessage(config));
         assertEquals(action.getClass(), SendAction.class);
-        action =
-            MessageActionFactory.createAction(config, clientConnection, ConnectionEndType.SERVER, new AlertMessage(
-                config));
+        action = MessageActionFactory.createAction(config, clientConnection, ConnectionEndType.SERVER,
+            new AlertMessage(config));
         assertEquals(action.getClass(), ReceiveAction.class);
-        action =
-            MessageActionFactory.createAction(config, serverConnection, ConnectionEndType.CLIENT, new AlertMessage(
-                config));
+        action = MessageActionFactory.createAction(config, serverConnection, ConnectionEndType.CLIENT,
+            new AlertMessage(config));
         assertEquals(action.getClass(), ReceiveAction.class);
-        action =
-            MessageActionFactory.createAction(config, serverConnection, ConnectionEndType.SERVER, new AlertMessage(
-                config));
+        action = MessageActionFactory.createAction(config, serverConnection, ConnectionEndType.SERVER,
+            new AlertMessage(config));
         assertEquals(action.getClass(), SendAction.class);
         assertTrue(action.messages.size() == 1);
     }

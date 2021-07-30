@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.handler;
@@ -14,6 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
@@ -81,11 +81,21 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
         if (message.getTicket().getIdentity() != null) {
             pskSet.setPreSharedKeyIdentity(message.getTicket().getIdentity().getValue());
         } else {
-            LOGGER.warn("No Identity in ticket. Using new byte[] instead");
+            LOGGER.warn("No Identity in ticket. Using new byte[0] instead");
             pskSet.setPreSharedKeyIdentity(new byte[0]);
         }
         pskSet.setTicketAge(getTicketAge());
-        pskSet.setPreSharedKey(derivePsk(message));
+        if (message.getTicket().getTicketNonce() != null) {
+            pskSet.setTicketNonce(message.getTicket().getTicketNonce().getValue());
+        } else {
+            LOGGER.warn("No nonce in ticket. Using new byte[0] instead");
+            pskSet.setTicketNonce(new byte[0]);
+        }
+        // only derive PSK if client finished was already sent, because full handshake transcript is required
+        if (tlsContext.getActiveClientKeySetType() == Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS) {
+            pskSet.setPreSharedKey(derivePsk(pskSet));
+        }
+
         LOGGER.debug("Adding PSK Set");
         pskSets.add(pskSet);
         tlsContext.setPskSets(pskSets);
@@ -99,29 +109,30 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
         return ticketDate.format(dateTimeFormatter);
     }
 
-    private byte[] derivePsk(NewSessionTicketMessage message) {
+    protected byte[] derivePsk(PskSet pskSet) {
         try {
             LOGGER.debug("Deriving PSK from current session");
             HKDFAlgorithm hkdfAlgorithm =
                 AlgorithmResolver.getHKDFAlgorithm(tlsContext.getChooser().getSelectedCipherSuite());
-            DigestAlgorithm digestAlgo =
-                AlgorithmResolver.getDigestAlgorithm(tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext
-                    .getChooser().getSelectedCipherSuite());
+            DigestAlgorithm digestAlgo = AlgorithmResolver.getDigestAlgorithm(
+                tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext.getChooser().getSelectedCipherSuite());
             int macLength = Mac.getInstance(hkdfAlgorithm.getMacAlgorithm().getJavaName()).getMacLength();
             byte[] resumptionMasterSecret =
                 HKDFunction.deriveSecret(hkdfAlgorithm, digestAlgo.getJavaName(), tlsContext.getMasterSecret(),
                     HKDFunction.RESUMPTION_MASTER_SECRET, tlsContext.getDigest().getRawBytes());
+            tlsContext.setResumptionMasterSecret(resumptionMasterSecret);
             LOGGER.debug("Derived ResumptionMasterSecret: " + ArrayConverter.bytesToHexString(resumptionMasterSecret));
-            byte[] psk =
-                HKDFunction.expandLabel(hkdfAlgorithm, resumptionMasterSecret, HKDFunction.RESUMPTION, message
-                    .getTicket().getTicketNonce().getValue(), macLength);
-            LOGGER.debug("Derived PSK: " + ArrayConverter.bytesToHexString(psk));
+            LOGGER.debug("Derived Master Secret: " + ArrayConverter.bytesToHexString(tlsContext.getMasterSecret()));
+            LOGGER.debug("Handshake Transcript Raw Bytes: "
+                + ArrayConverter.bytesToHexString(tlsContext.getDigest().getRawBytes()));
+            byte[] psk = HKDFunction.expandLabel(hkdfAlgorithm, resumptionMasterSecret, HKDFunction.RESUMPTION,
+                pskSet.getTicketNonce(), macLength);
+            LOGGER.debug("New derived pre-shared-key: " + ArrayConverter.bytesToHexString(psk));
             return psk;
 
         } catch (NoSuchAlgorithmException | CryptoException ex) {
             LOGGER.error("DigestAlgorithm for psk derivation unknown");
-            throw new WorkflowExecutionException(ex.toString());
+            throw new WorkflowExecutionException(ex);
         }
     }
-
 }

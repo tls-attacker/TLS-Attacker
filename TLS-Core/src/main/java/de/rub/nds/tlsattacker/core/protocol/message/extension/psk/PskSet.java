@@ -1,15 +1,15 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.message.extension.psk;
 
+import de.rub.nds.modifiablevariable.util.IllegalStringAdapter;
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import java.io.Serializable;
@@ -40,6 +40,7 @@ public class PskSet implements Serializable {
     /**
      * TicketAge value to be used to generate the obfuscated ticket age for the given PSKs
      */
+    @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String ticketAge;
 
     /**
@@ -48,17 +49,24 @@ public class PskSet implements Serializable {
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] ticketAgeAdd;
 
+    /**
+     * ticket nonce used to derive PSK
+     */
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
+    private byte[] ticketNonce;
+
     private CipherSuite cipherSuite;
 
     public PskSet() {
     }
 
     public PskSet(byte[] preSharedKeyIdentity, byte[] preSharedKey, String ticketAge, byte[] ticketAgeAdd,
-        CipherSuite cipherSuite) {
+        byte[] ticketNonce, CipherSuite cipherSuite) {
         this.preSharedKeyIdentity = preSharedKeyIdentity;
         this.preSharedKey = preSharedKey;
         this.ticketAge = ticketAge;
         this.ticketAgeAdd = ticketAgeAdd;
+        this.ticketNonce = ticketNonce;
         this.cipherSuite = cipherSuite;
     }
 
@@ -71,7 +79,7 @@ public class PskSet implements Serializable {
 
     /**
      * @param preSharedKeyIdentity
-     * the preSharedKeyIdentity to set
+     *                             the preSharedKeyIdentity to set
      */
     public void setPreSharedKeyIdentity(byte[] preSharedKeyIdentity) {
         this.preSharedKeyIdentity = preSharedKeyIdentity;
@@ -86,7 +94,7 @@ public class PskSet implements Serializable {
 
     /**
      * @param preSharedKey
-     * the preSharedKey to set
+     *                     the preSharedKey to set
      */
     public void setPreSharedKey(byte[] preSharedKey) {
         this.preSharedKey = preSharedKey;
@@ -101,7 +109,7 @@ public class PskSet implements Serializable {
 
     /**
      * @param ticketAge
-     * the ticketAge to set
+     *                  the ticketAge to set
      */
     public void setTicketAge(String ticketAge) {
         this.ticketAge = ticketAge;
@@ -116,10 +124,18 @@ public class PskSet implements Serializable {
 
     /**
      * @param ticketAgeAdd
-     * the ticketAgeAdd to set
+     *                     the ticketAgeAdd to set
      */
     public void setTicketAgeAdd(byte[] ticketAgeAdd) {
         this.ticketAgeAdd = ticketAgeAdd;
+    }
+
+    public byte[] getTicketNonce() {
+        return ticketNonce;
+    }
+
+    public void setTicketNonce(byte[] ticketNonce) {
+        this.ticketNonce = ticketNonce;
     }
 
     /**
@@ -131,7 +147,7 @@ public class PskSet implements Serializable {
 
     /**
      * @param cipherSuite
-     * the cipherSuite to set
+     *                    the cipherSuite to set
      */
     public void setCipherSuite(CipherSuite cipherSuite) {
         this.cipherSuite = cipherSuite;
@@ -144,6 +160,7 @@ public class PskSet implements Serializable {
         hash = 43 * hash + Arrays.hashCode(this.preSharedKey);
         hash = 43 * hash + Objects.hashCode(this.ticketAge);
         hash = 43 * hash + Arrays.hashCode(this.ticketAgeAdd);
+        hash = 43 * hash + Objects.hashCode(this.ticketNonce);
         hash = 43 * hash + Objects.hashCode(this.cipherSuite);
         return hash;
     }
@@ -172,6 +189,10 @@ public class PskSet implements Serializable {
         if (!Arrays.equals(this.ticketAgeAdd, other.ticketAgeAdd)) {
             return false;
         }
+        if (!Arrays.equals(this.ticketNonce, other.ticketNonce)) {
+            return false;
+        }
         return this.cipherSuite == other.cipherSuite;
     }
+
 }

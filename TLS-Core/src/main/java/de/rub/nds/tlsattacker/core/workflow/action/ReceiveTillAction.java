@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.workflow.action;
@@ -16,68 +15,29 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.https.HttpsRequestMessage;
 import de.rub.nds.tlsattacker.core.https.HttpsResponseMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.CertificateStatusMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.EncryptedExtensionsMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.EndOfEarlyDataMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.HelloRequestMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.HelloRetryRequestMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PWDClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PWDServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PskClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PskDhClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PskDheServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PskEcDhClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PskEcDheServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PskRsaClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PskServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientMasterKeyMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerVerifyMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.SrpClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.SrpServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.SupplementalDataMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.UnknownHandshakeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.action.MessageAction.MessageActionDirection;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+@XmlRootElement
 public class ReceiveTillAction extends MessageAction implements ReceivingAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     @HoldsModifiableVariable
     @XmlElements(value = { @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
+        @XmlElement(type = TlsMessage.class, name = "TlsMessage"),
         @XmlElement(type = CertificateMessage.class, name = "Certificate"),
         @XmlElement(type = CertificateVerifyMessage.class, name = "CertificateVerify"),
         @XmlElement(type = CertificateRequestMessage.class, name = "CertificateRequest"),
@@ -97,6 +57,7 @@ public class ReceiveTillAction extends MessageAction implements ReceivingAction 
         @XmlElement(type = ServerHelloMessage.class, name = "ServerHello"),
         @XmlElement(type = AlertMessage.class, name = "Alert"),
         @XmlElement(type = NewSessionTicketMessage.class, name = "NewSessionTicket"),
+        @XmlElement(type = KeyUpdateMessage.class, name = "KeyUpdate"),
         @XmlElement(type = ApplicationMessage.class, name = "Application"),
         @XmlElement(type = ChangeCipherSpecMessage.class, name = "ChangeCipherSpec"),
         @XmlElement(type = SSL2ClientHelloMessage.class, name = "SSL2ClientHello"),
@@ -123,18 +84,18 @@ public class ReceiveTillAction extends MessageAction implements ReceivingAction 
         @XmlElement(type = EndOfEarlyDataMessage.class, name = "EndOfEarlyData"),
         @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensions"),
         @XmlElement(type = HelloRetryRequestMessage.class, name = "HelloRetryRequest") })
-    protected ProtocolMessage waitTillMessage;
+    protected TlsMessage waitTillMessage;
 
     public ReceiveTillAction() {
         super();
     }
 
-    public ReceiveTillAction(ProtocolMessage waitTillMessage) {
+    public ReceiveTillAction(TlsMessage waitTillMessage) {
         super();
         this.waitTillMessage = waitTillMessage;
     }
 
-    public ReceiveTillAction(String connectionAliasAlias, ProtocolMessage waitTillMessage) {
+    public ReceiveTillAction(String connectionAliasAlias, TlsMessage waitTillMessage) {
         super(connectionAliasAlias);
         this.waitTillMessage = waitTillMessage;
     }
@@ -218,7 +179,7 @@ public class ReceiveTillAction extends MessageAction implements ReceivingAction 
         return false;
     }
 
-    public ProtocolMessage getWaitTillMessage() {
+    public TlsMessage getWaitTillMessage() {
         return waitTillMessage;
     }
 
@@ -230,7 +191,7 @@ public class ReceiveTillAction extends MessageAction implements ReceivingAction 
         this.records = receivedRecords;
     }
 
-    public void setWaitTillMessage(ProtocolMessage waitTillMessage) {
+    public void setWaitTillMessage(TlsMessage waitTillMessage) {
         this.waitTillMessage = waitTillMessage;
     }
 

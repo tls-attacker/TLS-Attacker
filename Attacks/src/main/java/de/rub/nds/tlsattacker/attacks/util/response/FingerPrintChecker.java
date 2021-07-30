@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.attacks.util.response;
@@ -20,8 +19,8 @@ public class FingerPrintChecker {
 
     /**
      *
-     * @param fingerprint1
-     * @param fingerprint2
+     * @param  fingerprint1
+     * @param  fingerprint2
      * @return
      */
     public static EqualityError checkEquality(ResponseFingerprint fingerprint1, ResponseFingerprint fingerprint2) {
@@ -48,8 +47,8 @@ public class FingerPrintChecker {
                         return EqualityError.RECORD_CLASS;
                     }
                     // This also finds fragmentation issues
-                    if (fingerprint1.getRecordList().get(i).getCompleteRecordBytes().getValue().length != fingerprint2
-                        .getRecordList().get(i).getCompleteRecordBytes().getValue().length) {
+                    if (fingerprint1.getRecordList().get(i).getCompleteRecordBytes().getValue().length
+                        != fingerprint2.getRecordList().get(i).getCompleteRecordBytes().getValue().length) {
                         return EqualityError.RECORD_CONTENT;
                     }
                     if (fingerprint1.getRecordList().get(i) instanceof Record
@@ -57,20 +56,21 @@ public class FingerPrintChecker {
                         // Comparing Records
                         Record thisRecord = (Record) fingerprint1.getRecordList().get(i);
                         Record otherRecord = (Record) fingerprint2.getRecordList().get(i);
-                        if (thisRecord.getContentMessageType().getValue() != otherRecord.getContentMessageType()
-                            .getValue()) {
+                        if (thisRecord.getContentMessageType().getValue()
+                            != otherRecord.getContentMessageType().getValue()) {
                             return EqualityError.RECORD_CONTENT_TYPE;
                         }
 
-                        if (!java.util.Arrays.equals(thisRecord.getProtocolVersion().getValue(), otherRecord
-                            .getProtocolVersion().getValue())) {
+                        if (!java.util.Arrays.equals(thisRecord.getProtocolVersion().getValue(),
+                            otherRecord.getProtocolVersion().getValue())) {
                             return EqualityError.RECORD_VERSION;
                         }
 
                     } else {
                         // Comparing BlobRecords
-                        if (java.util.Arrays.equals(fingerprint1.getRecordList().get(i).getCompleteRecordBytes()
-                            .getValue(), fingerprint2.getRecordList().get(i).getCompleteRecordBytes().getValue())) {
+                        if (java.util.Arrays.equals(
+                            fingerprint1.getRecordList().get(i).getCompleteRecordBytes().getValue(),
+                            fingerprint2.getRecordList().get(i).getCompleteRecordBytes().getValue())) {
                             return EqualityError.RECORD_CONTENT;
                         }
                     }
