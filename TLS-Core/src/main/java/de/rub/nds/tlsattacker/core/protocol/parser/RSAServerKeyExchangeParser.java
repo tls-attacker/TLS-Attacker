@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import org.apache.logging.log4j.LogManager;
@@ -28,7 +28,7 @@ public class RSAServerKeyExchangeParser<T extends RSAServerKeyExchangeMessage> e
     private final KeyExchangeAlgorithm keyExchangeAlgorithm;
 
     public RSAServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version,
-            KeyExchangeAlgorithm keyExchangeAlgorithm, Config config) {
+        KeyExchangeAlgorithm keyExchangeAlgorithm, Config config) {
         super(pointer, array, HandshakeMessageType.SERVER_KEY_EXCHANGE, version, config);
         this.version = version;
         this.keyExchangeAlgorithm = keyExchangeAlgorithm;
@@ -100,8 +100,7 @@ public class RSAServerKeyExchangeParser<T extends RSAServerKeyExchangeMessage> e
     }
 
     /**
-     * Reads the next bytes as the SignatureAndHashAlgorithm and writes them in
-     * the message
+     * Reads the next bytes as the SignatureAndHashAlgorithm and writes them in the message
      *
      * @param msg
      *            Message to write in
@@ -109,12 +108,11 @@ public class RSAServerKeyExchangeParser<T extends RSAServerKeyExchangeMessage> e
     private void parseSignatureAndHashAlgorithm(RSAServerKeyExchangeMessage msg) {
         msg.setSignatureAndHashAlgorithm(parseByteArrayField(HandshakeByteLength.SIGNATURE_HASH_ALGORITHM));
         LOGGER.debug("SignatureAndHashAlgorithm: "
-                + ArrayConverter.bytesToHexString(msg.getSignatureAndHashAlgorithm().getValue()));
+            + ArrayConverter.bytesToHexString(msg.getSignatureAndHashAlgorithm().getValue()));
     }
 
     /**
-     * Reads the next bytes as the SignatureLength and writes them in the
-     * message
+     * Reads the next bytes as the SignatureLength and writes them in the message
      *
      * @param msg
      *            Message to write in

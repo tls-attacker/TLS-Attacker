@@ -56,7 +56,7 @@ public class ClassicDynamicPaddingTraceGenerator extends PaddingTraceGenerator {
         sendAction.setMessages(applicationMessage);
         sendAction.setRecords(new LinkedList<AbstractRecord>());
         sendAction.getRecords().add(vector.createRecord());
-        
+
         return trace;
     }
 }

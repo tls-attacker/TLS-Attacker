@@ -522,10 +522,10 @@ public class WorkflowConfigurationFactory {
         AliasedConnection connection = getConnection();
         WorkflowTrace trace = createDynamicHandshakeWorkflow();
         MessageAction action = MessageActionFactory.createAction(config, connection, ConnectionEndType.CLIENT,
-                new HttpsRequestMessage(config));
+            new HttpsRequestMessage(config));
         trace.addTlsAction(action);
-        action = MessageActionFactory.createAction(config, connection, ConnectionEndType.SERVER, new HttpsResponseMessage(
-                config));
+        action = MessageActionFactory.createAction(config, connection, ConnectionEndType.SERVER,
+            new HttpsResponseMessage(config));
         trace.addTlsAction(action);
         return trace;
     }

@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import org.apache.logging.log4j.LogManager;
@@ -17,8 +17,8 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAServerKeyExchangeMessage;
 
-public class RSAServerKeyExchangeSerializer<T extends RSAServerKeyExchangeMessage> extends
-        ServerKeyExchangeSerializer<T> {
+public class RSAServerKeyExchangeSerializer<T extends RSAServerKeyExchangeMessage>
+    extends ServerKeyExchangeSerializer<T> {
     private static final Logger LOGGER = LogManager.getLogger();
     private final T msg;
 
@@ -60,13 +60,12 @@ public class RSAServerKeyExchangeSerializer<T extends RSAServerKeyExchangeMessag
     }
 
     /**
-     * Writes the SignatureAndHashalgorithm of the DHEServerKeyExchangeMessage
-     * into the final byte[]
+     * Writes the SignatureAndHashalgorithm of the DHEServerKeyExchangeMessage into the final byte[]
      */
     private void writeSignatureAndHashAlgorithm(T msg) {
         appendBytes(msg.getSignatureAndHashAlgorithm().getValue());
         LOGGER.debug("SignatureAndHaslAlgorithm: "
-                + ArrayConverter.bytesToHexString(msg.getSignatureAndHashAlgorithm().getValue()));
+            + ArrayConverter.bytesToHexString(msg.getSignatureAndHashAlgorithm().getValue()));
     }
 
     private boolean isTLS12() {
@@ -78,8 +77,7 @@ public class RSAServerKeyExchangeSerializer<T extends RSAServerKeyExchangeMessag
     }
 
     /**
-     * Writes the SignatureLength of the DHEServerKeyExchangeMessage into the
-     * final byte[]
+     * Writes the SignatureLength of the DHEServerKeyExchangeMessage into the final byte[]
      */
     private void writeSignatureLength(T msg) {
         appendInt(msg.getSignatureLength().getValue(), HandshakeByteLength.SIGNATURE_LENGTH);
@@ -87,8 +85,7 @@ public class RSAServerKeyExchangeSerializer<T extends RSAServerKeyExchangeMessag
     }
 
     /**
-     * Writes the Signature of the DHEServerKeyExchangeMessage into the final
-     * byte[]
+     * Writes the Signature of the DHEServerKeyExchangeMessage into the final byte[]
      */
     private void writeSignature(T msg) {
         appendBytes(msg.getSignature().getValue());
