@@ -123,6 +123,7 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
                     int certificatesLength = 0;
                     try {
                         for (CertificatePair pair : message.getCertificatesList()) {
+
                             stream.write(ArrayConverter.intToBytes(pair.getCertificateLength().getValue(),
                                 HandshakeByteLength.CERTIFICATE_LENGTH));
                             stream.write(pair.getCertificate().getValue());

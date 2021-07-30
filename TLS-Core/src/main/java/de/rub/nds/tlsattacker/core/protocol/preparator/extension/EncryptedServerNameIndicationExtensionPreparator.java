@@ -58,8 +58,6 @@ public class EncryptedServerNameIndicationExtensionPreparator
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final Chooser chooser;
-
     private final EncryptedServerNameIndicationExtensionMessage msg;
 
     private ClientHelloMessage clientHelloMessage;
@@ -71,7 +69,6 @@ public class EncryptedServerNameIndicationExtensionPreparator
         ExtensionSerializer<EncryptedServerNameIndicationExtensionMessage> serializer) {
         super(chooser, message, serializer);
         this.msg = message;
-        this.chooser = chooser;
 
         if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
             this.esniPreparatorMode = EsniPreparatorMode.CLIENT;
@@ -199,7 +196,7 @@ public class EncryptedServerNameIndicationExtensionPreparator
     }
 
     private void prepareEsniServerPublicKey(EncryptedServerNameIndicationExtensionMessage msg) {
-        byte[] serverPublicKey = chooser.getEsniServerKeyShareEntries().get(0).getPublicKey();
+        byte[] serverPublicKey = new byte[0];
         for (KeyShareStoreEntry entry : chooser.getEsniServerKeyShareEntries()) {
             if (Arrays.equals(entry.getGroup().getValue(), msg.getKeyShareEntry().getGroup().getValue())) {
                 serverPublicKey = entry.getPublicKey();
@@ -280,10 +277,14 @@ public class EncryptedServerNameIndicationExtensionPreparator
     }
 
     private void prepareRecordDigest(EncryptedServerNameIndicationExtensionMessage msg) {
-        byte[] recordDigest = null;
+        byte[] recordDigest;
         byte[] record = msg.getEncryptedSniComputation().getEsniRecordBytes().getValue();
         CipherSuite cipherSuite = CipherSuite.getCipherSuite(msg.getCipherSuite().getValue());
         DigestAlgorithm algorithm = AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS13, cipherSuite);
+        if (algorithm == null) {
+            LOGGER.warn("Could not select digest algorithm for " + cipherSuite + ". Using SHA256 instead");
+            algorithm = DigestAlgorithm.SHA256;
+        }
         MessageDigest messageDigest = null;
         try {
             messageDigest = MessageDigest.getInstance(algorithm.getJavaName());

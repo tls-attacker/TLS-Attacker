@@ -79,9 +79,7 @@ public class EncryptedServerNameIndicationExtensionPreparatorTest {
         EncryptedServerNameIndicationExtensionPreparator preparator =
             new EncryptedServerNameIndicationExtensionPreparator(chooser, msg, serializer);
 
-        ServerNamePair pair = new ServerNamePair();
-        pair.setServerNameTypeConfig(nameTypeConfig);
-        pair.setServerNameConfig(hostnameConfig.getBytes(StandardCharsets.UTF_8));
+        ServerNamePair pair = new ServerNamePair(nameTypeConfig, hostnameConfig.getBytes(StandardCharsets.UTF_8));
         msg.getClientEsniInner().getServerNameList().add(pair);
 
         context.getConfig().getClientSupportedEsniCipherSuites().add(cipherSuite);

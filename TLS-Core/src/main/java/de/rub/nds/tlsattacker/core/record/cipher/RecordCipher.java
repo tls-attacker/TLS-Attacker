@@ -96,10 +96,19 @@ public abstract class RecordCipher {
             if (protocolVersion.isTLS13()) {
                 stream.write(record.getContentType().getValue());
                 stream.write(record.getProtocolVersion().getValue());
-                stream.write(ArrayConverter.intToBytes(record.getLength().getValue(), RecordByteLength.RECORD_LENGTH));
+                if (record.getLength() != null && record.getLength().getValue() != null) {
+                    stream.write(
+                        ArrayConverter.intToBytes(record.getLength().getValue(), RecordByteLength.RECORD_LENGTH));
+                } else {
+                    // It may happen that the record does not have a length prepared - in that case we will need to add
+                    // the length of the data content
+                    // This is mostly interessting for fuzzing
+                    stream.write(ArrayConverter.intToBytes(record.getCleanProtocolMessageBytes().getValue().length,
+                        RecordByteLength.RECORD_LENGTH));
+                }
                 return stream.toByteArray();
             } else {
-                if (protocolVersion.isDTLS()) {
+                if (protocolVersion.isDTLS() && record.getEpoch() != null) {
                     stream.write(ArrayConverter.intToBytes(record.getEpoch().getValue().shortValue(),
                         RecordByteLength.DTLS_EPOCH));
                     stream.write(ArrayConverter.longToUint48Bytes(record.getSequenceNumber().getValue().longValue()));

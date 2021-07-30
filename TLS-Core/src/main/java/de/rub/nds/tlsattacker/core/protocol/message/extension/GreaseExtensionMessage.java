@@ -12,6 +12,7 @@ package de.rub.nds.tlsattacker.core.protocol.message.extension;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,6 +20,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.Random;
 
 public class GreaseExtensionMessage extends ExtensionMessage {
+
     private static final Logger LOGGER = LogManager.getLogger();
 
     @ModifiableVariableProperty
@@ -30,6 +32,13 @@ public class GreaseExtensionMessage extends ExtensionMessage {
     public GreaseExtensionMessage() {
         super(ExtensionType.GREASE_00);
         this.type = ExtensionType.GREASE_00;
+        data = new byte[0];
+    }
+
+    public GreaseExtensionMessage(Config config) {
+        super(ExtensionType.GREASE_00);
+        this.type = ExtensionType.GREASE_00;
+        data = new byte[0];
     }
 
     public GreaseExtensionMessage(ExtensionType type, byte[] data) {

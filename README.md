@@ -1,6 +1,6 @@
 # TLS-Attacker
 
-[![release](https://img.shields.io/badge/Release-v3.6.0-blue.svg)](https://github.com/RUB-NDS/TLS-Attacker/releases)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/tls-attacker/TLS-Attacker)
 ![licence](https://img.shields.io/badge/License-Apachev2-brightgreen.svg)
 [![Build Status](https://hydrogen.cloud.nds.rub.de/buildStatus/icon.svg?job=TLS-Attacker)](https://hydrogen.cloud.nds.rub.de/job/TLS-Attacker/)
 
@@ -13,28 +13,11 @@ In order to compile and use TLS-Attacker, you need to have Java and Maven instal
 ```bash
 $ sudo apt-get install maven
 ```
-TLS-Attacker currently needs Java JDK 8 to run. Since version 3.5.0, TLS-Attacker also required ASN.1-Tool and X509-Attacker as a dependency.
-
-Installing ASN.1 Tool:
-```bash
-$ git clone https://github.com/RUB-NDS/ASN.1-Tool
-$ cd ASN.1-Tool
-$ mvn clean install
-$ cd ..
-
-```
-
-Installing X509-Attacker:
-```bash
-$ git clone https://github.com/RUB-NDS/x509-Attacker
-$ cd X509-Attacker
-$ mvn clean install
-$ cd ..
-```
-
+TLS-Attacker currently needs Java JDK 8 to run.
 
 If you have the correct Java version you can run the maven command from the TLS-Attacker directory:
 ```bash
+$ git clone https://github.com/tls-attacker/TLS-Attacker.git
 $ cd TLS-Attacker
 $ mvn clean install
 ```
@@ -43,6 +26,17 @@ Alternatively, if you are in a hurry, you can skip the tests by using:
 $ mvn clean install -DskipTests=true
 ```
 The resulting jar files are placed in the "apps" folder.
+
+If you want to use this project as a dependency, you do not have to compile it yourself and can include it in your pom
+.xml as follows.
+```xml
+<dependency>
+    <groupId>de.rub.nds.tlsattacker</groupId>
+    <artifactId>TLS-Attacker</artifactId>
+    <version>3.7.0</version>
+    <type>pom</type>
+</dependency>
+```
 
 TLS-Attacker ships with demo applications which provide you easy access to TLS-Attacker functionality.
 
@@ -75,7 +69,7 @@ TLS-Attacker consists of several (maven) projects:
 - Transport: Transport utilities for lower layers
 - Utils: A collection of utility classes
 
-![TLS-Attacker design](https://github.com/RUB-NDS/TLS-Attacker/blob/master/resources/figures/design.png)
+![TLS-Attacker design](https://github.com/tls-attacker/TLS-Attacker/blob/master/resources/figures/design.png)
 
 You can find more information about these modules in the Wiki.
 
@@ -133,10 +127,7 @@ State state = new State(config, trace);
 DefaultWorkflowExecutor executor = new DefaultWorkflowExecutor(state);
 executor.executeWorkflow();
 ```
-TLS-Attacker uses the concept of WorkflowTraces to define a "TLS message flow". A WorkflowTrace consists of a list of actions which are then executed one after the other.
-Although for a typical "TLS message flow" only SendAction's and ReceiveAction's are needed, the framework does not
- stop here and implements a lot of different other actions
-which can be used to execute even more arbitrary message flows. A list of currently implemented actions with explanations can be found in the Wiki.
+TLS-Attacker uses the concept of WorkflowTraces to define a "TLS message flow". A WorkflowTrace consists of a list of actions which are then executed one after the other. Although for a typical "TLS message flow" only SendAction's and ReceiveAction's are needed, the framework does not stop here and implements a lot of different other actions which can be used to execute even more arbitrary message flows. A list of currently implemented actions with explanations can be found in the Wiki.
 
 We know many of you hate Java. Therefore, you can also use an XML structure and run your customized TLS protocol from XML:
 ```xml
@@ -186,7 +177,7 @@ Given this XML structure is located in TLS-Attacker/apps/workflow.xml, you would
 $ java -jar TLS-Client.jar -connect [host]:[port] -workflow_input workflow.xml
 ```
 ## Modifiable Variables
-TLS-Attacker uses the concept of Modifiable Variables to allow runtime modifications to predefined Workflows. Modifiable variables allow one to set modifications to basic types after or before their values are actually set. When their actual values are determined and one tries to access the value via getters the original value will be returned in a modified form accordingly. More details on this concept can be found at https://github.com/RUB-NDS/ModifiableVariable. 
+TLS-Attacker uses the concept of Modifiable Variables to allow runtime modifications to predefined Workflows. Modifiable variables allow one to set modifications to basic types after or before their values are actually set. When their actual values are determined and one tries to access the value via getters the original value will be returned in a modified form accordingly. More details on this concept can be found at https://github.com/tls-attacker/ModifiableVariable. 
 
 ```java
 ModifiableInteger i = new ModifiableInteger();

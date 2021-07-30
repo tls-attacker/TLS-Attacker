@@ -132,7 +132,7 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
 
         } catch (NoSuchAlgorithmException | CryptoException ex) {
             LOGGER.error("DigestAlgorithm for psk derivation unknown");
-            throw new WorkflowExecutionException(ex.toString());
+            throw new WorkflowExecutionException(ex);
         }
     }
 }

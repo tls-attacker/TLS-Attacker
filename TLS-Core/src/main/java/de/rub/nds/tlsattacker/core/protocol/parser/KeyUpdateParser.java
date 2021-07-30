@@ -38,13 +38,13 @@ public class KeyUpdateParser extends HandshakeMessageParser<KeyUpdateMessage> {
     }
 
     private void parseUpdateRequest(KeyUpdateMessage msg) {
-
-        if (parseByteField(HandshakeByteLength.KEY_UPDATE_LENGTH) == KeyUpdateRequest.UPDATE_REQUESTED.getValue()) {
-            msg.setRequestUpdate(KeyUpdateRequest.UPDATE_REQUESTED);
+        byte requestMode = parseByteField(HandshakeByteLength.KEY_UPDATE_LENGTH);
+        if (requestMode == KeyUpdateRequest.UPDATE_REQUESTED.getValue()) {
+            msg.setRequestMode(KeyUpdateRequest.UPDATE_REQUESTED);
         } else {
-            msg.setRequestUpdate(KeyUpdateRequest.UPDATE_NOT_REQUESTED);
+            msg.setRequestMode(KeyUpdateRequest.UPDATE_NOT_REQUESTED);
         }
-        LOGGER.debug("KeyUpdateValue: " + msg.getRequestUpdate());
+        LOGGER.debug("KeyUpdateValue: " + msg.getRequestMode().getValue());
 
     }
 

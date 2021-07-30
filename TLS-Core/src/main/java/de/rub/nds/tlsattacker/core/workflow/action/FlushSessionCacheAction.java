@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
+import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,6 +19,7 @@ import org.apache.logging.log4j.Logger;
  *
  *
  */
+@XmlRootElement
 public class FlushSessionCacheAction extends TlsAction {
 
     private static final Logger LOGGER = LogManager.getLogger();

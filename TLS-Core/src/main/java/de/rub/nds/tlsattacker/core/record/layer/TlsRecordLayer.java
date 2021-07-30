@@ -135,6 +135,9 @@ public class TlsRecordLayer extends RecordLayer {
         for (AbstractRecord record : records) {
             if (useRecordType) {
                 contentType = record.getContentMessageType();
+                if (contentType == null) {
+                    contentType = ProtocolMessageType.UNKNOWN;
+                }
             }
 
             AbstractRecordPreparator preparator =

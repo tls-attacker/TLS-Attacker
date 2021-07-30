@@ -29,6 +29,7 @@ import de.rub.nds.tlsattacker.core.util.StaticTicketCrypto;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import org.apache.logging.log4j.LogManager;
@@ -57,19 +58,21 @@ public class PWDComputations extends KeyExchangeComputations {
         BigInteger prime = curve.getModulus();
 
         byte[] base;
-        byte[] salt = chooser.getServerPWDSalt();
+        byte[] salt = chooser.getContext().getServerPWDSalt();
         if (salt == null && chooser.getSelectedProtocolVersion() != ProtocolVersion.TLS13) {
             salt = chooser.getConfig().getDefaultServerPWDSalt();
         }
         if (salt == null) {
             Digest digest = TlsUtils.createHash(HashAlgorithm.sha256);
             base = new byte[digest.getDigestSize()];
-            byte[] usernamePW = (chooser.getClientPWDUsername() + chooser.getPWDPassword()).getBytes();
+            byte[] usernamePW =
+                (chooser.getClientPWDUsername() + chooser.getPWDPassword()).getBytes(StandardCharsets.ISO_8859_1);
             digest.update(usernamePW, 0, usernamePW.length);
             digest.doFinal(base, 0);
         } else {
             base = StaticTicketCrypto.generateHMAC(MacAlgorithm.HMAC_SHA256,
-                (chooser.getClientPWDUsername() + chooser.getPWDPassword()).getBytes(), salt);
+                (chooser.getClientPWDUsername() + chooser.getPWDPassword()).getBytes(StandardCharsets.ISO_8859_1),
+                salt);
         }
 
         boolean found = false;

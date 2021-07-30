@@ -26,18 +26,17 @@ public class ServerUdpTransportHandler extends UdpTransportHandler {
     }
 
     public ServerUdpTransportHandler(long firstTimeout, long timeout, int port) {
-        super(firstTimeout, timeout, ConnectionEndType.SERVER, false);
+        super(firstTimeout, timeout, ConnectionEndType.SERVER);
         this.port = port;
     }
 
     @Override
     public void initialize() throws IOException {
         socket = new DatagramSocket(port);
-        socket.setSoTimeout((int) getTimeout());
         setStreams(new PushbackInputStream(new UdpInputStream(socket, true)), new UdpOutputStream(socket));
         srcPort = socket.getLocalPort();
         dstPort = socket.getPort();
-
+        cachedSocketState = null;
         // this could be made an option
         waitOnReceive();
     }
@@ -51,7 +50,6 @@ public class ServerUdpTransportHandler extends UdpTransportHandler {
             try {
                 Thread.sleep(1);
             } catch (InterruptedException e) {
-                ;
             }
         }
     }

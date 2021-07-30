@@ -43,8 +43,8 @@ public class KeyUpdateSerializer extends HandshakeMessageSerializer<KeyUpdateMes
     }
 
     private void writeKeyUpdateData(KeyUpdateMessage msg) {
-        appendByte(msg.getRequestUpdate().getValue());
-        LOGGER.debug("Serialized KeyUpdate Value: " + msg.getRequestUpdate());
+        appendByte(msg.getRequestMode().getValue());
+        LOGGER.debug("Serialized KeyUpdate Value: " + msg.getRequestMode());
     }
 
 }

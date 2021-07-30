@@ -9,8 +9,14 @@
 
 package de.rub.nds.tlsattacker.core.workflow.action;
 
+import de.rub.nds.modifiablevariable.util.IllegalStringAdapter;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+@XmlRootElement
 public abstract class AsciiAction extends TlsAction {
 
+    @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String asciiText;
 
     private final String encoding;

@@ -9,7 +9,6 @@
 
 package de.rub.nds.tlsattacker.attacks.task;
 
-import de.rub.nds.tlsattacker.attacks.exception.FingerprintExtractionException;
 import de.rub.nds.tlsattacker.attacks.util.response.ResponseExtractor;
 import de.rub.nds.tlsattacker.attacks.util.response.ResponseFingerprint;
 import de.rub.nds.tlsattacker.core.state.State;

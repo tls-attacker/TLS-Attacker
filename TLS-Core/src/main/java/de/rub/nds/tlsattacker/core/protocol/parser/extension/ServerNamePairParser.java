@@ -28,7 +28,7 @@ public class ServerNamePairParser extends Parser<ServerNamePair> {
 
     @Override
     public ServerNamePair parse() {
-        pair = new ServerNamePair();
+        pair = new ServerNamePair(null, null);
         parseServerNameType(pair);
         parseServerNameLength(pair);
         parseServerName(pair);

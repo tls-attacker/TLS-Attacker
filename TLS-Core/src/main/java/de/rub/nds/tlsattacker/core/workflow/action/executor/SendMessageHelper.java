@@ -186,6 +186,10 @@ public class SendMessageHelper {
                 if (context.getConfig().isCreateRecordsDynamically()) {
                     LOGGER.trace("Creating new Record");
                     records.add(context.getRecordLayer().getFreshRecord());
+                    if (context.getConfig().getDefaultMaxRecordData() == 0) {
+                        LOGGER.warn("MaxRecordLength is 0 in config. This is an endless loop. Aborting");
+                        break;
+                    }
                 } else {
                     return toFillList;
                 }

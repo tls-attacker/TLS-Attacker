@@ -12,6 +12,7 @@ package de.rub.nds.tlsattacker.core.protocol.serializer.extension.alpn;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.alpn.AlpnEntry;
 import de.rub.nds.tlsattacker.core.protocol.Serializer;
+import java.nio.charset.StandardCharsets;
 
 public class AlpnEntrySerializer extends Serializer<AlpnEntry> {
 
@@ -24,7 +25,7 @@ public class AlpnEntrySerializer extends Serializer<AlpnEntry> {
     @Override
     protected byte[] serializeBytes() {
         appendInt(entry.getAlpnEntryLength().getValue(), ExtensionByteLength.ALPN_ENTRY_LENGTH);
-        appendBytes(entry.getAlpnEntry().getValue().getBytes());
+        appendBytes(entry.getAlpnEntry().getValue().getBytes(StandardCharsets.ISO_8859_1));
         return getAlreadySerialized();
     }
 

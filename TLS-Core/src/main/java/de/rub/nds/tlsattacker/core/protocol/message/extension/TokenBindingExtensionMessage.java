@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 
 /**
@@ -27,6 +28,10 @@ public class TokenBindingExtensionMessage extends ExtensionMessage {
     private ModifiableInteger parameterListLength;
 
     public TokenBindingExtensionMessage() {
+        super(ExtensionType.TOKEN_BINDING);
+    }
+
+    public TokenBindingExtensionMessage(Config config) {
         super(ExtensionType.TOKEN_BINDING);
     }
 

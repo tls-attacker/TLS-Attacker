@@ -22,7 +22,7 @@ public class StandardizedChaCha20Poly1305Cipher extends ChaCha20Poly1305Cipher {
     private static final Logger LOGGER = LogManager.getLogger();
 
     public StandardizedChaCha20Poly1305Cipher(byte[] key) {
-        super(key);
+        super(key, 12);
         setCipher(new ChaCha7539Engine());
         setDraftStructure(false);
     }

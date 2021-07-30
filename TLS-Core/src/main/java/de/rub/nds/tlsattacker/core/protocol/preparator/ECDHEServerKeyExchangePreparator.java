@@ -17,8 +17,6 @@ import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.SignatureCalculator;
 import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
 import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
-import de.rub.nds.tlsattacker.core.crypto.ec.ForgivingX25519Curve;
-import de.rub.nds.tlsattacker.core.crypto.ec.ForgivingX448Curve;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.crypto.ec.RFC7748Curve;
@@ -94,6 +92,10 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
         } else if (namedGroup.isCurve()) {
             Point publicKey = curve.mult(msg.getComputations().getPrivateKey().getValue(), curve.getBasePoint());
             publicKeyBytes = PointFormatter.formatToByteArray(namedGroup, publicKey, pointFormat);
+        } else {
+            LOGGER.warn(
+                "Could not set public key. The selected curve is probably not a real curve. Using empty public key instead");
+            publicKeyBytes = new byte[0];
         }
         msg.setPublicKey(publicKeyBytes);
         msg.setPublicKeyLength(msg.getPublicKey().getValue().length);

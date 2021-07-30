@@ -29,7 +29,7 @@ public class ServerNamePairSerializerTest {
      */
     @Test
     public void testSerializeBytes() {
-        pair = new ServerNamePair();
+        pair = new ServerNamePair((byte) 3, null);
         pair.setServerNameLength(123);
         pair.setServerNameType((byte) 3);
         pair.setServerName(new byte[] { 1, 2, 3, 4, });

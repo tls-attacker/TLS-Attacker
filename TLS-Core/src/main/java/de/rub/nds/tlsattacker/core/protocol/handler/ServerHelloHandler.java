@@ -223,8 +223,8 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                 ? tlsContext.getChooser().getPsk() : new byte[macLength]; // use PSK if available
             byte[] earlySecret = HKDFunction.extract(hkdfAlgorithm, new byte[0], psk);
             byte[] saltHandshakeSecret = HKDFunction.deriveSecret(hkdfAlgorithm, digestAlgo.getJavaName(), earlySecret,
-                HKDFunction.DERIVED, ArrayConverter.hexStringToByteArray(""));
-            byte[] sharedSecret = new byte[macLength];
+                HKDFunction.DERIVED, new byte[0]);
+            byte[] sharedSecret;
             if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
                 if (tlsContext.getChooser().getSelectedCipherSuite().isPWD()) {
                     sharedSecret = computeSharedPWDSecret(tlsContext.getChooser().getServerKeyShare());

@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.Arrays;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,6 +23,7 @@ import org.apache.logging.log4j.Logger;
 /**
  *
  */
+@XmlRootElement
 public class ChangeDefaultPreMasterSecretAction extends ConnectionBoundAction {
 
     private static final Logger LOGGER = LogManager.getLogger();

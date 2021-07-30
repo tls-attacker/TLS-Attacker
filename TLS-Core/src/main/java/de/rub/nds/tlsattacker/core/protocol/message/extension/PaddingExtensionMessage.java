@@ -12,6 +12,7 @@ package de.rub.nds.tlsattacker.core.protocol.message.extension;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 
 /**
@@ -26,6 +27,10 @@ public class PaddingExtensionMessage extends ExtensionMessage {
     private ModifiableByteArray paddingBytes;
 
     public PaddingExtensionMessage() {
+        super(ExtensionType.PADDING);
+    }
+
+    public PaddingExtensionMessage(Config config) {
         super(ExtensionType.PADDING);
     }
 

@@ -83,6 +83,7 @@ public class ServerTcpTransportHandler extends TcpTransportHandler {
         }
         srcPort = socket.getLocalPort();
         dstPort = socket.getPort();
+        cachedSocketState = null;
         LOGGER.info("Connection established from ports {} -> {}", srcPort, dstPort);
         setStreams(new PushbackInputStream(socket.getInputStream()), socket.getOutputStream());
     }

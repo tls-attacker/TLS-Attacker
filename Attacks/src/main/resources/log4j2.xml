@@ -34,7 +34,7 @@
         <Logger name="de.rub.nds.tlsattacker.core.state" level="WARN"/>
         <Logger name="de.rub.nds.tlsattacker.core.constants" level="WARN"/>
         <Logger name="de.rub.nds.modifiablevariable" level="WARN"/>
-        
+        <Logger name="de.rub.nds.tlsattacker.transport.tcp.ClientTcpTransportHandler" level="WARN"/>
         <Root level="INFO">
             <AppenderRef ref="Console"/>
         </Root>

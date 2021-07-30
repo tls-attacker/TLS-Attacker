@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.transport.socket;
 
 public enum SocketState {
     CLOSED,
+    PEER_WRITE_CLOSED,
     UP,
     DATA_AVAILABLE,
     TIMEOUT,
