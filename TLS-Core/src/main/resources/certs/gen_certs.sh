@@ -21,10 +21,10 @@ rm attacker_dsa_cap.pem
 openssl ecparam -name secp256r1 -genkey -out attacker_ecdsa_ca_key.pem
 openssl req -key attacker_ecdsa_ca_key.pem -new -x509 -days 2000 -out attacker_ecdsa_ca.pem -subj "/C=DE/ST=NRW/L=Bochum/O=RUB/OU=NDS"
 
-#gen dh_dsa and dh_rsa keys and pems
+#gen dh keys and pems
 for len in 512 1024 2048 3072
 do
-  openssl dhparam -out dhparam.pem 1024
+  openssl dhparam -out dhparam.pem ${len}
   openssl genpkey -paramfile dhparam.pem -out dh${len}_key.pem
   openssl pkey -in dh${len}_key.pem -pubout -out dh.pem
   # DH is a bit weird as we have to generate the certificate request over the root CA certificates

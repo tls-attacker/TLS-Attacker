@@ -108,10 +108,13 @@ public class CcaCertificateManager {
 
     public void init(CcaDelegate ccaDelegate) {
         this.ccaDelegate = ccaDelegate;
+        if (!ccaDelegate.directoriesSupplied() || !ccaDelegate.clientCertificateSupplied()) {
+            LOGGER.debug("CcaDelegate does not contain enough information to evaluate all CcaCertificateTypes");
+        }
         for (CcaCertificateType ccaCertificateType : CcaCertificateType.values()) {
-            if (ccaCertificateType.getRequiresCaCertAndKeys()) {
+            if (ccaCertificateType.getRequiresCaCertAndKeys() && ccaDelegate.directoriesSupplied()) {
                 this.certificateKeyMap.put(ccaCertificateType, generateCertificateListFromXML(ccaCertificateType));
-            } else if (ccaCertificateType.getRequiresCertificate()) {
+            } else if (ccaCertificateType.getRequiresCertificate() && ccaDelegate.clientCertificateSupplied()) {
                 CcaCertificateChain ccaCertificateChain = new CcaCertificateChain();
                 ccaCertificateChain.appendEncodedCertificate(ccaDelegate.getClientCertificate());
                 this.certificateKeyMap.put(ccaCertificateType, ccaCertificateChain);
