@@ -53,7 +53,6 @@ public class SendDynamicClientKeyExchangeAction extends MessageAction implements
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
         }
-        System.out.println(tlsContext.getChooser().getSelectedCipherSuite());
         messages = new LinkedList<>();
         ClientKeyExchangeMessage clientKeyExchangeMessage =
             new WorkflowConfigurationFactory(state.getConfig()).createClientKeyExchangeMessage(
