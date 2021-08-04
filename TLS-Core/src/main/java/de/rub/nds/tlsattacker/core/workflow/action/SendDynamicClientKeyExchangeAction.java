@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
@@ -52,25 +53,32 @@ public class SendDynamicClientKeyExchangeAction extends MessageAction implements
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
         }
+        System.out.println(tlsContext.getChooser().getSelectedCipherSuite());
         messages = new LinkedList<>();
-        messages.add(new WorkflowConfigurationFactory(state.getConfig()).createClientKeyExchangeMessage(
-            AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite())));
-        String sending = getReadableString(messages);
-        if (hasDefaultAlias()) {
-            LOGGER.info("Sending DynamicKeyExchange: " + sending);
-        } else {
-            LOGGER.info("Sending DynamicKeyExchange (" + connectionAlias + "): " + sending);
-        }
+        ClientKeyExchangeMessage clientKeyExchangeMessage =
+            new WorkflowConfigurationFactory(state.getConfig()).createClientKeyExchangeMessage(
+                AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite()));
+        if (clientKeyExchangeMessage != null) {
+            messages.add(clientKeyExchangeMessage);
+            String sending = getReadableString(messages);
+            if (hasDefaultAlias()) {
+                LOGGER.info("Sending DynamicKeyExchange: " + sending);
+            } else {
+                LOGGER.info("Sending DynamicKeyExchange (" + connectionAlias + "): " + sending);
+            }
 
-        try {
-            MessageActionResult result = sendMessageHelper.sendMessages(messages, records, tlsContext);
-            messages = new ArrayList<>(result.getMessageList());
-            records = new ArrayList<>(result.getRecordList());
-            setExecuted(true);
-        } catch (IOException e) {
-            tlsContext.setReceivedTransportHandlerException(true);
-            LOGGER.debug(e);
-            setExecuted(getActionOptions().contains(ActionOption.MAY_FAIL));
+            try {
+                MessageActionResult result = sendMessageHelper.sendMessages(messages, records, tlsContext);
+                messages = new ArrayList<>(result.getMessageList());
+                records = new ArrayList<>(result.getRecordList());
+                setExecuted(true);
+            } catch (IOException e) {
+                tlsContext.setReceivedTransportHandlerException(true);
+                LOGGER.debug(e);
+                setExecuted(getActionOptions().contains(ActionOption.MAY_FAIL));
+            }
+        } else {
+            LOGGER.info("Sending DynamicKeyExchange: none");
         }
     }
 
