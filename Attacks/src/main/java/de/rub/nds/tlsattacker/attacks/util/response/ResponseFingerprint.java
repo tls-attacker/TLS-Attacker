@@ -207,7 +207,7 @@ public class ResponseFingerprint {
             return false;
         }
         EqualityError equalityError = FingerPrintChecker.checkEquality(this, (ResponseFingerprint) obj);
-        return equalityError == EqualityError.NONE;
+        return equalityError == EqualityError.NONE || equalityError == EqualityError.RECORD_CONTENT;
     }
 
     /**
