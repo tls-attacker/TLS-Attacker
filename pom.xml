@@ -56,7 +56,7 @@
             <email>robert.merget@rub.de</email>
             <url>http://www.nds.rub.de/</url>
             <organization>NDS</organization>
-            <organizationUrl>http://www.nds.rub.de</organizationUrl>
+            <organizationUrl>https://www.nds.rub.de</organizationUrl>
             <roles>
                 <role>Team lead</role>
             </roles>
@@ -65,20 +65,20 @@
             <id>mmaehren</id>
             <name>Marcel Maehren</name>
             <email>marcel.maehren@rub.de</email>
-            <url>http://www.nds.rub.de/</url>
+            <url>https://www.nds.rub.de/</url>
             <organization>NDS</organization>
-            <organizationUrl>http://www.nds.rub.de</organizationUrl>
+            <organizationUrl>https://www.nds.rub.de</organizationUrl>
             <roles>
                 <role>Developer</role>
             </roles>
         </developer>
         <developer>
-            <id>n</id>
-            <name>Nurullah Erinolah</name>
+            <id>NErinola</id>
+            <name>Nurullah Erinola</name>
             <email>nurullah.erinola@rub.de</email>
-            <url>http://www.nds.rub.de/</url>
+            <url>https://www.nds.rub.de/</url>
             <organization>NDS</organization>
-            <organizationUrl>http://www.nds.rub.de</organizationUrl>
+            <organizationUrl>https://www.nds.rub.de</organizationUrl>
             <roles>
                 <role>Developer</role>
             </roles>
