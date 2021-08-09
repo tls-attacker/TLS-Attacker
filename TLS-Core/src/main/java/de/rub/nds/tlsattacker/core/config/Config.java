@@ -1163,7 +1163,7 @@ public class Config implements Serializable {
 
     private ChooserType chooserType = ChooserType.DEFAULT;
 
-    private Boolean useAllProvidedFragments = false;
+    private Boolean useAllProvidedDtlsFragments = false;
 
     private Boolean useAllProvidedRecords = false;
 
@@ -1621,12 +1621,12 @@ public class Config implements Serializable {
         this.useFreshRandom = useFreshRandom;
     }
 
-    public Boolean isUseAllProvidedFragments() {
-        return useAllProvidedFragments;
+    public Boolean isUseAllProvidedDtlsFragments() {
+        return useAllProvidedDtlsFragments;
     }
 
-    public void setUseAllProvidedFragments(Boolean useAllProvidedFragments) {
-        this.useAllProvidedFragments = useAllProvidedFragments;
+    public void setUseAllProvidedDtlsFragments(Boolean useAllProvidedDtlsFragments) {
+        this.useAllProvidedDtlsFragments = useAllProvidedDtlsFragments;
     }
 
     public Boolean isUseAllProvidedRecords() {
