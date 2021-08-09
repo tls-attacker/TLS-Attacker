@@ -63,9 +63,6 @@ public class ProtocolVersionDelegate extends Delegate {
         }
         config.getDefaultClientConnection().setTransportHandlerType(th);
         config.getDefaultServerConnection().setTransportHandlerType(th);
-
-        // TODO: Nach dem testen löschen
-        Configurator.setAllLevels("de.rub.nds.tlsattacker", Level.INFO);
     }
 
 }
