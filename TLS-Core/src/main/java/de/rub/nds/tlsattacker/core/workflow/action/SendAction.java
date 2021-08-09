@@ -19,6 +19,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.TlsMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
+import de.rub.nds.tlsattacker.core.record.BlobRecord;
+import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
@@ -30,12 +32,14 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
  * todo print configured records
  */
+@XmlRootElement
 public class SendAction extends MessageAction implements SendingAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -179,29 +183,7 @@ public class SendAction extends MessageAction implements SendingAction {
             }
         }
         for (ModifiableVariableHolder holder : holders) {
-            List<Field> fields = holder.getAllModifiableVariableFields();
-            for (Field f : fields) {
-                f.setAccessible(true);
-
-                ModifiableVariable mv = null;
-                try {
-                    mv = (ModifiableVariable) f.get(holder);
-                } catch (IllegalArgumentException | IllegalAccessException ex) {
-                    LOGGER.warn("Could not retrieve ModifiableVariables");
-                    LOGGER.debug(ex);
-                }
-                if (mv != null) {
-                    if (mv.getModification() != null || mv.isCreateRandomModification()) {
-                        mv.setOriginalValue(null);
-                    } else {
-                        try {
-                            f.set(holder, null);
-                        } catch (IllegalArgumentException | IllegalAccessException ex) {
-                            LOGGER.warn("Could not strip ModifiableVariable without Modification");
-                        }
-                    }
-                }
-            }
+            holder.reset();
         }
         setExecuted(null);
     }

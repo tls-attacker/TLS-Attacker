@@ -165,7 +165,11 @@ public class SSL2ClientMasterKeyPreparator extends HandshakeMessagePreparator<SS
         int unpaddedLength = message.getComputations().getPremasterSecret().getValue().length;
 
         int randomByteLength = keyByteLength - unpaddedLength - 3;
-        padding = new byte[randomByteLength];
+        if (randomByteLength >= 0) {
+            padding = new byte[randomByteLength];
+        } else {
+            padding = new byte[0]; // randomByteLength could be negative
+        }
         chooser.getContext().getRandom().nextBytes(padding);
         ArrayConverter.makeArrayNonZero(padding);
         preparePadding(message);

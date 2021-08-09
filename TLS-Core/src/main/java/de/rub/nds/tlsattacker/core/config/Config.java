@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.config;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.IllegalStringAdapter;
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.certificate.CertificateKeyPair;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
@@ -33,12 +34,14 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
 import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
+import de.rub.nds.tlsattacker.core.constants.KeyUpdateRequest;
 import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
 import de.rub.nds.tlsattacker.core.constants.NameType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.PskKeyExchangeMode;
+import de.rub.nds.tlsattacker.core.constants.RecordSizeLimit;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.constants.SSL2CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
@@ -78,15 +81,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementDecl;
 import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlList;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.apache.logging.log4j.LogManager;
@@ -304,9 +303,9 @@ public class Config implements Serializable {
     private Integer prefferedCertDssKeySize = 2048;
 
     /**
-     * MaxFragmentLength in MaxFragmentLengthExtension
+     * Determine if a KeyUpdate should be requested from peer
      */
-    private MaxFragmentLength maxFragmentLength = MaxFragmentLength.TWO_9;
+    private KeyUpdateRequest defaultKeyUpdateRequestMode = KeyUpdateRequest.UPDATE_NOT_REQUESTED;
 
     /**
      * Determine if CCS should be encrypted in TLS 1.3 if encryption is set up for record layer
@@ -376,8 +375,10 @@ public class Config implements Serializable {
      */
     @XmlElement(name = "defaultProposedAlpnProtocol")
     @XmlElementWrapper
+    @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private List<String> defaultProposedAlpnProtocols;
 
+    @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String defaultSelectedAlpnProtocol = AlpnProtocol.HTTP_2.getConstant();
 
     /**
@@ -526,6 +527,11 @@ public class Config implements Serializable {
     private Boolean addMaxFragmentLengthExtension = false;
 
     /**
+     * If we generate ClientHello with the RecordSizeLimit extension
+     */
+    private Boolean addRecordSizeLimitExtension = false;
+
+    /**
      * If we generate ClientHello with the ServerNameIndication extension
      */
     private Boolean addServerNameIndicationExtension = false;
@@ -622,11 +628,13 @@ public class Config implements Serializable {
     /**
      * Default cookie value to use if addHttpsCookie is true.
      */
+    @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String defaultHttpsCookieName = "tls-attacker";
 
     /**
      * Default cookie value to use if addHttpsCookie is true.
      */
+    @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String defaultHttpsCookieValue = "42130912812";
 
     /**
@@ -861,6 +869,7 @@ public class Config implements Serializable {
 
     private GOSTCurve defaultSelectedGostCurve = GOSTCurve.GostR3410_2001_CryptoPro_XchB;
 
+    @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String defaultApplicationMessageData = "Test";
 
     @XmlElement(name = "clientCertificateType")
@@ -873,11 +882,6 @@ public class Config implements Serializable {
     private Integer heartbeatPayloadLength = 256;
 
     private Integer heartbeatPaddingLength = 256;
-
-    /**
-     * How much data we should put into a record by default
-     */
-    private Integer defaultMaxRecordData = 16384;
 
     /**
      * How much padding bytes should be send by default
@@ -996,7 +1000,15 @@ public class Config implements Serializable {
 
     private ProtocolVersion defaultHighestClientProtocolVersion = ProtocolVersion.TLS12;
 
+    /**
+     * Both methods of limiting record size as defined in RFC 3546 (MaximumFragmentLength extension) and RFC 8449
+     * (RecordSizeLimit extension)
+     */
     private MaxFragmentLength defaultMaxFragmentLength = MaxFragmentLength.TWO_12;
+
+    private Integer defaultMaxRecordData = RecordSizeLimit.DEFAULT_MAX_RECORD_DATA_SIZE;
+
+    private Integer inboundRecordSizeLimit = RecordSizeLimit.DEFAULT_MAX_RECORD_DATA_SIZE;
 
     private HeartbeatMode defaultHeartbeatMode = HeartbeatMode.PEER_ALLOWED_TO_SEND;
 
@@ -1163,6 +1175,7 @@ public class Config implements Serializable {
      * requestPath to use in LocationHeader if none is saved during the connection, e.g. no received HttpsRequestMessage
      * or httpsParsing is disabled
      */
+    @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String defaultHttpsRequestPath = "/";
 
     private StarttlsType starttlsType = StarttlsType.NONE;
@@ -1209,6 +1222,7 @@ public class Config implements Serializable {
     /**
      * Use username from the example of RFC8492
      */
+    @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String defaultClientPWDUsername = "fred";
 
     /**
@@ -1227,6 +1241,7 @@ public class Config implements Serializable {
     /**
      * Use password from the example of RFC8492
      */
+    @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String defaultPWDPassword = "barney";
 
     /**
@@ -2199,6 +2214,14 @@ public class Config implements Serializable {
         this.defaultMaxFragmentLength = defaultMaxFragmentLength;
     }
 
+    public Integer getInboundRecordSizeLimit() {
+        return inboundRecordSizeLimit;
+    }
+
+    public void setInboundRecordSizeLimit(Integer inboundRecordSizeLimit) {
+        this.inboundRecordSizeLimit = inboundRecordSizeLimit;
+    }
+
     public SignatureAndHashAlgorithm getDefaultSelectedSignatureAndHashAlgorithm() {
         return defaultSelectedSignatureAndHashAlgorithm;
     }
@@ -2532,14 +2555,6 @@ public class Config implements Serializable {
         this.workflowInput = workflowInput;
     }
 
-    public MaxFragmentLength getMaxFragmentLength() {
-        return maxFragmentLength;
-    }
-
-    public void setMaxFragmentLength(MaxFragmentLength maxFragmentLengthConfig) {
-        this.maxFragmentLength = maxFragmentLengthConfig;
-    }
-
     public NamedGroup getDefaultSelectedNamedGroup() {
         return defaultSelectedNamedGroup;
     }
@@ -2649,6 +2664,14 @@ public class Config implements Serializable {
 
     public void setAddMaxFragmentLengthExtension(Boolean addMaxFragmentLengthExtension) {
         this.addMaxFragmentLengthExtension = addMaxFragmentLengthExtension;
+    }
+
+    public Boolean isAddRecordSizeLimitExtension() {
+        return addRecordSizeLimitExtension;
+    }
+
+    public void setAddRecordSizeLimitExtension(Boolean addRecordSizeLimitExtension) {
+        this.addRecordSizeLimitExtension = addRecordSizeLimitExtension;
     }
 
     public Boolean isAddServerNameIndicationExtension() {
@@ -3626,7 +3649,7 @@ public class Config implements Serializable {
     }
 
     public byte[] getDefaultServerPWDSalt() {
-        return defaultServerPWDSalt;
+        return Arrays.copyOf(defaultServerPWDSalt, defaultServerPWDSalt.length);
     }
 
     public void setDefaultServerPWDSalt(byte[] salt) {
@@ -3650,7 +3673,7 @@ public class Config implements Serializable {
     }
 
     public byte[] getDefaultServerPWDPrivate() {
-        return defaultServerPWDPrivate;
+        return Arrays.copyOf(defaultServerPWDPrivate, defaultServerPWDPrivate.length);
     }
 
     public void setDefaultServerPWDPrivate(byte[] defaultServerPWDPrivate) {
@@ -3658,7 +3681,7 @@ public class Config implements Serializable {
     }
 
     public byte[] getDefaultServerPWDMask() {
-        return defaultServerPWDMask;
+        return Arrays.copyOf(defaultServerPWDMask, defaultServerPWDMask.length);
     }
 
     public void setDefaultServerPWDMask(byte[] defaultServerPWDMask) {
@@ -3666,7 +3689,7 @@ public class Config implements Serializable {
     }
 
     public byte[] getDefaultClientPWDPrivate() {
-        return defaultClientPWDPrivate;
+        return Arrays.copyOf(defaultClientPWDPrivate, defaultClientPWDPrivate.length);
     }
 
     public void setDefaultClientPWDPrivate(byte[] defaultClientPWDPrivate) {
@@ -3674,7 +3697,7 @@ public class Config implements Serializable {
     }
 
     public byte[] getDefaultClientPWDMask() {
-        return defaultClientPWDMask;
+        return Arrays.copyOf(defaultClientPWDMask, defaultClientPWDMask.length);
     }
 
     public void setDefaultClientPWDMask(byte[] defaultClientPWDMask) {
@@ -3766,7 +3789,7 @@ public class Config implements Serializable {
     }
 
     public byte[] getDefaultEsniClientNonce() {
-        return defaultEsniClientNonce;
+        return Arrays.copyOf(defaultEsniClientNonce, defaultEsniClientNonce.length);
     }
 
     public void setDefaultEsniClientNonce(byte[] defaultEsniClientNonce) {
@@ -3774,7 +3797,7 @@ public class Config implements Serializable {
     }
 
     public byte[] getDefaultEsniServerNonce() {
-        return defaultEsniServerNonce;
+        return Arrays.copyOf(defaultEsniServerNonce, defaultEsniServerNonce.length);
     }
 
     public void setDefaultEsniServerNonce(byte[] defaultEsniServerNonce) {
@@ -3782,7 +3805,7 @@ public class Config implements Serializable {
     }
 
     public byte[] getDefaultEsniRecordBytes() {
-        return defaultEsniRecordBytes;
+        return Arrays.copyOf(defaultEsniRecordBytes, defaultEsniRecordBytes.length);
     }
 
     public void setDefaultEsniRecordBytes(byte[] defaultEsniRecordBytes) {
@@ -3798,7 +3821,7 @@ public class Config implements Serializable {
     }
 
     public byte[] getDefaultEsniRecordChecksum() {
-        return defaultEsniRecordChecksum;
+        return Arrays.copyOf(defaultEsniRecordChecksum, defaultEsniRecordChecksum.length);
     }
 
     public void setDefaultEsniRecordChecksum(byte[] defaultEsniRecordChecksum) {
@@ -3938,7 +3961,7 @@ public class Config implements Serializable {
     }
 
     public byte[] getDefaultLastClientHello() {
-        return defaultLastClientHello;
+        return Arrays.copyOf(defaultLastClientHello, defaultLastClientHello.length);
     }
 
     public void setDefaultLastClientHello(byte[] defaultLastClientHello) {
@@ -3983,5 +4006,13 @@ public class Config implements Serializable {
 
     public void setEncryptChangeCipherSpec(Boolean encryptChangeCipherSpec) {
         this.encryptChangeCipherSpecTls13 = encryptChangeCipherSpec;
+    }
+
+    public KeyUpdateRequest getDefaultKeyUpdateRequestMode() {
+        return defaultKeyUpdateRequestMode;
+    }
+
+    public void setDefaultKeyUpdateRequestMode(KeyUpdateRequest defaultKeyUpdateRequestMode) {
+        this.defaultKeyUpdateRequestMode = defaultKeyUpdateRequestMode;
     }
 }

@@ -14,11 +14,13 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
+import javax.xml.bind.annotation.XmlRootElement;
 
+@XmlRootElement
 public class UserMappingExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty
-    ModifiableByte userMappingType;
+    private ModifiableByte userMappingType;
 
     public UserMappingExtensionMessage() {
         super(ExtensionType.USER_MAPPING);

@@ -42,6 +42,7 @@ public enum ExtensionType {
     EXTENDED_MASTER_SECRET(new byte[] { (byte) 0, (byte) 23 }),
     TOKEN_BINDING(new byte[] { (byte) 0, (byte) 24 }),
     CACHED_INFO(new byte[] { (byte) 0, (byte) 25 }),
+    RECORD_SIZE_LIMIT(new byte[] { (byte) 0, (byte) 28 }),
     PWD_PROTECT(new byte[] { (byte) 0, (byte) 29 }),
     PWD_CLEAR(new byte[] { (byte) 0, (byte) 30 }),
     PASSWORD_SALT(new byte[] { (byte) 0, (byte) 31 }),
@@ -168,6 +169,7 @@ public enum ExtensionType {
         list.add(TRUSTED_CA_KEYS);
         list.add(USE_SRTP);
         list.add(COOKIE);
+        list.add(RECORD_SIZE_LIMIT);
 
         return list;
     }
@@ -208,6 +210,7 @@ public enum ExtensionType {
         list.add(TRUSTED_CA_KEYS);
         list.add(USE_SRTP);
         list.add(COOKIE);
+        list.add(RECORD_SIZE_LIMIT);
 
         return list;
     }
@@ -231,6 +234,8 @@ public enum ExtensionType {
         list.add(HEARTBEAT);
         list.add(EXTENDED_RANDOM);
         list.add(COOKIE);
+        list.add(RECORD_SIZE_LIMIT);
+
         return list;
     }
 
@@ -245,6 +250,7 @@ public enum ExtensionType {
             case CLIENT_CERTIFICATE_TYPE:
             case SERVER_CERTIFICATE_TYPE:
             case EARLY_DATA:
+            case RECORD_SIZE_LIMIT:
                 return true;
         }
         return false;

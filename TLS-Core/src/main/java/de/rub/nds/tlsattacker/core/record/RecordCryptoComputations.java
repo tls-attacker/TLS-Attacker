@@ -12,11 +12,12 @@ package de.rub.nds.tlsattacker.core.record;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class RecordCryptoComputations implements Serializable {
+public class RecordCryptoComputations extends ModifiableVariableHolder implements Serializable {
 
     /**
      * The key used for the symmetric cipher
@@ -94,6 +95,14 @@ public class RecordCryptoComputations implements Serializable {
     private Tls13KeySetType usedTls13KeySetType = Tls13KeySetType.NONE;
 
     public RecordCryptoComputations() {
+    }
+
+    @Override
+    public void reset() {
+        super.reset();
+        paddingValid = null;
+        macValid = null;
+        authenticationTagValid = null;
     }
 
     public ModifiableByteArray getCipherKey() {

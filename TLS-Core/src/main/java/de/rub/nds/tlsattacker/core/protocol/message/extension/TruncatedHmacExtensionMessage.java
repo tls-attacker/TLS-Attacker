@@ -9,6 +9,7 @@
 
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 
 /**
@@ -20,4 +21,7 @@ public class TruncatedHmacExtensionMessage extends ExtensionMessage {
         super(ExtensionType.TRUNCATED_HMAC);
     }
 
+    public TruncatedHmacExtensionMessage(Config config) {
+        super(ExtensionType.TRUNCATED_HMAC);
+    }
 }

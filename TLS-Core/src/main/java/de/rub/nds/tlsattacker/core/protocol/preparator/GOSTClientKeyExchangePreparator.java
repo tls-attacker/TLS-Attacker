@@ -115,7 +115,7 @@ public abstract class GOSTClientKeyExchangePreparator
                 byte[] pms = wrap(false, wrapped, sboxName);
                 msg.getComputations().setPremasterSecret(pms);
             }
-        } catch (GeneralSecurityException | IOException e) {
+        } catch (Exception e) {
             throw new WorkflowExecutionException("Could not prepare the key agreement!", e);
         }
     }
@@ -142,6 +142,10 @@ public abstract class GOSTClientKeyExchangePreparator
     private void prepareKek(BigInteger privateKey, Point publicKey) throws GeneralSecurityException {
         EllipticCurve curve = CurveFactory.getCurve(chooser.getSelectedGostCurve());
         Point sharedPoint = curve.mult(privateKey, publicKey);
+        if (sharedPoint == null) {
+            LOGGER.warn("GOST shared point is null - using base point instead");
+            sharedPoint = curve.getBasePoint();
+        }
         byte[] pms = PointFormatter.toRawFormat(sharedPoint);
         Digest digest = getKeyAgreementDigestAlgorithm();
         digest.update(pms, 0, pms.length);
@@ -174,24 +178,36 @@ public abstract class GOSTClientKeyExchangePreparator
     }
 
     private byte[] wrap(boolean wrap, byte[] bytes, String sboxName) {
-        byte[] sbox = GOST28147Engine.getSBox(sboxName);
-        KeyParameter keySpec = new KeyParameter(msg.getComputations().getKeyEncryptionKey().getValue());
-        ParametersWithSBox withSBox = new ParametersWithSBox(keySpec, sbox);
-        ParametersWithUKM withIV = new ParametersWithUKM(withSBox, msg.getComputations().getUkm().getValue());
+        try {
+            byte[] sbox = GOST28147Engine.getSBox(sboxName);
+            KeyParameter keySpec = new KeyParameter(msg.getComputations().getKeyEncryptionKey().getValue());
+            ParametersWithSBox withSBox = new ParametersWithSBox(keySpec, sbox);
+            ParametersWithUKM withIV = new ParametersWithUKM(withSBox, msg.getComputations().getUkm().getValue());
 
-        GOST28147WrapEngine cipher = new GOST28147WrapEngine();
-        cipher.init(wrap, withIV);
-
-        byte[] result;
-        if (wrap) {
-            LOGGER.debug("Wrapping GOST PMS: " + ArrayConverter.bytesToHexString(bytes));
-            result = cipher.wrap(bytes, 0, bytes.length);
-        } else {
-            LOGGER.debug("Unwrapping GOST PMS: " + ArrayConverter.bytesToHexString(bytes));
-            result = cipher.unwrap(bytes, 0, bytes.length);
+            GOST28147WrapEngine cipher = new GOST28147WrapEngine();
+            cipher.init(wrap, withIV);
+            byte[] result;
+            try {
+                if (wrap) {
+                    LOGGER.debug("Wrapping GOST PMS: " + ArrayConverter.bytesToHexString(bytes));
+                    result = cipher.wrap(bytes, 0, bytes.length);
+                } else {
+                    LOGGER.debug("Unwrapping GOST PMS: " + ArrayConverter.bytesToHexString(bytes));
+                    result = cipher.unwrap(bytes, 0, bytes.length);
+                }
+            } catch (IndexOutOfBoundsException ex) {
+                // TODO this is not so nice, but its honestly not worth fixing as gost is not used and this can only
+                // happen
+                // during fuzzing
+                LOGGER.warn("IndexOutOfBounds within GOST code. We catch this and return an empty byte array");
+                result = new byte[0];
+            }
+            LOGGER.debug("Wrap result: " + ArrayConverter.bytesToHexString(result));
+            return result;
+        } catch (Exception E) {
+            LOGGER.warn("Could not wrap. Using byte[0]");
+            return new byte[0];
         }
-        LOGGER.debug("Wrap result: " + ArrayConverter.bytesToHexString(result));
-        return result;
     }
 
     private void prepareCek() {
@@ -211,9 +227,13 @@ public abstract class GOSTClientKeyExchangePreparator
             LOGGER.warn("Something going wrong here...");
         }
         msg.getComputations().setEncryptedKey(cek);
-
-        byte[] mac = new byte[wrapped.length - cek.length];
-        System.arraycopy(wrapped, cek.length, mac, 0, mac.length);
+        byte[] mac;
+        if (wrapped.length - cek.length < 0) {
+            mac = new byte[0];
+        } else {
+            mac = new byte[wrapped.length - cek.length];
+            System.arraycopy(wrapped, cek.length, mac, 0, mac.length);
+        }
         msg.getComputations().setMacKey(mac);
     }
 

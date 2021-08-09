@@ -50,64 +50,82 @@ public class CertificateByteChooser {
 
     private List<String> getResourceFiles() throws IOException {
         List<String> filenames = new ArrayList<>();
-        filenames.add("ec_rsa_sect163r1_cert.pem");
-        filenames.add("ec_secp224k1_cert.pem");
-        filenames.add("ec_sect571k1_cert.pem");
-        filenames.add("ec_rsa_secp160r2_cert.pem");
-        filenames.add("ec_rsa_sect409k1_cert.pem");
-        filenames.add("ec_sect193r2_cert.pem");
-        filenames.add("dh_dsa_cert.pem");
-        filenames.add("ec_rsa_sect163r2_cert.pem");
-        filenames.add("ec_secp224r1_cert.pem");
-        filenames.add("ec_sect571r1_cert.pem");
-        filenames.add("ec_rsa_secp192k1_cert.pem");
-        filenames.add("ec_rsa_sect409r1_cert.pem");
-        filenames.add("ec_sect233k1_cert.pem");
-        filenames.add("dh_rsa_cert.pem");
-        filenames.add("ec_rsa_sect193r1_cert.pem");
-        filenames.add("ec_secp256k1_cert.pem");
-        filenames.add("rsa1024_cert.pem");
-        filenames.add("ec_rsa_secp224k1_cert.pem");
-        filenames.add("ec_rsa_sect571k1_cert.pem");
-        filenames.add("ec_sect233r1_cert.pem");
-        filenames.add("dsa1024_cert.pem");
-        filenames.add("ec_rsa_sect193r2_cert.pem");
-        filenames.add("ec_secp384r1_cert.pem");
-        filenames.add("rsa2048_cert.pem");
-        filenames.add("ec_rsa_secp224r1_cert.pem");
-        filenames.add("ec_rsa_sect571r1_cert.pem");
-        filenames.add("ec_sect239k1_cert.pem");
-        filenames.add("dsa2048_cert.pem");
-        filenames.add("ec_rsa_sect233k1_cert.pem");
-        filenames.add("ec_secp521r1_cert.pem");
-        filenames.add("rsa4096_cert.pem");
-        filenames.add("ec_rsa_secp256k1_cert.pem");
-        filenames.add("ec_secp160k1_cert.pem");
-        filenames.add("ec_sect283k1_cert.pem");
-        filenames.add("dsa3072_cert.pem");
-        filenames.add("ec_rsa_sect233r1_cert.pem");
-        filenames.add("ec_sect163k1_cert.pem");
-        filenames.add("rsa512_cert.pem");
-        filenames.add("ec_rsa_secp384r1_cert.pem");
-        filenames.add("ec_secp160r1_cert.pem");
-        filenames.add("ec_sect283r1_cert.pem");
-        filenames.add("dsa512_cert.pem");
-        filenames.add("ec_rsa_sect239k1_cert.pem");
-        filenames.add("ec_sect163r1_cert.pem");
-        filenames.add("ec_rsa_secp521r1_cert.pem");
-        filenames.add("ec_secp160r2_cert.pem");
-        filenames.add("ec_sect409k1_cert.pem");
-        filenames.add("ec_rsa_secp160k1_cert.pem");
-        filenames.add("ec_rsa_sect283k1_cert.pem");
-        filenames.add("ec_sect163r2_cert.pem");
-        filenames.add("ec_rsa_sect163k1_cert.pem");
-        filenames.add("ec_secp192k1_cert.pem");
-        filenames.add("ec_sect409r1_cert.pem");
-        filenames.add("ec_rsa_secp160r1_cert.pem");
-        filenames.add("ec_rsa_sect283r1_cert.pem");
-        filenames.add("ec_sect193r1_cert.pem");
-        filenames.add("ec_secp256r1_cert.pem");
-        filenames.add("ec_rsa_secp256r1_cert.pem");
+        filenames.add("ec_sect163r1_rsa_cert.pem");
+        filenames.add("ec_secp224k1_ecdsa_cert.pem");
+        filenames.add("ec_sect571k1_ecdsa_cert.pem");
+        filenames.add("ec_secp160r2_rsa_cert.pem");
+        filenames.add("ec_sect409k1_rsa_cert.pem");
+        filenames.add("ec_sect193r2_ecdsa_cert.pem");
+        filenames.add("dh3072_dsa_cert.pem");
+        filenames.add("dh2048_dsa_cert.pem");
+        filenames.add("dh1024_dsa_cert.pem");
+        filenames.add("dh512_dsa_cert.pem");
+        filenames.add("ec_sect163r2_rsa_cert.pem");
+        filenames.add("ec_secp224r1_ecdsa_cert.pem");
+        filenames.add("ec_sect571r1_ecdsa_cert.pem");
+        filenames.add("ec_secp192k1_rsa_cert.pem");
+        filenames.add("ec_sect409r1_rsa_cert.pem");
+        filenames.add("ec_sect233k1_ecdsa_cert.pem");
+        filenames.add("dh3072_rsa_cert.pem");
+        filenames.add("dh2048_rsa_cert.pem");
+        filenames.add("dh1024_rsa_cert.pem");
+        filenames.add("dh512_rsa_cert.pem");
+        filenames.add("ec_sect193r1_rsa_cert.pem");
+        filenames.add("ec_secp256k1_ecdsa_cert.pem");
+        filenames.add("rsa1024_rsa_cert.pem");
+        filenames.add("ec_secp224k1_rsa_cert.pem");
+        filenames.add("ec_sect571k1_rsa_cert.pem");
+        filenames.add("ec_sect233r1_ecdsa_cert.pem");
+        filenames.add("ec_sect193r2_rsa_cert.pem");
+        filenames.add("ec_secp384r1_ecdsa_cert.pem");
+        filenames.add("rsa2048_rsa_cert.pem");
+        filenames.add("ec_secp224r1_rsa_cert.pem");
+        filenames.add("ec_sect571r1_rsa_cert.pem");
+        filenames.add("ec_sect239k1_ecdsa_cert.pem");
+        filenames.add("ec_sect233k1_rsa_cert.pem");
+        filenames.add("ec_secp521r1_ecdsa_cert.pem");
+        filenames.add("rsa4096_rsa_cert.pem");
+        filenames.add("ec_secp256k1_rsa_cert.pem");
+        filenames.add("ec_secp160k1_ecdsa_cert.pem");
+        filenames.add("ec_sect283k1_ecdsa_cert.pem");
+        filenames.add("ec_sect233r1_rsa_cert.pem");
+        filenames.add("ec_sect163k1_ecdsa_cert.pem");
+        filenames.add("rsa512_rsa_cert.pem");
+        filenames.add("ec_secp384r1_rsa_cert.pem");
+        filenames.add("ec_secp160r1_ecdsa_cert.pem");
+        filenames.add("ec_sect283r1_ecdsa_cert.pem");
+        filenames.add("ec_sect239k1_rsa_cert.pem");
+        filenames.add("ec_sect163r1_ecdsa_cert.pem");
+        filenames.add("ec_secp521r1_rsa_cert.pem");
+        filenames.add("ec_secp160r2_ecdsa_cert.pem");
+        filenames.add("ec_sect409k1_ecdsa_cert.pem");
+        filenames.add("ec_secp160k1_rsa_cert.pem");
+        filenames.add("ec_sect283k1_rsa_cert.pem");
+        filenames.add("ec_sect163r2_ecdsa_cert.pem");
+        filenames.add("ec_sect163k1_rsa_cert.pem");
+        filenames.add("ec_secp192k1_ecdsa_cert.pem");
+        filenames.add("ec_sect409r1_ecdsa_cert.pem");
+        filenames.add("ec_secp160r1_rsa_cert.pem");
+        filenames.add("ec_sect283r1_rsa_cert.pem");
+        filenames.add("ec_sect193r1_ecdsa_cert.pem");
+        filenames.add("ec_secp256r1_ecdsa_cert.pem");
+        filenames.add("ec_secp256r1_rsa_cert.pem");
+        filenames.add("dh3072_ecdsa_cert.pem");
+        filenames.add("dh2048_ecdsa_cert.pem");
+        filenames.add("dh1024_ecdsa_cert.pem");
+        filenames.add("dh512_ecdsa_cert.pem");
+        filenames.add("dsa512_rsa_cert.pem");
+        filenames.add("dsa1024_rsa_cert.pem");
+        filenames.add("dsa2048_rsa_cert.pem");
+        filenames.add("dsa3072_rsa_cert.pem");
+        filenames.add("dsa512_ecdsa_cert.pem");
+        filenames.add("dsa1024_ecdsa_cert.pem");
+        filenames.add("dsa2048_ecdsa_cert.pem");
+        filenames.add("dsa3072_ecdsa_cert.pem");
+        filenames.add("dsa512_dsa_cert.pem");
+        filenames.add("dsa1024_dsa_cert.pem");
+        filenames.add("dsa2048_dsa_cert.pem");
+        filenames.add("dsa3072_dsa_cert.pem");
         // filenames.add("gost01_0_cert.pem");
         filenames.add("gost01_A_cert.pem");
         filenames.add("gost01_B_cert.pem");
@@ -133,7 +151,7 @@ public class CertificateByteChooser {
                     try {
                         Certificate readCertificate = PemUtil.readCertificate(
                             this.getClass().getClassLoader().getResourceAsStream(RESOURCE_PATH + file));
-                        String keyName = file.replace("cert.pem", "key.pem");
+                        String keyName = resolveKeyfileFromCert(file);
                         PrivateKey privateKey = PemUtil.readPrivateKey(
                             this.getClass().getClassLoader().getResourceAsStream(RESOURCE_PATH + keyName));
                         keyPairList.add(new CertificateKeyPair(readCertificate, privateKey));
@@ -259,5 +277,18 @@ public class CertificateByteChooser {
             throw new RuntimeException("Key Pair list is empty!");
         }
         return keyPairList.get(0);
+    }
+
+    private String resolveKeyfileFromCert(String certName) {
+        int signatureTypeSuffixIndex;
+        if (certName.startsWith("ec_")) {
+            signatureTypeSuffixIndex = certName.indexOf("_", 4);
+            return certName.substring(0, signatureTypeSuffixIndex) + "_key.pem";
+        } else if (certName.startsWith("rsa") || certName.startsWith("dh") || certName.startsWith("dsa")) {
+            signatureTypeSuffixIndex = certName.indexOf("_");
+            return certName.substring(0, signatureTypeSuffixIndex) + "_key.pem";
+        } else {
+            return certName.replace("cert.pem", "key.pem");
+        }
     }
 }

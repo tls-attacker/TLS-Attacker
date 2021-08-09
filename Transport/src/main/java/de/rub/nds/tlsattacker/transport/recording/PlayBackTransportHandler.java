@@ -42,6 +42,7 @@ public class PlayBackTransportHandler extends TransportHandler {
 
     @Override
     public void initialize() throws IOException {
+        cachedSocketState = null;
         RandomHelper.getRandom().setSeed(recording.getSeed());
     }
 
@@ -78,5 +79,10 @@ public class PlayBackTransportHandler extends TransportHandler {
     @Override
     public boolean isClosed() throws IOException {
         return closed;
+    }
+
+    @Override
+    public void setTimeout(long timeout) {
+        // DO NOTHING
     }
 }

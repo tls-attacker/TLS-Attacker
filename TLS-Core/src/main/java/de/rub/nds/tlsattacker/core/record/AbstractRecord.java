@@ -55,6 +55,10 @@ public abstract class AbstractRecord extends ModifiableVariableHolder {
         this.maxRecordLengthConfig = config.getDefaultMaxRecordData();
     }
 
+    public AbstractRecord(Integer maxRecordLengthConfig) {
+        this.maxRecordLengthConfig = maxRecordLengthConfig;
+    }
+
     public ProtocolMessageType getContentMessageType() {
         return contentMessageType;
     }

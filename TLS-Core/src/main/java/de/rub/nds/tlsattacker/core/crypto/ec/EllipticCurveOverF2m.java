@@ -209,6 +209,10 @@ public class EllipticCurveOverF2m extends EllipticCurve {
      * @return      The result z for the quadratic equation or null if non-existent
      */
     public FieldElementF2m solveQuadraticEquation(FieldElement beta) {
+        if (beta.getData().equals(BigInteger.ZERO)) {
+            return new FieldElementF2m(BigInteger.ONE, beta.getModulus());
+        }
+
         FieldElementF2m gamma;
         FieldElementF2m z;
         Random randNum = new Random(0);

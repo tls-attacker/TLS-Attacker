@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
@@ -29,9 +30,11 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+@XmlRootElement
 public class SendDynamicClientKeyExchangeAction extends MessageAction implements SendingAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -52,27 +55,33 @@ public class SendDynamicClientKeyExchangeAction extends MessageAction implements
             throw new WorkflowExecutionException("Action already executed!");
         }
         messages = new LinkedList<>();
-        messages.add(new WorkflowConfigurationFactory(state.getConfig()).createClientKeyExchangeMessage(
-            AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite())));
-        String sending = getReadableString(messages);
-        if (hasDefaultAlias()) {
-            LOGGER.info("Sending DynamicKeyExchange: " + sending);
-        } else {
-            LOGGER.info("Sending DynamicKeyExchange (" + connectionAlias + "): " + sending);
-        }
-
-        try {
-            MessageActionResult result = sendMessageHelper.sendMessages(messages, fragments, records, tlsContext);
-            messages = new ArrayList<>(result.getMessageList());
-            records = new ArrayList<>(result.getRecordList());
-            if (result.getMessageFragmentList() != null) {
-                fragments = new ArrayList<>(result.getMessageFragmentList());
+        ClientKeyExchangeMessage clientKeyExchangeMessage =
+            new WorkflowConfigurationFactory(state.getConfig()).createClientKeyExchangeMessage(
+                AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite()));
+        if (clientKeyExchangeMessage != null) {
+            messages.add(clientKeyExchangeMessage);
+            String sending = getReadableString(messages);
+            if (hasDefaultAlias()) {
+                LOGGER.info("Sending DynamicKeyExchange: " + sending);
+            } else {
+                LOGGER.info("Sending DynamicKeyExchange (" + connectionAlias + "): " + sending);
             }
-            setExecuted(true);
-        } catch (IOException e) {
-            tlsContext.setReceivedTransportHandlerException(true);
-            LOGGER.debug(e);
-            setExecuted(getActionOptions().contains(ActionOption.MAY_FAIL));
+
+            try {
+                MessageActionResult result = sendMessageHelper.sendMessages(messages, fragments, records, tlsContext);
+                messages = new ArrayList<>(result.getMessageList());
+                records = new ArrayList<>(result.getRecordList());
+                if (result.getMessageFragmentList() != null) {
+                    fragments = new ArrayList<>(result.getMessageFragmentList());
+                }
+                setExecuted(true);
+            } catch (IOException e) {
+                tlsContext.setReceivedTransportHandlerException(true);
+                LOGGER.debug(e);
+                setExecuted(getActionOptions().contains(ActionOption.MAY_FAIL));
+            }
+        } else {
+            LOGGER.info("Sending DynamicKeyExchange: none");
         }
     }
 

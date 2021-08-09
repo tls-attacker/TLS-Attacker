@@ -45,6 +45,8 @@ public abstract class RecordLayer {
 
     public abstract void setRecordCipher(RecordCipher cipher);
 
+    public abstract RecordCipher getRecordCipher();
+
     public abstract void updateEncryptionCipher();
 
     public abstract void updateDecryptionCipher();

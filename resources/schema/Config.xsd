@@ -170,7 +170,7 @@
       <xs:element name="sniType" type="nameType" minOccurs="0"/>
       <xs:element name="prefferedCertRsaKeySize" type="xs:int" minOccurs="0"/>
       <xs:element name="prefferedCertDssKeySize" type="xs:int" minOccurs="0"/>
-      <xs:element name="maxFragmentLength" type="maxFragmentLength" minOccurs="0"/>
+      <xs:element name="defaultKeyUpdateRequestMode" type="keyUpdateRequest" minOccurs="0"/>
       <xs:element name="encryptChangeCipherSpecTls13" type="xs:boolean" minOccurs="0"/>
       <xs:element name="tlsSessionTicket" type="xs:string" minOccurs="0"/>
       <xs:element name="defaultClientRenegotiationInfo" type="xs:string" minOccurs="0"/>
@@ -274,6 +274,7 @@
       <xs:element name="addEllipticCurveExtension" type="xs:boolean" minOccurs="0"/>
       <xs:element name="addHeartbeatExtension" type="xs:boolean" minOccurs="0"/>
       <xs:element name="addMaxFragmentLengthExtension" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="addRecordSizeLimitExtension" type="xs:boolean" minOccurs="0"/>
       <xs:element name="addServerNameIndicationExtension" type="xs:boolean" minOccurs="0"/>
       <xs:element name="addSignatureAndHashAlgorithmsExtension" type="xs:boolean" minOccurs="0"/>
       <xs:element name="addSupportedVersionsExtension" type="xs:boolean" minOccurs="0"/>
@@ -378,7 +379,6 @@
       </xs:element>
       <xs:element name="heartbeatPayloadLength" type="xs:int" minOccurs="0"/>
       <xs:element name="heartbeatPaddingLength" type="xs:int" minOccurs="0"/>
-      <xs:element name="defaultMaxRecordData" type="xs:int" minOccurs="0"/>
       <xs:element name="defaultPaddingExtensionBytes" type="xs:string" minOccurs="0"/>
       <xs:element name="dtlsDefaultCookieLength" type="xs:int" minOccurs="0"/>
       <xs:element name="dtlsMaximumFragmentLength" type="xs:int" minOccurs="0"/>
@@ -430,6 +430,8 @@
       <xs:element name="defaultSelectedProtocolVersion" type="protocolVersion" minOccurs="0"/>
       <xs:element name="defaultHighestClientProtocolVersion" type="protocolVersion" minOccurs="0"/>
       <xs:element name="defaultMaxFragmentLength" type="maxFragmentLength" minOccurs="0"/>
+      <xs:element name="defaultMaxRecordData" type="xs:int" minOccurs="0"/>
+      <xs:element name="inboundRecordSizeLimit" type="xs:int" minOccurs="0"/>
       <xs:element name="defaultHeartbeatMode" type="heartbeatMode" minOccurs="0"/>
       <xs:element name="defaultClientSupportedCompressionMethods" minOccurs="0">
         <xs:complexType>
@@ -793,13 +795,14 @@
     <xs:complexContent>
       <xs:extension base="modifiableVariableHolder">
         <xs:sequence>
-          <xs:element name="distinguishedName" type="modifiableByteArray" minOccurs="0"/>
-          <xs:element name="distinguishedNameConfig" type="xs:base64Binary" minOccurs="0"/>
-          <xs:element name="distinguishedNameLength" type="modifiableInteger" minOccurs="0"/>
           <xs:element name="identifierType" type="modifiableByte" minOccurs="0"/>
-          <xs:element name="identifierTypeConfig" type="xs:byte"/>
           <xs:element name="sha1Hash" type="modifiableByteArray" minOccurs="0"/>
-          <xs:element name="sha1HashConfig" type="xs:base64Binary" minOccurs="0"/>
+          <xs:element name="distinguishedNameLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="distinguishedName" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="identifierTypeConfig" type="xs:byte"/>
+          <xs:element name="sha1HashConfig" type="xs:string" minOccurs="0"/>
+          <xs:element name="distinguishedNameLengthConfig" type="xs:int" minOccurs="0"/>
+          <xs:element name="distinguishedNameConfig" type="xs:string" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -809,7 +812,7 @@
     <xs:sequence/>
   </xs:complexType>
 
-  <xs:complexType name="modifiableByteArray">
+  <xs:complexType name="modifiableByte">
     <xs:sequence>
       <xs:choice minOccurs="0">
         <xs:element name="BigIntegerXorModification" type="bigIntegerXorModification"/>
@@ -845,8 +848,9 @@
         <xs:element name="ByteExplicitValueModification" type="byteExplicitValueModification"/>
         <xs:element name="StringExplicitValueModification" type="stringExplicitValueModification"/>
       </xs:choice>
-      <xs:element name="assertEquals" type="xs:string" minOccurs="0"/>
-      <xs:element name="originalValue" type="xs:string" minOccurs="0"/>
+      <xs:element name="createRandomModification" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="assertEquals" type="xs:anyType" minOccurs="0"/>
+      <xs:element name="originalValue" type="xs:byte" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -1093,6 +1097,47 @@
     </xs:sequence>
   </xs:complexType>
 
+  <xs:complexType name="modifiableByteArray">
+    <xs:sequence>
+      <xs:choice minOccurs="0">
+        <xs:element name="BigIntegerXorModification" type="bigIntegerXorModification"/>
+        <xs:element name="BigIntegerSubtractModification" type="bigIntegerSubtractModification"/>
+        <xs:element name="BigIntegerShiftRightModification" type="bigIntegerShiftRightModification"/>
+        <xs:element name="BigIntegerShiftLeftModification" type="bigIntegerShiftLeftModification"/>
+        <xs:element name="BigIntegerExplicitValueModification" type="bigIntegerExplicitValueModification"/>
+        <xs:element name="BigIntegerAddModification" type="bigIntegerAddModification"/>
+        <xs:element name="BigIntegerInteractiveModification" type="bigIntegerInteractiveModification"/>
+        <xs:element name="BigIntegerMultiplyModification" type="bigIntegerMultiplyModification"/>
+        <xs:element name="BooleanToggleModification" type="booleanToggleModification"/>
+        <xs:element name="BooleanExplicitValueModification" type="booleanExplicitValueModification"/>
+        <xs:element name="ByteArrayXorModification" type="byteArrayXorModification"/>
+        <xs:element name="ByteArrayShuffleModification" type="byteArrayShuffleModification"/>
+        <xs:element name="ByteArrayPayloadModification" type="byteArrayPayloadModification"/>
+        <xs:element name="ByteArrayInsertModification" type="byteArrayInsertModification"/>
+        <xs:element name="ByteArrayExplicitValueModification" type="byteArrayExplicitValueModification"/>
+        <xs:element name="ByteArrayDuplicateModification" type="byteArrayDuplicateModification"/>
+        <xs:element name="ByteArrayDeleteModification" type="byteArrayDeleteModification"/>
+        <xs:element name="IntegerXorModification" type="integerXorModification"/>
+        <xs:element name="IntegerSubtractModification" type="integerSubtractModification"/>
+        <xs:element name="IntegerShiftRightModification" type="integerShiftRightModification"/>
+        <xs:element name="IntegerShiftLeftModification" type="integerShiftLeftModification"/>
+        <xs:element name="IntegerExplicitValueModification" type="integerExplicitValueModification"/>
+        <xs:element name="IntegerAddModification" type="integerAddModification"/>
+        <xs:element name="LongXorModification" type="longXorModification"/>
+        <xs:element name="LongSubtractModification" type="longSubtractModification"/>
+        <xs:element name="LongExplicitValueModification" type="longExplicitValueModification"/>
+        <xs:element name="LongAddModification" type="longAddModification"/>
+        <xs:element name="ByteXorModification" type="byteXorModification"/>
+        <xs:element name="ByteSubtractModification" type="byteSubtractModification"/>
+        <xs:element name="ByteAddModification" type="byteAddModification"/>
+        <xs:element name="ByteExplicitValueModification" type="byteExplicitValueModification"/>
+        <xs:element name="StringExplicitValueModification" type="stringExplicitValueModification"/>
+      </xs:choice>
+      <xs:element name="assertEquals" type="xs:string" minOccurs="0"/>
+      <xs:element name="originalValue" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
   <xs:complexType name="modifiableInteger">
     <xs:sequence>
       <xs:choice minOccurs="0">
@@ -1132,48 +1177,6 @@
       <xs:element name="createRandomModification" type="xs:boolean" minOccurs="0"/>
       <xs:element name="assertEquals" type="xs:anyType" minOccurs="0"/>
       <xs:element name="originalValue" type="xs:int" minOccurs="0"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="modifiableByte">
-    <xs:sequence>
-      <xs:choice minOccurs="0">
-        <xs:element name="BigIntegerXorModification" type="bigIntegerXorModification"/>
-        <xs:element name="BigIntegerSubtractModification" type="bigIntegerSubtractModification"/>
-        <xs:element name="BigIntegerShiftRightModification" type="bigIntegerShiftRightModification"/>
-        <xs:element name="BigIntegerShiftLeftModification" type="bigIntegerShiftLeftModification"/>
-        <xs:element name="BigIntegerExplicitValueModification" type="bigIntegerExplicitValueModification"/>
-        <xs:element name="BigIntegerAddModification" type="bigIntegerAddModification"/>
-        <xs:element name="BigIntegerInteractiveModification" type="bigIntegerInteractiveModification"/>
-        <xs:element name="BigIntegerMultiplyModification" type="bigIntegerMultiplyModification"/>
-        <xs:element name="BooleanToggleModification" type="booleanToggleModification"/>
-        <xs:element name="BooleanExplicitValueModification" type="booleanExplicitValueModification"/>
-        <xs:element name="ByteArrayXorModification" type="byteArrayXorModification"/>
-        <xs:element name="ByteArrayShuffleModification" type="byteArrayShuffleModification"/>
-        <xs:element name="ByteArrayPayloadModification" type="byteArrayPayloadModification"/>
-        <xs:element name="ByteArrayInsertModification" type="byteArrayInsertModification"/>
-        <xs:element name="ByteArrayExplicitValueModification" type="byteArrayExplicitValueModification"/>
-        <xs:element name="ByteArrayDuplicateModification" type="byteArrayDuplicateModification"/>
-        <xs:element name="ByteArrayDeleteModification" type="byteArrayDeleteModification"/>
-        <xs:element name="IntegerXorModification" type="integerXorModification"/>
-        <xs:element name="IntegerSubtractModification" type="integerSubtractModification"/>
-        <xs:element name="IntegerShiftRightModification" type="integerShiftRightModification"/>
-        <xs:element name="IntegerShiftLeftModification" type="integerShiftLeftModification"/>
-        <xs:element name="IntegerExplicitValueModification" type="integerExplicitValueModification"/>
-        <xs:element name="IntegerAddModification" type="integerAddModification"/>
-        <xs:element name="LongXorModification" type="longXorModification"/>
-        <xs:element name="LongSubtractModification" type="longSubtractModification"/>
-        <xs:element name="LongExplicitValueModification" type="longExplicitValueModification"/>
-        <xs:element name="LongAddModification" type="longAddModification"/>
-        <xs:element name="ByteXorModification" type="byteXorModification"/>
-        <xs:element name="ByteSubtractModification" type="byteSubtractModification"/>
-        <xs:element name="ByteAddModification" type="byteAddModification"/>
-        <xs:element name="ByteExplicitValueModification" type="byteExplicitValueModification"/>
-        <xs:element name="StringExplicitValueModification" type="stringExplicitValueModification"/>
-      </xs:choice>
-      <xs:element name="createRandomModification" type="xs:boolean" minOccurs="0"/>
-      <xs:element name="assertEquals" type="xs:anyType" minOccurs="0"/>
-      <xs:element name="originalValue" type="xs:byte" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -1898,12 +1901,10 @@
     </xs:restriction>
   </xs:simpleType>
 
-  <xs:simpleType name="maxFragmentLength">
+  <xs:simpleType name="keyUpdateRequest">
     <xs:restriction base="xs:string">
-      <xs:enumeration value="TWO_9"/>
-      <xs:enumeration value="TWO_10"/>
-      <xs:enumeration value="TWO_11"/>
-      <xs:enumeration value="TWO_12"/>
+      <xs:enumeration value="UPDATE_NOT_REQUESTED"/>
+      <xs:enumeration value="UPDATE_REQUESTED"/>
     </xs:restriction>
   </xs:simpleType>
 
@@ -2077,6 +2078,15 @@
     </xs:restriction>
   </xs:simpleType>
 
+  <xs:simpleType name="maxFragmentLength">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="TWO_9"/>
+      <xs:enumeration value="TWO_10"/>
+      <xs:enumeration value="TWO_11"/>
+      <xs:enumeration value="TWO_12"/>
+    </xs:restriction>
+  </xs:simpleType>
+
   <xs:simpleType name="compressionMethod">
     <xs:restriction base="xs:string">
       <xs:enumeration value="NULL"/>
@@ -2210,6 +2220,7 @@
       <xs:enumeration value="EXTENDED_MASTER_SECRET"/>
       <xs:enumeration value="TOKEN_BINDING"/>
       <xs:enumeration value="CACHED_INFO"/>
+      <xs:enumeration value="RECORD_SIZE_LIMIT"/>
       <xs:enumeration value="PWD_PROTECT"/>
       <xs:enumeration value="PWD_CLEAR"/>
       <xs:enumeration value="PASSWORD_SALT"/>

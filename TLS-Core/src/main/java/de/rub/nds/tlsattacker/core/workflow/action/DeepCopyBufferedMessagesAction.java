@@ -19,9 +19,11 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.LinkedList;
+import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+@XmlRootElement
 public class DeepCopyBufferedMessagesAction extends CopyContextFieldAction {
 
     private static final Logger LOGGER = LogManager.getLogger();

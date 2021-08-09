@@ -32,7 +32,7 @@ public class LocationHeaderPreparator extends Preparator<LocationHeader> {
         // if we do not find a request path in the context, none was set or interpreted during the connection, we
         // then use a default value
         String lastRequestPath = chooser.getContext().getHttpContext().getLastRequestPath();
-        if (header.getHeaderValue() != null) {
+        if (lastRequestPath != null) {
             header.setHeaderValue(lastRequestPath);
         } else {
             LOGGER.debug("Request path was not set or interpreted during the connection, we use default value from the"

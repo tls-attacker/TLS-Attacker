@@ -17,8 +17,10 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ServerVerifyHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import javax.xml.bind.annotation.XmlRootElement;
 
 @SuppressWarnings("serial")
+@XmlRootElement
 public class SSL2ServerVerifyMessage extends SSL2HandshakeMessage {
 
     // TODO, nit: The type byte is encrypted for ServerVerify messages.

@@ -36,6 +36,7 @@ import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import org.bouncycastle.util.Arrays;
 
@@ -802,7 +803,7 @@ public class DefaultChooser extends Chooser {
         if (context.getLastHandledApplicationMessageData() != null) {
             return copy(context.getLastHandledApplicationMessageData());
         } else {
-            return config.getDefaultApplicationMessageData().getBytes();
+            return config.getDefaultApplicationMessageData().getBytes(StandardCharsets.ISO_8859_1);
         }
     }
 
@@ -1017,7 +1018,11 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public byte[] getServerPWDSalt() {
-        return context.getServerPWDSalt();
+        if (context.getServerPWDSalt() != null) {
+            return context.getServerPWDSalt();
+        } else {
+            return config.getDefaultServerPWDSalt();
+        }
     }
 
     @Override
@@ -1149,6 +1154,42 @@ public class DefaultChooser extends Chooser {
             return context.getExtensionCookie();
         } else {
             return config.getDefaultExtensionCookie();
+        }
+    }
+
+    @Override
+    public Integer getOutboundRecordSizeLimit() {
+        if (context.getOutboundRecordSizeLimit() != null) {
+            return context.getOutboundRecordSizeLimit();
+        } else {
+            return config.getDefaultMaxRecordData();
+        }
+    }
+
+    @Override
+    public Integer getInboundRecordSizeLimit() {
+        if (config.getInboundRecordSizeLimit() != null) {
+            return config.getInboundRecordSizeLimit();
+        } else {
+            return config.getDefaultMaxRecordData();
+        }
+    }
+
+    @Override
+    public Integer getOutboundMaxRecordDataSize() {
+        if (context != null) {
+            return context.getOutboundMaxRecordDataSize();
+        } else {
+            return config.getDefaultMaxRecordData();
+        }
+    }
+
+    @Override
+    public Integer getInboundMaxRecordDataSize() {
+        if (context != null) {
+            return context.getInboundMaxRecordDataSize();
+        } else {
+            return config.getDefaultMaxRecordData();
         }
     }
 }

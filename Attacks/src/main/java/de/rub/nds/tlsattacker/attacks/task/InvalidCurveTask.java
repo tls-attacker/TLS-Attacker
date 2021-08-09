@@ -60,6 +60,7 @@ public class InvalidCurveTask extends TlsTask {
             }
 
             if (!state.getWorkflowTrace().executedAsPlanned()) {
+                LOGGER.debug("Not executed as planned!");
                 return false;
             }
             fingerprint = ResponseExtractor.getFingerprint(getState());

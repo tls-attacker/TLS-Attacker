@@ -65,6 +65,7 @@ public class ServerTCPNonBlockingTransportHandler extends TcpTransportHandler {
         task = new FutureTask(callable);
         thread = new Thread(task);
         thread.start();
+        cachedSocketState = null;
         isInitialized();
     }
 

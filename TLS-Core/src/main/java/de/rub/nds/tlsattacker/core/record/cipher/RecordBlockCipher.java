@@ -124,8 +124,11 @@ public final class RecordBlockCipher extends RecordCipher {
         if (context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)) {
 
             computations.setPadding(calculatePadding(calculatePaddingLength(record, cleanBytes.length)));
+            LOGGER.debug("Padding: " + ArrayConverter.bytesToHexString(computations.getPadding().getValue()));
             computations
                 .setPlainRecordBytes(ArrayConverter.concatenate(cleanBytes, computations.getPadding().getValue()));
+            LOGGER.debug(
+                "PlainRecordBytes: " + ArrayConverter.bytesToHexString(computations.getPlainRecordBytes().getValue()));
             byte[] ciphertext = encrypt(computations.getPlainRecordBytes().getValue(), iv);
             computations.setCiphertext(ciphertext);
             if (useExplicitIv) {
@@ -156,9 +159,12 @@ public final class RecordBlockCipher extends RecordCipher {
 
             computations.setPadding(calculatePadding(
                 calculatePaddingLength(record, cleanBytes.length + computations.getMac().getValue().length)));
+            LOGGER.debug("Padding: " + ArrayConverter.bytesToHexString(computations.getPadding().getValue()));
 
             record.getComputations().setPlainRecordBytes(ArrayConverter.concatenate(cleanBytes,
                 computations.getMac().getValue(), computations.getPadding().getValue()));
+            LOGGER.debug(
+                "PlainRecordBytes: " + ArrayConverter.bytesToHexString(computations.getPlainRecordBytes().getValue()));
 
             computations.setCiphertext(encrypt(record.getComputations().getPlainRecordBytes().getValue(), iv));
 

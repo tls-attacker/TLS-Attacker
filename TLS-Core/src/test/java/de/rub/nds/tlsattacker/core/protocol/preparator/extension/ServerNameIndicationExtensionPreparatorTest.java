@@ -43,9 +43,7 @@ public class ServerNameIndicationExtensionPreparatorTest {
     @Test
     public void testPrepareExtensionContentWithOnePair() {
         List<ServerNamePair> pairList = new LinkedList<>();
-        ServerNamePair pair = new ServerNamePair();
-        pair.setServerNameConfig(new byte[] { 0x01, 0x02 });
-        pair.setServerNameTypeConfig((byte) 1);
+        ServerNamePair pair = new ServerNamePair((byte) 1, new byte[] { 0x01, 0x02 });
         pair.setServerNameLength(2);
         pairList.add(pair);
         message.setServerNameList(pairList);
@@ -63,14 +61,10 @@ public class ServerNameIndicationExtensionPreparatorTest {
     @Test
     public void testPrepareExtensionContentWithTwoPairs() {
         List<ServerNamePair> pairList = new LinkedList<>();
-        ServerNamePair pair = new ServerNamePair();
-        pair.setServerNameConfig(new byte[] { 0x01, 0x02 });
-        pair.setServerNameTypeConfig((byte) 1);
+        ServerNamePair pair = new ServerNamePair((byte) 1, new byte[] { 0x01, 0x02 });
         pair.setServerNameLength(2);
         pairList.add(pair);
-        ServerNamePair pair2 = new ServerNamePair();
-        pair2.setServerNameConfig(new byte[] { 0x03, 0x04, 0x05, 0x06 });
-        pair2.setServerNameTypeConfig((byte) 2);
+        ServerNamePair pair2 = new ServerNamePair((byte) 2, new byte[] { 0x03, 0x04, 0x05, 0x06 });
         pair2.setServerNameLength(4);
         pairList.add(pair2);
         message.setServerNameList(pairList);

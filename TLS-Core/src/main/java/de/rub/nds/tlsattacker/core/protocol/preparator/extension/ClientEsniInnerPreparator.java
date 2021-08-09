@@ -81,6 +81,10 @@ public class ClientEsniInnerPreparator extends Preparator<ClientEsniInner> {
         int paddedLength = chooser.getEsniPaddedLength();
         int paddingLength =
             paddedLength - msg.getServerNameListBytes().getValue().length - ExtensionByteLength.SERVER_NAME_LIST;
+        if (paddingLength > 65536) {
+            LOGGER.warn("ESNI Inner PaddingLength is greater than 65536. Limiting it to 65536");
+            paddingLength = 65536;
+        }
         if (paddingLength > 0) {
             padding = new byte[paddingLength];
         } else {

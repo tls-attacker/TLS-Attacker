@@ -125,7 +125,7 @@ public class TlsRecordLayer extends RecordLayer {
     @Override
     public byte[] prepareRecords(byte[] data, ProtocolMessageType contentType, List<AbstractRecord> records) {
         CleanRecordByteSeperator separator =
-            new CleanRecordByteSeperator(records, tlsContext.getConfig().getDefaultMaxRecordData(), 0, data);
+            new CleanRecordByteSeperator(records, tlsContext.getChooser().getOutboundMaxRecordDataSize(), 0, data);
         records = separator.parse();
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         boolean useRecordType = false;
@@ -135,6 +135,9 @@ public class TlsRecordLayer extends RecordLayer {
         for (AbstractRecord record : records) {
             if (useRecordType) {
                 contentType = record.getContentMessageType();
+                if (contentType == null) {
+                    contentType = ProtocolMessageType.UNKNOWN;
+                }
             }
 
             AbstractRecordPreparator preparator =
@@ -157,6 +160,7 @@ public class TlsRecordLayer extends RecordLayer {
         this.cipher = cipher;
     }
 
+    @Override
     public RecordCipher getRecordCipher() {
         return cipher;
     }
@@ -197,7 +201,7 @@ public class TlsRecordLayer extends RecordLayer {
 
     @Override
     public AbstractRecord getFreshRecord() {
-        return new Record(tlsContext.getConfig());
+        return new Record(tlsContext.getChooser().getOutboundMaxRecordDataSize());
     }
 
     @Override

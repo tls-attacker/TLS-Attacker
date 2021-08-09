@@ -1,27 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="https://maven.apache.org/POM/4.0.0" xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.rub.nds.tlsattacker</groupId>
     <artifactId>TLS-Attacker</artifactId>
-    <version>3.7.0-SNAPSHOT</version>
+    <version>3.8.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <inceptionYear>2015</inceptionYear>
     <name>TLS-Attacker</name>
     <url>https://github.com/RUB-NDS/TLS-Attacker</url>
-    <description>TLS-Attacker is a Java-based framework for analyzing TLS libraries. It is developed by the Ruhr University Bochum (http://nds.rub.de/), the Paderborn University, and the Hackmanit GmbH (http://hackmanit.de/). </description>
+    <description>TLS-Attacker is a Java-based framework for analyzing TLS libraries. It is developed by the Ruhr University Bochum (https://nds.rub.de/), the Paderborn University, and the Hackmanit GmbH (https://hackmanit.de/). </description>
 
     <licenses>
         <license>
             <name>Apache License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
 
     <distributionManagement>
         <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <id>rub-nexus</id>
+            <name>TLS-Attacker Internal Repository</name>
+            <url>https://hydrogen.cloud.nds.rub.de/nexus/repository/maven-snapshots/</url>
         </snapshotRepository>
         <repository>
             <id>ossrh</id>
@@ -41,9 +42,9 @@
             <id>jsomorovsky</id>
             <name>Juraj Somorovsky</name>
             <email>Juraj.Somorovsky@rub.de</email>
-            <url>http://www.nds.rub.de/</url>
+            <url>https://www.nds.rub.de/</url>
             <organization>NDS</organization>
-            <organizationUrl>http://www.nds.rub.de</organizationUrl>
+            <organizationUrl>https://www.nds.rub.de</organizationUrl>
             <roles>
                 <role>Architect</role>
                 <role>Developer</role>
@@ -53,9 +54,9 @@
             <id>ic0ns</id>
             <name>Robert Merget</name>
             <email>robert.merget@rub.de</email>
-            <url>http://www.nds.rub.de/</url>
+            <url>https://www.nds.rub.de/</url>
             <organization>NDS</organization>
-            <organizationUrl>http://www.nds.rub.de</organizationUrl>
+            <organizationUrl>https://www.nds.rub.de</organizationUrl>
             <roles>
                 <role>Developer</role>
             </roles>
@@ -157,7 +158,7 @@
         <dependency>
             <groupId>de.rub.nds</groupId>
             <artifactId>ModifiableVariable</artifactId>
-            <version>3.1.0</version>
+            <version>3.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.reflections</groupId>
@@ -172,7 +173,7 @@
         <dependency>
             <groupId>de.rub.nds</groupId>
             <artifactId>X509Attacker</artifactId>
-            <version>1.2.0</version>
+            <version>1.3.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
     <build>
@@ -479,9 +480,13 @@
                     <additionalparam>-Xdoclint:none</additionalparam>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>3.0.0-M1</version>
+        </plugin>
         </plugins>
     </reporting>
-
     <properties>
         <maven.build.timestamp.format>yyyy</maven.build.timestamp.format>
         <buildYear>${maven.build.timestamp}</buildYear>

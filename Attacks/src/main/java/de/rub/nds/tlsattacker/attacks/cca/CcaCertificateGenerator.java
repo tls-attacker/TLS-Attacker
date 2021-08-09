@@ -42,11 +42,17 @@ public class CcaCertificateGenerator {
             switch (ccaCertificateType) {
                 case CLIENT_INPUT:
                     List<CertificatePair> certificatePairsList = new LinkedList<>();
-                    CertificatePair certificatePair = new CertificatePair(
-                        ccaCertificateManager.getCertificateChain(ccaCertificateType).getEncodedCertificates().get(0));
-                    certificatePairsList.add(certificatePair);
-                    certificateMessage.setCertificatesList(certificatePairsList);
-                    break;
+
+                    CcaCertificateChain ccaCertificateChain =
+                        ccaCertificateManager.getCertificateChain(ccaCertificateType);
+                    if (ccaCertificateChain != null) {
+                        CertificatePair certificatePair =
+                            new CertificatePair(ccaCertificateChain.getEncodedCertificates().get(0));
+                        certificatePairsList.add(certificatePair);
+                        certificateMessage.setCertificatesList(certificatePairsList);
+                        break;
+                    }
+                    LOGGER.warn("Tried to fetch undefined client certificate - falling back to empty certificate");
                 case EMPTY:
                     certificateMessage.setCertificatesListBytes(Modifiable.explicit(new byte[0]));
                     break;
@@ -114,7 +120,13 @@ public class CcaCertificateGenerator {
                 case ROOTv3_CAv3_LEAF_ECv3:
                 case DSAROOTv3_CAv3_LEAF_DHv3:
                 case ROOTv3_CAv3_LEAFv3_nLEAF_RSAv3:
-                    certificateMessage = generateCertificateMessage(ccaCertificateManager, ccaCertificateType);
+                    if (ccaCertificateManager.getCertificateChain(ccaCertificateType) != null) {
+                        certificateMessage = generateCertificateMessage(ccaCertificateManager, ccaCertificateType);
+                    } else {
+                        LOGGER.warn("Tried to fetch certificate for type " + ccaCertificateType
+                            + " that has not been generated - falling back to empty certificate");
+                        certificateMessage.setCertificatesListBytes(Modifiable.explicit(new byte[0]));
+                    }
                     break;
                 default:
                     break;

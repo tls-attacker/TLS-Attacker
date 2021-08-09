@@ -12,6 +12,7 @@ package de.rub.nds.tlsattacker.core.https;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.https.header.HttpsHeader;
 import de.rub.nds.tlsattacker.core.https.header.serializer.HttpsHeaderSerializer;
+import java.nio.charset.StandardCharsets;
 import de.rub.nds.tlsattacker.core.protocol.serializer.TlsMessageSerializer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -34,11 +35,11 @@ public class HttpsRequestSerializer extends TlsMessageSerializer<HttpsRequestMes
             .append(" ").append(message.getRequestProtocol().getValue()).append("\r\n");
         for (HttpsHeader header : message.getHeader()) {
             HttpsHeaderSerializer serializer = new HttpsHeaderSerializer(header);
-            builder.append(new String(serializer.serialize()));
+            builder.append(new String(serializer.serialize(), StandardCharsets.ISO_8859_1));
         }
         builder.append("\r\n");
         LOGGER.info(builder.toString());
-        appendBytes(builder.toString().getBytes());
+        appendBytes(builder.toString().getBytes(StandardCharsets.ISO_8859_1));
         return getAlreadySerialized();
     }
 

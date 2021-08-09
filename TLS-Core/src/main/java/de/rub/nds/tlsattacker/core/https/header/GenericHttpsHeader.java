@@ -9,14 +9,21 @@
 
 package de.rub.nds.tlsattacker.core.https.header;
 
+import de.rub.nds.modifiablevariable.util.IllegalStringAdapter;
 import de.rub.nds.tlsattacker.core.https.header.preparator.GenericHttpsHeaderPreparator;
 import de.rub.nds.tlsattacker.core.protocol.Preparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+@XmlAccessorType(XmlAccessType.FIELD)
 public class GenericHttpsHeader extends HttpsHeader {
 
+    @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String headerNameConfig;
 
+    @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String headerValueConfig;
 
     public GenericHttpsHeader() {

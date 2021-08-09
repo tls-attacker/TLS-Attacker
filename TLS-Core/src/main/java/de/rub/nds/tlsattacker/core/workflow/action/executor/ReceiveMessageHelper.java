@@ -166,6 +166,7 @@ public class ReceiveMessageHelper {
 
             for (int recordIndex = 0; recordIndex < recordGroups.get(groupIndex).getRecords().size(); recordIndex++) {
                 currentGroup.decryptRecord(context, recordIndex);
+                currentGroup.checkRecordDataSize(context, recordIndex);
                 currentGroup.adjustContextForRecord(context, recordIndex);
 
                 if (currentGroup.areAllRecordsValid()) {
@@ -428,22 +429,72 @@ public class ReceiveMessageHelper {
      *                                     If the list contains blob records
      */
     private void orderDtlsRecords(List<AbstractRecord> abstractRecordList) throws UnsortableRecordsExceptions {
-        for (AbstractRecord abstractRecord : abstractRecordList) {
-            if (abstractRecord instanceof BlobRecord) {
-                throw new UnsortableRecordsExceptions("RecordList contains BlobRecords. Cannot sort by SQN/EPOCH");
-            }
-        }
+
         abstractRecordList.sort(new Comparator<AbstractRecord>() {
             @Override
             public int compare(AbstractRecord o1, AbstractRecord o2) {
-                Record r1 = (Record) o1;
-                Record r2 = (Record) o2;
-                if (r1.getEpoch().getValue() > r2.getEpoch().getValue()) {
-                    return 1;
-                } else if (r1.getEpoch().getValue() < r2.getEpoch().getValue()) {
-                    return -1;
+                if (o1 instanceof Record && o2 instanceof Record) {
+                    Record r1 = (Record) o1;
+                    Record r2 = (Record) o2;
+                    if (r1.getEpoch().getValue() > r2.getEpoch().getValue()) {
+                        return 1;
+                    } else if (r1.getEpoch().getValue() < r2.getEpoch().getValue()) {
+                        return -1;
+                    } else {
+                        return r1.getSequenceNumber().getValue().compareTo(r2.getSequenceNumber().getValue());
+                    }
                 } else {
-                    return r1.getSequenceNumber().getValue().compareTo(r2.getSequenceNumber().getValue());
+                    // Ok we are now sorting blob records....
+                    if (o1 instanceof Record) {
+                        return 1;
+                    } else if (o2 instanceof Record) {
+                        return -1;
+                    } else {
+                        byte[] a = o1.getCompleteRecordBytes().getValue();
+                        byte[] b = o2.getCompleteRecordBytes().getValue();
+                        if (a == b) { // also covers the case of two null arrays. those are considered 'equal'
+                            return 0;
+                        }
+
+                        // arbitrary: non-null array is considered 'greater than' null array
+                        if (a == null) {
+                            return -1; // "a < b"
+                        } else if (b == null) {
+                            return 1; // "a > b"
+                        }
+
+                        // now the item-by-item comparison - the loop runs as long as items in both arrays are equal
+                        int last = Math.min(a.length, b.length);
+                        for (int i = 0; i < last; i++) {
+                            Byte ai = a[i];
+                            Byte bi = b[i];
+
+                            if (ai == null && bi == null) {
+                                continue; // two null items are assumed 'equal'
+                            } else if (ai == null) { // arbitrary: non-null item is considered 'greater than' null item
+                                return -1; // "a < b"
+                            } else if (bi == null) {
+                                return 1; // "a > b"
+                            }
+
+                            int comp = ai.compareTo(bi);
+                            if (comp != 0) {
+                                return comp;
+                            }
+                        }
+
+                        // shorter array whose items are all equal to the first items of a longer array is considered
+                        // 'less than'
+                        if (a.length < b.length) {
+                            return -1; // "a < b"
+                        } else if (a.length > b.length) {
+                            return 1; // "a > b"
+                        }
+
+                        // i.e. (a.length == b.length)
+                        return 0; // "a = b", same length, all items equal
+                    }
+
                 }
             }
         });
@@ -534,7 +585,7 @@ public class ReceiveMessageHelper {
                     if (exCorrectMsg instanceof ParserException && !failedToReceiveMoreRecords) {
                         throw new ParserException();
                     }
-                    LOGGER.error("Could not parse Message as a CorrectMessage");
+                    LOGGER.warn("Could not parse Message as a CorrectMessage");
                     LOGGER.debug(exCorrectMsg);
                     try {
                         if (typeFromRecord == ProtocolMessageType.HANDSHAKE) {
@@ -635,7 +686,9 @@ public class ReceiveMessageHelper {
                 == HandshakeMessageType.SSL2_SERVER_HELLO.getValue()) {
             handler = new SSL2ServerHelloHandler(context);
         } else {
-            handler = new SSL2ServerVerifyHandler(context);
+            // The SSL2ServerVerifyMessage is currently not supported for parsing purposes
+            // handler = new SSL2ServerVerifyHandler(context);
+            throw new ParserException("SSL2ServerVerifyMessage is not supported");
         }
         return parseMessage(handler, cleanProtocolMessageBytes, dataPointer, false, context);
     }
@@ -753,7 +806,6 @@ public class ReceiveMessageHelper {
      */
     private boolean recordGroupIndicatesWrongTls13KeySet(List<ProtocolMessage> parsedMessages,
         RecordGroup recordGroup) {
-        // todo: once KeyUpdate is implemented, check if it counts as HS message
         Set<Tls13KeySetType> expectedKeyTypes = new HashSet<>();
         for (ProtocolMessage msg : parsedMessages) {
             if (!(msg instanceof TlsMessage)) {
@@ -762,7 +814,7 @@ public class ReceiveMessageHelper {
 
             switch (((TlsMessage) msg).getProtocolMessageType()) {
                 case HANDSHAKE:
-                    if (msg instanceof NewSessionTicketMessage) {
+                    if (msg instanceof NewSessionTicketMessage || msg instanceof KeyUpdateMessage) {
                         expectedKeyTypes.add(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS);
                     } else if (msg instanceof ClientHelloMessage || msg instanceof ServerHelloMessage) {
                         expectedKeyTypes.add(Tls13KeySetType.NONE);

@@ -20,6 +20,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.Base64;
 import java.util.LinkedList;
 import java.util.List;
+import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.xbill.DNS.Lookup;
@@ -28,6 +29,7 @@ import org.xbill.DNS.TXTRecord;
 import org.xbill.DNS.TextParseException;
 import org.xbill.DNS.Type;
 
+@XmlRootElement
 public class EsniKeyDnsRequestAction extends TlsAction {
 
     private static final Logger LOGGER = LogManager.getLogger();

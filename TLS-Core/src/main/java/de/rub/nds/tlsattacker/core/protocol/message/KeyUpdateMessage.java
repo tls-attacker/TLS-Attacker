@@ -9,6 +9,8 @@
 
 package de.rub.nds.tlsattacker.core.protocol.message;
 
+import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.KeyUpdateRequest;
@@ -22,7 +24,7 @@ public class KeyUpdateMessage extends HandshakeMessage {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private KeyUpdateRequest requestUpdate;
+    private ModifiableByte requestMode;
 
     @Override
     public KeyUpdateHandler getHandler(TlsContext context) {
@@ -32,27 +34,29 @@ public class KeyUpdateMessage extends HandshakeMessage {
     public KeyUpdateMessage() {
         super(HandshakeMessageType.KEY_UPDATE);
         this.setIncludeInDigest(false);
-        this.requestUpdate = KeyUpdateRequest.UPDATE_NOT_REQUESTED;
     }
 
     public KeyUpdateMessage(Config tlsConfig) {
         super(tlsConfig, HandshakeMessageType.KEY_UPDATE);
-        this.requestUpdate = KeyUpdateRequest.UPDATE_NOT_REQUESTED;
         this.setIncludeInDigest(false);
     }
 
-    public KeyUpdateMessage(HandshakeMessageType handshakeMessageType, KeyUpdateRequest requestUpdate) {
-        super(handshakeMessageType);
-        this.requestUpdate = requestUpdate;
+    public KeyUpdateMessage(Config tlsConfig, KeyUpdateRequest requestUpdate) {
+        super(tlsConfig, HandshakeMessageType.KEY_UPDATE);
+        setRequestMode(requestUpdate);
         this.setIncludeInDigest(false);
     }
 
-    public void setRequestUpdate(KeyUpdateRequest keyupdaterequest) {
-        requestUpdate = keyupdaterequest;
+    public final void setRequestMode(KeyUpdateRequest requestMode) {
+        this.requestMode = ModifiableVariableFactory.safelySetValue(this.requestMode, requestMode.getValue());
     }
 
-    public KeyUpdateRequest getRequestUpdate() {
-        return this.requestUpdate;
+    public void setRequestMode(ModifiableByte requestMode) {
+        this.requestMode = requestMode;
+    }
+
+    public ModifiableByte getRequestMode() {
+        return this.requestMode;
     }
 
 }

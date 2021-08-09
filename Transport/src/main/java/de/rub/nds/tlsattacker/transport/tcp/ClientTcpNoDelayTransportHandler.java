@@ -27,5 +27,6 @@ public class ClientTcpNoDelayTransportHandler extends ClientTcpTransportHandler 
     public void initialize() throws IOException {
         super.initialize();
         socket.setTcpNoDelay(true);
+        cachedSocketState = null;
     }
 }

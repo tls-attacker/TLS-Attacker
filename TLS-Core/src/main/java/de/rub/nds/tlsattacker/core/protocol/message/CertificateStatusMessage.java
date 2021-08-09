@@ -21,9 +21,11 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.CertificateStatusHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.IOException;
+import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+@XmlRootElement
 public class CertificateStatusMessage extends HandshakeMessage {
 
     private static final Logger LOGGER = LogManager.getLogger();
