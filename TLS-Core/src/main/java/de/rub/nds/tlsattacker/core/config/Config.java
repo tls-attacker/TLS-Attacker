@@ -915,10 +915,8 @@ public class Config implements Serializable {
     private Boolean createFragmentsDynamically = true;
 
     /**
-     * If there is not enough space in the defined records, new records are dynamically added if not set,
-     * protocolmessage bytes that wont fit are discarded ======= If there is not enough space in the defined records,
-     * new records are dynamically added if not set, protocol message bytes that wont fit are discarded >>>>>>>
-     * origin/master
+     * If there is not enough space in the defined records, new records are dynamically added if not set, protocol
+     * message bytes that wont fit are discarded
      */
     private Boolean createRecordsDynamically = true;
     /**
