@@ -501,7 +501,7 @@
       <xs:element name="defaultTokenBindingRsaModulus" type="xs:integer" minOccurs="0"/>
       <xs:element name="useFreshRandom" type="xs:boolean" minOccurs="0"/>
       <xs:element name="chooserType" type="chooserType" minOccurs="0"/>
-      <xs:element name="useAllProvidedFragments" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="useAllProvidedDtlsFragments" type="xs:boolean" minOccurs="0"/>
       <xs:element name="useAllProvidedRecords" type="xs:boolean" minOccurs="0"/>
       <xs:element name="httpsParsingEnabled" type="xs:boolean" minOccurs="0"/>
       <xs:element name="defaultHttpsRequestPath" type="xs:string" minOccurs="0"/>
