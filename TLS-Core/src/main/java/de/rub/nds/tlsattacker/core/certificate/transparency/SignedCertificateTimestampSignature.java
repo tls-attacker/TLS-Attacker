@@ -31,7 +31,7 @@ import java.util.List;
 
 public class SignedCertificateTimestampSignature {
 
-    protected static final Logger LOGGER = LogManager.getLogger(SignedCertificateTimestampSignature.class.getName());
+    protected static final Logger LOGGER = LogManager.getLogger();
 
     private byte[] encodedSignature;
     private byte[] signature;

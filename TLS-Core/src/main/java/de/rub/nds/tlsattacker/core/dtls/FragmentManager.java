@@ -26,7 +26,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class FragmentManager {
 
-    private static final Logger LOGGER = LogManager.getLogger(FragmentManager.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private Map<FragmentKey, FragmentCollector> fragments;
     private Config config;

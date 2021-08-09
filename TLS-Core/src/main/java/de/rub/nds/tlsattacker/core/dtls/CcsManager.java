@@ -20,7 +20,7 @@ import org.apache.logging.log4j.Logger;
 
 public class CcsManager {
 
-    private static final Logger LOGGER = LogManager.getLogger(CcsManager.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private Config config;
 

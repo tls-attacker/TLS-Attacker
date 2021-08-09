@@ -23,7 +23,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class FragmentCollector {
 
-    protected static final Logger LOGGER = LogManager.getLogger(FragmentCollector.class.getName());
+    protected static final Logger LOGGER = LogManager.getLogger();
 
     private Integer messageLength;
 
