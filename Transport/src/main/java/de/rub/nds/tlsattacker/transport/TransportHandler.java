@@ -74,9 +74,9 @@ public abstract class TransportHandler {
     @SuppressWarnings({ "checkstyle:EmptyCatchBlock", "CheckStyle" })
     public byte[] fetchData() throws IOException {
         if (firstReceived) {
-            setTimeout(timeout);
-        } else {
             setTimeout(firstTimeout);
+        } else {
+            setTimeout(timeout);
         }
         firstReceived = false;
         try {
