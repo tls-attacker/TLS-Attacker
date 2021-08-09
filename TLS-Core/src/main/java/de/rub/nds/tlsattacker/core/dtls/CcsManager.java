@@ -18,10 +18,6 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- *
- * @author Nurullah Erinola - nurullah.erinola@rub.de
- */
 public class CcsManager {
 
     private static final Logger LOGGER = LogManager.getLogger(CcsManager.class);

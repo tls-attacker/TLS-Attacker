@@ -31,10 +31,6 @@ import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- *
- * @author Nurullah Erinola
- */
 public class DtlsCloseConnectionAction extends MessageAction implements SendingAction {
 
     private static final Logger LOGGER = LogManager.getLogger();

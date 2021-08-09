@@ -13,10 +13,6 @@ import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * @author Nurullah Erinola - nurullah.erinola@rub.de
- */
 public class CcsCollector {
 
     private List<AbstractRecord> records;

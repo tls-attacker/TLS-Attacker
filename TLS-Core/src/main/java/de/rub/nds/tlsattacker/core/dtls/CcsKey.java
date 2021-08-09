@@ -9,10 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.dtls;
 
-/**
- *
- * @author Nurullah Erinola - nurullah.erinola@rub.de
- */
 public class CcsKey {
 
     private Integer epoch;
