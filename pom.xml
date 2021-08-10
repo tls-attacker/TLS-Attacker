@@ -54,6 +54,28 @@
             <id>ic0ns</id>
             <name>Robert Merget</name>
             <email>robert.merget@rub.de</email>
+            <url>http://www.nds.rub.de/</url>
+            <organization>NDS</organization>
+            <organizationUrl>https://www.nds.rub.de</organizationUrl>
+            <roles>
+                <role>Team lead</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>mmaehren</id>
+            <name>Marcel Maehren</name>
+            <email>marcel.maehren@rub.de</email>
+            <url>https://www.nds.rub.de/</url>
+            <organization>NDS</organization>
+            <organizationUrl>https://www.nds.rub.de</organizationUrl>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>NErinola</id>
+            <name>Nurullah Erinola</name>
+            <email>nurullah.erinola@rub.de</email>
             <url>https://www.nds.rub.de/</url>
             <organization>NDS</organization>
             <organizationUrl>https://www.nds.rub.de</organizationUrl>
@@ -484,7 +506,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>
                 <version>3.0.0-M1</version>
-        </plugin>
+            </plugin>
         </plugins>
     </reporting>
     <properties>
