@@ -95,7 +95,8 @@ public class PseudoRandomFunction {
          * ClientHello.random)) + [...]; until enough output has been generated.
          */
         while (pseudoRandomBitStream.length < size) {
-            outputSha = sha.getDigest().digest(ArrayConverter.concatenate(salt, master_secret, server_random, client_random));
+            outputSha =
+                sha.getDigest().digest(ArrayConverter.concatenate(salt, master_secret, server_random, client_random));
             outputMd5 = md5.getDigest().digest(ArrayConverter.concatenate(master_secret, outputSha));
 
             pseudoRandomBitStream = ArrayConverter.concatenate(pseudoRandomBitStream, outputMd5);
@@ -251,9 +252,10 @@ public class PseudoRandomFunction {
 
     /**
      * p_hash is a data expansion function as described in RFC 5246 5. HMAC and the Pseudorandom Function
-     * @param hmac
-     * @param data
-     * @param size
+     * 
+     * @param  hmac
+     * @param  data
+     * @param  size
      * @return
      * @throws NoSuchAlgorithmException
      */
@@ -261,8 +263,8 @@ public class PseudoRandomFunction {
         byte[] extendedSecret = new byte[0];
 
         /*
-         * hmacIteration will be used as an input for the next hmac,
-         * which will generate the actual bytes for the extendedSecret
+         * hmacIteration will be used as an input for the next hmac, which will generate the actual bytes for the
+         * extendedSecret
          */
         byte[] hmacIteration = data;
 
@@ -272,7 +274,7 @@ public class PseudoRandomFunction {
         while (extendedSecret.length < size) {
             hmacIteration = hmac.doFinal(hmacIteration);
             extendedSecret = ArrayConverter.concatenate(extendedSecret,
-                    hmac.doFinal(ArrayConverter.concatenate(hmacIteration, data)));
+                hmac.doFinal(ArrayConverter.concatenate(hmacIteration, data)));
         }
         return Arrays.copyOf(extendedSecret, size);
     }

@@ -20,6 +20,7 @@ import java.security.Security;
 /**
  * HMAC provides a base for implementing the PRF for TLS1.0 and TLS1.2
  */
+
 public class HMAC {
 
     private byte[] opad;
@@ -99,7 +100,7 @@ public class HMAC {
         }
     }
 
-    public MessageDigest getDigest(){
+    public MessageDigest getDigest() {
         return this.digest;
     }
 
