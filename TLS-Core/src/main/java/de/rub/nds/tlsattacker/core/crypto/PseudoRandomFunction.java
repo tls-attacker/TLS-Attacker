@@ -82,11 +82,11 @@ public class PseudoRandomFunction {
         HMAC md5 = new HMAC(MacAlgorithm.HMAC_MD5);
         HMAC sha = new HMAC(MacAlgorithm.HMAC_SHA1);
 
-        byte[] output_md5;
-        byte[] output_sha;
+        byte[] outputMd5;
+        byte[] outputSha;
         byte[] pseudoRandomBitStream = new byte[0];
-        byte[] salt_byte = { 0x41 };
         byte[] salt = { 0x41 };
+        byte[] saltByte = { 0x41 };
 
         /*
          * To generate the key material, compute pseudoRandomBitStream = MD5(master_secret + SHA(`A' + master_secret +
@@ -95,17 +95,17 @@ public class PseudoRandomFunction {
          * ClientHello.random)) + [...]; until enough output has been generated.
          */
         while (pseudoRandomBitStream.length < size) {
-            output_sha = sha.hash(ArrayConverter.concatenate(salt, master_secret, server_random, client_random));
-            output_md5 = md5.hash(ArrayConverter.concatenate(master_secret, output_sha));
+            outputSha = sha.getDigest().digest(ArrayConverter.concatenate(salt, master_secret, server_random, client_random));
+            outputMd5 = md5.getDigest().digest(ArrayConverter.concatenate(master_secret, outputSha));
 
-            pseudoRandomBitStream = ArrayConverter.concatenate(pseudoRandomBitStream, output_md5);
+            pseudoRandomBitStream = ArrayConverter.concatenate(pseudoRandomBitStream, outputMd5);
 
             /*
-             * Adds another byte to the salt and increments the howl salt array by one bit afterwards as in the command
+             * Adds another byte to the salt and increments the whole salt array by one bit afterwards as in the command
              * above described
              */
-            salt = ArrayConverter.concatenate(salt, salt_byte);
-            salt_byte[0] += 0x01;
+            salt = ArrayConverter.concatenate(salt, saltByte);
+            saltByte[0] += 0x01;
             for (int j = 0; j < salt.length; j++) {
                 salt[j] += 0x01;
             }
@@ -157,57 +157,41 @@ public class PseudoRandomFunction {
     private static byte[] computeTls10(byte[] secret, String label, byte[] seed, int size) throws CryptoException {
         try {
             byte[] labelSeed = ArrayConverter.concatenate(label.getBytes(Charset.forName("ASCII")), seed);
-            HMAC hmac_md5 = new HMAC(MacAlgorithm.HMAC_MD5);
-            HMAC hmac_sha1 = new HMAC(MacAlgorithm.HMAC_SHA1);
+            byte[] pseudoRandomBitStream = new byte[size];
 
-            int length;
-            int s_half = (secret.length + 1) / 2;
-            byte[] s1 = new byte[s_half];
-            byte[] s2 = new byte[s_half];
-            System.arraycopy(secret, 0, s1, 0, s_half);
-            System.arraycopy(secret, secret.length - s_half, s2, 0, s_half);
+            HMAC hmacMd5 = new HMAC(MacAlgorithm.HMAC_MD5);
+            HMAC hmacSha1 = new HMAC(MacAlgorithm.HMAC_SHA1);
 
-            byte[] extendedSecret_md5 = new byte[0];
-            byte[] extendedSecret_sha1 = new byte[0];
+            /*
+             * Divides the secret into two halves, s1 and s2
+             */
+            int offset = (secret.length + 1) / 2;
+            byte[] s1 = new byte[offset];
+            byte[] s2 = new byte[offset];
+            System.arraycopy(secret, 0, s1, 0, offset);
+            System.arraycopy(secret, secret.length - offset, s2, 0, offset);
 
-            byte[] ai = labelSeed;
+            hmacMd5.init(s1);
+            hmacSha1.init(s2);
 
             /*
              * Expands the first half of the secret with the p_hash function, which uses md5
              */
-            while (extendedSecret_md5.length < size) {
-                ai = hmac_md5.p_hash(s1, ai);
-                extendedSecret_md5 = ArrayConverter.concatenate(extendedSecret_md5,
-                    hmac_md5.p_hash(s1, ArrayConverter.concatenate(ai, labelSeed)));
-            }
-
-            ai = labelSeed;
+            byte[] extendedSecretMd5 = p_hash(hmacMd5, labelSeed, size);
 
             /*
              * Expands the second half of the secret with the p_hash function, which uses sha1
              */
-            while (extendedSecret_sha1.length < size) {
-                ai = hmac_sha1.p_hash(s2, ai);
-                extendedSecret_sha1 = ArrayConverter.concatenate(extendedSecret_sha1,
-                    hmac_sha1.p_hash(s2, ArrayConverter.concatenate(ai, labelSeed)));
-            }
-
-            if (extendedSecret_md5.length > extendedSecret_sha1.length) {
-                length = extendedSecret_sha1.length;
-            } else {
-                length = extendedSecret_md5.length;
-            }
-
-            byte[] pseudoRandomBitStream = new byte[length];
+            byte[] extendedSecretSha1 = p_hash(hmacSha1, labelSeed, size);
 
             /*
-             * Produces the key block (pseudo random bit stream) by xoring the extended secrets
+             * Produces the pseudo random bit stream by xoring the extended secrets
              */
-            for (int i = 0; i < length; i++) {
-                pseudoRandomBitStream[i] = (byte) (extendedSecret_md5[i] ^ extendedSecret_sha1[i]);
+            for (int i = 0; i < size; i++) {
+                pseudoRandomBitStream[i] = (byte) (extendedSecretMd5[i] ^ extendedSecretSha1[i]);
             }
 
-            return Arrays.copyOf(pseudoRandomBitStream, size);
+            return pseudoRandomBitStream;
         } catch (NoSuchAlgorithmException ex) {
             throw new CryptoException(ex);
         }
@@ -240,22 +224,57 @@ public class PseudoRandomFunction {
                 hmac.setSecret(new byte[0]);
             }
 
-            byte[] pseudoRandomBitStream = new byte[0];
-            byte[] ai = labelSeed;
+            hmac.init(secret);
 
             /*
-             * Expands the secret to produce the key block (pseudo random bit stream)
+             * Expands the secret to produce the pseudo random bit stream
              */
-            while (pseudoRandomBitStream.length < size) {
-                ai = hmac.p_hash(secret, ai);
-                pseudoRandomBitStream = ArrayConverter.concatenate(pseudoRandomBitStream,
-                    hmac.p_hash(secret, ArrayConverter.concatenate(ai, labelSeed)));
-            }
+            byte[] pseudoRandomBitStream = p_hash(hmac, labelSeed, size);
 
-            return Arrays.copyOf(pseudoRandomBitStream, size);
+            return pseudoRandomBitStream;
         } catch (NoSuchAlgorithmException ex) {
             throw new CryptoException(ex);
         }
+    }
+
+    /*
+     * RFC 5246 5. HMAC and the Pseudorandom Function p_hash is a data expansion function. By taking a secret and a seed
+     * as input, a data expansion function produces an output of arbitrary length. In here, p_hash only computes one
+     * round of pseudo random bits (one use of the hmac) To expand the secret, one can implement a PRF with p_hash as
+     * follows: P_hash(secret, seed) = HMAC_hash(secret, A(1) + seed) + HMAC_hash(secret, A(2) + seed) +
+     * HMAC_hash(secret, A(3) + seed) + ... where + indicates concatenation. A() is defined as: A(0) = seed A(i) =
+     * HMAC_hash(secret, A(i-1)) TLS's PRF is created by applying P_hash to the secret as: PRF(secret, label, seed) =
+     * P_<hash>(secret, label + seed)
+     *
+     * The PseudoRandomFunction class takes use of the p_hash function.
+     */
+
+    /**
+     * p_hash is a data expansion function as described in RFC 5246 5. HMAC and the Pseudorandom Function
+     * @param hmac
+     * @param data
+     * @param size
+     * @return
+     * @throws NoSuchAlgorithmException
+     */
+    private static byte[] p_hash(HMAC hmac, byte[] data, int size) throws NoSuchAlgorithmException {
+        byte[] extendedSecret = new byte[0];
+
+        /*
+         * hmacIteration will be used as an input for the next hmac,
+         * which will generate the actual bytes for the extendedSecret
+         */
+        byte[] hmacIteration = data;
+
+        /*
+         * Expands the secret
+         */
+        while (extendedSecret.length < size) {
+            hmacIteration = hmac.doFinal(hmacIteration);
+            extendedSecret = ArrayConverter.concatenate(extendedSecret,
+                    hmac.doFinal(ArrayConverter.concatenate(hmacIteration, data)));
+        }
+        return Arrays.copyOf(extendedSecret, size);
     }
 
     private PseudoRandomFunction() {
