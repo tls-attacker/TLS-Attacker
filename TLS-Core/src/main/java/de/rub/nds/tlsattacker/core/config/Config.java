@@ -955,12 +955,25 @@ public class Config implements Serializable {
 
     private Boolean stopActionsAfterFatal = false;
 
+    /**
+     * If the WorkflowExecutor should take care of terminating the connection with a Alert(fatal, close_notify) message
+     */
     private Boolean finishWithCloseNotify = false;
 
+    /**
+     * In DTLS, TLS-Attacker will not process further ChangeCipherSpec messages except the first received per epoch
+     * value
+     */
     private Boolean ignoreRetransmittedCcs = false;
 
+    /**
+     * If retransmissions are received in DTLS should they included to the workflow trace
+     */
     private Boolean addRetransmissionsToWorkflowTrace = false;
 
+    /**
+     * How many retransmissions in DTLS should be executed during the handshake
+     */
     private Integer maxRetransmissions = 3;
 
     private Boolean stopReceivingAfterWarning = false;
