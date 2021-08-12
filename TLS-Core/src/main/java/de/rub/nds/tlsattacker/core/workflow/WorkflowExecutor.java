@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
+import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.BouncyCastleNotLoadedException;
@@ -19,6 +20,8 @@ import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
@@ -91,6 +94,15 @@ public abstract class WorkflowExecutor {
         for (TlsContext ctx : state.getAllTlsContexts()) {
             ctx.initRecordLayer();
         }
+    }
+
+    public void sendCloseNotify() {
+        AlertMessage alertMessage = new AlertMessage();
+        alertMessage.setConfig(AlertLevel.FATAL, AlertDescription.CLOSE_NOTIFY);
+        SendAction sendAction =
+            new SendAction(state.getWorkflowTrace().getConnections().get(0).getAlias(), alertMessage);
+        sendAction.getActionOptions().add(ActionOption.MAY_FAIL);
+        sendAction.execute(state);
     }
 
     public void setFinalSocketState() {

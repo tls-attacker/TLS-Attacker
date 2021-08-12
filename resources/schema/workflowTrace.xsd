@@ -331,7 +331,6 @@
         <xs:element name="DeepCopyBufferedMessages" type="deepCopyBufferedMessagesAction"/>
         <xs:element name="DeepCopyBufferedRecords" type="deepCopyBufferedRecordsAction"/>
         <xs:element name="DeepCopyBuffers" type="deepCopyBuffersAction"/>
-        <xs:element name="DtlsCloseConnection" type="dtlsCloseConnectionAction"/>
         <xs:element name="EsniKeyDnsRequest" type="esniKeyDnsRequestAction"/>
         <xs:element name="FindReceivedProtocolMessage" type="findReceivedProtocolMessageAction"/>
         <xs:element name="ForwardMessages" type="forwardMessagesAction"/>
@@ -3365,16 +3364,6 @@
 
   <xs:complexType name="stackTraceElement" final="extension restriction">
     <xs:sequence/>
-  </xs:complexType>
-
-  <xs:complexType name="dtlsCloseConnectionAction">
-    <xs:complexContent>
-      <xs:extension base="messageAction">
-        <xs:sequence>
-          <xs:element name="epoch" type="xs:int"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
   </xs:complexType>
 
   <xs:complexType name="esniKeyDnsRequestAction">

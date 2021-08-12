@@ -50,15 +50,15 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
                 LOGGER.debug("Clean shutdown of execution flow");
                 break;
             }
-            if ((state.getConfig().isStopActionsAfterFatal() && isReceivedFatalAlert())) {
+            if ((config.isStopActionsAfterFatal() && isReceivedFatalAlert())) {
                 LOGGER.debug("Skipping all Actions, received FatalAlert, StopActionsAfterFatal active");
                 break;
             }
-            if ((state.getConfig().getStopActionsAfterWarning() && isReceivedWarningAlert())) {
+            if ((config.getStopActionsAfterWarning() && isReceivedWarningAlert())) {
                 LOGGER.debug("Skipping all Actions, received Warning Alert, StopActionsAfterWarning active");
                 break;
             }
-            if ((state.getConfig().getStopActionsAfterIOException() && isIoException())) {
+            if ((config.getStopActionsAfterIOException() && isIoException())) {
                 LOGGER.debug("Skipping all Actions, received IO Exception, StopActionsAfterIOException active");
                 break;
             }
@@ -85,13 +85,16 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
             }
         }
 
-        setFinalSocketState();
-
-        if (state.getConfig().isWorkflowExecutorShouldClose()) {
-            closeConnection();
+        if (config.isFinishWithCloseNotify()) {
+            sendCloseNotify();
         }
 
-        if (state.getConfig().isResetWorkflowTracesBeforeSaving()) {
+        setFinalSocketState();
+
+        if (config.isWorkflowExecutorShouldClose()) {
+            closeConnection();
+        }
+        if (config.isResetWorkflowTracesBeforeSaving()) {
             state.getWorkflowTrace().reset();
         }
 
