@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.TlsMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.TlsMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.UnknownHandshakeMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.IOException;
@@ -137,7 +138,26 @@ public class SendMessageHelper {
         }
         sendData(messageBytesCollector, context);
 
-        // TODO: Zuviele Fragmente als leere Fragmente senden, wie folgend
+        if (context.getChooser().getSelectedProtocolVersion().isDTLS()
+            && context.getConfig().isUseAllProvidedDtlsFragments() && fragmentPosition < fragments.size()) {
+            int current = 0;
+            for (DtlsHandshakeMessageFragment fragment : fragments) {
+                if (current >= fragmentPosition) {
+                    UnknownHandshakeMessage unkownHandshakeMessage = new UnknownHandshakeMessage();
+                    prepareMessage(unkownHandshakeMessage, prepareMessages, context);
+                    List<DtlsHandshakeMessageFragment> messageFragments =
+                        MessageFragmenter.fragmentMessage(unkownHandshakeMessage,
+                            Collections.singletonList((DtlsHandshakeMessageFragment) fragment), context);
+                    messageBytesCollector
+                        .appendProtocolMessageBytes(messageFragments.get(0).getCompleteResultingMessage().getValue());
+                    recordPosition =
+                        flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition, context);
+                    sendData(messageBytesCollector, context);
+                }
+                current++;
+            }
+        }
+
         if (context.getConfig().isUseAllProvidedRecords() && recordPosition < records.size()) {
             int current = 0;
             for (AbstractRecord record : records) {
