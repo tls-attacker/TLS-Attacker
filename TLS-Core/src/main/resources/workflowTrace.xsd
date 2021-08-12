@@ -3659,20 +3659,6 @@
               </xs:sequence>
             </xs:complexType>
           </xs:element>
-          <xs:element name="sendFragments" minOccurs="0">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="DtlsFragment" type="dtlsHandshakeMessageFragment" minOccurs="0" maxOccurs="unbounded"/>
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="receivedFragments" minOccurs="0">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="DtlsFragment" type="dtlsHandshakeMessageFragment" minOccurs="0" maxOccurs="unbounded"/>
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
