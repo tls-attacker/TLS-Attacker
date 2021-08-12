@@ -10,13 +10,8 @@
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.tlsattacker.core.config.ConfigIO;
-import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
-import de.rub.nds.tlsattacker.core.constants.AlertLevel;
-import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -28,10 +23,6 @@ import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.SendMessageHelper;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import de.rub.nds.tlsattacker.transport.TransportHandler;
-import de.rub.nds.tlsattacker.transport.socket.SocketState;
-import de.rub.nds.tlsattacker.transport.tcp.TcpTransportHandler;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -52,21 +43,10 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
         List<TlsContext> allTlsContexts = state.getAllTlsContexts();
 
         if (config.isWorkflowExecutorShouldOpen()) {
-            for (TlsContext ctx : allTlsContexts) {
-                AliasedConnection con = ctx.getConnection();
-                if (con.getLocalConnectionEndType() == ConnectionEndType.SERVER) {
-                    LOGGER.info("Waiting for incoming connection on " + con.getHostname() + ":" + con.getPort());
-                } else {
-                    LOGGER.info("Connecting to " + con.getHostname() + ":" + con.getPort());
-                }
-                ctx.initTransportHandler();
-                LOGGER.debug("Connection for " + ctx + " initialized");
-            }
+            initTranstHandler();
         }
 
-        for (TlsContext ctx : state.getAllTlsContexts()) {
-            ctx.initRecordLayer();
-        }
+        initRecordLayer();
 
         state.getWorkflowTrace().reset();
         state.setStartTimestamp(System.currentTimeMillis());
@@ -172,26 +152,10 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
 
         // ------------------------------------------
 
-        for (TlsContext ctx : allTlsContexts) {
-            TransportHandler handler = ctx.getTransportHandler();
-            if (handler instanceof TcpTransportHandler) {
-                SocketState socketSt =
-                    ((TcpTransportHandler) handler).getSocketState(config.isReceiveFinalTcpSocketStateWithTimeout());
-                ctx.setFinalSocketState(socketSt);
-            } else {
-                ctx.setFinalSocketState(SocketState.UNAVAILABLE);
-            }
-        }
+        setFinalSocketState();
 
         if (state.getConfig().isWorkflowExecutorShouldClose()) {
-            for (TlsContext ctx : state.getAllTlsContexts()) {
-                try {
-                    ctx.getTransportHandler().closeConnection();
-                } catch (IOException ex) {
-                    LOGGER.warn("Could not close connection for context " + ctx);
-                    LOGGER.debug(ex);
-                }
-            }
+            closeConnection();
         }
 
         if (state.getConfig().isResetWorkflowTracesBeforeSaving()) {
@@ -205,39 +169,4 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
         }
     }
 
-    /**
-     * Check if a at least one TLS context received a fatal alert.
-     */
-    private boolean isReceivedFatalAlert() {
-        for (TlsContext ctx : state.getAllTlsContexts()) {
-            if (ctx.isReceivedFatalAlert()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Check if a at least one TLS context received a warning alert.
-     */
-    private boolean isReceivedWarningAlert() {
-        List<ProtocolMessage> allReceivedMessages =
-            WorkflowTraceUtil.getAllReceivedMessages(state.getWorkflowTrace(), ProtocolMessageType.ALERT);
-        for (ProtocolMessage message : allReceivedMessages) {
-            AlertMessage alert = (AlertMessage) message;
-            if (alert.getLevel().getValue() == AlertLevel.WARNING.getValue()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean isIoException() {
-        for (TlsContext ctx : state.getAllTlsContexts()) {
-            if (ctx.isReceivedTransportHandlerException()) {
-                return true;
-            }
-        }
-        return false;
-    }
 }
