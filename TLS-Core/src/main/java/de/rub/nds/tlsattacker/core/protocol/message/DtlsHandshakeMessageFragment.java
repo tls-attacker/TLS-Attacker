@@ -37,9 +37,9 @@ public class DtlsHandshakeMessageFragment extends HandshakeMessage {
     private ModifiableInteger epoch = null;
 
     private byte[] fragmentContentConfig = new byte[0];
-    private int messageSequenceConfig = 0;
-    private int offsetConfig = 0;
-    private int handshakeMessageLengthConfig = 0;
+    private int messageSequenceConfig;
+    private int offsetConfig;
+    private int handshakeMessageLengthConfig;
     private HandshakeMessageType handshakeMessageTypeConfig;
     private int maxFragmentLengthConfig;
 
