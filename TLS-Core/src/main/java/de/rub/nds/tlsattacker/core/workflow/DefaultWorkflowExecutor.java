@@ -31,20 +31,16 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
 
     @Override
     public void executeWorkflow() throws WorkflowExecutionException {
-        List<TlsContext> allTlsContexts = state.getAllTlsContexts();
-
         if (config.isWorkflowExecutorShouldOpen()) {
             initTranstHandler();
         }
-
         initRecordLayer();
 
         state.getWorkflowTrace().reset();
         state.setStartTimestamp(System.currentTimeMillis());
-        int numTlsContexts = allTlsContexts.size();
+        int numTlsContexts = state.getAllTlsContexts().size();
         List<TlsAction> tlsActions = state.getWorkflowTrace().getTlsActions();
         for (TlsAction action : tlsActions) {
-
             // TODO: in multi ctx scenarios, how to handle earlyCleanShutdown ?
             if (numTlsContexts == 1 && state.getTlsContext().isEarlyCleanShutdown()) {
                 LOGGER.debug("Clean shutdown of execution flow");
