@@ -48,9 +48,10 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
         int retransmissions = 0;
         int retransmissionActionIndex = 0;
         for (int i = 0; i < tlsActions.size(); i++) {
-
-            // Hier kritisische Action finden
-
+            if (i != 0 && !(tlsActions.get(i) instanceof ReceivingAction)
+                && (tlsActions.get(i - 1) instanceof ReceivingAction)) {
+                retransmissionActionIndex = i;
+            }
             TlsAction action = tlsActions.get(i);
             if (!action.isExecuted()) {
                 try {
@@ -101,7 +102,7 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
                 } else if (retransmissions == config.getMaxDtlsRetransmissions()) {
                     break;
                 } else {
-                    i = retransmissionActionIndex;
+                    i = retransmissionActionIndex - 1;
                     retransmissions++;
                 }
             }
