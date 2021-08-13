@@ -78,6 +78,8 @@ import javax.xml.bind.annotation.XmlTransient;
 
 import de.rub.nds.tlsattacker.transport.socket.SocketState;
 import de.rub.nds.tlsattacker.transport.tcp.ClientTcpTransportHandler;
+import java.util.HashSet;
+import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.tls.Certificate;
@@ -518,7 +520,7 @@ public class TlsContext {
 
     private int dtlsWriteHandshakeMessageSequence = 0;
 
-    private List<Integer> dtlsReceivedHandshakeMessageSequences;
+    private Set<Integer> dtlsReceivedHandshakeMessageSequences;
 
     /**
      * a fragment manager assembles DTLS fragments into corresponding messages.
@@ -737,7 +739,7 @@ public class TlsContext {
         messageBuffer = new LinkedList<>();
         recordBuffer = new LinkedList<>();
         fragmentBuffer = new LinkedList<>();
-        dtlsReceivedHandshakeMessageSequences = new LinkedList<>();
+        dtlsReceivedHandshakeMessageSequences = new HashSet<>();
         globalDtlsFragmentManager = new FragmentManager(config);
         globalDtlsCcsManager = new CcsManager(config);
         keylogfile = new Keylogfile(this);
@@ -1362,7 +1364,7 @@ public class TlsContext {
         dtlsReceivedHandshakeMessageSequences.add(sequence);
     }
 
-    public List<Integer> getDtlsReceivedHandshakeMessageSequences() {
+    public Set<Integer> getDtlsReceivedHandshakeMessageSequences() {
         return dtlsReceivedHandshakeMessageSequences;
     }
 

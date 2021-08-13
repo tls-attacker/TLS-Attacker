@@ -28,7 +28,6 @@ import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
 import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.core.protocol.ParserResult;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
-import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -99,8 +98,6 @@ public class ReceiveMessageHelper {
         try {
             byte[] receivedBytes;
             boolean shouldContinue = true;
-            int dtlsReadHandshakeMessageSequenceStart = context.getDtlsReadHandshakeMessageSequence() + 1;
-            int dtlsReadHandshakeMessageSequenceEnd = context.getDtlsReadHandshakeMessageSequence() + 1;
             do {
                 receivedBytes = receiveByteArray(context);
                 MessageActionResult tempResult = handleReceivedBytes(receivedBytes, context);
@@ -118,12 +115,11 @@ public class ReceiveMessageHelper {
                     if (message.getClass().equals(waitTillMessage.getClass())) {
                         LOGGER.debug("Received message we waited for");
                         shouldContinue = false;
-                        dtlsReadHandshakeMessageSequenceEnd = context.getDtlsReadHandshakeMessageSequence();
                         break;
                     }
                 }
                 if (context.getChooser().getSelectedProtocolVersion().isDTLS() && shouldContinue == false) {
-                    for (int i = dtlsReadHandshakeMessageSequenceStart; i <= dtlsReadHandshakeMessageSequenceEnd; i++) {
+                    for (int i = 0; i <= context.getDtlsReadHandshakeMessageSequence(); i++) {
                         if (!context.getDtlsReceivedHandshakeMessageSequences().contains(i)) {
                             shouldContinue = true;
                             break;
