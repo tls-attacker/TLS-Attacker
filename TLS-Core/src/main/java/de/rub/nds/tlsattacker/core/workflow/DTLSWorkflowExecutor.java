@@ -46,7 +46,10 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
         state.setStartTimestamp(System.currentTimeMillis());
         List<TlsAction> tlsActions = state.getWorkflowTrace().getTlsActions();
         int retransmissions = 0;
+        int retransmissionActionIndex = 0;
         for (int i = 0; i < tlsActions.size(); i++) {
+
+            // Hier kritisische Action finden
 
             TlsAction action = tlsActions.get(i);
             if (!action.isExecuted()) {
@@ -70,6 +73,7 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
                     if (action instanceof SendingAction) {
                         executeRetransmission((SendingAction) action);
                     } else if (action instanceof ReceivingAction) {
+                        action.reset();
                         action.execute(state);
                     }
                 } catch (IOException | PreparationException | WorkflowExecutionException ex) {
@@ -97,22 +101,7 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
                 } else if (retransmissions == config.getMaxDtlsRetransmissions()) {
                     break;
                 } else {
-                    int j = i;
-                    for (; j >= 0; j--) {
-                        if (tlsActions.get(j) instanceof ReceivingAction) {
-                            tlsActions.get(j).reset();
-                        } else {
-                            break;
-                        }
-
-                    }
-                    for (; j >= 0; j--) {
-                        if (tlsActions.get(j) instanceof ReceivingAction) {
-                            break;
-                        }
-
-                    }
-                    i = j;
+                    i = retransmissionActionIndex;
                     retransmissions++;
                 }
             }
