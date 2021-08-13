@@ -228,12 +228,12 @@ public class ForwardRecordsAction extends TlsAction implements ReceivingAction, 
 
     @Override
     public List<DtlsHandshakeMessageFragment> getReceivedFragments() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException("Not supported.");
     }
 
     @Override
     public List<DtlsHandshakeMessageFragment> getSendFragments() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException("Not supported.");
     }
 
 }
