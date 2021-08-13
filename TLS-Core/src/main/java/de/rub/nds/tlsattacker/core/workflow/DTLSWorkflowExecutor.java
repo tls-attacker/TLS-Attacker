@@ -45,15 +45,9 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
 
         state.getWorkflowTrace().reset();
         state.setStartTimestamp(System.currentTimeMillis());
-        int numTlsContexts = state.getAllTlsContexts().size();
         List<TlsAction> tlsActions = state.getWorkflowTrace().getTlsActions();
         int retransmissions = 0;
         for (int i = 0; i < tlsActions.size(); i++) {
-            // TODO: in multi ctx scenarios, how to handle earlyCleanShutdown ?
-            if (numTlsContexts == 1 && state.getTlsContext().isEarlyCleanShutdown()) {
-                LOGGER.debug("Clean shutdown of execution flow");
-                break;
-            }
 
             TlsAction action = tlsActions.get(i);
             if (!action.isExecuted()) {

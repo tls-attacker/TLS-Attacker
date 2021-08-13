@@ -60,9 +60,6 @@ public class MultiReceiveAction extends GenericReceiveAction {
                 break;
             }
         }
-        if (selectedAction.getActionOptions().contains(ActionOption.EARLY_CLEAN_SHUTDOWN)) {
-            state.getTlsContext().setEarlyCleanShutdown(true);
-        }
         selectedAction.setReceivedMessages(super.getReceivedMessages());
         selectedAction.setReceivedRecords(super.getReceivedRecords());
         selectedAction.setExecuted(super.isExecuted());

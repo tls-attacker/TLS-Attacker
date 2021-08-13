@@ -168,7 +168,6 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         } else {
             LOGGER.info("Received Messages (" + getConnectionAlias() + "): " + received);
         }
-        tlsContext.setEarlyCleanShutdown(getActionOptions().contains(ActionOption.EARLY_CLEAN_SHUTDOWN));
     }
 
     @Override

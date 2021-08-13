@@ -38,14 +38,8 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
 
         state.getWorkflowTrace().reset();
         state.setStartTimestamp(System.currentTimeMillis());
-        int numTlsContexts = state.getAllTlsContexts().size();
         List<TlsAction> tlsActions = state.getWorkflowTrace().getTlsActions();
         for (TlsAction action : tlsActions) {
-            // TODO: in multi ctx scenarios, how to handle earlyCleanShutdown ?
-            if (numTlsContexts == 1 && state.getTlsContext().isEarlyCleanShutdown()) {
-                LOGGER.debug("Clean shutdown of execution flow");
-                break;
-            }
             if ((config.isStopActionsAfterFatal() && isReceivedFatalAlert())) {
                 LOGGER.debug("Skipping all Actions, received FatalAlert, StopActionsAfterFatal active");
                 break;

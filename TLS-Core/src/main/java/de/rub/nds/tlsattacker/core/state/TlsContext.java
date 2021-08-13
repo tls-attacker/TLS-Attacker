@@ -631,7 +631,6 @@ public class TlsContext {
      */
     private boolean useExtendedMasterSecret;
 
-    private Boolean earlyCleanShutdown = false;
     /**
      * Add a cookie with this name to HTTPS header if config.isAddHttpsCookie is set.
      */
@@ -1892,16 +1891,8 @@ public class TlsContext {
         this.clientRSAPrivateKey = clientRSAPrivateKey;
     }
 
-    public boolean isEarlyCleanShutdown() {
-        return earlyCleanShutdown;
-    }
-
     public Random getRandom() {
         return random;
-    }
-
-    public void setEarlyCleanShutdown(boolean earlyCleanShutdown) {
-        this.earlyCleanShutdown = earlyCleanShutdown;
     }
 
     public void setRandom(Random random) {
