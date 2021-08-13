@@ -65,7 +65,7 @@ public class FragmentCollector {
                 this.type = fragment.getType().getValue();
                 interpreted = false;
             }
-            if (interpreted && config.isAddRetransmissionsToWorkflowTrace()) {
+            if (interpreted && config.isAddRetransmissionsToWorkflowTraceInDtls()) {
                 interpreted = false;
                 retransmission = true;
             }

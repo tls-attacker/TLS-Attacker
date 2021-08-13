@@ -52,7 +52,7 @@ public class ProtocolVersionDelegate extends Delegate {
             th = TransportHandlerType.UDP;
             config.setWorkflowExecutorType(WorkflowExecutorType.DTLS);
             config.setFinishWithCloseNotify(true);
-            config.setIgnoreRetransmittedCss(true);
+            config.setIgnoreRetransmittedCssInDtls(true);
         }
 
         if (config.getDefaultClientConnection() == null) {

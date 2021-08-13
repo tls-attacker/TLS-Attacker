@@ -395,9 +395,9 @@
       <xs:element name="stopReceivingAfterFatal" type="xs:boolean" minOccurs="0"/>
       <xs:element name="stopActionsAfterFatal" type="xs:boolean" minOccurs="0"/>
       <xs:element name="finishWithCloseNotify" type="xs:boolean" minOccurs="0"/>
-      <xs:element name="ignoreRetransmittedCcs" type="xs:boolean" minOccurs="0"/>
-      <xs:element name="addRetransmissionsToWorkflowTrace" type="xs:boolean" minOccurs="0"/>
-      <xs:element name="maxRetransmissions" type="xs:int" minOccurs="0"/>
+      <xs:element name="ignoreRetransmittedCcsInDtls" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="addRetransmissionsToWorkflowTraceInDtls" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="maxDtlsRetransmissions" type="xs:int" minOccurs="0"/>
       <xs:element name="stopReceivingAfterWarning" type="xs:boolean" minOccurs="0"/>
       <xs:element name="stopActionsAfterWarning" type="xs:boolean" minOccurs="0"/>
       <xs:element name="defaultSelectedCipherSuite" type="cipherSuite" minOccurs="0"/>
@@ -2013,7 +2013,6 @@
 
   <xs:simpleType name="actionOption">
     <xs:restriction base="xs:string">
-      <xs:enumeration value="EARLY_CLEAN_SHUTDOWN"/>
       <xs:enumeration value="IGNORE_UNEXPECTED_NEW_SESSION_TICKETS"/>
       <xs:enumeration value="IGNORE_UNEXPECTED_WARNINGS"/>
       <xs:enumeration value="MAY_FAIL"/>

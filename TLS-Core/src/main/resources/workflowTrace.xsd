@@ -3093,7 +3093,6 @@
       <xs:element name="negotiatedExtensionSet" type="extensionType" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="secureRenegotiation" type="xs:boolean"/>
       <xs:element name="useExtendedMasterSecret" type="xs:boolean"/>
-      <xs:element name="earlyCleanShutdown" type="xs:boolean" minOccurs="0"/>
       <xs:element name="httpsCookieName" type="xs:string" minOccurs="0"/>
       <xs:element name="httpsCookieValue" type="xs:string" minOccurs="0"/>
       <xs:element name="receivedTransportHandlerException" type="xs:boolean"/>
@@ -4044,7 +4043,6 @@
 
   <xs:simpleType name="actionOption">
     <xs:restriction base="xs:string">
-      <xs:enumeration value="EARLY_CLEAN_SHUTDOWN"/>
       <xs:enumeration value="IGNORE_UNEXPECTED_NEW_SESSION_TICKETS"/>
       <xs:enumeration value="IGNORE_UNEXPECTED_WARNINGS"/>
       <xs:enumeration value="MAY_FAIL"/>

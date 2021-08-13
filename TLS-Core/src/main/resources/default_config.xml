@@ -979,9 +979,9 @@
     <stopReceivingAfterFatal>false</stopReceivingAfterFatal>
     <stopActionsAfterFatal>false</stopActionsAfterFatal>
     <finishWithCloseNotify>false</finishWithCloseNotify>
-    <ignoreRetransmittedCcs>false</ignoreRetransmittedCcs>
-    <addRetransmissionsToWorkflowTrace>false</addRetransmissionsToWorkflowTrace>
-    <maxRetransmissions>3</maxRetransmissions>
+    <ignoreRetransmittedCcsInDtls>false</ignoreRetransmittedCcsInDtls>
+    <addRetransmissionsToWorkflowTraceInDtls>false</addRetransmissionsToWorkflowTraceInDtls>
+    <maxDtlsRetransmissions>3</maxDtlsRetransmissions>
     <stopReceivingAfterWarning>false</stopReceivingAfterWarning>
     <stopActionsAfterWarning>false</stopActionsAfterWarning>
     <defaultSelectedCipherSuite>TLS_RSA_WITH_AES_128_CBC_SHA</defaultSelectedCipherSuite>

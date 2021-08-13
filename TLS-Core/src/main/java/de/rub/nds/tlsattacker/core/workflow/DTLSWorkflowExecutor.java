@@ -102,7 +102,7 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
                 if (config.isStopTraceAfterUnexpected()) {
                     LOGGER.debug("Skipping all Actions, action did not execute as planned.");
                     break;
-                } else if (retransmissions == config.getMaxRetransmissions()) {
+                } else if (retransmissions == config.getMaxDtlsRetransmissions()) {
                     break;
                 } else {
                     int j = i;

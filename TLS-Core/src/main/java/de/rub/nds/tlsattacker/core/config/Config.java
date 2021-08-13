@@ -964,17 +964,17 @@ public class Config implements Serializable {
      * In DTLS, TLS-Attacker will not process further ChangeCipherSpec messages except the first received per epoch
      * value
      */
-    private Boolean ignoreRetransmittedCcs = false;
+    private Boolean ignoreRetransmittedCcsInDtls = false;
 
     /**
      * If retransmissions are received in DTLS should they included to the workflow trace
      */
-    private Boolean addRetransmissionsToWorkflowTrace = false;
+    private Boolean addRetransmissionsToWorkflowTraceInDtls = false;
 
     /**
      * How many retransmissions in DTLS should be executed during the handshake
      */
-    private Integer maxRetransmissions = 3;
+    private Integer maxDtlsRetransmissions = 3;
 
     private Boolean stopReceivingAfterWarning = false;
 
@@ -3218,28 +3218,28 @@ public class Config implements Serializable {
         this.finishWithCloseNotify = finishWithCloseNotify;
     }
 
-    public Boolean isIgnoreRetransmittedCcs() {
-        return ignoreRetransmittedCcs;
+    public Boolean isIgnoreRetransmittedCcsInDtls() {
+        return ignoreRetransmittedCcsInDtls;
     }
 
-    public void setIgnoreRetransmittedCss(Boolean ignoreRetransmittedCcs) {
-        this.ignoreRetransmittedCcs = ignoreRetransmittedCcs;
+    public void setIgnoreRetransmittedCssInDtls(Boolean ignoreRetransmittedCcs) {
+        this.ignoreRetransmittedCcsInDtls = ignoreRetransmittedCcs;
     }
 
-    public Boolean isAddRetransmissionsToWorkflowTrace() {
-        return addRetransmissionsToWorkflowTrace;
+    public Boolean isAddRetransmissionsToWorkflowTraceInDtls() {
+        return addRetransmissionsToWorkflowTraceInDtls;
     }
 
-    public void setAddRetransmissionsToWorkflowTrace(Boolean addRetransmissionsToWorkflowTrace) {
-        this.addRetransmissionsToWorkflowTrace = addRetransmissionsToWorkflowTrace;
+    public void setAddRetransmissionsToWorkflowTraceInDtls(Boolean addRetransmissionsToWorkflowTrace) {
+        this.addRetransmissionsToWorkflowTraceInDtls = addRetransmissionsToWorkflowTrace;
     }
 
-    public int getMaxRetransmissions() {
-        return maxRetransmissions;
+    public int getMaxDtlsRetransmissions() {
+        return maxDtlsRetransmissions;
     }
 
-    public void setMaxRetransmissions(int maxRetransmissions) {
-        this.maxRetransmissions = maxRetransmissions;
+    public void setMaxDtlsRetransmissions(int maxRetransmissions) {
+        this.maxDtlsRetransmissions = maxRetransmissions;
     }
 
     public List<FilterType> getOutputFilters() {

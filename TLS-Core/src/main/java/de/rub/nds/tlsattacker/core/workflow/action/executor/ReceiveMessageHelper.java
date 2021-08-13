@@ -397,7 +397,7 @@ public class ReceiveMessageHelper {
 
                 } else if (context.getChooser().getSelectedProtocolVersion().isDTLS()
                     && subGroup.getProtocolMessageType() == ProtocolMessageType.CHANGE_CIPHER_SPEC
-                    && context.getConfig().isIgnoreRetransmittedCcs()) {
+                    && context.getConfig().isIgnoreRetransmittedCcsInDtls()) {
                     CcsManager cssManager = context.getDtlsCcsManager();
                     for (AbstractRecord record : subGroup.getRecords()) {
                         cssManager.addCssMessage(record, subGroup.getDtlsEpoch());
