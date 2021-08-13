@@ -15,7 +15,6 @@ import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceivingAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendingAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
@@ -53,6 +52,9 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
             if (!action.isExecuted()) {
                 try {
                     action.execute(state);
+                } catch (UnsupportedOperationException E) {
+                    LOGGER.warn("Unsupported operation!", E);
+                    state.setExecutionException(E);
                 } catch (PreparationException | WorkflowExecutionException ex) {
                     state.setExecutionException(ex);
                     throw new WorkflowExecutionException("Problem while executing Action:" + action.toString(), ex);
@@ -66,19 +68,9 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
             } else {
                 try {
                     if (action instanceof SendingAction) {
-
-                        SendMessageHelper sendMessageHelper = new SendMessageHelper();
-                        for (AbstractRecord record : ((SendingAction) action).getSendRecords()) {
-                            ((Record) record)
-                                .setSequenceNumber(BigInteger.valueOf(state.getTlsContext().getWriteSequenceNumber()));
-                            state.getTlsContext().increaseWriteSequenceNumber();
-                        }
-                        sendMessageHelper.sendRecords(((SendingAction) action).getSendRecords(), state.getTlsContext());
-
+                        executeRetransmission((SendingAction) action);
                     } else if (action instanceof ReceivingAction) {
-
                         action.execute(state);
-
                     }
                 } catch (IOException | PreparationException | WorkflowExecutionException ex) {
                     throw new WorkflowExecutionException("Problem while executing Action:" + action.toString(), ex);
@@ -149,6 +141,16 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
         if (config.getConfigOutput() != null) {
             ConfigIO.write(config, new File(config.getConfigOutput()));
         }
+    }
+
+    private void executeRetransmission(SendingAction action) throws IOException {
+        SendMessageHelper sendMessageHelper = new SendMessageHelper();
+        for (AbstractRecord record : action.getSendRecords()) {
+            ((Record) record).setSequenceNumber(BigInteger.valueOf(state.getTlsContext().getWriteSequenceNumber()));
+            state.getTlsContext().increaseWriteSequenceNumber();
+        }
+        LOGGER.info("Executing retransmission of last send flight");
+        sendMessageHelper.sendRecords(action.getSendRecords(), state.getTlsContext());
     }
 
 }
