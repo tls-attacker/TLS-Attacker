@@ -143,16 +143,8 @@ public class SendMessageHelper {
             int current = 0;
             for (DtlsHandshakeMessageFragment fragment : fragments) {
                 if (current >= fragmentPosition) {
-                    UnknownHandshakeMessage unkownHandshakeMessage = new UnknownHandshakeMessage();
-                    prepareMessage(unkownHandshakeMessage, prepareMessages, context);
-                    List<DtlsHandshakeMessageFragment> messageFragments =
-                        MessageFragmenter.fragmentMessage(unkownHandshakeMessage,
-                            Collections.singletonList((DtlsHandshakeMessageFragment) fragment), context);
-                    messageBytesCollector
-                        .appendProtocolMessageBytes(messageFragments.get(0).getCompleteResultingMessage().getValue());
-                    recordPosition =
-                        flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition, context);
-                    sendData(messageBytesCollector, context);
+                    recordPosition = prepareDtlsFragmentAndSend(fragment, messageBytesCollector, lastType, records,
+                        recordPosition, context);
                 }
                 current++;
             }
@@ -162,15 +154,7 @@ public class SendMessageHelper {
             int current = 0;
             for (AbstractRecord record : records) {
                 if (current >= recordPosition) {
-                    if (record.getMaxRecordLengthConfig() == null) {
-                        record.setMaxRecordLengthConfig(context.getChooser().getOutboundMaxRecordDataSize());
-                    }
-                    List<AbstractRecord> emptyRecords = new LinkedList<>();
-                    emptyRecords.add(record);
-                    messageBytesCollector.appendRecordBytes(
-                        context.getRecordLayer().prepareRecords(messageBytesCollector.getProtocolMessageBytesStream(),
-                            record.getContentMessageType(), emptyRecords));
-                    sendData(messageBytesCollector, context);
+                    prepareRecordAndSend(record, messageBytesCollector, context);
                 }
                 current++;
             }
@@ -179,6 +163,31 @@ public class SendMessageHelper {
             fragmentMessages = null;
         }
         return new MessageActionResult(records, messages, fragmentMessages);
+    }
+
+    private int prepareDtlsFragmentAndSend(DtlsHandshakeMessageFragment fragment, MessageBytesCollector collector,
+        ProtocolMessageType lastType, List<AbstractRecord> records, int recordPosition, TlsContext context)
+        throws IOException {
+        UnknownHandshakeMessage unkownHandshakeMessage = new UnknownHandshakeMessage();
+        prepareMessage(new UnknownHandshakeMessage(), true, context);
+        List<DtlsHandshakeMessageFragment> messageFragments = MessageFragmenter.fragmentMessage(unkownHandshakeMessage,
+            Collections.singletonList((DtlsHandshakeMessageFragment) fragment), context);
+        collector.appendProtocolMessageBytes(messageFragments.get(0).getCompleteResultingMessage().getValue());
+        recordPosition = flushBytesToRecords(collector, lastType, records, recordPosition, context);
+        sendData(collector, context);
+        return recordPosition;
+    }
+
+    private void prepareRecordAndSend(AbstractRecord record, MessageBytesCollector messageBytesCollector,
+        TlsContext context) throws IOException {
+        if (record.getMaxRecordLengthConfig() == null) {
+            record.setMaxRecordLengthConfig(context.getChooser().getOutboundMaxRecordDataSize());
+        }
+        List<AbstractRecord> emptyRecords = new LinkedList<>();
+        emptyRecords.add(record);
+        messageBytesCollector.appendRecordBytes(context.getRecordLayer().prepareRecords(
+            messageBytesCollector.getProtocolMessageBytesStream(), record.getContentMessageType(), emptyRecords));
+        sendData(messageBytesCollector, context);
     }
 
     public void sendRecords(List<AbstractRecord> records, TlsContext context) throws IOException {
