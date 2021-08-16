@@ -13,17 +13,26 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
 
 public class UdpOutputStream extends OutputStream {
 
     private final static int BUFFER_SIZE = 16384;
 
     private final DatagramSocket socket;
+    private String hostname;
+    private int port;
     private final byte[] dataBuffer = new byte[BUFFER_SIZE];
     private int index;
 
     public UdpOutputStream(DatagramSocket socket) {
         this.socket = socket;
+    }
+
+    public UdpOutputStream(DatagramSocket socket, String hostname, int port) {
+        this.socket = socket;
+        this.hostname = hostname;
+        this.port = port;
     }
 
     @Override
@@ -47,7 +56,12 @@ public class UdpOutputStream extends OutputStream {
     public void flush() throws IOException {
         byte[] outData = new byte[index];
         System.arraycopy(dataBuffer, 0, outData, 0, index);
-        DatagramPacket packet = new DatagramPacket(outData, index);
+        DatagramPacket packet;
+        if (socket.isConnected()) {
+            packet = new DatagramPacket(outData, index);
+        } else {
+            packet = new DatagramPacket(outData, index, InetAddress.getByName(hostname), port);
+        }
         socket.send(packet);
         index = 0;
     }
