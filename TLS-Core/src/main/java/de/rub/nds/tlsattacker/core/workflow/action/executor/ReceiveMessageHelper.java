@@ -14,7 +14,6 @@ import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.dtls.CcsManager;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.dtls.FragmentManager;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
@@ -358,10 +357,8 @@ public class ReceiveMessageHelper {
         List<ProtocolMessage> messages = new LinkedList<>();
         List<DtlsHandshakeMessageFragment> messageFragments = null;
         for (RecordGroup group : RecordGroup.generateRecordGroups(recordGroup.getRecords())) {
-
             List<RecordGroup> subGroups = group.splitIntoProcessableSubgroups();
             for (RecordGroup subGroup : subGroups) {
-
                 byte[] cleanProtocolMessageBytes;
                 if (context.getChooser().getSelectedProtocolVersion().isDTLS()
                     && subGroup.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE) {
@@ -392,19 +389,18 @@ public class ReceiveMessageHelper {
                     }
 
                 } else if (context.getChooser().getSelectedProtocolVersion().isDTLS()
-                    && subGroup.getProtocolMessageType() == ProtocolMessageType.CHANGE_CIPHER_SPEC
-                    && context.getConfig().isIgnoreRetransmittedCcsInDtls()) {
-                    // Manager komplett entfernen
-                    // Alle CCS Parsen und eine verarbeiten
-                    CcsManager cssManager = context.getDtlsCcsManager();
+                    && subGroup.getProtocolMessageType() == ProtocolMessageType.CHANGE_CIPHER_SPEC) {
                     for (AbstractRecord record : subGroup.getRecords()) {
-                        cssManager.addCssMessage(record, subGroup.getDtlsEpoch());
-                    }
-                    cleanProtocolMessageBytes = cssManager.getUninterpretedCssMessages(subGroup.getDtlsEpoch());
-                    List<ProtocolMessage> parsedMessages =
-                        handleCleanBytes(cleanProtocolMessageBytes, subGroup.getProtocolMessageType(), context, false,
+                        boolean added = context.addDtlsReceivedChangeCipherSpecEpochs(subGroup.getDtlsEpoch());
+                        if (!added && context.getConfig().isIgnoreRetransmittedCcsInDtls()) {
+                            continue;
+                        }
+                        cleanProtocolMessageBytes = record.getCleanProtocolMessageBytes().getValue();
+                        List<ProtocolMessage> parsedMessages = handleCleanBytes(cleanProtocolMessageBytes,
+                            subGroup.getProtocolMessageType(), context, false,
                             subGroup.areAllRecordsValid() || context.getConfig().getParseInvalidRecordNormally());
-                    messages.addAll(parsedMessages);
+                        messages.addAll(parsedMessages);
+                    }
                 } else {
                     cleanProtocolMessageBytes = subGroup.getCleanBytes();
                     List<ProtocolMessage> parsedMessages =

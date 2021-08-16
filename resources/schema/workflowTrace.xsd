@@ -3061,7 +3061,7 @@
       <xs:element name="dtlsWriteHandshakeMessageSequence" type="xs:int"/>
       <xs:element name="dtlsReceivedHandshakeMessageSequences" type="xs:int" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="globalDtlsFragmentManager" type="fragmentManager" minOccurs="0"/>
-      <xs:element name="globalDtlsCcsManager" type="ccsManager" minOccurs="0"/>
+      <xs:element name="dtlsReceivedChangeCipherSpecEpochs" type="xs:int" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="clientSupportedProtocolVersions" type="protocolVersion" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="tokenBindingVersion" type="tokenBindingVersion" minOccurs="0"/>
       <xs:element name="tokenBindingKeyParameters" type="tokenBindingKeyParameters" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
@@ -3179,10 +3179,6 @@
   </xs:complexType>
 
   <xs:complexType name="fragmentManager">
-    <xs:sequence/>
-  </xs:complexType>
-
-  <xs:complexType name="ccsManager">
     <xs:sequence/>
   </xs:complexType>
 

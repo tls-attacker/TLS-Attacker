@@ -39,12 +39,10 @@ import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
 import de.rub.nds.tlsattacker.core.crypto.MessageDigestCollector;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
-import de.rub.nds.tlsattacker.core.dtls.CcsManager;
 import de.rub.nds.tlsattacker.core.dtls.FragmentManager;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
-import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
@@ -527,7 +525,7 @@ public class TlsContext {
      */
     private FragmentManager globalDtlsFragmentManager;
 
-    private CcsManager globalDtlsCcsManager;
+    private Set<Integer> dtlsReceivedChangeCipherSpecEpochs;
 
     /**
      * supported protocol versions
@@ -741,7 +739,7 @@ public class TlsContext {
         fragmentBuffer = new LinkedList<>();
         dtlsReceivedHandshakeMessageSequences = new HashSet<>();
         globalDtlsFragmentManager = new FragmentManager(config);
-        globalDtlsCcsManager = new CcsManager(config);
+        dtlsReceivedChangeCipherSpecEpochs = new HashSet<>();
         keylogfile = new Keylogfile(this);
     }
 
@@ -1376,12 +1374,12 @@ public class TlsContext {
         return this.globalDtlsFragmentManager = globalDtlsFragmentManager;
     }
 
-    public CcsManager getDtlsCcsManager() {
-        return globalDtlsCcsManager;
+    public boolean addDtlsReceivedChangeCipherSpecEpochs(int epoch) {
+        return dtlsReceivedChangeCipherSpecEpochs.add(epoch);
     }
 
-    public CcsManager setDtlsCcsManager(CcsManager globalDtlsCcsManager) {
-        return this.globalDtlsCcsManager = globalDtlsCcsManager;
+    public Set<Integer> getDtlsReceivedChangeCipherSpecEpochs() {
+        return dtlsReceivedChangeCipherSpecEpochs;
     }
 
     public List<CipherSuite> getClientSupportedCipherSuites() {
