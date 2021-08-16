@@ -50,10 +50,7 @@ public class ClientUdpTransportHandler extends UdpTransportHandler {
             new UdpOutputStream(socket, hostname, port));
     }
 
-    public int getLocalPort() throws IOException {
-        if (socket.isConnected()) {
-            return socket.getLocalPort();
-        }
-        throw new IOException("Cannot retrieve local Port. Socket not connected");
+    public int getLocalPort() {
+        return socket.getLocalPort();
     }
 }
