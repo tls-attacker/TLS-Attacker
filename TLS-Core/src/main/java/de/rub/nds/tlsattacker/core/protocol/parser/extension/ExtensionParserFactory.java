@@ -50,6 +50,9 @@ public class ExtensionParserFactory {
             case MAX_FRAGMENT_LENGTH:
                 parser = new MaxFragmentLengthExtensionParser(pointer, extensionBytes, config);
                 break;
+            case RECORD_SIZE_LIMIT:
+                parser = new RecordSizeLimitExtensionParser(pointer, extensionBytes, config);
+                break;
             case SERVER_NAME_INDICATION:
                 parser = new ServerNameIndicationExtensionParser(pointer, extensionBytes, config);
                 break;

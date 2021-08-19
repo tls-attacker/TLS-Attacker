@@ -118,9 +118,7 @@ public class RecordGroup {
     }
 
     public void decryptRecord(TlsContext context, int recordIndex) {
-
         context.getRecordLayer().decryptAndDecompressRecord(getRecords().get(recordIndex));
-
     }
 
     @Deprecated
@@ -221,5 +219,16 @@ public class RecordGroup {
         }
         return recordGroupList;
 
+    }
+
+    public void checkRecordDataSize(TlsContext context, int recordIndex) {
+        final AbstractRecord record = getRecords().get(recordIndex);
+        if (record.getCleanProtocolMessageBytes() != null) {
+            final int recordDataSize = record.getCleanProtocolMessageBytes().getValue().length;
+            if (recordDataSize > context.getChooser().getInboundMaxRecordDataSize()) {
+                LOGGER.warn("Received record with size (" + recordDataSize + ") greater than advertised limit ("
+                    + context.getChooser().getInboundMaxRecordDataSize() + ")");
+            }
+        }
     }
 }

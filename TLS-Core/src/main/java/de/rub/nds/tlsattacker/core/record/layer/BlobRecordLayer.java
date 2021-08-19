@@ -87,7 +87,7 @@ public class BlobRecordLayer extends RecordLayer {
     @Override
     public byte[] prepareRecords(byte[] data, ProtocolMessageType contentType, List<AbstractRecord> records) {
         CleanRecordByteSeperator separator =
-            new CleanRecordByteSeperator(records, context.getConfig().getDefaultMaxRecordData(), 0, data);
+            new CleanRecordByteSeperator(records, context.getChooser().getOutboundMaxRecordDataSize(), 0, data);
         records = separator.parse();
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         for (AbstractRecord record : records) {
@@ -112,6 +112,11 @@ public class BlobRecordLayer extends RecordLayer {
     }
 
     @Override
+    public RecordCipher getRecordCipher() {
+        return cipher;
+    }
+
+    @Override
     public void updateEncryptionCipher() {
         encryptor.addNewRecordCipher(cipher);
     }
@@ -123,7 +128,7 @@ public class BlobRecordLayer extends RecordLayer {
 
     @Override
     public AbstractRecord getFreshRecord() {
-        return new BlobRecord(context.getConfig());
+        return new BlobRecord(context.getChooser().getOutboundMaxRecordDataSize());
     }
 
     @Override

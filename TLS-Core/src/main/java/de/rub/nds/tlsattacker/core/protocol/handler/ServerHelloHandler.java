@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
@@ -84,6 +85,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         adjustSelectedCipherSuite(message);
         adjustServerRandom(message);
         adjustExtensions(message);
+        warnOnConflictingExtensions();
         if (!message.isTls13HelloRetryRequest()) {
             if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
                 adjustHandshakeTrafficSecrets();
@@ -372,6 +374,19 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                 "Complete resulting digest: " + ArrayConverter.bytesToHexString(tlsContext.getDigest().getRawBytes()));
         } catch (NoSuchAlgorithmException ex) {
             LOGGER.error(ex);
+        }
+    }
+
+    private void warnOnConflictingExtensions() {
+        if (tlsContext.getTalkingConnectionEndType() == tlsContext.getChooser().getMyConnectionPeer()) {
+            // for TLS 1.3, this is handled in encrypted extensions
+            if (!tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
+                if (tlsContext.isExtensionNegotiated(ExtensionType.MAX_FRAGMENT_LENGTH)
+                    && tlsContext.isExtensionNegotiated(ExtensionType.RECORD_SIZE_LIMIT)) {
+                    // this is supposed to result in a fatal error, just warning for now
+                    LOGGER.warn("Server sent max_fragment_length AND record_size_limit extensions");
+                }
+            }
         }
     }
 }
