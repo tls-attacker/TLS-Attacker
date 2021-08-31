@@ -373,9 +373,11 @@ public class ReceiveMessageHelper {
                             context.addDtlsReceivedHandshakeMessageSequences(fragment.getMessageSeq().getValue());
                             List<ProtocolMessage> parsedMessages = handleCleanBytes(
                                 convertDtlsFragmentToCleanTlsBytes(fragment), subGroup.getProtocolMessageType(),
-                                context, false,
+                                context, fragment.isRetransmission(),
                                 subGroup.areAllRecordsValid() || context.getConfig().getParseInvalidRecordNormally());
                             ((HandshakeMessage) parsedMessages.get(0)).setRetransmission(fragment.isRetransmission());
+                            ((HandshakeMessage) parsedMessages.get(0))
+                                .setIncludeInDigest(fragment.getIncludeInDigest());
                             messages.addAll(parsedMessages);
                         }
                     } else {
