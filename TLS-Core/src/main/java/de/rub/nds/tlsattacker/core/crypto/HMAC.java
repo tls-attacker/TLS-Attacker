@@ -38,7 +38,6 @@ public class HMAC {
     public HMAC(MacAlgorithm macAlgorithm) throws NoSuchAlgorithmException {
         this.macAlgorithm = macAlgorithm;
 
-        Security.addProvider(new BouncyCastleProvider());
         // decides which hash for the hmac should be used
         switch (macAlgorithm) {
             case HMAC_SHA1:

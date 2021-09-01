@@ -14,12 +14,15 @@ import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 
+import java.io.ByteArrayOutputStream;
 import java.nio.charset.Charset;
 import java.security.NoSuchAlgorithmException;
+import java.security.Security;
 import java.util.Arrays;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 /**
  * Pseudo random function computation for SSL3, TLS 1.0 - 1.2
@@ -85,8 +88,8 @@ public class PseudoRandomFunction {
         byte[] outputMd5;
         byte[] outputSha;
         byte[] pseudoRandomBitStream = new byte[0];
-        byte[] salt = { 0x41 };
-        byte[] saltByte = { 0x41 };
+        ByteArrayOutputStream salt = new ByteArrayOutputStream();
+        salt.write(0x41);
 
         /*
          * To generate the key material, compute pseudoRandomBitStream = MD5(master_secret + SHA(`A' + master_secret +
@@ -94,21 +97,20 @@ public class PseudoRandomFunction {
          * + ClientHello.random)) + MD5(master_secret + SHA(`CCC' + master_secret + ServerHello.random +
          * ClientHello.random)) + [...]; until enough output has been generated.
          */
-        while (pseudoRandomBitStream.length < size) {
-            outputSha =
-                sha.getDigest().digest(ArrayConverter.concatenate(salt, master_secret, server_random, client_random));
+        for (int i = 0; pseudoRandomBitStream.length < size; i++) {
+            outputSha = sha.getDigest()
+                .digest(ArrayConverter.concatenate(salt.toByteArray(), master_secret, server_random, client_random));
             outputMd5 = md5.getDigest().digest(ArrayConverter.concatenate(master_secret, outputSha));
 
             pseudoRandomBitStream = ArrayConverter.concatenate(pseudoRandomBitStream, outputMd5);
 
             /*
-             * Adds another byte to the salt and increments the whole salt array by one bit afterwards as in the command
-             * above described
+             * Resets the salt and rewrites it. For each new iteration another byte will be added to the salt as
+             * described in the comment above.
              */
-            salt = ArrayConverter.concatenate(salt, saltByte);
-            saltByte[0] += 0x01;
-            for (int j = 0; j < salt.length; j++) {
-                salt[j] += 0x01;
+            salt.reset();
+            for (int j = 0; j < i + 2; j++) {
+                salt.write(0x41 + i + 1);
             }
         }
         return Arrays.copyOf(pseudoRandomBitStream, size);
@@ -132,6 +134,7 @@ public class PseudoRandomFunction {
      */
     public static byte[] compute(PRFAlgorithm prfAlgorithm, byte[] secret, String label, byte[] seed, int size)
         throws CryptoException {
+
         if (prfAlgorithm == null) {
             LOGGER.warn("Trying to compute PRF without specified PRF algorithm. Using TLS 1.0/TLS 1.1 as default.");
             prfAlgorithm = PRFAlgorithm.TLS_PRF_LEGACY;

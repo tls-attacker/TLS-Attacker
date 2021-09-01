@@ -12,9 +12,11 @@ package de.rub.nds.tlsattacker.core.crypto;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
 import junit.framework.TestCase;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.Test;
 
 import java.security.NoSuchAlgorithmException;
+import java.security.Security;
 
 import static org.junit.Assert.assertArrayEquals;
 
@@ -68,6 +70,7 @@ public class HMACTest extends TestCase {
 
     @Test
     public void testComputeGOSTR3411() throws NoSuchAlgorithmException {
+        Security.addProvider(new BouncyCastleProvider());
         byte[] data = ArrayConverter.hexStringToByteArray("01010101010101010101010101010101");
         byte[] secret =
             ArrayConverter.hexStringToByteArray("DEADBEEFC0FFEEDEADBEEFC0FFEEDEADBEEFC0FFEEDEADBEEFC0FFEEDEAD");
@@ -80,6 +83,7 @@ public class HMACTest extends TestCase {
 
     @Test
     public void testComputeGOSTR3411_2012_256() throws NoSuchAlgorithmException {
+        Security.addProvider(new BouncyCastleProvider());
         byte[] data = ArrayConverter.hexStringToByteArray("01010101010101010101010101010101");
         byte[] secret =
             ArrayConverter.hexStringToByteArray("DEADBEEFC0FFEEDEADBEEFC0FFEEDEADBEEFC0FFEEDEADBEEFC0FFEEDEAD");
