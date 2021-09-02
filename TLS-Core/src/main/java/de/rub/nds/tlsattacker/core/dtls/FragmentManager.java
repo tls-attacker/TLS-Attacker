@@ -83,16 +83,18 @@ public class FragmentManager {
 
         for (FragmentKey key : orderedFragmentKeys) {
             FragmentCollector fragmentCollector = fragments.get(key);
+            if (fragmentCollector == null) {
+                LOGGER.error("Trying to access unreceived message fragment");
+                break;
+            }
             if (!fragmentCollector.isInterpreted()) {
-                if (fragmentCollector == null) {
-                    LOGGER.error("Trying to access unreceived message fragment");
+                if (onlyIfComplete && !fragmentCollector.isMessageComplete()) {
+                    LOGGER.debug("Incomplete message. Not processing: msg_sqn: " + key.getMessageSeq() + " epoch: "
+                        + key.getEpoch());
+                    break;
                 } else {
-                    if (onlyIfComplete && !fragmentCollector.isMessageComplete()) {
-                        LOGGER.debug("Incomplete message. Not processing: msg_sqn: " + key.getMessageSeq() + " epoch: "
-                            + key.getEpoch());
-                    } else {
-                        handshakeFragmentList.add(fragmentCollector.buildCombinedFragment());
-                    }
+                    handshakeFragmentList.add(fragmentCollector.buildCombinedFragment());
+                    fragmentCollector.setInterpreted(true);
                 }
             }
         }
