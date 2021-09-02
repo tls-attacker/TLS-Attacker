@@ -77,6 +77,9 @@ public class ReceiveMessageHelper {
                     shouldContinue =
                         testIfWeShouldContinueToReceive(expectedMessages, result.getMessageList(), context);
                 }
+                if (context.getConfig().getReceiveMaximumRecords() == result.getRecordList().size()) {
+                    shouldContinue = false;
+                }
             } while (receivedBytes.length != 0 && shouldContinue);
 
         } catch (IOException ex) {
@@ -124,6 +127,9 @@ public class ReceiveMessageHelper {
                             break;
                         }
                     }
+                }
+                if (context.getConfig().getReceiveMaximumRecords() == result.getRecordList().size()) {
+                    shouldContinue = false;
                 }
             } while (receivedBytes.length != 0 && shouldContinue);
         } catch (IOException ex) {

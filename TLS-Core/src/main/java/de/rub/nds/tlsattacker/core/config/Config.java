@@ -803,6 +803,11 @@ public class Config implements Serializable {
     private Boolean earlyStop = false;
 
     /**
+     * The maximum number of records that can be received
+     */
+    private Integer receiveMaximumRecords = 100;
+
+    /**
      * If true, Random of the context is not seeded with an explicit value, thus client/server randoms are not
      * deterministic.
      */
@@ -2320,6 +2325,14 @@ public class Config implements Serializable {
 
     public void setQuickReceive(Boolean quickReceive) {
         this.quickReceive = quickReceive;
+    }
+
+    public Integer getReceiveMaximumRecords() {
+        return receiveMaximumRecords;
+    }
+
+    public void setReceiveMaximumRecords(int receiveMaximumRecords) {
+        this.receiveMaximumRecords = receiveMaximumRecords;
     }
 
     public Boolean isResetWorkflowTracesBeforeSaving() {
