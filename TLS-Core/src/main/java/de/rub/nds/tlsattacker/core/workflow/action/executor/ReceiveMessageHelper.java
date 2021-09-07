@@ -722,7 +722,7 @@ public class ReceiveMessageHelper {
             fragmentManager.addMessageFragment(fragment);
         }
         List<DtlsHandshakeMessageFragment> orderedCombinedUninterpretedMessageFragments =
-            fragmentManager.getOrderedCombinedUninterpretedMessageFragments(true);
+            fragmentManager.getOrderedCombinedUninterpretedMessageFragments(true, false);
         return orderedCombinedUninterpretedMessageFragments;
 
     }

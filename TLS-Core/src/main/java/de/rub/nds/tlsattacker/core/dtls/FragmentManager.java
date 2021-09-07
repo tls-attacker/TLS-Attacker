@@ -30,6 +30,7 @@ public class FragmentManager {
 
     private Map<FragmentKey, FragmentCollector> fragments;
     private Config config;
+    private int lastInterpretedMessageSeq = -1;
 
     public FragmentManager(Config config) {
         fragments = new HashMap<>();
@@ -64,8 +65,8 @@ public class FragmentManager {
         return collector.isMessageComplete();
     }
 
-    public List<DtlsHandshakeMessageFragment> getOrderedCombinedUninterpretedMessageFragments(boolean onlyIfComplete) {
-
+    public List<DtlsHandshakeMessageFragment> getOrderedCombinedUninterpretedMessageFragments(boolean onlyIfComplete,
+        boolean skipMessageSequences) {
         List<DtlsHandshakeMessageFragment> handshakeFragmentList = new LinkedList<>();
         List<FragmentKey> orderedFragmentKeys = new ArrayList<>(fragments.keySet());
         orderedFragmentKeys.sort(new Comparator<FragmentKey>() {
@@ -84,17 +85,25 @@ public class FragmentManager {
         for (FragmentKey key : orderedFragmentKeys) {
             FragmentCollector fragmentCollector = fragments.get(key);
             if (fragmentCollector == null) {
-                LOGGER.error("Trying to access unreceived message fragment");
-                break;
+                LOGGER.error("Trying to access unreceived message fragment. Not processing: msg_sqn: "
+                    + key.getMessageSeq() + " epoch: " + key.getEpoch());
+                if (!skipMessageSequences) {
+                    break;
+                } else {
+                    continue;
+                }
             }
             if (!fragmentCollector.isInterpreted()) {
+                if (!skipMessageSequences && key.getMessageSeq() != lastInterpretedMessageSeq + 1) {
+                    break;
+                }
                 if (onlyIfComplete && !fragmentCollector.isMessageComplete()) {
                     LOGGER.debug("Incomplete message. Not processing: msg_sqn: " + key.getMessageSeq() + " epoch: "
                         + key.getEpoch());
-                    break;
                 } else {
                     handshakeFragmentList.add(fragmentCollector.buildCombinedFragment());
                     fragmentCollector.setInterpreted(true);
+                    lastInterpretedMessageSeq = key.getMessageSeq();
                 }
             }
         }
