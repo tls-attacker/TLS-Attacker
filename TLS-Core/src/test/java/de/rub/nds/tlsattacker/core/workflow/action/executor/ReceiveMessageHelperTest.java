@@ -155,7 +155,7 @@ public class ReceiveMessageHelperTest {
                 + "42247163793dad66e12e3ead668107e783796c24c48c28bc03000001300170000ff"
                 + "0100010000230000000b00020100");
 
-        // DTLS 1.2 SERVER HELLO DONE mseq 4, length 12, f. offset 0, f. length 
+        // DTLS 1.2 SERVER HELLO DONE mseq 4, length 12, f. offset 0, f. length
         // 0
         private static final byte[] REC_SERVER_HELLO_DONE =
             ArrayConverter.hexStringToByteArray("16fefd0000000000000017000c0e0000000004000000000000");
