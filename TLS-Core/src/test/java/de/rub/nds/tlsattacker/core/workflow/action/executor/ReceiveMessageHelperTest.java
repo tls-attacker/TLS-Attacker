@@ -134,14 +134,14 @@ public class ReceiveMessageHelperTest {
         private static final byte[] MSG_HELLO_VERIFY_REQUEST_ASSEMBLED =
             ArrayConverter.hexStringToByteArray("03000013feff1031323334353637383930313233343536");
 
-        // DTLS 1.2 Server Hello part 1: mseq 1, length 91, f. offset 0, f.
+        // DTLS 1.2 SERVER HELLO part 1: mseq 1, length 91, f. offset 0, f.
         // length 75
         private static final byte[] REC_SERVER_HELLO_F1 = ArrayConverter
             .hexStringToByteArray("16fefd0000000000000004005" + "70200005b000100000000004bfefd5c83e461a9320674e42d"
                 + "4cb1e05191c7c416e1da6551e71e9a8b39cdbf3d393f20844"
                 + "f60860755d38ef42247163793dad66e12e3ead668107e7837" + "96c24c48c28bc030000013001700");
 
-        // DTLS 1.2 SERVER_HELLO part 2: mseq 1, length 91, f. offset 75, f.
+        // DTLS 1.2 SERVER HELLO part 2: mseq 1, length 91, f. offset 75, f.
         // length 16
         private static final byte[] REC_SERVER_HELLO_F2 = ArrayConverter.hexStringToByteArray(
             "16fefd0000000000000005001c" + "0200005b000100004b00001000ff0100010000230000000b0" + "0020100");
@@ -155,7 +155,7 @@ public class ReceiveMessageHelperTest {
                 + "42247163793dad66e12e3ead668107e783796c24c48c28bc03000001300170000ff"
                 + "0100010000230000000b00020100");
 
-        // DTLS 1.2 Server Hello Done mseq 4, length 12, f. offset 0, f. length
+        // DTLS 1.2 SERVER HELLO DONE mseq 4, length 12, f. offset 0, f. length 
         // 0
         private static final byte[] REC_SERVER_HELLO_DONE =
             ArrayConverter.hexStringToByteArray("16fefd0000000000000017000c0e0000000004000000000000");
@@ -163,7 +163,7 @@ public class ReceiveMessageHelperTest {
         private static final byte[] MSG_SERVER_HELLO_DONE_SINGLE_FRAGMENT =
             ArrayConverter.hexStringToByteArray("0e0000000004000000000000");
 
-        // what is expected when assembling the SERVER_HELLO DONE message
+        // what is expected when assembling the SERVER HELLO DONE message
         private static final byte[] MSG_SERVER_HELLO_DONE_ASSEMBLED = ArrayConverter.hexStringToByteArray("0E000000");
 
     }
