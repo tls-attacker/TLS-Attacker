@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.tlsattacker.core.config.ConfigIO;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
@@ -23,6 +24,7 @@ import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType
 import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,8 +33,11 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    private SendMessageHelper sendMessageHelper;
+
     public DTLSWorkflowExecutor(State state) {
         super(WorkflowExecutorType.DTLS, state);
+        sendMessageHelper = new SendMessageHelper();
     }
 
     @Override
@@ -134,12 +139,20 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
     }
 
     private void executeRetransmission(SendingAction action) throws IOException {
-        SendMessageHelper sendMessageHelper = new SendMessageHelper();
-        for (AbstractRecord record : action.getSendRecords()) {
-            ((Record) record).setSequenceNumber(BigInteger.valueOf(state.getTlsContext().getWriteSequenceNumber()));
-            state.getTlsContext().increaseWriteSequenceNumber();
-        }
         LOGGER.info("Executing retransmission of last send flight");
+        for (AbstractRecord abstractRecord : action.getSendRecords()) {
+            Record record = (Record) abstractRecord;
+            if (record.getContentMessageType() == ProtocolMessageType.HANDSHAKE && record.getEpoch().getValue() > 0) {
+                List<AbstractRecord> records = new LinkedList<>();
+                records.add(record);
+                state.getTlsContext().getRecordLayer().prepareRecords(record.getCleanProtocolMessageBytes().getValue(),
+                    record.getContentMessageType(), records);
+            } else {
+                record.setSequenceNumber(BigInteger.valueOf(state.getTlsContext().getWriteSequenceNumber()));
+                record.setCompleteRecordBytes(record.getRecordSerializer().serialize());
+                state.getTlsContext().increaseWriteSequenceNumber();
+            }
+        }
         sendMessageHelper.sendRecords(action.getSendRecords(), state.getTlsContext());
     }
 
