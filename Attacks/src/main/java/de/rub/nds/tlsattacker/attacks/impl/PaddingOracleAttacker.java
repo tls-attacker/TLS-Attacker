@@ -89,10 +89,6 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         this.executor = executor;
     }
 
-    public Config getGeneratedConfig() {
-        return tlsConfig;
-    }
-
     @Override
     public void executeAttack() {
         throw new UnsupportedOperationException("Not implemented yet");

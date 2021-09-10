@@ -29,7 +29,6 @@ import java.util.List;
 import de.rub.nds.tlsattacker.transport.tcp.TcpTransportHandler;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.socket.SocketState;
-import de.rub.nds.tlsattacker.transport.tcp.ServerTcpTransportHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -61,10 +60,7 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
         for (TlsContext ctx : state.getAllTlsContexts()) {
             ctx.initRecordLayer();
         }
-
-        if (config.isResetTrace()) {
-            state.getWorkflowTrace().reset();
-        }
+        state.getWorkflowTrace().reset();
         state.setStartTimestamp(System.currentTimeMillis());
         int numTlsContexts = allTlsContexts.size();
         List<TlsAction> tlsActions = state.getWorkflowTrace().getTlsActions();
@@ -89,9 +85,6 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
             }
 
             try {
-                if (!config.isSkipExecutedActions() || !action.isExecuted()) {
-                    action.execute(state);
-                }
                 action.execute(state);
             } catch (UnsupportedOperationException E) {
                 LOGGER.warn("Unsupported operation!", E);

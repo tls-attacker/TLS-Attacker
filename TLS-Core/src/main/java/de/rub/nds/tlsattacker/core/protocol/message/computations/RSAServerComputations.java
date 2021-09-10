@@ -31,7 +31,6 @@ public class RSAServerComputations extends KeyExchangeComputations {
         config.setDefaultServerRSAPrivateKey(getPrivateKey().getValue());
     }
 
-    // #region getters/setters
     public void setModulus(BigInteger modulus) {
         this.modulus = ModifiableVariableFactory.safelySetValue(this.modulus, modulus);
     }
@@ -47,6 +46,4 @@ public class RSAServerComputations extends KeyExchangeComputations {
     public ModifiableBigInteger getPublicExponent() {
         return publicExponent;
     }
-    // #endregion
-
 }

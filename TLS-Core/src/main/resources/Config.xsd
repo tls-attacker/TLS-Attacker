@@ -394,8 +394,6 @@
       <xs:element name="workflowExecutorShouldClose" type="xs:boolean" minOccurs="0"/>
       <xs:element name="stopReceivingAfterFatal" type="xs:boolean" minOccurs="0"/>
       <xs:element name="stopActionsAfterFatal" type="xs:boolean" minOccurs="0"/>
-      <xs:element name="skipExecutedActions" type="xs:boolean" minOccurs="0"/>
-      <xs:element name="resetTrace" type="xs:boolean" minOccurs="0"/>
       <xs:element name="stopReceivingAfterWarning" type="xs:boolean" minOccurs="0"/>
       <xs:element name="stopActionsAfterWarning" type="xs:boolean" minOccurs="0"/>
       <xs:element name="defaultSelectedCipherSuite" type="cipherSuite" minOccurs="0"/>

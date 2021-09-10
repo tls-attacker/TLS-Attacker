@@ -78,8 +78,6 @@ public class RSAServerKeyExchangePreparator<T extends RSAServerKeyExchangeMessag
 
     }
 
-    // copied from dhe
-
     protected byte[] generateSignature(SignatureAndHashAlgorithm algorithm) throws CryptoException {
         return SignatureCalculator.generateSignature(algorithm, chooser, generateToBeSigned());
     }

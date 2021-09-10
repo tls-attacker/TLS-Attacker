@@ -62,7 +62,7 @@ public class RSAServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("DHEServerKeyExchangeMessage:");
+        sb.append("RSAServerKeyExchangeMessage:");
         sb.append("\n  Modulus N: ");
         if (modulus != null && modulus.getValue() != null) {
             sb.append(ArrayConverter.bytesToHexString(modulus.getValue()));
@@ -106,7 +106,6 @@ public class RSAServerKeyExchangeMessage extends ServerKeyExchangeMessage {
         return holders;
     }
 
-    // #region getters/setters
     public ModifiableByteArray getModulus() {
         return modulus;
     }
@@ -122,6 +121,4 @@ public class RSAServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     public void setModulusLength(int modulusLength) {
         this.modulusLength = ModifiableVariableFactory.safelySetValue(this.modulusLength, modulusLength);
     }
-    // #endregion
-
 }

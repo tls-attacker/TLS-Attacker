@@ -23,7 +23,7 @@ public class FingerPrintTask extends TlsTask {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private State state;
+    private final State state;
 
     private ResponseFingerprint fingerprint;
 
@@ -74,13 +74,4 @@ public class FingerPrintTask extends TlsTask {
     public void reset() {
         state.reset();
     }
-
-    public void setState(State state) {
-        this.state = state;
-    }
-
-    public void setFingerprint(ResponseFingerprint fingerprint) {
-        this.fingerprint = fingerprint;
-    }
-
 }
