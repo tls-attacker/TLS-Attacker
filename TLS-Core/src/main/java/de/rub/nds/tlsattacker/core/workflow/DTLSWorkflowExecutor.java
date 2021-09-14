@@ -143,8 +143,8 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
         for (AbstractRecord abstractRecord : action.getSendRecords()) {
             if (abstractRecord instanceof Record) {
                 Record record = (Record) abstractRecord;
-                record.getSequenceNumber().setModification(new BigIntegerExplicitValueModification(
-                    BigInteger.valueOf(state.getTlsContext().getWriteSequenceNumber(record.getEpoch().getValue()))));
+                record.setSequenceNumber(
+                    BigInteger.valueOf(state.getTlsContext().getWriteSequenceNumber(record.getEpoch().getValue())));
                 List<AbstractRecord> records = new LinkedList<>();
                 records.add(record);
                 state.getTlsContext().getRecordLayer().prepareRecords(record.getCleanProtocolMessageBytes().getValue(),
