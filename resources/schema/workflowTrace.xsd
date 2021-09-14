@@ -3053,8 +3053,34 @@
       <xs:element name="selectedGostCurve" type="gostCurve" minOccurs="0"/>
       <xs:element name="activeClientKeySetType" type="tls13KeySetType" minOccurs="0"/>
       <xs:element name="activeServerKeySetType" type="tls13KeySetType" minOccurs="0"/>
-      <xs:element name="writeSequenceNumber" type="xs:long"/>
-      <xs:element name="readSequenceNumber" type="xs:long"/>
+      <xs:element name="writeSequenceNumbers">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="entry" minOccurs="0" maxOccurs="unbounded">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="key" minOccurs="0" type="xs:int"/>
+                  <xs:element name="value" minOccurs="0" type="xs:long"/>
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="readSequenceNumbers">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="entry" minOccurs="0" maxOccurs="unbounded">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="key" minOccurs="0" type="xs:int"/>
+                  <xs:element name="value" minOccurs="0" type="xs:long"/>
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
       <xs:element name="dtlsReadEpoch" type="xs:int"/>
       <xs:element name="dtlsWriteEpoch" type="xs:int"/>
       <xs:element name="dtlsReadHandshakeMessageSequence" type="xs:int"/>
