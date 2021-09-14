@@ -51,7 +51,6 @@ public class RecordDecryptor extends Decryptor {
         } catch (CryptoException ex1) {
             LOGGER.warn("Could not decrypt BlobRecord with NullCipher", ex1);
         }
-        context.increaseReadSequenceNumber();
     }
 
     @Override
@@ -78,6 +77,5 @@ public class RecordDecryptor extends Decryptor {
                 LOGGER.warn("Could not decrypt Record with null cipher", ex1);
             }
         }
-        context.increaseReadSequenceNumber();
     }
 }

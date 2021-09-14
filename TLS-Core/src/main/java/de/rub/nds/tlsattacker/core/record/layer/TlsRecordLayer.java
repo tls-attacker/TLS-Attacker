@@ -123,7 +123,8 @@ public class TlsRecordLayer extends RecordLayer {
     }
 
     @Override
-    public byte[] prepareRecords(byte[] data, ProtocolMessageType contentType, List<AbstractRecord> records) {
+    public byte[] prepareRecords(byte[] data, ProtocolMessageType contentType, List<AbstractRecord> records,
+        boolean withPrepare) {
         CleanRecordByteSeperator separator =
             new CleanRecordByteSeperator(records, tlsContext.getChooser().getOutboundMaxRecordDataSize(), 0, data);
         records = separator.parse();
@@ -142,7 +143,11 @@ public class TlsRecordLayer extends RecordLayer {
 
             AbstractRecordPreparator preparator =
                 record.getRecordPreparator(tlsContext.getChooser(), encryptor, compressor, contentType);
-            preparator.prepare();
+            if (withPrepare) {
+                preparator.prepare();
+                tlsContext.increaseWriteSequenceNumber();
+            }
+            preparator.encrypt();
             AbstractRecordSerializer serializer = record.getRecordSerializer();
             try {
                 byte[] recordBytes = serializer.serialize();
@@ -197,6 +202,7 @@ public class TlsRecordLayer extends RecordLayer {
             decryptor.decrypt(record);
             decompressor.decompress(record);
         }
+        tlsContext.increaseReadSequenceNumber();
     }
 
     @Override

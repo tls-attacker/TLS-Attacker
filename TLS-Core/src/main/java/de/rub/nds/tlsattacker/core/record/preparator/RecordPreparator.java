@@ -52,6 +52,12 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
         }
         prepareSequenceNumber(record);
         compressor.compress(record);
+        encrypt();
+        prepareLength(record);
+    }
+
+    public void encrypt() {
+        LOGGER.debug("Encrypting Record");
         if (chooser.getSelectedProtocolVersion().isTLS13()
             && record.getContentMessageType() == ProtocolMessageType.CHANGE_CIPHER_SPEC
             && !chooser.getConfig().isEncryptChangeCipherSpec()) {
@@ -62,12 +68,10 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
         } else {
             encryptor.encrypt(record);
         }
-
         prepareLength(record);
     }
 
     private void prepareContentType(Record record) {
-
         record.setContentType(type.getValue());
         prepareContentMessageType(type);
         LOGGER.debug("ContentType: " + type.getValue());

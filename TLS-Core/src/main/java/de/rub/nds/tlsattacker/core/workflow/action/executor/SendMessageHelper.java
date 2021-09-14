@@ -186,7 +186,7 @@ public class SendMessageHelper {
         List<AbstractRecord> emptyRecords = new LinkedList<>();
         emptyRecords.add(record);
         messageBytesCollector.appendRecordBytes(context.getRecordLayer().prepareRecords(
-            messageBytesCollector.getProtocolMessageBytesStream(), record.getContentMessageType(), emptyRecords));
+            messageBytesCollector.getProtocolMessageBytesStream(), record.getContentMessageType(), emptyRecords, true));
         sendData(messageBytesCollector, context);
     }
 
@@ -213,7 +213,7 @@ public class SendMessageHelper {
         int length = collector.getProtocolMessageBytesStream().length;
         List<AbstractRecord> toFillList = getEnoughRecords(length, recordPosition, records, context);
         collector.appendRecordBytes(
-            context.getRecordLayer().prepareRecords(collector.getProtocolMessageBytesStream(), type, toFillList));
+            context.getRecordLayer().prepareRecords(collector.getProtocolMessageBytesStream(), type, toFillList, true));
         collector.flushProtocolMessageBytes();
         return recordPosition + toFillList.size();
     }
