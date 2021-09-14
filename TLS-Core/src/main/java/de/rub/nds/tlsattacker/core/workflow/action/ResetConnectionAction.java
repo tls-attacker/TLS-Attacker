@@ -65,8 +65,8 @@ public class ResetConnectionAction extends ConnectionBoundAction {
         tlsContext.setDtlsCookie(null);
         tlsContext.setDtlsReadHandshakeMessageSequence(0);
         tlsContext.setDtlsWriteHandshakeMessageSequence(0);
-        tlsContext.setDtlsReceiveEpoch(0);
-        tlsContext.setDtlsWriteEpoch(0);
+        tlsContext.setReadEpoch(0);
+        tlsContext.setWriteEpoch(0);
         tlsContext.getDtlsReceivedChangeCipherSpecEpochs().clear();
         tlsContext.setDtlsFragmentManager(new FragmentManager(state.getConfig()));
         tlsContext.getDtlsReceivedHandshakeMessageSequences().clear();

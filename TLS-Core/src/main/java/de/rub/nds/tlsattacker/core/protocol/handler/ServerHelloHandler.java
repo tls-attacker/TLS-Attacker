@@ -186,10 +186,10 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         tlsContext.getRecordLayer().setRecordCipher(recordCipherServer);
 
         if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
-            tlsContext.increaseDtlsReadEpoch();
+            tlsContext.increaseReadEpoch();
             tlsContext.getRecordLayer().updateDecryptionCipher();
         } else {
-            tlsContext.increaseDtlsWriteEpoch();
+            tlsContext.increaseWriteEpoch();
             tlsContext.getRecordLayer().updateEncryptionCipher();
         }
     }

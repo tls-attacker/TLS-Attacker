@@ -48,7 +48,7 @@ public class ChangeCipherSpecHandler extends TlsMessageHandler<ChangeCipherSpecM
             && tlsContext.getChooser().getSelectedProtocolVersion() != ProtocolVersion.TLS13) {
             tlsContext.getRecordLayer().updateDecryptionCipher();
             tlsContext.getRecordLayer().updateDecompressor();
-            tlsContext.increaseDtlsReadEpoch();
+            tlsContext.increaseReadEpoch();
         }
     }
 
@@ -59,7 +59,7 @@ public class ChangeCipherSpecHandler extends TlsMessageHandler<ChangeCipherSpecM
             if (!tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
                 tlsContext.getRecordLayer().updateEncryptionCipher();
                 tlsContext.getRecordLayer().updateCompressor();
-                tlsContext.increaseDtlsWriteEpoch();
+                tlsContext.increaseWriteEpoch();
             }
         }
     }

@@ -64,8 +64,8 @@ public class ActivateEncryptionAction extends ConnectionBoundAction {
         tlsContext.getRecordLayer().updateEncryptionCipher();
 
         if (resetSequenceNumbers) {
-            tlsContext.increaseDtlsReadEpoch();
-            tlsContext.increaseDtlsWriteEpoch();
+            tlsContext.increaseReadEpoch();
+            tlsContext.increaseWriteEpoch();
         }
 
         LOGGER.info("Activated Encryption/Decryption");

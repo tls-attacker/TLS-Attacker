@@ -34,7 +34,7 @@ public class DtlsHandshakeMessageFragmentPreparator extends HandshakeMessagePrep
         msg.setMessageSeq(msg.getMessageSequenceConfig());
         msg.setFragmentOffset(msg.getOffsetConfig());
         msg.setFragmentLength(msg.getContent().getValue().length);
-        msg.setEpoch(chooser.getContext().getDtlsWriteEpoch());
+        msg.setEpoch(chooser.getContext().getWriteEpoch());
     }
 
     private void prepareHandshakeType(DtlsHandshakeMessageFragment message) {

@@ -507,14 +507,14 @@ public class TlsContext {
     private Map<Integer, Long> readSequenceNumbers;
 
     /**
-     * the latest epoch the peer used
+     * The latest epoch for the decryption. It is incremented on every cipher state change.
      */
-    private int dtlsReadEpoch = 0;
+    private int readEpoch = 0;
 
     /**
-     * the epoch applied to transmitted DTLS records
+     * The latest epoch for the encryption. It is incremented on every cipher state change.
      */
-    private int dtlsWriteEpoch = 0;
+    private int writeEpoch = 0;
 
     private int dtlsReadHandshakeMessageSequence = 0;
 
@@ -1325,7 +1325,7 @@ public class TlsContext {
     }
 
     public long getWriteSequenceNumber() {
-        return writeSequenceNumbers.get(dtlsWriteEpoch);
+        return writeSequenceNumbers.get(writeEpoch);
     }
 
     public void setWriteSequenceNumber(int epoch, long writeSequenceNumber) {
@@ -1333,7 +1333,7 @@ public class TlsContext {
     }
 
     public void setWriteSequenceNumber(long writeSequenceNumber) {
-        writeSequenceNumbers.put(dtlsWriteEpoch, writeSequenceNumber);
+        writeSequenceNumbers.put(writeEpoch, writeSequenceNumber);
     }
 
     public void increaseWriteSequenceNumber(int epoch) {
@@ -1341,7 +1341,7 @@ public class TlsContext {
     }
 
     public void increaseWriteSequenceNumber() {
-        writeSequenceNumbers.put(dtlsWriteEpoch, writeSequenceNumbers.get(dtlsWriteEpoch) + 1);
+        writeSequenceNumbers.put(writeEpoch, writeSequenceNumbers.get(writeEpoch) + 1);
     }
 
     public Map<Integer, Long> getReadSequenceNumbers() {
@@ -1353,7 +1353,7 @@ public class TlsContext {
     }
 
     public long getReadSequenceNumber() {
-        return readSequenceNumbers.get(dtlsReadEpoch);
+        return readSequenceNumbers.get(readEpoch);
     }
 
     public void setReadSequenceNumber(int epoch, long readSequenceNumber) {
@@ -1361,7 +1361,7 @@ public class TlsContext {
     }
 
     public void setReadSequenceNumber(long readSequenceNumber) {
-        readSequenceNumbers.put(dtlsReadEpoch, readSequenceNumber);
+        readSequenceNumbers.put(readEpoch, readSequenceNumber);
     }
 
     public void increaseReadSequenceNumber(int epoch) {
@@ -1369,33 +1369,33 @@ public class TlsContext {
     }
 
     public void increaseReadSequenceNumber() {
-        readSequenceNumbers.put(dtlsReadEpoch, readSequenceNumbers.get(dtlsReadEpoch) + 1);
+        readSequenceNumbers.put(readEpoch, readSequenceNumbers.get(readEpoch) + 1);
     }
 
-    public void increaseDtlsReadEpoch() {
-        dtlsReadEpoch++;
-        setReadSequenceNumber(dtlsReadEpoch, 0);
+    public void increaseReadEpoch() {
+        readEpoch++;
+        setReadSequenceNumber(readEpoch, 0);
     }
 
-    public void increaseDtlsWriteEpoch() {
-        dtlsWriteEpoch++;
-        setWriteSequenceNumber(dtlsWriteEpoch, 0);
+    public void increaseWriteEpoch() {
+        writeEpoch++;
+        setWriteSequenceNumber(writeEpoch, 0);
     }
 
-    public int getDtlsWriteEpoch() {
-        return dtlsWriteEpoch;
+    public int getWriteEpoch() {
+        return writeEpoch;
     }
 
-    public void setDtlsWriteEpoch(int dtlsWriteEpoch) {
-        this.dtlsWriteEpoch = dtlsWriteEpoch;
+    public void setWriteEpoch(int writeEpoch) {
+        this.writeEpoch = writeEpoch;
     }
 
-    public int getDtlsReceiveEpoch() {
-        return dtlsReadEpoch;
+    public int getReadEpoch() {
+        return readEpoch;
     }
 
-    public void setDtlsReceiveEpoch(int sendEpoch) {
-        this.dtlsReadEpoch = sendEpoch;
+    public void setReadEpoch(int readEpoch) {
+        this.readEpoch = readEpoch;
     }
 
     public void addDtlsReceivedHandshakeMessageSequences(int sequence) {

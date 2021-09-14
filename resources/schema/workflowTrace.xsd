@@ -3081,8 +3081,8 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="dtlsReadEpoch" type="xs:int"/>
-      <xs:element name="dtlsWriteEpoch" type="xs:int"/>
+      <xs:element name="readEpoch" type="xs:int"/>
+      <xs:element name="writeEpoch" type="xs:int"/>
       <xs:element name="dtlsReadHandshakeMessageSequence" type="xs:int"/>
       <xs:element name="dtlsWriteHandshakeMessageSequence" type="xs:int"/>
       <xs:element name="dtlsReceivedHandshakeMessageSequences" type="xs:int" nillable="true" minOccurs="0" maxOccurs="unbounded"/>

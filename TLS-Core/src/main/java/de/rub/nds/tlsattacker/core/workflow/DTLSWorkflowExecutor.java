@@ -114,12 +114,12 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
         }
 
         if (config.isFinishWithCloseNotify()) {
-            int dtlsWriteEpoch = state.getTlsContext().getDtlsWriteEpoch();
+            int dtlsWriteEpoch = state.getTlsContext().getWriteEpoch();
             for (int epoch = dtlsWriteEpoch; epoch >= 0; epoch--) {
-                state.getTlsContext().setDtlsWriteEpoch(epoch);
+                state.getTlsContext().setWriteEpoch(epoch);
                 sendCloseNotify();
             }
-            state.getTlsContext().setDtlsWriteEpoch(dtlsWriteEpoch);
+            state.getTlsContext().setWriteEpoch(dtlsWriteEpoch);
         }
 
         setFinalSocketState();
