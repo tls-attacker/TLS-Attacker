@@ -104,16 +104,16 @@ public class RecordAEADCipher extends RecordCipher {
     }
 
     private byte[] prepareEncryptionExplicitNonce(Record record) {
-        byte[] explicitNonce = createExplicitNonce();
+        byte[] explicitNonce = createExplicitNonce(record.getSequenceNumber().getValue().longValue());
         record.getComputations().setExplicitNonce(explicitNonce);
         explicitNonce = record.getComputations().getExplicitNonce().getValue();
         return explicitNonce;
     }
 
-    private byte[] createExplicitNonce() {
+    private byte[] createExplicitNonce(long sequenceNumber) {
         byte[] explicitNonce;
         if (aeadExplicitLength > 0) {
-            explicitNonce = ArrayConverter.longToBytes(context.getWriteSequenceNumber(), aeadExplicitLength);
+            explicitNonce = ArrayConverter.longToBytes(sequenceNumber, aeadExplicitLength);
         } else {
             explicitNonce = new byte[aeadExplicitLength];
         }

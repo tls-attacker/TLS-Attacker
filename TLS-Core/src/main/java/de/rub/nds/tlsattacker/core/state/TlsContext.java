@@ -1316,6 +1316,10 @@ public class TlsContext {
         this.clientSupportedCompressions = new ArrayList(Arrays.asList(clientSupportedCompressions));
     }
 
+    public Map getWriteSequenceNumbers() {
+        return writeSequenceNumbers;
+    }
+
     public long getWriteSequenceNumber(int epoch) {
         return writeSequenceNumbers.get(epoch);
     }
@@ -1338,6 +1342,10 @@ public class TlsContext {
 
     public void increaseWriteSequenceNumber() {
         writeSequenceNumbers.put(dtlsWriteEpoch, writeSequenceNumbers.get(dtlsWriteEpoch) + 1);
+    }
+
+    public Map<Integer, Long> getReadSequenceNumbers() {
+        return readSequenceNumbers;
     }
 
     public long getReadSequenceNumber(int epoch) {

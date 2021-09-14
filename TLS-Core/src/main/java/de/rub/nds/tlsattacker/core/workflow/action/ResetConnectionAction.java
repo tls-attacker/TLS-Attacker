@@ -59,8 +59,8 @@ public class ResetConnectionAction extends ConnectionBoundAction {
         LOGGER.info("Resetting ActiveKeySets");
         tlsContext.setActiveClientKeySetType(Tls13KeySetType.NONE);
         tlsContext.setActiveServerKeySetType(Tls13KeySetType.NONE);
-        tlsContext.setReadSequenceNumber(0);
-        tlsContext.setWriteSequenceNumber(0);
+        tlsContext.getReadSequenceNumbers().clear();
+        tlsContext.getWriteSequenceNumbers().clear();
         LOGGER.info("Resetting DTLS numbers and cookie");
         tlsContext.setDtlsCookie(null);
         tlsContext.setDtlsReadHandshakeMessageSequence(0);

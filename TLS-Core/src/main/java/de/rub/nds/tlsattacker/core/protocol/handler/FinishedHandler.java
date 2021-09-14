@@ -152,10 +152,10 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
         tlsContext.getRecordLayer().setRecordCipher(recordCipherServer);
 
         if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
-            tlsContext.setReadSequenceNumber(0);
+            tlsContext.increaseDtlsReadEpoch();
             tlsContext.getRecordLayer().updateDecryptionCipher();
         } else {
-            tlsContext.setWriteSequenceNumber(0);
+            tlsContext.increaseDtlsWriteEpoch();
             tlsContext.getRecordLayer().updateEncryptionCipher();
         }
     }
@@ -169,10 +169,10 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
         tlsContext.getRecordLayer().setRecordCipher(recordCipherClient);
 
         if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {
-            tlsContext.setReadSequenceNumber(0);
+            tlsContext.increaseDtlsReadEpoch();
             tlsContext.getRecordLayer().updateDecryptionCipher();
         } else {
-            tlsContext.setWriteSequenceNumber(0);
+            tlsContext.increaseDtlsWriteEpoch();
             tlsContext.getRecordLayer().updateEncryptionCipher();
         }
     }

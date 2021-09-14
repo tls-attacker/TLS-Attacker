@@ -195,7 +195,6 @@ public class TlsRecordLayer extends RecordLayer {
                 ((Record) record).setSequenceNumber(BigInteger.valueOf(tlsContext.getReadSequenceNumber()));
                 byte[] protocolMessageBytes = record.getProtocolMessageBytes().getValue();
                 record.setCleanProtocolMessageBytes(protocolMessageBytes);
-                // tlsContext.increaseReadSequenceNumber();
             }
         } else {
             LOGGER.warn("Decrypting received non Record:" + record.toString());
