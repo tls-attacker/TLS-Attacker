@@ -81,15 +81,23 @@ public class RecordAEADCipher extends RecordCipher {
         byte[] gcmNonce = ArrayConverter.concatenate(aeadSalt, explicitNonce);
 
         // Nonce construction is different for chacha & tls1.3
-        if (cipherAlg == CipherAlgorithm.CHACHA20_POLY1305) {
-            if (version.isTLS13()) {
-                gcmNonce = preprocessIv(record.getSequenceNumber().getValue().longValue(), gcmNonce);
-            } else if (version.isDTLS()) {
+        if (version.isTLS13()) {
+            gcmNonce = preprocessIv(record.getSequenceNumber().getValue().longValue(), gcmNonce);
+        } else if (cipherAlg == CipherAlgorithm.CHACHA20_POLY1305) {
+            if (version.isDTLS()) {
                 gcmNonce = preprocessIvforDtls(record.getEpoch().getValue(),
                     record.getSequenceNumber().getValue().longValue(), gcmNonce);
+            } else {
+                gcmNonce = preprocessIv(record.getSequenceNumber().getValue().longValue(), gcmNonce);
             }
         } else if (cipherAlg == CipherAlgorithm.UNOFFICIAL_CHACHA20_POLY1305) {
-            gcmNonce = ArrayConverter.longToUint64Bytes(record.getSequenceNumber().getValue().longValue());
+            if (version.isDTLS()) {
+                gcmNonce = ArrayConverter.concatenate(
+                    ArrayConverter.intToBytes(record.getEpoch().getValue(), RecordByteLength.DTLS_EPOCH),
+                    ArrayConverter.longToUint48Bytes(record.getSequenceNumber().getValue().longValue()));
+            } else {
+                gcmNonce = ArrayConverter.longToUint64Bytes(record.getSequenceNumber().getValue().longValue());
+            }
         }
         record.getComputations().setGcmNonce(gcmNonce);
         gcmNonce = record.getComputations().getGcmNonce().getValue();
@@ -221,15 +229,23 @@ public class RecordAEADCipher extends RecordCipher {
         byte[] gcmNonce = ArrayConverter.concatenate(salt, explicitNonce);
 
         // Nonce construction is different for chacha & tls1.3
-        if (cipherAlg == CipherAlgorithm.CHACHA20_POLY1305) {
-            if (version.isTLS13()) {
-                gcmNonce = preprocessIv(record.getSequenceNumber().getValue().longValue(), gcmNonce);
-            } else if (version.isDTLS()) {
+        if (version.isTLS13()) {
+            gcmNonce = preprocessIv(record.getSequenceNumber().getValue().longValue(), gcmNonce);
+        } else if (cipherAlg == CipherAlgorithm.CHACHA20_POLY1305) {
+            if (version.isDTLS()) {
                 gcmNonce = preprocessIvforDtls(record.getEpoch().getValue(),
                     record.getSequenceNumber().getValue().longValue(), gcmNonce);
+            } else {
+                gcmNonce = preprocessIv(record.getSequenceNumber().getValue().longValue(), gcmNonce);
             }
         } else if (cipherAlg == CipherAlgorithm.UNOFFICIAL_CHACHA20_POLY1305) {
-            gcmNonce = ArrayConverter.longToUint64Bytes(record.getSequenceNumber().getValue().longValue());
+            if (version.isDTLS()) {
+                gcmNonce = ArrayConverter.concatenate(
+                    ArrayConverter.intToBytes(record.getEpoch().getValue(), RecordByteLength.DTLS_EPOCH),
+                    ArrayConverter.longToUint48Bytes(record.getSequenceNumber().getValue().longValue()));
+            } else {
+                gcmNonce = ArrayConverter.longToUint64Bytes(record.getSequenceNumber().getValue().longValue());
+            }
         }
         record.getComputations().setGcmNonce(gcmNonce);
         gcmNonce = record.getComputations().getGcmNonce().getValue();
