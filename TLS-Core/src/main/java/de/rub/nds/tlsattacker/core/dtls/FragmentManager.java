@@ -94,7 +94,8 @@ public class FragmentManager {
                 }
             }
             if (!fragmentCollector.isInterpreted()) {
-                if (!skipMessageSequences && key.getMessageSeq() != lastInterpretedMessageSeq + 1) {
+                if (!skipMessageSequences && key.getMessageSeq() != lastInterpretedMessageSeq + 1
+                    && !fragmentCollector.isRetransmission()) {
                     break;
                 }
                 if (onlyIfComplete && !fragmentCollector.isMessageComplete()) {
