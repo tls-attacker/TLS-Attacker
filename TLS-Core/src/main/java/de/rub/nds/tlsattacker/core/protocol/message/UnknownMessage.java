@@ -79,4 +79,9 @@ public class UnknownMessage extends TlsMessage {
         }
         return sb.toString();
     }
+
+    @Override
+    public String toShortString() {
+        return "UM";
+    }
 }

@@ -56,6 +56,11 @@ public class EmptyClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     }
 
     @Override
+    public String toShortString() {
+        return "E_CKE";
+    }
+
+    @Override
     public void prepareComputations() {
         if (getComputations() == null) {
             computations = new EmptyClientComputations();

@@ -93,4 +93,9 @@ public class PskRsaClientKeyExchangeMessage extends RSAClientKeyExchangeMessage 
     public String toCompactString() {
         return "PSK_RSA_CLIENT_KEY_EXCHANGE";
     }
+
+    @Override
+    public String toShortString() {
+        return "PSK_RSA_CKE";
+    }
 }

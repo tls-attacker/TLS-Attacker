@@ -144,6 +144,11 @@ public class AlertMessage extends TlsMessage {
     }
 
     @Override
+    public String toShortString() {
+        return "ALERT";
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof AlertMessage)) {
             return false;

@@ -43,6 +43,11 @@ public class SSL2ServerVerifyMessage extends SSL2HandshakeMessage {
     }
 
     @Override
+    public String toShortString() {
+        return "SSL2_SV";
+    }
+
+    @Override
     public SSL2ServerVerifyHandler getHandler(TlsContext context) {
         return new SSL2ServerVerifyHandler(context);
     }

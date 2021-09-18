@@ -229,6 +229,11 @@ public class CertificateRequestMessage extends HandshakeMessage {
     }
 
     @Override
+    public String toShortString() {
+        return "CERT_REQ";
+    }
+
+    @Override
     public CertificateRequestHandler getHandler(TlsContext context) {
         return new CertificateRequestHandler(context);
     }

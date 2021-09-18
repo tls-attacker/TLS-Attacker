@@ -73,4 +73,9 @@ public class UnknownHandshakeMessage extends HandshakeMessage {
         return sb.toString();
     }
 
+    @Override
+    public String toShortString() {
+        return "UHM";
+    }
+
 }

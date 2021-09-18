@@ -96,4 +96,9 @@ public class HelloRetryRequestMessage extends HandshakeMessage {
     public HelloRetryRequestHandler getHandler(TlsContext context) {
         return new HelloRetryRequestHandler(context);
     }
+
+    @Override
+    public String toShortString() {
+        return "HELLO_RET";
+    }
 }

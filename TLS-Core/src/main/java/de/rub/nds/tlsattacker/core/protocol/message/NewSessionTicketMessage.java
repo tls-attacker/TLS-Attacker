@@ -138,4 +138,9 @@ public class NewSessionTicketMessage extends HandshakeMessage {
     public NewSessionTicketHandler getHandler(TlsContext context) {
         return new NewSessionTicketHandler(context);
     }
+
+    @Override
+    public String toShortString() {
+        return "SESS_TICK";
+    }
 }

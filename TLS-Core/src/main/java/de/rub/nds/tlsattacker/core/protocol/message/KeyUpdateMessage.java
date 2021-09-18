@@ -59,4 +59,9 @@ public class KeyUpdateMessage extends HandshakeMessage {
         return this.requestMode;
     }
 
+    @Override
+    public String toShortString() {
+        return "KEY_UP";
+    }
+
 }

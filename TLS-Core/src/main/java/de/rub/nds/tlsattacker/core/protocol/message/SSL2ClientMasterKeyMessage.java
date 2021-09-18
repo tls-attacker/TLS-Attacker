@@ -187,6 +187,11 @@ public class SSL2ClientMasterKeyMessage extends SSL2HandshakeMessage {
     }
 
     @Override
+    public String toShortString() {
+        return "SSL2_CMKM";
+    }
+
+    @Override
     public List<ModifiableVariableHolder> getAllModifiableVariableHolders() {
         List<ModifiableVariableHolder> allModifiableVariableHolders = super.getAllModifiableVariableHolders();
         if (computations != null) {

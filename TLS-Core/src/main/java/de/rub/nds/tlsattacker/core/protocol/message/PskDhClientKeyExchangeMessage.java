@@ -89,4 +89,9 @@ public class PskDhClientKeyExchangeMessage extends DHClientKeyExchangeMessage {
     public String toCompactString() {
         return "PSK_DH_CLIENT_KEY_EXCHANGE";
     }
+
+    @Override
+    public String toShortString() {
+        return "PSK_DH_CKE";
+    }
 }

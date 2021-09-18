@@ -313,4 +313,9 @@ public class ServerHelloMessage extends HelloMessage {
         }
         return false;
     }
+
+    @Override
+    public String toShortString() {
+        return "SH";
+    }
 }

@@ -48,4 +48,9 @@ public abstract class TlsMessage extends ProtocolMessage {
     public boolean addToTypes(List<ProtocolMessageType> protocolMessageTypes) {
         return protocolMessageTypes.add(getProtocolMessageType());
     }
+
+    @Override
+    public String toShortString() {
+        return "TLS_M";
+    }
 }

@@ -216,4 +216,9 @@ public class PWDServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     public String toCompactString() {
         return "PWD_SERVER_KEY_EXCHANGE";
     }
+
+    @Override
+    public String toShortString() {
+        return "PWD_SKE";
+    }
 }

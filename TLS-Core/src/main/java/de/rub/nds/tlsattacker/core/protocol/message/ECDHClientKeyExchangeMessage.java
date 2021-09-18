@@ -55,6 +55,11 @@ public class ECDHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     }
 
     @Override
+    public String toShortString() {
+        return "ECDH_CKE";
+    }
+
+    @Override
     public void prepareComputations() {
         if (computations == null) {
             computations = new ECDHClientComputations();

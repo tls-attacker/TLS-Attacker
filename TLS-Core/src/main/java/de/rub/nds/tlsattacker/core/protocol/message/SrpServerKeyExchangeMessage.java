@@ -189,6 +189,11 @@ public class SrpServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     }
 
     @Override
+    public String toShortString() {
+        return "SRP_SKE";
+    }
+
+    @Override
     public SrpServerKeyExchangeHandler getHandler(TlsContext context) {
         return new SrpServerKeyExchangeHandler(context);
     }

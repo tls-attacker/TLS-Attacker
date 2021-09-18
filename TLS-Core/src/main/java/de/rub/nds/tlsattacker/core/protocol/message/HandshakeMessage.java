@@ -328,4 +328,9 @@ public abstract class HandshakeMessage extends TlsMessage {
         }
         return holders;
     }
+
+    @Override
+    public String toShortString() {
+        return "HANDSHAKE";
+    }
 }

@@ -40,4 +40,9 @@ public class HelloRequestMessage extends HandshakeMessage {
 
         return sb.toString();
     }
+
+    @Override
+    public String toShortString() {
+        return "HELLO_REQ";
+    }
 }

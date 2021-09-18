@@ -180,6 +180,11 @@ public class SSL2ClientHelloMessage extends SSL2HandshakeMessage {
     }
 
     @Override
+    public String toShortString() {
+        return "SSL2_CH";
+    }
+
+    @Override
     public SSL2ClientHelloHandler getHandler(TlsContext context) {
         return new SSL2ClientHelloHandler(context);
     }
