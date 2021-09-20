@@ -9,20 +9,12 @@
 
 package de.rub.nds.tlsattacker.core.workflow;
 
-import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.workflow.task.StateExecutionServerTask;
-import de.rub.nds.tlsattacker.core.workflow.task.StateExecutionTask;
-import de.rub.nds.tlsattacker.core.workflow.task.TlsTask;
-
-import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.ThreadFactory;
@@ -34,7 +26,6 @@ import org.apache.logging.log4j.Logger;
 
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.task.ITask;
-import de.rub.nds.tlsattacker.core.workflow.task.StateExecutionServerTask;
 import de.rub.nds.tlsattacker.core.workflow.task.StateExecutionTask;
 import de.rub.nds.tlsattacker.core.workflow.task.TlsTask;
 
@@ -53,6 +44,14 @@ public class ParallelExecutor {
     private boolean shouldShutdown = false;
 
     private final int reexecutions;
+
+    private Callable<Integer> defaultBeforeTransportPreInitCallback = null;
+
+    private Callable<Integer> defaultBeforeTransportInitCallback = null;
+
+    private Callable<Integer> defaultAfterTransportInitCallback = null;
+
+    private Callable<Integer> defaultAfterExecutionCallback = null;
 
     public ParallelExecutor(int size, int reexecutions, ThreadPoolExecutor executorService) {
         this.executorService = executorService;
@@ -82,21 +81,29 @@ public class ParallelExecutor {
         if (executorService.isShutdown()) {
             throw new RuntimeException("Cannot add Tasks to already shutdown executor");
         }
+        if (defaultBeforeTransportPreInitCallback != null && task.getBeforeTransportPreInitCallback() == null) {
+            task.setBeforeTransportPreInitCallback(defaultBeforeTransportPreInitCallback);
+        }
+        if (defaultBeforeTransportInitCallback != null && task.getBeforeTransportInitCallback() == null) {
+            task.setBeforeTransportInitCallback(defaultBeforeTransportInitCallback);
+        }
+        if (defaultAfterTransportInitCallback != null && task.getAfterTransportInitCallback() == null) {
+            task.setAfterTransportInitCallback(defaultAfterTransportInitCallback);
+        }
+        if (defaultAfterExecutionCallback != null && task.getAfterExecutionCallback() == null) {
+            task.setAfterExecutionCallback(defaultAfterExecutionCallback);
+        }
         return executorService.submit(task);
     }
 
-    private Future<ITask> addClientStateTask(State state) {
+    private Future<ITask> addStateTask(State state) {
         return addTask(new StateExecutionTask(state, reexecutions));
     }
 
-    private Future<ITask> addServerStateTask(State state, ServerSocket socket) {
-        return addTask(new StateExecutionServerTask(state, socket, reexecutions));
-    }
-
-    public void bulkExecuteClientStateTasks(List<State> stateList) {
+    public void bulkExecuteStateTasks(List<State> stateList) {
         List<Future> futureList = new LinkedList<>();
         for (State state : stateList) {
-            futureList.add(addClientStateTask(state));
+            futureList.add(addStateTask(state));
         }
         for (Future future : futureList) {
             try {
@@ -107,8 +114,8 @@ public class ParallelExecutor {
         }
     }
 
-    public void bulkExecuteClientStateTasks(State... states) {
-        this.bulkExecuteClientStateTasks(new ArrayList<>(Arrays.asList(states)));
+    public void bulkExecuteStateTasks(State... states) {
+        this.bulkExecuteStateTasks(new ArrayList<>(Arrays.asList(states)));
     }
 
     public List<ITask> bulkExecuteTasks(List<TlsTask> taskList) {
@@ -145,7 +152,7 @@ public class ParallelExecutor {
      * exceeds the timeout, the function assiged to {@link ParallelExecutor#timeoutAction } is executed. The
      * {@link ParallelExecutor#timeoutAction } function can, for example, try to restart the client/server, so that the
      * remaining {@link TlsTask}s can be finished.
-     * 
+     *
      * @param timeout
      *                The timeout in milliseconds
      *
@@ -195,4 +202,37 @@ public class ParallelExecutor {
     public void setTimeoutAction(Callable<Integer> timeoutAction) {
         this.timeoutAction = timeoutAction;
     }
+
+    public Callable<Integer> getDefaultBeforeTransportPreInitCallback() {
+        return defaultBeforeTransportPreInitCallback;
+    }
+
+    public void setDefaultBeforeTransportPreInitCallback(Callable<Integer> defaultBeforeTransportPreInitCallback) {
+        this.defaultBeforeTransportPreInitCallback = defaultBeforeTransportPreInitCallback;
+    }
+
+    public Callable<Integer> getDefaultBeforeTransportInitCallback() {
+        return defaultBeforeTransportInitCallback;
+    }
+
+    public void setDefaultBeforeTransportInitCallback(Callable<Integer> defaultBeforeTransportInitCallback) {
+        this.defaultBeforeTransportInitCallback = defaultBeforeTransportInitCallback;
+    }
+
+    public Callable<Integer> getDefaultAfterTransportInitCallback() {
+        return defaultAfterTransportInitCallback;
+    }
+
+    public void setDefaultAfterTransportInitCallback(Callable<Integer> defaultAfterTransportInitCallback) {
+        this.defaultAfterTransportInitCallback = defaultAfterTransportInitCallback;
+    }
+
+    public Callable<Integer> getDefaultAfterExecutionCallback() {
+        return defaultAfterExecutionCallback;
+    }
+
+    public void setDefaultAfterExecutionCallback(Callable<Integer> defaultAfterExecutionCallback) {
+        this.defaultAfterExecutionCallback = defaultAfterExecutionCallback;
+    }
+
 }

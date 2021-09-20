@@ -32,12 +32,10 @@ public class ServerUdpTransportHandler extends UdpTransportHandler {
 
     @Override
     public void initialize() throws IOException {
-        socket = new DatagramSocket(port);
-        setStreams(new PushbackInputStream(new UdpInputStream(socket, true)), new UdpOutputStream(socket));
-        srcPort = socket.getLocalPort();
-        dstPort = socket.getPort();
-        cachedSocketState = null;
         // this could be made an option
+        if (socket == null) {
+            throw new IOException("TransportHandler not preInitalized");
+        }
         waitOnReceive();
     }
 
@@ -56,5 +54,14 @@ public class ServerUdpTransportHandler extends UdpTransportHandler {
 
     public int getPort() {
         return port;
+    }
+
+    @Override
+    public void preInitialize() throws IOException {
+        socket = new DatagramSocket(port);
+        setStreams(new PushbackInputStream(new UdpInputStream(socket, true)), new UdpOutputStream(socket));
+        srcPort = socket.getLocalPort();
+        dstPort = socket.getPort();
+        cachedSocketState = null;
     }
 }

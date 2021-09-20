@@ -1984,43 +1984,6 @@ public class TlsContext {
         this.httpsCookieValue = httpsCookieValue;
     }
 
-    /**
-     * Initialize the context's transport handler. Start listening or connect to a server, depending on our connection
-     * end type.
-     */
-    public void initTransportHandler() {
-
-        if (transportHandler == null) {
-            if (connection == null) {
-                throw new ConfigurationException("Connection end not set");
-            }
-            transportHandler = TransportHandlerFactory.createTransportHandler(connection);
-            if (transportHandler instanceof ClientTcpTransportHandler) {
-                ((ClientTcpTransportHandler) transportHandler)
-                    .setRetryFailedSocketInitialization(config.isRetryFailedClientTcpSocketInitialization());
-            }
-        }
-
-        try {
-            transportHandler.initialize();
-        } catch (NullPointerException | NumberFormatException ex) {
-            throw new ConfigurationException("Invalid values in " + connection.toString(), ex);
-        } catch (IOException ex) {
-            throw new TransportHandlerConnectException(
-                "Unable to initialize the transport handler with: " + connection.toString(), ex);
-        }
-    }
-
-    /**
-     * Initialize the context's record layer.
-     */
-    public void initRecordLayer() {
-        if (recordLayerType == null) {
-            throw new ConfigurationException("No record layer type defined");
-        }
-        recordLayer = RecordLayerFactory.getRecordLayer(recordLayerType, this);
-    }
-
     @Override
     public String toString() {
         StringBuilder info = new StringBuilder();

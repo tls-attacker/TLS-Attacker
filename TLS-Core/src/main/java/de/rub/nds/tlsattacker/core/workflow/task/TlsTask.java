@@ -28,6 +28,14 @@ public abstract class TlsTask implements ITask, Callable<ITask> {
 
     private final long additionalTcpTimeout;
 
+    private Callable<Integer> beforeTransportPreInitCallback = null;
+
+    private Callable<Integer> beforeTransportInitCallback = null;
+
+    private Callable<Integer> afterTransportInitCallback = null;
+
+    private Callable<Integer> afterExecutionCallback = null;
+
     public TlsTask(int reexecutions) {
         this.reexecutions = reexecutions;
         additionalSleepTime = 1000;
@@ -104,5 +112,37 @@ public abstract class TlsTask implements ITask, Callable<ITask> {
 
     public int getReexecutions() {
         return reexecutions;
+    }
+
+    public Callable<Integer> getBeforeTransportPreInitCallback() {
+        return beforeTransportPreInitCallback;
+    }
+
+    public void setBeforeTransportPreInitCallback(Callable<Integer> beforeTransportPreInitCallback) {
+        this.beforeTransportPreInitCallback = beforeTransportPreInitCallback;
+    }
+
+    public Callable<Integer> getBeforeTransportInitCallback() {
+        return beforeTransportInitCallback;
+    }
+
+    public void setBeforeTransportInitCallback(Callable<Integer> beforeTransportInitCallback) {
+        this.beforeTransportInitCallback = beforeTransportInitCallback;
+    }
+
+    public Callable<Integer> getAfterTransportInitCallback() {
+        return afterTransportInitCallback;
+    }
+
+    public void setAfterTransportInitCallback(Callable<Integer> afterTransportInitCallback) {
+        this.afterTransportInitCallback = afterTransportInitCallback;
+    }
+
+    public Callable<Integer> getAfterExecutionCallback() {
+        return afterExecutionCallback;
+    }
+
+    public void setAfterExecutionCallback(Callable<Integer> afterExecutionCallback) {
+        this.afterExecutionCallback = afterExecutionCallback;
     }
 }

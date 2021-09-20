@@ -45,20 +45,22 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
         List<TlsContext> allTlsContexts = state.getAllTlsContexts();
 
         if (config.isWorkflowExecutorShouldOpen()) {
-            for (TlsContext ctx : allTlsContexts) {
-                AliasedConnection con = ctx.getConnection();
+            for (TlsContext context : allTlsContexts) {
+                AliasedConnection con = context.getConnection();
                 if (con.getLocalConnectionEndType() == ConnectionEndType.SERVER) {
                     LOGGER.info("Waiting for incoming connection on " + con.getHostname() + ":" + con.getPort());
                 } else {
                     LOGGER.info("Connecting to " + con.getHostname() + ":" + con.getPort());
                 }
-                ctx.initTransportHandler();
-                LOGGER.debug("Connection for " + ctx + " initialized");
+
+                initTransportHandler(context);
+
+                LOGGER.debug("Connection for " + context + " initialized");
             }
         }
 
-        for (TlsContext ctx : state.getAllTlsContexts()) {
-            ctx.initRecordLayer();
+        for (TlsContext context : state.getAllTlsContexts()) {
+            initRecordLayer(context);
         }
         state.getWorkflowTrace().reset();
         state.setStartTimestamp(System.currentTimeMillis());
@@ -97,13 +99,19 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
                 state.setExecutionException(e);
                 throw e;
             } finally {
-                state.setEndTimestamp(System.currentTimeMillis());
+            }
+
+            try {
+                getAfterExecutionCallback().call();
+            } catch (Exception ex) {
+                LOGGER.trace("Error during AfterExecutionCallback", ex);
             }
 
             if (config.isStopTraceAfterUnexpected() && !action.executedAsPlanned()) {
                 LOGGER.debug("Skipping all Actions, action did not execute as planned.");
                 break;
             }
+
         }
 
         for (TlsContext ctx : allTlsContexts) {
@@ -174,4 +182,5 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
         }
         return false;
     }
+
 }

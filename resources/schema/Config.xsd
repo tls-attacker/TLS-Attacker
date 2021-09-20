@@ -1396,7 +1396,6 @@
       <xs:enumeration value="TCP"/>
       <xs:enumeration value="EAP_TLS"/>
       <xs:enumeration value="UDP"/>
-      <xs:enumeration value="NON_BLOCKING_TCP"/>
       <xs:enumeration value="STREAM"/>
       <xs:enumeration value="TCP_TIMING"/>
       <xs:enumeration value="UDP_TIMING"/>

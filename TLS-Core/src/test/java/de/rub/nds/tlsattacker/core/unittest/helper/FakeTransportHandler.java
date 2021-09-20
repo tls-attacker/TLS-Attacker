@@ -75,4 +75,8 @@ public class FakeTransportHandler extends TransportHandler {
     public void setTimeout(long timeout) {
     }
 
+    @Override
+    public void preInitialize() throws IOException {
+    }
+
 }

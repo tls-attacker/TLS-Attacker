@@ -20,6 +20,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class ServerTcpTransportHandler extends TcpTransportHandler {
+
     private static final Logger LOGGER = LogManager.getLogger();
 
     private ServerSocket serverSocket;
@@ -76,16 +77,25 @@ public class ServerTcpTransportHandler extends TcpTransportHandler {
     public void initialize() throws IOException {
         if (!externalServerSocket) {
             if (serverSocket == null || serverSocket.isClosed()) {
-                serverSocket = new ServerSocket(port);
+                throw new IOException("TransportHandler not preinitialized");
             }
             socket = serverSocket.accept();
             socket.setSoTimeout(1);
         }
-        srcPort = socket.getLocalPort();
         dstPort = socket.getPort();
         cachedSocketState = null;
         LOGGER.info("Connection established from ports {} -> {}", srcPort, dstPort);
         setStreams(new PushbackInputStream(socket.getInputStream()), socket.getOutputStream());
+    }
+
+    @Override
+    public void preInitialize() throws IOException {
+        if (!externalServerSocket) {
+            if (serverSocket == null || serverSocket.isClosed()) {
+                serverSocket = new ServerSocket(port);
+                srcPort = serverSocket.getLocalPort();
+            }
+        }
     }
 
     @Override

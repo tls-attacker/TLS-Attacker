@@ -26,6 +26,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.computations.RSAServerComput
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 public class RSAServerKeyExchangeMessage extends ServerKeyExchangeMessage {
+
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
     protected ModifiableByteArray modulus;
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
@@ -112,6 +113,14 @@ public class RSAServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     public void setModulus(byte[] modulus) {
         this.modulus = ModifiableVariableFactory.safelySetValue(this.modulus, modulus);
+    }
+
+    public void setModulus(ModifiableByteArray modulus) {
+        this.modulus = modulus;
+    }
+
+    public void setModulusLength(ModifiableInteger modulusLength) {
+        this.modulusLength = modulusLength;
     }
 
     public ModifiableInteger getModulusLength() {

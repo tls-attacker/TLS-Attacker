@@ -40,6 +40,11 @@ public class ClientUdpTransportHandler extends UdpTransportHandler {
     }
 
     @Override
+    public void preInitialize() throws IOException {
+        // Nothing to do here
+    }
+
+    @Override
     public void initialize() throws IOException {
         LOGGER.debug("Initializing ClientUdpTransportHandler host: {}, port: {}", hostname, port);
         socket = new DatagramSocket();

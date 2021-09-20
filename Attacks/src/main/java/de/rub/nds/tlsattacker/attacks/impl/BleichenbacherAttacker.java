@@ -221,7 +221,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
             stateList.add(state);
             stateVectorPairList.add(new StateVectorPair(state, pkcs1Vector));
         }
-        executor.bulkExecuteClientStateTasks(stateList);
+        executor.bulkExecuteStateTasks(stateList);
         for (StateVectorPair stateVectorPair : stateVectorPairList) {
             processFinishedStateVectorPair(stateVectorPair, bleichenbacherVectorMap);
         }
