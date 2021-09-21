@@ -41,6 +41,7 @@ import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.PskKeyExchangeMode;
+import de.rub.nds.tlsattacker.core.constants.RecordSizeLimit;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.constants.SSL2CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
@@ -302,11 +303,6 @@ public class Config implements Serializable {
     private Integer prefferedCertDssKeySize = 2048;
 
     /**
-     * MaxFragmentLength in MaxFragmentLengthExtension
-     */
-    private MaxFragmentLength maxFragmentLength = MaxFragmentLength.TWO_9;
-
-    /**
      * Determine if a KeyUpdate should be requested from peer
      */
     private KeyUpdateRequest defaultKeyUpdateRequestMode = KeyUpdateRequest.UPDATE_NOT_REQUESTED;
@@ -529,6 +525,11 @@ public class Config implements Serializable {
      * If we generate ClientHello with the MaxFragmentLength extension
      */
     private Boolean addMaxFragmentLengthExtension = false;
+
+    /**
+     * If we generate ClientHello with the RecordSizeLimit extension
+     */
+    private Boolean addRecordSizeLimitExtension = false;
 
     /**
      * If we generate ClientHello with the ServerNameIndication extension
@@ -883,11 +884,6 @@ public class Config implements Serializable {
     private Integer heartbeatPaddingLength = 256;
 
     /**
-     * How much data we should put into a record by default
-     */
-    private Integer defaultMaxRecordData = 16384;
-
-    /**
      * How much padding bytes should be send by default
      */
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
@@ -988,7 +984,15 @@ public class Config implements Serializable {
 
     private ProtocolVersion defaultHighestClientProtocolVersion = ProtocolVersion.TLS12;
 
+    /**
+     * Both methods of limiting record size as defined in RFC 3546 (MaximumFragmentLength extension) and RFC 8449
+     * (RecordSizeLimit extension)
+     */
     private MaxFragmentLength defaultMaxFragmentLength = MaxFragmentLength.TWO_12;
+
+    private Integer defaultMaxRecordData = RecordSizeLimit.DEFAULT_MAX_RECORD_DATA_SIZE;
+
+    private Integer inboundRecordSizeLimit = RecordSizeLimit.DEFAULT_MAX_RECORD_DATA_SIZE;
 
     private HeartbeatMode defaultHeartbeatMode = HeartbeatMode.PEER_ALLOWED_TO_SEND;
 
@@ -2184,6 +2188,14 @@ public class Config implements Serializable {
         this.defaultMaxFragmentLength = defaultMaxFragmentLength;
     }
 
+    public Integer getInboundRecordSizeLimit() {
+        return inboundRecordSizeLimit;
+    }
+
+    public void setInboundRecordSizeLimit(Integer inboundRecordSizeLimit) {
+        this.inboundRecordSizeLimit = inboundRecordSizeLimit;
+    }
+
     public SignatureAndHashAlgorithm getDefaultSelectedSignatureAndHashAlgorithm() {
         return defaultSelectedSignatureAndHashAlgorithm;
     }
@@ -2509,14 +2521,6 @@ public class Config implements Serializable {
         this.workflowInput = workflowInput;
     }
 
-    public MaxFragmentLength getMaxFragmentLength() {
-        return maxFragmentLength;
-    }
-
-    public void setMaxFragmentLength(MaxFragmentLength maxFragmentLengthConfig) {
-        this.maxFragmentLength = maxFragmentLengthConfig;
-    }
-
     public NamedGroup getDefaultSelectedNamedGroup() {
         return defaultSelectedNamedGroup;
     }
@@ -2626,6 +2630,14 @@ public class Config implements Serializable {
 
     public void setAddMaxFragmentLengthExtension(Boolean addMaxFragmentLengthExtension) {
         this.addMaxFragmentLengthExtension = addMaxFragmentLengthExtension;
+    }
+
+    public Boolean isAddRecordSizeLimitExtension() {
+        return addRecordSizeLimitExtension;
+    }
+
+    public void setAddRecordSizeLimitExtension(Boolean addRecordSizeLimitExtension) {
+        this.addRecordSizeLimitExtension = addRecordSizeLimitExtension;
     }
 
     public Boolean isAddServerNameIndicationExtension() {

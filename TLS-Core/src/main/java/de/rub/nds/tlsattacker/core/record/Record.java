@@ -70,6 +70,10 @@ public class Record extends AbstractRecord {
     public Record() {
     }
 
+    public Record(Integer maxRecordLengthConfig) {
+        super(maxRecordLengthConfig);
+    }
+
     public ModifiableInteger getLength() {
         return length;
     }

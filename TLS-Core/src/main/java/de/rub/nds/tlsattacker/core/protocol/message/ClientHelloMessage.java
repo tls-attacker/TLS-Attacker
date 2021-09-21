@@ -45,6 +45,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.PWDClearExtensionM
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PWDProtectExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PreSharedKeyExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.RecordSizeLimitExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RenegotiationInfoExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SRPExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerAuthzExtensionMessage;
@@ -116,6 +117,9 @@ public class ClientHelloMessage extends HelloMessage {
             }
             if (tlsConfig.isAddMaxFragmentLengthExtension()) {
                 addExtension(new MaxFragmentLengthExtensionMessage());
+            }
+            if (tlsConfig.isAddRecordSizeLimitExtension()) {
+                addExtension(new RecordSizeLimitExtensionMessage());
             }
             if (tlsConfig.isAddServerNameIndicationExtension()) {
                 ServerNameIndicationExtensionMessage extension = new ServerNameIndicationExtensionMessage();

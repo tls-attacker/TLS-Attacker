@@ -1156,4 +1156,40 @@ public class DefaultChooser extends Chooser {
             return config.getDefaultExtensionCookie();
         }
     }
+
+    @Override
+    public Integer getOutboundRecordSizeLimit() {
+        if (context.getOutboundRecordSizeLimit() != null) {
+            return context.getOutboundRecordSizeLimit();
+        } else {
+            return config.getDefaultMaxRecordData();
+        }
+    }
+
+    @Override
+    public Integer getInboundRecordSizeLimit() {
+        if (config.getInboundRecordSizeLimit() != null) {
+            return config.getInboundRecordSizeLimit();
+        } else {
+            return config.getDefaultMaxRecordData();
+        }
+    }
+
+    @Override
+    public Integer getOutboundMaxRecordDataSize() {
+        if (context != null) {
+            return context.getOutboundMaxRecordDataSize();
+        } else {
+            return config.getDefaultMaxRecordData();
+        }
+    }
+
+    @Override
+    public Integer getInboundMaxRecordDataSize() {
+        if (context != null) {
+            return context.getInboundMaxRecordDataSize();
+        } else {
+            return config.getDefaultMaxRecordData();
+        }
+    }
 }

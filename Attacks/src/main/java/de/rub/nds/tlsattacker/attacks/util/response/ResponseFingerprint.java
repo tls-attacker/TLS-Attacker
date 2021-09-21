@@ -91,6 +91,14 @@ public class ResponseFingerprint {
             + "], SocketState=" + socketState + ']';
     }
 
+    public String toShortString() {
+        StringBuilder messages = new StringBuilder();
+        for (ProtocolMessage someMessage : this.messageList) {
+            messages.append(someMessage.getClass().getSimpleName()).append(",");
+        }
+        return messages + " SocketState: " + socketState;
+    }
+
     public String toHumanReadable() {
         StringBuilder resultString = new StringBuilder();
         for (ProtocolMessage msg : messageList) {
@@ -183,79 +191,31 @@ public class ResponseFingerprint {
         return resultString.toString();
     }
 
+    /**
+     * Overrides the built-in hashCode() function. toString().hashCode() assures same hashes for responses with
+     * essentially the same content but differences in their record bytes.
+     * 
+     * @return The hash of the string representation
+     */
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 29 * hash + Objects.hashCode(this.messageList);
-        hash = 29 * hash + Objects.hashCode(this.recordList);
-        hash = 29 * hash + Objects.hashCode(this.socketState);
-        return hash;
+        return toString().hashCode();
     }
 
     /**
-     *
+     * Returns whether two ResponseFingerprints are equal using the {@link FingerPrintChecker}.
+     * 
      * @param  obj
-     * @return
+     *             ResponseFingerprint to compare this one to
+     * @return     True, if both ResponseFingerprints are equal
      */
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
+        if (!(obj instanceof ResponseFingerprint)) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final ResponseFingerprint other = (ResponseFingerprint) obj;
-        if (this.messageList.size() == other.messageList.size()) {
-            for (int i = 0; i < this.messageList.size(); i++) {
-                if (!this.messageList.get(i).toCompactString().equals(other.messageList.get(i).toCompactString())) {
-                    return false;
-                }
-            }
-        } else {
-            return false;
-        }
-        if (this.recordList != null && other.recordList != null) {
-            if (this.recordList.size() == other.recordList.size()) {
-                for (int i = 0; i < this.recordList.size(); i++) {
-                    if (!this.recordList.get(i).getClass().equals(other.recordList.get(i).getClass())) {
-                        return false;
-                    }
-                    // This also finds fragmentation issues
-                    if (this.recordList.get(i).getCompleteRecordBytes().getValue().length
-                        != other.recordList.get(i).getCompleteRecordBytes().getValue().length) {
-                        return false;
-                    }
-                    if (this.recordList.get(i) instanceof Record && other.recordList.get(i) instanceof Record) {
-                        // Comparing Records
-                        Record thisRecord = (Record) this.getRecordList().get(i);
-                        Record otherRecord = (Record) other.getRecordList().get(i);
-                        if (thisRecord.getContentMessageType().getValue()
-                            != otherRecord.getContentMessageType().getValue()) {
-                            return false;
-                        }
-
-                        if (!Arrays.equals(thisRecord.getProtocolVersion().getValue(),
-                            otherRecord.getProtocolVersion().getValue())) {
-                            return false;
-                        }
-
-                    } else {
-                        // Comparing BlobRecords
-                        if (!Arrays.equals(this.getRecordList().get(i).getCompleteRecordBytes().getValue(),
-                            other.getRecordList().get(i).getCompleteRecordBytes().getValue())) {
-                            return false;
-                        }
-                    }
-                }
-            } else {
-                return false;
-            }
-        }
-        return this.socketState == other.socketState;
+        EqualityError equalityError = FingerPrintChecker.checkEquality(this, (ResponseFingerprint) obj);
+        return equalityError == EqualityError.NONE || equalityError == EqualityError.RECORD_CONTENT;
     }
 
     /**

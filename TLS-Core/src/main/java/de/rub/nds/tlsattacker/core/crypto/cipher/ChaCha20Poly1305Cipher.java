@@ -120,9 +120,9 @@ public abstract class ChaCha20Poly1305Cipher extends BaseCipher {
 
     @Override
     public byte[] encrypt(byte[] iv, int tagLength, byte[] additionAuthenticatedData, byte[] someBytes) {
-        if (iv.length != 8) {
-            LOGGER.warn("IV for ChaCha20Poly1305 has wrong size. Expected 8 byte but found: " + iv.length
-                + ". Padding/Trimming to " + IV_LENGTH + " Byte.");
+        if (iv.length != IV_LENGTH) {
+            LOGGER.warn("IV for ChaCha20Poly1305 has wrong size. Expected " + IV_LENGTH + " byte but found: "
+                + iv.length + ". Padding/Trimming to " + IV_LENGTH + " Byte.");
             if (iv.length > IV_LENGTH) {
                 iv = Arrays.copyOfRange(iv, 0, IV_LENGTH);
             } else {

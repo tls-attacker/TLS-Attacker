@@ -39,6 +39,22 @@ public enum MaxFragmentLength {
         return MAP.get(value);
     }
 
+    public static Integer getIntegerRepresentation(MaxFragmentLength maxFragmentLength) {
+        switch (maxFragmentLength) {
+            case TWO_9:
+                return 512;
+            case TWO_10:
+                return 1024;
+            case TWO_11:
+                return 2048;
+            case TWO_12:
+                return 4096;
+            // this SHOULD be unreachable
+            default:
+                return null;
+        }
+    }
+
     public byte getValue() {
         return value;
     }

@@ -154,6 +154,7 @@ public class ReceiveMessageHelper {
 
             for (int recordIndex = 0; recordIndex < recordGroups.get(groupIndex).getRecords().size(); recordIndex++) {
                 currentGroup.decryptRecord(context, recordIndex);
+                currentGroup.checkRecordDataSize(context, recordIndex);
                 currentGroup.adjustContextForRecord(context, recordIndex);
 
                 if (currentGroup.areAllRecordsValid()) {

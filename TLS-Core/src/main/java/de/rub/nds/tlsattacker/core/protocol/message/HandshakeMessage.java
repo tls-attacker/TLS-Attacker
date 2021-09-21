@@ -48,6 +48,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.PWDProtectExtensio
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PasswordSaltExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PreSharedKeyExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.RecordSizeLimitExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RenegotiationInfoExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SRPExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerAuthzExtensionMessage;
@@ -106,6 +107,7 @@ public abstract class HandshakeMessage extends TlsMessage {
         @XmlElement(type = GreaseExtensionMessage.class, name = "GreaseExtension"),
         @XmlElement(type = HeartbeatExtensionMessage.class, name = "HeartbeatExtension"),
         @XmlElement(type = MaxFragmentLengthExtensionMessage.class, name = "MaxFragmentLengthExtension"),
+        @XmlElement(type = RecordSizeLimitExtensionMessage.class, name = "RecordSizeLimitExtension"),
         @XmlElement(type = PaddingExtensionMessage.class, name = "PaddingExtension"),
         @XmlElement(type = RenegotiationInfoExtensionMessage.class, name = "RenegotiationInfoExtension"),
         @XmlElement(type = ServerNameIndicationExtensionMessage.class, name = "ServerNameIndicationExtension"),

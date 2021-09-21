@@ -931,6 +931,7 @@
                   <xs:element name="GreaseExtension" type="greaseExtensionMessage"/>
                   <xs:element name="HeartbeatExtension" type="heartbeatExtensionMessage"/>
                   <xs:element name="MaxFragmentLengthExtension" type="maxFragmentLengthExtensionMessage"/>
+                  <xs:element name="RecordSizeLimitExtension" type="recordSizeLimitExtensionMessage"/>
                   <xs:element name="PaddingExtension" type="paddingExtensionMessage"/>
                   <xs:element name="RenegotiationInfoExtension" type="renegotiationInfoExtensionMessage"/>
                   <xs:element name="ServerNameIndicationExtension" type="serverNameIndicationExtensionMessage"/>
@@ -1234,6 +1235,16 @@
       <xs:extension base="extensionMessage">
         <xs:sequence>
           <xs:element name="maxFragmentLength" type="modifiableByteArray" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="recordSizeLimitExtensionMessage">
+    <xs:complexContent>
+      <xs:extension base="extensionMessage">
+        <xs:sequence>
+          <xs:element name="recordSizeLimit" type="modifiableByteArray" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -2971,7 +2982,6 @@
       <xs:element name="serverSupportedSignatureAndHashAlgorithms" type="signatureAndHashAlgorithm" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="clientSupportedSignatureAndHashAlgorithms" type="signatureAndHashAlgorithm" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="heartbeatMode" type="heartbeatMode" minOccurs="0"/>
-      <xs:element name="maxFragmentLength" type="maxFragmentLength" minOccurs="0"/>
       <xs:element name="selectedSigHashAlgorithm" type="signatureAndHashAlgorithm" minOccurs="0"/>
       <xs:element name="cachedInfoExtensionClientState" type="xs:boolean"/>
       <xs:element name="cachedInfoExtensionObjects" type="cachedObject" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
@@ -3108,6 +3118,8 @@
       <xs:element name="esniNotBefore" type="xs:long" minOccurs="0"/>
       <xs:element name="esniNotAfter" type="xs:long" minOccurs="0"/>
       <xs:element name="esniExtensions" type="extensionType" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="maxFragmentLength" type="maxFragmentLength" minOccurs="0"/>
+      <xs:element name="outboundRecordSizeLimit" type="xs:int" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -3147,6 +3159,12 @@
   </xs:complexType>
 
   <xs:complexType name="recordLayer" abstract="true">
+    <xs:sequence>
+      <xs:element name="recordCipher" type="recordCipher" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="recordCipher" abstract="true">
     <xs:sequence/>
   </xs:complexType>
 
@@ -4110,6 +4128,7 @@
       <xs:enumeration value="EXTENDED_MASTER_SECRET"/>
       <xs:enumeration value="TOKEN_BINDING"/>
       <xs:enumeration value="CACHED_INFO"/>
+      <xs:enumeration value="RECORD_SIZE_LIMIT"/>
       <xs:enumeration value="PWD_PROTECT"/>
       <xs:enumeration value="PWD_CLEAR"/>
       <xs:enumeration value="PASSWORD_SALT"/>
@@ -4734,15 +4753,6 @@
     </xs:restriction>
   </xs:simpleType>
 
-  <xs:simpleType name="maxFragmentLength">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="TWO_9"/>
-      <xs:enumeration value="TWO_10"/>
-      <xs:enumeration value="TWO_11"/>
-      <xs:enumeration value="TWO_12"/>
-    </xs:restriction>
-  </xs:simpleType>
-
   <xs:simpleType name="certificateType">
     <xs:restriction base="xs:string">
       <xs:enumeration value="X509"/>
@@ -4885,6 +4895,15 @@
       <xs:enumeration value="VERSION_FF01"/>
       <xs:enumeration value="VERSION_FF02"/>
       <xs:enumeration value="VERSION_FF03"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="maxFragmentLength">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="TWO_9"/>
+      <xs:enumeration value="TWO_10"/>
+      <xs:enumeration value="TWO_11"/>
+      <xs:enumeration value="TWO_12"/>
     </xs:restriction>
   </xs:simpleType>
 
