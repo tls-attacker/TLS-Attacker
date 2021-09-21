@@ -3034,7 +3034,7 @@
       <xs:element name="serverEcPrivateKey" type="xs:integer" minOccurs="0"/>
       <xs:element name="clientEcPrivateKey" type="xs:integer" minOccurs="0"/>
       <xs:element name="clientRsaModulus" type="xs:integer" minOccurs="0"/>
-      <xs:element name="serverRsaModulus" type="xs:integer" minOccurs="0"/>
+      <xs:element name="serverRSAModulus" type="xs:integer" minOccurs="0"/>
       <xs:element name="serverRSAPublicKey" type="xs:integer" minOccurs="0"/>
       <xs:element name="clientRSAPublicKey" type="xs:integer" minOccurs="0"/>
       <xs:element name="serverRSAPrivateKey" type="xs:integer" minOccurs="0"/>

@@ -426,7 +426,7 @@ public class TlsContext {
 
     private BigInteger clientRsaModulus;
 
-    private BigInteger serverRsaModulus;
+    private BigInteger serverRSAModulus;
 
     private BigInteger serverRSAPublicKey;
 
@@ -888,12 +888,12 @@ public class TlsContext {
         this.clientRsaModulus = clientRsaModulus;
     }
 
-    public BigInteger getServerRsaModulus() {
-        return serverRsaModulus;
+    public BigInteger getServerRSAModulus() {
+        return serverRSAModulus;
     }
 
-    public void setServerRsaModulus(BigInteger serverRsaModulus) {
-        this.serverRsaModulus = serverRsaModulus;
+    public void setServerRSAModulus(BigInteger serverRSAModulus) {
+        this.serverRSAModulus = serverRSAModulus;
     }
 
     public BigInteger getServerRSAPublicKey() {

@@ -157,7 +157,7 @@ class ExtraClearAttack {
         if (serverPublicKey == null) {
             throw new AttackFailedException("Could not get server public key");
         }
-        serverModulus = state.getTlsContext().getServerRsaModulus();
+        serverModulus = state.getTlsContext().getServerRSAModulus();
         if (serverModulus == null) {
             throw new AttackFailedException("Could not get server modulus");
         }

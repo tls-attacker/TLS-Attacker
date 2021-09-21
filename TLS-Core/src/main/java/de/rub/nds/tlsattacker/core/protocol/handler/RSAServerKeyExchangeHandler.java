@@ -46,7 +46,7 @@ public class RSAServerKeyExchangeHandler extends ServerKeyExchangeHandler<RSASer
 
     @Override
     public void adjustTLSContext(RSAServerKeyExchangeMessage message) {
-        tlsContext.setServerRsaModulus(new BigInteger(1, message.getModulus().getValue()));
+        tlsContext.setServerRSAModulus(new BigInteger(1, message.getModulus().getValue()));
         tlsContext.setServerRSAPublicKey(new BigInteger(1, message.getPublicKey().getValue()));
         if (message.getComputations() != null && message.getComputations().getPrivateKey() != null) {
             tlsContext.setServerRSAPrivateKey(message.getComputations().getPrivateKey().getValue());

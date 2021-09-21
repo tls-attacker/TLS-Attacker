@@ -29,7 +29,7 @@ public class ChangeRsaParametersAction extends ConnectionBoundAction {
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
-        state.getTlsContext().setServerRsaModulus(modulus);
+        state.getTlsContext().setServerRSAModulus(modulus);
         state.getTlsContext().setServerRSAPublicKey(publicExponent);
         state.getTlsContext().setServerRSAPrivateKey(privateExponent);
         setExecuted(true);

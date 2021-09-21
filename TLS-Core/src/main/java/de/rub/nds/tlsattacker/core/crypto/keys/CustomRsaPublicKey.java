@@ -52,7 +52,7 @@ public class CustomRsaPublicKey extends CustomPublicKey implements RSAPublicKey 
                     break;
                 case SERVER:
                     context.setServerRSAPublicKey(publicExponent);
-                    context.setServerRsaModulus(modulus);
+                    context.setServerRSAModulus(modulus);
                     break;
                 default:
                     throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");

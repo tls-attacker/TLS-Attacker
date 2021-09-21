@@ -60,7 +60,7 @@ public class SignatureCalculatorTest {
         KeyPair keyPair = keyPairGenerator.generateKeyPair();
         RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
         context.setServerRSAPrivateKey(privateKey.getPrivateExponent());
-        context.setServerRsaModulus(privateKey.getModulus());
+        context.setServerRSAModulus(privateKey.getModulus());
 
         byte[] signature = SignatureCalculator.generateSignature(algorithm, context.getChooser(), data);
         Signature instance = Signature.getInstance(algorithm.getJavaName());
@@ -78,7 +78,7 @@ public class SignatureCalculatorTest {
         KeyPair keyPair = keyPairGenerator.generateKeyPair();
         RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
         context.setServerRSAPrivateKey(privateKey.getPrivateExponent());
-        context.setServerRsaModulus(privateKey.getModulus());
+        context.setServerRSAModulus(privateKey.getModulus());
         context.setSelectedProtocolVersion(SSL3);
 
         byte[] signature = SignatureCalculator.generateSignature(algorithm, context.getChooser(), data);
