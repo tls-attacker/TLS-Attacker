@@ -82,6 +82,6 @@ public class UnknownMessage extends TlsMessage {
 
     @Override
     public String toShortString() {
-        return "UM";
+        return "?";
     }
 }
