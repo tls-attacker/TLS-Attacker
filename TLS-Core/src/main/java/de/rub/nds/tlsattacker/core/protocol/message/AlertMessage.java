@@ -145,7 +145,7 @@ public class AlertMessage extends TlsMessage {
 
     @Override
     public String toShortString() {
-        return "ALERT";
+        return AlertDescription.getAlertDescription(description.getValue()).toString();
     }
 
     @Override

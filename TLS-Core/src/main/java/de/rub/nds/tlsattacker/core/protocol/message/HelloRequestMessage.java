@@ -43,6 +43,6 @@ public class HelloRequestMessage extends HandshakeMessage {
 
     @Override
     public String toShortString() {
-        return "HELLO_REQ";
+        return "HR";
     }
 }

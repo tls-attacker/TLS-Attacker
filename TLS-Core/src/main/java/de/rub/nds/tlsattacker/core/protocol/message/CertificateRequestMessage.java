@@ -230,7 +230,7 @@ public class CertificateRequestMessage extends HandshakeMessage {
 
     @Override
     public String toShortString() {
-        return "CERT_REQ";
+        return "CR";
     }
 
     @Override

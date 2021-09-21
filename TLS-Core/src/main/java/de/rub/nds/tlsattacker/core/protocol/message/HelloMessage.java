@@ -115,10 +115,4 @@ public abstract class HelloMessage extends HandshakeMessage {
     public void setSessionId(byte[] sessionId) {
         this.sessionId = ModifiableVariableFactory.safelySetValue(this.sessionId, sessionId);
     }
-
-    @Override
-    public String toShortString() {
-        return "HELLO";
-    }
-
 }

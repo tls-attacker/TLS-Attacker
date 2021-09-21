@@ -135,7 +135,7 @@ public class HeartbeatMessage extends TlsMessage {
 
     @Override
     public String toShortString() {
-        return "HEARTBEAT";
+        return "HB";
     }
 
     @Override

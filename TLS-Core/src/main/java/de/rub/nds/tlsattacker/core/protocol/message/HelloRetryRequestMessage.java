@@ -99,6 +99,6 @@ public class HelloRetryRequestMessage extends HandshakeMessage {
 
     @Override
     public String toShortString() {
-        return "HELLO_RET";
+        return "HRR";
     }
 }

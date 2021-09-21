@@ -111,7 +111,7 @@ public class CertificateVerifyMessage extends HandshakeMessage {
 
     @Override
     public String toShortString() {
-        return "CERT_VER";
+        return "CV";
     }
 
     @Override

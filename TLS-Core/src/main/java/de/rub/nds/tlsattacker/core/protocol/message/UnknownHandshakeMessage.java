@@ -75,7 +75,7 @@ public class UnknownHandshakeMessage extends HandshakeMessage {
 
     @Override
     public String toShortString() {
-        return "UHM";
+        return "HS";
     }
 
 }

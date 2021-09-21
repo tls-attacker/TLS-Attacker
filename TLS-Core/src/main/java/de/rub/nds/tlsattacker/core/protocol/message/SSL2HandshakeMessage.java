@@ -61,10 +61,4 @@ public abstract class SSL2HandshakeMessage extends HandshakeMessage {
         }
         return sb.toString();
     }
-
-    @Override
-    public String toShortString() {
-        return "SSL2_HM";
-    }
-
 }

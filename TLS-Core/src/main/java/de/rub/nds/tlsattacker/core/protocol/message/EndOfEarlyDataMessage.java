@@ -36,7 +36,7 @@ public class EndOfEarlyDataMessage extends HandshakeMessage {
 
     @Override
     public String toShortString() {
-        return "EOD";
+        return "EOED";
     }
 
 }

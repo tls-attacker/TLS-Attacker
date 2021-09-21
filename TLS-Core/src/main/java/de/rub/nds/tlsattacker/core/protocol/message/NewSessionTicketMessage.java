@@ -141,6 +141,6 @@ public class NewSessionTicketMessage extends HandshakeMessage {
 
     @Override
     public String toShortString() {
-        return "SESS_TICK";
+        return "ST";
     }
 }

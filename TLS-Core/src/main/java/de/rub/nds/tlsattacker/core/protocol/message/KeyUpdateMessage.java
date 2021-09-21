@@ -61,7 +61,7 @@ public class KeyUpdateMessage extends HandshakeMessage {
 
     @Override
     public String toShortString() {
-        return "KEY_UP";
+        return "KU";
     }
 
 }
