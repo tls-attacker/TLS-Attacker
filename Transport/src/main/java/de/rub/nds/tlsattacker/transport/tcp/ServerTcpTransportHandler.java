@@ -69,7 +69,7 @@ public class ServerTcpTransportHandler extends TcpTransportHandler {
         if (serverSocket != null) {
             serverSocket.close();
         } else if (!externalServerSocket) {
-            throw new IOException("TransportHandler not initialised");
+            throw new IOException("TransportHandler not initialized");
         }
     }
 

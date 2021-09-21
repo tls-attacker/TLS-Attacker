@@ -16,7 +16,6 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAServerKeyExchangeMessage;
 
@@ -25,17 +24,9 @@ public class RSAServerKeyExchangeParser<T extends RSAServerKeyExchangeMessage> e
 
     private final ProtocolVersion version;
 
-    private final KeyExchangeAlgorithm keyExchangeAlgorithm;
-
-    public RSAServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version,
-        KeyExchangeAlgorithm keyExchangeAlgorithm, Config config) {
+    public RSAServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
         super(pointer, array, HandshakeMessageType.SERVER_KEY_EXCHANGE, version, config);
         this.version = version;
-        this.keyExchangeAlgorithm = keyExchangeAlgorithm;
-    }
-
-    public RSAServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
-        this(pointer, array, version, null, config);
     }
 
     @Override
@@ -50,15 +41,11 @@ public class RSAServerKeyExchangeParser<T extends RSAServerKeyExchangeMessage> e
         parseModulus(msg);
         parsePublicExponentLength(msg);
         parsePublicExponent(msg);
-        // TODO: this.keyExchangeAlgorithm can currently be null, only for test
-        // code that needs to be reworked.
-        if (this.keyExchangeAlgorithm == null || !this.keyExchangeAlgorithm.isAnon()) {
-            if (isTLS12() || isDTLS12()) {
-                parseSignatureAndHashAlgorithm(msg);
-            }
-            parseSignatureLength(msg);
-            parseSignature(msg);
+        if (isTLS12() || isDTLS12()) {
+            parseSignatureAndHashAlgorithm(msg);
         }
+        parseSignatureLength(msg);
+        parseSignature(msg);
     }
 
     private void parseModulusLength(RSAServerKeyExchangeMessage msg) {

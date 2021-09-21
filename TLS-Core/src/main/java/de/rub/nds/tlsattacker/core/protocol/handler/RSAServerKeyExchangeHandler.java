@@ -30,7 +30,6 @@ public class RSAServerKeyExchangeHandler extends ServerKeyExchangeHandler<RSASer
     @Override
     public HandshakeMessageParser<RSAServerKeyExchangeMessage> getParser(byte[] message, int pointer) {
         return new RSAServerKeyExchangeParser<>(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
-            AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite()),
             tlsContext.getConfig());
     }
 

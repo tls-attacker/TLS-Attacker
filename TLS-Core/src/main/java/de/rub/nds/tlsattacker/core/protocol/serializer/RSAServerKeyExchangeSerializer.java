@@ -60,7 +60,7 @@ public class RSAServerKeyExchangeSerializer<T extends RSAServerKeyExchangeMessag
     }
 
     /**
-     * Writes the SignatureAndHashalgorithm of the DHEServerKeyExchangeMessage into the final byte[]
+     * Writes the SignatureAndHashalgorithm of the RSAServerKeyExchangeMessage into the final byte[]
      */
     private void writeSignatureAndHashAlgorithm(T msg) {
         appendBytes(msg.getSignatureAndHashAlgorithm().getValue());
@@ -77,7 +77,7 @@ public class RSAServerKeyExchangeSerializer<T extends RSAServerKeyExchangeMessag
     }
 
     /**
-     * Writes the SignatureLength of the DHEServerKeyExchangeMessage into the final byte[]
+     * Writes the SignatureLength of the RSAServerKeyExchangeMessage into the final byte[]
      */
     private void writeSignatureLength(T msg) {
         appendInt(msg.getSignatureLength().getValue(), HandshakeByteLength.SIGNATURE_LENGTH);
@@ -85,7 +85,7 @@ public class RSAServerKeyExchangeSerializer<T extends RSAServerKeyExchangeMessag
     }
 
     /**
-     * Writes the Signature of the DHEServerKeyExchangeMessage into the final byte[]
+     * Writes the Signature of the RSAServerKeyExchangeMessage into the final byte[]
      */
     private void writeSignature(T msg) {
         appendBytes(msg.getSignature().getValue());
