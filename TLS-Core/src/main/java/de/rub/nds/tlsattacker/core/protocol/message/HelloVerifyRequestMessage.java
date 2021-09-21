@@ -110,7 +110,7 @@ public class HelloVerifyRequestMessage extends HandshakeMessage {
 
     @Override
     public String toShortString() {
-        return "HELLO_VER";
+        return "HVR";
     }
 
 }
