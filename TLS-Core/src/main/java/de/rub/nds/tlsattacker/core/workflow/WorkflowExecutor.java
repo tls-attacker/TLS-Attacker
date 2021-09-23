@@ -21,7 +21,7 @@ import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType
 import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;
 import de.rub.nds.tlsattacker.transport.tcp.ClientTcpTransportHandler;
 import java.io.IOException;
-import java.util.concurrent.Callable;
+import java.util.function.Function;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -29,22 +29,22 @@ public abstract class WorkflowExecutor {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private Callable<Integer> beforeTransportPreInitCallback = () -> {
+    private Function<State, Integer> beforeTransportPreInitCallback = (State state) -> {
         LOGGER.trace("BeforePreInitCallback");
         return 0;
     };
 
-    private Callable<Integer> beforeTransportInitCallback = () -> {
+    private Function<State, Integer> beforeTransportInitCallback = (State state) -> {
         LOGGER.trace("BeforeInitCallback");
         return 0;
     };
 
-    private Callable<Integer> afterTransportInitCallback = () -> {
+    private Function<State, Integer> afterTransportInitCallback = (State state) -> {
         LOGGER.trace("AfterTransportInitCallback");
         return 0;
     };
 
-    private Callable<Integer> afterExecutionCallback = () -> {
+    private Function<State, Integer> afterExecutionCallback = (State state) -> {
         LOGGER.trace("AfterExecutionCallback");
         return 0;
     };
@@ -99,11 +99,11 @@ public abstract class WorkflowExecutor {
         }
 
         try {
-            getBeforeTransportPreInitCallback().call();
+            getBeforeTransportPreInitCallback().apply(state);
             context.getTransportHandler().preInitialize();
-            getBeforeTransportInitCallback().call();
+            getBeforeTransportInitCallback().apply(state);
             context.getTransportHandler().initialize();
-            getAfterTransportInitCallback().call();
+            getAfterTransportInitCallback().apply(state);
         } catch (NullPointerException | NumberFormatException ex) {
             throw new ConfigurationException("Invalid values in " + context.getConnection().toString(), ex);
         } catch (IOException ex) {
@@ -127,35 +127,35 @@ public abstract class WorkflowExecutor {
         context.setRecordLayer(RecordLayerFactory.getRecordLayer(context.getRecordLayerType(), context));
     }
 
-    public Callable<Integer> getBeforeTransportPreInitCallback() {
+    public Function<State, Integer> getBeforeTransportPreInitCallback() {
         return beforeTransportPreInitCallback;
     }
 
-    public void setBeforeTransportPreInitCallback(Callable<Integer> beforeTransportPreInitCallback) {
+    public void setBeforeTransportPreInitCallback(Function<State, Integer> beforeTransportPreInitCallback) {
         this.beforeTransportPreInitCallback = beforeTransportPreInitCallback;
     }
 
-    public Callable<Integer> getBeforeTransportInitCallback() {
+    public Function<State, Integer> getBeforeTransportInitCallback() {
         return beforeTransportInitCallback;
     }
 
-    public void setBeforeTransportInitCallback(Callable<Integer> beforeTransportInitCallback) {
+    public void setBeforeTransportInitCallback(Function<State, Integer> beforeTransportInitCallback) {
         this.beforeTransportInitCallback = beforeTransportInitCallback;
     }
 
-    public Callable<Integer> getAfterTransportInitCallback() {
+    public Function<State, Integer> getAfterTransportInitCallback() {
         return afterTransportInitCallback;
     }
 
-    public void setAfterTransportInitCallback(Callable<Integer> afterTransportInitCallback) {
+    public void setAfterTransportInitCallback(Function<State, Integer> afterTransportInitCallback) {
         this.afterTransportInitCallback = afterTransportInitCallback;
     }
 
-    public Callable<Integer> getAfterExecutionCallback() {
+    public Function<State, Integer> getAfterExecutionCallback() {
         return afterExecutionCallback;
     }
 
-    public void setAfterExecutionCallback(Callable<Integer> afterExecutionCallback) {
+    public void setAfterExecutionCallback(Function<State, Integer> afterExecutionCallback) {
         this.afterExecutionCallback = afterExecutionCallback;
     }
 }
