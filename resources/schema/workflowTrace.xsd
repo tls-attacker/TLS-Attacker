@@ -3,6 +3,8 @@
 
   <xs:element name="accessModificationFilter" type="accessModificationFilter"/>
 
+  <xs:element name="activateDecryptionAction" type="activateDecryptionAction"/>
+
   <xs:element name="activateEncryptionAction" type="activateEncryptionAction"/>
 
   <xs:element name="alertMessage" type="alertMessage"/>
@@ -102,6 +104,8 @@
   <xs:element name="copyPreMasterSecretAction" type="copyPreMasterSecretAction"/>
 
   <xs:element name="copyServerRandomAction" type="copyServerRandomAction"/>
+
+  <xs:element name="deactivateDecryptionAction" type="deactivateDecryptionAction"/>
 
   <xs:element name="deactivateEncryptionAction" type="deactivateEncryptionAction"/>
 
@@ -305,6 +309,7 @@
         <xs:element name="OutboundConnection" type="outboundConnection"/>
       </xs:choice>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="ActivateDecryption" type="activateDecryptionAction"/>
         <xs:element name="ActivateEncryption" type="activateEncryptionAction"/>
         <xs:element name="ApplyBufferedMessages" type="applyBufferedMessagesAction"/>
         <xs:element name="BufferedGenericReceive" type="bufferedGenericReceiveAction"/>
@@ -327,6 +332,7 @@
         <xs:element name="CopyContextField" type="copyContextFieldAction"/>
         <xs:element name="CopyPreMasterSecret" type="copyPreMasterSecretAction"/>
         <xs:element name="CopyServerRandom" type="copyServerRandomAction"/>
+        <xs:element name="DeactivateDecryption" type="deactivateDecryptionAction"/>
         <xs:element name="DeactivateEncryption" type="deactivateEncryptionAction"/>
         <xs:element name="DeepCopyBufferedMessages" type="deepCopyBufferedMessagesAction"/>
         <xs:element name="DeepCopyBufferedRecords" type="deepCopyBufferedRecordsAction"/>
@@ -404,7 +410,7 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="activateEncryptionAction">
+  <xs:complexType name="activateDecryptionAction">
     <xs:complexContent>
       <xs:extension base="activateCryptoAction">
         <xs:sequence/>
@@ -443,6 +449,14 @@
         </xs:complexType>
       </xs:element>
     </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="activateEncryptionAction">
+    <xs:complexContent>
+      <xs:extension base="activateCryptoAction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
   </xs:complexType>
 
   <xs:complexType name="applyBufferedMessagesAction">
@@ -3327,7 +3341,7 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="deactivateEncryptionAction">
+  <xs:complexType name="deactivateDecryptionAction">
     <xs:complexContent>
       <xs:extension base="deactivateCryptoAction">
         <xs:sequence/>
@@ -3338,6 +3352,14 @@
   <xs:complexType name="deactivateCryptoAction" abstract="true">
     <xs:complexContent>
       <xs:extension base="connectionBoundAction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="deactivateEncryptionAction">
+    <xs:complexContent>
+      <xs:extension base="deactivateCryptoAction">
         <xs:sequence/>
       </xs:extension>
     </xs:complexContent>

@@ -87,7 +87,8 @@ public class WorkflowTrace implements Serializable {
     private List<AliasedConnection> connections = new ArrayList<>();
 
     @HoldsModifiableVariable
-    @XmlElements(value = { @XmlElement(type = ActivateEncryptionAction.class, name = "ActivateEncryption"),
+    @XmlElements(value = { @XmlElement(type = ActivateDecryptionAction.class, name = "ActivateDecryption"),
+        @XmlElement(type = ActivateEncryptionAction.class, name = "ActivateEncryption"),
         @XmlElement(type = ApplyBufferedMessagesAction.class, name = "ApplyBufferedMessages"),
         @XmlElement(type = BufferedGenericReceiveAction.class, name = "BufferedGenericReceive"),
         @XmlElement(type = BufferedSendAction.class, name = "BufferedSend"),
@@ -109,6 +110,7 @@ public class WorkflowTrace implements Serializable {
         @XmlElement(type = CopyContextFieldAction.class, name = "CopyContextField"),
         @XmlElement(type = CopyPreMasterSecretAction.class, name = "CopyPreMasterSecret"),
         @XmlElement(type = CopyServerRandomAction.class, name = "CopyServerRandom"),
+        @XmlElement(type = DeactivateDecryptionAction.class, name = "DeactivateDecryption"),
         @XmlElement(type = DeactivateEncryptionAction.class, name = "DeactivateEncryption"),
         @XmlElement(type = DeepCopyBufferedMessagesAction.class, name = "DeepCopyBufferedMessages"),
         @XmlElement(type = DeepCopyBufferedRecordsAction.class, name = "DeepCopyBufferedRecords"),
