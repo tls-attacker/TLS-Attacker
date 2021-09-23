@@ -49,7 +49,9 @@ public class ResetConnectionActionTest {
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
         tlsContext.setRecordLayer(new TlsRecordLayer(tlsContext));
         tlsContext.getRecordLayer()
-            .setRecordCipher(new RecordBlockCipher(tlsContext, KeySetGenerator.generateKeySet(tlsContext)));
+            .setEncryptionRecordCipher(new RecordBlockCipher(tlsContext, KeySetGenerator.generateKeySet(tlsContext)));
+        tlsContext.getRecordLayer()
+            .setDecryptionRecordCipher(new RecordBlockCipher(tlsContext, KeySetGenerator.generateKeySet(tlsContext)));
         tlsContext.getRecordLayer().updateEncryptionCipher();
         tlsContext.getRecordLayer().updateDecryptionCipher();
         tlsContext.setActiveClientKeySetType(Tls13KeySetType.EARLY_TRAFFIC_SECRETS);
@@ -61,7 +63,8 @@ public class ResetConnectionActionTest {
     public void testExecute() throws IOException {
         action.execute(state);
         TlsRecordLayer layer = TlsRecordLayer.class.cast(tlsContext.getRecordLayer());
-        assertTrue(layer.getRecordCipher() instanceof RecordNullCipher);
+        assertTrue(layer.getEncryptionRecordCipher() instanceof RecordNullCipher);
+        assertTrue(layer.getDecryptionRecordCipher() instanceof RecordNullCipher);
         assertTrue(layer.getEncryptorCipher() instanceof RecordNullCipher);
         assertTrue(layer.getDecryptorCipher() instanceof RecordNullCipher);
         assertEquals(tlsContext.getActiveClientKeySetType(), Tls13KeySetType.NONE);

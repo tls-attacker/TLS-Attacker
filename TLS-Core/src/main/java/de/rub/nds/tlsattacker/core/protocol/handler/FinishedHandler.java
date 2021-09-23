@@ -149,12 +149,13 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
         KeySet serverKeySet = getKeySet(tlsContext, tlsContext.getActiveServerKeySetType());
         RecordCipher recordCipherServer = RecordCipherFactory.getRecordCipher(tlsContext, serverKeySet,
             tlsContext.getChooser().getSelectedCipherSuite());
-        tlsContext.getRecordLayer().setRecordCipher(recordCipherServer);
 
         if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
+            tlsContext.getRecordLayer().setDecryptionRecordCipher(recordCipherServer);
             tlsContext.setReadSequenceNumber(0);
             tlsContext.getRecordLayer().updateDecryptionCipher();
         } else {
+            tlsContext.getRecordLayer().setEncryptionRecordCipher(recordCipherServer);
             tlsContext.setWriteSequenceNumber(0);
             tlsContext.getRecordLayer().updateEncryptionCipher();
         }
@@ -166,12 +167,13 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
         KeySet clientKeySet = getKeySet(tlsContext, tlsContext.getActiveClientKeySetType());
         RecordCipher recordCipherClient = RecordCipherFactory.getRecordCipher(tlsContext, clientKeySet,
             tlsContext.getChooser().getSelectedCipherSuite());
-        tlsContext.getRecordLayer().setRecordCipher(recordCipherClient);
 
         if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {
+            tlsContext.getRecordLayer().setDecryptionRecordCipher(recordCipherClient);
             tlsContext.setReadSequenceNumber(0);
             tlsContext.getRecordLayer().updateDecryptionCipher();
         } else {
+            tlsContext.getRecordLayer().setEncryptionRecordCipher(recordCipherClient);
             tlsContext.setWriteSequenceNumber(0);
             tlsContext.getRecordLayer().updateEncryptionCipher();
         }

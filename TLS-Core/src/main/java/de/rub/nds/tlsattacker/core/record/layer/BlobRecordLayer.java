@@ -40,7 +40,8 @@ public class BlobRecordLayer extends RecordLayer {
 
     private final TlsContext context;
 
-    private RecordCipher cipher;
+    private RecordCipher encryptionCipher;
+    private RecordCipher decryptionCipher;
     private final Encryptor encryptor;
     private final Decryptor decryptor;
     private RecordCompressor compressor;
@@ -48,9 +49,10 @@ public class BlobRecordLayer extends RecordLayer {
 
     public BlobRecordLayer(TlsContext context) {
         this.context = context;
-        cipher = new RecordNullCipher(context);
-        encryptor = new RecordEncryptor(cipher, context);
-        decryptor = new RecordDecryptor(cipher, context);
+        encryptionCipher = new RecordNullCipher(context);
+        decryptionCipher = new RecordNullCipher(context);
+        encryptor = new RecordEncryptor(encryptionCipher, context);
+        decryptor = new RecordDecryptor(decryptionCipher, context);
         compressor = new RecordCompressor(context);
         decompressor = new RecordDecompressor(context);
     }
@@ -107,23 +109,13 @@ public class BlobRecordLayer extends RecordLayer {
     }
 
     @Override
-    public void setRecordCipher(RecordCipher cipher) {
-        this.cipher = cipher;
-    }
-
-    @Override
-    public RecordCipher getRecordCipher() {
-        return cipher;
-    }
-
-    @Override
     public void updateEncryptionCipher() {
-        encryptor.addNewRecordCipher(cipher);
+        encryptor.addNewRecordCipher(encryptionCipher);
     }
 
     @Override
     public void updateDecryptionCipher() {
-        decryptor.addNewRecordCipher(cipher);
+        decryptor.addNewRecordCipher(decryptionCipher);
     }
 
     @Override
@@ -139,6 +131,26 @@ public class BlobRecordLayer extends RecordLayer {
     @Override
     public RecordCipher getDecryptorCipher() {
         return decryptor.getRecordMostRecentCipher();
+    }
+
+    @Override
+    public void setEncryptionRecordCipher(RecordCipher encryptionCipher) {
+        this.encryptionCipher = encryptionCipher;
+    }
+
+    @Override
+    public RecordCipher getEncryptionRecordCipher() {
+        return encryptionCipher;
+    }
+
+    @Override
+    public void setDecryptionRecordCipher(RecordCipher decryptionCipher) {
+        this.decryptionCipher = decryptionCipher;
+    }
+
+    @Override
+    public RecordCipher getDecryptionRecordCipher() {
+        return decryptionCipher;
     }
 
 }

@@ -48,7 +48,7 @@ public class ChangeServerRandomActionTest {
         tlsContext.setRecordLayer(new TlsRecordLayer(tlsContext));
 
         tlsContext.getRecordLayer()
-            .setRecordCipher(new RecordBlockCipher(tlsContext, KeySetGenerator.generateKeySet(tlsContext)));
+            .setEncryptionRecordCipher(new RecordBlockCipher(tlsContext, KeySetGenerator.generateKeySet(tlsContext)));
     }
 
     @After

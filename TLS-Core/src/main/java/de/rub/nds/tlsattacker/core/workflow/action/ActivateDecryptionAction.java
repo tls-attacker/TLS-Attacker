@@ -14,17 +14,17 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class ActivateEncryptionAction extends ActivateCryptoAction {
+public class ActivateDecryptionAction extends ActivateCryptoAction {
 
     @Override
     protected void activateCrypto(TlsContext tlsContext, RecordCipher recordCipher) {
-        LOGGER.info("Setting new encryption cipher and activating encryption");
-        tlsContext.getRecordLayer().setEncryptionRecordCipher(recordCipher);
-        tlsContext.getRecordLayer().updateEncryptionCipher();
+        LOGGER.info("Setting new decryption cipher and activating decryption");
+        tlsContext.getRecordLayer().setDecryptionRecordCipher(recordCipher);
+        tlsContext.getRecordLayer().updateDecryptionCipher();
 
         if (resetSequenceNumbers) {
-            tlsContext.setWriteSequenceNumber(0);
-            LOGGER.info("Reset write SQN");
+            tlsContext.setReadSequenceNumber(0);
+            LOGGER.info("Reset read SQN");
         }
     }
 

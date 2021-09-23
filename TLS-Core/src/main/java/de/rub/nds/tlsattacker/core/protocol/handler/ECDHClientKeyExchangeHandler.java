@@ -49,7 +49,6 @@ public class ECDHClientKeyExchangeHandler<T extends ECDHClientKeyExchangeMessage
         adjustPremasterSecret(message);
         adjustMasterSecret(message);
         adjustClientPublicKey(message);
-        setRecordCipher();
         spawnNewSession();
     }
 

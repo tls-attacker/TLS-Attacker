@@ -45,7 +45,6 @@ public class SrpClientKeyExchangeHandler extends ClientKeyExchangeHandler<SrpCli
     public void adjustTLSContext(SrpClientKeyExchangeMessage message) {
         adjustPremasterSecret(message);
         adjustMasterSecret(message);
-        setRecordCipher();
         spawnNewSession();
     }
 }

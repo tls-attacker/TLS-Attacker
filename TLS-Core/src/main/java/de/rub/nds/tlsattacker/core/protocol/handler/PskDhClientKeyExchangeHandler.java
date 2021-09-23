@@ -41,7 +41,6 @@ public class PskDhClientKeyExchangeHandler extends DHClientKeyExchangeHandler<Ps
     public void adjustTLSContext(PskDhClientKeyExchangeMessage message) {
         adjustPremasterSecret(message);
         adjustMasterSecret(message);
-        setRecordCipher();
         spawnNewSession();
     }
 }

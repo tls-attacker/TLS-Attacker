@@ -11,21 +11,15 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import static de.rub.nds.tlsattacker.core.workflow.action.DeactivateCryptoAction.LOGGER;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class ActivateEncryptionAction extends ActivateCryptoAction {
-
+public class DeactivateDecryptionAction extends DeactivateCryptoAction {
     @Override
-    protected void activateCrypto(TlsContext tlsContext, RecordCipher recordCipher) {
-        LOGGER.info("Setting new encryption cipher and activating encryption");
-        tlsContext.getRecordLayer().setEncryptionRecordCipher(recordCipher);
-        tlsContext.getRecordLayer().updateEncryptionCipher();
-
-        if (resetSequenceNumbers) {
-            tlsContext.setWriteSequenceNumber(0);
-            LOGGER.info("Reset write SQN");
-        }
+    protected void deactivateCrypto(TlsContext tlsContext, RecordCipher recordCipher) {
+        LOGGER.info("Disabling decryption");
+        tlsContext.getRecordLayer().setDecryptionRecordCipher(recordCipher);
+        tlsContext.getRecordLayer().updateDecryptionCipher();
     }
-
 }

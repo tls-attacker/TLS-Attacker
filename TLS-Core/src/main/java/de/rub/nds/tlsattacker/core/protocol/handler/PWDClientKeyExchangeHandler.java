@@ -47,7 +47,6 @@ public class PWDClientKeyExchangeHandler extends ClientKeyExchangeHandler<PWDCli
 
         adjustPremasterSecret(message);
         adjustMasterSecret(message);
-        setRecordCipher();
         spawnNewSession();
     }
 }

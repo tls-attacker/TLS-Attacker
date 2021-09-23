@@ -2521,11 +2521,19 @@ public class TlsContext {
     }
 
     public Boolean isRecordEncryptionActive() {
-        if (this.recordLayer == null || this.recordLayer.getRecordCipher() == null) {
+        if (this.recordLayer == null || this.recordLayer.getEncryptionRecordCipher() == null) {
             return false;
         }
 
-        return !(this.recordLayer.getRecordCipher() instanceof RecordNullCipher);
+        return !(this.recordLayer.getEncryptionRecordCipher() instanceof RecordNullCipher);
+    }
+
+    public Boolean isRecordDecryptionActive() {
+        if (this.recordLayer == null || this.recordLayer.getDecryptionRecordCipher() == null) {
+            return false;
+        }
+
+        return !(this.recordLayer.getDecryptionRecordCipher() instanceof RecordNullCipher);
     }
 
     public Integer getOutboundMaxRecordDataSize() {

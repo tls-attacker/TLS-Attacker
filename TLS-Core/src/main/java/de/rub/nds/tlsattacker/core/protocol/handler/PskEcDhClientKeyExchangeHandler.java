@@ -41,7 +41,6 @@ public class PskEcDhClientKeyExchangeHandler extends ECDHClientKeyExchangeHandle
     public void adjustTLSContext(PskEcDhClientKeyExchangeMessage message) {
         adjustPremasterSecret(message);
         adjustMasterSecret(message);
-        setRecordCipher();
         spawnNewSession();
     }
 }

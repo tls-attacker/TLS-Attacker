@@ -206,12 +206,13 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
                 tlsContext.getActiveClientKeySetType());
             RecordCipher recordCipherClient = RecordCipherFactory.getRecordCipher(tlsContext, clientKeySet,
                 tlsContext.getChooser().getEarlyDataCipherSuite());
-            tlsContext.getRecordLayer().setRecordCipher(recordCipherClient);
 
             if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {
+                tlsContext.getRecordLayer().setDecryptionRecordCipher(recordCipherClient);
                 tlsContext.setReadSequenceNumber(0);
                 tlsContext.getRecordLayer().updateDecryptionCipher();
             } else {
+                tlsContext.getRecordLayer().setEncryptionRecordCipher(recordCipherClient);
                 tlsContext.setWriteSequenceNumber(0);
                 tlsContext.getRecordLayer().updateEncryptionCipher();
             }

@@ -406,6 +406,14 @@
 
   <xs:complexType name="activateEncryptionAction">
     <xs:complexContent>
+      <xs:extension base="activateCryptoAction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="activateCryptoAction" abstract="true">
+    <xs:complexContent>
       <xs:extension base="connectionBoundAction">
         <xs:sequence>
           <xs:element name="resetSequenceNumbers" type="xs:boolean"/>
@@ -3160,7 +3168,8 @@
 
   <xs:complexType name="recordLayer" abstract="true">
     <xs:sequence>
-      <xs:element name="recordCipher" type="recordCipher" minOccurs="0"/>
+      <xs:element name="decryptionRecordCipher" type="recordCipher" minOccurs="0"/>
+      <xs:element name="encryptionRecordCipher" type="recordCipher" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -3319,6 +3328,14 @@
   </xs:complexType>
 
   <xs:complexType name="deactivateEncryptionAction">
+    <xs:complexContent>
+      <xs:extension base="deactivateCryptoAction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="deactivateCryptoAction" abstract="true">
     <xs:complexContent>
       <xs:extension base="connectionBoundAction">
         <xs:sequence/>

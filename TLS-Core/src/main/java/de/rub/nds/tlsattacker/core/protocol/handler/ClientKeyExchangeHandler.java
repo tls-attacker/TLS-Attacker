@@ -93,13 +93,6 @@ public abstract class ClientKeyExchangeHandler<MessageT extends ClientKeyExchang
         LOGGER.debug("Set MasterSecret in Context to " + ArrayConverter.bytesToHexString(masterSecret));
     }
 
-    protected void setRecordCipher() {
-        KeySet keySet = getKeySet(tlsContext);
-        LOGGER.debug("Setting new Cipher in RecordLayer");
-        RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(tlsContext, keySet);
-        tlsContext.getRecordLayer().setRecordCipher(recordCipher);
-    }
-
     protected void spawnNewSession() {
         Session session =
             new Session(tlsContext.getChooser().getServerSessionId(), tlsContext.getChooser().getMasterSecret());
