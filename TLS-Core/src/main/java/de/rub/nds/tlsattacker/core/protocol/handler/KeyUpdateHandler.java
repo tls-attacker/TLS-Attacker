@@ -159,10 +159,9 @@ public class KeyUpdateHandler extends HandshakeMessageHandler<KeyUpdateMessage> 
 
                 RecordCipher recordCipherClient = RecordCipherFactory.getRecordCipher(tlsContext, keySet,
                     tlsContext.getChooser().getSelectedCipherSuite());
-                tlsContext.getRecordLayer().setEncryptionRecordCipher(recordCipherClient);
 
                 tlsContext.setWriteSequenceNumber(0);
-                tlsContext.getRecordLayer().updateEncryptionCipher();
+                tlsContext.getRecordLayer().updateEncryptionCipher(recordCipherClient);
 
             } else if (tlsContext.getChooser().getTalkingConnectionEnd()
                 != tlsContext.getChooser().getConnectionEndType()) {
@@ -188,10 +187,9 @@ public class KeyUpdateHandler extends HandshakeMessageHandler<KeyUpdateMessage> 
 
                 RecordCipher recordCipherClient = RecordCipherFactory.getRecordCipher(tlsContext, keySet,
                     tlsContext.getChooser().getSelectedCipherSuite());
-                tlsContext.getRecordLayer().setDecryptionRecordCipher(recordCipherClient);
 
                 tlsContext.setReadSequenceNumber(0);
-                tlsContext.getRecordLayer().updateDecryptionCipher();
+                tlsContext.getRecordLayer().updateDecryptionCipher(recordCipherClient);
 
             }
 

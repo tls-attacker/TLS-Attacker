@@ -43,17 +43,9 @@ public abstract class RecordLayer {
 
     public abstract byte[] prepareRecords(byte[] data, ProtocolMessageType contentType, List<AbstractRecord> records);
 
-    public abstract void setEncryptionRecordCipher(RecordCipher encryptionCipher);
+    public abstract void updateEncryptionCipher(RecordCipher encryptionCipher);
 
-    public abstract RecordCipher getEncryptionRecordCipher();
-
-    public abstract void setDecryptionRecordCipher(RecordCipher decryptionCipher);
-
-    public abstract RecordCipher getDecryptionRecordCipher();
-
-    public abstract void updateEncryptionCipher();
-
-    public abstract void updateDecryptionCipher();
+    public abstract void updateDecryptionCipher(RecordCipher decryptionCipher);
 
     public abstract RecordCipher getEncryptorCipher();
 

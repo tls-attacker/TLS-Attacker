@@ -19,7 +19,6 @@ public class DeactivateDecryptionAction extends DeactivateCryptoAction {
     @Override
     protected void deactivateCrypto(TlsContext tlsContext, RecordCipher recordCipher) {
         LOGGER.info("Disabling decryption");
-        tlsContext.getRecordLayer().setDecryptionRecordCipher(recordCipher);
-        tlsContext.getRecordLayer().updateDecryptionCipher();
+        tlsContext.getRecordLayer().updateDecryptionCipher(recordCipher);
     }
 }

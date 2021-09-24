@@ -40,8 +40,6 @@ public class BlobRecordLayer extends RecordLayer {
 
     private final TlsContext context;
 
-    private RecordCipher encryptionCipher;
-    private RecordCipher decryptionCipher;
     private final Encryptor encryptor;
     private final Decryptor decryptor;
     private RecordCompressor compressor;
@@ -49,10 +47,8 @@ public class BlobRecordLayer extends RecordLayer {
 
     public BlobRecordLayer(TlsContext context) {
         this.context = context;
-        encryptionCipher = new RecordNullCipher(context);
-        decryptionCipher = new RecordNullCipher(context);
-        encryptor = new RecordEncryptor(encryptionCipher, context);
-        decryptor = new RecordDecryptor(decryptionCipher, context);
+        encryptor = new RecordEncryptor(new RecordNullCipher(context), context);
+        decryptor = new RecordDecryptor(new RecordNullCipher(context), context);
         compressor = new RecordCompressor(context);
         decompressor = new RecordDecompressor(context);
     }
@@ -109,12 +105,12 @@ public class BlobRecordLayer extends RecordLayer {
     }
 
     @Override
-    public void updateEncryptionCipher() {
+    public void updateEncryptionCipher(RecordCipher encryptionCipher) {
         encryptor.addNewRecordCipher(encryptionCipher);
     }
 
     @Override
-    public void updateDecryptionCipher() {
+    public void updateDecryptionCipher(RecordCipher decryptionCipher) {
         decryptor.addNewRecordCipher(decryptionCipher);
     }
 
@@ -132,25 +128,4 @@ public class BlobRecordLayer extends RecordLayer {
     public RecordCipher getDecryptorCipher() {
         return decryptor.getRecordMostRecentCipher();
     }
-
-    @Override
-    public void setEncryptionRecordCipher(RecordCipher encryptionCipher) {
-        this.encryptionCipher = encryptionCipher;
-    }
-
-    @Override
-    public RecordCipher getEncryptionRecordCipher() {
-        return encryptionCipher;
-    }
-
-    @Override
-    public void setDecryptionRecordCipher(RecordCipher decryptionCipher) {
-        this.decryptionCipher = decryptionCipher;
-    }
-
-    @Override
-    public RecordCipher getDecryptionRecordCipher() {
-        return decryptionCipher;
-    }
-
 }

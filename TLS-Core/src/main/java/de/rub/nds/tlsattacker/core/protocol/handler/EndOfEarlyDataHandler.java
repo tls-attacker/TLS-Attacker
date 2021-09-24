@@ -64,8 +64,7 @@ public class EndOfEarlyDataHandler extends HandshakeMessageHandler<EndOfEarlyDat
                 tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext.getActiveClientKeySetType());
             RecordCipher recordCipherClient = RecordCipherFactory.getRecordCipher(tlsContext, clientKeySet,
                 tlsContext.getChooser().getSelectedCipherSuite());
-            tlsContext.getRecordLayer().setDecryptionRecordCipher(recordCipherClient);
-            tlsContext.getRecordLayer().updateDecryptionCipher();
+            tlsContext.getRecordLayer().updateDecryptionCipher(recordCipherClient);
             tlsContext.setReadSequenceNumber(0);
         } catch (CryptoException | NoSuchAlgorithmException ex) {
             LOGGER.error("Generating KeySet failed", ex);

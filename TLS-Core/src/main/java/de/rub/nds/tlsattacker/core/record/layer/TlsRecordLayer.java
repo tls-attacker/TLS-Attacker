@@ -48,16 +48,10 @@ public class TlsRecordLayer extends RecordLayer {
     private final RecordCompressor compressor;
     private final RecordDecompressor decompressor;
 
-    private RecordCipher encryptionCipher;
-
-    private RecordCipher decryptionCipher;
-
     public TlsRecordLayer(TlsContext tlsContext) {
         this.tlsContext = tlsContext;
-        encryptionCipher = new RecordNullCipher(tlsContext);
-        decryptionCipher = new RecordNullCipher(tlsContext);
-        encryptor = new RecordEncryptor(encryptionCipher, tlsContext);
-        decryptor = new RecordDecryptor(decryptionCipher, tlsContext);
+        encryptor = new RecordEncryptor(new RecordNullCipher(tlsContext), tlsContext);
+        decryptor = new RecordDecryptor(new RecordNullCipher(tlsContext), tlsContext);
         compressor = new RecordCompressor(tlsContext);
         decompressor = new RecordDecompressor(tlsContext);
     }
@@ -159,12 +153,12 @@ public class TlsRecordLayer extends RecordLayer {
     }
 
     @Override
-    public void updateEncryptionCipher() {
+    public void updateEncryptionCipher(RecordCipher encryptionCipher) {
         encryptor.addNewRecordCipher(encryptionCipher);
     }
 
     @Override
-    public void updateDecryptionCipher() {
+    public void updateDecryptionCipher(RecordCipher decryptionCipher) {
         decryptor.addNewRecordCipher(decryptionCipher);
     }
 
@@ -213,25 +207,5 @@ public class TlsRecordLayer extends RecordLayer {
 
     public Decryptor getDecryptor() {
         return decryptor;
-    }
-
-    @Override
-    public void setEncryptionRecordCipher(RecordCipher encryptionCipher) {
-        this.encryptionCipher = encryptionCipher;
-    }
-
-    @Override
-    public RecordCipher getEncryptionRecordCipher() {
-        return encryptionCipher;
-    }
-
-    @Override
-    public void setDecryptionRecordCipher(RecordCipher decryptionCipher) {
-        this.decryptionCipher = decryptionCipher;
-    }
-
-    @Override
-    public RecordCipher getDecryptionRecordCipher() {
-        return decryptionCipher;
     }
 }

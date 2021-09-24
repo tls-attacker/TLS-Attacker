@@ -60,7 +60,6 @@ public class ReceiveActionTest {
         tlsContext.setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
         tlsContext.setRecordLayer(new TlsRecordLayer(tlsContext));
-        tlsContext.getRecordLayer().setDecryptionRecordCipher(new RecordNullCipher(tlsContext));
     }
 
     @After

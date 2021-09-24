@@ -90,14 +90,10 @@ public class ForwardMessagesActionTest {
         th.setFetchableByte(alertMsg);
         ctx1.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
         ctx1.setRecordLayer(new TlsRecordLayer(ctx1));
-        ctx1.getRecordLayer()
-            .setEncryptionRecordCipher(new RecordBlockCipher(ctx1, KeySetGenerator.generateKeySet(ctx1)));
         ctx1.setTransportHandler(th);
 
         ctx2.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
         ctx2.setRecordLayer(new TlsRecordLayer(ctx2));
-        ctx2.getRecordLayer()
-            .setEncryptionRecordCipher(new RecordBlockCipher(ctx2, KeySetGenerator.generateKeySet(ctx2)));
         ctx2.setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
     }
 

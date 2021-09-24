@@ -10,9 +10,15 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
+import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
@@ -61,8 +67,15 @@ public class ChangeCipherSuiteAction extends ConnectionBoundAction {
         }
         oldValue = tlsContext.getSelectedCipherSuite();
         tlsContext.setSelectedCipherSuite(newValue);
-        tlsContext.getRecordLayer().updateDecryptionCipher();
-        tlsContext.getRecordLayer().updateEncryptionCipher();
+        KeySet keySet;
+        try {
+            keySet = KeySetGenerator.generateKeySet(tlsContext);
+        } catch (NoSuchAlgorithmException | CryptoException ex) {
+            throw new UnsupportedOperationException("The specified Algorithm is not supported", ex);
+        }
+        RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(tlsContext, keySet);
+        tlsContext.getRecordLayer().updateDecryptionCipher(recordCipher);
+        tlsContext.getRecordLayer().updateEncryptionCipher(recordCipher);
         LOGGER
             .info("Changed CipherSuite from " + (oldValue == null ? null : oldValue.name()) + " to " + newValue.name());
         setExecuted(true);

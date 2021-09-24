@@ -3182,13 +3182,6 @@
   </xs:complexType>
 
   <xs:complexType name="recordLayer" abstract="true">
-    <xs:sequence>
-      <xs:element name="decryptionRecordCipher" type="recordCipher" minOccurs="0"/>
-      <xs:element name="encryptionRecordCipher" type="recordCipher" minOccurs="0"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="recordCipher" abstract="true">
     <xs:sequence/>
   </xs:complexType>
 

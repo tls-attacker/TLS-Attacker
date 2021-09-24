@@ -19,8 +19,7 @@ public class ActivateDecryptionAction extends ActivateCryptoAction {
     @Override
     protected void activateCrypto(TlsContext tlsContext, RecordCipher recordCipher) {
         LOGGER.info("Setting new decryption cipher and activating decryption");
-        tlsContext.getRecordLayer().setDecryptionRecordCipher(recordCipher);
-        tlsContext.getRecordLayer().updateDecryptionCipher();
+        tlsContext.getRecordLayer().updateDecryptionCipher(recordCipher);
 
         if (resetSequenceNumbers) {
             tlsContext.setReadSequenceNumber(0);

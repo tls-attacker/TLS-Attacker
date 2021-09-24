@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordBlockCipher;
+import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
@@ -48,12 +49,9 @@ public class ResetConnectionActionTest {
         tlsContext.setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
         tlsContext.setRecordLayer(new TlsRecordLayer(tlsContext));
-        tlsContext.getRecordLayer()
-            .setEncryptionRecordCipher(new RecordBlockCipher(tlsContext, KeySetGenerator.generateKeySet(tlsContext)));
-        tlsContext.getRecordLayer()
-            .setDecryptionRecordCipher(new RecordBlockCipher(tlsContext, KeySetGenerator.generateKeySet(tlsContext)));
-        tlsContext.getRecordLayer().updateEncryptionCipher();
-        tlsContext.getRecordLayer().updateDecryptionCipher();
+        RecordCipher recordCipher = new RecordBlockCipher(tlsContext, KeySetGenerator.generateKeySet(tlsContext));
+        tlsContext.getRecordLayer().updateEncryptionCipher(recordCipher);
+        tlsContext.getRecordLayer().updateDecryptionCipher(recordCipher);
         tlsContext.setActiveClientKeySetType(Tls13KeySetType.EARLY_TRAFFIC_SECRETS);
         tlsContext.setActiveServerKeySetType(Tls13KeySetType.EARLY_TRAFFIC_SECRETS);
 
@@ -63,8 +61,8 @@ public class ResetConnectionActionTest {
     public void testExecute() throws IOException {
         action.execute(state);
         TlsRecordLayer layer = TlsRecordLayer.class.cast(tlsContext.getRecordLayer());
-        assertTrue(layer.getEncryptionRecordCipher() instanceof RecordNullCipher);
-        assertTrue(layer.getDecryptionRecordCipher() instanceof RecordNullCipher);
+        assertTrue(layer.getEncryptorCipher() instanceof RecordNullCipher);
+        assertTrue(layer.getDecryptorCipher() instanceof RecordNullCipher);
         assertTrue(layer.getEncryptorCipher() instanceof RecordNullCipher);
         assertTrue(layer.getDecryptorCipher() instanceof RecordNullCipher);
         assertEquals(tlsContext.getActiveClientKeySetType(), Tls13KeySetType.NONE);
