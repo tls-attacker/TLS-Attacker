@@ -921,10 +921,11 @@
           <xs:element name="requestContext" type="modifiableByteArray" minOccurs="0"/>
           <xs:element name="certificatesListLength" type="modifiableInteger" minOccurs="0"/>
           <xs:element name="certificatesListBytes" type="modifiableByteArray" minOccurs="0"/>
-          <xs:element name="certificatesList" minOccurs="0">
+          <xs:element name="certificatesList" type="certificatePair" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="certificateListConfig" minOccurs="0">
             <xs:complexType>
               <xs:sequence>
-                <xs:element name="certificatesList" type="certificatePair" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element name="certificatesListConfig" type="certificatePair" minOccurs="0" maxOccurs="unbounded"/>
               </xs:sequence>
             </xs:complexType>
           </xs:element>

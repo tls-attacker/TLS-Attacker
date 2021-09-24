@@ -52,11 +52,14 @@ public class CertificateMessage extends HandshakeMessage {
     @ModifiableVariableProperty
     private ModifiableByteArray certificatesListBytes;
 
+    @HoldsModifiableVariable
     // this allows users to also send empty certificates
+    private List<CertificatePair> certificatesList;
+
     @HoldsModifiableVariable
     @XmlElementWrapper
-    @XmlElement(name = "certificatesList")
-    private List<CertificatePair> certificatesList;
+    @XmlElement(name = "certificatesListConfig")
+    private List<CertificatePair> certificateListConfig;
 
     @HoldsModifiableVariable
     private List<CertificateEntry> certificatesListAsEntry;
@@ -185,5 +188,13 @@ public class CertificateMessage extends HandshakeMessage {
     @Override
     public CertificateMessageHandler getHandler(TlsContext context) {
         return new CertificateMessageHandler(context);
+    }
+
+    public List<CertificatePair> getCertificateListConfig() {
+        return certificateListConfig;
+    }
+
+    public void setCertificateListConfig(List<CertificatePair> certificateListConfig) {
+        this.certificateListConfig = certificateListConfig;
     }
 }
