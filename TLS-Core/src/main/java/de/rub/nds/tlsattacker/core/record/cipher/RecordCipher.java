@@ -43,7 +43,7 @@ public abstract class RecordCipher {
     /**
      * CipherAlgorithm algorithm (AES, ...)
      */
-    protected final CipherAlgorithm cipherAlg;
+    private CipherAlgorithm cipherAlg;
 
     private final KeySet keySet;
     /**
@@ -51,7 +51,7 @@ public abstract class RecordCipher {
      */
     protected TlsContext context;
 
-    protected final CipherSuite cipherSuite;
+    private CipherSuite cipherSuite;
 
     protected final ProtocolVersion version;
 
@@ -139,5 +139,21 @@ public abstract class RecordCipher {
         } catch (IOException e) {
             throw new WorkflowExecutionException("Could not write data to ByteArrayOutputStream");
         }
+    }
+
+    public CipherAlgorithm getCipherAlg() {
+        return cipherAlg;
+    }
+
+    public void setCipherAlg(CipherAlgorithm cipherAlg) {
+        this.cipherAlg = cipherAlg;
+    }
+
+    public CipherSuite getCipherSuite() {
+        return cipherSuite;
+    }
+
+    public void setCipherSuite(CipherSuite cipherSuite) {
+        this.cipherSuite = cipherSuite;
     }
 }

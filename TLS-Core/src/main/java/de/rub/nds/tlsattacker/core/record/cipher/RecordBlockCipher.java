@@ -233,8 +233,7 @@ public final class RecordBlockCipher extends RecordCipher {
     public byte[] getEncryptionIV() {
         if (useExplicitIv) {
             LOGGER.debug("Using explict IV");
-            CipherAlgorithm cipherAlgorithm = AlgorithmResolver.getCipher(cipherSuite);
-            byte[] iv = new byte[cipherAlgorithm.getNonceBytesFromHandshake()];
+            byte[] iv = new byte[getCipherAlg().getNonceBytesFromHandshake()];
             context.getRandom().nextBytes(iv);
             return iv;
         } else {
@@ -264,13 +263,11 @@ public final class RecordBlockCipher extends RecordCipher {
 
         byte[] plaintext = record.getProtocolMessageBytes().getValue();
         DecryptionParser parser = new DecryptionParser(0, plaintext);
-        CipherSuite cipherSuite = context.getChooser().getSelectedCipherSuite();
 
         byte[] iv;
         if (useExplicitIv) {
             LOGGER.debug("Using explicit IV");
-            CipherAlgorithm cipherAlgorithm = AlgorithmResolver.getCipher(cipherSuite);
-            iv = parser.parseByteArrayField(cipherAlgorithm.getNonceBytesFromHandshake());
+            iv = parser.parseByteArrayField(getCipherAlg().getNonceBytesFromHandshake());
         } else {
             LOGGER.debug("Using implicit IV");
             iv = decryptCipher.getIv();

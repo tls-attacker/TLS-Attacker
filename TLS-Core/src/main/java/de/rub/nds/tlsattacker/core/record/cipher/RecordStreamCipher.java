@@ -51,12 +51,12 @@ public class RecordStreamCipher extends RecordCipher {
     private void initCipherAndMac() throws UnsupportedOperationException {
         try {
             ConnectionEndType localConEndType = context.getConnection().getLocalConnectionEndType();
-            encryptCipher = CipherWrapper.getEncryptionCipher(cipherSuite, localConEndType, getKeySet());
-            decryptCipher = CipherWrapper.getDecryptionCipher(cipherSuite, localConEndType, getKeySet());
-            readMac = MacWrapper.getMac(version, cipherSuite, getKeySet().getReadMacSecret(localConEndType));
-            writeMac = MacWrapper.getMac(version, cipherSuite, getKeySet().getWriteMacSecret(localConEndType));
+            encryptCipher = CipherWrapper.getEncryptionCipher(getCipherSuite(), localConEndType, getKeySet());
+            decryptCipher = CipherWrapper.getDecryptionCipher(getCipherSuite(), localConEndType, getKeySet());
+            readMac = MacWrapper.getMac(version, getCipherSuite(), getKeySet().getReadMacSecret(localConEndType));
+            writeMac = MacWrapper.getMac(version, getCipherSuite(), getKeySet().getWriteMacSecret(localConEndType));
         } catch (NoSuchAlgorithmException ex) {
-            throw new UnsupportedOperationException("Cipher not supported: " + cipherSuite.name(), ex);
+            throw new UnsupportedOperationException("Cipher not supported: " + getCipherSuite().name(), ex);
         }
     }
 
@@ -89,7 +89,7 @@ public class RecordStreamCipher extends RecordCipher {
 
         // For unusual handshakes we need the length here if TLS 1.3 is
         // negotiated as a version.
-        record.setLength(cleanBytes.length + AlgorithmResolver.getMacAlgorithm(version, cipherSuite).getSize());
+        record.setLength(cleanBytes.length + AlgorithmResolver.getMacAlgorithm(version, getCipherSuite()).getSize());
 
         computations.setAuthenticatedMetaData(collectAdditionalAuthenticatedData(record, version));
         computations.setMac(calculateMac(
