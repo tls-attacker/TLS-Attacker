@@ -30,11 +30,14 @@ public class RecordCipherFactory {
                 CipherType type = AlgorithmResolver.getCipherType(cipherSuite);
                 switch (type) {
                     case AEAD:
-                        return new RecordAEADCipher(context, keySet);
+                        return new RecordAEADCipher(context, context.getChooser().getSelectedProtocolVersion(),
+                            context.getChooser().getSelectedCipherSuite(), keySet);
                     case BLOCK:
-                        return new RecordBlockCipher(context, keySet);
+                        return new RecordBlockCipher(context, context.getChooser().getSelectedProtocolVersion(),
+                            context.getChooser().getSelectedCipherSuite(), keySet);
                     case STREAM:
-                        return new RecordStreamCipher(context, keySet);
+                        return new RecordStreamCipher(context, context.getChooser().getSelectedProtocolVersion(),
+                            context.getChooser().getSelectedCipherSuite(), keySet);
                     default:
                         LOGGER.warn("UnknownCipherType:" + type.name());
                         return new RecordNullCipher(context);

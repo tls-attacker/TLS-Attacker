@@ -49,7 +49,9 @@ public class ResetConnectionActionTest {
         tlsContext.setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
         tlsContext.setRecordLayer(new TlsRecordLayer(tlsContext));
-        RecordCipher recordCipher = new RecordBlockCipher(tlsContext, KeySetGenerator.generateKeySet(tlsContext));
+        RecordCipher recordCipher =
+            new RecordBlockCipher(tlsContext, tlsContext.getChooser().getSelectedProtocolVersion(),
+                tlsContext.getChooser().getSelectedCipherSuite(), KeySetGenerator.generateKeySet(tlsContext));
         tlsContext.getRecordLayer().updateEncryptionCipher(recordCipher);
         tlsContext.getRecordLayer().updateDecryptionCipher(recordCipher);
         tlsContext.setActiveClientKeySetType(Tls13KeySetType.EARLY_TRAFFIC_SECRETS);

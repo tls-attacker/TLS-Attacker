@@ -60,7 +60,9 @@ public class TlsContextTest {
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_GCM_SHA256);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         context.setRandom(new TestRandomData(ArrayConverter.hexStringToByteArray("FFEEDDCC")));
-        context.getRecordLayer().updateEncryptionCipher(new RecordAEADCipher(context, testKeySet));
+        context.getRecordLayer()
+            .updateEncryptionCipher(new RecordAEADCipher(context, context.getChooser().getSelectedProtocolVersion(),
+                context.getChooser().getSelectedCipherSuite(), testKeySet));
     }
 
     /**

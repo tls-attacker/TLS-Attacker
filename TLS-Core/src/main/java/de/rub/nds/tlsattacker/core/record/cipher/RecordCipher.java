@@ -55,12 +55,13 @@ public abstract class RecordCipher {
 
     protected final ProtocolVersion version;
 
-    public RecordCipher(TlsContext context, KeySet keySet) {
+    // TODO get rid of context after DTLS SQN changes are merged
+    public RecordCipher(TlsContext context, ProtocolVersion protocolVersion, CipherSuite cipherSuite, KeySet keySet) {
         this.keySet = keySet;
         this.context = context;
-        this.cipherSuite = context.getChooser().getSelectedCipherSuite();
-        this.version = context.getChooser().getSelectedProtocolVersion();
-        this.cipherAlg = AlgorithmResolver.getCipher(context.getChooser().getSelectedCipherSuite());
+        this.cipherSuite = cipherSuite;
+        this.version = protocolVersion;
+        this.cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
     }
 
     public abstract void encrypt(Record record) throws CryptoException;

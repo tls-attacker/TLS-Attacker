@@ -13,7 +13,9 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.crypto.cipher.CipherWrapper;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.Parser;
@@ -50,8 +52,9 @@ public class RecordAEADCipher extends RecordCipher {
      */
     private final int aeadExplicitLength;
 
-    public RecordAEADCipher(TlsContext context, KeySet keySet) {
-        super(context, keySet);
+    public RecordAEADCipher(TlsContext context, ProtocolVersion protocolVersion, CipherSuite cipherSuite,
+        KeySet keySet) {
+        super(context, protocolVersion, cipherSuite, keySet);
         ConnectionEndType localConEndType = context.getConnection().getLocalConnectionEndType();
         encryptCipher = CipherWrapper.getEncryptionCipher(cipherSuite, localConEndType, getKeySet());
         decryptCipher = CipherWrapper.getDecryptionCipher(cipherSuite, localConEndType, getKeySet());

@@ -11,6 +11,8 @@ package de.rub.nds.tlsattacker.core.record.cipher;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.crypto.cipher.CipherWrapper;
 import de.rub.nds.tlsattacker.core.crypto.mac.MacWrapper;
 import de.rub.nds.tlsattacker.core.crypto.mac.WrappedMac;
@@ -40,8 +42,9 @@ public class RecordStreamCipher extends RecordCipher {
      */
     private WrappedMac writeMac;
 
-    public RecordStreamCipher(TlsContext context, KeySet keySet) {
-        super(context, keySet);
+    public RecordStreamCipher(TlsContext context, ProtocolVersion protocolVersion, CipherSuite cipherSuite,
+        KeySet keySet) {
+        super(context, protocolVersion, cipherSuite, keySet);
         initCipherAndMac();
     }
 

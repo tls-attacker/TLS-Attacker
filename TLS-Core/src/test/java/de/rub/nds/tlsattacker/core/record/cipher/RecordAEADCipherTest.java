@@ -65,7 +65,8 @@ public class RecordAEADCipherTest {
         context.setRandom(new TestRandomData(ArrayConverter.hexStringToByteArray("FFEEDDCC"))); // ExplicitIV
         byte[] data = ArrayConverter
             .hexStringToByteArray("1400000CCE92FBEC9131F48A63FED31F71573F726479AA9108FB86A4FA16BC1D5CB5753003030303");
-        cipher = new RecordAEADCipher(context, keySet);
+        cipher = new RecordAEADCipher(context, context.getChooser().getSelectedProtocolVersion(),
+            context.getChooser().getSelectedCipherSuite(), keySet);
         Record record = new Record();
         record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
         record.prepareComputations();
@@ -131,7 +132,8 @@ public class RecordAEADCipherTest {
         context.setRandom(new TestRandomData(ArrayConverter.hexStringToByteArray("FFEEDDCC"))); // ExplicitIV
         byte[] data = ArrayConverter.hexStringToByteArray(
             "000000000000000077D85417660273BBA5F220778CC117ECB7AAC7F46B0E07A8679215363031E912DA4494F0E8BEA216DEA10FBB5AF87DF49E75EA206892A1A0");
-        cipher = new RecordAEADCipher(context, keySet);
+        cipher = new RecordAEADCipher(context, context.getChooser().getSelectedProtocolVersion(),
+            context.getChooser().getSelectedCipherSuite(), keySet);
         Record record = new Record();
         record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
         record.prepareComputations();
@@ -198,7 +200,8 @@ public class RecordAEADCipherTest {
         context.setRandom(new TestRandomData(ArrayConverter.hexStringToByteArray("FFEEDDCC"))); // ExplicitIV
         byte[] data = ArrayConverter
             .hexStringToByteArray("1400000CCE92FBEC9131F48A63FED31F71573F726479AA9108FB86A4FA16BC1D5CB5753003030303");
-        cipher = new RecordAEADCipher(context, keySet);
+        cipher = new RecordAEADCipher(context, context.getChooser().getSelectedProtocolVersion(),
+            context.getChooser().getSelectedCipherSuite(), keySet);
         Record record = new Record();
         record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
         record.prepareComputations();
@@ -264,7 +267,8 @@ public class RecordAEADCipherTest {
         context.setRandom(new TestRandomData(ArrayConverter.hexStringToByteArray("FFEEDDCC"))); // ExplicitIV
         byte[] data = ArrayConverter.hexStringToByteArray(
             "000000000000000077D85417660273BBA5F220778CC117ECB7AAC7F46B0E07A8679215363031E912DA4494F0E8BEA216DEA10FBB5AF87DF49E75EA206892A1A0");
-        cipher = new RecordAEADCipher(context, keySet);
+        cipher = new RecordAEADCipher(context, context.getChooser().getSelectedProtocolVersion(),
+            context.getChooser().getSelectedCipherSuite(), keySet);
         Record record = new Record();
         record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
         record.prepareComputations();

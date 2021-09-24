@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.crypto.cipher.CipherWrapper;
 import de.rub.nds.tlsattacker.core.crypto.mac.MacWrapper;
 import de.rub.nds.tlsattacker.core.crypto.mac.WrappedMac;
@@ -47,8 +48,9 @@ public final class RecordBlockCipher extends RecordCipher {
      */
     private WrappedMac writeMac;
 
-    public RecordBlockCipher(TlsContext context, KeySet keySet) {
-        super(context, keySet);
+    public RecordBlockCipher(TlsContext context, ProtocolVersion protocolVersion, CipherSuite cipherSuite,
+        KeySet keySet) {
+        super(context, protocolVersion, cipherSuite, keySet);
 
         ConnectionEndType localConEndType = context.getConnection().getLocalConnectionEndType();
 
