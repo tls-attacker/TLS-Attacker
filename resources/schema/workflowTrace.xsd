@@ -75,6 +75,8 @@
 
   <xs:element name="changeCompressionAction" type="changeCompressionAction"/>
 
+  <xs:element name="changeConnectionTimeoutAction" type="changeConnectionTimeoutAction"/>
+
   <xs:element name="changeContextValueAction" type="changeContextValueAction"/>
 
   <xs:element name="changeDefaultPreMasterSecretAction" type="changeDefaultPreMasterSecretAction"/>
@@ -318,6 +320,7 @@
         <xs:element name="ChangeDefaultPreMasterSecret" type="changeDefaultPreMasterSecretAction"/>
         <xs:element name="ChangeProtocolVersion" type="changeProtocolVersionAction"/>
         <xs:element name="ChangeServerRandom" type="changeServerRandomAction"/>
+        <xs:element name="ChangeConnectionTimeout" type="changeConnectionTimeoutAction"/>
         <xs:element name="ClearBuffers" type="clearBuffersAction"/>
         <xs:element name="ConnectionBound" type="connectionBoundAction"/>
         <xs:element name="CopyBufferedMessages" type="copyBufferedMessagesAction"/>
@@ -3262,6 +3265,17 @@
         <xs:sequence>
           <xs:element name="newValue" type="xs:string" minOccurs="0"/>
           <xs:element name="oldValue" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="changeConnectionTimeoutAction">
+    <xs:complexContent>
+      <xs:extension base="connectionBoundAction">
+        <xs:sequence>
+          <xs:element name="newValue" type="xs:long"/>
+          <xs:element name="oldValue" type="xs:long"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
