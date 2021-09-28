@@ -43,11 +43,6 @@ public class GOSTClientComputations extends KeyExchangeComputations {
 
     private ModifiableBigInteger clientPublicKeyY;
 
-    @Override
-    public void setSecretsInConfig(Config config) {
-
-    }
-
     public void setClientPublicKey(Point point) {
         this.clientPublicKeyX =
             ModifiableVariableFactory.safelySetValue(this.clientPublicKeyX, point.getFieldX().getData());

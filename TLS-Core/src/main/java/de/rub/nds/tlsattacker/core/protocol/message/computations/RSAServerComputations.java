@@ -24,13 +24,6 @@ public class RSAServerComputations extends KeyExchangeComputations {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
     private ModifiableBigInteger publicExponent;
 
-    @Override
-    public void setSecretsInConfig(Config config) {
-        config.setDefaultServerRSAModulus(modulus.getValue());
-        config.setDefaultServerRSAPublicKey(publicExponent.getValue());
-        config.setDefaultServerRSAPrivateKey(getPrivateKey().getValue());
-    }
-
     public void setModulus(BigInteger modulus) {
         this.modulus = ModifiableVariableFactory.safelySetValue(this.modulus, modulus);
     }
