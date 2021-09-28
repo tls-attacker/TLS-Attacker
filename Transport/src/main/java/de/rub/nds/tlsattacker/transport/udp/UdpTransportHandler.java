@@ -26,8 +26,6 @@ public abstract class UdpTransportHandler extends TransportHandler {
     protected DatagramSocket socket;
 
     protected int port;
-    protected int srcPort;
-    protected int dstPort;
 
     public UdpTransportHandler(Connection con) {
         super(con);
@@ -65,10 +63,10 @@ public abstract class UdpTransportHandler extends TransportHandler {
     }
 
     public int getSrcPort() {
-        return srcPort;
+        return socket.getLocalPort();
     }
 
     public int getDstPort() {
-        return dstPort;
+        return socket.getPort();
     }
 }

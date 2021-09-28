@@ -43,14 +43,9 @@ public class ClientUdpTransportHandler extends UdpTransportHandler {
         LOGGER.debug("Initializing ClientUdpTransportHandler host: {}, port: {}", hostname, port);
         socket = new DatagramSocket();
         socket.setSoTimeout((int) timeout);
-        srcPort = socket.getLocalPort();
-        dstPort = socket.getPort();
         cachedSocketState = null;
         setStreams(new PushbackInputStream(new UdpInputStream(socket, true)),
             new UdpOutputStream(socket, hostname, port));
     }
 
-    public int getLocalPort() {
-        return socket.getLocalPort();
-    }
 }
