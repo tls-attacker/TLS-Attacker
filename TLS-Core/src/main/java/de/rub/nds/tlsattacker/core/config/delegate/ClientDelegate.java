@@ -137,7 +137,7 @@ public class ClientDelegate extends Delegate {
         return extractedHost;
     }
 
-    public int getExtractedPort() {        
+    public int getExtractedPort() {
         return extractedPort;
     }
 }
