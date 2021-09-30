@@ -53,7 +53,7 @@ public abstract class RecordCipher {
 
     private CipherSuite cipherSuite;
 
-    protected final ProtocolVersion version;
+    private final ProtocolVersion version;
 
     // TODO get rid of context after DTLS SQN changes are merged
     public RecordCipher(TlsContext context, ProtocolVersion protocolVersion, CipherSuite cipherSuite, KeySet keySet) {
@@ -155,5 +155,9 @@ public abstract class RecordCipher {
 
     public void setCipherSuite(CipherSuite cipherSuite) {
         this.cipherSuite = cipherSuite;
+    }
+
+    public final ProtocolVersion getVersion() {
+        return version;
     }
 }

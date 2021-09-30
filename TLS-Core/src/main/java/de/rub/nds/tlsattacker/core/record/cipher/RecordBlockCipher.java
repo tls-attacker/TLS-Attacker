@@ -57,9 +57,9 @@ public final class RecordBlockCipher extends RecordCipher {
         try {
             encryptCipher = CipherWrapper.getEncryptionCipher(cipherSuite, localConEndType, getKeySet());
             decryptCipher = CipherWrapper.getDecryptionCipher(cipherSuite, localConEndType, getKeySet());
-            readMac = MacWrapper.getMac(version, cipherSuite, getKeySet().getReadMacSecret(localConEndType));
-            writeMac = MacWrapper.getMac(version, cipherSuite, getKeySet().getWriteMacSecret(localConEndType));
-            if (version.usesExplicitIv()) {
+            readMac = MacWrapper.getMac(getVersion(), cipherSuite, getKeySet().getReadMacSecret(localConEndType));
+            writeMac = MacWrapper.getMac(getVersion(), cipherSuite, getKeySet().getWriteMacSecret(localConEndType));
+            if (getVersion().usesExplicitIv()) {
                 useExplicitIv = true;
             } else {
                 useExplicitIv = false;
@@ -139,7 +139,7 @@ public final class RecordBlockCipher extends RecordCipher {
             } else {
                 computations.setAuthenticatedNonMetaData(record.getComputations().getCiphertext().getValue());
             }
-            computations.setAuthenticatedMetaData(collectAdditionalAuthenticatedData(record, version));
+            computations.setAuthenticatedMetaData(collectAdditionalAuthenticatedData(record, getVersion()));
             computations.setMac(calculateMac(
                 ArrayConverter.concatenate(computations.getAuthenticatedMetaData().getValue(),
                     computations.getAuthenticatedNonMetaData().getValue()),
@@ -153,7 +153,7 @@ public final class RecordBlockCipher extends RecordCipher {
             }
         } else {
             computations.setAuthenticatedNonMetaData(cleanBytes);
-            computations.setAuthenticatedMetaData(collectAdditionalAuthenticatedData(record, version));
+            computations.setAuthenticatedMetaData(collectAdditionalAuthenticatedData(record, getVersion()));
             computations.setMac(calculateMac(
                 ArrayConverter.concatenate(computations.getAuthenticatedMetaData().getValue(),
                     computations.getAuthenticatedNonMetaData().getValue()),
@@ -303,7 +303,7 @@ public final class RecordBlockCipher extends RecordCipher {
             } else {
                 computations.setAuthenticatedNonMetaData(record.getComputations().getCiphertext().getValue());
             }
-            computations.setAuthenticatedMetaData(collectAdditionalAuthenticatedData(record, version));
+            computations.setAuthenticatedMetaData(collectAdditionalAuthenticatedData(record, getVersion()));
 
             byte[] padding = parser.parseByteArrayField(plainData[plainData.length - 1] + 1);
             computations.setPadding(padding);
@@ -337,7 +337,7 @@ public final class RecordBlockCipher extends RecordCipher {
             computations.setPadding(padding);
 
             computations.setAuthenticatedNonMetaData(cleanProtocolBytes);
-            computations.setAuthenticatedMetaData(collectAdditionalAuthenticatedData(record, version));
+            computations.setAuthenticatedMetaData(collectAdditionalAuthenticatedData(record, getVersion()));
 
             computations.setPaddingValid(isPaddingValid(padding));
             byte[] calculatedHMAC = calculateMac(

@@ -64,7 +64,7 @@ public class RecordAEADCipher extends RecordCipher {
         } else {
             aeadTagLength = AEAD_TAG_LENGTH;
         }
-        if (version.isTLS13()) {
+        if (getVersion().isTLS13()) {
             aeadExplicitLength = 0;
         } else {
             aeadExplicitLength = AlgorithmResolver.getCipher(cipherSuite).getNonceBytesFromRecord();
@@ -72,7 +72,7 @@ public class RecordAEADCipher extends RecordCipher {
     }
 
     public int getAeadSizeIncrease() {
-        if (version.isTLS13()) {
+        if (getVersion().isTLS13()) {
             return aeadTagLength;
         } else {
             return aeadExplicitLength + aeadTagLength;
@@ -83,7 +83,7 @@ public class RecordAEADCipher extends RecordCipher {
         byte[] gcmNonce = ArrayConverter.concatenate(aeadSalt, explicitNonce);
 
         // Nonce construction is different for chacha & tls1.3
-        if (version.isTLS13() || getCipherAlg() == CipherAlgorithm.CHACHA20_POLY1305) {
+        if (getVersion().isTLS13() || getCipherAlg() == CipherAlgorithm.CHACHA20_POLY1305) {
             gcmNonce = preprocessIv(record.getSequenceNumber().getValue().longValue(), gcmNonce);
         } else if (getCipherAlg() == CipherAlgorithm.UNOFFICIAL_CHACHA20_POLY1305) {
             gcmNonce = ArrayConverter.longToUint64Bytes(record.getSequenceNumber().getValue().longValue());
@@ -121,7 +121,7 @@ public class RecordAEADCipher extends RecordCipher {
     public void encrypt(Record record) throws CryptoException {
         LOGGER.debug("Encrypting Record");
         record.getComputations().setCipherKey(getKeySet().getWriteKey(context.getChooser().getConnectionEndType()));
-        if (version.isTLS13()) {
+        if (getVersion().isTLS13()) {
             int additionalPadding = context.getConfig().getDefaultAdditionalPadding();
             if (additionalPadding > 65536) {
                 LOGGER.warn("Additional padding is too big. setting it to max possible value");
@@ -148,8 +148,7 @@ public class RecordAEADCipher extends RecordCipher {
         byte[] gcmNonce = prepareEncryptionGcmNonce(aeadSalt, explicitNonce, record);
 
         LOGGER.debug("Encrypting AEAD with the following IV: {}", ArrayConverter.bytesToHexString(gcmNonce));
-        byte[] additionalAuthenticatedData =
-            collectAdditionalAuthenticatedData(record, context.getChooser().getSelectedProtocolVersion());
+        byte[] additionalAuthenticatedData = collectAdditionalAuthenticatedData(record, getVersion());
         record.getComputations().setAuthenticatedMetaData(additionalAuthenticatedData);
         additionalAuthenticatedData = record.getComputations().getAuthenticatedMetaData().getValue();
 
@@ -207,8 +206,7 @@ public class RecordAEADCipher extends RecordCipher {
         record.getComputations().setCiphertext(cipherTextOnly);
         record.getComputations().setAuthenticatedNonMetaData(record.getComputations().getCiphertext().getValue());
 
-        byte[] additionalAuthenticatedData =
-            collectAdditionalAuthenticatedData(record, context.getChooser().getSelectedProtocolVersion());
+        byte[] additionalAuthenticatedData = collectAdditionalAuthenticatedData(record, getVersion());
         record.getComputations().setAuthenticatedMetaData(additionalAuthenticatedData);
         additionalAuthenticatedData = record.getComputations().getAuthenticatedMetaData().getValue();
 
@@ -218,7 +216,7 @@ public class RecordAEADCipher extends RecordCipher {
         byte[] gcmNonce = ArrayConverter.concatenate(salt, explicitNonce);
 
         // Nonce construction is different for chacha & tls1.3
-        if (version.isTLS13() || getCipherAlg() == CipherAlgorithm.CHACHA20_POLY1305) {
+        if (getVersion().isTLS13() || getCipherAlg() == CipherAlgorithm.CHACHA20_POLY1305) {
             gcmNonce = preprocessIv(record.getSequenceNumber().getValue().longValue(), gcmNonce);
         } else if (getCipherAlg() == CipherAlgorithm.UNOFFICIAL_CHACHA20_POLY1305) {
             gcmNonce = ArrayConverter.longToUint64Bytes(record.getSequenceNumber().getValue().longValue());
@@ -243,7 +241,7 @@ public class RecordAEADCipher extends RecordCipher {
             record.getComputations().setPlainRecordBytes(plainRecordBytes);
             plainRecordBytes = record.getComputations().getPlainRecordBytes().getValue();
 
-            if (version.isTLS13()) {
+            if (getVersion().isTLS13()) {
                 // TLS 1.3 plain record bytes are constructed as: Clean |
                 // ContentType | 0x00000... (Padding)
                 int numberOfPaddingBytes = countTrailingZeroBytes(plainRecordBytes);

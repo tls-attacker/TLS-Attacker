@@ -53,8 +53,9 @@ public class RecordStreamCipher extends RecordCipher {
             ConnectionEndType localConEndType = context.getConnection().getLocalConnectionEndType();
             encryptCipher = CipherWrapper.getEncryptionCipher(getCipherSuite(), localConEndType, getKeySet());
             decryptCipher = CipherWrapper.getDecryptionCipher(getCipherSuite(), localConEndType, getKeySet());
-            readMac = MacWrapper.getMac(version, getCipherSuite(), getKeySet().getReadMacSecret(localConEndType));
-            writeMac = MacWrapper.getMac(version, getCipherSuite(), getKeySet().getWriteMacSecret(localConEndType));
+            readMac = MacWrapper.getMac(getVersion(), getCipherSuite(), getKeySet().getReadMacSecret(localConEndType));
+            writeMac =
+                MacWrapper.getMac(getVersion(), getCipherSuite(), getKeySet().getWriteMacSecret(localConEndType));
         } catch (NoSuchAlgorithmException ex) {
             throw new UnsupportedOperationException("Cipher not supported: " + getCipherSuite().name(), ex);
         }
@@ -89,9 +90,10 @@ public class RecordStreamCipher extends RecordCipher {
 
         // For unusual handshakes we need the length here if TLS 1.3 is
         // negotiated as a version.
-        record.setLength(cleanBytes.length + AlgorithmResolver.getMacAlgorithm(version, getCipherSuite()).getSize());
+        record
+            .setLength(cleanBytes.length + AlgorithmResolver.getMacAlgorithm(getVersion(), getCipherSuite()).getSize());
 
-        computations.setAuthenticatedMetaData(collectAdditionalAuthenticatedData(record, version));
+        computations.setAuthenticatedMetaData(collectAdditionalAuthenticatedData(record, getVersion()));
         computations.setMac(calculateMac(
             ArrayConverter.concatenate(computations.getAuthenticatedMetaData().getValue(),
                 computations.getAuthenticatedNonMetaData().getValue()),
@@ -135,7 +137,7 @@ public class RecordStreamCipher extends RecordCipher {
         byte[] cleanBytes = parser.parseByteArrayField(plainData.length - readMac.getMacLength());
         record.setCleanProtocolMessageBytes(cleanBytes);
         record.getComputations().setAuthenticatedNonMetaData(cleanBytes);
-        record.getComputations().setAuthenticatedMetaData(collectAdditionalAuthenticatedData(record, version));
+        record.getComputations().setAuthenticatedMetaData(collectAdditionalAuthenticatedData(record, getVersion()));
         byte[] hmac = parser.parseByteArrayField(readMac.getMacLength());
         record.getComputations().setMac(hmac);
         byte[] calculatedHmac = calculateMac(
