@@ -18,7 +18,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.Security;
 
 /**
- * HMAC provides a base for implementing the PRF for TLS1.0 and TLS1.2
+ * Implements the HMAC class
  */
 
 public class HMAC {
@@ -33,7 +33,7 @@ public class HMAC {
      * Creates an hmac instance.
      *
      * @param macAlgorithm
-     *                     sets the hash algorithm for the prf
+     *                     sets the hash algorithm that is going to be used for the HMAC computation
      */
     public HMAC(MacAlgorithm macAlgorithm) throws NoSuchAlgorithmException {
         this.macAlgorithm = macAlgorithm;
@@ -66,37 +66,6 @@ public class HMAC {
     /* Implements getter amd setter methods */
     public void setSecret(byte[] newSecret) {
         this.secret = newSecret;
-    }
-
-    /*
-     * let you reset the used hash algorithm
-     */
-    public void setHashAlgorithm(MacAlgorithm macAlgorithm) throws NoSuchAlgorithmException {
-        this.macAlgorithm = macAlgorithm;
-
-        // decides which hash for the hmac should be used
-        switch (macAlgorithm) {
-            case HMAC_SHA1:
-                this.digest = MessageDigest.getInstance("SHA-1");
-                break;
-            case HMAC_MD5:
-                this.digest = MessageDigest.getInstance("MD5");
-                break;
-            case HMAC_SHA256:
-                this.digest = MessageDigest.getInstance("SHA-256");
-                break;
-            case HMAC_SHA384:
-                this.digest = MessageDigest.getInstance("SHA-384");
-                break;
-            case HMAC_GOSTR3411:
-                this.digest = MessageDigest.getInstance("GOST3411");
-                break;
-            case HMAC_GOSTR3411_2012_256:
-                this.digest = MessageDigest.getInstance("GOST3411-2012-256");
-                break;
-            default:
-                throw new UnsupportedOperationException("Hash algorithm is not supported");
-        }
     }
 
     public MessageDigest getDigest() {

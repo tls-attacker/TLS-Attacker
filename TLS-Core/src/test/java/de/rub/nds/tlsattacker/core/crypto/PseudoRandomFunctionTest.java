@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.security.NoSuchAlgorithmException;
 import java.security.Security;
@@ -130,7 +131,7 @@ public class PseudoRandomFunctionTest {
     }
 
     @Test
-    public void testComputeForSSL3() throws CryptoException, NoSuchAlgorithmException {
+    public void testComputeForSSL3() throws CryptoException, NoSuchAlgorithmException, IOException {
         byte[] master_secret = ArrayConverter.hexStringToByteArray(StringUtils.repeat("01", 48));
         byte[] client_random = ArrayConverter.hexStringToByteArray(StringUtils.repeat("02", 32));
         byte[] server_random = ArrayConverter.hexStringToByteArray(StringUtils.repeat("03", 32));
@@ -139,6 +140,22 @@ public class PseudoRandomFunctionTest {
         byte[] result2 = ArrayConverter.hexStringToByteArray(
             "24d8e8797e3a106b7752b22cbf8829acf27c8f1e2630e9c2d3442f991e7736288d696027c06fd118f1c59311a66039a0");
 
+        assertArrayEquals(result1, result2);
+    }
+
+    @Test
+    public void testComputeForTLS10() throws CryptoException {
+        /*
+        * Test case 1: secret with length 0
+        * */
+        byte [] secret = new byte[0];
+        PRFAlgorithm prfAlgorithm = PRFAlgorithm.TLS_PRF_LEGACY;
+        String label = "master secret";
+        byte [] seed = new byte[60];
+        int size = 48;
+
+        byte[] result1 = TlsUtils.PRF_legacy(secret, label, seed, size);
+        byte[] result2 = PseudoRandomFunction.compute(PRFAlgorithm.TLS_PRF_LEGACY, secret, label, seed, size);
         assertArrayEquals(result1, result2);
     }
 }

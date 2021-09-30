@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.security.NoSuchAlgorithmException;
 import java.security.Security;
@@ -81,15 +82,11 @@ public class PseudoRandomFunction {
      * @throws NoSuchAlgorithmException
      */
     public static byte[] computeSSL3(byte[] master_secret, byte[] client_random, byte[] server_random, int size)
-        throws NoSuchAlgorithmException {
+            throws NoSuchAlgorithmException, IOException {
         HMAC md5 = new HMAC(MacAlgorithm.HMAC_MD5);
         HMAC sha = new HMAC(MacAlgorithm.HMAC_SHA1);
 
-        byte[] outputMd5;
-        byte[] outputSha;
         byte[] pseudoRandomBitStream = new byte[0];
-        ByteArrayOutputStream salt = new ByteArrayOutputStream();
-        salt.write(0x41);
 
         /*
          * To generate the key material, compute pseudoRandomBitStream = MD5(master_secret + SHA(`A' + master_secret +
@@ -97,21 +94,18 @@ public class PseudoRandomFunction {
          * + ClientHello.random)) + MD5(master_secret + SHA(`CCC' + master_secret + ServerHello.random +
          * ClientHello.random)) + [...]; until enough output has been generated.
          */
-        for (int i = 0; pseudoRandomBitStream.length < size; i++) {
-            outputSha = sha.getDigest()
-                .digest(ArrayConverter.concatenate(salt.toByteArray(), master_secret, server_random, client_random));
-            outputMd5 = md5.getDigest().digest(ArrayConverter.concatenate(master_secret, outputSha));
-
-            pseudoRandomBitStream = ArrayConverter.concatenate(pseudoRandomBitStream, outputMd5);
-
-            /*
-             * Resets the salt and rewrites it. For each new iteration another byte will be added to the salt as
-             * described in the comment above.
-             */
-            salt.reset();
-            for (int j = 0; j < i + 2; j++) {
-                salt.write(0x41 + i + 1);
+        for (int i = 0; pseudoRandomBitStream.length <= size; i++) {
+            ByteArrayOutputStream outputMd5 = new ByteArrayOutputStream();
+            ByteArrayOutputStream outputSha = new ByteArrayOutputStream();
+            ByteArrayOutputStream salt = new ByteArrayOutputStream();
+            for (int j = 0; j <= i; j++){
+                salt.write(0x41 + i);
             }
+
+            outputSha.write(sha.getDigest().digest(ArrayConverter.concatenate(salt.toByteArray(), master_secret, server_random, client_random)));
+            outputMd5.write(md5.getDigest().digest(ArrayConverter.concatenate(master_secret, outputSha.toByteArray())));
+
+            pseudoRandomBitStream = ArrayConverter.concatenate(pseudoRandomBitStream, outputMd5.toByteArray());
         }
         return Arrays.copyOf(pseudoRandomBitStream, size);
     }
@@ -139,22 +133,23 @@ public class PseudoRandomFunction {
             LOGGER.warn("Trying to compute PRF without specified PRF algorithm. Using TLS 1.0/TLS 1.1 as default.");
             prfAlgorithm = PRFAlgorithm.TLS_PRF_LEGACY;
         }
-        switch (prfAlgorithm) {
-            case TLS_PRF_SHA256:
-                return computeTls12(secret, label, seed, size, MacAlgorithm.HMAC_SHA256);
-            case TLS_PRF_SHA384:
-                return computeTls12(secret, label, seed, size, MacAlgorithm.HMAC_SHA384);
-            case TLS_PRF_GOSTR3411:
-                return computeTls12(secret, label, seed, size, MacAlgorithm.HMAC_GOSTR3411);
-            case TLS_PRF_GOSTR3411_2012_256:
-                return computeTls12(secret, label, seed, size, MacAlgorithm.HMAC_GOSTR3411_2012_256);
-            case TLS_PRF_LEGACY:
-                // prf legacy is the prf computation function for older protocol
-                // versions, it works by default with sha1 and md5
-                return computeTls10(secret, label, seed, size);
-            default:
-                throw new UnsupportedOperationException(
-                    "PRF computation for different" + " protocol versions is not supported yet");
+
+        if(prfAlgorithm == PRFAlgorithm.TLS_PRF_LEGACY){
+            return computeTls10(secret, label, seed, size);
+        }else{
+            switch (prfAlgorithm) {
+                case TLS_PRF_SHA256:
+                    return computeTls12(secret, label, seed, size, MacAlgorithm.HMAC_SHA256);
+                case TLS_PRF_SHA384:
+                    return computeTls12(secret, label, seed, size, MacAlgorithm.HMAC_SHA384);
+                case TLS_PRF_GOSTR3411:
+                    return computeTls12(secret, label, seed, size, MacAlgorithm.HMAC_GOSTR3411);
+                case TLS_PRF_GOSTR3411_2012_256:
+                    return computeTls12(secret, label, seed, size, MacAlgorithm.HMAC_GOSTR3411_2012_256);
+                default:
+                    throw new UnsupportedOperationException(
+                            "PRF computation for different" + " protocol versions is not supported yet");
+            }
         }
     }
 
@@ -169,11 +164,11 @@ public class PseudoRandomFunction {
             /*
              * Divides the secret into two halves, s1 and s2
              */
-            int offset = (secret.length + 1) / 2;
-            byte[] s1 = new byte[offset];
-            byte[] s2 = new byte[offset];
-            System.arraycopy(secret, 0, s1, 0, offset);
-            System.arraycopy(secret, secret.length - offset, s2, 0, offset);
+            int secretHalf = (secret.length + 1) / 2;
+            byte[] s1 = new byte[secretHalf];
+            byte[] s2 = new byte[secretHalf];
+            System.arraycopy(secret, 0, s1, 0, secretHalf);
+            System.arraycopy(secret, secret.length - secretHalf, s2, 0, secretHalf);
 
             hmacMd5.init(s1);
             hmacSha1.init(s2);
@@ -196,7 +191,7 @@ public class PseudoRandomFunction {
             }
 
             return pseudoRandomBitStream;
-        } catch (NoSuchAlgorithmException ex) {
+        } catch (NoSuchAlgorithmException | IOException ex) {
             throw new CryptoException(ex);
         }
     }
@@ -236,7 +231,7 @@ public class PseudoRandomFunction {
             byte[] pseudoRandomBitStream = p_hash(hmac, labelSeed, size);
 
             return pseudoRandomBitStream;
-        } catch (NoSuchAlgorithmException ex) {
+        } catch (NoSuchAlgorithmException | IOException ex) {
             throw new CryptoException(ex);
         }
     }
@@ -262,8 +257,8 @@ public class PseudoRandomFunction {
      * @return
      * @throws NoSuchAlgorithmException
      */
-    private static byte[] p_hash(HMAC hmac, byte[] data, int size) throws NoSuchAlgorithmException {
-        byte[] extendedSecret = new byte[0];
+    private static byte[] p_hash(HMAC hmac, byte[] data, int size) throws NoSuchAlgorithmException, IOException {
+        ByteArrayOutputStream extendedSecret = new ByteArrayOutputStream();
 
         /*
          * hmacIteration will be used as an input for the next hmac, which will generate the actual bytes for the
@@ -274,12 +269,11 @@ public class PseudoRandomFunction {
         /*
          * Expands the secret
          */
-        while (extendedSecret.length < size) {
+        while (extendedSecret.size() < size) {
             hmacIteration = hmac.doFinal(hmacIteration);
-            extendedSecret = ArrayConverter.concatenate(extendedSecret,
-                hmac.doFinal(ArrayConverter.concatenate(hmacIteration, data)));
+            extendedSecret.write(hmac.doFinal(ArrayConverter.concatenate(hmacIteration, data)));
         }
-        return Arrays.copyOf(extendedSecret, size);
+        return Arrays.copyOf(extendedSecret.toByteArray(), size);
     }
 
     private PseudoRandomFunction() {
