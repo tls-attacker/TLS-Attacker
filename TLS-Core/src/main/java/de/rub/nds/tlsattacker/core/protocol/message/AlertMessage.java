@@ -149,7 +149,7 @@ public class AlertMessage extends TlsMessage {
         if (alertDescription == null) {
             throw new NullPointerException();
         }
-        return AlertDescription.getAlertDescription(description.getValue()).toString();
+        return alertDescription.toString();
     }
 
     @Override
