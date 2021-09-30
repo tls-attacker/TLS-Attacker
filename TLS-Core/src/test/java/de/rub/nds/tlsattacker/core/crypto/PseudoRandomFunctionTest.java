@@ -146,12 +146,12 @@ public class PseudoRandomFunctionTest {
     @Test
     public void testComputeForTLS10() throws CryptoException {
         /*
-        * Test case 1: secret with length 0
-        * */
-        byte [] secret = new byte[0];
+         * Test case 1: secret with length 0
+         */
+        byte[] secret = new byte[0];
         PRFAlgorithm prfAlgorithm = PRFAlgorithm.TLS_PRF_LEGACY;
         String label = "master secret";
-        byte [] seed = new byte[60];
+        byte[] seed = new byte[60];
         int size = 48;
 
         byte[] result1 = TlsUtils.PRF_legacy(secret, label, seed, size);

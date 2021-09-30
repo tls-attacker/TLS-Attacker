@@ -82,7 +82,7 @@ public class PseudoRandomFunction {
      * @throws NoSuchAlgorithmException
      */
     public static byte[] computeSSL3(byte[] master_secret, byte[] client_random, byte[] server_random, int size)
-            throws NoSuchAlgorithmException, IOException {
+        throws NoSuchAlgorithmException, IOException {
         HMAC md5 = new HMAC(MacAlgorithm.HMAC_MD5);
         HMAC sha = new HMAC(MacAlgorithm.HMAC_SHA1);
 
@@ -98,11 +98,12 @@ public class PseudoRandomFunction {
             ByteArrayOutputStream outputMd5 = new ByteArrayOutputStream();
             ByteArrayOutputStream outputSha = new ByteArrayOutputStream();
             ByteArrayOutputStream salt = new ByteArrayOutputStream();
-            for (int j = 0; j <= i; j++){
+            for (int j = 0; j <= i; j++) {
                 salt.write(0x41 + i);
             }
 
-            outputSha.write(sha.getDigest().digest(ArrayConverter.concatenate(salt.toByteArray(), master_secret, server_random, client_random)));
+            outputSha.write(sha.getDigest()
+                .digest(ArrayConverter.concatenate(salt.toByteArray(), master_secret, server_random, client_random)));
             outputMd5.write(md5.getDigest().digest(ArrayConverter.concatenate(master_secret, outputSha.toByteArray())));
 
             pseudoRandomBitStream = ArrayConverter.concatenate(pseudoRandomBitStream, outputMd5.toByteArray());
@@ -134,9 +135,9 @@ public class PseudoRandomFunction {
             prfAlgorithm = PRFAlgorithm.TLS_PRF_LEGACY;
         }
 
-        if(prfAlgorithm == PRFAlgorithm.TLS_PRF_LEGACY){
+        if (prfAlgorithm == PRFAlgorithm.TLS_PRF_LEGACY) {
             return computeTls10(secret, label, seed, size);
-        }else{
+        } else {
             switch (prfAlgorithm) {
                 case TLS_PRF_SHA256:
                     return computeTls12(secret, label, seed, size, MacAlgorithm.HMAC_SHA256);
@@ -148,7 +149,7 @@ public class PseudoRandomFunction {
                     return computeTls12(secret, label, seed, size, MacAlgorithm.HMAC_GOSTR3411_2012_256);
                 default:
                     throw new UnsupportedOperationException(
-                            "PRF computation for different" + " protocol versions is not supported yet");
+                        "PRF computation for different" + " protocol versions is not supported yet");
             }
         }
     }
