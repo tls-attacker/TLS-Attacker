@@ -139,7 +139,7 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
     }
 
     private void executeRetransmission(SendingAction action) throws IOException {
-        LOGGER.info("Executing retransmission of last send flight");
+        LOGGER.info("Executing retransmission of last sent flight");
         for (AbstractRecord abstractRecord : action.getSendRecords()) {
             if (abstractRecord instanceof Record) {
                 Record record = (Record) abstractRecord;
