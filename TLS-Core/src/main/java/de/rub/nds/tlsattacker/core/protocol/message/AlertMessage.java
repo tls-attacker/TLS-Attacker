@@ -145,6 +145,10 @@ public class AlertMessage extends TlsMessage {
 
     @Override
     public String toShortString() {
+        AlertDescription alertDescription = AlertDescription.getAlertDescription(description.getValue());
+        if (alertDescription == null) {
+            throw new NullPointerException();
+        }
         return AlertDescription.getAlertDescription(description.getValue()).toString();
     }
 
