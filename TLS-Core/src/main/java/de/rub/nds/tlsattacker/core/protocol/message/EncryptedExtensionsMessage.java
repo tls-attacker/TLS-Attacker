@@ -47,6 +47,11 @@ public class EncryptedExtensionsMessage extends HandshakeMessage {
     }
 
     @Override
+    public String toShortString() {
+        return "EEM";
+    }
+
+    @Override
     public EncryptedExtensionsHandler getHandler(TlsContext context) {
         return new EncryptedExtensionsHandler(context);
     }

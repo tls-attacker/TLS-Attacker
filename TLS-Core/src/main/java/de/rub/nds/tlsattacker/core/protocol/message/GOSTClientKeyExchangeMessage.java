@@ -84,4 +84,9 @@ public class GOSTClientKeyExchangeMessage extends ClientKeyExchangeMessage {
         return holders;
     }
 
+    @Override
+    public String toShortString() {
+        return "GOST_CKE";
+    }
+
 }

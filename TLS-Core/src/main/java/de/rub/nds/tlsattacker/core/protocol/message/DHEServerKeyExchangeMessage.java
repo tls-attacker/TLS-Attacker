@@ -162,6 +162,11 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     }
 
     @Override
+    public String toShortString() {
+        return "DH_SKE";
+    }
+
+    @Override
     public void prepareComputations() {
         if (getComputations() == null) {
             computations = new DHEServerComputations();

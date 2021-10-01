@@ -90,4 +90,9 @@ public class PskEcDhClientKeyExchangeMessage extends ECDHClientKeyExchangeMessag
     public String toCompactString() {
         return "PSK_ECDH_CLIENT_KEY_EXCHANGE";
     }
+
+    @Override
+    public String toShortString() {
+        return "PSK_ECDH_CKE";
+    }
 }

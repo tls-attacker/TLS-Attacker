@@ -121,4 +121,8 @@ public class HttpsResponseMessage extends TlsMessage {
         return new HttpsResponseHandler(context);
     }
 
+    @Override
+    public java.lang.String toShortString() {
+        return "HTTPS_RES";
+    }
 }

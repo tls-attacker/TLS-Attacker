@@ -134,4 +134,9 @@ public class HttpsRequestMessage extends TlsMessage {
         return new HttpsRequestHandler(context);
     }
 
+    @Override
+    public String toShortString() {
+        return "HTTPS_REQ";
+    }
+
 }
