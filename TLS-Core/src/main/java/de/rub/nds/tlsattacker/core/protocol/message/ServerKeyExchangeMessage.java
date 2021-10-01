@@ -118,4 +118,9 @@ public abstract class ServerKeyExchangeMessage extends HandshakeMessage {
     public void setPublicKey(byte[] publicKey) {
         this.publicKey = ModifiableVariableFactory.safelySetValue(this.publicKey, publicKey);
     }
+
+    @Override
+    public String toShortString() {
+        return "SKE";
+    }
 }

@@ -55,6 +55,11 @@ public class DHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     }
 
     @Override
+    public String toShortString() {
+        return "DH_CKE";
+    }
+
+    @Override
     public void prepareComputations() {
         if (getComputations() == null) {
             computations = new DHClientComputations();

@@ -94,9 +94,9 @@ public class ResponseFingerprint {
     public String toShortString() {
         StringBuilder messages = new StringBuilder();
         for (ProtocolMessage someMessage : this.messageList) {
-            messages.append(someMessage.getClass().getSimpleName()).append(",");
+            messages.append(someMessage.toShortString()).append(",");
         }
-        return messages + " SocketState: " + socketState;
+        return messages.append("|").append(socketState).toString();
     }
 
     public String toHumanReadable() {

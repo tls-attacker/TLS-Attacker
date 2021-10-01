@@ -116,4 +116,9 @@ public class PskServerKeyExchangeMessage extends ServerKeyExchangeMessage {
         }
         return holders;
     }
+
+    @Override
+    public String toShortString() {
+        return "PSK_SKE";
+    }
 }

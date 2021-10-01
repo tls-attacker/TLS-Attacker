@@ -110,6 +110,11 @@ public class CertificateVerifyMessage extends HandshakeMessage {
     }
 
     @Override
+    public String toShortString() {
+        return "CV";
+    }
+
+    @Override
     public CertificateVerifyHandler getHandler(TlsContext context) {
         return new CertificateVerifyHandler(context);
     }

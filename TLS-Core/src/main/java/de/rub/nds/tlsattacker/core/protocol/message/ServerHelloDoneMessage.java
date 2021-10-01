@@ -37,4 +37,9 @@ public class ServerHelloDoneMessage extends HandshakeMessage {
         sb.append("ServerHelloDoneMessage:");
         return sb.toString();
     }
+
+    @Override
+    public String toShortString() {
+        return "SHD";
+    }
 }

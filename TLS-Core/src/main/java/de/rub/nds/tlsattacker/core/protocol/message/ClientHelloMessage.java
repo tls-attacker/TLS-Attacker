@@ -376,6 +376,11 @@ public class ClientHelloMessage extends HelloMessage {
     }
 
     @Override
+    public String toShortString() {
+        return "CH";
+    }
+
+    @Override
     public ClientHelloHandler getHandler(TlsContext context) {
         return new ClientHelloHandler(context);
     }

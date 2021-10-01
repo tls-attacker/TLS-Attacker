@@ -144,6 +144,15 @@ public class AlertMessage extends TlsMessage {
     }
 
     @Override
+    public String toShortString() {
+        AlertDescription alertDescription = AlertDescription.getAlertDescription(description.getValue());
+        if (alertDescription == null) {
+            return "UKNOWN ALERT";
+        }
+        return alertDescription.toString();
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof AlertMessage)) {
             return false;

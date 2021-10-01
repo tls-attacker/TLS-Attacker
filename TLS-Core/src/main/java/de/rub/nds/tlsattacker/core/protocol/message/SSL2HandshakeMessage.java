@@ -61,5 +61,4 @@ public abstract class SSL2HandshakeMessage extends HandshakeMessage {
         }
         return sb.toString();
     }
-
 }

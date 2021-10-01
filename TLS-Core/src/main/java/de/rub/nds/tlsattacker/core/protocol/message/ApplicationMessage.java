@@ -89,6 +89,11 @@ public class ApplicationMessage extends TlsMessage {
     }
 
     @Override
+    public String toShortString() {
+        return "APP";
+    }
+
+    @Override
     public TlsMessageHandler getHandler(TlsContext context) {
         return new ApplicationMessageHandler(context);
     }
