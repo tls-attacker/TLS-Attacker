@@ -134,6 +134,11 @@ public class HeartbeatMessage extends TlsMessage {
     }
 
     @Override
+    public String toShortString() {
+        return "HB";
+    }
+
+    @Override
     public TlsMessageHandler getHandler(TlsContext context) {
         return new HeartbeatMessageHandler(context);
     }

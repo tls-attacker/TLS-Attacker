@@ -118,4 +118,9 @@ public class PskClientKeyExchangeMessage extends ClientKeyExchangeMessage {
         return holders;
     }
 
+    @Override
+    public String toShortString() {
+        return "PSK_CKE";
+    }
+
 }

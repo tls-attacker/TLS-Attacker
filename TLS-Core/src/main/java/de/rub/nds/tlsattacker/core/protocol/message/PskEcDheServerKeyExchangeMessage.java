@@ -96,4 +96,9 @@ public class PskEcDheServerKeyExchangeMessage extends ECDHEServerKeyExchangeMess
     public String toCompactString() {
         return "ECDHE_PSK_SERVER_KEY_EXCHANGE";
     }
+
+    @Override
+    public String toShortString() {
+        return "PSK_ECDHE_SKE";
+    }
 }

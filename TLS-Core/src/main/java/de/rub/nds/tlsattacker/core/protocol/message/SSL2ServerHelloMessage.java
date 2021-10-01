@@ -223,4 +223,9 @@ public class SSL2ServerHelloMessage extends SSL2HandshakeMessage {
         }
         return sb.toString();
     }
+
+    @Override
+    public String toShortString() {
+        return "SSL2_SH";
+    }
 }

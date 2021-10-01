@@ -108,4 +108,9 @@ public class HelloVerifyRequestMessage extends HandshakeMessage {
         return sb.toString();
     }
 
+    @Override
+    public String toShortString() {
+        return "HVR";
+    }
+
 }

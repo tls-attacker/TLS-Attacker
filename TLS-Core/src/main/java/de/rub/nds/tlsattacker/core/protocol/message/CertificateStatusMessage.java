@@ -76,6 +76,11 @@ public class CertificateStatusMessage extends HandshakeMessage {
         return builder.toString();
     }
 
+    @Override
+    public String toShortString() {
+        return "CERT_STAT";
+    }
+
     public ModifiableInteger getCertificateStatusType() {
         return certificateStatusType;
     }

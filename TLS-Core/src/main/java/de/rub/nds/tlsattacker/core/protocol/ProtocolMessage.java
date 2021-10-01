@@ -118,7 +118,15 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder {
         this.adjustContext = ModifiableVariableFactory.safelySetValue(this.adjustContext, adjustContext);
     }
 
+    /**
+     * Returns a compact version of the protocol message still containing some additional information.
+     */
     public abstract String toCompactString();
+
+    /**
+     * Returns the shortest possible string for the protocol message, mostly abbreviations.
+     */
+    public abstract String toShortString();
 
     public abstract <S extends ProtocolMessage, T extends ProtocolMessageHandler<S>> T getHandler(TlsContext context);
 

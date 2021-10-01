@@ -183,6 +183,11 @@ public class CertificateMessage extends HandshakeMessage {
     }
 
     @Override
+    public String toShortString() {
+        return "CERT";
+    }
+
+    @Override
     public CertificateMessageHandler getHandler(TlsContext context) {
         return new CertificateMessageHandler(context);
     }

@@ -114,4 +114,9 @@ public class SupplementalDataMessage extends HandshakeMessage {
         return sb.toString();
     }
 
+    @Override
+    public String toShortString() {
+        return "SDM";
+    }
+
 }
