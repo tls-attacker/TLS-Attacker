@@ -147,7 +147,7 @@ public class AlertMessage extends TlsMessage {
     public String toShortString() {
         AlertDescription alertDescription = AlertDescription.getAlertDescription(description.getValue());
         if (alertDescription == null) {
-            throw new NullPointerException();
+            return "UKNOWN ALERT";
         }
         return alertDescription.toString();
     }
