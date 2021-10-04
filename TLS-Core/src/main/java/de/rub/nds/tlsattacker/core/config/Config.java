@@ -2363,7 +2363,7 @@ public class Config implements Serializable {
         return createFragmentsDynamically;
     }
 
-    public void setCreateFragmentsDynamicallyy(Boolean createFragmentsDynamically) {
+    public void setCreateFragmentsDynamically(Boolean createFragmentsDynamically) {
         this.createFragmentsDynamically = createFragmentsDynamically;
     }
 
