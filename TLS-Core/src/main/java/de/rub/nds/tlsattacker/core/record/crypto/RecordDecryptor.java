@@ -64,7 +64,8 @@ public class RecordDecryptor extends Decryptor {
             recordCipher = getRecordMostRecentCipher();
         }
         record.prepareComputations();
-        if (!ProtocolVersion.getProtocolVersion(record.getProtocolVersion().getValue()).isDTLS()) {
+        ProtocolVersion version = ProtocolVersion.getProtocolVersion(record.getProtocolVersion().getValue());
+        if (version == null || !version.isDTLS()) {
             record.setSequenceNumber(BigInteger.valueOf(context.getReadSequenceNumber()));
         }
         try {
