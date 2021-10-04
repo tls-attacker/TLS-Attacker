@@ -92,8 +92,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensions"),
         @XmlElement(type = GOSTClientKeyExchangeMessage.class, name = "GostClientKeyExchangeMessage"),
         @XmlElement(type = EmptyClientKeyExchangeMessage.class, name = "EmptyClientKeyExchangeMessage"),
-        @XmlElement(type = DtlsHandshakeMessageFragment.class, name = "DtlsHandshakeMessageFragment"),
-        @XmlElement(type = HelloRetryRequestMessage.class, name = "HelloRetryRequest") })
+        @XmlElement(type = DtlsHandshakeMessageFragment.class, name = "DtlsHandshakeMessageFragment") })
     protected List<ProtocolMessage> expectedMessages = new ArrayList<>();
 
     public ReceiveAction() {

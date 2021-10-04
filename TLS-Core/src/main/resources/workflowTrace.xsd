@@ -159,8 +159,6 @@
 
   <xs:element name="helloRequestMessage" type="helloRequestMessage"/>
 
-  <xs:element name="helloRetryRequestMessage" type="helloRetryRequestMessage"/>
-
   <xs:element name="helloVerifyRequestMessage" type="helloVerifyRequestMessage"/>
 
   <xs:element name="httpsRequestMessage" type="httpsRequestMessage"/>
@@ -542,7 +540,6 @@
                   <xs:element name="EndOfEarlyData" type="endOfEarlyDataMessage"/>
                   <xs:element name="EncryptedExtensions" type="encryptedExtensionsMessage"/>
                   <xs:element name="DtlsHandshakeMessageFragment" type="dtlsHandshakeMessageFragment"/>
-                  <xs:element name="HelloRetryRequest" type="helloRetryRequestMessage"/>
                 </xs:choice>
               </xs:sequence>
             </xs:complexType>
@@ -2816,17 +2813,6 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="helloRetryRequestMessage">
-    <xs:complexContent>
-      <xs:extension base="handshakeMessage">
-        <xs:sequence>
-          <xs:element name="protocolVersion" type="modifiableByteArray" minOccurs="0"/>
-          <xs:element name="selectedCipherSuite" type="modifiableByteArray" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
   <xs:complexType name="record">
     <xs:complexContent>
       <xs:extension base="abstractRecord">
@@ -3483,7 +3469,6 @@
                   <xs:element name="SrpClientKeyExchange" type="srpClientKeyExchangeMessage"/>
                   <xs:element name="EndOfEarlyData" type="endOfEarlyDataMessage"/>
                   <xs:element name="EncryptedExtensions" type="encryptedExtensionsMessage"/>
-                  <xs:element name="HelloRetryRequest" type="helloRetryRequestMessage"/>
                 </xs:choice>
               </xs:sequence>
             </xs:complexType>
@@ -3547,7 +3532,6 @@
                   <xs:element name="SrpClientKeyExchange" type="srpClientKeyExchangeMessage"/>
                   <xs:element name="EndOfEarlyData" type="endOfEarlyDataMessage"/>
                   <xs:element name="EncryptedExtensions" type="encryptedExtensionsMessage"/>
-                  <xs:element name="HelloRetryRequest" type="helloRetryRequestMessage"/>
                 </xs:choice>
               </xs:sequence>
             </xs:complexType>
@@ -3611,7 +3595,6 @@
                   <xs:element name="SrpClientKeyExchange" type="srpClientKeyExchangeMessage"/>
                   <xs:element name="EndOfEarlyData" type="endOfEarlyDataMessage"/>
                   <xs:element name="EncryptedExtensions" type="encryptedExtensionsMessage"/>
-                  <xs:element name="HelloRetryRequest" type="helloRetryRequestMessage"/>
                 </xs:choice>
               </xs:sequence>
             </xs:complexType>
@@ -3722,7 +3705,6 @@
             <xs:element name="SrpClientKeyExchange" type="srpClientKeyExchangeMessage"/>
             <xs:element name="EndOfEarlyData" type="endOfEarlyDataMessage"/>
             <xs:element name="EncryptedExtensions" type="encryptedExtensionsMessage"/>
-            <xs:element name="HelloRetryRequest" type="helloRetryRequestMessage"/>
           </xs:choice>
         </xs:sequence>
       </xs:extension>
@@ -3797,7 +3779,6 @@
                   <xs:element name="GostClientKeyExchangeMessage" type="gostClientKeyExchangeMessage"/>
                   <xs:element name="EmptyClientKeyExchangeMessage" type="emptyClientKeyExchangeMessage"/>
                   <xs:element name="DtlsHandshakeMessageFragment" type="dtlsHandshakeMessageFragment"/>
-                  <xs:element name="HelloRetryRequest" type="helloRetryRequestMessage"/>
                 </xs:choice>
               </xs:sequence>
             </xs:complexType>
