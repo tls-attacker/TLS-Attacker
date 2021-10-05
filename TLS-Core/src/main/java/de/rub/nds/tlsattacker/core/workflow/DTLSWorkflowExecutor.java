@@ -136,6 +136,12 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
         if (config.getConfigOutput() != null) {
             ConfigIO.write(config, new File(config.getConfigOutput()));
         }
+        
+        try {
+            getAfterExecutionCallback().apply(state);
+        } catch (Exception ex) {
+            LOGGER.trace("Error during AfterExecutionCallback", ex);
+        }
     }
 
     private void executeRetransmission(SendingAction action) throws IOException {
