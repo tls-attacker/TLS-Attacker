@@ -55,7 +55,7 @@ public class ChangeMasterSecretActionTest {
     }
 
     /**
-     * Test of setNewValue method, of class ChangeClientRandomAction.
+     * Test of setNewValue method, of class ChangeMasterSecretAction.
      */
     @Test
     public void testSetNewValue() {
@@ -65,7 +65,7 @@ public class ChangeMasterSecretActionTest {
     }
 
     /**
-     * Test of getNewValue method, of class ChangeClientRandomAction.
+     * Test of getNewValue method, of class ChangeMasterSecretAction.
      */
     @Test
     public void testGetNewValue() {
@@ -73,7 +73,7 @@ public class ChangeMasterSecretActionTest {
     }
 
     /**
-     * Test of getOldValue method, of class ChangeClientRandomAction.
+     * Test of getOldValue method, of class ChangeMasterSecretAction.
      */
     @Test
     public void testGetOldValue() {
@@ -84,7 +84,7 @@ public class ChangeMasterSecretActionTest {
     }
 
     /**
-     * Test of execute method, of class ChangeClientRandomAction.
+     * Test of execute method, of class ChangeMasterSecretAction.
      */
     @Test
     public void testExecute() {

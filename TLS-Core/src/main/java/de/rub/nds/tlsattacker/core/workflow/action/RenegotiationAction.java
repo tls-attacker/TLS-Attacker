@@ -30,6 +30,7 @@ public class RenegotiationAction extends ConnectionBoundAction {
         }
         tlsContext.getDigest().reset();
         tlsContext.setDtlsWriteHandshakeMessageSequence(0);
+        tlsContext.setDtlsReadHandshakeMessageSequence(0);
         setExecuted(true);
         LOGGER.info("Resetting Digest for Renegotiation");
     }

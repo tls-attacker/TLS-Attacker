@@ -27,7 +27,6 @@ import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
 import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.core.protocol.ParserResult;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
-import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -69,14 +68,19 @@ public class ReceiveMessageHelper {
 
         try {
             byte[] receivedBytes;
+            int receivedBytesLength = 0;
             boolean shouldContinue = true;
             do {
                 receivedBytes = receiveByteArray(context);
+                receivedBytesLength += receivedBytes.length;
                 MessageActionResult tempResult = handleReceivedBytes(receivedBytes, context);
                 result = result.merge(tempResult);
                 if (context.getConfig().isQuickReceive() && !expectedMessages.isEmpty()) {
                     shouldContinue =
                         testIfWeShouldContinueToReceive(expectedMessages, result.getMessageList(), context);
+                }
+                if (receivedBytesLength >= context.getConfig().getReceiveMaximumBytes()) {
+                    shouldContinue = false;
                 }
             } while (receivedBytes.length != 0 && shouldContinue);
 
@@ -97,9 +101,11 @@ public class ReceiveMessageHelper {
         MessageActionResult result = new MessageActionResult();
         try {
             byte[] receivedBytes;
+            int receivedBytesLength = 0;
             boolean shouldContinue = true;
             do {
                 receivedBytes = receiveByteArray(context);
+                receivedBytesLength += receivedBytes.length;
                 MessageActionResult tempResult = handleReceivedBytes(receivedBytes, context);
                 result = result.merge(tempResult);
                 boolean receivedFatalAlert = testIfReceivedFatalAlert(tempResult.getMessageList());
@@ -117,6 +123,17 @@ public class ReceiveMessageHelper {
                         shouldContinue = false;
                         break;
                     }
+                }
+                if (context.getChooser().getSelectedProtocolVersion().isDTLS() && shouldContinue == false) {
+                    for (int i = 0; i <= context.getDtlsReadHandshakeMessageSequence(); i++) {
+                        if (!context.getDtlsReceivedHandshakeMessageSequences().contains(i)) {
+                            shouldContinue = true;
+                            break;
+                        }
+                    }
+                }
+                if (receivedBytesLength >= context.getConfig().getReceiveMaximumBytes()) {
+                    shouldContinue = false;
                 }
             } while (receivedBytes.length != 0 && shouldContinue);
         } catch (IOException ex) {
@@ -350,10 +367,8 @@ public class ReceiveMessageHelper {
         List<ProtocolMessage> messages = new LinkedList<>();
         List<DtlsHandshakeMessageFragment> messageFragments = null;
         for (RecordGroup group : RecordGroup.generateRecordGroups(recordGroup.getRecords())) {
-
             List<RecordGroup> subGroups = group.splitIntoProcessableSubgroups();
             for (RecordGroup subGroup : subGroups) {
-
                 byte[] cleanProtocolMessageBytes;
                 if (context.getChooser().getSelectedProtocolVersion().isDTLS()
                     && subGroup.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE) {
@@ -365,10 +380,14 @@ public class ReceiveMessageHelper {
                             defragmentAndReorder(messageFragments, context);
                         for (DtlsHandshakeMessageFragment fragment : defragmentedReorderedFragments) {
                             context.setDtlsReadHandshakeMessageSequence(fragment.getMessageSeq().getValue());
+                            context.addDtlsReceivedHandshakeMessageSequences(fragment.getMessageSeq().getValue());
                             List<ProtocolMessage> parsedMessages = handleCleanBytes(
                                 convertDtlsFragmentToCleanTlsBytes(fragment), subGroup.getProtocolMessageType(),
-                                context, false,
+                                context, fragment.isRetransmission(),
                                 subGroup.areAllRecordsValid() || context.getConfig().getParseInvalidRecordNormally());
+                            ((HandshakeMessage) parsedMessages.get(0)).setRetransmission(fragment.isRetransmission());
+                            ((HandshakeMessage) parsedMessages.get(0))
+                                .setIncludeInDigest(fragment.getIncludeInDigest());
                             messages.addAll(parsedMessages);
                         }
                     } else {
@@ -381,6 +400,19 @@ public class ReceiveMessageHelper {
                         messages.addAll(parsedMessages);
                     }
 
+                } else if (context.getChooser().getSelectedProtocolVersion().isDTLS()
+                    && subGroup.getProtocolMessageType() == ProtocolMessageType.CHANGE_CIPHER_SPEC) {
+                    for (AbstractRecord record : subGroup.getRecords()) {
+                        boolean added = context.addDtlsReceivedChangeCipherSpecEpochs(subGroup.getDtlsEpoch());
+                        if (!added && context.getConfig().isIgnoreRetransmittedCcsInDtls()) {
+                            continue;
+                        }
+                        cleanProtocolMessageBytes = record.getCleanProtocolMessageBytes().getValue();
+                        List<ProtocolMessage> parsedMessages = handleCleanBytes(cleanProtocolMessageBytes,
+                            subGroup.getProtocolMessageType(), context, false,
+                            subGroup.areAllRecordsValid() || context.getConfig().getParseInvalidRecordNormally());
+                        messages.addAll(parsedMessages);
+                    }
                 } else {
                     cleanProtocolMessageBytes = subGroup.getCleanBytes();
                     List<ProtocolMessage> parsedMessages =
@@ -694,7 +726,7 @@ public class ReceiveMessageHelper {
             fragmentManager.addMessageFragment(fragment);
         }
         List<DtlsHandshakeMessageFragment> orderedCombinedUninterpretedMessageFragments =
-            fragmentManager.getOrderedCombinedUninterpretedMessageFragments(true);
+            fragmentManager.getOrderedCombinedUninterpretedMessageFragments(true, false);
         return orderedCombinedUninterpretedMessageFragments;
 
     }

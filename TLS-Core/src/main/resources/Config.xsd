@@ -340,6 +340,7 @@
       <xs:element name="distinguishedNames" type="xs:string" minOccurs="0"/>
       <xs:element name="enforceSettings" type="xs:boolean" minOccurs="0"/>
       <xs:element name="earlyStop" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="receiveMaximumBytes" type="xs:int" minOccurs="0"/>
       <xs:element name="stealthMode" type="xs:boolean" minOccurs="0"/>
       <xs:element name="stopActionsAfterIOException" type="xs:boolean" minOccurs="0"/>
       <xs:element name="stopTraceAfterUnexpected" type="xs:boolean" minOccurs="0"/>
@@ -384,6 +385,7 @@
       <xs:element name="dtlsMaximumFragmentLength" type="xs:int" minOccurs="0"/>
       <xs:element name="workflowExecutorType" type="workflowExecutorType" minOccurs="0"/>
       <xs:element name="flushOnMessageTypeChange" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="createFragmentsDynamically" type="xs:boolean" minOccurs="0"/>
       <xs:element name="createRecordsDynamically" type="xs:boolean" minOccurs="0"/>
       <xs:element name="createIndividualRecords" type="xs:boolean" minOccurs="0"/>
       <xs:element name="recordLayerType" type="recordLayerType" minOccurs="0"/>
@@ -393,6 +395,10 @@
       <xs:element name="workflowExecutorShouldClose" type="xs:boolean" minOccurs="0"/>
       <xs:element name="stopReceivingAfterFatal" type="xs:boolean" minOccurs="0"/>
       <xs:element name="stopActionsAfterFatal" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="finishWithCloseNotify" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="ignoreRetransmittedCcsInDtls" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="addRetransmissionsToWorkflowTraceInDtls" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="maxDtlsRetransmissions" type="xs:int" minOccurs="0"/>
       <xs:element name="stopReceivingAfterWarning" type="xs:boolean" minOccurs="0"/>
       <xs:element name="stopActionsAfterWarning" type="xs:boolean" minOccurs="0"/>
       <xs:element name="defaultSelectedCipherSuite" type="cipherSuite" minOccurs="0"/>
@@ -496,6 +502,7 @@
       <xs:element name="defaultTokenBindingRsaModulus" type="xs:integer" minOccurs="0"/>
       <xs:element name="useFreshRandom" type="xs:boolean" minOccurs="0"/>
       <xs:element name="chooserType" type="chooserType" minOccurs="0"/>
+      <xs:element name="useAllProvidedDtlsFragments" type="xs:boolean" minOccurs="0"/>
       <xs:element name="useAllProvidedRecords" type="xs:boolean" minOccurs="0"/>
       <xs:element name="httpsParsingEnabled" type="xs:boolean" minOccurs="0"/>
       <xs:element name="defaultHttpsRequestPath" type="xs:string" minOccurs="0"/>
@@ -2007,7 +2014,6 @@
 
   <xs:simpleType name="actionOption">
     <xs:restriction base="xs:string">
-      <xs:enumeration value="EARLY_CLEAN_SHUTDOWN"/>
       <xs:enumeration value="IGNORE_UNEXPECTED_NEW_SESSION_TICKETS"/>
       <xs:enumeration value="IGNORE_UNEXPECTED_WARNINGS"/>
       <xs:enumeration value="MAY_FAIL"/>
@@ -2040,6 +2046,7 @@
     <xs:restriction base="xs:string">
       <xs:enumeration value="DEFAULT"/>
       <xs:enumeration value="THREADED_SERVER"/>
+      <xs:enumeration value="DTLS"/>
     </xs:restriction>
   </xs:simpleType>
 

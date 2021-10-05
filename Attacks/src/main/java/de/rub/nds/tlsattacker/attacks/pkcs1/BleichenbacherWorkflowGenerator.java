@@ -35,8 +35,8 @@ public class BleichenbacherWorkflowGenerator {
      */
     public static WorkflowTrace generateWorkflow(Config tlsConfig, BleichenbacherWorkflowType type,
         byte[] encryptedPMS) {
-        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(WorkflowTraceType.HELLO,
-            RunningModeType.CLIENT);
+        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig)
+            .createWorkflowTrace(WorkflowTraceType.DYNAMIC_HELLO, RunningModeType.CLIENT);
         RSAClientKeyExchangeMessage cke = new RSAClientKeyExchangeMessage(tlsConfig);
         ModifiableByteArray epms = new ModifiableByteArray();
         epms.setModification(ByteArrayModificationFactory.explicitValue(encryptedPMS));

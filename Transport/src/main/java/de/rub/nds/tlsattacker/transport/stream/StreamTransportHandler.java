@@ -80,6 +80,7 @@ public class StreamTransportHandler extends TransportHandler {
 
     @Override
     public void setTimeout(long timeout) {
+        this.timeout = timeout;
         timeoutableInputStream.setTimeout(timeout);
     }
 

@@ -161,7 +161,7 @@ public class KeyUpdateHandler extends HandshakeMessageHandler<KeyUpdateMessage> 
                     tlsContext.getChooser().getSelectedCipherSuite());
                 tlsContext.getRecordLayer().setRecordCipher(recordCipherClient);
 
-                tlsContext.setWriteSequenceNumber(0);
+                tlsContext.increaseWriteEpoch();
                 tlsContext.getRecordLayer().updateEncryptionCipher();
 
             } else if (tlsContext.getChooser().getTalkingConnectionEnd()
@@ -190,7 +190,7 @@ public class KeyUpdateHandler extends HandshakeMessageHandler<KeyUpdateMessage> 
                     tlsContext.getChooser().getSelectedCipherSuite());
                 tlsContext.getRecordLayer().setRecordCipher(recordCipherClient);
 
-                tlsContext.setReadSequenceNumber(0);
+                tlsContext.increaseReadEpoch();
                 tlsContext.getRecordLayer().updateDecryptionCipher();
 
             }

@@ -42,7 +42,7 @@ import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.dtls.FragmentManager;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
-import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
@@ -70,12 +70,14 @@ import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlTransient;
-
 import de.rub.nds.tlsattacker.transport.socket.SocketState;
 import de.rub.nds.tlsattacker.transport.tcp.ClientTcpTransportHandler;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.tls.Certificate;
@@ -88,14 +90,12 @@ public class TlsContext {
     /**
      * TLS-Attacker related configurations.
      */
-    @XmlTransient
     private Config config;
 
     private List<Session> sessionList;
 
     private HttpContext httpContext;
 
-    @XmlTransient
     private Keylogfile keylogfile;
 
     /**
@@ -493,33 +493,37 @@ public class TlsContext {
     private Tls13KeySetType activeServerKeySetType = Tls13KeySetType.NONE;
 
     /**
-     * sequence number used for the encryption
+     * sequence numbers used for the encryption
      */
-    private long writeSequenceNumber = 0;
+    private Map<Integer, Long> writeSequenceNumbers;
 
     /**
-     * sequence number used for the decryption
+     * sequence numbers used for the decryption
      */
-    private long readSequenceNumber = 0;
+    private Map<Integer, Long> readSequenceNumbers;
 
     /**
-     * the latest epoch the peer used
+     * The latest epoch for the decryption. It is incremented on every cipher state change.
      */
-    private int dtlsReadEpoch = 0;
+    private int readEpoch = 0;
 
     /**
-     * the epoch applied to transmitted DTLS records
+     * The latest epoch for the encryption. It is incremented on every cipher state change.
      */
-    private int dtlsWriteEpoch = 0;
+    private int writeEpoch = 0;
 
     private int dtlsReadHandshakeMessageSequence = 0;
 
     private int dtlsWriteHandshakeMessageSequence = 0;
 
+    private Set<Integer> dtlsReceivedHandshakeMessageSequences;
+
     /**
      * a fragment manager assembles DTLS fragments into corresponding messages.
      */
     private FragmentManager globalDtlsFragmentManager;
+
+    private Set<Integer> dtlsReceivedChangeCipherSpecEpochs;
 
     /**
      * supported protocol versions
@@ -588,13 +592,12 @@ public class TlsContext {
 
     private Random random;
 
-    @XmlTransient
     private LinkedList<ProtocolMessage> messageBuffer;
 
-    @XmlTransient
     private LinkedList<AbstractRecord> recordBuffer;
 
-    @XmlTransient
+    private LinkedList<DtlsHandshakeMessageFragment> fragmentBuffer;
+
     private Chooser chooser;
 
     /**
@@ -622,7 +625,6 @@ public class TlsContext {
      */
     private boolean useExtendedMasterSecret;
 
-    private Boolean earlyCleanShutdown = false;
     /**
      * Add a cookie with this name to HTTPS header if config.isAddHttpsCookie is set.
      */
@@ -728,7 +730,14 @@ public class TlsContext {
         }
         messageBuffer = new LinkedList<>();
         recordBuffer = new LinkedList<>();
+        fragmentBuffer = new LinkedList<>();
+        writeSequenceNumbers = new HashMap<>();
+        writeSequenceNumbers.put(0, new Long(0));
+        readSequenceNumbers = new HashMap<>();
+        readSequenceNumbers.put(0, new Long(0));
+        dtlsReceivedHandshakeMessageSequences = new HashSet<>();
         globalDtlsFragmentManager = new FragmentManager(config);
+        dtlsReceivedChangeCipherSpecEpochs = new HashSet<>();
         keylogfile = new Keylogfile(this);
     }
 
@@ -801,6 +810,14 @@ public class TlsContext {
 
     public void setRecordBuffer(LinkedList<AbstractRecord> recordBuffer) {
         this.recordBuffer = recordBuffer;
+    }
+
+    public LinkedList<DtlsHandshakeMessageFragment> getFragmentBuffer() {
+        return fragmentBuffer;
+    }
+
+    public void setFragmentBuffer(LinkedList<DtlsHandshakeMessageFragment> fragmentBuffer) {
+        this.fragmentBuffer = fragmentBuffer;
     }
 
     public HttpContext getHttpContext() {
@@ -1291,56 +1308,110 @@ public class TlsContext {
         this.clientSupportedCompressions = new ArrayList(Arrays.asList(clientSupportedCompressions));
     }
 
+    public Map getWriteSequenceNumbers() {
+        return writeSequenceNumbers;
+    }
+
+    public long getWriteSequenceNumber(int epoch) {
+        return writeSequenceNumbers.get(epoch);
+    }
+
     public long getWriteSequenceNumber() {
-        return writeSequenceNumber;
+        return writeSequenceNumbers.get(writeEpoch);
+    }
+
+    public void setWriteSequenceNumber(int epoch, long writeSequenceNumber) {
+        writeSequenceNumbers.put(epoch, writeSequenceNumber);
     }
 
     public void setWriteSequenceNumber(long writeSequenceNumber) {
-        this.writeSequenceNumber = writeSequenceNumber;
+        writeSequenceNumbers.put(writeEpoch, writeSequenceNumber);
+    }
+
+    public void increaseWriteSequenceNumber(int epoch) {
+        writeSequenceNumbers.put(epoch, writeSequenceNumbers.get(epoch) + 1);
     }
 
     public void increaseWriteSequenceNumber() {
-        this.writeSequenceNumber++;
+        writeSequenceNumbers.put(writeEpoch, writeSequenceNumbers.get(writeEpoch) + 1);
+    }
+
+    public Map<Integer, Long> getReadSequenceNumbers() {
+        return readSequenceNumbers;
+    }
+
+    public long getReadSequenceNumber(int epoch) {
+        return readSequenceNumbers.get(epoch);
     }
 
     public long getReadSequenceNumber() {
-        return readSequenceNumber;
+        return readSequenceNumbers.get(readEpoch);
+    }
+
+    public void setReadSequenceNumber(int epoch, long readSequenceNumber) {
+        readSequenceNumbers.put(epoch, readSequenceNumber);
     }
 
     public void setReadSequenceNumber(long readSequenceNumber) {
-        this.readSequenceNumber = readSequenceNumber;
+        readSequenceNumbers.put(readEpoch, readSequenceNumber);
+    }
+
+    public void increaseReadSequenceNumber(int epoch) {
+        readSequenceNumbers.put(epoch, readSequenceNumbers.get(epoch) + 1);
     }
 
     public void increaseReadSequenceNumber() {
-        this.readSequenceNumber++;
+        readSequenceNumbers.put(readEpoch, readSequenceNumbers.get(readEpoch) + 1);
     }
 
-    public void increaseDtlsReadEpoch() {
-        this.dtlsReadEpoch++;
+    public void increaseReadEpoch() {
+        readEpoch++;
+        setReadSequenceNumber(readEpoch, 0);
     }
 
-    public void increaseDtlsWriteEpoch() {
-        this.dtlsWriteEpoch++;
+    public void increaseWriteEpoch() {
+        writeEpoch++;
+        setWriteSequenceNumber(writeEpoch, 0);
     }
 
-    public int getDtlsWriteEpoch() {
-        return dtlsWriteEpoch;
+    public int getWriteEpoch() {
+        return writeEpoch;
     }
 
-    public void setDtlsWriteEpoch(int dtlsWriteEpoch) {
-        this.dtlsWriteEpoch = dtlsWriteEpoch;
+    public void setWriteEpoch(int writeEpoch) {
+        this.writeEpoch = writeEpoch;
     }
 
-    public int getDtlsReceiveEpoch() {
-        return dtlsReadEpoch;
+    public int getReadEpoch() {
+        return readEpoch;
     }
 
-    public void setDtlsReceiveEpoch(int sendEpoch) {
-        this.dtlsReadEpoch = sendEpoch;
+    public void setReadEpoch(int readEpoch) {
+        this.readEpoch = readEpoch;
+    }
+
+    public void addDtlsReceivedHandshakeMessageSequences(int sequence) {
+        dtlsReceivedHandshakeMessageSequences.add(sequence);
+    }
+
+    public Set<Integer> getDtlsReceivedHandshakeMessageSequences() {
+        return dtlsReceivedHandshakeMessageSequences;
     }
 
     public FragmentManager getDtlsFragmentManager() {
         return globalDtlsFragmentManager;
+    }
+
+    public FragmentManager setDtlsFragmentManager(FragmentManager globalDtlsFragmentManager) {
+        return this.globalDtlsFragmentManager = globalDtlsFragmentManager;
+    }
+
+    public boolean addDtlsReceivedChangeCipherSpecEpochs(int epoch) {
+        return dtlsReceivedChangeCipherSpecEpochs.add(epoch);
+    }
+
+    public Set<Integer> getDtlsReceivedChangeCipherSpecEpochs() {
+        return dtlsReceivedChangeCipherSpecEpochs;
     }
 
     public List<CipherSuite> getClientSupportedCipherSuites() {
@@ -1852,16 +1923,8 @@ public class TlsContext {
         this.clientRSAPrivateKey = clientRSAPrivateKey;
     }
 
-    public boolean isEarlyCleanShutdown() {
-        return earlyCleanShutdown;
-    }
-
     public Random getRandom() {
         return random;
-    }
-
-    public void setEarlyCleanShutdown(boolean earlyCleanShutdown) {
-        this.earlyCleanShutdown = earlyCleanShutdown;
     }
 
     public void setRandom(Random random) {

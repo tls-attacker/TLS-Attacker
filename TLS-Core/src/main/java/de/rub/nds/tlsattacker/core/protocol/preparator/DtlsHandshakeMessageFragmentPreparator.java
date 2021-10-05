@@ -9,6 +9,7 @@
 
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
+import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
@@ -27,12 +28,24 @@ public class DtlsHandshakeMessageFragmentPreparator extends HandshakeMessagePrep
 
     @Override
     protected void prepareHandshakeMessageContents() {
+        prepareHandshakeType(msg);
         msg.setContent(msg.getFragmentContentConfig());
         msg.setLength(msg.getHandshakeMessageLengthConfig());
         msg.setMessageSeq(msg.getMessageSequenceConfig());
         msg.setFragmentOffset(msg.getOffsetConfig());
         msg.setFragmentLength(msg.getContent().getValue().length);
-        msg.setEpoch(chooser.getContext().getDtlsWriteEpoch());
+        msg.setEpoch(chooser.getContext().getWriteEpoch());
+    }
+
+    private void prepareHandshakeType(DtlsHandshakeMessageFragment message) {
+        HandshakeMessageType handshakeType = message.getHandshakeMessageTypeConfig();
+        if (handshakeType == null) {
+            handshakeType = msg.getHandshakeMessageType();
+            if (handshakeType == null) {
+                handshakeType = HandshakeMessageType.UNKNOWN;
+            }
+        }
+        message.setType(handshakeType.getValue());
     }
 
     @Override

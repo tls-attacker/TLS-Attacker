@@ -26,8 +26,6 @@ public abstract class UdpTransportHandler extends TransportHandler {
     protected DatagramSocket socket;
 
     protected int port;
-    protected int srcPort;
-    protected int dstPort;
 
     public UdpTransportHandler(Connection con) {
         super(con);
@@ -40,6 +38,7 @@ public abstract class UdpTransportHandler extends TransportHandler {
     @Override
     public void setTimeout(long timeout) {
         try {
+            this.timeout = timeout;
             socket.setSoTimeout((int) timeout);
         } catch (SocketException ex) {
             LOGGER.error("Could not adjust socket timeout", ex);
@@ -64,10 +63,10 @@ public abstract class UdpTransportHandler extends TransportHandler {
     }
 
     public int getSrcPort() {
-        return srcPort;
+        return socket.getLocalPort();
     }
 
     public int getDstPort() {
-        return dstPort;
+        return socket.getPort();
     }
 }

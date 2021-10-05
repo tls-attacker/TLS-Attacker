@@ -95,6 +95,11 @@ public abstract class MessageAction extends ConnectionBoundAction {
         @XmlElement(type = BlobRecord.class, name = "BlobRecord") })
     protected List<AbstractRecord> records = new ArrayList<>();
 
+    @HoldsModifiableVariable
+    @XmlElementWrapper
+    @XmlElements(value = { @XmlElement(type = DtlsHandshakeMessageFragment.class, name = "DtlsFragment") })
+    protected List<DtlsHandshakeMessageFragment> fragments = new ArrayList<>();
+
     @XmlTransient
     protected ReceiveMessageHelper receiveMessageHelper;
 
@@ -194,6 +199,18 @@ public abstract class MessageAction extends ConnectionBoundAction {
         this.records = new ArrayList<>(Arrays.asList(records));
     }
 
+    public List<DtlsHandshakeMessageFragment> getFragments() {
+        return fragments;
+    }
+
+    public void setFragments(List<DtlsHandshakeMessageFragment> fragments) {
+        this.fragments = fragments;
+    }
+
+    public void setFragments(DtlsHandshakeMessageFragment... fragments) {
+        this.fragments = new ArrayList<>(Arrays.asList(fragments));
+    }
+
     public void clearRecords() {
         this.records = null;
     }
@@ -229,6 +246,9 @@ public abstract class MessageAction extends ConnectionBoundAction {
         if (records == null || records.isEmpty()) {
             records = null;
         }
+        if (fragments == null || fragments.isEmpty()) {
+            fragments = null;
+        }
     }
 
     private void initEmptyLists() {
@@ -237,6 +257,9 @@ public abstract class MessageAction extends ConnectionBoundAction {
         }
         if (records == null) {
             records = new ArrayList<>();
+        }
+        if (fragments == null) {
+            fragments = new ArrayList<>();
         }
     }
 

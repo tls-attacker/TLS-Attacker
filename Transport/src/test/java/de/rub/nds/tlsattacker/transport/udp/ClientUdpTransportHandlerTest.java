@@ -60,7 +60,7 @@ public class ClientUdpTransportHandlerTest {
                 new ClientUdpTransportHandler(1, 1, localhost.getHostName(), testSocket.getLocalPort());
 
             udpTH.initialize();
-            testSocket.connect(localhost, udpTH.getLocalPort());
+            testSocket.connect(localhost, udpTH.getSrcPort());
             udpTH.setTimeout(1);
 
             byte[] allSentData = new byte[0];
@@ -73,7 +73,7 @@ public class ClientUdpTransportHandlerTest {
             for (int i = 0; i < numTestPackets; i++) {
                 txData = new byte[RandomHelper.getRandom().nextInt(16383) + 1];
                 RandomHelper.getRandom().nextBytes(txData);
-                txPacket = new DatagramPacket(txData, txData.length, localhost, udpTH.getLocalPort());
+                txPacket = new DatagramPacket(txData, txData.length, localhost, udpTH.getSrcPort());
                 testSocket.send(txPacket);
                 allSentData = ArrayConverter.concatenate(allSentData, txData);
                 rxData = udpTH.fetchData();

@@ -82,10 +82,12 @@ public class BlobRecordLayer extends RecordLayer {
     public void decryptAndDecompressRecord(AbstractRecord record) {
         decryptor.decrypt(record);
         decompressor.decompress(record);
+        context.increaseReadSequenceNumber();
     }
 
     @Override
-    public byte[] prepareRecords(byte[] data, ProtocolMessageType contentType, List<AbstractRecord> records) {
+    public byte[] prepareRecords(byte[] data, ProtocolMessageType contentType, List<AbstractRecord> records,
+        boolean withPrepare) {
         CleanRecordByteSeperator separator =
             new CleanRecordByteSeperator(records, context.getChooser().getOutboundMaxRecordDataSize(), 0, data);
         records = separator.parse();
@@ -93,7 +95,11 @@ public class BlobRecordLayer extends RecordLayer {
         for (AbstractRecord record : records) {
             AbstractRecordPreparator preparator =
                 record.getRecordPreparator(context.getChooser(), encryptor, compressor, contentType);
-            preparator.prepare();
+            if (withPrepare) {
+                preparator.prepare();
+                context.increaseWriteSequenceNumber();
+            }
+            preparator.encrypt();
             AbstractRecordSerializer serializer = record.getRecordSerializer();
             try {
                 byte[] recordBytes = serializer.serialize();
@@ -139,6 +145,16 @@ public class BlobRecordLayer extends RecordLayer {
     @Override
     public RecordCipher getDecryptorCipher() {
         return decryptor.getRecordMostRecentCipher();
+    }
+
+    @Override
+    public void resetEncryptor() {
+        encryptor.removeAllCiphers();
+    }
+
+    @Override
+    public void resetDecryptor() {
+        decryptor.removeAllCiphers();
     }
 
 }
