@@ -803,9 +803,9 @@ public class Config implements Serializable {
     private Boolean earlyStop = false;
 
     /**
-     * The maximum number of bytes that can be received during a receive process
+     * The maximum number of bytes that can be received during a receive process. Default: 2^24.
      */
-    private Integer receiveMaximumBytes = 100000;
+    private Integer receiveMaximumBytes = 16777216;
 
     /**
      * If true, Random of the context is not seeded with an explicit value, thus client/server randoms are not
