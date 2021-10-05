@@ -65,6 +65,7 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
                 state.setExecutionException(e);
                 throw e;
             } finally {
+                state.setEndTimestamp(System.currentTimeMillis());
             }
 
             try {
