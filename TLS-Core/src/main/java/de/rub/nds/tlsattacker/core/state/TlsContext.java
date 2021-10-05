@@ -76,10 +76,13 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.tls.Certificate;
 
+@XmlAccessorType(XmlAccessType.FIELD)
 public class TlsContext {
 
     private static final Logger LOGGER = LogManager.getLogger();

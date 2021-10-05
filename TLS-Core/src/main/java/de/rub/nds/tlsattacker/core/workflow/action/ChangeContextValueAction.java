@@ -19,8 +19,8 @@ import java.util.List;
 import java.util.Objects;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
-
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -34,6 +34,7 @@ import org.apache.logging.log4j.Logger;
  * @param <T>
  *            Object type of the field inside the {@link TlsContext}
  */
+@XmlSeeAlso(TlsContext.class)
 @XmlRootElement
 public class ChangeContextValueAction<T> extends ConnectionBoundAction {
 
