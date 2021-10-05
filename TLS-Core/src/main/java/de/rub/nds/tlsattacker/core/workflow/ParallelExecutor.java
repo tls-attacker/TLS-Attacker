@@ -64,7 +64,6 @@ public class ParallelExecutor {
     }
 
     public ParallelExecutor(ThreadPoolExecutor executorService, int reexecutions) {
-        // TODO check whether this constructor is still used or whether it could be removed
         this(-1, reexecutions, executorService);
     }
 
