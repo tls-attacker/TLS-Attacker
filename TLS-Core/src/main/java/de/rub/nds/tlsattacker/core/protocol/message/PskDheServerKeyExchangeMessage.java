@@ -94,4 +94,9 @@ public class PskDheServerKeyExchangeMessage extends DHEServerKeyExchangeMessage 
     public String toCompactString() {
         return "DHE_PSK_SERVER_KEY_EXCHANGE";
     }
+
+    @Override
+    public String toShortString() {
+        return "PSK_DHE_CKE";
+    }
 }

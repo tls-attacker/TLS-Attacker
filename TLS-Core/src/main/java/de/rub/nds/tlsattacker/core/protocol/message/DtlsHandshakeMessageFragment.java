@@ -199,4 +199,9 @@ public class DtlsHandshakeMessageFragment extends HandshakeMessage {
         return this.getHandshakeMessageType().name().toUpperCase() + "_DTLS_FRAGMENT";
     }
 
+    @Override
+    public String toShortString() {
+        return "DTLS_FRAG";
+    }
+
 }

@@ -247,4 +247,9 @@ public class TokenBindingMessage extends TlsMessage {
     public TlsMessageHandler getHandler(TlsContext context) {
         return new TokenBindingMessageHandler(context);
     }
+
+    @Override
+    public String toShortString() {
+        return "TB";
+    }
 }

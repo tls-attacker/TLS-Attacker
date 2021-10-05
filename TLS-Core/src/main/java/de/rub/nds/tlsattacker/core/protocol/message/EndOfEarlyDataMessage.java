@@ -34,4 +34,9 @@ public class EndOfEarlyDataMessage extends HandshakeMessage {
         return new EndOfEarlyDataHandler(context);
     }
 
+    @Override
+    public String toShortString() {
+        return "EOED";
+    }
+
 }

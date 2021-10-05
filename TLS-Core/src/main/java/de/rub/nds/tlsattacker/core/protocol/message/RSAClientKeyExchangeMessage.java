@@ -73,4 +73,9 @@ public class RSAClientKeyExchangeMessage extends ClientKeyExchangeMessage {
         return holders;
     }
 
+    @Override
+    public String toShortString() {
+        return "RSA_CKE";
+    }
+
 }

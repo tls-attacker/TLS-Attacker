@@ -146,4 +146,9 @@ public class PWDClientKeyExchangeMessage extends ClientKeyExchangeMessage {
         return allModifiableVariableHolders;
     }
 
+    @Override
+    public String toShortString() {
+        return "PWD_CKE";
+    }
+
 }

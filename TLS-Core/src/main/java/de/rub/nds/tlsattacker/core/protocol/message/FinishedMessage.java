@@ -59,6 +59,11 @@ public class FinishedMessage extends HandshakeMessage {
     }
 
     @Override
+    public String toShortString() {
+        return "FIN";
+    }
+
+    @Override
     public FinishedHandler getHandler(TlsContext context) {
         return new FinishedHandler(context);
     }

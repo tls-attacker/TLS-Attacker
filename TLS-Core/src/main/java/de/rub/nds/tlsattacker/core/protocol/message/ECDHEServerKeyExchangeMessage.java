@@ -125,6 +125,11 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     }
 
     @Override
+    public String toShortString() {
+        return "ECDH_SKE";
+    }
+
+    @Override
     public void prepareComputations() {
         if (computations == null) {
             computations = new ECDHEServerComputations();

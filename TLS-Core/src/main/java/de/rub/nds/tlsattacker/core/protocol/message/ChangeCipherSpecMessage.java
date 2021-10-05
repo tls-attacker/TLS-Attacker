@@ -61,6 +61,11 @@ public class ChangeCipherSpecMessage extends TlsMessage {
     }
 
     @Override
+    public String toShortString() {
+        return "CCS";
+    }
+
+    @Override
     public String toCompactString() {
         return "CHANGE_CIPHER_SPEC";
     }
