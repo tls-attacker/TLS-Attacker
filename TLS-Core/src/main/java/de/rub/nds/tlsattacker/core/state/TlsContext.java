@@ -70,10 +70,6 @@ import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlTransient;
-
 import de.rub.nds.tlsattacker.transport.socket.SocketState;
 import de.rub.nds.tlsattacker.transport.tcp.ClientTcpTransportHandler;
 import java.util.HashMap;
@@ -84,7 +80,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.tls.Certificate;
 
-@XmlAccessorType(XmlAccessType.FIELD)
 public class TlsContext {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -92,14 +87,12 @@ public class TlsContext {
     /**
      * TLS-Attacker related configurations.
      */
-    @XmlTransient
     private Config config;
 
     private List<Session> sessionList;
 
     private HttpContext httpContext;
 
-    @XmlTransient
     private Keylogfile keylogfile;
 
     /**
@@ -596,16 +589,12 @@ public class TlsContext {
 
     private Random random;
 
-    @XmlTransient
     private LinkedList<ProtocolMessage> messageBuffer;
 
-    @XmlTransient
     private LinkedList<AbstractRecord> recordBuffer;
 
-    @XmlTransient
     private LinkedList<DtlsHandshakeMessageFragment> fragmentBuffer;
 
-    @XmlTransient
     private Chooser chooser;
 
     /**
