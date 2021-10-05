@@ -10,8 +10,6 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
-import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.apache.logging.log4j.LogManager;
@@ -23,7 +21,7 @@ public abstract class DeactivateCryptoAction extends ConnectionBoundAction {
     public DeactivateCryptoAction() {
     }
 
-    protected abstract void deactivateCrypto(TlsContext tlsContext, RecordCipher recordCipher);
+    protected abstract void deactivateCrypto(TlsContext tlsContext);
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
@@ -32,7 +30,7 @@ public abstract class DeactivateCryptoAction extends ConnectionBoundAction {
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
         }
-        deactivateCrypto(tlsContext, new RecordNullCipher(tlsContext));
+        deactivateCrypto(tlsContext);
         setExecuted(true);
     }
 

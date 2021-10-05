@@ -9,7 +9,7 @@
 
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
+import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -17,9 +17,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class DeactivateEncryptionAction extends DeactivateCryptoAction {
 
     @Override
-    protected void deactivateCrypto(TlsContext tlsContext, RecordCipher recordCipher) {
+    protected void deactivateCrypto(TlsContext tlsContext) {
         LOGGER.info("Disabling encryption");
-        tlsContext.getRecordLayer().updateEncryptionCipher(recordCipher);
+        tlsContext.getRecordLayer().updateEncryptionCipher(new RecordNullCipher(tlsContext));
     }
 
 }
