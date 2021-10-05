@@ -803,9 +803,9 @@ public class Config implements Serializable {
     private Boolean earlyStop = false;
 
     /**
-     * The maximum number of records that can be received
+     * The maximum number of bytes that can be received during a receive process
      */
-    private Integer receiveMaximumRecords = 100;
+    private Integer receiveMaximumBytes = 100000;
 
     /**
      * If true, Random of the context is not seeded with an explicit value, thus client/server randoms are not
@@ -2327,12 +2327,12 @@ public class Config implements Serializable {
         this.quickReceive = quickReceive;
     }
 
-    public Integer getReceiveMaximumRecords() {
-        return receiveMaximumRecords;
+    public Integer getReceiveMaximumBytes() {
+        return receiveMaximumBytes;
     }
 
-    public void setReceiveMaximumRecords(int receiveMaximumRecords) {
-        this.receiveMaximumRecords = receiveMaximumRecords;
+    public void setReceiveMaximumBytes(int receiveMaximumBytes) {
+        this.receiveMaximumBytes = receiveMaximumBytes;
     }
 
     public Boolean isResetWorkflowTracesBeforeSaving() {

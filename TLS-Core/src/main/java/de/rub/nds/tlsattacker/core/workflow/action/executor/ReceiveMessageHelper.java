@@ -68,16 +68,18 @@ public class ReceiveMessageHelper {
 
         try {
             byte[] receivedBytes;
+            int receivedBytesLength = 0;
             boolean shouldContinue = true;
             do {
                 receivedBytes = receiveByteArray(context);
+                receivedBytesLength += receivedBytes.length;
                 MessageActionResult tempResult = handleReceivedBytes(receivedBytes, context);
                 result = result.merge(tempResult);
                 if (context.getConfig().isQuickReceive() && !expectedMessages.isEmpty()) {
                     shouldContinue =
                         testIfWeShouldContinueToReceive(expectedMessages, result.getMessageList(), context);
                 }
-                if (context.getConfig().getReceiveMaximumRecords() == result.getRecordList().size()) {
+                if (receivedBytesLength >= context.getConfig().getReceiveMaximumBytes()) {
                     shouldContinue = false;
                 }
             } while (receivedBytes.length != 0 && shouldContinue);
@@ -99,9 +101,11 @@ public class ReceiveMessageHelper {
         MessageActionResult result = new MessageActionResult();
         try {
             byte[] receivedBytes;
+            int receivedBytesLength = 0;
             boolean shouldContinue = true;
             do {
                 receivedBytes = receiveByteArray(context);
+                receivedBytesLength += receivedBytes.length;
                 MessageActionResult tempResult = handleReceivedBytes(receivedBytes, context);
                 result = result.merge(tempResult);
                 boolean receivedFatalAlert = testIfReceivedFatalAlert(tempResult.getMessageList());
@@ -128,7 +132,7 @@ public class ReceiveMessageHelper {
                         }
                     }
                 }
-                if (context.getConfig().getReceiveMaximumRecords() == result.getRecordList().size()) {
+                if (receivedBytesLength >= context.getConfig().getReceiveMaximumBytes()) {
                     shouldContinue = false;
                 }
             } while (receivedBytes.length != 0 && shouldContinue);

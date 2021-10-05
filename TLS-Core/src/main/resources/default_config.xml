@@ -934,7 +934,7 @@
     <distinguishedNames></distinguishedNames>
     <enforceSettings>false</enforceSettings>
     <earlyStop>false</earlyStop>
-    <receiveMaximumRecords>100</receiveMaximumRecords>
+    <receiveMaximumBytes>100000</receiveMaximumBytes>
     <stealthMode>false</stealthMode>
     <stopActionsAfterIOException>false</stopActionsAfterIOException>
     <stopTraceAfterUnexpected>false</stopTraceAfterUnexpected>
