@@ -55,7 +55,7 @@ public class MessageParserBoundaryVerificationContext implements ParserContext {
                         throw new ParserContextParserException(message, MessageParserBoundaryVerificationContext.this,
                             previous);
                     } else {
-                        LOGGER.info(message);
+                        LOGGER.debug(message);
                     }
                 }
             };

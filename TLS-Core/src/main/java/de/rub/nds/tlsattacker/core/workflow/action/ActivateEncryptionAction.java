@@ -22,7 +22,7 @@ public class ActivateEncryptionAction extends ActivateCryptoAction {
         tlsContext.getRecordLayer().updateEncryptionCipher(recordCipher);
 
         if (resetSequenceNumbers) {
-            tlsContext.setWriteSequenceNumber(0);
+            tlsContext.increaseWriteEpoch();
             LOGGER.info("Reset write SQN");
         }
     }

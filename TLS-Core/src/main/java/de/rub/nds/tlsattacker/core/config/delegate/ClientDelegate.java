@@ -31,6 +31,10 @@ public class ClientDelegate extends Delegate {
     @Parameter(names = "-server_name", description = "Server name for the SNI extension.")
     private String sniHostname = null;
 
+    private String extractedHost = null;
+
+    private int extractedPort;
+
     public ClientDelegate() {
     }
 
@@ -40,12 +44,38 @@ public class ClientDelegate extends Delegate {
 
     public void setHost(String host) {
         this.host = host;
+        extractParameters();
     }
 
     @Override
     public void applyDelegate(Config config) {
-        config.setDefaultRunningMode(RunningModeType.CLIENT);
+        extractParameters();
 
+        config.setDefaultRunningMode(RunningModeType.CLIENT);
+        OutboundConnection con = config.getDefaultClientConnection();
+        if (con == null) {
+            con = new OutboundConnection();
+            config.setDefaultClientConnection(con);
+        }
+        con.setPort(extractedPort);
+        if (IPAddress.isValid(extractedHost)) {
+            con.setIp(extractedHost);
+            if (sniHostname != null) {
+                con.setHostname(sniHostname);
+            } else {
+                con.setHostname(getHostForIp(extractedHost));
+            }
+        } else {
+            if (sniHostname != null) {
+                con.setHostname(sniHostname);
+            } else {
+                con.setHostname(extractedHost);
+            }
+            con.setIp(getIpForHost(extractedHost));
+        }
+    }
+
+    private void extractParameters() {
         if (host == null) {
             // Though host is a required parameter we can get here if
             // we call applyDelegate manually, e.g. in tests.
@@ -67,32 +97,13 @@ public class ClientDelegate extends Delegate {
         if (uri.getHost() == null) {
             throw new ParameterException("Provided host seems invalid:" + host);
         }
-        OutboundConnection con = config.getDefaultClientConnection();
-        if (con == null) {
-            con = new OutboundConnection();
-            config.setDefaultClientConnection(con);
-        }
-        if (uri.getPort() <= 0) {
-            con.setPort(DEFAULT_HTTPS_PORT);
-        } else {
-            con.setPort(uri.getPort());
-        }
-        if (IPAddress.isValid(uri.getHost())) {
-            con.setIp(uri.getHost());
-            if (sniHostname != null) {
-                con.setHostname(sniHostname);
-            } else {
-                con.setHostname(getHostForIp(uri.getHost()));
-            }
-        } else {
-            if (sniHostname != null) {
-                con.setHostname(sniHostname);
-            } else {
-                con.setHostname(uri.getHost());
-            }
-            con.setIp(getIpForHost(uri.getHost()));
-        }
 
+        if (uri.getPort() <= 0) {
+            extractedPort = DEFAULT_HTTPS_PORT;
+        } else {
+            extractedPort = uri.getPort();
+        }
+        extractedHost = uri.getHost();
     }
 
     private String getIpForHost(String host) {
@@ -120,5 +131,13 @@ public class ClientDelegate extends Delegate {
 
     public void setSniHostname(String sniHostname) {
         this.sniHostname = sniHostname;
+    }
+
+    public String getExtractedHost() {
+        return extractedHost;
+    }
+
+    public int getExtractedPort() {
+        return extractedPort;
     }
 }

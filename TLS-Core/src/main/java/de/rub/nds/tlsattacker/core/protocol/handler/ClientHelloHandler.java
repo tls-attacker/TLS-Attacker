@@ -208,10 +208,10 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
                 tlsContext.getChooser().getEarlyDataCipherSuite());
 
             if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {
-                tlsContext.setReadSequenceNumber(0);
+                tlsContext.increaseReadEpoch();
                 tlsContext.getRecordLayer().updateDecryptionCipher(recordCipherClient);
             } else {
-                tlsContext.setWriteSequenceNumber(0);
+                tlsContext.increaseWriteEpoch();
                 tlsContext.getRecordLayer().updateEncryptionCipher(recordCipherClient);
             }
         } catch (NoSuchAlgorithmException ex) {

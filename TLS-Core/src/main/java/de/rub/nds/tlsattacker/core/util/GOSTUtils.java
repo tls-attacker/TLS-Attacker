@@ -36,7 +36,7 @@ import org.bouncycastle.jce.spec.ECNamedCurveSpec;
 
 public class GOSTUtils {
 
-    private static final Logger LOGGER = LogManager.getLogger(GOSTUtils.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public static byte[] getGostSBox(CipherSuite cipherSuite) {
         return GOST28147Engine.getSBox(cipherSuite.usesGOSTR34112012() ? "Param-Z" : "E-A");

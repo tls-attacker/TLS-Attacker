@@ -177,10 +177,10 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
             tlsContext.getChooser().getSelectedCipherSuite());
 
         if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
-            tlsContext.setReadSequenceNumber(0);
+            tlsContext.increaseReadEpoch();
             tlsContext.getRecordLayer().updateDecryptionCipher(recordCipherServer);
         } else {
-            tlsContext.setWriteSequenceNumber(0);
+            tlsContext.increaseWriteEpoch();
             tlsContext.getRecordLayer().updateEncryptionCipher(recordCipherServer);
         }
     }

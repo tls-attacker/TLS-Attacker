@@ -77,6 +77,8 @@
 
   <xs:element name="changeCompressionAction" type="changeCompressionAction"/>
 
+  <xs:element name="changeConnectionTimeoutAction" type="changeConnectionTimeoutAction"/>
+
   <xs:element name="changeContextValueAction" type="changeContextValueAction"/>
 
   <xs:element name="changeDefaultPreMasterSecretAction" type="changeDefaultPreMasterSecretAction"/>
@@ -92,6 +94,8 @@
   <xs:element name="clearBuffersAction" type="clearBuffersAction"/>
 
   <xs:element name="clientHelloMessage" type="clientHelloMessage"/>
+
+  <xs:element name="config" type="config"/>
 
   <xs:element name="copyBufferedMessagesAction" type="copyBufferedMessagesAction"/>
 
@@ -321,6 +325,7 @@
         <xs:element name="ChangeDefaultPreMasterSecret" type="changeDefaultPreMasterSecretAction"/>
         <xs:element name="ChangeProtocolVersion" type="changeProtocolVersionAction"/>
         <xs:element name="ChangeServerRandom" type="changeServerRandomAction"/>
+        <xs:element name="ChangeConnectionTimeout" type="changeConnectionTimeoutAction"/>
         <xs:element name="ClearBuffers" type="clearBuffersAction"/>
         <xs:element name="ConnectionBound" type="connectionBoundAction"/>
         <xs:element name="CopyBufferedMessages" type="copyBufferedMessagesAction"/>
@@ -551,6 +556,13 @@
                   <xs:element name="Record" type="record"/>
                   <xs:element name="BlobRecord" type="blobRecord"/>
                 </xs:choice>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="fragments" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="DtlsFragment" type="dtlsHandshakeMessageFragment" minOccurs="0" maxOccurs="unbounded"/>
               </xs:sequence>
             </xs:complexType>
           </xs:element>
@@ -939,6 +951,7 @@
           <xs:element name="type" type="modifiableByte" minOccurs="0"/>
           <xs:element name="length" type="modifiableInteger" minOccurs="0"/>
           <xs:element name="includeInDigest" type="modifiableBoolean" minOccurs="0"/>
+          <xs:element name="retransmission" type="modifiableBoolean" minOccurs="0"/>
           <xs:element name="extensions" minOccurs="0">
             <xs:complexType>
               <xs:sequence>
@@ -1794,6 +1807,8 @@
           <xs:element name="messageSequenceConfig" type="xs:int"/>
           <xs:element name="offsetConfig" type="xs:int"/>
           <xs:element name="handshakeMessageLengthConfig" type="xs:int"/>
+          <xs:element name="handshakeMessageTypeConfig" type="handshakeMessageType" minOccurs="0"/>
+          <xs:element name="maxFragmentLengthConfig" type="xs:int"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -2943,8 +2958,10 @@
 
   <xs:complexType name="tlsContext">
     <xs:sequence>
+      <xs:element ref="config" minOccurs="0"/>
       <xs:element name="sessionList" type="session" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="httpContext" type="httpContext" minOccurs="0"/>
+      <xs:element name="keylogfile" type="keylogfile" minOccurs="0"/>
       <xs:element name="connection" type="aliasedConnection" minOccurs="0"/>
       <xs:element name="finalSocketState" type="socketState" minOccurs="0"/>
       <xs:element name="handshakeSecret" type="xs:base64Binary" minOccurs="0"/>
@@ -3073,13 +3090,41 @@
       <xs:element name="selectedGostCurve" type="gostCurve" minOccurs="0"/>
       <xs:element name="activeClientKeySetType" type="tls13KeySetType" minOccurs="0"/>
       <xs:element name="activeServerKeySetType" type="tls13KeySetType" minOccurs="0"/>
-      <xs:element name="writeSequenceNumber" type="xs:long"/>
-      <xs:element name="readSequenceNumber" type="xs:long"/>
-      <xs:element name="dtlsReadEpoch" type="xs:int"/>
-      <xs:element name="dtlsWriteEpoch" type="xs:int"/>
+      <xs:element name="writeSequenceNumbers">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="entry" minOccurs="0" maxOccurs="unbounded">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="key" minOccurs="0" type="xs:int"/>
+                  <xs:element name="value" minOccurs="0" type="xs:long"/>
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="readSequenceNumbers">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="entry" minOccurs="0" maxOccurs="unbounded">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="key" minOccurs="0" type="xs:int"/>
+                  <xs:element name="value" minOccurs="0" type="xs:long"/>
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="readEpoch" type="xs:int"/>
+      <xs:element name="writeEpoch" type="xs:int"/>
       <xs:element name="dtlsReadHandshakeMessageSequence" type="xs:int"/>
       <xs:element name="dtlsWriteHandshakeMessageSequence" type="xs:int"/>
+      <xs:element name="dtlsReceivedHandshakeMessageSequences" type="xs:int" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="globalDtlsFragmentManager" type="fragmentManager" minOccurs="0"/>
+      <xs:element name="dtlsReceivedChangeCipherSpecEpochs" type="xs:int" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="clientSupportedProtocolVersions" type="protocolVersion" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="tokenBindingVersion" type="tokenBindingVersion" minOccurs="0"/>
       <xs:element name="tokenBindingKeyParameters" type="tokenBindingKeyParameters" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
@@ -3107,11 +3152,14 @@
       <xs:element name="lastServerVerifyData" type="xs:base64Binary" minOccurs="0"/>
       <xs:element name="lastClientHello" type="xs:base64Binary" minOccurs="0"/>
       <xs:element name="random" type="random" minOccurs="0"/>
+      <xs:element name="messageBuffer" type="protocolMessage" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="recordBuffer" type="abstractRecord" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="fragmentBuffer" type="dtlsHandshakeMessageFragment" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="chooser" type="chooser" minOccurs="0"/>
       <xs:element name="proposedExtensionSet" type="extensionType" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="negotiatedExtensionSet" type="extensionType" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="secureRenegotiation" type="xs:boolean"/>
       <xs:element name="useExtendedMasterSecret" type="xs:boolean"/>
-      <xs:element name="earlyCleanShutdown" type="xs:boolean" minOccurs="0"/>
       <xs:element name="httpsCookieName" type="xs:string" minOccurs="0"/>
       <xs:element name="httpsCookieValue" type="xs:string" minOccurs="0"/>
       <xs:element name="receivedTransportHandlerException" type="xs:boolean"/>
@@ -3132,6 +3180,660 @@
     </xs:sequence>
   </xs:complexType>
 
+  <xs:complexType name="config">
+    <xs:all>
+      <xs:element name="defaultHandshakeSecret" type="xs:string" minOccurs="0"/>
+      <xs:element name="throwExceptionOnParserContextViolation" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="preferredCertificateSignatureType" type="certificateKeyType" minOccurs="0"/>
+      <xs:element name="preferredCertificateSignatureGroup" type="namedGroup" minOccurs="0"/>
+      <xs:element name="autoSelectCertificate" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="defaultExplicitCertificateKeyPair" type="certificateKeyPair" minOccurs="0"/>
+      <xs:element name="autoAdjustSignatureAndHashAlgorithm" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="preferredHashAlgorithm" type="hashAlgorithm" minOccurs="0"/>
+      <xs:element name="outputFilters" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="outputFilter" type="filterType" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="applyFiltersInPlace" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="filtersKeepUserSettings" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="reorderReceivedDtlsRecords" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="highestProtocolVersion" type="protocolVersion" minOccurs="0"/>
+      <xs:element name="defaultClientConnection" type="outboundConnection" minOccurs="0"/>
+      <xs:element name="receiveFinalTcpSocketStateWithTimeout" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="retryFailedClientTcpSocketInitialization" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="defaultServerConnection" type="inboundConnection" minOccurs="0"/>
+      <xs:element name="defaultRunningMode" type="runningModeType" minOccurs="0"/>
+      <xs:element name="clientAuthentication" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="defaultClientSupportedSignatureAndHashAlgorithms" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="defaultClientSupportedSignatureAndHashAlgorithm" type="signatureAndHashAlgorithm" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="defaultClientSupportedCipherSuites" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="defaultClientSupportedCipherSuite" type="cipherSuite" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="defaultServerSupportedCipherSuites" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="defaultServerSupportedCipherSuite" type="cipherSuite" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="defaultClientNamedGroups" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="defaultClientNamedGroup" type="namedGroup" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="defaultServerNamedGroups" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="defaultServerNamedGroup" type="namedGroup" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="supportedVersions" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="supportedVersion" type="protocolVersion" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="heartbeatMode" type="heartbeatMode" minOccurs="0"/>
+      <xs:element name="defaultAdditionalPadding" type="xs:int" minOccurs="0"/>
+      <xs:element name="defaultSelectedNamedGroup" type="namedGroup" minOccurs="0"/>
+      <xs:element name="defaultKeySharePrivateKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultClientKeyShareNamedGroups" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="defaultClientKeyShareNamedGroup" type="namedGroup" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="defaultClientKeyStoreEntries" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="defaultClientKeyStoreEntry" type="keyShareStoreEntry" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="defaultServerKeyShareEntry" type="keyShareStoreEntry" minOccurs="0"/>
+      <xs:element name="sniType" type="nameType" minOccurs="0"/>
+      <xs:element name="prefferedCertRsaKeySize" type="xs:int" minOccurs="0"/>
+      <xs:element name="prefferedCertDssKeySize" type="xs:int" minOccurs="0"/>
+      <xs:element name="defaultKeyUpdateRequestMode" type="keyUpdateRequest" minOccurs="0"/>
+      <xs:element name="encryptChangeCipherSpecTls13" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="tlsSessionTicket" type="xs:string" minOccurs="0"/>
+      <xs:element name="defaultClientRenegotiationInfo" type="xs:string" minOccurs="0"/>
+      <xs:element name="defaultServerRenegotiationInfo" type="xs:string" minOccurs="0"/>
+      <xs:element name="defaultSignedCertificateTimestamp" type="xs:string" minOccurs="0"/>
+      <xs:element name="defaultTokenBindingVersion" type="tokenBindingVersion" minOccurs="0"/>
+      <xs:element name="defaultTokenBindingKeyParameters" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="defaultTokenBindingKeyParameter" type="tokenBindingKeyParameters" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="certificateStatusRequestExtensionRequestType" type="certificateStatusRequestType" minOccurs="0"/>
+      <xs:element name="certificateStatusRequestExtensionResponderIDList" type="xs:string" minOccurs="0"/>
+      <xs:element name="certificateStatusRequestExtensionRequestExtension" type="xs:string" minOccurs="0"/>
+      <xs:element name="defaultProposedAlpnProtocols" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="defaultProposedAlpnProtocol" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="defaultSelectedAlpnProtocol" type="xs:string" minOccurs="0"/>
+      <xs:element name="secureRemotePasswordExtensionIdentifier" type="xs:string" minOccurs="0"/>
+      <xs:element name="secureRealTimeTransportProtocolProtectionProfiles" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="secureRealTimeTransportProtocolProtectionProfile" type="srtpProtectionProfiles" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="secureRealTimeTransportProtocolMasterKeyIdentifier" type="xs:string" minOccurs="0"/>
+      <xs:element name="userMappingExtensionHintType" type="userMappingExtensionHintType" minOccurs="0"/>
+      <xs:element name="certificateTypeDesiredTypes" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="certificateTypeDesiredType" type="certificateType" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="clientCertificateTypeDesiredTypes" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="clientCertificateTypeDesiredType" type="certificateType" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="serverCertificateTypeDesiredTypes" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="serverCertificateTypeDesiredType" type="certificateType" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="clientAuthzExtensionDataFormat" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="clientAuthzExtensionDataFormat" type="authzDataFormat" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="certificateTypeExtensionMessageState" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="serverAuthzExtensionDataFormat" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="serverAuthzExtensionDataFormat" type="authzDataFormat" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="trustedCaIndicationExtensionAuthorities" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="trustedCaIndicationExtensionAuthority" type="trustedAuthority" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="clientCertificateTypeExtensionMessageState" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="cachedInfoExtensionIsClientState" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="cachedObjectList" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="cachedObject" type="cachedObject" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="statusRequestV2RequestList" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="statusRequestV2Request" type="requestItemV2" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="workflowInput" type="xs:string" minOccurs="0"/>
+      <xs:element name="workflowOutput" type="xs:string" minOccurs="0"/>
+      <xs:element name="configOutput" type="xs:string" minOccurs="0"/>
+      <xs:element name="workflowTraceType" type="workflowTraceType" minOccurs="0"/>
+      <xs:element name="serverSendsApplicationData" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="addExtensionsInSSL" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="addECPointFormatExtension" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="addEllipticCurveExtension" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="addHeartbeatExtension" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="addMaxFragmentLengthExtension" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="addRecordSizeLimitExtension" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="addServerNameIndicationExtension" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="addSignatureAndHashAlgorithmsExtension" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="addSupportedVersionsExtension" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="addKeyShareExtension" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="addEarlyDataExtension" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="defaultMaxEarlyDataSize" type="xs:int" minOccurs="0"/>
+      <xs:element name="addEncryptedServerNameIndicationExtension" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="addPWDClearExtension" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="addPWDProtectExtension" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="addPSKKeyExchangeModesExtension" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="addPreSharedKeyExtension" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="addPaddingExtension" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="addExtendedMasterSecretExtension" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="addSessionTicketTLSExtension" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="addExtendedRandomExtension" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="addSignedCertificateTimestampExtension" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="addRenegotiationInfoExtension" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="addTokenBindingExtension" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="addHttpsCookie" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="defaultHttpsCookieName" type="xs:string" minOccurs="0"/>
+      <xs:element name="defaultHttpsCookieValue" type="xs:string" minOccurs="0"/>
+      <xs:element name="addCertificateStatusRequestExtension" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="addAlpnExtension" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="addSRPExtension" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="addSRTPExtension" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="addTruncatedHmacExtension" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="addUserMappingExtension" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="addCertificateTypeExtension" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="addClientAuthzExtension" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="addServerAuthzExtension" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="addClientCertificateTypeExtension" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="addServerCertificateTypeExtension" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="addEncryptThenMacExtension" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="addCachedInfoExtension" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="addClientCertificateUrlExtension" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="addTrustedCaIndicationExtension" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="addCertificateStatusRequestV2Extension" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="addCookieExtension" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="updateTimestamps" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="pskKeyExchangeModes" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="pskKeyExchangeMode" type="pskKeyExchangeMode" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="psk" type="xs:string" minOccurs="0"/>
+      <xs:element name="clientEarlyTrafficSecret" type="xs:string" minOccurs="0"/>
+      <xs:element name="earlySecret" type="xs:string" minOccurs="0"/>
+      <xs:element name="earlyDataCipherSuite" type="cipherSuite" minOccurs="0"/>
+      <xs:element name="earlyDataPsk" type="xs:string" minOccurs="0"/>
+      <xs:element name="defaultPskSets" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="defaultPskSet" type="pskSet" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="limitPsksToOne" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="preserveMessageRecordRelation" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="usePsk" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="earlyData" type="xs:string" minOccurs="0"/>
+      <xs:element name="distinguishedNames" type="xs:string" minOccurs="0"/>
+      <xs:element name="enforceSettings" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="earlyStop" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="receiveMaximumBytes" type="xs:int" minOccurs="0"/>
+      <xs:element name="stealthMode" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="stopActionsAfterIOException" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="stopTraceAfterUnexpected" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="messageFactoryActionOptions" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="messageFactoryActionOption" type="actionOption" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="defaultServerDhGenerator" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultServerDhModulus" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultClientDhGenerator" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultClientDhModulus" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultServerDhPrivateKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultClientDhPrivateKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultServerDhPublicKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultClientDhPublicKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultServerDsaPrivateKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultServerDsaPublicKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultServerDsaPrimeP" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultServerDsaPrimeQ" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultServerDsaGenerator" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultClientDsaPrivateKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultClientDsaPublicKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultClientDsaPrimeP" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultClientDsaPrimeQ" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultClientDsaGenerator" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultSelectedGostCurve" type="gostCurve" minOccurs="0"/>
+      <xs:element name="defaultApplicationMessageData" type="xs:string" minOccurs="0"/>
+      <xs:element name="clientCertificateTypes" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="clientCertificateType" type="clientCertificateType" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="heartbeatPayloadLength" type="xs:int" minOccurs="0"/>
+      <xs:element name="heartbeatPaddingLength" type="xs:int" minOccurs="0"/>
+      <xs:element name="defaultPaddingExtensionBytes" type="xs:string" minOccurs="0"/>
+      <xs:element name="dtlsDefaultCookieLength" type="xs:int" minOccurs="0"/>
+      <xs:element name="dtlsMaximumFragmentLength" type="xs:int" minOccurs="0"/>
+      <xs:element name="workflowExecutorType" type="workflowExecutorType" minOccurs="0"/>
+      <xs:element name="flushOnMessageTypeChange" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="createFragmentsDynamically" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="createRecordsDynamically" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="createIndividualRecords" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="recordLayerType" type="recordLayerType" minOccurs="0"/>
+      <xs:element name="resetWorkflowTracesBeforeSaving" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="quickReceive" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="workflowExecutorShouldOpen" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="workflowExecutorShouldClose" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="stopReceivingAfterFatal" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="stopActionsAfterFatal" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="finishWithCloseNotify" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="ignoreRetransmittedCcsInDtls" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="addRetransmissionsToWorkflowTraceInDtls" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="maxDtlsRetransmissions" type="xs:int" minOccurs="0"/>
+      <xs:element name="stopReceivingAfterWarning" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="stopActionsAfterWarning" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="defaultSelectedCipherSuite" type="cipherSuite" minOccurs="0"/>
+      <xs:element name="defaultSelectedServerCertificateType" type="certificateType" minOccurs="0"/>
+      <xs:element name="defaultSelectedClientCertificateType" type="certificateType" minOccurs="0"/>
+      <xs:element name="defaultSSL2CipherSuite" type="ssl2CipherSuite" minOccurs="0"/>
+      <xs:element name="defaultServerSupportedPointFormats" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="defaultServerSupportedPointFormat" type="ecPointFormat" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="defaultClientSupportedPointFormats" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="defaultClientSupportedPointFormat" type="ecPointFormat" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="defaultServerSupportedSignatureAndHashAlgorithms" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="defaultServerSupportedSignatureAndHashAlgorithm" type="signatureAndHashAlgorithm" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="defaultSelectedSignatureAndHashAlgorithm" type="signatureAndHashAlgorithm" minOccurs="0"/>
+      <xs:element name="defaultLastRecordProtocolVersion" type="protocolVersion" minOccurs="0"/>
+      <xs:element name="defaultSelectedProtocolVersion" type="protocolVersion" minOccurs="0"/>
+      <xs:element name="defaultHighestClientProtocolVersion" type="protocolVersion" minOccurs="0"/>
+      <xs:element name="defaultMaxFragmentLength" type="maxFragmentLength" minOccurs="0"/>
+      <xs:element name="defaultMaxRecordData" type="xs:int" minOccurs="0"/>
+      <xs:element name="inboundRecordSizeLimit" type="xs:int" minOccurs="0"/>
+      <xs:element name="defaultHeartbeatMode" type="heartbeatMode" minOccurs="0"/>
+      <xs:element name="defaultClientSupportedCompressionMethods" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="defaultClientSupportedCompressionMethod" type="compressionMethod" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="defaultServerSupportedCompressionMethods" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="defaultServerSupportedCompressionMethod" type="compressionMethod" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="defaultMasterSecret" type="xs:string" minOccurs="0"/>
+      <xs:element name="defaultPreMasterSecret" type="xs:string" minOccurs="0"/>
+      <xs:element name="defaultClientExtendedRandom" type="xs:string" minOccurs="0"/>
+      <xs:element name="defaultServerExtendedRandom" type="xs:string" minOccurs="0"/>
+      <xs:element name="defaultClientRandom" type="xs:string" minOccurs="0"/>
+      <xs:element name="defaultServerRandom" type="xs:string" minOccurs="0"/>
+      <xs:element name="defaultClientSessionId" type="xs:string" minOccurs="0"/>
+      <xs:element name="defaultServerSessionId" type="xs:string" minOccurs="0"/>
+      <xs:element name="defaultSelectedCompressionMethod" type="compressionMethod" minOccurs="0"/>
+      <xs:element name="dtlsDefaultCookie" type="xs:string" minOccurs="0"/>
+      <xs:element name="defaultExtensionCookie" type="xs:string" minOccurs="0"/>
+      <xs:element name="defaultCertificateRequestContext" type="xs:string" minOccurs="0"/>
+      <xs:element name="defaultPRFAlgorithm" type="prfAlgorithm" minOccurs="0"/>
+      <xs:element name="defaultAlertDescription" type="alertDescription" minOccurs="0"/>
+      <xs:element name="defaultAlertLevel" type="alertLevel" minOccurs="0"/>
+      <xs:element name="defaultEcCertificateCurve" type="namedGroup" minOccurs="0"/>
+      <xs:element name="defaultClientEcPublicKey" type="point" minOccurs="0"/>
+      <xs:element name="defaultServerEcPublicKey" type="point" minOccurs="0"/>
+      <xs:element name="defaultServerEcPrivateKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultClientEcPrivateKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultServerRSAModulus" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultClientRSAModulus" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultServerRSAPublicKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultClientRSAPublicKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultServerRSAPrivateKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultClientRSAPrivateKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultPSKKey" type="xs:string" minOccurs="0"/>
+      <xs:element name="defaultPSKIdentity" type="xs:string" minOccurs="0"/>
+      <xs:element name="defaultPSKIdentityHint" type="xs:string" minOccurs="0"/>
+      <xs:element name="defaultSRPModulus" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultPSKModulus" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultPSKGenerator" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultPskDhServerPrivateKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultPskDhServerPublicKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultSRPGenerator" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultSRPServerPrivateKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultSRPClientPrivateKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultSRPServerPublicKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultSRPClientPublicKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultSRPServerSalt" type="xs:string" minOccurs="0"/>
+      <xs:element name="defaultSRPIdentity" type="xs:string" minOccurs="0"/>
+      <xs:element name="defaultSRPPassword" type="xs:string" minOccurs="0"/>
+      <xs:element name="defaultClientHandshakeTrafficSecret" type="xs:string" minOccurs="0"/>
+      <xs:element name="defaultServerHandshakeTrafficSecret" type="xs:string" minOccurs="0"/>
+      <xs:element name="defaultClientApplicationTrafficSecret" type="xs:string" minOccurs="0"/>
+      <xs:element name="defaultServerApplicationTrafficSecret" type="xs:string" minOccurs="0"/>
+      <xs:element name="defaultTokenBindingType" type="tokenBindingType" minOccurs="0"/>
+      <xs:element name="defaultTokenBindingECPublicKey" type="point" minOccurs="0"/>
+      <xs:element name="defaultTokenBindingRsaPublicKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultTokenBindingRsaPrivateKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultTokenBindingEcPrivateKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultTokenBindingRsaModulus" type="xs:integer" minOccurs="0"/>
+      <xs:element name="useFreshRandom" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="chooserType" type="chooserType" minOccurs="0"/>
+      <xs:element name="useAllProvidedDtlsFragments" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="useAllProvidedRecords" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="httpsParsingEnabled" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="defaultHttpsRequestPath" type="xs:string" minOccurs="0"/>
+      <xs:element name="starttlsType" type="starttlsType" minOccurs="0"/>
+      <xs:element name="sessionTicketLifetimeHint" type="xs:long" minOccurs="0"/>
+      <xs:element name="sessionTicketKeyAES" type="xs:string" minOccurs="0"/>
+      <xs:element name="sessionTicketKeyHMAC" type="xs:string" minOccurs="0"/>
+      <xs:element name="sessionTicketKeyName" type="xs:string" minOccurs="0"/>
+      <xs:element name="defaultSessionTicketAgeAdd" type="xs:string" minOccurs="0"/>
+      <xs:element name="defaultSessionTicketNonce" type="xs:string" minOccurs="0"/>
+      <xs:element name="defaultSessionTicketIdentity" type="xs:string" minOccurs="0"/>
+      <xs:element name="defaultLastClientHello" type="xs:string" minOccurs="0"/>
+      <xs:element name="clientAuthenticationType" type="clientAuthenticationType" minOccurs="0"/>
+      <xs:element name="tls13BackwardsCompatibilityMode" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="defaultClientPWDUsername" type="xs:string" minOccurs="0"/>
+      <xs:element name="defaultPWDProtectGroup" type="namedGroup" minOccurs="0"/>
+      <xs:element name="defaultServerPWDProtectPublicKey" type="point" minOccurs="0"/>
+      <xs:element name="defaultServerPWDProtectPrivateKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultServerPWDProtectRandomSecret" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultPWDPassword" type="xs:string" minOccurs="0"/>
+      <xs:element name="defaultPWDIterations" type="xs:int" minOccurs="0"/>
+      <xs:element name="defaultServerPWDPrivate" type="xs:string" minOccurs="0"/>
+      <xs:element name="defaultServerPWDMask" type="xs:string" minOccurs="0"/>
+      <xs:element name="defaultClientPWDPrivate" type="xs:string" minOccurs="0"/>
+      <xs:element name="defaultClientPWDMask" type="xs:string" minOccurs="0"/>
+      <xs:element name="defaultServerPWDSalt" type="xs:string" minOccurs="0"/>
+      <xs:element name="parseInvalidRecordsUnencrypted" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="defaultSelectedPointFormat" type="ecPointFormat" minOccurs="0"/>
+      <xs:element name="defaultEsniClientPrivateKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="clientSupportedEsniCipherSuites" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="clientSupportedEsniCipherSuite" type="cipherSuite" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="clientSupportedEsniNamedGroups" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="clientSupportedEsniNamedGroup" type="namedGroup" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="esniServerKeyPairs" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="esniServerKeyPair" type="keyShareEntry" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="defaultEsniClientNonce" type="xs:string" minOccurs="0"/>
+      <xs:element name="defaultEsniServerNonce" type="xs:string" minOccurs="0"/>
+      <xs:element name="defaultEsniRecordBytes" type="xs:string" minOccurs="0"/>
+      <xs:element name="defaultEsniRecordVersion" type="esniDnsKeyRecordVersion" minOccurs="0"/>
+      <xs:element name="defaultEsniRecordChecksum" type="xs:string" minOccurs="0"/>
+      <xs:element name="defaultEsniServerKeyShareEntries" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="defaultEsniServerKeyShareEntry" type="keyShareStoreEntry" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="defaultEsniServerCipherSuites" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="defaultEsniServerCipherSuite" type="cipherSuite" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="defaultEsniPaddedLength" type="xs:int" minOccurs="0"/>
+      <xs:element name="defaultEsniNotBefore" type="xs:long" minOccurs="0"/>
+      <xs:element name="defaultEsniNotAfter" type="xs:long" minOccurs="0"/>
+      <xs:element name="defaultEsniExtensions" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="defaultEsniExtension" type="extensionType" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="acceptOnlyFittingDtlsFragments" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="acceptContentRewritingDtlsFragments" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="writeKeylogFile" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="keylogFilePath" type="xs:string" minOccurs="0"/>
+    </xs:all>
+  </xs:complexType>
+
+  <xs:complexType name="certificateKeyPair">
+    <xs:sequence>
+      <xs:element name="certPublicKeyType" type="certificateKeyType" minOccurs="0"/>
+      <xs:element name="certSignatureType" type="certificateKeyType" minOccurs="0"/>
+      <xs:element name="gostCurve" type="gostCurve" minOccurs="0"/>
+      <xs:element name="certificateBytes" type="xs:string" minOccurs="0"/>
+      <xs:choice minOccurs="0">
+        <xs:element name="DhPublicKey" type="customDhPublicKey"/>
+        <xs:element name="DsaPublicKey" type="customDsaPublicKey"/>
+        <xs:element name="RsaPublicKey" type="customRsaPublicKey"/>
+        <xs:element name="EcPublicKey" type="customEcPublicKey"/>
+      </xs:choice>
+      <xs:choice minOccurs="0">
+        <xs:element name="DhPrivateKey" type="customDHPrivateKey"/>
+        <xs:element name="DsaPrivateKey" type="customDSAPrivateKey"/>
+        <xs:element name="RsaPrivateKey" type="customRSAPrivateKey"/>
+        <xs:element name="EcPrivateKey" type="customECPrivateKey"/>
+      </xs:choice>
+      <xs:element name="signatureGroup" type="namedGroup" minOccurs="0"/>
+      <xs:element name="publicKeyGroup" type="namedGroup" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="customDhPublicKey">
+    <xs:complexContent>
+      <xs:extension base="customPublicKey">
+        <xs:sequence>
+          <xs:element name="modulus" type="xs:integer" minOccurs="0"/>
+          <xs:element name="generator" type="xs:integer" minOccurs="0"/>
+          <xs:element name="publicKey" type="xs:integer" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="customPublicKey" abstract="true">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="customDsaPublicKey">
+    <xs:complexContent>
+      <xs:extension base="customPublicKey">
+        <xs:sequence>
+          <xs:element name="dsaP" type="xs:integer" minOccurs="0"/>
+          <xs:element name="dsaQ" type="xs:integer" minOccurs="0"/>
+          <xs:element name="dsaG" type="xs:integer" minOccurs="0"/>
+          <xs:element name="publicKey" type="xs:integer" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="customRsaPublicKey">
+    <xs:complexContent>
+      <xs:extension base="customPublicKey">
+        <xs:sequence>
+          <xs:element name="publicExponent" type="xs:integer" minOccurs="0"/>
+          <xs:element name="modulus" type="xs:integer" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="customEcPublicKey">
+    <xs:complexContent>
+      <xs:extension base="customPublicKey">
+        <xs:sequence>
+          <xs:element ref="point" minOccurs="0"/>
+          <xs:element name="group" type="namedGroup" minOccurs="0"/>
+          <xs:element name="gostCurve" type="gostCurve" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="customDHPrivateKey">
+    <xs:complexContent>
+      <xs:extension base="customPrivateKey">
+        <xs:sequence>
+          <xs:element name="privateKey" type="xs:integer" minOccurs="0"/>
+          <xs:element name="modulus" type="xs:integer" minOccurs="0"/>
+          <xs:element name="generator" type="xs:integer" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="customPrivateKey" abstract="true">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="customDSAPrivateKey">
+    <xs:complexContent>
+      <xs:extension base="customPrivateKey">
+        <xs:sequence>
+          <xs:element name="privateKey" type="xs:integer" minOccurs="0"/>
+          <xs:element name="primeP" type="xs:integer" minOccurs="0"/>
+          <xs:element name="primeQ" type="xs:integer" minOccurs="0"/>
+          <xs:element name="generator" type="xs:integer" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="customRSAPrivateKey">
+    <xs:complexContent>
+      <xs:extension base="customPrivateKey">
+        <xs:sequence>
+          <xs:element name="modulus" type="xs:integer" minOccurs="0"/>
+          <xs:element name="privateExponent" type="xs:integer" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="customECPrivateKey">
+    <xs:complexContent>
+      <xs:extension base="customPrivateKey">
+        <xs:sequence>
+          <xs:element name="privateKey" type="xs:integer" minOccurs="0"/>
+          <xs:element name="group" type="namedGroup" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="keyShareStoreEntry">
+    <xs:sequence>
+      <xs:element name="group" type="namedGroup" minOccurs="0"/>
+      <xs:element name="publicKey" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="pskSet">
+    <xs:sequence>
+      <xs:element name="preSharedKeyIdentity" type="xs:string" minOccurs="0"/>
+      <xs:element name="preSharedKey" type="xs:string" minOccurs="0"/>
+      <xs:element name="ticketAge" type="xs:string" minOccurs="0"/>
+      <xs:element name="ticketAgeAdd" type="xs:string" minOccurs="0"/>
+      <xs:element name="ticketNonce" type="xs:string" minOccurs="0"/>
+      <xs:element name="cipherSuite" type="cipherSuite" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
   <xs:complexType name="session">
     <xs:sequence>
       <xs:element name="masterSecret" type="xs:base64Binary" minOccurs="0"/>
@@ -3146,15 +3848,8 @@
     </xs:sequence>
   </xs:complexType>
 
-  <xs:complexType name="pskSet">
-    <xs:sequence>
-      <xs:element name="preSharedKeyIdentity" type="xs:string" minOccurs="0"/>
-      <xs:element name="preSharedKey" type="xs:string" minOccurs="0"/>
-      <xs:element name="ticketAge" type="xs:string" minOccurs="0"/>
-      <xs:element name="ticketAgeAdd" type="xs:string" minOccurs="0"/>
-      <xs:element name="ticketNonce" type="xs:string" minOccurs="0"/>
-      <xs:element name="cipherSuite" type="cipherSuite" minOccurs="0"/>
-    </xs:sequence>
+  <xs:complexType name="keylogfile">
+    <xs:sequence/>
   </xs:complexType>
 
   <xs:complexType name="certificate">
@@ -3184,18 +3879,15 @@
     </xs:sequence>
   </xs:complexType>
 
-  <xs:complexType name="keyShareStoreEntry">
-    <xs:sequence>
-      <xs:element name="group" type="namedGroup" minOccurs="0"/>
-      <xs:element name="publicKey" type="xs:string" minOccurs="0"/>
-    </xs:sequence>
-  </xs:complexType>
-
   <xs:complexType name="fragmentManager">
     <xs:sequence/>
   </xs:complexType>
 
   <xs:complexType name="random">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="chooser" abstract="true">
     <xs:sequence/>
   </xs:complexType>
 
@@ -3249,6 +3941,17 @@
         <xs:sequence>
           <xs:element name="newValue" type="xs:string" minOccurs="0"/>
           <xs:element name="oldValue" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="changeConnectionTimeoutAction">
+    <xs:complexContent>
+      <xs:extension base="connectionBoundAction">
+        <xs:sequence>
+          <xs:element name="newValue" type="xs:long"/>
+          <xs:element name="oldValue" type="xs:long"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -3483,6 +4186,13 @@
               </xs:sequence>
             </xs:complexType>
           </xs:element>
+          <xs:element name="receivedFragments" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="DtlsFragment" type="dtlsHandshakeMessageFragment" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
           <xs:element name="messages" minOccurs="0">
             <xs:complexType>
               <xs:sequence>
@@ -3546,6 +4256,13 @@
               </xs:sequence>
             </xs:complexType>
           </xs:element>
+          <xs:element name="fragments" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="DtlsFragment" type="dtlsHandshakeMessageFragment" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
           <xs:element name="sendMessages" minOccurs="0">
             <xs:complexType>
               <xs:sequence>
@@ -3606,6 +4323,13 @@
                   <xs:element name="Record" type="record"/>
                   <xs:element name="BlobRecord" type="blobRecord"/>
                 </xs:choice>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="sendFragments" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="DtlsFragment" type="dtlsHandshakeMessageFragment" minOccurs="0" maxOccurs="unbounded"/>
               </xs:sequence>
             </xs:complexType>
           </xs:element>
@@ -4041,7 +4765,6 @@
 
   <xs:simpleType name="actionOption">
     <xs:restriction base="xs:string">
-      <xs:enumeration value="EARLY_CLEAN_SHUTDOWN"/>
       <xs:enumeration value="IGNORE_UNEXPECTED_NEW_SESSION_TICKETS"/>
       <xs:enumeration value="IGNORE_UNEXPECTED_WARNINGS"/>
       <xs:enumeration value="MAY_FAIL"/>
@@ -4595,6 +5318,35 @@
     </xs:restriction>
   </xs:simpleType>
 
+  <xs:simpleType name="handshakeMessageType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="UNKNOWN"/>
+      <xs:enumeration value="HELLO_REQUEST"/>
+      <xs:enumeration value="CLIENT_HELLO"/>
+      <xs:enumeration value="SSL2_CLIENT_HELLO"/>
+      <xs:enumeration value="SERVER_HELLO"/>
+      <xs:enumeration value="SSL2_CLIENT_MASTER_KEY"/>
+      <xs:enumeration value="HELLO_VERIFY_REQUEST"/>
+      <xs:enumeration value="NEW_SESSION_TICKET"/>
+      <xs:enumeration value="SSL2_SERVER_HELLO"/>
+      <xs:enumeration value="END_OF_EARLY_DATA"/>
+      <xs:enumeration value="SSL2_SERVER_VERIFY"/>
+      <xs:enumeration value="HELLO_RETRY_REQUEST"/>
+      <xs:enumeration value="ENCRYPTED_EXTENSIONS"/>
+      <xs:enumeration value="CERTIFICATE"/>
+      <xs:enumeration value="SERVER_KEY_EXCHANGE"/>
+      <xs:enumeration value="CERTIFICATE_REQUEST"/>
+      <xs:enumeration value="SERVER_HELLO_DONE"/>
+      <xs:enumeration value="CERTIFICATE_VERIFY"/>
+      <xs:enumeration value="CLIENT_KEY_EXCHANGE"/>
+      <xs:enumeration value="FINISHED"/>
+      <xs:enumeration value="KEY_UPDATE"/>
+      <xs:enumeration value="CERTIFICATE_STATUS"/>
+      <xs:enumeration value="SUPPLEMENTAL_DATA"/>
+      <xs:enumeration value="MESSAGE_HASH"/>
+    </xs:restriction>
+  </xs:simpleType>
+
   <xs:simpleType name="protocolMessageType">
     <xs:restriction base="xs:string">
       <xs:enumeration value="UNKNOWN"/>
@@ -4623,43 +5375,54 @@
     </xs:restriction>
   </xs:simpleType>
 
-  <xs:simpleType name="socketState">
+  <xs:simpleType name="certificateKeyType">
     <xs:restriction base="xs:string">
-      <xs:enumeration value="CLOSED"/>
-      <xs:enumeration value="PEER_WRITE_CLOSED"/>
-      <xs:enumeration value="UP"/>
-      <xs:enumeration value="DATA_AVAILABLE"/>
-      <xs:enumeration value="TIMEOUT"/>
-      <xs:enumeration value="SOCKET_EXCEPTION"/>
-      <xs:enumeration value="IO_EXCEPTION"/>
-      <xs:enumeration value="UNAVAILABLE"/>
+      <xs:enumeration value="DH"/>
+      <xs:enumeration value="ECDH"/>
+      <xs:enumeration value="RSA"/>
+      <xs:enumeration value="DSS"/>
+      <xs:enumeration value="ECDSA"/>
+      <xs:enumeration value="GOST01"/>
+      <xs:enumeration value="GOST12"/>
+      <xs:enumeration value="FORTEZZA"/>
+      <xs:enumeration value="ECNRA"/>
+      <xs:enumeration value="NONE"/>
     </xs:restriction>
   </xs:simpleType>
 
-  <xs:simpleType name="pskKeyExchangeMode">
+  <xs:simpleType name="gostCurve">
     <xs:restriction base="xs:string">
-      <xs:enumeration value="PSK_KE"/>
-      <xs:enumeration value="PSK_DHE_KE"/>
+      <xs:enumeration value="GostR3410_2001_CryptoPro_A"/>
+      <xs:enumeration value="GostR3410_2001_CryptoPro_B"/>
+      <xs:enumeration value="GostR3410_2001_CryptoPro_C"/>
+      <xs:enumeration value="GostR3410_2001_CryptoPro_XchA"/>
+      <xs:enumeration value="GostR3410_2001_CryptoPro_XchB"/>
+      <xs:enumeration value="Tc26_Gost_3410_12_256_paramSetA"/>
+      <xs:enumeration value="Tc26_Gost_3410_12_512_paramSetA"/>
+      <xs:enumeration value="Tc26_Gost_3410_12_512_paramSetB"/>
+      <xs:enumeration value="Tc26_Gost_3410_12_512_paramSetC"/>
     </xs:restriction>
   </xs:simpleType>
 
-  <xs:simpleType name="ssl2CipherSuite">
+  <xs:simpleType name="hashAlgorithm">
     <xs:restriction base="xs:string">
-      <xs:enumeration value="SSL_CK_RC4_128_WITH_MD5"/>
-      <xs:enumeration value="SSL_CK_RC4_128_EXPORT40_WITH_MD5"/>
-      <xs:enumeration value="SSL_CK_RC2_128_CBC_WITH_MD5"/>
-      <xs:enumeration value="SSL_CK_RC2_128_CBC_EXPORT40_WITH_MD5"/>
-      <xs:enumeration value="SSL_CK_IDEA_128_CBC_WITH_MD5"/>
-      <xs:enumeration value="SSL_CK_DES_64_CBC_WITH_MD5"/>
-      <xs:enumeration value="SSL_CK_DES_192_EDE3_CBC_WITH_MD5"/>
-      <xs:enumeration value="SSL_UNKNOWN_CIPHER"/>
+      <xs:enumeration value="NONE"/>
+      <xs:enumeration value="MD5"/>
+      <xs:enumeration value="SHA1"/>
+      <xs:enumeration value="SHA224"/>
+      <xs:enumeration value="SHA256"/>
+      <xs:enumeration value="SHA384"/>
+      <xs:enumeration value="SHA512"/>
+      <xs:enumeration value="GOSTR3411"/>
+      <xs:enumeration value="GOSTR34112012_256"/>
+      <xs:enumeration value="GOSTR34112012_512"/>
     </xs:restriction>
   </xs:simpleType>
 
-  <xs:simpleType name="connectionEndType">
+  <xs:simpleType name="filterType">
     <xs:restriction base="xs:string">
-      <xs:enumeration value="CLIENT"/>
-      <xs:enumeration value="SERVER"/>
+      <xs:enumeration value="DEFAULT"/>
+      <xs:enumeration value="DISCARD_RECORDS"/>
     </xs:restriction>
   </xs:simpleType>
 
@@ -4704,6 +5467,14 @@
       <xs:enumeration value="GREASE_13"/>
       <xs:enumeration value="GREASE_14"/>
       <xs:enumeration value="GREASE_15"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="runningModeType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="CLIENT"/>
+      <xs:enumeration value="SERVER"/>
+      <xs:enumeration value="MITM"/>
     </xs:restriction>
   </xs:simpleType>
 
@@ -4767,91 +5538,16 @@
     </xs:restriction>
   </xs:simpleType>
 
-  <xs:simpleType name="certificateType">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="X509"/>
-      <xs:enumeration value="OPEN_PGP"/>
-      <xs:enumeration value="RAW_PUBLIC_KEY"/>
-    </xs:restriction>
-  </xs:simpleType>
-
-  <xs:simpleType name="certificateStatusRequestType">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="OCSP"/>
-      <xs:enumeration value="OCSP_multi"/>
-    </xs:restriction>
-  </xs:simpleType>
-
-  <xs:simpleType name="srtpProtectionProfiles">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="SRTP_AES128_CM_HMAC_SHA1_80"/>
-      <xs:enumeration value="SRTP_AES128_CM_HMAC_SHA1_32"/>
-      <xs:enumeration value="SRTP_NULL_HMAC_SHA1_80"/>
-      <xs:enumeration value="SRTP_NULL_HMAC_SHA1_32"/>
-    </xs:restriction>
-  </xs:simpleType>
-
-  <xs:simpleType name="userMappingExtensionHintType">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="UPN_DOMAIN_HINT"/>
-    </xs:restriction>
-  </xs:simpleType>
-
-  <xs:simpleType name="authzDataFormat">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="X509_ATTR_CERT"/>
-      <xs:enumeration value="SAML_ASSERTION"/>
-      <xs:enumeration value="X509_ATTR_CERT_URL"/>
-      <xs:enumeration value="SAML_ASSERTION_URL"/>
-    </xs:restriction>
-  </xs:simpleType>
-
-  <xs:simpleType name="ecPointFormat">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="UNCOMPRESSED"/>
-      <xs:enumeration value="ANSIX962_COMPRESSED_PRIME"/>
-      <xs:enumeration value="ANSIX962_COMPRESSED_CHAR2"/>
-    </xs:restriction>
-  </xs:simpleType>
-
-  <xs:simpleType name="clientCertificateType">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="RSA_SIGN"/>
-      <xs:enumeration value="DSS_SIGN"/>
-      <xs:enumeration value="RSA_FIXED_DH"/>
-      <xs:enumeration value="DSS_FIXED_DH"/>
-      <xs:enumeration value="RSA_EPHEMERAL_DH_RESERVED"/>
-      <xs:enumeration value="DSS_EPHEMERAL_DH_RESERVED"/>
-      <xs:enumeration value="FORTEZZA_DMS_RESERVED"/>
-      <xs:enumeration value="GOSTR34101994"/>
-      <xs:enumeration value="GOSTR34102001"/>
-      <xs:enumeration value="ECDSA_SIGN"/>
-      <xs:enumeration value="RSA_FIXED_ECDH"/>
-      <xs:enumeration value="ECDSA_FIXED_ECDH"/>
-      <xs:enumeration value="GOST_SIGN256"/>
-      <xs:enumeration value="GOST_SIGN512"/>
-      <xs:enumeration value="GOSTR34102012_256"/>
-      <xs:enumeration value="GOSTR34102012_512"/>
-    </xs:restriction>
-  </xs:simpleType>
-
   <xs:simpleType name="nameType">
     <xs:restriction base="xs:string">
       <xs:enumeration value="HOST_NAME"/>
     </xs:restriction>
   </xs:simpleType>
 
-  <xs:simpleType name="gostCurve">
+  <xs:simpleType name="keyUpdateRequest">
     <xs:restriction base="xs:string">
-      <xs:enumeration value="GostR3410_2001_CryptoPro_A"/>
-      <xs:enumeration value="GostR3410_2001_CryptoPro_B"/>
-      <xs:enumeration value="GostR3410_2001_CryptoPro_C"/>
-      <xs:enumeration value="GostR3410_2001_CryptoPro_XchA"/>
-      <xs:enumeration value="GostR3410_2001_CryptoPro_XchB"/>
-      <xs:enumeration value="Tc26_Gost_3410_12_256_paramSetA"/>
-      <xs:enumeration value="Tc26_Gost_3410_12_512_paramSetA"/>
-      <xs:enumeration value="Tc26_Gost_3410_12_512_paramSetB"/>
-      <xs:enumeration value="Tc26_Gost_3410_12_512_paramSetC"/>
+      <xs:enumeration value="UPDATE_NOT_REQUESTED"/>
+      <xs:enumeration value="UPDATE_REQUESTED"/>
     </xs:restriction>
   </xs:simpleType>
 
@@ -4886,13 +5582,105 @@
     </xs:restriction>
   </xs:simpleType>
 
-  <xs:simpleType name="prfAlgorithm">
+  <xs:simpleType name="certificateStatusRequestType">
     <xs:restriction base="xs:string">
-      <xs:enumeration value="TLS_PRF_LEGACY"/>
-      <xs:enumeration value="TLS_PRF_SHA256"/>
-      <xs:enumeration value="TLS_PRF_SHA384"/>
-      <xs:enumeration value="TLS_PRF_GOSTR3411"/>
-      <xs:enumeration value="TLS_PRF_GOSTR3411_2012_256"/>
+      <xs:enumeration value="OCSP"/>
+      <xs:enumeration value="OCSP_multi"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="srtpProtectionProfiles">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="SRTP_AES128_CM_HMAC_SHA1_80"/>
+      <xs:enumeration value="SRTP_AES128_CM_HMAC_SHA1_32"/>
+      <xs:enumeration value="SRTP_NULL_HMAC_SHA1_80"/>
+      <xs:enumeration value="SRTP_NULL_HMAC_SHA1_32"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="userMappingExtensionHintType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="UPN_DOMAIN_HINT"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="certificateType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="X509"/>
+      <xs:enumeration value="OPEN_PGP"/>
+      <xs:enumeration value="RAW_PUBLIC_KEY"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="authzDataFormat">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="X509_ATTR_CERT"/>
+      <xs:enumeration value="SAML_ASSERTION"/>
+      <xs:enumeration value="X509_ATTR_CERT_URL"/>
+      <xs:enumeration value="SAML_ASSERTION_URL"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="workflowTraceType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="FULL"/>
+      <xs:enumeration value="HANDSHAKE"/>
+      <xs:enumeration value="DYNAMIC_HANDSHAKE"/>
+      <xs:enumeration value="DYNAMIC_HELLO"/>
+      <xs:enumeration value="HELLO"/>
+      <xs:enumeration value="SHORT_HELLO"/>
+      <xs:enumeration value="RESUMPTION"/>
+      <xs:enumeration value="FULL_RESUMPTION"/>
+      <xs:enumeration value="CLIENT_RENEGOTIATION_WITHOUT_RESUMPTION"/>
+      <xs:enumeration value="CLIENT_RENEGOTIATION"/>
+      <xs:enumeration value="SERVER_RENEGOTIATION"/>
+      <xs:enumeration value="DYNAMIC_CLIENT_RENEGOTIATION_WITHOUT_RESUMPTION"/>
+      <xs:enumeration value="HTTPS"/>
+      <xs:enumeration value="DYNAMIC_HTTPS"/>
+      <xs:enumeration value="SSL2_HELLO"/>
+      <xs:enumeration value="SIMPLE_MITM_PROXY"/>
+      <xs:enumeration value="TLS13_PSK"/>
+      <xs:enumeration value="FULL_TLS13_PSK"/>
+      <xs:enumeration value="ZERO_RTT"/>
+      <xs:enumeration value="FULL_ZERO_RTT"/>
+      <xs:enumeration value="FALSE_START"/>
+      <xs:enumeration value="RSA_SYNC_PROXY"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="pskKeyExchangeMode">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="PSK_KE"/>
+      <xs:enumeration value="PSK_DHE_KE"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="clientCertificateType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="RSA_SIGN"/>
+      <xs:enumeration value="DSS_SIGN"/>
+      <xs:enumeration value="RSA_FIXED_DH"/>
+      <xs:enumeration value="DSS_FIXED_DH"/>
+      <xs:enumeration value="RSA_EPHEMERAL_DH_RESERVED"/>
+      <xs:enumeration value="DSS_EPHEMERAL_DH_RESERVED"/>
+      <xs:enumeration value="FORTEZZA_DMS_RESERVED"/>
+      <xs:enumeration value="GOSTR34101994"/>
+      <xs:enumeration value="GOSTR34102001"/>
+      <xs:enumeration value="ECDSA_SIGN"/>
+      <xs:enumeration value="RSA_FIXED_ECDH"/>
+      <xs:enumeration value="ECDSA_FIXED_ECDH"/>
+      <xs:enumeration value="GOST_SIGN256"/>
+      <xs:enumeration value="GOST_SIGN512"/>
+      <xs:enumeration value="GOSTR34102012_256"/>
+      <xs:enumeration value="GOSTR34102012_512"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="workflowExecutorType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="DEFAULT"/>
+      <xs:enumeration value="THREADED_SERVER"/>
+      <xs:enumeration value="DTLS"/>
     </xs:restriction>
   </xs:simpleType>
 
@@ -4903,12 +5691,24 @@
     </xs:restriction>
   </xs:simpleType>
 
-  <xs:simpleType name="esniDnsKeyRecordVersion">
+  <xs:simpleType name="ssl2CipherSuite">
     <xs:restriction base="xs:string">
-      <xs:enumeration value="NULL"/>
-      <xs:enumeration value="VERSION_FF01"/>
-      <xs:enumeration value="VERSION_FF02"/>
-      <xs:enumeration value="VERSION_FF03"/>
+      <xs:enumeration value="SSL_CK_RC4_128_WITH_MD5"/>
+      <xs:enumeration value="SSL_CK_RC4_128_EXPORT40_WITH_MD5"/>
+      <xs:enumeration value="SSL_CK_RC2_128_CBC_WITH_MD5"/>
+      <xs:enumeration value="SSL_CK_RC2_128_CBC_EXPORT40_WITH_MD5"/>
+      <xs:enumeration value="SSL_CK_IDEA_128_CBC_WITH_MD5"/>
+      <xs:enumeration value="SSL_CK_DES_64_CBC_WITH_MD5"/>
+      <xs:enumeration value="SSL_CK_DES_192_EDE3_CBC_WITH_MD5"/>
+      <xs:enumeration value="SSL_UNKNOWN_CIPHER"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="ecPointFormat">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="UNCOMPRESSED"/>
+      <xs:enumeration value="ANSIX962_COMPRESSED_PRIME"/>
+      <xs:enumeration value="ANSIX962_COMPRESSED_CHAR2"/>
     </xs:restriction>
   </xs:simpleType>
 
@@ -4921,11 +5721,120 @@
     </xs:restriction>
   </xs:simpleType>
 
-  <xs:simpleType name="runningModeType">
+  <xs:simpleType name="prfAlgorithm">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="TLS_PRF_LEGACY"/>
+      <xs:enumeration value="TLS_PRF_SHA256"/>
+      <xs:enumeration value="TLS_PRF_SHA384"/>
+      <xs:enumeration value="TLS_PRF_GOSTR3411"/>
+      <xs:enumeration value="TLS_PRF_GOSTR3411_2012_256"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="alertDescription">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="CLOSE_NOTIFY"/>
+      <xs:enumeration value="UNEXPECTED_MESSAGE"/>
+      <xs:enumeration value="BAD_RECORD_MAC"/>
+      <xs:enumeration value="DECRYPTION_FAILED_RESERVED"/>
+      <xs:enumeration value="RECORD_OVERFLOW"/>
+      <xs:enumeration value="DECOMPRESSION_FAILURE"/>
+      <xs:enumeration value="HANDSHAKE_FAILURE"/>
+      <xs:enumeration value="NO_CERTIFICATE_RESERVED"/>
+      <xs:enumeration value="BAD_CERTIFICATE"/>
+      <xs:enumeration value="UNSUPPORTED_CERTIFICATE"/>
+      <xs:enumeration value="CERTIFICATE_REVOKED"/>
+      <xs:enumeration value="CERTIFICATE_EXPIRED"/>
+      <xs:enumeration value="CERTIFICATE_UNKNOWN"/>
+      <xs:enumeration value="ILLEGAL_PARAMETER"/>
+      <xs:enumeration value="UNKNOWN_CA"/>
+      <xs:enumeration value="ACCESS_DENIED"/>
+      <xs:enumeration value="DECODE_ERROR"/>
+      <xs:enumeration value="DECRYPT_ERROR"/>
+      <xs:enumeration value="EXPORT_RESTRICTION_RESERVED"/>
+      <xs:enumeration value="PROTOCOL_VERSION"/>
+      <xs:enumeration value="INSUFFICIENT_SECURITY"/>
+      <xs:enumeration value="INTERNAL_ERROR"/>
+      <xs:enumeration value="INAPPROPRIATE_FALLBACK"/>
+      <xs:enumeration value="USER_CANCELED"/>
+      <xs:enumeration value="NO_RENEGOTIATION"/>
+      <xs:enumeration value="MISSING_EXTENSION"/>
+      <xs:enumeration value="UNSUPPORTED_EXTENSION"/>
+      <xs:enumeration value="CERTIFICATE_UNOBTAINABLE"/>
+      <xs:enumeration value="UNRECOGNIZED_NAME"/>
+      <xs:enumeration value="BAD_CERTIFICATE_STATUS_RESPONSE"/>
+      <xs:enumeration value="BAD_CERTIFICATE_HASH_VALUE"/>
+      <xs:enumeration value="UNKNOWN_PSK_IDENTITY"/>
+      <xs:enumeration value="CERTIFICATE_REQUIRED"/>
+      <xs:enumeration value="NO_APPLICATION_PROTOCOL"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="alertLevel">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="UNDEFINED"/>
+      <xs:enumeration value="WARNING"/>
+      <xs:enumeration value="FATAL"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="tokenBindingType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="PROVIDED_TOKEN_BINDING"/>
+      <xs:enumeration value="REFERRED_TOKEN_BINDING"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="chooserType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="DEFAULT"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="starttlsType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="NONE"/>
+      <xs:enumeration value="FTP"/>
+      <xs:enumeration value="IMAP"/>
+      <xs:enumeration value="POP3"/>
+      <xs:enumeration value="SMTP"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="clientAuthenticationType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="ANONYMOUS"/>
+      <xs:enumeration value="CERTIFICATE_BASED"/>
+      <xs:enumeration value="PSK"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="esniDnsKeyRecordVersion">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="NULL"/>
+      <xs:enumeration value="VERSION_FF01"/>
+      <xs:enumeration value="VERSION_FF02"/>
+      <xs:enumeration value="VERSION_FF03"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="socketState">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="CLOSED"/>
+      <xs:enumeration value="PEER_WRITE_CLOSED"/>
+      <xs:enumeration value="UP"/>
+      <xs:enumeration value="DATA_AVAILABLE"/>
+      <xs:enumeration value="TIMEOUT"/>
+      <xs:enumeration value="SOCKET_EXCEPTION"/>
+      <xs:enumeration value="IO_EXCEPTION"/>
+      <xs:enumeration value="UNAVAILABLE"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="connectionEndType">
     <xs:restriction base="xs:string">
       <xs:enumeration value="CLIENT"/>
       <xs:enumeration value="SERVER"/>
-      <xs:enumeration value="MITM"/>
     </xs:restriction>
   </xs:simpleType>
 </xs:schema>

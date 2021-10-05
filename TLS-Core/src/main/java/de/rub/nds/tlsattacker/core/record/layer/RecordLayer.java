@@ -41,7 +41,8 @@ public abstract class RecordLayer {
 
     public abstract void decryptAndDecompressRecord(AbstractRecord records);
 
-    public abstract byte[] prepareRecords(byte[] data, ProtocolMessageType contentType, List<AbstractRecord> records);
+    public abstract byte[] prepareRecords(byte[] data, ProtocolMessageType contentType, List<AbstractRecord> records,
+        boolean withPrepare);
 
     public abstract void updateEncryptionCipher(RecordCipher encryptionCipher);
 
@@ -56,4 +57,8 @@ public abstract class RecordLayer {
     public abstract void updateCompressor();
 
     public abstract void updateDecompressor();
+
+    public abstract void resetEncryptor();
+
+    public abstract void resetDecryptor();
 }

@@ -54,7 +54,7 @@ public class RecordLayerTest {
         byte[] result;
         List<AbstractRecord> records = new LinkedList<>();
         records.add(new Record());
-        result = recordHandler.prepareRecords(data, ProtocolMessageType.HANDSHAKE, records);
+        result = recordHandler.prepareRecords(data, ProtocolMessageType.HANDSHAKE, records, true);
 
         byte[] expectedResult = { 22, 3, 3, 0, 10, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
@@ -66,7 +66,7 @@ public class RecordLayerTest {
         records.clear();
         records.add(preconfiguredRecord);
 
-        result = recordHandler.prepareRecords(data, ProtocolMessageType.HANDSHAKE, records);
+        result = recordHandler.prepareRecords(data, ProtocolMessageType.HANDSHAKE, records, true);
         assertEquals(1, records.size());
         assertEquals(7, result.length);
 
@@ -76,7 +76,7 @@ public class RecordLayerTest {
         records.add(preconfiguredRecord);
         records.add(preconfiguredRecord);
 
-        result = recordHandler.prepareRecords(data, ProtocolMessageType.HANDSHAKE, records);
+        result = recordHandler.prepareRecords(data, ProtocolMessageType.HANDSHAKE, records, true);
         assertEquals(2, records.size());
         assertEquals(14, result.length);
 

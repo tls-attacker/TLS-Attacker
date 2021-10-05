@@ -47,7 +47,6 @@ public class RecordEncryptor extends Encryptor {
                 LOGGER.error("Could not encrypt with NullCipher", ex1);
             }
         }
-        context.increaseWriteSequenceNumber();
     }
 
     @Override
@@ -70,7 +69,6 @@ public class RecordEncryptor extends Encryptor {
                 LOGGER.error("Could not encrypt with NullCipher", ex1);
             }
         }
-        context.increaseWriteSequenceNumber();
         if (context.getChooser().getSelectedProtocolVersion().isTLS13()) {
             record.getComputations().setUsedTls13KeySetType(context.getActiveKeySetTypeWrite());
         }

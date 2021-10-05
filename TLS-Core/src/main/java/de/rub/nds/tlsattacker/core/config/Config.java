@@ -803,6 +803,11 @@ public class Config implements Serializable {
     private Boolean earlyStop = false;
 
     /**
+     * The maximum number of bytes that can be received during a receive process. Default: 2^24.
+     */
+    private Integer receiveMaximumBytes = 16777216;
+
+    /**
      * If true, Random of the context is not seeded with an explicit value, thus client/server randoms are not
      * deterministic.
      */
@@ -909,6 +914,12 @@ public class Config implements Serializable {
     private Boolean flushOnMessageTypeChange = true;
 
     /**
+     * If there is not enough space in the defined fragments, new fragments are dynamically added if not set,
+     * protocolmessage bytes that wont fit are discarded
+     */
+    private Boolean createFragmentsDynamically = true;
+
+    /**
      * If there is not enough space in the defined records, new records are dynamically added if not set, protocol
      * message bytes that wont fit are discarded
      */
@@ -948,6 +959,27 @@ public class Config implements Serializable {
     private Boolean stopReceivingAfterFatal = false;
 
     private Boolean stopActionsAfterFatal = false;
+
+    /**
+     * If the WorkflowExecutor should take care of terminating the connection with a Alert(fatal, close_notify) message
+     */
+    private Boolean finishWithCloseNotify = false;
+
+    /**
+     * In DTLS, TLS-Attacker will not process further ChangeCipherSpec messages except the first received per epoch
+     * value
+     */
+    private Boolean ignoreRetransmittedCcsInDtls = false;
+
+    /**
+     * If retransmissions are received in DTLS should they included to the workflow trace
+     */
+    private Boolean addRetransmissionsToWorkflowTraceInDtls = false;
+
+    /**
+     * How many retransmissions in DTLS should be executed during the handshake
+     */
+    private Integer maxDtlsRetransmissions = 3;
 
     private Boolean stopReceivingAfterWarning = false;
 
@@ -1148,6 +1180,8 @@ public class Config implements Serializable {
     private Boolean useFreshRandom = true;
 
     private ChooserType chooserType = ChooserType.DEFAULT;
+
+    private Boolean useAllProvidedDtlsFragments = false;
 
     private Boolean useAllProvidedRecords = false;
 
@@ -1603,6 +1637,14 @@ public class Config implements Serializable {
 
     public void setUseFreshRandom(Boolean useFreshRandom) {
         this.useFreshRandom = useFreshRandom;
+    }
+
+    public Boolean isUseAllProvidedDtlsFragments() {
+        return useAllProvidedDtlsFragments;
+    }
+
+    public void setUseAllProvidedDtlsFragments(Boolean useAllProvidedDtlsFragments) {
+        this.useAllProvidedDtlsFragments = useAllProvidedDtlsFragments;
     }
 
     public Boolean isUseAllProvidedRecords() {
@@ -2285,6 +2327,14 @@ public class Config implements Serializable {
         this.quickReceive = quickReceive;
     }
 
+    public Integer getReceiveMaximumBytes() {
+        return receiveMaximumBytes;
+    }
+
+    public void setReceiveMaximumBytes(int receiveMaximumBytes) {
+        this.receiveMaximumBytes = receiveMaximumBytes;
+    }
+
     public Boolean isResetWorkflowTracesBeforeSaving() {
         return resetWorkflowTracesBeforeSaving;
     }
@@ -2307,6 +2357,14 @@ public class Config implements Serializable {
 
     public void setFlushOnMessageTypeChange(Boolean flushOnMessageTypeChange) {
         this.flushOnMessageTypeChange = flushOnMessageTypeChange;
+    }
+
+    public Boolean isCreateFragmentsDynamically() {
+        return createFragmentsDynamically;
+    }
+
+    public void setCreateFragmentsDynamically(Boolean createFragmentsDynamically) {
+        this.createFragmentsDynamically = createFragmentsDynamically;
     }
 
     public Boolean isCreateRecordsDynamically() {
@@ -3163,6 +3221,38 @@ public class Config implements Serializable {
 
     public void setStopActionsAfterFatal(Boolean stopActionsAfterFatal) {
         this.stopActionsAfterFatal = stopActionsAfterFatal;
+    }
+
+    public Boolean isFinishWithCloseNotify() {
+        return finishWithCloseNotify;
+    }
+
+    public void setFinishWithCloseNotify(Boolean finishWithCloseNotify) {
+        this.finishWithCloseNotify = finishWithCloseNotify;
+    }
+
+    public Boolean isIgnoreRetransmittedCcsInDtls() {
+        return ignoreRetransmittedCcsInDtls;
+    }
+
+    public void setIgnoreRetransmittedCssInDtls(Boolean ignoreRetransmittedCcs) {
+        this.ignoreRetransmittedCcsInDtls = ignoreRetransmittedCcs;
+    }
+
+    public Boolean isAddRetransmissionsToWorkflowTraceInDtls() {
+        return addRetransmissionsToWorkflowTraceInDtls;
+    }
+
+    public void setAddRetransmissionsToWorkflowTraceInDtls(Boolean addRetransmissionsToWorkflowTrace) {
+        this.addRetransmissionsToWorkflowTraceInDtls = addRetransmissionsToWorkflowTrace;
+    }
+
+    public int getMaxDtlsRetransmissions() {
+        return maxDtlsRetransmissions;
+    }
+
+    public void setMaxDtlsRetransmissions(int maxRetransmissions) {
+        this.maxDtlsRetransmissions = maxRetransmissions;
     }
 
     public List<FilterType> getOutputFilters() {

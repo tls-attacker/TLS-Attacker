@@ -52,16 +52,10 @@ public class ServerUdpTransportHandler extends UdpTransportHandler {
         }
     }
 
-    public int getPort() {
-        return port;
-    }
-
     @Override
     public void preInitialize() throws IOException {
         socket = new DatagramSocket(port);
         setStreams(new PushbackInputStream(new UdpInputStream(socket, true)), new UdpOutputStream(socket));
-        srcPort = socket.getLocalPort();
-        dstPort = socket.getPort();
         cachedSocketState = null;
     }
 }

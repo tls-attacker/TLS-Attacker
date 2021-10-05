@@ -35,11 +35,17 @@ public class BlobRecordPreparator extends AbstractRecordPreparator<BlobRecord> {
 
     @Override
     public void prepare() {
+        LOGGER.debug("Preparing Record");
         if (!chooser.getSelectedProtocolVersion().isTLS13()) {
             compressor.compress(record);
         }
-        encryptor.encrypt(record);
+        encrypt();
         prepareContentMessageType(record);
+    }
+
+    public void encrypt() {
+        LOGGER.debug("Encrypting Record");
+        encryptor.encrypt(record);
     }
 
     private void prepareContentMessageType(BlobRecord record) {

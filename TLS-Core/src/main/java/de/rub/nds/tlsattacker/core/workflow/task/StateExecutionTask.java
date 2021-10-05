@@ -10,8 +10,8 @@
 package de.rub.nds.tlsattacker.core.workflow.task;
 
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.workflow.DefaultWorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 
 /**
  * Do not use this Task if you want to rely on the socket state
@@ -28,7 +28,8 @@ public class StateExecutionTask extends TlsTask {
     @Override
     public boolean execute() {
 
-        WorkflowExecutor executor = new DefaultWorkflowExecutor(state);
+        WorkflowExecutor executor =
+            WorkflowExecutorFactory.createWorkflowExecutor(state.getConfig().getWorkflowExecutorType(), state);
         if (getBeforeTransportPreInitCallback() != null) {
             executor.setBeforeTransportPreInitCallback(getBeforeTransportPreInitCallback());
         }

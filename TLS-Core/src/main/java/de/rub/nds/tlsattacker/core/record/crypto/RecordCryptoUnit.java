@@ -42,6 +42,10 @@ public abstract class RecordCryptoUnit {
         this.recordCipherList.add(recordCipher);
     }
 
+    public void removeAllCiphers() {
+        this.recordCipherList = new ArrayList<>();
+    }
+
     public void removeCiphers(int toRemove) {
         while (toRemove > 0 && !recordCipherList.isEmpty()) {
             recordCipherList.remove(recordCipherList.size() - 1);
