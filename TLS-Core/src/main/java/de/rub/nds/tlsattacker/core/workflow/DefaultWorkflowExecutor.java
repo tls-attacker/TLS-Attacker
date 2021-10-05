@@ -68,12 +68,6 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
                 state.setEndTimestamp(System.currentTimeMillis());
             }
 
-            try {
-                getAfterExecutionCallback().apply(state);
-            } catch (Exception ex) {
-                LOGGER.trace("Error during AfterExecutionCallback", ex);
-            }
-
             if (config.isStopTraceAfterUnexpected() && !action.executedAsPlanned()) {
                 LOGGER.debug("Skipping all Actions, action did not execute as planned.");
                 break;
@@ -87,9 +81,7 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
 
         setFinalSocketState();
 
-        if (config.isWorkflowExecutorShouldClose())
-
-        {
+        if (config.isWorkflowExecutorShouldClose()) {
             closeConnection();
         }
         if (config.isResetWorkflowTracesBeforeSaving()) {
@@ -100,6 +92,12 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
 
         if (config.getConfigOutput() != null) {
             ConfigIO.write(config, new File(config.getConfigOutput()));
+        }
+
+        try {
+            getAfterExecutionCallback().apply(state);
+        } catch (Exception ex) {
+            LOGGER.trace("Error during AfterExecutionCallback", ex);
         }
     }
 }
