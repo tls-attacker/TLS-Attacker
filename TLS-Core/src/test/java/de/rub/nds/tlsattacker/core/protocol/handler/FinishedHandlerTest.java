@@ -117,8 +117,6 @@ public class FinishedHandlerTest {
         context.setHandshakeSecret(new byte[] { 0, 1, 2, 3, 4 });
         context.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
         message.setVerifyData(new byte[] { 0, 1, 2, 3, 4 });
-        context.setReadSequenceNumber(99);
-        context.setWriteSequenceNumber(99);
 
         handler.adjustTLSContext(message);
 
@@ -126,8 +124,6 @@ public class FinishedHandlerTest {
         assertArrayEquals(null, context.getLastClientVerifyData());
         assertEquals(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS, context.getActiveServerKeySetType());
         assertEquals(Tls13KeySetType.NONE, context.getActiveClientKeySetType());
-        assertEquals(99, context.getWriteSequenceNumber());
-        assertEquals(0, context.getReadSequenceNumber());
 
         assertArrayEquals(
             ArrayConverter.hexStringToByteArray("F8FAD34AEB9E4A8A3233A5F3C01D9E7B25CFAA4CBD7E255426A39B5EA8AE9840"),
@@ -151,8 +147,6 @@ public class FinishedHandlerTest {
         context.setHandshakeSecret(new byte[] { 0, 1, 2, 3, 4 });
         context.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
         message.setVerifyData(new byte[] { 0, 1, 2, 3, 4 });
-        context.setReadSequenceNumber(99);
-        context.setWriteSequenceNumber(99);
 
         handler.adjustTLSContext(message);
 
@@ -160,8 +154,6 @@ public class FinishedHandlerTest {
         assertEquals(Tls13KeySetType.NONE, context.getActiveServerKeySetType());
         assertArrayEquals(new byte[] { 0, 1, 2, 3, 4 }, context.getLastServerVerifyData());
         assertArrayEquals(null, context.getLastClientVerifyData());
-        assertEquals(99, context.getWriteSequenceNumber());
-        assertEquals(0, context.getReadSequenceNumber());
 
         assertArrayEquals(null, context.getClientApplicationTrafficSecret());
         assertArrayEquals(null, context.getServerApplicationTrafficSecret());
@@ -178,8 +170,6 @@ public class FinishedHandlerTest {
         context.setHandshakeSecret(new byte[] { 0, 1, 2, 3, 4 });
         context.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
         message.setVerifyData(new byte[] { 0, 1, 2, 3, 4 });
-        context.setReadSequenceNumber(99);
-        context.setWriteSequenceNumber(99);
 
         handler.adjustTLSContext(message);
 
@@ -187,8 +177,6 @@ public class FinishedHandlerTest {
         assertEquals(Tls13KeySetType.NONE, context.getActiveServerKeySetType());
         assertArrayEquals(new byte[] { 0, 1, 2, 3, 4 }, context.getLastClientVerifyData());
         assertArrayEquals(null, context.getLastServerVerifyData());
-        assertEquals(0, context.getWriteSequenceNumber());
-        assertEquals(99, context.getReadSequenceNumber());
 
         assertArrayEquals(null, context.getClientApplicationTrafficSecret());
         assertArrayEquals(null, context.getServerApplicationTrafficSecret());
@@ -206,8 +194,6 @@ public class FinishedHandlerTest {
         context.setHandshakeSecret(new byte[] { 0, 1, 2, 3, 4 });
         context.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
         message.setVerifyData(new byte[] { 0, 1, 2, 3, 4 });
-        context.setReadSequenceNumber(99);
-        context.setWriteSequenceNumber(99);
 
         handler.adjustTLSContext(message);
 
@@ -215,8 +201,6 @@ public class FinishedHandlerTest {
         assertEquals(Tls13KeySetType.NONE, context.getActiveServerKeySetType());
         assertArrayEquals(new byte[] { 0, 1, 2, 3, 4 }, context.getLastClientVerifyData());
         assertArrayEquals(null, context.getLastServerVerifyData());
-        assertEquals(99, context.getWriteSequenceNumber());
-        assertEquals(0, context.getReadSequenceNumber());
 
         assertArrayEquals(null, context.getClientApplicationTrafficSecret());
         assertArrayEquals(null, context.getServerApplicationTrafficSecret());
@@ -233,8 +217,6 @@ public class FinishedHandlerTest {
         context.setHandshakeSecret(new byte[] { 0, 1, 2, 3, 4 });
         context.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
         message.setVerifyData(new byte[] { 0, 1, 2, 3, 4 });
-        context.setReadSequenceNumber(99);
-        context.setWriteSequenceNumber(99);
 
         handler.adjustTlsContextAfterSerialize(message);
 
@@ -242,8 +224,6 @@ public class FinishedHandlerTest {
         assertEquals(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS, context.getActiveServerKeySetType());
         assertArrayEquals(null, context.getLastClientVerifyData());
         assertArrayEquals(null, context.getLastServerVerifyData());
-        assertEquals(0, context.getWriteSequenceNumber());
-        assertEquals(99, context.getReadSequenceNumber());
 
         assertArrayEquals(
             ArrayConverter.hexStringToByteArray("F8FAD34AEB9E4A8A3233A5F3C01D9E7B25CFAA4CBD7E255426A39B5EA8AE9840"),
@@ -266,8 +246,6 @@ public class FinishedHandlerTest {
         context.setHandshakeSecret(new byte[] { 0, 1, 2, 3, 4 });
         context.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
         message.setVerifyData(new byte[] { 0, 1, 2, 3, 4 });
-        context.setReadSequenceNumber(99);
-        context.setWriteSequenceNumber(99);
 
         handler.adjustTlsContextAfterSerialize(message);
 
@@ -275,8 +253,6 @@ public class FinishedHandlerTest {
         assertEquals(Tls13KeySetType.NONE, context.getActiveServerKeySetType());
         assertArrayEquals(null, context.getLastClientVerifyData());
         assertArrayEquals(null, context.getLastServerVerifyData());
-        assertEquals(0, context.getWriteSequenceNumber());
-        assertEquals(99, context.getReadSequenceNumber());
     }
 
     @Test
@@ -289,8 +265,6 @@ public class FinishedHandlerTest {
         context.setHandshakeSecret(new byte[] { 0, 1, 2, 3, 4 });
         context.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
         message.setVerifyData(new byte[] { 0, 1, 2, 3, 4 });
-        context.setReadSequenceNumber(99);
-        context.setWriteSequenceNumber(99);
 
         handler.adjustTlsContextAfterSerialize(message);
 
@@ -298,8 +272,6 @@ public class FinishedHandlerTest {
         assertArrayEquals(null, context.getLastClientVerifyData());
         assertEquals(Tls13KeySetType.NONE, context.getActiveServerKeySetType());
         assertEquals(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS, context.getActiveClientKeySetType());
-        assertEquals(0, context.getWriteSequenceNumber());
-        assertEquals(99, context.getReadSequenceNumber());
 
     }
 
@@ -313,8 +285,6 @@ public class FinishedHandlerTest {
         context.setHandshakeSecret(new byte[] { 0, 1, 2, 3, 4 });
         context.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
         message.setVerifyData(new byte[] { 0, 1, 2, 3, 4 });
-        context.setReadSequenceNumber(99);
-        context.setWriteSequenceNumber(99);
 
         handler.adjustTlsContextAfterSerialize(message);
 
@@ -322,8 +292,6 @@ public class FinishedHandlerTest {
         assertArrayEquals(null, context.getLastClientVerifyData());
         assertEquals(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS, context.getActiveServerKeySetType());
         assertEquals(Tls13KeySetType.NONE, context.getActiveClientKeySetType());
-        assertEquals(0, context.getWriteSequenceNumber());
-        assertEquals(99, context.getReadSequenceNumber());
 
         assertArrayEquals(
             ArrayConverter.hexStringToByteArray("F8FAD34AEB9E4A8A3233A5F3C01D9E7B25CFAA4CBD7E255426A39B5EA8AE9840"),
@@ -348,8 +316,6 @@ public class FinishedHandlerTest {
         context.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
         message.setVerifyData(new byte[] { 0, 1, 2, 3, 4 });
         context.getNegotiatedExtensionSet().remove(ExtensionType.EARLY_DATA);
-        context.setReadSequenceNumber(99);
-        context.setWriteSequenceNumber(99);
 
         handler.adjustTLSContext(message);
 
@@ -357,8 +323,6 @@ public class FinishedHandlerTest {
         assertEquals(Tls13KeySetType.NONE, context.getActiveServerKeySetType());
         assertArrayEquals(new byte[] { 0, 1, 2, 3, 4 }, context.getLastServerVerifyData());
         assertArrayEquals(null, context.getLastClientVerifyData());
-        assertEquals(99, context.getWriteSequenceNumber());
-        assertEquals(0, context.getReadSequenceNumber());
 
         assertArrayEquals(null, context.getClientApplicationTrafficSecret());
         assertArrayEquals(null, context.getServerApplicationTrafficSecret());
@@ -377,8 +341,6 @@ public class FinishedHandlerTest {
         context.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
         message.setVerifyData(new byte[] { 0, 1, 2, 3, 4 });
         context.getNegotiatedExtensionSet().add(ExtensionType.EARLY_DATA);
-        context.setReadSequenceNumber(99);
-        context.setWriteSequenceNumber(99);
 
         handler.adjustTLSContext(message);
 
@@ -386,8 +348,6 @@ public class FinishedHandlerTest {
         assertEquals(Tls13KeySetType.NONE, context.getActiveServerKeySetType());
         assertArrayEquals(new byte[] { 0, 1, 2, 3, 4 }, context.getLastServerVerifyData());
         assertArrayEquals(null, context.getLastClientVerifyData());
-        assertEquals(99, context.getWriteSequenceNumber());
-        assertEquals(99, context.getReadSequenceNumber());
 
         assertArrayEquals(null, context.getClientApplicationTrafficSecret());
         assertArrayEquals(null, context.getServerApplicationTrafficSecret());

@@ -77,7 +77,7 @@ public class EarlyCcsAction extends TlsAction {
         r.setContentMessageType(ProtocolMessageType.HANDSHAKE);
         recordList.add(r);
         byte[] prepareRecords = state.getTlsContext().getRecordLayer().prepareRecords(protocolMessageBytes,
-            ProtocolMessageType.HANDSHAKE, recordList, true);
+            ProtocolMessageType.HANDSHAKE, recordList);
         try {
             state.getTlsContext().getTransportHandler().sendData(prepareRecords);
             executedAsPlanned = true;

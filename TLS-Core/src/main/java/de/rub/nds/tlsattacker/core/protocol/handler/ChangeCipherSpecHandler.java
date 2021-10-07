@@ -55,9 +55,8 @@ public class ChangeCipherSpecHandler extends TlsMessageHandler<ChangeCipherSpecM
         if (tlsContext.getTalkingConnectionEndType() != tlsContext.getChooser().getConnectionEndType()
             && tlsContext.getChooser().getSelectedProtocolVersion() != ProtocolVersion.TLS13) {
             LOGGER.debug("Adjusting decrypting cipher for " + tlsContext.getTalkingConnectionEndType());
-            tlsContext.getRecordLayer().updateDecryptionCipher(getRecordCipher());
+            tlsContext.getRecordLayer().updateDecryptionCipher(getRecordCipher(false));
             tlsContext.getRecordLayer().updateDecompressor();
-            tlsContext.increaseReadEpoch();
         }
     }
 
@@ -65,17 +64,16 @@ public class ChangeCipherSpecHandler extends TlsMessageHandler<ChangeCipherSpecM
     public void adjustTlsContextAfterSerialize(ChangeCipherSpecMessage message) {
         if (!tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
             LOGGER.debug("Adjusting encrypting cipher for " + tlsContext.getTalkingConnectionEndType());
-            tlsContext.getRecordLayer().updateEncryptionCipher(getRecordCipher());
+            tlsContext.getRecordLayer().updateEncryptionCipher(getRecordCipher(true));
             tlsContext.getRecordLayer().updateCompressor();
-            tlsContext.increaseWriteEpoch();
         }
     }
 
-    private RecordCipher getRecordCipher() {
+    private RecordCipher getRecordCipher(boolean isEncCipher) {
         try {
             KeySet keySet = KeySetGenerator.generateKeySet(tlsContext,
                 tlsContext.getChooser().getSelectedProtocolVersion(), Tls13KeySetType.NONE);
-            return RecordCipherFactory.getRecordCipher(tlsContext, keySet);
+            return RecordCipherFactory.getRecordCipher(tlsContext, keySet, isEncCipher);
         } catch (NoSuchAlgorithmException | CryptoException ex) {
             throw new UnsupportedOperationException("The specified Algorithm is not supported", ex);
         }

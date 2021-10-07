@@ -173,15 +173,13 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         tlsContext.setActiveServerKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
         LOGGER.debug("Setting cipher for server to use handshake secrets");
         KeySet serverKeySet = getTls13KeySet(tlsContext, tlsContext.getActiveServerKeySetType());
-        RecordCipher recordCipherServer = RecordCipherFactory.getRecordCipher(tlsContext, serverKeySet,
-            tlsContext.getChooser().getSelectedCipherSuite());
 
         if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
-            tlsContext.increaseReadEpoch();
-            tlsContext.getRecordLayer().updateDecryptionCipher(recordCipherServer);
+            tlsContext.getRecordLayer().updateDecryptionCipher(RecordCipherFactory.getRecordCipher(tlsContext,
+                serverKeySet, tlsContext.getChooser().getSelectedCipherSuite(), false));
         } else {
-            tlsContext.increaseWriteEpoch();
-            tlsContext.getRecordLayer().updateEncryptionCipher(recordCipherServer);
+            tlsContext.getRecordLayer().updateEncryptionCipher(RecordCipherFactory.getRecordCipher(tlsContext,
+                serverKeySet, tlsContext.getChooser().getSelectedCipherSuite(), true));
         }
     }
 

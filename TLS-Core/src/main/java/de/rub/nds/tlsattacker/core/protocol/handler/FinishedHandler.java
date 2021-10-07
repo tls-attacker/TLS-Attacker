@@ -147,15 +147,13 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
         tlsContext.setActiveServerKeySetType(keySetType);
         LOGGER.debug("Setting cipher for server to use " + keySetType);
         KeySet serverKeySet = getKeySet(tlsContext, tlsContext.getActiveServerKeySetType());
-        RecordCipher recordCipherServer = RecordCipherFactory.getRecordCipher(tlsContext, serverKeySet,
-            tlsContext.getChooser().getSelectedCipherSuite());
 
         if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
-            tlsContext.increaseReadEpoch();
-            tlsContext.getRecordLayer().updateDecryptionCipher(recordCipherServer);
+            tlsContext.getRecordLayer().updateDecryptionCipher(RecordCipherFactory.getRecordCipher(tlsContext,
+                serverKeySet, tlsContext.getChooser().getSelectedCipherSuite(), false));
         } else {
-            tlsContext.increaseWriteEpoch();
-            tlsContext.getRecordLayer().updateEncryptionCipher(recordCipherServer);
+            tlsContext.getRecordLayer().updateEncryptionCipher(RecordCipherFactory.getRecordCipher(tlsContext,
+                serverKeySet, tlsContext.getChooser().getSelectedCipherSuite(), true));
         }
     }
 
@@ -163,15 +161,13 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
         tlsContext.setActiveClientKeySetType(keySetType);
         LOGGER.debug("Setting cipher for client to use " + keySetType);
         KeySet clientKeySet = getKeySet(tlsContext, tlsContext.getActiveClientKeySetType());
-        RecordCipher recordCipherClient = RecordCipherFactory.getRecordCipher(tlsContext, clientKeySet,
-            tlsContext.getChooser().getSelectedCipherSuite());
 
         if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {
-            tlsContext.increaseReadEpoch();
-            tlsContext.getRecordLayer().updateDecryptionCipher(recordCipherClient);
+            tlsContext.getRecordLayer().updateDecryptionCipher(RecordCipherFactory.getRecordCipher(tlsContext,
+                clientKeySet, tlsContext.getChooser().getSelectedCipherSuite(), false));
         } else {
-            tlsContext.increaseWriteEpoch();
-            tlsContext.getRecordLayer().updateEncryptionCipher(recordCipherClient);
+            tlsContext.getRecordLayer().updateEncryptionCipher(RecordCipherFactory.getRecordCipher(tlsContext,
+                clientKeySet, tlsContext.getChooser().getSelectedCipherSuite(), true));
         }
     }
 }

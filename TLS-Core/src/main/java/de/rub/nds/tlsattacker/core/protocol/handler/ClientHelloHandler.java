@@ -204,15 +204,13 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
 
             KeySet clientKeySet = KeySetGenerator.generateKeySet(tlsContext, ProtocolVersion.TLS13,
                 tlsContext.getActiveClientKeySetType());
-            RecordCipher recordCipherClient = RecordCipherFactory.getRecordCipher(tlsContext, clientKeySet,
-                tlsContext.getChooser().getEarlyDataCipherSuite());
 
             if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {
-                tlsContext.increaseReadEpoch();
-                tlsContext.getRecordLayer().updateDecryptionCipher(recordCipherClient);
+                tlsContext.getRecordLayer().updateDecryptionCipher(RecordCipherFactory.getRecordCipher(tlsContext,
+                    clientKeySet, tlsContext.getChooser().getEarlyDataCipherSuite(), false));
             } else {
-                tlsContext.increaseWriteEpoch();
-                tlsContext.getRecordLayer().updateEncryptionCipher(recordCipherClient);
+                tlsContext.getRecordLayer().updateEncryptionCipher(RecordCipherFactory.getRecordCipher(tlsContext,
+                    clientKeySet, tlsContext.getChooser().getEarlyDataCipherSuite(), true));
             }
         } catch (NoSuchAlgorithmException ex) {
             LOGGER.error("Unable to generate KeySet - unknown algorithm");

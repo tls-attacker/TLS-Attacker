@@ -10,8 +10,10 @@
 package de.rub.nds.tlsattacker.core.record;
 
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.record.cipher.CipherState;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
 import de.rub.nds.tlsattacker.core.record.compressor.RecordCompressor;
 import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
@@ -38,7 +40,10 @@ public class BlobRecordTest {
         record = new BlobRecord(config);
         TlsContext ctx = new TlsContext(config);
         chooser = ctx.getChooser();
-        encryptor = new RecordEncryptor(new RecordNullCipher(ctx), ctx);
+        encryptor = new RecordEncryptor(
+            new RecordNullCipher(ctx,
+                new CipherState(chooser.getSelectedProtocolVersion(), chooser.getSelectedCipherSuite(), null, null, 0)),
+            ctx);
         compressor = new RecordCompressor(ctx);
 
     }

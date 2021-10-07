@@ -12,6 +12,8 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.dtls.FragmentManager;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.record.cipher.CipherState;
+import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
@@ -46,10 +48,16 @@ public class ResetConnectionAction extends ConnectionBoundAction {
             LOGGER.debug("Could not close client connection", ex);
         }
         LOGGER.info("Resetting Cipher");
+        tlsContext.getRecordLayer().setWriteEpoch(0);
+        tlsContext.getRecordLayer().setReadEpoch(0);
         tlsContext.getRecordLayer().resetDecryptor();
         tlsContext.getRecordLayer().resetEncryptor();
-        tlsContext.getRecordLayer().updateDecryptionCipher(new RecordNullCipher(tlsContext));
-        tlsContext.getRecordLayer().updateEncryptionCipher(new RecordNullCipher(tlsContext));
+        tlsContext.getRecordLayer().updateDecryptionCipher(
+            new RecordNullCipher(tlsContext, new CipherState(tlsContext.getChooser().getSelectedProtocolVersion(),
+                tlsContext.getChooser().getSelectedCipherSuite(), null, null, 0)));
+        tlsContext.getRecordLayer().updateEncryptionCipher(
+            new RecordNullCipher(tlsContext, new CipherState(tlsContext.getChooser().getSelectedProtocolVersion(),
+                tlsContext.getChooser().getSelectedCipherSuite(), null, null, 0)));
         LOGGER.info("Resetting SecureRenegotiation");
         tlsContext.setLastClientVerifyData(new byte[0]);
         tlsContext.setLastServerVerifyData(new byte[0]);
@@ -58,14 +66,10 @@ public class ResetConnectionAction extends ConnectionBoundAction {
         LOGGER.info("Resetting ActiveKeySets");
         tlsContext.setActiveClientKeySetType(Tls13KeySetType.NONE);
         tlsContext.setActiveServerKeySetType(Tls13KeySetType.NONE);
-        tlsContext.getReadSequenceNumbers().clear();
-        tlsContext.getWriteSequenceNumbers().clear();
         LOGGER.info("Resetting DTLS numbers and cookie");
         tlsContext.setDtlsCookie(null);
         tlsContext.setDtlsReadHandshakeMessageSequence(0);
         tlsContext.setDtlsWriteHandshakeMessageSequence(0);
-        tlsContext.setReadEpoch(0);
-        tlsContext.setWriteEpoch(0);
         tlsContext.getDtlsReceivedChangeCipherSpecEpochs().clear();
         tlsContext.setDtlsFragmentManager(new FragmentManager(state.getConfig()));
         tlsContext.getDtlsReceivedHandshakeMessageSequences().clear();

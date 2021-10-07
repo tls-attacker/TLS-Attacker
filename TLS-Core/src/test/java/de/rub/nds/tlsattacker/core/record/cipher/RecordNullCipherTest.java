@@ -24,7 +24,9 @@ public class RecordNullCipherTest {
 
     @Before
     public void setUp() {
-        recordCipher = new RecordNullCipher(new TlsContext());
+        TlsContext ctx = new TlsContext();
+        recordCipher = new RecordNullCipher(ctx, new CipherState(ctx.getChooser().getSelectedProtocolVersion(),
+            ctx.getChooser().getSelectedCipherSuite(), null, null, 0));
         data = new byte[] { 1, 2 };
         record = new Record();
     }

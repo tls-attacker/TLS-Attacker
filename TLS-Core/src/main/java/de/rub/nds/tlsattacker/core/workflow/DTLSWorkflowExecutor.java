@@ -9,12 +9,9 @@
 
 package de.rub.nds.tlsattacker.core.workflow;
 
-import de.rub.nds.modifiablevariable.biginteger.BigIntegerExplicitValueModification;
 import de.rub.nds.tlsattacker.core.config.ConfigIO;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.record.AbstractRecord;
-import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceivingAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendingAction;
@@ -23,8 +20,6 @@ import de.rub.nds.tlsattacker.core.workflow.action.executor.SendMessageHelper;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import java.io.File;
 import java.io.IOException;
-import java.math.BigInteger;
-import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -114,12 +109,12 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
         }
 
         if (config.isFinishWithCloseNotify()) {
-            int dtlsWriteEpoch = state.getTlsContext().getWriteEpoch();
-            for (int epoch = dtlsWriteEpoch; epoch >= 0; epoch--) {
-                state.getTlsContext().setWriteEpoch(epoch);
+            int currentEpoch = state.getTlsContext().getRecordLayer().getCurrentWriteEpoch();
+            for (int epoch = currentEpoch; epoch >= 0; epoch--) {
+                state.getTlsContext().getRecordLayer().setWriteEpoch(epoch);
                 sendCloseNotify();
             }
-            state.getTlsContext().setWriteEpoch(dtlsWriteEpoch);
+            state.getTlsContext().getRecordLayer().setWriteEpoch(currentEpoch);
         }
 
         setFinalSocketState();
@@ -146,18 +141,7 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
 
     private void executeRetransmission(SendingAction action) throws IOException {
         LOGGER.info("Executing retransmission of last sent flight");
-        for (AbstractRecord abstractRecord : action.getSendRecords()) {
-            if (abstractRecord instanceof Record) {
-                Record record = (Record) abstractRecord;
-                record.setSequenceNumber(
-                    BigInteger.valueOf(state.getTlsContext().getWriteSequenceNumber(record.getEpoch().getValue())));
-                List<AbstractRecord> records = new LinkedList<>();
-                records.add(record);
-                state.getTlsContext().getRecordLayer().prepareRecords(record.getCleanProtocolMessageBytes().getValue(),
-                    record.getContentMessageType(), records, false);
-                state.getTlsContext().increaseWriteSequenceNumber(record.getEpoch().getValue());
-            }
-        }
+        state.getTlsContext().getRecordLayer().reencrypt(action.getSendRecords());
         sendMessageHelper.sendRecords(action.getSendRecords(), state.getTlsContext());
     }
 

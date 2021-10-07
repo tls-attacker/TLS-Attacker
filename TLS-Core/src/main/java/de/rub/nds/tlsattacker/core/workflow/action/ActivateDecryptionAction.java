@@ -10,6 +10,8 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
+import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -17,14 +19,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class ActivateDecryptionAction extends ActivateCryptoAction {
 
     @Override
-    protected void activateCrypto(TlsContext tlsContext, RecordCipher recordCipher) {
+    protected void activateCrypto(TlsContext tlsContext, KeySet keySet) {
         LOGGER.info("Setting new decryption cipher and activating decryption");
+        RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(tlsContext, keySet, false);
         tlsContext.getRecordLayer().updateDecryptionCipher(recordCipher);
-
-        if (resetSequenceNumbers) {
-            tlsContext.setReadSequenceNumber(0);
-            LOGGER.info("Reset read SQN");
-        }
     }
 
 }

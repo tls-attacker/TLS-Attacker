@@ -18,6 +18,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.record.cipher.CipherState;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordAEADCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordBlockCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
@@ -69,8 +70,10 @@ public class RecordDecryptorTest {
         record.setProtocolMessageBytes(ArrayConverter.hexStringToByteArray(
             "04cc7a7f777567ccda7d45233d8180929b89dc55a67d8a5783b229610756b9cd0b5d7b96b7b533da0e5f21634b170c6561fc649c007bf5b02398eec7d6b68a55"));
 
-        recordCipher = new RecordBlockCipher(context, context.getChooser().getSelectedProtocolVersion(),
-            context.getChooser().getSelectedCipherSuite(), KeySetGenerator.generateKeySet(context));
+        recordCipher = new RecordBlockCipher(context,
+            new CipherState(context.getChooser().getSelectedProtocolVersion(),
+                context.getChooser().getSelectedCipherSuite(), KeySetGenerator.generateKeySet(context),
+                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC), 0));
         decryptor = new RecordDecryptor(recordCipher, context);
         decryptor.decrypt(record);
 
@@ -110,8 +113,10 @@ public class RecordDecryptorTest {
         record.setProtocolMessageBytes(ArrayConverter.hexStringToByteArray(
             "16B406CF7A489CA985883AEDA28D34E3AB1B66A1C376C1F354607CFDA1739D9B60D30776152207B1988604FBCF75E6BC370ADE1EE684CAE9B0801AAE50CC2EFA"));
 
-        recordCipher = new RecordBlockCipher(context, context.getChooser().getSelectedProtocolVersion(),
-            context.getChooser().getSelectedCipherSuite(), KeySetGenerator.generateKeySet(context));
+        recordCipher = new RecordBlockCipher(context,
+            new CipherState(context.getChooser().getSelectedProtocolVersion(),
+                context.getChooser().getSelectedCipherSuite(), KeySetGenerator.generateKeySet(context),
+                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC), 0));
         decryptor = new RecordDecryptor(recordCipher, context);
         decryptor.decrypt(record);
 
@@ -149,8 +154,10 @@ public class RecordDecryptorTest {
         record.setProtocolMessageBytes(ArrayConverter
             .hexStringToByteArray("2142ec1d8a2b0bff9866bd07682a3c1b3e1a6cd253763586edc5849bf53d17037f2578cf"));
 
-        recordCipher = new RecordStreamCipher(context, context.getChooser().getSelectedProtocolVersion(),
-            context.getChooser().getSelectedCipherSuite(), KeySetGenerator.generateKeySet(context));
+        recordCipher = new RecordStreamCipher(context,
+            new CipherState(context.getChooser().getSelectedProtocolVersion(),
+                context.getChooser().getSelectedCipherSuite(), KeySetGenerator.generateKeySet(context),
+                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC), 0));
         decryptor = new RecordDecryptor(recordCipher, context);
         decryptor.decrypt(record);
 
@@ -190,8 +197,10 @@ public class RecordDecryptorTest {
         record.setProtocolMessageBytes(ArrayConverter
             .hexStringToByteArray("A26A2D97CE709B530E53BF60E39AE84D58A167C2431ACF356B9C674265A14BAA6DBDF4BAFEF87F5F"));
 
-        recordCipher = new RecordAEADCipher(context, context.getChooser().getSelectedProtocolVersion(),
-            context.getChooser().getSelectedCipherSuite(), KeySetGenerator.generateKeySet(context));
+        recordCipher = new RecordAEADCipher(context,
+            new CipherState(context.getChooser().getSelectedProtocolVersion(),
+                context.getChooser().getSelectedCipherSuite(), KeySetGenerator.generateKeySet(context),
+                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC), 0));
         decryptor = new RecordDecryptor(recordCipher, context);
         decryptor.decrypt(record);
 
@@ -228,8 +237,10 @@ public class RecordDecryptorTest {
         record.setProtocolVersion(ProtocolVersion.TLS10.getValue());
         record.setProtocolMessageBytes(ArrayConverter.hexStringToByteArray(
             "1d42081019ffbdedc5e155e1dc3faab3e522bc764a2f476a57246bf59fc37f68463023f27e7f0fb64488ced496048124"));
-        recordCipher = new RecordBlockCipher(context, context.getChooser().getSelectedProtocolVersion(),
-            context.getChooser().getSelectedCipherSuite(), KeySetGenerator.generateKeySet(context));
+        recordCipher = new RecordBlockCipher(context,
+            new CipherState(context.getChooser().getSelectedProtocolVersion(),
+                context.getChooser().getSelectedCipherSuite(), KeySetGenerator.generateKeySet(context),
+                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC), 0));
         decryptor = new RecordDecryptor(recordCipher, context);
         decryptor.decrypt(record);
 
@@ -271,8 +282,10 @@ public class RecordDecryptorTest {
         record.setProtocolMessageBytes(ArrayConverter
             .hexStringToByteArray("c98ff632fb3abf9f584c81dd196ecb38ea79383741c481b932022bee2bb3473792ad38a1"));
 
-        recordCipher = new RecordStreamCipher(context, context.getChooser().getSelectedProtocolVersion(),
-            context.getChooser().getSelectedCipherSuite(), KeySetGenerator.generateKeySet(context));
+        recordCipher = new RecordStreamCipher(context,
+            new CipherState(context.getChooser().getSelectedProtocolVersion(),
+                context.getChooser().getSelectedCipherSuite(), KeySetGenerator.generateKeySet(context),
+                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC), 0));
         decryptor = new RecordDecryptor(recordCipher, context);
         decryptor.decrypt(record);
 
@@ -312,8 +325,10 @@ public class RecordDecryptorTest {
         record.setProtocolMessageBytes(ArrayConverter.hexStringToByteArray(
             "09FF0714A189621595B6D0FB3F478E0AFD3BE7A6F40688505483433AAF6748EE634F8F837976DAFB8BAEDC2355298FC0D6B9D3CC28AD37E3FEAA4E533AF5375839C3866D"));
 
-        recordCipher = new RecordBlockCipher(context, context.getChooser().getSelectedProtocolVersion(),
-            context.getChooser().getSelectedCipherSuite(), KeySetGenerator.generateKeySet(context));
+        recordCipher = new RecordBlockCipher(context,
+            new CipherState(context.getChooser().getSelectedProtocolVersion(),
+                context.getChooser().getSelectedCipherSuite(), KeySetGenerator.generateKeySet(context),
+                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC), 0));
         decryptor = new RecordDecryptor(recordCipher, context);
         decryptor.decrypt(record);
 
@@ -371,8 +386,10 @@ public class RecordDecryptorTest {
         record.setProtocolMessageBytes(ArrayConverter.hexStringToByteArray(
             "2d2b71ffcdefbe88cfbc16973f2c3ef8f1e754dcd75712b4e0e2d2ce4bf58a8c55c1af006943cd3ab7c837c2d55331bee9ad9fd143"));
 
-        recordCipher = new RecordAEADCipher(context, context.getChooser().getSelectedProtocolVersion(),
-            context.getChooser().getSelectedCipherSuite(), KeySetGenerator.generateKeySet(context));
+        recordCipher = new RecordAEADCipher(context,
+            new CipherState(context.getChooser().getSelectedProtocolVersion(),
+                context.getChooser().getSelectedCipherSuite(), KeySetGenerator.generateKeySet(context),
+                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC), 0));
         decryptor = new RecordDecryptor(recordCipher, context);
         decryptor.decrypt(record);
 
@@ -425,8 +442,10 @@ public class RecordDecryptorTest {
         record
             .setProtocolMessageBytes(ArrayConverter.hexStringToByteArray("619f8c33dc44e80a7399ff70e10af19466be2085cf"));
         record.setLength(record.getProtocolMessageBytes().getValue().length);
-        recordCipher = new RecordAEADCipher(context, context.getChooser().getSelectedProtocolVersion(),
-            context.getChooser().getSelectedCipherSuite(), KeySetGenerator.generateKeySet(context));
+        recordCipher = new RecordAEADCipher(context,
+            new CipherState(context.getChooser().getSelectedProtocolVersion(),
+                context.getChooser().getSelectedCipherSuite(), KeySetGenerator.generateKeySet(context),
+                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC), 0));
         decryptor = new RecordDecryptor(recordCipher, context);
         decryptor.decrypt(record);
 

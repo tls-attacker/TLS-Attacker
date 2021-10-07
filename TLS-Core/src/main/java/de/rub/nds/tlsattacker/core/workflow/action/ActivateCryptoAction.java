@@ -24,14 +24,8 @@ import org.apache.logging.log4j.Logger;
 public abstract class ActivateCryptoAction extends ConnectionBoundAction {
     protected static final Logger LOGGER = LogManager.getLogger();
 
-    protected final boolean resetSequenceNumbers;
-
     public ActivateCryptoAction() {
-        this(true);
-    }
 
-    public ActivateCryptoAction(boolean resetSequenceNumbers) {
-        this.resetSequenceNumbers = resetSequenceNumbers;
     }
 
     @Override
@@ -39,7 +33,7 @@ public abstract class ActivateCryptoAction extends ConnectionBoundAction {
         return o instanceof ActivateEncryptionAction;
     }
 
-    protected abstract void activateCrypto(TlsContext tlsContext, RecordCipher recordCipher);
+    protected abstract void activateCrypto(TlsContext tlsContext, KeySet keySet);
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
@@ -55,8 +49,7 @@ public abstract class ActivateCryptoAction extends ConnectionBoundAction {
         } catch (NoSuchAlgorithmException | CryptoException ex) {
             throw new UnsupportedOperationException("The specified Algorithm is not supported", ex);
         }
-        RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(tlsContext, keySet);
-        activateCrypto(tlsContext, recordCipher);
+        activateCrypto(tlsContext, keySet);
         setExecuted(true);
     }
 

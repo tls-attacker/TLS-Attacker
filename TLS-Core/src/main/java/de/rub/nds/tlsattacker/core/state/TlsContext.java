@@ -492,26 +492,6 @@ public class TlsContext {
      */
     private Tls13KeySetType activeServerKeySetType = Tls13KeySetType.NONE;
 
-    /**
-     * sequence numbers used for the encryption
-     */
-    private Map<Integer, Long> writeSequenceNumbers;
-
-    /**
-     * sequence numbers used for the decryption
-     */
-    private Map<Integer, Long> readSequenceNumbers;
-
-    /**
-     * The latest epoch for the decryption. It is incremented on every cipher state change.
-     */
-    private int readEpoch = 0;
-
-    /**
-     * The latest epoch for the encryption. It is incremented on every cipher state change.
-     */
-    private int writeEpoch = 0;
-
     private int dtlsReadHandshakeMessageSequence = 0;
 
     private int dtlsWriteHandshakeMessageSequence = 0;
@@ -731,10 +711,6 @@ public class TlsContext {
         messageBuffer = new LinkedList<>();
         recordBuffer = new LinkedList<>();
         fragmentBuffer = new LinkedList<>();
-        writeSequenceNumbers = new HashMap<>();
-        writeSequenceNumbers.put(0, new Long(0));
-        readSequenceNumbers = new HashMap<>();
-        readSequenceNumbers.put(0, new Long(0));
         dtlsReceivedHandshakeMessageSequences = new HashSet<>();
         globalDtlsFragmentManager = new FragmentManager(config);
         dtlsReceivedChangeCipherSpecEpochs = new HashSet<>();
@@ -1306,88 +1282,6 @@ public class TlsContext {
 
     public void setClientSupportedCompressions(CompressionMethod... clientSupportedCompressions) {
         this.clientSupportedCompressions = new ArrayList(Arrays.asList(clientSupportedCompressions));
-    }
-
-    public Map getWriteSequenceNumbers() {
-        return writeSequenceNumbers;
-    }
-
-    public long getWriteSequenceNumber(int epoch) {
-        return writeSequenceNumbers.get(epoch);
-    }
-
-    public long getWriteSequenceNumber() {
-        return writeSequenceNumbers.get(writeEpoch);
-    }
-
-    public void setWriteSequenceNumber(int epoch, long writeSequenceNumber) {
-        writeSequenceNumbers.put(epoch, writeSequenceNumber);
-    }
-
-    public void setWriteSequenceNumber(long writeSequenceNumber) {
-        writeSequenceNumbers.put(writeEpoch, writeSequenceNumber);
-    }
-
-    public void increaseWriteSequenceNumber(int epoch) {
-        writeSequenceNumbers.put(epoch, writeSequenceNumbers.get(epoch) + 1);
-    }
-
-    public void increaseWriteSequenceNumber() {
-        writeSequenceNumbers.put(writeEpoch, writeSequenceNumbers.get(writeEpoch) + 1);
-    }
-
-    public Map<Integer, Long> getReadSequenceNumbers() {
-        return readSequenceNumbers;
-    }
-
-    public long getReadSequenceNumber(int epoch) {
-        return readSequenceNumbers.get(epoch);
-    }
-
-    public long getReadSequenceNumber() {
-        return readSequenceNumbers.get(readEpoch);
-    }
-
-    public void setReadSequenceNumber(int epoch, long readSequenceNumber) {
-        readSequenceNumbers.put(epoch, readSequenceNumber);
-    }
-
-    public void setReadSequenceNumber(long readSequenceNumber) {
-        readSequenceNumbers.put(readEpoch, readSequenceNumber);
-    }
-
-    public void increaseReadSequenceNumber(int epoch) {
-        readSequenceNumbers.put(epoch, readSequenceNumbers.get(epoch) + 1);
-    }
-
-    public void increaseReadSequenceNumber() {
-        readSequenceNumbers.put(readEpoch, readSequenceNumbers.get(readEpoch) + 1);
-    }
-
-    public void increaseReadEpoch() {
-        readEpoch++;
-        setReadSequenceNumber(readEpoch, 0);
-    }
-
-    public void increaseWriteEpoch() {
-        writeEpoch++;
-        setWriteSequenceNumber(writeEpoch, 0);
-    }
-
-    public int getWriteEpoch() {
-        return writeEpoch;
-    }
-
-    public void setWriteEpoch(int writeEpoch) {
-        this.writeEpoch = writeEpoch;
-    }
-
-    public int getReadEpoch() {
-        return readEpoch;
-    }
-
-    public void setReadEpoch(int readEpoch) {
-        this.readEpoch = readEpoch;
     }
 
     public void addDtlsReceivedHandshakeMessageSequences(int sequence) {

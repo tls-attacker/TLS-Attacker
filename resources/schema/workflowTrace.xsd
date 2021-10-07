@@ -424,9 +424,7 @@
   <xs:complexType name="activateCryptoAction" abstract="true">
     <xs:complexContent>
       <xs:extension base="connectionBoundAction">
-        <xs:sequence>
-          <xs:element name="resetSequenceNumbers" type="xs:boolean"/>
-        </xs:sequence>
+        <xs:sequence/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
@@ -3090,36 +3088,6 @@
       <xs:element name="selectedGostCurve" type="gostCurve" minOccurs="0"/>
       <xs:element name="activeClientKeySetType" type="tls13KeySetType" minOccurs="0"/>
       <xs:element name="activeServerKeySetType" type="tls13KeySetType" minOccurs="0"/>
-      <xs:element name="writeSequenceNumbers">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element name="entry" minOccurs="0" maxOccurs="unbounded">
-              <xs:complexType>
-                <xs:sequence>
-                  <xs:element name="key" minOccurs="0" type="xs:int"/>
-                  <xs:element name="value" minOccurs="0" type="xs:long"/>
-                </xs:sequence>
-              </xs:complexType>
-            </xs:element>
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="readSequenceNumbers">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element name="entry" minOccurs="0" maxOccurs="unbounded">
-              <xs:complexType>
-                <xs:sequence>
-                  <xs:element name="key" minOccurs="0" type="xs:int"/>
-                  <xs:element name="value" minOccurs="0" type="xs:long"/>
-                </xs:sequence>
-              </xs:complexType>
-            </xs:element>
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="readEpoch" type="xs:int"/>
-      <xs:element name="writeEpoch" type="xs:int"/>
       <xs:element name="dtlsReadHandshakeMessageSequence" type="xs:int"/>
       <xs:element name="dtlsWriteHandshakeMessageSequence" type="xs:int"/>
       <xs:element name="dtlsReceivedHandshakeMessageSequences" type="xs:int" nillable="true" minOccurs="0" maxOccurs="unbounded"/>

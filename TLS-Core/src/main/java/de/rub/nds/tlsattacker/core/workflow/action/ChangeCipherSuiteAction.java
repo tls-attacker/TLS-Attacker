@@ -73,9 +73,10 @@ public class ChangeCipherSuiteAction extends ConnectionBoundAction {
         } catch (NoSuchAlgorithmException | CryptoException ex) {
             throw new UnsupportedOperationException("The specified Algorithm is not supported", ex);
         }
-        RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(tlsContext, keySet);
-        tlsContext.getRecordLayer().updateDecryptionCipher(recordCipher);
-        tlsContext.getRecordLayer().updateEncryptionCipher(recordCipher);
+        tlsContext.getRecordLayer()
+            .updateDecryptionCipher(RecordCipherFactory.getRecordCipher(tlsContext, keySet, false));
+        tlsContext.getRecordLayer()
+            .updateEncryptionCipher(RecordCipherFactory.getRecordCipher(tlsContext, keySet, true));
         LOGGER
             .info("Changed CipherSuite from " + (oldValue == null ? null : oldValue.name()) + " to " + newValue.name());
         setExecuted(true);
