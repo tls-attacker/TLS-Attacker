@@ -12,7 +12,6 @@ package de.rub.nds.tlsattacker.core.record.cipher;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 
@@ -35,10 +34,6 @@ public class CipherState {
      * sequence number used for the decryption
      */
     private long readSequenceNumber = 0;
-
-    /**
-     * CipherAlgorithm algorithm (AES, ...)
-     */
 
     private Boolean encryptThenMac;
 
