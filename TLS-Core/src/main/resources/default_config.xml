@@ -754,6 +754,11 @@
         <defaultClientNamedGroup>BRAINPOOLP256R1</defaultClientNamedGroup>
         <defaultClientNamedGroup>BRAINPOOLP384R1</defaultClientNamedGroup>
         <defaultClientNamedGroup>BRAINPOOLP512R1</defaultClientNamedGroup>
+        <defaultClientNamedGroup>FFDHE2048</defaultClientNamedGroup>
+        <defaultClientNamedGroup>FFDHE3072</defaultClientNamedGroup>
+        <defaultClientNamedGroup>FFDHE4096</defaultClientNamedGroup>
+        <defaultClientNamedGroup>FFDHE6144</defaultClientNamedGroup>
+        <defaultClientNamedGroup>FFDHE8192</defaultClientNamedGroup>
     </defaultClientNamedGroups>
     <defaultServerNamedGroups>
         <defaultServerNamedGroup>SECP160K1</defaultServerNamedGroup>
@@ -786,6 +791,11 @@
         <defaultServerNamedGroup>BRAINPOOLP256R1</defaultServerNamedGroup>
         <defaultServerNamedGroup>BRAINPOOLP384R1</defaultServerNamedGroup>
         <defaultServerNamedGroup>BRAINPOOLP512R1</defaultServerNamedGroup>
+        <defaultServerNamedGroup>FFDHE2048</defaultServerNamedGroup>
+        <defaultServerNamedGroup>FFDHE3072</defaultServerNamedGroup>
+        <defaultServerNamedGroup>FFDHE4096</defaultServerNamedGroup>
+        <defaultServerNamedGroup>FFDHE6144</defaultServerNamedGroup>
+        <defaultServerNamedGroup>FFDHE8192</defaultServerNamedGroup>
     </defaultServerNamedGroups>
     <supportedVersions>
         <supportedVersion>TLS13</supportedVersion>

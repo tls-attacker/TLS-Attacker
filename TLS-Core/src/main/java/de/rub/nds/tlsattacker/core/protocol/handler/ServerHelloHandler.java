@@ -22,11 +22,11 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
+import de.rub.nds.tlsattacker.core.crypto.KeyShareCalculator;
 import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
 import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
-import de.rub.nds.tlsattacker.core.crypto.ec.RFC7748Curve;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
@@ -37,7 +37,6 @@ import de.rub.nds.tlsattacker.core.protocol.parser.ServerHelloParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.keyshare.DragonFlyKeyShareEntryParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ServerHelloPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ServerHelloSerializer;
-import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
@@ -88,7 +87,8 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         warnOnConflictingExtensions();
         if (!message.isTls13HelloRetryRequest()) {
             if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
-                adjustHandshakeTrafficSecrets();
+                KeyShareStoreEntry keyShareStoreEntry = adjustKeyShareStoreEntry();
+                adjustHandshakeTrafficSecrets(keyShareStoreEntry);
                 if (tlsContext.getTalkingConnectionEndType() != tlsContext.getChooser().getConnectionEndType()) {
                     setServerRecordCipher();
                 }
@@ -200,7 +200,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         }
     }
 
-    private void adjustHandshakeTrafficSecrets() {
+    private void adjustHandshakeTrafficSecrets(KeyShareStoreEntry keyShareStoreEntry) {
         HKDFAlgorithm hkdfAlgorithm =
             AlgorithmResolver.getHKDFAlgorithm(tlsContext.getChooser().getSelectedCipherSuite());
         DigestAlgorithm digestAlgo = AlgorithmResolver.getDigestAlgorithm(
@@ -214,34 +214,16 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
             byte[] saltHandshakeSecret = HKDFunction.deriveSecret(hkdfAlgorithm, digestAlgo.getJavaName(), earlySecret,
                 HKDFunction.DERIVED, new byte[0]);
             byte[] sharedSecret;
-            if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
-                if (tlsContext.getChooser().getSelectedCipherSuite().isPWD()) {
-                    sharedSecret = computeSharedPWDSecret(tlsContext.getChooser().getServerKeyShare());
-                } else {
-                    sharedSecret = computeSharedSecret(tlsContext.getChooser().getServerKeyShare());
-
-                    // This is a workaround for Tls1.3 InvalidCurve attacks
-                    if (tlsContext.getConfig().getDefaultPreMasterSecret().length > 0) {
-                        LOGGER.debug("Using specified PMS instead of computed PMS");
-                        sharedSecret = tlsContext.getConfig().getDefaultPreMasterSecret();
-                    }
-                }
+            BigInteger privateKey = tlsContext.getConfig().getKeySharePrivate();
+            if (tlsContext.getChooser().getSelectedCipherSuite().isPWD()) {
+                sharedSecret = computeSharedPWDSecret(keyShareStoreEntry);
             } else {
-                Integer pos = null;
-                for (KeyShareStoreEntry entry : tlsContext.getChooser().getClientKeyShares()) {
-                    if (Arrays.equals(entry.getGroup().getValue(),
-                        tlsContext.getChooser().getServerKeyShare().getGroup().getValue())) {
-                        pos = tlsContext.getChooser().getClientKeyShares().indexOf(entry);
-                    }
-                }
-                if (pos == null) {
-                    LOGGER.warn("Client did not send the KeyShareType we expected. Choosing first in his List");
-                    pos = 0;
-                }
-                if (tlsContext.getChooser().getSelectedCipherSuite().isPWD()) {
-                    sharedSecret = computeSharedPWDSecret(tlsContext.getChooser().getClientKeyShares().get(pos));
-                } else {
-                    sharedSecret = computeSharedSecret(tlsContext.getChooser().getClientKeyShares().get(pos));
+                sharedSecret = KeyShareCalculator.computeSharedSecret(keyShareStoreEntry.getGroup(), privateKey,
+                    keyShareStoreEntry.getPublicKey());
+                // This is a workaround for Tls1.3 InvalidCurve attacks
+                if (tlsContext.getConfig().getDefaultPreMasterSecret().length > 0) {
+                    LOGGER.debug("Using specified PMS instead of computed PMS");
+                    sharedSecret = tlsContext.getConfig().getDefaultPreMasterSecret();
                 }
             }
             byte[] handshakeSecret = HKDFunction.extract(hkdfAlgorithm, saltHandshakeSecret, sharedSecret);
@@ -259,56 +241,6 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                 + ArrayConverter.bytesToHexString(serverHandshakeTrafficSecret));
         } catch (CryptoException | NoSuchAlgorithmException ex) {
             throw new AdjustmentException(ex);
-        }
-    }
-
-    /**
-     * Computes the shared secret for Elliptic Curves
-     *
-     * @return
-     */
-    private byte[] computeSharedSecret(KeyShareStoreEntry keyShare) {
-        EllipticCurve curve = CurveFactory.getCurve(keyShare.getGroup());
-        Point publicPoint = PointFormatter.formatFromByteArray(keyShare.getGroup(), keyShare.getPublicKey());
-        tlsContext.setServerEcPublicKey(publicPoint);
-        tlsContext.setSelectedGroup(keyShare.getGroup());
-        BigInteger privateKey = tlsContext.getConfig().getKeySharePrivate();
-
-        switch (keyShare.getGroup()) {
-            case ECDH_X25519:
-            case ECDH_X448:
-                RFC7748Curve rfcCurve = (RFC7748Curve) curve;
-                return rfcCurve.computeSharedSecretFromDecodedPoint(privateKey, publicPoint);
-            case SECP160K1:
-            case SECP160R1:
-            case SECP160R2:
-            case SECP192K1:
-            case SECP192R1:
-            case SECP224K1:
-            case SECP224R1:
-            case SECP256K1:
-            case SECP256R1:
-            case SECP384R1:
-            case SECP521R1:
-            case SECT163K1:
-            case SECT163R1:
-            case SECT163R2:
-            case SECT193R1:
-            case SECT193R2:
-            case SECT233K1:
-            case SECT233R1:
-            case SECT239K1:
-            case SECT283K1:
-            case SECT283R1:
-            case SECT409K1:
-            case SECT409R1:
-            case SECT571K1:
-            case SECT571R1:
-                Point sharedPoint = curve.mult(privateKey, publicPoint);
-                int elementLength = ArrayConverter.bigIntegerToByteArray(sharedPoint.getFieldX().getModulus()).length;
-                return ArrayConverter.bigIntegerToNullPaddedByteArray(sharedPoint.getFieldX().getData(), elementLength);
-            default:
-                throw new UnsupportedOperationException("KeyShare type " + keyShare.getGroup() + " is unsupported");
         }
     }
 
@@ -377,5 +309,43 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                 }
             }
         }
+    }
+
+    private KeyShareStoreEntry adjustKeyShareStoreEntry() {
+        KeyShareStoreEntry selectedKeyShareStore;
+        if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
+            selectedKeyShareStore = tlsContext.getChooser().getServerKeyShare();
+        } else {
+            Integer pos = null;
+            for (KeyShareStoreEntry entry : tlsContext.getChooser().getClientKeyShares()) {
+                if (Arrays.equals(entry.getGroup().getValue(),
+                    tlsContext.getChooser().getServerKeyShare().getGroup().getValue())) {
+                    pos = tlsContext.getChooser().getClientKeyShares().indexOf(entry);
+                }
+            }
+            if (pos == null) {
+                LOGGER.warn("Client did not send the KeyShareType we expected. Choosing first in his List");
+                pos = 0;
+            }
+
+            selectedKeyShareStore = tlsContext.getChooser().getClientKeyShares().get(pos);
+        }
+        tlsContext.setSelectedGroup(selectedKeyShareStore.getGroup());
+
+        if (selectedKeyShareStore.getGroup().isCurve()) {
+            Point publicPoint;
+            if (tlsContext.getChooser().getSelectedCipherSuite().isPWD()) {
+                publicPoint = PointFormatter.fromRawFormat(selectedKeyShareStore.getGroup(),
+                    selectedKeyShareStore.getPublicKey());
+            } else {
+                publicPoint = PointFormatter.formatFromByteArray(selectedKeyShareStore.getGroup(),
+                    selectedKeyShareStore.getPublicKey());
+            }
+            tlsContext.setServerEcPublicKey(publicPoint);
+        } else {
+            tlsContext.setServerDhPublicKey(new BigInteger(selectedKeyShareStore.getPublicKey()));
+        }
+
+        return selectedKeyShareStore;
     }
 }
