@@ -69,7 +69,7 @@ public class RecordAEADCipherTest {
         cipher = new RecordAEADCipher(context,
             new CipherState(context.getChooser().getSelectedProtocolVersion(),
                 context.getChooser().getSelectedCipherSuite(), keySet,
-                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC), 0));
+                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         Record record = new Record();
         record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
         record.prepareComputations();
@@ -138,7 +138,7 @@ public class RecordAEADCipherTest {
         cipher = new RecordAEADCipher(context,
             new CipherState(context.getChooser().getSelectedProtocolVersion(),
                 context.getChooser().getSelectedCipherSuite(), keySet,
-                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC), 0));
+                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         Record record = new Record();
         record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
         record.prepareComputations();
@@ -208,7 +208,7 @@ public class RecordAEADCipherTest {
         cipher = new RecordAEADCipher(context,
             new CipherState(context.getChooser().getSelectedProtocolVersion(),
                 context.getChooser().getSelectedCipherSuite(), keySet,
-                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC), 0));
+                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         Record record = new Record();
         record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
         record.prepareComputations();
@@ -277,7 +277,7 @@ public class RecordAEADCipherTest {
         cipher = new RecordAEADCipher(context,
             new CipherState(context.getChooser().getSelectedProtocolVersion(),
                 context.getChooser().getSelectedCipherSuite(), keySet,
-                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC), 0));
+                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         Record record = new Record();
         record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
         record.prepareComputations();

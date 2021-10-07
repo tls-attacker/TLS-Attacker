@@ -12,9 +12,8 @@ package de.rub.nds.tlsattacker.core.record.layer;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
-import de.rub.nds.tlsattacker.core.record.cipher.CipherState;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
-import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
+import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.record.compressor.RecordCompressor;
 import de.rub.nds.tlsattacker.core.record.compressor.RecordDecompressor;
 import de.rub.nds.tlsattacker.core.record.crypto.Decryptor;
@@ -43,14 +42,8 @@ public abstract class RecordLayer {
 
     public RecordLayer(TlsContext tlsContext) {
         this.tlsContext = tlsContext;
-        encryptor = new RecordEncryptor(
-            new RecordNullCipher(tlsContext, new CipherState(tlsContext.getChooser().getSelectedProtocolVersion(),
-                tlsContext.getChooser().getSelectedCipherSuite(), null, null, writeEpoch)),
-            tlsContext);
-        decryptor = new RecordDecryptor(
-            new RecordNullCipher(tlsContext, new CipherState(tlsContext.getChooser().getSelectedProtocolVersion(),
-                tlsContext.getChooser().getSelectedCipherSuite(), null, null, readEpoch)),
-            tlsContext);
+        encryptor = new RecordEncryptor(RecordCipherFactory.getNullCipher(tlsContext), tlsContext);
+        decryptor = new RecordDecryptor(RecordCipherFactory.getNullCipher(tlsContext), tlsContext);
         compressor = new RecordCompressor(tlsContext);
         decompressor = new RecordDecompressor(tlsContext);
     }
@@ -92,11 +85,13 @@ public abstract class RecordLayer {
     public void updateEncryptionCipher(RecordCipher encryptionCipher) {
         LOGGER.debug("Activating new EncryptionCipher (" + encryptionCipher.getClass().getSimpleName() + ")");
         encryptor.addNewRecordCipher(encryptionCipher);
+        writeEpoch++;
     }
 
     public void updateDecryptionCipher(RecordCipher decryptionCipher) {
         LOGGER.debug("Activating new DecryptionCipher (" + decryptionCipher.getClass().getSimpleName() + ")");
         decryptor.addNewRecordCipher(decryptionCipher);
+        readEpoch++;
     }
 
     public RecordCipher getEncryptorCipher() {
@@ -135,12 +130,11 @@ public abstract class RecordLayer {
         return tlsContext;
     }
 
-    public int getNextWriteEpoch() {
-        writeEpoch += 1;
-        return writeEpoch;
+    public void increaseWriteEpoch() {
+        writeEpoch++;
     }
 
-    public int getCurrentWriteEpoch() {
+    public int getWriteEpoch() {
         return writeEpoch;
     }
 
@@ -148,12 +142,11 @@ public abstract class RecordLayer {
         this.writeEpoch = writeEpoch;
     }
 
-    public int getNextReadEpoch() {
-        readEpoch += 1;
-        return readEpoch;
+    public void increaseReadEpoch() {
+        readEpoch++;
     }
 
-    public int getCurrentReadEpoch() {
+    public int getReadEpoch() {
         return readEpoch;
     }
 

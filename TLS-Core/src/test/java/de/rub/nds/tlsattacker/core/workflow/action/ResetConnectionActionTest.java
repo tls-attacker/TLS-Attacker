@@ -54,7 +54,7 @@ public class ResetConnectionActionTest {
         RecordCipher recordCipher = new RecordBlockCipher(tlsContext,
             new CipherState(tlsContext.getChooser().getSelectedProtocolVersion(),
                 tlsContext.getChooser().getSelectedCipherSuite(), KeySetGenerator.generateKeySet(tlsContext),
-                tlsContext.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC), 0));
+                tlsContext.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         tlsContext.getRecordLayer().updateEncryptionCipher(recordCipher);
         tlsContext.getRecordLayer().updateDecryptionCipher(recordCipher);
         tlsContext.setActiveClientKeySetType(Tls13KeySetType.EARLY_TRAFFIC_SECRETS);

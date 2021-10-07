@@ -207,10 +207,10 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
 
             if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {
                 tlsContext.getRecordLayer().updateDecryptionCipher(RecordCipherFactory.getRecordCipher(tlsContext,
-                    clientKeySet, tlsContext.getChooser().getEarlyDataCipherSuite(), false));
+                    clientKeySet, tlsContext.getChooser().getEarlyDataCipherSuite()));
             } else {
                 tlsContext.getRecordLayer().updateEncryptionCipher(RecordCipherFactory.getRecordCipher(tlsContext,
-                    clientKeySet, tlsContext.getChooser().getEarlyDataCipherSuite(), true));
+                    clientKeySet, tlsContext.getChooser().getEarlyDataCipherSuite()));
             }
         } catch (NoSuchAlgorithmException ex) {
             LOGGER.error("Unable to generate KeySet - unknown algorithm");

@@ -10,8 +10,6 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
-import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -19,9 +17,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class ActivateEncryptionAction extends ActivateCryptoAction {
 
     @Override
-    protected void activateCrypto(TlsContext tlsContext, KeySet keySet) {
+    protected void activateCrypto(TlsContext tlsContext, RecordCipher recordCipher) {
         LOGGER.info("Setting new encryption cipher and activating encryption");
-        RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(tlsContext, keySet, true);
         tlsContext.getRecordLayer().updateEncryptionCipher(recordCipher);
     }
 

@@ -12,8 +12,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.dtls.FragmentManager;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.record.cipher.CipherState;
-import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
+import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.IOException;
@@ -51,12 +50,8 @@ public class ResetConnectionAction extends ConnectionBoundAction {
         tlsContext.getRecordLayer().setReadEpoch(0);
         tlsContext.getRecordLayer().resetDecryptor();
         tlsContext.getRecordLayer().resetEncryptor();
-        tlsContext.getRecordLayer().updateDecryptionCipher(
-            new RecordNullCipher(tlsContext, new CipherState(tlsContext.getChooser().getSelectedProtocolVersion(),
-                tlsContext.getChooser().getSelectedCipherSuite(), null, null, 0)));
-        tlsContext.getRecordLayer().updateEncryptionCipher(
-            new RecordNullCipher(tlsContext, new CipherState(tlsContext.getChooser().getSelectedProtocolVersion(),
-                tlsContext.getChooser().getSelectedCipherSuite(), null, null, 0)));
+        tlsContext.getRecordLayer().updateDecryptionCipher(RecordCipherFactory.getNullCipher(tlsContext));
+        tlsContext.getRecordLayer().updateEncryptionCipher(RecordCipherFactory.getNullCipher(tlsContext));
         LOGGER.info("Resetting SecureRenegotiation");
         tlsContext.setLastClientVerifyData(new byte[0]);
         tlsContext.setLastServerVerifyData(new byte[0]);
