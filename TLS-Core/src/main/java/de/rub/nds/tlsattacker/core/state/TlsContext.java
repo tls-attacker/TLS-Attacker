@@ -2533,4 +2533,36 @@ public class TlsContext {
 
         return maxRecordDataSize;
     }
+
+    public int getWriteEpoch() {
+        return getRecordLayer().getWriteEpoch();
+    }
+
+    public int getReadEpoch() {
+        return getRecordLayer().getReadEpoch();
+    }
+
+    public void setWriteEpoch(int epoch) {
+        getRecordLayer().setWriteEpoch(epoch);
+    }
+
+    public void setReadEpoch(int epoch) {
+        getRecordLayer().setReadEpoch(epoch);
+    }
+
+    public void getWriteSequenceNumber(int epoch) {
+        getRecordLayer().getEncryptor().getRecordCipher(epoch).getState().getWriteSequenceNumber();
+    }
+
+    public void getReadSequenceNumber(int epoch) {
+        getRecordLayer().getDecryptor().getRecordCipher(epoch).getState().getReadSequenceNumber();
+    }
+
+    public void setWriteSequenceNumber(int epoch, long sqn) {
+        getRecordLayer().getEncryptor().getRecordCipher(epoch).getState().setWriteSequenceNumber(sqn);
+    }
+
+    public void setReadSequenceNumber(int epoch, long sqn) {
+        getRecordLayer().getDecryptor().getRecordCipher(epoch).getState().setReadSequenceNumber(sqn);
+    }
 }
