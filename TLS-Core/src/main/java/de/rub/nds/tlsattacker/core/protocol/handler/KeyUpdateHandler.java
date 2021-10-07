@@ -157,8 +157,7 @@ public class KeyUpdateHandler extends HandshakeMessageHandler<KeyUpdateMessage> 
                         AlgorithmResolver.getCipher(tlsContext.getChooser().getSelectedCipherSuite()).getKeySize()));
                 }
 
-                RecordCipher recordCipherClient = RecordCipherFactory.getRecordCipher(tlsContext, keySet,
-                    tlsContext.getChooser().getSelectedCipherSuite(), true);
+                RecordCipher recordCipherClient = RecordCipherFactory.getRecordCipher(tlsContext, keySet, true);
                 tlsContext.getRecordLayer().updateEncryptionCipher(recordCipherClient);
 
             } else if (tlsContext.getChooser().getTalkingConnectionEnd()
@@ -183,8 +182,7 @@ public class KeyUpdateHandler extends HandshakeMessageHandler<KeyUpdateMessage> 
                         AlgorithmResolver.getCipher(tlsContext.getChooser().getSelectedCipherSuite()).getKeySize()));
                 }
 
-                RecordCipher recordCipherClient = RecordCipherFactory.getRecordCipher(tlsContext, keySet,
-                    tlsContext.getChooser().getSelectedCipherSuite(), false);
+                RecordCipher recordCipherClient = RecordCipherFactory.getRecordCipher(tlsContext, keySet, false);
                 tlsContext.getRecordLayer().updateDecryptionCipher(recordCipherClient);
 
             }

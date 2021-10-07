@@ -175,11 +175,11 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         KeySet serverKeySet = getTls13KeySet(tlsContext, tlsContext.getActiveServerKeySetType());
 
         if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
-            tlsContext.getRecordLayer().updateDecryptionCipher(RecordCipherFactory.getRecordCipher(tlsContext,
-                serverKeySet, tlsContext.getChooser().getSelectedCipherSuite(), false));
+            tlsContext.getRecordLayer()
+                .updateDecryptionCipher(RecordCipherFactory.getRecordCipher(tlsContext, serverKeySet, false));
         } else {
-            tlsContext.getRecordLayer().updateEncryptionCipher(RecordCipherFactory.getRecordCipher(tlsContext,
-                serverKeySet, tlsContext.getChooser().getSelectedCipherSuite(), true));
+            tlsContext.getRecordLayer()
+                .updateEncryptionCipher(RecordCipherFactory.getRecordCipher(tlsContext, serverKeySet, true));
         }
     }
 
