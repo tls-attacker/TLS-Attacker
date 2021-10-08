@@ -33,7 +33,7 @@ public abstract class ActivateCryptoAction extends ConnectionBoundAction {
         return o instanceof ActivateEncryptionAction;
     }
 
-    protected abstract void activateCrypto(TlsContext tlsContext, KeySet keySet);
+    protected abstract void activateCrypto(TlsContext tlsContext, RecordCipher recordCipher);
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
@@ -49,7 +49,8 @@ public abstract class ActivateCryptoAction extends ConnectionBoundAction {
         } catch (NoSuchAlgorithmException | CryptoException ex) {
             throw new UnsupportedOperationException("The specified Algorithm is not supported", ex);
         }
-        activateCrypto(tlsContext, keySet);
+        RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(tlsContext, keySet);
+        activateCrypto(tlsContext, recordCipher);
         setExecuted(true);
     }
 

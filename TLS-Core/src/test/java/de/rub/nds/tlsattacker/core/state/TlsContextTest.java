@@ -66,7 +66,7 @@ public class TlsContextTest {
             .updateEncryptionCipher(new RecordAEADCipher(context,
                 new CipherState(context.getChooser().getSelectedProtocolVersion(),
                     context.getChooser().getSelectedCipherSuite(), testKeySet,
-                    context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC), 1)));
+                    context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC))));
     }
 
     /**

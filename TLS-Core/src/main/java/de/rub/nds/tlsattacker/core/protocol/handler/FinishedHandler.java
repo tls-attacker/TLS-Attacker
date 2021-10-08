@@ -149,11 +149,11 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
         KeySet serverKeySet = getKeySet(tlsContext, tlsContext.getActiveServerKeySetType());
 
         if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
-            tlsContext.getRecordLayer().updateDecryptionCipher(RecordCipherFactory.getRecordCipher(tlsContext,
-                serverKeySet, tlsContext.getChooser().getSelectedCipherSuite(), false));
+            tlsContext.getRecordLayer()
+                .updateDecryptionCipher(RecordCipherFactory.getRecordCipher(tlsContext, serverKeySet));
         } else {
-            tlsContext.getRecordLayer().updateEncryptionCipher(RecordCipherFactory.getRecordCipher(tlsContext,
-                serverKeySet, tlsContext.getChooser().getSelectedCipherSuite(), true));
+            tlsContext.getRecordLayer()
+                .updateEncryptionCipher(RecordCipherFactory.getRecordCipher(tlsContext, serverKeySet));
         }
     }
 
@@ -163,11 +163,11 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
         KeySet clientKeySet = getKeySet(tlsContext, tlsContext.getActiveClientKeySetType());
 
         if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {
-            tlsContext.getRecordLayer().updateDecryptionCipher(RecordCipherFactory.getRecordCipher(tlsContext,
-                clientKeySet, tlsContext.getChooser().getSelectedCipherSuite(), false));
+            tlsContext.getRecordLayer()
+                .updateDecryptionCipher(RecordCipherFactory.getRecordCipher(tlsContext, clientKeySet));
         } else {
-            tlsContext.getRecordLayer().updateEncryptionCipher(RecordCipherFactory.getRecordCipher(tlsContext,
-                clientKeySet, tlsContext.getChooser().getSelectedCipherSuite(), true));
+            tlsContext.getRecordLayer()
+                .updateEncryptionCipher(RecordCipherFactory.getRecordCipher(tlsContext, clientKeySet));
         }
     }
 }

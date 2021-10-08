@@ -106,7 +106,7 @@ public class TlsRecordLayer extends RecordLayer {
                 }
             }
             if (getTlsContext().getChooser().getSelectedProtocolVersion().isDTLS() && record instanceof Record) {
-                ((Record) record).setEpoch(getCurrentWriteEpoch());
+                ((Record) record).setEpoch(getWriteEpoch());
             }
             AbstractRecordPreparator preparator =
                 record.getRecordPreparator(getTlsContext().getChooser(), getEncryptor(), getCompressor(), contentType);

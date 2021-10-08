@@ -14,7 +14,6 @@ import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
-import de.rub.nds.tlsattacker.core.record.cipher.CipherState;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
@@ -34,8 +33,7 @@ public class RecordDecryptor extends Decryptor {
     public RecordDecryptor(RecordCipher recordCipher, TlsContext context) {
         super(recordCipher);
         this.context = context;
-        nullCipher = new RecordNullCipher(context, new CipherState(context.getChooser().getSelectedProtocolVersion(),
-            context.getChooser().getSelectedCipherSuite(), null, null, 0));
+        nullCipher = RecordCipherFactory.getNullCipher(context);
     }
 
     @Override

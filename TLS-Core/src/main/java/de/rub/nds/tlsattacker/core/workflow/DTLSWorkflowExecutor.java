@@ -109,7 +109,7 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
         }
 
         if (config.isFinishWithCloseNotify()) {
-            int currentEpoch = state.getTlsContext().getRecordLayer().getCurrentWriteEpoch();
+            int currentEpoch = state.getTlsContext().getRecordLayer().getWriteEpoch();
             for (int epoch = currentEpoch; epoch >= 0; epoch--) {
                 state.getTlsContext().getRecordLayer().setWriteEpoch(epoch);
                 sendCloseNotify();

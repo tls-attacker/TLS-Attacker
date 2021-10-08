@@ -23,8 +23,6 @@ public class CipherState {
 
     private KeySet keySet;
 
-    private final int epoch;
-
     /**
      * sequence number used for the encryption
      */
@@ -37,13 +35,12 @@ public class CipherState {
 
     private Boolean encryptThenMac;
 
-    public CipherState(ProtocolVersion protocolVersion, CipherSuite cipherSuite, KeySet keySet, Boolean encryptThenMac,
-        int epoch) {
+    public CipherState(ProtocolVersion protocolVersion, CipherSuite cipherSuite, KeySet keySet,
+        Boolean encryptThenMac) {
         this.protocolVersion = protocolVersion;
         this.cipherSuite = cipherSuite;
         this.keySet = keySet;
         this.encryptThenMac = encryptThenMac;
-        this.epoch = epoch;
     }
 
     public Boolean isEncryptThenMac() {
@@ -76,10 +73,6 @@ public class CipherState {
 
     public void setKeySet(KeySet keySet) {
         this.keySet = keySet;
-    }
-
-    public int getEpoch() {
-        return epoch;
     }
 
     public long getWriteSequenceNumber() {

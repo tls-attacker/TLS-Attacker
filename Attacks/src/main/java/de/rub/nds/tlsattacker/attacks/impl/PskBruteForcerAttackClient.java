@@ -237,7 +237,7 @@ public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackCli
         computeMasterSecret(state.getTlsContext(), state.getWorkflowTrace());
         byte[] controlValue = computeControlValue(state.getWorkflowTrace(), state.getTlsContext());
         KeySet keySet = KeySetGenerator.generateKeySet(state.getTlsContext());
-        RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(state.getTlsContext(), keySet, false);
+        RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(state.getTlsContext(), keySet);
         RecordDecryptor dec = new RecordDecryptor(recordCipher, state.getTlsContext());
         dec.decrypt(encryptedRecord);
         byte[] receivedVrfyData = Arrays.copyOfRange(encryptedRecord.getComputations().getPlainRecordBytes().getValue(),

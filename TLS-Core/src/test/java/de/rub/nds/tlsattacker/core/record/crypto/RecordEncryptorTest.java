@@ -77,7 +77,7 @@ public class RecordEncryptorTest {
         recordCipher = new RecordBlockCipher(context,
             new CipherState(context.getChooser().getSelectedProtocolVersion(),
                 context.getChooser().getSelectedCipherSuite(), KeySetGenerator.generateKeySet(context),
-                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC), 0));
+                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         encryptor = new RecordEncryptor(recordCipher, context);
         encryptor.encrypt(record);
         assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603030010"),
@@ -120,7 +120,7 @@ public class RecordEncryptorTest {
         recordCipher = new RecordBlockCipher(context,
             new CipherState(context.getChooser().getSelectedProtocolVersion(),
                 context.getChooser().getSelectedCipherSuite(), KeySetGenerator.generateKeySet(context),
-                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC), 0));
+                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         encryptor = new RecordEncryptor(recordCipher, context);
         encryptor.encrypt(record);
 
@@ -167,7 +167,7 @@ public class RecordEncryptorTest {
         recordCipher = new RecordStreamCipher(context,
             new CipherState(context.getChooser().getSelectedProtocolVersion(),
                 context.getChooser().getSelectedCipherSuite(), KeySetGenerator.generateKeySet(context),
-                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC), 0));
+                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         encryptor = new RecordEncryptor(recordCipher, context);
         encryptor.encrypt(record);
 
@@ -194,7 +194,7 @@ public class RecordEncryptorTest {
         recordCipher = new RecordStreamCipher(context,
             new CipherState(context.getChooser().getSelectedProtocolVersion(),
                 context.getChooser().getSelectedCipherSuite(), KeySetGenerator.generateKeySet(context),
-                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC), 0));
+                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         encryptor = new RecordEncryptor(recordCipher, context);
         encryptor.encrypt(record);
         assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603030010"),
@@ -230,7 +230,7 @@ public class RecordEncryptorTest {
         recordCipher = new RecordAEADCipher(context,
             new CipherState(context.getChooser().getSelectedProtocolVersion(),
                 context.getChooser().getSelectedCipherSuite(), KeySetGenerator.generateKeySet(context),
-                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC), 0));
+                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         encryptor = new RecordEncryptor(recordCipher, context);
         encryptor.encrypt(record);
         assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603030010"),
@@ -264,7 +264,7 @@ public class RecordEncryptorTest {
         recordCipher = new RecordBlockCipher(context,
             new CipherState(context.getChooser().getSelectedProtocolVersion(),
                 context.getChooser().getSelectedCipherSuite(), KeySetGenerator.generateKeySet(context),
-                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC), 0));
+                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         encryptor = new RecordEncryptor(recordCipher, context);
         encryptor.encrypt(record);
         assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603010010"),
@@ -301,7 +301,7 @@ public class RecordEncryptorTest {
         recordCipher = new RecordStreamCipher(context,
             new CipherState(context.getChooser().getSelectedProtocolVersion(),
                 context.getChooser().getSelectedCipherSuite(), KeySetGenerator.generateKeySet(context),
-                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC), 0));
+                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         encryptor = new RecordEncryptor(recordCipher, context);
         encryptor.encrypt(record);
         assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603010010"),
@@ -331,7 +331,7 @@ public class RecordEncryptorTest {
         recordCipher = new RecordStreamCipher(context,
             new CipherState(context.getChooser().getSelectedProtocolVersion(),
                 context.getChooser().getSelectedCipherSuite(), KeySetGenerator.generateKeySet(context),
-                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC), 0));
+                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         encryptor = new RecordEncryptor(recordCipher, context);
         encryptor.encrypt(record);
 
@@ -348,7 +348,7 @@ public class RecordEncryptorTest {
         recordCipher = new RecordAEADCipher(context,
             new CipherState(context.getChooser().getSelectedProtocolVersion(),
                 context.getChooser().getSelectedCipherSuite(), KeySetGenerator.generateKeySet(context),
-                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC), 0));
+                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         encryptor = new RecordEncryptor(recordCipher, context);
         encryptor.encrypt(record);
     }

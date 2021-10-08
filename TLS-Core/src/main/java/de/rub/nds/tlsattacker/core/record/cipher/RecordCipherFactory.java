@@ -22,20 +22,16 @@ public class RecordCipherFactory {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public static RecordCipher getRecordCipher(TlsContext context, KeySet keySet, CipherSuite cipherSuite,
-        boolean isEncCipher) {
-        int epoch =
-            isEncCipher ? context.getRecordLayer().getNextWriteEpoch() : context.getRecordLayer().getNextReadEpoch();
+    public static RecordCipher getRecordCipher(TlsContext context, KeySet keySet, CipherSuite cipherSuite) {
         try {
             if (context.getChooser().getSelectedCipherSuite() == null || !cipherSuite.isImplemented()) {
                 LOGGER.warn("Cipher " + cipherSuite.name() + " not implemented. Using Null Cipher instead");
-                return new RecordNullCipher(context, new CipherState(context.getChooser().getSelectedProtocolVersion(),
-                    context.getChooser().getSelectedCipherSuite(), null, null, epoch));
+                return getNullCipher(context);
             } else {
                 CipherType type = AlgorithmResolver.getCipherType(cipherSuite);
                 CipherState state = new CipherState(context.getChooser().getSelectedProtocolVersion(),
                     context.getChooser().getSelectedCipherSuite(), keySet,
-                    context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC), epoch);
+                    context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC));
                 switch (type) {
                     case AEAD:
                         return new RecordAEADCipher(context, state);
@@ -50,20 +46,17 @@ public class RecordCipherFactory {
             }
         } catch (Exception e) {
             LOGGER.debug("Could not create RecordCipher from the current Context! Creating null Cipher", e);
-            return new RecordNullCipher(context, new CipherState(context.getChooser().getSelectedProtocolVersion(),
-                context.getChooser().getSelectedCipherSuite(), null, null, epoch));
+            return getNullCipher(context);
         }
     }
 
-    public static RecordCipher getRecordCipher(TlsContext context, KeySet keySet, boolean isEncCipher) {
-        return getRecordCipher(context, keySet, context.getChooser().getSelectedCipherSuite(), isEncCipher);
+    public static RecordCipher getRecordCipher(TlsContext context, KeySet keySet) {
+        return getRecordCipher(context, keySet, context.getChooser().getSelectedCipherSuite());
     }
 
-    public static RecordNullCipher getNullCipher(TlsContext context, boolean isEncCipher) {
-        int epoch =
-            isEncCipher ? context.getRecordLayer().getNextWriteEpoch() : context.getRecordLayer().getNextReadEpoch();
+    public static RecordNullCipher getNullCipher(TlsContext context) {
         return new RecordNullCipher(context, new CipherState(context.getChooser().getSelectedProtocolVersion(),
-            context.getChooser().getSelectedCipherSuite(), null, null, epoch));
+            context.getChooser().getSelectedCipherSuite(), null, null));
     }
 
     private RecordCipherFactory() {

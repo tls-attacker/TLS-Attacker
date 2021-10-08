@@ -3831,7 +3831,10 @@
   </xs:complexType>
 
   <xs:complexType name="recordLayer" abstract="true">
-    <xs:sequence/>
+    <xs:sequence>
+      <xs:element name="readEpoch" type="xs:int"/>
+      <xs:element name="writeEpoch" type="xs:int"/>
+    </xs:sequence>
   </xs:complexType>
 
   <xs:complexType name="transportHandler" abstract="true">

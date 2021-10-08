@@ -41,7 +41,6 @@ import de.rub.nds.tlsattacker.core.crypto.MessageDigestCollector;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.dtls.FragmentManager;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
@@ -54,15 +53,12 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.T
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayer;
-import de.rub.nds.tlsattacker.core.record.layer.RecordLayerFactory;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
 import de.rub.nds.tlsattacker.core.state.http.HttpContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
-import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;
-import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -71,10 +67,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import de.rub.nds.tlsattacker.transport.socket.SocketState;
-import de.rub.nds.tlsattacker.transport.tcp.ClientTcpTransportHandler;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -2539,5 +2532,37 @@ public class TlsContext {
         }
 
         return maxRecordDataSize;
+    }
+
+    public int getWriteEpoch() {
+        return getRecordLayer().getWriteEpoch();
+    }
+
+    public int getReadEpoch() {
+        return getRecordLayer().getReadEpoch();
+    }
+
+    public void setWriteEpoch(int epoch) {
+        getRecordLayer().setWriteEpoch(epoch);
+    }
+
+    public void setReadEpoch(int epoch) {
+        getRecordLayer().setReadEpoch(epoch);
+    }
+
+    public void getWriteSequenceNumber(int epoch) {
+        getRecordLayer().getEncryptor().getRecordCipher(epoch).getState().getWriteSequenceNumber();
+    }
+
+    public void getReadSequenceNumber(int epoch) {
+        getRecordLayer().getDecryptor().getRecordCipher(epoch).getState().getReadSequenceNumber();
+    }
+
+    public void setWriteSequenceNumber(int epoch, long sqn) {
+        getRecordLayer().getEncryptor().getRecordCipher(epoch).getState().setWriteSequenceNumber(sqn);
+    }
+
+    public void setReadSequenceNumber(int epoch, long sqn) {
+        getRecordLayer().getDecryptor().getRecordCipher(epoch).getState().setReadSequenceNumber(sqn);
     }
 }
