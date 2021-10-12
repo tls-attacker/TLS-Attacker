@@ -50,7 +50,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
 
-    private static final Logger LOGGER = LogManager.getLogger(Lucky13Attacker.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final Map<Integer, List<Long>> results;
 

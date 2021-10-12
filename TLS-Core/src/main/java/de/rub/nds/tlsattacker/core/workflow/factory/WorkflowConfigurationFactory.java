@@ -11,6 +11,8 @@ package de.rub.nds.tlsattacker.core.workflow.factory;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
+import de.rub.nds.tlsattacker.core.constants.AlertDescription;
+import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
@@ -45,6 +47,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.PWDClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.PWDServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.PskClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.PskDhClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.PskDheServerKeyExchangeMessage;
@@ -370,8 +373,17 @@ public class WorkflowConfigurationFactory {
 
         trace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.CLIENT,
             new ClientHelloMessage(config)));
+
+        if (config.getHighestProtocolVersion().isDTLS()) {
+            trace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.SERVER,
+                new HelloVerifyRequestMessage(config)));
+            trace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.CLIENT,
+                new ClientHelloMessage(config)));
+        }
+
         trace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.SERVER,
             new ServerHelloMessage(config)));
+
         return trace;
     }
 
@@ -429,6 +441,11 @@ public class WorkflowConfigurationFactory {
         AliasedConnection conEnd = getConnection();
         WorkflowTrace trace = this.createHandshakeWorkflow(conEnd);
 
+        if (config.getHighestProtocolVersion().isDTLS() && config.isFinishWithCloseNotify()) {
+            AlertMessage alert = new AlertMessage();
+            alert.setConfig(AlertLevel.WARNING, AlertDescription.CLOSE_NOTIFY);
+            trace.addTlsAction(new SendAction(alert));
+        }
         trace.addTlsAction(new ResetConnectionAction());
         WorkflowTrace tempTrace = this.createResumptionWorkflow();
         for (TlsAction resumption : tempTrace.getTlsActions()) {
@@ -966,6 +983,12 @@ public class WorkflowConfigurationFactory {
         }
         trace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.CLIENT,
             new ClientHelloMessage(config)));
+        if (config.getHighestProtocolVersion().isDTLS()) {
+            trace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.SERVER,
+                new HelloVerifyRequestMessage(config)));
+            trace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.CLIENT,
+                new ClientHelloMessage(config)));
+        }
         if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
             if (config.getHighestProtocolVersion().isTLS13()) {
                 trace.addTlsAction(new ReceiveTillAction(new FinishedMessage()));
@@ -1020,15 +1043,17 @@ public class WorkflowConfigurationFactory {
 
     private WorkflowTrace createDynamicHelloWorkflow() {
         AliasedConnection connection = getConnection();
-        WorkflowTrace trace = new WorkflowTrace();
-        if (config.getStarttlsType() != StarttlsType.NONE) {
-            addStartTlsActions(connection, config.getStarttlsType(), trace);
-        }
+        WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
+        WorkflowTrace trace = factory.createTlsEntryWorkflowTrace(config.getDefaultClientConnection());
         trace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.CLIENT,
             new ClientHelloMessage(config)));
         if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
             if (config.getHighestProtocolVersion().isTLS13()) {
                 trace.addTlsAction(new ReceiveTillAction(new FinishedMessage()));
+            } else if (config.getHighestProtocolVersion().isDTLS()) {
+                trace.addTlsAction(new ReceiveAction(new HelloVerifyRequestMessage(config)));
+                trace.addTlsAction(new SendAction(new ClientHelloMessage(config)));
+                trace.addTlsAction(new ReceiveTillAction(new ServerHelloDoneMessage()));
             } else {
                 trace.addTlsAction(new ReceiveTillAction(new ServerHelloDoneMessage()));
             }

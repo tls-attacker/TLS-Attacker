@@ -22,7 +22,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class FragmentCollector {
 
-    protected static final Logger LOGGER = LogManager.getLogger(FragmentCollector.class.getName());
+    protected static final Logger LOGGER = LogManager.getLogger();
 
     private Integer messageLength;
 
@@ -31,6 +31,8 @@ public class FragmentCollector {
     private Byte type;
 
     private boolean interpreted = false;
+
+    private boolean retransmission = false;
 
     private final Config config;
 
@@ -56,11 +58,20 @@ public class FragmentCollector {
             if (isFragmentOverwritingContent(fragment)) {
                 LOGGER.warn(
                     "Found a fragment which tries to rewrite history. Setting interpreted to false and resetting Stream.");
-                fragmentStream = new FragmentStream(messageLength);
-                this.messageLength = fragment.getFragmentLength().getValue();
+                fragmentStream = new FragmentStream(fragment.getLength().getValue());
+                this.messageLength = fragment.getLength().getValue();
                 this.messageSeq = fragment.getMessageSeq().getValue();
                 this.type = fragment.getType().getValue();
                 interpreted = false;
+                retransmission = false;
+            }
+            if (interpreted && config.isAddRetransmissionsToWorkflowTraceInDtls()) {
+                fragmentStream = new FragmentStream(fragment.getLength().getValue());
+                this.messageLength = fragment.getLength().getValue();
+                this.messageSeq = fragment.getMessageSeq().getValue();
+                this.type = fragment.getType().getValue();
+                interpreted = false;
+                retransmission = true;
             }
             fragmentStream.insertByteArray(fragment.getContent().getValue(), fragment.getFragmentOffset().getValue());
         } else {
@@ -137,7 +148,9 @@ public class FragmentCollector {
         message.setContent(getCombinedContent());
         DtlsHandshakeMessageFragmentSerializer serializer = new DtlsHandshakeMessageFragmentSerializer(message, null);
         message.setCompleteResultingMessage(serializer.serialize());
-        this.setInterpreted(interpreted);
+        message.setRetransmission(retransmission);
+        message.setIncludeInDigest(!retransmission);
+        interpreted = true;
         return message;
     }
 
@@ -172,5 +185,23 @@ public class FragmentCollector {
      */
     public void setInterpreted(boolean interpreted) {
         this.interpreted = interpreted;
+    }
+
+    /**
+     * Returns true if the message from this fragment stream is a retransmission
+     *
+     * @return
+     */
+    public boolean isRetransmission() {
+        return retransmission;
+    }
+
+    /**
+     * Marks this message as retransmission
+     *
+     * @param retransmission
+     */
+    public void setRetransmission(boolean retransmission) {
+        this.retransmission = retransmission;
     }
 }

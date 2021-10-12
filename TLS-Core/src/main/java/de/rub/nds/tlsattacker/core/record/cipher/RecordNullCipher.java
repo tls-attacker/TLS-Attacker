@@ -20,9 +20,8 @@ public class RecordNullCipher extends RecordCipher {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public RecordNullCipher(TlsContext context) {
-        super(context, context.getChooser().getSelectedProtocolVersion(), context.getChooser().getSelectedCipherSuite(),
-            null);
+    public RecordNullCipher(TlsContext context, CipherState state) {
+        super(context, state);
     }
 
     @Override

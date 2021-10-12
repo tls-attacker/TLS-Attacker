@@ -88,6 +88,7 @@ public class PlayBackTransportHandler extends TransportHandler {
 
     @Override
     public void setTimeout(long timeout) {
+        this.timeout = timeout;
         // DO NOTHING
     }
 }

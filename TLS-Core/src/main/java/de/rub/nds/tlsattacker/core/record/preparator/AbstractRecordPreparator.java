@@ -32,6 +32,8 @@ public abstract class AbstractRecordPreparator<T extends AbstractRecord> extends
         this.type = type;
     }
 
+    public abstract void encrypt();
+
     protected void prepareContentMessageType(ProtocolMessageType type) {
         getObject().setContentMessageType(this.type);
         LOGGER.debug("ContentMessageType: " + ArrayConverter.bytesToHexString(type.getArrayValue()));

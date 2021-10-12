@@ -76,8 +76,10 @@ public class RecordBlockCipherTest {
                             continue;
                         }
                         context.setSelectedProtocolVersion(version);
-                        cipher = new RecordBlockCipher(context, context.getChooser().getSelectedProtocolVersion(),
-                            context.getChooser().getSelectedCipherSuite(), KeySetGenerator.generateKeySet(context));
+                        cipher = new RecordBlockCipher(context,
+                            new CipherState(context.getChooser().getSelectedProtocolVersion(),
+                                context.getChooser().getSelectedCipherSuite(), KeySetGenerator.generateKeySet(context),
+                                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
                     }
                 }
             }
@@ -100,8 +102,10 @@ public class RecordBlockCipherTest {
         keySet.setServerWriteKey(new byte[24]); // ServerSide is not used
         keySet.setServerWriteMacSecret(new byte[20]); // ServerSide is not used
 
-        cipher = new RecordBlockCipher(context, context.getChooser().getSelectedProtocolVersion(),
-            context.getChooser().getSelectedCipherSuite(), keySet);
+        cipher = new RecordBlockCipher(context,
+            new CipherState(context.getChooser().getSelectedProtocolVersion(),
+                context.getChooser().getSelectedCipherSuite(), keySet,
+                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         Record record = new Record();
         record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
         record.prepareComputations();
@@ -161,8 +165,10 @@ public class RecordBlockCipherTest {
         keySet.setServerWriteKey(new byte[24]); // ServerSide is not used
         keySet.setServerWriteMacSecret(new byte[20]); // ServerSide is not used
 
-        cipher = new RecordBlockCipher(context, context.getChooser().getSelectedProtocolVersion(),
-            context.getChooser().getSelectedCipherSuite(), keySet);
+        cipher = new RecordBlockCipher(context,
+            new CipherState(context.getChooser().getSelectedProtocolVersion(),
+                context.getChooser().getSelectedCipherSuite(), keySet,
+                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         Record record = new Record();
         record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
         record.prepareComputations();
@@ -228,8 +234,10 @@ public class RecordBlockCipherTest {
         context.setRandom(new TestRandomData(ArrayConverter.hexStringToByteArray("1ACF314DA7208EB8"))); // IV
         byte[] data = ArrayConverter
             .hexStringToByteArray("1400000CCE92FBEC9131F48A63FED31F71573F726479AA9108FB86A4FA16BC1D5CB5753003030303");
-        cipher = new RecordBlockCipher(context, context.getChooser().getSelectedProtocolVersion(),
-            context.getChooser().getSelectedCipherSuite(), keySet);
+        cipher = new RecordBlockCipher(context,
+            new CipherState(context.getChooser().getSelectedProtocolVersion(),
+                context.getChooser().getSelectedCipherSuite(), keySet,
+                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         Record record = new Record();
         record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
         record.prepareComputations();
@@ -289,8 +297,10 @@ public class RecordBlockCipherTest {
 
         byte[] data = ArrayConverter.hexStringToByteArray(
             "1ACF314DA7208EB8C34B06D54CDE2A5AF25EE0AE1896F6F149720FA9EC205C6629B2C7F52A7F3A72931E351D4AD26E235FDF3AEC315FD8629559C31FDF6F88E35EC40BF4B2A46473");
-        cipher = new RecordBlockCipher(context, context.getChooser().getSelectedProtocolVersion(),
-            context.getChooser().getSelectedCipherSuite(), keySet);
+        cipher = new RecordBlockCipher(context,
+            new CipherState(context.getChooser().getSelectedProtocolVersion(),
+                context.getChooser().getSelectedCipherSuite(), keySet,
+                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         Record record = new Record();
         record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
         record.prepareComputations();
@@ -356,8 +366,10 @@ public class RecordBlockCipherTest {
         context.setRandom(new TestRandomData(ArrayConverter.hexStringToByteArray("1ACF314DA7208EB8"))); // IV
         byte[] data = ArrayConverter
             .hexStringToByteArray("1400000CCE92FBEC9131F48A63FED31F71573F726479AA9108FB86A4FA16BC1D5CB5753003030303");
-        cipher = new RecordBlockCipher(context, context.getChooser().getSelectedProtocolVersion(),
-            context.getChooser().getSelectedCipherSuite(), keySet);
+        cipher = new RecordBlockCipher(context,
+            new CipherState(context.getChooser().getSelectedProtocolVersion(),
+                context.getChooser().getSelectedCipherSuite(), keySet,
+                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         Record record = new Record();
         record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
         record.prepareComputations();
@@ -417,8 +429,10 @@ public class RecordBlockCipherTest {
         context.setRandom(new TestRandomData(ArrayConverter.hexStringToByteArray("1ACF314DA7208EB8"))); // IV
         byte[] data = ArrayConverter
             .hexStringToByteArray("1400000CCE92FBEC9131F48A63FED31F71573F726479AA9108FB86A4FA16BC1D5CB5753003030303");
-        cipher = new RecordBlockCipher(context, context.getChooser().getSelectedProtocolVersion(),
-            context.getChooser().getSelectedCipherSuite(), keySet);
+        cipher = new RecordBlockCipher(context,
+            new CipherState(context.getChooser().getSelectedProtocolVersion(),
+                context.getChooser().getSelectedCipherSuite(), keySet,
+                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         Record record = new Record();
         record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
         record.prepareComputations();
@@ -450,8 +464,10 @@ public class RecordBlockCipherTest {
 
         byte[] data = ArrayConverter.hexStringToByteArray(
             "1ACF314DA7208EB8C34B06D54CDE2A5AF25EE0AE1896F6F149720FA9EC205C6629B2C7F52A7F3A72931E351D4AD26E23658D0028D806AD6DCFB4A1C95523EE32182FE110528D80AE");
-        cipher = new RecordBlockCipher(context, context.getChooser().getSelectedProtocolVersion(),
-            context.getChooser().getSelectedCipherSuite(), keySet);
+        cipher = new RecordBlockCipher(context,
+            new CipherState(context.getChooser().getSelectedProtocolVersion(),
+                context.getChooser().getSelectedCipherSuite(), keySet,
+                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         Record record = new Record();
         record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
         record.prepareComputations();
@@ -524,8 +540,10 @@ public class RecordBlockCipherTest {
         keySet.setClientWriteKey(new byte[24]); // ServerSide is not used
         keySet.setClientWriteMacSecret(new byte[20]); // ServerSide is not used
 
-        cipher = new RecordBlockCipher(context, context.getChooser().getSelectedProtocolVersion(),
-            context.getChooser().getSelectedCipherSuite(), keySet);
+        cipher = new RecordBlockCipher(context,
+            new CipherState(context.getChooser().getSelectedProtocolVersion(),
+                context.getChooser().getSelectedCipherSuite(), keySet,
+                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         Record record = new Record();
         record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
         record.prepareComputations();
@@ -586,8 +604,10 @@ public class RecordBlockCipherTest {
         keySet.setClientWriteKey(new byte[24]); // ClientSide is not used
         keySet.setClientWriteMacSecret(new byte[20]); // ClientSide is not used
 
-        cipher = new RecordBlockCipher(context, context.getChooser().getSelectedProtocolVersion(),
-            context.getChooser().getSelectedCipherSuite(), keySet);
+        cipher = new RecordBlockCipher(context,
+            new CipherState(context.getChooser().getSelectedProtocolVersion(),
+                context.getChooser().getSelectedCipherSuite(), keySet,
+                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         Record record = new Record();
         record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
         record.prepareComputations();
@@ -654,8 +674,10 @@ public class RecordBlockCipherTest {
         context.setRandom(new TestRandomData(ArrayConverter.hexStringToByteArray("1ACF314DA7208EB8"))); // IV
         byte[] data = ArrayConverter
             .hexStringToByteArray("1400000CCE92FBEC9131F48A63FED31F71573F726479AA9108FB86A4FA16BC1D5CB5753003030303");
-        cipher = new RecordBlockCipher(context, context.getChooser().getSelectedProtocolVersion(),
-            context.getChooser().getSelectedCipherSuite(), keySet);
+        cipher = new RecordBlockCipher(context,
+            new CipherState(context.getChooser().getSelectedProtocolVersion(),
+                context.getChooser().getSelectedCipherSuite(), keySet,
+                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         Record record = new Record();
         record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
         record.prepareComputations();
@@ -716,8 +738,10 @@ public class RecordBlockCipherTest {
 
         byte[] data = ArrayConverter.hexStringToByteArray(
             "1ACF314DA7208EB8C34B06D54CDE2A5AF25EE0AE1896F6F149720FA9EC205C6629B2C7F52A7F3A72931E351D4AD26E235FDF3AEC315FD8629559C31FDF6F88E35EC40BF4B2A46473");
-        cipher = new RecordBlockCipher(context, context.getChooser().getSelectedProtocolVersion(),
-            context.getChooser().getSelectedCipherSuite(), keySet);
+        cipher = new RecordBlockCipher(context,
+            new CipherState(context.getChooser().getSelectedProtocolVersion(),
+                context.getChooser().getSelectedCipherSuite(), keySet,
+                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         Record record = new Record();
         record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
         record.prepareComputations();
@@ -784,8 +808,10 @@ public class RecordBlockCipherTest {
         context.setRandom(new TestRandomData(ArrayConverter.hexStringToByteArray("1ACF314DA7208EB8"))); // IV
         byte[] data = ArrayConverter
             .hexStringToByteArray("1400000CCE92FBEC9131F48A63FED31F71573F726479AA9108FB86A4FA16BC1D5CB5753003030303");
-        cipher = new RecordBlockCipher(context, context.getChooser().getSelectedProtocolVersion(),
-            context.getChooser().getSelectedCipherSuite(), keySet);
+        cipher = new RecordBlockCipher(context,
+            new CipherState(context.getChooser().getSelectedProtocolVersion(),
+                context.getChooser().getSelectedCipherSuite(), keySet,
+                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         Record record = new Record();
         record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
         record.prepareComputations();
@@ -846,8 +872,10 @@ public class RecordBlockCipherTest {
 
         byte[] data = ArrayConverter.hexStringToByteArray(
             "1ACF314DA7208EB8C34B06D54CDE2A5AF25EE0AE1896F6F149720FA9EC205C6629B2C7F52A7F3A72931E351D4AD26E23658D0028D806AD6DCFB4A1C95523EE32182FE110528D80AE");
-        cipher = new RecordBlockCipher(context, context.getChooser().getSelectedProtocolVersion(),
-            context.getChooser().getSelectedCipherSuite(), keySet);
+        cipher = new RecordBlockCipher(context,
+            new CipherState(context.getChooser().getSelectedProtocolVersion(),
+                context.getChooser().getSelectedCipherSuite(), keySet,
+                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         Record record = new Record();
         record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
         record.prepareComputations();
@@ -914,8 +942,10 @@ public class RecordBlockCipherTest {
         keySet.setServerWriteKey(new byte[24]); // ServerSide is not used
         keySet.setServerWriteMacSecret(new byte[20]); // ServerSide is not used
 
-        cipher = new RecordBlockCipher(context, context.getChooser().getSelectedProtocolVersion(),
-            context.getChooser().getSelectedCipherSuite(), keySet);
+        cipher = new RecordBlockCipher(context,
+            new CipherState(context.getChooser().getSelectedProtocolVersion(),
+                context.getChooser().getSelectedCipherSuite(), keySet,
+                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         Record record = new Record();
         record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
         record.prepareComputations();
@@ -982,8 +1012,10 @@ public class RecordBlockCipherTest {
         keySet.setServerWriteKey(new byte[24]); // ServerSide is not used
         keySet.setServerWriteMacSecret(new byte[20]); // ServerSide is not used
 
-        cipher = new RecordBlockCipher(context, context.getChooser().getSelectedProtocolVersion(),
-            context.getChooser().getSelectedCipherSuite(), keySet);
+        cipher = new RecordBlockCipher(context,
+            new CipherState(context.getChooser().getSelectedProtocolVersion(),
+                context.getChooser().getSelectedCipherSuite(), keySet,
+                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         Record record = new Record();
         record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
         record.prepareComputations();
@@ -1052,8 +1084,10 @@ public class RecordBlockCipherTest {
         keySet.setServerWriteMacSecret(new byte[20]); // ServerSide is not used
         context.setRandom(new TestRandomData(ArrayConverter.hexStringToByteArray("1ACF314DA7208EB8"))); // IV
 
-        cipher = new RecordBlockCipher(context, context.getChooser().getSelectedProtocolVersion(),
-            context.getChooser().getSelectedCipherSuite(), keySet);
+        cipher = new RecordBlockCipher(context,
+            new CipherState(context.getChooser().getSelectedProtocolVersion(),
+                context.getChooser().getSelectedCipherSuite(), keySet,
+                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         Record record = new Record();
         record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
         record.prepareComputations();
@@ -1119,8 +1153,10 @@ public class RecordBlockCipherTest {
         keySet.setServerWriteKey(new byte[24]); // ServerSide is not used
         keySet.setServerWriteMacSecret(new byte[20]); // ServerSide is not used
 
-        cipher = new RecordBlockCipher(context, context.getChooser().getSelectedProtocolVersion(),
-            context.getChooser().getSelectedCipherSuite(), keySet);
+        cipher = new RecordBlockCipher(context,
+            new CipherState(context.getChooser().getSelectedProtocolVersion(),
+                context.getChooser().getSelectedCipherSuite(), keySet,
+                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         Record record = new Record();
         record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
         record.prepareComputations();
@@ -1187,8 +1223,10 @@ public class RecordBlockCipherTest {
         keySet.setServerWriteMacSecret(new byte[20]); // ServerSide is not used
         context.setRandom(new TestRandomData(ArrayConverter.hexStringToByteArray("1ACF314DA7208EB8"))); // IV
 
-        cipher = new RecordBlockCipher(context, context.getChooser().getSelectedProtocolVersion(),
-            context.getChooser().getSelectedCipherSuite(), keySet);
+        cipher = new RecordBlockCipher(context,
+            new CipherState(context.getChooser().getSelectedProtocolVersion(),
+                context.getChooser().getSelectedCipherSuite(), keySet,
+                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         Record record = new Record();
         record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
         record.prepareComputations();
@@ -1254,8 +1292,10 @@ public class RecordBlockCipherTest {
         keySet.setServerWriteKey(new byte[24]); // ServerSide is not used
         keySet.setServerWriteMacSecret(new byte[20]); // ServerSide is not used
 
-        cipher = new RecordBlockCipher(context, context.getChooser().getSelectedProtocolVersion(),
-            context.getChooser().getSelectedCipherSuite(), keySet);
+        cipher = new RecordBlockCipher(context,
+            new CipherState(context.getChooser().getSelectedProtocolVersion(),
+                context.getChooser().getSelectedCipherSuite(), keySet,
+                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         Record record = new Record();
         record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
         record.prepareComputations();
@@ -1321,8 +1361,10 @@ public class RecordBlockCipherTest {
         keySet.setClientWriteKey(new byte[24]); // ClientSide is not used
         keySet.setClientWriteMacSecret(new byte[20]); // ClientSide is not used
 
-        cipher = new RecordBlockCipher(context, context.getChooser().getSelectedProtocolVersion(),
-            context.getChooser().getSelectedCipherSuite(), keySet);
+        cipher = new RecordBlockCipher(context,
+            new CipherState(context.getChooser().getSelectedProtocolVersion(),
+                context.getChooser().getSelectedCipherSuite(), keySet,
+                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         Record record = new Record();
         record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
         record.prepareComputations();
@@ -1389,8 +1431,10 @@ public class RecordBlockCipherTest {
         keySet.setClientWriteKey(new byte[24]); // ClientSide is not used
         keySet.setClientWriteMacSecret(new byte[20]); // ClientSide is not used
 
-        cipher = new RecordBlockCipher(context, context.getChooser().getSelectedProtocolVersion(),
-            context.getChooser().getSelectedCipherSuite(), keySet);
+        cipher = new RecordBlockCipher(context,
+            new CipherState(context.getChooser().getSelectedProtocolVersion(),
+                context.getChooser().getSelectedCipherSuite(), keySet,
+                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         Record record = new Record();
         record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
         record.prepareComputations();
@@ -1459,8 +1503,10 @@ public class RecordBlockCipherTest {
         keySet.setClientWriteMacSecret(new byte[20]); // ClientSide is not used
         context.setRandom(new TestRandomData(ArrayConverter.hexStringToByteArray("1ACF314DA7208EB8"))); // IV
 
-        cipher = new RecordBlockCipher(context, context.getChooser().getSelectedProtocolVersion(),
-            context.getChooser().getSelectedCipherSuite(), keySet);
+        cipher = new RecordBlockCipher(context,
+            new CipherState(context.getChooser().getSelectedProtocolVersion(),
+                context.getChooser().getSelectedCipherSuite(), keySet,
+                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         Record record = new Record();
         record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
         record.prepareComputations();
@@ -1526,8 +1572,10 @@ public class RecordBlockCipherTest {
         keySet.setClientWriteKey(new byte[24]); // ClientSide is not used
         keySet.setClientWriteMacSecret(new byte[20]); // ClientSide is not used
 
-        cipher = new RecordBlockCipher(context, context.getChooser().getSelectedProtocolVersion(),
-            context.getChooser().getSelectedCipherSuite(), keySet);
+        cipher = new RecordBlockCipher(context,
+            new CipherState(context.getChooser().getSelectedProtocolVersion(),
+                context.getChooser().getSelectedCipherSuite(), keySet,
+                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         Record record = new Record();
         record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
         record.prepareComputations();
@@ -1594,8 +1642,10 @@ public class RecordBlockCipherTest {
         keySet.setClientWriteMacSecret(new byte[20]); // ClientSide is not used
         context.setRandom(new TestRandomData(ArrayConverter.hexStringToByteArray("1ACF314DA7208EB8"))); // IV
 
-        cipher = new RecordBlockCipher(context, context.getChooser().getSelectedProtocolVersion(),
-            context.getChooser().getSelectedCipherSuite(), keySet);
+        cipher = new RecordBlockCipher(context,
+            new CipherState(context.getChooser().getSelectedProtocolVersion(),
+                context.getChooser().getSelectedCipherSuite(), keySet,
+                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         Record record = new Record();
         record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
         record.prepareComputations();
@@ -1661,8 +1711,10 @@ public class RecordBlockCipherTest {
         keySet.setClientWriteKey(new byte[24]); // ClientSide is not used
         keySet.setClientWriteMacSecret(new byte[20]); // ClientSide is not used
 
-        cipher = new RecordBlockCipher(context, context.getChooser().getSelectedProtocolVersion(),
-            context.getChooser().getSelectedCipherSuite(), keySet);
+        cipher = new RecordBlockCipher(context,
+            new CipherState(context.getChooser().getSelectedProtocolVersion(),
+                context.getChooser().getSelectedCipherSuite(), keySet,
+                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         Record record = new Record();
         record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
         record.prepareComputations();

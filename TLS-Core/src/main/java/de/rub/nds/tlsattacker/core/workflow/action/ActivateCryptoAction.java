@@ -24,14 +24,8 @@ import org.apache.logging.log4j.Logger;
 public abstract class ActivateCryptoAction extends ConnectionBoundAction {
     protected static final Logger LOGGER = LogManager.getLogger();
 
-    protected final boolean resetSequenceNumbers;
-
     public ActivateCryptoAction() {
-        this(true);
-    }
 
-    public ActivateCryptoAction(boolean resetSequenceNumbers) {
-        this.resetSequenceNumbers = resetSequenceNumbers;
     }
 
     @Override

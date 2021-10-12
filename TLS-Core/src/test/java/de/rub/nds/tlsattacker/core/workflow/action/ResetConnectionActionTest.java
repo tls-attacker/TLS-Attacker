@@ -11,8 +11,10 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import de.rub.nds.tlsattacker.core.record.cipher.CipherState;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordBlockCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
@@ -49,9 +51,10 @@ public class ResetConnectionActionTest {
         tlsContext.setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
         tlsContext.setRecordLayer(new TlsRecordLayer(tlsContext));
-        RecordCipher recordCipher =
-            new RecordBlockCipher(tlsContext, tlsContext.getChooser().getSelectedProtocolVersion(),
-                tlsContext.getChooser().getSelectedCipherSuite(), KeySetGenerator.generateKeySet(tlsContext));
+        RecordCipher recordCipher = new RecordBlockCipher(tlsContext,
+            new CipherState(tlsContext.getChooser().getSelectedProtocolVersion(),
+                tlsContext.getChooser().getSelectedCipherSuite(), KeySetGenerator.generateKeySet(tlsContext),
+                tlsContext.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         tlsContext.getRecordLayer().updateEncryptionCipher(recordCipher);
         tlsContext.getRecordLayer().updateDecryptionCipher(recordCipher);
         tlsContext.setActiveClientKeySetType(Tls13KeySetType.EARLY_TRAFFIC_SECRETS);

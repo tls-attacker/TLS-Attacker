@@ -61,8 +61,6 @@ public class HandlerFactoryTest {
         assertTrue(
             HandlerFactory.getHandshakeHandler(context, HandshakeMessageType.FINISHED) instanceof FinishedHandler);
         assertTrue(HandlerFactory.getHandshakeHandler(context,
-            HandshakeMessageType.HELLO_RETRY_REQUEST) instanceof HelloRetryRequestHandler);
-        assertTrue(HandlerFactory.getHandshakeHandler(context,
             HandshakeMessageType.HELLO_REQUEST) instanceof HelloRequestHandler);
         assertTrue(HandlerFactory.getHandshakeHandler(context,
             HandshakeMessageType.HELLO_VERIFY_REQUEST) instanceof HelloVerifyRequestHandler);

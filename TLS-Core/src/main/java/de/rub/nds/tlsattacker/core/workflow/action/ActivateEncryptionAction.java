@@ -20,11 +20,6 @@ public class ActivateEncryptionAction extends ActivateCryptoAction {
     protected void activateCrypto(TlsContext tlsContext, RecordCipher recordCipher) {
         LOGGER.info("Setting new encryption cipher and activating encryption");
         tlsContext.getRecordLayer().updateEncryptionCipher(recordCipher);
-
-        if (resetSequenceNumbers) {
-            tlsContext.setWriteSequenceNumber(0);
-            LOGGER.info("Reset write SQN");
-        }
     }
 
 }

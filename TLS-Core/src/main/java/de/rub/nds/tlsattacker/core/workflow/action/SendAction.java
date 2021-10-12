@@ -14,8 +14,9 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
-import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
+import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.TlsMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
@@ -95,9 +96,12 @@ public class SendAction extends MessageAction implements SendingAction {
         }
 
         try {
-            MessageActionResult result = sendMessageHelper.sendMessages(messages, records, tlsContext);
+            MessageActionResult result = sendMessageHelper.sendMessages(messages, fragments, records, tlsContext);
             messages = new ArrayList<>(result.getMessageList());
             records = new ArrayList<>(result.getRecordList());
+            if (result.getMessageFragmentList() != null) {
+                fragments = new ArrayList<>(result.getMessageFragmentList());
+            }
             setExecuted(true);
         } catch (IOException e) {
             if (!getActionOptions().contains(ActionOption.MAY_FAIL)) {
@@ -156,6 +160,11 @@ public class SendAction extends MessageAction implements SendingAction {
     }
 
     @Override
+    public void setFragments(List<DtlsHandshakeMessageFragment> fragments) {
+        this.fragments = fragments;
+    }
+
+    @Override
     public void reset() {
         List<ModifiableVariableHolder> holders = new LinkedList<>();
         if (messages != null) {
@@ -166,6 +175,11 @@ public class SendAction extends MessageAction implements SendingAction {
         if (getRecords() != null) {
             for (AbstractRecord record : getRecords()) {
                 holders.addAll(record.getAllModifiableVariableHolders());
+            }
+        }
+        if (getFragments() != null) {
+            for (DtlsHandshakeMessageFragment fragment : getFragments()) {
+                holders.addAll(fragment.getAllModifiableVariableHolders());
             }
         }
         for (ModifiableVariableHolder holder : holders) {
@@ -182,6 +196,11 @@ public class SendAction extends MessageAction implements SendingAction {
     @Override
     public List<AbstractRecord> getSendRecords() {
         return records;
+    }
+
+    @Override
+    public List<DtlsHandshakeMessageFragment> getSendFragments() {
+        return fragments;
     }
 
     @Override
@@ -207,6 +226,9 @@ public class SendAction extends MessageAction implements SendingAction {
         if (!Objects.equals(this.records, other.records)) {
             return false;
         }
+        if (!Objects.equals(this.fragments, other.fragments)) {
+            return false;
+        }
         return super.equals(obj);
     }
 
@@ -215,7 +237,7 @@ public class SendAction extends MessageAction implements SendingAction {
         int hash = super.hashCode();
         hash = 67 * hash + Objects.hashCode(this.messages);
         hash = 67 * hash + Objects.hashCode(this.records);
-
+        hash = 67 * hash + Objects.hashCode(this.fragments);
         return hash;
     }
 

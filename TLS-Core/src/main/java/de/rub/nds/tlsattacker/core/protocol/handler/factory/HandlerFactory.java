@@ -36,7 +36,6 @@ import de.rub.nds.tlsattacker.core.protocol.handler.GOSTClientKeyExchangeHandler
 import de.rub.nds.tlsattacker.core.protocol.handler.HandshakeMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.HeartbeatMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.HelloRequestHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.HelloRetryRequestHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.HelloVerifyRequestHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.KeyUpdateHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.NewSessionTicketHandler;
@@ -163,8 +162,6 @@ public class HandlerFactory {
                     return new EndOfEarlyDataHandler(context);
                 case FINISHED:
                     return new FinishedHandler(context);
-                case HELLO_RETRY_REQUEST:
-                    return new HelloRetryRequestHandler(context);
                 case HELLO_REQUEST:
                     return new HelloRequestHandler(context);
                 case HELLO_VERIFY_REQUEST:

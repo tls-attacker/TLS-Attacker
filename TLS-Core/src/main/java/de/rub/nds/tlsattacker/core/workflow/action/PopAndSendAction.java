@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -77,9 +78,13 @@ public class PopAndSendAction extends MessageAction implements SendingAction {
         }
 
         try {
-            MessageActionResult result = sendMessageHelper.sendMessages(messages, records, tlsContext, false);
+            MessageActionResult result =
+                sendMessageHelper.sendMessages(messages, fragments, records, tlsContext, false);
             messages = new ArrayList<>(result.getMessageList());
             records = new ArrayList<>(result.getRecordList());
+            if (result.getMessageFragmentList() != null) {
+                fragments = new ArrayList<>(result.getMessageFragmentList());
+            }
             setExecuted(true);
         } catch (IOException e) {
             LOGGER.debug(e);
@@ -103,9 +108,15 @@ public class PopAndSendAction extends MessageAction implements SendingAction {
     }
 
     @Override
+    public void setFragments(List<DtlsHandshakeMessageFragment> fragments) {
+        this.fragments = fragments;
+    }
+
+    @Override
     public void reset() {
         messages = new LinkedList<>();
         records = new LinkedList<>();
+        fragments = new LinkedList<>();
         setExecuted(null);
     }
 
@@ -117,6 +128,11 @@ public class PopAndSendAction extends MessageAction implements SendingAction {
     @Override
     public List<AbstractRecord> getSendRecords() {
         return records;
+    }
+
+    @Override
+    public List<DtlsHandshakeMessageFragment> getSendFragments() {
+        return fragments;
     }
 
     @Override

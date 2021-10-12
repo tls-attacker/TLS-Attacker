@@ -11,5 +11,6 @@ package de.rub.nds.tlsattacker.core.workflow.action.executor;
 
 public enum WorkflowExecutorType {
     DEFAULT,
-    THREADED_SERVER
+    THREADED_SERVER,
+    DTLS
 }

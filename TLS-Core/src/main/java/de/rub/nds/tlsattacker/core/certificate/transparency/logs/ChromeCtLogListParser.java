@@ -24,7 +24,7 @@ import java.util.Base64;
 
 public class ChromeCtLogListParser implements CtLogListParser {
 
-    protected static final Logger LOGGER = LogManager.getLogger(ChromeCtLogListParser.class.getName());
+    protected static final Logger LOGGER = LogManager.getLogger();
 
     private JSONParser jsonParser = new JSONParser();
 

@@ -62,10 +62,8 @@ public class EndOfEarlyDataHandler extends HandshakeMessageHandler<EndOfEarlyDat
             LOGGER.debug("Setting cipher for client to use handshake secrets");
             KeySet clientKeySet = KeySetGenerator.generateKeySet(tlsContext,
                 tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext.getActiveClientKeySetType());
-            RecordCipher recordCipherClient = RecordCipherFactory.getRecordCipher(tlsContext, clientKeySet,
-                tlsContext.getChooser().getSelectedCipherSuite());
+            RecordCipher recordCipherClient = RecordCipherFactory.getRecordCipher(tlsContext, clientKeySet);
             tlsContext.getRecordLayer().updateDecryptionCipher(recordCipherClient);
-            tlsContext.setReadSequenceNumber(0);
         } catch (CryptoException | NoSuchAlgorithmException ex) {
             LOGGER.error("Generating KeySet failed", ex);
             throw new WorkflowExecutionException(ex.toString());

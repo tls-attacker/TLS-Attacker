@@ -12,6 +12,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
@@ -222,6 +223,16 @@ public class ForwardRecordsAction extends TlsAction implements ReceivingAction, 
 
     @Override
     public List<ProtocolMessage> getSendMessages() {
+        throw new UnsupportedOperationException("Not supported.");
+    }
+
+    @Override
+    public List<DtlsHandshakeMessageFragment> getReceivedFragments() {
+        throw new UnsupportedOperationException("Not supported.");
+    }
+
+    @Override
+    public List<DtlsHandshakeMessageFragment> getSendFragments() {
         throw new UnsupportedOperationException("Not supported.");
     }
 
