@@ -9,58 +9,38 @@
 
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
+import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.state.SessionTicket;
 
 /**
  * This extension is defined in RFC4507
  */
 public class SessionTicketTLSExtensionMessage extends ExtensionMessage {
 
-    @ModifiableVariableProperty
-    private ModifiableByteArray ticket;
+    @HoldsModifiableVariable
+    private SessionTicket sessionTicket;
 
     /**
      * Constructor
      */
     public SessionTicketTLSExtensionMessage() {
         super(ExtensionType.SESSION_TICKET);
+        sessionTicket = new SessionTicket();
     }
 
     public SessionTicketTLSExtensionMessage(Config config) {
         super(ExtensionType.SESSION_TICKET);
+        sessionTicket = new SessionTicket();
     }
 
-    /**
-     * Returns the saved SessionTicket
-     *
-     * @return the Raw ticket
-     */
-    public ModifiableByteArray getTicket() {
-        return ticket;
-    }
-
-    /**
-     * Sets the SessionTicket
-     *
-     * @param ticket
-     *               the Raw ticket bytes
-     */
-    public void setTicket(ModifiableByteArray ticket) {
-        this.ticket = ticket;
-    }
-
-    /**
-     * Sets the SessionTicket
-     *
-     * @param array
-     *              the Raw ticket bytes
-     */
-    public void setTicket(byte[] array) {
-        this.ticket = ModifiableVariableFactory.safelySetValue(ticket, array);
+    public SessionTicket getSessionTicket() {
+        return sessionTicket;
     }
 
 }

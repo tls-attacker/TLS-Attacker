@@ -508,9 +508,11 @@
       <xs:element name="defaultHttpsRequestPath" type="xs:string" minOccurs="0"/>
       <xs:element name="starttlsType" type="starttlsType" minOccurs="0"/>
       <xs:element name="sessionTicketLifetimeHint" type="xs:long" minOccurs="0"/>
-      <xs:element name="sessionTicketKeyAES" type="xs:string" minOccurs="0"/>
+      <xs:element name="sessionTicketEncryptionKey" type="xs:string" minOccurs="0"/>
       <xs:element name="sessionTicketKeyHMAC" type="xs:string" minOccurs="0"/>
       <xs:element name="sessionTicketKeyName" type="xs:string" minOccurs="0"/>
+      <xs:element name="sessionTicketCipherAlgorithm" type="cipherAlgorithm" minOccurs="0"/>
+      <xs:element name="sessionTicketMacAlgorithm" type="macAlgorithm" minOccurs="0"/>
       <xs:element name="defaultSessionTicketAgeAdd" type="xs:string" minOccurs="0"/>
       <xs:element name="defaultSessionTicketNonce" type="xs:string" minOccurs="0"/>
       <xs:element name="defaultSessionTicketIdentity" type="xs:string" minOccurs="0"/>
@@ -2172,6 +2174,56 @@
       <xs:enumeration value="IMAP"/>
       <xs:enumeration value="POP3"/>
       <xs:enumeration value="SMTP"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="cipherAlgorithm">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="NULL"/>
+      <xs:enumeration value="RC2_128"/>
+      <xs:enumeration value="RC4_128"/>
+      <xs:enumeration value="DES_CBC"/>
+      <xs:enumeration value="DES_EDE_CBC"/>
+      <xs:enumeration value="AES_128_CBC"/>
+      <xs:enumeration value="AES_256_CBC"/>
+      <xs:enumeration value="AES_128_GCM"/>
+      <xs:enumeration value="AES_256_GCM"/>
+      <xs:enumeration value="CAMELLIA_128_CBC"/>
+      <xs:enumeration value="CAMELLIA_256_CBC"/>
+      <xs:enumeration value="CAMELLIA_128_GCM"/>
+      <xs:enumeration value="CAMELLIA_256_GCM"/>
+      <xs:enumeration value="IDEA_128"/>
+      <xs:enumeration value="SEED_CBC"/>
+      <xs:enumeration value="AES_128_CCM"/>
+      <xs:enumeration value="AES_256_CCM"/>
+      <xs:enumeration value="CHACHA20_POLY1305"/>
+      <xs:enumeration value="UNOFFICIAL_CHACHA20_POLY1305"/>
+      <xs:enumeration value="DES40_CBC"/>
+      <xs:enumeration value="ARIA_128_CBC"/>
+      <xs:enumeration value="ARIA_256_CBC"/>
+      <xs:enumeration value="ARIA_128_GCM"/>
+      <xs:enumeration value="ARIA_256_GCM"/>
+      <xs:enumeration value="GOST_28147_CNT"/>
+      <xs:enumeration value="FORTEZZA_CBC"/>
+      <xs:enumeration value="AES_128_CTR"/>
+      <xs:enumeration value="AES_256_CTR"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="macAlgorithm">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="NULL"/>
+      <xs:enumeration value="AEAD"/>
+      <xs:enumeration value="SSLMAC_MD5"/>
+      <xs:enumeration value="SSLMAC_SHA1"/>
+      <xs:enumeration value="HMAC_MD5"/>
+      <xs:enumeration value="HMAC_SHA1"/>
+      <xs:enumeration value="HMAC_SHA256"/>
+      <xs:enumeration value="HMAC_SHA384"/>
+      <xs:enumeration value="HMAC_SHA512"/>
+      <xs:enumeration value="IMIT_GOST28147"/>
+      <xs:enumeration value="HMAC_GOSTR3411"/>
+      <xs:enumeration value="HMAC_GOSTR3411_2012_256"/>
     </xs:restriction>
   </xs:simpleType>
 
