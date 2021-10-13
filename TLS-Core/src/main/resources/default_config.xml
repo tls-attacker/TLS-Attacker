@@ -1043,7 +1043,7 @@
     <defaultServerSupportedCompressionMethods>
         <defaultServerSupportedCompressionMethod>NULL</defaultServerSupportedCompressionMethod>
     </defaultServerSupportedCompressionMethods>
-    <defaultMasterSecret></defaultMasterSecret>
+    <defaultMasterSecret>00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00</defaultMasterSecret>
     <defaultPreMasterSecret></defaultPreMasterSecret>
     <defaultClientExtendedRandom>AA BB CC DD EE FF AA BB CC DD EE FF AA BB CC DD EE FF AA BB CC DD EE FF AA BB CC DD EE FF AA BB</defaultClientExtendedRandom>
     <defaultServerExtendedRandom>AA BB CC DD EE FF AA BB CC DD EE FF AA BB CC DD EE FF AA BB CC DD EE FF AA BB CC DD EE FF AA BB</defaultServerExtendedRandom>

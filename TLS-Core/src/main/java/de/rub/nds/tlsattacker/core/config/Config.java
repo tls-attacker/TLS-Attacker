@@ -1039,7 +1039,7 @@ public class Config implements Serializable {
     private List<CompressionMethod> defaultServerSupportedCompressionMethods;
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private byte[] defaultMasterSecret = new byte[0];
+    private byte[] defaultMasterSecret = new byte[48];
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultPreMasterSecret = new byte[0];
