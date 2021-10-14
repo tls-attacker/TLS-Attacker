@@ -45,10 +45,10 @@ public abstract class TLSDelegateConfig {
         delegateList.add(delegate);
     }
 
-    public Delegate getDelegate(Class<? extends Delegate> delegateClass) {
+    public <T extends Delegate> T getDelegate(Class<T> delegateClass) {
         for (Delegate delegate : getDelegateList()) {
             if (delegate.getClass().equals(delegateClass)) {
-                return delegate;
+                return (T) delegate;
             }
         }
         return null;

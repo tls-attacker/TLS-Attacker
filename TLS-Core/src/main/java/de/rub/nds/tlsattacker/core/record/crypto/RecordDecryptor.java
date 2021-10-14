@@ -10,22 +10,15 @@
 package de.rub.nds.tlsattacker.core.record.crypto;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.math.BigInteger;
-import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -40,7 +33,7 @@ public class RecordDecryptor extends Decryptor {
     public RecordDecryptor(RecordCipher recordCipher, TlsContext context) {
         super(recordCipher);
         this.context = context;
-        nullCipher = new RecordNullCipher(context);
+        nullCipher = RecordCipherFactory.getNullCipher(context);
     }
 
     @Override
@@ -51,6 +44,7 @@ public class RecordDecryptor extends Decryptor {
         } catch (CryptoException ex1) {
             LOGGER.warn("Could not decrypt BlobRecord with NullCipher", ex1);
         }
+        getRecordMostRecentCipher().getState().increaseReadSequenceNumber();
     }
 
     @Override
@@ -66,7 +60,7 @@ public class RecordDecryptor extends Decryptor {
         record.prepareComputations();
         ProtocolVersion version = ProtocolVersion.getProtocolVersion(record.getProtocolVersion().getValue());
         if (version == null || !version.isDTLS()) {
-            record.setSequenceNumber(BigInteger.valueOf(context.getReadSequenceNumber()));
+            record.setSequenceNumber(BigInteger.valueOf(recordCipher.getState().getReadSequenceNumber()));
         }
         try {
             recordCipher.decrypt(record);
@@ -78,5 +72,6 @@ public class RecordDecryptor extends Decryptor {
                 LOGGER.warn("Could not decrypt Record with null cipher", ex1);
             }
         }
+        recordCipher.getState().increaseReadSequenceNumber();
     }
 }

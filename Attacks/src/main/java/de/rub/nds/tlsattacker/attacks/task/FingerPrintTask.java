@@ -75,5 +75,4 @@ public class FingerPrintTask extends TlsTask {
     public void reset() {
         state.reset();
     }
-
 }

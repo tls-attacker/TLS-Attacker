@@ -10,10 +10,7 @@
 package de.rub.nds.tlsattacker.core.record.cipher;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
-import de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.RecordByteLength;
 import de.rub.nds.tlsattacker.core.crypto.cipher.DecryptionCipher;
@@ -22,10 +19,11 @@ import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -42,26 +40,17 @@ public abstract class RecordCipher {
      */
     protected EncryptionCipher encryptCipher;
     /**
-     * CipherAlgorithm algorithm (AES, ...)
-     */
-    protected final CipherAlgorithm cipherAlg;
-
-    private final KeySet keySet;
-    /**
      * TLS context
      */
-    protected TlsContext context;
+    private TlsContext context;
+    /**
+     * cipher state
+     */
+    private CipherState state;
 
-    protected final CipherSuite cipherSuite;
-
-    protected final ProtocolVersion version;
-
-    public RecordCipher(TlsContext context, KeySet keySet) {
-        this.keySet = keySet;
+    public RecordCipher(TlsContext context, CipherState state) {
         this.context = context;
-        this.cipherSuite = context.getChooser().getSelectedCipherSuite();
-        this.version = context.getChooser().getSelectedProtocolVersion();
-        this.cipherAlg = AlgorithmResolver.getCipher(context.getChooser().getSelectedCipherSuite());
+        this.state = state;
     }
 
     public abstract void encrypt(Record record) throws CryptoException;
@@ -71,10 +60,6 @@ public abstract class RecordCipher {
     public abstract void decrypt(Record record) throws CryptoException;
 
     public abstract void decrypt(BlobRecord record) throws CryptoException;
-
-    public final KeySet getKeySet() {
-        return keySet;
-    }
 
     /**
      * This function collects data needed for computing MACs and other authentication tags in CBC/CCM/GCM cipher suites.
@@ -140,4 +125,33 @@ public abstract class RecordCipher {
             throw new WorkflowExecutionException("Could not write data to ByteArrayOutputStream");
         }
     }
+
+    public CipherState getState() {
+        return state;
+    }
+
+    public void setState(CipherState state) {
+        this.state = state;
+    }
+
+    public ConnectionEndType getLocalConnectionEndType() {
+        return context.getConnection().getLocalConnectionEndType();
+    }
+
+    public ConnectionEndType getConnectionEndType() {
+        return context.getChooser().getConnectionEndType();
+    }
+
+    public Integer getDefaultAdditionalPadding() {
+        return context.getConfig().getDefaultAdditionalPadding();
+    }
+
+    public ConnectionEndType getTalkingConnectionEndType() {
+        return context.getTalkingConnectionEndType();
+    }
+
+    public Random getRandom() {
+        return context.getRandom();
+    }
+
 }

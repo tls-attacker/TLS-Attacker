@@ -60,10 +60,9 @@ public class ClientDelegate extends Delegate {
         con.setPort(extractedPort);
         if (IPAddress.isValid(extractedHost)) {
             con.setIp(extractedHost);
+            con.setHostname(extractedHost);
             if (sniHostname != null) {
                 con.setHostname(sniHostname);
-            } else {
-                con.setHostname(getHostForIp(extractedHost));
             }
         } else {
             if (sniHostname != null) {

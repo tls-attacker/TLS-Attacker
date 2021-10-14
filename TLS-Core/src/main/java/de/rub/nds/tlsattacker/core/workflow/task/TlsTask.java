@@ -10,7 +10,9 @@
 package de.rub.nds.tlsattacker.core.workflow.task;
 
 import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
+import de.rub.nds.tlsattacker.core.state.State;
 import java.util.concurrent.Callable;
+import java.util.function.Function;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,6 +29,14 @@ public abstract class TlsTask implements ITask, Callable<ITask> {
     private final boolean increasingSleepTimes;
 
     private final long additionalTcpTimeout;
+
+    private Function<State, Integer> beforeTransportPreInitCallback = null;
+
+    private Function<State, Integer> beforeTransportInitCallback = null;
+
+    private Function<State, Integer> afterTransportInitCallback = null;
+
+    private Function<State, Integer> afterExecutionCallback = null;
 
     public TlsTask(int reexecutions) {
         this.reexecutions = reexecutions;
@@ -101,4 +111,40 @@ public abstract class TlsTask implements ITask, Callable<ITask> {
     }
 
     public abstract void reset();
+
+    public int getReexecutions() {
+        return reexecutions;
+    }
+
+    public Function<State, Integer> getBeforeTransportPreInitCallback() {
+        return beforeTransportPreInitCallback;
+    }
+
+    public void setBeforeTransportPreInitCallback(Function<State, Integer> beforeTransportPreInitCallback) {
+        this.beforeTransportPreInitCallback = beforeTransportPreInitCallback;
+    }
+
+    public Function<State, Integer> getBeforeTransportInitCallback() {
+        return beforeTransportInitCallback;
+    }
+
+    public void setBeforeTransportInitCallback(Function<State, Integer> beforeTransportInitCallback) {
+        this.beforeTransportInitCallback = beforeTransportInitCallback;
+    }
+
+    public Function<State, Integer> getAfterTransportInitCallback() {
+        return afterTransportInitCallback;
+    }
+
+    public void setAfterTransportInitCallback(Function<State, Integer> afterTransportInitCallback) {
+        this.afterTransportInitCallback = afterTransportInitCallback;
+    }
+
+    public Function<State, Integer> getAfterExecutionCallback() {
+        return afterExecutionCallback;
+    }
+
+    public void setAfterExecutionCallback(Function<State, Integer> afterExecutionCallback) {
+        this.afterExecutionCallback = afterExecutionCallback;
+    }
 }

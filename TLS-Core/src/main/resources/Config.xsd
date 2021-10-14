@@ -1404,7 +1404,6 @@
       <xs:enumeration value="TCP"/>
       <xs:enumeration value="EAP_TLS"/>
       <xs:enumeration value="UDP"/>
-      <xs:enumeration value="NON_BLOCKING_TCP"/>
       <xs:enumeration value="STREAM"/>
       <xs:enumeration value="TCP_TIMING"/>
       <xs:enumeration value="UDP_TIMING"/>
@@ -1994,6 +1993,7 @@
       <xs:enumeration value="SERVER_RENEGOTIATION"/>
       <xs:enumeration value="DYNAMIC_CLIENT_RENEGOTIATION_WITHOUT_RESUMPTION"/>
       <xs:enumeration value="HTTPS"/>
+      <xs:enumeration value="DYNAMIC_HTTPS"/>
       <xs:enumeration value="SSL2_HELLO"/>
       <xs:enumeration value="SIMPLE_MITM_PROXY"/>
       <xs:enumeration value="TLS13_PSK"/>

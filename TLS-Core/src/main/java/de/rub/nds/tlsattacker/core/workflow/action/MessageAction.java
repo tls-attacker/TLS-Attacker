@@ -9,6 +9,15 @@
 
 package de.rub.nds.tlsattacker.core.workflow.action;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlTransient;
+
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.https.HttpsRequestMessage;
 import de.rub.nds.tlsattacker.core.https.HttpsResponseMessage;
@@ -19,13 +28,6 @@ import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ReceiveMessageHelper;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.SendMessageHelper;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlElements;
-import javax.xml.bind.annotation.XmlTransient;
 
 public abstract class MessageAction extends ConnectionBoundAction {
 
@@ -53,6 +55,7 @@ public abstract class MessageAction extends ConnectionBoundAction {
         @XmlElement(type = PWDServerKeyExchangeMessage.class, name = "PWDServerKeyExchange"),
         @XmlElement(type = PWDClientKeyExchangeMessage.class, name = "PWDClientKeyExchange"),
         @XmlElement(type = FinishedMessage.class, name = "Finished"),
+        @XmlElement(type = RSAServerKeyExchangeMessage.class, name = "RSAServerKeyExchange"),
         @XmlElement(type = RSAClientKeyExchangeMessage.class, name = "RSAClientKeyExchange"),
         @XmlElement(type = GOSTClientKeyExchangeMessage.class, name = "GOSTClientKeyExchange"),
         @XmlElement(type = ServerHelloDoneMessage.class, name = "ServerHelloDone"),
@@ -85,8 +88,7 @@ public abstract class MessageAction extends ConnectionBoundAction {
         @XmlElement(type = SrpClientKeyExchangeMessage.class, name = "SrpClientKeyExchange"),
         @XmlElement(type = EndOfEarlyDataMessage.class, name = "EndOfEarlyData"),
         @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensions"),
-        @XmlElement(type = DtlsHandshakeMessageFragment.class, name = "DtlsHandshakeMessageFragment"),
-        @XmlElement(type = HelloRetryRequestMessage.class, name = "HelloRetryRequest") })
+        @XmlElement(type = DtlsHandshakeMessageFragment.class, name = "DtlsHandshakeMessageFragment") })
     protected List<ProtocolMessage> messages = new ArrayList<>();
 
     @HoldsModifiableVariable

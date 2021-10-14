@@ -662,8 +662,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public BigInteger getServerRsaModulus() {
-        if (context.getServerRsaModulus() != null) {
-            return context.getServerRsaModulus();
+        if (context.getServerRSAModulus() != null) {
+            return context.getServerRSAModulus();
         } else {
             return config.getDefaultServerRSAModulus();
         }

@@ -13,7 +13,6 @@ import de.rub.nds.tlsattacker.core.config.ConfigIO;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import java.io.File;
@@ -32,9 +31,9 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
     @Override
     public void executeWorkflow() throws WorkflowExecutionException {
         if (config.isWorkflowExecutorShouldOpen()) {
-            initTranstHandler();
+            initAllTransportHandler();
         }
-        initRecordLayer();
+        initAllRecordLayer();
 
         state.getWorkflowTrace().reset();
         state.setStartTimestamp(System.currentTimeMillis());
@@ -73,6 +72,7 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
                 LOGGER.debug("Skipping all Actions, action did not execute as planned.");
                 break;
             }
+
         }
 
         if (config.isFinishWithCloseNotify()) {
@@ -93,6 +93,11 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
         if (config.getConfigOutput() != null) {
             ConfigIO.write(config, new File(config.getConfigOutput()));
         }
-    }
 
+        try {
+            getAfterExecutionCallback().apply(state);
+        } catch (Exception ex) {
+            LOGGER.trace("Error during AfterExecutionCallback", ex);
+        }
+    }
 }

@@ -205,10 +205,6 @@ public class PWDComputations extends KeyExchangeComputations {
      */
     private BigInteger privateKeyScalar;
 
-    @Override
-    public void setSecretsInConfig(Config config) {
-    }
-
     public Point getPasswordElement() {
         return passwordElement;
     }

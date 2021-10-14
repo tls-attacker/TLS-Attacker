@@ -13,8 +13,10 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.record.cipher.CipherState;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordAEADCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
@@ -60,7 +62,11 @@ public class TlsContextTest {
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_GCM_SHA256);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         context.setRandom(new TestRandomData(ArrayConverter.hexStringToByteArray("FFEEDDCC")));
-        context.getRecordLayer().setRecordCipher(new RecordAEADCipher(context, testKeySet));
+        context.getRecordLayer()
+            .updateEncryptionCipher(new RecordAEADCipher(context,
+                new CipherState(context.getChooser().getSelectedProtocolVersion(),
+                    context.getChooser().getSelectedCipherSuite(), testKeySet,
+                    context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC))));
     }
 
     /**

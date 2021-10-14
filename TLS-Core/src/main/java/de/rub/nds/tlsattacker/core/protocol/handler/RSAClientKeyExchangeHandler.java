@@ -41,7 +41,6 @@ public class RSAClientKeyExchangeHandler<T extends RSAClientKeyExchangeMessage> 
     public void adjustTLSContext(T message) {
         adjustPremasterSecret(message);
         adjustMasterSecret(message);
-        setRecordCipher();
         spawnNewSession();
     }
 }

@@ -64,6 +64,4 @@ public abstract class KeyExchangeComputations extends ModifiableVariableHolder i
     public void setPrivateKey(BigInteger privateKey) {
         this.privateKey = ModifiableVariableFactory.safelySetValue(this.privateKey, privateKey);
     }
-
-    public abstract void setSecretsInConfig(Config config);
 }

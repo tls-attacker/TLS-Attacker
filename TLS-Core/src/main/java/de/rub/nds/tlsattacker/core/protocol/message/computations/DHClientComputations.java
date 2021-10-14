@@ -70,9 +70,4 @@ public class DHClientComputations extends KeyExchangeComputations {
     public void setPublicKey(BigInteger serverPublicKey) {
         this.publicKey = ModifiableVariableFactory.safelySetValue(this.publicKey, serverPublicKey);
     }
-
-    @Override
-    public void setSecretsInConfig(Config config) {
-        config.setDefaultClientDhPrivateKey(getPrivateKey().getValue());
-    }
 }

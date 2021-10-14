@@ -20,11 +20,6 @@ public class ECDHClientComputations extends KeyExchangeComputations {
 
     private ModifiableBigInteger publicKeyY;
 
-    @Override
-    public void setSecretsInConfig(Config config) {
-        config.setDefaultClientEcPrivateKey(getPrivateKey().getValue());
-    }
-
     public ModifiableBigInteger getPublicKeyX() {
         return publicKeyX;
     }

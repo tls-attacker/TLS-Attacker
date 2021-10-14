@@ -710,11 +710,11 @@ public class DefaultChooserTest {
      */
     @Test
     public void testGetRsaModulus() {
-        context.setServerRsaModulus(null);
+        context.setServerRSAModulus(null);
         config.setDefaultServerRSAModulus(BigInteger.ONE);
         assertEquals(BigInteger.ONE, config.getDefaultServerRSAModulus());
         assertEquals(BigInteger.ONE, chooser.getServerRsaModulus());
-        context.setServerRsaModulus(BigInteger.TEN);
+        context.setServerRSAModulus(BigInteger.TEN);
         assertEquals(BigInteger.TEN, chooser.getServerRsaModulus());
     }
 

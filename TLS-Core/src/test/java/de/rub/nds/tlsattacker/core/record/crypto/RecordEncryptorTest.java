@@ -10,14 +10,13 @@
 package de.rub.nds.tlsattacker.core.record.crypto;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.record.cipher.CipherState;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordAEADCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordBlockCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
@@ -31,7 +30,6 @@ import java.util.Random;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.test.TestRandomData;
 import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
@@ -76,7 +74,10 @@ public class RecordEncryptorTest {
         record.setCleanProtocolMessageBytes(ArrayConverter.hexStringToByteArray("1400000CB692015BE123B8364314FE1C"));
         record.setContentMessageType(ProtocolMessageType.HANDSHAKE);
         record.setProtocolVersion(ProtocolVersion.TLS12.getValue());
-        recordCipher = new RecordBlockCipher(context, KeySetGenerator.generateKeySet(context));
+        recordCipher = new RecordBlockCipher(context,
+            new CipherState(context.getChooser().getSelectedProtocolVersion(),
+                context.getChooser().getSelectedCipherSuite(), KeySetGenerator.generateKeySet(context),
+                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         encryptor = new RecordEncryptor(recordCipher, context);
         encryptor.encrypt(record);
         assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603030010"),
@@ -116,7 +117,10 @@ public class RecordEncryptorTest {
         record.setContentMessageType(ProtocolMessageType.HANDSHAKE);
         record.setProtocolVersion(ProtocolVersion.TLS12.getValue());
 
-        recordCipher = new RecordBlockCipher(context, KeySetGenerator.generateKeySet(context));
+        recordCipher = new RecordBlockCipher(context,
+            new CipherState(context.getChooser().getSelectedProtocolVersion(),
+                context.getChooser().getSelectedCipherSuite(), KeySetGenerator.generateKeySet(context),
+                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         encryptor = new RecordEncryptor(recordCipher, context);
         encryptor.encrypt(record);
 
@@ -160,7 +164,10 @@ public class RecordEncryptorTest {
 
         record.setCleanProtocolMessageBytes(ArrayConverter.hexStringToByteArray("1400000C07E0B66F9A775545F6590C2E"));
 
-        recordCipher = new RecordStreamCipher(context, KeySetGenerator.generateKeySet(context));
+        recordCipher = new RecordStreamCipher(context,
+            new CipherState(context.getChooser().getSelectedProtocolVersion(),
+                context.getChooser().getSelectedCipherSuite(), KeySetGenerator.generateKeySet(context),
+                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         encryptor = new RecordEncryptor(recordCipher, context);
         encryptor.encrypt(record);
 
@@ -184,7 +191,10 @@ public class RecordEncryptorTest {
         record.setCleanProtocolMessageBytes(ArrayConverter.hexStringToByteArray("1400000CDF6663DF2F42C83E1EA94381"));
         record.setContentMessageType(ProtocolMessageType.HANDSHAKE);
         record.setProtocolVersion(ProtocolVersion.TLS12.getValue());
-        recordCipher = new RecordStreamCipher(context, KeySetGenerator.generateKeySet(context));
+        recordCipher = new RecordStreamCipher(context,
+            new CipherState(context.getChooser().getSelectedProtocolVersion(),
+                context.getChooser().getSelectedCipherSuite(), KeySetGenerator.generateKeySet(context),
+                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         encryptor = new RecordEncryptor(recordCipher, context);
         encryptor.encrypt(record);
         assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603030010"),
@@ -217,7 +227,10 @@ public class RecordEncryptorTest {
         record.setCleanProtocolMessageBytes(ArrayConverter.hexStringToByteArray("1400000C0C821172BB87E255D5C6E078"));
         record.setContentMessageType(ProtocolMessageType.HANDSHAKE);
         record.setProtocolVersion(ProtocolVersion.TLS12.getValue());
-        recordCipher = new RecordAEADCipher(context, KeySetGenerator.generateKeySet(context));
+        recordCipher = new RecordAEADCipher(context,
+            new CipherState(context.getChooser().getSelectedProtocolVersion(),
+                context.getChooser().getSelectedCipherSuite(), KeySetGenerator.generateKeySet(context),
+                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         encryptor = new RecordEncryptor(recordCipher, context);
         encryptor.encrypt(record);
         assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603030010"),
@@ -248,7 +261,10 @@ public class RecordEncryptorTest {
         record.setCleanProtocolMessageBytes(ArrayConverter.hexStringToByteArray("1400000CD424FAF2BEA85BCE69DC07D2"));
         record.setContentMessageType(ProtocolMessageType.HANDSHAKE);
         record.setProtocolVersion(ProtocolVersion.TLS10.getValue());
-        recordCipher = new RecordBlockCipher(context, KeySetGenerator.generateKeySet(context));
+        recordCipher = new RecordBlockCipher(context,
+            new CipherState(context.getChooser().getSelectedProtocolVersion(),
+                context.getChooser().getSelectedCipherSuite(), KeySetGenerator.generateKeySet(context),
+                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         encryptor = new RecordEncryptor(recordCipher, context);
         encryptor.encrypt(record);
         assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603010010"),
@@ -282,7 +298,10 @@ public class RecordEncryptorTest {
         record.setCleanProtocolMessageBytes(ArrayConverter.hexStringToByteArray("1400000C5BD2239FEE954F5C5CC2A66D"));
         record.setContentMessageType(ProtocolMessageType.HANDSHAKE);
         record.setProtocolVersion(ProtocolVersion.TLS10.getValue());
-        recordCipher = new RecordStreamCipher(context, KeySetGenerator.generateKeySet(context));
+        recordCipher = new RecordStreamCipher(context,
+            new CipherState(context.getChooser().getSelectedProtocolVersion(),
+                context.getChooser().getSelectedCipherSuite(), KeySetGenerator.generateKeySet(context),
+                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         encryptor = new RecordEncryptor(recordCipher, context);
         encryptor.encrypt(record);
         assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603010010"),
@@ -309,7 +328,10 @@ public class RecordEncryptorTest {
         context.setMasterSecret(ArrayConverter.hexStringToByteArray(""));
         record.setCleanProtocolMessageBytes(ArrayConverter.hexStringToByteArray("080000020000"));
         record.setContentMessageType(ProtocolMessageType.HANDSHAKE);
-        recordCipher = new RecordStreamCipher(context, KeySetGenerator.generateKeySet(context));
+        recordCipher = new RecordStreamCipher(context,
+            new CipherState(context.getChooser().getSelectedProtocolVersion(),
+                context.getChooser().getSelectedCipherSuite(), KeySetGenerator.generateKeySet(context),
+                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         encryptor = new RecordEncryptor(recordCipher, context);
         encryptor.encrypt(record);
 
@@ -323,7 +345,10 @@ public class RecordEncryptorTest {
         context.setMasterSecret(ArrayConverter.hexStringToByteArray(""));
         record.setCleanProtocolMessageBytes(ArrayConverter.hexStringToByteArray("080000020000"));
         record.setContentMessageType(ProtocolMessageType.HANDSHAKE);
-        recordCipher = new RecordAEADCipher(context, KeySetGenerator.generateKeySet(context));
+        recordCipher = new RecordAEADCipher(context,
+            new CipherState(context.getChooser().getSelectedProtocolVersion(),
+                context.getChooser().getSelectedCipherSuite(), KeySetGenerator.generateKeySet(context),
+                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         encryptor = new RecordEncryptor(recordCipher, context);
         encryptor.encrypt(record);
     }

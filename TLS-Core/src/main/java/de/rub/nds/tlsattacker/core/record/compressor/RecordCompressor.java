@@ -37,6 +37,7 @@ public class RecordCompressor extends Compressor<AbstractRecord> {
     }
 
     public void setMethod(CompressionMethod method) {
+        LOGGER.debug("Changing Compression method to {}", method);
         AlgorithmFactory factory = new AlgorithmFactory();
         algorithm = factory.getAlgorithm(version, method);
     }

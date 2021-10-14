@@ -13,9 +13,10 @@ import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
+import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -30,7 +31,7 @@ public class RecordEncryptor extends Encryptor {
     public RecordEncryptor(RecordCipher recordCipher, TlsContext context) {
         super(recordCipher);
         this.context = context;
-        nullCipher = new RecordNullCipher(context);
+        nullCipher = RecordCipherFactory.getNullCipher(context);
     }
 
     @Override
@@ -47,11 +48,11 @@ public class RecordEncryptor extends Encryptor {
                 LOGGER.error("Could not encrypt with NullCipher", ex1);
             }
         }
+        recordCipher.getState().increaseWriteSequenceNumber();
     }
 
     @Override
     public void encrypt(Record record) {
-
         LOGGER.debug("Encrypting Record:");
         RecordCipher recordCipher;
         if (context.getChooser().getSelectedProtocolVersion().isDTLS()) {
@@ -60,6 +61,7 @@ public class RecordEncryptor extends Encryptor {
             recordCipher = getRecordMostRecentCipher();
         }
         try {
+            record.setSequenceNumber(BigInteger.valueOf(recordCipher.getState().getWriteSequenceNumber()));
             recordCipher.encrypt(record);
         } catch (CryptoException ex) {
             LOGGER.warn("Could not encrypt BlobRecord. Using NullCipher", ex);
@@ -69,6 +71,7 @@ public class RecordEncryptor extends Encryptor {
                 LOGGER.error("Could not encrypt with NullCipher", ex1);
             }
         }
+        recordCipher.getState().increaseWriteSequenceNumber();
         if (context.getChooser().getSelectedProtocolVersion().isTLS13()) {
             record.getComputations().setUsedTls13KeySetType(context.getActiveKeySetTypeWrite());
         }

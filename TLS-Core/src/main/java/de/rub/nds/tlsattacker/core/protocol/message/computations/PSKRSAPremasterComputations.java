@@ -64,9 +64,4 @@ public class PSKRSAPremasterComputations extends KeyExchangeComputations {
     public void setPadding(byte[] padding) {
         this.padding = ModifiableVariableFactory.safelySetValue(this.padding, padding);
     }
-
-    @Override
-    public void setSecretsInConfig(Config config) {
-        config.setDefaultPSKKey(psk.getValue());
-    }
 }

@@ -17,7 +17,6 @@ import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.compressor.RecordCompressor;
 import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -47,13 +46,8 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
         record.prepareComputations();
         prepareContentType(record);
         prepareProtocolVersion(record);
-        if (isDTLS()) {
-            prepareEpoch(record);
-        }
-        prepareSequenceNumber(record);
         compressor.compress(record);
         encrypt();
-        prepareLength(record);
     }
 
     public void encrypt() {
@@ -85,20 +79,6 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
             record.setProtocolVersion(chooser.getSelectedProtocolVersion().getValue());
         }
         LOGGER.debug("ProtocolVersion: " + ArrayConverter.bytesToHexString(record.getProtocolVersion().getValue()));
-    }
-
-    private boolean isDTLS() {
-        return chooser.getSelectedProtocolVersion().isDTLS();
-    }
-
-    private void prepareEpoch(Record record) {
-        record.setEpoch(chooser.getContext().getWriteEpoch());
-        LOGGER.debug("Epoch: " + record.getEpoch().getValue());
-    }
-
-    private void prepareSequenceNumber(Record record) {
-        record.setSequenceNumber(BigInteger.valueOf(chooser.getContext().getWriteSequenceNumber()));
-        LOGGER.debug("SequenceNumber: " + record.getSequenceNumber().getValue());
     }
 
     private void prepareLength(Record record) {
