@@ -17,11 +17,12 @@ import org.apache.logging.log4j.Logger;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 
-public class ChangeRsaParametersAction extends ConnectionBoundAction {
+public class ChangeServerRsaParametersAction extends ConnectionBoundAction {
     private static final Logger LOGGER = LogManager.getLogger();
     private final BigInteger modulus, publicExponent, privateExponent;
+    private BigInteger oldModulus, oldPublicExponent, oldPrivateExponent;
 
-    public ChangeRsaParametersAction(BigInteger modulus, BigInteger publicExponent, BigInteger privateExponent) {
+    public ChangeServerRsaParametersAction(BigInteger modulus, BigInteger publicExponent, BigInteger privateExponent) {
         this.modulus = modulus;
         this.publicExponent = publicExponent;
         this.privateExponent = privateExponent;
@@ -29,6 +30,9 @@ public class ChangeRsaParametersAction extends ConnectionBoundAction {
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
+        oldModulus = state.getTlsContext().getServerRSAModulus();
+        oldPublicExponent = state.getTlsContext().getServerRSAPublicKey();
+        oldPrivateExponent = state.getTlsContext().getServerRSAPrivateKey();
         state.getTlsContext().setServerRSAModulus(modulus);
         state.getTlsContext().setServerRSAPublicKey(publicExponent);
         state.getTlsContext().setServerRSAPrivateKey(privateExponent);
@@ -44,6 +48,10 @@ public class ChangeRsaParametersAction extends ConnectionBoundAction {
     @Override
     public boolean executedAsPlanned() {
         return isExecuted();
+    }
+
+    public BigInteger getOldModulus() {
+        return oldModulus;
     }
 
 }

@@ -119,9 +119,6 @@ public abstract class WorkflowExecutor {
             getAfterTransportInitCallback().apply(state);
         } catch (NullPointerException | NumberFormatException ex) {
             throw new ConfigurationException("Invalid values in " + context.getConnection().toString(), ex);
-        } catch (IOException ex) {
-            throw new TransportHandlerConnectException(
-                "Unable to initialize the transport handler with: " + context.getConnection().toString(), ex);
         } catch (Exception ex) {
             throw new TransportHandlerConnectException(
                 "Unable to initialize the transport handler with: " + context.getConnection().toString(), ex);
