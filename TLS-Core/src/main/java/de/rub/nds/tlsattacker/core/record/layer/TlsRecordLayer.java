@@ -41,8 +41,8 @@ public class TlsRecordLayer extends RecordLayer {
         int dataPointer = 0;
         while (dataPointer != rawRecordData.length) {
             try {
-                RecordParser parser = new RecordParser(dataPointer, rawRecordData,
-                    getTlsContext().getChooser().getSelectedProtocolVersion());
+                RecordParser parser =
+                    new RecordParser(dataPointer, rawRecordData, getDecryptorCipher().getState().getVersion());
                 Record record = parser.parse();
                 records.add(record);
                 if (dataPointer == parser.getPointer()) {
@@ -63,8 +63,8 @@ public class TlsRecordLayer extends RecordLayer {
         int dataPointer = 0;
         while (dataPointer != rawRecordData.length) {
             try {
-                RecordParser parser = new RecordParser(dataPointer, rawRecordData,
-                    getTlsContext().getChooser().getSelectedProtocolVersion());
+                RecordParser parser =
+                    new RecordParser(dataPointer, rawRecordData, getDecryptorCipher().getState().getVersion());
                 Record record = parser.parse();
                 records.add(record);
                 if (dataPointer == parser.getPointer()) {
@@ -74,8 +74,8 @@ public class TlsRecordLayer extends RecordLayer {
             } catch (ParserException e) {
                 LOGGER.debug("Could not parse Record, parsing as Blob");
                 LOGGER.trace(e);
-                BlobRecordParser blobParser = new BlobRecordParser(dataPointer, rawRecordData,
-                    getTlsContext().getChooser().getSelectedProtocolVersion());
+                BlobRecordParser blobParser =
+                    new BlobRecordParser(dataPointer, rawRecordData, getDecryptorCipher().getState().getVersion());
                 AbstractRecord record = blobParser.parse();
                 records.add(record);
                 if (dataPointer == blobParser.getPointer()) {
@@ -105,7 +105,7 @@ public class TlsRecordLayer extends RecordLayer {
                     contentType = ProtocolMessageType.UNKNOWN;
                 }
             }
-            if (getTlsContext().getChooser().getSelectedProtocolVersion().isDTLS() && record instanceof Record) {
+            if (getEncryptorCipher().getState().getVersion().isDTLS() && record instanceof Record) {
                 ((Record) record).setEpoch(getWriteEpoch());
             }
             AbstractRecordPreparator preparator =

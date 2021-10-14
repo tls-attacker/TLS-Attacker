@@ -17,17 +17,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.ValidationEventHandler;
+import javax.xml.bind.util.JAXBSource;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -93,7 +91,7 @@ public class WorkflowTraceSerializer {
     public static String write(WorkflowTrace trace) throws JAXBException, IOException {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         WorkflowTraceSerializer.write(bos, trace);
-        return new String(bos.toByteArray(), "UTF-8");
+        return bos.toString("UTF-8");
     }
 
     /**
@@ -108,22 +106,14 @@ public class WorkflowTraceSerializer {
      */
     public static void write(OutputStream outputStream, WorkflowTrace workflowTrace) throws JAXBException, IOException {
         context = getJAXBContext();
-        Marshaller m = context.createMarshaller();
-        m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        try (ByteArrayOutputStream tempStream = new ByteArrayOutputStream()) {
-
-            StringWriter stringWriter = new StringWriter();
-
-            m.marshal(workflowTrace, stringWriter);
-            // circumvent the max indentation of 8 of the JAXB marshaller
+        try (ByteArrayOutputStream xmlOutputStream = new ByteArrayOutputStream()) {
             Transformer transformer = TransformerFactory.newInstance().newTransformer();
-            transformer.setOutputProperty("omit-xml-declaration", "yes");
+            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
             transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
-            transformer.transform(new StreamSource(new StringReader(stringWriter.toString())),
-                new StreamResult(tempStream));
+            transformer.transform(new JAXBSource(context, workflowTrace), new StreamResult(xmlOutputStream));
 
-            String xml_text = new String(tempStream.toByteArray());
+            String xml_text = xmlOutputStream.toString();
             // and we modify all line separators to the system dependant line separator
             xml_text = xml_text.replaceAll("\r?\n", System.lineSeparator());
             outputStream.write(xml_text.getBytes());

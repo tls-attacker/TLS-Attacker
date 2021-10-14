@@ -330,6 +330,7 @@
         <xs:element name="ChangeContextValue" type="changeContextValueAction"/>
         <xs:element name="ChangeMasterSecret" type="changeMasterSecretAction"/>
         <xs:element name="ChangePreMasterSecret" type="changePreMasterSecretAction"/>
+        <xs:element name="ChangeServerRsaParameters" type="changeServerRsaParametersAction"/>
         <xs:element name="ChangeDefaultPreMasterSecret" type="changeDefaultPreMasterSecretAction"/>
         <xs:element name="ChangeProtocolVersion" type="changeProtocolVersionAction"/>
         <xs:element name="ChangeServerRandom" type="changeServerRandomAction"/>
@@ -3893,6 +3894,21 @@
         <xs:sequence>
           <xs:element name="newValue" type="xs:string" minOccurs="0"/>
           <xs:element name="oldValue" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="changeServerRsaParametersAction">
+    <xs:complexContent>
+      <xs:extension base="connectionBoundAction">
+        <xs:sequence>
+          <xs:element name="modulus" type="xs:integer" minOccurs="0"/>
+          <xs:element name="publicExponent" type="xs:integer" minOccurs="0"/>
+          <xs:element name="privateExponent" type="xs:integer" minOccurs="0"/>
+          <xs:element name="oldModulus" type="xs:integer" minOccurs="0"/>
+          <xs:element name="oldPublicExponent" type="xs:integer" minOccurs="0"/>
+          <xs:element name="oldPrivateExponent" type="xs:integer" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
