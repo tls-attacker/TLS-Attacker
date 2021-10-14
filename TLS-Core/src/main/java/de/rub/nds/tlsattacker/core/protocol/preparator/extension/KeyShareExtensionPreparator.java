@@ -48,12 +48,12 @@ public class KeyShareExtensionPreparator extends ExtensionPreparator<KeyShareExt
         }
         stream = new ByteArrayOutputStream();
 
-        if (chooser.getTalkingConnectionEnd() == ConnectionEndType.SERVER) {
-            if (msg.isRetryRequestMode()) {
-                msg.setKeyShareList(setupRetryRequestKeyShareEntry());
-            } else {
-                msg.setKeyShareList(setupRegularServerKeyShareEntry());
-            }
+        if (msg.isRetryRequestMode()) {
+            LOGGER.debug("Preparing KeyShareExtension with HelloRetryRequest structure");
+            msg.setKeyShareList(setupRetryRequestKeyShareEntry());
+        } else if (chooser.getTalkingConnectionEnd() == ConnectionEndType.SERVER) {
+            LOGGER.debug("Preparing KeyShareExtension with ServerHello structure");
+            msg.setKeyShareList(setupRegularServerKeyShareEntry());
         }
 
         if (!msg.isRetryRequestMode() && msg.getKeyShareList() != null) {
