@@ -31,17 +31,19 @@ import java.security.NoSuchAlgorithmException;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertSame;
 
 public class GenericReceiveActionTest {
 
     private GenericReceiveAction action;
     private State state;
     private TlsContext tlsContext;
+    private AlertMessage alert;
 
     @Before
     public void setUp() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
         InvalidAlgorithmParameterException {
-        AlertMessage alert = new AlertMessage(Config.createConfig());
+        alert = new AlertMessage(Config.createConfig());
         alert.setConfig(AlertLevel.FATAL, AlertDescription.DECRYPT_ERROR);
         alert.setDescription(AlertDescription.DECODE_ERROR.getValue());
         alert.setLevel(AlertLevel.FATAL.getValue());
@@ -55,7 +57,6 @@ public class GenericReceiveActionTest {
         tlsContext.setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
         tlsContext.setRecordLayer(new TlsRecordLayer(tlsContext));
-        tlsContext.getRecordLayer().setRecordCipher(new RecordNullCipher(tlsContext));
     }
 
     /**
@@ -68,6 +69,7 @@ public class GenericReceiveActionTest {
         action.execute(state);
         assertTrue(action.executedAsPlanned());
         assertTrue(action.isExecuted());
+        assertSame(action.getReceivedMessages().get(0), alert);
     }
 
     /**
