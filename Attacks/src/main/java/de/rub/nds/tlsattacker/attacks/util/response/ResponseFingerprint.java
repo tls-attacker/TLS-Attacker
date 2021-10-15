@@ -75,14 +75,17 @@ public class ResponseFingerprint {
         @XmlElement(type = SrpClientKeyExchangeMessage.class, name = "SrpClientKeyExchange"),
         @XmlElement(type = EndOfEarlyDataMessage.class, name = "EndOfEarlyData"),
         @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensions") })
-    private final List<ProtocolMessage> messageList;
+    private List<ProtocolMessage> messageList;
 
     @XmlElementWrapper
     @XmlElements(value = { @XmlElement(type = Record.class, name = "Record"),
         @XmlElement(type = BlobRecord.class, name = "BlobRecord") })
-    private final List<AbstractRecord> recordList;
+    private List<AbstractRecord> recordList;
 
-    private final SocketState socketState;
+    private SocketState socketState;
+
+    public ResponseFingerprint() {
+    }
 
     /**
      *
