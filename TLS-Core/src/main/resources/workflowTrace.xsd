@@ -3,6 +3,8 @@
 
   <xs:element name="accessModificationFilter" type="accessModificationFilter"/>
 
+  <xs:element name="activateDecryptionAction" type="activateDecryptionAction"/>
+
   <xs:element name="activateEncryptionAction" type="activateEncryptionAction"/>
 
   <xs:element name="alertMessage" type="alertMessage"/>
@@ -107,6 +109,8 @@
 
   <xs:element name="copyServerRandomAction" type="copyServerRandomAction"/>
 
+  <xs:element name="deactivateDecryptionAction" type="deactivateDecryptionAction"/>
+
   <xs:element name="deactivateEncryptionAction" type="deactivateEncryptionAction"/>
 
   <xs:element name="deepCopyBufferedMessagesAction" type="deepCopyBufferedMessagesAction"/>
@@ -158,8 +162,6 @@
   <xs:element name="heartbeatMessage" type="heartbeatMessage"/>
 
   <xs:element name="helloRequestMessage" type="helloRequestMessage"/>
-
-  <xs:element name="helloRetryRequestMessage" type="helloRetryRequestMessage"/>
 
   <xs:element name="helloVerifyRequestMessage" type="helloVerifyRequestMessage"/>
 
@@ -309,6 +311,7 @@
         <xs:element name="OutboundConnection" type="outboundConnection"/>
       </xs:choice>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="ActivateDecryption" type="activateDecryptionAction"/>
         <xs:element name="ActivateEncryption" type="activateEncryptionAction"/>
         <xs:element name="ApplyBufferedMessages" type="applyBufferedMessagesAction"/>
         <xs:element name="BufferedGenericReceive" type="bufferedGenericReceiveAction"/>
@@ -319,6 +322,7 @@
         <xs:element name="ChangeContextValue" type="changeContextValueAction"/>
         <xs:element name="ChangeMasterSecret" type="changeMasterSecretAction"/>
         <xs:element name="ChangePreMasterSecret" type="changePreMasterSecretAction"/>
+        <xs:element name="ChangeServerRsaParameters" type="changeServerRsaParametersAction"/>
         <xs:element name="ChangeDefaultPreMasterSecret" type="changeDefaultPreMasterSecretAction"/>
         <xs:element name="ChangeProtocolVersion" type="changeProtocolVersionAction"/>
         <xs:element name="ChangeServerRandom" type="changeServerRandomAction"/>
@@ -332,6 +336,7 @@
         <xs:element name="CopyContextField" type="copyContextFieldAction"/>
         <xs:element name="CopyPreMasterSecret" type="copyPreMasterSecretAction"/>
         <xs:element name="CopyServerRandom" type="copyServerRandomAction"/>
+        <xs:element name="DeactivateDecryption" type="deactivateDecryptionAction"/>
         <xs:element name="DeactivateEncryption" type="deactivateEncryptionAction"/>
         <xs:element name="DeepCopyBufferedMessages" type="deepCopyBufferedMessagesAction"/>
         <xs:element name="DeepCopyBufferedRecords" type="deepCopyBufferedRecordsAction"/>
@@ -409,12 +414,18 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="activateEncryptionAction">
+  <xs:complexType name="activateDecryptionAction">
+    <xs:complexContent>
+      <xs:extension base="activateCryptoAction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="activateCryptoAction" abstract="true">
     <xs:complexContent>
       <xs:extension base="connectionBoundAction">
-        <xs:sequence>
-          <xs:element name="resetSequenceNumbers" type="xs:boolean"/>
-        </xs:sequence>
+        <xs:sequence/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
@@ -440,6 +451,14 @@
         </xs:complexType>
       </xs:element>
     </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="activateEncryptionAction">
+    <xs:complexContent>
+      <xs:extension base="activateCryptoAction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
   </xs:complexType>
 
   <xs:complexType name="applyBufferedMessagesAction">
@@ -491,6 +510,7 @@
                   <xs:element name="PWDServerKeyExchange" type="pwdServerKeyExchangeMessage"/>
                   <xs:element name="PWDClientKeyExchange" type="pwdClientKeyExchangeMessage"/>
                   <xs:element name="Finished" type="finishedMessage"/>
+                  <xs:element name="RSAServerKeyExchange" type="rsaServerKeyExchangeMessage"/>
                   <xs:element name="RSAClientKeyExchange" type="rsaClientKeyExchangeMessage"/>
                   <xs:element name="GOSTClientKeyExchange" type="gostClientKeyExchangeMessage"/>
                   <xs:element name="ServerHelloDone" type="serverHelloDoneMessage"/>
@@ -524,7 +544,6 @@
                   <xs:element name="EndOfEarlyData" type="endOfEarlyDataMessage"/>
                   <xs:element name="EncryptedExtensions" type="encryptedExtensionsMessage"/>
                   <xs:element name="DtlsHandshakeMessageFragment" type="dtlsHandshakeMessageFragment"/>
-                  <xs:element name="HelloRetryRequest" type="helloRetryRequestMessage"/>
                 </xs:choice>
               </xs:sequence>
             </xs:complexType>
@@ -910,10 +929,11 @@
           <xs:element name="requestContext" type="modifiableByteArray" minOccurs="0"/>
           <xs:element name="certificatesListLength" type="modifiableInteger" minOccurs="0"/>
           <xs:element name="certificatesListBytes" type="modifiableByteArray" minOccurs="0"/>
-          <xs:element name="certificatesList" minOccurs="0">
+          <xs:element name="certificatesList" type="certificatePair" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="certificateListConfig" minOccurs="0">
             <xs:complexType>
               <xs:sequence>
-                <xs:element name="certificatesList" type="certificatePair" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element name="certificatesListConfig" type="certificatePair" minOccurs="0" maxOccurs="unbounded"/>
               </xs:sequence>
             </xs:complexType>
           </xs:element>
@@ -2173,6 +2193,26 @@
     </xs:complexContent>
   </xs:complexType>
 
+  <xs:complexType name="rsaServerKeyExchangeMessage">
+    <xs:complexContent>
+      <xs:extension base="serverKeyExchangeMessage">
+        <xs:sequence>
+          <xs:element name="modulus" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="modulusLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="computations" type="rsaServerComputations" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="rsaServerComputations">
+    <xs:complexContent>
+      <xs:extension base="keyExchangeComputations">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
   <xs:complexType name="rsaClientKeyExchangeMessage">
     <xs:complexContent>
       <xs:extension base="clientKeyExchangeMessage">
@@ -2787,17 +2827,6 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="helloRetryRequestMessage">
-    <xs:complexContent>
-      <xs:extension base="handshakeMessage">
-        <xs:sequence>
-          <xs:element name="protocolVersion" type="modifiableByteArray" minOccurs="0"/>
-          <xs:element name="selectedCipherSuite" type="modifiableByteArray" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
   <xs:complexType name="record">
     <xs:complexContent>
       <xs:extension base="abstractRecord">
@@ -3030,7 +3059,7 @@
       <xs:element name="serverEcPrivateKey" type="xs:integer" minOccurs="0"/>
       <xs:element name="clientEcPrivateKey" type="xs:integer" minOccurs="0"/>
       <xs:element name="clientRsaModulus" type="xs:integer" minOccurs="0"/>
-      <xs:element name="serverRsaModulus" type="xs:integer" minOccurs="0"/>
+      <xs:element name="serverRSAModulus" type="xs:integer" minOccurs="0"/>
       <xs:element name="serverRSAPublicKey" type="xs:integer" minOccurs="0"/>
       <xs:element name="clientRSAPublicKey" type="xs:integer" minOccurs="0"/>
       <xs:element name="serverRSAPrivateKey" type="xs:integer" minOccurs="0"/>
@@ -3060,36 +3089,6 @@
       <xs:element name="selectedGostCurve" type="gostCurve" minOccurs="0"/>
       <xs:element name="activeClientKeySetType" type="tls13KeySetType" minOccurs="0"/>
       <xs:element name="activeServerKeySetType" type="tls13KeySetType" minOccurs="0"/>
-      <xs:element name="writeSequenceNumbers">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element name="entry" minOccurs="0" maxOccurs="unbounded">
-              <xs:complexType>
-                <xs:sequence>
-                  <xs:element name="key" minOccurs="0" type="xs:int"/>
-                  <xs:element name="value" minOccurs="0" type="xs:long"/>
-                </xs:sequence>
-              </xs:complexType>
-            </xs:element>
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="readSequenceNumbers">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element name="entry" minOccurs="0" maxOccurs="unbounded">
-              <xs:complexType>
-                <xs:sequence>
-                  <xs:element name="key" minOccurs="0" type="xs:int"/>
-                  <xs:element name="value" minOccurs="0" type="xs:long"/>
-                </xs:sequence>
-              </xs:complexType>
-            </xs:element>
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="readEpoch" type="xs:int"/>
-      <xs:element name="writeEpoch" type="xs:int"/>
       <xs:element name="dtlsReadHandshakeMessageSequence" type="xs:int"/>
       <xs:element name="dtlsWriteHandshakeMessageSequence" type="xs:int"/>
       <xs:element name="dtlsReceivedHandshakeMessageSequences" type="xs:int" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
@@ -3834,12 +3833,9 @@
 
   <xs:complexType name="recordLayer" abstract="true">
     <xs:sequence>
-      <xs:element name="recordCipher" type="recordCipher" minOccurs="0"/>
+      <xs:element name="readEpoch" type="xs:int"/>
+      <xs:element name="writeEpoch" type="xs:int"/>
     </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="recordCipher" abstract="true">
-    <xs:sequence/>
   </xs:complexType>
 
   <xs:complexType name="transportHandler" abstract="true">
@@ -3884,6 +3880,21 @@
         <xs:sequence>
           <xs:element name="newValue" type="xs:string" minOccurs="0"/>
           <xs:element name="oldValue" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="changeServerRsaParametersAction">
+    <xs:complexContent>
+      <xs:extension base="connectionBoundAction">
+        <xs:sequence>
+          <xs:element name="modulus" type="xs:integer" minOccurs="0"/>
+          <xs:element name="publicExponent" type="xs:integer" minOccurs="0"/>
+          <xs:element name="privateExponent" type="xs:integer" minOccurs="0"/>
+          <xs:element name="oldModulus" type="xs:integer" minOccurs="0"/>
+          <xs:element name="oldPublicExponent" type="xs:integer" minOccurs="0"/>
+          <xs:element name="oldPrivateExponent" type="xs:integer" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -4000,9 +4011,25 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="deactivateEncryptionAction">
+  <xs:complexType name="deactivateDecryptionAction">
+    <xs:complexContent>
+      <xs:extension base="deactivateCryptoAction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="deactivateCryptoAction" abstract="true">
     <xs:complexContent>
       <xs:extension base="connectionBoundAction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="deactivateEncryptionAction">
+    <xs:complexContent>
+      <xs:extension base="deactivateCryptoAction">
         <xs:sequence/>
       </xs:extension>
     </xs:complexContent>
@@ -4132,7 +4159,6 @@
                   <xs:element name="SrpClientKeyExchange" type="srpClientKeyExchangeMessage"/>
                   <xs:element name="EndOfEarlyData" type="endOfEarlyDataMessage"/>
                   <xs:element name="EncryptedExtensions" type="encryptedExtensionsMessage"/>
-                  <xs:element name="HelloRetryRequest" type="helloRetryRequestMessage"/>
                 </xs:choice>
               </xs:sequence>
             </xs:complexType>
@@ -4203,7 +4229,6 @@
                   <xs:element name="SrpClientKeyExchange" type="srpClientKeyExchangeMessage"/>
                   <xs:element name="EndOfEarlyData" type="endOfEarlyDataMessage"/>
                   <xs:element name="EncryptedExtensions" type="encryptedExtensionsMessage"/>
-                  <xs:element name="HelloRetryRequest" type="helloRetryRequestMessage"/>
                 </xs:choice>
               </xs:sequence>
             </xs:complexType>
@@ -4274,7 +4299,6 @@
                   <xs:element name="SrpClientKeyExchange" type="srpClientKeyExchangeMessage"/>
                   <xs:element name="EndOfEarlyData" type="endOfEarlyDataMessage"/>
                   <xs:element name="EncryptedExtensions" type="encryptedExtensionsMessage"/>
-                  <xs:element name="HelloRetryRequest" type="helloRetryRequestMessage"/>
                 </xs:choice>
               </xs:sequence>
             </xs:complexType>
@@ -4392,7 +4416,6 @@
             <xs:element name="SrpClientKeyExchange" type="srpClientKeyExchangeMessage"/>
             <xs:element name="EndOfEarlyData" type="endOfEarlyDataMessage"/>
             <xs:element name="EncryptedExtensions" type="encryptedExtensionsMessage"/>
-            <xs:element name="HelloRetryRequest" type="helloRetryRequestMessage"/>
           </xs:choice>
         </xs:sequence>
       </xs:extension>
@@ -4467,7 +4490,6 @@
                   <xs:element name="GostClientKeyExchangeMessage" type="gostClientKeyExchangeMessage"/>
                   <xs:element name="EmptyClientKeyExchangeMessage" type="emptyClientKeyExchangeMessage"/>
                   <xs:element name="DtlsHandshakeMessageFragment" type="dtlsHandshakeMessageFragment"/>
-                  <xs:element name="HelloRetryRequest" type="helloRetryRequestMessage"/>
                 </xs:choice>
               </xs:sequence>
             </xs:complexType>
@@ -4719,7 +4741,6 @@
       <xs:enumeration value="TCP"/>
       <xs:enumeration value="EAP_TLS"/>
       <xs:enumeration value="UDP"/>
-      <xs:enumeration value="NON_BLOCKING_TCP"/>
       <xs:enumeration value="STREAM"/>
       <xs:enumeration value="TCP_TIMING"/>
       <xs:enumeration value="UDP_TIMING"/>
@@ -5602,6 +5623,7 @@
       <xs:enumeration value="SERVER_RENEGOTIATION"/>
       <xs:enumeration value="DYNAMIC_CLIENT_RENEGOTIATION_WITHOUT_RESUMPTION"/>
       <xs:enumeration value="HTTPS"/>
+      <xs:enumeration value="DYNAMIC_HTTPS"/>
       <xs:enumeration value="SSL2_HELLO"/>
       <xs:enumeration value="SIMPLE_MITM_PROXY"/>
       <xs:enumeration value="TLS13_PSK"/>

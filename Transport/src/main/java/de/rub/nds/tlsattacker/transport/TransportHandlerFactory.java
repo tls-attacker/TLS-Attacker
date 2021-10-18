@@ -9,7 +9,6 @@
 
 package de.rub.nds.tlsattacker.transport;
 
-import de.rub.nds.tlsattacker.transport.nonblocking.ServerTCPNonBlockingTransportHandler;
 import de.rub.nds.tlsattacker.transport.tcp.ClientTcpNoDelayTransportHandler;
 import de.rub.nds.tlsattacker.transport.tcp.ClientTcpTransportHandler;
 import de.rub.nds.tlsattacker.transport.tcp.ServerTcpTransportHandler;
@@ -43,12 +42,6 @@ public class TransportHandlerFactory {
                 } else {
                     return new ServerUdpTransportHandler(con);
                 }
-            case NON_BLOCKING_TCP:
-                if (localConEndType == ConnectionEndType.CLIENT) {
-                    throw new UnsupportedOperationException("NON_BLOCKING_TCP-TransportHandler is not supported");
-                } else {
-                    return new ServerTCPNonBlockingTransportHandler(con);
-                }
             case STREAM:
                 throw new UnsupportedOperationException("STREAM TransportHandler can only be created manually");
             case TCP_TIMING:
@@ -75,7 +68,7 @@ public class TransportHandlerFactory {
                     return new ClientTcpNoDelayTransportHandler(con);
                 } else {
                     throw new UnsupportedOperationException(
-                        "This transport handler type is only supported in client mode");
+                        "This Transporthandler type is only supported in client mode");
                 }
             case TCP_FRAGMENTATION:
                 if (localConEndType == ConnectionEndType.CLIENT) {

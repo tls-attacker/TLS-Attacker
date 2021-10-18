@@ -10,19 +10,10 @@
 package de.rub.nds.tlsattacker.core.record.layer;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.parser.cert.CleanRecordByteSeperator;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
-import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
-import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
-import de.rub.nds.tlsattacker.core.record.compressor.RecordCompressor;
-import de.rub.nds.tlsattacker.core.record.compressor.RecordDecompressor;
-import de.rub.nds.tlsattacker.core.record.crypto.Decryptor;
-import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
-import de.rub.nds.tlsattacker.core.record.crypto.RecordDecryptor;
-import de.rub.nds.tlsattacker.core.record.crypto.RecordEncryptor;
 import de.rub.nds.tlsattacker.core.record.parser.BlobRecordParser;
 import de.rub.nds.tlsattacker.core.record.preparator.AbstractRecordPreparator;
 import de.rub.nds.tlsattacker.core.record.serializer.AbstractRecordSerializer;
@@ -38,37 +29,15 @@ public class BlobRecordLayer extends RecordLayer {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final TlsContext context;
-
-    private RecordCipher cipher;
-    private final Encryptor encryptor;
-    private final Decryptor decryptor;
-    private RecordCompressor compressor;
-    private RecordDecompressor decompressor;
-
     public BlobRecordLayer(TlsContext context) {
-        this.context = context;
-        cipher = new RecordNullCipher(context);
-        encryptor = new RecordEncryptor(cipher, context);
-        decryptor = new RecordDecryptor(cipher, context);
-        compressor = new RecordCompressor(context);
-        decompressor = new RecordDecompressor(context);
-    }
-
-    @Override
-    public void updateCompressor() {
-        compressor.setMethod(context.getChooser().getSelectedCompressionMethod());
-    }
-
-    @Override
-    public void updateDecompressor() {
-        decompressor.setMethod(context.getChooser().getSelectedCompressionMethod());
+        super(context);
     }
 
     @Override
     public List<AbstractRecord> parseRecords(byte[] rawBytes) {
         List<AbstractRecord> list = new LinkedList<>();
-        BlobRecordParser parser = new BlobRecordParser(0, rawBytes, context.getChooser().getSelectedProtocolVersion());
+        BlobRecordParser parser =
+            new BlobRecordParser(0, rawBytes, getTlsContext().getChooser().getSelectedProtocolVersion());
         list.add(parser.parse());
         return list;
     }
@@ -80,25 +49,38 @@ public class BlobRecordLayer extends RecordLayer {
 
     @Override
     public void decryptAndDecompressRecord(AbstractRecord record) {
-        decryptor.decrypt(record);
-        decompressor.decompress(record);
-        context.increaseReadSequenceNumber();
+        getDecryptor().decrypt(record);
+        getDecompressor().decompress(record);
     }
 
     @Override
-    public byte[] prepareRecords(byte[] data, ProtocolMessageType contentType, List<AbstractRecord> records,
-        boolean withPrepare) {
+    public byte[] prepareRecords(byte[] data, ProtocolMessageType contentType, List<AbstractRecord> records) {
         CleanRecordByteSeperator separator =
-            new CleanRecordByteSeperator(records, context.getChooser().getOutboundMaxRecordDataSize(), 0, data);
+            new CleanRecordByteSeperator(records, getTlsContext().getChooser().getOutboundMaxRecordDataSize(), 0, data);
         records = separator.parse();
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         for (AbstractRecord record : records) {
             AbstractRecordPreparator preparator =
-                record.getRecordPreparator(context.getChooser(), encryptor, compressor, contentType);
-            if (withPrepare) {
-                preparator.prepare();
-                context.increaseWriteSequenceNumber();
+                record.getRecordPreparator(getTlsContext().getChooser(), getEncryptor(), getCompressor(), contentType);
+            preparator.prepare();
+            AbstractRecordSerializer serializer = record.getRecordSerializer();
+            try {
+                byte[] recordBytes = serializer.serialize();
+                record.setCompleteRecordBytes(recordBytes);
+                stream.write(record.getCompleteRecordBytes().getValue());
+            } catch (IOException ex) {
+                throw new PreparationException("Could not write Record bytes to ByteArrayStream", ex);
             }
+        }
+        return stream.toByteArray();
+    }
+
+    @Override
+    public byte[] reencrypt(List<AbstractRecord> records) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        for (AbstractRecord record : records) {
+            AbstractRecordPreparator preparator = record.getRecordPreparator(getTlsContext().getChooser(),
+                getEncryptor(), getCompressor(), record.getContentMessageType());
             preparator.encrypt();
             AbstractRecordSerializer serializer = record.getRecordSerializer();
             try {
@@ -113,48 +95,8 @@ public class BlobRecordLayer extends RecordLayer {
     }
 
     @Override
-    public void setRecordCipher(RecordCipher cipher) {
-        this.cipher = cipher;
-    }
-
-    @Override
-    public RecordCipher getRecordCipher() {
-        return cipher;
-    }
-
-    @Override
-    public void updateEncryptionCipher() {
-        encryptor.addNewRecordCipher(cipher);
-    }
-
-    @Override
-    public void updateDecryptionCipher() {
-        decryptor.addNewRecordCipher(cipher);
-    }
-
-    @Override
     public AbstractRecord getFreshRecord() {
-        return new BlobRecord(context.getChooser().getOutboundMaxRecordDataSize());
-    }
-
-    @Override
-    public RecordCipher getEncryptorCipher() {
-        return encryptor.getRecordMostRecentCipher();
-    }
-
-    @Override
-    public RecordCipher getDecryptorCipher() {
-        return decryptor.getRecordMostRecentCipher();
-    }
-
-    @Override
-    public void resetEncryptor() {
-        encryptor.removeAllCiphers();
-    }
-
-    @Override
-    public void resetDecryptor() {
-        decryptor.removeAllCiphers();
+        return new BlobRecord(getTlsContext().getChooser().getOutboundMaxRecordDataSize());
     }
 
 }

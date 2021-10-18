@@ -28,6 +28,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.core.protocol.ParserResult;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.record.cipher.CipherState;
+import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayOutputStream;
@@ -167,7 +169,8 @@ public class ReceiveMessageHelper {
 
             boolean foundValidRecordInGroup = false;
             byte[] preservedDigest = context.getDigest().getRawBytes();
-            long preservedReadSQN = context.getReadSequenceNumber();
+            CipherState state = context.getRecordLayer().getDecryptor().getRecordMostRecentCipher().getState();
+            long preservedReadSQN = state.getReadSequenceNumber();
 
             for (int recordIndex = 0; recordIndex < recordGroups.get(groupIndex).getRecords().size(); recordIndex++) {
                 currentGroup.decryptRecord(context, recordIndex);
@@ -177,7 +180,7 @@ public class ReceiveMessageHelper {
                 if (currentGroup.areAllRecordsValid()) {
                     foundValidRecordInGroup = true;
                 } else if (!currentGroup.areAllRecordsValid() && foundValidRecordInGroup) {
-                    context.setReadSequenceNumber(context.getReadSequenceNumber() - 1);
+                    state.setReadSequenceNumber(state.getReadSequenceNumber() - 1);
                     formNewGroupFromLastAndComingRecords(recordIndex, groupIndex, recordGroups);
                 }
             }
@@ -197,7 +200,8 @@ public class ReceiveMessageHelper {
 
     private void restorePreGroupState(TlsContext context, byte[] preservedDigest, long preservedReadSQN) {
         context.getDigest().setRawBytes(preservedDigest);
-        context.setReadSequenceNumber(preservedReadSQN);
+        context.getRecordLayer().getDecryptor().getRecordMostRecentCipher().getState()
+            .setReadSequenceNumber(preservedReadSQN);
     }
 
     private List<AbstractRecord> tryToFetchAdditionalRecords(TlsContext context) {

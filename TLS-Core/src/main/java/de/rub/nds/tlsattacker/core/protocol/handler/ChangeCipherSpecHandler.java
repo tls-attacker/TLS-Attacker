@@ -10,11 +10,19 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.ChangeCipherSpecParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ChangeCipherSpecPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ChangeCipherSpecSerializer;
+import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
+import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.security.NoSuchAlgorithmException;
+import java.util.logging.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -46,22 +54,28 @@ public class ChangeCipherSpecHandler extends TlsMessageHandler<ChangeCipherSpecM
     public void adjustTLSContext(ChangeCipherSpecMessage message) {
         if (tlsContext.getTalkingConnectionEndType() != tlsContext.getChooser().getConnectionEndType()
             && tlsContext.getChooser().getSelectedProtocolVersion() != ProtocolVersion.TLS13) {
-            tlsContext.getRecordLayer().updateDecryptionCipher();
+            LOGGER.debug("Adjusting decrypting cipher for " + tlsContext.getTalkingConnectionEndType());
+            tlsContext.getRecordLayer().updateDecryptionCipher(getRecordCipher());
             tlsContext.getRecordLayer().updateDecompressor();
-            tlsContext.increaseReadEpoch();
         }
     }
 
     @Override
     public void adjustTlsContextAfterSerialize(ChangeCipherSpecMessage message) {
-
-        if (tlsContext.getTalkingConnectionEndType() == tlsContext.getChooser().getConnectionEndType()) {
-            if (!tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
-                tlsContext.getRecordLayer().updateEncryptionCipher();
-                tlsContext.getRecordLayer().updateCompressor();
-                tlsContext.increaseWriteEpoch();
-            }
+        if (!tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
+            LOGGER.debug("Adjusting encrypting cipher for " + tlsContext.getTalkingConnectionEndType());
+            tlsContext.getRecordLayer().updateEncryptionCipher(getRecordCipher());
+            tlsContext.getRecordLayer().updateCompressor();
         }
     }
 
+    private RecordCipher getRecordCipher() {
+        try {
+            KeySet keySet = KeySetGenerator.generateKeySet(tlsContext,
+                tlsContext.getChooser().getSelectedProtocolVersion(), Tls13KeySetType.NONE);
+            return RecordCipherFactory.getRecordCipher(tlsContext, keySet);
+        } catch (NoSuchAlgorithmException | CryptoException ex) {
+            throw new UnsupportedOperationException("The specified Algorithm is not supported", ex);
+        }
+    }
 }

@@ -110,8 +110,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
         @XmlElement(type = SrpServerKeyExchangeMessage.class, name = "SrpServerKeyExchange"),
         @XmlElement(type = SrpClientKeyExchangeMessage.class, name = "SrpClientKeyExchange"),
         @XmlElement(type = EndOfEarlyDataMessage.class, name = "EndOfEarlyData"),
-        @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensions"),
-        @XmlElement(type = HelloRetryRequestMessage.class, name = "HelloRetryRequest") })
+        @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensions") })
     protected List<ProtocolMessage> receivedMessages;
 
     @HoldsModifiableVariable
@@ -171,8 +170,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
         @XmlElement(type = SrpServerKeyExchangeMessage.class, name = "SrpServerKeyExchange"),
         @XmlElement(type = SrpClientKeyExchangeMessage.class, name = "SrpClientKeyExchange"),
         @XmlElement(type = EndOfEarlyDataMessage.class, name = "EndOfEarlyData"),
-        @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensions"),
-        @XmlElement(type = HelloRetryRequestMessage.class, name = "HelloRetryRequest") })
+        @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensions") })
     protected List<ProtocolMessage> messages;
 
     @HoldsModifiableVariable
@@ -232,8 +230,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
         @XmlElement(type = SrpServerKeyExchangeMessage.class, name = "SrpServerKeyExchange"),
         @XmlElement(type = SrpClientKeyExchangeMessage.class, name = "SrpClientKeyExchange"),
         @XmlElement(type = EndOfEarlyDataMessage.class, name = "EndOfEarlyData"),
-        @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensions"),
-        @XmlElement(type = HelloRetryRequestMessage.class, name = "HelloRetryRequest") })
+        @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensions") })
     protected List<ProtocolMessage> sendMessages;
 
     @HoldsModifiableVariable

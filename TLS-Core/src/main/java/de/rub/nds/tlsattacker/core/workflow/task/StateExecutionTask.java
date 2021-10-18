@@ -10,12 +10,8 @@
 package de.rub.nds.tlsattacker.core.workflow.task;
 
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.workflow.DefaultWorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
-
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
-
-import java.util.concurrent.Callable;
 
 /**
  * Do not use this Task if you want to rely on the socket state
@@ -24,10 +20,6 @@ public class StateExecutionTask extends TlsTask {
 
     private final State state;
 
-    private Callable<Integer> beforeConnectCallback = () -> {
-        return 0;
-    };
-
     public StateExecutionTask(State state, int reexecutions) {
         super(reexecutions);
         this.state = state;
@@ -35,29 +27,26 @@ public class StateExecutionTask extends TlsTask {
 
     @Override
     public boolean execute() {
-        beforeConnectAction();
+
         WorkflowExecutor executor =
             WorkflowExecutorFactory.createWorkflowExecutor(state.getConfig().getWorkflowExecutorType(), state);
+        if (getBeforeTransportPreInitCallback() != null) {
+            executor.setBeforeTransportPreInitCallback(getBeforeTransportPreInitCallback());
+        }
+        if (getBeforeTransportInitCallback() != null) {
+            executor.setBeforeTransportInitCallback(getBeforeTransportInitCallback());
+        }
+        if (getAfterTransportInitCallback() != null) {
+            executor.setAfterTransportInitCallback(getAfterTransportInitCallback());
+        }
+        if (getAfterExecutionCallback() != null) {
+            executor.setAfterExecutionCallback(getAfterExecutionCallback());
+        }
         executor.executeWorkflow();
         if (state.getTlsContext().isReceivedTransportHandlerException()) {
             throw new RuntimeException("TransportHandler exception received.");
         }
         return true;
-    }
-
-    private void beforeConnectAction() {
-        try {
-            beforeConnectCallback.call();
-        } catch (Exception ex) {
-        }
-    }
-
-    public Callable<Integer> getBeforeConnectCallback() {
-        return beforeConnectCallback;
-    }
-
-    public void setBeforeConnectCallback(Callable<Integer> beforeConnectCallback) {
-        this.beforeConnectCallback = beforeConnectCallback;
     }
 
     public State getState() {

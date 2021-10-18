@@ -255,6 +255,15 @@ public class HandshakeByteLength {
     public static final int CERTIFICATE_STATUS_RESPONSE_LENGTH = 3;
 
     /**
+     * RSA modulus length
+     */
+    public static final int RSA_MODULUS_LENGTH = 2;
+    /**
+     * RSA public key length
+     */
+    public static final int RSA_PUBLICKEY_LENGTH = 2;
+
+    /**
      * KeyUpdate Message Length
      */
     public static final int KEY_UPDATE_LENGTH = 1;

@@ -76,7 +76,7 @@ public class CustomRSAPrivateKey extends CustomPrivateKey implements RSAPrivateK
                     break;
                 case SERVER:
                     context.setServerRSAPrivateKey(privateExponent);
-                    context.setServerRsaModulus(modulus);
+                    context.setServerRSAModulus(modulus);
                     break;
                 default:
                     throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");

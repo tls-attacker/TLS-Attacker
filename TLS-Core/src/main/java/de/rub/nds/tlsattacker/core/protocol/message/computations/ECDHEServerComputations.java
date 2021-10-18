@@ -49,9 +49,4 @@ public class ECDHEServerComputations extends KeyExchangeComputations {
     public void setNamedGroup(byte[] namedGroup) {
         this.namedGroup = ModifiableVariableFactory.safelySetValue(this.namedGroup, namedGroup);
     }
-
-    @Override
-    public void setSecretsInConfig(Config config) {
-        config.setDefaultServerEcPrivateKey(getPrivateKey().getValue());
-    }
 }

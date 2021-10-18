@@ -22,3 +22,6 @@ nbactions.xml.project
 # Maven
 pom.xml.*
 release.properties
+
+# VS Code
+.factorypath

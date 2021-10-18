@@ -99,7 +99,6 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                 LOGGER.debug("Loading MasterSecret");
                 Session session = tlsContext.getSession(tlsContext.getChooser().getServerSessionId());
                 tlsContext.setMasterSecret(session.getMasterSecret());
-                setRecordCipher();
             }
         } else {
             adjustHelloRetryDigest(message);
@@ -170,31 +169,21 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         }
     }
 
-    private void setRecordCipher() {
-        KeySet keySet = getKeySet(tlsContext, Tls13KeySetType.NONE);
-        LOGGER.debug("Setting new Cipher in RecordLayer");
-        RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(tlsContext, keySet);
-        tlsContext.getRecordLayer().setRecordCipher(recordCipher);
-    }
-
     private void setServerRecordCipher() {
         tlsContext.setActiveServerKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
         LOGGER.debug("Setting cipher for server to use handshake secrets");
-        KeySet serverKeySet = getKeySet(tlsContext, tlsContext.getActiveServerKeySetType());
-        RecordCipher recordCipherServer = RecordCipherFactory.getRecordCipher(tlsContext, serverKeySet,
-            tlsContext.getChooser().getSelectedCipherSuite());
-        tlsContext.getRecordLayer().setRecordCipher(recordCipherServer);
+        KeySet serverKeySet = getTls13KeySet(tlsContext, tlsContext.getActiveServerKeySetType());
 
         if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
-            tlsContext.increaseReadEpoch();
-            tlsContext.getRecordLayer().updateDecryptionCipher();
+            tlsContext.getRecordLayer()
+                .updateDecryptionCipher(RecordCipherFactory.getRecordCipher(tlsContext, serverKeySet));
         } else {
-            tlsContext.increaseWriteEpoch();
-            tlsContext.getRecordLayer().updateEncryptionCipher();
+            tlsContext.getRecordLayer()
+                .updateEncryptionCipher(RecordCipherFactory.getRecordCipher(tlsContext, serverKeySet));
         }
     }
 
-    private KeySet getKeySet(TlsContext context, Tls13KeySetType keySetType) {
+    private KeySet getTls13KeySet(TlsContext context, Tls13KeySetType keySetType) {
         try {
             LOGGER.debug("Generating new KeySet");
             return KeySetGenerator.generateKeySet(context, tlsContext.getChooser().getSelectedProtocolVersion(),

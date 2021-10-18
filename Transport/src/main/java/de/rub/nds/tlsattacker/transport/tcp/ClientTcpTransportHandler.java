@@ -64,6 +64,11 @@ public class ClientTcpTransportHandler extends TcpTransportHandler {
     }
 
     @Override
+    public void preInitialize() throws IOException {
+        // nothing to do here
+    }
+
+    @Override
     public void initialize() throws IOException {
         long timeoutTime = System.currentTimeMillis() + this.connectionTimeout;
         while (System.currentTimeMillis() < timeoutTime || this.connectionTimeout == 0) {

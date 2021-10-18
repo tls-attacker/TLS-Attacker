@@ -180,8 +180,8 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         // currently a limitation of our script as the attack vectors are generated statically and not dynamically. We
         // will adjust this in future versions.
         for (FingerprintTaskVectorPair pair : stateVectorPairList) {
-            if (pair.getFingerPrintTask().getState().getTlsContext().getServerRsaModulus() != null && !pair
-                .getFingerPrintTask().getState().getTlsContext().getServerRsaModulus().equals(publicKey.getModulus())) {
+            if (pair.getFingerPrintTask().getState().getTlsContext().getServerRSAModulus() != null && !pair
+                .getFingerPrintTask().getState().getTlsContext().getServerRSAModulus().equals(publicKey.getModulus())) {
                 throw new OracleUnstableException(
                     "Server sent us a different publickey during the scan. Aborting test");
             }

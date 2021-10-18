@@ -85,7 +85,7 @@ public class SSL2ServerHelloHandler extends HandshakeMessageHandler<SSL2ServerHe
             LOGGER.debug("Adjusting RSA PublicKey");
             try {
                 tlsContext.setServerRSAPublicKey(CertificateUtils.extractRSAPublicKey(cert));
-                tlsContext.setServerRsaModulus(CertificateUtils.extractRSAModulus(cert));
+                tlsContext.setServerRSAModulus(CertificateUtils.extractRSAModulus(cert));
             } catch (IOException e) {
                 throw new AdjustmentException("Could not adjust PublicKey Information from Certificate", e);
             }

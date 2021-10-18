@@ -13,11 +13,13 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.Serializable;
+import java.security.PrivateKey;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public abstract class CustomPrivateKey implements Serializable {
+public abstract class CustomPrivateKey implements PrivateKey {
 
     public abstract void adjustInContext(TlsContext context, ConnectionEndType ownerOfKey);
 

@@ -104,7 +104,7 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
                 break;
 
             case X509:
-                List<CertificatePair> pairList = msg.getCertificatesList();
+                List<CertificatePair> pairList = msg.getCertificateListConfig();
                 if (pairList == null) {
                     CertificateKeyPair selectedCertificateKeyPair;
                     if (chooser.getConfig().isAutoSelectCertificate()) {
@@ -134,6 +134,7 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
                         msg.setCertificatesListLength(msg.getCertificatesListBytes().getValue().length);
                     }
                 } else {
+                    msg.setCertificatesList(pairList);
                     prepareFromPairList(msg);
                 }
 
