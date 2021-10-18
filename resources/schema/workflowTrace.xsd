@@ -381,8 +381,8 @@
         <xs:element name="SendDynamicServerKeyExchange" type="sendDynamicServerKeyExchangeAction"/>
         <xs:element name="SendDynamicCertificate" type="sendDynamicServerCertificateAction"/>
         <xs:element name="SendRaccoonCke" type="sendRaccoonCkeAction"/>
-        <xs:element name="SendMessagesFromLastFlys" type="sendMessagesFromLastFlysAction"/>
-        <xs:element name="SendRecordsFromLastFlys" type="sendRecordsFromLastFlysAction"/>
+        <xs:element name="SendMessagesFromLastFlight" type="sendMessagesFromLastFlightAction"/>
+        <xs:element name="SendRecordsFromLastFlight" type="sendRecordsFromLastFlightAction"/>
         <xs:element name="SetEncryptChangeCipherSpecConfig" type="setEncryptChangeCipherSpecConfigAction"/>
         <xs:element name="Wait" type="waitAction"/>
         <xs:element name="SendAscii" type="sendAsciiAction"/>
@@ -4736,7 +4736,7 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="sendMessagesFromLastFlysAction">
+  <xs:complexType name="sendMessagesFromLastFlightAction">
     <xs:complexContent>
       <xs:extension base="messageAction">
         <xs:sequence>
@@ -4746,7 +4746,7 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="sendRecordsFromLastFlysAction">
+  <xs:complexType name="sendRecordsFromLastFlightAction">
     <xs:complexContent>
       <xs:extension base="messageAction">
         <xs:sequence>

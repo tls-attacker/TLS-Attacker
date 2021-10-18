@@ -25,26 +25,26 @@ import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class SendRecordsFromLastFlysAction extends MessageAction implements SendingAction {
+public class SendRecordsFromLastFlightAction extends MessageAction implements SendingAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     private int depth;
 
-    public SendRecordsFromLastFlysAction() {
+    public SendRecordsFromLastFlightAction() {
         super();
     }
 
-    public SendRecordsFromLastFlysAction(String connectionAlias) {
+    public SendRecordsFromLastFlightAction(String connectionAlias) {
         super(connectionAlias);
     }
 
-    public SendRecordsFromLastFlysAction(int depth) {
+    public SendRecordsFromLastFlightAction(int depth) {
         super();
         this.depth = depth;
     }
 
-    public SendRecordsFromLastFlysAction(String connectionAlias, int depth) {
+    public SendRecordsFromLastFlightAction(String connectionAlias, int depth) {
         super(connectionAlias);
         this.depth = depth;
     }

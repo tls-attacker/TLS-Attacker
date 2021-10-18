@@ -22,7 +22,6 @@ import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.TlsMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
@@ -36,26 +35,26 @@ import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class SendMessagesFromLastFlysAction extends MessageAction implements SendingAction {
+public class SendMessagesFromLastFlightAction extends MessageAction implements SendingAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     private int depth;
 
-    public SendMessagesFromLastFlysAction() {
+    public SendMessagesFromLastFlightAction() {
         super();
     }
 
-    public SendMessagesFromLastFlysAction(String connectionAlias) {
+    public SendMessagesFromLastFlightAction(String connectionAlias) {
         super(connectionAlias);
     }
 
-    public SendMessagesFromLastFlysAction(int depth) {
+    public SendMessagesFromLastFlightAction(int depth) {
         super();
         this.depth = depth;
     }
 
-    public SendMessagesFromLastFlysAction(String connectionAlias, int depth) {
+    public SendMessagesFromLastFlightAction(String connectionAlias, int depth) {
         super(connectionAlias);
         this.depth = depth;
     }
