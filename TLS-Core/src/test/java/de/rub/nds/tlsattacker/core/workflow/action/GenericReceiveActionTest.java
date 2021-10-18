@@ -14,7 +14,6 @@ import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
-import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
 import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
@@ -29,9 +28,9 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertSame;
 
 public class GenericReceiveActionTest {
 
@@ -47,7 +46,7 @@ public class GenericReceiveActionTest {
         alert.setConfig(AlertLevel.FATAL, AlertDescription.DECRYPT_ERROR);
         alert.setDescription(AlertDescription.DECODE_ERROR.getValue());
         alert.setLevel(AlertLevel.FATAL.getValue());
-        action = new GenericReceiveAction(alert);
+        action = new GenericReceiveAction();
 
         WorkflowTrace trace = new WorkflowTrace();
         trace.addTlsAction(action);
@@ -69,7 +68,7 @@ public class GenericReceiveActionTest {
         action.execute(state);
         assertTrue(action.executedAsPlanned());
         assertTrue(action.isExecuted());
-        assertSame(action.getReceivedMessages().get(0), alert);
+        assertEquals(action.getReceivedMessages().get(0), alert);
     }
 
     /**
