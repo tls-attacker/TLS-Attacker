@@ -11,28 +11,81 @@ package de.rub.nds.tlsattacker.attacks.util.response;
 
 import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
-import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
+import de.rub.nds.tlsattacker.core.https.HttpsRequestMessage;
+import de.rub.nds.tlsattacker.core.https.HttpsResponseMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.TlsMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
+import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.transport.socket.SocketState;
-import java.util.Arrays;
+
+import javax.xml.bind.annotation.*;
 import java.util.List;
-import java.util.Objects;
 
 /**
  *
  *
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public class ResponseFingerprint {
+    @XmlElementWrapper
+    @XmlElements(value = { @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
+        @XmlElement(type = TlsMessage.class, name = "TlsMessage"),
+        @XmlElement(type = CertificateMessage.class, name = "Certificate"),
+        @XmlElement(type = CertificateVerifyMessage.class, name = "CertificateVerify"),
+        @XmlElement(type = CertificateRequestMessage.class, name = "CertificateRequest"),
+        @XmlElement(type = ClientHelloMessage.class, name = "ClientHello"),
+        @XmlElement(type = HelloVerifyRequestMessage.class, name = "HelloVerifyRequest"),
+        @XmlElement(type = DHClientKeyExchangeMessage.class, name = "DHClientKeyExchange"),
+        @XmlElement(type = DHEServerKeyExchangeMessage.class, name = "DHEServerKeyExchange"),
+        @XmlElement(type = ECDHClientKeyExchangeMessage.class, name = "ECDHClientKeyExchange"),
+        @XmlElement(type = ECDHEServerKeyExchangeMessage.class, name = "ECDHEServerKeyExchange"),
+        @XmlElement(type = PskClientKeyExchangeMessage.class, name = "PSKClientKeyExchange"),
+        @XmlElement(type = FinishedMessage.class, name = "Finished"),
+        @XmlElement(type = RSAClientKeyExchangeMessage.class, name = "RSAClientKeyExchange"),
+        @XmlElement(type = GOSTClientKeyExchangeMessage.class, name = "GOSTClientKeyExchange"),
+        @XmlElement(type = ServerHelloDoneMessage.class, name = "ServerHelloDone"),
+        @XmlElement(type = ServerHelloMessage.class, name = "ServerHello"),
+        @XmlElement(type = AlertMessage.class, name = "Alert"),
+        @XmlElement(type = NewSessionTicketMessage.class, name = "NewSessionTicket"),
+        @XmlElement(type = KeyUpdateMessage.class, name = "KeyUpdate"),
+        @XmlElement(type = ApplicationMessage.class, name = "Application"),
+        @XmlElement(type = ChangeCipherSpecMessage.class, name = "ChangeCipherSpec"),
+        @XmlElement(type = SSL2ClientHelloMessage.class, name = "SSL2ClientHello"),
+        @XmlElement(type = SSL2ServerHelloMessage.class, name = "SSL2ServerHello"),
+        @XmlElement(type = SSL2ClientMasterKeyMessage.class, name = "SSL2ClientMasterKey"),
+        @XmlElement(type = SSL2ServerVerifyMessage.class, name = "SSL2ServerVerify"),
+        @XmlElement(type = UnknownMessage.class, name = "UnknownMessage"),
+        @XmlElement(type = UnknownHandshakeMessage.class, name = "UnknownHandshakeMessage"),
+        @XmlElement(type = HelloRequestMessage.class, name = "HelloRequest"),
+        @XmlElement(type = HeartbeatMessage.class, name = "Heartbeat"),
+        @XmlElement(type = SupplementalDataMessage.class, name = "SupplementalDataMessage"),
+        @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensionMessage"),
+        @XmlElement(type = HttpsRequestMessage.class, name = "HttpsRequest"),
+        @XmlElement(type = HttpsResponseMessage.class, name = "HttpsResponse"),
+        @XmlElement(type = PskClientKeyExchangeMessage.class, name = "PskClientKeyExchange"),
+        @XmlElement(type = PskDhClientKeyExchangeMessage.class, name = "PskDhClientKeyExchange"),
+        @XmlElement(type = PskDheServerKeyExchangeMessage.class, name = "PskDheServerKeyExchange"),
+        @XmlElement(type = PskEcDhClientKeyExchangeMessage.class, name = "PskEcDhClientKeyExchange"),
+        @XmlElement(type = PskEcDheServerKeyExchangeMessage.class, name = "PskEcDheServerKeyExchange"),
+        @XmlElement(type = PskRsaClientKeyExchangeMessage.class, name = "PskRsaClientKeyExchange"),
+        @XmlElement(type = PskServerKeyExchangeMessage.class, name = "PskServerKeyExchange"),
+        @XmlElement(type = SrpServerKeyExchangeMessage.class, name = "SrpServerKeyExchange"),
+        @XmlElement(type = SrpClientKeyExchangeMessage.class, name = "SrpClientKeyExchange"),
+        @XmlElement(type = EndOfEarlyDataMessage.class, name = "EndOfEarlyData"),
+        @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensions") })
+    private List<ProtocolMessage> messageList;
 
-    private final List<ProtocolMessage> messageList;
+    @XmlElementWrapper
+    @XmlElements(value = { @XmlElement(type = Record.class, name = "Record"),
+        @XmlElement(type = BlobRecord.class, name = "BlobRecord") })
+    private List<AbstractRecord> recordList;
 
-    private final List<AbstractRecord> recordList;
+    private SocketState socketState;
 
-    private final SocketState socketState;
+    public ResponseFingerprint() {
+    }
 
     /**
      *
