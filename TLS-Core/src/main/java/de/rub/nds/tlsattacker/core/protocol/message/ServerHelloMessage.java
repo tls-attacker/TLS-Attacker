@@ -316,6 +316,9 @@ public class ServerHelloMessage extends HelloMessage {
 
     @Override
     public String toShortString() {
+        if (isTls13HelloRetryRequest()) {
+            return "HRR";
+        }
         return "SH";
     }
 }
