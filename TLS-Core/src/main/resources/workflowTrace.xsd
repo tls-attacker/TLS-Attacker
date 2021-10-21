@@ -89,7 +89,15 @@
 
   <xs:element name="changeProtocolVersionAction" type="changeProtocolVersionAction"/>
 
+  <xs:element name="changeReadEpochAction" type="changeReadEpochAction"/>
+
+  <xs:element name="changeReadSequenceNumberAction" type="changeReadSequenceNumberAction"/>
+
   <xs:element name="changeServerRandomAction" type="changeServerRandomAction"/>
+
+  <xs:element name="changeWriteEpochAction" type="changeWriteEpochAction"/>
+
+  <xs:element name="changeWriteSequenceNumberAction" type="changeWriteSequenceNumberAction"/>
 
   <xs:element name="clearBuffersAction" type="clearBuffersAction"/>
 
@@ -327,6 +335,10 @@
         <xs:element name="ChangeProtocolVersion" type="changeProtocolVersionAction"/>
         <xs:element name="ChangeServerRandom" type="changeServerRandomAction"/>
         <xs:element name="ChangeConnectionTimeout" type="changeConnectionTimeoutAction"/>
+        <xs:element name="ChangeReadEpoch" type="changeReadEpochAction"/>
+        <xs:element name="ChangeReadSequenceNumber" type="changeReadSequenceNumberAction"/>
+        <xs:element name="ChangeWriteEpoch" type="changeWriteEpochAction"/>
+        <xs:element name="ChangeWriteSequenceNumber" type="changeWriteSequenceNumberAction"/>
         <xs:element name="ClearBuffers" type="clearBuffersAction"/>
         <xs:element name="ConnectionBound" type="connectionBoundAction"/>
         <xs:element name="CopyBufferedMessages" type="copyBufferedMessagesAction"/>
@@ -369,6 +381,8 @@
         <xs:element name="SendDynamicServerKeyExchange" type="sendDynamicServerKeyExchangeAction"/>
         <xs:element name="SendDynamicCertificate" type="sendDynamicServerCertificateAction"/>
         <xs:element name="SendRaccoonCke" type="sendRaccoonCkeAction"/>
+        <xs:element name="SendMessagesFromLastFlight" type="sendMessagesFromLastFlightAction"/>
+        <xs:element name="SendRecordsFromLastFlight" type="sendRecordsFromLastFlightAction"/>
         <xs:element name="SetEncryptChangeCipherSpecConfig" type="setEncryptChangeCipherSpecConfigAction"/>
         <xs:element name="Wait" type="waitAction"/>
         <xs:element name="SendAscii" type="sendAsciiAction"/>
@@ -3944,6 +3958,58 @@
     </xs:complexContent>
   </xs:complexType>
 
+  <xs:complexType name="changeReadEpochAction">
+    <xs:complexContent>
+      <xs:extension base="changeEpochAction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="changeEpochAction" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="connectionBoundAction">
+        <xs:sequence>
+          <xs:element name="epoch" type="xs:int" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="changeReadSequenceNumberAction">
+    <xs:complexContent>
+      <xs:extension base="changeSequenceNumberAction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="changeSequenceNumberAction" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="connectionBoundAction">
+        <xs:sequence>
+          <xs:element name="sequenceNumber" type="xs:long" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="changeWriteEpochAction">
+    <xs:complexContent>
+      <xs:extension base="changeEpochAction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="changeWriteSequenceNumberAction">
+    <xs:complexContent>
+      <xs:extension base="changeSequenceNumberAction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
   <xs:complexType name="clearBuffersAction">
     <xs:complexContent>
       <xs:extension base="connectionBoundAction">
@@ -4665,6 +4731,26 @@
         <xs:sequence>
           <xs:element name="withNullByte" type="xs:boolean"/>
           <xs:element name="initialSecret" type="xs:integer" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="sendMessagesFromLastFlightAction">
+    <xs:complexContent>
+      <xs:extension base="messageAction">
+        <xs:sequence>
+          <xs:element name="depth" type="xs:int"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="sendRecordsFromLastFlightAction">
+    <xs:complexContent>
+      <xs:extension base="messageAction">
+        <xs:sequence>
+          <xs:element name="depth" type="xs:int"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
