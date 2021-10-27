@@ -52,9 +52,11 @@ public enum AlpnProtocol {
     SUN_RPC("sunrpc", "SunRPC");
 
     private final String constant;
+    private final String printableName;
 
     private AlpnProtocol(String constant, String printableName) {
         this.constant = constant;
+        this.printableName = printableName;
     }
 
     public String getConstant() {
@@ -62,7 +64,7 @@ public enum AlpnProtocol {
     }
 
     public String getPrintableName() {
-        return constant;
+        return printableName;
     }
 
     public boolean isGrease() {
