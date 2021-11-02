@@ -213,6 +213,15 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
 
     @Override
     public boolean executedAsPlanned() {
+        return receivedAsPlanned(getMessages(), getExpectedMessages(), getActionOptions());
+    }
+
+    public static boolean receivedAsPlanned(List<ProtocolMessage> messages, List<ProtocolMessage> expectedMessages) {
+        return receivedAsPlanned(messages, expectedMessages, new HashSet<>());
+    }
+
+    public static boolean receivedAsPlanned(List<ProtocolMessage> messages, List<ProtocolMessage> expectedMessages,
+        Set<ActionOption> actionOptions) {
         if (messages == null) {
             return false;
         }
@@ -223,7 +232,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
             } else if (j < messages.size()) {
                 if (!Objects.equals(expectedMessages.get(i).getClass(), messages.get(j).getClass())
                     && expectedMessages.get(i).isRequired()) {
-                    if (receivedMessageCanBeIgnored(messages.get(j))) {
+                    if (receivedMessageCanBeIgnored(messages.get(j), actionOptions)) {
                         j++;
                         i--;
                     } else {
@@ -237,8 +246,8 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         }
 
         for (; j < messages.size(); j++) {
-            if (!receivedMessageCanBeIgnored(messages.get(j))
-                && !getActionOptions().contains(ActionOption.CHECK_ONLY_EXPECTED)) {
+            if (!receivedMessageCanBeIgnored(messages.get(j), actionOptions)
+                && !actionOptions.contains(ActionOption.CHECK_ONLY_EXPECTED)) {
                 return false; // additional messages are not allowed
             }
         }
@@ -367,15 +376,15 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         }
     }
 
-    private boolean receivedMessageCanBeIgnored(ProtocolMessage msg) {
-        if (getActionOptions().contains(ActionOption.IGNORE_UNEXPECTED_WARNINGS)) {
+    private static boolean receivedMessageCanBeIgnored(ProtocolMessage msg, Set<ActionOption> actionOptions) {
+        if (actionOptions.contains(ActionOption.IGNORE_UNEXPECTED_WARNINGS)) {
             if (msg instanceof AlertMessage) {
                 AlertMessage alert = (AlertMessage) msg;
                 if (alert.getLevel().getOriginalValue() == AlertLevel.WARNING.getValue()) {
                     return true;
                 }
             }
-        } else if (getActionOptions().contains(ActionOption.IGNORE_UNEXPECTED_NEW_SESSION_TICKETS)
+        } else if (actionOptions.contains(ActionOption.IGNORE_UNEXPECTED_NEW_SESSION_TICKETS)
             && msg instanceof NewSessionTicketMessage) {
             return true;
         }
