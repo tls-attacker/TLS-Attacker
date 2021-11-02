@@ -112,15 +112,13 @@ public class MessageFragmenterTest {
         clientMessage.setUnixTime(unixTime);
         clientMessage.setRandom(random);
         clientMessage.setProtocolVersion(protocolVersion);
-
-        System.out.println("TEST");
     }
 
     /**
      * Test of fragmentMessage method, of class MessageFragmenter with maxFragmentLenth given.
      */
     @Test
-    public void fragmentMessageTest_Length() throws IOException {
+    public void fragmentMessageTestLength() throws IOException {
         int maxFragmentLength = 128;
         List<DtlsHandshakeMessageFragment> fragmented =
             MessageFragmenter.fragmentMessage(clientMessage, maxFragmentLength, tlsContext);
@@ -131,13 +129,13 @@ public class MessageFragmenterTest {
      * Test of fragmentMessage method, of class MessageFragmenter with prepared fragment list given.
      */
     @Test
-    public void fragmentMessageTest_List() throws IOException {
+    public void fragmentMessageTestList() throws IOException {
         int maxFragmentLength = 64;
         List<DtlsHandshakeMessageFragment> fragments = new LinkedList<>();
         for (int i = 0; i < 4; i++) {
-            DtlsHandshakeMessageFragment new_fragment = new DtlsHandshakeMessageFragment();
-            new_fragment.setMaxFragmentLengthConfig(maxFragmentLength);
-            fragments.add(new_fragment);
+            DtlsHandshakeMessageFragment newFragment = new DtlsHandshakeMessageFragment();
+            newFragment.setMaxFragmentLengthConfig(maxFragmentLength);
+            fragments.add(newFragment);
         }
         List<DtlsHandshakeMessageFragment> fragmented =
             MessageFragmenter.fragmentMessage(clientMessage, fragments, tlsContext);
@@ -147,11 +145,14 @@ public class MessageFragmenterTest {
     private void testFragments(List<DtlsHandshakeMessageFragment> fragmented, int maxFragmentLength)
         throws IOException {
         ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+        int fragmentOffset = 0;
         for (DtlsHandshakeMessageFragment fragment : fragmented) {
             int fragmentLength = fragment.getContent().getValue().length;
             assertTrue(fragment.getFragmentLength().getValue() == fragmentLength);
             assertTrue(fragmentLength <= maxFragmentLength);
-            assertEquals(fragment.getType().getValue().byteValue(), (byte) 1);
+            assertTrue(fragment.getFragmentOffset().getValue() == fragmentOffset);
+            fragmentOffset += fragmentLength;
+            assertEquals(fragment.getType().getValue().byteValue(), HandshakeMessageType.CLIENT_HELLO.getValue());
             assertTrue(fragment.getMessageSeq().getValue() == 0);
             byte[] fragmentContent = fragment.getContent().getValue();
             if (fragmentContent != null) {
@@ -172,7 +173,8 @@ public class MessageFragmenterTest {
         DtlsHandshakeMessageFragment fragment = MessageFragmenter.wrapInSingleFragment(clientMessage, tlsContext);
         int fragmentLength = fragment.getContent().getValue().length;
         assertTrue(fragment.getFragmentLength().getValue() == fragmentLength);
-        assertEquals(fragment.getType().getValue().byteValue(), (byte) 1);
+        assertTrue(fragment.getFragmentOffset().getValue() == 0);
+        assertEquals(fragment.getType().getValue().byteValue(), HandshakeMessageType.CLIENT_HELLO.getValue());
         assertTrue(fragment.getMessageSeq().getValue() == 0);
         byte[] contentBytes = fragment.getContent().getValue();
         byte[] expectedContentBytes = Arrays.copyOfRange(expectedPart, 6, expectedPart.length);
