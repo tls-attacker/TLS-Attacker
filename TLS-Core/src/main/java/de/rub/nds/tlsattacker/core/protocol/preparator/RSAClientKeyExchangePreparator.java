@@ -49,16 +49,11 @@ public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessag
     }
 
     protected byte[] generatePremasterSecret() {
-        byte[] tempPremasterSecret = chooser.getContext().getPreMasterSecret();
-        if (tempPremasterSecret != null) {
-            LOGGER.debug("Using preset PreMasterSecret from context.");
-            return tempPremasterSecret;
-        }
         msg.getComputations().setPremasterSecretProtocolVersion(chooser.getHighestClientProtocolVersion().getValue());
-        tempPremasterSecret = new byte[HandshakeByteLength.PREMASTER_SECRET - HandshakeByteLength.VERSION];
-        chooser.getContext().getRandom().nextBytes(tempPremasterSecret);
+        byte[] premasterSecret = new byte[HandshakeByteLength.PREMASTER_SECRET - HandshakeByteLength.VERSION];
+        chooser.getContext().getRandom().nextBytes(premasterSecret);
         return ArrayConverter.concatenate(msg.getComputations().getPremasterSecretProtocolVersion().getValue(),
-            tempPremasterSecret);
+            premasterSecret);
     }
 
     protected RSAPublicKey generateFreshKey() {
@@ -93,7 +88,7 @@ public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessag
     protected void prepareClientServerRandom(T msg) {
         clientServerRandom = ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
         msg.getComputations().setClientServerRandom(clientServerRandom);
-        LOGGER.debug("ClientRandom: "
+        LOGGER.debug("ClientServerRandom: "
             + ArrayConverter.bytesToHexString(msg.getComputations().getClientServerRandom().getValue()));
     }
 
