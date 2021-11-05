@@ -1050,6 +1050,7 @@
     <defaultClientRandom>00 11 22 33 44 55 66 77 88 99 AA BB CC DD EE FF FF EE DD CC BB AA 99 88 77 66 55 44 33 22 11 00</defaultClientRandom>
     <defaultServerRandom>00 11 22 33 44 55 66 77 88 99 AA BB CC DD EE FF FF EE DD CC BB AA 99 88 77 66 55 44 33 22 11 00</defaultServerRandom>
     <defaultClientSessionId></defaultClientSessionId>
+    <defaultClientTicketResumptionSessionId>33 2C AC 09 A5 C5 69 74 E3 D4 9C 07 41 F3 96 C5 F1 C9 0B 41 52 9D D6 43 48 5E 65 B1 C0 61 9D 2B</defaultClientTicketResumptionSessionId>
     <defaultServerSessionId></defaultServerSessionId>
     <defaultSelectedCompressionMethod>NULL</defaultSelectedCompressionMethod>
     <dtlsDefaultCookie></dtlsDefaultCookie>

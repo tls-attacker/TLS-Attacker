@@ -455,6 +455,7 @@
       <xs:element name="defaultClientRandom" type="xs:string" minOccurs="0"/>
       <xs:element name="defaultServerRandom" type="xs:string" minOccurs="0"/>
       <xs:element name="defaultClientSessionId" type="xs:string" minOccurs="0"/>
+      <xs:element name="defaultClientTicketResumptionSessionId" type="xs:string" minOccurs="0"/>
       <xs:element name="defaultServerSessionId" type="xs:string" minOccurs="0"/>
       <xs:element name="defaultSelectedCompressionMethod" type="compressionMethod" minOccurs="0"/>
       <xs:element name="dtlsDefaultCookie" type="xs:string" minOccurs="0"/>

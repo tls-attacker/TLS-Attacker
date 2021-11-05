@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSEx
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.SessionTicketTLSExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SessionTicketTLSExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SessionTicketTLSExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.Session;
 import de.rub.nds.tlsattacker.core.state.StatePlaintext;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.state.parser.StatePlaintextParser;
@@ -69,6 +70,10 @@ public class SessionTicketTlsExtensionHandler extends ExtensionHandler<SessionTi
                 }
             } else {
                 // TODO: rework interaction with SessionID, use ticket value
+                LOGGER.debug("Adding Session for Ticket resumption using dummy SessionID");
+                Session session = new Session(context.getConfig().getDefaultClientTicketResumptionSessionId(),
+                    context.getChooser().getMasterSecret());
+                context.addNewSession(session);
             }
         }
         context.setSessionTicketTLS(message.getSessionTicket().getIdentity().getValue());

@@ -328,6 +328,7 @@
         <xs:element name="ChangeServerRandom" type="changeServerRandomAction"/>
         <xs:element name="ChangeConnectionTimeout" type="changeConnectionTimeoutAction"/>
         <xs:element name="ClearBuffers" type="clearBuffersAction"/>
+        <xs:element name="ClearDigest" type="clearDigestAction"/>
         <xs:element name="ConnectionBound" type="connectionBoundAction"/>
         <xs:element name="CopyBufferedMessages" type="copyBufferedMessagesAction"/>
         <xs:element name="CopyBufferedRecords" type="copyBufferedRecordsAction"/>
@@ -3523,6 +3524,7 @@
       <xs:element name="defaultClientRandom" type="xs:string" minOccurs="0"/>
       <xs:element name="defaultServerRandom" type="xs:string" minOccurs="0"/>
       <xs:element name="defaultClientSessionId" type="xs:string" minOccurs="0"/>
+      <xs:element name="defaultClientTicketResumptionSessionId" type="xs:string" minOccurs="0"/>
       <xs:element name="defaultServerSessionId" type="xs:string" minOccurs="0"/>
       <xs:element name="defaultSelectedCompressionMethod" type="compressionMethod" minOccurs="0"/>
       <xs:element name="dtlsDefaultCookie" type="xs:string" minOccurs="0"/>
@@ -3945,6 +3947,14 @@
   </xs:complexType>
 
   <xs:complexType name="clearBuffersAction">
+    <xs:complexContent>
+      <xs:extension base="connectionBoundAction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="clearDigestAction">
     <xs:complexContent>
       <xs:extension base="connectionBoundAction">
         <xs:sequence/>

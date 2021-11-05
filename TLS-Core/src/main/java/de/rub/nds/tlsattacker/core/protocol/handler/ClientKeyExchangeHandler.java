@@ -24,6 +24,7 @@ import de.rub.nds.tlsattacker.core.state.Session;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -92,10 +93,12 @@ public abstract class ClientKeyExchangeHandler<MessageT extends ClientKeyExchang
     }
 
     protected void spawnNewSession() {
-        Session session =
-            new Session(tlsContext.getChooser().getServerSessionId(), tlsContext.getChooser().getMasterSecret());
-        tlsContext.addNewSession(session);
-        LOGGER.debug("Spawning new resumable Session");
+        if (!Arrays.equals(tlsContext.getChooser().getServerSessionId(), new byte[0])) {
+            Session session =
+                new Session(tlsContext.getChooser().getServerSessionId(), tlsContext.getChooser().getMasterSecret());
+            tlsContext.addNewSession(session);
+            LOGGER.debug("Spawning new resumable Session");
+        }
     }
 
     private KeySet getKeySet(TlsContext context) {
