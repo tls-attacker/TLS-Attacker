@@ -70,10 +70,6 @@ public class SessionTicketTlsExtensionHandler extends ExtensionHandler<SessionTi
                 }
             } else {
                 // TODO: rework interaction with SessionID, use ticket value
-                LOGGER.debug("Adding Session for Ticket resumption using dummy SessionID");
-                Session session = new Session(context.getConfig().getDefaultClientTicketResumptionSessionId(),
-                    context.getChooser().getMasterSecret());
-                context.addNewSession(session);
             }
         }
         context.setSessionTicketTLS(message.getSessionTicket().getIdentity().getValue());
