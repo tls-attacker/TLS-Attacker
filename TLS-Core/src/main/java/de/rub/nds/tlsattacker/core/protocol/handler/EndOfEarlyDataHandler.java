@@ -22,6 +22,7 @@ import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -35,8 +36,8 @@ public class EndOfEarlyDataHandler extends HandshakeMessageHandler<EndOfEarlyDat
     }
 
     @Override
-    public EndOfEarlyDataParser getParser(byte[] message, int pointer) {
-        return new EndOfEarlyDataParser(pointer, message, tlsContext.getLastRecordVersion(), tlsContext.getConfig());
+    public EndOfEarlyDataParser getParser(InputStream stream) {
+        return new EndOfEarlyDataParser(stream, tlsContext.getLastRecordVersion(), tlsContext.getConfig());
     }
 
     @Override

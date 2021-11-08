@@ -6,17 +6,17 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerAuthzExtensionMessage;
+import java.io.InputStream;
 
 public class ServerAuthzExtensionParser extends ExtensionParser<ServerAuthzExtensionMessage> {
 
-    public ServerAuthzExtensionParser(int startposition, byte[] array, Config config) {
-        super(startposition, array, config);
+    public ServerAuthzExtensionParser(InputStream stream, Config config) {
+        super(stream, config);
     }
 
     @Override

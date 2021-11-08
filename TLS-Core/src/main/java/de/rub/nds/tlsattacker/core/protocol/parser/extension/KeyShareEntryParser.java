@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.Parser;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -23,8 +24,8 @@ public class KeyShareEntryParser extends Parser<KeyShareEntry> {
 
     private KeyShareEntry entry;
 
-    public KeyShareEntryParser(int startposition, byte[] array) {
-        super(startposition, array);
+    public KeyShareEntryParser(InputStream stream) {
+        super(stream);
     }
 
     @Override

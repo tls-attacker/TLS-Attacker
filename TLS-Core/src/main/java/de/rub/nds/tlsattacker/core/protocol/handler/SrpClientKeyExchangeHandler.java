@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.SrpClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.SrpClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.SrpClientKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 
 /**
  * Handler for SRP ClientKeyExchange messages
@@ -26,8 +27,8 @@ public class SrpClientKeyExchangeHandler extends ClientKeyExchangeHandler<SrpCli
     }
 
     @Override
-    public SrpClientKeyExchangeParser getParser(byte[] message, int pointer) {
-        return new SrpClientKeyExchangeParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
+    public SrpClientKeyExchangeParser getParser(InputStream stream) {
+        return new SrpClientKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(),
             tlsContext.getConfig());
     }
 

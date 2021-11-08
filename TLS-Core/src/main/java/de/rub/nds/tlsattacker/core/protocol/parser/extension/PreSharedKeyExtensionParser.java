@@ -6,7 +6,6 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -15,6 +14,8 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PreSharedKeyExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PSKBinder;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PSKIdentity;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -27,13 +28,14 @@ public class PreSharedKeyExtensionParser extends ExtensionParser<PreSharedKeyExt
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public PreSharedKeyExtensionParser(int startposition, byte[] array, Config config) {
-        super(startposition, array, config);
+    public PreSharedKeyExtensionParser(InputStream stream, Config config) {
+        super(stream, config);
     }
 
     @Override
     public void parseExtensionMessageContent(PreSharedKeyExtensionMessage msg) {
         LOGGER.debug("Parsing PreSharedKeyExtensionMessage");
+        //TODO DO NOT GUESS HERE
         // Client -> Server
         if (msg.getExtensionLength().getValue() > 2) {
             parsePreSharedKeyIdentityListLength(msg);
@@ -61,11 +63,10 @@ public class PreSharedKeyExtensionParser extends ExtensionParser<PreSharedKeyExt
         LOGGER.debug("Identity list bytes: " + ArrayConverter.bytesToHexString(msg.getIdentityListBytes().getValue()));
 
         List<PSKIdentity> identities = new LinkedList<>();
-        int parsed = 0;
-        while (parsed < msg.getIdentityListLength().getValue()) {
-            PSKIdentityParser parser = new PSKIdentityParser(parsed, msg.getIdentityListBytes().getValue());
+        ByteArrayInputStream innerStream = new ByteArrayInputStream(msg.getIdentityListBytes().getValue());
+        while (innerStream.available() > 0) {
+            PSKIdentityParser parser = new PSKIdentityParser(innerStream);
             identities.add(parser.parse());
-            parsed = parser.getPointer();
         }
         msg.setIdentities(identities);
     }
@@ -80,11 +81,11 @@ public class PreSharedKeyExtensionParser extends ExtensionParser<PreSharedKeyExt
         LOGGER.debug("Binder list bytes: " + ArrayConverter.bytesToHexString(msg.getBinderListBytes().getValue()));
 
         List<PSKBinder> binders = new LinkedList<>();
-        int parsed = 0;
-        while (parsed < msg.getBinderListLength().getValue()) {
-            PSKBinderParser parser = new PSKBinderParser(parsed, msg.getBinderListBytes().getValue());
+        ByteArrayInputStream innerStream = new ByteArrayInputStream(msg.getBinderListBytes().getValue());
+        
+        while (innerStream.available() > 0) {
+            PSKBinderParser parser = new PSKBinderParser(innerStream);
             binders.add(parser.parse());
-            parsed = parser.getPointer();
         }
         msg.setBinders(binders);
     }

@@ -6,7 +6,6 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
@@ -14,6 +13,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.DtlsHandshakeMessageFragmentP
 import de.rub.nds.tlsattacker.core.protocol.preparator.DtlsHandshakeMessageFragmentPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.DtlsHandshakeMessageFragmentSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 
 public class DtlsHandshakeMessageFragmentHandler extends HandshakeMessageHandler<DtlsHandshakeMessageFragment> {
 
@@ -22,9 +22,8 @@ public class DtlsHandshakeMessageFragmentHandler extends HandshakeMessageHandler
     }
 
     @Override
-    public DtlsHandshakeMessageFragmentParser getParser(byte[] message, int pointer) {
-        return new DtlsHandshakeMessageFragmentParser(pointer, message,
-            tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext.getConfig());
+    public DtlsHandshakeMessageFragmentParser getParser(InputStream stream) {
+        return new DtlsHandshakeMessageFragmentParser(stream, tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext.getConfig());
     }
 
     @Override
@@ -35,7 +34,7 @@ public class DtlsHandshakeMessageFragmentHandler extends HandshakeMessageHandler
     @Override
     public DtlsHandshakeMessageFragmentSerializer getSerializer(DtlsHandshakeMessageFragment message) {
         return new DtlsHandshakeMessageFragmentSerializer(message,
-            tlsContext.getChooser().getSelectedProtocolVersion());
+                tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

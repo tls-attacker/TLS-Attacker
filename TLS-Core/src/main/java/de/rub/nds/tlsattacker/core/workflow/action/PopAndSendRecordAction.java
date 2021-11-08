@@ -12,8 +12,8 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.record.AbstractRecord;
-import de.rub.nds.tlsattacker.core.record.serializer.AbstractRecordSerializer;
+import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.record.serializer.RecordSerializer;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.IOException;
@@ -46,14 +46,14 @@ public class PopAndSendRecordAction extends MessageAction implements SendingActi
             throw new WorkflowExecutionException("Action already executed!");
         }
 
-        AbstractRecord record = tlsContext.getRecordBuffer().pop();
+        Record record = tlsContext.getRecordBuffer().pop();
         String sending = record.getContentMessageType().name();
         if (connectionAlias == null) {
             LOGGER.info("Sending record: " + sending);
         } else {
             LOGGER.info("Sending record(" + connectionAlias + "): " + sending);
         }
-        AbstractRecordSerializer s = record.getRecordSerializer();
+        RecordSerializer s = record.getRecordSerializer();
         try {
             tlsContext.getTransportHandler().sendData(s.serialize());
             asPlanned = true;
@@ -76,7 +76,7 @@ public class PopAndSendRecordAction extends MessageAction implements SendingActi
     }
 
     @Override
-    public void setRecords(List<AbstractRecord> records) {
+    public void setRecords(List<Record> records) {
         this.records = records;
     }
 
@@ -95,7 +95,7 @@ public class PopAndSendRecordAction extends MessageAction implements SendingActi
     }
 
     @Override
-    public List<AbstractRecord> getSendRecords() {
+    public List<Record> getSendRecords() {
         return records;
     }
 

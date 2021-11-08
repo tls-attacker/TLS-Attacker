@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.record.crypto;
 
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
@@ -32,23 +31,6 @@ public class RecordEncryptor extends Encryptor {
         super(recordCipher);
         this.context = context;
         nullCipher = RecordCipherFactory.getNullCipher(context);
-    }
-
-    @Override
-    public void encrypt(BlobRecord record) {
-        LOGGER.debug("Encrypting BlobRecord");
-        RecordCipher recordCipher = getRecordMostRecentCipher();
-        try {
-            recordCipher.encrypt(record);
-        } catch (CryptoException ex) {
-            LOGGER.warn("Could not encrypt BlobRecord. Using NullCipher", ex);
-            try {
-                nullCipher.encrypt(record);
-            } catch (CryptoException ex1) {
-                LOGGER.error("Could not encrypt with NullCipher", ex1);
-            }
-        }
-        recordCipher.getState().increaseWriteSequenceNumber();
     }
 
     @Override

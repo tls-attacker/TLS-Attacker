@@ -9,12 +9,12 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.GreaseExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.GreaseExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.GreaseExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.GreaseExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 
 public class GreaseExtensionHandler extends ExtensionHandler<GreaseExtensionMessage> {
 
@@ -23,7 +23,7 @@ public class GreaseExtensionHandler extends ExtensionHandler<GreaseExtensionMess
     }
 
     @Override
-    public GreaseExtensionParser getParser(byte[] message, int pointer, Config config) {
+    public GreaseExtensionParser getParser(InputStream stream) {
         return null;
     }
 

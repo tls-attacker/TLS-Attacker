@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.TlsMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.TlsMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.TlsMessageSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 
 /**
  * @param <MessageT>
@@ -70,7 +71,7 @@ public abstract class TlsMessageHandler<MessageT extends TlsMessage> extends Pro
     }
 
     @Override
-    public abstract TlsMessageParser<MessageT> getParser(byte[] message, int pointer);
+    public abstract TlsMessageParser<MessageT> getParser(InputStream stream);
 
     @Override
     public abstract TlsMessagePreparator<MessageT> getPreparator(MessageT message);

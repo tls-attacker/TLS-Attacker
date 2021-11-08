@@ -6,7 +6,6 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -16,12 +15,14 @@ import de.rub.nds.tlsattacker.core.constants.EsniDnsKeyRecordVersion;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EsniKeyRecord;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.Parser;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,17 +30,21 @@ import org.apache.logging.log4j.Logger;
 public class EsniKeyRecordParser extends Parser<EsniKeyRecord> {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    private EsniKeyRecord record;
-    private Config config;
 
-    public EsniKeyRecordParser(int startposition, byte[] array, Config config) {
-        super(startposition, array);
+    private final Config config;
+    private final ConnectionEndType talkingConnectionEndType;
+    private final ProtocolVersion selectedVersion;
+
+    public EsniKeyRecordParser(InputStream stream, Config config, ConnectionEndType talkingConnectionEndType, ProtocolVersion selectedVersion) {
+        super(stream);
         this.config = config;
+        this.talkingConnectionEndType = talkingConnectionEndType;
+        this.selectedVersion = selectedVersion;
     }
 
     @Override
     public EsniKeyRecord parse() {
-        record = new EsniKeyRecord();
+        EsniKeyRecord record = new EsniKeyRecord();
         parseVersion(record);
         parseChecksum(record);
         parseKeys(record);
@@ -67,6 +72,7 @@ public class EsniKeyRecordParser extends Parser<EsniKeyRecord> {
         int keysLen = this.parseIntField(ExtensionByteLength.KEY_SHARE_LIST_LENGTH);
         LOGGER.debug("KeysLength: " + keysLen);
         KeyShareStoreEntry entry;
+        //TODO this should use streams
         int i = 0;
         while (i < keysLen) {
             byte[] namedGroup = this.parseByteArrayField(ExtensionByteLength.KEY_SHARE_GROUP);
@@ -111,27 +117,11 @@ public class EsniKeyRecordParser extends Parser<EsniKeyRecord> {
 
     private void parseExtensions(EsniKeyRecord record) {
         int extensionsLength = this.parseIntField(HandshakeByteLength.EXTENSION_LENGTH);
-        int i = 0;
-        while (i < extensionsLength) {
-            byte[] extensionType = this.parseByteArrayField(ExtensionByteLength.TYPE);
-            int contentLength = this.parseIntField(ExtensionByteLength.EXTENSIONS_LENGTH);
-            byte[] extensionContentBytes = this.parseByteArrayField(contentLength);
 
-            ByteArrayOutputStream extensionStream = new ByteArrayOutputStream();
-            try {
-                extensionStream.write(extensionType);
-                extensionStream.write(ArrayConverter.intToBytes(contentLength, ExtensionByteLength.EXTENSIONS_LENGTH));
-                extensionStream.write(extensionContentBytes);
-            } catch (IOException e) {
-                LOGGER.warn("Failed to parse extensions.");
-            }
-
-            byte[] extensionBytes = extensionStream.toByteArray();
-            ExtensionParser parser = ExtensionParserFactory.getExtensionParser(extensionBytes, 0, config);
-            ExtensionMessage extensionMessage = parser.parse();
-            record.getExtensions().add(extensionMessage);
-            i = i + ExtensionByteLength.TYPE + ExtensionByteLength.EXTENSIONS_LENGTH + contentLength;
-        }
+        byte[] extensionListBytes = parseByteArrayField(extensionsLength);
+        ExtensionListParser extensionListParser = new ExtensionListParser(new ByteArrayInputStream(extensionListBytes), config, talkingConnectionEndType, selectedVersion, false);
+        List<ExtensionMessage> parsed = extensionListParser.parse();
+        record.setExtensions(parsed);
     }
 
 }

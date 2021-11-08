@@ -10,17 +10,18 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.RequestItemV2;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.ResponderId;
 import de.rub.nds.tlsattacker.core.protocol.Parser;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 
 public class RequestItemV2Parser extends Parser<RequestItemV2> {
 
-    public RequestItemV2Parser(int startposition, byte[] array) {
-        super(startposition, array);
+    public RequestItemV2Parser(InputStream stream) {
+        super(stream);
     }
 
     @Override
@@ -35,16 +36,11 @@ public class RequestItemV2Parser extends Parser<RequestItemV2> {
             parseIntField(ExtensionByteLength.CERTIFICATE_STATUS_REQUEST_V2_REQUEST_EXTENSION));
         item.setRequestExtensions(parseByteArrayField(item.getRequestExtensionsLength().getValue()));
 
-        int position = 0;
         List<ResponderId> responderIds = new LinkedList<>();
-
-        while (position < item.getResponderIdListBytes().getValue().length) {
-            ResponderIdParser parser = new ResponderIdParser(position, item.getResponderIdListBytes().getValue());
+        ByteArrayInputStream innerStream = new ByteArrayInputStream(item.getResponderIdListBytes().getValue());
+        while (innerStream.available() > 0) {
+            ResponderIdParser parser = new ResponderIdParser(innerStream);
             responderIds.add(parser.parse());
-            if (position == parser.getPointer()) {
-                throw new ParserException("Ran into infinite Loop while parsing ResponderId");
-            }
-            position = parser.getPointer();
         }
         item.setResponderIdList(responderIds);
 

@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.AlertParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.AlertPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.AlertSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,8 +28,8 @@ public class AlertHandler extends TlsMessageHandler<AlertMessage> {
     }
 
     @Override
-    public AlertParser getParser(byte[] message, int pointer) {
-        return new AlertParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
+    public AlertParser getParser(InputStream stream) {
+        return new AlertParser(stream, tlsContext.getChooser().getLastRecordVersion(),
             tlsContext.getConfig());
     }
 

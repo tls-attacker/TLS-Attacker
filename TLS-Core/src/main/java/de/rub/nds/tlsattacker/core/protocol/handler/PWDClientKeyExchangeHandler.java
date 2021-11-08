@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.PWDClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.PWDClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.PWDClientKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 
 public class PWDClientKeyExchangeHandler extends ClientKeyExchangeHandler<PWDClientKeyExchangeMessage> {
     public PWDClientKeyExchangeHandler(TlsContext tlsContext) {
@@ -22,8 +23,8 @@ public class PWDClientKeyExchangeHandler extends ClientKeyExchangeHandler<PWDCli
     }
 
     @Override
-    public PWDClientKeyExchangeParser getParser(byte[] message, int pointer) {
-        return new PWDClientKeyExchangeParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
+    public PWDClientKeyExchangeParser getParser(InputStream stream) {
+        return new PWDClientKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(),
             AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite()),
             tlsContext.getConfig());
     }

@@ -6,16 +6,15 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.AuthzDataFormat;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientAuthzExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ClientAuthzExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ClientAuthzExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ClientAuthzExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 
 public class ClientAuthzExtensionHandler extends ExtensionHandler<ClientAuthzExtensionMessage> {
 
@@ -24,8 +23,8 @@ public class ClientAuthzExtensionHandler extends ExtensionHandler<ClientAuthzExt
     }
 
     @Override
-    public ClientAuthzExtensionParser getParser(byte[] message, int pointer, Config config) {
-        return new ClientAuthzExtensionParser(pointer, message, config);
+    public ClientAuthzExtensionParser getParser(InputStream stream) {
+        return new ClientAuthzExtensionParser(stream, context.getConfig());
     }
 
     @Override

@@ -6,10 +6,8 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
@@ -19,6 +17,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SupportedVersio
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SupportedVersionsExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.io.InputStream;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -36,8 +35,8 @@ public class SupportedVersionsExtensionHandler extends ExtensionHandler<Supporte
     }
 
     @Override
-    public SupportedVersionsExtensionParser getParser(byte[] message, int pointer, Config config) {
-        return new SupportedVersionsExtensionParser(pointer, message, config);
+    public SupportedVersionsExtensionParser getParser(InputStream stream) {
+        return new SupportedVersionsExtensionParser(stream, context.getConfig());
     }
 
     @Override

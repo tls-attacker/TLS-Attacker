@@ -20,6 +20,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.util.CertificateUtils;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.tls.Certificate;
@@ -33,8 +34,8 @@ public class SSL2ServerHelloHandler extends HandshakeMessageHandler<SSL2ServerHe
     }
 
     @Override
-    public SSL2ServerHelloParser getParser(byte[] message, int pointer) {
-        return new SSL2ServerHelloParser(message, pointer, tlsContext.getChooser().getSelectedProtocolVersion(),
+    public SSL2ServerHelloParser getParser(InputStream stream) {
+        return new SSL2ServerHelloParser(stream, tlsContext.getChooser().getSelectedProtocolVersion(),
             tlsContext.getConfig());
     }
 

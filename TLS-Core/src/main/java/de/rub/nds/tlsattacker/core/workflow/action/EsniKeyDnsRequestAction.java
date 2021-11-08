@@ -17,6 +17,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.EsniKeyRecordParser;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.io.ByteArrayInputStream;
 import java.util.Base64;
 import java.util.LinkedList;
 import java.util.List;
@@ -84,7 +86,7 @@ public class EsniKeyDnsRequestAction extends TlsAction {
         LOGGER.debug("esniKeyRecordStr :" + esniKeyRecordStr);
         LOGGER.debug("esniKeyRecordBytes: " + ArrayConverter.bytesToHexString(esniKeyRecordBytes));
 
-        EsniKeyRecordParser esniKeyParser = new EsniKeyRecordParser(0, esniKeyRecordBytes, tlsContext.getConfig());
+        EsniKeyRecordParser esniKeyParser = new EsniKeyRecordParser(new ByteArrayInputStream(esniKeyRecordBytes), tlsContext.getConfig(), ConnectionEndType.CLIENT, tlsContext.getChooser().getSelectedProtocolVersion());
         EsniKeyRecord esniKeyRecord = esniKeyParser.parse();
         tlsContext.setEsniRecordBytes(esniKeyRecordBytes);
         tlsContext.setEsniRecordVersion(esniKeyRecord.getVersion());

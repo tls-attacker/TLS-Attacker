@@ -6,7 +6,6 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.parser.extension.keyshare;
 
 import de.rub.nds.tlsattacker.core.constants.Bits;
@@ -16,14 +15,15 @@ import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
 import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.DragonFlyKeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.Parser;
+import java.io.InputStream;
 import java.math.BigInteger;
 
 public class DragonFlyKeyShareEntryParser extends Parser<DragonFlyKeyShareEntry> {
 
     private NamedGroup group;
 
-    public DragonFlyKeyShareEntryParser(byte[] array, NamedGroup group) {
-        super(0, array);
+    public DragonFlyKeyShareEntryParser(InputStream stream, NamedGroup group) {
+        super(stream);
         this.group = group;
     }
 

@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.ServerHelloDoneParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ServerHelloDonePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ServerHelloDoneSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 
 public class ServerHelloDoneHandler extends HandshakeMessageHandler<ServerHelloDoneMessage> {
 
@@ -22,8 +23,8 @@ public class ServerHelloDoneHandler extends HandshakeMessageHandler<ServerHelloD
     }
 
     @Override
-    public ServerHelloDoneParser getParser(byte[] message, int pointer) {
-        return new ServerHelloDoneParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
+    public ServerHelloDoneParser getParser(InputStream stream) {
+        return new ServerHelloDoneParser(stream, tlsContext.getChooser().getLastRecordVersion(),
             tlsContext.getConfig());
     }
 

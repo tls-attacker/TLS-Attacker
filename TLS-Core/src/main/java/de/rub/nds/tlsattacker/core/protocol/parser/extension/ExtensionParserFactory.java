@@ -6,14 +6,13 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,133 +20,126 @@ public class ExtensionParserFactory {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public static ExtensionParser getExtensionParser(byte[] extensionBytes, int pointer, Config config) {
-        if (extensionBytes.length - pointer < ExtensionByteLength.TYPE) {
-            throw new ParserException(
-                "Could not retrieve Parser for ExtensionBytes. Not Enough bytes left for an ExtensionType");
-        }
-        byte[] typeBytes = new byte[2];
-        typeBytes[0] = extensionBytes[pointer];
-        typeBytes[1] = extensionBytes[pointer + 1];
-        ExtensionType type = ExtensionType.getExtensionType(typeBytes);
+    public static ExtensionParser getExtensionParser(InputStream stream, ExtensionType type, Config config, ConnectionEndType talkingConnectionEndType, ProtocolVersion selectedVersion) {
+
         ExtensionParser parser = null;
         switch (type) {
             case CLIENT_CERTIFICATE_URL:
-                parser = new ClientCertificateUrlExtensionParser(pointer, extensionBytes, config);
+                parser = new ClientCertificateUrlExtensionParser(stream, config);
                 break;
             case EC_POINT_FORMATS:
-                parser = new ECPointFormatExtensionParser(pointer, extensionBytes, config);
+                parser = new ECPointFormatExtensionParser(stream, config);
                 break;
             case ELLIPTIC_CURVES:
-                parser = new EllipticCurvesExtensionParser(pointer, extensionBytes, config);
+                parser = new EllipticCurvesExtensionParser(stream, config);
                 break;
             case ENCRYPTED_SERVER_NAME_INDICATION:
-                parser = new EncryptedServerNameIndicationExtensionParser(pointer, extensionBytes, config);
+                parser = new EncryptedServerNameIndicationExtensionParser(stream, config, talkingConnectionEndType);
                 break;
             case HEARTBEAT:
-                parser = new HeartbeatExtensionParser(pointer, extensionBytes, config);
+                parser = new HeartbeatExtensionParser(stream, config);
                 break;
             case MAX_FRAGMENT_LENGTH:
-                parser = new MaxFragmentLengthExtensionParser(pointer, extensionBytes, config);
+                parser = new MaxFragmentLengthExtensionParser(stream, config);
                 break;
             case RECORD_SIZE_LIMIT:
-                parser = new RecordSizeLimitExtensionParser(pointer, extensionBytes, config);
+                parser = new RecordSizeLimitExtensionParser(stream, config);
                 break;
             case SERVER_NAME_INDICATION:
-                parser = new ServerNameIndicationExtensionParser(pointer, extensionBytes, config);
+                parser = new ServerNameIndicationExtensionParser(stream, config);
                 break;
             case SIGNATURE_AND_HASH_ALGORITHMS:
-                parser = new SignatureAndHashAlgorithmsExtensionParser(pointer, extensionBytes, config);
+                parser = new SignatureAndHashAlgorithmsExtensionParser(stream, config);
                 break;
             case SUPPORTED_VERSIONS:
-                parser = new SupportedVersionsExtensionParser(pointer, extensionBytes, config);
+                parser = new SupportedVersionsExtensionParser(stream, config);
                 break;
             case EXTENDED_RANDOM:
-                parser = new ExtendedRandomExtensionParser(pointer, extensionBytes, config);
+                parser = new ExtendedRandomExtensionParser(stream, config);
                 break;
             case KEY_SHARE:
-                parser = new KeyShareExtensionParser(pointer, extensionBytes, config);
+                parser = new KeyShareExtensionParser(stream, config);
                 break;
             case STATUS_REQUEST:
-                parser = new CertificateStatusRequestExtensionParser(pointer, extensionBytes, config);
+                parser = new CertificateStatusRequestExtensionParser(stream, config, selectedVersion);
                 break;
             case TRUNCATED_HMAC:
-                parser = new TruncatedHmacExtensionParser(pointer, extensionBytes, config);
+                parser = new TruncatedHmacExtensionParser(stream, config);
                 break;
             case TRUSTED_CA_KEYS:
-                parser = new TrustedCaIndicationExtensionParser(pointer, extensionBytes, config);
+                parser = new TrustedCaIndicationExtensionParser(stream, config);
                 break;
             case ALPN:
-                parser = new AlpnExtensionParser(pointer, extensionBytes, config);
+                parser = new AlpnExtensionParser(stream, config);
                 break;
             case CACHED_INFO:
-                parser = new CachedInfoExtensionParser(pointer, extensionBytes, config);
+                parser = new CachedInfoExtensionParser(stream, config);
                 break;
             case CERT_TYPE:
-                parser = new CertificateTypeExtensionParser(pointer, extensionBytes, config);
+                parser = new CertificateTypeExtensionParser(stream, config);
                 break;
             case CLIENT_AUTHZ:
-                parser = new ClientAuthzExtensionParser(pointer, extensionBytes, config);
+                parser = new ClientAuthzExtensionParser(stream, config);
                 break;
             case CLIENT_CERTIFICATE_TYPE:
-                parser = new ClientCertificateTypeExtensionParser(pointer, extensionBytes, config);
+                parser = new ClientCertificateTypeExtensionParser(stream, config);
                 break;
             case COOKIE:
-                parser = new CookieExtensionParser(pointer, extensionBytes, config);
+                parser = new CookieExtensionParser(stream, config);
                 break;
             case EARLY_DATA:
-                parser = new EarlyDataExtensionParser(pointer, extensionBytes, config);
+                parser = new EarlyDataExtensionParser(stream, config);
                 break;
             case ENCRYPT_THEN_MAC:
-                parser = new EncryptThenMacExtensionParser(pointer, extensionBytes, config);
+                parser = new EncryptThenMacExtensionParser(stream, config);
                 break;
             case EXTENDED_MASTER_SECRET:
-                parser = new ExtendedMasterSecretExtensionParser(pointer, extensionBytes, config);
+                parser = new ExtendedMasterSecretExtensionParser(stream, config);
                 break;
             case PADDING:
-                parser = new PaddingExtensionParser(pointer, extensionBytes, config);
+                parser = new PaddingExtensionParser(stream, config);
                 break;
             case PRE_SHARED_KEY:
-                parser = new PreSharedKeyExtensionParser(pointer, extensionBytes, config);
+                parser = new PreSharedKeyExtensionParser(stream, config);
                 break;
             case PSK_KEY_EXCHANGE_MODES:
-                parser = new PSKKeyExchangeModesExtensionParser(pointer, extensionBytes, config);
+                parser = new PSKKeyExchangeModesExtensionParser(stream, config);
                 break;
             case RENEGOTIATION_INFO:
-                parser = new RenegotiationInfoExtensionParser(pointer, extensionBytes, config);
+                parser = new RenegotiationInfoExtensionParser(stream, config);
                 break;
             case SERVER_AUTHZ:
-                parser = new ServerAuthzExtensionParser(pointer, extensionBytes, config);
+                parser = new ServerAuthzExtensionParser(stream, config);
                 break;
             case SERVER_CERTIFICATE_TYPE:
-                parser = new ServerCertificateTypeExtensionParser(pointer, extensionBytes, config);
+                parser = new ServerCertificateTypeExtensionParser(stream, config);
                 break;
             case SESSION_TICKET:
-                parser = new SessionTicketTLSExtensionParser(pointer, extensionBytes, config);
+                parser = new SessionTicketTLSExtensionParser(stream, config);
                 break;
             case SIGNED_CERTIFICATE_TIMESTAMP:
-                parser = new SignedCertificateTimestampExtensionParser(pointer, extensionBytes, config);
+                parser = new SignedCertificateTimestampExtensionParser(stream, config);
                 break;
             case SRP:
-                parser = new SRPExtensionParser(pointer, extensionBytes, config);
+                parser = new SRPExtensionParser(stream, config);
                 break;
             case STATUS_REQUEST_V2:
-                parser = new CertificateStatusRequestV2ExtensionParser(pointer, extensionBytes, config);
+                parser = new CertificateStatusRequestV2ExtensionParser(stream, config);
                 break;
             case TOKEN_BINDING:
-                parser = new TokenBindingExtensionParser(pointer, extensionBytes, config);
+                parser = new TokenBindingExtensionParser(stream, config);
                 break;
             case USER_MAPPING:
-                parser = new UserMappingExtensionParser(pointer, extensionBytes, config);
+                parser = new UserMappingExtensionParser(stream, config);
                 break;
             case USE_SRTP:
-                parser = new SrtpExtensionParser(pointer, extensionBytes, config);
+                parser = new SrtpExtensionParser(stream, config);
                 break;
             case PWD_PROTECT:
-                parser = new PWDProtectExtensionParser(pointer, extensionBytes, config);
+                parser = new PWDProtectExtensionParser(stream, config);
                 break;
             case PWD_CLEAR:
-                parser = new PWDClearExtensionParser(pointer, extensionBytes, config);
+                parser = new PWDClearExtensionParser(stream, config);
                 break;
             case GREASE_00:
             case GREASE_01:
@@ -165,19 +157,19 @@ public class ExtensionParserFactory {
             case GREASE_13:
             case GREASE_14:
             case GREASE_15:
-                parser = new GreaseExtensionParser(pointer, extensionBytes, config);
+                parser = new GreaseExtensionParser(stream, config);
                 break;
             case UNKNOWN:
-                parser = new UnknownExtensionParser(pointer, extensionBytes, config);
+                parser = new UnknownExtensionParser(stream, config);
                 break;
             default:
-                parser = new UnknownExtensionParser(pointer, extensionBytes, config);
+                parser = new UnknownExtensionParser(stream, config);
                 break;
         }
         if (parser == null) {
-            LOGGER.debug("The ExtensionParser for the " + type.name()
-                + " Extension is currently not implemented. Using the UnknownExtensionParser instead");
-            parser = new UnknownExtensionParser(pointer, extensionBytes, config);
+            LOGGER.warn("The ExtensionParser for the " + type.name()
+                    + " Extension is currently not implemented. Using the UnknownExtensionParser instead");
+            parser = new UnknownExtensionParser(stream, config);
         }
         return parser;
     }

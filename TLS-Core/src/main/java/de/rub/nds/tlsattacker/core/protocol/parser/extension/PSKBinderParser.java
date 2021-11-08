@@ -6,13 +6,13 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PSKBinder;
 import de.rub.nds.tlsattacker.core.protocol.Parser;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,8 +20,8 @@ public class PSKBinderParser extends Parser<PSKBinder> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public PSKBinderParser(int startposition, byte[] array) {
-        super(startposition, array);
+    public PSKBinderParser(InputStream stream) {
+        super(stream);
     }
 
     @Override

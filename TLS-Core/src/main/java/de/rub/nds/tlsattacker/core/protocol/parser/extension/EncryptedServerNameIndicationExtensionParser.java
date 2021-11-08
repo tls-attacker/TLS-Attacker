@@ -15,6 +15,8 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,11 +24,12 @@ public class EncryptedServerNameIndicationExtensionParser
     extends ExtensionParser<EncryptedServerNameIndicationExtensionMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    private final byte[] array;
+    private final ConnectionEndType talkingConnectionEnd;
+    
 
-    public EncryptedServerNameIndicationExtensionParser(int startposition, byte[] array, Config config) {
-        super(startposition, array, config);
-        this.array = array;
+    public EncryptedServerNameIndicationExtensionParser(InputStream stream, Config config, ConnectionEndType talkingConnectionEnd) {
+        super(stream, config);
+        this.talkingConnectionEnd = talkingConnectionEnd;
     }
 
     @Override
@@ -35,8 +38,7 @@ public class EncryptedServerNameIndicationExtensionParser
             LOGGER.debug("Received empty ESNI Extension");
             return;
         }
-        boolean isParserClientMode = (msg.getExtensionLength().getValue() == ExtensionByteLength.NONCE);
-        if (isParserClientMode) {
+        if (talkingConnectionEnd == ConnectionEndType.CLIENT) {
             parseNonce(msg);
         } else {
             parseCipherSuite(msg);
@@ -66,9 +68,8 @@ public class EncryptedServerNameIndicationExtensionParser
     }
 
     private void parseKeyShareEntry(EncryptedServerNameIndicationExtensionMessage msg) {
-        KeyShareEntryParser parser = new KeyShareEntryParser(this.getPointer(), this.array);
+        KeyShareEntryParser parser = new KeyShareEntryParser(getStream());
         KeyShareEntry keyShareEntry = parser.parse();
-        this.setPointer(parser.getPointer());
         msg.setKeyShareEntry(keyShareEntry);
     }
 

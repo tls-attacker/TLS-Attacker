@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.DHClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.DHClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.DHClientKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,8 +31,8 @@ public class DHClientKeyExchangeHandler<T extends DHClientKeyExchangeMessage> ex
     }
 
     @Override
-    public DHClientKeyExchangeParser<T> getParser(byte[] message, int pointer) {
-        return new DHClientKeyExchangeParser<T>(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
+    public DHClientKeyExchangeParser<T> getParser(InputStream stream) {
+        return new DHClientKeyExchangeParser<T>(stream, tlsContext.getChooser().getLastRecordVersion(),
             tlsContext.getConfig());
     }
 

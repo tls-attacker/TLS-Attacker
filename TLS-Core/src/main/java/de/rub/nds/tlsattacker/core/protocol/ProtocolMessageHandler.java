@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol;
 
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -25,7 +26,7 @@ public abstract class ProtocolMessageHandler<MessageT extends ProtocolMessage> i
     }
 
     @Override
-    public abstract ProtocolMessageParser<MessageT> getParser(byte[] message, int pointer);
+    public abstract ProtocolMessageParser<MessageT> getParser(InputStream stream);
 
     @Override
     public abstract ProtocolMessagePreparator<MessageT> getPreparator(MessageT message);

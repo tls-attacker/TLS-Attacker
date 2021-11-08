@@ -6,7 +6,6 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.PskRsaClientKeyExchangeMessage;
@@ -14,6 +13,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.PskRsaClientKeyExchangeParser
 import de.rub.nds.tlsattacker.core.protocol.preparator.PskRsaClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.PskRsaClientKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 
 public class PskRsaClientKeyExchangeHandler extends RSAClientKeyExchangeHandler<PskRsaClientKeyExchangeMessage> {
 
@@ -22,9 +22,9 @@ public class PskRsaClientKeyExchangeHandler extends RSAClientKeyExchangeHandler<
     }
 
     @Override
-    public PskRsaClientKeyExchangeParser getParser(byte[] message, int pointer) {
-        return new PskRsaClientKeyExchangeParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
-            tlsContext.getConfig());
+    public PskRsaClientKeyExchangeParser getParser(InputStream stream) {
+        return new PskRsaClientKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(),
+                tlsContext.getConfig());
     }
 
     @Override

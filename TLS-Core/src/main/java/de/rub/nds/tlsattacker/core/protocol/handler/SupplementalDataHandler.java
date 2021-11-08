@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.SupplementalDataParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.SupplementalDataPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.SupplementalDataSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 
 public class SupplementalDataHandler extends HandshakeMessageHandler<SupplementalDataMessage> {
     public SupplementalDataHandler(TlsContext tlsContext) {
@@ -21,8 +22,8 @@ public class SupplementalDataHandler extends HandshakeMessageHandler<Supplementa
     }
 
     @Override
-    public SupplementalDataParser getParser(byte[] message, int pointer) {
-        return new SupplementalDataParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
+    public SupplementalDataParser getParser(InputStream stream) {
+        return new SupplementalDataParser(stream, tlsContext.getChooser().getLastRecordVersion(),
             tlsContext.getConfig());
     }
 

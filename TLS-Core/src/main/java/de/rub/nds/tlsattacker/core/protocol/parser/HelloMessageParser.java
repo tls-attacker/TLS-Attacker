@@ -6,7 +6,6 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -15,6 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloMessage;
+import java.io.InputStream;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,8 +22,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * An abstract Parser class for Hello Messages
  *
- * @param <T>
- *            Type of the HelloMessage to parse
+ * @param <T> Type of the HelloMessage to parse
  */
 public abstract class HelloMessageParser<T extends HelloMessage> extends HandshakeMessageParser<T> {
 
@@ -32,20 +31,13 @@ public abstract class HelloMessageParser<T extends HelloMessage> extends Handsha
     /**
      * Constructor for the Parser class
      *
-     * @param pointer
-     *                Position in the array where the HelloMessageParser is supposed to start parsing
-     * @param array
-     *                The byte[] which the HelloMessageParser is supposed to parse
-     * @param type
-     *                Expected Type value for the Message
-     * @param version
-     *                Version of the Protocol
-     * @param config
-     *                A Config used in the current context
+     * @param stream
+     * @param type Expected Type value for the Message
+     * @param version Version of the Protocol
+     * @param config A Config used in the current context
      */
-    public HelloMessageParser(int pointer, byte[] array, HandshakeMessageType type, ProtocolVersion version,
-        Config config) {
-        super(pointer, array, type, version, config);
+    public HelloMessageParser(InputStream stream, HandshakeMessageType type, ProtocolVersion version, Config config) {
+        super(stream, type, version, config);
     }
 
     protected boolean hasSessionID(HelloMessage message) {
@@ -55,8 +47,7 @@ public abstract class HelloMessageParser<T extends HelloMessage> extends Handsha
     /**
      * Reads the next bytes as a ProtocolVersion and writes them in the message
      *
-     * @param message
-     *                Message to write in
+     * @param message Message to write in
      */
     protected void parseProtocolVersion(HelloMessage message) {
         message.setProtocolVersion(parseByteArrayField(HandshakeByteLength.VERSION));
@@ -66,8 +57,7 @@ public abstract class HelloMessageParser<T extends HelloMessage> extends Handsha
     /**
      * Reads the next bytes as a the Random and writes them in the message
      *
-     * @param message
-     *                Message to write in
+     * @param message Message to write in
      */
     protected void parseRandom(HelloMessage message) {
         message.setRandom(parseByteArrayField(HandshakeByteLength.RANDOM));
@@ -77,10 +67,10 @@ public abstract class HelloMessageParser<T extends HelloMessage> extends Handsha
     }
 
     /**
-     * Reads the next bytes as the SessionID length and writes them in the message
+     * Reads the next bytes as the SessionID length and writes them in the
+     * message
      *
-     * @param message
-     *                Message to write in
+     * @param message Message to write in
      */
     protected void parseSessionIDLength(HelloMessage message) {
         message.setSessionIdLength(parseIntField(HandshakeByteLength.SESSION_ID_LENGTH));
@@ -90,8 +80,7 @@ public abstract class HelloMessageParser<T extends HelloMessage> extends Handsha
     /**
      * Reads the next bytes as the SessionID and writes them in the message
      *
-     * @param message
-     *                Message to write in
+     * @param message Message to write in
      */
     protected void parseSessionID(HelloMessage message) {
         message.setSessionId(parseByteArrayField(message.getSessionIdLength().getOriginalValue()));

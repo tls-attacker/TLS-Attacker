@@ -9,8 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.AlpnExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.alpn.AlpnEntry;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.AlpnExtensionParser;
@@ -18,6 +16,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.AlpnExtensionPr
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.AlpnExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.Level;
@@ -33,8 +32,8 @@ public class AlpnExtensionHandler extends ExtensionHandler<AlpnExtensionMessage>
     }
 
     @Override
-    public AlpnExtensionParser getParser(byte[] message, int pointer, Config config) {
-        return new AlpnExtensionParser(pointer, message, config);
+    public AlpnExtensionParser getParser(InputStream stream) {
+        return new AlpnExtensionParser(stream, context.getConfig());
     }
 
     @Override

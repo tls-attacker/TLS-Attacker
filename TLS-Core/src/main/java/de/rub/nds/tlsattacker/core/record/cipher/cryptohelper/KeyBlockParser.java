@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CipherType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.Parser;
+import java.io.ByteArrayInputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -37,7 +38,7 @@ public class KeyBlockParser extends Parser<KeySet> {
     private final ProtocolVersion version;
 
     public KeyBlockParser(byte[] keyBlock, CipherSuite suite, ProtocolVersion version) {
-        super(0, keyBlock);
+        super(new ByteArrayInputStream(keyBlock));
         this.suite = suite;
         this.version = version;
     }

@@ -6,7 +6,6 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -23,6 +22,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.NewSessionTicketParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.NewSessionTicketPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.NewSessionTicketSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -41,9 +41,9 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
     }
 
     @Override
-    public NewSessionTicketParser getParser(byte[] message, int pointer) {
-        return new NewSessionTicketParser(pointer, message, tlsContext.getChooser().getSelectedProtocolVersion(),
-            tlsContext.getConfig());
+    public NewSessionTicketParser getParser(InputStream stream) {
+        return new NewSessionTicketParser(stream, tlsContext.getChooser().getSelectedProtocolVersion(),
+                tlsContext.getConfig(), tlsContext.getTalkingConnectionEndType());
     }
 
     @Override
@@ -112,21 +112,21 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
     protected byte[] derivePsk(PskSet pskSet) {
         try {
             LOGGER.debug("Deriving PSK from current session");
-            HKDFAlgorithm hkdfAlgorithm =
-                AlgorithmResolver.getHKDFAlgorithm(tlsContext.getChooser().getSelectedCipherSuite());
+            HKDFAlgorithm hkdfAlgorithm
+                    = AlgorithmResolver.getHKDFAlgorithm(tlsContext.getChooser().getSelectedCipherSuite());
             DigestAlgorithm digestAlgo = AlgorithmResolver.getDigestAlgorithm(
-                tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext.getChooser().getSelectedCipherSuite());
+                    tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext.getChooser().getSelectedCipherSuite());
             int macLength = Mac.getInstance(hkdfAlgorithm.getMacAlgorithm().getJavaName()).getMacLength();
-            byte[] resumptionMasterSecret =
-                HKDFunction.deriveSecret(hkdfAlgorithm, digestAlgo.getJavaName(), tlsContext.getMasterSecret(),
-                    HKDFunction.RESUMPTION_MASTER_SECRET, tlsContext.getDigest().getRawBytes());
+            byte[] resumptionMasterSecret
+                    = HKDFunction.deriveSecret(hkdfAlgorithm, digestAlgo.getJavaName(), tlsContext.getMasterSecret(),
+                            HKDFunction.RESUMPTION_MASTER_SECRET, tlsContext.getDigest().getRawBytes());
             tlsContext.setResumptionMasterSecret(resumptionMasterSecret);
             LOGGER.debug("Derived ResumptionMasterSecret: " + ArrayConverter.bytesToHexString(resumptionMasterSecret));
             LOGGER.debug("Derived Master Secret: " + ArrayConverter.bytesToHexString(tlsContext.getMasterSecret()));
             LOGGER.debug("Handshake Transcript Raw Bytes: "
-                + ArrayConverter.bytesToHexString(tlsContext.getDigest().getRawBytes()));
+                    + ArrayConverter.bytesToHexString(tlsContext.getDigest().getRawBytes()));
             byte[] psk = HKDFunction.expandLabel(hkdfAlgorithm, resumptionMasterSecret, HKDFunction.RESUMPTION,
-                pskSet.getTicketNonce(), macLength);
+                    pskSet.getTicketNonce(), macLength);
             LOGGER.debug("New derived pre-shared-key: " + ArrayConverter.bytesToHexString(psk));
             return psk;
 

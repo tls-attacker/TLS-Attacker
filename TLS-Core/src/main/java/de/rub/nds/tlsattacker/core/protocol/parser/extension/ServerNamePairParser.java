@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
 import de.rub.nds.tlsattacker.core.protocol.Parser;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,8 +23,8 @@ public class ServerNamePairParser extends Parser<ServerNamePair> {
 
     private ServerNamePair pair;
 
-    public ServerNamePairParser(int startposition, byte[] array) {
-        super(startposition, array);
+    public ServerNamePairParser(InputStream stream) {
+        super(stream);
     }
 
     @Override

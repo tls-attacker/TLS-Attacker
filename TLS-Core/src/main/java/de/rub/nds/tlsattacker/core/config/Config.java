@@ -62,7 +62,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareS
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.RequestItemV2;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
-import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
@@ -928,11 +927,6 @@ public class Config implements Serializable {
      * When "Null" records are defined to be send, every message will be sent in at least one individual record
      */
     private Boolean createIndividualRecords = true;
-
-    /**
-     * Which recordLayer should be used
-     */
-    private RecordLayerType recordLayerType = RecordLayerType.RECORD;
 
     /**
      * If this value is set the default workflowExecutor will remove all runtime values from the workflow trace and will
@@ -2341,14 +2335,6 @@ public class Config implements Serializable {
 
     public void setResetWorkflowTracesBeforeSaving(Boolean resetWorkflowTracesBeforeSaving) {
         this.resetWorkflowTracesBeforeSaving = resetWorkflowTracesBeforeSaving;
-    }
-
-    public RecordLayerType getRecordLayerType() {
-        return recordLayerType;
-    }
-
-    public void setRecordLayerType(RecordLayerType recordLayerType) {
-        this.recordLayerType = recordLayerType;
     }
 
     public Boolean isFlushOnMessageTypeChange() {

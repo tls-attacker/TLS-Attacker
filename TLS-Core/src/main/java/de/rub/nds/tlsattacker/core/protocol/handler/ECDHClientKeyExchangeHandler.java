@@ -6,7 +6,6 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
@@ -17,6 +16,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.ECDHClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ECDHClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ECDHClientKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -29,9 +29,9 @@ public class ECDHClientKeyExchangeHandler<T extends ECDHClientKeyExchangeMessage
     }
 
     @Override
-    public ECDHClientKeyExchangeParser<T> getParser(byte[] message, int pointer) {
-        return new ECDHClientKeyExchangeParser<>(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
-            tlsContext.getConfig());
+    public ECDHClientKeyExchangeParser<T> getParser(InputStream stream) {
+        return new ECDHClientKeyExchangeParser<>(stream, tlsContext.getChooser().getLastRecordVersion(),
+                tlsContext.getConfig());
     }
 
     @Override

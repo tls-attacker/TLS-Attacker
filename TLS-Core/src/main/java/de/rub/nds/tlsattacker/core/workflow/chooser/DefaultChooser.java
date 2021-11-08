@@ -30,7 +30,6 @@ import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
-import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -286,8 +285,9 @@ public class DefaultChooser extends Chooser {
     }
 
     /**
-     * Additional Check for Extended Random. If extended Random was negotiated, we add the additional bytes to the
-     * Server Random
+     * Additional Check for Extended Random.If extended Random was negotiated, we add the additional bytes to the
+ Server Random
+     * @return 
      */
     @Override
     public byte[] getServerRandom() {
@@ -740,16 +740,7 @@ public class DefaultChooser extends Chooser {
         } else {
             return config.getDefaultServerApplicationTrafficSecret();
         }
-    }
-
-    @Override
-    public RecordLayerType getRecordLayerType() {
-        if (context.getRecordLayerType() != null) {
-            return context.getRecordLayerType();
-        } else {
-            return config.getRecordLayerType();
-        }
-    }
+    } 
 
     @Override
     public BigInteger getClientRSAPrivateKey() {

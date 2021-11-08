@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.message.TlsMessage;
+import java.io.InputStream;
 
 /**
  * An abstract Parser class for ProtocolMessages
@@ -27,17 +28,14 @@ public abstract class TlsMessageParser<T extends TlsMessage> extends ProtocolMes
     /**
      * Constructor for the Parser class
      *
-     * @param pointer
-     *                Position in the array where the ProtocolMessageParser is supposed to start parsing
-     * @param array
-     *                The byte[] which the ProtocolMessageParser is supposed to parse
+     * @param stream
      * @param version
      *                Version of the Protocol
      * @param config
      *                A Config used in the current context
      */
-    public TlsMessageParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
-        super(pointer, array, config);
+    public TlsMessageParser(InputStream stream, ProtocolVersion version, Config config) {
+        super(stream, config);
         this.version = version;
     }
 

@@ -10,14 +10,12 @@
 package de.rub.nds.tlsattacker.core.record.cipher;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.RecordByteLength;
 import de.rub.nds.tlsattacker.core.crypto.cipher.DecryptionCipher;
 import de.rub.nds.tlsattacker.core.crypto.cipher.EncryptionCipher;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -55,11 +53,7 @@ public abstract class RecordCipher {
 
     public abstract void encrypt(Record record) throws CryptoException;
 
-    public abstract void encrypt(BlobRecord record) throws CryptoException;
-
     public abstract void decrypt(Record record) throws CryptoException;
-
-    public abstract void decrypt(BlobRecord record) throws CryptoException;
 
     /**
      * This function collects data needed for computing MACs and other authentication tags in CBC/CCM/GCM cipher suites.

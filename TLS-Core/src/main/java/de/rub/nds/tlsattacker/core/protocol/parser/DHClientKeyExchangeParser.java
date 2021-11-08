@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,17 +25,14 @@ public class DHClientKeyExchangeParser<T extends DHClientKeyExchangeMessage> ext
     /**
      * Constructor for the Parser class
      *
-     * @param startposition
-     *                      Position in the array where the ClientKeyExchangeParser is supposed to start parsing
-     * @param array
-     *                      The byte[] which the ClientKeyExchangeParser is supposed to parse
+     * @param stream
      * @param version
      *                      Version of the Protocol
      * @param config
      *                      A Config used in the current context
      */
-    public DHClientKeyExchangeParser(int startposition, byte[] array, ProtocolVersion version, Config config) {
-        super(startposition, array, version, config);
+    public DHClientKeyExchangeParser(InputStream stream, ProtocolVersion version, Config config) {
+        super(stream, version, config);
     }
 
     @Override

@@ -18,12 +18,13 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.KeyUpdateRequest;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.KeyUpdateMessage;
+import java.io.InputStream;
 
 public class KeyUpdateParser extends HandshakeMessageParser<KeyUpdateMessage> {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public KeyUpdateParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
-        super(pointer, array, HandshakeMessageType.KEY_UPDATE, version, config);
+    public KeyUpdateParser(InputStream stream, ProtocolVersion version, Config config) {
+        super(stream, HandshakeMessageType.KEY_UPDATE, version, config);
     }
 
     @Override

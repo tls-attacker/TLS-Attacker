@@ -6,12 +6,13 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.certificate.transparency;
 
 import de.rub.nds.asn1.parser.ParserException;
 import de.rub.nds.tlsattacker.core.constants.CertificateTransparencyLength;
 import de.rub.nds.tlsattacker.core.protocol.Parser;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,12 +25,10 @@ public class SignedCertificateTimestampParser extends Parser<SignedCertificateTi
     /**
      * Constructor for the Parser
      *
-     * @param startposition
-     *                      Position in the array from which the Parser should start working
-     * @param array
+     * @param stream
      */
-    public SignedCertificateTimestampParser(int startposition, byte[] array) {
-        super(startposition, array);
+    public SignedCertificateTimestampParser(InputStream stream) {
+        super(stream);
     }
 
     @Override
@@ -39,8 +38,8 @@ public class SignedCertificateTimestampParser extends Parser<SignedCertificateTi
             SignedCertificateTimestamp certificateTimestamp = new SignedCertificateTimestamp();
 
             // Decode and parse SCT version
-            SignedCertificateTimestampVersion sctVersion =
-                SignedCertificateTimestampVersion.decodeVersion(parseByteField(1));
+            SignedCertificateTimestampVersion sctVersion
+                    = SignedCertificateTimestampVersion.decodeVersion(parseByteField(1));
             certificateTimestamp.setVersion(sctVersion);
 
             // Decode 32 byte log id
@@ -71,8 +70,7 @@ public class SignedCertificateTimestampParser extends Parser<SignedCertificateTi
 
             // Decode signature (currently only copied and not further parsed)
             byte[] encodedSignature = parseByteArrayField(getBytesLeft());
-            SignedCertificateTimestampSignatureParser signatureParser =
-                new SignedCertificateTimestampSignatureParser(0, encodedSignature);
+            SignedCertificateTimestampSignatureParser signatureParser = new SignedCertificateTimestampSignatureParser(new ByteArrayInputStream(encodedSignature));
             SignedCertificateTimestampSignature signature = signatureParser.parse();
             certificateTimestamp.setSignature(signature);
 

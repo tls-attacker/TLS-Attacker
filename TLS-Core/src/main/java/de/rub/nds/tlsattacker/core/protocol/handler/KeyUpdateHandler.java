@@ -26,6 +26,7 @@ import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.io.InputStream;
 
 import java.security.NoSuchAlgorithmException;
 
@@ -56,8 +57,8 @@ public class KeyUpdateHandler extends HandshakeMessageHandler<KeyUpdateMessage> 
     }
 
     @Override
-    public KeyUpdateParser getParser(byte[] message, int pointer) {
-        return new KeyUpdateParser(pointer, message, tlsContext.getChooser().getSelectedProtocolVersion(),
+    public KeyUpdateParser getParser(InputStream stream) {
+        return new KeyUpdateParser(stream, tlsContext.getChooser().getSelectedProtocolVersion(),
             tlsContext.getConfig());
 
     }

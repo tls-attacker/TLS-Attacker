@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.https;
 
 import de.rub.nds.tlsattacker.core.protocol.handler.TlsMessageHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 
 public class HttpsRequestHandler extends TlsMessageHandler<HttpsRequestMessage> {
 
@@ -19,8 +20,8 @@ public class HttpsRequestHandler extends TlsMessageHandler<HttpsRequestMessage> 
     }
 
     @Override
-    public HttpsRequestParser getParser(byte[] message, int pointer) {
-        return new HttpsRequestParser(pointer, message, tlsContext.getChooser().getSelectedProtocolVersion(),
+    public HttpsRequestParser getParser(InputStream stream) {
+        return new HttpsRequestParser(stream, tlsContext.getChooser().getSelectedProtocolVersion(),
             tlsContext.getConfig());
     }
 

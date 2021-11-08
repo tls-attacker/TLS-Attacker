@@ -6,20 +6,20 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.record.AbstractRecord;
+import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -60,12 +60,8 @@ public class GenericReceiveAction extends MessageAction implements ReceivingActi
         }
         LOGGER.debug("Receiving Messages...");
         TlsContext ctx = state.getTlsContext(getConnectionAlias());
-        MessageActionResult result = receiveMessageHelper.receiveMessages(ctx);
-        records.addAll(result.getRecordList());
-        messages.addAll(result.getMessageList());
-        if (result.getMessageFragmentList() != null) {
-            fragments = new ArrayList<>(result.getMessageFragmentList());
-        }
+        receive(ctx, messages, records);
+
         setExecuted(true);
         String received = getReadableString(messages);
         LOGGER.info("Received Messages (" + ctx + "): " + received);
@@ -101,7 +97,7 @@ public class GenericReceiveAction extends MessageAction implements ReceivingActi
     }
 
     @Override
-    public List<AbstractRecord> getReceivedRecords() {
+    public List<Record> getReceivedRecords() {
         return records;
     }
 

@@ -6,7 +6,6 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -15,8 +14,10 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.PWDClearExtensionPa
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PWDClearExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PWDClearExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 
 public class PWDClearExtensionHandler extends ExtensionHandler<PWDClearExtensionMessage> {
+
     public PWDClearExtensionHandler(TlsContext context) {
         super(context);
     }
@@ -27,8 +28,8 @@ public class PWDClearExtensionHandler extends ExtensionHandler<PWDClearExtension
     }
 
     @Override
-    public PWDClearExtensionParser getParser(byte[] message, int pointer, Config config) {
-        return new PWDClearExtensionParser(pointer, message, config);
+    public PWDClearExtensionParser getParser(InputStream stream) {
+        return new PWDClearExtensionParser(stream, context.getConfig());
     }
 
     @Override

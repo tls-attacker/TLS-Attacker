@@ -20,7 +20,6 @@ import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
-import de.rub.nds.tlsattacker.core.record.layer.RecordLayerFactory;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
@@ -125,18 +124,6 @@ public abstract class WorkflowExecutor {
         }
     }
 
-    /**
-     * Initialize the context's record layer.
-     *
-     * @param context
-     */
-    public void initRecordLayer(TlsContext context) {
-        if (context.getRecordLayerType() == null) {
-            throw new ConfigurationException("No record layer type defined");
-        }
-        context.setRecordLayer(RecordLayerFactory.getRecordLayer(context.getRecordLayerType(), context));
-    }
-
     public Function<State, Integer> getBeforeTransportPreInitCallback() {
         return beforeTransportPreInitCallback;
     }
@@ -195,7 +182,7 @@ public abstract class WorkflowExecutor {
 
     public void initAllRecordLayer() {
         for (TlsContext ctx : state.getAllTlsContexts()) {
-            initRecordLayer(ctx);
+            initProtocolStack(ctx);
         }
     }
 
@@ -249,11 +236,15 @@ public abstract class WorkflowExecutor {
     }
 
     public boolean isIoException() {
-        for (TlsContext ctx : state.getAllTlsContexts()) {
-            if (ctx.isReceivedTransportHandlerException()) {
+        for (TlsContext context : state.getAllTlsContexts()) {
+            if (context.isReceivedTransportHandlerException()) {
                 return true;
             }
         }
         return false;
+    }
+
+    private void initProtocolStack(TlsContext context) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

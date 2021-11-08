@@ -6,7 +6,6 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -14,6 +13,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SupportedVersionsExtensionMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,13 +21,14 @@ public class SupportedVersionsExtensionParser extends ExtensionParser<SupportedV
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SupportedVersionsExtensionParser(int startposition, byte[] array, Config config) {
-        super(startposition, array, config);
+    public SupportedVersionsExtensionParser(InputStream stream, Config config) {
+        super(stream, config);
     }
 
     @Override
     public void parseExtensionMessageContent(SupportedVersionsExtensionMessage msg) {
         LOGGER.debug("Parsing SupportedVersionsExtensionMessage");
+        //TODO Don't guess
         if (msg.getExtensionLength().getValue() == HandshakeByteLength.VERSION) {
             // This looks like a ServerProtocolVersionExtension
             msg.setSupportedVersions(parseByteArrayField(HandshakeByteLength.VERSION));
@@ -44,10 +45,10 @@ public class SupportedVersionsExtensionParser extends ExtensionParser<SupportedV
     }
 
     /**
-     * Reads the next bytes as the supportedVersionLength of the Extension and writes them in the message
+     * Reads the next bytes as the supportedVersionLength of the Extension and
+     * writes them in the message
      *
-     * @param msg
-     *            Message to write in
+     * @param msg Message to write in
      */
     private void parseSupportedVersionLength(SupportedVersionsExtensionMessage msg) {
         msg.setSupportedVersionsLength(parseIntField(ExtensionByteLength.SUPPORTED_PROTOCOL_VERSIONS_LENGTH));
@@ -55,10 +56,10 @@ public class SupportedVersionsExtensionParser extends ExtensionParser<SupportedV
     }
 
     /**
-     * Reads the next bytes as the supportedVersion of the Extension and writes them in the message
+     * Reads the next bytes as the supportedVersion of the Extension and writes
+     * them in the message
      *
-     * @param msg
-     *            Message to write in
+     * @param msg Message to write in
      */
     private void parseSupportedVersion(SupportedVersionsExtensionMessage msg) {
         msg.setSupportedVersions(parseByteArrayField(msg.getSupportedVersionsLength().getValue()));

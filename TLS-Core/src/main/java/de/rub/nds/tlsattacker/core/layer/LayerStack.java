@@ -1,5 +1,7 @@
 package de.rub.nds.tlsattacker.core.layer;
 
+import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -34,62 +36,71 @@ public class LayerStack {
         }
     }
 
-    public List<LayerProcessingResult> sendData(List<LayerConfiguration> layerConfigurationList) {
-        int i = 0;
+    public final ProtocolLayer getLayer(Class<? extends ProtocolLayer> layerClass) {
         for (ProtocolLayer layer : layerList) {
+            if (layer.getClass().equals(layerClass)) {
+                return layer;
+            }
+        }
+        return null;
+    }
+
+    public ProtocolLayer getHighestLayer() {
+        return layerList.get(0);
+    }
+
+    public ProtocolLayer getLowestLayer() {
+        return layerList.get(layerList.size() - 1);
+    }
+
+    public List<LayerProcessingResult> sendData(List<LayerConfiguration> layerConfigurationList) throws IOException {
+        if (layerList.size() != layerConfigurationList.size()) {
+            throw new RuntimeException(
+                    "Illegal LayerConfiguration list provided. Each layer needs a configuration entry (null is fine too if no explict configuration is desired). Expected "
+                    + layerList.size() + " but found " + layerConfigurationList.size());
+        }
+        // Prepare layer configuration and clear previous executions
+        for (int i = 0; i < layerList.size(); i++) {
+            ProtocolLayer layer = layerList.get(i);
             layer.clear();
             layer.setLayerConfiguration(layerConfigurationList.get(i));
             i++;
         }
-    }
 
-    public List<LayerProcessingResult> sendLayerConfigurations(List<LayerConfiguration> layerConfigurationList) {
-        if (layerList.size() != layerConfigurationList.size()) {
-            throw new RuntimeException("Illegal LayerConfiguration list provided. Each layer needs a configuration entry (null is fine too if no explict configuration is desired). Expected " + layerList.size() + " but found " + layerConfigurationList.size());
+        // Send data
+        for (ProtocolLayer layer : layerList) {
+            layer.sendData();
         }
+
+        // Gather results
         List<LayerProcessingResult> resultList = new LinkedList<>();
-        byte[] lowerLayerData = null;
-        //traverse layers in order
-        for (int i = 0; i < layerList.size(); i++) {
-            LayerConfiguration configuration = layerConfigurationList.get(i);
-            if (configuration == null) {
-                continue;
-            }
-            if (lowerLayerData != null) {
-                if (configuration.getAdditionalLayerData() == null) {
-                    LOGGER.warn("Layer is configured to use additionalData but higher layer provided data. Overwriting configuration!");
-                }
-                configuration.setAdditionalLayerData(lowerLayerData);
-            }
-            LayerProcessingResult result = layerList.get(i).sendConfiguration(configuration);
-            lowerLayerData = result.getResultingData();
-            resultList.add(result);
-        }
+        layerList.forEach(layer -> {
+            resultList.add(layer.getLayerResult());
+        });
         return resultList;
     }
 
-    public List<LayerProcessingResult> receiveLayerConfigurations(List<LayerConfiguration> layerConfigurationList) {
+    public List<LayerProcessingResult> receiveData(List<LayerConfiguration> layerConfigurationList) throws IOException {
         if (layerList.size() != layerConfigurationList.size()) {
-            throw new RuntimeException("Illegal LayerConfiguration list provided. Each layer needs a configuration entry (null is fine too if no explict configuration is desired). Expected " + layerList.size() + " but found " + layerConfigurationList.size());
+            throw new RuntimeException(
+                    "Illegal LayerConfiguration list provided. Each layer needs a configuration entry (null is fine too if no explict configuration is desired). Expected "
+                    + layerList.size() + " but found " + layerConfigurationList.size());
         }
+        // Prepare layer configuration and clear previous executions
+        for (int i = 0; i < layerList.size(); i++) {
+            ProtocolLayer layer = layerList.get(i);
+            layer.clear();
+            layer.setLayerConfiguration(layerConfigurationList.get(i));
+            i++;
+        }
+
+        ProtocolLayer receive = layerList.get(layerList.size() - 1);
+        receive.retrieveMoreData(null);
+        // Gather results
         List<LayerProcessingResult> resultList = new LinkedList<>();
-        byte[] higherLayerData = null;
-        //Traverse layers in the reverse order
-        for (int i = layerList.size() - 1; i >= 0; i--) {
-            LayerConfiguration configuration = layerConfigurationList.get(i);
-            if (configuration == null) {
-                continue;
-            }
-            if (higherLayerData != null) {
-                if (configuration.getAdditionalLayerData() == null) {
-                    LOGGER.warn("Layer is configured to use additionalData but higher layer provided data. Overwriting configuration!");
-                }
-                configuration.setAdditionalLayerData(higherLayerData);
-            }
-            LayerProcessingResult result = layerList.get(i).receiveData();
-            higherLayerData = result.getResultingData();
-            resultList.add(result);
-        }
+        layerList.forEach(layer -> {
+            resultList.add(layer.getLayerResult());
+        });
         return resultList;
     }
 }

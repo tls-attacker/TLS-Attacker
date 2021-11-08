@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.HandshakeMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.SSL2ClientMasterKeyPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.SSL2ClientMasterKeySerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 
 public class SSL2ClientMasterKeyHandler extends HandshakeMessageHandler<SSL2ClientMasterKeyMessage> {
 
@@ -22,7 +23,7 @@ public class SSL2ClientMasterKeyHandler extends HandshakeMessageHandler<SSL2Clie
     }
 
     @Override
-    public HandshakeMessageParser<SSL2ClientMasterKeyMessage> getParser(byte[] message, int pointer) {
+    public HandshakeMessageParser<SSL2ClientMasterKeyMessage> getParser(InputStream stream) {
         // We currently don't receive ClientMasterKey messages, only send them.
         return null;
     }

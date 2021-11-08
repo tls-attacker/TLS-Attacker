@@ -15,14 +15,15 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.core.protocol.Parser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.io.InputStream;
 
 public class CachedObjectParser extends Parser<CachedObject> {
 
     private final CachedObject cachedObject;
     private final ConnectionEndType connectionEndType;
 
-    public CachedObjectParser(int startposition, byte[] array, ConnectionEndType connectionEndType) {
-        super(startposition, array);
+    public CachedObjectParser(InputStream stream, ConnectionEndType connectionEndType) {
+        super(stream);
         cachedObject = new CachedObject();
         this.connectionEndType = connectionEndType;
     }

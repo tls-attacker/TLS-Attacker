@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.PskEcDheServerKeyExchangeMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -26,17 +27,14 @@ public class PskEcDheServerKeyExchangeParser extends ECDHEServerKeyExchangeParse
     /**
      * Constructor for the Parser class
      *
-     * @param pointer
-     *                Position in the array where the ServerKeyExchangeParser is supposed to start parsing
-     * @param array
-     *                The byte[] which the ServerKeyExchangeParser is supposed to parse
+     * @param stream
      * @param version
      *                Version of the Protocol
      * @param config
      *                A Config used in the current context
      */
-    public PskEcDheServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
-        super(pointer, array, version, config);
+    public PskEcDheServerKeyExchangeParser(InputStream stream, ProtocolVersion version, Config config) {
+        super(stream, version, config);
         this.version = version;
     }
 

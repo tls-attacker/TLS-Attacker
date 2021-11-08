@@ -6,13 +6,13 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.parser.supplementaldata;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.supplementaldata.SupplementalDataEntry;
 import de.rub.nds.tlsattacker.core.protocol.Parser;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,8 +20,8 @@ public class SupplementalDataEntryParser extends Parser<SupplementalDataEntry> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SupplementalDataEntryParser(int startposition, byte[] array) {
-        super(startposition, array);
+    public SupplementalDataEntryParser(InputStream stream) {
+        super(stream);
     }
 
     @Override
@@ -47,7 +47,7 @@ public class SupplementalDataEntryParser extends Parser<SupplementalDataEntry> {
     private void parseSupplementalDataEntry(SupplementalDataEntry entry) {
         entry.setSupplementalDataEntry(parseByteArrayField(entry.getSupplementalDataEntryLength().getValue()));
         LOGGER.debug(
-            "SupplementalDataEntry: " + ArrayConverter.bytesToHexString(entry.getSupplementalDataEntry().getValue()));
+                "SupplementalDataEntry: " + ArrayConverter.bytesToHexString(entry.getSupplementalDataEntry().getValue()));
     }
 
 }

@@ -11,11 +11,12 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptThenMacExtensionMessage;
+import java.io.InputStream;
 
 public class EncryptThenMacExtensionParser extends ExtensionParser<EncryptThenMacExtensionMessage> {
 
-    public EncryptThenMacExtensionParser(int startposition, byte[] array, Config config) {
-        super(startposition, array, config);
+    public EncryptThenMacExtensionParser(InputStream stream, Config config) {
+        super(stream, config);
     }
 
     @Override

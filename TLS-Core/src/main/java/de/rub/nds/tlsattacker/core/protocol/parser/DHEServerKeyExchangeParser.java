@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
+import java.io.InputStream;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,10 +32,7 @@ public class DHEServerKeyExchangeParser<T extends DHEServerKeyExchangeMessage> e
     /**
      * Constructor for the Parser class
      *
-     * @param pointer
-     *                             Position in the array where the ServerKeyExchangeParser is supposed to start parsing
-     * @param array
-     *                             The byte[] which the ServerKeyExchangeParser is supposed to parse
+     * @param stream
      * @param version
      *                             Version of the Protocol
      * @param keyExchangeAlgorithm
@@ -42,17 +40,12 @@ public class DHEServerKeyExchangeParser<T extends DHEServerKeyExchangeMessage> e
      * @param config
      *                             A Config used in the current context
      */
-    public DHEServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version,
+    public DHEServerKeyExchangeParser(InputStream stream, ProtocolVersion version,
         KeyExchangeAlgorithm keyExchangeAlgorithm, Config config) {
-        super(pointer, array, HandshakeMessageType.SERVER_KEY_EXCHANGE, version, config);
+        super(stream, HandshakeMessageType.SERVER_KEY_EXCHANGE, version, config);
         this.version = version;
         this.keyExchangeAlgorithm = keyExchangeAlgorithm;
 
-    }
-
-    public DHEServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
-        // TODO: Delete when done
-        this(pointer, array, version, null, config);
     }
 
     @Override

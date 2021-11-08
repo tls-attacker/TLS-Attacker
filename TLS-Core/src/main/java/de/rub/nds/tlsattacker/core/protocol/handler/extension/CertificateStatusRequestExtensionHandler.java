@@ -6,24 +6,23 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import static de.rub.nds.modifiablevariable.util.ArrayConverter.bytesToHexString;
 import static de.rub.nds.tlsattacker.transport.ConnectionEndType.CLIENT;
 
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.CertificateStatusRequestExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.CertificateStatusRequestExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.CertificateStatusRequestExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class CertificateStatusRequestExtensionHandler
-    extends ExtensionHandler<CertificateStatusRequestExtensionMessage> {
+        extends ExtensionHandler<CertificateStatusRequestExtensionMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -32,8 +31,9 @@ public class CertificateStatusRequestExtensionHandler
     }
 
     @Override
-    public CertificateStatusRequestExtensionParser getParser(byte[] message, int pointer, Config config) {
-        return new CertificateStatusRequestExtensionParser(pointer, message, config);
+    public CertificateStatusRequestExtensionParser getParser(InputStream stream) {
+        //TODO make sure this is the correct version
+        return new CertificateStatusRequestExtensionParser(stream, context.getConfig(), context.getChooser().getSelectedProtocolVersion());
     }
 
     @Override
@@ -50,15 +50,15 @@ public class CertificateStatusRequestExtensionHandler
     public void adjustTLSExtensionContext(CertificateStatusRequestExtensionMessage message) {
         if (context.getTalkingConnectionEndType() == CLIENT) {
             context.setCertificateStatusRequestExtensionRequestType(CertificateStatusRequestType
-                .getCertificateStatusRequestType(message.getCertificateStatusRequestType().getValue()));
+                    .getCertificateStatusRequestType(message.getCertificateStatusRequestType().getValue()));
             LOGGER.debug("Adjusted the Certificate Status Request Type in the TLSContext to "
-                + context.getCertificateStatusRequestExtensionRequestType());
+                    + context.getCertificateStatusRequestExtensionRequestType());
             context.setCertificateStatusRequestExtensionRequestExtension(message.getRequestExtension().getValue());
             LOGGER.debug("Adjusted the Certificate Status Request Request Extension to "
-                + bytesToHexString(context.getCertificateStatusRequestExtensionRequestExtension()));
+                    + bytesToHexString(context.getCertificateStatusRequestExtensionRequestExtension()));
             context.setCertificateStatusRequestExtensionResponderIDList(message.getResponderIDList().getValue());
             LOGGER.debug("Adjusted the Certificate Status Request Responder ID List to "
-                + bytesToHexString(context.getCertificateStatusRequestExtensionResponderIDList()));
+                    + bytesToHexString(context.getCertificateStatusRequestExtensionResponderIDList()));
         }
     }
 

@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -31,22 +32,19 @@ public class ECDHEServerKeyExchangeParser<T extends ECDHEServerKeyExchangeMessag
     /**
      * Constructor for the Parser class
      *
-     * @param pointer
-     *                Position in the array where the ServerKeyExchangeParser is supposed to start parsing
-     * @param array
-     *                The byte[] which the ServerKeyExchangeParser is supposed to parse
+     * @param stream
      * @param version
      *                Version of the Protocol
      * @param config
      *                A Config used in the current context
      */
-    public ECDHEServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
-        this(pointer, array, version, null, config);
+    public ECDHEServerKeyExchangeParser(InputStream stream, ProtocolVersion version, Config config) {
+        this(stream, version, null, config);
     }
 
-    public ECDHEServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version,
+    public ECDHEServerKeyExchangeParser(InputStream stream, ProtocolVersion version,
         KeyExchangeAlgorithm keyExchangeAlgorithm, Config config) {
-        super(pointer, array, HandshakeMessageType.SERVER_KEY_EXCHANGE, version, config);
+        super(stream, HandshakeMessageType.SERVER_KEY_EXCHANGE, version, config);
         this.version = version;
         this.keyExchangeAlgorithm = keyExchangeAlgorithm;
     }

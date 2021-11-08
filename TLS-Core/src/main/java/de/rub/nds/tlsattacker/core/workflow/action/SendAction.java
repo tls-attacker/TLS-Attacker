@@ -6,27 +6,24 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
+import de.rub.nds.tlsattacker.core.layer.LayerStack;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.TlsMessage;
-import de.rub.nds.tlsattacker.core.record.AbstractRecord;
-import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -41,67 +38,62 @@ import org.apache.logging.log4j.Logger;
  */
 @XmlRootElement
 public class SendAction extends MessageAction implements SendingAction {
-
+    
     private static final Logger LOGGER = LogManager.getLogger();
-
+    
     public SendAction() {
         super();
     }
-
+    
     public SendAction(ActionOption option, List<ProtocolMessage> messages) {
         super(messages);
-
+        
         if (option != null) {
             this.addActionOption(option);
         }
     }
-
+    
     public SendAction(List<ProtocolMessage> messages) {
         this((ActionOption) null, messages);
     }
-
+    
     public SendAction(ActionOption option, ProtocolMessage... messages) {
         this(option, new ArrayList<>(Arrays.asList(messages)));
     }
-
+    
     public SendAction(ProtocolMessage... messages) {
         this(new ArrayList<>(Arrays.asList(messages)));
     }
-
+    
     public SendAction(String connectionAlias) {
         super(connectionAlias);
     }
-
+    
     public SendAction(String connectionAlias, List<ProtocolMessage> messages) {
         super(connectionAlias, messages);
     }
-
+    
     public SendAction(String connectionAlias, ProtocolMessage... messages) {
         super(connectionAlias, new ArrayList<>(Arrays.asList(messages)));
     }
-
+    
     @Override
     public void execute(State state) throws WorkflowExecutionException {
         TlsContext tlsContext = state.getTlsContext(connectionAlias);
-
+        
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
         }
-
+        
         String sending = getReadableString(messages);
         if (hasDefaultAlias()) {
             LOGGER.info("Sending messages: " + sending);
         } else {
             LOGGER.info("Sending messages (" + connectionAlias + "): " + sending);
         }
-
+        
         try {
-            MessageActionResult result = sendMessageHelper.sendMessages(messages, fragments, records, tlsContext);
-            messages = new ArrayList<>(result.getMessageList());
-            records = new ArrayList<>(result.getRecordList());
-            if (result.getMessageFragmentList() != null) {
-                fragments = new ArrayList<>(result.getMessageFragmentList());
-            }
+            send(tlsContext, messages, records);
             setExecuted(true);
         } catch (IOException e) {
             if (!getActionOptions().contains(ActionOption.MAY_FAIL)) {
@@ -111,7 +103,7 @@ public class SendAction extends MessageAction implements SendingAction {
             setExecuted(getActionOptions().contains(ActionOption.MAY_FAIL));
         }
     }
-
+    
     @Override
     public String toString() {
         StringBuilder sb;
@@ -132,7 +124,7 @@ public class SendAction extends MessageAction implements SendingAction {
         }
         return sb.toString();
     }
-
+    
     @Override
     public String toCompactString() {
         StringBuilder sb = new StringBuilder(super.toCompactString());
@@ -148,22 +140,22 @@ public class SendAction extends MessageAction implements SendingAction {
         }
         return sb.toString();
     }
-
+    
     @Override
     public boolean executedAsPlanned() {
         return isExecuted();
     }
-
+    
     @Override
-    public void setRecords(List<AbstractRecord> records) {
+    public void setRecords(List<Record> records) {
         this.records = records;
     }
-
+    
     @Override
     public void setFragments(List<DtlsHandshakeMessageFragment> fragments) {
         this.fragments = fragments;
     }
-
+    
     @Override
     public void reset() {
         List<ModifiableVariableHolder> holders = new LinkedList<>();
@@ -173,7 +165,7 @@ public class SendAction extends MessageAction implements SendingAction {
             }
         }
         if (getRecords() != null) {
-            for (AbstractRecord record : getRecords()) {
+            for (Record record : getRecords()) {
                 holders.addAll(record.getAllModifiableVariableHolders());
             }
         }
@@ -187,27 +179,27 @@ public class SendAction extends MessageAction implements SendingAction {
         }
         setExecuted(null);
     }
-
+    
     @Override
     public List<ProtocolMessage> getSendMessages() {
         return messages;
     }
-
+    
     @Override
-    public List<AbstractRecord> getSendRecords() {
+    public List<Record> getSendRecords() {
         return records;
     }
-
+    
     @Override
     public List<DtlsHandshakeMessageFragment> getSendFragments() {
         return fragments;
     }
-
+    
     @Override
     public MessageActionDirection getMessageDirection() {
         return MessageActionDirection.SENDING;
     }
-
+    
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -231,7 +223,7 @@ public class SendAction extends MessageAction implements SendingAction {
         }
         return super.equals(obj);
     }
-
+    
     @Override
     public int hashCode() {
         int hash = super.hashCode();
@@ -240,7 +232,7 @@ public class SendAction extends MessageAction implements SendingAction {
         hash = 67 * hash + Objects.hashCode(this.fragments);
         return hash;
     }
-
+    
     @Override
     public List<ProtocolMessageType> getGoingToSendProtocolMessageTypes() {
         List<ProtocolMessageType> protocolMessageTypes = new ArrayList<>();
@@ -251,7 +243,7 @@ public class SendAction extends MessageAction implements SendingAction {
         }
         return protocolMessageTypes;
     }
-
+    
     @Override
     public List<HandshakeMessageType> getGoingToSendHandshakeMessageTypes() {
         List<HandshakeMessageType> handshakeMessageTypes = new ArrayList<>();
@@ -262,5 +254,5 @@ public class SendAction extends MessageAction implements SendingAction {
         }
         return handshakeMessageTypes;
     }
-
+    
 }

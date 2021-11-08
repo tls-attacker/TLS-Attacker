@@ -6,7 +6,6 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import java.util.ArrayList;
@@ -16,18 +15,20 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
-import javax.xml.bind.annotation.XmlTransient;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.https.HttpsRequestMessage;
 import de.rub.nds.tlsattacker.core.https.HttpsResponseMessage;
+import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
+import de.rub.nds.tlsattacker.core.layer.LayerStack;
+import de.rub.nds.tlsattacker.core.layer.SpecificContainerLayerConfiguration;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.*;
-import de.rub.nds.tlsattacker.core.record.AbstractRecord;
-import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.ReceiveMessageHelper;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.SendMessageHelper;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.IOException;
+import java.util.LinkedList;
 
 public abstract class MessageAction extends ConnectionBoundAction {
 
@@ -38,7 +39,8 @@ public abstract class MessageAction extends ConnectionBoundAction {
 
     @XmlElementWrapper
     @HoldsModifiableVariable
-    @XmlElements(value = { @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
+    @XmlElements(value = {
+        @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
         @XmlElement(type = TlsMessage.class, name = "TlsMessage"),
         @XmlElement(type = CertificateMessage.class, name = "Certificate"),
         @XmlElement(type = CertificateVerifyMessage.class, name = "CertificateVerify"),
@@ -88,66 +90,43 @@ public abstract class MessageAction extends ConnectionBoundAction {
         @XmlElement(type = SrpClientKeyExchangeMessage.class, name = "SrpClientKeyExchange"),
         @XmlElement(type = EndOfEarlyDataMessage.class, name = "EndOfEarlyData"),
         @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensions"),
-        @XmlElement(type = DtlsHandshakeMessageFragment.class, name = "DtlsHandshakeMessageFragment") })
+        @XmlElement(type = DtlsHandshakeMessageFragment.class, name = "DtlsHandshakeMessageFragment")})
     protected List<ProtocolMessage> messages = new ArrayList<>();
 
     @HoldsModifiableVariable
     @XmlElementWrapper
-    @XmlElements(value = { @XmlElement(type = Record.class, name = "Record"),
-        @XmlElement(type = BlobRecord.class, name = "BlobRecord") })
-    protected List<AbstractRecord> records = new ArrayList<>();
+    @XmlElements(value = {
+        @XmlElement(type = Record.class, name = "Record")})
+    protected List<Record> records = new ArrayList<>();
 
     @HoldsModifiableVariable
     @XmlElementWrapper
-    @XmlElements(value = { @XmlElement(type = DtlsHandshakeMessageFragment.class, name = "DtlsFragment") })
+    @XmlElements(value = {
+        @XmlElement(type = DtlsHandshakeMessageFragment.class, name = "DtlsFragment")})
     protected List<DtlsHandshakeMessageFragment> fragments = new ArrayList<>();
 
-    @XmlTransient
-    protected ReceiveMessageHelper receiveMessageHelper;
-
-    @XmlTransient
-    protected SendMessageHelper sendMessageHelper;
-
     public MessageAction() {
-        receiveMessageHelper = new ReceiveMessageHelper();
-        sendMessageHelper = new SendMessageHelper();
     }
 
     public MessageAction(List<ProtocolMessage> messages) {
         this.messages = new ArrayList<>(messages);
-        receiveMessageHelper = new ReceiveMessageHelper();
-        sendMessageHelper = new SendMessageHelper();
     }
 
     public MessageAction(ProtocolMessage... messages) {
         this.messages = new ArrayList<>(Arrays.asList(messages));
-        receiveMessageHelper = new ReceiveMessageHelper();
-        sendMessageHelper = new SendMessageHelper();
     }
 
     public MessageAction(String connectionAlias) {
         super(connectionAlias);
-        receiveMessageHelper = new ReceiveMessageHelper();
-        sendMessageHelper = new SendMessageHelper();
     }
 
     public MessageAction(String connectionAlias, List<ProtocolMessage> messages) {
         super(connectionAlias);
         this.messages = new ArrayList<>(messages);
-        receiveMessageHelper = new ReceiveMessageHelper();
-        sendMessageHelper = new SendMessageHelper();
     }
 
     public MessageAction(String connectionAlias, ProtocolMessage... messages) {
         this(connectionAlias, new ArrayList<>(Arrays.asList(messages)));
-    }
-
-    public void setReceiveMessageHelper(ReceiveMessageHelper receiveMessageHelper) {
-        this.receiveMessageHelper = receiveMessageHelper;
-    }
-
-    public void setSendMessageHelper(SendMessageHelper sendMessageHelper) {
-        this.sendMessageHelper = sendMessageHelper;
     }
 
     public String getReadableString(ProtocolMessage... messages) {
@@ -189,15 +168,15 @@ public abstract class MessageAction extends ConnectionBoundAction {
         this.messages = new ArrayList(Arrays.asList(messages));
     }
 
-    public List<AbstractRecord> getRecords() {
+    public List<Record> getRecords() {
         return records;
     }
 
-    public void setRecords(List<AbstractRecord> records) {
+    public void setRecords(List<Record> records) {
         this.records = records;
     }
 
-    public void setRecords(AbstractRecord... records) {
+    public void setRecords(Record... records) {
         this.records = new ArrayList<>(Arrays.asList(records));
     }
 
@@ -266,5 +245,48 @@ public abstract class MessageAction extends ConnectionBoundAction {
     }
 
     public abstract MessageActionDirection getMessageDirection();
+
+    protected void send(TlsContext tlsContext, List<ProtocolMessage> protocolMessagesToSend, List<Record> recordsToSend) throws IOException {
+        LayerStack layerStack = tlsContext.getLayerStack();
+        List<LayerConfiguration> layerConfigurationList = new LinkedList<>();
+        layerConfigurationList.add(new SpecificContainerLayerConfiguration(protocolMessagesToSend));
+        layerConfigurationList.add(new SpecificContainerLayerConfiguration(recordsToSend));
+        layerConfigurationList.add(new SpecificContainerLayerConfiguration((List) null));
+        List<LayerProcessingResult> processingResult = layerStack.sendData(layerConfigurationList);
+        messages = new ArrayList<>(processingResult.get(0).getUsedContainers()); //TODO Automatically get correct index in result
+        records = new ArrayList<>(processingResult.get(1).getUsedContainers()); // TODO Automatically get correct index in result
+    }
+
+    protected void receive(TlsContext tlsContext, List<ProtocolMessage> protocolMessagesToReceive, List<Record> recordsToReceive) {
+        LayerStack layerStack = tlsContext.getLayerStack();
+        List<LayerConfiguration> layerConfigurationList = new LinkedList<>();
+        layerConfigurationList.add(new SpecificContainerLayerConfiguration(protocolMessagesToReceive));
+        layerConfigurationList.add(new SpecificContainerLayerConfiguration(recordsToReceive));
+        layerConfigurationList.add(new SpecificContainerLayerConfiguration((List) null));
+        List<LayerProcessingResult> processingResult;
+        try {
+            processingResult = layerStack.receiveData(layerConfigurationList);
+            messages = new ArrayList<>(processingResult.get(0).getUsedContainers()); //TODO Automatically get correct index in result
+            records = new ArrayList<>(processingResult.get(1).getUsedContainers()); // TODO Automatically get correct index in result
+        } catch (IOException ex) {
+            LOGGER.warn("Received an IOException");
+        }
+    }
+    
+    protected void receiveTill(TlsContext tlsContext, List<ProtocolMessage> protocolMessagesToSend, List<Record> recordsToSend) {
+        LayerStack layerStack = tlsContext.getLayerStack();
+        List<LayerConfiguration> layerConfigurationList = new LinkedList<>();
+        layerConfigurationList.add(new SpecificContainerLayerConfiguration(protocolMessagesToSend));
+        layerConfigurationList.add(new SpecificContainerLayerConfiguration(recordsToSend));
+        layerConfigurationList.add(new SpecificContainerLayerConfiguration((List) null));
+        List<LayerProcessingResult> processingResult;
+        try {
+            processingResult = layerStack.receiveData(layerConfigurationList);
+            messages = new ArrayList<>(processingResult.get(0).getUsedContainers()); //TODO Automatically get correct index in result
+            records = new ArrayList<>(processingResult.get(1).getUsedContainers()); // TODO Automatically get correct index in result
+        } catch (IOException ex) {
+            LOGGER.warn("Received an IOException");
+        }
+    }
 
 }

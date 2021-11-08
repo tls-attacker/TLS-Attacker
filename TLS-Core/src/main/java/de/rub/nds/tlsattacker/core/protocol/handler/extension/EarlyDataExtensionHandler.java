@@ -6,7 +6,6 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -20,6 +19,7 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.extension.EarlyDataExtens
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.io.InputStream;
 
 /**
  * RFC draft-ietf-tls-tls13-21
@@ -31,8 +31,8 @@ public class EarlyDataExtensionHandler extends ExtensionHandler<EarlyDataExtensi
     }
 
     @Override
-    public ExtensionParser getParser(byte[] message, int pointer, Config config) {
-        return new EarlyDataExtensionParser(pointer, message, config);
+    public ExtensionParser getParser(InputStream stream) {
+        return new EarlyDataExtensionParser(stream, context.getConfig());
     }
 
     @Override

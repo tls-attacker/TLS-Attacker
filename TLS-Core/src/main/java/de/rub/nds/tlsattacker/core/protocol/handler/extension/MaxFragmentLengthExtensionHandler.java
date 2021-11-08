@@ -6,7 +6,6 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -18,6 +17,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.MaxFragmentLengthEx
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.MaxFragmentLengthExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.MaxFragmentLengthExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -45,8 +45,8 @@ public class MaxFragmentLengthExtensionHandler extends ExtensionHandler<MaxFragm
     }
 
     @Override
-    public MaxFragmentLengthExtensionParser getParser(byte[] message, int pointer, Config config) {
-        return new MaxFragmentLengthExtensionParser(pointer, message, config);
+    public MaxFragmentLengthExtensionParser getParser(InputStream stream) {
+        return new MaxFragmentLengthExtensionParser(stream, context.getConfig());
     }
 
     @Override

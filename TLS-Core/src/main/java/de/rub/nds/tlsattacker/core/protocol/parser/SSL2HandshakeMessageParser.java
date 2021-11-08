@@ -6,15 +6,16 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2HandshakeMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,16 +23,14 @@ public abstract class SSL2HandshakeMessageParser<T extends SSL2HandshakeMessage>
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SSL2HandshakeMessageParser(int pointer, byte[] array, HandshakeMessageType type, ProtocolVersion version,
-        Config config) {
-        super(pointer, array, type, version, config);
+    public SSL2HandshakeMessageParser(InputStream stream, HandshakeMessageType type, ProtocolVersion version, Config config) {
+        super(stream, type, version, config);
     }
 
     /**
      * Reads the next bytes as the MessageLength and writes them in the message
      *
-     * @param message
-     *                Message to write in
+     * @param message Message to write in
      */
     protected void parseMessageLength(T message) {
         // The "wonderful" SSL2 message length field:
@@ -41,12 +40,14 @@ public abstract class SSL2HandshakeMessageParser<T extends SSL2HandshakeMessage>
         // O/w, 3-byte header.
         byte[] length;
         int mask;
-        if ((peek() & (byte) 0x80) != 0) {
-            length = parseByteArrayField(SSL2ByteLength.LENGTH);
+        byte[] firstTwoBytes = parseByteArrayField(SSL2ByteLength.LENGTH);
+        if ((firstTwoBytes[0] & (byte) 0x80) != 0) {
+            length = firstTwoBytes;
             mask = 0x3f;
             message.setPaddingLength(0);
         } else {
-            length = parseByteArrayField(SSL2ByteLength.LONG_LENGTH);
+            //Parse remaining bytes
+            length = ArrayConverter.concatenate(firstTwoBytes, parseByteArrayField(SSL2ByteLength.LONG_LENGTH - SSL2ByteLength.LENGTH));
             mask = 0x7f;
             message.setPaddingLength((int) length[2]);
         }
@@ -58,8 +59,7 @@ public abstract class SSL2HandshakeMessageParser<T extends SSL2HandshakeMessage>
     /**
      * Reads the next bytes as the Type and writes them in the message
      *
-     * @param msg
-     *            Message to write in
+     * @param msg Message to write in
      */
     protected void parseType(T msg) {
         msg.setType(parseByteField(SSL2ByteLength.MESSAGE_TYPE));

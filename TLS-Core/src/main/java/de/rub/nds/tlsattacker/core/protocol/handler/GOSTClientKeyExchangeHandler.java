@@ -19,6 +19,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.GOST12ClientKeyExchangePr
 import de.rub.nds.tlsattacker.core.protocol.preparator.GOSTClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.GOSTClientKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 
 public class GOSTClientKeyExchangeHandler extends ClientKeyExchangeHandler<GOSTClientKeyExchangeMessage> {
 
@@ -27,8 +28,8 @@ public class GOSTClientKeyExchangeHandler extends ClientKeyExchangeHandler<GOSTC
     }
 
     @Override
-    public GOSTClientKeyExchangeParser getParser(byte[] message, int pointer) {
-        return new GOSTClientKeyExchangeParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
+    public GOSTClientKeyExchangeParser getParser(InputStream stream) {
+        return new GOSTClientKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(),
             tlsContext.getConfig());
     }
 

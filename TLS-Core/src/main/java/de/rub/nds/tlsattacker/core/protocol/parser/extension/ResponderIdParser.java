@@ -6,17 +6,17 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.ResponderId;
 import de.rub.nds.tlsattacker.core.protocol.Parser;
+import java.io.InputStream;
 
 public class ResponderIdParser extends Parser<ResponderId> {
 
-    public ResponderIdParser(int startposition, byte[] array) {
-        super(startposition, array);
+    public ResponderIdParser(InputStream stream) {
+        super(stream);
     }
 
     @Override

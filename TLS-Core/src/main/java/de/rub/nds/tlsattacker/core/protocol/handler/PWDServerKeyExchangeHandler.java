@@ -6,7 +6,6 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
@@ -17,18 +16,20 @@ import de.rub.nds.tlsattacker.core.protocol.parser.PWDServerKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.PWDServerKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.PWDServerKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 import java.math.BigInteger;
 
 public class PWDServerKeyExchangeHandler extends ServerKeyExchangeHandler<PWDServerKeyExchangeMessage> {
+
     public PWDServerKeyExchangeHandler(TlsContext tlsContext) {
         super(tlsContext);
     }
 
     @Override
-    public PWDServerKeyExchangeParser getParser(byte[] message, int pointer) {
-        return new PWDServerKeyExchangeParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
-            AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite()),
-            tlsContext.getConfig());
+    public PWDServerKeyExchangeParser getParser(InputStream stream) {
+        return new PWDServerKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(),
+                AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite()),
+                tlsContext.getConfig());
     }
 
     @Override
@@ -46,7 +47,7 @@ public class PWDServerKeyExchangeHandler extends ServerKeyExchangeHandler<PWDSer
         tlsContext.setSelectedGroup(NamedGroup.getNamedGroup(message.getNamedGroup().getValue()));
         tlsContext.setServerPWDSalt(message.getSalt().getValue());
         tlsContext.setServerPWDElement(PointFormatter
-            .formatFromByteArray(tlsContext.getChooser().getSelectedNamedGroup(), message.getElement().getValue()));
+                .formatFromByteArray(tlsContext.getChooser().getSelectedNamedGroup(), message.getElement().getValue()));
         tlsContext.setServerPWDScalar(new BigInteger(1, message.getScalar().getValue()));
         if (message.getComputations() != null) {
             tlsContext.setPWDPE(message.getComputations().getPasswordElement());

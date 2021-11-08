@@ -13,13 +13,15 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.AlpnExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.alpn.AlpnEntry;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 
 public class AlpnExtensionParser extends ExtensionParser<AlpnExtensionMessage> {
 
-    public AlpnExtensionParser(int startposition, byte[] array, Config config) {
-        super(startposition, array, config);
+    public AlpnExtensionParser(InputStream stream, Config config) {
+        super(stream, config);
     }
 
     @Override
@@ -28,11 +30,10 @@ public class AlpnExtensionParser extends ExtensionParser<AlpnExtensionMessage> {
         byte[] proposedProtocol = parseByteArrayField(msg.getProposedAlpnProtocolsLength().getValue());
         msg.setProposedAlpnProtocols(proposedProtocol);
         List<AlpnEntry> entryList = new LinkedList<>();
-        int pointer = 0;
-        while (pointer < proposedProtocol.length) {
-            AlpnEntryParser parser = new AlpnEntryParser(pointer, proposedProtocol);
+        ByteArrayInputStream innerStream = new ByteArrayInputStream(proposedProtocol);
+        while (innerStream.available() > 0) {
+            AlpnEntryParser parser = new AlpnEntryParser(innerStream);
             entryList.add(parser.parse());
-            pointer = parser.getPointer();
         }
         msg.setAlpnEntryList(entryList);
     }

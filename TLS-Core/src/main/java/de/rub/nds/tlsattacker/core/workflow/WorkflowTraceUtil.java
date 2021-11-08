@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.TlsMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
-import de.rub.nds.tlsattacker.core.record.AbstractRecord;
+import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.workflow.action.*;
 
 import java.util.LinkedList;
@@ -81,8 +81,8 @@ public class WorkflowTraceUtil {
         }
     }
 
-    public static AbstractRecord getLastReceivedRecord(WorkflowTrace trace) {
-        List<AbstractRecord> recordList = getAllReceivedRecords(trace);
+    public static Record getLastReceivedRecord(WorkflowTrace trace) {
+        List<Record> recordList = getAllReceivedRecords(trace);
         if (recordList.isEmpty()) {
             return null;
         } else {
@@ -283,16 +283,16 @@ public class WorkflowTraceUtil {
         return false;
     }
 
-    public static List<AbstractRecord> getAllReceivedRecords(WorkflowTrace trace) {
-        List<AbstractRecord> receivedRecords = new LinkedList<>();
+    public static List<Record> getAllReceivedRecords(WorkflowTrace trace) {
+        List<Record> receivedRecords = new LinkedList<>();
         for (ReceivingAction action : trace.getReceivingActions()) {
             receivedRecords.addAll(action.getReceivedRecords());
         }
         return receivedRecords;
     }
 
-    public static List<AbstractRecord> getAllSendRecords(WorkflowTrace trace) {
-        List<AbstractRecord> sendRecords = new LinkedList<>();
+    public static List<Record> getAllSendRecords(WorkflowTrace trace) {
+        List<Record> sendRecords = new LinkedList<>();
         for (SendingAction action : trace.getSendingActions()) {
             if (action.getSendRecords() != null) {
                 sendRecords.addAll(action.getSendRecords());

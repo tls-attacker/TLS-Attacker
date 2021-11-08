@@ -18,6 +18,7 @@ import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.layer.DataContainer;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.record.compressor.RecordCompressor;
 import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
@@ -26,11 +27,35 @@ import de.rub.nds.tlsattacker.core.record.preparator.RecordPreparator;
 import de.rub.nds.tlsattacker.core.record.serializer.RecordSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import java.io.InputStream;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Objects;
 
-public class Record extends AbstractRecord {
+public class Record extends ModifiableVariableHolder implements DataContainer {
+
+    /**
+     * maximum length configuration for this record
+     */
+    private Integer maxRecordLengthConfig;
+
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.CIPHERTEXT)
+    private ModifiableByteArray completeRecordBytes;
+
+    /**
+     * protocol message bytes transported in the record as seen on the transport layer if encryption is active this is
+     * encrypted if not its plaintext
+     */
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.CIPHERTEXT)
+    private ModifiableByteArray protocolMessageBytes;
+
+    /**
+     * The decrypted , unpadded, unmaced record bytes
+     */
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PLAIN_PROTOCOL_MESSAGE)
+    private ModifiableByteArray cleanProtocolMessageBytes;
+
+    private ProtocolMessageType contentMessageType;
 
     /**
      * Content type
@@ -64,14 +89,14 @@ public class Record extends AbstractRecord {
     private RecordCryptoComputations computations;
 
     public Record(Config config) {
-        super(config);
+        this.maxRecordLengthConfig = config.getDefaultMaxRecordData();
     }
 
     public Record() {
     }
 
     public Record(Integer maxRecordLengthConfig) {
-        super(maxRecordLengthConfig);
+        this.maxRecordLengthConfig = maxRecordLengthConfig;
     }
 
     public ModifiableInteger getLength() {
@@ -134,26 +159,76 @@ public class Record extends AbstractRecord {
         this.sequenceNumber = ModifiableVariableFactory.safelySetValue(this.sequenceNumber, sequenceNumber);
     }
 
-    @Override
     public RecordPreparator getRecordPreparator(Chooser chooser, Encryptor encryptor, RecordCompressor compressor,
         ProtocolMessageType type) {
         return new RecordPreparator(chooser, this, encryptor, type, compressor);
     }
 
-    @Override
-    public RecordParser getRecordParser(int startposition, byte[] array, ProtocolVersion version) {
-        return new RecordParser(0, array, version);
+    public RecordParser getRecordParser(InputStream stream, ProtocolVersion version) {
+        return new RecordParser(stream, version);
     }
 
-    @Override
     public RecordSerializer getRecordSerializer() {
         return new RecordSerializer(this);
     }
 
-    @Override
     public void adjustContext(TlsContext context) {
         ProtocolVersion version = ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue());
         context.setLastRecordVersion(version);
+    }
+
+    public ProtocolMessageType getContentMessageType() {
+        return contentMessageType;
+    }
+
+    public void setContentMessageType(ProtocolMessageType contentMessageType) {
+        this.contentMessageType = contentMessageType;
+    }
+
+    public ModifiableByteArray getCleanProtocolMessageBytes() {
+        return cleanProtocolMessageBytes;
+    }
+
+    public void setCleanProtocolMessageBytes(byte[] cleanProtocolMessageBytes) {
+        this.cleanProtocolMessageBytes =
+            ModifiableVariableFactory.safelySetValue(this.cleanProtocolMessageBytes, cleanProtocolMessageBytes);
+    }
+
+    public void setCleanProtocolMessageBytes(ModifiableByteArray cleanProtocolMessageBytes) {
+        this.cleanProtocolMessageBytes = cleanProtocolMessageBytes;
+    }
+
+    public ModifiableByteArray getProtocolMessageBytes() {
+        return protocolMessageBytes;
+    }
+
+    public void setProtocolMessageBytes(ModifiableByteArray protocolMessageBytes) {
+        this.protocolMessageBytes = protocolMessageBytes;
+    }
+
+    public void setProtocolMessageBytes(byte[] bytes) {
+        this.protocolMessageBytes = ModifiableVariableFactory.safelySetValue(this.protocolMessageBytes, bytes);
+    }
+
+    public Integer getMaxRecordLengthConfig() {
+        return maxRecordLengthConfig;
+    }
+
+    public void setMaxRecordLengthConfig(Integer maxRecordLengthConfig) {
+        this.maxRecordLengthConfig = maxRecordLengthConfig;
+    }
+
+    public ModifiableByteArray getCompleteRecordBytes() {
+        return completeRecordBytes;
+    }
+
+    public void setCompleteRecordBytes(ModifiableByteArray completeRecordBytes) {
+        this.completeRecordBytes = completeRecordBytes;
+    }
+
+    public void setCompleteRecordBytes(byte[] completeRecordBytes) {
+        this.completeRecordBytes =
+            ModifiableVariableFactory.safelySetValue(this.completeRecordBytes, completeRecordBytes);
     }
 
     public RecordCryptoComputations getComputations() {
@@ -164,7 +239,6 @@ public class Record extends AbstractRecord {
         this.computations = computations;
     }
 
-    @Override
     public void prepareComputations() {
         if (computations == null) {
             this.computations = new RecordCryptoComputations();

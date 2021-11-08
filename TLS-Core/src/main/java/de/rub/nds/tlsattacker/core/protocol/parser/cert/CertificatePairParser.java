@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificatePair;
 import de.rub.nds.tlsattacker.core.protocol.Parser;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,8 +21,8 @@ public class CertificatePairParser extends Parser<CertificatePair> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public CertificatePairParser(int startposition, byte[] array) {
-        super(startposition, array);
+    public CertificatePairParser(InputStream stream) {
+        super(stream);
     }
 
     @Override

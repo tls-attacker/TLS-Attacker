@@ -12,7 +12,6 @@ package de.rub.nds.tlsattacker.core.record.crypto;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
-import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
@@ -34,17 +33,6 @@ public class RecordDecryptor extends Decryptor {
         super(recordCipher);
         this.context = context;
         nullCipher = RecordCipherFactory.getNullCipher(context);
-    }
-
-    @Override
-    public void decrypt(BlobRecord record) {
-        LOGGER.warn("We are not decrypting BlobRecords. Using NullCipher");
-        try {
-            nullCipher.decrypt(record);
-        } catch (CryptoException ex1) {
-            LOGGER.warn("Could not decrypt BlobRecord with NullCipher", ex1);
-        }
-        getRecordMostRecentCipher().getState().increaseReadSequenceNumber();
     }
 
     @Override

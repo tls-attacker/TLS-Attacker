@@ -6,13 +6,13 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.protocol.Parser;
 import de.rub.nds.tlsattacker.core.protocol.message.certificatestatus.CertificateStatusObject;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,8 +22,8 @@ public class CertificateStatusGenericParser extends Parser {
 
     private CertificateStatusObject certificateStatusObject = new CertificateStatusObject();
 
-    public CertificateStatusGenericParser(int pointer, byte[] array) {
-        super(pointer, array);
+    public CertificateStatusGenericParser(InputStream stream) {
+        super(stream);
     }
 
     @Override

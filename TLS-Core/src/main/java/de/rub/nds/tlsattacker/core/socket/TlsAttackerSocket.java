@@ -96,8 +96,7 @@ public class TlsAttackerSocket {
     }
 
     public void send(ProtocolMessage message) {
-        SendAction action = new SendAction(message);
-        action.setConnectionAlias(state.getTlsContext().getConnection().getAlias());
+        SendAction action = new SendAction(state.getTlsContext().getConnection().getAlias(), message);
         action.execute(state);
     }
 
@@ -109,8 +108,8 @@ public class TlsAttackerSocket {
      *                             If something goes wrong during the receive
      */
     public byte[] receiveBytes() throws IOException {
-        ReceiveAction action = new ReceiveAction(new ApplicationMessage());
-        action.setConnectionAlias(state.getTlsContext().getConnection().getAlias());
+        ReceiveAction action =
+            new ReceiveAction(state.getTlsContext().getConnection().getAlias(), new ApplicationMessage());
         action.execute(state);
         List<ProtocolMessage> receivedMessages = action.getReceivedMessages();
 

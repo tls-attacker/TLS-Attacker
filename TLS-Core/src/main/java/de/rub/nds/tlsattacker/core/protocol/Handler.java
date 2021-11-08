@@ -9,13 +9,15 @@
 
 package de.rub.nds.tlsattacker.core.protocol;
 
+import java.io.InputStream;
+
 /**
  * @param <T>
  *            The Object that should be Handled
  */
 public interface Handler<T> {
 
-    Parser<T> getParser(byte[] message, int pointer);
+    Parser<T> getParser(InputStream stream);
 
     Preparator<T> getPreparator(T message);
 

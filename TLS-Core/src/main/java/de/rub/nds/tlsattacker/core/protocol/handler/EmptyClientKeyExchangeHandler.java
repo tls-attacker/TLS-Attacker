@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.EmptyClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.EmptyClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.EmptyClientKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 
 /**
  * Handler for Empty ClientKeyExchange messages
@@ -25,8 +26,8 @@ public class EmptyClientKeyExchangeHandler extends ClientKeyExchangeHandler<Empt
     }
 
     @Override
-    public EmptyClientKeyExchangeParser getParser(byte[] message, int pointer) {
-        return new EmptyClientKeyExchangeParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
+    public EmptyClientKeyExchangeParser getParser(InputStream stream) {
+        return new EmptyClientKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(),
             tlsContext.getConfig());
     }
 

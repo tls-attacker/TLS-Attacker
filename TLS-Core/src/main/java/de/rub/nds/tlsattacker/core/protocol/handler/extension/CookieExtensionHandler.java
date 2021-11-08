@@ -6,10 +6,8 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CookieExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.CookieExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
@@ -18,6 +16,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtensionPrepar
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.CookieExtensionSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 
 public class CookieExtensionHandler extends ExtensionHandler<CookieExtensionMessage> {
 
@@ -26,8 +25,8 @@ public class CookieExtensionHandler extends ExtensionHandler<CookieExtensionMess
     }
 
     @Override
-    public ExtensionParser getParser(byte[] message, int pointer, Config config) {
-        return new CookieExtensionParser(pointer, message, config);
+    public ExtensionParser getParser(InputStream stream) {
+        return new CookieExtensionParser(stream, context.getConfig());
     }
 
     @Override

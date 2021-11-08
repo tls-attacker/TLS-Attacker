@@ -6,13 +6,13 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.TrustedCaIndicationIdentifierType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
 import de.rub.nds.tlsattacker.core.protocol.Parser;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,8 +20,8 @@ public class TrustedAuthorityParser extends Parser<TrustedAuthority> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public TrustedAuthorityParser(int startposition, byte[] array) {
-        super(startposition, array);
+    public TrustedAuthorityParser(InputStream stream) {
+        super(stream);
     }
 
     @Override
@@ -39,7 +39,7 @@ public class TrustedAuthorityParser extends Parser<TrustedAuthority> {
                 break;
             case X509_NAME:
                 authority.setDistinguishedNameLength(
-                    parseIntField(ExtensionByteLength.TRUSTED_AUTHORITY_DISTINGUISHED_NAME_LENGTH));
+                        parseIntField(ExtensionByteLength.TRUSTED_AUTHORITY_DISTINGUISHED_NAME_LENGTH));
                 authority.setDistinguishedName(parseByteArrayField(authority.getDistinguishedNameLength().getValue()));
                 break;
             default:

@@ -6,11 +6,9 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
@@ -21,13 +19,15 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.KeyShareExtensi
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.KeyShareExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * This handler processes the KeyShare extensions in ClientHello and ServerHello messages, as defined in
+ * This handler processes the KeyShare extensions in ClientHello and ServerHello
+ * messages, as defined in
  * https://tools.ietf.org/html/draft-ietf-tls-tls13-21#section-4.2.7
  */
 public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtensionMessage> {
@@ -45,8 +45,8 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
     }
 
     @Override
-    public KeyShareExtensionParser getParser(byte[] message, int pointer, Config config) {
-        return new KeyShareExtensionParser(pointer, message, config);
+    public KeyShareExtensionParser getParser(InputStream stream) {
+        return new KeyShareExtensionParser(stream, context.getConfig());
     }
 
     @Override
@@ -82,7 +82,7 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
                     ksEntryList.add(new KeyShareStoreEntry(type, pair.getPublicKey().getValue()));
                 } else {
                     LOGGER.warn("Empty KeyShare - Setting only selected KeyShareType: to "
-                        + ArrayConverter.bytesToHexString(pair.getGroup()));
+                            + ArrayConverter.bytesToHexString(pair.getGroup()));
                     context.setSelectedGroup(type);
                 }
             } else {
@@ -96,7 +96,7 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
         // The server has only one key
         if (ksEntryList.size() > 0) {
             context.setServerKeyShareStoreEntry(
-                new KeyShareStoreEntry(ksEntryList.get(0).getGroup(), ksEntryList.get(0).getPublicKey()));
+                    new KeyShareStoreEntry(ksEntryList.get(0).getGroup(), ksEntryList.get(0).getPublicKey()));
             NamedGroup selectedGroup = context.getServerKeyShareStoreEntry().getGroup();
             LOGGER.debug("Setting selected NamedGroup in context to " + selectedGroup);
             context.setSelectedGroup(selectedGroup);

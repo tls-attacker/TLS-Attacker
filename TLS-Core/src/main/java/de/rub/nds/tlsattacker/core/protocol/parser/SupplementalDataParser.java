@@ -6,7 +6,6 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -18,6 +17,8 @@ import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.protocol.message.SupplementalDataMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.supplementaldata.SupplementalDataEntry;
 import de.rub.nds.tlsattacker.core.protocol.parser.supplementaldata.SupplementalDataEntryParser;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -30,17 +31,12 @@ public class SupplementalDataParser extends HandshakeMessageParser<SupplementalD
     /**
      * Constructor for the Parser class
      *
-     * @param pointer
-     *                Position in the array where the HandshakeMessageParser is supposed to start parsing
-     * @param array
-     *                The byte[] which the HandshakeMessageParser is supposed to parse
-     * @param version
-     *                The Version for which this message should be parsed
-     * @param config
-     *                A Config used in the current context
+     * @param stream
+     * @param version The Version for which this message should be parsed
+     * @param config A Config used in the current context
      */
-    public SupplementalDataParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
-        super(pointer, array, HandshakeMessageType.SUPPLEMENTAL_DATA, version, config);
+    public SupplementalDataParser(InputStream stream, ProtocolVersion version, Config config) {
+        super(stream, HandshakeMessageType.SUPPLEMENTAL_DATA, version, config);
     }
 
     @Override
@@ -64,20 +60,15 @@ public class SupplementalDataParser extends HandshakeMessageParser<SupplementalD
     private void parseSupplementalDataBytes(SupplementalDataMessage msg) {
         msg.setSupplementalDataBytes(parseByteArrayField(msg.getSupplementalDataLength().getValue()));
         LOGGER.debug(
-            "SupplementalDataBytes: " + ArrayConverter.bytesToHexString(msg.getSupplementalDataBytes().getValue()));
+                "SupplementalDataBytes: " + ArrayConverter.bytesToHexString(msg.getSupplementalDataBytes().getValue()));
     }
 
     private void parseSupplementalDataEntries(SupplementalDataMessage msg) {
-        int pointer = 0;
         List<SupplementalDataEntry> entryList = new LinkedList<>();
-        while (pointer < msg.getSupplementalDataLength().getValue()) {
-            SupplementalDataEntryParser parser =
-                new SupplementalDataEntryParser(pointer, msg.getSupplementalDataBytes().getValue());
+        ByteArrayInputStream innerStream = new ByteArrayInputStream(msg.getSupplementalDataBytes().getValue());
+        while (innerStream.available() > 0) {
+            SupplementalDataEntryParser parser = new SupplementalDataEntryParser(innerStream);
             entryList.add(parser.parse());
-            if (pointer == parser.getPointer()) {
-                throw new ParserException("Ran into infinite Loop while parsing SupplementalDataEntries");
-            }
-            pointer = parser.getPointer();
         }
         msg.setEntries(entryList);
     }

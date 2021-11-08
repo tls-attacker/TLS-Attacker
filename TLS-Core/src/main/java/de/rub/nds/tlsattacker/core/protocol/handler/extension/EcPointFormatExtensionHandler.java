@@ -6,7 +6,6 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -17,6 +16,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ECPointFormatEx
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ECPointFormatExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -50,8 +50,8 @@ public class EcPointFormatExtensionHandler extends ExtensionHandler<ECPointForma
     }
 
     @Override
-    public ECPointFormatExtensionParser getParser(byte[] message, int pointer, Config config) {
-        return new ECPointFormatExtensionParser(pointer, message, config);
+    public ECPointFormatExtensionParser getParser(InputStream stream) {
+        return new ECPointFormatExtensionParser(stream, context.getConfig());
     }
 
     @Override

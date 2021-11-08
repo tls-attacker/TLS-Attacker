@@ -18,14 +18,15 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAServerKeyExchangeMessage;
+import java.io.InputStream;
 
 public class RSAServerKeyExchangeParser<T extends RSAServerKeyExchangeMessage> extends ServerKeyExchangeParser<T> {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private final ProtocolVersion version;
 
-    public RSAServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
-        super(pointer, array, HandshakeMessageType.SERVER_KEY_EXCHANGE, version, config);
+    public RSAServerKeyExchangeParser(InputStream stream, ProtocolVersion version, Config config) {
+        super(stream, HandshakeMessageType.SERVER_KEY_EXCHANGE, version, config);
         this.version = version;
     }
 

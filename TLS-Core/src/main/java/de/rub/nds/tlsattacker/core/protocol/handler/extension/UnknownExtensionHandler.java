@@ -6,15 +6,14 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.UnknownExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.UnknownExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.UnknownExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.UnknownExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 
 public class UnknownExtensionHandler extends ExtensionHandler<UnknownExtensionMessage> {
 
@@ -27,8 +26,8 @@ public class UnknownExtensionHandler extends ExtensionHandler<UnknownExtensionMe
     }
 
     @Override
-    public UnknownExtensionParser getParser(byte[] message, int pointer, Config config) {
-        return new UnknownExtensionParser(pointer, message, config);
+    public UnknownExtensionParser getParser(InputStream stream) {
+        return new UnknownExtensionParser(stream, context.getConfig());
     }
 
     @Override

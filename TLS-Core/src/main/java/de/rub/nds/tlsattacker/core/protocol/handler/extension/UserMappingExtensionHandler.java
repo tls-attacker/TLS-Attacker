@@ -6,16 +6,15 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
 import de.rub.nds.tlsattacker.core.protocol.message.UserMappingExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.UserMappingExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.UserMappingExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.UserMappingExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -28,8 +27,8 @@ public class UserMappingExtensionHandler extends ExtensionHandler<UserMappingExt
     }
 
     @Override
-    public UserMappingExtensionParser getParser(byte[] message, int pointer, Config config) {
-        return new UserMappingExtensionParser(pointer, message, config);
+    public UserMappingExtensionParser getParser(InputStream stream) {
+        return new UserMappingExtensionParser(stream, context.getConfig());
     }
 
     @Override
@@ -45,9 +44,9 @@ public class UserMappingExtensionHandler extends ExtensionHandler<UserMappingExt
     @Override
     public void adjustTLSExtensionContext(UserMappingExtensionMessage message) {
         context.setUserMappingExtensionHintType(
-            UserMappingExtensionHintType.getExtensionType(message.getUserMappingType().getValue()));
+                UserMappingExtensionHintType.getExtensionType(message.getUserMappingType().getValue()));
         LOGGER.debug("Adjusted the TLS context user mapping extension hint type to "
-            + context.getUserMappingExtensionHintType().getValue());
+                + context.getUserMappingExtensionHintType().getValue());
     }
 
 }

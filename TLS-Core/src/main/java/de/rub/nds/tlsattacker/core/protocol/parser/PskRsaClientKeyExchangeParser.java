@@ -6,7 +6,6 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -14,6 +13,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.PskRsaClientKeyExchangeMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,17 +24,12 @@ public class PskRsaClientKeyExchangeParser extends RSAClientKeyExchangeParser<Ps
     /**
      * Constructor for the Parser class
      *
-     * @param startposition
-     *                      Position in the array where the ClientKeyExchangeParser is supposed to start parsing
-     * @param array
-     *                      The byte[] which the ClientKeyExchangeParser is supposed to parse
-     * @param version
-     *                      Version of the Protocol
-     * @param config
-     *                      A Config used in the current context
+     * @param stream
+     * @param version Version of the Protocol
+     * @param config A Config used in the current context
      */
-    public PskRsaClientKeyExchangeParser(int startposition, byte[] array, ProtocolVersion version, Config config) {
-        super(startposition, array, version, config);
+    public PskRsaClientKeyExchangeParser(InputStream stream, ProtocolVersion version, Config config) {
+        super(stream, version, config);
     }
 
     @Override
@@ -51,10 +46,10 @@ public class PskRsaClientKeyExchangeParser extends RSAClientKeyExchangeParser<Ps
     }
 
     /**
-     * Reads the next bytes as the PSKIdentityLength and writes them in the message
+     * Reads the next bytes as the PSKIdentityLength and writes them in the
+     * message
      *
-     * @param msg
-     *            Message to write in
+     * @param msg Message to write in
      */
     private void parsePskIdentityLength(PskRsaClientKeyExchangeMessage msg) {
         msg.setIdentityLength(parseIntField(HandshakeByteLength.PSK_IDENTITY_LENGTH));
@@ -64,8 +59,7 @@ public class PskRsaClientKeyExchangeParser extends RSAClientKeyExchangeParser<Ps
     /**
      * Reads the next bytes as the PSKIdentity and writes them in the message
      *
-     * @param msg
-     *            Message to write in
+     * @param msg Message to write in
      */
     private void parsePskIdentity(PskRsaClientKeyExchangeMessage msg) {
         msg.setIdentity(parseByteArrayField(msg.getIdentityLength().getValue()));

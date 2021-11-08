@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.PWDServerKeyExchangeMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -28,13 +29,13 @@ public class PWDServerKeyExchangeParser extends ServerKeyExchangeParser<PWDServe
 
     private final KeyExchangeAlgorithm keyExchangeAlgorithm;
 
-    public PWDServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
-        this(pointer, array, version, null, config);
+    public PWDServerKeyExchangeParser(InputStream stream, ProtocolVersion version, Config config) {
+        this(stream, version, null, config);
     }
 
-    public PWDServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version,
+    public PWDServerKeyExchangeParser(InputStream stream, ProtocolVersion version,
         KeyExchangeAlgorithm keyExchangeAlgorithm, Config config) {
-        super(pointer, array, HandshakeMessageType.SERVER_KEY_EXCHANGE, version, config);
+        super(stream, HandshakeMessageType.SERVER_KEY_EXCHANGE, version, config);
         this.version = version;
         this.keyExchangeAlgorithm = keyExchangeAlgorithm;
     }

@@ -15,7 +15,8 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.context.MessageParserBoundaryVerificationContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -23,20 +24,28 @@ public class ClientHelloParser extends HelloMessageParser<ClientHelloMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    private ConnectionEndType talkingConnectionEndType;
+    
     /**
      * Constructor for the Parser class
      *
-     * @param pointer
-     *                Position in the array where the HelloMessageParser is supposed to start parsing
-     * @param array
-     *                The byte[] which the HelloMessageParser is supposed to parse
+     * @param stream
      * @param version
      *                Version of the Protocol
      * @param config
      *                A Config used in the current context
      */
-    public ClientHelloParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
-        super(pointer, array, HandshakeMessageType.CLIENT_HELLO, version, config);
+
+    /**
+     * Constructor for the Parser class
+     * @param stream
+     * @param version Version of the Protocol
+     * @param config A Config used in the current context
+     * @param talkingConnectionEndType
+     */
+    public ClientHelloParser(InputStream stream, ProtocolVersion version, Config config, ConnectionEndType talkingConnectionEndType) {
+        super(stream, HandshakeMessageType.CLIENT_HELLO, version, config);
+        this.talkingConnectionEndType = talkingConnectionEndType;
     }
 
     @Override
@@ -60,10 +69,7 @@ public class ClientHelloParser extends HelloMessageParser<ClientHelloMessage> {
         if (hasExtensionLengthField(msg)) {
             parseExtensionLength(msg);
             if (hasExtensions(msg)) {
-                pushContext(new MessageParserBoundaryVerificationContext(msg.getExtensionsLength().getValue(),
-                    "Extension Length", getPointer(), getConfig().isThrowExceptionOnParserContextViolation()));
-                parseExtensionBytes(msg);
-                popContext();
+                 parseExtensionBytes(msg, getVersion(), talkingConnectionEndType, false);
 
             }
         }

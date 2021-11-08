@@ -6,27 +6,28 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.certificate.transparency;
 
 import de.rub.nds.tlsattacker.core.protocol.Parser;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import org.bouncycastle.crypto.tls.Certificate;
 
 public class SignedCertificateTimestampListParser extends Parser<SignedCertificateTimestampList> {
 
-    private boolean isPreCertificateSct;
-    private Certificate certificateChain;
+    private final boolean isPreCertificateSct;
+    private final Certificate certificateChain;
 
     /**
      * Constructor for the Parser
      *
-     * @param startposition
-     *                      Position in the array from which the Parser should start working
-     * @param array
+     * @param stream
+     * @param certificateChain
+     * @param isPreCertificateSct
      */
-    public SignedCertificateTimestampListParser(int startposition, byte[] array, Certificate certificateChain,
-        boolean isPreCertificateSct) {
-        super(startposition, array);
+    public SignedCertificateTimestampListParser(InputStream stream, Certificate certificateChain,
+            boolean isPreCertificateSct) {
+        super(stream);
 
         this.isPreCertificateSct = isPreCertificateSct;
         this.certificateChain = certificateChain;
@@ -42,15 +43,15 @@ public class SignedCertificateTimestampListParser extends Parser<SignedCertifica
         int length = parseIntField(2);
 
         // Decode and parse every list entry
-        while (getPointer() < length) {
+        while (getBytesLeft() > 0) {
 
             // Determine length of variable-length encoded SCT entry
             int entryLength = parseIntField(2);
 
             // Decode and parse Signed Certificate Timestamp list entry
             byte[] encodedEntryData = parseByteArrayField(entryLength);
-            SignedCertificateTimestampParser signedCertificateTimestampParser =
-                new SignedCertificateTimestampParser(0, encodedEntryData);
+            SignedCertificateTimestampParser signedCertificateTimestampParser
+                    = new SignedCertificateTimestampParser(new ByteArrayInputStream(encodedEntryData));
             SignedCertificateTimestamp sct = signedCertificateTimestampParser.parse();
 
             // Add certificates required for SCT signature validation

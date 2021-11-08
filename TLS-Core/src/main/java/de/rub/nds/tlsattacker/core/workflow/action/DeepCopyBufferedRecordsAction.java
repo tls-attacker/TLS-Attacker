@@ -10,7 +10,7 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.record.AbstractRecord;
+import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import java.io.ByteArrayInputStream;
@@ -52,18 +52,18 @@ public class DeepCopyBufferedRecordsAction extends CopyContextFieldAction {
     }
 
     private void deepCopyRecords(TlsContext src, TlsContext dst) {
-        LinkedList<AbstractRecord> recordBuffer = new LinkedList<>();
+        LinkedList<Record> recordBuffer = new LinkedList<>();
         ObjectOutputStream outStream;
         ObjectInputStream inStream;
         try {
-            for (AbstractRecord record : src.getRecordBuffer()) {
+            for (Record record : src.getRecordBuffer()) {
 
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 outStream = new ObjectOutputStream(stream);
                 outStream.writeObject(record);
                 outStream.close();
                 inStream = new ObjectInputStream(new ByteArrayInputStream(stream.toByteArray()));
-                AbstractRecord recordCopy = (AbstractRecord) inStream.readObject();
+                Record recordCopy = (Record) inStream.readObject();
 
                 recordBuffer.add(recordCopy);
                 setExecuted(true);

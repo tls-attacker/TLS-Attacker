@@ -18,11 +18,10 @@ import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.record.AbstractRecord;
+import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -69,12 +68,7 @@ public class SendDynamicServerKeyExchangeAction extends MessageAction implements
         }
 
         try {
-            MessageActionResult result = sendMessageHelper.sendMessages(messages, fragments, records, tlsContext);
-            messages = new ArrayList<>(result.getMessageList());
-            records = new ArrayList<>(result.getRecordList());
-            if (result.getMessageFragmentList() != null) {
-                fragments = new ArrayList<>(result.getMessageFragmentList());
-            }
+            send(tlsContext, messages, records);
             setExecuted(true);
         } catch (IOException e) {
             tlsContext.setReceivedTransportHandlerException(true);
@@ -126,7 +120,7 @@ public class SendDynamicServerKeyExchangeAction extends MessageAction implements
     }
 
     @Override
-    public void setRecords(List<AbstractRecord> records) {
+    public void setRecords(List<Record> records) {
         this.records = records;
     }
 
@@ -144,7 +138,7 @@ public class SendDynamicServerKeyExchangeAction extends MessageAction implements
             }
         }
         if (getRecords() != null) {
-            for (AbstractRecord record : getRecords()) {
+            for (Record record : getRecords()) {
                 holders.addAll(record.getAllModifiableVariableHolders());
             }
         }
@@ -187,7 +181,7 @@ public class SendDynamicServerKeyExchangeAction extends MessageAction implements
     }
 
     @Override
-    public List<AbstractRecord> getSendRecords() {
+    public List<Record> getSendRecords() {
         return records;
     }
 

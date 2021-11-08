@@ -3,39 +3,21 @@ package de.rub.nds.tlsattacker.core.layer;
 import java.util.Arrays;
 import java.util.List;
 
-public class LayerConfiguration<T extends DataContainer> {
+public abstract class LayerConfiguration<Container extends DataContainer> {
 
-    private final List<T> containerList;
+    private final List<Container> containerList;
 
-    private byte[] additionalLayerData = null;
-
-    public LayerConfiguration(List<T> containerList) {
+    public LayerConfiguration(List<Container> containerList) {
         this.containerList = containerList;
     }
 
-    public LayerConfiguration(T... containers) {
+    public LayerConfiguration(Container... containers) {
         this.containerList = Arrays.asList(containers);
     }
 
-    public LayerConfiguration(byte[] additionalLayerData, List<T> containerList) {
-        this.containerList = containerList;
-        this.additionalLayerData = additionalLayerData;
-    }
-
-    public LayerConfiguration(byte[] additionalLayerData, T... containers) {
-        this.containerList = Arrays.asList(containers);
-        this.additionalLayerData = additionalLayerData;
-    }
-
-    public List<T> getContainerList() {
+    public List<Container> getContainerList() {
         return containerList;
     }
 
-    public byte[] getAdditionalLayerData() {
-        return additionalLayerData;
-    }
-
-    public void setAdditionalLayerData(byte[] additionalLayerData) {
-        this.additionalLayerData = additionalLayerData;
-    }
+    public abstract boolean isFullfilled(List<Container> list);
 }

@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.tokenbinding;
 
 import de.rub.nds.tlsattacker.core.protocol.handler.TlsMessageHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 
 public class TokenBindingMessageHandler extends TlsMessageHandler<TokenBindingMessage> {
 
@@ -19,8 +20,8 @@ public class TokenBindingMessageHandler extends TlsMessageHandler<TokenBindingMe
     }
 
     @Override
-    public TokenBindingMessageParser getParser(byte[] message, int pointer) {
-        return new TokenBindingMessageParser(pointer, message, tlsContext.getChooser().getSelectedProtocolVersion(),
+    public TokenBindingMessageParser getParser(InputStream stream) {
+        return new TokenBindingMessageParser(stream, tlsContext.getChooser().getSelectedProtocolVersion(),
             tlsContext.getConfig());
     }
 

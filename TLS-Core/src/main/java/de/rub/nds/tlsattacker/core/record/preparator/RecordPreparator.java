@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
+import de.rub.nds.tlsattacker.core.protocol.Preparator;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.compressor.RecordCompressor;
 import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
@@ -23,7 +24,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * The cleanRecordBytes should be set when the record preparator received the record
  */
-public class RecordPreparator extends AbstractRecordPreparator<Record> {
+public class RecordPreparator extends Preparator<Record> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -31,13 +32,15 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
     private final Encryptor encryptor;
     private final RecordCompressor compressor;
 
+    private ProtocolMessageType type;
+
     public RecordPreparator(Chooser chooser, Record record, Encryptor encryptor, ProtocolMessageType type,
         RecordCompressor compressor) {
-        super(chooser, record, type);
+        super(chooser, record);
         this.record = record;
         this.encryptor = encryptor;
         this.compressor = compressor;
-
+        this.type = type;
     }
 
     @Override
@@ -84,5 +87,10 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
     private void prepareLength(Record record) {
         record.setLength(record.getProtocolMessageBytes().getValue().length);
         LOGGER.debug("Length: " + record.getLength().getValue());
+    }
+
+    protected void prepareContentMessageType(ProtocolMessageType type) {
+        getObject().setContentMessageType(this.type);
+        LOGGER.debug("ContentMessageType: " + ArrayConverter.bytesToHexString(type.getArrayValue()));
     }
 }

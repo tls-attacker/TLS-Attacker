@@ -6,7 +6,6 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -19,6 +18,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EllipticCurvesE
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.EllipticCurvesExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -65,8 +65,8 @@ public class EllipticCurvesExtensionHandler extends ExtensionHandler<EllipticCur
     }
 
     @Override
-    public EllipticCurvesExtensionParser getParser(byte[] message, int pointer, Config config) {
-        return new EllipticCurvesExtensionParser(pointer, message, config);
+    public EllipticCurvesExtensionParser getParser(InputStream stream) {
+        return new EllipticCurvesExtensionParser(stream, context.getConfig());
     }
 
     @Override

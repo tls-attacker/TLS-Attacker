@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.CertificateStatusParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateStatusPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateStatusSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 
 public class CertificateStatusHandler extends HandshakeMessageHandler<CertificateStatusMessage> {
     public CertificateStatusHandler(TlsContext tlsContext) {
@@ -21,8 +22,8 @@ public class CertificateStatusHandler extends HandshakeMessageHandler<Certificat
     }
 
     @Override
-    public CertificateStatusParser getParser(byte[] message, int pointer) {
-        return new CertificateStatusParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
+    public CertificateStatusParser getParser(InputStream stream) {
+        return new CertificateStatusParser(stream, tlsContext.getChooser().getLastRecordVersion(),
             tlsContext.getConfig());
     }
 

@@ -9,7 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
@@ -17,6 +16,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtensionPrepar
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -34,7 +34,7 @@ public abstract class ExtensionHandler<MessageT extends ExtensionMessage> {
         this.context = context;
     }
 
-    public abstract ExtensionParser<MessageT> getParser(byte[] message, int pointer, Config config);
+    public abstract ExtensionParser<MessageT> getParser(InputStream stream);
 
     public abstract ExtensionPreparator<MessageT> getPreparator(MessageT message);
 

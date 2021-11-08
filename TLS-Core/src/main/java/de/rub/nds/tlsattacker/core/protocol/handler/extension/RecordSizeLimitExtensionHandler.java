@@ -6,11 +6,9 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.RecordSizeLimit;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
@@ -19,6 +17,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.RecordSizeLimitExte
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.RecordSizeLimitExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.RecordSizeLimitExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -48,8 +47,8 @@ public class RecordSizeLimitExtensionHandler extends ExtensionHandler<RecordSize
     }
 
     @Override
-    public RecordSizeLimitExtensionParser getParser(byte[] message, int pointer, Config config) {
-        return new RecordSizeLimitExtensionParser(pointer, message, config);
+    public RecordSizeLimitExtensionParser getParser(InputStream stream) {
+        return new RecordSizeLimitExtensionParser(stream, context.getConfig());
     }
 
     @Override

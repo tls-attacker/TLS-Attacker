@@ -30,7 +30,6 @@ import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
-import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -216,8 +215,6 @@ public abstract class Chooser {
     public abstract byte[] getClientApplicationTrafficSecret();
 
     public abstract byte[] getServerApplicationTrafficSecret();
-
-    public abstract RecordLayerType getRecordLayerType();
 
     public abstract BigInteger getClientRSAPrivateKey();
 

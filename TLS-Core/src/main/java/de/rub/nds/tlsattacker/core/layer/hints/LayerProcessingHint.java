@@ -1,4 +1,5 @@
-package de.rub.nds.tlsattacker.core.layer;
+
+package de.rub.nds.tlsattacker.core.layer.hints;
 
 public interface LayerProcessingHint {
 

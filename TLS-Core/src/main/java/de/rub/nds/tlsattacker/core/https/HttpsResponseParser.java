@@ -18,6 +18,8 @@ import de.rub.nds.tlsattacker.core.https.header.parser.HttpsHeaderParser;
 import java.nio.charset.Charset;
 
 import de.rub.nds.tlsattacker.core.protocol.parser.TlsMessageParser;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -25,8 +27,8 @@ public class HttpsResponseParser extends TlsMessageParser<HttpsResponseMessage> 
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public HttpsResponseParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
-        super(pointer, array, version, config);
+    public HttpsResponseParser(InputStream stream, ProtocolVersion version, Config config) {
+        super(stream, version, config);
     }
 
     @Override
@@ -43,7 +45,7 @@ public class HttpsResponseParser extends TlsMessageParser<HttpsResponseMessage> 
 
         // compatible with \r\n and \n line endings
         while (!line.trim().isEmpty()) {
-            HttpsHeaderParser parser = new HttpsHeaderParser(0, line.getBytes(Charset.forName("ASCII")));
+            HttpsHeaderParser parser = new HttpsHeaderParser(new ByteArrayInputStream(line.getBytes(Charset.forName("ASCII"))));
             HttpsHeader header = parser.parse();
             message.getHeader().add(header);
             line = parseStringTill((byte) 0x0A);

@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.PWDClientKeyExchangeMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -26,13 +27,13 @@ public class PWDClientKeyExchangeParser extends ClientKeyExchangeParser<PWDClien
 
     private final KeyExchangeAlgorithm keyExchangeAlgorithm;
 
-    public PWDClientKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
-        this(pointer, array, version, null, config);
+    public PWDClientKeyExchangeParser(InputStream stream, ProtocolVersion version, Config config) {
+        this(stream, version, null, config);
     }
 
-    public PWDClientKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version,
+    public PWDClientKeyExchangeParser(InputStream stream, ProtocolVersion version,
         KeyExchangeAlgorithm keyExchangeAlgorithm, Config config) {
-        super(pointer, array, version, config);
+        super(stream, version, config);
         this.version = version;
         this.keyExchangeAlgorithm = keyExchangeAlgorithm;
     }

@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import java.math.BigInteger;
 
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.HandshakeMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.RSAServerKeyExchangeParser;
@@ -20,6 +19,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.RSAServerKeyExchangePrepa
 import de.rub.nds.tlsattacker.core.protocol.serializer.HandshakeMessageSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.RSAServerKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 
 public class RSAServerKeyExchangeHandler extends ServerKeyExchangeHandler<RSAServerKeyExchangeMessage> {
 
@@ -28,8 +28,8 @@ public class RSAServerKeyExchangeHandler extends ServerKeyExchangeHandler<RSASer
     }
 
     @Override
-    public HandshakeMessageParser<RSAServerKeyExchangeMessage> getParser(byte[] message, int pointer) {
-        return new RSAServerKeyExchangeParser<>(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
+    public HandshakeMessageParser<RSAServerKeyExchangeMessage> getParser(InputStream stream) {
+        return new RSAServerKeyExchangeParser<>(stream, tlsContext.getChooser().getLastRecordVersion(),
             tlsContext.getConfig());
     }
 

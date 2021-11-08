@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.core.https.HttpsRequestMessage;
 import de.rub.nds.tlsattacker.core.https.HttpsResponseMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.*;
-import de.rub.nds.tlsattacker.core.record.AbstractRecord;
+import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
@@ -108,12 +108,7 @@ public class ReceiveTillAction extends MessageAction implements ReceivingAction 
         }
 
         LOGGER.debug("Receiving Messages...");
-        MessageActionResult result = receiveMessageHelper.receiveMessagesTill(waitTillMessage, tlsContext);
-        records = new ArrayList<>(result.getRecordList());
-        messages = new ArrayList<>(result.getMessageList());
-        if (result.getMessageFragmentList() != null) {
-            fragments = new ArrayList<>(result.getMessageFragmentList());
-        }
+        receiveTill(tlsContext, messages, records);
         setExecuted(true);
 
         String expected = getReadableString(waitTillMessage);
@@ -189,7 +184,7 @@ public class ReceiveTillAction extends MessageAction implements ReceivingAction 
         this.messages = receivedMessages;
     }
 
-    void setReceivedRecords(List<AbstractRecord> receivedRecords) {
+    void setReceivedRecords(List<Record> receivedRecords) {
         this.records = receivedRecords;
     }
 
@@ -215,7 +210,7 @@ public class ReceiveTillAction extends MessageAction implements ReceivingAction 
     }
 
     @Override
-    public List<AbstractRecord> getReceivedRecords() {
+    public List<Record> getReceivedRecords() {
         return records;
     }
 

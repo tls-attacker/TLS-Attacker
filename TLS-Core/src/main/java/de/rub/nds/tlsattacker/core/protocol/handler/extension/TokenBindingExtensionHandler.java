@@ -6,7 +6,6 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -17,6 +16,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.TokenBindingExtensi
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.TokenBindingExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.TokenBindingExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 public class TokenBindingExtensionHandler extends ExtensionHandler<TokenBindingExtensionMessage> {
@@ -26,8 +26,8 @@ public class TokenBindingExtensionHandler extends ExtensionHandler<TokenBindingE
     }
 
     @Override
-    public TokenBindingExtensionParser getParser(byte[] message, int pointer, Config config) {
-        return new TokenBindingExtensionParser(pointer, message, config);
+    public TokenBindingExtensionParser getParser(InputStream stream) {
+        return new TokenBindingExtensionParser(stream, context.getConfig());
     }
 
     @Override
@@ -43,7 +43,7 @@ public class TokenBindingExtensionHandler extends ExtensionHandler<TokenBindingE
     @Override
     public void adjustTLSExtensionContext(TokenBindingExtensionMessage message) {
         context
-            .setTokenBindingVersion(TokenBindingVersion.getExtensionType(message.getTokenbindingVersion().getValue()));
+                .setTokenBindingVersion(TokenBindingVersion.getExtensionType(message.getTokenbindingVersion().getValue()));
         ArrayList<TokenBindingKeyParameters> tokenbindingKeyParameters = new ArrayList<>();
         for (byte kp : message.getTokenbindingKeyParameters().getValue()) {
             tokenbindingKeyParameters.add(TokenBindingKeyParameters.getTokenBindingKeyParameter(kp));

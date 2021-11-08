@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.HelloRequestParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.HelloRequestPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.HelloRequestSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 
 public class HelloRequestHandler extends HandshakeMessageHandler<HelloRequestMessage> {
 
@@ -22,8 +23,8 @@ public class HelloRequestHandler extends HandshakeMessageHandler<HelloRequestMes
     }
 
     @Override
-    public HelloRequestParser getParser(byte[] message, int pointer) {
-        return new HelloRequestParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
+    public HelloRequestParser getParser(InputStream stream) {
+        return new HelloRequestParser(stream, tlsContext.getChooser().getLastRecordVersion(),
             tlsContext.getConfig());
     }
 

@@ -6,7 +6,6 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -19,6 +18,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PSKKeyExchangeM
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PSKKeyExchangeModesExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 import java.util.LinkedList;
 
 /**
@@ -31,8 +31,8 @@ public class PSKKeyExchangeModesExtensionHandler extends ExtensionHandler<PSKKey
     }
 
     @Override
-    public ExtensionParser getParser(byte[] message, int pointer, Config config) {
-        return new PSKKeyExchangeModesExtensionParser(pointer, message, config);
+    public ExtensionParser getParser(InputStream stream) {
+        return new PSKKeyExchangeModesExtensionParser(stream, context.getConfig());
     }
 
     @Override

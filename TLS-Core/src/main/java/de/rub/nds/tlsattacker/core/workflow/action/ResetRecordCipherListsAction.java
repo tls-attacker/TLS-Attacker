@@ -6,18 +6,17 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.record.layer.RecordLayer;
-import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
+import de.rub.nds.tlsattacker.core.layer.impl.RecordLayer;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
- * This action removes the most recent ciphers from the encryptor and decryptor. The most-recent cipher used to encrypt
- * and decrypt records will thus be an older one with its state (if applicable) kept in place
+ * This action removes the most recent ciphers from the encryptor and decryptor.
+ * The most-recent cipher used to encrypt and decrypt records will thus be an
+ * older one with its state (if applicable) kept in place
  */
 public class ResetRecordCipherListsAction extends ConnectionBoundAction {
 
@@ -38,10 +37,9 @@ public class ResetRecordCipherListsAction extends ConnectionBoundAction {
     public void execute(State state) throws WorkflowExecutionException {
         TlsContext context = state.getTlsContext(getConnectionAlias());
         RecordLayer recordLayer = context.getRecordLayer();
-        if (recordLayer instanceof TlsRecordLayer) {
-            ((TlsRecordLayer) recordLayer).getEncryptor().removeCiphers(toRemoveEncryptor);
-            ((TlsRecordLayer) recordLayer).getDecryptor().removeCiphers(toRemoveDecryptor);
-        }
+        //TODO test if record layer is non null
+        ((RecordLayer) recordLayer).getEncryptor().removeCiphers(toRemoveEncryptor);
+        ((RecordLayer) recordLayer).getDecryptor().removeCiphers(toRemoveDecryptor);
         setExecuted(true);
     }
 

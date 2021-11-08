@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.PskClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.PskClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.PskClientKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 
 public class PskClientKeyExchangeHandler extends ClientKeyExchangeHandler<PskClientKeyExchangeMessage> {
 
@@ -22,8 +23,8 @@ public class PskClientKeyExchangeHandler extends ClientKeyExchangeHandler<PskCli
     }
 
     @Override
-    public PskClientKeyExchangeParser getParser(byte[] message, int pointer) {
-        return new PskClientKeyExchangeParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
+    public PskClientKeyExchangeParser getParser(InputStream stream) {
+        return new PskClientKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(),
             tlsContext.getConfig());
     }
 

@@ -11,20 +11,20 @@ package de.rub.nds.tlsattacker.core.workflow.action.executor;
 
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.record.AbstractRecord;
+import de.rub.nds.tlsattacker.core.record.Record;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
 public class MessageActionResult {
 
-    private final List<AbstractRecord> recordList;
+    private final List<Record> recordList;
 
     private final List<ProtocolMessage> messageList;
 
     private final List<DtlsHandshakeMessageFragment> messageFragmentList;
 
-    public MessageActionResult(List<AbstractRecord> recordList, List<ProtocolMessage> messageList,
+    public MessageActionResult(List<Record> recordList, List<ProtocolMessage> messageList,
         List<DtlsHandshakeMessageFragment> messageFragmentList) {
         this.recordList = recordList;
         this.messageList = messageList;
@@ -38,7 +38,7 @@ public class MessageActionResult {
         this(new LinkedList<>(), new LinkedList<>(), new LinkedList<>());
     }
 
-    public List<AbstractRecord> getRecordList() {
+    public List<Record> getRecordList() {
         return recordList;
     }
 
@@ -56,7 +56,7 @@ public class MessageActionResult {
     public MessageActionResult merge(MessageActionResult... other) {
         LinkedList<MessageActionResult> results = new LinkedList<MessageActionResult>(Arrays.asList(other));
         results.add(0, this);
-        List<AbstractRecord> recordList = new LinkedList<>();
+        List<Record> recordList = new LinkedList<>();
         List<DtlsHandshakeMessageFragment> messageFragmentList = null;
         List<ProtocolMessage> messageList = new LinkedList<>();
 

@@ -6,7 +6,6 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownHandshakeMessage;
@@ -14,6 +13,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.UnknownHandshakeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.UnknownHandshakePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.UnknownHandshakeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 
 public class UnknownHandshakeHandler extends HandshakeMessageHandler<UnknownHandshakeMessage> {
 
@@ -27,9 +27,9 @@ public class UnknownHandshakeHandler extends HandshakeMessageHandler<UnknownHand
     }
 
     @Override
-    public UnknownHandshakeParser getParser(byte[] message, int pointer) {
-        return new UnknownHandshakeParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
-            tlsContext.getConfig());
+    public UnknownHandshakeParser getParser(InputStream stream) {
+        return new UnknownHandshakeParser(stream, tlsContext.getChooser().getLastRecordVersion(),
+                tlsContext.getConfig());
     }
 
     @Override

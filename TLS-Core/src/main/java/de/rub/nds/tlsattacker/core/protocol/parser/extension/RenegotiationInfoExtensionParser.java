@@ -6,7 +6,6 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import static de.rub.nds.modifiablevariable.util.ArrayConverter.bytesToHexString;
@@ -14,6 +13,7 @@ import static de.rub.nds.modifiablevariable.util.ArrayConverter.bytesToHexString
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RenegotiationInfoExtensionMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,8 +21,8 @@ public class RenegotiationInfoExtensionParser extends ExtensionParser<Renegotiat
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public RenegotiationInfoExtensionParser(int startposition, byte[] array, Config config) {
-        super(startposition, array, config);
+    public RenegotiationInfoExtensionParser(InputStream stream, Config config) {
+        super(stream, config);
     }
 
     @Override
@@ -30,11 +30,11 @@ public class RenegotiationInfoExtensionParser extends ExtensionParser<Renegotiat
         msg.setRenegotiationInfoLength(parseIntField(ExtensionByteLength.RENEGOTIATION_INFO));
         if (msg.getRenegotiationInfoLength().getValue() > 255) {
             LOGGER.warn("The renegotiation info length shouldn't exceed 1 byte as defined in RFC 5246. " + "Length was "
-                + msg.getExtensionLength().getValue());
+                    + msg.getExtensionLength().getValue());
         }
         msg.setRenegotiationInfo(parseByteArrayField(msg.getRenegotiationInfoLength().getValue()));
         LOGGER.debug(
-            "The RenegotiationInfoExtensionParser parsed the value " + bytesToHexString(msg.getRenegotiationInfo()));
+                "The RenegotiationInfoExtensionParser parsed the value " + bytesToHexString(msg.getRenegotiationInfo()));
     }
 
     @Override

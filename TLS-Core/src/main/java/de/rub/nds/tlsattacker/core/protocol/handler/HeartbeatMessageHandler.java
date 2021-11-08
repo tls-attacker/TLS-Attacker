@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.HeartbeatMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.HeartbeatMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.HeartbeatMessageSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 
 /**
  * Handler for Heartbeat messages: http://tools.ietf.org/html/rfc6520#page-4
@@ -25,8 +26,8 @@ public class HeartbeatMessageHandler extends TlsMessageHandler<HeartbeatMessage>
     }
 
     @Override
-    public HeartbeatMessageParser getParser(byte[] message, int pointer) {
-        return new HeartbeatMessageParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
+    public HeartbeatMessageParser getParser(InputStream stream) {
+        return new HeartbeatMessageParser(stream, tlsContext.getChooser().getLastRecordVersion(),
             tlsContext.getConfig());
     }
 

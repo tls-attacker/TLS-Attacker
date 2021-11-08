@@ -6,7 +6,6 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -16,6 +15,8 @@ import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -29,8 +30,8 @@ public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMe
 
     private boolean helloRetryRequestHint = false;
 
-    public KeyShareExtensionParser(int startposition, byte[] array, Config config) {
-        super(startposition, array, config);
+    public KeyShareExtensionParser(InputStream stream, Config config) {
+        super(stream, config);
     }
 
     @Override
@@ -51,24 +52,13 @@ public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMe
     private void parseRegularKeyShare(KeyShareExtensionMessage msg) {
         LOGGER.debug("Parsing KeyShareExtensionMessage as regular KeyShareExtension");
         parseKeyShareListLength(msg);
-        if (msg.getKeyShareListLength().getValue() + ExtensionByteLength.KEY_SHARE_LIST_LENGTH
-            == msg.getExtensionLength().getValue()) {
-            parseKeyShareListBytes(msg);
-        } else {
-            msg.setKeyShareListLength(msg.getExtensionLength().getValue());
-            LOGGER.debug("KeyShareListLength: " + msg.getExtensionLength().getValue());
-            setPointer(getPointer() - ExtensionByteLength.KEY_SHARE_LIST_LENGTH);
-            parseKeyShareListBytes(msg);
-        }
-        int position = 0;
+        parseKeyShareListBytes(msg);
+
+        ByteArrayInputStream innerStream = new ByteArrayInputStream(msg.getKeyShareListBytes().getValue());
         entryList = new LinkedList<>();
-        while (position < msg.getKeyShareListLength().getValue()) {
-            KeyShareEntryParser parser = new KeyShareEntryParser(position, msg.getKeyShareListBytes().getValue());
+        while (innerStream.available() > 0) {
+            KeyShareEntryParser parser = new KeyShareEntryParser(innerStream);
             entryList.add(parser.parse());
-            if (position == parser.getPointer()) {
-                throw new ParserException("Ran into infinite Loop while parsing KeySharePairs");
-            }
-            position = parser.getPointer();
         }
         parseKeyShareList(msg);
     }
@@ -77,16 +67,16 @@ public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMe
         LOGGER.debug("Parsing KeyShareExtensionMessage as HelloRetryRequest KeyShareExtension");
         msg.setKeyShareListBytes(parseByteArrayField(NamedGroup.LENGTH));
         entryList = new LinkedList<>();
-        KeyShareEntryParser parser = new KeyShareEntryParser(0, msg.getKeyShareListBytes().getValue());
+        KeyShareEntryParser parser = new KeyShareEntryParser(new ByteArrayInputStream(msg.getKeyShareListBytes().getValue()));
         entryList.add(parser.parse());
         parseKeyShareList(msg);
     }
 
     /**
-     * Reads the next bytes as the keyShareListLength of the Extension and writes them in the message
+     * Reads the next bytes as the keyShareListLength of the Extension and
+     * writes them in the message
      *
-     * @param msg
-     *            Message to write in
+     * @param msg Message to write in
      */
     private void parseKeyShareListLength(KeyShareExtensionMessage msg) {
         msg.setKeyShareListLength(parseIntField(ExtensionByteLength.KEY_SHARE_LIST_LENGTH));
@@ -94,10 +84,10 @@ public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMe
     }
 
     /**
-     * Reads the next bytes as the keyShareListBytes of the Extension and writes them in the message
+     * Reads the next bytes as the keyShareListBytes of the Extension and writes
+     * them in the message
      *
-     * @param msg
-     *            Message to write in
+     * @param msg Message to write in
      */
     private void parseKeyShareListBytes(KeyShareExtensionMessage msg) {
         msg.setKeyShareListBytes(parseByteArrayField(msg.getKeyShareListLength().getValue()));
@@ -105,10 +95,10 @@ public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMe
     }
 
     /**
-     * Reads the next bytes as the keyShareList of the Extension and writes them in the message
+     * Reads the next bytes as the keyShareList of the Extension and writes them
+     * in the message
      *
-     * @param msg
-     *            Message to write in
+     * @param msg Message to write in
      */
     private void parseKeyShareList(KeyShareExtensionMessage msg) {
         msg.setKeyShareList(entryList);

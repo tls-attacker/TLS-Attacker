@@ -86,6 +86,7 @@ public class UdpInputStream extends InputStream {
     private DatagramPacket receive() throws IOException {
         DatagramPacket packet = new DatagramPacket(dataBuffer, BUFFER_SIZE);
         socket.receive(packet);
+        
         index = 0;
         packetSize = packet.getLength();
 

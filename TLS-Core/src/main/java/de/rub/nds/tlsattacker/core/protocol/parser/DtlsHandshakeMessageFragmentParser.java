@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,8 +22,8 @@ public class DtlsHandshakeMessageFragmentParser extends HandshakeMessageParser<D
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public DtlsHandshakeMessageFragmentParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
-        super(pointer, array, HandshakeMessageType.UNKNOWN, version, config);
+    public DtlsHandshakeMessageFragmentParser(InputStream stream, ProtocolVersion version, Config config) {
+        super(stream, HandshakeMessageType.UNKNOWN, version, config);
     }
 
     @Override

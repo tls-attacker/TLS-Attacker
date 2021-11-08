@@ -6,7 +6,6 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -18,6 +17,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.ServerNameIndicatio
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ServerNameIndicationExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ServerNameIndicationExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -46,8 +46,8 @@ public class ServerNameIndicationExtensionHandler extends ExtensionHandler<Serve
     }
 
     @Override
-    public ServerNameIndicationExtensionParser getParser(byte[] message, int pointer, Config config) {
-        return new ServerNameIndicationExtensionParser(pointer, message, config);
+    public ServerNameIndicationExtensionParser getParser(InputStream stream) {
+        return new ServerNameIndicationExtensionParser(stream, context.getConfig());
     }
 
     @Override

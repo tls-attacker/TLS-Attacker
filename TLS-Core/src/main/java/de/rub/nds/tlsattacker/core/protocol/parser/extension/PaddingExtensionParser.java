@@ -13,6 +13,7 @@ import static de.rub.nds.modifiablevariable.util.ArrayConverter.bytesToHexString
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,8 +21,8 @@ public class PaddingExtensionParser extends ExtensionParser<PaddingExtensionMess
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public PaddingExtensionParser(int startposition, byte[] array, Config config) {
-        super(startposition, array, config);
+    public PaddingExtensionParser(InputStream stream, Config config) {
+        super(stream, config);
     }
 
     @Override

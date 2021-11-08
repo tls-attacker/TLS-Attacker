@@ -12,6 +12,7 @@ package de.rub.nds.tlsattacker.core.protocol.parser;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.GOSTClientKeyExchangeMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -19,8 +20,8 @@ public class GOSTClientKeyExchangeParser extends ClientKeyExchangeParser<GOSTCli
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public GOSTClientKeyExchangeParser(int startposition, byte[] array, ProtocolVersion version, Config config) {
-        super(startposition, array, version, config);
+    public GOSTClientKeyExchangeParser(InputStream stream, ProtocolVersion version, Config config) {
+        super(stream, version, config);
     }
 
     @Override

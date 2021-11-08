@@ -15,6 +15,8 @@ import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CachedInfoExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -22,16 +24,17 @@ public class CachedInfoExtensionParser extends ExtensionParser<CachedInfoExtensi
 
     private List<CachedObject> cachedObjectList;
 
-    public CachedInfoExtensionParser(int startposition, byte[] array, Config config) {
-        super(startposition, array, config);
+    public CachedInfoExtensionParser(InputStream stream, Config config) {
+        super(stream, config);
     }
 
     @Override
     public void parseExtensionMessageContent(CachedInfoExtensionMessage msg) {
         msg.setCachedInfoLength(parseIntField(ExtensionByteLength.CACHED_INFO_LENGTH));
-        msg.setCachedInfoBytes(parseByteArrayField(msg.getCachedInfoLength().getValue()));
-
-        int position = 0;
+        byte[] cachedInfoBytes = parseByteArrayField(msg.getCachedInfoLength().getValue()); 
+        msg.setCachedInfoBytes(cachedInfoBytes);
+        ByteArrayInputStream innerStream = new ByteArrayInputStream(cachedInfoBytes);
+        //TODO The parser should know and not guess which connectionEnd it is
         ConnectionEndType connectionEndType = ConnectionEndType.CLIENT;
         cachedObjectList = new LinkedList<>();
 
@@ -39,14 +42,9 @@ public class CachedInfoExtensionParser extends ExtensionParser<CachedInfoExtensi
             connectionEndType = ConnectionEndType.SERVER;
         }
 
-        while (position < msg.getCachedInfoLength().getValue()) {
-            CachedObjectParser parser =
-                new CachedObjectParser(position, msg.getCachedInfoBytes().getValue(), connectionEndType);
+        while (innerStream.available() > 0) {
+            CachedObjectParser parser = new CachedObjectParser(innerStream, connectionEndType);
             cachedObjectList.add(parser.parse());
-            if (position == parser.getPointer()) {
-                throw new ParserException("Ran into infinite Loop while parsing CachedObjects");
-            }
-            position = parser.getPointer();
         }
         msg.setCachedInfo(cachedObjectList);
     }

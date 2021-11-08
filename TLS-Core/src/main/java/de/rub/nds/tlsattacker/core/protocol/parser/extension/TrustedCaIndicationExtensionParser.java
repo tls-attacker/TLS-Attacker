@@ -6,21 +6,21 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TrustedCaIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 
 public class TrustedCaIndicationExtensionParser extends ExtensionParser<TrustedCaIndicationExtensionMessage> {
 
-    public TrustedCaIndicationExtensionParser(int startposition, byte[] array, Config config) {
-        super(startposition, array, config);
+    public TrustedCaIndicationExtensionParser(InputStream stream, Config config) {
+        super(stream, config);
     }
 
     @Override
@@ -29,16 +29,11 @@ public class TrustedCaIndicationExtensionParser extends ExtensionParser<TrustedC
         msg.setTrustedAuthoritiesBytes(parseByteArrayField(msg.getTrustedAuthoritiesLength().getValue()));
 
         List<TrustedAuthority> trustedAuthoritiesList = new LinkedList<>();
-        int position = 0;
+        ByteArrayInputStream innerStream = new ByteArrayInputStream(msg.getTrustedAuthoritiesBytes().getValue());
 
-        while (position < msg.getTrustedAuthoritiesLength().getValue()) {
-            TrustedAuthorityParser parser =
-                new TrustedAuthorityParser(position, msg.getTrustedAuthoritiesBytes().getValue());
+        while (innerStream.available() > 0) {
+            TrustedAuthorityParser parser = new TrustedAuthorityParser(innerStream);
             trustedAuthoritiesList.add(parser.parse());
-            if (position == parser.getPointer()) {
-                throw new ParserException("Ran into infinite Loop while parsing TrustedAuthorities");
-            }
-            position = parser.getPointer();
         }
         msg.setTrustedAuthorities(trustedAuthoritiesList);
     }

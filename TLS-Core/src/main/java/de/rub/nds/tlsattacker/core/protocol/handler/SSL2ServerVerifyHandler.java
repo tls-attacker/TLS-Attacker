@@ -6,7 +6,6 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerVerifyMessage;
@@ -14,6 +13,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.SSL2ServerVerifyParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.SSL2ServerVerifyPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.HandshakeMessageSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 
 public class SSL2ServerVerifyHandler extends HandshakeMessageHandler<SSL2ServerVerifyMessage> {
 
@@ -22,9 +22,9 @@ public class SSL2ServerVerifyHandler extends HandshakeMessageHandler<SSL2ServerV
     }
 
     @Override
-    public SSL2ServerVerifyParser getParser(byte[] message, int pointer) {
-        return new SSL2ServerVerifyParser(message, pointer, tlsContext.getChooser().getSelectedProtocolVersion(),
-            tlsContext.getConfig());
+    public SSL2ServerVerifyParser getParser(InputStream stream) {
+        return new SSL2ServerVerifyParser(stream, tlsContext.getChooser().getSelectedProtocolVersion(),
+                tlsContext.getConfig());
     }
 
     @Override

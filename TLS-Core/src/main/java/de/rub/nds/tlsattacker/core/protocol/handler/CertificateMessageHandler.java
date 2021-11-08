@@ -31,6 +31,7 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.ASN1InputStream;
@@ -48,9 +49,9 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
     }
 
     @Override
-    public CertificateMessageParser getParser(byte[] message, int pointer) {
-        return new CertificateMessageParser(pointer, message, tlsContext.getChooser().getSelectedProtocolVersion(),
-            tlsContext.getConfig());
+    public CertificateMessageParser getParser(InputStream stream) {
+        return new CertificateMessageParser(stream, tlsContext.getChooser().getSelectedProtocolVersion(),
+            tlsContext.getConfig(), tlsContext.getTalkingConnectionEndType());
     }
 
     @Override

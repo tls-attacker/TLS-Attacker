@@ -10,27 +10,28 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.cert;
 
 import de.rub.nds.tlsattacker.core.protocol.Parser;
-import de.rub.nds.tlsattacker.core.record.AbstractRecord;
+import de.rub.nds.tlsattacker.core.record.Record;
+import java.io.InputStream;
 import java.util.List;
 
 /**
  * //TODO I am not sure if this implementation is so smart since it extends Parser which is designed for Message objects
  * and is called ByteSeperator //I Think another logical abstraction is needed here
  */
-public class CleanRecordByteSeperator extends Parser<List<AbstractRecord>> {
+public class CleanRecordByteSeperator extends Parser<List<Record>> {
 
-    private final List<AbstractRecord> records;
+    private final List<Record> records;
     private final int defaultMaxSize;
 
-    public CleanRecordByteSeperator(List<AbstractRecord> records, int defaultMaxSize, int startposition, byte[] array) {
-        super(startposition, array);
+    public CleanRecordByteSeperator(List<Record> records, int defaultMaxSize, InputStream stream) {
+        super(stream);
         this.records = records;
         this.defaultMaxSize = defaultMaxSize;
     }
 
     @Override
-    public List<AbstractRecord> parse() {
-        for (AbstractRecord record : records) {
+    public List<Record> parse() {
+        for (Record record : records) {
             Integer maxData = record.getMaxRecordLengthConfig();
             if (maxData == null) {
                 maxData = defaultMaxSize;

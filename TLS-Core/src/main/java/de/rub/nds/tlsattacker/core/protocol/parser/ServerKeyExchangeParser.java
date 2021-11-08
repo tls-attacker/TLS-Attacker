@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerKeyExchangeMessage;
+import java.io.InputStream;
 
 /**
  * @param <T>
@@ -23,10 +24,7 @@ public abstract class ServerKeyExchangeParser<T extends ServerKeyExchangeMessage
     /**
      * Constructor for the Parser class
      *
-     * @param pointer
-     *                     Position in the array where the ServerKeyExchangeParser is supposed to start parsing
-     * @param array
-     *                     The byte[] which the ServerKeyExchangeParser is supposed to parse
+     * @param stream
      * @param expectedType
      *                     The Handshake message type that is expected
      * @param version
@@ -34,9 +32,9 @@ public abstract class ServerKeyExchangeParser<T extends ServerKeyExchangeMessage
      * @param config
      *                     A Config used in the current context
      */
-    public ServerKeyExchangeParser(int pointer, byte[] array, HandshakeMessageType expectedType,
+    public ServerKeyExchangeParser(InputStream stream, HandshakeMessageType expectedType,
         ProtocolVersion version, Config config) {
-        super(pointer, array, expectedType, version, config);
+        super(stream, expectedType, version, config);
     }
 
 }

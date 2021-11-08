@@ -19,11 +19,12 @@ import de.rub.nds.tlsattacker.core.https.header.HttpsHeader;
 import de.rub.nds.tlsattacker.core.https.header.LocationHeader;
 import de.rub.nds.tlsattacker.core.https.header.TokenBindingHeader;
 import de.rub.nds.tlsattacker.core.protocol.Parser;
+import java.io.InputStream;
 
 public class HttpsHeaderParser extends Parser<HttpsHeader> {
 
-    public HttpsHeaderParser(int startposition, byte[] array) {
-        super(startposition, array);
+    public HttpsHeaderParser(InputStream stream) {
+        super(stream);
     }
 
     @Override

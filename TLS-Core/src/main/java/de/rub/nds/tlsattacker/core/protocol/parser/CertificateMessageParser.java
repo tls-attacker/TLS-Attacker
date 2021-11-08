@@ -6,7 +6,6 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -14,14 +13,15 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificateEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificatePair;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.cert.CertificatePairParser;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParserFactory;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionListParser;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -31,20 +31,19 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    private final ConnectionEndType talkingConnectionEndType;
+
     /**
      * Constructor for the Parser class
      *
-     * @param startposition
-     *                      Position in the array where the HandshakeMessageParser is supposed to start parsing
-     * @param array
-     *                      The byte[] which the HandshakeMessageParser is supposed to parse
-     * @param version
-     *                      Version of the Protocol
-     * @param config
-     *                      A Config used in the current context
+     * @param stream
+     * @param version Version of the Protocol
+     * @param config A Config used in the current context
+     * @param talkingConnectionEndType
      */
-    public CertificateMessageParser(int startposition, byte[] array, ProtocolVersion version, Config config) {
-        super(startposition, array, HandshakeMessageType.CERTIFICATE, version, config);
+    public CertificateMessageParser(InputStream stream, ProtocolVersion version, Config config, ConnectionEndType talkingConnectionEndType) {
+        super(stream, HandshakeMessageType.CERTIFICATE, version, config);
+        this.talkingConnectionEndType = talkingConnectionEndType;
     }
 
     @Override
@@ -67,10 +66,10 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
     }
 
     /**
-     * Reads the next bytes as the RequestContextLength and writes them in the message
+     * Reads the next bytes as the RequestContextLength and writes them in the
+     * message
      *
-     * @param msg
-     *            Message to write in
+     * @param msg Message to write in
      */
     private void parseRequestContextLength(CertificateMessage msg) {
         msg.setRequestContextLength(parseIntField(HandshakeByteLength.CERTIFICATE_REQUEST_CONTEXT_LENGTH));
@@ -78,10 +77,10 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
     }
 
     /**
-     * Reads the next bytes as the requestContextBytes and writes them in the message
+     * Reads the next bytes as the requestContextBytes and writes them in the
+     * message
      *
-     * @param msg
-     *            Message to write in
+     * @param msg Message to write in
      */
     private void parseRequestContextBytes(CertificateMessage msg) {
         msg.setRequestContext(parseByteArrayField(msg.getRequestContextLength().getValue()));
@@ -89,10 +88,10 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
     }
 
     /**
-     * Reads the next bytes as the CertificateLength and writes them in the message
+     * Reads the next bytes as the CertificateLength and writes them in the
+     * message
      *
-     * @param msg
-     *            Message to write in
+     * @param msg Message to write in
      */
     private void parseCertificatesListLength(CertificateMessage msg) {
         msg.setCertificatesListLength(parseIntField(HandshakeByteLength.CERTIFICATES_LENGTH));
@@ -100,10 +99,10 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
     }
 
     /**
-     * Reads the next bytes as the CertificateBytes and writes them in the message
+     * Reads the next bytes as the CertificateBytes and writes them in the
+     * message
      *
-     * @param msg
-     *            Message to write in
+     * @param msg Message to write in
      */
     private void parseCertificateListBytes(CertificateMessage msg) {
         msg.setCertificatesListBytes(parseByteArrayField(msg.getCertificatesListLength().getValue()));
@@ -111,38 +110,24 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
     }
 
     /**
-     * Reads the bytes from the CertificateListBytes and writes them in the CertificateList
+     * Reads the bytes from the CertificateListBytes and writes them in the
+     * CertificateList
      *
-     * @param msg
-     *            Message to write in
+     * @param msg Message to write in
      */
     private void parseCertificateList(CertificateMessage msg) {
-        int position = 0;
         List<CertificatePair> pairList = new LinkedList<>();
-        while (position < msg.getCertificatesListLength().getValue()) {
-            CertificatePairParser parser =
-                new CertificatePairParser(position, msg.getCertificatesListBytes().getValue());
+        ByteArrayInputStream innerStream = new ByteArrayInputStream(msg.getCertificatesListBytes().getValue());
+        while (innerStream.available() > 0) {
+            CertificatePairParser parser = new CertificatePairParser(innerStream);
             pairList.add(parser.parse());
-            if (position == parser.getPointer()) {
-                throw new ParserException("Ran into infinite Loop while parsing CertificatePairs");
-            }
-            position = parser.getPointer();
         }
         msg.setCertificatesList(pairList);
 
         List<CertificateEntry> entryList = new LinkedList<>();
         for (CertificatePair pair : msg.getCertificatesList()) {
-            List<ExtensionMessage> extensionMessages = new LinkedList<>();
-            int pointer = 0;
-            while (pointer < pair.getExtensionsLength().getValue()) {
-                ExtensionParser parser = ExtensionParserFactory.getExtensionParser(pair.getExtensions().getValue(),
-                    pointer, this.getConfig());
-                extensionMessages.add(parser.parse());
-                if (pointer == parser.getPointer()) {
-                    throw new ParserException("Ran into infinite Loop while parsing CertificateExtensions");
-                }
-                pointer = parser.getPointer();
-            }
+            ExtensionListParser parser = new ExtensionListParser(new ByteArrayInputStream(pair.getExtensions().getValue()), config, talkingConnectionEndType, getVersion(), false);
+            List<ExtensionMessage> extensionMessages = parser.parse();
             entryList.add(new CertificateEntry(pair.getCertificate().getValue(), extensionMessages));
         }
         msg.setCertificatesListAsEntry(entryList);

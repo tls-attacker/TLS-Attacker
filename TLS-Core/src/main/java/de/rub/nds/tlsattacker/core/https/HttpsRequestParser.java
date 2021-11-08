@@ -6,7 +6,6 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.https;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -18,6 +17,8 @@ import de.rub.nds.tlsattacker.core.https.header.parser.HttpsHeaderParser;
 import java.nio.charset.Charset;
 
 import de.rub.nds.tlsattacker.core.protocol.parser.TlsMessageParser;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -25,8 +26,8 @@ public class HttpsRequestParser extends TlsMessageParser<HttpsRequestMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public HttpsRequestParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
-        super(pointer, array, version, config);
+    public HttpsRequestParser(InputStream stream, ProtocolVersion version, Config config) {
+        super(stream, version, config);
     }
 
     @Override
@@ -44,7 +45,7 @@ public class HttpsRequestParser extends TlsMessageParser<HttpsRequestMessage> {
 
         // compatible with \r\n and \n line endings
         while (!line.trim().isEmpty()) {
-            HttpsHeaderParser parser = new HttpsHeaderParser(0, line.getBytes(Charset.forName("ASCII")));
+            HttpsHeaderParser parser = new HttpsHeaderParser(new ByteArrayInputStream(line.getBytes(Charset.forName("ASCII"))));
             HttpsHeader header = parser.parse();
             message.getHeader().add(header);
             line = parseStringTill((byte) 0x0A);

@@ -65,7 +65,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.SrpClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SrpServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EarlyDataExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PreSharedKeyExtensionMessage;
-import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
 import de.rub.nds.tlsattacker.core.workflow.action.BufferedGenericReceiveAction;
@@ -75,8 +74,8 @@ import de.rub.nds.tlsattacker.core.workflow.action.CopyBuffersAction;
 import de.rub.nds.tlsattacker.core.workflow.action.CopyPreMasterSecretAction;
 import de.rub.nds.tlsattacker.core.workflow.action.EsniKeyDnsRequestAction;
 import de.rub.nds.tlsattacker.core.workflow.action.FlushSessionCacheAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ForwardDataAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ForwardMessagesAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ForwardRecordsAction;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageActionFactory;
 import de.rub.nds.tlsattacker.core.workflow.action.PopAndSendAction;
@@ -428,11 +427,9 @@ public class WorkflowConfigurationFactory {
 
         MessageAction action = MessageActionFactory.createAction(config, connection, ConnectionEndType.CLIENT,
             new SSL2ClientHelloMessage(config));
-        action.setRecords(new BlobRecord());
         trace.addTlsAction(action);
         action = MessageActionFactory.createAction(config, connection, ConnectionEndType.SERVER,
             new SSL2ServerHelloMessage(config));
-        action.setRecords(new BlobRecord());
         trace.addTlsAction(action);
         return trace;
     }
@@ -820,8 +817,8 @@ public class WorkflowConfigurationFactory {
             new SendAction(clientToMitmAlias, new ChangeCipherSpecMessage(), new FinishedMessage()), //
 
             // Step out, enjoy :)
-            new ForwardRecordsAction(clientToMitmAlias, mitmToServerAlias), //
-            new ForwardRecordsAction(mitmToServerAlias, clientToMitmAlias)); //
+            new ForwardDataAction(clientToMitmAlias, mitmToServerAlias), //
+            new ForwardDataAction(mitmToServerAlias, clientToMitmAlias)); //
 
         return trace;
     }

@@ -5,20 +5,25 @@
  */
 package de.rub.nds.tlsattacker.core.layer;
 
-import java.io.InputStream;
+import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
+import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
-public abstract class ProtocolLayer<T extends DataContainer> {
+public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container extends DataContainer> {
 
     private ProtocolLayer higherLayer = null;
     private ProtocolLayer lowerLayer = null;
 
-    private LayerConfiguration layerConfiguration;
+    private LayerConfiguration<Container> layerConfiguration;
 
-    private List<DataContainer> producedDataContainers;
+    private List<Container> producedDataContainers;
 
     private boolean initialized = false;
+
+    private ByteArrayOutputStream resultDataStream;
 
     public ProtocolLayer getHigherLayer() {
         if (!initialized) {
@@ -50,11 +55,19 @@ public abstract class ProtocolLayer<T extends DataContainer> {
         this.lowerLayer = lowerLayer;
     }
 
-    public abstract LayerProcessingResult sendData(byte[] data);
+    public abstract LayerProcessingResult sendData() throws IOException;
 
-    public abstract LayerProcessingResult receiveData();
+    public abstract LayerProcessingResult sendData(byte[] data) throws IOException;
 
-    public LayerConfiguration getLayerConfiguration() {
+    public abstract LayerProcessingResult sendData(Hint hint) throws IOException;
+
+    public abstract LayerProcessingResult sendData(Hint hint, byte[] additionalData) throws IOException;
+
+    protected ByteArrayOutputStream getResultDataStream() {
+        return resultDataStream;
+    }
+
+    public LayerConfiguration<Container> getLayerConfiguration() {
         return layerConfiguration;
     }
 
@@ -62,13 +75,21 @@ public abstract class ProtocolLayer<T extends DataContainer> {
         this.layerConfiguration = layerConfiguration;
     }
 
-    public List<DataContainer> getProducedDataContainers() {
-        return producedDataContainers;
+    public LayerProcessingResult<Container> getLayerResult() {
+        return new LayerProcessingResult(producedDataContainers, resultDataStream.toByteArray());
     }
 
     public void clear() {
         producedDataContainers = new LinkedList<>();
         layerConfiguration = null;
     }
+
+    protected void addProducedContainer(Container container) {
+        producedDataContainers.add(container);
+    }
+
+    public abstract byte[] retrieveMoreData(LayerProcessingHint hint) throws IOException;
+
+    public abstract HintedLayerStream getDataStream();
 
 }

@@ -12,18 +12,17 @@ package de.rub.nds.tlsattacker.core.certificate.transparency;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.Parser;
+import java.io.InputStream;
 
 public class SignedCertificateTimestampSignatureParser extends Parser<SignedCertificateTimestampSignature> {
 
     /**
      * Constructor for the Parser
      *
-     * @param startposition
-     *                         Position in the array from which the Parser should start working
-     * @param encodedSignature
+     * @param stream
      */
-    public SignedCertificateTimestampSignatureParser(int startposition, byte[] encodedSignature) {
-        super(startposition, encodedSignature);
+    public SignedCertificateTimestampSignatureParser(InputStream stream) {
+        super(stream);
     }
 
     @Override

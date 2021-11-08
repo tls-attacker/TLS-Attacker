@@ -21,6 +21,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.HandshakeMessagePreparato
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EncryptedServerNameIndicationExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.HandshakeMessageSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 
 /**
  * @param <HandshakeMessageT>
@@ -69,7 +70,7 @@ public abstract class HandshakeMessageHandler<HandshakeMessageT extends Handshak
     }
 
     @Override
-    public abstract HandshakeMessageParser<HandshakeMessageT> getParser(byte[] message, int pointer);
+    public abstract HandshakeMessageParser<HandshakeMessageT> getParser(InputStream stream);
 
     @Override
     public abstract HandshakeMessagePreparator<HandshakeMessageT> getPreparator(HandshakeMessageT message);
