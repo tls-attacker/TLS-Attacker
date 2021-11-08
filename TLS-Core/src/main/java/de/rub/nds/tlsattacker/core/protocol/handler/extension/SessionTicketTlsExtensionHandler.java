@@ -62,14 +62,20 @@ public class SessionTicketTlsExtensionHandler extends ExtensionHandler<SessionTi
         if (message.getExtensionLength().getValue() > 0) {
             LOGGER.debug("Adjusting for client offered session ticket");
             if (context.getTalkingConnectionEndType() != context.getChooser().getConnectionEndType()) {
+                // Server receives a ticket presented by the client
                 StatePlaintext statePlaintext = getStateFromTicket(message);
                 if (statePlaintext != null) {
                     LOGGER.info("Resuming Session using Ticket");
                     context.setMasterSecret(statePlaintext.getMasterSecret().getValue());
-                    // TODO: rework interaction with SessionID
+                    if (context.getClientSessionId().length > 0) {
+                        context.setServerSessionId(context.getClientSessionId().clone());
+                    }
                 }
-            } else {
-                // TODO: rework interaction with SessionID, use ticket value
+            }
+        } else {
+            if (context.getTalkingConnectionEndType() != context.getChooser().getConnectionEndType()) {
+                // Server receives an empty ticket
+                context.setServerSessionId(new byte[0]);
             }
         }
         context.setSessionTicketTLS(message.getSessionTicket().getIdentity().getValue());

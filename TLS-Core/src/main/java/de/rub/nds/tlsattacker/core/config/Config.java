@@ -1065,7 +1065,7 @@ public class Config implements Serializable {
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultClientTicketResumptionSessionId =
-        ArrayConverter.hexStringToByteArray("332CAC09A5C56974E3D49C0741F396C5F1C90B41529DD643485E65B1C0619D2B");;
+        ArrayConverter.hexStringToByteArray("332CAC09A5C56974E3D49C0741F396C5F1C90B41529DD643485E65B1C0619D2B");
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultServerSessionId = new byte[0];

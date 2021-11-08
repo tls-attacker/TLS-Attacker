@@ -12,6 +12,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
@@ -71,18 +72,12 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
     }
 
     private void prepareSessionID() {
-        if (chooser.getConfig().getHighestProtocolVersion().isTLS13()) {
-            if (chooser.getContext().getServerSessionId() == null) {
-                msg.setSessionId(chooser.getClientSessionId());
-            } else {
-                msg.setSessionId(chooser.getServerSessionId());
-            }
+        if (msg.containsExtension(ExtensionType.SESSION_TICKET)){
+            msg.setSessionId(chooser.getConfig().getDefaultClientTicketResumptionSessionId());
+        } else if (chooser.getContext().getServerSessionId() == null) {
+            msg.setSessionId(chooser.getClientSessionId());
         } else {
-            if (chooser.getContext().getServerSessionId() == null) {
-                msg.setSessionId(chooser.getClientSessionId());
-            } else {
-                msg.setSessionId(chooser.getServerSessionId());
-            }
+            msg.setSessionId(chooser.getServerSessionId());
         }
         LOGGER.debug("SessionId: " + ArrayConverter.bytesToHexString(msg.getSessionId().getValue()));
     }
