@@ -22,6 +22,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
 import de.rub.nds.tlsattacker.core.protocol.parser.NewSessionTicketParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.NewSessionTicketPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.NewSessionTicketSerializer;
+import de.rub.nds.tlsattacker.core.state.Session;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
@@ -62,6 +63,10 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
             adjustPskSets(message);
         } else {
             tlsContext.setSessionTicketTLS(message.getTicket().getIdentity().getValue());
+            LOGGER.debug("Adding Session for Ticket resumption using dummy SessionID");
+            Session session = new Session(tlsContext.getConfig().getDefaultClientTicketResumptionSessionId(),
+                tlsContext.getChooser().getMasterSecret());
+            tlsContext.addNewSession(session);
         }
     }
 
