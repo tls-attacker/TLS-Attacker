@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -28,8 +29,10 @@ public class PskServerKeyExchangeParser extends ServerKeyExchangeParser<PskServe
      * Constructor for the Parser class
      *
      * @param stream
-     * @param version Version of the Protocol
-     * @param config A Config used in the current context
+     * @param version
+     *                Version of the Protocol
+     * @param config
+     *                A Config used in the current context
      */
     public PskServerKeyExchangeParser(InputStream stream, ProtocolVersion version, Config config) {
         super(stream, HandshakeMessageType.SERVER_KEY_EXCHANGE, version, config);
@@ -54,10 +57,10 @@ public class PskServerKeyExchangeParser extends ServerKeyExchangeParser<PskServe
     }
 
     /**
-     * Reads the next bytes as the PSKIdentityHint and writes them in the
-     * message
+     * Reads the next bytes as the PSKIdentityHint and writes them in the message
      *
-     * @param msg Message to write in
+     * @param msg
+     *            Message to write in
      */
     private void parsePskIdentityHint(PskServerKeyExchangeMessage msg) {
         msg.setIdentityHint(parseByteArrayField(msg.getIdentityHintLength().getValue()));

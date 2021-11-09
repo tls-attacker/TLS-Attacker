@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.PWDServerKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.PWDServerKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.PWDServerKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.ByteArrayInputStream;
 import java.math.BigInteger;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -38,7 +39,7 @@ public class PWDServerKeyExchangeHandlerTest {
      */
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[1], 0) instanceof PWDServerKeyExchangeParser);
+        assertTrue(handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof PWDServerKeyExchangeParser);
     }
 
     /**

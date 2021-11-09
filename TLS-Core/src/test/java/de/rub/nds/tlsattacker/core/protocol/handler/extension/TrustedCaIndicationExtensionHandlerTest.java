@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.TrustedAuthorit
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.TrustedCaIndicationExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.TrustedCaIndicationExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.List;
 import static org.junit.Assert.assertArrayEquals;
@@ -56,7 +57,7 @@ public class TrustedCaIndicationExtensionHandlerTest {
     @Test
     public void testGetParser() {
         assertTrue(
-            handler.getParser(new byte[0], 0, context.getConfig()) instanceof TrustedCaIndicationExtensionParser);
+            handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof TrustedCaIndicationExtensionParser);
     }
 
     @Test

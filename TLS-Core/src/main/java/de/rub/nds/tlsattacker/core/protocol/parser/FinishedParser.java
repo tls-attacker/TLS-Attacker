@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -26,7 +27,8 @@ public class FinishedParser extends HandshakeMessageParser<FinishedMessage> {
      *
      * @param stream
      * @param config
-     * @param version Version of the Protocol
+     * @param version
+     *                Version of the Protocol
      */
     public FinishedParser(InputStream stream, ProtocolVersion version, Config config) {
         super(stream, HandshakeMessageType.FINISHED, version, config);
@@ -46,7 +48,8 @@ public class FinishedParser extends HandshakeMessageParser<FinishedMessage> {
     /**
      * Reads the next bytes as the VerifyData and writes them in the message
      *
-     * @param msg Message to write in
+     * @param msg
+     *            Message to write in
      */
     private void parseVerifyData(FinishedMessage msg) {
         msg.setVerifyData(parseByteArrayField(msg.getLength().getValue()));

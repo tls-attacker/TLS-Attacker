@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
+import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import static org.junit.Assert.assertArrayEquals;
@@ -27,27 +28,26 @@ public class ExtendedMasterSecretExtensionParserTest {
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] {
-            { ExtensionType.EXTENDED_MASTER_SECRET, 0, ArrayConverter.hexStringToByteArray("00170000"), 0 } });
+            { ExtensionType.EXTENDED_MASTER_SECRET, 0, ArrayConverter.hexStringToByteArray("00170000") } });
     }
 
     private final ExtensionType extensionType;
     private final int extensionLength;
     private final byte[] expectedBytes;
-    private final int startParsing;
     private ExtendedMasterSecretExtensionParser parser;
     private ExtendedMasterSecretExtensionMessage message;
 
     public ExtendedMasterSecretExtensionParserTest(ExtensionType extensionType, int extensionLength,
-        byte[] expectedBytes, int startParsing) {
+        byte[] expectedBytes) {
         this.extensionType = extensionType;
         this.extensionLength = extensionLength;
         this.expectedBytes = expectedBytes;
-        this.startParsing = startParsing;
     }
 
     @Before
     public void setUp() {
-        parser = new ExtendedMasterSecretExtensionParser(startParsing, expectedBytes, Config.createConfig());
+        parser =
+            new ExtendedMasterSecretExtensionParser(new ByteArrayInputStream(expectedBytes), Config.createConfig());
     }
 
     @Test

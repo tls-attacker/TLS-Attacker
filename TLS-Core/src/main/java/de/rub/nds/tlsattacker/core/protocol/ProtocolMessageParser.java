@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -31,7 +32,6 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage> extends P
     }
 
     protected abstract T parseMessageContent();
-
 
     protected Config getConfig() {
         return config;

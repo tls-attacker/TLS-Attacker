@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.ModifiableVariable;
@@ -33,47 +34,47 @@ import org.apache.logging.log4j.Logger;
 
 @XmlRootElement
 public class SendRaccoonCkeAction extends MessageAction implements SendingAction {
-    
+
     private static final Logger LOGGER = LogManager.getLogger();
-    
+
     private boolean withNullByte = true;
-    
+
     private BigInteger initialSecret = new BigInteger("" + 5000);
-    
+
     public SendRaccoonCkeAction() {
         super();
     }
-    
+
     public SendRaccoonCkeAction(boolean withNullByte, BigInteger initialSecret) {
         super();
         this.withNullByte = withNullByte;
         this.initialSecret = initialSecret;
     }
-    
+
     public SendRaccoonCkeAction(String connectionAlias) {
         super(connectionAlias);
     }
-    
+
     public BigInteger getInitialSecret() {
         return initialSecret;
     }
-    
+
     public void setInitialSecret(BigInteger initialSecret) {
         this.initialSecret = initialSecret;
     }
-    
+
     public boolean isWithNullByte() {
         return withNullByte;
     }
-    
+
     public void setWithNullByte(boolean withNullByte) {
         this.withNullByte = withNullByte;
     }
-    
+
     @Override
     public void execute(State state) throws WorkflowExecutionException {
         TlsContext tlsContext = state.getTlsContext(connectionAlias);
-        
+
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
         }
@@ -82,12 +83,12 @@ public class SendRaccoonCkeAction extends MessageAction implements SendingAction
         String sending = getReadableString(messages);
         if (hasDefaultAlias()) {
             LOGGER.info("Sending Raccoon Cke message " + (withNullByte ? "(withNullByte)" : "(withoutNullByte)") + ": "
-                    + sending);
+                + sending);
         } else {
             LOGGER.info("Sending Raccoon Cke message " + (withNullByte ? "(withNullByte)" : "(withoutNullByte)") + ": ("
-                    + connectionAlias + "): " + sending);
+                + connectionAlias + "): " + sending);
         }
-        
+
         try {
             send(tlsContext, messages, records);
             setExecuted(true);
@@ -97,23 +98,23 @@ public class SendRaccoonCkeAction extends MessageAction implements SendingAction
             setExecuted(getActionOptions().contains(ActionOption.MAY_FAIL));
         }
     }
-    
+
     private DHClientKeyExchangeMessage generateRaccoonDhClientKeyExchangeMessage(State state, boolean withNullByte) {
-        
+
         DHClientKeyExchangeMessage cke = new DHClientKeyExchangeMessage(state.getConfig());
         Chooser chooser = state.getTlsContext().getChooser();
         byte[] clientPublicKey = getClientPublicKey(chooser.getServerDhGenerator(), chooser.getServerDhModulus(),
-                chooser.getServerDhPublicKey(), initialSecret, withNullByte);
+            chooser.getServerDhPublicKey(), initialSecret, withNullByte);
         cke.setPublicKey(Modifiable.explicit(clientPublicKey));
         return cke;
     }
-    
+
     private byte[] getClientPublicKey(BigInteger g, BigInteger m, BigInteger serverPublicKey,
-            BigInteger initialClientDhSecret, boolean withNullByte) {
+        BigInteger initialClientDhSecret, boolean withNullByte) {
         int length = ArrayConverter.bigIntegerToByteArray(m).length;
-        byte[] pms
-                = ArrayConverter.bigIntegerToNullPaddedByteArray(serverPublicKey.modPow(initialClientDhSecret, m), length);
-        
+        byte[] pms =
+            ArrayConverter.bigIntegerToNullPaddedByteArray(serverPublicKey.modPow(initialClientDhSecret, m), length);
+
         if (((withNullByte && pms[0] == 0) && pms[1] != 0) || (!withNullByte && pms[0] != 0)) {
             BigInteger clientPublicKey = g.modPow(initialClientDhSecret, m);
             byte[] cke = ArrayConverter.bigIntegerToByteArray(clientPublicKey);
@@ -124,7 +125,7 @@ public class SendRaccoonCkeAction extends MessageAction implements SendingAction
         initialClientDhSecret = initialClientDhSecret.add(new BigInteger("1"));
         return getClientPublicKey(g, m, serverPublicKey, initialClientDhSecret, withNullByte);
     }
-    
+
     @Override
     public String toString() {
         StringBuilder sb;
@@ -145,7 +146,7 @@ public class SendRaccoonCkeAction extends MessageAction implements SendingAction
         }
         return sb.toString();
     }
-    
+
     @Override
     public String toCompactString() {
         StringBuilder sb = new StringBuilder(super.toCompactString());
@@ -161,22 +162,22 @@ public class SendRaccoonCkeAction extends MessageAction implements SendingAction
         }
         return sb.toString();
     }
-    
+
     @Override
     public boolean executedAsPlanned() {
         return isExecuted();
     }
-    
+
     @Override
     public void setRecords(List<Record> records) {
         this.records = records;
     }
-    
+
     @Override
     public void setFragments(List<DtlsHandshakeMessageFragment> fragments) {
         this.fragments = fragments;
     }
-    
+
     @Override
     public void reset() {
         List<ModifiableVariableHolder> holders = new LinkedList<>();
@@ -199,7 +200,7 @@ public class SendRaccoonCkeAction extends MessageAction implements SendingAction
             List<Field> fields = holder.getAllModifiableVariableFields();
             for (Field f : fields) {
                 f.setAccessible(true);
-                
+
                 ModifiableVariable mv = null;
                 try {
                     mv = (ModifiableVariable) f.get(holder);
@@ -222,22 +223,22 @@ public class SendRaccoonCkeAction extends MessageAction implements SendingAction
         }
         setExecuted(null);
     }
-    
+
     @Override
     public List<ProtocolMessage> getSendMessages() {
         return messages;
     }
-    
+
     @Override
     public List<Record> getSendRecords() {
         return records;
     }
-    
+
     @Override
     public List<DtlsHandshakeMessageFragment> getSendFragments() {
         return fragments;
     }
-    
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -261,7 +262,7 @@ public class SendRaccoonCkeAction extends MessageAction implements SendingAction
         }
         return super.equals(obj);
     }
-    
+
     @Override
     public int hashCode() {
         int hash = super.hashCode();
@@ -270,7 +271,7 @@ public class SendRaccoonCkeAction extends MessageAction implements SendingAction
         hash = 67 * hash + Objects.hashCode(this.fragments);
         return hash;
     }
-    
+
     @Override
     public MessageActionDirection getMessageDirection() {
         return MessageActionDirection.SENDING;

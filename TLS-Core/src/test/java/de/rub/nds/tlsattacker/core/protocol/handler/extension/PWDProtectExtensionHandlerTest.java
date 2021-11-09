@@ -17,11 +17,13 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.PWDProtectExtension
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PWDProtectExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PWDProtectExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.ByteArrayInputStream;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
 public class PWDProtectExtensionHandlerTest {
+
     private PWDProtectExtensionHandler handler;
     private TlsContext context;
 
@@ -44,7 +46,7 @@ public class PWDProtectExtensionHandlerTest {
 
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[0], 0, context.getConfig()) instanceof PWDProtectExtensionParser);
+        assertTrue(handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof PWDProtectExtensionParser);
     }
 
     @Test

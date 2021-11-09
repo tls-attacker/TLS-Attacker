@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -23,8 +24,10 @@ public class ApplicationMessageParser extends TlsMessageParser<ApplicationMessag
     /**
      * Constructor for the Parser class
      *
-     * @param version Version of the Protocol
-     * @param config A Config used in the current context
+     * @param version
+     *                Version of the Protocol
+     * @param config
+     *                A Config used in the current context
      */
     public ApplicationMessageParser(InputStream stream, ProtocolVersion version, Config config) {
         super(stream, version, config);
@@ -41,7 +44,8 @@ public class ApplicationMessageParser extends TlsMessageParser<ApplicationMessag
     /**
      * Reads the next bytes as the Data and writes them in the message
      *
-     * @param msg Message to write in
+     * @param msg
+     *            Message to write in
      */
     private void parseData(ApplicationMessage msg) {
         msg.setData(parseByteArrayField(getBytesLeft()));

@@ -14,7 +14,6 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -66,7 +65,6 @@ public class ClientKeyExchangeHandlerTest {
         context.setServerRandom(serverRdm);
         context.setSelectedCipherSuite(CipherSuite.TLS_DHE_RSA_WITH_AES_256_CBC_SHA);
         context.setSelectedProtocolVersion(ProtocolVersion.SSL3);
-        context.setRecordLayer(new TlsRecordLayer(context));
         context.setPreMasterSecret(preMasterSecret);
 
         final MessageDigest md5 = java.security.MessageDigest.getInstance("MD5");

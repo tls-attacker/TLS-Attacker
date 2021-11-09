@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -37,11 +38,14 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
      * Constructor for the Parser class
      *
      * @param stream
-     * @param version Version of the Protocol
-     * @param config A Config used in the current context
+     * @param version
+     *                                 Version of the Protocol
+     * @param config
+     *                                 A Config used in the current context
      * @param talkingConnectionEndType
      */
-    public CertificateMessageParser(InputStream stream, ProtocolVersion version, Config config, ConnectionEndType talkingConnectionEndType) {
+    public CertificateMessageParser(InputStream stream, ProtocolVersion version, Config config,
+        ConnectionEndType talkingConnectionEndType) {
         super(stream, HandshakeMessageType.CERTIFICATE, version, config);
         this.talkingConnectionEndType = talkingConnectionEndType;
     }
@@ -66,10 +70,10 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
     }
 
     /**
-     * Reads the next bytes as the RequestContextLength and writes them in the
-     * message
+     * Reads the next bytes as the RequestContextLength and writes them in the message
      *
-     * @param msg Message to write in
+     * @param msg
+     *            Message to write in
      */
     private void parseRequestContextLength(CertificateMessage msg) {
         msg.setRequestContextLength(parseIntField(HandshakeByteLength.CERTIFICATE_REQUEST_CONTEXT_LENGTH));
@@ -77,10 +81,10 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
     }
 
     /**
-     * Reads the next bytes as the requestContextBytes and writes them in the
-     * message
+     * Reads the next bytes as the requestContextBytes and writes them in the message
      *
-     * @param msg Message to write in
+     * @param msg
+     *            Message to write in
      */
     private void parseRequestContextBytes(CertificateMessage msg) {
         msg.setRequestContext(parseByteArrayField(msg.getRequestContextLength().getValue()));
@@ -88,10 +92,10 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
     }
 
     /**
-     * Reads the next bytes as the CertificateLength and writes them in the
-     * message
+     * Reads the next bytes as the CertificateLength and writes them in the message
      *
-     * @param msg Message to write in
+     * @param msg
+     *            Message to write in
      */
     private void parseCertificatesListLength(CertificateMessage msg) {
         msg.setCertificatesListLength(parseIntField(HandshakeByteLength.CERTIFICATES_LENGTH));
@@ -99,10 +103,10 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
     }
 
     /**
-     * Reads the next bytes as the CertificateBytes and writes them in the
-     * message
+     * Reads the next bytes as the CertificateBytes and writes them in the message
      *
-     * @param msg Message to write in
+     * @param msg
+     *            Message to write in
      */
     private void parseCertificateListBytes(CertificateMessage msg) {
         msg.setCertificatesListBytes(parseByteArrayField(msg.getCertificatesListLength().getValue()));
@@ -110,10 +114,10 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
     }
 
     /**
-     * Reads the bytes from the CertificateListBytes and writes them in the
-     * CertificateList
+     * Reads the bytes from the CertificateListBytes and writes them in the CertificateList
      *
-     * @param msg Message to write in
+     * @param msg
+     *            Message to write in
      */
     private void parseCertificateList(CertificateMessage msg) {
         List<CertificatePair> pairList = new LinkedList<>();
@@ -126,7 +130,9 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
 
         List<CertificateEntry> entryList = new LinkedList<>();
         for (CertificatePair pair : msg.getCertificatesList()) {
-            ExtensionListParser parser = new ExtensionListParser(new ByteArrayInputStream(pair.getExtensions().getValue()), config, talkingConnectionEndType, getVersion(), false);
+            ExtensionListParser parser =
+                new ExtensionListParser(new ByteArrayInputStream(pair.getExtensions().getValue()), config,
+                    talkingConnectionEndType, getVersion(), false);
             List<ExtensionMessage> extensionMessages = parser.parse();
             entryList.add(new CertificateEntry(pair.getCertificate().getValue(), extensionMessages));
         }

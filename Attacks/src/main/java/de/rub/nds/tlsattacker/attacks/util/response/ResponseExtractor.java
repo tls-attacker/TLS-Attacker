@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.attacks.util.response;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceivingAction;
@@ -38,7 +37,7 @@ public class ResponseExtractor {
      */
     public static ResponseFingerprint getFingerprint(State state, ReceivingAction action) {
         List<ProtocolMessage> messageList = action.getReceivedMessages();
-        List<AbstractRecord> recordList = action.getReceivedRecords();
+        List<Record> recordList = action.getReceivedRecords();
         SocketState socketState = extractSocketState(state);
         return new ResponseFingerprint(messageList, recordList, socketState);
     }
@@ -63,11 +62,11 @@ public class ResponseExtractor {
         }
     }
 
-    private static List<Class<AbstractRecord>> extractRecordClasses(ReceivingAction action) {
-        List<Class<AbstractRecord>> classList = new LinkedList<>();
+    private static List<Class<Record>> extractRecordClasses(ReceivingAction action) {
+        List<Class<Record>> classList = new LinkedList<>();
         if (action.getReceivedRecords() != null) {
-            for (AbstractRecord record : action.getReceivedRecords()) {
-                classList.add((Class<AbstractRecord>) record.getClass());
+            for (Record record : action.getReceivedRecords()) {
+                classList.add((Class<Record>) record.getClass());
             }
         }
         return classList;
@@ -85,7 +84,7 @@ public class ResponseExtractor {
 
     private static boolean didReceiveEncryptedAlert(ReceivingAction action) {
         if (action.getReceivedRecords() != null) {
-            for (AbstractRecord abstractRecord : action.getReceivedRecords()) {
+            for (Record abstractRecord : action.getReceivedRecords()) {
                 if (abstractRecord instanceof Record) {
                     Record record = (Record) abstractRecord;
                     if (record.getContentMessageType() == ProtocolMessageType.ALERT) {

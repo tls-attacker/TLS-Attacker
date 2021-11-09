@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.MaxFragmentLengthEx
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.MaxFragmentLengthExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.MaxFragmentLengthExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.ByteArrayInputStream;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -55,8 +56,8 @@ public class MaxFragmentLengthExtensionHandlerTest {
      */
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[] { 0, 1, 2, 3 }, 0,
-            context.getConfig()) instanceof MaxFragmentLengthExtensionParser);
+        assertTrue(
+            handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof MaxFragmentLengthExtensionParser);
     }
 
     /**

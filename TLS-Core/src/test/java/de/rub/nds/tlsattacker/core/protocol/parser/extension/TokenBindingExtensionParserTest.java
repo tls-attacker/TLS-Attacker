@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TokenBindingExtensionMessage;
+import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import static org.junit.Assert.assertArrayEquals;
@@ -55,7 +56,7 @@ public class TokenBindingExtensionParserTest {
 
     @Before
     public void setUp() {
-        parser = new TokenBindingExtensionParser(0, extensionBytes, Config.createConfig());
+        parser = new TokenBindingExtensionParser(new ByteArrayInputStream(extensionBytes), Config.createConfig());
     }
 
     @Test

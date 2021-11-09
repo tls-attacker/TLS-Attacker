@@ -16,7 +16,6 @@ import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
-import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import org.junit.Before;
 import org.junit.Test;
@@ -75,14 +74,6 @@ public class ConfigTest {
         stripConfig(config);
         config.setDefaultApplicationMessageData("ayy lmao");
         writeToConfig(config, "appdata.config");
-    }
-
-    @Test
-    public void generateConfigBlobConfig() {
-        Config config = new Config();
-        stripConfig(config);
-        config.setRecordLayerType(RecordLayerType.BLOB);
-        writeToConfig(config, "config_blob.config");
     }
 
     @Test

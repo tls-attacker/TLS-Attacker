@@ -15,7 +15,6 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
-import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.GenericReceiveAction;
@@ -49,7 +48,7 @@ public class HeartbeatPaddingTraceGenerator extends PaddingTraceGenerator {
         ApplicationMessage applicationMessage = new ApplicationMessage(config);
         HeartbeatMessage heartbeat = new HeartbeatMessage();
         SendAction sendAction = new SendAction(applicationMessage, heartbeat);
-        sendAction.setRecords(new LinkedList<AbstractRecord>());
+        sendAction.setRecords(new LinkedList<Record>());
         sendAction.getRecords().add(vector.createRecord());
         sendAction.getRecords().add(new Record(config));
         trace.addTlsAction(sendAction);

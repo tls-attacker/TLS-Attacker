@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PSKBinder;
+import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import static org.junit.Assert.assertArrayEquals;
@@ -25,23 +26,19 @@ public class PSKBinderParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { { 0,
-            ArrayConverter.hexStringToByteArray("2034c8ead79d29168694fcbff00106f86005ddf0a6480ea86cf06d8440752b62f9"),
-            32, ArrayConverter
-                .hexStringToByteArray("34c8ead79d29168694fcbff00106f86005ddf0a6480ea86cf06d8440752b62f9") } });
+        return Arrays.asList(new Object[][] {
+            { ArrayConverter.hexStringToByteArray("2034c8ead79d29168694fcbff00106f86005ddf0a6480ea86cf06d8440752b62f9"),
+                32, ArrayConverter
+                    .hexStringToByteArray("34c8ead79d29168694fcbff00106f86005ddf0a6480ea86cf06d8440752b62f9") } });
     }
 
-    private final int startPosition;
     private final byte[] pskBinderBytes;
     private final long pskBinderEntryLength;
     private final byte[] pskBinderEntry;
     private PSKBinderParser parser;
     private PSKBinder pskBinder;
 
-    public PSKBinderParserTest(int startPosition, byte[] pskBinderBytes, int pskBinderEntryLength,
-        byte[] pskBinderEntry) {
-
-        this.startPosition = startPosition;
+    public PSKBinderParserTest(byte[] pskBinderBytes, int pskBinderEntryLength, byte[] pskBinderEntry) {
         this.pskBinderBytes = pskBinderBytes;
         this.pskBinderEntryLength = pskBinderEntryLength;
         this.pskBinderEntry = pskBinderEntry;
@@ -49,7 +46,7 @@ public class PSKBinderParserTest {
 
     @Before
     public void setUp() {
-        parser = new PSKBinderParser(startPosition, pskBinderBytes);
+        parser = new PSKBinderParser(new ByteArrayInputStream(pskBinderBytes));
     }
 
     @Test

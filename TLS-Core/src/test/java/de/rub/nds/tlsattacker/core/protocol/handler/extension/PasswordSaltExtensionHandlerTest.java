@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.PasswordSaltExtensi
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PasswordSaltExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PasswordSaltExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.ByteArrayInputStream;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,7 +41,7 @@ public class PasswordSaltExtensionHandlerTest {
 
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[0], 0, context.getConfig()) instanceof PasswordSaltExtensionParser);
+        assertTrue(handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof PasswordSaltExtensionParser);
     }
 
     @Test

@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedO
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.CachedObjectPreparator;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -66,7 +67,8 @@ public class CachedInfoExtensionParserTest {
     public void testParse() {
         TlsContext context = new TlsContext();
 
-        CachedInfoExtensionParser parser = new CachedInfoExtensionParser(0, extensionBytes, Config.createConfig());
+        CachedInfoExtensionParser parser =
+            new CachedInfoExtensionParser(new ByteArrayInputStream(extensionBytes), Config.createConfig());
         CachedInfoExtensionMessage msg = parser.parse();
 
         assertArrayEquals(type.getValue(), msg.getExtensionType().getValue());

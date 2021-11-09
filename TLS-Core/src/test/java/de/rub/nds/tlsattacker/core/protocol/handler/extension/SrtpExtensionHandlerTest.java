@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.SrtpExtensionParser
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SrtpExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SrtpExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.List;
 import static org.hamcrest.CoreMatchers.is;
@@ -55,7 +56,7 @@ public class SrtpExtensionHandlerTest {
 
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[0], 0, context.getConfig()) instanceof SrtpExtensionParser);
+        assertTrue(handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof SrtpExtensionParser);
     }
 
     @Test

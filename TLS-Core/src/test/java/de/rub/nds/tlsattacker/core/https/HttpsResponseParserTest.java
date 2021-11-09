@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
+import java.io.ByteArrayInputStream;
 import java.nio.charset.Charset;
 import static org.junit.Assert.assertEquals;
 import org.junit.Before;
@@ -35,8 +36,9 @@ public class HttpsResponseParserTest {
      */
     @Test(expected = ParserException.class)
     public void testParseMessageContentFailed() {
-        HttpsResponseParser parser = new HttpsResponseParser(0,
-            ArrayConverter.hexStringToByteArray("AAAAAAAAAAAAAAAAAAAAAAAA"), ProtocolVersion.TLS12, config);
+        HttpsResponseParser parser = new HttpsResponseParser(
+            new ByteArrayInputStream(ArrayConverter.hexStringToByteArray("AAAAAAAAAAAAAAAAAAAAAAAA")),
+            ProtocolVersion.TLS12, config);
         parser.parse();
     }
 
@@ -48,8 +50,8 @@ public class HttpsResponseParserTest {
         String message = "HTTP/1.1 200 OK\r\nDate: Mon, 27 Jul 2009 12:28:53 GMT\r\nServer: Apache/2.2.14 (Win32)\r\n"
             + "Last-Modified: Wed, 22 Jul 2009 19:15:56 GMT\r\nContent-Length: 88\r\nContent-Type: text/html\r\nConnection: Closed\r\n\r\ntest";
 
-        HttpsResponseParser parser =
-            new HttpsResponseParser(0, message.getBytes(Charset.forName("UTF-8")), ProtocolVersion.TLS12, config);
+        HttpsResponseParser parser = new HttpsResponseParser(
+            new ByteArrayInputStream(message.getBytes(Charset.forName("UTF-8"))), ProtocolVersion.TLS12, config);
         HttpsResponseMessage parsedMessage = parser.parse();
 
         assertEquals(parsedMessage.getResponseStatusCode().getValue(), "200 OK");

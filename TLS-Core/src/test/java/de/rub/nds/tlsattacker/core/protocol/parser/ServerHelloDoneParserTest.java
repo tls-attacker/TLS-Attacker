@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
+import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import static org.junit.Assert.*;
@@ -54,7 +55,7 @@ public class ServerHelloDoneParserTest {
      */
     @Test
     public void testParse() {
-        ServerHelloDoneParser parser = new ServerHelloDoneParser(0, message, version, config);
+        ServerHelloDoneParser parser = new ServerHelloDoneParser(new ByteArrayInputStream(message), version, config);
         ServerHelloDoneMessage msg = parser.parse();
         assertArrayEquals(message, msg.getCompleteResultingMessage().getValue());
         assertTrue(msg.getLength().getValue() == length);

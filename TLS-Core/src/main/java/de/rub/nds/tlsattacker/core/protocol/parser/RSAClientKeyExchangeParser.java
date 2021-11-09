@@ -27,9 +27,9 @@ public class RSAClientKeyExchangeParser<T extends RSAClientKeyExchangeMessage> e
      *
      * @param stream
      * @param version
-     *                      Version of the Protocol
+     *                Version of the Protocol
      * @param config
-     *                      A Config used in the current context
+     *                A Config used in the current context
      */
     public RSAClientKeyExchangeParser(InputStream stream, ProtocolVersion version, Config config) {
         super(stream, version, config);

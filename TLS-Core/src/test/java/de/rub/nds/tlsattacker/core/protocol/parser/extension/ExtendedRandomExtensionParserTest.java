@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedRandomExtensionMessage;
+import java.io.ByteArrayInputStream;
 import org.junit.Before;
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -28,14 +29,13 @@ public class ExtendedRandomExtensionParserTest {
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] { { ExtensionType.EXTENDED_RANDOM, 3,
-            ArrayConverter.hexStringToByteArray("AB"), ArrayConverter.hexStringToByteArray("002800030001AB"), 0 } });
+            ArrayConverter.hexStringToByteArray("AB"), ArrayConverter.hexStringToByteArray("002800030001AB") } });
     }
 
     private final ExtensionType extensionType;
     private final int extensionLength;
     private final byte[] extendedRandom;
     private final byte[] expectedBytes;
-    private final int startParsing;
     private ExtendedRandomExtensionParser parser;
     private ExtendedRandomExtensionMessage message;
 
@@ -46,20 +46,18 @@ public class ExtendedRandomExtensionParserTest {
      * @param extensionLength
      * @param extendedRandom
      * @param expectedBytes
-     * @param startParsing
      */
     public ExtendedRandomExtensionParserTest(ExtensionType extensionType, int extensionLength, byte[] extendedRandom,
-        byte[] expectedBytes, int startParsing) {
+        byte[] expectedBytes) {
         this.extensionType = extensionType;
         this.extensionLength = extensionLength;
         this.extendedRandom = extendedRandom;
         this.expectedBytes = expectedBytes;
-        this.startParsing = startParsing;
     }
 
     @Before
     public void setUp() {
-        parser = new ExtendedRandomExtensionParser(startParsing, expectedBytes, Config.createConfig());
+        parser = new ExtendedRandomExtensionParser(new ByteArrayInputStream(expectedBytes), Config.createConfig());
     }
 
     @Test

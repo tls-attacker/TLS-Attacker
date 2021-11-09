@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateMessagePrepara
 import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateMessageSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.io.ByteArrayInputStream;
 import java.security.Security;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.After;
@@ -48,7 +49,7 @@ public class CertificateMessageHandlerTest {
      */
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[1], 0) instanceof CertificateMessageParser);
+        assertTrue(handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof CertificateMessageParser);
     }
 
     /**

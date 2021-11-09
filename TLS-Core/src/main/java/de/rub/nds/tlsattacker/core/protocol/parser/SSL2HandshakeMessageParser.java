@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -23,14 +24,16 @@ public abstract class SSL2HandshakeMessageParser<T extends SSL2HandshakeMessage>
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SSL2HandshakeMessageParser(InputStream stream, HandshakeMessageType type, ProtocolVersion version, Config config) {
+    public SSL2HandshakeMessageParser(InputStream stream, HandshakeMessageType type, ProtocolVersion version,
+        Config config) {
         super(stream, type, version, config);
     }
 
     /**
      * Reads the next bytes as the MessageLength and writes them in the message
      *
-     * @param message Message to write in
+     * @param message
+     *                Message to write in
      */
     protected void parseMessageLength(T message) {
         // The "wonderful" SSL2 message length field:
@@ -46,8 +49,9 @@ public abstract class SSL2HandshakeMessageParser<T extends SSL2HandshakeMessage>
             mask = 0x3f;
             message.setPaddingLength(0);
         } else {
-            //Parse remaining bytes
-            length = ArrayConverter.concatenate(firstTwoBytes, parseByteArrayField(SSL2ByteLength.LONG_LENGTH - SSL2ByteLength.LENGTH));
+            // Parse remaining bytes
+            length = ArrayConverter.concatenate(firstTwoBytes,
+                parseByteArrayField(SSL2ByteLength.LONG_LENGTH - SSL2ByteLength.LENGTH));
             mask = 0x7f;
             message.setPaddingLength((int) length[2]);
         }
@@ -59,7 +63,8 @@ public abstract class SSL2HandshakeMessageParser<T extends SSL2HandshakeMessage>
     /**
      * Reads the next bytes as the Type and writes them in the message
      *
-     * @param msg Message to write in
+     * @param msg
+     *            Message to write in
      */
     protected void parseType(T msg) {
         msg.setType(parseByteField(SSL2ByteLength.MESSAGE_TYPE));

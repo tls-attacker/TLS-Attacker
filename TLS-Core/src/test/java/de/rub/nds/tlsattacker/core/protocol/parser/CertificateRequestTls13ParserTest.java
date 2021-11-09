@@ -14,6 +14,8 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.io.ByteArrayInputStream;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -56,7 +58,8 @@ public class CertificateRequestTls13ParserTest {
 
     @Test
     public void testParse() {
-        CertificateRequestParser parser = new CertificateRequestParser(0, message, version, Config.createConfig());
+        CertificateRequestParser parser = new CertificateRequestParser(new ByteArrayInputStream(message), version,
+            Config.createConfig(), ConnectionEndType.SERVER);
         CertificateRequestMessage msg = parser.parse();
         assertArrayEquals(message, msg.getCompleteResultingMessage().getValue());
         assertTrue(msg.getCertificateRequestContextLength().getValue() == certificateRequestContextLength);

@@ -12,6 +12,7 @@ package de.rub.nds.tlsattacker.core.protocol.parser;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
+import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import static org.junit.Assert.*;
@@ -46,7 +47,7 @@ public class ChangeCipherSpecParserTest {
      */
     @Test
     public void testParse() {
-        ChangeCipherSpecParser parser = new ChangeCipherSpecParser(0, message, version, config);
+        ChangeCipherSpecParser parser = new ChangeCipherSpecParser(new ByteArrayInputStream(message), version, config);
         ChangeCipherSpecMessage ccsMessagee = parser.parse();
         assertArrayEquals(message, ccsMessagee.getCompleteResultingMessage().getValue());
         assertTrue(ccsType == ccsMessagee.getCcsProtocolType().getValue()[0]);

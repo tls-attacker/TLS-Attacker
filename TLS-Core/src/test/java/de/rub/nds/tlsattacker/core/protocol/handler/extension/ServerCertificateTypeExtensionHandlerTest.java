@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.ServerCertificateTy
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ServerCertificateTypeExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ServerCertificateTypeExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.List;
 import static org.hamcrest.CoreMatchers.is;
@@ -49,7 +50,7 @@ public class ServerCertificateTypeExtensionHandlerTest {
     @Test
     public void testGetParser() {
         assertTrue(
-            handler.getParser(new byte[0], 0, context.getConfig()) instanceof ServerCertificateTypeExtensionParser);
+            handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof ServerCertificateTypeExtensionParser);
     }
 
     @Test

@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -26,7 +27,8 @@ public class NewSessionTicketParser extends HandshakeMessageParser<NewSessionTic
 
     private final ConnectionEndType talkingConnectionEndType;
 
-    public NewSessionTicketParser(InputStream stream, ProtocolVersion version, Config config, ConnectionEndType talkingConnectionEndType) {
+    public NewSessionTicketParser(InputStream stream, ProtocolVersion version, Config config,
+        ConnectionEndType talkingConnectionEndType) {
         super(stream, HandshakeMessageType.NEW_SESSION_TICKET, version, config);
         this.talkingConnectionEndType = talkingConnectionEndType;
     }

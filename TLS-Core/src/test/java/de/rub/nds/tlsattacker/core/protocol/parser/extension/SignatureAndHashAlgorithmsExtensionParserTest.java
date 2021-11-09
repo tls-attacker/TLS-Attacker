@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
+import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import static org.junit.Assert.*;
@@ -28,7 +29,6 @@ public class SignatureAndHashAlgorithmsExtensionParserTest {
         return Arrays.asList(new Object[][] { {
             ArrayConverter
                 .hexStringToByteArray("000d0020001e060106020603050105020503040104020403030103020303020102020203"),
-            0,
             ArrayConverter
                 .hexStringToByteArray("000d0020001e060106020603050105020503040104020403030103020303020102020203"),
             ExtensionType.SIGNATURE_AND_HASH_ALGORITHMS, 32, 30,
@@ -36,17 +36,15 @@ public class SignatureAndHashAlgorithmsExtensionParserTest {
     }
 
     private byte[] extension;
-    private int start;
     private byte[] completeExtension;
     private ExtensionType type;
     private int extensionLength;
     private int algoListLength;
     private byte[] algoList;
 
-    public SignatureAndHashAlgorithmsExtensionParserTest(byte[] extension, int start, byte[] completeExtension,
-        ExtensionType type, int extensionLength, int algoListLength, byte[] algoList) {
+    public SignatureAndHashAlgorithmsExtensionParserTest(byte[] extension, byte[] completeExtension, ExtensionType type,
+        int extensionLength, int algoListLength, byte[] algoList) {
         this.extension = extension;
-        this.start = start;
         this.completeExtension = completeExtension;
         this.type = type;
         this.extensionLength = extensionLength;
@@ -60,7 +58,7 @@ public class SignatureAndHashAlgorithmsExtensionParserTest {
     @Test
     public void testParseExtensionMessageContent() {
         SignatureAndHashAlgorithmsExtensionParser parser =
-            new SignatureAndHashAlgorithmsExtensionParser(start, extension, Config.createConfig());
+            new SignatureAndHashAlgorithmsExtensionParser(new ByteArrayInputStream(extension), Config.createConfig());
         SignatureAndHashAlgorithmsExtensionMessage msg = parser.parse();
         assertArrayEquals(msg.getExtensionBytes().getValue(), completeExtension);
         assertArrayEquals(type.getValue(), msg.getExtensionType().getValue());

@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.Re
 import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.ResponderId;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ResponderIdPreparator;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.List;
 import static org.junit.Assert.assertArrayEquals;
@@ -35,7 +36,6 @@ public class RequestItemV2ParserTest {
         }
     }
 
-    private final int startParsing = 0;
     private final int requestType = 1;
     private final int requestLength = 21;
     private final int responderIdLength = 0x0b;
@@ -48,7 +48,7 @@ public class RequestItemV2ParserTest {
 
     @Test
     public void testParser() {
-        RequestItemV2Parser parser = new RequestItemV2Parser(startParsing, parsingBytes);
+        RequestItemV2Parser parser = new RequestItemV2Parser(new ByteArrayInputStream(parsingBytes));
         RequestItemV2 item = parser.parse();
 
         assertEquals(requestType, (long) item.getRequestType().getValue());

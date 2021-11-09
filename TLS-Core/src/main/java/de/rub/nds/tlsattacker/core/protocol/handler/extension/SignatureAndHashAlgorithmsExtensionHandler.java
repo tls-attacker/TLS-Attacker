@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -26,7 +27,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class SignatureAndHashAlgorithmsExtensionHandler
-        extends ExtensionHandler<SignatureAndHashAlgorithmsExtensionMessage> {
+    extends ExtensionHandler<SignatureAndHashAlgorithmsExtensionMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -40,11 +41,11 @@ public class SignatureAndHashAlgorithmsExtensionHandler
         byte[] signatureAndHashBytes = message.getSignatureAndHashAlgorithms().getValue();
         if (signatureAndHashBytes.length % HandshakeByteLength.SIGNATURE_HASH_ALGORITHM != 0) {
             throw new AdjustmentException(
-                    "Cannot adjust ClientSupportedSignature and Hash algorithms to a reasonable Value");
+                "Cannot adjust ClientSupportedSignature and Hash algorithms to a reasonable Value");
         }
         for (int i = 0; i < signatureAndHashBytes.length; i += HandshakeByteLength.SIGNATURE_HASH_ALGORITHM) {
-            byte[] algoBytes
-                    = Arrays.copyOfRange(signatureAndHashBytes, i, i + HandshakeByteLength.SIGNATURE_HASH_ALGORITHM);
+            byte[] algoBytes =
+                Arrays.copyOfRange(signatureAndHashBytes, i, i + HandshakeByteLength.SIGNATURE_HASH_ALGORITHM);
             SignatureAndHashAlgorithm algo = SignatureAndHashAlgorithm.getSignatureAndHashAlgorithm(algoBytes);
             if (algo == null || algo.getSignatureAlgorithm() == null || algo.getHashAlgorithm() == null) {
                 LOGGER.warn("Unknown SignatureAndHashAlgorithm:" + ArrayConverter.bytesToHexString(algoBytes));
@@ -62,13 +63,13 @@ public class SignatureAndHashAlgorithmsExtensionHandler
 
     @Override
     public SignatureAndHashAlgorithmsExtensionPreparator
-            getPreparator(SignatureAndHashAlgorithmsExtensionMessage message) {
+        getPreparator(SignatureAndHashAlgorithmsExtensionMessage message) {
         return new SignatureAndHashAlgorithmsExtensionPreparator(context.getChooser(), message, getSerializer(message));
     }
 
     @Override
     public SignatureAndHashAlgorithmsExtensionSerializer
-            getSerializer(SignatureAndHashAlgorithmsExtensionMessage message) {
+        getSerializer(SignatureAndHashAlgorithmsExtensionMessage message) {
         return new SignatureAndHashAlgorithmsExtensionSerializer(message);
     }
 

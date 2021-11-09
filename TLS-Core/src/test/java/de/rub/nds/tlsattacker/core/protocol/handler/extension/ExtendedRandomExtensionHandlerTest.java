@@ -17,12 +17,14 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtendedRandomE
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.io.ByteArrayInputStream;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
 public class ExtendedRandomExtensionHandlerTest {
+
     private final byte[] EXTENDED_RANDOM_SHORT = new byte[0];
     private final byte[] EXTENDED_RANDOM_DEFAULT =
         ArrayConverter.hexStringToByteArray("AABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABB");
@@ -122,7 +124,7 @@ public class ExtendedRandomExtensionHandlerTest {
 
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[0], 0, context.getConfig()) instanceof ExtendedRandomExtensionParser);
+        assertTrue(handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof ExtendedRandomExtensionParser);
     }
 
     @Test

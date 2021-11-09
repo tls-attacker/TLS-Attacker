@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.RenegotiationIn
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.RenegotiationInfoExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.io.ByteArrayInputStream;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
@@ -45,7 +46,8 @@ public class RenegotiationInfoExtensionHandlerTest {
 
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[0], 0, context.getConfig()) instanceof RenegotiationInfoExtensionParser);
+        assertTrue(
+            handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof RenegotiationInfoExtensionParser);
     }
 
     @Test

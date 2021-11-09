@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PWDClearExtensionMessage;
+import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import static org.junit.Assert.assertArrayEquals;
@@ -27,20 +28,18 @@ public class PWDClearExtensionParserTest {
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] {
-            { ArrayConverter.hexStringToByteArray("001e00050466726564"), 0, ExtensionType.PWD_CLEAR, 5, 4, "fred" } });
+            { ArrayConverter.hexStringToByteArray("001e00050466726564"), ExtensionType.PWD_CLEAR, 5, 4, "fred" } });
     }
 
     private final byte[] expectedBytes;
-    private final int start;
     private final ExtensionType type;
     private final int extensionLength;
     private final int usernameLength;
     private final String username;
 
-    public PWDClearExtensionParserTest(byte[] expectedBytes, int start, ExtensionType type, int extensionLength,
+    public PWDClearExtensionParserTest(byte[] expectedBytes, ExtensionType type, int extensionLength,
         int usernameLength, String username) {
         this.expectedBytes = expectedBytes;
-        this.start = start;
         this.type = type;
         this.extensionLength = extensionLength;
         this.usernameLength = usernameLength;
@@ -49,7 +48,8 @@ public class PWDClearExtensionParserTest {
 
     @Test
     public void testParseExtensionMessageContent() {
-        PWDClearExtensionParser parser = new PWDClearExtensionParser(start, expectedBytes, Config.createConfig());
+        PWDClearExtensionParser parser =
+            new PWDClearExtensionParser(new ByteArrayInputStream(expectedBytes), Config.createConfig());
         PWDClearExtensionMessage msg = parser.parse();
         assertArrayEquals(type.getValue(), msg.getExtensionType().getValue());
         assertEquals(extensionLength, (long) msg.getExtensionLength().getValue());

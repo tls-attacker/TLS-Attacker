@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.PWDServerKeyExchangeMessage;
+import java.io.ByteArrayInputStream;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -51,7 +52,8 @@ public class PWDServerKeyExchangeParserTest {
 
         byte[] scalar = ArrayConverter.hexStringToByteArray(("2f 70 48 96 69 9f c4 24 d3 ce c3 37 17 64 4f 5a\n"
             + "             df 7f 68 48 34 24 ee 51 49 2b b9 66 13 fc 49 21").replaceAll("\\s+", ""));
-        PWDServerKeyExchangeParser parser = new PWDServerKeyExchangeParser(0, message, ProtocolVersion.TLS12, config);
+        PWDServerKeyExchangeParser parser =
+            new PWDServerKeyExchangeParser(new ByteArrayInputStream(message), ProtocolVersion.TLS12, config);
         PWDServerKeyExchangeMessage msg = parser.parse();
         assertArrayEquals(message, msg.getCompleteResultingMessage().getValue());
         assertEquals(135, (long) msg.getLength().getValue());

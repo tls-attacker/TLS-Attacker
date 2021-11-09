@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PWDProtectExtensionMessage;
+import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import static org.junit.Assert.assertArrayEquals;
@@ -33,21 +34,19 @@ public class PWDProtectExtensionParserTest {
      */
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { { ArrayConverter.hexStringToByteArray("001d00050466726564"), 0,
+        return Arrays.asList(new Object[][] { { ArrayConverter.hexStringToByteArray("001d00050466726564"),
             ExtensionType.PWD_PROTECT, 5, 4, ArrayConverter.hexStringToByteArray("66726564") } });
     }
 
     private final byte[] expectedBytes;
-    private final int start;
     private final ExtensionType type;
     private final int extensionLength;
     private final int usernameLength;
     private final byte[] username;
 
-    public PWDProtectExtensionParserTest(byte[] expectedBytes, int start, ExtensionType type, int extensionLength,
+    public PWDProtectExtensionParserTest(byte[] expectedBytes, ExtensionType type, int extensionLength,
         int usernameLength, byte[] username) {
         this.expectedBytes = expectedBytes;
-        this.start = start;
         this.type = type;
         this.extensionLength = extensionLength;
         this.usernameLength = usernameLength;
@@ -56,7 +55,8 @@ public class PWDProtectExtensionParserTest {
 
     @Test
     public void testParseExtensionMessageContent() {
-        PWDProtectExtensionParser parser = new PWDProtectExtensionParser(start, expectedBytes, Config.createConfig());
+        PWDProtectExtensionParser parser =
+            new PWDProtectExtensionParser(new ByteArrayInputStream(expectedBytes), Config.createConfig());
         PWDProtectExtensionMessage msg = parser.parse();
         assertArrayEquals(type.getValue(), msg.getExtensionType().getValue());
         assertEquals(extensionLength, (long) msg.getExtensionLength().getValue());

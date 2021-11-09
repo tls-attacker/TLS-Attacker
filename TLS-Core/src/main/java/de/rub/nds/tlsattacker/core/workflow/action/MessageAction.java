@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import java.util.ArrayList;
@@ -39,8 +40,7 @@ public abstract class MessageAction extends ConnectionBoundAction {
 
     @XmlElementWrapper
     @HoldsModifiableVariable
-    @XmlElements(value = {
-        @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
+    @XmlElements(value = { @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
         @XmlElement(type = TlsMessage.class, name = "TlsMessage"),
         @XmlElement(type = CertificateMessage.class, name = "Certificate"),
         @XmlElement(type = CertificateVerifyMessage.class, name = "CertificateVerify"),
@@ -90,19 +90,17 @@ public abstract class MessageAction extends ConnectionBoundAction {
         @XmlElement(type = SrpClientKeyExchangeMessage.class, name = "SrpClientKeyExchange"),
         @XmlElement(type = EndOfEarlyDataMessage.class, name = "EndOfEarlyData"),
         @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensions"),
-        @XmlElement(type = DtlsHandshakeMessageFragment.class, name = "DtlsHandshakeMessageFragment")})
+        @XmlElement(type = DtlsHandshakeMessageFragment.class, name = "DtlsHandshakeMessageFragment") })
     protected List<ProtocolMessage> messages = new ArrayList<>();
 
     @HoldsModifiableVariable
     @XmlElementWrapper
-    @XmlElements(value = {
-        @XmlElement(type = Record.class, name = "Record")})
+    @XmlElements(value = { @XmlElement(type = Record.class, name = "Record") })
     protected List<Record> records = new ArrayList<>();
 
     @HoldsModifiableVariable
     @XmlElementWrapper
-    @XmlElements(value = {
-        @XmlElement(type = DtlsHandshakeMessageFragment.class, name = "DtlsFragment")})
+    @XmlElements(value = { @XmlElement(type = DtlsHandshakeMessageFragment.class, name = "DtlsFragment") })
     protected List<DtlsHandshakeMessageFragment> fragments = new ArrayList<>();
 
     public MessageAction() {
@@ -246,18 +244,22 @@ public abstract class MessageAction extends ConnectionBoundAction {
 
     public abstract MessageActionDirection getMessageDirection();
 
-    protected void send(TlsContext tlsContext, List<ProtocolMessage> protocolMessagesToSend, List<Record> recordsToSend) throws IOException {
+    protected void send(TlsContext tlsContext, List<ProtocolMessage> protocolMessagesToSend, List<Record> recordsToSend)
+        throws IOException {
         LayerStack layerStack = tlsContext.getLayerStack();
         List<LayerConfiguration> layerConfigurationList = new LinkedList<>();
         layerConfigurationList.add(new SpecificContainerLayerConfiguration(protocolMessagesToSend));
         layerConfigurationList.add(new SpecificContainerLayerConfiguration(recordsToSend));
         layerConfigurationList.add(new SpecificContainerLayerConfiguration((List) null));
         List<LayerProcessingResult> processingResult = layerStack.sendData(layerConfigurationList);
-        messages = new ArrayList<>(processingResult.get(0).getUsedContainers()); //TODO Automatically get correct index in result
-        records = new ArrayList<>(processingResult.get(1).getUsedContainers()); // TODO Automatically get correct index in result
+        messages = new ArrayList<>(processingResult.get(0).getUsedContainers()); // TODO Automatically get correct index
+                                                                                 // in result
+        records = new ArrayList<>(processingResult.get(1).getUsedContainers()); // TODO Automatically get correct index
+                                                                                // in result
     }
 
-    protected void receive(TlsContext tlsContext, List<ProtocolMessage> protocolMessagesToReceive, List<Record> recordsToReceive) {
+    protected void receive(TlsContext tlsContext, List<ProtocolMessage> protocolMessagesToReceive,
+        List<Record> recordsToReceive) {
         LayerStack layerStack = tlsContext.getLayerStack();
         List<LayerConfiguration> layerConfigurationList = new LinkedList<>();
         layerConfigurationList.add(new SpecificContainerLayerConfiguration(protocolMessagesToReceive));
@@ -266,14 +268,17 @@ public abstract class MessageAction extends ConnectionBoundAction {
         List<LayerProcessingResult> processingResult;
         try {
             processingResult = layerStack.receiveData(layerConfigurationList);
-            messages = new ArrayList<>(processingResult.get(0).getUsedContainers()); //TODO Automatically get correct index in result
-            records = new ArrayList<>(processingResult.get(1).getUsedContainers()); // TODO Automatically get correct index in result
+            messages = new ArrayList<>(processingResult.get(0).getUsedContainers()); // TODO Automatically get correct
+                                                                                     // index in result
+            records = new ArrayList<>(processingResult.get(1).getUsedContainers()); // TODO Automatically get correct
+                                                                                    // index in result
         } catch (IOException ex) {
             LOGGER.warn("Received an IOException");
         }
     }
-    
-    protected void receiveTill(TlsContext tlsContext, List<ProtocolMessage> protocolMessagesToSend, List<Record> recordsToSend) {
+
+    protected void receiveTill(TlsContext tlsContext, List<ProtocolMessage> protocolMessagesToSend,
+        List<Record> recordsToSend) {
         LayerStack layerStack = tlsContext.getLayerStack();
         List<LayerConfiguration> layerConfigurationList = new LinkedList<>();
         layerConfigurationList.add(new SpecificContainerLayerConfiguration(protocolMessagesToSend));
@@ -282,8 +287,10 @@ public abstract class MessageAction extends ConnectionBoundAction {
         List<LayerProcessingResult> processingResult;
         try {
             processingResult = layerStack.receiveData(layerConfigurationList);
-            messages = new ArrayList<>(processingResult.get(0).getUsedContainers()); //TODO Automatically get correct index in result
-            records = new ArrayList<>(processingResult.get(1).getUsedContainers()); // TODO Automatically get correct index in result
+            messages = new ArrayList<>(processingResult.get(0).getUsedContainers()); // TODO Automatically get correct
+                                                                                     // index in result
+            records = new ArrayList<>(processingResult.get(1).getUsedContainers()); // TODO Automatically get correct
+                                                                                    // index in result
         } catch (IOException ex) {
             LOGGER.warn("Received an IOException");
         }

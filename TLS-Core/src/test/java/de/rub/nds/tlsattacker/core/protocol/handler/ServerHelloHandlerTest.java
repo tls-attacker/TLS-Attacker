@@ -20,10 +20,9 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareS
 import de.rub.nds.tlsattacker.core.protocol.parser.ServerHelloParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ServerHelloPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ServerHelloSerializer;
-import de.rub.nds.tlsattacker.core.record.layer.RecordLayerFactory;
-import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.io.ByteArrayInputStream;
 import java.math.BigInteger;
 import org.junit.After;
 import static org.junit.Assert.*;
@@ -66,7 +65,7 @@ public class ServerHelloHandlerTest {
      */
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[1], 0) instanceof ServerHelloParser);
+        assertTrue(handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof ServerHelloParser);
     }
 
     /**
@@ -105,7 +104,6 @@ public class ServerHelloHandlerTest {
         context.setServerKeyShareStoreEntry(new KeyShareStoreEntry(NamedGroup.ECDH_X25519,
             ArrayConverter.hexStringToByteArray("9c1b0a7421919a73cb57b3a0ad9d6805861a9c47e11df8639d25323b79ce201c")));
         context.addNegotiatedExtension(ExtensionType.KEY_SHARE);
-        context.setRecordLayer(RecordLayerFactory.getRecordLayer(RecordLayerType.RECORD, context));
         handler.adjustTLSContext(message);
         assertArrayEquals(
             ArrayConverter.hexStringToByteArray("EA2F968FD0A381E4B041E6D8DDBF6DA93DE4CEAC862693D3026323E780DB9FC3"),
@@ -132,7 +130,6 @@ public class ServerHelloHandlerTest {
             new KeyShareStoreEntry(NamedGroup.BRAINPOOLP256R1, ArrayConverter.hexStringToByteArray(
                 "9EE17F2ECF74028F6C1FD70DA1D05A4A85975D7D270CAA6B8605F1C6EBB875BA87579167408F7C9E77842C2B3F3368A25FD165637E9B5D57760B0B704659B87420669244AA67CB00EA72C09B84A9DB5BB824FC3982428FCD406963AE080E677A48")));
         context.addNegotiatedExtension(ExtensionType.KEY_SHARE);
-        context.setRecordLayer(RecordLayerFactory.getRecordLayer(RecordLayerType.RECORD, context));
         handler.adjustTLSContext(message);
         assertArrayEquals(
             ArrayConverter.hexStringToByteArray("09E4B18F6B4F59BD8ADED8E875CD9B9A7694A8C5345EDB3381A47D1F860BF209"),

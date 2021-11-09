@@ -29,8 +29,7 @@ public class AlertHandler extends TlsMessageHandler<AlertMessage> {
 
     @Override
     public AlertParser getParser(InputStream stream) {
-        return new AlertParser(stream, tlsContext.getChooser().getLastRecordVersion(),
-            tlsContext.getConfig());
+        return new AlertParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext.getConfig());
     }
 
     @Override

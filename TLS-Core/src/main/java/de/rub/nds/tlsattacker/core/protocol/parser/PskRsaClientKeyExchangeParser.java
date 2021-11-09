@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -25,8 +26,10 @@ public class PskRsaClientKeyExchangeParser extends RSAClientKeyExchangeParser<Ps
      * Constructor for the Parser class
      *
      * @param stream
-     * @param version Version of the Protocol
-     * @param config A Config used in the current context
+     * @param version
+     *                Version of the Protocol
+     * @param config
+     *                A Config used in the current context
      */
     public PskRsaClientKeyExchangeParser(InputStream stream, ProtocolVersion version, Config config) {
         super(stream, version, config);
@@ -46,10 +49,10 @@ public class PskRsaClientKeyExchangeParser extends RSAClientKeyExchangeParser<Ps
     }
 
     /**
-     * Reads the next bytes as the PSKIdentityLength and writes them in the
-     * message
+     * Reads the next bytes as the PSKIdentityLength and writes them in the message
      *
-     * @param msg Message to write in
+     * @param msg
+     *            Message to write in
      */
     private void parsePskIdentityLength(PskRsaClientKeyExchangeMessage msg) {
         msg.setIdentityLength(parseIntField(HandshakeByteLength.PSK_IDENTITY_LENGTH));
@@ -59,7 +62,8 @@ public class PskRsaClientKeyExchangeParser extends RSAClientKeyExchangeParser<Ps
     /**
      * Reads the next bytes as the PSKIdentity and writes them in the message
      *
-     * @param msg Message to write in
+     * @param msg
+     *            Message to write in
      */
     private void parsePskIdentity(PskRsaClientKeyExchangeMessage msg) {
         msg.setIdentity(parseByteArrayField(msg.getIdentityLength().getValue()));

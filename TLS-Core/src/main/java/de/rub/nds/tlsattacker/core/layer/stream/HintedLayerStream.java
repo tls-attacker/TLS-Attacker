@@ -1,3 +1,11 @@
+/**
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ *
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
+ */
 
 package de.rub.nds.tlsattacker.core.layer.stream;
 
@@ -45,7 +53,7 @@ public class HintedLayerStream extends InputStream {
             byte[] data = new byte[stream.available()];
             stream.read(data);
             return data;
-            
+
         } else {
             int read = stream.read();
             if (read != -1) {
@@ -58,7 +66,7 @@ public class HintedLayerStream extends InputStream {
                 }
                 return outputStream.toByteArray();
             } else {
-                //cachedSocketState = SocketState.CLOSED;
+                // cachedSocketState = SocketState.CLOSED;
                 return new byte[0];
             }
 

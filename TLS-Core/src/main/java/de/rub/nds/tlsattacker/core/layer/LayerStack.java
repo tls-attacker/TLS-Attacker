@@ -1,3 +1,12 @@
+/**
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ *
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
+ */
+
 package de.rub.nds.tlsattacker.core.layer;
 
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
@@ -13,13 +22,10 @@ public class LayerStack {
     private static final Logger LOGGER = LogManager.getLogger();
 
     /**
-     * The layer list, layer 0 is the highest layer, layer n is the lowest. Eg.
-     * For TLS layer 0 could be the application layer, layer 1 the tls message
-     * layer layer 2 the record layer and layer 3 the tcp transport layer, layer
-     * 4 could be the ip layer layer 5 could be the ethernet layer. Not all
-     * layers need to be defined at any time, it is perfectly fine to leave the
-     * layer stack and plug another component in which does the rest of the
-     * processing
+     * The layer list, layer 0 is the highest layer, layer n is the lowest. Eg. For TLS layer 0 could be the application
+     * layer, layer 1 the tls message layer layer 2 the record layer and layer 3 the tcp transport layer, layer 4 could
+     * be the ip layer layer 5 could be the ethernet layer. Not all layers need to be defined at any time, it is
+     * perfectly fine to leave the layer stack and plug another component in which does the rest of the processing
      */
     private final List<ProtocolLayer> layerList;
 
@@ -56,7 +62,7 @@ public class LayerStack {
     public List<LayerProcessingResult> sendData(List<LayerConfiguration> layerConfigurationList) throws IOException {
         if (layerList.size() != layerConfigurationList.size()) {
             throw new RuntimeException(
-                    "Illegal LayerConfiguration list provided. Each layer needs a configuration entry (null is fine too if no explict configuration is desired). Expected "
+                "Illegal LayerConfiguration list provided. Each layer needs a configuration entry (null is fine too if no explict configuration is desired). Expected "
                     + layerList.size() + " but found " + layerConfigurationList.size());
         }
         // Prepare layer configuration and clear previous executions
@@ -83,7 +89,7 @@ public class LayerStack {
     public List<LayerProcessingResult> receiveData(List<LayerConfiguration> layerConfigurationList) throws IOException {
         if (layerList.size() != layerConfigurationList.size()) {
             throw new RuntimeException(
-                    "Illegal LayerConfiguration list provided. Each layer needs a configuration entry (null is fine too if no explict configuration is desired). Expected "
+                "Illegal LayerConfiguration list provided. Each layer needs a configuration entry (null is fine too if no explict configuration is desired). Expected "
                     + layerList.size() + " but found " + layerConfigurationList.size());
         }
         // Prepare layer configuration and clear previous executions

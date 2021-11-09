@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.ServerNameIndicatio
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ServerNameIndicationExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ServerNameIndicationExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.ByteArrayInputStream;
 import java.util.LinkedList;
 import java.util.List;
 import static org.junit.Assert.*;
@@ -71,8 +72,8 @@ public class ServerNameIndicationExtensionHandlerTest {
      */
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[] { 0, 2, 3, }, 0,
-            context.getConfig()) instanceof ServerNameIndicationExtensionParser);
+        assertTrue(
+            handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof ServerNameIndicationExtensionParser);
     }
 
     /**

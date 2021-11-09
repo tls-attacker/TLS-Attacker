@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.ClientCertificateTy
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ClientCertificateTypeExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ClientCertificateTypeExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.List;
 import static org.hamcrest.CoreMatchers.is;
@@ -24,6 +25,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class ClientCertificateTypeExtensionHandlerTest {
+
     private final List<CertificateType> certList =
         Arrays.asList(CertificateType.OPEN_PGP, CertificateType.X509, CertificateType.RAW_PUBLIC_KEY);
     private ClientCertificateTypeExtensionHandler handler;
@@ -48,7 +50,7 @@ public class ClientCertificateTypeExtensionHandlerTest {
     @Test
     public void testGetParser() {
         assertTrue(
-            handler.getParser(new byte[0], 0, context.getConfig()) instanceof ClientCertificateTypeExtensionParser);
+            handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof ClientCertificateTypeExtensionParser);
     }
 
     @Test

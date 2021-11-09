@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.ClientCertificateUr
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ClientCertificateUrlExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ClientCertificateUrlExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.ByteArrayInputStream;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,7 +40,7 @@ public class ClientCertificateUrlExtensionHandlerTest {
     @Test
     public void testGetParser() {
         assertTrue(
-            handler.getParser(new byte[0], 0, context.getConfig()) instanceof ClientCertificateUrlExtensionParser);
+            handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof ClientCertificateUrlExtensionParser);
     }
 
     @Test

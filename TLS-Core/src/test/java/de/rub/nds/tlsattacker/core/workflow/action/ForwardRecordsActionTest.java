@@ -14,9 +14,6 @@ import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.record.cipher.RecordBlockCipher;
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
-import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
@@ -48,11 +45,11 @@ public class ForwardRecordsActionTest {
 
     private State state;
     private Config config;
-    private TlsContext ctx1;
+    private TlsContext context;
     private final String ctx1Alias = "ctx1";
-    private TlsContext ctx2;
+    private TlsContext context2;
     private final String ctx2Alias = "ctx2";
-    private ForwardRecordsAction action;
+    private ForwardDataAction action;
     private WorkflowTrace trace;
 
     @Before
@@ -64,24 +61,22 @@ public class ForwardRecordsActionTest {
         trace.addConnection(new InboundConnection(ctx2Alias));
 
         state = new State(config, trace);
-        ctx1 = state.getTlsContext(ctx1Alias);
-        ctx2 = state.getTlsContext(ctx2Alias);
+        context = state.getTlsContext(ctx1Alias);
+        context2 = state.getTlsContext(ctx2Alias);
 
         FakeTransportHandler th = new FakeTransportHandler(ConnectionEndType.SERVER);
         byte[] alertMsg = new byte[] { 0x15, 0x03, 0x03, 0x00, 0x02, 0x02, 0x32 };
         th.setFetchableByte(alertMsg);
-        ctx1.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
-        ctx1.setRecordLayer(new TlsRecordLayer(ctx1));
-        ctx1.setTransportHandler(th);
+        context.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
+        context.setTransportHandler(th);
 
-        ctx2.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
-        ctx2.setRecordLayer(new TlsRecordLayer(ctx2));
-        ctx2.setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
+        context2.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
+        context2.setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
     }
 
     @Test
     public void executingSetsExecutionFlagsCorrectly() throws Exception {
-        action = new ForwardRecordsAction(ctx1Alias, ctx2Alias);
+        action = new ForwardDataAction(ctx1Alias, ctx2Alias);
         action.execute(state);
         assertTrue(action.isExecuted());
         assertTrue(action.executedAsPlanned());
@@ -89,7 +84,7 @@ public class ForwardRecordsActionTest {
 
     @Test(expected = WorkflowExecutionException.class)
     public void executingTwiceThrowsException() throws Exception {
-        action = new ForwardRecordsAction(ctx1Alias, ctx2Alias);
+        action = new ForwardDataAction(ctx1Alias, ctx2Alias);
         action.execute(state);
         assertTrue(action.isExecuted());
         action.execute(state);
@@ -97,20 +92,20 @@ public class ForwardRecordsActionTest {
 
     @Test(expected = WorkflowExecutionException.class)
     public void executingWithNullAliasThrowsException() throws Exception {
-        action = new ForwardRecordsAction(null, ctx2Alias);
+        action = new ForwardDataAction(null, ctx2Alias);
         action.execute(state);
     }
 
     @Test(expected = WorkflowExecutionException.class)
     public void executingWithEmptyAliasThrowsException() throws Exception {
-        action = new ForwardRecordsAction("", ctx2Alias);
+        action = new ForwardDataAction("", ctx2Alias);
         action.execute(state);
     }
 
     @Test
     public void marshalingEmptyActionYieldsMinimalOutput() {
         try {
-            action = new ForwardRecordsAction(ctx1Alias, ctx2Alias);
+            action = new ForwardDataAction(ctx1Alias, ctx2Alias);
             trace.addTlsAction(action);
 
             // used PrintWriter and not StringBuilder as it offers
@@ -148,10 +143,10 @@ public class ForwardRecordsActionTest {
 
     @Test
     public void marshalingAndUnmarshalingYieldsEqualObject() {
-        action = new ForwardRecordsAction(ctx1Alias, ctx2Alias);
+        action = new ForwardDataAction(ctx1Alias, ctx2Alias);
         StringWriter writer = new StringWriter();
         JAXB.marshal(action, writer);
-        TlsAction actual = JAXB.unmarshal(new StringReader(writer.getBuffer().toString()), ForwardRecordsAction.class);
+        TlsAction actual = JAXB.unmarshal(new StringReader(writer.getBuffer().toString()), ForwardDataAction.class);
         assertEquals(action, actual);
     }
 }

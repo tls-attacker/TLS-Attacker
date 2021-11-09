@@ -20,15 +20,11 @@ import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.record.cipher.RecordBlockCipher;
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
-import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.FakeReceiveMessageHelper;
 import de.rub.nds.tlsattacker.core.workflow.filter.DefaultFilter;
 import de.rub.nds.tlsattacker.core.workflow.filter.Filter;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -61,9 +57,9 @@ public class ForwardMessagesActionTest {
 
     private State state;
     private Config config;
-    private TlsContext ctx1;
+    private TlsContext context1;
     private final String ctx1Alias = "ctx1";
-    private TlsContext ctx2;
+    private TlsContext context2;
     private final String ctx2Alias = "ctx2";
     private AlertMessage alert;
     ForwardMessagesAction action;
@@ -82,19 +78,17 @@ public class ForwardMessagesActionTest {
         trace.addConnection(new InboundConnection(ctx2Alias));
 
         state = new State(config, trace);
-        ctx1 = state.getTlsContext(ctx1Alias);
-        ctx2 = state.getTlsContext(ctx2Alias);
+        context1 = state.getTlsContext(ctx1Alias);
+        context2 = state.getTlsContext(ctx2Alias);
 
         FakeTransportHandler th = new FakeTransportHandler(ConnectionEndType.SERVER);
         byte[] alertMsg = new byte[] { 0x15, 0x03, 0x03, 0x00, 0x02, 0x02, 50 };
         th.setFetchableByte(alertMsg);
-        ctx1.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
-        ctx1.setRecordLayer(new TlsRecordLayer(ctx1));
-        ctx1.setTransportHandler(th);
+        context1.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
+        context1.setTransportHandler(th);
 
-        ctx2.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
-        ctx2.setRecordLayer(new TlsRecordLayer(ctx2));
-        ctx2.setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
+        context2.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
+        context2.setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
     }
 
     @Test
@@ -203,10 +197,9 @@ public class ForwardMessagesActionTest {
         msg.setCompleteResultingMessage(receivedData.getBytes());
         List<ProtocolMessage> receivedMsgs = new ArrayList<>();
         receivedMsgs.add(msg);
-        FakeReceiveMessageHelper fakeReceiveHelper = new FakeReceiveMessageHelper();
-        fakeReceiveHelper.setMessagesToReturn(receivedMsgs);
+        // TODO ADD FAKE DATA TO RECEIVE
 
-        action = new ForwardMessagesAction(ctx1Alias, ctx2Alias, fakeReceiveHelper);
+        action = new ForwardMessagesAction(ctx1Alias, ctx2Alias);
         action.setMessages(new ApplicationMessage());
 
         action.execute(state);

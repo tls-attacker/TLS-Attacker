@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.ServerAuthzExtensio
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ServerAuthzExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ServerAuthzExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.List;
 import static org.hamcrest.CoreMatchers.is;
@@ -50,7 +51,7 @@ public class ServerAuthzExtensionHandlerTest {
 
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[0], 0, context.getConfig()) instanceof ServerAuthzExtensionParser);
+        assertTrue(handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof ServerAuthzExtensionParser);
     }
 
     @Test

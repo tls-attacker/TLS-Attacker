@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ECPointFormatExtensionMessage;
+import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import static org.junit.Assert.*;
@@ -25,23 +26,21 @@ public class ECPointFormatExtensionParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { { ArrayConverter.hexStringToByteArray("000b000403000102"), 0,
+        return Arrays.asList(new Object[][] { { ArrayConverter.hexStringToByteArray("000b000403000102"),
             ArrayConverter.hexStringToByteArray("000b000403000102"), ExtensionType.EC_POINT_FORMATS, 4, 3,
             new byte[] { 0, 1, 2 } } }); // is the same for TLS10 and TLS11
     }
 
     private byte[] extension;
-    private int start;
     private byte[] completeExtension;
     private ExtensionType type;
     private int extensionLength;
     private int pointFormatLength;
     private byte[] pointFormats;
 
-    public ECPointFormatExtensionParserTest(byte[] extension, int start, byte[] completeExtension, ExtensionType type,
+    public ECPointFormatExtensionParserTest(byte[] extension, byte[] completeExtension, ExtensionType type,
         int extensionLength, int pointFormatLength, byte[] pointFormats) {
         this.extension = extension;
-        this.start = start;
         this.completeExtension = completeExtension;
         this.type = type;
         this.extensionLength = extensionLength;
@@ -54,7 +53,8 @@ public class ECPointFormatExtensionParserTest {
      */
     @Test
     public void testParseExtensionMessageContent() {
-        ECPointFormatExtensionParser parser = new ECPointFormatExtensionParser(start, extension, Config.createConfig());
+        ECPointFormatExtensionParser parser =
+            new ECPointFormatExtensionParser(new ByteArrayInputStream(extension), Config.createConfig());
         ECPointFormatExtensionMessage msg = parser.parse();
         assertArrayEquals(msg.getExtensionBytes().getValue(), completeExtension);
         assertArrayEquals(type.getValue(), msg.getExtensionType().getValue());

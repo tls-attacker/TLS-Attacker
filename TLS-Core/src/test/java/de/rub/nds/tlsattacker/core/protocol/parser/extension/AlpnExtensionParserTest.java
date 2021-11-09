@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.AlpnExtensionMessage;
+import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import static org.junit.Assert.*;
@@ -26,32 +27,30 @@ public class AlpnExtensionParserTest {
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] {
-            { ExtensionType.ALPN, ArrayConverter.hexStringToByteArray("0010000e000c02683208687474702f312e31"), 14, 0,
-                12, ArrayConverter.hexStringToByteArray("02683208687474702f312e31") } });
+            { ExtensionType.ALPN, ArrayConverter.hexStringToByteArray("0010000e000c02683208687474702f312e31"), 14, 12,
+                ArrayConverter.hexStringToByteArray("02683208687474702f312e31") } });
     }
 
     private final ExtensionType extensionType;
     private final byte[] expectedBytes;
     private final int extensionLength;
-    private final int startParsing;
     private final int proposedAlpnProtocolsLength;
     private final byte[] proposedAlpnProtocols;
     private AlpnExtensionParser parser;
     private AlpnExtensionMessage message;
 
     public AlpnExtensionParserTest(ExtensionType extensionType, byte[] expectedBytes, int extensionLength,
-        int startParsing, int alpnExtensionLength, byte[] alpnAnnouncedProtocols) {
+        int alpnExtensionLength, byte[] alpnAnnouncedProtocols) {
         this.extensionType = extensionType;
         this.expectedBytes = expectedBytes;
         this.extensionLength = extensionLength;
-        this.startParsing = startParsing;
         this.proposedAlpnProtocolsLength = alpnExtensionLength;
         this.proposedAlpnProtocols = alpnAnnouncedProtocols;
     }
 
     @Before
     public void setUp() {
-        parser = new AlpnExtensionParser(startParsing, expectedBytes, Config.createConfig());
+        parser = new AlpnExtensionParser(new ByteArrayInputStream(expectedBytes), Config.createConfig());
     }
 
     @Test

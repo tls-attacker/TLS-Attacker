@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RenegotiationInfoExtensionMessage;
+import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import static org.junit.Assert.assertArrayEquals;
@@ -28,7 +29,7 @@ public class RenegotiationInfoExtensionParserTest {
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] { { ExtensionType.RENEGOTIATION_INFO, 1, 0, new byte[] {},
-            ArrayConverter.hexStringToByteArray("ff01000100"), 0 } });
+            ArrayConverter.hexStringToByteArray("ff01000100") } });
     }
 
     private final ExtensionType extensionType;
@@ -36,23 +37,21 @@ public class RenegotiationInfoExtensionParserTest {
     private final int extensionPayloadLength;
     private final byte[] extensionPayload;
     private final byte[] expectedBytes;
-    private final int startParsing;
     private RenegotiationInfoExtensionParser parser;
     private RenegotiationInfoExtensionMessage message;
 
     public RenegotiationInfoExtensionParserTest(ExtensionType extensionType, int extensionLength,
-        int extensionPayloadLength, byte[] extensionPayload, byte[] expectedBytes, int startParsing) {
+        int extensionPayloadLength, byte[] extensionPayload, byte[] expectedBytes) {
         this.extensionType = extensionType;
         this.extensionLength = extensionLength;
         this.extensionPayload = extensionPayload;
         this.expectedBytes = expectedBytes;
-        this.startParsing = startParsing;
         this.extensionPayloadLength = extensionPayloadLength;
     }
 
     @Before
     public void setUp() {
-        parser = new RenegotiationInfoExtensionParser(startParsing, expectedBytes, Config.createConfig());
+        parser = new RenegotiationInfoExtensionParser(new ByteArrayInputStream(expectedBytes), Config.createConfig());
     }
 
     @Test

@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
@@ -38,60 +39,60 @@ import org.apache.logging.log4j.Logger;
  */
 @XmlRootElement
 public class SendAction extends MessageAction implements SendingAction {
-    
+
     private static final Logger LOGGER = LogManager.getLogger();
-    
+
     public SendAction() {
         super();
     }
-    
+
     public SendAction(ActionOption option, List<ProtocolMessage> messages) {
         super(messages);
-        
+
         if (option != null) {
             this.addActionOption(option);
         }
     }
-    
+
     public SendAction(List<ProtocolMessage> messages) {
         this((ActionOption) null, messages);
     }
-    
+
     public SendAction(ActionOption option, ProtocolMessage... messages) {
         this(option, new ArrayList<>(Arrays.asList(messages)));
     }
-    
+
     public SendAction(ProtocolMessage... messages) {
         this(new ArrayList<>(Arrays.asList(messages)));
     }
-    
+
     public SendAction(String connectionAlias) {
         super(connectionAlias);
     }
-    
+
     public SendAction(String connectionAlias, List<ProtocolMessage> messages) {
         super(connectionAlias, messages);
     }
-    
+
     public SendAction(String connectionAlias, ProtocolMessage... messages) {
         super(connectionAlias, new ArrayList<>(Arrays.asList(messages)));
     }
-    
+
     @Override
     public void execute(State state) throws WorkflowExecutionException {
         TlsContext tlsContext = state.getTlsContext(connectionAlias);
-        
+
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
         }
-        
+
         String sending = getReadableString(messages);
         if (hasDefaultAlias()) {
             LOGGER.info("Sending messages: " + sending);
         } else {
             LOGGER.info("Sending messages (" + connectionAlias + "): " + sending);
         }
-        
+
         try {
             send(tlsContext, messages, records);
             setExecuted(true);
@@ -103,7 +104,7 @@ public class SendAction extends MessageAction implements SendingAction {
             setExecuted(getActionOptions().contains(ActionOption.MAY_FAIL));
         }
     }
-    
+
     @Override
     public String toString() {
         StringBuilder sb;
@@ -124,7 +125,7 @@ public class SendAction extends MessageAction implements SendingAction {
         }
         return sb.toString();
     }
-    
+
     @Override
     public String toCompactString() {
         StringBuilder sb = new StringBuilder(super.toCompactString());
@@ -140,22 +141,22 @@ public class SendAction extends MessageAction implements SendingAction {
         }
         return sb.toString();
     }
-    
+
     @Override
     public boolean executedAsPlanned() {
         return isExecuted();
     }
-    
+
     @Override
     public void setRecords(List<Record> records) {
         this.records = records;
     }
-    
+
     @Override
     public void setFragments(List<DtlsHandshakeMessageFragment> fragments) {
         this.fragments = fragments;
     }
-    
+
     @Override
     public void reset() {
         List<ModifiableVariableHolder> holders = new LinkedList<>();
@@ -179,27 +180,27 @@ public class SendAction extends MessageAction implements SendingAction {
         }
         setExecuted(null);
     }
-    
+
     @Override
     public List<ProtocolMessage> getSendMessages() {
         return messages;
     }
-    
+
     @Override
     public List<Record> getSendRecords() {
         return records;
     }
-    
+
     @Override
     public List<DtlsHandshakeMessageFragment> getSendFragments() {
         return fragments;
     }
-    
+
     @Override
     public MessageActionDirection getMessageDirection() {
         return MessageActionDirection.SENDING;
     }
-    
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -223,7 +224,7 @@ public class SendAction extends MessageAction implements SendingAction {
         }
         return super.equals(obj);
     }
-    
+
     @Override
     public int hashCode() {
         int hash = super.hashCode();
@@ -232,7 +233,7 @@ public class SendAction extends MessageAction implements SendingAction {
         hash = 67 * hash + Objects.hashCode(this.fragments);
         return hash;
     }
-    
+
     @Override
     public List<ProtocolMessageType> getGoingToSendProtocolMessageTypes() {
         List<ProtocolMessageType> protocolMessageTypes = new ArrayList<>();
@@ -243,7 +244,7 @@ public class SendAction extends MessageAction implements SendingAction {
         }
         return protocolMessageTypes;
     }
-    
+
     @Override
     public List<HandshakeMessageType> getGoingToSendHandshakeMessageTypes() {
         List<HandshakeMessageType> handshakeMessageTypes = new ArrayList<>();
@@ -254,5 +255,5 @@ public class SendAction extends MessageAction implements SendingAction {
         }
         return handshakeMessageTypes;
     }
-    
+
 }

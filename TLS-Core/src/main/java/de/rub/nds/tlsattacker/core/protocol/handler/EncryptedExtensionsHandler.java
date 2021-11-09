@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
@@ -35,8 +36,8 @@ public class EncryptedExtensionsHandler extends HandshakeMessageHandler<Encrypte
 
     @Override
     public EncryptedExtensionsParser getParser(InputStream stream) {
-        return new EncryptedExtensionsParser(stream, tlsContext.getLastRecordVersion(),
-                tlsContext.getConfig(), tlsContext.getTalkingConnectionEndType());
+        return new EncryptedExtensionsParser(stream, tlsContext.getLastRecordVersion(), tlsContext.getConfig(),
+            tlsContext.getTalkingConnectionEndType());
     }
 
     @Override
@@ -55,8 +56,8 @@ public class EncryptedExtensionsHandler extends HandshakeMessageHandler<Encrypte
             LOGGER.debug("Adjusting for EncryptedExtensions:");
             for (ExtensionMessage extension : message.getExtensions()) {
                 LOGGER.debug("Adjusting " + message.toCompactString());
-                ExtensionHandler handler
-                        = HandlerFactory.getExtensionHandler(tlsContext, extension.getExtensionTypeConstant());
+                ExtensionHandler handler =
+                    HandlerFactory.getExtensionHandler(tlsContext, extension.getExtensionTypeConstant());
                 handler.adjustTLSContext(extension);
             }
 
@@ -67,7 +68,7 @@ public class EncryptedExtensionsHandler extends HandshakeMessageHandler<Encrypte
     private void warnOnConflictingExtensions() {
         if (tlsContext.getTalkingConnectionEndType() == tlsContext.getChooser().getMyConnectionPeer()) {
             if (tlsContext.isExtensionNegotiated(ExtensionType.MAX_FRAGMENT_LENGTH)
-                    && tlsContext.isExtensionNegotiated(ExtensionType.RECORD_SIZE_LIMIT)) {
+                && tlsContext.isExtensionNegotiated(ExtensionType.RECORD_SIZE_LIMIT)) {
                 LOGGER.warn("Server sent max_fragment_length AND record_size_limit extensions");
             }
         }

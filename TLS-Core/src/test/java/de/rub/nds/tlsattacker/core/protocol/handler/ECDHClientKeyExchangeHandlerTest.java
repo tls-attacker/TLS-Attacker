@@ -18,8 +18,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage
 import de.rub.nds.tlsattacker.core.protocol.parser.ECDHClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ECDHClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ECDHClientKeyExchangeSerializer;
-import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.ByteArrayInputStream;
 import java.math.BigInteger;
 import java.security.Security;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -50,7 +50,7 @@ public class ECDHClientKeyExchangeHandlerTest {
      */
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[1], 0) instanceof ECDHClientKeyExchangeParser);
+        assertTrue(handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof ECDHClientKeyExchangeParser);
     }
 
     /**
@@ -89,7 +89,6 @@ public class ECDHClientKeyExchangeHandlerTest {
                 new BigInteger("4390496211885670837594012513791855863576256216444143941964"), NamedGroup.SECP192R1));
         context.getConfig().setDefaultClientEcPrivateKey(new BigInteger("3"));
         context.getConfig().setDefaultServerEcPrivateKey(new BigInteger("3"));
-        context.setRecordLayer(new TlsRecordLayer(context));
         ECDHClientKeyExchangeMessage message = new ECDHClientKeyExchangeMessage(context.getConfig());
         ECDHClientKeyExchangePreparator prep = new ECDHClientKeyExchangePreparator(context.getChooser(), message);
         prep.prepare();

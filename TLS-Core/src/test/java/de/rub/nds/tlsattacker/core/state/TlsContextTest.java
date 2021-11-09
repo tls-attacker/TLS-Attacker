@@ -19,8 +19,6 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.record.cipher.CipherState;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordAEADCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
-import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
-import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.security.Security;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -40,9 +38,7 @@ public class TlsContextTest {
     @Before
     public void setUp() {
         config = Config.createConfig();
-        config.setRecordLayerType(RecordLayerType.RECORD);
         context = new TlsContext(config);
-        context.setRecordLayer(new TlsRecordLayer(context));
         assertNotNull(context.getChooser());
 
         Security.addProvider(new BouncyCastleProvider());

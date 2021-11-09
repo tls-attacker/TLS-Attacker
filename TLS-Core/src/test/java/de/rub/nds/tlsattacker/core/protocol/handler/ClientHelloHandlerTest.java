@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.ClientHelloParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ClientHelloPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ClientHelloSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.ByteArrayInputStream;
 import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -42,7 +43,7 @@ public class ClientHelloHandlerTest {
      */
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[1], 0) instanceof ClientHelloParser);
+        assertTrue(handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof ClientHelloParser);
     }
 
     /**

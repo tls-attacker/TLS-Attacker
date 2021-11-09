@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -25,17 +26,18 @@ public class HelloRequestParser extends HandshakeMessageParser<HelloRequestMessa
      *
      * @param inputStream
      * @param config
-     * @param version Version of the Protocol
+     * @param version
+     *                    Version of the Protocol
      */
     public HelloRequestParser(InputStream inputStream, ProtocolVersion version, Config config) {
         super(inputStream, HandshakeMessageType.HELLO_REQUEST, version, config);
     }
 
     /**
-     * Reads the next bytes as the HandshakeMessageContent and writes them in
-     * the message
+     * Reads the next bytes as the HandshakeMessageContent and writes them in the message
      *
-     * @param msg Message to write in
+     * @param msg
+     *            Message to write in
      */
     @Override
     protected void parseHandshakeMessageContent(HelloRequestMessage msg) {

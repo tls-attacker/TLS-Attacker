@@ -20,10 +20,9 @@ import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.FinishedParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.FinishedPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.FinishedSerializer;
-import de.rub.nds.tlsattacker.core.record.layer.RecordLayerFactory;
-import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.io.ByteArrayInputStream;
 import org.junit.After;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -51,7 +50,7 @@ public class FinishedHandlerTest {
      */
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[1], 0) instanceof FinishedParser);
+        assertTrue(handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof FinishedParser);
     }
 
     /**
@@ -110,7 +109,6 @@ public class FinishedHandlerTest {
     @Test
     public void testAdjustTLSContextTls13ServerOutbound() {
         FinishedMessage message = new FinishedMessage();
-        context.setRecordLayer(RecordLayerFactory.getRecordLayer(RecordLayerType.RECORD, context));
         context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
         context.setConnection(new OutboundConnection());
         context.setSelectedProtocolVersion(ProtocolVersion.TLS13);
@@ -140,7 +138,6 @@ public class FinishedHandlerTest {
     @Test
     public void testAdjustTLSContextTls13ServerInbound() {
         FinishedMessage message = new FinishedMessage();
-        context.setRecordLayer(RecordLayerFactory.getRecordLayer(RecordLayerType.RECORD, context));
         context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
         context.setConnection(new InboundConnection());
         context.setSelectedProtocolVersion(ProtocolVersion.TLS13);
@@ -163,7 +160,6 @@ public class FinishedHandlerTest {
     @Test
     public void testAdjustTLSContextTls13ClientOutbound() {
         FinishedMessage message = new FinishedMessage();
-        context.setRecordLayer(RecordLayerFactory.getRecordLayer(RecordLayerType.RECORD, context));
         context.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
         context.setConnection(new OutboundConnection());
         context.setSelectedProtocolVersion(ProtocolVersion.TLS13);
@@ -187,7 +183,6 @@ public class FinishedHandlerTest {
     @Test
     public void testAdjustTLSContextTls13ClientInbound() {
         FinishedMessage message = new FinishedMessage();
-        context.setRecordLayer(RecordLayerFactory.getRecordLayer(RecordLayerType.RECORD, context));
         context.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
         context.setConnection(new InboundConnection());
         context.setSelectedProtocolVersion(ProtocolVersion.TLS13);
@@ -210,7 +205,6 @@ public class FinishedHandlerTest {
     @Test
     public void testAdjustTlsContextAfterSerializedTls13ClientInbound() {
         FinishedMessage message = new FinishedMessage();
-        context.setRecordLayer(RecordLayerFactory.getRecordLayer(RecordLayerType.RECORD, context));
         context.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
         context.setConnection(new InboundConnection());
         context.setSelectedProtocolVersion(ProtocolVersion.TLS13);
@@ -239,7 +233,6 @@ public class FinishedHandlerTest {
     @Test
     public void testAdjustTlsContextAfterSerializedTls13ClientOutbound() {
         FinishedMessage message = new FinishedMessage();
-        context.setRecordLayer(RecordLayerFactory.getRecordLayer(RecordLayerType.RECORD, context));
         context.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
         context.setConnection(new OutboundConnection());
         context.setSelectedProtocolVersion(ProtocolVersion.TLS13);
@@ -258,7 +251,6 @@ public class FinishedHandlerTest {
     @Test
     public void testAdjustTlsContextAfterSerializeTls13ServerOutbound() {
         FinishedMessage message = new FinishedMessage();
-        context.setRecordLayer(RecordLayerFactory.getRecordLayer(RecordLayerType.RECORD, context));
         context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
         context.setConnection(new OutboundConnection());
         context.setSelectedProtocolVersion(ProtocolVersion.TLS13);
@@ -278,7 +270,6 @@ public class FinishedHandlerTest {
     @Test
     public void testAdjustTlsContextAfterSerializeTls13ServerInbound() {
         FinishedMessage message = new FinishedMessage();
-        context.setRecordLayer(RecordLayerFactory.getRecordLayer(RecordLayerType.RECORD, context));
         context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
         context.setConnection(new InboundConnection());
         context.setSelectedProtocolVersion(ProtocolVersion.TLS13);
@@ -308,7 +299,6 @@ public class FinishedHandlerTest {
     @Test
     public void testAdjustTLSContextTls13ServerInboundWithoutEarlyData() {
         FinishedMessage message = new FinishedMessage();
-        context.setRecordLayer(RecordLayerFactory.getRecordLayer(RecordLayerType.RECORD, context));
         context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
         context.setConnection(new InboundConnection());
         context.setSelectedProtocolVersion(ProtocolVersion.TLS13);
@@ -333,7 +323,6 @@ public class FinishedHandlerTest {
     @Test
     public void testAdjustTLSContextTls13ServerInboundWithEarlyData() {
         FinishedMessage message = new FinishedMessage();
-        context.setRecordLayer(RecordLayerFactory.getRecordLayer(RecordLayerType.RECORD, context));
         context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
         context.setConnection(new InboundConnection());
         context.setSelectedProtocolVersion(ProtocolVersion.TLS13);

@@ -14,9 +14,9 @@ import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.ChangeCipherSpecParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ChangeCipherSpecPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ChangeCipherSpecSerializer;
-import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.io.ByteArrayInputStream;
 import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -42,7 +42,7 @@ public class ChangeCipherSpecHandlerTest {
      */
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[1], 0) instanceof ChangeCipherSpecParser);
+        assertTrue(handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof ChangeCipherSpecParser);
     }
 
     /**
@@ -67,7 +67,6 @@ public class ChangeCipherSpecHandlerTest {
     @Test
     public void testAdjustTLSContext() {
         ChangeCipherSpecMessage message = new ChangeCipherSpecMessage();
-        context.setRecordLayer(new TlsRecordLayer(context));
         context.setSelectedCipherSuite(CipherSuite.getImplemented().get(0));
         context.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
         handler.adjustTLSContext(message);

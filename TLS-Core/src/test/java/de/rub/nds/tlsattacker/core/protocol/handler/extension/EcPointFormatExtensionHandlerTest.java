@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.ECPointFormatExtens
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ECPointFormatExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ECPointFormatExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.ByteArrayInputStream;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -55,8 +56,7 @@ public class EcPointFormatExtensionHandlerTest {
      */
     @Test
     public void testGetParser() {
-        assertTrue(
-            handler.getParser(new byte[] { 123 }, 0, context.getConfig()) instanceof ECPointFormatExtensionParser);
+        assertTrue(handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof ECPointFormatExtensionParser);
     }
 
     /**

@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.state;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -232,9 +233,8 @@ public class TlsContext {
     private byte[] clientSessionId;
 
     /**
-     * Initialization vector for SSLv2 with block ciphers. Unlike for SSLv3 and
-     * TLS, this is explicitly transmitted in the handshake and cannot be
-     * derived from other data.
+     * Initialization vector for SSLv2 with block ciphers. Unlike for SSLv3 and TLS, this is explicitly transmitted in
+     * the handshake and cannot be derived from other data.
      */
     private byte[] ssl2Iv;
 
@@ -249,8 +249,7 @@ public class TlsContext {
     private Certificate clientCertificate;
 
     /**
-     * Collects messages for computation of the Finished and CertificateVerify
-     * hashes
+     * Collects messages for computation of the Finished and CertificateVerify hashes
      */
     private MessageDigestCollector digest;
 
@@ -551,8 +550,8 @@ public class TlsContext {
     private Point serverPWDElement;
 
     /**
-     * Last application message data received/send by this context. This is
-     * especially useful for forwarding application messages via ForwardAction.
+     * Last application message data received/send by this context. This is especially useful for forwarding application
+     * messages via ForwardAction.
      */
     private byte[] lastHandledApplicationMessageData;
 
@@ -583,32 +582,27 @@ public class TlsContext {
     private final EnumSet<ExtensionType> negotiatedExtensionSet = EnumSet.noneOf(ExtensionType.class);
 
     /**
-     * The "secure_renegotiation" flag of the Renegotiation Indication Extension
-     * as defined in RFC5746. Indicates whether secure renegotiation is in use
-     * for the connection. Note that this flag reflects a connection "state" and
-     * differs from isProposedTlsExtensions*(ExtensionType.RENEGOTIATION_INFO).
-     * The latter merely says that the extension was send by client or server.
+     * The "secure_renegotiation" flag of the Renegotiation Indication Extension as defined in RFC5746. Indicates
+     * whether secure renegotiation is in use for the connection. Note that this flag reflects a connection "state" and
+     * differs from isProposedTlsExtensions*(ExtensionType.RENEGOTIATION_INFO). The latter merely says that the
+     * extension was send by client or server.
      */
     private boolean secureRenegotiation = false;
 
     /**
-     * Whether to use the extended master secret or not. This flag is set if the
-     * EMS extension was send by both peers. Note that this flag reflects a
-     * connection "state" and differs from
-     * isProposedTlsExtensions*(ExtensionType. EXTENDED_MASTER_SECRET). The
-     * latter merely says that the extension was sent by client or server.
+     * Whether to use the extended master secret or not. This flag is set if the EMS extension was send by both peers.
+     * Note that this flag reflects a connection "state" and differs from isProposedTlsExtensions*(ExtensionType.
+     * EXTENDED_MASTER_SECRET). The latter merely says that the extension was sent by client or server.
      */
     private boolean useExtendedMasterSecret;
 
     /**
-     * Add a cookie with this name to HTTPS header if config.isAddHttpsCookie is
-     * set.
+     * Add a cookie with this name to HTTPS header if config.isAddHttpsCookie is set.
      */
     private String httpsCookieName = null;
 
     /**
-     * Add a cookie with this value to HTTPS header if config.isAddHttpsCookie
-     * is set.
+     * Add a cookie with this value to HTTPS header if config.isAddHttpsCookie is set.
      */
     private String httpsCookieValue = null;
 
@@ -651,9 +645,8 @@ public class TlsContext {
     private List<ExtensionType> esniExtensions;
 
     /**
-     * Both methods of limiting record size as defined in RFC 3546
-     * (MaximumFragmentLength extension) and RFC 8449 (RecordSizeLimit
-     * extension)
+     * Both methods of limiting record size as defined in RFC 3546 (MaximumFragmentLength extension) and RFC 8449
+     * (RecordSizeLimit extension)
      */
     private MaxFragmentLength maxFragmentLength;
 
@@ -665,11 +658,11 @@ public class TlsContext {
     }
 
     /**
-     * This constructor assumes that the config holds exactly one connection
-     * end. This is usually used when working with the default connection end in
-     * single context scenarios.
+     * This constructor assumes that the config holds exactly one connection end. This is usually used when working with
+     * the default connection end in single context scenarios.
      *
-     * @param config The Config for which the TlsContext should be created
+     * @param config
+     *               The Config for which the TlsContext should be created
      */
     public TlsContext(Config config) {
         RunningModeType mode = config.getDefaultRunningMode();
@@ -685,7 +678,7 @@ public class TlsContext {
                     break;
                 default:
                     throw new ConfigurationException(
-                            "Cannot create connection for unknown running mode " + "'" + mode + "'");
+                        "Cannot create connection for unknown running mode " + "'" + mode + "'");
             }
         }
     }
@@ -1183,14 +1176,14 @@ public class TlsContext {
     }
 
     public void setClientSupportedSignatureAndHashAlgorithms(
-            List<SignatureAndHashAlgorithm> clientSupportedSignatureAndHashAlgorithms) {
+        List<SignatureAndHashAlgorithm> clientSupportedSignatureAndHashAlgorithms) {
         this.clientSupportedSignatureAndHashAlgorithms = clientSupportedSignatureAndHashAlgorithms;
     }
 
     public void setClientSupportedSignatureAndHashAlgorithms(
-            SignatureAndHashAlgorithm... clientSupportedSignatureAndHashAlgorithms) {
-        this.clientSupportedSignatureAndHashAlgorithms
-                = new ArrayList(Arrays.asList(clientSupportedSignatureAndHashAlgorithms));
+        SignatureAndHashAlgorithm... clientSupportedSignatureAndHashAlgorithms) {
+        this.clientSupportedSignatureAndHashAlgorithms =
+            new ArrayList(Arrays.asList(clientSupportedSignatureAndHashAlgorithms));
     }
 
     public List<SNIEntry> getClientSNIEntryList() {
@@ -1330,14 +1323,14 @@ public class TlsContext {
     }
 
     public void setServerSupportedSignatureAndHashAlgorithms(
-            List<SignatureAndHashAlgorithm> serverSupportedSignatureAndHashAlgorithms) {
+        List<SignatureAndHashAlgorithm> serverSupportedSignatureAndHashAlgorithms) {
         this.serverSupportedSignatureAndHashAlgorithms = serverSupportedSignatureAndHashAlgorithms;
     }
 
     public void setServerSupportedSignatureAndHashAlgorithms(
-            SignatureAndHashAlgorithm... serverSupportedSignatureAndHashAlgorithms) {
-        this.serverSupportedSignatureAndHashAlgorithms
-                = new ArrayList(Arrays.asList(serverSupportedSignatureAndHashAlgorithms));
+        SignatureAndHashAlgorithm... serverSupportedSignatureAndHashAlgorithms) {
+        this.serverSupportedSignatureAndHashAlgorithms =
+            new ArrayList(Arrays.asList(serverSupportedSignatureAndHashAlgorithms));
     }
 
     public ProtocolVersion getSelectedProtocolVersion() {
@@ -1651,7 +1644,7 @@ public class TlsContext {
     }
 
     public void setCertificateStatusRequestExtensionRequestType(
-            CertificateStatusRequestType certificateStatusRequestExtensionRequestType) {
+        CertificateStatusRequestType certificateStatusRequestExtensionRequestType) {
         this.certificateStatusRequestExtensionRequestType = certificateStatusRequestExtensionRequestType;
     }
 
@@ -1660,7 +1653,7 @@ public class TlsContext {
     }
 
     public void
-            setCertificateStatusRequestExtensionResponderIDList(byte[] certificateStatusRequestExtensionResponderIDList) {
+        setCertificateStatusRequestExtensionResponderIDList(byte[] certificateStatusRequestExtensionResponderIDList) {
         this.certificateStatusRequestExtensionResponderIDList = certificateStatusRequestExtensionResponderIDList;
     }
 
@@ -1669,7 +1662,7 @@ public class TlsContext {
     }
 
     public void
-            setCertificateStatusRequestExtensionRequestExtension(byte[] certificateStatusRequestExtensionRequestExtension) {
+        setCertificateStatusRequestExtensionRequestExtension(byte[] certificateStatusRequestExtensionRequestExtension) {
         this.certificateStatusRequestExtensionRequestExtension = certificateStatusRequestExtensionRequestExtension;
     }
 
@@ -1702,7 +1695,7 @@ public class TlsContext {
     }
 
     public void setSecureRealTimeTransportProtocolProtectionProfiles(
-            List<SrtpProtectionProfiles> secureRealTimeTransportProtocolProtectionProfiles) {
+        List<SrtpProtectionProfiles> secureRealTimeTransportProtocolProtectionProfiles) {
         this.secureRealTimeTransportProtocolProtectionProfiles = secureRealTimeTransportProtocolProtectionProfiles;
     }
 
@@ -1869,8 +1862,9 @@ public class TlsContext {
     /**
      * Check if the given TLS extension type was proposed by the client.
      *
-     * @param ext The ExtensionType to check for
-     * @return true if extension was proposed by client, false otherwise
+     * @param  ext
+     *             The ExtensionType to check for
+     * @return     true if extension was proposed by client, false otherwise
      */
     public boolean isExtensionProposed(ExtensionType ext) {
         return proposedExtensionSet.contains(ext);
@@ -1888,7 +1882,8 @@ public class TlsContext {
     /**
      * Mark the given TLS extension type as client proposed extension.
      *
-     * @param ext The ExtensionType that is proposed
+     * @param ext
+     *            The ExtensionType that is proposed
      */
     public void addProposedExtension(ExtensionType ext) {
         proposedExtensionSet.add(ext);
@@ -1897,8 +1892,9 @@ public class TlsContext {
     /**
      * Check if the given TLS extension type was sent by the server.
      *
-     * @param ext The ExtensionType to check for
-     * @return true if extension was proposed by server, false otherwise
+     * @param  ext
+     *             The ExtensionType to check for
+     * @return     true if extension was proposed by server, false otherwise
      */
     public boolean isExtensionNegotiated(ExtensionType ext) {
         return negotiatedExtensionSet.contains(ext);
@@ -1907,7 +1903,8 @@ public class TlsContext {
     /**
      * Mark the given TLS extension type as server negotiated extension.
      *
-     * @param ext The ExtensionType to add
+     * @param ext
+     *            The ExtensionType to add
      */
     public void addNegotiatedExtension(ExtensionType ext) {
         negotiatedExtensionSet.add(ext);
@@ -1952,7 +1949,7 @@ public class TlsContext {
                 info.append(", listening on port ").append(connection.getPort());
             } else {
                 info.append(", connected to ").append(connection.getHostname()).append(":")
-                        .append(connection.getPort());
+                    .append(connection.getPort());
             }
             info.append("}");
         }
@@ -1967,7 +1964,8 @@ public class TlsContext {
     }
 
     /**
-     * @param clientEarlyTrafficSecret the clientEarlyTrafficSecret to set
+     * @param clientEarlyTrafficSecret
+     *                                 the clientEarlyTrafficSecret to set
      */
     public void setClientEarlyTrafficSecret(byte[] clientEarlyTrafficSecret) {
         keylogfile.writeKey("CLIENT_EARLY_TRAFFIC_SECRET", clientEarlyTrafficSecret);
@@ -1982,7 +1980,8 @@ public class TlsContext {
     }
 
     /**
-     * @param maxEarlyDataSize the maxEarlyDataSize to set
+     * @param maxEarlyDataSize
+     *                         the maxEarlyDataSize to set
      */
     public void setMaxEarlyDataSize(Integer maxEarlyDataSize) {
         this.maxEarlyDataSize = maxEarlyDataSize;
@@ -1996,7 +1995,8 @@ public class TlsContext {
     }
 
     /**
-     * @param psk the psk to set
+     * @param psk
+     *            the psk to set
      */
     public void setPsk(byte[] psk) {
         this.psk = psk;
@@ -2010,7 +2010,8 @@ public class TlsContext {
     }
 
     /**
-     * @param earlySecret the earlySecret to set
+     * @param earlySecret
+     *                    the earlySecret to set
      */
     public void setEarlySecret(byte[] earlySecret) {
         this.earlySecret = earlySecret;
@@ -2024,7 +2025,8 @@ public class TlsContext {
     }
 
     /**
-     * @param earlyDataCipherSuite the earlyDataCipherSuite to set
+     * @param earlyDataCipherSuite
+     *                             the earlyDataCipherSuite to set
      */
     public void setEarlyDataCipherSuite(CipherSuite earlyDataCipherSuite) {
         this.earlyDataCipherSuite = earlyDataCipherSuite;
@@ -2038,7 +2040,8 @@ public class TlsContext {
     }
 
     /**
-     * @param earlyDataPSKIdentity the earlyDataPSKIdentity to set
+     * @param earlyDataPSKIdentity
+     *                             the earlyDataPSKIdentity to set
      */
     public void setEarlyDataPSKIdentity(byte[] earlyDataPSKIdentity) {
         this.earlyDataPSKIdentity = earlyDataPSKIdentity;
@@ -2052,7 +2055,8 @@ public class TlsContext {
     }
 
     /**
-     * @param selectedIdentityIndex the selectedIdentityIndex to set
+     * @param selectedIdentityIndex
+     *                              the selectedIdentityIndex to set
      */
     public void setSelectedIdentityIndex(int selectedIdentityIndex) {
         this.selectedIdentityIndex = selectedIdentityIndex;
@@ -2066,7 +2070,8 @@ public class TlsContext {
     }
 
     /**
-     * @param clientPskKeyExchangeModes the clientPskKeyExchangeModes to set
+     * @param clientPskKeyExchangeModes
+     *                                  the clientPskKeyExchangeModes to set
      */
     public void setClientPskKeyExchangeModes(List<PskKeyExchangeMode> clientPskKeyExchangeModes) {
         this.clientPskKeyExchangeModes = clientPskKeyExchangeModes;
@@ -2080,7 +2085,8 @@ public class TlsContext {
     }
 
     /**
-     * @param pskSets the pskSets to set
+     * @param pskSets
+     *                the pskSets to set
      */
     public void setPskSets(List<PskSet> pskSets) {
         this.pskSets = pskSets;
@@ -2094,7 +2100,8 @@ public class TlsContext {
     }
 
     /**
-     * @param activeClientKeySetType the activeClientKeySetType to set
+     * @param activeClientKeySetType
+     *                               the activeClientKeySetType to set
      */
     public void setActiveClientKeySetType(Tls13KeySetType activeClientKeySetType) {
         this.activeClientKeySetType = activeClientKeySetType;
@@ -2108,7 +2115,8 @@ public class TlsContext {
     }
 
     /**
-     * @param activeServerKeySetType the activeServerKeySetType to set
+     * @param activeServerKeySetType
+     *                               the activeServerKeySetType to set
      */
     public void setActiveServerKeySetType(Tls13KeySetType activeServerKeySetType) {
         this.activeServerKeySetType = activeServerKeySetType;
@@ -2138,7 +2146,8 @@ public class TlsContext {
     }
 
     /**
-     * @param earlyDataPsk the earlyDataPsk to set
+     * @param earlyDataPsk
+     *                     the earlyDataPsk to set
      */
     public void setEarlyDataPsk(byte[] earlyDataPsk) {
         this.earlyDataPsk = earlyDataPsk;
@@ -2479,19 +2488,17 @@ public class TlsContext {
     }
 
     /**
-     * Calculates the record data size limit for the current connection
-     * direction with respect to extensions and the current encryption status.
+     * Calculates the record data size limit for the current connection direction with respect to extensions and the
+     * current encryption status.
      *
-     * Disclaimer: this is not 100% accurate for TLS 1.3 since the actual
-     * padding length can be slightly different (compared to configured
-     * additional padding length) depending on the ciphers block size. I don't
-     * think it is necessary to introduce this additional complexity. Revisit if
-     * we run into problems with an implementation.
+     * Disclaimer: this is not 100% accurate for TLS 1.3 since the actual padding length can be slightly different
+     * (compared to configured additional padding length) depending on the ciphers block size. I don't think it is
+     * necessary to introduce this additional complexity. Revisit if we run into problems with an implementation.
      *
-     * @param recordSizeLimit the record_size_limit extension value for the
-     * current connection direction
+     * @param  recordSizeLimit
+     *                         the record_size_limit extension value for the current connection direction
      *
-     * @return the record data size limit for the target connection end type
+     * @return                 the record data size limit for the target connection end type
      */
     private Integer getMaxRecordDataSize(Integer recordSizeLimit) {
         // max_fragment_length extension applies to all records if record_size_limit extension is not active

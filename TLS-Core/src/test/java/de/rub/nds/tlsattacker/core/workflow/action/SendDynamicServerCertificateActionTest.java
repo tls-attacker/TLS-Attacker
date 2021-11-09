@@ -12,19 +12,13 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
-import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
-import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import org.apache.commons.lang3.ObjectUtils;
-import org.bouncycastle.crypto.tls.CertificateStatus;
-import org.bouncycastle.crypto.tls.CertificateStatusRequest;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -59,7 +53,6 @@ public class SendDynamicServerCertificateActionTest {
 
         tlsContext = state.getTlsContext();
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
-        tlsContext.setRecordLayer(new TlsRecordLayer(tlsContext));
         tlsContext.setTransportHandler(new FakeTransportHandler(ConnectionEndType.SERVER));
     }
 
@@ -97,7 +90,7 @@ public class SendDynamicServerCertificateActionTest {
     public void testSetRecords() {
         // check if set records are correct in out case: empty list
         action.execute(state);
-        List<AbstractRecord> testRecords = new ArrayList<>();
+        List<Record> testRecords = new ArrayList<>();
         action.setRecords(testRecords);
         assertTrue(action.getSendRecords().equals(testRecords));
     }

@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateTypeExtensionMessage;
+import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -27,21 +28,21 @@ import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
 public class ClientCertificateTypeExtensionParserTest {
+
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] {
-            { ExtensionType.CLIENT_CERTIFICATE_TYPE, ArrayConverter.hexStringToByteArray("0013000100"), 1, 0, null,
+            { ExtensionType.CLIENT_CERTIFICATE_TYPE, ArrayConverter.hexStringToByteArray("0013000100"), 1, null,
                 Arrays.asList(CertificateType.X509), false },
-            { ExtensionType.CLIENT_CERTIFICATE_TYPE, ArrayConverter.hexStringToByteArray("001300020100"), 2, 0, 1,
+            { ExtensionType.CLIENT_CERTIFICATE_TYPE, ArrayConverter.hexStringToByteArray("001300020100"), 2, 1,
                 Arrays.asList(CertificateType.X509), true },
-            { ExtensionType.CLIENT_CERTIFICATE_TYPE, ArrayConverter.hexStringToByteArray("00130003020100"), 3, 0, 2,
+            { ExtensionType.CLIENT_CERTIFICATE_TYPE, ArrayConverter.hexStringToByteArray("00130003020100"), 3, 2,
                 Arrays.asList(CertificateType.OPEN_PGP, CertificateType.X509), true } });
     }
 
     private final ExtensionType extensionType;
     private final byte[] expectedBytes;
     private final int extensionLength;
-    private final int startParsing;
     private final Integer certificateTypesLength;
     private final List<CertificateType> certificateTypes;
     private final boolean isClientState;
@@ -49,12 +50,11 @@ public class ClientCertificateTypeExtensionParserTest {
     private ClientCertificateTypeExtensionMessage msg;
 
     public ClientCertificateTypeExtensionParserTest(ExtensionType extensionType, byte[] expectedBytes,
-        int extensionLength, int startParsing, Integer certificateTypesLength, List<CertificateType> certificateTypes,
+        int extensionLength, Integer certificateTypesLength, List<CertificateType> certificateTypes,
         boolean isClientState) {
         this.extensionType = extensionType;
         this.expectedBytes = expectedBytes;
         this.extensionLength = extensionLength;
-        this.startParsing = startParsing;
         this.certificateTypesLength = certificateTypesLength;
         this.certificateTypes = certificateTypes;
         this.isClientState = isClientState;
@@ -62,7 +62,8 @@ public class ClientCertificateTypeExtensionParserTest {
 
     @Before
     public void setUp() {
-        parser = new ClientCertificateTypeExtensionParser(startParsing, expectedBytes, Config.createConfig());
+        parser =
+            new ClientCertificateTypeExtensionParser(new ByteArrayInputStream(expectedBytes), Config.createConfig());
     }
 
     @Test

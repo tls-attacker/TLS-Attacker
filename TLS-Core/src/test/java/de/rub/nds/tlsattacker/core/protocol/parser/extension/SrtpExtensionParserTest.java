@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SrtpExtensionMessage;
+import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import static org.junit.Assert.assertArrayEquals;
@@ -24,19 +25,19 @@ import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
 public class SrtpExtensionParserTest {
+
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] {
-            { ExtensionType.USE_SRTP, ArrayConverter.hexStringToByteArray("000e0009000400010006020102"), 9, 0, 4,
+            { ExtensionType.USE_SRTP, ArrayConverter.hexStringToByteArray("000e0009000400010006020102"), 9, 4,
                 ArrayConverter.hexStringToByteArray("00010006"), 2, new byte[] { 0x01, 0x02 } },
-            { ExtensionType.USE_SRTP, ArrayConverter.hexStringToByteArray("000e000900040001000600"), 9, 0, 4,
+            { ExtensionType.USE_SRTP, ArrayConverter.hexStringToByteArray("000e000900040001000600"), 9, 4,
                 ArrayConverter.hexStringToByteArray("00010006"), 0, new byte[0] } });
     }
 
     private final ExtensionType extensionType;
     private final byte[] expectedBytes;
     private final int extensionLength;
-    private final int startParsing;
     private final int srtpProtectionProfilesLength;
     private final byte[] srtpProtectionProfiles;
     private final int srtpMkiLength;
@@ -44,12 +45,10 @@ public class SrtpExtensionParserTest {
     private SrtpExtensionParser parser;
 
     public SrtpExtensionParserTest(ExtensionType extensionType, byte[] expectedBytes, int extensionLength,
-        int startParsing, int srtpProtectionProfilesLength, byte[] srtpProtectionProfiles, int srtpMkiLength,
-        byte[] srtpMki) {
+        int srtpProtectionProfilesLength, byte[] srtpProtectionProfiles, int srtpMkiLength, byte[] srtpMki) {
         this.extensionType = extensionType;
         this.expectedBytes = expectedBytes;
         this.extensionLength = extensionLength;
-        this.startParsing = startParsing;
         this.srtpProtectionProfilesLength = srtpProtectionProfilesLength;
         this.srtpProtectionProfiles = srtpProtectionProfiles;
         this.srtpMkiLength = srtpMkiLength;
@@ -58,7 +57,7 @@ public class SrtpExtensionParserTest {
 
     @Before
     public void setUp() {
-        parser = new SrtpExtensionParser(startParsing, expectedBytes, Config.createConfig());
+        parser = new SrtpExtensionParser(new ByteArrayInputStream(expectedBytes), Config.createConfig());
     }
 
     @Test

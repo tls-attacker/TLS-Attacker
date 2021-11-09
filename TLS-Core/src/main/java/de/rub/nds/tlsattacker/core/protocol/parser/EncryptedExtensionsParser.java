@@ -23,10 +23,11 @@ import java.util.ArrayList;
 public class EncryptedExtensionsParser extends HandshakeMessageParser<EncryptedExtensionsMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    
+
     private ConnectionEndType talkingConnectionEndType;
 
-    public EncryptedExtensionsParser(InputStream stream, ProtocolVersion version, Config config, ConnectionEndType talkingConnectionEndType) {
+    public EncryptedExtensionsParser(InputStream stream, ProtocolVersion version, Config config,
+        ConnectionEndType talkingConnectionEndType) {
         super(stream, HandshakeMessageType.ENCRYPTED_EXTENSIONS, version, config);
         this.talkingConnectionEndType = talkingConnectionEndType;
     }

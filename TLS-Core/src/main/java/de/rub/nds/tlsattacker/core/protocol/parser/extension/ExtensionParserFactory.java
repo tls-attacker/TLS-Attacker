@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -20,7 +21,8 @@ public class ExtensionParserFactory {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public static ExtensionParser getExtensionParser(InputStream stream, ExtensionType type, Config config, ConnectionEndType talkingConnectionEndType, ProtocolVersion selectedVersion) {
+    public static ExtensionParser getExtensionParser(InputStream stream, ExtensionType type, Config config,
+        ConnectionEndType talkingConnectionEndType, ProtocolVersion selectedVersion) {
 
         ExtensionParser parser = null;
         switch (type) {
@@ -168,7 +170,7 @@ public class ExtensionParserFactory {
         }
         if (parser == null) {
             LOGGER.warn("The ExtensionParser for the " + type.name()
-                    + " Extension is currently not implemented. Using the UnknownExtensionParser instead");
+                + " Extension is currently not implemented. Using the UnknownExtensionParser instead");
             parser = new UnknownExtensionParser(stream, config);
         }
         return parser;

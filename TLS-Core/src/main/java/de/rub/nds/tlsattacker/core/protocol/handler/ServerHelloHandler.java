@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -73,8 +74,8 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 
     @Override
     public ServerHelloParser getParser(InputStream stream) {
-        return new ServerHelloParser(stream, tlsContext.getChooser().getLastRecordVersion(),
-                tlsContext.getConfig(), tlsContext.getTalkingConnectionEndType());
+        return new ServerHelloParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext.getConfig(),
+            tlsContext.getTalkingConnectionEndType());
     }
 
     @Override
@@ -157,7 +158,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
             LOGGER.debug("Set SelectedProtocolVersion in Context to " + version.name());
         } else {
             LOGGER.warn("Did not Adjust ProtocolVersion since version is undefined "
-                    + ArrayConverter.bytesToHexString(message.getProtocolVersion().getValue()));
+                + ArrayConverter.bytesToHexString(message.getProtocolVersion().getValue()));
         }
     }
 
@@ -165,7 +166,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         Chooser chooser = tlsContext.getChooser();
         if (!chooser.getSelectedProtocolVersion().isSSL()) {
             tlsContext.setPrfAlgorithm(AlgorithmResolver.getPRFAlgorithm(chooser.getSelectedProtocolVersion(),
-                    chooser.getSelectedCipherSuite()));
+                chooser.getSelectedCipherSuite()));
         }
     }
 
@@ -176,10 +177,10 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 
         if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
             tlsContext.getRecordLayer()
-                    .updateDecryptionCipher(RecordCipherFactory.getRecordCipher(tlsContext, serverKeySet));
+                .updateDecryptionCipher(RecordCipherFactory.getRecordCipher(tlsContext, serverKeySet));
         } else {
             tlsContext.getRecordLayer()
-                    .updateEncryptionCipher(RecordCipherFactory.getRecordCipher(tlsContext, serverKeySet));
+                .updateEncryptionCipher(RecordCipherFactory.getRecordCipher(tlsContext, serverKeySet));
         }
     }
 
@@ -187,7 +188,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         try {
             LOGGER.debug("Generating new KeySet");
             return KeySetGenerator.generateKeySet(context, tlsContext.getChooser().getSelectedProtocolVersion(),
-                    keySetType);
+                keySetType);
         } catch (NoSuchAlgorithmException | CryptoException ex) {
             throw new UnsupportedOperationException("The specified Algorithm is not supported", ex);
         }
@@ -201,18 +202,18 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
     }
 
     private void adjustHandshakeTrafficSecrets() {
-        HKDFAlgorithm hkdfAlgorithm
-                = AlgorithmResolver.getHKDFAlgorithm(tlsContext.getChooser().getSelectedCipherSuite());
+        HKDFAlgorithm hkdfAlgorithm =
+            AlgorithmResolver.getHKDFAlgorithm(tlsContext.getChooser().getSelectedCipherSuite());
         DigestAlgorithm digestAlgo = AlgorithmResolver.getDigestAlgorithm(
-                tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext.getChooser().getSelectedCipherSuite());
+            tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext.getChooser().getSelectedCipherSuite());
 
         try {
             int macLength = Mac.getInstance(hkdfAlgorithm.getMacAlgorithm().getJavaName()).getMacLength();
             byte[] psk = (tlsContext.getConfig().isUsePsk() || tlsContext.getPsk() != null)
-                    ? tlsContext.getChooser().getPsk() : new byte[macLength]; // use PSK if available
+                ? tlsContext.getChooser().getPsk() : new byte[macLength]; // use PSK if available
             byte[] earlySecret = HKDFunction.extract(hkdfAlgorithm, new byte[0], psk);
             byte[] saltHandshakeSecret = HKDFunction.deriveSecret(hkdfAlgorithm, digestAlgo.getJavaName(), earlySecret,
-                    HKDFunction.DERIVED, new byte[0]);
+                HKDFunction.DERIVED, new byte[0]);
             byte[] sharedSecret;
             if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
                 if (tlsContext.getChooser().getSelectedCipherSuite().isPWD()) {
@@ -230,7 +231,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                 Integer pos = null;
                 for (KeyShareStoreEntry entry : tlsContext.getChooser().getClientKeyShares()) {
                     if (Arrays.equals(entry.getGroup().getValue(),
-                            tlsContext.getChooser().getServerKeyShare().getGroup().getValue())) {
+                        tlsContext.getChooser().getServerKeyShare().getGroup().getValue())) {
                         pos = tlsContext.getChooser().getClientKeyShares().indexOf(entry);
                     }
                 }
@@ -248,15 +249,15 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
             tlsContext.setHandshakeSecret(handshakeSecret);
             LOGGER.debug("Set handshakeSecret in Context to " + ArrayConverter.bytesToHexString(handshakeSecret));
             byte[] clientHandshakeTrafficSecret = HKDFunction.deriveSecret(hkdfAlgorithm, digestAlgo.getJavaName(),
-                    handshakeSecret, HKDFunction.CLIENT_HANDSHAKE_TRAFFIC_SECRET, tlsContext.getDigest().getRawBytes());
+                handshakeSecret, HKDFunction.CLIENT_HANDSHAKE_TRAFFIC_SECRET, tlsContext.getDigest().getRawBytes());
             tlsContext.setClientHandshakeTrafficSecret(clientHandshakeTrafficSecret);
             LOGGER.debug("Set clientHandshakeTrafficSecret in Context to "
-                    + ArrayConverter.bytesToHexString(clientHandshakeTrafficSecret));
+                + ArrayConverter.bytesToHexString(clientHandshakeTrafficSecret));
             byte[] serverHandshakeTrafficSecret = HKDFunction.deriveSecret(hkdfAlgorithm, digestAlgo.getJavaName(),
-                    handshakeSecret, HKDFunction.SERVER_HANDSHAKE_TRAFFIC_SECRET, tlsContext.getDigest().getRawBytes());
+                handshakeSecret, HKDFunction.SERVER_HANDSHAKE_TRAFFIC_SECRET, tlsContext.getDigest().getRawBytes());
             tlsContext.setServerHandshakeTrafficSecret(serverHandshakeTrafficSecret);
             LOGGER.debug("Set serverHandshakeTrafficSecret in Context to "
-                    + ArrayConverter.bytesToHexString(serverHandshakeTrafficSecret));
+                + ArrayConverter.bytesToHexString(serverHandshakeTrafficSecret));
         } catch (CryptoException | NoSuchAlgorithmException ex) {
             throw new AdjustmentException(ex);
         }
@@ -315,40 +316,40 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
     private byte[] computeSharedPWDSecret(KeyShareStoreEntry keyShare) throws CryptoException {
         Chooser chooser = tlsContext.getChooser();
         EllipticCurve curve = CurveFactory.getCurve(keyShare.getGroup());
-        DragonFlyKeyShareEntryParser parser
-                = new DragonFlyKeyShareEntryParser(new ByteArrayInputStream(keyShare.getPublicKey()), keyShare.getGroup());
+        DragonFlyKeyShareEntryParser parser =
+            new DragonFlyKeyShareEntryParser(new ByteArrayInputStream(keyShare.getPublicKey()), keyShare.getGroup());
         DragonFlyKeyShareEntry dragonFlyKeyShareEntry = parser.parse();
         int curveSize = curve.getModulus().bitLength();
-        Point keySharePoint
-                = PointFormatter.fromRawFormat(keyShare.getGroup(), dragonFlyKeyShareEntry.getRawPublicKey());
+        Point keySharePoint =
+            PointFormatter.fromRawFormat(keyShare.getGroup(), dragonFlyKeyShareEntry.getRawPublicKey());
 
         BigInteger scalar = dragonFlyKeyShareEntry.getScalar();
         Point passwordElement = PWDComputations.computePasswordElement(tlsContext.getChooser(), curve);
         BigInteger privateKeyScalar;
         if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
-            privateKeyScalar
-                    = new BigInteger(1, chooser.getConfig().getDefaultClientPWDPrivate()).mod(curve.getBasePointOrder());
+            privateKeyScalar =
+                new BigInteger(1, chooser.getConfig().getDefaultClientPWDPrivate()).mod(curve.getBasePointOrder());
         } else {
-            privateKeyScalar
-                    = new BigInteger(1, chooser.getConfig().getDefaultServerPWDPrivate()).mod(curve.getBasePointOrder());
+            privateKeyScalar =
+                new BigInteger(1, chooser.getConfig().getDefaultServerPWDPrivate()).mod(curve.getBasePointOrder());
         }
         LOGGER.debug("Element: " + ArrayConverter.bytesToHexString(PointFormatter.toRawFormat(keySharePoint)));
         LOGGER.debug("Scalar: " + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(scalar)));
 
-        Point sharedSecret
-                = curve.mult(privateKeyScalar, curve.add(curve.mult(scalar, passwordElement), keySharePoint));
+        Point sharedSecret =
+            curve.mult(privateKeyScalar, curve.add(curve.mult(scalar, passwordElement), keySharePoint));
         return ArrayConverter.bigIntegerToByteArray(sharedSecret.getFieldX().getData(), curveSize / Bits.IN_A_BYTE,
-                true);
+            true);
     }
 
     private void adjustHelloRetryDigest(ServerHelloMessage message) {
         try {
             byte[] lastClientHello = tlsContext.getChooser().getLastClientHello();
             LOGGER.debug("Replacing current digest for Hello Retry Request using Client Hello: "
-                    + ArrayConverter.bytesToHexString(lastClientHello));
+                + ArrayConverter.bytesToHexString(lastClientHello));
 
             DigestAlgorithm algorithm = AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS13,
-                    tlsContext.getChooser().getSelectedCipherSuite());
+                tlsContext.getChooser().getSelectedCipherSuite());
             MessageDigest hash = MessageDigest.getInstance(algorithm.getJavaName());
             hash.update(lastClientHello);
             byte[] clientHelloHash = hash.digest();
@@ -356,11 +357,11 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 
             tlsContext.getDigest().setRawBytes(HandshakeMessageType.MESSAGE_HASH.getArrayValue());
             tlsContext.getDigest()
-                    .append(ArrayConverter.intToBytes(clientHelloHash.length, HandshakeByteLength.MESSAGE_LENGTH_FIELD));
+                .append(ArrayConverter.intToBytes(clientHelloHash.length, HandshakeByteLength.MESSAGE_LENGTH_FIELD));
             tlsContext.getDigest().append(clientHelloHash);
             tlsContext.getDigest().append(serverHelloBytes);
             LOGGER.debug(
-                    "Complete resulting digest: " + ArrayConverter.bytesToHexString(tlsContext.getDigest().getRawBytes()));
+                "Complete resulting digest: " + ArrayConverter.bytesToHexString(tlsContext.getDigest().getRawBytes()));
         } catch (NoSuchAlgorithmException ex) {
             LOGGER.error(ex);
         }
@@ -371,7 +372,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
             // for TLS 1.3, this is handled in encrypted extensions
             if (!tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
                 if (tlsContext.isExtensionNegotiated(ExtensionType.MAX_FRAGMENT_LENGTH)
-                        && tlsContext.isExtensionNegotiated(ExtensionType.RECORD_SIZE_LIMIT)) {
+                    && tlsContext.isExtensionNegotiated(ExtensionType.RECORD_SIZE_LIMIT)) {
                     // this is supposed to result in a fatal error, just warning for now
                     LOGGER.warn("Server sent max_fragment_length AND record_size_limit extensions");
                 }

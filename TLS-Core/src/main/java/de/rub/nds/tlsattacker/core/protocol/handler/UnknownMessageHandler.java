@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
@@ -28,7 +29,7 @@ public class UnknownMessageHandler extends TlsMessageHandler<UnknownMessage> {
     @Override
     public UnknownMessageParser getParser(InputStream stream) {
         return new UnknownMessageParser(stream, tlsContext.getChooser().getLastRecordVersion(),
-                recordContentMessageType, tlsContext.getConfig());
+            recordContentMessageType, tlsContext.getConfig());
     }
 
     @Override

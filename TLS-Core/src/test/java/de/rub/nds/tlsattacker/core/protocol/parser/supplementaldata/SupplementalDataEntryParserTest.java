@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.parser.supplementaldata;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.supplementaldata.SupplementalDataEntry;
+import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import static org.junit.Assert.assertArrayEquals;
@@ -43,7 +44,8 @@ public class SupplementalDataEntryParserTest {
 
     @Test
     public void testParse() {
-        SupplementalDataEntryParser parser = new SupplementalDataEntryParser(0, supplementalDataTestEntry);
+        SupplementalDataEntryParser parser =
+            new SupplementalDataEntryParser(new ByteArrayInputStream(supplementalDataTestEntry));
         SupplementalDataEntry entry = parser.parse();
         assertTrue(supplementalDataEntryType == entry.getSupplementalDataEntryType().getValue());
         assertTrue(supplementalDataEntryLength == entry.getSupplementalDataEntryLength().getValue());

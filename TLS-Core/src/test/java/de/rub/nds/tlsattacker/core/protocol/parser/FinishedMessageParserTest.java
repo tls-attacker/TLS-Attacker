@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
+import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import static org.junit.Assert.*;
@@ -33,8 +34,6 @@ public class FinishedMessageParserTest {
         new byte[] { 0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x66, 0x55, 0x44, 0x33 };
     private static final byte[] MSG_0 =
         ArrayConverter.concatenate(MSG_HANDSHAKE_FINISHED, MSG_LENGTH, MSG_0_VERIFY_DATA);
-    private static final byte[] MSG_1 =
-        ArrayConverter.concatenate(MSG_RECORD_HANDSHAKE, MSG_RECORD_VERSION, MSG_RECORD_LENGTH, MSG_0);
     private static final byte[] MSG_DECRYPTED_WIRESHARK_CAP_0 =
         ArrayConverter.hexStringToByteArray("1400000ccc111ca8d8d84321f1039b92");
     private static final byte[] MSG_DECRYPTED_WIRESHARK_CAP_0_VERIFY_DATA =
@@ -56,21 +55,18 @@ public class FinishedMessageParserTest {
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] {
-            { MSG_0, 0, MSG_0, HandshakeMessageType.FINISHED, 12, MSG_0_VERIFY_DATA, ProtocolVersion.TLS12 },
-            { MSG_1, 6, MSG_0, HandshakeMessageType.FINISHED, 12, MSG_0_VERIFY_DATA, ProtocolVersion.TLS12 },
-            { MSG_DECRYPTED_WIRESHARK_CAP_0, 0, MSG_DECRYPTED_WIRESHARK_CAP_0, HandshakeMessageType.FINISHED, 12,
+            { MSG_0, MSG_0, HandshakeMessageType.FINISHED, 12, MSG_0_VERIFY_DATA, ProtocolVersion.TLS12 },
+            { MSG_DECRYPTED_WIRESHARK_CAP_0, MSG_DECRYPTED_WIRESHARK_CAP_0, HandshakeMessageType.FINISHED, 12,
                 MSG_DECRYPTED_WIRESHARK_CAP_0_VERIFY_DATA, ProtocolVersion.TLS12 },
-            { MSG_DECRYPTED_WIRESHARK_CAP_1, 0, MSG_DECRYPTED_WIRESHARK_CAP_1, HandshakeMessageType.FINISHED, 12,
+            { MSG_DECRYPTED_WIRESHARK_CAP_1, MSG_DECRYPTED_WIRESHARK_CAP_1, HandshakeMessageType.FINISHED, 12,
                 MSG_DECRYPTED_WIRESHARK_CAP_1_VERIFY_DATA, ProtocolVersion.TLS12 },
-
-            { MSG_CLIENT_FINISHED_SSL3, 0, MSG_CLIENT_FINISHED_SSL3, HandshakeMessageType.FINISHED, 36,
+            { MSG_CLIENT_FINISHED_SSL3, MSG_CLIENT_FINISHED_SSL3, HandshakeMessageType.FINISHED, 36,
                 MSG_CLIENT_FINISHED_VERIFY_DATA_SSL3, ProtocolVersion.SSL3 },
-            { MSG_SERVER_FINISHED_SSL3, 0, MSG_SERVER_FINISHED_SSL3, HandshakeMessageType.FINISHED, 36,
+            { MSG_SERVER_FINISHED_SSL3, MSG_SERVER_FINISHED_SSL3, HandshakeMessageType.FINISHED, 36,
                 MSG_SERVER_FINISHED_VERIFY_DATA_SSL3, ProtocolVersion.SSL3 } });
     }
 
     private final byte[] message;
-    private final int start;
     private final byte[] expectedPart;
 
     private final HandshakeMessageType type;
@@ -81,10 +77,9 @@ public class FinishedMessageParserTest {
     private final ProtocolVersion version;
     private final Config config = Config.createConfig();
 
-    public FinishedMessageParserTest(byte[] message, int start, byte[] expectedPart, HandshakeMessageType type,
-        int length, byte[] verifyData, ProtocolVersion version) {
+    public FinishedMessageParserTest(byte[] message, byte[] expectedPart, HandshakeMessageType type, int length,
+        byte[] verifyData, ProtocolVersion version) {
         this.message = message;
-        this.start = start;
         this.expectedPart = expectedPart;
         this.type = type;
         this.length = length;
@@ -97,7 +92,7 @@ public class FinishedMessageParserTest {
      */
     @Test
     public void testParse() {
-        FinishedParser parser = new FinishedParser(start, message, version, config);
+        FinishedParser parser = new FinishedParser(new ByteArrayInputStream(message), version, config);
         FinishedMessage msg = parser.parse();
         assertArrayEquals(expectedPart, msg.getCompleteResultingMessage().getValue());
         assertTrue(msg.getLength().getValue() == length);

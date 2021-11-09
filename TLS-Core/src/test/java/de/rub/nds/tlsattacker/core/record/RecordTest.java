@@ -30,6 +30,7 @@ import de.rub.nds.tlsattacker.core.record.serializer.RecordSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
+import java.io.ByteArrayInputStream;
 import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
@@ -62,10 +63,14 @@ public class RecordTest {
      */
     @Test
     public void testGetRecordParser() {
-        assertEquals(record.getRecordParser(0, new byte[0], ProtocolVersion.TLS10).getClass(), RecordParser.class);
-        assertEquals(record.getRecordParser(0, new byte[0], ProtocolVersion.TLS11).getClass(), RecordParser.class);
-        assertEquals(record.getRecordParser(0, new byte[0], ProtocolVersion.TLS12).getClass(), RecordParser.class);
-        assertEquals(record.getRecordParser(0, new byte[0], ProtocolVersion.TLS13).getClass(), RecordParser.class);
+        assertEquals(record.getRecordParser(new ByteArrayInputStream(new byte[0]), ProtocolVersion.TLS10).getClass(),
+            RecordParser.class);
+        assertEquals(record.getRecordParser(new ByteArrayInputStream(new byte[0]), ProtocolVersion.TLS11).getClass(),
+            RecordParser.class);
+        assertEquals(record.getRecordParser(new ByteArrayInputStream(new byte[0]), ProtocolVersion.TLS12).getClass(),
+            RecordParser.class);
+        assertEquals(record.getRecordParser(new ByteArrayInputStream(new byte[0]), ProtocolVersion.TLS13).getClass(),
+            RecordParser.class);
     }
 
     /**

@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
@@ -117,9 +118,8 @@ public class ForwardDataAction extends TlsAction {
     }
 
     /**
-     * TODO: the equals methods for message/record actions and similar classes
-     * would require that messages and records implement equals for a proper
-     * implementation. The present approach is not satisfying.
+     * TODO: the equals methods for message/record actions and similar classes would require that messages and records
+     * implement equals for a proper implementation. The present approach is not satisfying.
      */
     @Override
     public boolean equals(Object obj) {
@@ -157,11 +157,11 @@ public class ForwardDataAction extends TlsAction {
     public void assertAliasesSetProperly() throws ConfigurationException {
         if ((receiveFromAlias == null) || (receiveFromAlias.isEmpty())) {
             throw new WorkflowExecutionException("Can't execute " + this.getClass().getSimpleName()
-                    + " with empty receive alias (if using XML: add <from/>)");
+                + " with empty receive alias (if using XML: add <from/>)");
         }
         if ((forwardToAlias == null) || (forwardToAlias.isEmpty())) {
             throw new WorkflowExecutionException("Can't execute " + this.getClass().getSimpleName()
-                    + " with empty forward alis (if using XML: add <to/>)");
+                + " with empty forward alis (if using XML: add <to/>)");
         }
     }
 

@@ -40,8 +40,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownHandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
-import de.rub.nds.tlsattacker.core.record.AbstractRecord;
-import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeCipherSuiteAction;
@@ -142,8 +140,7 @@ public class SerializationFullTest {
         message.getRequestPath().setModification(new StringExplicitValueModification("replacedString"));
         messages.add(message);
         SendAction action = new SendAction(messages);
-        List<AbstractRecord> records = new LinkedList<>();
-        records.add(new BlobRecord());
+        List<Record> records = new LinkedList<>();
         records.add(new Record());
         action.setRecords(records);
         trace.addTlsAction(action);

@@ -19,7 +19,6 @@ import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
@@ -112,7 +111,7 @@ public class TLSPoodleAttacker extends Attacker<TLSPoodleCommandConfig> {
         SendingAction lastSendingAction = WorkflowTraceUtil.getLastSendingAction(trace);
         List<ProtocolMessage> sendMessages = lastSendingAction.getSendMessages();
         assert (sendMessages.get(sendMessages.size() - 1) instanceof FinishedMessage);
-        List<AbstractRecord> sendRecords = lastSendingAction.getSendRecords();
+        List<Record> sendRecords = lastSendingAction.getSendRecords();
         sendRecords.add(new Record()); // Key Exchange
         sendRecords.add(new Record()); // CCS
         sendRecords.add(finishedMessageRecord);

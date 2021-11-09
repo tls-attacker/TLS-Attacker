@@ -15,12 +15,9 @@ import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.TlsMessage;
-import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.transport.socket.SocketState;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 /**
  *
@@ -30,7 +27,7 @@ public class ResponseFingerprint {
 
     private final List<ProtocolMessage> messageList;
 
-    private final List<AbstractRecord> recordList;
+    private final List<Record> recordList;
 
     private final SocketState socketState;
 
@@ -40,8 +37,7 @@ public class ResponseFingerprint {
      * @param recordList
      * @param socketState
      */
-    public ResponseFingerprint(List<ProtocolMessage> messageList, List<AbstractRecord> recordList,
-        SocketState socketState) {
+    public ResponseFingerprint(List<ProtocolMessage> messageList, List<Record> recordList, SocketState socketState) {
         this.messageList = messageList;
         this.recordList = recordList;
         this.socketState = socketState;
@@ -59,7 +55,7 @@ public class ResponseFingerprint {
      *
      * @return
      */
-    public List<AbstractRecord> getRecordList() {
+    public List<Record> getRecordList() {
         return recordList;
     }
 
@@ -83,7 +79,7 @@ public class ResponseFingerprint {
             messages.append(someMessage.toCompactString()).append(",");
         }
         StringBuilder records = new StringBuilder();
-        for (AbstractRecord someRecord : this.getRecordList()) {
+        for (Record someRecord : this.getRecordList()) {
             records.append(someRecord.getClass().getSimpleName()).append(",");
         }
 
@@ -152,7 +148,7 @@ public class ResponseFingerprint {
         }
         if (recordList != null && recordList.size() > 0) {
             resultString.append(" [");
-            for (AbstractRecord record : recordList) {
+            for (Record record : recordList) {
                 if (record instanceof Record) {
                     resultString.append("R(" + ((Record) record).getLength().getValue() + "),");
                 } else {

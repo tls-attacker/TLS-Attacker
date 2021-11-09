@@ -22,9 +22,12 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.EsniVersion;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EsniKeyRecord;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.io.ByteArrayInputStream;
 
 public class EsniKeyRecordParserTest {
 
@@ -35,7 +38,8 @@ public class EsniKeyRecordParserTest {
 
         byte[] recordBytes = ArrayConverter.hexStringToByteArray(
             "ff0100124b2a0024001d0020fa572d03e21e15f9ca1aa7fb85f61b9fc78458a78050ac581811863325944412000213010104000000005dcc3a45000000005dda12050000");
-        EsniKeyRecordParser parser = new EsniKeyRecordParser(0, recordBytes, config);
+        EsniKeyRecordParser parser = new EsniKeyRecordParser(new ByteArrayInputStream(recordBytes), config,
+            ConnectionEndType.CLIENT, ProtocolVersion.TLS13);
         EsniKeyRecord esniKeyRecord = parser.parse();
 
         byte[] expectedVersion = EsniVersion.DRAFT_2.getDnsKeyRecordVersion().getByteValue();
@@ -107,7 +111,8 @@ public class EsniKeyRecordParserTest {
 
         byte[] recordBytes = ArrayConverter.hexStringToByteArray(
             "ff0100124b2a0024001d0020fa572d03e21e15f9ca1aa7fb85f61b9fc78458a78050ac5818118633259444120004130113020104000000005dcc3a45000000005dda12050000");
-        EsniKeyRecordParser parser = new EsniKeyRecordParser(0, recordBytes, config);
+        EsniKeyRecordParser parser = new EsniKeyRecordParser(new ByteArrayInputStream(recordBytes), config,
+            ConnectionEndType.CLIENT, ProtocolVersion.TLS13);
         EsniKeyRecord esniKeyRecord = parser.parse();
 
         byte[] expectedVersion = EsniVersion.DRAFT_2.getDnsKeyRecordVersion().getByteValue();
@@ -181,7 +186,8 @@ public class EsniKeyRecordParserTest {
         byte[] recordBytes = ArrayConverter.hexStringToByteArray(
             "ff0100124b2a0046001d0020fa572d03e21e15f9ca1aa7fb85f61b9fc78458a78050ac581811863325944412001E001Efa572d03e21e15f9ca1aa7fb85f61b9fc78458a78050ac581811863325940004130113020104000000005dcc3a45000000005dda12050000");
 
-        EsniKeyRecordParser parser = new EsniKeyRecordParser(0, recordBytes, config);
+        EsniKeyRecordParser parser = new EsniKeyRecordParser(new ByteArrayInputStream(recordBytes), config,
+            ConnectionEndType.CLIENT, ProtocolVersion.TLS13);
         EsniKeyRecord esniKeyRecord = parser.parse();
 
         byte[] expectedVersion = EsniVersion.DRAFT_2.getDnsKeyRecordVersion().getByteValue();
@@ -264,7 +270,8 @@ public class EsniKeyRecordParserTest {
 
         byte[] recordBytes = ArrayConverter.hexStringToByteArray(
             "ff0100124b2a0024001d0020fa572d03e21e15f9ca1aa7fb85f61b9fc78458a78050ac581811863325944412000213010104000000005dcc3a45000000005dda12050014ffce0010a7284c9a52f15c13644b947261774657");
-        EsniKeyRecordParser parser = new EsniKeyRecordParser(0, recordBytes, config);
+        EsniKeyRecordParser parser = new EsniKeyRecordParser(new ByteArrayInputStream(recordBytes), config,
+            ConnectionEndType.CLIENT, ProtocolVersion.TLS13);
         EsniKeyRecord esniKeyRecord = parser.parse();
 
         byte[] expectedVersion = EsniVersion.DRAFT_2.getDnsKeyRecordVersion().getByteValue();

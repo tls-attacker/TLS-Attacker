@@ -45,7 +45,8 @@ public class HttpsResponseParser extends TlsMessageParser<HttpsResponseMessage> 
 
         // compatible with \r\n and \n line endings
         while (!line.trim().isEmpty()) {
-            HttpsHeaderParser parser = new HttpsHeaderParser(new ByteArrayInputStream(line.getBytes(Charset.forName("ASCII"))));
+            HttpsHeaderParser parser =
+                new HttpsHeaderParser(new ByteArrayInputStream(line.getBytes(Charset.forName("ASCII"))));
             HttpsHeader header = parser.parse();
             message.getHeader().add(header);
             line = parseStringTill((byte) 0x0A);

@@ -12,7 +12,6 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
-import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
@@ -37,15 +36,13 @@ public class ActivateEncryptionActionTest {
         state = new State(config, trace);
         tlsContext = state.getTlsContext();
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
-        tlsContext.setRecordLayer(new TlsRecordLayer(tlsContext));
     }
 
     @Test
     public void testExecute() throws Exception {
         action.execute(state);
         assertTrue(action.isExecuted());
-        TlsRecordLayer layer = TlsRecordLayer.class.cast(tlsContext.getRecordLayer());
-        assertFalse(layer.getEncryptorCipher() instanceof RecordNullCipher);
+        assertFalse(tlsContext.getRecordLayer().getEncryptorCipher() instanceof RecordNullCipher);
     }
 
     @Test

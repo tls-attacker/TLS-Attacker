@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.UnknownHandshakeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.UnknownHandshakePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.UnknownHandshakeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.ByteArrayInputStream;
 import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -46,7 +47,7 @@ public class UnknownHandshakeHandlerTest {
      */
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[1], 0) instanceof UnknownHandshakeParser);
+        assertTrue(handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof UnknownHandshakeParser);
     }
 
     /**

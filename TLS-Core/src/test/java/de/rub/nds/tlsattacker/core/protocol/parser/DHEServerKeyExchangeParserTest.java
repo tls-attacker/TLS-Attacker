@@ -12,8 +12,10 @@ package de.rub.nds.tlsattacker.core.protocol.parser;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
+import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import static org.junit.Assert.*;
@@ -105,8 +107,8 @@ public class DHEServerKeyExchangeParserTest {
     @Test
     public void testParse() {// TODO Write tests for others versions and make
         // protocol version a parameter
-        DHEServerKeyExchangeParser<DHEServerKeyExchangeMessage> parser =
-            new DHEServerKeyExchangeParser(0, message, version, config);
+        DHEServerKeyExchangeParser<DHEServerKeyExchangeMessage> parser = new DHEServerKeyExchangeParser(
+            new ByteArrayInputStream(message), version, KeyExchangeAlgorithm.DHE_RSA, config);
         DHEServerKeyExchangeMessage msg = parser.parse();
         assertArrayEquals(message, msg.getCompleteResultingMessage().getValue());
         assertTrue(msg.getLength().getValue() == length);

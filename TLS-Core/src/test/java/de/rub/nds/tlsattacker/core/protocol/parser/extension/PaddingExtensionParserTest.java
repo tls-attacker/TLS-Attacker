@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
+import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import static org.junit.Assert.assertArrayEquals;
@@ -33,29 +34,27 @@ public class PaddingExtensionParserTest {
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] { { ExtensionType.PADDING, 6, new byte[] { 0, 0, 0, 0, 0, 0 },
-            ArrayConverter.hexStringToByteArray("00150006000000000000"), 0 } });
+            ArrayConverter.hexStringToByteArray("00150006000000000000") } });
     }
 
     private final ExtensionType extensionType;
     private final int extensionLength;
     private final byte[] extensionPayload;
     private final byte[] expectedBytes;
-    private final int startParsing;
     private PaddingExtensionParser parser;
     private PaddingExtensionMessage message;
 
     public PaddingExtensionParserTest(ExtensionType extensionType, int extensionLength, byte[] extensionPayload,
-        byte[] expectedBytes, int startParsing) {
+        byte[] expectedBytes) {
         this.extensionType = extensionType;
         this.extensionLength = extensionLength;
         this.extensionPayload = extensionPayload;
         this.expectedBytes = expectedBytes;
-        this.startParsing = startParsing;
     }
 
     @Before
     public void setUp() {
-        parser = new PaddingExtensionParser(startParsing, expectedBytes, Config.createConfig());
+        parser = new PaddingExtensionParser(new ByteArrayInputStream(expectedBytes), Config.createConfig());
     }
 
     @Test

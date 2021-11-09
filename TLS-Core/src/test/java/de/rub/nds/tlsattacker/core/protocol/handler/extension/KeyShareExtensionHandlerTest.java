@@ -22,6 +22,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.KeyShareExtensi
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.KeyShareExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.io.ByteArrayInputStream;
 import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
@@ -76,8 +77,7 @@ public class KeyShareExtensionHandlerTest {
      */
     @Test
     public void testGetParser() {
-        assertTrue(
-            handler.getParser(new byte[] { 0, 2, 3, }, 0, context.getConfig()) instanceof KeyShareExtensionParser);
+        assertTrue(handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof KeyShareExtensionParser);
     }
 
     /**

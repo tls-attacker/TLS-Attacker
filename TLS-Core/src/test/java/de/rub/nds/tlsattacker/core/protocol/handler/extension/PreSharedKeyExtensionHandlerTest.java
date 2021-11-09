@@ -18,6 +18,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.PreSharedKeyExtensi
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PreSharedKeyExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PreSharedKeyExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.ByteArrayInputStream;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -93,7 +94,7 @@ public class PreSharedKeyExtensionHandlerTest {
 
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[0], 0, context.getConfig()) instanceof PreSharedKeyExtensionParser);
+        assertTrue(handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof PreSharedKeyExtensionParser);
     }
 
     @Test

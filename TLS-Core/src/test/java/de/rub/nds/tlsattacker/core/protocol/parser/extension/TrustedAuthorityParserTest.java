@@ -12,6 +12,7 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.TrustedCaIndicationIdentifierType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
+import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import static org.junit.Assert.assertArrayEquals;
@@ -55,7 +56,7 @@ public class TrustedAuthorityParserTest {
     @Test
     public void parse() {
 
-        TrustedAuthorityParser parser = new TrustedAuthorityParser(0, parserBytes);
+        TrustedAuthorityParser parser = new TrustedAuthorityParser(new ByteArrayInputStream(parserBytes));
         TrustedAuthority authority = parser.parse();
 
         assertEquals(identifier.getValue(), (long) authority.getIdentifierType().getValue());

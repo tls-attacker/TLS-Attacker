@@ -27,7 +27,7 @@ public class HeartbeatMessageParser extends TlsMessageParser<HeartbeatMessage> {
      *
      * @param stream
      * @param version
-     *                      Version of the Protocol
+     *                Version of the Protocol
      * @param config
      */
     public HeartbeatMessageParser(InputStream stream, ProtocolVersion version, Config config) {

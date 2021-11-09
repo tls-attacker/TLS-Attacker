@@ -31,10 +31,10 @@ public class CachedInfoExtensionParser extends ExtensionParser<CachedInfoExtensi
     @Override
     public void parseExtensionMessageContent(CachedInfoExtensionMessage msg) {
         msg.setCachedInfoLength(parseIntField(ExtensionByteLength.CACHED_INFO_LENGTH));
-        byte[] cachedInfoBytes = parseByteArrayField(msg.getCachedInfoLength().getValue()); 
+        byte[] cachedInfoBytes = parseByteArrayField(msg.getCachedInfoLength().getValue());
         msg.setCachedInfoBytes(cachedInfoBytes);
         ByteArrayInputStream innerStream = new ByteArrayInputStream(cachedInfoBytes);
-        //TODO The parser should know and not guess which connectionEnd it is
+        // TODO The parser should know and not guess which connectionEnd it is
         ConnectionEndType connectionEndType = ConnectionEndType.CLIENT;
         cachedObjectList = new LinkedList<>();
 

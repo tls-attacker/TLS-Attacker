@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.PaddingExtensionPar
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PaddingExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PaddingExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.ByteArrayInputStream;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
@@ -53,7 +54,7 @@ public class PaddingExtensionHandlerTest {
 
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[0], 0, context.getConfig()) instanceof PaddingExtensionParser);
+        assertTrue(handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof PaddingExtensionParser);
     }
 
     /**

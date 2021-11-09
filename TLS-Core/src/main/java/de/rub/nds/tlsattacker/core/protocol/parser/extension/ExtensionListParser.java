@@ -1,3 +1,12 @@
+/**
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ *
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
+ */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -24,7 +33,8 @@ public class ExtensionListParser extends Parser<List<ExtensionMessage>> {
     private final ProtocolVersion selectedVersion;
     private final boolean helloRetryRequestHint;
 
-    public ExtensionListParser(InputStream stream, Config config, ConnectionEndType talkingConnectionEndType, ProtocolVersion selectedVersion, boolean helloRetryRequestHint) {
+    public ExtensionListParser(InputStream stream, Config config, ConnectionEndType talkingConnectionEndType,
+        ProtocolVersion selectedVersion, boolean helloRetryRequestHint) {
         super(stream);
         this.talkingConnectionEndType = talkingConnectionEndType;
         this.config = config;
@@ -41,24 +51,27 @@ public class ExtensionListParser extends Parser<List<ExtensionMessage>> {
             LOGGER.debug("ExtensionType: {} ({})" + ArrayConverter.bytesToHexString(typeBytes), extensionType);
             int length = parseExtensionLength();
             byte[] extensionPayload = parseByteArrayField(length);
-            ExtensionParser parser = ExtensionParserFactory.getExtensionParser(new ByteArrayInputStream(extensionPayload), extensionType, config, talkingConnectionEndType, selectedVersion);
+            ExtensionParser parser =
+                ExtensionParserFactory.getExtensionParser(new ByteArrayInputStream(extensionPayload), extensionType,
+                    config, talkingConnectionEndType, selectedVersion);
             if (parser instanceof KeyShareExtensionParser) {
                 ((KeyShareExtensionParser) parser).setHelloRetryRequestHint(helloRetryRequestHint);
             }
             ExtensionMessage extension = parser.parse();
             extension.setExtensionType(typeBytes);
             extension.setExtensionLength(length);
-            extension.setExtensionBytes(ArrayConverter.concatenate(typeBytes, ArrayConverter.intToBytes(length, ExtensionByteLength.EXTENSIONS_LENGTH), extensionPayload));
+            extension.setExtensionBytes(ArrayConverter.concatenate(typeBytes,
+                ArrayConverter.intToBytes(length, ExtensionByteLength.EXTENSIONS_LENGTH), extensionPayload));
             extensionList.add(extension);
         }
         return extensionList;
     }
 
     /**
-     * Reads the next bytes as the length of the Extension and writes them in
-     * the message
+     * Reads the next bytes as the length of the Extension and writes them in the message
      *
-     * @param msg Message to write in
+     * @param msg
+     *            Message to write in
      */
     private int parseExtensionLength() {
         int length = parseIntField(ExtensionByteLength.EXTENSIONS_LENGTH);

@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import static de.rub.nds.modifiablevariable.util.ArrayConverter.bytesToHexString;
@@ -31,16 +32,16 @@ public class SessionTicketTLSExtensionParser extends ExtensionParser<SessionTick
     }
 
     /**
-     * Parses the content of the given byte array to a
-     * SessionTicketTLSExtensionMessage
+     * Parses the content of the given byte array to a SessionTicketTLSExtensionMessage
      *
-     * @param msg Message, which will hold the parsed extension
+     * @param msg
+     *            Message, which will hold the parsed extension
      */
     @Override
     public void parseExtensionMessageContent(SessionTicketTLSExtensionMessage msg) {
         if (msg.getExtensionLength().getValue() > 65535) {
             LOGGER.warn("The SessionTLS ticket length shouldn't exceed 2 bytes as defined in RFC 4507. " + "Length was "
-                    + msg.getExtensionLength().getValue());
+                + msg.getExtensionLength().getValue());
         }
         msg.setTicket(parseByteArrayField(msg.getExtensionLength().getValue()));
         LOGGER.debug("The session ticket TLS parser parsed the value " + bytesToHexString(msg.getTicket()));

@@ -16,8 +16,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.RSAClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.RSAClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.RSAClientKeyExchangeSerializer;
-import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.ByteArrayInputStream;
 import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -43,7 +43,7 @@ public class RSAClientKeyExchangeHandlerTest {
      */
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[1], 0) instanceof RSAClientKeyExchangeParser);
+        assertTrue(handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof RSAClientKeyExchangeParser);
     }
 
     /**
@@ -71,7 +71,6 @@ public class RSAClientKeyExchangeHandlerTest {
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
         message.prepareComputations();
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
-        context.setRecordLayer(new TlsRecordLayer(context));
         message.getComputations().setPremasterSecret(ArrayConverter.hexStringToByteArray(
             "0303d3fad5b20109834717bac4e7762e217add183d0c4852ab054f65ba6e93b1ed83ca5c5fa614cd3b810f4766c66feb"));
         message.getComputations().setClientServerRandom(ArrayConverter.hexStringToByteArray(

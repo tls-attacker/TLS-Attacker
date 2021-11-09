@@ -26,9 +26,9 @@ public class PskEcDhClientKeyExchangeParser extends ECDHClientKeyExchangeParser<
      * Constructor for the Parser class
      *
      * @param version
-     *                      Version of the Protocol
+     *                Version of the Protocol
      * @param config
-     *                      A Config used in the current context
+     *                A Config used in the current context
      */
     public PskEcDhClientKeyExchangeParser(InputStream stream, ProtocolVersion version, Config config) {
         super(stream, version, config);

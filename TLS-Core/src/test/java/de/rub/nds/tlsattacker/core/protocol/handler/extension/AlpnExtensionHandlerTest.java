@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.AlpnExtensionPr
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.AlpnExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.io.ByteArrayInputStream;
 import java.util.LinkedList;
 import java.util.List;
 import static org.junit.Assert.assertEquals;
@@ -55,7 +56,7 @@ public class AlpnExtensionHandlerTest {
 
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[0], 0, context.getConfig()) instanceof AlpnExtensionParser);
+        assertTrue(handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof AlpnExtensionParser);
     }
 
     @Test

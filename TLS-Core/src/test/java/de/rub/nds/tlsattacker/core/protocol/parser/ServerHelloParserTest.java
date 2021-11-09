@@ -16,6 +16,8 @@ import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import org.apache.logging.log4j.LogManager;
@@ -92,7 +94,8 @@ public class ServerHelloParserTest {
      */
     @Test
     public void verify() {
-        ServerHelloParser parser = new ServerHelloParser(0, message, version, config);
+        ServerHelloParser parser =
+            new ServerHelloParser(new ByteArrayInputStream(message), version, config, ConnectionEndType.SERVER);
         ServerHelloMessage helloMessage = parser.parse();
         assertTrue(helloMessage.getType().getValue() == messageType);
         assertTrue(helloMessage.getLength().getValue() == messageLength);
@@ -112,7 +115,5 @@ public class ServerHelloParserTest {
         LOGGER.debug(
             "Complete was:" + ArrayConverter.bytesToHexString(helloMessage.getCompleteResultingMessage().getValue()));
         assertArrayEquals(helloMessage.getCompleteResultingMessage().getValue(), message);
-        assertTrue(parser.getPointer() == message.length);
-
     }
 }

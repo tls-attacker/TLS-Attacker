@@ -12,7 +12,9 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestExtensionMessage;
+import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import static org.junit.Assert.assertArrayEquals;
@@ -41,7 +43,6 @@ public class CertificateStatusRequestExtensionParserTest {
     private final ExtensionType extensionType;
     private final byte[] expectedBytes;
     private final int extensionLength;
-    private final int startParsing;
     private final int certificateStatusRequestType;
     private final int responderIDListLength;
     private final byte[] responderIDList;
@@ -51,12 +52,11 @@ public class CertificateStatusRequestExtensionParserTest {
     private CertificateStatusRequestExtensionMessage message;
 
     public CertificateStatusRequestExtensionParserTest(ExtensionType extensionType, byte[] expectedBytes,
-        int extensionLength, int startParsing, int certificateStatusRequestType, int responderIDListLength,
-        byte[] responderIDList, int requestExtensionLength, byte[] requestExtension) {
+        int extensionLength, int certificateStatusRequestType, int responderIDListLength, byte[] responderIDList,
+        int requestExtensionLength, byte[] requestExtension) {
         this.extensionType = extensionType;
         this.expectedBytes = expectedBytes;
         this.extensionLength = extensionLength;
-        this.startParsing = startParsing;
         this.certificateStatusRequestType = certificateStatusRequestType;
         this.responderIDListLength = responderIDListLength;
         this.responderIDList = responderIDList;
@@ -66,7 +66,8 @@ public class CertificateStatusRequestExtensionParserTest {
 
     @Before
     public void setUp() {
-        parser = new CertificateStatusRequestExtensionParser(startParsing, expectedBytes, Config.createConfig());
+        parser = new CertificateStatusRequestExtensionParser(new ByteArrayInputStream(expectedBytes),
+            Config.createConfig(), ProtocolVersion.TLS12);
     }
 
     @Test

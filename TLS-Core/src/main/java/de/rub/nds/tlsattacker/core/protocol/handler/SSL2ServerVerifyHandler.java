@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerVerifyMessage;
@@ -24,7 +25,7 @@ public class SSL2ServerVerifyHandler extends HandshakeMessageHandler<SSL2ServerV
     @Override
     public SSL2ServerVerifyParser getParser(InputStream stream) {
         return new SSL2ServerVerifyParser(stream, tlsContext.getChooser().getSelectedProtocolVersion(),
-                tlsContext.getConfig());
+            tlsContext.getConfig());
     }
 
     @Override

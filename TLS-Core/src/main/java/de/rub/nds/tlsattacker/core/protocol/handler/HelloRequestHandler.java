@@ -24,8 +24,7 @@ public class HelloRequestHandler extends HandshakeMessageHandler<HelloRequestMes
 
     @Override
     public HelloRequestParser getParser(InputStream stream) {
-        return new HelloRequestParser(stream, tlsContext.getChooser().getLastRecordVersion(),
-            tlsContext.getConfig());
+        return new HelloRequestParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext.getConfig());
     }
 
     @Override

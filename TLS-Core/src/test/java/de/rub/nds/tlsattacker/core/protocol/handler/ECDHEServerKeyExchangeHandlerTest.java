@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.ECDHEServerKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ECDHEServerKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ECDHEServerKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.ByteArrayInputStream;
 import java.math.BigInteger;
 import org.junit.After;
 import static org.junit.Assert.*;
@@ -44,7 +45,7 @@ public class ECDHEServerKeyExchangeHandlerTest {
      */
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[1], 0) instanceof ECDHEServerKeyExchangeParser);
+        assertTrue(handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof ECDHEServerKeyExchangeParser);
     }
 
     /**

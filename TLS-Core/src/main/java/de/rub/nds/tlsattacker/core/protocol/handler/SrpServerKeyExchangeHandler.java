@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -30,7 +31,7 @@ public class SrpServerKeyExchangeHandler extends ServerKeyExchangeHandler<SrpSer
     @Override
     public SrpServerKeyExchangeParser getParser(InputStream stream) {
         return new SrpServerKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(),
-                tlsContext.getConfig());
+            tlsContext.getConfig());
     }
 
     @Override

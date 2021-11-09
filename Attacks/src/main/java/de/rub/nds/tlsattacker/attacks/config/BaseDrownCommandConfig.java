@@ -17,7 +17,6 @@ import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.StarttlsDelegate;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
 
 public abstract class BaseDrownCommandConfig extends AttackConfig {
 
@@ -45,7 +44,6 @@ public abstract class BaseDrownCommandConfig extends AttackConfig {
     @Override
     public Config createConfig() {
         Config config = super.createConfig();
-        config.setRecordLayerType(RecordLayerType.BLOB);
         config.setHighestProtocolVersion(ProtocolVersion.SSL2);
 
         return config;

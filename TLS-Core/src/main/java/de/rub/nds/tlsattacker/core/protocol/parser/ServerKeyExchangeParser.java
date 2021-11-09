@@ -32,8 +32,8 @@ public abstract class ServerKeyExchangeParser<T extends ServerKeyExchangeMessage
      * @param config
      *                     A Config used in the current context
      */
-    public ServerKeyExchangeParser(InputStream stream, HandshakeMessageType expectedType,
-        ProtocolVersion version, Config config) {
+    public ServerKeyExchangeParser(InputStream stream, HandshakeMessageType expectedType, ProtocolVersion version,
+        Config config) {
         super(stream, expectedType, version, config);
     }
 

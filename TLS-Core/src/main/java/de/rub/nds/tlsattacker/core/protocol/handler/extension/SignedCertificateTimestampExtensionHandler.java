@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -19,14 +20,15 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class SignedCertificateTimestampExtensionHandler
-        extends ExtensionHandler<SignedCertificateTimestampExtensionMessage> {
+    extends ExtensionHandler<SignedCertificateTimestampExtensionMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * Constructor
      *
-     * @param context A Chooser
+     * @param context
+     *                A Chooser
      */
     public SignedCertificateTimestampExtensionHandler(TlsContext context) {
         super(context);
@@ -35,9 +37,9 @@ public class SignedCertificateTimestampExtensionHandler
     /**
      * Returns a new SignedCertificateTimestampExtensionParser
      *
-     * @param stream
-     * @param config
-     * @return A SignedCertificateTimestampExtensionParser
+     * @param  stream
+     * @param  config
+     * @return        A SignedCertificateTimestampExtensionParser
      */
     @Override
     public SignedCertificateTimestampExtensionParser getParser(InputStream stream) {
@@ -47,42 +49,44 @@ public class SignedCertificateTimestampExtensionHandler
     /**
      * Returns a new SignedCertificateTimestampExtensionPreparator
      *
-     * @param message A SignedCertificateTimestampExtensionMessage
-     * @return A SignedCertificateTimestampExtensionPreparator
+     * @param  message
+     *                 A SignedCertificateTimestampExtensionMessage
+     * @return         A SignedCertificateTimestampExtensionPreparator
      */
     @Override
     public SignedCertificateTimestampExtensionPreparator
-            getPreparator(SignedCertificateTimestampExtensionMessage message) {
+        getPreparator(SignedCertificateTimestampExtensionMessage message) {
         return new SignedCertificateTimestampExtensionPreparator(context.getChooser(), message, getSerializer(message));
     }
 
     /**
      * Returns a new SignedCertificateTimestampExtensionSerializer
      *
-     * @param message A SignedCertificateTimestampExtensionMessage
-     * @return A SignedCertificateTimestampExtensionSerializer
+     * @param  message
+     *                 A SignedCertificateTimestampExtensionMessage
+     * @return         A SignedCertificateTimestampExtensionSerializer
      */
     @Override
     public SignedCertificateTimestampExtensionSerializer
-            getSerializer(SignedCertificateTimestampExtensionMessage message) {
+        getSerializer(SignedCertificateTimestampExtensionMessage message) {
         return new SignedCertificateTimestampExtensionSerializer(message);
     }
 
     /**
-     * Parses the content of a SignedCertificateTimestampExtensionMessage to the
-     * actual Chooser
+     * Parses the content of a SignedCertificateTimestampExtensionMessage to the actual Chooser
      *
-     * @param message A SingedCertificateTimestampExtensionMessage
+     * @param message
+     *                A SingedCertificateTimestampExtensionMessage
      */
     @Override
     public void adjustTLSExtensionContext(SignedCertificateTimestampExtensionMessage message) {
         if (message.getExtensionLength().getValue() > 65535) {
             LOGGER.warn("The SingedCertificateTimestamp length shouldn't exceed 2 bytes as defined in RFC 6962. "
-                    + "Length was " + message.getExtensionLength().getValue());
+                + "Length was " + message.getExtensionLength().getValue());
         }
         context.setSignedCertificateTimestamp(message.getSignedTimestamp().getValue());
         LOGGER.debug("The context SignedCertificateTimestamp was set to "
-                + ArrayConverter.bytesToHexString(message.getSignedTimestamp()));
+            + ArrayConverter.bytesToHexString(message.getSignedTimestamp()));
     }
 
 }

@@ -27,9 +27,9 @@ public class ChangeCipherSpecParser extends TlsMessageParser<ChangeCipherSpecMes
      *
      * @param stream
      * @param version
-     *                      Version of the Protocol
+     *                Version of the Protocol
      * @param config
-     *                      A Config used in the current context
+     *                A Config used in the current context
      */
     public ChangeCipherSpecParser(InputStream stream, ProtocolVersion version, Config config) {
         super(stream, version, config);

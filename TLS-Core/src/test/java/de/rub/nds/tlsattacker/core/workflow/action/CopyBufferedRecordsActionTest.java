@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.junit.Before;
@@ -35,8 +34,8 @@ public class CopyBufferedRecordsActionTest {
         TlsContext src = new TlsContext();
         TlsContext dst = new TlsContext();
         ModifiableByteArray byteArray = new ModifiableByteArray();
-        AbstractRecord record = new Record();
-        LinkedList<AbstractRecord> recordBuffer = new LinkedList<>();
+        Record record = new Record();
+        LinkedList<Record> recordBuffer = new LinkedList<>();
 
         record.setProtocolMessageBytes(byteArray);
         record.setContentMessageType(ProtocolMessageType.HANDSHAKE);

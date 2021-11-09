@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
@@ -55,16 +56,14 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
     protected Boolean executedAsPlanned = null;
 
     /**
-     * If you want true here, use the more verbose
-     * ForwardMessagesWithPrepareAction.
+     * If you want true here, use the more verbose ForwardMessagesWithPrepareAction.
      */
     @XmlTransient
     protected Boolean withPrepare = false;
 
     @HoldsModifiableVariable
     @XmlElementWrapper
-    @XmlElements(value = {
-        @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
+    @XmlElements(value = { @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
         @XmlElement(type = TlsMessage.class, name = "TlsMessage"),
         @XmlElement(type = CertificateMessage.class, name = "Certificate"),
         @XmlElement(type = CertificateVerifyMessage.class, name = "CertificateVerify"),
@@ -111,25 +110,22 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
         @XmlElement(type = SrpServerKeyExchangeMessage.class, name = "SrpServerKeyExchange"),
         @XmlElement(type = SrpClientKeyExchangeMessage.class, name = "SrpClientKeyExchange"),
         @XmlElement(type = EndOfEarlyDataMessage.class, name = "EndOfEarlyData"),
-        @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensions")})
+        @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensions") })
     protected List<ProtocolMessage> receivedMessages;
 
     @HoldsModifiableVariable
     @XmlElementWrapper
-    @XmlElements(value = {
-        @XmlElement(type = Record.class, name = "Record")})
+    @XmlElements(value = { @XmlElement(type = Record.class, name = "Record") })
     protected List<Record> receivedRecords;
 
     @HoldsModifiableVariable
     @XmlElementWrapper
-    @XmlElements(value = {
-        @XmlElement(type = DtlsHandshakeMessageFragment.class, name = "DtlsFragment")})
+    @XmlElements(value = { @XmlElement(type = DtlsHandshakeMessageFragment.class, name = "DtlsFragment") })
     protected List<DtlsHandshakeMessageFragment> receivedFragments;
 
     @XmlElementWrapper
     @HoldsModifiableVariable
-    @XmlElements(value = {
-        @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
+    @XmlElements(value = { @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
         @XmlElement(type = TlsMessage.class, name = "TlsMessage"),
         @XmlElement(type = CertificateMessage.class, name = "Certificate"),
         @XmlElement(type = CertificateVerifyMessage.class, name = "CertificateVerify"),
@@ -173,25 +169,22 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
         @XmlElement(type = SrpServerKeyExchangeMessage.class, name = "SrpServerKeyExchange"),
         @XmlElement(type = SrpClientKeyExchangeMessage.class, name = "SrpClientKeyExchange"),
         @XmlElement(type = EndOfEarlyDataMessage.class, name = "EndOfEarlyData"),
-        @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensions")})
+        @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensions") })
     protected List<ProtocolMessage> messages;
 
     @HoldsModifiableVariable
     @XmlElementWrapper
-    @XmlElements(value = {
-        @XmlElement(type = Record.class, name = "Record")})
+    @XmlElements(value = { @XmlElement(type = Record.class, name = "Record") })
     protected List<Record> records;
 
     @HoldsModifiableVariable
     @XmlElementWrapper
-    @XmlElements(value = {
-        @XmlElement(type = DtlsHandshakeMessageFragment.class, name = "DtlsFragment")})
+    @XmlElements(value = { @XmlElement(type = DtlsHandshakeMessageFragment.class, name = "DtlsFragment") })
     protected List<DtlsHandshakeMessageFragment> fragments;
 
     @HoldsModifiableVariable
     @XmlElementWrapper
-    @XmlElements(value = {
-        @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
+    @XmlElements(value = { @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
         @XmlElement(type = TlsMessage.class, name = "TlsMessage"),
         @XmlElement(type = CertificateMessage.class, name = "Certificate"),
         @XmlElement(type = CertificateVerifyMessage.class, name = "CertificateVerify"),
@@ -235,19 +228,17 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
         @XmlElement(type = SrpServerKeyExchangeMessage.class, name = "SrpServerKeyExchange"),
         @XmlElement(type = SrpClientKeyExchangeMessage.class, name = "SrpClientKeyExchange"),
         @XmlElement(type = EndOfEarlyDataMessage.class, name = "EndOfEarlyData"),
-        @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensions")})
+        @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensions") })
     protected List<ProtocolMessage> sendMessages;
 
     @HoldsModifiableVariable
     @XmlElementWrapper
-    @XmlElements(value = {
-        @XmlElement(type = Record.class, name = "Record")})
+    @XmlElements(value = { @XmlElement(type = Record.class, name = "Record") })
     protected List<Record> sendRecords;
 
     @HoldsModifiableVariable
     @XmlElementWrapper
-    @XmlElements(value = {
-        @XmlElement(type = DtlsHandshakeMessageFragment.class, name = "DtlsFragment")})
+    @XmlElements(value = { @XmlElement(type = DtlsHandshakeMessageFragment.class, name = "DtlsFragment") })
     protected List<DtlsHandshakeMessageFragment> sendFragments;
 
     public ForwardMessagesAction() {
@@ -297,8 +288,10 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
         List<LayerProcessingResult> processingResult;
         try {
             processingResult = layerStack.receiveData(layerConfigurationList);
-            messages = new ArrayList<>(processingResult.get(0).getUsedContainers()); //TODO Automatically get correct index in result
-            records = new ArrayList<>(processingResult.get(1).getUsedContainers()); // TODO Automatically get correct index in result
+            messages = new ArrayList<>(processingResult.get(0).getUsedContainers()); // TODO Automatically get correct
+                                                                                     // index in result
+            records = new ArrayList<>(processingResult.get(1).getUsedContainers()); // TODO Automatically get correct
+                                                                                    // index in result
         } catch (IOException ex) {
             LOGGER.warn("Received an IOException");
         }
@@ -333,8 +326,10 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
             layerConfigurationList.add(new SpecificContainerLayerConfiguration(records));
             layerConfigurationList.add(new SpecificContainerLayerConfiguration((List) null));
             List<LayerProcessingResult> processingResult = layerStack.sendData(layerConfigurationList);
-            receivedMessages = new ArrayList<>(processingResult.get(0).getUsedContainers()); //TODO Automatically get correct index in result
-            receivedRecords = new ArrayList<>(processingResult.get(1).getUsedContainers()); // TODO Automatically get correct index in result
+            receivedMessages = new ArrayList<>(processingResult.get(0).getUsedContainers()); // TODO Automatically get
+                                                                                             // correct index in result
+            receivedRecords = new ArrayList<>(processingResult.get(1).getUsedContainers()); // TODO Automatically get
+                                                                                            // correct index in result
 
             if (executedAsPlanned) {
                 executedAsPlanned = checkMessageListsEquals(sendMessages, messages);
@@ -358,7 +353,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
     // TODO: yes, the correct way would be implement equals() for all
     // ProtocolMessages...
     private boolean checkMessageListsEquals(List<ProtocolMessage> expectedMessages,
-            List<ProtocolMessage> actualMessages) {
+        List<ProtocolMessage> actualMessages) {
         boolean actualEmpty = true;
         boolean expectedEmpty = true;
         if (actualMessages != null && !actualMessages.isEmpty()) {
@@ -462,9 +457,8 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
     }
 
     /**
-     * TODO: the equals methods for message/record actions and similar classes
-     * would require that messages and records implement equals for a proper
-     * implementation. The present approach is not satisfying.
+     * TODO: the equals methods for message/record actions and similar classes would require that messages and records
+     * implement equals for a proper implementation. The present approach is not satisfying.
      */
     @Override
     public boolean equals(Object obj) {
@@ -523,11 +517,11 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
     public void assertAliasesSetProperly() throws ConfigurationException {
         if ((receiveFromAlias == null) || (receiveFromAlias.isEmpty())) {
             throw new WorkflowExecutionException("Can't execute " + this.getClass().getSimpleName()
-                    + " with empty receive alias (if using XML: add <from/>)");
+                + " with empty receive alias (if using XML: add <from/>)");
         }
         if ((forwardToAlias == null) || (forwardToAlias.isEmpty())) {
             throw new WorkflowExecutionException("Can't execute " + this.getClass().getSimpleName()
-                    + " with empty forward alis (if using XML: add <to/>)");
+                + " with empty forward alis (if using XML: add <to/>)");
         }
     }
 

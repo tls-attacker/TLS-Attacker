@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicationExtensionMessage;
+import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import static org.junit.Assert.*;
@@ -27,18 +28,18 @@ public class ServerNameIndicationExtensionParserTest {
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] {
             // case 1: completion.amazon.com
-            { ArrayConverter.hexStringToByteArray("0000001a0018000015636f6d706c6574696f6e2e616d617a6f6e2e636f6d"), 0,
+            { ArrayConverter.hexStringToByteArray("0000001a0018000015636f6d706c6574696f6e2e616d617a6f6e2e636f6d"),
                 ArrayConverter.hexStringToByteArray("0000001a0018000015636f6d706c6574696f6e2e616d617a6f6e2e636f6d"),
                 ExtensionType.SERVER_NAME_INDICATION, 26, 24,
                 ArrayConverter.hexStringToByteArray("000015636f6d706c6574696f6e2e616d617a6f6e2e636f6d"), },
             // case 2: guzzoni.apple.com
-            { ArrayConverter.hexStringToByteArray("00000016001400001167757a7a6f6e692e6170706c652e636f6d"), 0,
+            { ArrayConverter.hexStringToByteArray("00000016001400001167757a7a6f6e692e6170706c652e636f6d"),
                 ArrayConverter.hexStringToByteArray("00000016001400001167757a7a6f6e692e6170706c652e636f6d"),
                 ExtensionType.SERVER_NAME_INDICATION, 22, 20,
                 ArrayConverter.hexStringToByteArray("00001167757a7a6f6e692e6170706c652e636f6d"), },
             // case 3: www.google.com, test.dummy.com
             { ArrayConverter.hexStringToByteArray(
-                "00000024002200000e7777772e676f6f676c652e636f6d00000e746573742e64756d6d792e636f6d"), 0,
+                "00000024002200000e7777772e676f6f676c652e636f6d00000e746573742e64756d6d792e636f6d"),
                 ArrayConverter.hexStringToByteArray(
                     "00000024002200000e7777772e676f6f676c652e636f6d00000e746573742e64756d6d792e636f6d"),
                 ExtensionType.SERVER_NAME_INDICATION, 36, 34, ArrayConverter
@@ -46,17 +47,15 @@ public class ServerNameIndicationExtensionParserTest {
     }
 
     private final byte[] extension;
-    private final int start;
     private final byte[] completeExtension;
     private final ExtensionType type;
     private final int extensionLength;
     private final int sniListLength;
     private final byte[] sniListBytes;
 
-    public ServerNameIndicationExtensionParserTest(byte[] extension, int start, byte[] completeExtension,
-        ExtensionType type, int extensionLength, int sniListLength, byte[] sniListBytes) {
+    public ServerNameIndicationExtensionParserTest(byte[] extension, byte[] completeExtension, ExtensionType type,
+        int extensionLength, int sniListLength, byte[] sniListBytes) {
         this.extension = extension;
-        this.start = start;
         this.completeExtension = completeExtension;
         this.type = type;
         this.extensionLength = extensionLength;
@@ -70,7 +69,7 @@ public class ServerNameIndicationExtensionParserTest {
     @Test
     public void testParseExtensionMessageContent() {
         ServerNameIndicationExtensionParser parser =
-            new ServerNameIndicationExtensionParser(start, extension, Config.createConfig());
+            new ServerNameIndicationExtensionParser(new ByteArrayInputStream(extension), Config.createConfig());
         ServerNameIndicationExtensionMessage msg = parser.parse();
 
         assertArrayEquals(msg.getExtensionBytes().getValue(), completeExtension);

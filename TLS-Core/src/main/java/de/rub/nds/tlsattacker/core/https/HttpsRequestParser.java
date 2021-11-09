@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.https;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -45,7 +46,8 @@ public class HttpsRequestParser extends TlsMessageParser<HttpsRequestMessage> {
 
         // compatible with \r\n and \n line endings
         while (!line.trim().isEmpty()) {
-            HttpsHeaderParser parser = new HttpsHeaderParser(new ByteArrayInputStream(line.getBytes(Charset.forName("ASCII"))));
+            HttpsHeaderParser parser =
+                new HttpsHeaderParser(new ByteArrayInputStream(line.getBytes(Charset.forName("ASCII"))));
             HttpsHeader header = parser.parse();
             message.getHeader().add(header);
             line = parseStringTill((byte) 0x0A);

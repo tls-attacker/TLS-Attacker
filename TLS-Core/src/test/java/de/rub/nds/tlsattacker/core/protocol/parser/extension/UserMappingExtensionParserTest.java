@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
 import de.rub.nds.tlsattacker.core.protocol.message.UserMappingExtensionMessage;
+import java.io.ByteArrayInputStream;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import org.junit.Before;
@@ -24,14 +25,13 @@ public class UserMappingExtensionParserTest {
     private final ExtensionType extensionType = ExtensionType.USER_MAPPING;
     private final byte[] extensionBytes = ArrayConverter.hexStringToByteArray("0006000140");
     private final int extensionLength = 1;
-    private final int startposition = 0;
     private final UserMappingExtensionHintType hintType = UserMappingExtensionHintType.UPN_DOMAIN_HINT;
     private UserMappingExtensionParser parser;
     private UserMappingExtensionMessage message;
 
     @Before
     public void setUp() {
-        parser = new UserMappingExtensionParser(startposition, extensionBytes, Config.createConfig());
+        parser = new UserMappingExtensionParser(new ByteArrayInputStream(extensionBytes), Config.createConfig());
     }
 
     @Test

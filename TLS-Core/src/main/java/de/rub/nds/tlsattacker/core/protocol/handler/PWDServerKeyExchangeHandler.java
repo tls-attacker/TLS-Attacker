@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
@@ -28,8 +29,8 @@ public class PWDServerKeyExchangeHandler extends ServerKeyExchangeHandler<PWDSer
     @Override
     public PWDServerKeyExchangeParser getParser(InputStream stream) {
         return new PWDServerKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(),
-                AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite()),
-                tlsContext.getConfig());
+            AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite()),
+            tlsContext.getConfig());
     }
 
     @Override
@@ -47,7 +48,7 @@ public class PWDServerKeyExchangeHandler extends ServerKeyExchangeHandler<PWDSer
         tlsContext.setSelectedGroup(NamedGroup.getNamedGroup(message.getNamedGroup().getValue()));
         tlsContext.setServerPWDSalt(message.getSalt().getValue());
         tlsContext.setServerPWDElement(PointFormatter
-                .formatFromByteArray(tlsContext.getChooser().getSelectedNamedGroup(), message.getElement().getValue()));
+            .formatFromByteArray(tlsContext.getChooser().getSelectedNamedGroup(), message.getElement().getValue()));
         tlsContext.setServerPWDScalar(new BigInteger(1, message.getScalar().getValue()));
         if (message.getComputations() != null) {
             tlsContext.setPWDPE(message.getComputations().getPasswordElement());

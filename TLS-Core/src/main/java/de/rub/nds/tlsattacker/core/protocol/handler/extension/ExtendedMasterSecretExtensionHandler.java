@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
@@ -40,7 +41,7 @@ public class ExtendedMasterSecretExtensionHandler extends ExtensionHandler<Exten
     @Override
     public void adjustTLSExtensionContext(ExtendedMasterSecretExtensionMessage message) {
         if (context.isExtensionProposed(ExtensionType.EXTENDED_MASTER_SECRET)
-                && context.isExtensionNegotiated(ExtensionType.EXTENDED_MASTER_SECRET)) {
+            && context.isExtensionNegotiated(ExtensionType.EXTENDED_MASTER_SECRET)) {
             context.setUseExtendedMasterSecret(true);
         }
     }

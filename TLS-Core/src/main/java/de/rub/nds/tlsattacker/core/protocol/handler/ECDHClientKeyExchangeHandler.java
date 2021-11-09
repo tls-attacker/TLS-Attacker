@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
@@ -31,7 +32,7 @@ public class ECDHClientKeyExchangeHandler<T extends ECDHClientKeyExchangeMessage
     @Override
     public ECDHClientKeyExchangeParser<T> getParser(InputStream stream) {
         return new ECDHClientKeyExchangeParser<>(stream, tlsContext.getChooser().getLastRecordVersion(),
-                tlsContext.getConfig());
+            tlsContext.getConfig());
     }
 
     @Override

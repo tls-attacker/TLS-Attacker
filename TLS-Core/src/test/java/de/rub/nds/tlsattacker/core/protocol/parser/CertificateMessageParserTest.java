@@ -14,6 +14,8 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import static org.junit.Assert.*;
@@ -72,7 +74,8 @@ public class CertificateMessageParserTest {
      */
     @Test
     public void testParse() {
-        CertificateMessageParser parser = new CertificateMessageParser(0, message, version, config);
+        CertificateMessageParser parser =
+            new CertificateMessageParser(new ByteArrayInputStream(message), version, config, ConnectionEndType.SERVER);
         CertificateMessage certMessage = parser.parse();
         assertArrayEquals(certMessage.getCompleteResultingMessage().getValue(), message);
         assertTrue(certMessage.getLength().getValue() == length);

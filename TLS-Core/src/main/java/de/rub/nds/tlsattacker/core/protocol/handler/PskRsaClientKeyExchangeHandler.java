@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.PskRsaClientKeyExchangeMessage;
@@ -24,7 +25,7 @@ public class PskRsaClientKeyExchangeHandler extends RSAClientKeyExchangeHandler<
     @Override
     public PskRsaClientKeyExchangeParser getParser(InputStream stream) {
         return new PskRsaClientKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(),
-                tlsContext.getConfig());
+            tlsContext.getConfig());
     }
 
     @Override

@@ -13,6 +13,8 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.io.ByteArrayInputStream;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -24,8 +26,8 @@ import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
 public class NewSessionTicketParserTest {
+
     private final byte[] message;
-    private final int start;
     private final byte[] identity;
     private final ProtocolVersion version;
     private final long lifetime;
@@ -55,18 +57,17 @@ public class NewSessionTicketParserTest {
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] {
-            { sessionTicketTls1_1, 0, sessionTicketTls1_1_identity, sessionTicketTls1_1_lifetime, new byte[0],
-                new byte[0], ProtocolVersion.TLS11 },
-            { sessionTicketTls1_2, 0, sessionTicketTls1_2_identity, sessionTicketTls1_2_lifetime, new byte[0],
-                new byte[0], ProtocolVersion.TLS12 },
-            { sessionTicketTls1_3, 0, sessionTicketTls1_3_identity, sessionTicketTls1_3_lifetime,
+            { sessionTicketTls1_1, sessionTicketTls1_1_identity, sessionTicketTls1_1_lifetime, new byte[0], new byte[0],
+                ProtocolVersion.TLS11 },
+            { sessionTicketTls1_2, sessionTicketTls1_2_identity, sessionTicketTls1_2_lifetime, new byte[0], new byte[0],
+                ProtocolVersion.TLS12 },
+            { sessionTicketTls1_3, sessionTicketTls1_3_identity, sessionTicketTls1_3_lifetime,
                 sessionTicketTls1_3_AgeAdd, sessionTicketTls1_3_Nonce, ProtocolVersion.TLS13 } });
     }
 
-    public NewSessionTicketParserTest(byte[] message, int start, byte[] identity, long lifetime, byte[] ageadd,
-        byte[] nonce, ProtocolVersion version) {
+    public NewSessionTicketParserTest(byte[] message, byte[] identity, long lifetime, byte[] ageadd, byte[] nonce,
+        ProtocolVersion version) {
         this.message = message;
-        this.start = start;
         this.version = version;
         this.identity = identity;
         this.lifetime = lifetime;
@@ -76,7 +77,8 @@ public class NewSessionTicketParserTest {
 
     @Test
     public void testParse() {
-        NewSessionTicketParser parser = new NewSessionTicketParser(start, message, version, config);
+        NewSessionTicketParser parser =
+            new NewSessionTicketParser(new ByteArrayInputStream(message), version, config, ConnectionEndType.SERVER);
         NewSessionTicketMessage msg = parser.parse();
         assertArrayEquals(identity, msg.getTicket().getIdentity().getValue());
         assertEquals(lifetime, (long) msg.getTicketLifetimeHint().getValue());

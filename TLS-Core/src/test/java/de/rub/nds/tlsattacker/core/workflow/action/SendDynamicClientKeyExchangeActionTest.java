@@ -14,8 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.record.AbstractRecord;
-import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
+import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
@@ -54,7 +53,6 @@ public class SendDynamicClientKeyExchangeActionTest {
 
         tlsContext = state.getTlsContext();
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
-        tlsContext.setRecordLayer(new TlsRecordLayer(tlsContext));
         tlsContext.setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
     }
 
@@ -87,13 +85,13 @@ public class SendDynamicClientKeyExchangeActionTest {
         assertTrue(action.getSendRecords() instanceof ArrayList && action.getSendRecords().isEmpty());
         action.execute(state);
         assertTrue(action.getSendRecords() instanceof ArrayList && action.getSendRecords().size() == 1
-            && action.getSendRecords().get(0) instanceof AbstractRecord);
+            && action.getSendRecords().get(0) instanceof Record);
     }
 
     @Test
     public void testSetRecords() {
         action.execute(state);
-        List<AbstractRecord> expectedRecords = new ArrayList<>();
+        List<Record> expectedRecords = new ArrayList<>();
         action.setRecords(expectedRecords);
         assertTrue(action.getSendRecords().equals(expectedRecords));
     }

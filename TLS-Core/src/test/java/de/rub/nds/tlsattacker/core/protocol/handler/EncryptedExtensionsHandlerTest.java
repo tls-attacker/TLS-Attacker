@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.EncryptedExtensionsPrepar
 import de.rub.nds.tlsattacker.core.protocol.serializer.EncryptedExtensionsSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.io.ByteArrayInputStream;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,7 +41,7 @@ public class EncryptedExtensionsHandlerTest {
      */
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[1], 0) instanceof EncryptedExtensionsParser);
+        assertTrue(handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof EncryptedExtensionsParser);
     }
 
     /**

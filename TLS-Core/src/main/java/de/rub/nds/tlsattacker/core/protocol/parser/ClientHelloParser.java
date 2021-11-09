@@ -25,7 +25,7 @@ public class ClientHelloParser extends HelloMessageParser<ClientHelloMessage> {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private ConnectionEndType talkingConnectionEndType;
-    
+
     /**
      * Constructor for the Parser class
      *
@@ -38,12 +38,16 @@ public class ClientHelloParser extends HelloMessageParser<ClientHelloMessage> {
 
     /**
      * Constructor for the Parser class
+     * 
      * @param stream
-     * @param version Version of the Protocol
-     * @param config A Config used in the current context
+     * @param version
+     *                                 Version of the Protocol
+     * @param config
+     *                                 A Config used in the current context
      * @param talkingConnectionEndType
      */
-    public ClientHelloParser(InputStream stream, ProtocolVersion version, Config config, ConnectionEndType talkingConnectionEndType) {
+    public ClientHelloParser(InputStream stream, ProtocolVersion version, Config config,
+        ConnectionEndType talkingConnectionEndType) {
         super(stream, HandshakeMessageType.CLIENT_HELLO, version, config);
         this.talkingConnectionEndType = talkingConnectionEndType;
     }
@@ -69,7 +73,7 @@ public class ClientHelloParser extends HelloMessageParser<ClientHelloMessage> {
         if (hasExtensionLengthField(msg)) {
             parseExtensionLength(msg);
             if (hasExtensions(msg)) {
-                 parseExtensionBytes(msg, getVersion(), talkingConnectionEndType, false);
+                parseExtensionBytes(msg, getVersion(), talkingConnectionEndType, false);
 
             }
         }

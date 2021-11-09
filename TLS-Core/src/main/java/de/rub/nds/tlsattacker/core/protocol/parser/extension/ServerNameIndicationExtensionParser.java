@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -53,10 +54,10 @@ public class ServerNameIndicationExtensionParser extends ExtensionParser<ServerN
     }
 
     /**
-     * Reads the next bytes as the serverNameListLength of the Extension and
-     * writes them in the message
+     * Reads the next bytes as the serverNameListLength of the Extension and writes them in the message
      *
-     * @param msg Message to write in
+     * @param msg
+     *            Message to write in
      */
     private void parseServerNameListLength(ServerNameIndicationExtensionMessage msg) {
         msg.setServerNameListLength(parseIntField(ExtensionByteLength.SERVER_NAME_LIST));
@@ -64,22 +65,22 @@ public class ServerNameIndicationExtensionParser extends ExtensionParser<ServerN
     }
 
     /**
-     * Reads the next bytes as the serverNameListBytes of the Extension and
-     * writes them in the message
+     * Reads the next bytes as the serverNameListBytes of the Extension and writes them in the message
      *
-     * @param msg Message to write in
+     * @param msg
+     *            Message to write in
      */
     private void parseServerNameListBytes(ServerNameIndicationExtensionMessage msg) {
         msg.setServerNameListBytes(parseByteArrayField(msg.getServerNameListLength().getValue()));
         LOGGER
-                .debug("ServerNameListBytes: " + ArrayConverter.bytesToHexString(msg.getServerNameListBytes().getValue()));
+            .debug("ServerNameListBytes: " + ArrayConverter.bytesToHexString(msg.getServerNameListBytes().getValue()));
     }
 
     /**
-     * Reads the next bytes as the serverNameList of the Extension and writes
-     * them in the message
+     * Reads the next bytes as the serverNameList of the Extension and writes them in the message
      *
-     * @param msg Message to write in
+     * @param msg
+     *            Message to write in
      */
     private void parseServerNameList(ServerNameIndicationExtensionMessage msg) {
         msg.setServerNameList(pairList);

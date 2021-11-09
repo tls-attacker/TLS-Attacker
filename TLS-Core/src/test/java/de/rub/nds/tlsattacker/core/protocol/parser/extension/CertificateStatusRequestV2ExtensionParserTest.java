@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.Re
 import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.ResponderId;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.RequestItemV2Preparator;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.List;
 import static org.junit.Assert.assertArrayEquals;
@@ -68,7 +69,6 @@ public class CertificateStatusRequestV2ExtensionParserTest {
         "010015000B00030102030004040506070006010203040506010015000B00030102030004040506070006010203040506");
     private final byte[] parseBytes = hexStringToByteArray(
         "001100340030010015000B00030102030004040506070006010203040506010015000B00030102030004040506070006010203040506");
-    private final int startPosition = 0;
     private final int extensionLength = 52;
     private final ExtensionType type = ExtensionType.STATUS_REQUEST_V2;
 
@@ -79,7 +79,7 @@ public class CertificateStatusRequestV2ExtensionParserTest {
         list.get(1).setResponderIdList(respList);
         list.get(1).setResponderIdListBytes(responderIdListBytes);
         CertificateStatusRequestV2ExtensionParser parser =
-            new CertificateStatusRequestV2ExtensionParser(startPosition, parseBytes, Config.createConfig());
+            new CertificateStatusRequestV2ExtensionParser(new ByteArrayInputStream(parseBytes), Config.createConfig());
         CertificateStatusRequestV2ExtensionMessage msg = parser.parse();
 
         assertArrayEquals(type.getValue(), msg.getExtensionType().getValue());

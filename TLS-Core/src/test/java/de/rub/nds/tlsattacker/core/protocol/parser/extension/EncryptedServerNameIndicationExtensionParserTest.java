@@ -31,6 +31,8 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EncryptedServer
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.io.ByteArrayInputStream;
 
 public class EncryptedServerNameIndicationExtensionParserTest {
 
@@ -80,8 +82,8 @@ public class EncryptedServerNameIndicationExtensionParserTest {
         serverKeyShareEntries.add(serverKeyShareEntry);
         context.getConfig().setEsniServerKeyPairs(serverKeyShareEntries);
 
-        EncryptedServerNameIndicationExtensionParser parser =
-            new EncryptedServerNameIndicationExtensionParser(0, msgBytes, context.getConfig());
+        EncryptedServerNameIndicationExtensionParser parser = new EncryptedServerNameIndicationExtensionParser(
+            new ByteArrayInputStream(msgBytes), context.getConfig(), ConnectionEndType.CLIENT);
         EncryptedServerNameIndicationExtensionMessage msg = parser.parse();
         EncryptedServerNameIndicationExtensionPreparator preparator =
             new EncryptedServerNameIndicationExtensionPreparator(chooser, msg, null);

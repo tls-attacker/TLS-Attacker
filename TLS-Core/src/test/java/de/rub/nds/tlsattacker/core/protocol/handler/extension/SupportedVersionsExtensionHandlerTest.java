@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.SupportedVersionsEx
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SupportedVersionsExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SupportedVersionsExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.ByteArrayInputStream;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
@@ -63,7 +64,7 @@ public class SupportedVersionsExtensionHandlerTest {
     @Test
     public void testGetParser() {
         assertTrue(
-            handler.getParser(new byte[] { 0, 2 }, 0, context.getConfig()) instanceof SupportedVersionsExtensionParser);
+            handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof SupportedVersionsExtensionParser);
     }
 
     /**

@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.SupplementalDataMessage;
+import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import static org.junit.Assert.assertArrayEquals;
@@ -59,7 +60,7 @@ public class SupplementalDataParserTest {
 
     @Test
     public void testParse() {
-        SupplementalDataParser parser = new SupplementalDataParser(0, message, version, config);
+        SupplementalDataParser parser = new SupplementalDataParser(new ByteArrayInputStream(message), version, config);
         SupplementalDataMessage suppDataMessage = parser.parse();
         assertArrayEquals(suppDataMessage.getCompleteResultingMessage().getValue(), message);
         assertTrue(suppDataMessage.getType().getValue() == type.getValue());

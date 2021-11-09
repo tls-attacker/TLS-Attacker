@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
+import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import static org.junit.Assert.*;
@@ -22,6 +23,7 @@ import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
 public class HeartbeatMessageParserTest {
+
     private static byte[] heartbeatRequest = ArrayConverter
         .hexStringToByteArray("010012000075a6d1d422693ea31584902266171b14ee376d595f5c65aeba8d04b0378faeda");
     private static byte[] requestPayload = ArrayConverter.hexStringToByteArray("000075a6d1d422693ea31584902266171b14");
@@ -34,12 +36,11 @@ public class HeartbeatMessageParserTest {
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(
-            new Object[][] { { heartbeatRequest, 0, heartbeatRequest, (byte) 0x1, 18, requestPayload, requestPadding },
-                { heartbeatResponse, 0, heartbeatResponse, (byte) 0x2, 18, responsePayload, responsePadding } });
+            new Object[][] { { heartbeatRequest, heartbeatRequest, (byte) 0x1, 18, requestPayload, requestPadding },
+                { heartbeatResponse, heartbeatResponse, (byte) 0x2, 18, responsePayload, responsePadding } });
     }
 
     private final byte[] message;
-    private final int start;
     // private final byte[] expectedPart;
 
     private final byte heartBeatType;
@@ -48,10 +49,9 @@ public class HeartbeatMessageParserTest {
     private final byte[] padding;
     private final Config config = Config.createConfig();
 
-    public HeartbeatMessageParserTest(byte[] message, int start, byte[] expectedPart, byte heartBeatType,
-        int payloadLength, byte[] payload, byte[] padding) {
+    public HeartbeatMessageParserTest(byte[] message, byte[] expectedPart, byte heartBeatType, int payloadLength,
+        byte[] payload, byte[] padding) {
         this.message = message;
-        this.start = start;
         // this.expectedPart = expectedPart;
         this.heartBeatType = heartBeatType;
         this.payloadLength = payloadLength;
@@ -64,7 +64,8 @@ public class HeartbeatMessageParserTest {
      */
     @Test
     public void testParse() {
-        HeartbeatMessageParser parser = new HeartbeatMessageParser(0, message, ProtocolVersion.TLS12, config);
+        HeartbeatMessageParser parser =
+            new HeartbeatMessageParser(new ByteArrayInputStream(message), ProtocolVersion.TLS12, config);
         HeartbeatMessage msg = parser.parse();
         assertTrue(heartBeatType == msg.getHeartbeatMessageType().getValue());
         assertTrue(payloadLength == msg.getPayloadLength().getValue());

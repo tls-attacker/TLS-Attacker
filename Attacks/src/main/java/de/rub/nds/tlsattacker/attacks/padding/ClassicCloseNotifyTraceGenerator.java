@@ -17,7 +17,6 @@ import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
-import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.GenericReceiveAction;
@@ -25,7 +24,6 @@ import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.util.LinkedList;
-import java.util.List;
 
 /**
  *
@@ -54,7 +52,7 @@ public class ClassicCloseNotifyTraceGenerator extends PaddingTraceGenerator {
         AlertMessage alert = new AlertMessage();
         alert.setConfig(AlertLevel.FATAL, AlertDescription.CLOSE_NOTIFY);
         SendAction sendAction = new SendAction(applicationMessage, alert);
-        sendAction.setRecords(new LinkedList<AbstractRecord>());
+        sendAction.setRecords(new LinkedList<>());
         sendAction.getRecords().add(vector.createRecord());
         sendAction.getRecords().add(new Record(config));
         trace.addTlsAction(sendAction);

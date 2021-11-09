@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -32,10 +33,13 @@ public class ServerHelloParser extends HelloMessageParser<ServerHelloMessage> {
      * Constructor for the ServerHelloMessageParser
      *
      * @param stream
-     * @param version The Version for which this message should be parsed
-     * @param config A Config used in the current context
+     * @param version
+     *                The Version for which this message should be parsed
+     * @param config
+     *                A Config used in the current context
      */
-    public ServerHelloParser(InputStream stream, ProtocolVersion version, Config config, ConnectionEndType talkingConnectionEndType) {
+    public ServerHelloParser(InputStream stream, ProtocolVersion version, Config config,
+        ConnectionEndType talkingConnectionEndType) {
         super(stream, HandshakeMessageType.SERVER_HELLO, version, config);
         this.talkingConnectionEndType = talkingConnectionEndType;
     }
@@ -43,17 +47,18 @@ public class ServerHelloParser extends HelloMessageParser<ServerHelloMessage> {
     /**
      * Reads the next bytes as a CipherSuite and writes them in the message
      *
-     * @param msg Message to write in
+     * @param msg
+     *            Message to write in
      */
     protected void parseSelectedCipherSuite(ServerHelloMessage msg) {
         msg.setSelectedCipherSuite(parseByteArrayField(HandshakeByteLength.CIPHER_SUITE));
     }
 
     /**
-     * Reads the next bytes as a CompressionMethod and writes them in the
-     * message
+     * Reads the next bytes as a CompressionMethod and writes them in the message
      *
-     * @param msg Message to write in
+     * @param msg
+     *            Message to write in
      */
     protected void parseSelectedCompressionMethod(ServerHelloMessage msg) {
         msg.setSelectedCompressionMethod(parseByteField(HandshakeByteLength.COMPRESSION));

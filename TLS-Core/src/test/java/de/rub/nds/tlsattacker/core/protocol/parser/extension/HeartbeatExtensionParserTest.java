@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.HeartbeatExtensionMessage;
+import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import static org.junit.Assert.*;
@@ -34,7 +35,6 @@ public class HeartbeatExtensionParserTest {
     }
 
     private final byte[] extension;
-    private final int start;
     private final byte[] completeExtension;
     private final ExtensionType type;
     private final int extensionLength;
@@ -43,7 +43,6 @@ public class HeartbeatExtensionParserTest {
     public HeartbeatExtensionParserTest(byte[] extension, ExtensionType type, int extensionLength,
         byte[] heartbeatMode) {
         this.extension = extension;
-        this.start = 0;
         this.completeExtension = extension;
         this.type = type;
         this.extensionLength = extensionLength;
@@ -55,7 +54,8 @@ public class HeartbeatExtensionParserTest {
      */
     @Test
     public void testParseExtensionMessageContent() {
-        HeartbeatExtensionParser parser = new HeartbeatExtensionParser(start, extension, Config.createConfig());
+        HeartbeatExtensionParser parser =
+            new HeartbeatExtensionParser(new ByteArrayInputStream(extension), Config.createConfig());
         HeartbeatExtensionMessage msg = parser.parse();
         assertArrayEquals(msg.getExtensionBytes().getValue(), completeExtension);
         assertArrayEquals(type.getValue(), msg.getExtensionType().getValue());

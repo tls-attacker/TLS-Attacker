@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -35,7 +36,8 @@ public class EsniKeyRecordParser extends Parser<EsniKeyRecord> {
     private final ConnectionEndType talkingConnectionEndType;
     private final ProtocolVersion selectedVersion;
 
-    public EsniKeyRecordParser(InputStream stream, Config config, ConnectionEndType talkingConnectionEndType, ProtocolVersion selectedVersion) {
+    public EsniKeyRecordParser(InputStream stream, Config config, ConnectionEndType talkingConnectionEndType,
+        ProtocolVersion selectedVersion) {
         super(stream);
         this.config = config;
         this.talkingConnectionEndType = talkingConnectionEndType;
@@ -72,7 +74,7 @@ public class EsniKeyRecordParser extends Parser<EsniKeyRecord> {
         int keysLen = this.parseIntField(ExtensionByteLength.KEY_SHARE_LIST_LENGTH);
         LOGGER.debug("KeysLength: " + keysLen);
         KeyShareStoreEntry entry;
-        //TODO this should use streams
+        // TODO this should use streams
         int i = 0;
         while (i < keysLen) {
             byte[] namedGroup = this.parseByteArrayField(ExtensionByteLength.KEY_SHARE_GROUP);
@@ -119,7 +121,8 @@ public class EsniKeyRecordParser extends Parser<EsniKeyRecord> {
         int extensionsLength = this.parseIntField(HandshakeByteLength.EXTENSION_LENGTH);
 
         byte[] extensionListBytes = parseByteArrayField(extensionsLength);
-        ExtensionListParser extensionListParser = new ExtensionListParser(new ByteArrayInputStream(extensionListBytes), config, talkingConnectionEndType, selectedVersion, false);
+        ExtensionListParser extensionListParser = new ExtensionListParser(new ByteArrayInputStream(extensionListBytes),
+            config, talkingConnectionEndType, selectedVersion, false);
         List<ExtensionMessage> parsed = extensionListParser.parse();
         record.setExtensions(parsed);
     }

@@ -29,10 +29,10 @@ public class CertificateStatusRequestV2ExtensionParser
     @Override
     public void parseExtensionMessageContent(CertificateStatusRequestV2ExtensionMessage msg) {
         msg.setStatusRequestListLength(parseIntField(ExtensionByteLength.CERTIFICATE_STATUS_REQUEST_V2_LIST));
-        
+
         msg.setStatusRequestBytes(parseByteArrayField(msg.getStatusRequestListLength().getValue()));
         ByteArrayInputStream innerStream = new ByteArrayInputStream(msg.getStatusRequestBytes().getValue());
-        
+
         int pointer = 0;
         List<RequestItemV2> itemList = new LinkedList<>();
         while (innerStream.available() > 0) {

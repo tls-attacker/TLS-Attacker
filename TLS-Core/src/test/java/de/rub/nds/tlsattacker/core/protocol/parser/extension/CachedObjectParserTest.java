@@ -12,6 +12,7 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 import de.rub.nds.tlsattacker.core.constants.CachedInfoType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import static org.junit.Assert.assertArrayEquals;
@@ -23,6 +24,7 @@ import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
 public class CachedObjectParserTest {
+
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] {
@@ -51,7 +53,8 @@ public class CachedObjectParserTest {
 
     @Test
     public void parse() {
-        CachedObjectParser parser = new CachedObjectParser(0, cachedObjectBytes, speakingEndType);
+        CachedObjectParser parser =
+            new CachedObjectParser(new ByteArrayInputStream(cachedObjectBytes), speakingEndType);
         CachedObject cachedObject = parser.parse();
 
         assertEquals(infoType.getValue(), (long) cachedObject.getCachedInformationType().getValue());

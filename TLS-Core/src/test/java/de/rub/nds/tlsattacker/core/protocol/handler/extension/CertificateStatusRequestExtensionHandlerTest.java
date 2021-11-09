@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.CertificateStatusRe
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.CertificateStatusRequestExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.CertificateStatusRequestExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.ByteArrayInputStream;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -55,8 +56,8 @@ public class CertificateStatusRequestExtensionHandlerTest {
 
     @Test
     public void testGetParser() {
-        assertTrue(
-            handler.getParser(new byte[0], 0, context.getConfig()) instanceof CertificateStatusRequestExtensionParser);
+        assertTrue(handler
+            .getParser(new ByteArrayInputStream(new byte[0])) instanceof CertificateStatusRequestExtensionParser);
     }
 
     @Test

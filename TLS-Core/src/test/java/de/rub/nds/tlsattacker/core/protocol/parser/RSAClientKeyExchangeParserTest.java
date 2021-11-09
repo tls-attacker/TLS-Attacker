@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
+import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import static org.junit.Assert.*;
@@ -78,7 +79,7 @@ public class RSAClientKeyExchangeParserTest {
     @Test
     public void testParse() {
         RSAClientKeyExchangeParser<RSAClientKeyExchangeMessage> parser =
-            new RSAClientKeyExchangeParser(0, message, version, config);
+            new RSAClientKeyExchangeParser(new ByteArrayInputStream(message), version, config);
         RSAClientKeyExchangeMessage msg = parser.parse();
         assertArrayEquals(message, msg.getCompleteResultingMessage().getValue());
         assertEquals(length, msg.getLength().getValue().intValue());

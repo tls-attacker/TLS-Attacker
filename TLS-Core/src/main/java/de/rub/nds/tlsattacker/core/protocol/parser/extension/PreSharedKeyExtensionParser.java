@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -35,7 +36,7 @@ public class PreSharedKeyExtensionParser extends ExtensionParser<PreSharedKeyExt
     @Override
     public void parseExtensionMessageContent(PreSharedKeyExtensionMessage msg) {
         LOGGER.debug("Parsing PreSharedKeyExtensionMessage");
-        //TODO DO NOT GUESS HERE
+        // TODO DO NOT GUESS HERE
         // Client -> Server
         if (msg.getExtensionLength().getValue() > 2) {
             parsePreSharedKeyIdentityListLength(msg);
@@ -82,7 +83,7 @@ public class PreSharedKeyExtensionParser extends ExtensionParser<PreSharedKeyExt
 
         List<PSKBinder> binders = new LinkedList<>();
         ByteArrayInputStream innerStream = new ByteArrayInputStream(msg.getBinderListBytes().getValue());
-        
+
         while (innerStream.available() > 0) {
             PSKBinderParser parser = new PSKBinderParser(innerStream);
             binders.add(parser.parse());

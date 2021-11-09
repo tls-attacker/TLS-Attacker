@@ -14,6 +14,8 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import static org.junit.Assert.*;
@@ -33,16 +35,15 @@ public class CertificateRequestParserTest {
         return Arrays.asList(new Object[][] { {
             ArrayConverter.hexStringToByteArray(
                 "0d00002603010240001e0601060206030501050205030401040204030301030203030201020202030000"),
-            0,
             ArrayConverter.hexStringToByteArray(
                 "0d00002603010240001e0601060206030501050205030401040204030301030203030201020202030000"),
             HandshakeMessageType.CERTIFICATE_REQUEST, 38, 3, RSA_DSS_ECDSA_TYPES, 30,
             ArrayConverter.hexStringToByteArray("060106020603050105020503040104020403030103020303020102020203"), 0,
-            null, ProtocolVersion.TLS12 },
-            /*
-             * { SSL3_CERTREQ_MSG, 0, SSL3_CERTREQ_MSG, HandshakeMessageType.CERTIFICATE_REQUEST, 6, 3,
-             * RSA_DSS_ECDSA_TYPES, 0,null, 0, null,ProtocolVersion.SSL3 }
-             */ });
+            null, ProtocolVersion.TLS12 }, /*
+                                            * { SSL3_CERTREQ_MSG, 0, SSL3_CERTREQ_MSG,
+                                            * HandshakeMessageType.CERTIFICATE_REQUEST, 6, 3, RSA_DSS_ECDSA_TYPES,
+                                            * 0,null, 0, null,ProtocolVersion.SSL3 }
+                                            */ });
         // TestData is correct, however Certificate request and other
         // Client-Authentication related messages are not yet supported for
         // TLS-Version < 1.2
@@ -80,7 +81,8 @@ public class CertificateRequestParserTest {
      */
     @Test
     public void testParse() {
-        CertificateRequestParser parser = new CertificateRequestParser(0, message, version, config);
+        CertificateRequestParser parser =
+            new CertificateRequestParser(new ByteArrayInputStream(message), version, config, ConnectionEndType.SERVER);
         CertificateRequestMessage msg = parser.parse();
         assertArrayEquals(message, msg.getCompleteResultingMessage().getValue());
         assertTrue(msg.getLength().getValue() == length);

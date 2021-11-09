@@ -18,6 +18,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.RecordSizeLimit
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.RecordSizeLimitExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.io.ByteArrayInputStream;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -71,8 +72,7 @@ public class RecordSizeLimitExtensionHandlerTest {
      */
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[] { 0, 1, 2, 3 }, 0,
-            context.getConfig()) instanceof RecordSizeLimitExtensionParser);
+        assertTrue(handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof RecordSizeLimitExtensionParser);
     }
 
     /**

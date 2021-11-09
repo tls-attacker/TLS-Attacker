@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.GreaseExtensionMessage;
+import java.io.ByteArrayInputStream;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -28,22 +29,20 @@ public class GreaseExtensionParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { { ArrayConverter.hexStringToByteArray("1a1a000a0102030405060708090a"), 0,
+        return Arrays.asList(new Object[][] { { ArrayConverter.hexStringToByteArray("1a1a000a0102030405060708090a"),
             ArrayConverter.hexStringToByteArray("1a1a000a0102030405060708090a"), ExtensionType.GREASE_01, 10,
             new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 } } });
     }
 
     private final byte[] extension;
-    private final int start;
     private final byte[] completeExtension;
     private final ExtensionType type;
     private final int extensionLength;
     private final byte[] randomData;
 
-    public GreaseExtensionParserTest(byte[] extension, int start, byte[] completeExtension, ExtensionType type,
+    public GreaseExtensionParserTest(byte[] extension, byte[] completeExtension, ExtensionType type,
         int extensionLength, byte[] randomData) {
         this.extension = extension;
-        this.start = start;
         this.completeExtension = completeExtension;
         this.type = type;
         this.extensionLength = extensionLength;
@@ -55,7 +54,8 @@ public class GreaseExtensionParserTest {
      */
     @Test
     public void testParseExtensionMessageContent() {
-        GreaseExtensionParser parser = new GreaseExtensionParser(start, extension, Config.createConfig());
+        GreaseExtensionParser parser =
+            new GreaseExtensionParser(new ByteArrayInputStream(extension), Config.createConfig());
         GreaseExtensionMessage msg = parser.parse();
         assertArrayEquals(msg.getExtensionBytes().getValue(), completeExtension);
         assertArrayEquals(type.getValue(), msg.getExtensionType().getValue());

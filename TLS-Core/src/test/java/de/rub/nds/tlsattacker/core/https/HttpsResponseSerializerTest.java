@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.https;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import java.io.ByteArrayInputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.Collection;
@@ -45,7 +46,7 @@ public class HttpsResponseSerializerTest {
      */
     @Test
     public void testSerializeProtocolMessageContent() {
-        HttpsResponseParser parser = new HttpsResponseParser(0, msg, version, config);
+        HttpsResponseParser parser = new HttpsResponseParser(new ByteArrayInputStream(msg), version, config);
         HttpsResponseMessage parsedMsg = parser.parse();
         HttpsResponseSerializer serializer = new HttpsResponseSerializer(parsedMsg, version);
 

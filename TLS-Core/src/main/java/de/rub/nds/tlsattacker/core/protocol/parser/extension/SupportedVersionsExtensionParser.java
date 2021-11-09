@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -28,7 +29,7 @@ public class SupportedVersionsExtensionParser extends ExtensionParser<SupportedV
     @Override
     public void parseExtensionMessageContent(SupportedVersionsExtensionMessage msg) {
         LOGGER.debug("Parsing SupportedVersionsExtensionMessage");
-        //TODO Don't guess
+        // TODO Don't guess
         if (msg.getExtensionLength().getValue() == HandshakeByteLength.VERSION) {
             // This looks like a ServerProtocolVersionExtension
             msg.setSupportedVersions(parseByteArrayField(HandshakeByteLength.VERSION));
@@ -45,10 +46,10 @@ public class SupportedVersionsExtensionParser extends ExtensionParser<SupportedV
     }
 
     /**
-     * Reads the next bytes as the supportedVersionLength of the Extension and
-     * writes them in the message
+     * Reads the next bytes as the supportedVersionLength of the Extension and writes them in the message
      *
-     * @param msg Message to write in
+     * @param msg
+     *            Message to write in
      */
     private void parseSupportedVersionLength(SupportedVersionsExtensionMessage msg) {
         msg.setSupportedVersionsLength(parseIntField(ExtensionByteLength.SUPPORTED_PROTOCOL_VERSIONS_LENGTH));
@@ -56,10 +57,10 @@ public class SupportedVersionsExtensionParser extends ExtensionParser<SupportedV
     }
 
     /**
-     * Reads the next bytes as the supportedVersion of the Extension and writes
-     * them in the message
+     * Reads the next bytes as the supportedVersion of the Extension and writes them in the message
      *
-     * @param msg Message to write in
+     * @param msg
+     *            Message to write in
      */
     private void parseSupportedVersion(SupportedVersionsExtensionMessage msg) {
         msg.setSupportedVersions(parseByteArrayField(msg.getSupportedVersionsLength().getValue()));

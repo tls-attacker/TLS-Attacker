@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -20,7 +21,8 @@ import org.apache.logging.log4j.Logger;
 /**
  * Abstract Parser class which can be used to read a byte array.
  *
- * @param <T> Type of the Object that should be parsed
+ * @param <T>
+ *            Type of the Object that should be parsed
  */
 public abstract class Parser<T> {
 
@@ -36,7 +38,8 @@ public abstract class Parser<T> {
     /**
      * Constructor for the Parser
      *
-     * @param stream The Inputstream to read data drom
+     * @param stream
+     *               The Inputstream to read data drom
      */
     public Parser(InputStream stream) {
         this.stream = stream;
@@ -50,8 +53,9 @@ public abstract class Parser<T> {
     /**
      * Parses a number of bytes from the Array and returns them as a byte[].
      *
-     * @param length Number of bytes to be parsed
-     * @return A subByteArray of according size from the Array
+     * @param  length
+     *                Number of bytes to be parsed
+     * @return        A subByteArray of according size from the Array
      */
     protected byte[] parseByteArrayField(int length) {
         byte[] data = new byte[length];
@@ -65,12 +69,12 @@ public abstract class Parser<T> {
     }
 
     /**
-     * Parses a number of bytes from the Array and returns them as a int. Throws
-     * a ParserException if the number of bytes cannot be parsed. Moves the
-     * pointer accordingly.
+     * Parses a number of bytes from the Array and returns them as a int. Throws a ParserException if the number of
+     * bytes cannot be parsed. Moves the pointer accordingly.
      *
-     * @param length Number of bytes to be parsed
-     * @return An integer representation of the subByteArray
+     * @param  length
+     *                Number of bytes to be parsed
+     * @return        An integer representation of the subByteArray
      */
     protected int parseIntField(int length) {
         if (length == 0) {
@@ -80,12 +84,12 @@ public abstract class Parser<T> {
     }
 
     /**
-     * Parses a number of bytes from the Array and returns them as a positive
-     * BigInteger. Throws a ParserException if the number of bytes cannot be
-     * parsed. Moves the pointer accordingly.
+     * Parses a number of bytes from the Array and returns them as a positive BigInteger. Throws a ParserException if
+     * the number of bytes cannot be parsed. Moves the pointer accordingly.
      *
-     * @param length Number of bytes to be parsed
-     * @return A BigInteger representation of the subByteArray
+     * @param  length
+     *                Number of bytes to be parsed
+     * @return        A BigInteger representation of the subByteArray
      */
     protected BigInteger parseBigIntField(int length) {
         if (length == 0) {
@@ -95,12 +99,12 @@ public abstract class Parser<T> {
     }
 
     /**
-     * Parses a number of bytes from the Array and returns them as a byte.
-     * Throws a ParserException if the number of bytes cannot be parsed. Moves
-     * the pointer accordingly.
+     * Parses a number of bytes from the Array and returns them as a byte. Throws a ParserException if the number of
+     * bytes cannot be parsed. Moves the pointer accordingly.
      *
-     * @param length Number of bytes to be parsed
-     * @return An integer representation of the subByteArray
+     * @param  length
+     *                Number of bytes to be parsed
+     * @return        An integer representation of the subByteArray
      */
     protected byte parseByteField(int length) {
         if (length == 0) {
@@ -126,8 +130,9 @@ public abstract class Parser<T> {
     /**
      * Checks if there are at least count bytes left to read
      *
-     * @param count Number of bytes to check for
-     * @return True if there are at least count bytes left to read
+     * @param  count
+     *               Number of bytes to check for
+     * @return       True if there are at least count bytes left to read
      */
     protected boolean enoughBytesLeft(int count) {
         return getBytesLeft() >= count;
@@ -158,7 +163,8 @@ public abstract class Parser<T> {
 
     /**
      * TODO: This can break get already parsed - not so nice
-     * @return 
+     * 
+     * @return
      */
     protected InputStream getStream() {
         return stream;

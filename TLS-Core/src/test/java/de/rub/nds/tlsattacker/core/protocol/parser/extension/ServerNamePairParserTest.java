@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
+import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import static org.junit.Assert.*;
@@ -50,7 +51,7 @@ public class ServerNamePairParserTest {
      */
     @Test
     public void testParse() {
-        ServerNamePairParser parser = new ServerNamePairParser(0, servernamePairBytes);
+        ServerNamePairParser parser = new ServerNamePairParser(new ByteArrayInputStream(servernamePairBytes));
         ServerNamePair pair = parser.parse();
         assertArrayEquals(serverName, pair.getServerName().getValue());
         assertTrue(serverNameLength == pair.getServerNameLength().getValue());

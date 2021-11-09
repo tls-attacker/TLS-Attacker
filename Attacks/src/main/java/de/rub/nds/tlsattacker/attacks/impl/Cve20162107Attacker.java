@@ -27,7 +27,6 @@ import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.TlsMessage;
-import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
@@ -94,7 +93,7 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
 
         // We need 2-3 Records,one for every message, while the last one will
         // have the modified padding
-        List<AbstractRecord> records = new LinkedList<>();
+        List<Record> records = new LinkedList<>();
         Record record = createRecordWithBadPadding();
         tlsConfig.setCreateIndividualRecords(true);
         records.add(new Record(tlsConfig));

@@ -12,6 +12,7 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.UnknownExtensionMessage;
+import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import org.apache.logging.log4j.LogManager;
@@ -65,7 +66,8 @@ public class UnknownExtensionParserTest {
      */
     @Test
     public void testParse() {
-        UnknownExtensionParser parser = new UnknownExtensionParser(0, array, Config.createConfig());
+        UnknownExtensionParser parser =
+            new UnknownExtensionParser(new ByteArrayInputStream(array), Config.createConfig());
         UnknownExtensionMessage unknownMessage = parser.parse();
         assertArrayEquals(message, unknownMessage.getExtensionBytes().getValue());
         if (type != null) {

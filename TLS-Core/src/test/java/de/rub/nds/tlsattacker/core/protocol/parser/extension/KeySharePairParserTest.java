@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
+import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import static org.junit.Assert.assertArrayEquals;
@@ -48,7 +49,7 @@ public class KeySharePairParserTest {
      */
     @Test
     public void testParse() {
-        KeyShareEntryParser parser = new KeyShareEntryParser(0, keySharePairBytes);
+        KeyShareEntryParser parser = new KeyShareEntryParser(new ByteArrayInputStream(keySharePairBytes));
         KeyShareEntry entry = parser.parse();
         assertArrayEquals(keyShare, entry.getPublicKey().getValue());
         assertTrue(keyShareLength == entry.getPublicKeyLength().getValue());

@@ -14,10 +14,8 @@ import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.SendMessageHelper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
@@ -87,10 +85,9 @@ public class FinishedPreparatorTest {
             clientKeyExchangeHex);
 
         preparator.prepare();
-
-        @SuppressWarnings("unchecked")
-        byte[] protocolMessageBytes = SendMessageHelper.prepareMessage(message, context);
-        Assert.assertArrayEquals(ArrayConverter.hexStringToByteArray(finishedHex), protocolMessageBytes);
+        // TODO might be wrong
+        Assert.assertArrayEquals(ArrayConverter.hexStringToByteArray(finishedHex),
+            message.getCompleteResultingMessage().getValue());
     }
 
     @Test
@@ -116,10 +113,11 @@ public class FinishedPreparatorTest {
 
         preparator.prepare();
 
-        @SuppressWarnings("unchecked")
-        byte[] protocolMessageBytes = SendMessageHelper.prepareMessage(message, context);
-        Assert.assertEquals(ArrayConverter.hexStringToByteArray(finishedHex).length, protocolMessageBytes.length);
-        Assert.assertArrayEquals(ArrayConverter.hexStringToByteArray(finishedHex), protocolMessageBytes);
+        // TODO might be wrong
+        Assert.assertEquals(ArrayConverter.hexStringToByteArray(finishedHex).length,
+            message.getCompleteResultingMessage().getValue().length);
+        Assert.assertArrayEquals(ArrayConverter.hexStringToByteArray(finishedHex),
+            message.getCompleteResultingMessage().getValue());
     }
 
     /**

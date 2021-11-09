@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -57,7 +58,7 @@ public class ClientEsniInnerParser extends Parser<ClientEsniInner> {
         byte[] serverNameListByte = parseByteArrayField(clientEsniInner.getServerNameListLength().getValue());
         clientEsniInner.setServerNameListBytes(serverNameListByte);
         LOGGER.debug("serverNameListByte: "
-                + ArrayConverter.bytesToHexString(clientEsniInner.getServerNameListBytes().getValue()));
+            + ArrayConverter.bytesToHexString(clientEsniInner.getServerNameListBytes().getValue()));
     }
 
     private void parsePadding(ClientEsniInner clientEsniInner) {
@@ -68,10 +69,10 @@ public class ClientEsniInnerParser extends Parser<ClientEsniInner> {
 
     private void parseServerNameList(ClientEsniInner clientEsniInner) {
         List<ServerNamePair> serverNamePairList = new LinkedList<>();
-        ByteArrayInputStream innerStream = new ByteArrayInputStream(clientEsniInner.getServerNameListBytes().getValue());
+        ByteArrayInputStream innerStream =
+            new ByteArrayInputStream(clientEsniInner.getServerNameListBytes().getValue());
         while (innerStream.available() > 0) {
-            ServerNamePairParser parser
-                    = new ServerNamePairParser(innerStream);
+            ServerNamePairParser parser = new ServerNamePairParser(innerStream);
             serverNamePairList.add(parser.parse());
         }
         clientEsniInner.setServerNameList(serverNamePairList);

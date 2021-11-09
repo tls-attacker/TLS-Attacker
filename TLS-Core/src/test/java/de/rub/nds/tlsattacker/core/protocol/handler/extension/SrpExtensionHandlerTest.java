@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.SRPExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SRPExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SRPExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.ByteArrayInputStream;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
@@ -45,7 +46,7 @@ public class SrpExtensionHandlerTest {
 
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[0], 0, context.getConfig()) instanceof SRPExtensionParser);
+        assertTrue(handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof SRPExtensionParser);
     }
 
     @Test

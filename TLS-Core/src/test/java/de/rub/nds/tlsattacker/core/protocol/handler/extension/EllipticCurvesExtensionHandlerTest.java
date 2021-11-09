@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.EllipticCurvesExten
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EllipticCurvesExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.EllipticCurvesExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.ByteArrayInputStream;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -56,8 +57,7 @@ public class EllipticCurvesExtensionHandlerTest {
      */
     @Test
     public void testGetParser() {
-        assertTrue(
-            handler.getParser(new byte[] { 1, 2 }, 0, context.getConfig()) instanceof EllipticCurvesExtensionParser);
+        assertTrue(handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof EllipticCurvesExtensionParser);
     }
 
     /**

@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
+import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import static org.junit.Assert.*;
@@ -72,7 +73,7 @@ public class SSL2ClientHelloParserTest {
      */
     @Test
     public void testParse() {
-        SSL2ClientHelloParser parser = new SSL2ClientHelloParser(0, message, version, config);
+        SSL2ClientHelloParser parser = new SSL2ClientHelloParser(new ByteArrayInputStream(message), version, config);
         SSL2ClientHelloMessage msg = parser.parse();
         assertArrayEquals(message, msg.getCompleteResultingMessage().getValue());
         assertTrue(msg.getMessageLength().getValue() == messageLength);

@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.UnknownMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.UnknownMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.UnknownMessageSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.ByteArrayInputStream;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,7 +36,7 @@ public class UnknownHandlerTest {
      */
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[] { 0 }, 0) instanceof UnknownMessageParser);
+        assertTrue(handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof UnknownMessageParser);
     }
 
     /**

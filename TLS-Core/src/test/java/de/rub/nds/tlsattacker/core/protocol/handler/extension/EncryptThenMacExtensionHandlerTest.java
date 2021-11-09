@@ -15,11 +15,13 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.EncryptThenMacExten
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EncryptThenMacExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.EncryptThenMacExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.ByteArrayInputStream;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
 public class EncryptThenMacExtensionHandlerTest {
+
     private EncryptThenMacExtensionHandler handler;
     private TlsContext context;
 
@@ -38,7 +40,7 @@ public class EncryptThenMacExtensionHandlerTest {
 
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[0], 0, context.getConfig()) instanceof EncryptThenMacExtensionParser);
+        assertTrue(handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof EncryptThenMacExtensionParser);
     }
 
     @Test

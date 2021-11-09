@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientAuthzExtensionMessage;
+import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import static org.junit.Assert.assertArrayEquals;
@@ -23,35 +24,34 @@ import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
 public class ClientAuthzExtensionParserTest {
+
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(
             new Object[][] { { ExtensionType.CLIENT_AUTHZ, ArrayConverter.hexStringToByteArray("000700050400010203"), 5,
-                0, 4, ArrayConverter.hexStringToByteArray("00010203") } });
+                4, ArrayConverter.hexStringToByteArray("00010203") } });
     }
 
     private final ExtensionType extensionType;
     private final byte[] expectedBytes;
     private final int extensionLength;
-    private final int startParsing;
     private final int authzFormatListLength;
     private final byte[] authzFormatList;
     private ClientAuthzExtensionParser parser;
     private ClientAuthzExtensionMessage msg;
 
     public ClientAuthzExtensionParserTest(ExtensionType extensionType, byte[] expectedBytes, int extensionLength,
-        int startParsing, int authzFormatListLength, byte[] authzFormatList) {
+        int authzFormatListLength, byte[] authzFormatList) {
         this.extensionType = extensionType;
         this.expectedBytes = expectedBytes;
         this.extensionLength = extensionLength;
-        this.startParsing = startParsing;
         this.authzFormatListLength = authzFormatListLength;
         this.authzFormatList = authzFormatList;
     }
 
     @Test
     public void testParseExtensionMessageContent() {
-        parser = new ClientAuthzExtensionParser(startParsing, expectedBytes, Config.createConfig());
+        parser = new ClientAuthzExtensionParser(new ByteArrayInputStream(expectedBytes), Config.createConfig());
         msg = parser.parse();
 
         assertArrayEquals(extensionType.getValue(), msg.getExtensionType().getValue());

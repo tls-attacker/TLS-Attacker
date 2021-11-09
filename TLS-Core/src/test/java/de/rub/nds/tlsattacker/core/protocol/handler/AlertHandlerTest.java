@@ -18,6 +18,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.AlertPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.AlertSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.io.ByteArrayInputStream;
 import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -43,7 +44,7 @@ public class AlertHandlerTest {
      */
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[1], 0) instanceof AlertParser);
+        assertTrue(handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof AlertParser);
     }
 
     /**

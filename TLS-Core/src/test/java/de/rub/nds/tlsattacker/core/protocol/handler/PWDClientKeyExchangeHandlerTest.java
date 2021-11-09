@@ -18,8 +18,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.PWDClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.PWDClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.PWDClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.PWDClientKeyExchangeSerializer;
-import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.ByteArrayInputStream;
 import java.math.BigInteger;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -41,7 +41,7 @@ public class PWDClientKeyExchangeHandlerTest {
      */
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[1], 0) instanceof PWDClientKeyExchangeParser);
+        assertTrue(handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof PWDClientKeyExchangeParser);
     }
 
     /**
@@ -66,7 +66,6 @@ public class PWDClientKeyExchangeHandlerTest {
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         context.getConfig().setDefaultSelectedNamedGroup(NamedGroup.BRAINPOOLP256R1);
         context.setSelectedGroup(NamedGroup.BRAINPOOLP256R1);
-        context.setRecordLayer(new TlsRecordLayer(context));
         context.setClientRandom(
             ArrayConverter.hexStringToByteArray("528fbf52175de2c869845fdbfa8344f7d732712ebfa679d8643cd31a880e043d"));
         context.setServerRandom(

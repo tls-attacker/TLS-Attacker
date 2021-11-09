@@ -12,13 +12,12 @@ package de.rub.nds.tlsattacker.attacks.actions;
 import de.rub.nds.modifiablevariable.util.Modifiable;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.layer.hints.RecordLayerHint;
 import de.rub.nds.tlsattacker.core.protocol.handler.ClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.SendMessageHelper;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import java.io.IOException;
 import java.util.LinkedList;
@@ -66,20 +65,15 @@ public class EarlyCcsAction extends TlsAction {
         }
         message.setAdjustContext(Modifiable.explicit(false));
         ClientKeyExchangeHandler handler = (ClientKeyExchangeHandler) message.getHandler(state.getTlsContext());
-        byte[] protocolMessageBytes = SendMessageHelper.prepareMessage(message, state.getTlsContext());
+        message.getHandler(state.getTlsContext()).getPreparator(message).prepare();
         if (targetOpenssl100) {
             handler.adjustPremasterSecret(message);
             handler.adjustMasterSecret(message);
         }
         handler.adjustTlsContextAfterSerialize(message);
-        List<AbstractRecord> recordList = new LinkedList<>();
-        Record r = new Record();
-        r.setContentMessageType(ProtocolMessageType.HANDSHAKE);
-        recordList.add(r);
-        byte[] prepareRecords = state.getTlsContext().getRecordLayer().prepareRecords(protocolMessageBytes,
-            ProtocolMessageType.HANDSHAKE, recordList);
         try {
-            state.getTlsContext().getTransportHandler().sendData(prepareRecords);
+            state.getTlsContext().getRecordLayer().sendData(new RecordLayerHint(ProtocolMessageType.HANDSHAKE),
+                message.getCompleteResultingMessage().getValue());
             executedAsPlanned = true;
         } catch (IOException e) {
             LOGGER.debug("Could not write Data to stream", e);

@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.ServerHelloDoneParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ServerHelloDonePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ServerHelloDoneSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.ByteArrayInputStream;
 import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -39,7 +40,7 @@ public class ServerHelloDoneHandlerTest {
      */
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[1], 0) instanceof ServerHelloDoneParser);
+        assertTrue(handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof ServerHelloDoneParser);
     }
 
     /**

@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtendedMasterS
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtendedMasterSecretExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.io.ByteArrayInputStream;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
@@ -51,7 +52,7 @@ public class ExtendedMasterSecretExtensionHandlerTest {
     @Test
     public void testGetParser() {
         assertTrue(
-            handler.getParser(new byte[] {}, 0, context.getConfig()) instanceof ExtendedMasterSecretExtensionParser);
+            handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof ExtendedMasterSecretExtensionParser);
     }
 
     @Test

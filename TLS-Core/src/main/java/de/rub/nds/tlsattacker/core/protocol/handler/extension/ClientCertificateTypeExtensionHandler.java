@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
@@ -49,12 +50,12 @@ public class ClientCertificateTypeExtensionHandler extends ExtensionHandler<Clie
                 LOGGER.warn("Invalid ClientCertificateType extension. Not adjusting context");
             } else {
                 context.setSelectedClientCertificateType(
-                        CertificateType.getCertificateType(message.getCertificateTypes().getValue()[0]));
+                    CertificateType.getCertificateType(message.getCertificateTypes().getValue()[0]));
             }
         } else {
             if (message.getCertificateTypes() != null) {
                 context.setClientCertificateTypeDesiredTypes(
-                        CertificateType.getCertificateTypesAsList(message.getCertificateTypes().getValue()));
+                    CertificateType.getCertificateTypesAsList(message.getCertificateTypes().getValue()));
             } else {
                 LOGGER.warn("Null CertificateTypes - not adjusting");
             }

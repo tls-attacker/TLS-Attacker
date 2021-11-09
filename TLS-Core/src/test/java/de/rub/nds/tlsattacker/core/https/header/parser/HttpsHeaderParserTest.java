@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.https.header.parser;
 
 import de.rub.nds.tlsattacker.core.https.header.HttpsHeader;
+import java.io.ByteArrayInputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.Collection;
@@ -24,17 +25,15 @@ public class HttpsHeaderParserTest {
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() throws UnsupportedEncodingException {
         byte[] msg = "Host: rub.com\r\n".getBytes("ASCII");
-        return Arrays.asList(new Object[][] { { msg, 0, "Host", "rub.com" } });
+        return Arrays.asList(new Object[][] { { msg, "Host", "rub.com" } });
     }
 
     private final byte[] message;
-    private final int start;
     private final String headerName;
     private final String headerValue;
 
-    public HttpsHeaderParserTest(byte[] message, int start, String headerName, String headerValue) {
+    public HttpsHeaderParserTest(byte[] message, String headerName, String headerValue) {
         this.message = message;
-        this.start = start;
         this.headerName = headerName;
         this.headerValue = headerValue;
     }
@@ -44,7 +43,7 @@ public class HttpsHeaderParserTest {
      */
     @Test
     public void testParse() {
-        HttpsHeaderParser parser = new HttpsHeaderParser(start, message);
+        HttpsHeaderParser parser = new HttpsHeaderParser(new ByteArrayInputStream(message));
         HttpsHeader header = parser.parse();
 
         assertEquals(headerName, header.getHeaderName().getValue());

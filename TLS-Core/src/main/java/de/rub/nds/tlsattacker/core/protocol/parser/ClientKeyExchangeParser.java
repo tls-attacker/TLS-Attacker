@@ -26,9 +26,9 @@ public abstract class ClientKeyExchangeParser<T extends ClientKeyExchangeMessage
      *
      * @param stream
      * @param version
-     *                      Version of the Protocol
+     *                Version of the Protocol
      * @param config
-     *                      A Config used in the current context
+     *                A Config used in the current context
      */
     public ClientKeyExchangeParser(InputStream stream, ProtocolVersion version, Config config) {
         super(stream, HandshakeMessageType.CLIENT_KEY_EXCHANGE, version, config);

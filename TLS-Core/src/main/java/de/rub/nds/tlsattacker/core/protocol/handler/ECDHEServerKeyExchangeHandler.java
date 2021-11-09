@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
@@ -22,7 +23,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class ECDHEServerKeyExchangeHandler<T extends ECDHEServerKeyExchangeMessage>
-        extends ServerKeyExchangeHandler<T> {
+    extends ServerKeyExchangeHandler<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -33,8 +34,8 @@ public class ECDHEServerKeyExchangeHandler<T extends ECDHEServerKeyExchangeMessa
     @Override
     public ECDHEServerKeyExchangeParser<T> getParser(InputStream stream) {
         return new ECDHEServerKeyExchangeParser<T>(stream, tlsContext.getChooser().getLastRecordVersion(),
-                AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite()),
-                tlsContext.getConfig());
+            AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite()),
+            tlsContext.getConfig());
     }
 
     @Override
