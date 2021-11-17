@@ -64,6 +64,12 @@ public class PseudoRandomFunction {
     public static final String IV_BLOCK_LABEL = "IV block";
 
     /**
+     * sByte is a constant additional salt byte that is used in the computeSSL3 method
+     * for computing a pseudo random bit stream as described in the RFC 6101
+     */
+    private static final byte sByte = 0x41;
+
+    /**
      * Computes the PRF output for SSL3 of the provided size
      *
      * @param  master_secret
@@ -86,29 +92,29 @@ public class PseudoRandomFunction {
         HMAC md5 = new HMAC(MacAlgorithm.HMAC_MD5);
         HMAC sha = new HMAC(MacAlgorithm.HMAC_SHA1);
 
-        byte[] pseudoRandomBitStream = new byte[0];
-
+        ByteArrayOutputStream pseudoRandomBitStream = new ByteArrayOutputStream();
         /*
+         * RFC 6101: 6.1. Converting the Master Secret into Keys and MAC Secrets
          * To generate the key material, compute pseudoRandomBitStream = MD5(master_secret + SHA(`A' + master_secret +
          * ServerHello.random + ClientHello.random)) + MD5(master_secret + SHA(`BB' + master_secret + ServerHello.random
          * + ClientHello.random)) + MD5(master_secret + SHA(`CCC' + master_secret + ServerHello.random +
          * ClientHello.random)) + [...]; until enough output has been generated.
          */
-        for (int i = 0; pseudoRandomBitStream.length <= size; i++) {
+        for (int i = 0; pseudoRandomBitStream.size() <= size; i++) {
             ByteArrayOutputStream outputMd5 = new ByteArrayOutputStream();
             ByteArrayOutputStream outputSha = new ByteArrayOutputStream();
             ByteArrayOutputStream salt = new ByteArrayOutputStream();
             for (int j = 0; j <= i; j++) {
-                salt.write(0x41 + i);
+                salt.write(sByte + i);
             }
 
             outputSha.write(sha.getDigest()
                 .digest(ArrayConverter.concatenate(salt.toByteArray(), master_secret, server_random, client_random)));
             outputMd5.write(md5.getDigest().digest(ArrayConverter.concatenate(master_secret, outputSha.toByteArray())));
 
-            pseudoRandomBitStream = ArrayConverter.concatenate(pseudoRandomBitStream, outputMd5.toByteArray());
+            pseudoRandomBitStream.write(outputMd5.toByteArray());
         }
-        return Arrays.copyOf(pseudoRandomBitStream, size);
+        return Arrays.copyOf(pseudoRandomBitStream.toByteArray(), size);
     }
 
     /**
@@ -133,6 +139,11 @@ public class PseudoRandomFunction {
         if (prfAlgorithm == null) {
             LOGGER.warn("Trying to compute PRF without specified PRF algorithm. Using TLS 1.0/TLS 1.1 as default.");
             prfAlgorithm = PRFAlgorithm.TLS_PRF_LEGACY;
+        }
+
+        if (secret == null) {
+            LOGGER.warn("Secret is null! Continuing to compute PRF with a secret set to zero bytes.");
+            secret = new byte[0];
         }
 
         if (prfAlgorithm == PRFAlgorithm.TLS_PRF_LEGACY) {
@@ -217,13 +228,6 @@ public class PseudoRandomFunction {
         try {
             byte[] labelSeed = ArrayConverter.concatenate(label.getBytes(Charset.forName("ASCII")), seed);
             HMAC hmac = new HMAC(macAlgorithm);
-
-            if (secret == null || secret.length == 0) {
-                // empty key, but we still want to try to compute the
-                // SecretKeySpec
-                hmac.setSecret(new byte[0]);
-            }
-
             hmac.init(secret);
 
             /*

@@ -10,15 +10,20 @@
 package de.rub.nds.tlsattacker.core.crypto;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.security.Security;
 import java.util.Random;
+
+import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
 import mockit.Expectations;
 import mockit.Mocked;
 import org.apache.commons.lang3.StringUtils;
@@ -156,6 +161,35 @@ public class PseudoRandomFunctionTest {
 
         byte[] result1 = TlsUtils.PRF_legacy(secret, label, seed, size);
         byte[] result2 = PseudoRandomFunction.compute(PRFAlgorithm.TLS_PRF_LEGACY, secret, label, seed, size);
+        assertArrayEquals(result1, result2);
+
+        /*
+         * Test case 2: test the whole keyBlock generation process check, if master secret is computed correctly
+         */
+        DHClientKeyExchangeMessage message = new DHClientKeyExchangeMessage();
+        message.setPublicKey(new byte[] { 1 });
+        message.prepareComputations();
+        message.getComputations().setPremasterSecret(ArrayConverter.hexStringToByteArray(
+            "17631f03fb5f59e65ef9b581bb6494e7304e2eaffb07ff7356cf62db1c44f4e4c15614909a3f2980c1908da2200924a23bc037963c204048cc77b1bcab5e6c9ef2c32928bcbdc0b664535885d46a9d4af4104eba4d7428c5741cf1c74bbd54d8e7ea16eaa126218286639a740fc39173e8989aea7f4b4440e1cad321315911fc4a8135d1217ebada1c70cb4ce99ff11dc8c8ca4ffc3c48a9f3f2143588a8fec147a6c3da4d36df18cf075eb7de187d83c7e3b7fd27124741a4b8809bed4f43ed9a434ce59c6a33277be96d8ef27b8e6a59d70bf6a04a86f04dfc37ab69ad90da53dfc1ea27f60a32ee7608b2197943bf8673dbe68003277bfd40b40d18b1a3bf"));
+        message.getComputations().setClientServerRandom(ArrayConverter.hexStringToByteArray(
+            "c8c9c788adbd9dc72b5dd0635f9e2576e09c87b67e045c026ffa3281069601fd594c07e445947b545a746fcbc094e12427e0286be2199300925a81be02bf5467"));
+        result1 = TlsUtils.PRF_legacy(message.getComputations().getPremasterSecret().getValue(), label,
+            message.getComputations().getClientServerRandom().getValue(), size);
+        result2 = PseudoRandomFunction.compute(PRFAlgorithm.TLS_PRF_LEGACY,
+            message.getComputations().getPremasterSecret().getValue(), label,
+            message.getComputations().getClientServerRandom().getValue(), size);
+        assertArrayEquals(result1, result2);
+
+        /*
+         * check, if keyblock is computed correctly TLS_DHE_RSA_WITH_AES_256_CBC_SHA MAC Write Client 20 Bytes Mac Write
+         * Server 20 Bytes Enc Write Client 32 Bytes Enc Write Server 32 Bytes IV Write Client 16 Bytes IV Write Server
+         * 16 Bytes
+         */
+        byte[] serverClientRandom = ArrayConverter.hexStringToByteArray(
+            "4a8135d1217ebada1c70cb4ce99ff11dc8c8ca4ffc3c48a9f3f2143588a8fec147a6c3da4d36df18cf075eb7de187d83c7e3b7fd27124741a4b8809bed4f43ed9a434ce59c6a33277be96d8ef27b8e6a59d70bf6a04a86f04dfc37ab69ad90da53dfc1ea27f60a32ee7608b2197943bf8673dbe68003277bfd40b40d18b1a3bf17631f03fb5f59e65ef9b581bb6494e7304e2eaffb07ff7356cf62db1c44f4e4c15614909a3f2980c1908da2200924a23bc037963c204048cc77b1bcab5e6c9ef2c32928bcbdc0b664535885d46a9d4af4104eba4d7428c5741cf1c74bbd54d8e7ea16eaa126218286639a740fc39173e8989aea7f4b4440e1cad321315911fc");
+        result1 = TlsUtils.PRF_legacy(result1, "key expansion", serverClientRandom, 136);
+        result2 = PseudoRandomFunction.compute(PRFAlgorithm.TLS_PRF_LEGACY, result2, "key expansion",
+            serverClientRandom, 136);
         assertArrayEquals(result1, result2);
     }
 }

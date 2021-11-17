@@ -11,6 +11,10 @@ package de.rub.nds.tlsattacker.core.crypto;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
+import org.apache.commons.lang.ObjectUtils;
+import org.apache.log4j.LogMF;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import java.security.MessageDigest;
@@ -23,6 +27,7 @@ import java.security.Security;
 
 public class HMAC {
 
+    private static final Logger LOGGER = LogManager.getLogger();
     private byte[] opad;
     private byte[] ipad;
     private byte[] secret;
@@ -63,7 +68,7 @@ public class HMAC {
         }
     }
 
-    /* Implements getter amd setter methods */
+    /* Implements getter and setter methods */
     public void setSecret(byte[] newSecret) {
         this.secret = newSecret;
     }
@@ -80,6 +85,10 @@ public class HMAC {
      *               the hmac key
      **/
     public void init(byte[] secret) throws NoSuchAlgorithmException {
+        if (secret == null){
+            LOGGER.warn("Secret is null! Continuing to init hmac with a secret set to zero bytes..");
+            secret = new byte[0];
+        }
         this.opad = new byte[0];
         this.ipad = new byte[0];
         switch (this.macAlgorithm) {
