@@ -1203,6 +1203,12 @@ public class Config implements Serializable {
     private StarttlsType starttlsType = StarttlsType.NONE;
 
     /**
+     * If the server receives an empty Session Ticket, it answers with an empty Server SID by default.
+     * Set this flag to modify the value of the ServerSessionID.
+     */
+    private Boolean dontOverrideServerSessionId = false;
+
+    /**
      * The Ticket Lifetime Hint, Ticket Key and Ticket Key Name used in the Extension defined in RFC5077, followed by
      * additional TLS 1.3 draft 21 NewSessionTicket parameters.
      */
@@ -1583,6 +1589,14 @@ public class Config implements Serializable {
 
     public void setTls13BackwardsCompatibilityMode(Boolean tls13BackwardsCompatibilityMode) {
         this.tls13BackwardsCompatibilityMode = tls13BackwardsCompatibilityMode;
+    }
+
+    public Boolean getDontOverrideServerSessionId() {
+        return dontOverrideServerSessionId;
+    }
+
+    public void setDontOverrideServerSessionId(Boolean dontOverrideServerSessionId){
+        this.dontOverrideServerSessionId = dontOverrideServerSessionId;
     }
 
     public long getSessionTicketLifetimeHint() {

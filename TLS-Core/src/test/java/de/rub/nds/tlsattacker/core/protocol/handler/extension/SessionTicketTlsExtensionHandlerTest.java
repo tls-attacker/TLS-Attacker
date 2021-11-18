@@ -47,7 +47,7 @@ public class SessionTicketTlsExtensionHandlerTest {
 
         handler.adjustTLSContext(message);
 
-        assertArrayEquals(SESSION_TICKET, context.getSessionTicketTLS());
+        assertArrayEquals(SESSION_TICKET, context.getLatestSessionTicket());
     }
 
     /**

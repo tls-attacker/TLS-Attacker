@@ -20,6 +20,7 @@ import de.rub.nds.tlsattacker.core.state.StatePlaintext;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.state.parser.StatePlaintextParser;
 import de.rub.nds.tlsattacker.core.util.StaticTicketCrypto;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -73,9 +74,11 @@ public class SessionTicketTlsExtensionHandler extends ExtensionHandler<SessionTi
                 }
             }
         } else {
-            if (context.getTalkingConnectionEndType() != context.getChooser().getConnectionEndType()) {
+            if (context.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
                 // Server receives an empty ticket
-                context.setServerSessionId(new byte[0]);
+                if(!context.getConfig().getDontOverrideServerSessionId()) {
+                    context.setServerSessionId(new byte[0]);
+                }
             }
         }
         context.setSessionTicketTLS(message.getSessionTicket().getIdentity().getValue());

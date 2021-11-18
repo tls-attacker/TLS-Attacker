@@ -298,6 +298,11 @@ public class TlsContext {
     private byte[] sessionTicketTLS;
 
     /**
+     * Number of session Tickets present in sessionList
+     */
+    private Integer sessionTicketCounter = 0;
+
+    /**
      * The renegotiation info of the RenegotiationInfo extension.
      */
     private byte[] renegotiationInfo;
@@ -806,11 +811,34 @@ public class TlsContext {
         return null;
     }
 
+    public Session getSession(int internalTicketId) {
+        for (Session session : sessionList) {
+            if (session.getInternalTicketId() == internalTicketId) {
+                return session;
+            }
+        }
+        return null;
+    }
+
     public boolean hasSession(byte[] sessionId) {
         return getSession(sessionId) != null;
     }
 
+    public boolean hasSessionTicket(int internalTicketId) {
+        return getSession(internalTicketId) != null;
+    }
+
+    public byte[] getLatestSessionTicket(){
+        return getSession(sessionTicketCounter - 1).getSessionTicket();
+    }
+
     public void addNewSession(Session session) {
+        if(session.hasTicket()) {
+            if(session.getInternalTicketId() == -2){
+                session.setInternalTicketId(sessionTicketCounter);
+            }
+            sessionTicketCounter++;
+        }
         sessionList.add(session);
     }
 
@@ -1592,6 +1620,10 @@ public class TlsContext {
 
     public void setSessionTicketTLS(byte[] sessionTicketTLS) {
         this.sessionTicketTLS = sessionTicketTLS;
+    }
+
+    public Integer getSessionTicketCounter() {
+        return this.sessionTicketCounter;
     }
 
     public byte[] getSignedCertificateTimestamp() {

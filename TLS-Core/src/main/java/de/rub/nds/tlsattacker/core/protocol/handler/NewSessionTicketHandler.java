@@ -62,10 +62,11 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
         if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
             adjustPskSets(message);
         } else {
-            tlsContext.setSessionTicketTLS(message.getTicket().getIdentity().getValue());
+            byte[] ticket = message.getTicket().getIdentity().getValue();
+            tlsContext.setSessionTicketTLS(ticket);
             LOGGER.debug("Adding Session for Ticket resumption using dummy SessionID");
             Session session = new Session(tlsContext.getConfig().getDefaultClientTicketResumptionSessionId(),
-                tlsContext.getChooser().getMasterSecret());
+                tlsContext.getChooser().getMasterSecret(), ticket);
             tlsContext.addNewSession(session);
         }
     }
