@@ -87,8 +87,9 @@ public class EsniKeyDnsRequestAction extends TlsAction {
         LOGGER.debug("esniKeyRecordBytes: " + ArrayConverter.bytesToHexString(esniKeyRecordBytes));
 
         EsniKeyRecordParser esniKeyParser = new EsniKeyRecordParser(new ByteArrayInputStream(esniKeyRecordBytes),
-            tlsContext.getConfig(), ConnectionEndType.CLIENT, tlsContext.getChooser().getSelectedProtocolVersion());
-        EsniKeyRecord esniKeyRecord = esniKeyParser.parse();
+            tlsContext, tlsContext.getChooser().getSelectedProtocolVersion());
+        EsniKeyRecord esniKeyRecord = new EsniKeyRecord();
+        esniKeyParser.parse(esniKeyRecord);
         tlsContext.setEsniRecordBytes(esniKeyRecordBytes);
         tlsContext.setEsniRecordVersion(esniKeyRecord.getVersion());
         tlsContext.setEsniRecordChecksum(esniKeyRecord.getChecksum());

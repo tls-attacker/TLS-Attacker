@@ -56,7 +56,8 @@ public class RenegotiationInfoExtensionParserTest {
 
     @Test
     public void testParseExtensionMessageContent() {
-        message = parser.parse();
+        message = new RenegotiationInfoExtensionMessage();
+        parser.parse(message);
 
         assertEquals(extensionType, message.getExtensionTypeConstant());
         assertEquals(extensionLength, (long) message.getExtensionLength().getValue());

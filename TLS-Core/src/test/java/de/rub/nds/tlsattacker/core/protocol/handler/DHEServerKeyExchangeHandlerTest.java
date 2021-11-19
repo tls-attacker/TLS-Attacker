@@ -11,14 +11,9 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.DHEServerKeyExchangeParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.DHEServerKeyExchangePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.DHEServerKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.ByteArrayInputStream;
 import java.math.BigInteger;
 import org.junit.After;
-import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -36,30 +31,6 @@ public class DHEServerKeyExchangeHandlerTest {
 
     @After
     public void tearDown() {
-    }
-
-    /**
-     * Test of getParser method, of class DHEServerKeyExchangeHandler.
-     */
-    @Test
-    public void testGetParser() {
-        assertTrue(handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof DHEServerKeyExchangeParser);
-    }
-
-    /**
-     * Test of getPreparator method, of class DHEServerKeyExchangeHandler.
-     */
-    @Test
-    public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new DHEServerKeyExchangeMessage()) instanceof DHEServerKeyExchangePreparator);
-    }
-
-    /**
-     * Test of getSerializer method, of class DHEServerKeyExchangeHandler.
-     */
-    @Test
-    public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new DHEServerKeyExchangeMessage()) instanceof DHEServerKeyExchangeSerializer);
     }
 
     /**

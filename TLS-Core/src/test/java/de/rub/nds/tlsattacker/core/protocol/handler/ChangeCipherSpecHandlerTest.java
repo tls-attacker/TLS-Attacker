@@ -11,14 +11,9 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.ChangeCipherSpecParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.ChangeCipherSpecPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.ChangeCipherSpecSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.io.ByteArrayInputStream;
 import org.junit.After;
-import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -35,30 +30,6 @@ public class ChangeCipherSpecHandlerTest {
 
     @After
     public void tearDown() {
-    }
-
-    /**
-     * Test of getParser method, of class ChangeCipherSpecHandler.
-     */
-    @Test
-    public void testGetParser() {
-        assertTrue(handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof ChangeCipherSpecParser);
-    }
-
-    /**
-     * Test of getPreparator method, of class ChangeCipherSpecHandler.
-     */
-    @Test
-    public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new ChangeCipherSpecMessage()) instanceof ChangeCipherSpecPreparator);
-    }
-
-    /**
-     * Test of getSerializer method, of class ChangeCipherSpecHandler.
-     */
-    @Test
-    public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new ChangeCipherSpecMessage()) instanceof ChangeCipherSpecSerializer);
     }
 
     /**

@@ -10,11 +10,11 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.PskDheServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,11 +31,9 @@ public class PskDheServerKeyExchangeParser extends DHEServerKeyExchangeParser<Ps
      * @param stream
      * @param version
      *                Version of the Protocol
-     * @param config
-     *                A Config used in the current context
      */
-    public PskDheServerKeyExchangeParser(InputStream stream, ProtocolVersion version, Config config) {
-        super(stream, version, KeyExchangeAlgorithm.DHE_PSK, config);
+    public PskDheServerKeyExchangeParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
+        super(stream, version, KeyExchangeAlgorithm.DHE_PSK, tlsContext);
         this.version = version;
     }
 
@@ -46,11 +44,6 @@ public class PskDheServerKeyExchangeParser extends DHEServerKeyExchangeParser<Ps
         parsePskIdentityHint(msg);
         super.parseDheParams(msg);
 
-    }
-
-    @Override
-    protected PskDheServerKeyExchangeMessage createHandshakeMessage() {
-        return new PskDheServerKeyExchangeMessage();
     }
 
     private void parsePskIdentityHintLength(PskDheServerKeyExchangeMessage msg) {

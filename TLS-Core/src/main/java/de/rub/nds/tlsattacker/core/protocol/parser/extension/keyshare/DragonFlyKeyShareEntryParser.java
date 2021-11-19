@@ -29,14 +29,16 @@ public class DragonFlyKeyShareEntryParser extends Parser<DragonFlyKeyShareEntry>
     }
 
     @Override
-    public DragonFlyKeyShareEntry parse() {
+    public void parse(DragonFlyKeyShareEntry keyShare) {
         if (group.isCurve()) {
             EllipticCurve curve = CurveFactory.getCurve(group);
             int elementLength = curve.getModulus().bitLength();
             byte[] rawPublicKey = parseByteArrayField(elementLength * 2 / Bits.IN_A_BYTE);
             int scalarLength = parseIntField(ExtensionByteLength.PWD_SCALAR);
             BigInteger scalar = parseBigIntField(scalarLength);
-            return new DragonFlyKeyShareEntry(rawPublicKey, scalarLength, scalar);
+            keyShare.setRawPublicKey(rawPublicKey);
+            keyShare.setScalar(scalar);
+            keyShare.setScalarLength(scalarLength);
         } else {
             throw new UnsupportedOperationException("Non-Curves are currently not supported");
         }

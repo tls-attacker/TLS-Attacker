@@ -17,16 +17,11 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.FinishedParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.FinishedPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.FinishedSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.io.ByteArrayInputStream;
 import org.junit.After;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -43,30 +38,6 @@ public class FinishedHandlerTest {
 
     @After
     public void tearDown() {
-    }
-
-    /**
-     * Test of getParser method, of class FinishedHandler.
-     */
-    @Test
-    public void testGetParser() {
-        assertTrue(handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof FinishedParser);
-    }
-
-    /**
-     * Test of getPreparator method, of class FinishedHandler.
-     */
-    @Test
-    public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new FinishedMessage()) instanceof FinishedPreparator);
-    }
-
-    /**
-     * Test of getSerializer method, of class FinishedHandler.
-     */
-    @Test
-    public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new FinishedMessage()) instanceof FinishedSerializer);
     }
 
     /**

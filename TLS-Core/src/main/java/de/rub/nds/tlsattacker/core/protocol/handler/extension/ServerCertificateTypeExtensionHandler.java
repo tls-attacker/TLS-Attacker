@@ -9,15 +9,10 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerCertificateTypeExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.ServerCertificateTypeExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ServerCertificateTypeExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ServerCertificateTypeExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,21 +22,6 @@ public class ServerCertificateTypeExtensionHandler extends ExtensionHandler<Serv
 
     public ServerCertificateTypeExtensionHandler(TlsContext context) {
         super(context);
-    }
-
-    @Override
-    public ServerCertificateTypeExtensionParser getParser(InputStream stream) {
-        return new ServerCertificateTypeExtensionParser(stream, context.getConfig());
-    }
-
-    @Override
-    public ServerCertificateTypeExtensionPreparator getPreparator(ServerCertificateTypeExtensionMessage message) {
-        return new ServerCertificateTypeExtensionPreparator(context.getChooser(), message, getSerializer(message));
-    }
-
-    @Override
-    public ServerCertificateTypeExtensionSerializer getSerializer(ServerCertificateTypeExtensionMessage message) {
-        return new ServerCertificateTypeExtensionSerializer(message);
     }
 
     @Override

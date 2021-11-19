@@ -37,8 +37,7 @@ public class SrtpExtensionSerializerTest {
     private SrtpExtensionMessage msg;
 
     public SrtpExtensionSerializerTest(ExtensionType extensionType, byte[] expectedBytes, int extensionLength,
-        int startParsing, int srtpProtectionProfilesLength, byte[] srtpProtectionProfiles, int srtpMkiLength,
-        byte[] srtpMki) {
+        int srtpProtectionProfilesLength, byte[] srtpProtectionProfiles, int srtpMkiLength, byte[] srtpMki) {
         this.extensionType = extensionType;
         this.expectedBytes = expectedBytes;
         this.extensionLength = extensionLength;

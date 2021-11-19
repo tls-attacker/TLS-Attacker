@@ -18,16 +18,15 @@ import java.io.InputStream;
 /**
  * An abstract Parser class for ProtocolMessages
  *
- * @param <T>
- *            Type of the HandshakeMessages to parse
  */
-public abstract class TlsMessageParser<T extends TlsMessage> extends ProtocolMessageParser<T> {
+public abstract class TlsMessageParser<Message extends TlsMessage> extends ProtocolMessageParser<Message> {
 
     private final ProtocolVersion version;
 
     /**
      * Constructor for the Parser class
      *
+     * @param message
      * @param stream
      * @param version
      *                Version of the Protocol

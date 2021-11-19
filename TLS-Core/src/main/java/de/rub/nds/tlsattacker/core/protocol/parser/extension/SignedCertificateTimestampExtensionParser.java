@@ -42,15 +42,4 @@ public class SignedCertificateTimestampExtensionParser
         LOGGER.debug("The signed certificate timestamp extension parser parsed the value "
             + bytesToHexString(msg.getSignedTimestamp()));
     }
-
-    /**
-     * Creates a new SignedCertificateTimestampExtensionMessage
-     *
-     * @return A new SignedCertificateTimestampExtensionMessage
-     */
-    @Override
-    protected SignedCertificateTimestampExtensionMessage createExtensionMessage() {
-        return new SignedCertificateTimestampExtensionMessage();
-    }
-
 }

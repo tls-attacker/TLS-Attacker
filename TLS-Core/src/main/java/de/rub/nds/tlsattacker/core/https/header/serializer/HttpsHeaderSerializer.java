@@ -9,15 +9,15 @@
 
 package de.rub.nds.tlsattacker.core.https.header.serializer;
 
-import de.rub.nds.tlsattacker.core.https.header.HttpsHeader;
+import de.rub.nds.tlsattacker.core.https.header.HttpHeader;
 import java.nio.charset.StandardCharsets;
 import de.rub.nds.tlsattacker.core.protocol.Serializer;
 
-public class HttpsHeaderSerializer extends Serializer<HttpsHeader> {
+public class HttpsHeaderSerializer extends Serializer<HttpHeader> {
 
-    private final HttpsHeader header;
+    private final HttpHeader header;
 
-    public HttpsHeaderSerializer(HttpsHeader header) {
+    public HttpsHeaderSerializer(HttpHeader header) {
         super();
         this.header = header;
     }

@@ -14,11 +14,18 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.SignedCertificateTimestampExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.SignedCertificateTimestampExtensionParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SignedCertificateTimestampExtensionPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SignedCertificateTimestampExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 
 /**
  * This extension is defined in RFC6962
  */
-public class SignedCertificateTimestampExtensionMessage extends ExtensionMessage {
+public class SignedCertificateTimestampExtensionMessage
+    extends ExtensionMessage<SignedCertificateTimestampExtensionMessage> {
 
     @ModifiableVariableProperty
     private ModifiableByteArray singedTimestamp;
@@ -57,4 +64,24 @@ public class SignedCertificateTimestampExtensionMessage extends ExtensionMessage
         this.singedTimestamp = ModifiableVariableFactory.safelySetValue(this.singedTimestamp, singedTimestamp);
     }
 
+    @Override
+    public SignedCertificateTimestampExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new SignedCertificateTimestampExtensionParser(stream, tlsContext.getConfig());
+    }
+
+    @Override
+    public SignedCertificateTimestampExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new SignedCertificateTimestampExtensionPreparator(tlsContext.getChooser(), this,
+            getSerializer(tlsContext));
+    }
+
+    @Override
+    public SignedCertificateTimestampExtensionSerializer getSerializer(TlsContext tlsContext) {
+        return new SignedCertificateTimestampExtensionSerializer(this);
+    }
+
+    @Override
+    public SignedCertificateTimestampExtensionHandler getHandler(TlsContext tlsContext) {
+        return new SignedCertificateTimestampExtensionHandler(tlsContext);
+    }
 }

@@ -35,22 +35,6 @@ public class ChangeCipherSpecHandler extends TlsMessageHandler<ChangeCipherSpecM
     }
 
     @Override
-    public ChangeCipherSpecParser getParser(InputStream stream) {
-        return new ChangeCipherSpecParser(stream, tlsContext.getChooser().getLastRecordVersion(),
-            tlsContext.getConfig());
-    }
-
-    @Override
-    public ChangeCipherSpecPreparator getPreparator(ChangeCipherSpecMessage message) {
-        return new ChangeCipherSpecPreparator(tlsContext.getChooser(), message);
-    }
-
-    @Override
-    public ChangeCipherSpecSerializer getSerializer(ChangeCipherSpecMessage message) {
-        return new ChangeCipherSpecSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
-    }
-
-    @Override
     public void adjustTLSContext(ChangeCipherSpecMessage message) {
         if (tlsContext.getTalkingConnectionEndType() != tlsContext.getChooser().getConnectionEndType()
             && tlsContext.getChooser().getSelectedProtocolVersion() != ProtocolVersion.TLS13) {

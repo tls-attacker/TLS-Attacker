@@ -10,13 +10,10 @@
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.protocol.Handler;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,7 +21,7 @@ import org.apache.logging.log4j.Logger;
  * @param <MessageT>
  *                   The ExtensionMessage that should be handled
  */
-public abstract class ExtensionHandler<MessageT extends ExtensionMessage> {
+public abstract class ExtensionHandler<MessageT extends ExtensionMessage> implements Handler<MessageT> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -34,19 +31,13 @@ public abstract class ExtensionHandler<MessageT extends ExtensionMessage> {
         this.context = context;
     }
 
-    public abstract ExtensionParser<MessageT> getParser(InputStream stream);
-
-    public abstract ExtensionPreparator<MessageT> getPreparator(MessageT message);
-
-    public abstract ExtensionSerializer<MessageT> getSerializer(MessageT message);
-
     /**
      * Adjusts the TLS Context according to the received or sending ProtocolMessage
      *
      * @param message
      *                The message for which the Context should be adjusted
      */
-    public final void adjustTLSContext(MessageT message) {
+    public final void adjustContext(MessageT message) {
         markExtensionInContext(message);
         adjustTLSExtensionContext(message);
     }

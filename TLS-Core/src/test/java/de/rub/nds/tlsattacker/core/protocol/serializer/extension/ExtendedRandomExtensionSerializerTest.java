@@ -34,7 +34,7 @@ public class ExtendedRandomExtensionSerializerTest {
     private ExtendedRandomExtensionMessage message;
 
     public ExtendedRandomExtensionSerializerTest(ExtensionType extensionType, int extensionLength,
-        byte[] extendedRandom, byte[] expectedBytes, int startParsing) {
+        byte[] extendedRandom, byte[] expectedBytes) {
         this.extensionType = extensionType;
         this.extensionLength = extensionLength;
         this.extendedRandom = extendedRandom;

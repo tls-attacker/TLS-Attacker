@@ -31,11 +31,6 @@ public class RecordSizeLimitExtensionParser extends ExtensionParser<RecordSizeLi
         parseRecordSizeLimit(message);
     }
 
-    @Override
-    protected RecordSizeLimitExtensionMessage createExtensionMessage() {
-        return new RecordSizeLimitExtensionMessage();
-    }
-
     private void parseRecordSizeLimit(RecordSizeLimitExtensionMessage message) {
         message.setRecordSizeLimit(parseByteArrayField(ExtensionByteLength.RECORD_SIZE_LIMIT_LENGTH));
         LOGGER.debug("RecordSizeLimit: " + ArrayConverter.bytesToHexString(message.getRecordSizeLimit().getValue()));

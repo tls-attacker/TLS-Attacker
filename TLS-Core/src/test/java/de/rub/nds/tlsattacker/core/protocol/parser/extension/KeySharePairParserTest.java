@@ -50,7 +50,8 @@ public class KeySharePairParserTest {
     @Test
     public void testParse() {
         KeyShareEntryParser parser = new KeyShareEntryParser(new ByteArrayInputStream(keySharePairBytes));
-        KeyShareEntry entry = parser.parse();
+        KeyShareEntry entry = new KeyShareEntry();
+        parser.parse(entry);
         assertArrayEquals(keyShare, entry.getPublicKey().getValue());
         assertTrue(keyShareLength == entry.getPublicKeyLength().getValue());
         assertArrayEquals(keyShareType, entry.getGroup().getValue());

@@ -15,12 +15,8 @@ import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.KeyShareExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.KeyShareExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.KeyShareExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -34,29 +30,8 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private ExtensionType type;
-
-    public KeyShareExtensionHandler(TlsContext context, ExtensionType type) {
+    public KeyShareExtensionHandler(TlsContext context) {
         super(context);
-        if (type != ExtensionType.KEY_SHARE && type != ExtensionType.KEY_SHARE_OLD) {
-            throw new RuntimeException("Trying to initialize KeyShareExtensionHandler with an illegal ExtensionType");
-        }
-        this.type = type;
-    }
-
-    @Override
-    public KeyShareExtensionParser getParser(InputStream stream) {
-        return new KeyShareExtensionParser(stream, context.getConfig());
-    }
-
-    @Override
-    public KeyShareExtensionPreparator getPreparator(KeyShareExtensionMessage message) {
-        return new KeyShareExtensionPreparator(context.getChooser(), message, getSerializer(message));
-    }
-
-    @Override
-    public KeyShareExtensionSerializer getSerializer(KeyShareExtensionMessage message) {
-        return new KeyShareExtensionSerializer(message, context.getChooser().getConnectionEndType());
     }
 
     @Override

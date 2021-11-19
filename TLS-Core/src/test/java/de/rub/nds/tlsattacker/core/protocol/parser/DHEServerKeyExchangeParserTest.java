@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
@@ -81,7 +82,7 @@ public class DHEServerKeyExchangeParserTest {
     private int sigLength;
     private byte[] signature;
     private ProtocolVersion version;
-    private final Config config = Config.createConfig();
+    private final Config config = new Config();
 
     public DHEServerKeyExchangeParserTest(byte[] message, HandshakeMessageType type, int length, int pLength, byte[] p,
         int gLength, byte[] g, int serializedKeyLength, byte[] serializedKey, byte[] signatureAndHashAlgo,
@@ -108,8 +109,9 @@ public class DHEServerKeyExchangeParserTest {
     public void testParse() {// TODO Write tests for others versions and make
         // protocol version a parameter
         DHEServerKeyExchangeParser<DHEServerKeyExchangeMessage> parser = new DHEServerKeyExchangeParser(
-            new ByteArrayInputStream(message), version, KeyExchangeAlgorithm.DHE_RSA, config);
-        DHEServerKeyExchangeMessage msg = parser.parse();
+            new ByteArrayInputStream(message), version, KeyExchangeAlgorithm.DHE_RSA, new TlsContext(config));
+        DHEServerKeyExchangeMessage msg = new DHEServerKeyExchangeMessage();
+        parser.parse(msg);
         assertArrayEquals(message, msg.getCompleteResultingMessage().getValue());
         assertTrue(msg.getLength().getValue() == length);
         assertTrue(msg.getType().getValue() == type.getValue());

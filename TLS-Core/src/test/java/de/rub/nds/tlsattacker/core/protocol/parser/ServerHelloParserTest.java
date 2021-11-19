@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
@@ -94,9 +95,10 @@ public class ServerHelloParserTest {
      */
     @Test
     public void verify() {
-        ServerHelloParser parser =
-            new ServerHelloParser(new ByteArrayInputStream(message), version, config, ConnectionEndType.SERVER);
-        ServerHelloMessage helloMessage = parser.parse();
+        ServerHelloParser parser = new ServerHelloParser(new ByteArrayInputStream(message), version,
+            new TlsContext(config), ConnectionEndType.SERVER);
+        ServerHelloMessage helloMessage = new ServerHelloMessage();
+        parser.parse(helloMessage);
         assertTrue(helloMessage.getType().getValue() == messageType);
         assertTrue(helloMessage.getLength().getValue() == messageLength);
         assertArrayEquals(helloMessage.getProtocolVersion().getValue(), protocolVersion);

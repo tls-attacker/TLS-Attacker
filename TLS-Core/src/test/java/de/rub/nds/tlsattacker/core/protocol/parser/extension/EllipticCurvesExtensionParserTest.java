@@ -57,7 +57,8 @@ public class EllipticCurvesExtensionParserTest {
     public void testParseExtensionMessageContent() {
         EllipticCurvesExtensionParser parser =
             new EllipticCurvesExtensionParser(new ByteArrayInputStream(extension), Config.createConfig());
-        EllipticCurvesExtensionMessage msg = parser.parse();
+        EllipticCurvesExtensionMessage msg = new EllipticCurvesExtensionMessage();
+        parser.parse(msg);
         assertArrayEquals(msg.getExtensionBytes().getValue(), completeExtension);
         assertArrayEquals(type.getValue(), msg.getExtensionType().getValue());
         assertTrue(extensionLength == msg.getExtensionLength().getValue());

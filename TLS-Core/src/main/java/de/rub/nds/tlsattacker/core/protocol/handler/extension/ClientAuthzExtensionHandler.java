@@ -24,21 +24,6 @@ public class ClientAuthzExtensionHandler extends ExtensionHandler<ClientAuthzExt
     }
 
     @Override
-    public ClientAuthzExtensionParser getParser(InputStream stream) {
-        return new ClientAuthzExtensionParser(stream, context.getConfig());
-    }
-
-    @Override
-    public ClientAuthzExtensionPreparator getPreparator(ClientAuthzExtensionMessage message) {
-        return new ClientAuthzExtensionPreparator(context.getChooser(), message, getSerializer(message));
-    }
-
-    @Override
-    public ClientAuthzExtensionSerializer getSerializer(ClientAuthzExtensionMessage message) {
-        return new ClientAuthzExtensionSerializer(message);
-    }
-
-    @Override
     public void adjustTLSExtensionContext(ClientAuthzExtensionMessage message) {
         context.setClientAuthzDataFormatList(AuthzDataFormat.byteArrayToList(message.getAuthzFormatList().getValue()));
     }

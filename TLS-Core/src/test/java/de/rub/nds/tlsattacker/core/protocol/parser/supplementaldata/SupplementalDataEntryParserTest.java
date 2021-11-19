@@ -46,7 +46,8 @@ public class SupplementalDataEntryParserTest {
     public void testParse() {
         SupplementalDataEntryParser parser =
             new SupplementalDataEntryParser(new ByteArrayInputStream(supplementalDataTestEntry));
-        SupplementalDataEntry entry = parser.parse();
+        SupplementalDataEntry entry = new SupplementalDataEntry();
+        parser.parse(entry);
         assertTrue(supplementalDataEntryType == entry.getSupplementalDataEntryType().getValue());
         assertTrue(supplementalDataEntryLength == entry.getSupplementalDataEntryLength().getValue());
         assertArrayEquals(supplementalDataEntry, entry.getSupplementalDataEntry().getValue());

@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestV2ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.RequestItemV2;
 import java.io.ByteArrayInputStream;
@@ -33,18 +32,13 @@ public class CertificateStatusRequestV2ExtensionParser
         msg.setStatusRequestBytes(parseByteArrayField(msg.getStatusRequestListLength().getValue()));
         ByteArrayInputStream innerStream = new ByteArrayInputStream(msg.getStatusRequestBytes().getValue());
 
-        int pointer = 0;
         List<RequestItemV2> itemList = new LinkedList<>();
         while (innerStream.available() > 0) {
             RequestItemV2Parser parser = new RequestItemV2Parser(innerStream);
-            itemList.add(parser.parse());
+            RequestItemV2 item = new RequestItemV2();
+            parser.parse(item);
+            itemList.add(item);
         }
         msg.setStatusRequestList(itemList);
     }
-
-    @Override
-    protected CertificateStatusRequestV2ExtensionMessage createExtensionMessage() {
-        return new CertificateStatusRequestV2ExtensionMessage();
-    }
-
 }

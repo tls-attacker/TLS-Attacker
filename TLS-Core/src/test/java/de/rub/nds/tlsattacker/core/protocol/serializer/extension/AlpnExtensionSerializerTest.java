@@ -21,6 +21,7 @@ import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
 public class AlpnExtensionSerializerTest {
+
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return AlpnExtensionParserTest.generateData();
@@ -29,18 +30,16 @@ public class AlpnExtensionSerializerTest {
     private final ExtensionType extensionType;
     private final byte[] expectedBytes;
     private final int extensionLength;
-    private final int startParsing;
     private final int proposedAlpnProtocolsLength;
     private final byte[] proposedAlpnProtocols;
     private AlpnExtensionSerializer serializer;
     private AlpnExtensionMessage message;
 
     public AlpnExtensionSerializerTest(ExtensionType extensionType, byte[] expectedBytes, int extensionLength,
-        int startParsing, int proposedAlpnProtocolsLength, byte[] proposedAlpnProtocols) {
+        int proposedAlpnProtocolsLength, byte[] proposedAlpnProtocols) {
         this.extensionType = extensionType;
         this.expectedBytes = expectedBytes;
         this.extensionLength = extensionLength;
-        this.startParsing = startParsing;
         this.proposedAlpnProtocolsLength = proposedAlpnProtocolsLength;
         this.proposedAlpnProtocols = proposedAlpnProtocols;
     }

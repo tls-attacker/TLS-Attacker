@@ -21,11 +21,9 @@ public class ResponderIdParser extends Parser<ResponderId> {
     }
 
     @Override
-    public ResponderId parse() {
-        ResponderId id = new ResponderId();
+    public void parse(ResponderId id) {
         id.setIdLength(parseIntField(ExtensionByteLength.CERTIFICATE_STATUS_REQUEST_V2_RESPONDER_ID));
         id.setId(parseByteArrayField(id.getIdLength().getValue()));
-        return id;
     }
 
 }

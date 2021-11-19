@@ -15,11 +15,18 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.protocol.Handler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.PWDClearExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.PWDClearExtensionParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PWDClearExtensionPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PWDClearExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 
 /**
  * This extension is defined in RFC8492
  */
-public class PWDClearExtensionMessage extends ExtensionMessage {
+public class PWDClearExtensionMessage extends ExtensionMessage<PWDClearExtensionMessage> {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger usernameLength;
@@ -57,5 +64,25 @@ public class PWDClearExtensionMessage extends ExtensionMessage {
 
     public void setUsername(ModifiableString username) {
         this.username = username;
+    }
+
+    @Override
+    public PWDClearExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new PWDClearExtensionParser(stream, tlsContext.getConfig());
+    }
+
+    @Override
+    public PWDClearExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new PWDClearExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+    }
+
+    @Override
+    public PWDClearExtensionSerializer getSerializer(TlsContext tlsContext) {
+        return new PWDClearExtensionSerializer(this);
+    }
+
+    @Override
+    public PWDClearExtensionHandler getHandler(TlsContext tlsContext) {
+        return new PWDClearExtensionHandler(tlsContext);
     }
 }

@@ -29,10 +29,4 @@ public class CertificateTypeExtensionParser extends ExtensionParser<CertificateT
             msg.setCertificateTypes(parseByteArrayField(ExtensionByteLength.CERTIFICATE_TYPE_TYPE_LENGTH));
         }
     }
-
-    @Override
-    protected CertificateTypeExtensionMessage createExtensionMessage() {
-        return new CertificateTypeExtensionMessage();
-    }
-
 }

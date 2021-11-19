@@ -29,21 +29,6 @@ public class SrtpExtensionHandler extends ExtensionHandler<SrtpExtensionMessage>
     }
 
     @Override
-    public SrtpExtensionParser getParser(InputStream stream) {
-        return new SrtpExtensionParser(stream, context.getConfig());
-    }
-
-    @Override
-    public SrtpExtensionPreparator getPreparator(SrtpExtensionMessage message) {
-        return new SrtpExtensionPreparator(context.getChooser(), message, getSerializer(message));
-    }
-
-    @Override
-    public SrtpExtensionSerializer getSerializer(SrtpExtensionMessage message) {
-        return new SrtpExtensionSerializer(message);
-    }
-
-    @Override
     public void adjustTLSExtensionContext(SrtpExtensionMessage message) {
         context.setSecureRealTimeTransportProtocolProtectionProfiles(
             SrtpProtectionProfiles.getProfilesAsArrayList(message.getSrtpProtectionProfiles().getValue()));

@@ -29,16 +29,14 @@ public class KeyShareEntryParser extends Parser<KeyShareEntry> {
     }
 
     @Override
-    public KeyShareEntry parse() {
+    public void parse(KeyShareEntry entry) {
         LOGGER.debug("Parsing KeyShareEntry");
-        entry = new KeyShareEntry();
         parseKeyShareGroup(entry);
         if (getBytesLeft() > 0) {
             parseKeyShareLength(entry);
             parseKeyShare(entry);
         }
         entry.setGroupConfig(NamedGroup.getNamedGroup(entry.getGroup().getValue()));
-        return entry;
     }
 
     /**

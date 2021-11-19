@@ -9,6 +9,7 @@
 
 package de.rub.nds.tlsattacker.core.protocol.message;
 
+import de.rub.nds.tlsattacker.core.protocol.message.extension.UserMappingExtensionMessage;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
@@ -20,7 +21,6 @@ import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.handler.ServerHelloHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.TlsMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.AlpnExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CachedInfoExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestExtensionMessage;
@@ -54,7 +54,11 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.TokenBindingExtens
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TruncatedHmacExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TrustedCaIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
+import de.rub.nds.tlsattacker.core.protocol.parser.ServerHelloParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.ServerHelloPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.ServerHelloSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Date;
@@ -293,6 +297,22 @@ public class ServerHelloMessage extends HelloMessage {
     @Override
     public ServerHelloHandler getHandler(TlsContext context) {
         return new ServerHelloHandler(context);
+    }
+
+    @Override
+    public ServerHelloPreparator getPreparator(TlsContext tlsContext) {
+        return new ServerHelloPreparator(tlsContext.getChooser(), this);
+    }
+
+    @Override
+    public ServerHelloSerializer getSerializer(TlsContext tlsContext) {
+        return new ServerHelloSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+    }
+
+    @Override
+    public ServerHelloParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new ServerHelloParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext,
+            tlsContext.getTalkingConnectionEndType());
     }
 
     public static byte[] getHelloRetryRequestRandom() {

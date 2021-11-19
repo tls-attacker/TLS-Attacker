@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
@@ -54,23 +53,6 @@ public class SignatureAndHashAlgorithmsExtensionHandler
             }
         }
         context.setClientSupportedSignatureAndHashAlgorithms(algoList);
-    }
-
-    @Override
-    public SignatureAndHashAlgorithmsExtensionParser getParser(InputStream stream) {
-        return new SignatureAndHashAlgorithmsExtensionParser(stream, context.getConfig());
-    }
-
-    @Override
-    public SignatureAndHashAlgorithmsExtensionPreparator
-        getPreparator(SignatureAndHashAlgorithmsExtensionMessage message) {
-        return new SignatureAndHashAlgorithmsExtensionPreparator(context.getChooser(), message, getSerializer(message));
-    }
-
-    @Override
-    public SignatureAndHashAlgorithmsExtensionSerializer
-        getSerializer(SignatureAndHashAlgorithmsExtensionMessage message) {
-        return new SignatureAndHashAlgorithmsExtensionSerializer(message);
     }
 
 }

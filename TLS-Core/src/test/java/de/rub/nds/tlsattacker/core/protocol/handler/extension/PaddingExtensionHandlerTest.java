@@ -10,13 +10,8 @@
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.PaddingExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PaddingExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PaddingExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.ByteArrayInputStream;
 import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -29,7 +24,6 @@ public class PaddingExtensionHandlerTest {
     /**
      * Some initial set up.
      */
-
     @Before
     public void setUp() {
         context = new TlsContext();
@@ -39,40 +33,12 @@ public class PaddingExtensionHandlerTest {
     /**
      * Test of adjustTLSContext method, of class PaddingExtensionHandler.
      */
-
     @Test
     public void testAdjustTLSContext() {
         PaddingExtensionMessage msg = new PaddingExtensionMessage();
         msg.setPaddingBytes(extensionPayload);
-        handler.adjustTLSContext(msg);
+        handler.adjustContext(msg);
         assertArrayEquals(context.getPaddingExtensionBytes(), extensionPayload);
-    }
-
-    /**
-     * Test of getParser method, of class PaddingExtensionHandler.
-     */
-
-    @Test
-    public void testGetParser() {
-        assertTrue(handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof PaddingExtensionParser);
-    }
-
-    /**
-     * Test of getPreparator method, of class PaddingExtensionHandler.
-     */
-
-    @Test
-    public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new PaddingExtensionMessage()) instanceof PaddingExtensionPreparator);
-    }
-
-    /**
-     * Test of getSerializer method, of class PaddingExtensionHandler.
-     */
-
-    @Test
-    public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new PaddingExtensionMessage()) instanceof PaddingExtensionSerializer);
     }
 
 }

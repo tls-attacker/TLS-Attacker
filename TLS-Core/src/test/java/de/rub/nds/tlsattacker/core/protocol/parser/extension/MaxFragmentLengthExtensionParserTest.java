@@ -51,7 +51,8 @@ public class MaxFragmentLengthExtensionParserTest {
     public void testParseExtensionMessageContent() {
         MaxFragmentLengthExtensionParser parser =
             new MaxFragmentLengthExtensionParser(new ByteArrayInputStream(extension), Config.createConfig());
-        MaxFragmentLengthExtensionMessage msg = parser.parse();
+        MaxFragmentLengthExtensionMessage msg = new MaxFragmentLengthExtensionMessage();
+        parser.parse(msg);
         assertArrayEquals(msg.getExtensionBytes().getValue(), completeExtension);
         assertArrayEquals(type.getValue(), msg.getExtensionType().getValue());
         assertTrue(extensionLength == msg.getExtensionLength().getValue());

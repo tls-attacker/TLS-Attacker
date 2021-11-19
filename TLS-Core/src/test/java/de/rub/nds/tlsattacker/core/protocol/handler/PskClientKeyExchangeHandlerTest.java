@@ -13,11 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.PskClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.PskClientKeyExchangeParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.PskClientKeyExchangePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.PskClientKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.ByteArrayInputStream;
 import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -36,30 +32,6 @@ public class PskClientKeyExchangeHandlerTest {
 
     @After
     public void tearDown() {
-    }
-
-    /**
-     * Test of getParser method, of class PskClientKeyExchangeHandler.
-     */
-    @Test
-    public void testGetParser() {
-        assertTrue(handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof PskClientKeyExchangeParser);
-    }
-
-    /**
-     * Test of getPreparator method, of class PskClientKeyExchangeHandler.
-     */
-    @Test
-    public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new PskClientKeyExchangeMessage()) instanceof PskClientKeyExchangePreparator);
-    }
-
-    /**
-     * Test of getSerializer method, of class PskClientKeyExchangeHandler.
-     */
-    @Test
-    public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new PskClientKeyExchangeMessage()) instanceof PskClientKeyExchangeSerializer);
     }
 
     /**

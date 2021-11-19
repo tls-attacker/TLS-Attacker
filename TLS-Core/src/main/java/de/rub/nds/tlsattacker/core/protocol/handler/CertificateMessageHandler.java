@@ -17,21 +17,17 @@ import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
+import de.rub.nds.tlsattacker.core.protocol.Handler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificateEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificatePair;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.CertificateMessageParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateMessagePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateMessageSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.ASN1InputStream;
@@ -46,22 +42,6 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
 
     public CertificateMessageHandler(TlsContext tlsContext) {
         super(tlsContext);
-    }
-
-    @Override
-    public CertificateMessageParser getParser(InputStream stream) {
-        return new CertificateMessageParser(stream, tlsContext.getChooser().getSelectedProtocolVersion(),
-            tlsContext.getConfig(), tlsContext.getTalkingConnectionEndType());
-    }
-
-    @Override
-    public CertificateMessagePreparator getPreparator(CertificateMessage message) {
-        return new CertificateMessagePreparator(tlsContext.getChooser(), message);
-    }
-
-    @Override
-    public CertificateMessageSerializer getSerializer(CertificateMessage message) {
-        return new CertificateMessageSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     private CertificateType selectTypeInternally() {
@@ -195,9 +175,8 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
             for (CertificateEntry entry : message.getCertificatesListAsEntry()) {
                 if (entry.getExtensions() != null) {
                     for (ExtensionMessage extension : entry.getExtensions()) {
-                        ExtensionHandler handler =
-                            HandlerFactory.getExtensionHandler(tlsContext, extension.getExtensionTypeConstant());
-                        handler.adjustTLSContext(extension);
+                        Handler handler = extension.getHandler(tlsContext);
+                        handler.adjustContext(extension);
                     }
                 }
             }

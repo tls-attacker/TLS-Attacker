@@ -44,18 +44,4 @@ public class HeartbeatExtensionHandler extends ExtensionHandler<HeartbeatExtensi
         }
     }
 
-    @Override
-    public HeartbeatExtensionParser getParser(InputStream stream) {
-        return new HeartbeatExtensionParser(stream, context.getConfig());
-    }
-
-    @Override
-    public HeartbeatExtensionPreparator getPreparator(HeartbeatExtensionMessage message) {
-        return new HeartbeatExtensionPreparator(context.getChooser(), message, getSerializer(message));
-    }
-
-    @Override
-    public HeartbeatExtensionSerializer getSerializer(HeartbeatExtensionMessage message) {
-        return new HeartbeatExtensionSerializer(message);
-    }
 }

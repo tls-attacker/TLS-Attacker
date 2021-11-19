@@ -30,6 +30,7 @@ import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
 public class TrustedCaIndicationExtensionParserTest {
+
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays
@@ -71,7 +72,8 @@ public class TrustedCaIndicationExtensionParserTest {
     public void testParse() {
         TrustedCaIndicationExtensionParser parser =
             new TrustedCaIndicationExtensionParser(new ByteArrayInputStream(extensionBytes), Config.createConfig());
-        TrustedCaIndicationExtensionMessage msg = parser.parse();
+        TrustedCaIndicationExtensionMessage msg = new TrustedCaIndicationExtensionMessage();
+        parser.parse(msg);
 
         assertArrayEquals(type.getValue(), msg.getExtensionType().getValue());
         assertEquals(extensionLength, (long) msg.getExtensionLength().getValue());

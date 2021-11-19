@@ -41,10 +41,4 @@ public class CookieExtensionParser extends ExtensionParser<CookieExtensionMessag
         msg.setCookie(parseByteArrayField(msg.getCookieLength().getValue()));
         LOGGER.debug("Cookie: " + ArrayConverter.bytesToHexString(msg.getCookie().getValue()));
     }
-
-    @Override
-    protected CookieExtensionMessage createExtensionMessage() {
-        return new CookieExtensionMessage();
-    }
-
 }

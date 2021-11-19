@@ -62,7 +62,8 @@ public class SrtpExtensionParserTest {
 
     @Test
     public void testParseExtensionMessageContent() {
-        SrtpExtensionMessage msg = parser.parse();
+        SrtpExtensionMessage msg = new SrtpExtensionMessage();
+        parser.parse(msg);
 
         assertArrayEquals(extensionType.getValue(), msg.getExtensionType().getValue());
         assertEquals(extensionLength, (long) msg.getExtensionLength().getValue());

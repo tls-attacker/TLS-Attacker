@@ -9,16 +9,11 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.ECDHEServerKeyExchangeParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.ECDHEServerKeyExchangePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.ECDHEServerKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -29,23 +24,6 @@ public class ECDHEServerKeyExchangeHandler<T extends ECDHEServerKeyExchangeMessa
 
     public ECDHEServerKeyExchangeHandler(TlsContext tlsContext) {
         super(tlsContext);
-    }
-
-    @Override
-    public ECDHEServerKeyExchangeParser<T> getParser(InputStream stream) {
-        return new ECDHEServerKeyExchangeParser<T>(stream, tlsContext.getChooser().getLastRecordVersion(),
-            AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite()),
-            tlsContext.getConfig());
-    }
-
-    @Override
-    public ECDHEServerKeyExchangePreparator<T> getPreparator(T message) {
-        return new ECDHEServerKeyExchangePreparator<T>(tlsContext.getChooser(), message);
-    }
-
-    @Override
-    public ECDHEServerKeyExchangeSerializer<T> getSerializer(T message) {
-        return new ECDHEServerKeyExchangeSerializer<T>(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

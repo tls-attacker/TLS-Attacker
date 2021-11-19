@@ -35,6 +35,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -67,19 +68,19 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
     @Override
     public LayerProcessingResult sendData() throws IOException {
         throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
-                                                                       // Tools | Templates.
+        // Tools | Templates.
     }
 
     @Override
     public LayerProcessingResult<Record> sendData(byte[] data) throws IOException {
         throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
-                                                                       // Tools | Templates.
+        // Tools | Templates.
     }
 
     @Override
     public LayerProcessingResult<Record> sendData(RecordLayerHint hint) throws IOException {
         throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
-                                                                       // Tools | Templates.
+        // Tools | Templates.
     }
 
     @Override
@@ -93,7 +94,8 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
 
         CleanRecordByteSeperator separator = new CleanRecordByteSeperator(getLayerConfiguration().getContainerList(),
             context.getChooser().getOutboundMaxRecordDataSize(), new ByteArrayInputStream(data));
-        List<Record> records = separator.parse();
+        List<Record> records = new LinkedList<>();
+        separator.parse(records);
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
 
         for (Record record : records) {
@@ -131,7 +133,8 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
         while (dataStream.available() > 0) {
             try {
                 RecordParser parser = new RecordParser(dataStream, getDecryptorCipher().getState().getVersion());
-                Record record = parser.parse();
+                Record record = new Record();
+                parser.parse(record);
                 addProducedContainer(record);
                 outputStream.write(record.getCleanProtocolMessageBytes().getValue());
             } catch (ParserException e) {

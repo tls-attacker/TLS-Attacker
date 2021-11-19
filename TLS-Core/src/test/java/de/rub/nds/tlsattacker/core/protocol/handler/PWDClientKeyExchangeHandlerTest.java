@@ -15,11 +15,8 @@ import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.protocol.message.PWDClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.PWDClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.PWDClientKeyExchangePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.PWDClientKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.ByteArrayInputStream;
 import java.math.BigInteger;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -34,30 +31,6 @@ public class PWDClientKeyExchangeHandlerTest {
     public void setUp() {
         context = new TlsContext();
         handler = new PWDClientKeyExchangeHandler(context);
-    }
-
-    /**
-     * Test of getParser method, of class ECDHClientKeyExchangeHandler.
-     */
-    @Test
-    public void testGetParser() {
-        assertTrue(handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof PWDClientKeyExchangeParser);
-    }
-
-    /**
-     * Test of getPreparator method, of class ECDHClientKeyExchangeHandler.
-     */
-    @Test
-    public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new PWDClientKeyExchangeMessage()) instanceof PWDClientKeyExchangePreparator);
-    }
-
-    /**
-     * Test of getSerializer method, of class ECDHClientKeyExchangeHandler.
-     */
-    @Test
-    public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new PWDClientKeyExchangeMessage()) instanceof PWDClientKeyExchangeSerializer);
     }
 
     @Test

@@ -13,7 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
-import de.rub.nds.tlsattacker.core.protocol.message.UserMappingExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.UserMappingExtensionMessage;
 import java.io.ByteArrayInputStream;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -36,7 +36,8 @@ public class UserMappingExtensionParserTest {
 
     @Test
     public void testParseExtensionMessageContent() {
-        message = parser.parse();
+        message = new UserMappingExtensionMessage();
+        parser.parse(message);
         assertArrayEquals(extensionType.getValue(), message.getExtensionType().getValue());
         assertEquals(extensionLength, (long) message.getExtensionLength().getValue());
         assertEquals(hintType.getValue(), (long) message.getUserMappingType().getValue());

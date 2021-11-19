@@ -46,7 +46,7 @@ public class SessionTicketTLSExtensionSerializerTest {
      * @param startParsing
      */
     public SessionTicketTLSExtensionSerializerTest(ExtensionType extensionType, int extensionLength,
-        byte[] sessionTicket, byte[] expectedBytes, int startParsing) {
+        byte[] sessionTicket, byte[] expectedBytes) {
         this.extensionType = extensionType;
         this.extensionLength = extensionLength;
         this.sessionTicket = sessionTicket;

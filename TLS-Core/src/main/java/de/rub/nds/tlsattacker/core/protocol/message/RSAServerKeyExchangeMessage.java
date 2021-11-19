@@ -20,10 +20,13 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.RSAServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.RSAServerComputations;
+import de.rub.nds.tlsattacker.core.protocol.parser.RSAServerKeyExchangeParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.RSAServerKeyExchangePreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.RSAServerKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 
 public class RSAServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
@@ -56,8 +59,23 @@ public class RSAServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     }
 
     @Override
-    public ProtocolMessageHandler<RSAServerKeyExchangeMessage> getHandler(TlsContext context) {
+    public RSAServerKeyExchangeHandler getHandler(TlsContext context) {
         return new RSAServerKeyExchangeHandler(context);
+    }
+
+    @Override
+    public RSAServerKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new RSAServerKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+    }
+
+    @Override
+    public RSAServerKeyExchangePreparator getPreparator(TlsContext tlsContext) {
+        return new RSAServerKeyExchangePreparator(tlsContext.getChooser(), this);
+    }
+
+    @Override
+    public RSAServerKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
+        return new RSAServerKeyExchangeSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

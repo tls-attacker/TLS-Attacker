@@ -17,13 +17,13 @@ import de.rub.nds.tlsattacker.core.protocol.Preparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.Serializable;
 
-public abstract class HttpsHeader extends ModifiableVariableHolder implements Serializable {
+public abstract class HttpHeader extends ModifiableVariableHolder implements Serializable {
 
     protected ModifiableString headerName;
 
     protected ModifiableString headerValue;
 
-    public HttpsHeader() {
+    public HttpHeader() {
     }
 
     public ModifiableString getHeaderName() {

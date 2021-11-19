@@ -13,11 +13,7 @@ import de.rub.nds.tlsattacker.core.dtls.MessageFragmenter;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.*;
-import de.rub.nds.tlsattacker.core.protocol.parser.TlsMessageParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.TlsMessagePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.TlsMessageSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.InputStream;
 
 /**
  * @param <MessageT>
@@ -69,13 +65,4 @@ public abstract class TlsMessageHandler<MessageT extends TlsMessage> extends Pro
 
     public void adjustTlsContextAfterSerialize(MessageT message) {
     }
-
-    @Override
-    public abstract TlsMessageParser<MessageT> getParser(InputStream stream);
-
-    @Override
-    public abstract TlsMessagePreparator<MessageT> getPreparator(MessageT message);
-
-    @Override
-    public abstract TlsMessageSerializer<MessageT> getSerializer(MessageT message);
 }

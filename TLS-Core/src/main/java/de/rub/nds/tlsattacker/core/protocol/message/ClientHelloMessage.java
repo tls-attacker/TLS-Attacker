@@ -9,6 +9,7 @@
 
 package de.rub.nds.tlsattacker.core.protocol.message;
 
+import de.rub.nds.tlsattacker.core.protocol.message.extension.UserMappingExtensionMessage;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
@@ -19,7 +20,6 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.handler.ClientHelloHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.TlsMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.AlpnExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CachedInfoExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestExtensionMessage;
@@ -60,7 +60,11 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.TokenBindingExtens
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TruncatedHmacExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TrustedCaIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
+import de.rub.nds.tlsattacker.core.protocol.parser.ClientHelloParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.ClientHelloPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.ClientHelloSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.Date;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -385,4 +389,19 @@ public class ClientHelloMessage extends HelloMessage {
         return new ClientHelloHandler(context);
     }
 
+    @Override
+    public ClientHelloParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new ClientHelloParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext,
+            tlsContext.getTalkingConnectionEndType());
+    }
+
+    @Override
+    public ClientHelloPreparator getPreparator(TlsContext tlsContext) {
+        return new ClientHelloPreparator(tlsContext.getChooser(), this);
+    }
+
+    @Override
+    public ClientHelloSerializer getSerializer(TlsContext tlsContext) {
+        return new ClientHelloSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+    }
 }

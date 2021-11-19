@@ -23,10 +23,4 @@ public class EncryptThenMacExtensionParser extends ExtensionParser<EncryptThenMa
     public void parseExtensionMessageContent(EncryptThenMacExtensionMessage msg) {
         // nothing to parse here, it's a opt-in extension
     }
-
-    @Override
-    protected EncryptThenMacExtensionMessage createExtensionMessage() {
-        return new EncryptThenMacExtensionMessage();
-    }
-
 }

@@ -23,15 +23,11 @@ import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.ClientHelloParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.ClientHelloPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.ClientHelloSerializer;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
 import java.util.LinkedList;
 import java.util.List;
@@ -44,22 +40,6 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
 
     public ClientHelloHandler(TlsContext tlsContext) {
         super(tlsContext);
-    }
-
-    @Override
-    public ClientHelloParser getParser(InputStream stream) {
-        return new ClientHelloParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext.getConfig(),
-            tlsContext.getTalkingConnectionEndType());
-    }
-
-    @Override
-    public ClientHelloPreparator getPreparator(ClientHelloMessage message) {
-        return new ClientHelloPreparator(tlsContext.getChooser(), message);
-    }
-
-    @Override
-    public ClientHelloSerializer getSerializer(ClientHelloMessage message) {
-        return new ClientHelloSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

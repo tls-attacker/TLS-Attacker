@@ -34,24 +34,7 @@ public class EncryptThenMacExtensionHandlerTest {
     @Test
     public void testAdjustTLSContext() {
         EncryptThenMacExtensionMessage message = new EncryptThenMacExtensionMessage();
-        handler.adjustTLSContext(message);
+        handler.adjustContext(message);
         assertTrue(context.isExtensionProposed(ExtensionType.ENCRYPT_THEN_MAC));
-    }
-
-    @Test
-    public void testGetParser() {
-        assertTrue(handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof EncryptThenMacExtensionParser);
-    }
-
-    @Test
-    public void testGetPreparator() {
-        assertTrue(
-            handler.getPreparator(new EncryptThenMacExtensionMessage()) instanceof EncryptThenMacExtensionPreparator);
-    }
-
-    @Test
-    public void testGetSerializer() {
-        assertTrue(
-            handler.getSerializer(new EncryptThenMacExtensionMessage()) instanceof EncryptThenMacExtensionSerializer);
     }
 }

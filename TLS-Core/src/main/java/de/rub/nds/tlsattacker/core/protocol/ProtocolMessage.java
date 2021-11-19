@@ -14,7 +14,9 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bool.ModifiableBoolean;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.layer.DataContainer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -24,7 +26,8 @@ import java.util.List;
 import java.util.Random;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public abstract class ProtocolMessage extends ModifiableVariableHolder {
+public abstract class ProtocolMessage<Self extends ProtocolMessage> extends ModifiableVariableHolder
+    implements DataContainer<Self> {
 
     @XmlTransient
     protected boolean goingToBeSentDefault = true;
@@ -128,9 +131,20 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder {
      */
     public abstract String toShortString();
 
-    public abstract <S extends ProtocolMessage, T extends ProtocolMessageHandler<S>> T getHandler(TlsContext context);
-
     public boolean addToTypes(List<ProtocolMessageType> protocolMessageTypes) {
         return false;
     }
+
+    @Override
+    public abstract ProtocolMessageHandler<Self> getHandler(TlsContext context);
+
+    @Override
+    public abstract ProtocolMessageSerializer<Self> getSerializer(TlsContext context);
+
+    @Override
+    public abstract ProtocolMessagePreparator<Self> getPreparator(TlsContext context);
+
+    @Override
+    public abstract ProtocolMessageParser<Self> getParser(TlsContext context, InputStream stream);
+
 }

@@ -33,22 +33,6 @@ public class SSL2ServerHelloHandler extends HandshakeMessageHandler<SSL2ServerHe
         super(context);
     }
 
-    @Override
-    public SSL2ServerHelloParser getParser(InputStream stream) {
-        return new SSL2ServerHelloParser(stream, tlsContext.getChooser().getSelectedProtocolVersion(),
-            tlsContext.getConfig());
-    }
-
-    @Override
-    public SSL2ServerHelloPreparator getPreparator(SSL2ServerHelloMessage message) {
-        return new SSL2ServerHelloPreparator(tlsContext.getChooser(), message);
-    }
-
-    @Override
-    public SSL2ServerHelloSerializer getSerializer(SSL2ServerHelloMessage message) {
-        return new SSL2ServerHelloSerializer(message, tlsContext);
-    }
-
     private Certificate parseCertificate(int lengthBytes, byte[] bytesToParse) {
         LOGGER.debug("SSL2 lengthBytes:" + lengthBytes);
         LOGGER.debug("SSL2 bytesToParse:" + ArrayConverter.bytesToHexString(bytesToParse, false));

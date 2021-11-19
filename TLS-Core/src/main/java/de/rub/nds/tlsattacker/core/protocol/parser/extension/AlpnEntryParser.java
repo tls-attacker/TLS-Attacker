@@ -21,12 +21,10 @@ public class AlpnEntryParser extends Parser<AlpnEntry> {
     }
 
     @Override
-    public AlpnEntry parse() {
-        AlpnEntry entry = new AlpnEntry();
+    public void parse(AlpnEntry entry) {
         entry.setAlpnEntryLength(parseIntField(ExtensionByteLength.ALPN_ENTRY_LENGTH));
         entry.setAlpnEntry(new String(parseByteArrayField(entry.getAlpnEntryLength().getValue())));
         entry.setAlpnEntryConfig(entry.getAlpnEntry().getValue());
-        return entry;
     }
 
 }

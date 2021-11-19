@@ -11,13 +11,8 @@ package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignedCertificateTimestampExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.SignedCertificateTimestampExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SignedCertificateTimestampExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SignedCertificateTimestampExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.ByteArrayInputStream;
 import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -48,32 +43,14 @@ public class SignedCertificateTimestampExtensionHandlerTest {
         messageOne.setSignedTimestamp(firstTimestamp);
         messageOne.setExtensionLength(lengthFirstPackage);
 
-        handler.adjustTLSContext(messageOne);
+        handler.adjustContext(messageOne);
         assertArrayEquals(firstTimestamp, context.getSignedCertificateTimestamp());
 
         SignedCertificateTimestampExtensionMessage messageTwo = new SignedCertificateTimestampExtensionMessage();
         messageTwo.setSignedTimestamp(secondTimestamp);
         messageTwo.setExtensionLength(lengthSecondPackage);
-        handler.adjustTLSContext(messageTwo);
+        handler.adjustContext(messageTwo);
 
         assertArrayEquals(secondTimestamp, context.getSignedCertificateTimestamp());
-    }
-
-    @Test
-    public void testGetParser() {
-        assertTrue(handler
-            .getParser(new ByteArrayInputStream(new byte[0])) instanceof SignedCertificateTimestampExtensionParser);
-    }
-
-    @Test
-    public void testGetPreparator() {
-        assertTrue(handler.getPreparator(
-            new SignedCertificateTimestampExtensionMessage()) instanceof SignedCertificateTimestampExtensionPreparator);
-    }
-
-    @Test
-    public void testGetSerializer() {
-        assertTrue(handler.getSerializer(
-            new SignedCertificateTimestampExtensionMessage()) instanceof SignedCertificateTimestampExtensionSerializer);
     }
 }

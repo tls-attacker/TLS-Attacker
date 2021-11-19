@@ -14,6 +14,8 @@ import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
+import de.rub.nds.tlsattacker.core.layer.LayerStackType;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
@@ -69,7 +71,8 @@ public class ForwardRecordsActionTest {
         th.setFetchableByte(alertMsg);
         context.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
         context.setTransportHandler(th);
-
+        context.setLayerStack(LayerStackFactory.createLayerStack(LayerStackType.TLS, context));
+        context2.setLayerStack(LayerStackFactory.createLayerStack(LayerStackType.TLS, context2));
         context2.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
         context2.setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
     }

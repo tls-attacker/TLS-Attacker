@@ -28,7 +28,7 @@ public class HeartbeatExtensionParserTest {
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] {
             { ArrayConverter.hexStringToByteArray("000f000101"), ExtensionType.HEARTBEAT, 1, new byte[] { 1 } } }); // is
-                                                                                                                    // the
+        // the
         // same for
         // TLS10 and
         // TLS11
@@ -56,7 +56,8 @@ public class HeartbeatExtensionParserTest {
     public void testParseExtensionMessageContent() {
         HeartbeatExtensionParser parser =
             new HeartbeatExtensionParser(new ByteArrayInputStream(extension), Config.createConfig());
-        HeartbeatExtensionMessage msg = parser.parse();
+        HeartbeatExtensionMessage msg = new HeartbeatExtensionMessage();
+        parser.parse(msg);
         assertArrayEquals(msg.getExtensionBytes().getValue(), completeExtension);
         assertArrayEquals(type.getValue(), msg.getExtensionType().getValue());
         assertTrue(extensionLength == msg.getExtensionLength().getValue());

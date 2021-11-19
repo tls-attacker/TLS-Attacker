@@ -26,10 +26,8 @@ public class TrustedAuthorityParser extends Parser<TrustedAuthority> {
     }
 
     @Override
-    public TrustedAuthority parse() {
-        TrustedAuthority authority = new TrustedAuthority();
+    public void parse(TrustedAuthority authority) {
         authority.setIdentifierType(parseByteField(ExtensionByteLength.TRUSTED_AUTHORITY_TYPE));
-
         switch (TrustedCaIndicationIdentifierType.getIdentifierByByte(authority.getIdentifierType().getValue())) {
             case PRE_AGREED:
                 // nothing to do here
@@ -47,8 +45,6 @@ public class TrustedAuthorityParser extends Parser<TrustedAuthority> {
                 LOGGER.warn("Couldn't set the trusted authority to reasonable values");
                 break;
         }
-
-        return authority;
     }
 
 }

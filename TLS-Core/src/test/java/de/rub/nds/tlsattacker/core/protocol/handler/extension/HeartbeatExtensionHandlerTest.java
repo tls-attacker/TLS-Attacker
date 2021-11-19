@@ -11,11 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.HeartbeatExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.HeartbeatExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.HeartbeatExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.HeartbeatExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.ByteArrayInputStream;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,7 +35,7 @@ public class HeartbeatExtensionHandlerTest {
     public void testAdjustTLSContext() {
         HeartbeatExtensionMessage msg = new HeartbeatExtensionMessage();
         msg.setHeartbeatMode(new byte[] { 1 });
-        handler.adjustTLSContext(msg);
+        handler.adjustContext(msg);
         assertTrue(context.getHeartbeatMode() == HeartbeatMode.PEER_ALLOWED_TO_SEND);
     }
 
@@ -47,32 +43,7 @@ public class HeartbeatExtensionHandlerTest {
     public void testAdjustUnspecifiedMode() {
         HeartbeatExtensionMessage msg = new HeartbeatExtensionMessage();
         msg.setHeartbeatMode(new byte[] { (byte) 0xFF });
-        handler.adjustTLSContext(msg);
+        handler.adjustContext(msg);
         assertNull(context.getHeartbeatMode());
     }
-
-    /**
-     * Test of getParser method, of class HeartbeatExtensionHandler.
-     */
-    @Test
-    public void testGetParser() {
-        assertTrue(handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof HeartbeatExtensionParser);
-    }
-
-    /**
-     * Test of getPreparator method, of class HeartbeatExtensionHandler.
-     */
-    @Test
-    public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new HeartbeatExtensionMessage()) instanceof HeartbeatExtensionPreparator);
-    }
-
-    /**
-     * Test of getSerializer method, of class HeartbeatExtensionHandler.
-     */
-    @Test
-    public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new HeartbeatExtensionMessage()) instanceof HeartbeatExtensionSerializer);
-    }
-
 }

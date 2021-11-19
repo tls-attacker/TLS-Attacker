@@ -11,11 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PWDClearExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.PWDClearExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PWDClearExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PWDClearExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.ByteArrayInputStream;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,23 +30,7 @@ public class PWDClearExtensionHandlerTest {
     public void testAdjustTLSContext() {
         PWDClearExtensionMessage message = new PWDClearExtensionMessage();
         message.setUsername("jens");
-        handler.adjustTLSContext(message);
+        handler.adjustContext(message);
         assertTrue(context.isExtensionProposed(ExtensionType.PWD_CLEAR));
     }
-
-    @Test
-    public void testGetParser() {
-        assertTrue(handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof PWDClearExtensionParser);
-    }
-
-    @Test
-    public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new PWDClearExtensionMessage()) instanceof PWDClearExtensionPreparator);
-    }
-
-    @Test
-    public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new PWDClearExtensionMessage()) instanceof PWDClearExtensionSerializer);
-    }
-
 }

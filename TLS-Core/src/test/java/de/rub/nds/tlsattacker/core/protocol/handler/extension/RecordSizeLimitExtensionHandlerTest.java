@@ -47,7 +47,7 @@ public class RecordSizeLimitExtensionHandlerTest {
         RecordSizeLimitExtensionMessage msg = new RecordSizeLimitExtensionMessage();
         msg.setRecordSizeLimit(new byte[] { (byte) 0x05, (byte) 0x39 });
         assertNull(context.getOutboundRecordSizeLimit());
-        handler.adjustTLSContext(msg);
+        handler.adjustContext(msg);
         assertTrue(context.getOutboundRecordSizeLimit() == 1337);
     }
 
@@ -56,41 +56,14 @@ public class RecordSizeLimitExtensionHandlerTest {
         RecordSizeLimitExtensionMessage msg = new RecordSizeLimitExtensionMessage();
         msg.setRecordSizeLimit(new byte[] { (byte) 0x05, (byte) 0x39, (byte) 0x00 });
         assertNull(context.getOutboundRecordSizeLimit());
-        handler.adjustTLSContext(msg);
+        handler.adjustContext(msg);
     }
 
     public void testAdjustTLSContextSizeTooSmall() {
         RecordSizeLimitExtensionMessage msg = new RecordSizeLimitExtensionMessage();
         msg.setRecordSizeLimit(new byte[] { (byte) 0x00, (byte) 0x2A });
         assertNull(context.getOutboundRecordSizeLimit());
-        handler.adjustTLSContext(msg);
+        handler.adjustContext(msg);
         assertNull(context.getOutboundRecordSizeLimit());
     }
-
-    /**
-     * Test of getParser method, of class RecordSizeLimitExtensionHandler.
-     */
-    @Test
-    public void testGetParser() {
-        assertTrue(handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof RecordSizeLimitExtensionParser);
-    }
-
-    /**
-     * Test of getPreparator method, of class RecordSizeLimitExtensionHandler.
-     */
-    @Test
-    public void testGetPreparator() {
-        assertTrue(
-            handler.getPreparator(new RecordSizeLimitExtensionMessage()) instanceof RecordSizeLimitExtensionPreparator);
-    }
-
-    /**
-     * Test of getSerializer method, of class RecordSizeLimitExtensionHandler.
-     */
-    @Test
-    public void testGetSerializer() {
-        assertTrue(
-            handler.getSerializer(new RecordSizeLimitExtensionMessage()) instanceof RecordSizeLimitExtensionSerializer);
-    }
-
 }

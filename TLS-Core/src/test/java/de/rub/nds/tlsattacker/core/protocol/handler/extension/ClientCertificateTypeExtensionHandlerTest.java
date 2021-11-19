@@ -42,26 +42,8 @@ public class ClientCertificateTypeExtensionHandlerTest {
         ClientCertificateTypeExtensionMessage msg = new ClientCertificateTypeExtensionMessage();
         msg.setCertificateTypes(CertificateType.toByteArray(certList));
 
-        handler.adjustTLSContext(msg);
+        handler.adjustContext(msg);
 
         assertThat(certList, is(context.getClientCertificateTypeDesiredTypes()));
-    }
-
-    @Test
-    public void testGetParser() {
-        assertTrue(
-            handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof ClientCertificateTypeExtensionParser);
-    }
-
-    @Test
-    public void testGetPreparator() {
-        assertTrue(handler.getPreparator(
-            new ClientCertificateTypeExtensionMessage()) instanceof ClientCertificateTypeExtensionPreparator);
-    }
-
-    @Test
-    public void testGetSerializer() {
-        assertTrue(handler.getSerializer(
-            new ClientCertificateTypeExtensionMessage()) instanceof ClientCertificateTypeExtensionSerializer);
     }
 }

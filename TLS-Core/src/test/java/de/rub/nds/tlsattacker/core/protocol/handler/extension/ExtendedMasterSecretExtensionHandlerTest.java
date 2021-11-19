@@ -37,34 +37,15 @@ public class ExtendedMasterSecretExtensionHandlerTest {
     public void testAdjustTLSContext() {
         ExtendedMasterSecretExtensionMessage msg = new ExtendedMasterSecretExtensionMessage();
         context.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
-        handler.adjustTLSContext(msg);
+        handler.adjustContext(msg);
 
         assertTrue(context.isExtensionProposed(ExtensionType.EXTENDED_MASTER_SECRET));
         assertFalse(context.isExtensionNegotiated(ExtensionType.EXTENDED_MASTER_SECRET));
         assertFalse(context.isUseExtendedMasterSecret());
         context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
-        handler.adjustTLSContext(msg);
+        handler.adjustContext(msg);
         assertTrue(context.isExtensionProposed(ExtensionType.EXTENDED_MASTER_SECRET));
         assertTrue(context.isExtensionNegotiated(ExtensionType.EXTENDED_MASTER_SECRET));
         assertTrue(context.isUseExtendedMasterSecret());
     }
-
-    @Test
-    public void testGetParser() {
-        assertTrue(
-            handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof ExtendedMasterSecretExtensionParser);
-    }
-
-    @Test
-    public void testGetPreparator() {
-        assertTrue(handler.getPreparator(
-            new ExtendedMasterSecretExtensionMessage()) instanceof ExtendedMasterSecretExtensionPreparator);
-    }
-
-    @Test
-    public void testGetSerializer() {
-        assertTrue(handler.getSerializer(
-            new ExtendedMasterSecretExtensionMessage()) instanceof ExtendedMasterSecretExtensionSerializer);
-    }
-
 }

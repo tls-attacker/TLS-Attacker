@@ -19,7 +19,11 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.layer.DataContainer;
+import de.rub.nds.tlsattacker.core.protocol.Handler;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
+import de.rub.nds.tlsattacker.core.protocol.Parser;
+import de.rub.nds.tlsattacker.core.protocol.Preparator;
+import de.rub.nds.tlsattacker.core.protocol.Serializer;
 import de.rub.nds.tlsattacker.core.record.compressor.RecordCompressor;
 import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
 import de.rub.nds.tlsattacker.core.record.parser.RecordParser;
@@ -309,6 +313,28 @@ public class Record extends ModifiableVariableHolder implements DataContainer {
     public void reset() {
         super.reset();
         setContentMessageType(null);
+    }
+
+    // TODO Fix this mess for records
+    @Override
+    public Parser getParser(TlsContext context, InputStream stream) {
+        return new RecordParser(stream, context.getLastRecordVersion());
+    }
+
+    @Override
+    public Preparator getPreparator(TlsContext context) {
+        return new RecordPreparator(context.getChooser(), this, null, contentMessageType, null);
+    }
+
+    @Override
+    public Serializer getSerializer(TlsContext context) {
+        return new RecordSerializer(this);
+    }
+
+    @Override
+    public Handler getHandler(TlsContext context) {
+        throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
+                                                                       // Tools | Templates.
     }
 
 }

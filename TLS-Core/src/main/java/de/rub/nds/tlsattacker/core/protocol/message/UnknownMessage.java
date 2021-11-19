@@ -14,7 +14,11 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.TlsMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.UnknownMessageHandler;
+import de.rub.nds.tlsattacker.core.protocol.parser.UnknownMessageParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.UnknownMessagePreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.UnknownMessageSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
@@ -65,6 +69,22 @@ public class UnknownMessage extends TlsMessage {
     @Override
     public TlsMessageHandler getHandler(TlsContext context) {
         return new UnknownMessageHandler(context, recordContentMessageType);
+    }
+
+    @Override
+    public UnknownMessageParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new UnknownMessageParser(stream, tlsContext.getChooser().getLastRecordVersion(),
+            recordContentMessageType, tlsContext.getConfig());
+    }
+
+    @Override
+    public UnknownMessagePreparator getPreparator(TlsContext tlsContext) {
+        return new UnknownMessagePreparator(tlsContext.getChooser(), this);
+    }
+
+    @Override
+    public UnknownMessageSerializer getSerializer(TlsContext tlsContext) {
+        return new UnknownMessageSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

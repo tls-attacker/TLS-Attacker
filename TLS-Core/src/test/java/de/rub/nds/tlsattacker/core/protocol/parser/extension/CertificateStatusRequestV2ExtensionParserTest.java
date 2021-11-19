@@ -80,7 +80,8 @@ public class CertificateStatusRequestV2ExtensionParserTest {
         list.get(1).setResponderIdListBytes(responderIdListBytes);
         CertificateStatusRequestV2ExtensionParser parser =
             new CertificateStatusRequestV2ExtensionParser(new ByteArrayInputStream(parseBytes), Config.createConfig());
-        CertificateStatusRequestV2ExtensionMessage msg = parser.parse();
+        CertificateStatusRequestV2ExtensionMessage msg = new CertificateStatusRequestV2ExtensionMessage();
+        parser.parse(msg);
 
         assertArrayEquals(type.getValue(), msg.getExtensionType().getValue());
         assertEquals(extensionLength, (long) msg.getExtensionLength().getValue());

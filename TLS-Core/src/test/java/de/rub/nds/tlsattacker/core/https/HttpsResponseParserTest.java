@@ -39,7 +39,8 @@ public class HttpsResponseParserTest {
         HttpsResponseParser parser = new HttpsResponseParser(
             new ByteArrayInputStream(ArrayConverter.hexStringToByteArray("AAAAAAAAAAAAAAAAAAAAAAAA")),
             ProtocolVersion.TLS12, config);
-        parser.parse();
+        HttpsResponseMessage message = new HttpsResponseMessage();
+        parser.parse(message);
     }
 
     /**
@@ -52,7 +53,8 @@ public class HttpsResponseParserTest {
 
         HttpsResponseParser parser = new HttpsResponseParser(
             new ByteArrayInputStream(message.getBytes(Charset.forName("UTF-8"))), ProtocolVersion.TLS12, config);
-        HttpsResponseMessage parsedMessage = parser.parse();
+        HttpsResponseMessage parsedMessage = new HttpsResponseMessage();
+        parser.parse(parsedMessage);
 
         assertEquals(parsedMessage.getResponseStatusCode().getValue(), "200 OK");
         assertEquals(parsedMessage.getResponseProtocol().getValue(), "HTTP/1.1");

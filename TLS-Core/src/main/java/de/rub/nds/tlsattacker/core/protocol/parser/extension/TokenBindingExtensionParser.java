@@ -36,10 +36,4 @@ public class TokenBindingExtensionParser extends ExtensionParser<TokenBindingExt
         LOGGER.debug("The token binding extension parser parsed the KeyParameters : "
             + msg.getTokenbindingKeyParameters().toString());
     }
-
-    @Override
-    protected TokenBindingExtensionMessage createExtensionMessage() {
-        return new TokenBindingExtensionMessage();
-    }
-
 }

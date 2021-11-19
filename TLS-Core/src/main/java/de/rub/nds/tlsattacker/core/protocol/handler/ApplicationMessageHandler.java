@@ -11,11 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.ApplicationMessageParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.ApplicationMessagePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.ApplicationMessageSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -25,22 +21,6 @@ public class ApplicationMessageHandler extends TlsMessageHandler<ApplicationMess
 
     public ApplicationMessageHandler(TlsContext tlsContext) {
         super(tlsContext);
-    }
-
-    @Override
-    public ApplicationMessageParser getParser(InputStream stream) {
-        return new ApplicationMessageParser(stream, tlsContext.getChooser().getLastRecordVersion(),
-            tlsContext.getConfig());
-    }
-
-    @Override
-    public ApplicationMessagePreparator getPreparator(ApplicationMessage message) {
-        return new ApplicationMessagePreparator(tlsContext.getChooser(), message);
-    }
-
-    @Override
-    public ApplicationMessageSerializer getSerializer(ApplicationMessage message) {
-        return new ApplicationMessageSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PreSharedKeyExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PSKBinder;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PSKIdentity;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.LinkedList;
@@ -28,17 +29,18 @@ import org.apache.logging.log4j.Logger;
 public class PreSharedKeyExtensionParser extends ExtensionParser<PreSharedKeyExtensionMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
+    private ConnectionEndType talkingConnectionEndType;
 
-    public PreSharedKeyExtensionParser(InputStream stream, Config config) {
+    public PreSharedKeyExtensionParser(InputStream stream, Config config, ConnectionEndType talkingConnectionEndType) {
         super(stream, config);
+        this.talkingConnectionEndType = talkingConnectionEndType;
     }
 
     @Override
     public void parseExtensionMessageContent(PreSharedKeyExtensionMessage msg) {
         LOGGER.debug("Parsing PreSharedKeyExtensionMessage");
-        // TODO DO NOT GUESS HERE
         // Client -> Server
-        if (msg.getExtensionLength().getValue() > 2) {
+        if (talkingConnectionEndType == ConnectionEndType.CLIENT) {
             parsePreSharedKeyIdentityListLength(msg);
             parsePreSharedKeyIdentityListBytes(msg);
             parsePreSharedKeyBinderListLength(msg);
@@ -47,11 +49,6 @@ public class PreSharedKeyExtensionParser extends ExtensionParser<PreSharedKeyExt
             // Server -> Client
             parseSelectedIdentity(msg);
         }
-    }
-
-    @Override
-    protected PreSharedKeyExtensionMessage createExtensionMessage() {
-        return new PreSharedKeyExtensionMessage();
     }
 
     private void parsePreSharedKeyIdentityListLength(PreSharedKeyExtensionMessage msg) {
@@ -67,7 +64,9 @@ public class PreSharedKeyExtensionParser extends ExtensionParser<PreSharedKeyExt
         ByteArrayInputStream innerStream = new ByteArrayInputStream(msg.getIdentityListBytes().getValue());
         while (innerStream.available() > 0) {
             PSKIdentityParser parser = new PSKIdentityParser(innerStream);
-            identities.add(parser.parse());
+            PSKIdentity identity = new PSKIdentity();
+            parser.parse(identity);
+            identities.add(identity);
         }
         msg.setIdentities(identities);
     }
@@ -86,7 +85,9 @@ public class PreSharedKeyExtensionParser extends ExtensionParser<PreSharedKeyExt
 
         while (innerStream.available() > 0) {
             PSKBinderParser parser = new PSKBinderParser(innerStream);
-            binders.add(parser.parse());
+            PSKBinder binder = new PSKBinder();
+            parser.parse(binder);
+            binders.add(binder);
         }
         msg.setBinders(binders);
     }

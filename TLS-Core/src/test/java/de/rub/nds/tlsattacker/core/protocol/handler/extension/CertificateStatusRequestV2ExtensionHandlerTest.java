@@ -12,15 +12,10 @@ package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestV2ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.RequestItemV2;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.ResponderId;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.CertificateStatusRequestV2ExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.CertificateStatusRequestV2ExtensionParserTest;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.CertificateStatusRequestV2ExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.CertificateStatusRequestV2ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.List;
-import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -42,27 +37,9 @@ public class CertificateStatusRequestV2ExtensionHandlerTest {
         CertificateStatusRequestV2ExtensionMessage msg = new CertificateStatusRequestV2ExtensionMessage();
         msg.setStatusRequestList(itemList);
 
-        handler.adjustTLSContext(msg);
+        handler.adjustContext(msg);
 
         CertificateStatusRequestV2ExtensionParserTest.assertRequestItemV2List(itemList,
             context.getStatusRequestV2RequestList());
-    }
-
-    @Test
-    public void testGetParser() {
-        assertTrue(handler
-            .getParser(new ByteArrayInputStream(new byte[0])) instanceof CertificateStatusRequestV2ExtensionParser);
-    }
-
-    @Test
-    public void testGetPreparator() {
-        assertTrue(handler.getPreparator(
-            new CertificateStatusRequestV2ExtensionMessage()) instanceof CertificateStatusRequestV2ExtensionPreparator);
-    }
-
-    @Test
-    public void testGetSerializer() {
-        assertTrue(handler.getSerializer(
-            new CertificateStatusRequestV2ExtensionMessage()) instanceof CertificateStatusRequestV2ExtensionSerializer);
     }
 }

@@ -33,14 +33,11 @@ public class AlpnExtensionParser extends ExtensionParser<AlpnExtensionMessage> {
         ByteArrayInputStream innerStream = new ByteArrayInputStream(proposedProtocol);
         while (innerStream.available() > 0) {
             AlpnEntryParser parser = new AlpnEntryParser(innerStream);
-            entryList.add(parser.parse());
+            AlpnEntry entry = new AlpnEntry();
+            parser.parse(entry);
+            entryList.add(entry);
         }
         msg.setAlpnEntryList(entryList);
-    }
-
-    @Override
-    protected AlpnExtensionMessage createExtensionMessage() {
-        return new AlpnExtensionMessage();
     }
 
 }

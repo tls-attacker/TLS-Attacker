@@ -32,7 +32,7 @@ public class ExtendedMasterSecretExtensionSerializerTest {
     private ExtendedMasterSecretExtensionMessage message;
 
     public ExtendedMasterSecretExtensionSerializerTest(ExtensionType extensionType, int extensionLength,
-        byte[] expectedBytes, int startParsing) {
+        byte[] expectedBytes) {
         this.extensionType = extensionType;
         this.extensionLength = extensionLength;
         this.expectedBytes = expectedBytes;

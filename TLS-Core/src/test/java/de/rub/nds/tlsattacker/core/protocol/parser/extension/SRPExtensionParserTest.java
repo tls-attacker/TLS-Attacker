@@ -57,7 +57,8 @@ public class SRPExtensionParserTest {
 
     @Test
     public void testParseExtensionMessageContent() {
-        message = parser.parse();
+        message = new SRPExtensionMessage();
+        parser.parse(message);
 
         assertArrayEquals(extensionType.getValue(), message.getExtensionType().getValue());
         assertEquals(extensionLength, (long) message.getExtensionLength().getValue());

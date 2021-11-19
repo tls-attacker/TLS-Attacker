@@ -16,6 +16,8 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
+import de.rub.nds.tlsattacker.core.layer.LayerStackType;
 import de.rub.nds.tlsattacker.core.record.cipher.CipherState;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordAEADCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
@@ -58,6 +60,8 @@ public class TlsContextTest {
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_GCM_SHA256);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         context.setRandom(new TestRandomData(ArrayConverter.hexStringToByteArray("FFEEDDCC")));
+        context.setLayerStack(LayerStackFactory.createLayerStack(LayerStackType.TLS, context));
+
         context.getRecordLayer()
             .updateEncryptionCipher(new RecordAEADCipher(context,
                 new CipherState(context.getChooser().getSelectedProtocolVersion(),

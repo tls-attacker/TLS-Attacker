@@ -24,21 +24,6 @@ public class CertificateTypeExtensionHandler extends ExtensionHandler<Certificat
     }
 
     @Override
-    public CertificateTypeExtensionParser getParser(InputStream stream) {
-        return new CertificateTypeExtensionParser(stream, context.getConfig());
-    }
-
-    @Override
-    public CertificateTypeExtensionPreparator getPreparator(CertificateTypeExtensionMessage message) {
-        return new CertificateTypeExtensionPreparator(context.getChooser(), message, getSerializer(message));
-    }
-
-    @Override
-    public CertificateTypeExtensionSerializer getSerializer(CertificateTypeExtensionMessage message) {
-        return new CertificateTypeExtensionSerializer(message);
-    }
-
-    @Override
     public void adjustTLSExtensionContext(CertificateTypeExtensionMessage message) {
         context.setCertificateTypeDesiredTypes(
             CertificateType.getCertificateTypesAsList(message.getCertificateTypes().getValue()));

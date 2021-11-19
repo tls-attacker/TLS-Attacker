@@ -12,7 +12,11 @@ package de.rub.nds.tlsattacker.core.protocol.message;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.EndOfEarlyDataHandler;
+import de.rub.nds.tlsattacker.core.protocol.parser.EndOfEarlyDataParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.EndOfEarlyDataPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.EndOfEarlyDataSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -32,6 +36,21 @@ public class EndOfEarlyDataMessage extends HandshakeMessage {
     @Override
     public EndOfEarlyDataHandler getHandler(TlsContext context) {
         return new EndOfEarlyDataHandler(context);
+    }
+
+    @Override
+    public EndOfEarlyDataParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new EndOfEarlyDataParser(stream, tlsContext.getLastRecordVersion(), tlsContext);
+    }
+
+    @Override
+    public EndOfEarlyDataPreparator getPreparator(TlsContext tlsContext) {
+        return new EndOfEarlyDataPreparator(tlsContext.getChooser(), this);
+    }
+
+    @Override
+    public EndOfEarlyDataSerializer getSerializer(TlsContext tlsContext) {
+        return new EndOfEarlyDataSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

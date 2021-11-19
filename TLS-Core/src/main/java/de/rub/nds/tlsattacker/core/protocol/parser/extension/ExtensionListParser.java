@@ -16,10 +16,10 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.Parser;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,43 +28,37 @@ public class ExtensionListParser extends Parser<List<ExtensionMessage>> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final ConnectionEndType talkingConnectionEndType;
-    private final Config config;
+    private final TlsContext tlsContext;
     private final ProtocolVersion selectedVersion;
     private final boolean helloRetryRequestHint;
 
-    public ExtensionListParser(InputStream stream, Config config, ConnectionEndType talkingConnectionEndType,
-        ProtocolVersion selectedVersion, boolean helloRetryRequestHint) {
+    public ExtensionListParser(InputStream stream, TlsContext tlsContext, ProtocolVersion selectedVersion,
+        boolean helloRetryRequestHint) {
         super(stream);
-        this.talkingConnectionEndType = talkingConnectionEndType;
-        this.config = config;
+        this.tlsContext = tlsContext;
         this.selectedVersion = selectedVersion;
         this.helloRetryRequestHint = helloRetryRequestHint;
     }
 
     @Override
-    public List<ExtensionMessage> parse() {
-        List<ExtensionMessage> extensionList = new LinkedList();
+    public void parse(List<ExtensionMessage> extensionList) {
         while (getBytesLeft() > 0) {
             byte[] typeBytes = parseByteArrayField(ExtensionByteLength.TYPE);
             ExtensionType extensionType = ExtensionType.getExtensionType(typeBytes);
             LOGGER.debug("ExtensionType: {} ({})" + ArrayConverter.bytesToHexString(typeBytes), extensionType);
             int length = parseExtensionLength();
             byte[] extensionPayload = parseByteArrayField(length);
-            ExtensionParser parser =
-                ExtensionParserFactory.getExtensionParser(new ByteArrayInputStream(extensionPayload), extensionType,
-                    config, talkingConnectionEndType, selectedVersion);
-            if (parser instanceof KeyShareExtensionParser) {
-                ((KeyShareExtensionParser) parser).setHelloRetryRequestHint(helloRetryRequestHint);
-            }
-            ExtensionMessage extension = parser.parse();
+            ExtensionMessage extension = ExtensionFactory.getExtension(extensionType);
             extension.setExtensionType(typeBytes);
             extension.setExtensionLength(length);
             extension.setExtensionBytes(ArrayConverter.concatenate(typeBytes,
                 ArrayConverter.intToBytes(length, ExtensionByteLength.EXTENSIONS_LENGTH), extensionPayload));
+            Parser parser = extension.getParser(tlsContext, new ByteArrayInputStream(extensionPayload));
+            if (parser instanceof KeyShareExtensionParser) {
+                ((KeyShareExtensionParser) parser).setHelloRetryRequestHint(helloRetryRequestHint);
+            }
             extensionList.add(extension);
         }
-        return extensionList;
     }
 
     /**

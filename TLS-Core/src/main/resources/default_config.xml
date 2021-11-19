@@ -972,7 +972,6 @@
     <createFragmentsDynamically>true</createFragmentsDynamically>
     <createRecordsDynamically>true</createRecordsDynamically>
     <createIndividualRecords>true</createIndividualRecords>
-    <recordLayerType>RECORD</recordLayerType>
     <resetWorkflowTracesBeforeSaving>false</resetWorkflowTracesBeforeSaving>
     <quickReceive>true</quickReceive>
     <workflowExecutorShouldOpen>true</workflowExecutorShouldOpen>

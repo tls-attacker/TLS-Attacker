@@ -41,7 +41,8 @@ public class TokenBindingMessageParserTest {
     @Test
     public void testParseMessageContent() {
         parser = new TokenBindingMessageParser(new ByteArrayInputStream(toParse), version, config);
-        TokenBindingMessage message = parser.parse();
+        TokenBindingMessage message = new TokenBindingMessage();
+        parser.parse(message);
         Assert.assertArrayEquals(new byte[0], message.getExtensionBytes().getValue());
         assertTrue(message.getExtensionLength().getValue() == 0);
         assertTrue(message.getSignatureLength().getValue() == 0x40);

@@ -17,7 +17,11 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.HelloVerifyRequestHandler;
+import de.rub.nds.tlsattacker.core.protocol.parser.HelloVerifyRequestParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.HelloVerifyRequestPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.HelloVerifyRequestSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
@@ -81,6 +85,21 @@ public class HelloVerifyRequestMessage extends HandshakeMessage {
     @Override
     public HelloVerifyRequestHandler getHandler(TlsContext context) {
         return new HelloVerifyRequestHandler(context);
+    }
+
+    @Override
+    public HelloVerifyRequestParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new HelloVerifyRequestParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+    }
+
+    @Override
+    public HelloVerifyRequestPreparator getPreparator(TlsContext tlsContext) {
+        return new HelloVerifyRequestPreparator(tlsContext.getChooser(), this);
+    }
+
+    @Override
+    public HelloVerifyRequestSerializer getSerializer(TlsContext tlsContext) {
+        return new HelloVerifyRequestSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

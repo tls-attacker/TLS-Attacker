@@ -55,7 +55,7 @@ public class PreSharedKeyExtensionHandlerTest {
         int selectedIdentity = 1;
         PreSharedKeyExtensionMessage msg = new PreSharedKeyExtensionMessage();
         msg.setSelectedIdentity(selectedIdentity);
-        handler.adjustTLSContext(msg);
+        handler.adjustContext(msg);
 
         assertArrayEquals(context.getPsk(), pskSet2.getPreSharedKey());
         assertEquals(context.getSelectedIdentityIndex(), selectedIdentity);
@@ -64,7 +64,7 @@ public class PreSharedKeyExtensionHandlerTest {
     @Test
     public void testAdjustTlsContextWithoutSelectedIdentity() {
         PreSharedKeyExtensionMessage msg = new PreSharedKeyExtensionMessage();
-        handler.adjustTLSContext(msg);
+        handler.adjustContext(msg);
 
         assertArrayEquals(context.getEarlyDataPSKIdentity(), pskSet1.getPreSharedKeyIdentity());
         assertArrayEquals(context.getEarlyDataCipherSuite().getByteValue(), pskSet1.getCipherSuite().getByteValue());
@@ -85,27 +85,10 @@ public class PreSharedKeyExtensionHandlerTest {
         identityList.add(id2);
         msg.setIdentities(identityList);
 
-        handler.adjustTLSContext(msg);
+        handler.adjustContext(msg);
 
         assertArrayEquals(context.getPsk(), pskSet2.getPreSharedKey());
         assertArrayEquals(context.getEarlyDataCipherSuite().getByteValue(), pskSet2.getCipherSuite().getByteValue());
         assertEquals(context.getSelectedIdentityIndex(), 1);
-    }
-
-    @Test
-    public void testGetParser() {
-        assertTrue(handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof PreSharedKeyExtensionParser);
-    }
-
-    @Test
-    public void testGetPreparator() {
-        assertTrue(
-            handler.getPreparator(new PreSharedKeyExtensionMessage()) instanceof PreSharedKeyExtensionPreparator);
-    }
-
-    @Test
-    public void testGetSerializer() {
-        assertTrue(
-            handler.getSerializer(new PreSharedKeyExtensionMessage()) instanceof PreSharedKeyExtensionSerializer);
     }
 }

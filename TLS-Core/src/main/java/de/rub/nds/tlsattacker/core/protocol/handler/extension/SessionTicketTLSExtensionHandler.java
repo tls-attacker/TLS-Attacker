@@ -11,15 +11,11 @@ package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.SessionTicketTLSExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SessionTicketTLSExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SessionTicketTLSExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class SessionTicketTlsExtensionHandler extends ExtensionHandler<SessionTicketTLSExtensionMessage> {
+public class SessionTicketTLSExtensionHandler extends ExtensionHandler<SessionTicketTLSExtensionMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -29,23 +25,8 @@ public class SessionTicketTlsExtensionHandler extends ExtensionHandler<SessionTi
      * @param context
      *                The TlsContext which the Handler should adjust
      */
-    public SessionTicketTlsExtensionHandler(TlsContext context) {
+    public SessionTicketTLSExtensionHandler(TlsContext context) {
         super(context);
-    }
-
-    @Override
-    public SessionTicketTLSExtensionParser getParser(InputStream stream) {
-        return new SessionTicketTLSExtensionParser(stream, context.getConfig());
-    }
-
-    @Override
-    public SessionTicketTLSExtensionPreparator getPreparator(SessionTicketTLSExtensionMessage message) {
-        return new SessionTicketTLSExtensionPreparator(context.getChooser(), message, getSerializer(message));
-    }
-
-    @Override
-    public SessionTicketTLSExtensionSerializer getSerializer(SessionTicketTLSExtensionMessage message) {
-        return new SessionTicketTLSExtensionSerializer(message);
     }
 
     @Override

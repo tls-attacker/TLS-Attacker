@@ -17,14 +17,20 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.ServerNameIndicationExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.ServerNameIndicationExtensionParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ServerNameIndicationExtensionPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ServerNameIndicationExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 
 /**
  * Describes Server Name Indication extension from http://tools.ietf.org/html/rfc6066
  */
-public class ServerNameIndicationExtensionMessage extends ExtensionMessage {
+public class ServerNameIndicationExtensionMessage extends ExtensionMessage<ServerNameIndicationExtensionMessage> {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger serverNameListLength;
@@ -88,5 +94,25 @@ public class ServerNameIndicationExtensionMessage extends ExtensionMessage {
             }
         }
         return holders;
+    }
+
+    @Override
+    public ServerNameIndicationExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new ServerNameIndicationExtensionParser(stream, tlsContext.getConfig());
+    }
+
+    @Override
+    public ServerNameIndicationExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new ServerNameIndicationExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+    }
+
+    @Override
+    public ServerNameIndicationExtensionSerializer getSerializer(TlsContext tlsContext) {
+        return new ServerNameIndicationExtensionSerializer(this);
+    }
+
+    @Override
+    public ServerNameIndicationExtensionHandler getHandler(TlsContext tlsContext) {
+        return new ServerNameIndicationExtensionHandler(tlsContext);
     }
 }

@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.https.header.preparator.CookieHeaderPreparato
 import de.rub.nds.tlsattacker.core.protocol.Preparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-public class CookieHeader extends HttpsHeader {
+public class CookieHeader extends HttpHeader {
 
     public CookieHeader() {
     }

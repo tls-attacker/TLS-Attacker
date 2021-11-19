@@ -27,19 +27,4 @@ public class UnknownHandshakeHandler extends HandshakeMessageHandler<UnknownHand
         // nothing to adjust here
     }
 
-    @Override
-    public UnknownHandshakeParser getParser(InputStream stream) {
-        return new UnknownHandshakeParser(stream, tlsContext.getChooser().getLastRecordVersion(),
-            tlsContext.getConfig());
-    }
-
-    @Override
-    public UnknownHandshakePreparator getPreparator(UnknownHandshakeMessage message) {
-        return new UnknownHandshakePreparator(tlsContext.getChooser(), message);
-    }
-
-    @Override
-    public UnknownHandshakeSerializer getSerializer(UnknownHandshakeMessage message) {
-        return new UnknownHandshakeSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
-    }
 }

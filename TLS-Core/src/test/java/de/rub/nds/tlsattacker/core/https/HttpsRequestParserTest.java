@@ -38,7 +38,8 @@ public class HttpsRequestParserTest {
         HttpsRequestParser parser = new HttpsRequestParser(
             new ByteArrayInputStream(ArrayConverter.hexStringToByteArray("AAAAAAAAAAAAAAAAAAAAAAAA")),
             ProtocolVersion.TLS12, config);
-        parser.parse();
+        HttpsRequestMessage message = new HttpsRequestMessage();
+        parser.parse(message);
     }
 
     /**
@@ -46,21 +47,22 @@ public class HttpsRequestParserTest {
      */
     @Test
     public void testParseMessageContentSuccess() {
-        String message = "GET /index.html HTTP/1.1\r\nUser-Agent: Test\r\nHost: www.rub.de\r\n\r\n";
+        String stringMessage = "GET /index.html HTTP/1.1\r\nUser-Agent: Test\r\nHost: www.rub.de\r\n\r\n";
 
         HttpsRequestParser parser = new HttpsRequestParser(
-            new ByteArrayInputStream(message.getBytes(Charset.forName("UTF-8"))), ProtocolVersion.TLS12, config);
-        HttpsRequestMessage parsedMessage = parser.parse();
+            new ByteArrayInputStream(stringMessage.getBytes(Charset.forName("UTF-8"))), ProtocolVersion.TLS12, config);
+        HttpsRequestMessage message = new HttpsRequestMessage();
+        parser.parse(message);
 
-        assertEquals(parsedMessage.getRequestType().getValue(), "GET");
-        assertEquals(parsedMessage.getRequestPath().getValue(), "/index.html");
-        assertEquals(parsedMessage.getRequestProtocol().getValue(), "HTTP/1.1");
+        assertEquals(message.getRequestType().getValue(), "GET");
+        assertEquals(message.getRequestPath().getValue(), "/index.html");
+        assertEquals(message.getRequestProtocol().getValue(), "HTTP/1.1");
 
-        assertEquals(parsedMessage.getHeader().get(0).getHeaderName().getValue(), "User-Agent");
-        assertEquals(parsedMessage.getHeader().get(0).getHeaderValue().getValue(), "Test");
+        assertEquals(message.getHeader().get(0).getHeaderName().getValue(), "User-Agent");
+        assertEquals(message.getHeader().get(0).getHeaderValue().getValue(), "Test");
 
-        assertEquals(parsedMessage.getHeader().get(1).getHeaderName().getValue(), "Host");
-        assertEquals(parsedMessage.getHeader().get(1).getHeaderValue().getValue(), "www.rub.de");
+        assertEquals(message.getHeader().get(1).getHeaderName().getValue(), "Host");
+        assertEquals(message.getHeader().get(1).getHeaderValue().getValue(), "www.rub.de");
     }
 
 }

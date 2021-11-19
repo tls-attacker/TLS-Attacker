@@ -9,11 +9,11 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateStatusMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.certificatestatus.CertificateStatusObject;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
@@ -23,24 +23,20 @@ public class CertificateStatusParser extends HandshakeMessageParser<CertificateS
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public CertificateStatusParser(InputStream stream, ProtocolVersion version, Config config) {
-        super(stream, HandshakeMessageType.CERTIFICATE_STATUS, version, config);
+    public CertificateStatusParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
+        super(stream, HandshakeMessageType.CERTIFICATE_STATUS, version, tlsContext);
     }
 
     @Override
-    protected void parseHandshakeMessageContent(CertificateStatusMessage msg) {
+    protected void parseHandshakeMessageContent(CertificateStatusMessage message) {
         LOGGER.debug("Parsing CertificateStatusMessage");
         CertificateStatusGenericParser parser = new CertificateStatusGenericParser(
-            new ByteArrayInputStream(parseByteArrayField(msg.getLength().getValue())));
-        CertificateStatusObject certificateStatus = parser.parse();
+            new ByteArrayInputStream(parseByteArrayField(message.getLength().getValue())));
+        CertificateStatusObject certificateStatusObject = new CertificateStatusObject();
+        parser.parse(certificateStatusObject);
 
-        msg.setCertificateStatusType(certificateStatus.getType());
-        msg.setOcspResponseLength(certificateStatus.getLength());
-        msg.setOcspResponseBytes(certificateStatus.getOcspResponse());
-    }
-
-    @Override
-    protected CertificateStatusMessage createHandshakeMessage() {
-        return new CertificateStatusMessage();
+        message.setCertificateStatusType(certificateStatusObject.getType());
+        message.setOcspResponseLength(certificateStatusObject.getLength());
+        message.setOcspResponseBytes(certificateStatusObject.getOcspResponse());
     }
 }

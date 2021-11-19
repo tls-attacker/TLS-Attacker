@@ -9,25 +9,20 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ECPointFormatExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.ECPointFormatExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ECPointFormatExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ECPointFormatExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class EcPointFormatExtensionHandler extends ExtensionHandler<ECPointFormatExtensionMessage> {
+public class ECPointFormatExtensionHandler extends ExtensionHandler<ECPointFormatExtensionMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public EcPointFormatExtensionHandler(TlsContext context) {
+    public ECPointFormatExtensionHandler(TlsContext context) {
         super(context);
     }
 
@@ -48,21 +43,6 @@ public class EcPointFormatExtensionHandler extends ExtensionHandler<ECPointForma
         } else {
             context.setServerPointFormatsList(formatList);
         }
-    }
-
-    @Override
-    public ECPointFormatExtensionParser getParser(InputStream stream) {
-        return new ECPointFormatExtensionParser(stream, context.getConfig());
-    }
-
-    @Override
-    public ECPointFormatExtensionPreparator getPreparator(ECPointFormatExtensionMessage message) {
-        return new ECPointFormatExtensionPreparator(context.getChooser(), message, getSerializer(message));
-    }
-
-    @Override
-    public ECPointFormatExtensionSerializer getSerializer(ECPointFormatExtensionMessage message) {
-        return new ECPointFormatExtensionSerializer(message);
     }
 
 }

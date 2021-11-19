@@ -10,11 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PasswordSaltExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.PasswordSaltExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PasswordSaltExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PasswordSaltExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.InputStream;
 
 public class PasswordSaltExtensionHandler extends ExtensionHandler<PasswordSaltExtensionMessage> {
 
@@ -27,18 +23,4 @@ public class PasswordSaltExtensionHandler extends ExtensionHandler<PasswordSaltE
         context.setServerPWDSalt(message.getSalt().getValue());
     }
 
-    @Override
-    public PasswordSaltExtensionParser getParser(InputStream stream) {
-        return new PasswordSaltExtensionParser(stream, context.getConfig());
-    }
-
-    @Override
-    public PasswordSaltExtensionPreparator getPreparator(PasswordSaltExtensionMessage message) {
-        return new PasswordSaltExtensionPreparator(context.getChooser(), message, getSerializer(message));
-    }
-
-    @Override
-    public PasswordSaltExtensionSerializer getSerializer(PasswordSaltExtensionMessage message) {
-        return new PasswordSaltExtensionSerializer(message);
-    }
 }

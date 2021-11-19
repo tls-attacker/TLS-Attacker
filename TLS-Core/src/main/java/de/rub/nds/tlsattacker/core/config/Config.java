@@ -99,23 +99,9 @@ public class Config implements Serializable {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /**
-     * The default Config file to load.
-     */
-    private static final String DEFAULT_CONFIG_FILE = "/default_config.xml";
-
-    private static final ConfigCache DEFAULT_CONFIG_CACHE;
-
-    static {
-        DEFAULT_CONFIG_CACHE = new ConfigCache(createConfig());
-    }
-
+    @Deprecated
     public static Config createConfig() {
-        if (DEFAULT_CONFIG_CACHE != null) {
-            return DEFAULT_CONFIG_CACHE.getCachedCopy();
-        }
-        InputStream stream = Config.class.getResourceAsStream(DEFAULT_CONFIG_FILE);
-        return ConfigIO.read(stream);
+        return new Config();
     }
 
     public static Config createConfig(File f) {
@@ -1361,7 +1347,7 @@ public class Config implements Serializable {
 
     private String keylogFilePath = null;
 
-    Config() {
+    public Config() {
         defaultClientConnection = new OutboundConnection("client", 443, "localhost");
         defaultServerConnection = new InboundConnection("server", 443, "localhost");
         workflowTraceType = WorkflowTraceType.HANDSHAKE;

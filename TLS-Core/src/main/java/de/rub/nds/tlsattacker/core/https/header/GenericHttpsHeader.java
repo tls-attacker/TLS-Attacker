@@ -18,7 +18,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public class GenericHttpsHeader extends HttpsHeader {
+public class GenericHttpsHeader extends HttpHeader {
 
     @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String headerNameConfig;

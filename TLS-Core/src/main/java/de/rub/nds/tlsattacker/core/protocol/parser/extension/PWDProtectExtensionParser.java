@@ -32,11 +32,6 @@ public class PWDProtectExtensionParser extends ExtensionParser<PWDProtectExtensi
         parseUsername(msg);
     }
 
-    @Override
-    protected PWDProtectExtensionMessage createExtensionMessage() {
-        return new PWDProtectExtensionMessage();
-    }
-
     /**
      * Reads the next bytes as the username length of the Extension and writes them in the message
      *

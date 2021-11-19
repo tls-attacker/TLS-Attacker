@@ -23,21 +23,6 @@ public class ClientCertificateUrlExtensionHandler extends ExtensionHandler<Clien
     }
 
     @Override
-    public ClientCertificateUrlExtensionParser getParser(InputStream stream) {
-        return new ClientCertificateUrlExtensionParser(stream, context.getConfig());
-    }
-
-    @Override
-    public ClientCertificateUrlExtensionPreparator getPreparator(ClientCertificateUrlExtensionMessage message) {
-        return new ClientCertificateUrlExtensionPreparator(context.getChooser(), message, getSerializer(message));
-    }
-
-    @Override
-    public ClientCertificateUrlExtensionSerializer getSerializer(ClientCertificateUrlExtensionMessage message) {
-        return new ClientCertificateUrlExtensionSerializer(message);
-    }
-
-    @Override
     public void adjustTLSExtensionContext(ClientCertificateUrlExtensionMessage message) {
     }
 

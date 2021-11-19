@@ -15,11 +15,19 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.protocol.Handler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.SignatureAndHashAlgorithmsExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.SignatureAndHashAlgorithmsExtensionParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SignatureAndHashAlgorithmsExtensionPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SignatureAndHashAlgorithmsExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 
 /**
  * This extension is defined in RFC5246
  */
-public class SignatureAndHashAlgorithmsExtensionMessage extends ExtensionMessage {
+public class SignatureAndHashAlgorithmsExtensionMessage
+    extends ExtensionMessage<SignatureAndHashAlgorithmsExtensionMessage> {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger signatureAndHashAlgorithmsLength;
@@ -59,5 +67,26 @@ public class SignatureAndHashAlgorithmsExtensionMessage extends ExtensionMessage
 
     public void setSignatureAndHashAlgorithms(ModifiableByteArray signatureAndHashAlgorithms) {
         this.signatureAndHashAlgorithms = signatureAndHashAlgorithms;
+    }
+
+    @Override
+    public SignatureAndHashAlgorithmsExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new SignatureAndHashAlgorithmsExtensionParser(stream, tlsContext.getConfig());
+    }
+
+    @Override
+    public SignatureAndHashAlgorithmsExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new SignatureAndHashAlgorithmsExtensionPreparator(tlsContext.getChooser(), this,
+            getSerializer(tlsContext));
+    }
+
+    @Override
+    public SignatureAndHashAlgorithmsExtensionSerializer getSerializer(TlsContext tlsContext) {
+        return new SignatureAndHashAlgorithmsExtensionSerializer(this);
+    }
+
+    @Override
+    public SignatureAndHashAlgorithmsExtensionHandler getHandler(TlsContext tlsContext) {
+        return new SignatureAndHashAlgorithmsExtensionHandler(tlsContext);
     }
 }

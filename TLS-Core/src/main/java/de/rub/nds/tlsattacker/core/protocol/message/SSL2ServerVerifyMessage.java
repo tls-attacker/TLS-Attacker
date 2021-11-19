@@ -16,7 +16,11 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ServerVerifyHandler;
+import de.rub.nds.tlsattacker.core.protocol.parser.SSL2ServerVerifyParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.SSL2ServerVerifyPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.HandshakeMessageSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @SuppressWarnings("serial")
@@ -24,7 +28,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class SSL2ServerVerifyMessage extends SSL2HandshakeMessage {
 
     // TODO, nit: The type byte is encrypted for ServerVerify messages.
-
     @ModifiableVariableProperty
     private ModifiableByteArray encryptedPart;
 
@@ -50,6 +53,22 @@ public class SSL2ServerVerifyMessage extends SSL2HandshakeMessage {
     @Override
     public SSL2ServerVerifyHandler getHandler(TlsContext context) {
         return new SSL2ServerVerifyHandler(context);
+    }
+
+    @Override
+    public SSL2ServerVerifyParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new SSL2ServerVerifyParser(stream, tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext);
+    }
+
+    @Override
+    public SSL2ServerVerifyPreparator getPreparator(TlsContext tlsContext) {
+        return new SSL2ServerVerifyPreparator(tlsContext.getChooser(), this);
+    }
+
+    @Override
+    public HandshakeMessageSerializer<SSL2ServerVerifyMessage> getSerializer(TlsContext tlsContext) {
+        // We currently don't send ServerVerify messages, only receive them.
+        return null;
     }
 
     public ModifiableByteArray getEncryptedPart() {

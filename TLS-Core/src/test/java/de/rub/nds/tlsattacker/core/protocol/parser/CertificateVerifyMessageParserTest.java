@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
@@ -62,9 +63,10 @@ public class CertificateVerifyMessageParserTest {
      */
     @Test
     public void testParse() {
-        CertificateVerifyParser parser =
-            new CertificateVerifyParser(new ByteArrayInputStream(message), ProtocolVersion.TLS12, config);
-        CertificateVerifyMessage certVerifyMessage = parser.parse();
+        CertificateVerifyParser parser = new CertificateVerifyParser(new ByteArrayInputStream(message),
+            ProtocolVersion.TLS12, new TlsContext(config));
+        CertificateVerifyMessage certVerifyMessage = new CertificateVerifyMessage();
+        parser.parse(certVerifyMessage);
         assertTrue(certVerifyMessage.getLength().getValue() == length);
         assertTrue(certVerifyMessage.getType().getValue() == type.getValue());
         assertArrayEquals(message, certVerifyMessage.getCompleteResultingMessage().getValue());

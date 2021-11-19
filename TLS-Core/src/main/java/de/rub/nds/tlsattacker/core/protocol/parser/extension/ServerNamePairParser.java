@@ -28,14 +28,12 @@ public class ServerNamePairParser extends Parser<ServerNamePair> {
     }
 
     @Override
-    public ServerNamePair parse() {
-        pair = new ServerNamePair(null, null);
+    public void parse(ServerNamePair pair) {
         parseServerNameType(pair);
         parseServerNameLength(pair);
         parseServerName(pair);
         pair.setServerNameConfig(pair.getServerName().getValue());
         pair.setServerNameTypeConfig(pair.getServerNameType().getValue());
-        return pair;
     }
 
     /**

@@ -26,14 +26,12 @@ public class CertificatePairParser extends Parser<CertificatePair> {
     }
 
     @Override
-    public CertificatePair parse() {
+    public void parse(CertificatePair pair) {
         LOGGER.debug("Parsing CertificatePair");
-        CertificatePair pair = new CertificatePair();
         parseCertificateLength(pair);
         parseCertificate(pair);
         parseExtensionsLength(pair);
         parseExtensions(pair);
-        return pair;
     }
 
     /**

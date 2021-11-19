@@ -10,12 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.UnknownExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.UnknownExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.UnknownExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.UnknownExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.ByteArrayInputStream;
-import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -36,32 +31,7 @@ public class UnknownExtensionHandlerTest {
     @Test
     public void testAdjustTLSContext() {
         UnknownExtensionMessage msg = new UnknownExtensionMessage();
-        handler.adjustTLSContext(msg);
+        handler.adjustContext(msg);
         // TODO Check that context does not change
     }
-
-    /**
-     * Test of getParser method, of class UnknownExtensionHandler.
-     */
-    @Test
-    public void testGetParser() {
-        assertTrue(handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof UnknownExtensionParser);
-    }
-
-    /**
-     * Test of getPreparator method, of class UnknownExtensionHandler.
-     */
-    @Test
-    public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new UnknownExtensionMessage()) instanceof UnknownExtensionPreparator);
-    }
-
-    /**
-     * Test of getSerializer method, of class UnknownExtensionHandler.
-     */
-    @Test
-    public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new UnknownExtensionMessage()) instanceof UnknownExtensionSerializer);
-    }
-
 }

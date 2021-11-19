@@ -26,9 +26,4 @@ public class GreaseExtensionParser extends ExtensionParser<GreaseExtensionMessag
         msg.setData(msg.getRandomData().getValue());
         msg.setType(ExtensionType.getExtensionType(msg.getExtensionType().getValue()));
     }
-
-    @Override
-    protected GreaseExtensionMessage createExtensionMessage() {
-        return new GreaseExtensionMessage();
-    }
 }

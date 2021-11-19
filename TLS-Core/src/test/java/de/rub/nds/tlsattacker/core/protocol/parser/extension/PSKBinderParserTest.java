@@ -51,7 +51,8 @@ public class PSKBinderParserTest {
 
     @Test
     public void testParseExtensionMessageContent() {
-        pskBinder = parser.parse();
+        pskBinder = new PSKBinder();
+        parser.parse(pskBinder);
 
         assertEquals(pskBinderEntryLength, (long) pskBinder.getBinderEntryLength().getValue());
         assertArrayEquals(pskBinderEntry, pskBinder.getBinderEntry().getValue());

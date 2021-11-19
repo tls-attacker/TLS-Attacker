@@ -11,16 +11,11 @@ package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerCertificateTypeExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.ServerCertificateTypeExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ServerCertificateTypeExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ServerCertificateTypeExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.List;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -42,26 +37,8 @@ public class ServerCertificateTypeExtensionHandlerTest {
         ServerCertificateTypeExtensionMessage msg = new ServerCertificateTypeExtensionMessage();
         msg.setCertificateTypes(CertificateType.toByteArray(certList));
 
-        handler.adjustTLSContext(msg);
+        handler.adjustContext(msg);
 
         assertThat(certList, is(context.getServerCertificateTypeDesiredTypes()));
-    }
-
-    @Test
-    public void testGetParser() {
-        assertTrue(
-            handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof ServerCertificateTypeExtensionParser);
-    }
-
-    @Test
-    public void testGetPreparator() {
-        assertTrue(handler.getPreparator(
-            new ServerCertificateTypeExtensionMessage()) instanceof ServerCertificateTypeExtensionPreparator);
-    }
-
-    @Test
-    public void testGetSerializer() {
-        assertTrue(handler.getSerializer(
-            new ServerCertificateTypeExtensionMessage()) instanceof ServerCertificateTypeExtensionSerializer);
     }
 }

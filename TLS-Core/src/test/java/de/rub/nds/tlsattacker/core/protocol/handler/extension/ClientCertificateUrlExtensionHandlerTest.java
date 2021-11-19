@@ -11,11 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateUrlExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.ClientCertificateUrlExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ClientCertificateUrlExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ClientCertificateUrlExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.ByteArrayInputStream;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,25 +29,7 @@ public class ClientCertificateUrlExtensionHandlerTest {
     @Test
     public void testAdjustTLSContext() {
         ClientCertificateUrlExtensionMessage message = new ClientCertificateUrlExtensionMessage();
-        handler.adjustTLSContext(message);
+        handler.adjustContext(message);
         assertTrue(context.isExtensionProposed(ExtensionType.CLIENT_CERTIFICATE_URL));
-    }
-
-    @Test
-    public void testGetParser() {
-        assertTrue(
-            handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof ClientCertificateUrlExtensionParser);
-    }
-
-    @Test
-    public void testGetPreparator() {
-        assertTrue(handler.getPreparator(
-            new ClientCertificateUrlExtensionMessage()) instanceof ClientCertificateUrlExtensionPreparator);
-    }
-
-    @Test
-    public void testGetSerializer() {
-        assertTrue(handler.getSerializer(
-            new ClientCertificateUrlExtensionMessage()) instanceof ClientCertificateUrlExtensionSerializer);
     }
 }

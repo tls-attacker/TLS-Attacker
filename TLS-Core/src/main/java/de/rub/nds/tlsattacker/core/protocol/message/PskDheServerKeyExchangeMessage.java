@@ -17,7 +17,11 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.handler.DHEServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.PskDheServerKeyExchangeHandler;
+import de.rub.nds.tlsattacker.core.protocol.parser.PskDheServerKeyExchangeParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.PskDheServerKeyExchangePreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.PskDheServerKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
@@ -88,6 +92,21 @@ public class PskDheServerKeyExchangeMessage extends DHEServerKeyExchangeMessage 
     @Override
     public DHEServerKeyExchangeHandler<PskDheServerKeyExchangeMessage> getHandler(TlsContext context) {
         return new PskDheServerKeyExchangeHandler(context);
+    }
+
+    @Override
+    public PskDheServerKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new PskDheServerKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+    }
+
+    @Override
+    public PskDheServerKeyExchangePreparator getPreparator(TlsContext tlsContext) {
+        return new PskDheServerKeyExchangePreparator(tlsContext.getChooser(), this);
+    }
+
+    @Override
+    public PskDheServerKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
+        return new PskDheServerKeyExchangeSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

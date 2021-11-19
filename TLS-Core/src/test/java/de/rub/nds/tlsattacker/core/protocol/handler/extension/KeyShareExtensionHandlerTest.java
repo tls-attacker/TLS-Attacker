@@ -43,7 +43,7 @@ public class KeyShareExtensionHandlerTest {
     @Before
     public void setUp() {
         context = new TlsContext();
-        handler = new KeyShareExtensionHandler(context, ExtensionType.KEY_SHARE);
+        handler = new KeyShareExtensionHandler(context);
     }
 
     /**
@@ -63,36 +63,12 @@ public class KeyShareExtensionHandlerTest {
         pair.setGroup(NamedGroup.ECDH_X25519.getValue());
         pairList.add(pair);
         msg.setKeyShareList(pairList);
-        handler.adjustTLSContext(msg);
+        handler.adjustContext(msg);
         assertNotNull(context.getServerKeyShareStoreEntry());
         KeyShareStoreEntry entry = context.getServerKeyShareStoreEntry();
         assertArrayEquals(
             ArrayConverter.hexStringToByteArray("9c1b0a7421919a73cb57b3a0ad9d6805861a9c47e11df8639d25323b79ce201c"),
             entry.getPublicKey());
         assertTrue(entry.getGroup() == NamedGroup.ECDH_X25519);
-    }
-
-    /**
-     * Test of getParser method, of class KeyShareExtensionHandler.
-     */
-    @Test
-    public void testGetParser() {
-        assertTrue(handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof KeyShareExtensionParser);
-    }
-
-    /**
-     * Test of getPreparator method, of class KeyShareExtensionHandler.
-     */
-    @Test
-    public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new KeyShareExtensionMessage()) instanceof KeyShareExtensionPreparator);
-    }
-
-    /**
-     * Test of getSerializer method, of class KeyShareExtensionHandler.
-     */
-    @Test
-    public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new KeyShareExtensionMessage()) instanceof KeyShareExtensionSerializer);
     }
 }

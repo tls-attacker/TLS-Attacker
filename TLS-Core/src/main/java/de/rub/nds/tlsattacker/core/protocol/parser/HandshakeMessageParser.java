@@ -10,16 +10,17 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionListParser;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -41,6 +42,7 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
     private final HandshakeMessageType expectedType;
 
     private ProtocolVersion version;
+    private TlsContext tlsContext;
 
     /**
      * Constructor for the Parser class
@@ -50,14 +52,14 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
      *                     The expected type of the parsed HandshakeMessage
      * @param version
      *                     The Version with which this message should be parsed
-     * @param config
-     *                     A Config used in the current context
+     * @param tlsContext
      */
     public HandshakeMessageParser(InputStream stream, HandshakeMessageType expectedType, ProtocolVersion version,
-        Config config) {
-        super(stream, version, config);
+        TlsContext tlsContext) {
+        super(stream, version, tlsContext.getConfig());
         this.expectedType = expectedType;
         this.version = version;
+        this.tlsContext = tlsContext;
     }
 
     /**
@@ -87,17 +89,14 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
     }
 
     @Override
-    protected T parseMessageContent() {
-        T msg = createHandshakeMessage();
-        parseType(msg);
-        parseLength(msg);
-        parseHandshakeMessageContent(msg);
-        return msg;
+    protected void parseMessageContent(T message) {
+        parseType(message);
+        parseLength(message);
+        parseHandshakeMessageContent(message);
+        message.setCompleteResultingMessage(getAlreadyParsed());
     }
 
     protected abstract void parseHandshakeMessageContent(T msg);
-
-    protected abstract T createHandshakeMessage();
 
     /**
      * Reads the next bytes as the ExtensionLength and writes them in the message
@@ -127,10 +126,9 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
         LOGGER.debug("ExtensionBytes:" + ArrayConverter.bytesToHexString(extensionBytes, false));
 
         ByteArrayInputStream innerStream = new ByteArrayInputStream(extensionBytes);
-        ExtensionListParser parser =
-            new ExtensionListParser(innerStream, config, talkingConnectionEndType, version, helloRetryRequestHint);
-        List<ExtensionMessage> extensionMessages = parser.parse();
-
+        ExtensionListParser parser = new ExtensionListParser(innerStream, tlsContext, version, helloRetryRequestHint);
+        List<ExtensionMessage> extensionMessages = new LinkedList<>();
+        parser.parse(extensionMessages);
         message.setExtensions(extensionMessages);
     }
 

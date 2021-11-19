@@ -29,7 +29,6 @@ public class CertificateStatusRequestExtensionSerializerTest {
     private final ExtensionType extensionType;
     private final byte[] expectedBytes;
     private final int extensionLength;
-    private final int startParsing;
     private final int certificateStatusRequestType;
     private final int responderIDListLength;
     private final byte[] responderIDList;
@@ -39,12 +38,11 @@ public class CertificateStatusRequestExtensionSerializerTest {
     private CertificateStatusRequestExtensionSerializer serializer;
 
     public CertificateStatusRequestExtensionSerializerTest(ExtensionType extensionType, byte[] expectedBytes,
-        int extensionLength, int startParsing, int certificateStatusRequestType, int responderIDListLength,
-        byte[] responderIDList, int requestExtensionLength, byte[] requestExtension) {
+        int extensionLength, int certificateStatusRequestType, int responderIDListLength, byte[] responderIDList,
+        int requestExtensionLength, byte[] requestExtension) {
         this.extensionType = extensionType;
         this.expectedBytes = expectedBytes;
         this.extensionLength = extensionLength;
-        this.startParsing = startParsing;
         this.certificateStatusRequestType = certificateStatusRequestType;
         this.responderIDListLength = responderIDListLength;
         this.responderIDList = responderIDList;

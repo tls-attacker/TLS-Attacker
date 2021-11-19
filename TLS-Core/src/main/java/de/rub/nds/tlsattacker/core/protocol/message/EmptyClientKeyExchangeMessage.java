@@ -13,9 +13,12 @@ import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.EmptyClientKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.TlsMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.EmptyClientComputations;
+import de.rub.nds.tlsattacker.core.protocol.parser.EmptyClientKeyExchangeParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.EmptyClientKeyExchangePreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.EmptyClientKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -48,6 +51,21 @@ public class EmptyClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     @Override
     public EmptyClientKeyExchangeHandler getHandler(TlsContext context) {
         return new EmptyClientKeyExchangeHandler(context);
+    }
+
+    @Override
+    public EmptyClientKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new EmptyClientKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+    }
+
+    @Override
+    public EmptyClientKeyExchangePreparator getPreparator(TlsContext tlsContext) {
+        return new EmptyClientKeyExchangePreparator(tlsContext.getChooser(), this);
+    }
+
+    @Override
+    public EmptyClientKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
+        return new EmptyClientKeyExchangeSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

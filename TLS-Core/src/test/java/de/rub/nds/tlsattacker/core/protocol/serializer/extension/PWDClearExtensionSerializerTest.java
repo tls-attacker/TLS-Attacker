@@ -28,7 +28,6 @@ public class PWDClearExtensionSerializerTest {
     }
 
     private final byte[] expectedBytes;
-    private final int start;
     private final ExtensionType type;
     private final int extensionLength;
     private final int usernameLength;
@@ -36,10 +35,9 @@ public class PWDClearExtensionSerializerTest {
     private PWDClearExtensionMessage message;
     private PWDClearExtensionSerializer serializer;
 
-    public PWDClearExtensionSerializerTest(byte[] expectedBytes, int start, ExtensionType type, int extensionLength,
+    public PWDClearExtensionSerializerTest(byte[] expectedBytes, ExtensionType type, int extensionLength,
         int usernameLength, String username) {
         this.expectedBytes = expectedBytes;
-        this.start = start;
         this.type = type;
         this.extensionLength = extensionLength;
         this.usernameLength = usernameLength;

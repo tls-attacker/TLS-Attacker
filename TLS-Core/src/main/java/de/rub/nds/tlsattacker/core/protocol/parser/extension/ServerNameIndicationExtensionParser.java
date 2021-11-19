@@ -40,17 +40,14 @@ public class ServerNameIndicationExtensionParser extends ExtensionParser<ServerN
             ByteArrayInputStream innerStream = new ByteArrayInputStream(msg.getServerNameListBytes().getValue());
             while (innerStream.available() > 0) {
                 ServerNamePairParser parser = new ServerNamePairParser(innerStream);
-                pairList.add(parser.parse());
+                ServerNamePair pair = new ServerNamePair();
+                parser.parse(pair);
+                pairList.add(pair);
             }
             parseServerNameList(msg);
         } else {
             LOGGER.debug("Received empty SNI Extension");
         }
-    }
-
-    @Override
-    protected ServerNameIndicationExtensionMessage createExtensionMessage() {
-        return new ServerNameIndicationExtensionMessage();
     }
 
     /**

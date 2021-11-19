@@ -20,22 +20,6 @@ public class TokenBindingMessageHandler extends TlsMessageHandler<TokenBindingMe
     }
 
     @Override
-    public TokenBindingMessageParser getParser(InputStream stream) {
-        return new TokenBindingMessageParser(stream, tlsContext.getChooser().getSelectedProtocolVersion(),
-            tlsContext.getConfig());
-    }
-
-    @Override
-    public TokenBindingMessagePreparator getPreparator(TokenBindingMessage message) {
-        return new TokenBindingMessagePreparator(tlsContext.getChooser(), message);
-    }
-
-    @Override
-    public TokenBindingMessageSerializer getSerializer(TokenBindingMessage message) {
-        return new TokenBindingMessageSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
-    }
-
-    @Override
     public void adjustTLSContext(TokenBindingMessage message) {
 
     }

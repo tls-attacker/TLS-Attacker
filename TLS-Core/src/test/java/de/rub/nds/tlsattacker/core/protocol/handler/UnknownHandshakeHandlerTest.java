@@ -9,14 +9,8 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.tlsattacker.core.protocol.message.UnknownHandshakeMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.UnknownHandshakeParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.UnknownHandshakePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.UnknownHandshakeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.ByteArrayInputStream;
 import org.junit.After;
-import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -41,29 +35,4 @@ public class UnknownHandshakeHandlerTest {
     @Test
     public void testAdjustTLSContext() {
     }
-
-    /**
-     * Test of getParser method, of class UnknownHandshakeHandler.
-     */
-    @Test
-    public void testGetParser() {
-        assertTrue(handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof UnknownHandshakeParser);
-    }
-
-    /**
-     * Test of getPreparator method, of class UnknownHandshakeHandler.
-     */
-    @Test
-    public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new UnknownHandshakeMessage()) instanceof UnknownHandshakePreparator);
-    }
-
-    /**
-     * Test of getSerializer method, of class UnknownHandshakeHandler.
-     */
-    @Test
-    public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new UnknownHandshakeMessage()) instanceof UnknownHandshakeSerializer);
-    }
-
 }

@@ -54,7 +54,8 @@ public class CertificatePairParserTest {
     @Test
     public void testParse() {
         CertificatePairParser parser = new CertificatePairParser(new ByteArrayInputStream(certPair));
-        CertificatePair pair = parser.parse();
+        CertificatePair pair = new CertificatePair();
+        parser.parse(pair);
         assertTrue(certificateLength == pair.getCertificateLength().getValue());
         assertTrue(extensionsLength == pair.getExtensionsLength().getValue());
         assertArrayEquals(certificate, pair.getCertificate().getValue());

@@ -10,15 +10,9 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateStatusMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.CertificateStatusParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateStatusPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateStatusSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.ByteArrayInputStream;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class CertificateStatusHandlerTest {
 
@@ -29,21 +23,6 @@ public class CertificateStatusHandlerTest {
     public void setUp() {
         context = new TlsContext();
         handler = new CertificateStatusHandler(context);
-    }
-
-    @Test
-    public void testGetParser() {
-        assertTrue(handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof CertificateStatusParser);
-    }
-
-    @Test
-    public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new CertificateStatusMessage()) instanceof CertificateStatusPreparator);
-    }
-
-    @Test
-    public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new CertificateStatusMessage()) instanceof CertificateStatusSerializer);
     }
 
     @Test

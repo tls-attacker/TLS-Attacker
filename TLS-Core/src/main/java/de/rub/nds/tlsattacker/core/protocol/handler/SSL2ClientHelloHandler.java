@@ -10,32 +10,12 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.SSL2ClientHelloParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.SSL2ClientHelloPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.SSL2ClientHelloSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.InputStream;
 
 public class SSL2ClientHelloHandler extends HandshakeMessageHandler<SSL2ClientHelloMessage> {
 
     public SSL2ClientHelloHandler(TlsContext context) {
         super(context);
-    }
-
-    @Override
-    public SSL2ClientHelloParser getParser(InputStream stream) {
-        return new SSL2ClientHelloParser(stream, tlsContext.getChooser().getSelectedProtocolVersion(),
-            tlsContext.getConfig());
-    }
-
-    @Override
-    public SSL2ClientHelloPreparator getPreparator(SSL2ClientHelloMessage message) {
-        return new SSL2ClientHelloPreparator(tlsContext.getChooser(), message);
-    }
-
-    @Override
-    public SSL2ClientHelloSerializer getSerializer(SSL2ClientHelloMessage message) {
-        return new SSL2ClientHelloSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

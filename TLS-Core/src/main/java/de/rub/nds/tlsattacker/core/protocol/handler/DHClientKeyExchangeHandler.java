@@ -10,11 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.DHClientKeyExchangeParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.DHClientKeyExchangePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.DHClientKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.InputStream;
 import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,22 +24,6 @@ public class DHClientKeyExchangeHandler<T extends DHClientKeyExchangeMessage> ex
 
     public DHClientKeyExchangeHandler(TlsContext tlsContext) {
         super(tlsContext);
-    }
-
-    @Override
-    public DHClientKeyExchangeParser<T> getParser(InputStream stream) {
-        return new DHClientKeyExchangeParser<T>(stream, tlsContext.getChooser().getLastRecordVersion(),
-            tlsContext.getConfig());
-    }
-
-    @Override
-    public DHClientKeyExchangePreparator<T> getPreparator(T message) {
-        return new DHClientKeyExchangePreparator<T>(tlsContext.getChooser(), message);
-    }
-
-    @Override
-    public DHClientKeyExchangeSerializer<T> getSerializer(T message) {
-        return new DHClientKeyExchangeSerializer<T>(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

@@ -10,10 +10,10 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,12 +27,11 @@ public class ECDHClientKeyExchangeParser<T extends ECDHClientKeyExchangeMessage>
      *
      * @param stream
      * @param version
-     *                Version of the Protocol
-     * @param config
-     *                A Config used in the current context
+     *                   Version of the Protocol
+     * @param tlsContext
      */
-    public ECDHClientKeyExchangeParser(InputStream stream, ProtocolVersion version, Config config) {
-        super(stream, version, config);
+    public ECDHClientKeyExchangeParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
+        super(stream, version, tlsContext);
     }
 
     @Override
@@ -45,11 +44,6 @@ public class ECDHClientKeyExchangeParser<T extends ECDHClientKeyExchangeMessage>
     protected void parseEcDhParams(T msg) {
         parseSerializedPublicKeyLength(msg);
         parseSerializedPublicKey(msg);
-    }
-
-    @Override
-    protected T createHandshakeMessage() {
-        return (T) new ECDHClientKeyExchangeMessage();
     }
 
     /**

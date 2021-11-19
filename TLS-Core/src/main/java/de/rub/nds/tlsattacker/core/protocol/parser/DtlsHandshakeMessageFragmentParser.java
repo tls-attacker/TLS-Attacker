@@ -9,11 +9,11 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,8 +22,8 @@ public class DtlsHandshakeMessageFragmentParser extends HandshakeMessageParser<D
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public DtlsHandshakeMessageFragmentParser(InputStream stream, ProtocolVersion version, Config config) {
-        super(stream, HandshakeMessageType.UNKNOWN, version, config);
+    public DtlsHandshakeMessageFragmentParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
+        super(stream, HandshakeMessageType.UNKNOWN, version, tlsContext);
     }
 
     @Override
@@ -48,10 +48,4 @@ public class DtlsHandshakeMessageFragmentParser extends HandshakeMessageParser<D
         msg.setMessageSeq(parseIntField(HandshakeByteLength.DTLS_MESSAGE_SEQUENCE));
         LOGGER.debug("MessageSequence:" + msg.getMessageSeq().getValue());
     }
-
-    @Override
-    protected DtlsHandshakeMessageFragment createHandshakeMessage() {
-        return new DtlsHandshakeMessageFragment();
-    }
-
 }

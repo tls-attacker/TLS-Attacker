@@ -55,7 +55,8 @@ public class ECPointFormatExtensionParserTest {
     public void testParseExtensionMessageContent() {
         ECPointFormatExtensionParser parser =
             new ECPointFormatExtensionParser(new ByteArrayInputStream(extension), Config.createConfig());
-        ECPointFormatExtensionMessage msg = parser.parse();
+        ECPointFormatExtensionMessage msg = new ECPointFormatExtensionMessage();
+        parser.parse(msg);
         assertArrayEquals(msg.getExtensionBytes().getValue(), completeExtension);
         assertArrayEquals(type.getValue(), msg.getExtensionType().getValue());
         assertTrue(extensionLength == msg.getExtensionLength().getValue());

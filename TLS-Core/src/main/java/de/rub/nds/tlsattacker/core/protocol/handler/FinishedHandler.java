@@ -14,18 +14,15 @@ import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.SessionTicketTLSExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
-import de.rub.nds.tlsattacker.core.protocol.parser.FinishedParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.FinishedPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.FinishedSerializer;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -38,21 +35,6 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
 
     public FinishedHandler(TlsContext context) {
         super(context);
-    }
-
-    @Override
-    public FinishedParser getParser(InputStream stream) {
-        return new FinishedParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext.getConfig());
-    }
-
-    @Override
-    public FinishedPreparator getPreparator(FinishedMessage message) {
-        return new FinishedPreparator(tlsContext.getChooser(), message);
-    }
-
-    @Override
-    public FinishedSerializer getSerializer(FinishedMessage message) {
-        return new FinishedSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override
@@ -70,8 +52,8 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
                 setClientRecordCipher(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
 
                 if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
-                    NewSessionTicketHandler ticketHandler = (NewSessionTicketHandler) HandlerFactory
-                        .getHandshakeHandler(tlsContext, HandshakeMessageType.NEW_SESSION_TICKET);
+
+                    NewSessionTicketHandler ticketHandler = new NewSessionTicketHandler(tlsContext);
                     if (tlsContext.getPskSets() != null) {
                         for (PskSet pskSet : tlsContext.getPskSets()) {
                             // if psk was derived earliers, skip derivation (especially for state reusage helpful)

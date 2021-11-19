@@ -58,11 +58,9 @@ public class UnknownMessageParser extends TlsMessageParser<UnknownMessage> {
     }
 
     @Override
-    protected UnknownMessage parseMessageContent() {
+    protected void parseMessageContent(UnknownMessage message) {
         LOGGER.debug("Parsing UnknownMessage");
-        UnknownMessage msg = new UnknownMessage(config, recordContentMessageType);
-        parseCompleteMessage(msg);
-        return msg;
+        parseCompleteMessage(message);
     }
 
 }

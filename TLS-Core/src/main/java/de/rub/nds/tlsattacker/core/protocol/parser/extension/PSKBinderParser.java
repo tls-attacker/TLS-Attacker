@@ -26,12 +26,10 @@ public class PSKBinderParser extends Parser<PSKBinder> {
     }
 
     @Override
-    public PSKBinder parse() {
+    public void parse(PSKBinder pskBinder) {
         LOGGER.debug("Parsing PSKBinder");
-        PSKBinder pskBinder = new PSKBinder();
         parseBinderLength(pskBinder);
         parseBinderEntry(pskBinder);
-        return pskBinder;
     }
 
     private void parseBinderLength(PSKBinder pskBinder) {

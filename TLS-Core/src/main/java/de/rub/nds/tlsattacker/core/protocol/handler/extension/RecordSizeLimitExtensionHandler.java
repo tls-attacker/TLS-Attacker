@@ -47,18 +47,4 @@ public class RecordSizeLimitExtensionHandler extends ExtensionHandler<RecordSize
         }
     }
 
-    @Override
-    public RecordSizeLimitExtensionParser getParser(InputStream stream) {
-        return new RecordSizeLimitExtensionParser(stream, context.getConfig());
-    }
-
-    @Override
-    public RecordSizeLimitExtensionPreparator getPreparator(RecordSizeLimitExtensionMessage message) {
-        return new RecordSizeLimitExtensionPreparator(context.getChooser(), message, getSerializer(message));
-    }
-
-    @Override
-    public RecordSizeLimitExtensionSerializer getSerializer(RecordSizeLimitExtensionMessage message) {
-        return new RecordSizeLimitExtensionSerializer(message);
-    }
 }

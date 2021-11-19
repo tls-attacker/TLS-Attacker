@@ -30,7 +30,7 @@ public class CleanRecordByteSeperator extends Parser<List<Record>> {
     }
 
     @Override
-    public List<Record> parse() {
+    public void parse(List<Record> records) {
         for (Record record : records) {
             Integer maxData = record.getMaxRecordLengthConfig();
             if (maxData == null) {
@@ -38,7 +38,6 @@ public class CleanRecordByteSeperator extends Parser<List<Record>> {
             }
             record.setCleanProtocolMessageBytes(parseArrayOrTillEnd(maxData));
         }
-        return records;
     }
 
 }

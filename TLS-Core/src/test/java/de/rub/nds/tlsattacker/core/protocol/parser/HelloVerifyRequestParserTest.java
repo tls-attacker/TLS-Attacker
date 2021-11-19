@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
@@ -58,9 +59,10 @@ public class HelloVerifyRequestParserTest {
      */
     @Test
     public void testParse() {
-        HelloVerifyRequestParser parser =
-            new HelloVerifyRequestParser(new ByteArrayInputStream(message), ProtocolVersion.DTLS10, config);
-        HelloVerifyRequestMessage msg = parser.parse();
+        HelloVerifyRequestParser parser = new HelloVerifyRequestParser(new ByteArrayInputStream(message),
+            ProtocolVersion.DTLS10, new TlsContext(config));
+        HelloVerifyRequestMessage msg = new HelloVerifyRequestMessage();
+        parser.parse(msg);
         assertArrayEquals(message, msg.getCompleteResultingMessage().getValue());
         assertTrue(msg.getLength().getValue() == length);
         assertTrue(msg.getType().getValue() == type.getValue());

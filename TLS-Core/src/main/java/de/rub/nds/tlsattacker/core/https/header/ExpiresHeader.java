@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.https.header.preparator.ExpiresHeaderPreparat
 import de.rub.nds.tlsattacker.core.protocol.Preparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-public class ExpiresHeader extends HttpsHeader {
+public class ExpiresHeader extends HttpHeader {
 
     public ExpiresHeader() {
     }

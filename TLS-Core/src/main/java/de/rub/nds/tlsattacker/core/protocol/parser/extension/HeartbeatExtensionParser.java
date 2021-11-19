@@ -31,11 +31,6 @@ public class HeartbeatExtensionParser extends ExtensionParser<HeartbeatExtension
         parseHeartbeatMode(msg);
     }
 
-    @Override
-    protected HeartbeatExtensionMessage createExtensionMessage() {
-        return new HeartbeatExtensionMessage();
-    }
-
     /**
      * Reads the next bytes as the HeartbeatMode of the Extension and writes them in the message
      *

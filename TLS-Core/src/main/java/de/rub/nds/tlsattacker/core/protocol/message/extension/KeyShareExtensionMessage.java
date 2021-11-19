@@ -18,8 +18,15 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import de.rub.nds.tlsattacker.core.protocol.Handler;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.KeyShareExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.KeyShareExtensionParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.extension.KeyShareExtensionPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.KeyShareExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -110,4 +117,23 @@ public class KeyShareExtensionMessage extends ExtensionMessage {
         return allModifiableVariableHolders;
     }
 
+    @Override
+    public KeyShareExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new KeyShareExtensionParser(stream, tlsContext.getConfig());
+    }
+
+    @Override
+    public KeyShareExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new KeyShareExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+    }
+
+    @Override
+    public KeyShareExtensionSerializer getSerializer(TlsContext tlsContext) {
+        return new KeyShareExtensionSerializer(this, tlsContext.getChooser().getConnectionEndType());
+    }
+
+    @Override
+    public KeyShareExtensionHandler getHandler(TlsContext tlsContext) {
+        return new KeyShareExtensionHandler(tlsContext);
+    }
 }

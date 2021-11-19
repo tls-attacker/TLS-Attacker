@@ -45,11 +45,6 @@ public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMe
         msg.setRetryRequestMode(helloRetryRequestHint);
     }
 
-    @Override
-    protected KeyShareExtensionMessage createExtensionMessage() {
-        return new KeyShareExtensionMessage();
-    }
-
     private void parseRegularKeyShare(KeyShareExtensionMessage msg) {
         LOGGER.debug("Parsing KeyShareExtensionMessage as regular KeyShareExtension");
         parseKeyShareListLength(msg);
@@ -59,7 +54,9 @@ public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMe
         entryList = new LinkedList<>();
         while (innerStream.available() > 0) {
             KeyShareEntryParser parser = new KeyShareEntryParser(innerStream);
-            entryList.add(parser.parse());
+            KeyShareEntry entry = new KeyShareEntry();
+            parser.parse(entry);
+            entryList.add(entry);
         }
         parseKeyShareList(msg);
     }
@@ -70,7 +67,9 @@ public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMe
         entryList = new LinkedList<>();
         KeyShareEntryParser parser =
             new KeyShareEntryParser(new ByteArrayInputStream(msg.getKeyShareListBytes().getValue()));
-        entryList.add(parser.parse());
+        KeyShareEntry entry = new KeyShareEntry();
+        parser.parse(entry);
+        entryList.add(entry);
         parseKeyShareList(msg);
     }
 

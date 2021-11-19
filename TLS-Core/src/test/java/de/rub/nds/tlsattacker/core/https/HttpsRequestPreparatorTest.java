@@ -34,8 +34,8 @@ public class HttpsRequestPreparatorTest {
         String rawMessage = "GET /index.html HTTP/1.1\r\nUser-Agent: Test\r\nHost: www.rub.de\r\n\r\n";
         HttpsRequestParser parser = new HttpsRequestParser(
             new ByteArrayInputStream(rawMessage.getBytes(Charset.forName("UTF-8"))), ProtocolVersion.TLS12, config);
-        message = parser.parse();
-
+        message = new HttpsRequestMessage();
+        parser.parse(message);
         preparator = new HttpsRequestPreparator(context.getChooser(), message);
     }
 

@@ -32,11 +32,6 @@ public class SignatureAndHashAlgorithmsExtensionParser
         parseSignatureAndHashAlgorithms(msg);
     }
 
-    @Override
-    protected SignatureAndHashAlgorithmsExtensionMessage createExtensionMessage() {
-        return new SignatureAndHashAlgorithmsExtensionMessage();
-    }
-
     /**
      * Reads the next bytes as the signatureAndHandshakeAlgorithmsLength of the Extension and writes them in the message
      *

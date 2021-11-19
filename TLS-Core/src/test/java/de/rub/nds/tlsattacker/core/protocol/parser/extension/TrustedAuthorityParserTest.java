@@ -57,7 +57,8 @@ public class TrustedAuthorityParserTest {
     public void parse() {
 
         TrustedAuthorityParser parser = new TrustedAuthorityParser(new ByteArrayInputStream(parserBytes));
-        TrustedAuthority authority = parser.parse();
+        TrustedAuthority authority = new TrustedAuthority();
+        parser.parse(authority);
 
         assertEquals(identifier.getValue(), (long) authority.getIdentifierType().getValue());
         if (hash != null) {

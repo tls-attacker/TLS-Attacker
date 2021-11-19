@@ -10,14 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNameIndicationExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.EncryptedServerNameIndicationExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EncryptedServerNameIndicationExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.EncryptedServerNameIndicationExtensionSerializer;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -28,23 +21,6 @@ public class EncryptedServerNameIndicationExtensionHandler
 
     public EncryptedServerNameIndicationExtensionHandler(TlsContext context) {
         super(context);
-    }
-
-    @Override
-    public ExtensionParser getParser(InputStream stream) {
-        return new EncryptedServerNameIndicationExtensionParser(stream, context.getConfig(),
-            context.getTalkingConnectionEndType());
-    }
-
-    @Override
-    public ExtensionPreparator getPreparator(EncryptedServerNameIndicationExtensionMessage message) {
-        return new EncryptedServerNameIndicationExtensionPreparator(context.getChooser(), message,
-            getSerializer(message));
-    }
-
-    @Override
-    public ExtensionSerializer getSerializer(EncryptedServerNameIndicationExtensionMessage message) {
-        return new EncryptedServerNameIndicationExtensionSerializer(message);
     }
 
     @Override

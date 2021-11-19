@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.https.header.preparator.LocationHeaderPrepara
 import de.rub.nds.tlsattacker.core.protocol.Preparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-public class LocationHeader extends HttpsHeader {
+public class LocationHeader extends HttpHeader {
 
     public LocationHeader() {
     }

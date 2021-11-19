@@ -32,7 +32,7 @@ public class KeyShareExtensionParserTest {
                 "002800260024001D00202a981db6cdd02a06c1763102c9e741365ac4e6f72b3176a6bd6a3523d3ec0f4c"),
             ArrayConverter.hexStringToByteArray(
                 "002800260024001D00202a981db6cdd02a06c1763102c9e741365ac4e6f72b3176a6bd6a3523d3ec0f4c"),
-            ExtensionType.KEY_SHARE_OLD, 38, 36, ArrayConverter
+            ExtensionType.KEY_SHARE, 38, 36, ArrayConverter
                 .hexStringToByteArray("001D00202a981db6cdd02a06c1763102c9e741365ac4e6f72b3176a6bd6a3523d3ec0f4c") } });
     }
 
@@ -60,7 +60,8 @@ public class KeyShareExtensionParserTest {
     public void testParseExtensionMessageContent() {
         KeyShareExtensionParser parser =
             new KeyShareExtensionParser(new ByteArrayInputStream(extension), Config.createConfig());
-        KeyShareExtensionMessage msg = parser.parse();
+        KeyShareExtensionMessage msg = new KeyShareExtensionMessage();
+        parser.parse(msg);
         assertArrayEquals(msg.getExtensionBytes().getValue(), completeExtension);
         assertArrayEquals(type.getValue(), msg.getExtensionType().getValue());
         assertTrue(extensionLength == msg.getExtensionLength().getValue());

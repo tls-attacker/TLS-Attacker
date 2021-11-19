@@ -10,11 +10,11 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.SrpServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
@@ -31,12 +31,12 @@ public class SrpServerKeyExchangeParser extends ServerKeyExchangeParser<SrpServe
      *
      * @param stream
      * @param version
-     *                Version of the Protocol
-     * @param config
-     *                A Config used in the current context
+     *                   Version of the Protocol
+     * @param tlsContext
+     * 
      */
-    public SrpServerKeyExchangeParser(InputStream stream, ProtocolVersion version, Config config) {
-        super(stream, HandshakeMessageType.SERVER_KEY_EXCHANGE, version, config);
+    public SrpServerKeyExchangeParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
+        super(stream, HandshakeMessageType.SERVER_KEY_EXCHANGE, version, tlsContext);
         this.version = version;
     }
 
@@ -56,11 +56,6 @@ public class SrpServerKeyExchangeParser extends ServerKeyExchangeParser<SrpServe
         }
         parseSignatureLength(msg);
         parseSignature(msg);
-    }
-
-    @Override
-    protected SrpServerKeyExchangeMessage createHandshakeMessage() {
-        return new SrpServerKeyExchangeMessage();
     }
 
     /**

@@ -16,11 +16,17 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.ClientCertificateTypeExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.ClientCertificateTypeExtensionParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ClientCertificateTypeExtensionPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ClientCertificateTypeExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 
 /**
  * This extension is defined in RFC7250
  */
-public class ClientCertificateTypeExtensionMessage extends ExtensionMessage {
+public class ClientCertificateTypeExtensionMessage extends ExtensionMessage<ClientCertificateTypeExtensionMessage> {
 
     @ModifiableVariableProperty
     private ModifiableInteger certificateTypesLength;
@@ -72,5 +78,25 @@ public class ClientCertificateTypeExtensionMessage extends ExtensionMessage {
 
     public void setIsClientMessage(boolean isClientMessage) {
         this.isClientMessage = ModifiableVariableFactory.safelySetValue(this.isClientMessage, isClientMessage);
+    }
+
+    @Override
+    public ClientCertificateTypeExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new ClientCertificateTypeExtensionParser(stream, tlsContext.getConfig());
+    }
+
+    @Override
+    public ClientCertificateTypeExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new ClientCertificateTypeExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+    }
+
+    @Override
+    public ClientCertificateTypeExtensionSerializer getSerializer(TlsContext tlsContext) {
+        return new ClientCertificateTypeExtensionSerializer(this);
+    }
+
+    @Override
+    public ClientCertificateTypeExtensionHandler getHandler(TlsContext context) {
+        return new ClientCertificateTypeExtensionHandler(context);
     }
 }

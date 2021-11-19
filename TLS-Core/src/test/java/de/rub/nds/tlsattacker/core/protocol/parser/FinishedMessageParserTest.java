@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
@@ -92,8 +93,9 @@ public class FinishedMessageParserTest {
      */
     @Test
     public void testParse() {
-        FinishedParser parser = new FinishedParser(new ByteArrayInputStream(message), version, config);
-        FinishedMessage msg = parser.parse();
+        FinishedParser parser = new FinishedParser(new ByteArrayInputStream(message), version, new TlsContext(config));
+        FinishedMessage msg = new FinishedMessage();
+        parser.parse(msg);
         assertArrayEquals(expectedPart, msg.getCompleteResultingMessage().getValue());
         assertTrue(msg.getLength().getValue() == length);
         assertTrue(msg.getType().getValue() == type.getValue());

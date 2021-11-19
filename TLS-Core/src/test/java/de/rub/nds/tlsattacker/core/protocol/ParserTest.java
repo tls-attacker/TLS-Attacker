@@ -152,8 +152,7 @@ public class ParserTest {
         }
 
         @Override
-        public Object parse() {
-            return null;
+        public void parse(Object o) {
         }
     }
 }

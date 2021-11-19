@@ -9,7 +9,7 @@
 
 package de.rub.nds.tlsattacker.core.https;
 
-import de.rub.nds.tlsattacker.core.https.header.HttpsHeader;
+import de.rub.nds.tlsattacker.core.https.header.HttpHeader;
 import de.rub.nds.tlsattacker.core.protocol.preparator.TlsMessagePreparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
@@ -27,7 +27,7 @@ public class HttpsRequestPreparator extends TlsMessagePreparator<HttpsRequestMes
         message.setRequestPath("/");
         message.setRequestProtocol("HTTP/1.1");
         message.setRequestType("GET");
-        for (HttpsHeader header : message.getHeader()) {
+        for (HttpHeader header : message.getHeader()) {
             header.getPreparator(chooser).prepare();
         }
     }

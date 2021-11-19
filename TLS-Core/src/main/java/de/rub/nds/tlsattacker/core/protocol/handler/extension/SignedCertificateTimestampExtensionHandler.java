@@ -35,44 +35,6 @@ public class SignedCertificateTimestampExtensionHandler
     }
 
     /**
-     * Returns a new SignedCertificateTimestampExtensionParser
-     *
-     * @param  stream
-     * @param  config
-     * @return        A SignedCertificateTimestampExtensionParser
-     */
-    @Override
-    public SignedCertificateTimestampExtensionParser getParser(InputStream stream) {
-        return new SignedCertificateTimestampExtensionParser(stream, context.getConfig());
-    }
-
-    /**
-     * Returns a new SignedCertificateTimestampExtensionPreparator
-     *
-     * @param  message
-     *                 A SignedCertificateTimestampExtensionMessage
-     * @return         A SignedCertificateTimestampExtensionPreparator
-     */
-    @Override
-    public SignedCertificateTimestampExtensionPreparator
-        getPreparator(SignedCertificateTimestampExtensionMessage message) {
-        return new SignedCertificateTimestampExtensionPreparator(context.getChooser(), message, getSerializer(message));
-    }
-
-    /**
-     * Returns a new SignedCertificateTimestampExtensionSerializer
-     *
-     * @param  message
-     *                 A SignedCertificateTimestampExtensionMessage
-     * @return         A SignedCertificateTimestampExtensionSerializer
-     */
-    @Override
-    public SignedCertificateTimestampExtensionSerializer
-        getSerializer(SignedCertificateTimestampExtensionMessage message) {
-        return new SignedCertificateTimestampExtensionSerializer(message);
-    }
-
-    /**
      * Parses the content of a SignedCertificateTimestampExtensionMessage to the actual Chooser
      *
      * @param message

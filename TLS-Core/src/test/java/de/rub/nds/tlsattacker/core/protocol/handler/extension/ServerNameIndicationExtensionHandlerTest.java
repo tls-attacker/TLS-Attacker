@@ -13,11 +13,7 @@ import de.rub.nds.tlsattacker.core.constants.NameType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.SNIEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.ServerNameIndicationExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ServerNameIndicationExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ServerNameIndicationExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.ByteArrayInputStream;
 import java.util.LinkedList;
 import java.util.List;
 import static org.junit.Assert.*;
@@ -47,7 +43,7 @@ public class ServerNameIndicationExtensionHandlerTest {
         pair.setServerNameType(pair.getServerNameTypeConfig());
         pairList.add(pair);
         msg.setServerNameList(pairList);
-        handler.adjustTLSContext(msg);
+        handler.adjustContext(msg);
         assertTrue(context.getClientSNIEntryList().size() == 1);
         SNIEntry entry = context.getClientSNIEntryList().get(0);
         assertEquals("localhost", entry.getName());
@@ -63,35 +59,7 @@ public class ServerNameIndicationExtensionHandlerTest {
         pair.setServerNameType(pair.getServerNameTypeConfig());
         pairList.add(pair);
         msg.setServerNameList(pairList);
-        handler.adjustTLSContext(msg);
+        handler.adjustContext(msg);
         assertTrue(context.getClientSNIEntryList().isEmpty());
     }
-
-    /**
-     * Test of getParser method, of class ServerNameIndicationExtensionHandler.
-     */
-    @Test
-    public void testGetParser() {
-        assertTrue(
-            handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof ServerNameIndicationExtensionParser);
-    }
-
-    /**
-     * Test of getPreparator method, of class ServerNameIndicationExtensionHandler.
-     */
-    @Test
-    public void testGetPreparator() {
-        assertTrue(handler.getPreparator(
-            new ServerNameIndicationExtensionMessage()) instanceof ServerNameIndicationExtensionPreparator);
-    }
-
-    /**
-     * Test of getSerializer method, of class ServerNameIndicationExtensionHandler.
-     */
-    @Test
-    public void testGetSerializer() {
-        assertTrue(handler.getSerializer(
-            new ServerNameIndicationExtensionMessage()) instanceof ServerNameIndicationExtensionSerializer);
-    }
-
 }

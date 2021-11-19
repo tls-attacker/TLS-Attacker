@@ -15,18 +15,28 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.protocol.Handler;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.PreSharedKeyExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PSKBinder;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PSKIdentity;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.PreSharedKeyExtensionParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtensionPreparator;
+import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PreSharedKeyExtensionPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PreSharedKeyExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 
 /**
  * RFC draft-ietf-tls-tls13-21
  */
-public class PreSharedKeyExtensionMessage extends ExtensionMessage {
+public class PreSharedKeyExtensionMessage extends ExtensionMessage<PreSharedKeyExtensionMessage> {
 
     private ModifiableInteger identityListLength;
     private ModifiableInteger binderListLength;
@@ -195,4 +205,24 @@ public class PreSharedKeyExtensionMessage extends ExtensionMessage {
         return allModifiableVariableHolders;
     }
 
+    @Override
+    public ExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new PreSharedKeyExtensionParser(stream, tlsContext.getConfig(),
+            tlsContext.getTalkingConnectionEndType());
+    }
+
+    @Override
+    public ExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new PreSharedKeyExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+    }
+
+    @Override
+    public ExtensionSerializer getSerializer(TlsContext tlsContext) {
+        return new PreSharedKeyExtensionSerializer(this, tlsContext.getChooser().getConnectionEndType());
+    }
+
+    @Override
+    public PreSharedKeyExtensionHandler getHandler(TlsContext tlsContext) {
+        return new PreSharedKeyExtensionHandler(tlsContext);
+    }
 }

@@ -9,7 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
@@ -56,18 +55,12 @@ public class CertificateStatusRequestExtensionParser extends ExtensionParser<Cer
     }
 
     private void parseAsCertificateStatus(CertificateStatusRequestExtensionMessage msg) {
-        // Reset parser and start again for TLS 1.3 extension
         CertificateStatusGenericParser certificateStatusGenericParser = new CertificateStatusGenericParser(
             new ByteArrayInputStream(parseByteArrayField(msg.getExtensionLength().getValue())));
-        CertificateStatusObject certificateStatus = certificateStatusGenericParser.parse();
+        CertificateStatusObject certificateStatus = new CertificateStatusObject();
+        certificateStatusGenericParser.parse(certificateStatus);
         msg.setCertificateStatusType(certificateStatus.getType());
         msg.setOcspResponseLength(certificateStatus.getLength());
         msg.setOcspResponseBytes(certificateStatus.getOcspResponse());
     }
-
-    @Override
-    protected CertificateStatusRequestExtensionMessage createExtensionMessage() {
-        return new CertificateStatusRequestExtensionMessage();
-    }
-
 }

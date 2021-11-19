@@ -32,7 +32,7 @@ public class RenegotiationInfoExtensionSerializerTest {
     private final byte[] expectedBytes;
 
     public RenegotiationInfoExtensionSerializerTest(ExtensionType extensionType, int extensionLength,
-        int extensionPayloadLength, byte[] extensionPayload, byte[] expectedBytes, int startParsing) {
+        int extensionPayloadLength, byte[] extensionPayload, byte[] expectedBytes) {
         this.extensionType = extensionType;
         this.extensionLength = extensionLength;
         this.extensionPayload = extensionPayload;

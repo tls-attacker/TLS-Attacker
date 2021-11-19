@@ -84,19 +84,21 @@ public class TokenbindingMessagePreparatorTest {
         byte[] serialize = serializer.serialize();
         TokenBindingMessageParser selfParser =
             new TokenBindingMessageParser(new ByteArrayInputStream(serialize), ProtocolVersion.TLS12, config);
-        TokenBindingMessage selfParsed = selfParser.parse();
+        TokenBindingMessage selfParsed = new TokenBindingMessage();
+        selfParser.parse(selfParsed);
         assertNotNull(selfParsed);
         String base64 =
             "AIkAAgBBQM9eQES_uxoyRn0DDoYLcWqvm6Oo3p0lI1s3fRjdIj6dw8wLDf0RWkxuyNAmgAQkUWxm8_JfwS8MziBYVuJ5ECcAQHF_HGcPiSv_X60y5Ql-AxoqaWzwqXvpStEBgY_IX8kT_qAHsb5h38ZuQoWOaZVgqlF1sa70B4GVXxmi2JkdJYcAAA";
         byte[] decode = Base64.getUrlDecoder().decode(base64);
         TokenBindingMessageParser parser =
             new TokenBindingMessageParser(new ByteArrayInputStream(decode), ProtocolVersion.TLS12, config);
-        TokenBindingMessage parsedMessage = parser.parse();
+        TokenBindingMessage message = new TokenBindingMessage();
+        parser.parse(message);
         byte[] xBytes = new byte[32];
-        System.arraycopy(parsedMessage.getPoint().getValue(), 0, xBytes, 0, 32);
+        System.arraycopy(message.getPoint().getValue(), 0, xBytes, 0, 32);
         LOGGER.debug("X:" + ArrayConverter.bytesToHexString(xBytes));
         byte[] yBytes = new byte[32];
-        System.arraycopy(parsedMessage.getPoint().getValue(), 32, yBytes, 0, 32);
+        System.arraycopy(message.getPoint().getValue(), 32, yBytes, 0, 32);
         LOGGER.debug("Y:" + ArrayConverter.bytesToHexString(yBytes));
         BigInteger intX = new BigInteger(xBytes);
         LOGGER.debug("intx: " + intX);
@@ -122,9 +124,9 @@ public class TokenbindingMessagePreparatorTest {
         // ours byte[] signedContent =
         // ArrayConverter.hexStringToByteArray("00022054736C9903E145286A925F9F2C064603D3211BCF0D81EDB6FEB6E9ACCAB4B7");
         byte[] rBytes = new byte[32];
-        System.arraycopy(parsedMessage.getSignature().getValue(), 0, rBytes, 0, 32);
+        System.arraycopy(message.getSignature().getValue(), 0, rBytes, 0, 32);
         byte[] sBytes = new byte[32];
-        System.arraycopy(parsedMessage.getSignature().getValue(), 32, sBytes, 0, 32);
+        System.arraycopy(message.getSignature().getValue(), 32, sBytes, 0, 32);
         LOGGER.debug("r:" + ArrayConverter.bytesToHexString(rBytes));
         LOGGER.debug("s:" + ArrayConverter.bytesToHexString(sBytes));
         LOGGER.debug("r:" + new ASN1Integer(rBytes).getPositiveValue());

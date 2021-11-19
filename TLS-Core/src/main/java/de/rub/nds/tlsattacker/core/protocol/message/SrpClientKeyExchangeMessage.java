@@ -18,12 +18,17 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.SrpClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.SRPClientComputations;
+import de.rub.nds.tlsattacker.core.protocol.parser.SrpClientKeyExchangeParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.SrpClientKeyExchangePreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.SrpClientKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class SrpClientKeyExchangeMessage extends ClientKeyExchangeMessage {
+
     /**
      * SRP modulus
      */
@@ -134,6 +139,21 @@ public class SrpClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     @Override
     public SrpClientKeyExchangeHandler getHandler(TlsContext context) {
         return new SrpClientKeyExchangeHandler(context);
+    }
+
+    @Override
+    public SrpClientKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new SrpClientKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+    }
+
+    @Override
+    public SrpClientKeyExchangePreparator getPreparator(TlsContext tlsContext) {
+        return new SrpClientKeyExchangePreparator(tlsContext.getChooser(), this);
+    }
+
+    @Override
+    public SrpClientKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
+        return new SrpClientKeyExchangeSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

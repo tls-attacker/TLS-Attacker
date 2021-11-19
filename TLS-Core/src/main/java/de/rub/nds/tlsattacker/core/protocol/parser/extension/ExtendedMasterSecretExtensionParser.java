@@ -39,9 +39,4 @@ public class ExtendedMasterSecretExtensionParser extends ExtensionParser<Extende
         }
     }
 
-    @Override
-    protected ExtendedMasterSecretExtensionMessage createExtensionMessage() {
-        return new ExtendedMasterSecretExtensionMessage();
-    }
-
 }

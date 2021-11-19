@@ -69,7 +69,8 @@ public class CachedInfoExtensionParserTest {
 
         CachedInfoExtensionParser parser =
             new CachedInfoExtensionParser(new ByteArrayInputStream(extensionBytes), Config.createConfig());
-        CachedInfoExtensionMessage msg = parser.parse();
+        CachedInfoExtensionMessage msg = new CachedInfoExtensionMessage();
+        parser.parse(msg);
 
         assertArrayEquals(type.getValue(), msg.getExtensionType().getValue());
         assertEquals(extensionLength, (long) msg.getExtensionLength().getValue());

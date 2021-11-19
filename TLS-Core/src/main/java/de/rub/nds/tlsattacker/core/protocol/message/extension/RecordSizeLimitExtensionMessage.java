@@ -13,11 +13,18 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.protocol.Handler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.RecordSizeLimitExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.RecordSizeLimitExtensionParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.extension.RecordSizeLimitExtensionPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.RecordSizeLimitExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 
 /**
  * Record Size Limit Extension described in RFC 8449
  */
-public class RecordSizeLimitExtensionMessage extends ExtensionMessage {
+public class RecordSizeLimitExtensionMessage extends ExtensionMessage<RecordSizeLimitExtensionMessage> {
 
     @ModifiableVariableProperty
     private ModifiableByteArray recordSizeLimit;
@@ -37,4 +44,25 @@ public class RecordSizeLimitExtensionMessage extends ExtensionMessage {
     public void setRecordSizeLimit(byte[] recordSizeLimit) {
         this.recordSizeLimit = ModifiableVariableFactory.safelySetValue(this.recordSizeLimit, recordSizeLimit);
     }
+
+    @Override
+    public RecordSizeLimitExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new RecordSizeLimitExtensionParser(stream, tlsContext.getConfig());
+    }
+
+    @Override
+    public RecordSizeLimitExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new RecordSizeLimitExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+    }
+
+    @Override
+    public RecordSizeLimitExtensionSerializer getSerializer(TlsContext tlsContetx) {
+        return new RecordSizeLimitExtensionSerializer(this);
+    }
+
+    @Override
+    public RecordSizeLimitExtensionHandler getHandler(TlsContext tlsContext) {
+        return new RecordSizeLimitExtensionHandler(tlsContext);
+    }
+
 }

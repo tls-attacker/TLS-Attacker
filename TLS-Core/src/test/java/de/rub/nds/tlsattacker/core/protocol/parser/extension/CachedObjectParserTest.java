@@ -55,7 +55,8 @@ public class CachedObjectParserTest {
     public void parse() {
         CachedObjectParser parser =
             new CachedObjectParser(new ByteArrayInputStream(cachedObjectBytes), speakingEndType);
-        CachedObject cachedObject = parser.parse();
+        CachedObject cachedObject = new CachedObject();
+        parser.parse(cachedObject);
 
         assertEquals(infoType.getValue(), (long) cachedObject.getCachedInformationType().getValue());
 

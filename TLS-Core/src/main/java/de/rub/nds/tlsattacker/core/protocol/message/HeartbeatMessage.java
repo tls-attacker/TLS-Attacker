@@ -20,7 +20,11 @@ import de.rub.nds.tlsattacker.core.constants.HeartbeatMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.HeartbeatMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.TlsMessageHandler;
+import de.rub.nds.tlsattacker.core.protocol.parser.HeartbeatMessageParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.HeartbeatMessagePreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.HeartbeatMessageSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
@@ -141,5 +145,21 @@ public class HeartbeatMessage extends TlsMessage {
     @Override
     public TlsMessageHandler getHandler(TlsContext context) {
         return new HeartbeatMessageHandler(context);
+    }
+
+    @Override
+    public HeartbeatMessageParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new HeartbeatMessageParser(stream, tlsContext.getChooser().getLastRecordVersion(),
+            tlsContext.getConfig());
+    }
+
+    @Override
+    public HeartbeatMessagePreparator getPreparator(TlsContext tlsContext) {
+        return new HeartbeatMessagePreparator(tlsContext.getChooser(), this);
+    }
+
+    @Override
+    public HeartbeatMessageSerializer getSerializer(TlsContext tlsContext) {
+        return new HeartbeatMessageSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 }

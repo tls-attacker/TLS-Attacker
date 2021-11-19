@@ -27,8 +27,7 @@ public class TokenBindingMessageParser extends TlsMessageParser<TokenBindingMess
     }
 
     @Override
-    protected TokenBindingMessage parseMessageContent() {
-        TokenBindingMessage message = new TokenBindingMessage();
+    protected void parseMessageContent(TokenBindingMessage message) {
         message.setTokenbindingsLength(parseIntField(TokenBindingLength.TOKENBINDINGS));
         LOGGER.debug("TokenbindingLength:" + message.getTokenbindingsLength().getValue());
         message.setTokenbindingType(parseByteField(TokenBindingLength.BINDING_TYPE));
@@ -66,8 +65,6 @@ public class TokenBindingMessageParser extends TlsMessageParser<TokenBindingMess
 
         message.setExtensionBytes(parseByteArrayField(message.getExtensionLength().getValue()));
         LOGGER.debug("Extensions:" + ArrayConverter.bytesToHexString(message.getExtensionBytes().getValue()));
-
-        return message;
     }
 
 }

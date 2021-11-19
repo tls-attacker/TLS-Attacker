@@ -32,7 +32,6 @@ public class ServerCertificateTypeExtensionSerializerTest {
     private final ExtensionType extensionType;
     private final byte[] expectedBytes;
     private final int extensionLength;
-    private final int startParsing;
     private final Integer certificateTypesLength;
     private final List<CertificateType> certificateTypes;
     private final boolean isClientState;
@@ -40,12 +39,11 @@ public class ServerCertificateTypeExtensionSerializerTest {
     private ServerCertificateTypeExtensionMessage msg;
 
     public ServerCertificateTypeExtensionSerializerTest(ExtensionType extensionType, byte[] expectedBytes,
-        int extensionLength, int startParsing, Integer certificateTypesLength, List<CertificateType> certificateTypes,
+        int extensionLength, Integer certificateTypesLength, List<CertificateType> certificateTypes,
         boolean isClientState) {
         this.extensionType = extensionType;
         this.expectedBytes = expectedBytes;
         this.extensionLength = extensionLength;
-        this.startParsing = startParsing;
         this.certificateTypesLength = certificateTypesLength;
         this.certificateTypes = certificateTypes;
         this.isClientState = isClientState;

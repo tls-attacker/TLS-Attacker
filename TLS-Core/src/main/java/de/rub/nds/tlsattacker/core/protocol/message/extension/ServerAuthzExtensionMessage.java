@@ -15,11 +15,18 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.protocol.Handler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.ServerAuthzExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.ServerAuthzExtensionParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ServerAuthzExtensionPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ServerAuthzExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 
 /**
  * This extension is defined in RFC5878
  */
-public class ServerAuthzExtensionMessage extends ExtensionMessage {
+public class ServerAuthzExtensionMessage extends ExtensionMessage<ServerAuthzExtensionMessage> {
 
     @ModifiableVariableProperty
     private ModifiableInteger authzFormatListLength;
@@ -59,4 +66,23 @@ public class ServerAuthzExtensionMessage extends ExtensionMessage {
         this.authzFormatList = ModifiableVariableFactory.safelySetValue(this.authzFormatList, authzFormatList);
     }
 
+    @Override
+    public ServerAuthzExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new ServerAuthzExtensionParser(stream, tlsContext.getConfig());
+    }
+
+    @Override
+    public ServerAuthzExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new ServerAuthzExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+    }
+
+    @Override
+    public ServerAuthzExtensionSerializer getSerializer(TlsContext tlsContext) {
+        return new ServerAuthzExtensionSerializer(this);
+    }
+
+    @Override
+    public ServerAuthzExtensionHandler getHandler(TlsContext tlsContext) {
+        return new ServerAuthzExtensionHandler(tlsContext);
+    }
 }

@@ -147,11 +147,6 @@ public class RecordStreamCipher extends RecordCipher {
         }
 
         @Override
-        public Object parse() {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
         public byte[] parseByteArrayField(int length) {
             return super.parseByteArrayField(length);
         }
@@ -159,6 +154,12 @@ public class RecordStreamCipher extends RecordCipher {
         @Override
         public int getBytesLeft() {
             return super.getBytesLeft();
+        }
+
+        @Override
+        public void parse(Object t) {
+            throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods,
+                                                                           // choose Tools | Templates.
         }
     }
 }

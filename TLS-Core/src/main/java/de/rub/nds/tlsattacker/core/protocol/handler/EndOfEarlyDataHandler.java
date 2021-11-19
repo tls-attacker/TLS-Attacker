@@ -13,16 +13,12 @@ import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.EndOfEarlyDataMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.EndOfEarlyDataParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.EndOfEarlyDataPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.EndOfEarlyDataSerializer;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -33,21 +29,6 @@ public class EndOfEarlyDataHandler extends HandshakeMessageHandler<EndOfEarlyDat
 
     public EndOfEarlyDataHandler(TlsContext tlsContext) {
         super(tlsContext);
-    }
-
-    @Override
-    public EndOfEarlyDataParser getParser(InputStream stream) {
-        return new EndOfEarlyDataParser(stream, tlsContext.getLastRecordVersion(), tlsContext.getConfig());
-    }
-
-    @Override
-    public EndOfEarlyDataPreparator getPreparator(EndOfEarlyDataMessage message) {
-        return new EndOfEarlyDataPreparator(tlsContext.getChooser(), message);
-    }
-
-    @Override
-    public EndOfEarlyDataSerializer getSerializer(EndOfEarlyDataMessage message) {
-        return new EndOfEarlyDataSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

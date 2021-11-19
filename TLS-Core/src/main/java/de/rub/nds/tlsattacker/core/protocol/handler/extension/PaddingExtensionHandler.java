@@ -11,11 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.PaddingExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PaddingExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PaddingExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -25,21 +21,6 @@ public class PaddingExtensionHandler extends ExtensionHandler<PaddingExtensionMe
 
     public PaddingExtensionHandler(TlsContext context) {
         super(context);
-    }
-
-    @Override
-    public PaddingExtensionParser getParser(InputStream stream) {
-        return new PaddingExtensionParser(stream, context.getConfig());
-    }
-
-    @Override
-    public PaddingExtensionPreparator getPreparator(PaddingExtensionMessage message) {
-        return new PaddingExtensionPreparator(context.getChooser(), message, getSerializer(message));
-    }
-
-    @Override
-    public PaddingExtensionSerializer getSerializer(PaddingExtensionMessage message) {
-        return new PaddingExtensionSerializer(message);
     }
 
     /**

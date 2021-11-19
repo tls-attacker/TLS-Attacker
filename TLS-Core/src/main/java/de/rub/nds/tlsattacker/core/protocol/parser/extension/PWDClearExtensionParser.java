@@ -30,11 +30,6 @@ public class PWDClearExtensionParser extends ExtensionParser<PWDClearExtensionMe
         parseUsername(msg);
     }
 
-    @Override
-    protected PWDClearExtensionMessage createExtensionMessage() {
-        return new PWDClearExtensionMessage();
-    }
-
     /**
      * Reads the next bytes as the username length of the Extension and writes them in the message
      *

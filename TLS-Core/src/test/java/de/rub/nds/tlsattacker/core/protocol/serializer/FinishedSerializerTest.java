@@ -36,7 +36,7 @@ public class FinishedSerializerTest {
 
     private final ProtocolVersion version;
 
-    public FinishedSerializerTest(byte[] message, int start, byte[] expectedPart, HandshakeMessageType type, int length,
+    public FinishedSerializerTest(byte[] message, byte[] expectedPart, HandshakeMessageType type, int length,
         byte[] verifyData, ProtocolVersion version) {
         this.expectedPart = expectedPart;
         this.type = type;

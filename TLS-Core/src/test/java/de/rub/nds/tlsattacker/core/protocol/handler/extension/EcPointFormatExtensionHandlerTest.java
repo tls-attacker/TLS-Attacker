@@ -11,24 +11,20 @@ package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ECPointFormatExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.ECPointFormatExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ECPointFormatExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ECPointFormatExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.ByteArrayInputStream;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
 public class EcPointFormatExtensionHandlerTest {
 
-    private EcPointFormatExtensionHandler handler;
+    private ECPointFormatExtensionHandler handler;
     private TlsContext context;
 
     @Before
     public void setUp() {
         context = new TlsContext();
-        handler = new EcPointFormatExtensionHandler(context);
+        handler = new ECPointFormatExtensionHandler(context);
     }
 
     /**
@@ -38,7 +34,7 @@ public class EcPointFormatExtensionHandlerTest {
     public void testAdjustTLSContext() {
         ECPointFormatExtensionMessage msg = new ECPointFormatExtensionMessage();
         msg.setPointFormats(new byte[] { 0, 1 });
-        handler.adjustTLSContext(msg);
+        handler.adjustContext(msg);
         assertTrue(context.getClientPointFormatsList().size() == 2);
         assertTrue(context.getClientPointFormatsList().contains(ECPointFormat.UNCOMPRESSED));
         assertTrue(context.getClientPointFormatsList().contains(ECPointFormat.ANSIX962_COMPRESSED_PRIME));
@@ -47,34 +43,7 @@ public class EcPointFormatExtensionHandlerTest {
     public void testUnadjustableMessage() {
         ECPointFormatExtensionMessage msg = new ECPointFormatExtensionMessage();
         msg.setPointFormats(new byte[] { 5 });
-        handler.adjustTLSContext(msg);
+        handler.adjustContext(msg);
         assertTrue(context.getClientPointFormatsList().isEmpty());
     }
-
-    /**
-     * Test of getParser method, of class EcPointFormatExtensionHandler.
-     */
-    @Test
-    public void testGetParser() {
-        assertTrue(handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof ECPointFormatExtensionParser);
-    }
-
-    /**
-     * Test of getPreparator method, of class EcPointFormatExtensionHandler.
-     */
-    @Test
-    public void testGetPreparator() {
-        assertTrue(
-            handler.getPreparator(new ECPointFormatExtensionMessage()) instanceof ECPointFormatExtensionPreparator);
-    }
-
-    /**
-     * Test of getSerializer method, of class EcPointFormatExtensionHandler.
-     */
-    @Test
-    public void testGetSerializer() {
-        assertTrue(
-            handler.getSerializer(new ECPointFormatExtensionMessage()) instanceof ECPointFormatExtensionSerializer);
-    }
-
 }

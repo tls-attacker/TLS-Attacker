@@ -17,18 +17,16 @@ import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class CertificateStatusGenericParser extends Parser {
+public class CertificateStatusGenericParser extends Parser<CertificateStatusObject> {
 
     private static final Logger LOGGER = LogManager.getLogger();
-
-    private CertificateStatusObject certificateStatusObject = new CertificateStatusObject();
 
     public CertificateStatusGenericParser(InputStream stream) {
         super(stream);
     }
 
     @Override
-    public CertificateStatusObject parse() {
+    public void parse(CertificateStatusObject certificateStatusObject) {
         LOGGER.debug("Parsing CertificateStatus with generic parser.");
 
         int type = parseIntField(HandshakeByteLength.CERTIFICATE_STATUS_TYPE_LENGTH);
@@ -42,7 +40,5 @@ public class CertificateStatusGenericParser extends Parser {
         byte[] ocspResponse = parseByteArrayField(length);
         certificateStatusObject.setOcspResponse(ocspResponse);
         LOGGER.debug("OCSP Response: " + ArrayConverter.bytesToHexString(ocspResponse));
-
-        return certificateStatusObject;
     }
 }

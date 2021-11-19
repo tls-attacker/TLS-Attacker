@@ -27,23 +27,6 @@ public class PWDServerKeyExchangeHandler extends ServerKeyExchangeHandler<PWDSer
     }
 
     @Override
-    public PWDServerKeyExchangeParser getParser(InputStream stream) {
-        return new PWDServerKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(),
-            AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite()),
-            tlsContext.getConfig());
-    }
-
-    @Override
-    public PWDServerKeyExchangePreparator getPreparator(PWDServerKeyExchangeMessage message) {
-        return new PWDServerKeyExchangePreparator(tlsContext.getChooser(), message);
-    }
-
-    @Override
-    public PWDServerKeyExchangeSerializer getSerializer(PWDServerKeyExchangeMessage message) {
-        return new PWDServerKeyExchangeSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
-    }
-
-    @Override
     public void adjustTLSContext(PWDServerKeyExchangeMessage message) {
         tlsContext.setSelectedGroup(NamedGroup.getNamedGroup(message.getNamedGroup().getValue()));
         tlsContext.setServerPWDSalt(message.getSalt().getValue());

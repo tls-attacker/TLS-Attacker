@@ -16,11 +16,17 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.CertificateTypeExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.CertificateTypeExtensionParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.extension.CertificateTypeExtensionPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.CertificateTypeExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 
 /**
  * This extension is defined in RFC6091
  */
-public class CertificateTypeExtensionMessage extends ExtensionMessage {
+public class CertificateTypeExtensionMessage extends ExtensionMessage<CertificateTypeExtensionMessage> {
 
     @ModifiableVariableProperty
     private ModifiableInteger certificateTypesLength;
@@ -73,4 +79,25 @@ public class CertificateTypeExtensionMessage extends ExtensionMessage {
     public void setIsClientMessage(boolean isClientMessage) {
         this.isClientMessage = ModifiableVariableFactory.safelySetValue(this.isClientMessage, isClientMessage);
     }
+
+    @Override
+    public CertificateTypeExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new CertificateTypeExtensionParser(stream, tlsContext.getConfig());
+    }
+
+    @Override
+    public CertificateTypeExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new CertificateTypeExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+    }
+
+    @Override
+    public CertificateTypeExtensionSerializer getSerializer(TlsContext tlsContext) {
+        return new CertificateTypeExtensionSerializer(this);
+    }
+
+    @Override
+    public CertificateTypeExtensionHandler getHandler(TlsContext context) {
+        return new CertificateTypeExtensionHandler(context);
+    }
+
 }

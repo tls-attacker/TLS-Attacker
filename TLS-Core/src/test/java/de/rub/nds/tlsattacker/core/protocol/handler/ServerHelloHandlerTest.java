@@ -17,12 +17,8 @@ import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
-import de.rub.nds.tlsattacker.core.protocol.parser.ServerHelloParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.ServerHelloPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.ServerHelloSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.io.ByteArrayInputStream;
 import java.math.BigInteger;
 import org.junit.After;
 import static org.junit.Assert.*;
@@ -42,30 +38,6 @@ public class ServerHelloHandlerTest {
 
     @After
     public void tearDown() {
-    }
-
-    /**
-     * Test of getPreparator method, of class ServerHelloHandler.
-     */
-    @Test
-    public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new ServerHelloMessage()) instanceof ServerHelloPreparator);
-    }
-
-    /**
-     * Test of getSerializer method, of class ServerHelloHandler.
-     */
-    @Test
-    public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new ServerHelloMessage()) instanceof ServerHelloSerializer);
-    }
-
-    /**
-     * Test of getParser method, of class ServerHelloHandler.
-     */
-    @Test
-    public void testGetParser() {
-        assertTrue(handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof ServerHelloParser);
     }
 
     /**

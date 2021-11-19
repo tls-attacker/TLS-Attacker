@@ -27,7 +27,6 @@ public class PasswordSaltExtensionSerializerTest {
     }
 
     private final byte[] expectedBytes;
-    private final int start;
     private final ExtensionType type;
     private final int extensionLength;
     private final int saltLength;
@@ -35,10 +34,9 @@ public class PasswordSaltExtensionSerializerTest {
     private PasswordSaltExtensionSerializer serializer;
     private PasswordSaltExtensionMessage msg;
 
-    public PasswordSaltExtensionSerializerTest(byte[] expectedBytes, int start, ExtensionType type, int extensionLength,
+    public PasswordSaltExtensionSerializerTest(byte[] expectedBytes, ExtensionType type, int extensionLength,
         int saltLength, byte[] salt) {
         this.expectedBytes = expectedBytes;
-        this.start = start;
         this.type = type;
         this.extensionLength = extensionLength;
         this.saltLength = saltLength;

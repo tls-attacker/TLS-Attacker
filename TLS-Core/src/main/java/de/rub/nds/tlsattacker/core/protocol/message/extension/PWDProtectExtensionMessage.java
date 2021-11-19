@@ -15,11 +15,17 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.PWDProtectExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.PWDProtectExtensionParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PWDProtectExtensionPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PWDProtectExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 
 /**
  * This extension is defined in RFC8492
  */
-public class PWDProtectExtensionMessage extends ExtensionMessage {
+public class PWDProtectExtensionMessage extends ExtensionMessage<PWDProtectExtensionMessage> {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger usernameLength;
@@ -57,5 +63,25 @@ public class PWDProtectExtensionMessage extends ExtensionMessage {
 
     public void setUsername(ModifiableByteArray username) {
         this.username = username;
+    }
+
+    @Override
+    public PWDProtectExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new PWDProtectExtensionParser(stream, tlsContext.getConfig());
+    }
+
+    @Override
+    public PWDProtectExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new PWDProtectExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+    }
+
+    @Override
+    public PWDProtectExtensionSerializer getSerializer(TlsContext tlsContext) {
+        return new PWDProtectExtensionSerializer(this);
+    }
+
+    @Override
+    public PWDProtectExtensionHandler getHandler(TlsContext tlsContext) {
+        return new PWDProtectExtensionHandler(tlsContext);
     }
 }

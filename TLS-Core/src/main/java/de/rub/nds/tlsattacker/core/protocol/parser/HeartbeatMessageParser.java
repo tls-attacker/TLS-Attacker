@@ -35,14 +35,12 @@ public class HeartbeatMessageParser extends TlsMessageParser<HeartbeatMessage> {
     }
 
     @Override
-    protected HeartbeatMessage parseMessageContent() {
+    protected void parseMessageContent(HeartbeatMessage message) {
         LOGGER.debug("Parsing HeartbeatMessage");
-        HeartbeatMessage msg = new HeartbeatMessage();
-        parseHeartbeatMessageType(msg);
-        parsePayloadLength(msg);
-        parsePayload(msg);
-        parsePadding(msg);
-        return msg;
+        parseHeartbeatMessageType(message);
+        parsePayloadLength(message);
+        parsePayload(message);
+        parsePadding(message);
     }
 
     /**

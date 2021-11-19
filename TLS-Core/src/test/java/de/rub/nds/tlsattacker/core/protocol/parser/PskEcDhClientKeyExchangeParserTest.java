@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.PskEcDhClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
@@ -53,8 +54,9 @@ public class PskEcDhClientKeyExchangeParserTest {
     @Test
     public void testParse() {
         PskEcDhClientKeyExchangeParser parser =
-            new PskEcDhClientKeyExchangeParser(new ByteArrayInputStream(message), version, config);
-        PskEcDhClientKeyExchangeMessage msg = parser.parse();
+            new PskEcDhClientKeyExchangeParser(new ByteArrayInputStream(message), version, new TlsContext(config));
+        PskEcDhClientKeyExchangeMessage msg = new PskEcDhClientKeyExchangeMessage();
+        parser.parse(msg);
         assertArrayEquals(message, msg.getCompleteResultingMessage().getValue());
         assertEquals(type.getValue(), msg.getType().getValue().byteValue());
         assertEquals(length, msg.getLength().getValue().intValue());

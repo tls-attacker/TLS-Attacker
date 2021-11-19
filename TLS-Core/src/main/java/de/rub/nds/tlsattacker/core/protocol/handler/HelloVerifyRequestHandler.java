@@ -28,22 +28,6 @@ public class HelloVerifyRequestHandler extends HandshakeMessageHandler<HelloVeri
     }
 
     @Override
-    public HelloVerifyRequestParser getParser(InputStream stream) {
-        return new HelloVerifyRequestParser(stream, tlsContext.getChooser().getLastRecordVersion(),
-            tlsContext.getConfig());
-    }
-
-    @Override
-    public HelloVerifyRequestPreparator getPreparator(HelloVerifyRequestMessage message) {
-        return new HelloVerifyRequestPreparator(tlsContext.getChooser(), message);
-    }
-
-    @Override
-    public HelloVerifyRequestSerializer getSerializer(HelloVerifyRequestMessage message) {
-        return new HelloVerifyRequestSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
-    }
-
-    @Override
     public void adjustTLSContext(HelloVerifyRequestMessage message) {
         adjustDTLSCookie(message);
     }

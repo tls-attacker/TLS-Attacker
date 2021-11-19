@@ -11,18 +11,14 @@ package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.CertificateStatusRequestExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.CertificateStatusRequestExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.CertificateStatusRequestExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.ByteArrayInputStream;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
 public class CertificateStatusRequestExtensionHandlerTest {
+
     private final CertificateStatusRequestType certificateStatusRequestExtensionRequestType =
         CertificateStatusRequestType.OCSP;
     private final byte[] certificateStatusRequestExtensionResponderIDList = new byte[] { 0x01 };
@@ -44,7 +40,7 @@ public class CertificateStatusRequestExtensionHandlerTest {
         message.setResponderIDList(certificateStatusRequestExtensionResponderIDList);
         message.setRequestExtension(certificateStatusRequestExtensionRequestExtension);
 
-        handler.adjustTLSContext(message);
+        handler.adjustContext(message);
 
         assertEquals(certificateStatusRequestExtensionRequestType,
             context.getCertificateStatusRequestExtensionRequestType());
@@ -53,23 +49,4 @@ public class CertificateStatusRequestExtensionHandlerTest {
         assertArrayEquals(certificateStatusRequestExtensionRequestExtension,
             context.getCertificateStatusRequestExtensionRequestExtension());
     }
-
-    @Test
-    public void testGetParser() {
-        assertTrue(handler
-            .getParser(new ByteArrayInputStream(new byte[0])) instanceof CertificateStatusRequestExtensionParser);
-    }
-
-    @Test
-    public void testGetPreparator() {
-        assertTrue(handler.getPreparator(
-            new CertificateStatusRequestExtensionMessage()) instanceof CertificateStatusRequestExtensionPreparator);
-    }
-
-    @Test
-    public void testGetSerializer() {
-        assertTrue(handler.getSerializer(
-            new CertificateStatusRequestExtensionMessage()) instanceof CertificateStatusRequestExtensionSerializer);
-    }
-
 }

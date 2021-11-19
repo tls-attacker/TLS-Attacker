@@ -32,13 +32,12 @@ public class ClientEsniInnerParser extends Parser<ClientEsniInner> {
     }
 
     @Override
-    public ClientEsniInner parse() {
+    public void parse(ClientEsniInner esniInner) {
         parseClientNonce(clientEsniInner);
         parseServerNameListLength(clientEsniInner);
         parseServerNameListByte(clientEsniInner);
         parsePadding(clientEsniInner);
         parseServerNameList(clientEsniInner);
-        return clientEsniInner;
     }
 
     private void parseClientNonce(ClientEsniInner clientEsniInner) {
@@ -73,7 +72,9 @@ public class ClientEsniInnerParser extends Parser<ClientEsniInner> {
             new ByteArrayInputStream(clientEsniInner.getServerNameListBytes().getValue());
         while (innerStream.available() > 0) {
             ServerNamePairParser parser = new ServerNamePairParser(innerStream);
-            serverNamePairList.add(parser.parse());
+            ServerNamePair pair = new ServerNamePair();
+            parser.parse(pair);
+            serverNamePairList.add(pair);
         }
         clientEsniInner.setServerNameList(serverNamePairList);
     }

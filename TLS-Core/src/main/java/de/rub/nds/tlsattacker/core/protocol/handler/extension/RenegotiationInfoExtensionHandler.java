@@ -30,21 +30,6 @@ public class RenegotiationInfoExtensionHandler extends ExtensionHandler<Renegoti
     }
 
     @Override
-    public RenegotiationInfoExtensionParser getParser(InputStream stream) {
-        return new RenegotiationInfoExtensionParser(stream, context.getConfig());
-    }
-
-    @Override
-    public RenegotiationInfoExtensionPreparator getPreparator(RenegotiationInfoExtensionMessage message) {
-        return new RenegotiationInfoExtensionPreparator(context.getChooser(), message, getSerializer(message));
-    }
-
-    @Override
-    public RenegotiationInfoExtensionSerializer getSerializer(RenegotiationInfoExtensionMessage message) {
-        return new RenegotiationInfoExtensionSerializer(message);
-    }
-
-    @Override
     public void adjustTLSExtensionContext(RenegotiationInfoExtensionMessage message) {
         if (message.getExtensionLength().getValue() > 65535) {
             LOGGER.warn("The RenegotiationInfo length shouldn't exceed 2 bytes as defined in RFC 5246. " + "Length was "

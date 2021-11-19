@@ -15,11 +15,17 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.SRPExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.SRPExtensionParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SRPExtensionPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SRPExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 
 /**
  * This extension is defined in RFC5054
  */
-public class SRPExtensionMessage extends ExtensionMessage {
+public class SRPExtensionMessage extends ExtensionMessage<SRPExtensionMessage> {
 
     // UTF-8 encoded and according to RFC 4013 with the SASLprep profile
     @ModifiableVariableProperty
@@ -59,6 +65,26 @@ public class SRPExtensionMessage extends ExtensionMessage {
     public void setSrpIdentifierLength(int srpIdentifierLength) {
         this.srpIdentifierLength =
             ModifiableVariableFactory.safelySetValue(this.srpIdentifierLength, srpIdentifierLength);
+    }
+
+    @Override
+    public SRPExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new SRPExtensionParser(stream, tlsContext.getConfig());
+    }
+
+    @Override
+    public SRPExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new SRPExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+    }
+
+    @Override
+    public SRPExtensionSerializer getSerializer(TlsContext tlsContext) {
+        return new SRPExtensionSerializer(this);
+    }
+
+    @Override
+    public SRPExtensionHandler getHandler(TlsContext tlsContext) {
+        return new SRPExtensionHandler(tlsContext);
     }
 
 }

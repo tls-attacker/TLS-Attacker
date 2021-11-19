@@ -16,7 +16,11 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.FinishedHandler;
+import de.rub.nds.tlsattacker.core.protocol.parser.FinishedParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.FinishedPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.FinishedSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
@@ -66,5 +70,20 @@ public class FinishedMessage extends HandshakeMessage {
     @Override
     public FinishedHandler getHandler(TlsContext context) {
         return new FinishedHandler(context);
+    }
+
+    @Override
+    public FinishedParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new FinishedParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+    }
+
+    @Override
+    public FinishedPreparator getPreparator(TlsContext tlsContext) {
+        return new FinishedPreparator(tlsContext.getChooser(), this);
+    }
+
+    @Override
+    public FinishedSerializer getSerializer(TlsContext tlsContext) {
+        return new FinishedSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 }

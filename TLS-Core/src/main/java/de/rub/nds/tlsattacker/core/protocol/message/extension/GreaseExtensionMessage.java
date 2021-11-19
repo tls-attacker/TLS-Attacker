@@ -14,12 +14,19 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.protocol.Handler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.GreaseExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.GreaseExtensionParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.extension.GreaseExtensionPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.GreaseExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.Random;
 
-public class GreaseExtensionMessage extends ExtensionMessage {
+public class GreaseExtensionMessage extends ExtensionMessage<GreaseExtensionMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -94,5 +101,25 @@ public class GreaseExtensionMessage extends ExtensionMessage {
 
     public void setType(ExtensionType type) {
         this.type = type;
+    }
+
+    @Override
+    public GreaseExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+        return null;
+    }
+
+    @Override
+    public GreaseExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new GreaseExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+    }
+
+    @Override
+    public GreaseExtensionSerializer getSerializer(TlsContext tlsContext) {
+        return new GreaseExtensionSerializer(this);
+    }
+
+    @Override
+    public GreaseExtensionHandler getHandler(TlsContext tlsContext) {
+        return new GreaseExtensionHandler(tlsContext);
     }
 }

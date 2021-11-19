@@ -10,7 +10,7 @@
 package de.rub.nds.tlsattacker.core.https;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.https.header.HttpsHeader;
+import de.rub.nds.tlsattacker.core.https.header.HttpHeader;
 import de.rub.nds.tlsattacker.core.https.header.serializer.HttpsHeaderSerializer;
 import java.nio.charset.StandardCharsets;
 import de.rub.nds.tlsattacker.core.protocol.serializer.TlsMessageSerializer;
@@ -33,7 +33,7 @@ public class HttpsRequestSerializer extends TlsMessageSerializer<HttpsRequestMes
         StringBuilder builder = new StringBuilder();
         builder.append(message.getRequestType().getValue()).append(" ").append(message.getRequestPath().getValue())
             .append(" ").append(message.getRequestProtocol().getValue()).append("\r\n");
-        for (HttpsHeader header : message.getHeader()) {
+        for (HttpHeader header : message.getHeader()) {
             HttpsHeaderSerializer serializer = new HttpsHeaderSerializer(header);
             builder.append(new String(serializer.serialize(), StandardCharsets.ISO_8859_1));
         }

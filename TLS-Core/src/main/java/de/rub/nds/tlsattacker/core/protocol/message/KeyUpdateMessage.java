@@ -16,6 +16,10 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.KeyUpdateRequest;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.KeyUpdateHandler;
+import de.rub.nds.tlsattacker.core.protocol.parser.KeyUpdateParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.KeyUpdatePreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.KeyUpdateSerializer;
+import java.io.InputStream;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,6 +33,21 @@ public class KeyUpdateMessage extends HandshakeMessage {
     @Override
     public KeyUpdateHandler getHandler(TlsContext context) {
         return new KeyUpdateHandler(context);
+    }
+
+    @Override
+    public KeyUpdateParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new KeyUpdateParser(stream, tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext);
+    }
+
+    @Override
+    public KeyUpdatePreparator getPreparator(TlsContext tlsContext) {
+        return new KeyUpdatePreparator(tlsContext.getChooser(), this);
+    }
+
+    @Override
+    public KeyUpdateSerializer getSerializer(TlsContext tlsContext) {
+        return new KeyUpdateSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     public KeyUpdateMessage() {

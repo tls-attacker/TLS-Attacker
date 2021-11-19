@@ -68,7 +68,8 @@ public class ClientCertificateTypeExtensionParserTest {
 
     @Test
     public void testParseExtensionMessageContent() {
-        msg = parser.parse();
+        msg = new ClientCertificateTypeExtensionMessage();
+        parser.parse(msg);
 
         assertArrayEquals(extensionType.getValue(), msg.getExtensionType().getValue());
         assertEquals(extensionLength, (long) msg.getExtensionLength().getValue());

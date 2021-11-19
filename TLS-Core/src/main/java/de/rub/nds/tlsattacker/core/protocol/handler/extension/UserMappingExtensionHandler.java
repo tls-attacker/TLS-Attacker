@@ -10,7 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
-import de.rub.nds.tlsattacker.core.protocol.message.UserMappingExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.UserMappingExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.UserMappingExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.UserMappingExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.UserMappingExtensionSerializer;
@@ -25,21 +25,6 @@ public class UserMappingExtensionHandler extends ExtensionHandler<UserMappingExt
 
     public UserMappingExtensionHandler(TlsContext context) {
         super(context);
-    }
-
-    @Override
-    public UserMappingExtensionParser getParser(InputStream stream) {
-        return new UserMappingExtensionParser(stream, context.getConfig());
-    }
-
-    @Override
-    public UserMappingExtensionPreparator getPreparator(UserMappingExtensionMessage message) {
-        return new UserMappingExtensionPreparator(context.getChooser(), message, getSerializer(message));
-    }
-
-    @Override
-    public UserMappingExtensionSerializer getSerializer(UserMappingExtensionMessage message) {
-        return new UserMappingExtensionSerializer(message);
     }
 
     @Override

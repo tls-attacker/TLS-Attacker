@@ -27,22 +27,6 @@ public class UnknownMessageHandler extends TlsMessageHandler<UnknownMessage> {
     }
 
     @Override
-    public UnknownMessageParser getParser(InputStream stream) {
-        return new UnknownMessageParser(stream, tlsContext.getChooser().getLastRecordVersion(),
-            recordContentMessageType, tlsContext.getConfig());
-    }
-
-    @Override
-    public UnknownMessagePreparator getPreparator(UnknownMessage message) {
-        return new UnknownMessagePreparator(tlsContext.getChooser(), message);
-    }
-
-    @Override
-    public UnknownMessageSerializer getSerializer(UnknownMessage message) {
-        return new UnknownMessageSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
-    }
-
-    @Override
     public void adjustTLSContext(UnknownMessage message) {
         // Nothing to do
     }

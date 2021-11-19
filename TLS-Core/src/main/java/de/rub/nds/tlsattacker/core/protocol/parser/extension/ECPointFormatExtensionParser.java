@@ -32,11 +32,6 @@ public class ECPointFormatExtensionParser extends ExtensionParser<ECPointFormatE
         parsePointFormat(msg);
     }
 
-    @Override
-    protected ECPointFormatExtensionMessage createExtensionMessage() {
-        return new ECPointFormatExtensionMessage();
-    }
-
     /**
      * Reads the next bytes as the PointFormatsLength of the Extension and writes them in the message
      *

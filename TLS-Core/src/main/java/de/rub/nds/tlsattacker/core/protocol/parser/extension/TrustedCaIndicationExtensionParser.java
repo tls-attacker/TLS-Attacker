@@ -34,14 +34,10 @@ public class TrustedCaIndicationExtensionParser extends ExtensionParser<TrustedC
 
         while (innerStream.available() > 0) {
             TrustedAuthorityParser parser = new TrustedAuthorityParser(innerStream);
-            trustedAuthoritiesList.add(parser.parse());
+            TrustedAuthority authority = new TrustedAuthority();
+            parser.parse(authority);
+            trustedAuthoritiesList.add(authority);
         }
         msg.setTrustedAuthorities(trustedAuthoritiesList);
     }
-
-    @Override
-    protected TrustedCaIndicationExtensionMessage createExtensionMessage() {
-        return new TrustedCaIndicationExtensionMessage();
-    }
-
 }

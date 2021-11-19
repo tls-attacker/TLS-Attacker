@@ -9,10 +9,10 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,12 +26,12 @@ public class ServerHelloDoneParser extends HandshakeMessageParser<ServerHelloDon
      *
      * @param stream
      * @param version
-     *                Version of the Protocol
-     * @param config
-     *                A Config used in the current context
+     *                   Version of the Protocol
+     * @param tlsContext
+     *                   A Config used in the current context
      */
-    public ServerHelloDoneParser(InputStream stream, ProtocolVersion version, Config config) {
-        super(stream, HandshakeMessageType.SERVER_HELLO_DONE, version, config);
+    public ServerHelloDoneParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
+        super(stream, HandshakeMessageType.SERVER_HELLO_DONE, version, tlsContext);
     }
 
     @Override
@@ -41,10 +41,4 @@ public class ServerHelloDoneParser extends HandshakeMessageParser<ServerHelloDon
             LOGGER.warn("Parsed ServerHelloDone with non-zero length! Not parsing payload.");
         }
     }
-
-    @Override
-    protected ServerHelloDoneMessage createHandshakeMessage() {
-        return new ServerHelloDoneMessage();
-    }
-
 }

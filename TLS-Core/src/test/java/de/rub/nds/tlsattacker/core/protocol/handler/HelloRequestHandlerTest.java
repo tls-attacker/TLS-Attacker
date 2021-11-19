@@ -10,13 +10,8 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.HelloRequestMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.HelloRequestParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.HelloRequestPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.HelloRequestSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.ByteArrayInputStream;
 import org.junit.After;
-import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -33,30 +28,6 @@ public class HelloRequestHandlerTest {
 
     @After
     public void tearDown() {
-    }
-
-    /**
-     * Test of getParser method, of class HelloRequestHandler.
-     */
-    @Test
-    public void testGetParser() {
-        assertTrue(handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof HelloRequestParser);
-    }
-
-    /**
-     * Test of getPreparator method, of class HelloRequestHandler.
-     */
-    @Test
-    public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new HelloRequestMessage()) instanceof HelloRequestPreparator);
-    }
-
-    /**
-     * Test of getSerializer method, of class HelloRequestHandler.
-     */
-    @Test
-    public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new HelloRequestMessage()) instanceof HelloRequestSerializer);
     }
 
     /**

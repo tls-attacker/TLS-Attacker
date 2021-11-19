@@ -35,9 +35,7 @@ public class SignedCertificateTimestampListParser extends Parser<SignedCertifica
     }
 
     @Override
-    public SignedCertificateTimestampList parse() {
-        SignedCertificateTimestampList sctList = new SignedCertificateTimestampList();
-
+    public void parse(SignedCertificateTimestampList signedCertificateTimestampList) {
         org.bouncycastle.asn1.x509.Certificate leafCertificate = certificateChain.getCertificateAt(0);
         org.bouncycastle.asn1.x509.Certificate issuerCertificate = certificateChain.getCertificateAt(1);
 
@@ -53,24 +51,23 @@ public class SignedCertificateTimestampListParser extends Parser<SignedCertifica
             byte[] encodedEntryData = parseByteArrayField(entryLength);
             SignedCertificateTimestampParser signedCertificateTimestampParser =
                 new SignedCertificateTimestampParser(new ByteArrayInputStream(encodedEntryData));
-            SignedCertificateTimestamp sct = signedCertificateTimestampParser.parse();
+            SignedCertificateTimestamp signedCertificateTimestamp = new SignedCertificateTimestamp();
+            signedCertificateTimestampParser.parse(signedCertificateTimestamp);
 
             // Add certificates required for SCT signature validation
-            sct.setCertificate(leafCertificate);
-            sct.setIssuerCertificate(issuerCertificate);
+            signedCertificateTimestamp.setCertificate(leafCertificate);
+            signedCertificateTimestamp.setIssuerCertificate(issuerCertificate);
 
             // Add Log-Entry-Type
             if (isPreCertificateSct) {
-                sct.setLogEntryType(SignedCertificateTimestampEntryType.PrecertChainEntry);
+                signedCertificateTimestamp.setLogEntryType(SignedCertificateTimestampEntryType.PrecertChainEntry);
             } else {
-                sct.setLogEntryType(SignedCertificateTimestampEntryType.X509ChainEntry);
+                signedCertificateTimestamp.setLogEntryType(SignedCertificateTimestampEntryType.X509ChainEntry);
             }
 
             // Add parsed SCT to the SCT-List data structure
-            sctList.getCertificateTimestampList().add(sct);
+            signedCertificateTimestampList.getCertificateTimestampList().add(signedCertificateTimestamp);
         }
-
-        sctList.setEncodedTimestampList(getAlreadyParsed());
-        return sctList;
+        signedCertificateTimestampList.setEncodedTimestampList(getAlreadyParsed());
     }
 }

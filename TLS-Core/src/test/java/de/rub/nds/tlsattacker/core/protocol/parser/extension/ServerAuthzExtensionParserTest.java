@@ -24,6 +24,7 @@ import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
 public class ServerAuthzExtensionParserTest {
+
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(
@@ -51,7 +52,8 @@ public class ServerAuthzExtensionParserTest {
     @Test
     public void testParseExtensionMessageContent() {
         parser = new ServerAuthzExtensionParser(new ByteArrayInputStream(expectedBytes), Config.createConfig());
-        msg = parser.parse();
+        msg = new ServerAuthzExtensionMessage();
+        parser.parse(msg);
 
         assertArrayEquals(extensionType.getValue(), msg.getExtensionType().getValue());
         assertEquals(extensionLength, (long) msg.getExtensionLength().getValue());

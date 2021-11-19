@@ -17,16 +17,12 @@ import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.KeyUpdateMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.KeyUpdateParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.KeyUpdatePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.KeyUpdateSerializer;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.io.InputStream;
 
 import java.security.NoSuchAlgorithmException;
 
@@ -54,23 +50,6 @@ public class KeyUpdateHandler extends HandshakeMessageHandler<KeyUpdateMessage> 
     public void adjustTlsContextAfterSerialize(KeyUpdateMessage message) {
         adjustApplicationTrafficSecrets();
         setRecordCipher(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS);
-    }
-
-    @Override
-    public KeyUpdateParser getParser(InputStream stream) {
-        return new KeyUpdateParser(stream, tlsContext.getChooser().getSelectedProtocolVersion(),
-            tlsContext.getConfig());
-
-    }
-
-    @Override
-    public KeyUpdatePreparator getPreparator(KeyUpdateMessage message) {
-        return new KeyUpdatePreparator(tlsContext.getChooser(), message);
-    }
-
-    @Override
-    public KeyUpdateSerializer getSerializer(KeyUpdateMessage message) {
-        return new KeyUpdateSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     private void adjustApplicationTrafficSecrets() {

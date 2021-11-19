@@ -29,21 +29,6 @@ public class ClientCertificateTypeExtensionHandler extends ExtensionHandler<Clie
     }
 
     @Override
-    public ClientCertificateTypeExtensionParser getParser(InputStream stream) {
-        return new ClientCertificateTypeExtensionParser(stream, context.getConfig());
-    }
-
-    @Override
-    public ClientCertificateTypeExtensionPreparator getPreparator(ClientCertificateTypeExtensionMessage message) {
-        return new ClientCertificateTypeExtensionPreparator(context.getChooser(), message, getSerializer(message));
-    }
-
-    @Override
-    public ClientCertificateTypeExtensionSerializer getSerializer(ClientCertificateTypeExtensionMessage message) {
-        return new ClientCertificateTypeExtensionSerializer(message);
-    }
-
-    @Override
     public void adjustTLSExtensionContext(ClientCertificateTypeExtensionMessage message) {
         if (context.getTalkingConnectionEndType() == ConnectionEndType.SERVER) {
             if (message.getCertificateTypes().getValue().length != 1) {

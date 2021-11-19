@@ -35,7 +35,7 @@ public class KeyShareExtensionSerializerTest {
     private int keyShareListLength;
     private byte[] keyShareList;
 
-    public KeyShareExtensionSerializerTest(byte[] extension, int start, byte[] completeExtension, ExtensionType type,
+    public KeyShareExtensionSerializerTest(byte[] extension, byte[] completeExtension, ExtensionType type,
         int extensionLength, int keyShareListLength, byte[] keyShareList) {
         this.extension = extension;
         this.start = start;

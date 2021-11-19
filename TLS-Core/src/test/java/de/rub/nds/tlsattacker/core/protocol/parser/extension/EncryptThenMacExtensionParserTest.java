@@ -19,6 +19,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class EncryptThenMacExtensionParserTest {
+
     private final ExtensionType extensionType = ExtensionType.ENCRYPT_THEN_MAC;
     private final byte[] expectedBytes = new byte[] { 0x00, 0x16, 0x00, 0x00 };
     private final int extensionLength = 0;
@@ -32,7 +33,8 @@ public class EncryptThenMacExtensionParserTest {
 
     @Test
     public void testParseExtensionMessageContent() {
-        message = parser.parse();
+        message = new EncryptThenMacExtensionMessage();
+        parser.parse(message);
 
         assertArrayEquals(extensionType.getValue(), message.getExtensionType().getValue());
         assertEquals(extensionLength, (long) message.getExtensionLength().getValue());

@@ -59,7 +59,8 @@ public class SignatureAndHashAlgorithmsExtensionParserTest {
     public void testParseExtensionMessageContent() {
         SignatureAndHashAlgorithmsExtensionParser parser =
             new SignatureAndHashAlgorithmsExtensionParser(new ByteArrayInputStream(extension), Config.createConfig());
-        SignatureAndHashAlgorithmsExtensionMessage msg = parser.parse();
+        SignatureAndHashAlgorithmsExtensionMessage msg = new SignatureAndHashAlgorithmsExtensionMessage();
+        parser.parse(msg);
         assertArrayEquals(msg.getExtensionBytes().getValue(), completeExtension);
         assertArrayEquals(type.getValue(), msg.getExtensionType().getValue());
         assertTrue(extensionLength == msg.getExtensionLength().getValue());

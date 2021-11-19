@@ -15,11 +15,18 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.protocol.Handler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.EllipticCurvesExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.EllipticCurvesExtensionParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EllipticCurvesExtensionPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.EllipticCurvesExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 
 /**
  * This extension is defined in RFC-ietf-tls-rfc4492bis-17 Also known as "supported_groups" extension
  */
-public class EllipticCurvesExtensionMessage extends ExtensionMessage {
+public class EllipticCurvesExtensionMessage extends ExtensionMessage<EllipticCurvesExtensionMessage> {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger supportedGroupsLength;
@@ -58,4 +65,25 @@ public class EllipticCurvesExtensionMessage extends ExtensionMessage {
     public void setSupportedGroups(ModifiableByteArray supportedGroups) {
         this.supportedGroups = supportedGroups;
     }
+
+    @Override
+    public EllipticCurvesExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new EllipticCurvesExtensionParser(stream, tlsContext.getConfig());
+    }
+
+    @Override
+    public EllipticCurvesExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new EllipticCurvesExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+    }
+
+    @Override
+    public EllipticCurvesExtensionSerializer getSerializer(TlsContext tlsContext) {
+        return new EllipticCurvesExtensionSerializer(this);
+    }
+
+    @Override
+    public EllipticCurvesExtensionHandler getHandler(TlsContext tlsContext) {
+        return new EllipticCurvesExtensionHandler(tlsContext);
+    }
+
 }

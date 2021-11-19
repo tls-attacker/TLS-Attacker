@@ -44,8 +44,7 @@ public class KeyBlockParser extends Parser<KeySet> {
     }
 
     @Override
-    public KeySet parse() {
-        KeySet keys = new KeySet();
+    public void parse(KeySet keys) {
         if (AlgorithmResolver.getCipherType(suite) != CipherType.AEAD) {
             parseClientWriteMacSecret(keys);
             parseServerWriteMacSecret(keys);
@@ -60,7 +59,6 @@ public class KeyBlockParser extends Parser<KeySet> {
             parseClientWriteIvAead(keys);
             parseServerWriteIvAead(keys);
         }
-        return keys;
     }
 
     private int getAeadSaltSize() {

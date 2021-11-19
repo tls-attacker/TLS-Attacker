@@ -56,7 +56,8 @@ public class GreaseExtensionParserTest {
     public void testParseExtensionMessageContent() {
         GreaseExtensionParser parser =
             new GreaseExtensionParser(new ByteArrayInputStream(extension), Config.createConfig());
-        GreaseExtensionMessage msg = parser.parse();
+        GreaseExtensionMessage msg = new GreaseExtensionMessage();
+        parser.parse(msg);
         assertArrayEquals(msg.getExtensionBytes().getValue(), completeExtension);
         assertArrayEquals(type.getValue(), msg.getExtensionType().getValue());
         assertArrayEquals(type.getValue(), msg.getType().getValue());

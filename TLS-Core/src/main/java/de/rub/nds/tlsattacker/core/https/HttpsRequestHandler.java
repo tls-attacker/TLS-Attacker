@@ -20,22 +20,6 @@ public class HttpsRequestHandler extends TlsMessageHandler<HttpsRequestMessage> 
     }
 
     @Override
-    public HttpsRequestParser getParser(InputStream stream) {
-        return new HttpsRequestParser(stream, tlsContext.getChooser().getSelectedProtocolVersion(),
-            tlsContext.getConfig());
-    }
-
-    @Override
-    public HttpsRequestPreparator getPreparator(HttpsRequestMessage message) {
-        return new HttpsRequestPreparator(tlsContext.getChooser(), message);
-    }
-
-    @Override
-    public HttpsRequestSerializer getSerializer(HttpsRequestMessage message) {
-        return new HttpsRequestSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
-    }
-
-    @Override
     public void adjustTLSContext(HttpsRequestMessage message) {
         tlsContext.getHttpContext().setLastRequestPath(message.getRequestPath().getValue());
     }

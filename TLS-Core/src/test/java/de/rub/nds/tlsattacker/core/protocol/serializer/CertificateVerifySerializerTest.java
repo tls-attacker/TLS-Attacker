@@ -36,8 +36,8 @@ public class CertificateVerifySerializerTest {
     private final int signatureLength;
     private final byte[] signature;
 
-    public CertificateVerifySerializerTest(byte[] message, int start, byte[] expectedPart, HandshakeMessageType type,
-        int length, byte[] sigHashAlgo, int signatureLength, byte[] signature) {
+    public CertificateVerifySerializerTest(byte[] message, byte[] expectedPart, HandshakeMessageType type, int length,
+        byte[] sigHashAlgo, int signatureLength, byte[] signature) {
         this.expectedPart = expectedPart;
         this.type = type;
         this.length = length;

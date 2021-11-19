@@ -193,7 +193,8 @@ public class EncryptedServerNameIndicationExtensionPreparator
     private void parseClientEsniInnerBytes(EncryptedServerNameIndicationExtensionMessage msg) {
         ClientEsniInnerParser parser =
             new ClientEsniInnerParser(new ByteArrayInputStream(msg.getClientEsniInnerBytes().getValue()));
-        ClientEsniInner clientEsniInner = parser.parse();
+        ClientEsniInner clientEsniInner = new ClientEsniInner();
+        parser.parse(clientEsniInner);
         msg.setClientEsniInner(clientEsniInner);
     }
 

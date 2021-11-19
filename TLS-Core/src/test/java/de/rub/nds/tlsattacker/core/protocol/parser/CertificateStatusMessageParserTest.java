@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateStatusMessage;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.ByteArrayInputStream;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -60,8 +61,9 @@ public class CertificateStatusMessageParserTest {
     @Test
     public void testParse() {
         CertificateStatusParser parser =
-            new CertificateStatusParser(new ByteArrayInputStream(message), version, Config.createConfig());
-        CertificateStatusMessage msg = parser.parse();
+            new CertificateStatusParser(new ByteArrayInputStream(message), version, new TlsContext(new Config()));
+        CertificateStatusMessage msg = new CertificateStatusMessage();
+        parser.parse(msg);
         assertEquals((int) msg.getLength().getValue(), length);
         assertEquals((byte) msg.getType().getValue(), type.getValue());
         assertEquals((int) msg.getCertificateStatusType().getValue(), certificateStatusType);

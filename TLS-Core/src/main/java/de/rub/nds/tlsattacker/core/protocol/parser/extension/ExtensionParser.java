@@ -9,9 +9,7 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.Parser;
 import java.io.InputStream;
@@ -19,10 +17,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * @param <T>
- *            The ExtensionMessage that should be parsed
  */
-public abstract class ExtensionParser<T extends ExtensionMessage> extends Parser<T> {
+public abstract class ExtensionParser<Extension extends ExtensionMessage> extends Parser<Extension> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -34,16 +30,12 @@ public abstract class ExtensionParser<T extends ExtensionMessage> extends Parser
     }
 
     @Override
-    public final T parse() {
+    public final void parse(Extension extension) {
         LOGGER.debug("Parsing ExtensionMessage");
-        T msg = createExtensionMessage();
-        parseExtensionMessageContent(msg);
-        return msg;
+        parseExtensionMessageContent(extension);
     }
 
-    public abstract void parseExtensionMessageContent(T msg);
-
-    protected abstract T createExtensionMessage();
+    public abstract void parseExtensionMessageContent(Extension extension);
 
     /**
      * Checks if the Extension has ExtensionData specified

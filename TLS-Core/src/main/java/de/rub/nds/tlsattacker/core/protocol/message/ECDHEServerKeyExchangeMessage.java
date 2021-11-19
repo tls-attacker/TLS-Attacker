@@ -15,14 +15,18 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.ECDHEServerKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.TlsMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.ECDHEServerComputations;
+import de.rub.nds.tlsattacker.core.protocol.parser.ECDHEServerKeyExchangeParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.ECDHEServerKeyExchangePreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.ECDHEServerKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -115,8 +119,24 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     }
 
     @Override
-    public ECDHEServerKeyExchangeHandler<? extends ECDHEServerKeyExchangeMessage> getHandler(TlsContext context) {
+    public ECDHEServerKeyExchangeHandler getHandler(TlsContext context) {
         return new ECDHEServerKeyExchangeHandler<>(context);
+    }
+
+    @Override
+    public ECDHEServerKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new ECDHEServerKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(),
+            AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite()), tlsContext);
+    }
+
+    @Override
+    public ECDHEServerKeyExchangePreparator getPreparator(TlsContext tlsContext) {
+        return new ECDHEServerKeyExchangePreparator(tlsContext.getChooser(), this);
+    }
+
+    @Override
+    public ECDHEServerKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
+        return new ECDHEServerKeyExchangeSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

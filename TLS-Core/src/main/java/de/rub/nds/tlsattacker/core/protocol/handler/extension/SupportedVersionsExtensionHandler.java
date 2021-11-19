@@ -36,21 +36,6 @@ public class SupportedVersionsExtensionHandler extends ExtensionHandler<Supporte
     }
 
     @Override
-    public SupportedVersionsExtensionParser getParser(InputStream stream) {
-        return new SupportedVersionsExtensionParser(stream, context.getConfig());
-    }
-
-    @Override
-    public SupportedVersionsExtensionPreparator getPreparator(SupportedVersionsExtensionMessage message) {
-        return new SupportedVersionsExtensionPreparator(context.getChooser(), message, getSerializer(message));
-    }
-
-    @Override
-    public SupportedVersionsExtensionSerializer getSerializer(SupportedVersionsExtensionMessage message) {
-        return new SupportedVersionsExtensionSerializer(message);
-    }
-
-    @Override
     public void adjustTLSExtensionContext(SupportedVersionsExtensionMessage message) {
         byte[] versionBytes = message.getSupportedVersions().getValue();
         if (versionBytes.length % HandshakeByteLength.VERSION != 0) {

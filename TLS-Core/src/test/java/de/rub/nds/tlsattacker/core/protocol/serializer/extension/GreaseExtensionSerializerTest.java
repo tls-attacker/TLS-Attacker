@@ -28,16 +28,14 @@ public class GreaseExtensionSerializerTest {
     }
 
     private final byte[] extension;
-    private final int start;
     private final byte[] completeExtension;
     private final ExtensionType type;
     private final int extensionLength;
     private final byte[] randomData;
 
-    public GreaseExtensionSerializerTest(byte[] extension, int start, byte[] completeExtension, ExtensionType type,
+    public GreaseExtensionSerializerTest(byte[] extension, byte[] completeExtension, ExtensionType type,
         int extensionLength, byte[] randomData) {
         this.extension = extension;
-        this.start = start;
         this.completeExtension = completeExtension;
         this.type = type;
         this.extensionLength = extensionLength;

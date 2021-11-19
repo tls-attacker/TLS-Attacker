@@ -24,21 +24,6 @@ public class ExtendedMasterSecretExtensionHandler extends ExtensionHandler<Exten
     }
 
     @Override
-    public ExtendedMasterSecretExtensionParser getParser(InputStream stream) {
-        return new ExtendedMasterSecretExtensionParser(stream, context.getConfig());
-    }
-
-    @Override
-    public ExtendedMasterSecretExtensionPreparator getPreparator(ExtendedMasterSecretExtensionMessage message) {
-        return new ExtendedMasterSecretExtensionPreparator(context.getChooser(), message, getSerializer(message));
-    }
-
-    @Override
-    public ExtendedMasterSecretExtensionSerializer getSerializer(ExtendedMasterSecretExtensionMessage message) {
-        return new ExtendedMasterSecretExtensionSerializer(message);
-    }
-
-    @Override
     public void adjustTLSExtensionContext(ExtendedMasterSecretExtensionMessage message) {
         if (context.isExtensionProposed(ExtensionType.EXTENDED_MASTER_SECRET)
             && context.isExtensionNegotiated(ExtensionType.EXTENDED_MASTER_SECRET)) {

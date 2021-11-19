@@ -31,11 +31,6 @@ public class MaxFragmentLengthExtensionParser extends ExtensionParser<MaxFragmen
         parseMaxFragmentLength(msg);
     }
 
-    @Override
-    protected MaxFragmentLengthExtensionMessage createExtensionMessage() {
-        return new MaxFragmentLengthExtensionMessage();
-    }
-
     /**
      * Reads the next bytes as the maxFragmentLength of the Extension and writes them in the message
      *

@@ -52,7 +52,8 @@ public class ServerNamePairParserTest {
     @Test
     public void testParse() {
         ServerNamePairParser parser = new ServerNamePairParser(new ByteArrayInputStream(servernamePairBytes));
-        ServerNamePair pair = parser.parse();
+        ServerNamePair pair = new ServerNamePair();
+        parser.parse(pair);
         assertArrayEquals(serverName, pair.getServerName().getValue());
         assertTrue(serverNameLength == pair.getServerNameLength().getValue());
         assertTrue(serverType == pair.getServerNameType().getValue());

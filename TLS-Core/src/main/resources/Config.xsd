@@ -388,7 +388,6 @@
       <xs:element name="createFragmentsDynamically" type="xs:boolean" minOccurs="0"/>
       <xs:element name="createRecordsDynamically" type="xs:boolean" minOccurs="0"/>
       <xs:element name="createIndividualRecords" type="xs:boolean" minOccurs="0"/>
-      <xs:element name="recordLayerType" type="recordLayerType" minOccurs="0"/>
       <xs:element name="resetWorkflowTracesBeforeSaving" type="xs:boolean" minOccurs="0"/>
       <xs:element name="quickReceive" type="xs:boolean" minOccurs="0"/>
       <xs:element name="workflowExecutorShouldOpen" type="xs:boolean" minOccurs="0"/>
@@ -2050,13 +2049,6 @@
     </xs:restriction>
   </xs:simpleType>
 
-  <xs:simpleType name="recordLayerType">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="RECORD"/>
-      <xs:enumeration value="BLOB"/>
-    </xs:restriction>
-  </xs:simpleType>
-
   <xs:simpleType name="ssl2CipherSuite">
     <xs:restriction base="xs:string">
       <xs:enumeration value="SSL_CK_RC4_128_WITH_MD5"/>
@@ -2226,7 +2218,6 @@
       <xs:enumeration value="PASSWORD_SALT"/>
       <xs:enumeration value="SESSION_TICKET"/>
       <xs:enumeration value="EXTENDED_RANDOM"/>
-      <xs:enumeration value="KEY_SHARE_OLD"/>
       <xs:enumeration value="PRE_SHARED_KEY"/>
       <xs:enumeration value="EARLY_DATA"/>
       <xs:enumeration value="SUPPORTED_VERSIONS"/>

@@ -34,9 +34,9 @@ public class CertificateStatusRequestExtensionParserTest {
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] {
-            { ExtensionType.STATUS_REQUEST, ArrayConverter.hexStringToByteArray("000500050100000000"), 5, 0, 1, 0,
+            { ExtensionType.STATUS_REQUEST, ArrayConverter.hexStringToByteArray("000500050100000000"), 5, 1, 0,
                 new byte[0], 0, new byte[0] },
-            { ExtensionType.STATUS_REQUEST, ArrayConverter.hexStringToByteArray("0005000701000102000103"), 7, 0, 1, 1,
+            { ExtensionType.STATUS_REQUEST, ArrayConverter.hexStringToByteArray("0005000701000102000103"), 7, 1, 1,
                 new byte[] { 0x02 }, 1, new byte[] { 0x03 } } });
     }
 
@@ -72,7 +72,8 @@ public class CertificateStatusRequestExtensionParserTest {
 
     @Test
     public void testParseExtensionMessageContent() {
-        message = parser.parse();
+        message = new CertificateStatusRequestExtensionMessage();
+        parser.parse(message);
 
         assertArrayEquals(extensionType.getValue(), message.getExtensionType().getValue());
         assertEquals(extensionLength, (long) message.getExtensionLength().getValue());

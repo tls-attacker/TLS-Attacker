@@ -10,14 +10,9 @@
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedRandomExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtendedRandomExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtendedRandomExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtendedRandomExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -31,21 +26,6 @@ public class ExtendedRandomExtensionHandler extends ExtensionHandler<ExtendedRan
 
     public ExtendedRandomExtensionHandler(TlsContext context) {
         super(context);
-    }
-
-    @Override
-    public ExtendedRandomExtensionParser getParser(InputStream stream) {
-        return new ExtendedRandomExtensionParser(stream, context.getConfig());
-    }
-
-    @Override
-    public ExtendedRandomExtensionPreparator getPreparator(ExtendedRandomExtensionMessage message) {
-        return new ExtendedRandomExtensionPreparator(context.getChooser(), message, getSerializer(message));
-    }
-
-    @Override
-    public ExtendedRandomExtensionSerializer getSerializer(ExtendedRandomExtensionMessage message) {
-        return new ExtendedRandomExtensionSerializer(message);
     }
 
     @Override

@@ -10,13 +10,8 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.HeartbeatMessageParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.HeartbeatMessagePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.HeartbeatMessageSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.ByteArrayInputStream;
 import org.junit.After;
-import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -33,30 +28,6 @@ public class HeartbeatMessageHandlerTest {
 
     @After
     public void tearDown() {
-    }
-
-    /**
-     * Test of getParser method, of class HeartbeatMessageHandler.
-     */
-    @Test
-    public void testGetParser() {
-        assertTrue(handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof HeartbeatMessageParser);
-    }
-
-    /**
-     * Test of getPreparator method, of class HeartbeatMessageHandler.
-     */
-    @Test
-    public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new HeartbeatMessage()) instanceof HeartbeatMessagePreparator);
-    }
-
-    /**
-     * Test of getSerializer method, of class HeartbeatMessageHandler.
-     */
-    @Test
-    public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new HeartbeatMessage()) instanceof HeartbeatMessageSerializer);
     }
 
     /**

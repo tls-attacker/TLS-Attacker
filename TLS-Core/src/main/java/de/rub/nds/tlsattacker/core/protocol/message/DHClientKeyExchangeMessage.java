@@ -14,7 +14,11 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.DHClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.DHClientComputations;
+import de.rub.nds.tlsattacker.core.protocol.parser.DHClientKeyExchangeParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.DHClientKeyExchangePreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.DHClientKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -47,6 +51,21 @@ public class DHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     @Override
     public DHClientKeyExchangeHandler<? extends DHClientKeyExchangeMessage> getHandler(TlsContext context) {
         return new DHClientKeyExchangeHandler<>(context);
+    }
+
+    @Override
+    public DHClientKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new DHClientKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+    }
+
+    @Override
+    public DHClientKeyExchangePreparator getPreparator(TlsContext tlsContext) {
+        return new DHClientKeyExchangePreparator(tlsContext.getChooser(), this);
+    }
+
+    @Override
+    public DHClientKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
+        return new DHClientKeyExchangeSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

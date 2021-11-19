@@ -18,7 +18,11 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.handler.PskRsaClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.RSAClientKeyExchangeHandler;
+import de.rub.nds.tlsattacker.core.protocol.parser.PskRsaClientKeyExchangeParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.PskRsaClientKeyExchangePreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.PskRsaClientKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -87,6 +91,21 @@ public class PskRsaClientKeyExchangeMessage extends RSAClientKeyExchangeMessage 
     @Override
     public RSAClientKeyExchangeHandler<PskRsaClientKeyExchangeMessage> getHandler(TlsContext context) {
         return new PskRsaClientKeyExchangeHandler(context);
+    }
+
+    @Override
+    public PskRsaClientKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new PskRsaClientKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+    }
+
+    @Override
+    public PskRsaClientKeyExchangePreparator getPreparator(TlsContext tlsContext) {
+        return new PskRsaClientKeyExchangePreparator(tlsContext.getChooser(), this);
+    }
+
+    @Override
+    public PskRsaClientKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
+        return new PskRsaClientKeyExchangeSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

@@ -13,11 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.protocol.message.PskEcDheServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.PskEcDheServerKeyExchangeParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.PskEcDheServerKeyExchangePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.PskEcDheServerKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.ByteArrayInputStream;
 import java.math.BigInteger;
 import org.junit.After;
 import static org.junit.Assert.*;
@@ -38,32 +34,6 @@ public class PskEcDheServerKeyExchangeHandlerTest {
 
     @After
     public void tearDown() {
-    }
-
-    /**
-     * Test of getParser method, of class PskEcDheServerKeyExchangeHandler.
-     */
-    @Test
-    public void testGetParser() {
-        assertTrue(handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof PskEcDheServerKeyExchangeParser);
-    }
-
-    /**
-     * Test of getPreparator method, of class PskEcDheServerKeyExchangeHandler.
-     */
-    @Test
-    public void testGetPreparator() {
-        assertTrue(handler
-            .getPreparator(new PskEcDheServerKeyExchangeMessage()) instanceof PskEcDheServerKeyExchangePreparator);
-    }
-
-    /**
-     * Test of getSerializer method, of class PskEcDheServerKeyExchangeHandler.
-     */
-    @Test
-    public void testGetSerializer() {
-        assertTrue(handler
-            .getSerializer(new PskEcDheServerKeyExchangeMessage()) instanceof PskEcDheServerKeyExchangeSerializer);
     }
 
     /**

@@ -1,0 +1,6 @@
+${projectName} - ${description}
+
+Copyright ${startYear}-${year} ${owner}
+
+Licensed under ${licenseName}
+${licenseURL}

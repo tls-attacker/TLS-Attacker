@@ -58,10 +58,20 @@ public abstract class Parser<T> {
      * @return        A subByteArray of according size from the Array
      */
     protected byte[] parseByteArrayField(int length) {
+        if (length == 0) {
+            return new byte[0];
+        }
+        if (length < 0) {
+            throw new ParserException("Trying to parse a negative amount of bytes");
+        }
         byte[] data = new byte[length];
         try {
-            stream.read(data);
-            outputStream.write(data);
+            int read = stream.read(data);
+            if (read != length) {
+                throw new ParserException("Could not read full " + length + " bytes");
+            } else {
+                outputStream.write(data);
+            }
         } catch (IOException E) {
             throw new ParserException("Could not parse byteArrayField of length=" + length, E);
         }
@@ -124,6 +134,7 @@ public abstract class Parser<T> {
             if (b == endSequence) {
                 return stream.toString();
             }
+
         }
     }
 
@@ -146,6 +157,10 @@ public abstract class Parser<T> {
         }
     }
 
+    protected byte[] parseTillEnd() {
+        return parseByteArrayField(getBytesLeft());
+    }
+
     public int getBytesLeft() {
         try {
             return stream.available();
@@ -157,13 +172,14 @@ public abstract class Parser<T> {
     /**
      * Returns the parsed object.
      *
-     * @return The parsed object
+     * @param T
+     *          object that should be filled with content
      */
-    public abstract T parse();
+    public abstract void parse(T t);
 
     /**
      * TODO: This can break get already parsed - not so nice
-     * 
+     *
      * @return
      */
     protected InputStream getStream() {

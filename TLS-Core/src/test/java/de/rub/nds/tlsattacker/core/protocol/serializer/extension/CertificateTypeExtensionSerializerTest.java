@@ -38,7 +38,7 @@ public class CertificateTypeExtensionSerializerTest {
     private CertificateTypeExtensionMessage msg;
 
     public CertificateTypeExtensionSerializerTest(ExtensionType extensionType, byte[] expectedBytes,
-        int extensionLength, int startParsing, Integer certificateTypesLength, List<CertificateType> certificateTypes,
+        int extensionLength, Integer certificateTypesLength, List<CertificateType> certificateTypes,
         boolean isClientState) {
         this.extensionType = extensionType;
         this.expectedBytes = expectedBytes;

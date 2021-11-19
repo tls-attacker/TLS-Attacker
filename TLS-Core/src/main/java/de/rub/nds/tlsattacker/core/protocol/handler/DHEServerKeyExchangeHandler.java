@@ -9,13 +9,8 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.DHEServerKeyExchangeParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.DHEServerKeyExchangePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.DHEServerKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.InputStream;
 import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,23 +21,6 @@ public class DHEServerKeyExchangeHandler<T extends DHEServerKeyExchangeMessage> 
 
     public DHEServerKeyExchangeHandler(TlsContext tlsContext) {
         super(tlsContext);
-    }
-
-    @Override
-    public DHEServerKeyExchangeParser<T> getParser(InputStream stream) {
-        return new DHEServerKeyExchangeParser<T>(stream, tlsContext.getChooser().getLastRecordVersion(),
-            AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite()),
-            tlsContext.getConfig());
-    }
-
-    @Override
-    public DHEServerKeyExchangePreparator<T> getPreparator(T message) {
-        return new DHEServerKeyExchangePreparator<T>(tlsContext.getChooser(), message);
-    }
-
-    @Override
-    public DHEServerKeyExchangeSerializer<T> getSerializer(T message) {
-        return new DHEServerKeyExchangeSerializer<T>(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

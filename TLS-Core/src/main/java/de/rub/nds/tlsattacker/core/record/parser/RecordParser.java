@@ -31,9 +31,8 @@ public class RecordParser extends Parser<Record> {
     }
 
     @Override
-    public Record parse() {
+    public void parse(Record record) {
         LOGGER.debug("Parsing Record");
-        Record record = new Record();
         parseContentType(record);
         ProtocolMessageType protocolMessageType =
             ProtocolMessageType.getContentType(record.getContentType().getValue());
@@ -49,7 +48,6 @@ public class RecordParser extends Parser<Record> {
         parseLength(record);
         parseProtocolMessageBytes(record);
         // record.setCompleteRecordBytes(getAlreadyParsed());
-        return record;
     }
 
     private void parseEpoch(Record record) {

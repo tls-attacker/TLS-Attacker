@@ -12,16 +12,11 @@ package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AuthzDataFormat;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientAuthzExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.ClientAuthzExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ClientAuthzExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ClientAuthzExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.List;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -44,23 +39,8 @@ public class ClientAuthzExtensionHandlerTest {
         ClientAuthzExtensionMessage msg = new ClientAuthzExtensionMessage();
         msg.setAuthzFormatList(authzFormatListAsBytes);
 
-        handler.adjustTLSContext(msg);
+        handler.adjustContext(msg);
 
         assertThat(authzFormatList, is(context.getClientAuthzDataFormatList()));
-    }
-
-    @Test
-    public void testGetParser() {
-        assertTrue(handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof ClientAuthzExtensionParser);
-    }
-
-    @Test
-    public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new ClientAuthzExtensionMessage()) instanceof ClientAuthzExtensionPreparator);
-    }
-
-    @Test
-    public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new ClientAuthzExtensionMessage()) instanceof ClientAuthzExtensionSerializer);
     }
 }

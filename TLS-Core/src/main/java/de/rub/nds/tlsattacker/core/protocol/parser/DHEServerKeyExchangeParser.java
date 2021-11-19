@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
@@ -37,12 +38,11 @@ public class DHEServerKeyExchangeParser<T extends DHEServerKeyExchangeMessage> e
      *                             Version of the Protocol
      * @param keyExchangeAlgorithm
      *                             The selected key exchange algorithm (affects which fields are present).
-     * @param config
-     *                             A Config used in the current context
+     * @param tlsContext
      */
     public DHEServerKeyExchangeParser(InputStream stream, ProtocolVersion version,
-        KeyExchangeAlgorithm keyExchangeAlgorithm, Config config) {
-        super(stream, HandshakeMessageType.SERVER_KEY_EXCHANGE, version, config);
+        KeyExchangeAlgorithm keyExchangeAlgorithm, TlsContext tlsContext) {
+        super(stream, HandshakeMessageType.SERVER_KEY_EXCHANGE, version, tlsContext);
         this.version = version;
         this.keyExchangeAlgorithm = keyExchangeAlgorithm;
 
@@ -75,11 +75,6 @@ public class DHEServerKeyExchangeParser<T extends DHEServerKeyExchangeMessage> e
         parseG(msg);
         parseSerializedPublicKeyLength(msg);
         parseSerializedPublicKey(msg);
-    }
-
-    @Override
-    protected T createHandshakeMessage() {
-        return (T) new DHEServerKeyExchangeMessage();
     }
 
     /**

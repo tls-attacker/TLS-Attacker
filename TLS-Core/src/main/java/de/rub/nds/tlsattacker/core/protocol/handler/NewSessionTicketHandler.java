@@ -19,11 +19,7 @@ import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
-import de.rub.nds.tlsattacker.core.protocol.parser.NewSessionTicketParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.NewSessionTicketPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.NewSessionTicketSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -39,22 +35,6 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
 
     public NewSessionTicketHandler(TlsContext context) {
         super(context);
-    }
-
-    @Override
-    public NewSessionTicketParser getParser(InputStream stream) {
-        return new NewSessionTicketParser(stream, tlsContext.getChooser().getSelectedProtocolVersion(),
-            tlsContext.getConfig(), tlsContext.getTalkingConnectionEndType());
-    }
-
-    @Override
-    public NewSessionTicketPreparator getPreparator(NewSessionTicketMessage message) {
-        return new NewSessionTicketPreparator(tlsContext.getChooser(), message);
-    }
-
-    @Override
-    public NewSessionTicketSerializer getSerializer(NewSessionTicketMessage message) {
-        return new NewSessionTicketSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override
@@ -110,6 +90,7 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
         return ticketDate.format(dateTimeFormatter);
     }
 
+    // TODO: this should be outsourced into a separate class
     protected byte[] derivePsk(PskSet pskSet) {
         try {
             LOGGER.debug("Deriving PSK from current session");

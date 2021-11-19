@@ -14,7 +14,11 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.ECDHClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.ECDHClientComputations;
+import de.rub.nds.tlsattacker.core.protocol.parser.ECDHClientKeyExchangeParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.ECDHClientKeyExchangePreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.ECDHClientKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -45,8 +49,23 @@ public class ECDHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     }
 
     @Override
-    public ECDHClientKeyExchangeHandler<? extends ECDHClientKeyExchangeMessage> getHandler(TlsContext context) {
+    public ECDHClientKeyExchangeHandler getHandler(TlsContext context) {
         return new ECDHClientKeyExchangeHandler<>(context);
+    }
+
+    @Override
+    public ECDHClientKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new ECDHClientKeyExchangeParser<>(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+    }
+
+    @Override
+    public ECDHClientKeyExchangePreparator getPreparator(TlsContext tlsContext) {
+        return new ECDHClientKeyExchangePreparator<>(tlsContext.getChooser(), this);
+    }
+
+    @Override
+    public ECDHClientKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
+        return new ECDHClientKeyExchangeSerializer<>(this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

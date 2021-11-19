@@ -15,8 +15,14 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.SupportedVersionsExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.SupportedVersionsExtensionParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SupportedVersionsExtensionPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SupportedVersionsExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 
-public class SupportedVersionsExtensionMessage extends ExtensionMessage {
+public class SupportedVersionsExtensionMessage extends ExtensionMessage<SupportedVersionsExtensionMessage> {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger supportedVersionsLength;
@@ -54,5 +60,25 @@ public class SupportedVersionsExtensionMessage extends ExtensionMessage {
 
     public void setSupportedVersions(ModifiableByteArray supportedVersions) {
         this.supportedVersions = supportedVersions;
+    }
+
+    @Override
+    public SupportedVersionsExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new SupportedVersionsExtensionParser(stream, tlsContext.getConfig());
+    }
+
+    @Override
+    public SupportedVersionsExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new SupportedVersionsExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+    }
+
+    @Override
+    public SupportedVersionsExtensionSerializer getSerializer(TlsContext tlsContext) {
+        return new SupportedVersionsExtensionSerializer(this);
+    }
+
+    @Override
+    public SupportedVersionsExtensionHandler getHandler(TlsContext tlsContext) {
+        return new SupportedVersionsExtensionHandler(tlsContext);
     }
 }

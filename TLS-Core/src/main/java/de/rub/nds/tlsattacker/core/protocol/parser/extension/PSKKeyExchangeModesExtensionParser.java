@@ -36,11 +36,6 @@ public class PSKKeyExchangeModesExtensionParser extends ExtensionParser<PSKKeyEx
         msg.setKeyExchangeModesConfig(msg.getKeyExchangeModesListBytes().getValue());
     }
 
-    @Override
-    protected PSKKeyExchangeModesExtensionMessage createExtensionMessage() {
-        return new PSKKeyExchangeModesExtensionMessage();
-    }
-
     private void parseExchangeModesListLength(PSKKeyExchangeModesExtensionMessage msg) {
         msg.setKeyExchangeModesListLength(parseIntField(ExtensionByteLength.PSK_KEY_EXCHANGE_MODES_LENGTH));
         LOGGER.debug("PSKKeyModesList length:" + msg.getKeyExchangeModesListLength().getValue());

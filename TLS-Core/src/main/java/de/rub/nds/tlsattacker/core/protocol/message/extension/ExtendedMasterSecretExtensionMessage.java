@@ -11,6 +11,13 @@ package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.protocol.Handler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtendedMasterSecretExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtendedMasterSecretExtensionParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtendedMasterSecretExtensionPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtendedMasterSecretExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 
 /**
  * This is the extended_master_secret message.
@@ -19,7 +26,7 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
  *
  * This extension is defined in RFC7627
  */
-public class ExtendedMasterSecretExtensionMessage extends ExtensionMessage {
+public class ExtendedMasterSecretExtensionMessage extends ExtensionMessage<ExtendedMasterSecretExtensionMessage> {
 
     public ExtendedMasterSecretExtensionMessage() {
         super(ExtensionType.EXTENDED_MASTER_SECRET);
@@ -28,4 +35,25 @@ public class ExtendedMasterSecretExtensionMessage extends ExtensionMessage {
     public ExtendedMasterSecretExtensionMessage(Config config) {
         super(ExtensionType.EXTENDED_MASTER_SECRET);
     }
+
+    @Override
+    public ExtendedMasterSecretExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new ExtendedMasterSecretExtensionParser(stream, tlsContext.getConfig());
+    }
+
+    @Override
+    public ExtendedMasterSecretExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new ExtendedMasterSecretExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+    }
+
+    @Override
+    public ExtendedMasterSecretExtensionSerializer getSerializer(TlsContext tlsContext) {
+        return new ExtendedMasterSecretExtensionSerializer(this);
+    }
+
+    @Override
+    public ExtendedMasterSecretExtensionHandler getHandler(TlsContext tlsContext) {
+        return new ExtendedMasterSecretExtensionHandler(tlsContext);
+    }
+
 }

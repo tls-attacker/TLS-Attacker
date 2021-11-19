@@ -32,7 +32,7 @@ public class SignedCertificateTimestampExtensionSerializerTest {
     private SignedCertificateTimestampExtensionMessage message;
 
     public SignedCertificateTimestampExtensionSerializerTest(ExtensionType extensionType, int extensionLength,
-        byte[] timestamp, byte[] expectedBytes, int startPosition) {
+        byte[] timestamp, byte[] expectedBytes) {
         this.extensionType = extensionType;
         this.extensionLength = extensionLength;
         this.timestamp = timestamp;

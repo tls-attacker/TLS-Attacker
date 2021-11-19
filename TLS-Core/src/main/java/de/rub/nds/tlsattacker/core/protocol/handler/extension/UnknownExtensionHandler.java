@@ -26,19 +26,4 @@ public class UnknownExtensionHandler extends ExtensionHandler<UnknownExtensionMe
     public void adjustTLSExtensionContext(UnknownExtensionMessage message) {
     }
 
-    @Override
-    public UnknownExtensionParser getParser(InputStream stream) {
-        return new UnknownExtensionParser(stream, context.getConfig());
-    }
-
-    @Override
-    public UnknownExtensionPreparator getPreparator(UnknownExtensionMessage message) {
-        return new UnknownExtensionPreparator(context.getChooser(), message, getSerializer(message));
-    }
-
-    @Override
-    public UnknownExtensionSerializer getSerializer(UnknownExtensionMessage message) {
-        return new UnknownExtensionSerializer(message);
-    }
-
 }

@@ -84,7 +84,8 @@ public class EncryptedServerNameIndicationExtensionParserTest {
 
         EncryptedServerNameIndicationExtensionParser parser = new EncryptedServerNameIndicationExtensionParser(
             new ByteArrayInputStream(msgBytes), context.getConfig(), ConnectionEndType.CLIENT);
-        EncryptedServerNameIndicationExtensionMessage msg = parser.parse();
+        EncryptedServerNameIndicationExtensionMessage msg = new EncryptedServerNameIndicationExtensionMessage();
+        parser.parse(msg);
         EncryptedServerNameIndicationExtensionPreparator preparator =
             new EncryptedServerNameIndicationExtensionPreparator(chooser, msg, null);
 

@@ -11,16 +11,13 @@ package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CachedInfoExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.CachedInfoExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.CachedInfoExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.CachedInfoExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.List;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -46,24 +43,9 @@ public class CachedInfoExtensionHandlerTest {
             new CachedInfoExtensionPreparator(context.getChooser(), msg, new CachedInfoExtensionSerializer(msg));
         preparator.prepare();
 
-        handler.adjustTLSContext(msg);
+        handler.adjustContext(msg);
 
         assertCachedObjectList(cachedObjects, context.getCachedInfoExtensionObjects());
-    }
-
-    @Test
-    public void testGetParser() {
-        assertTrue(handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof CachedInfoExtensionParser);
-    }
-
-    @Test
-    public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new CachedInfoExtensionMessage()) instanceof CachedInfoExtensionPreparator);
-    }
-
-    @Test
-    public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new CachedInfoExtensionMessage()) instanceof CachedInfoExtensionSerializer);
     }
 
     public void assertCachedObjectList(List<CachedObject> expected, List<CachedObject> actual) {

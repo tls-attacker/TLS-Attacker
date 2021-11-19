@@ -10,32 +10,12 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.RSAClientKeyExchangeParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.RSAClientKeyExchangePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.RSAClientKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.InputStream;
 
 public class RSAClientKeyExchangeHandler<T extends RSAClientKeyExchangeMessage> extends ClientKeyExchangeHandler<T> {
 
     public RSAClientKeyExchangeHandler(TlsContext tlsContext) {
         super(tlsContext);
-    }
-
-    @Override
-    public RSAClientKeyExchangeParser<T> getParser(InputStream stream) {
-        return new RSAClientKeyExchangeParser<>(stream, tlsContext.getChooser().getLastRecordVersion(),
-            tlsContext.getConfig());
-    }
-
-    @Override
-    public RSAClientKeyExchangePreparator<T> getPreparator(T message) {
-        return new RSAClientKeyExchangePreparator<>(tlsContext.getChooser(), message);
-    }
-
-    @Override
-    public RSAClientKeyExchangeSerializer<T> getSerializer(T message) {
-        return new RSAClientKeyExchangeSerializer<>(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

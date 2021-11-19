@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
@@ -74,8 +75,9 @@ public class ECDHClientKeyExchangeParserTest {
     @Test
     public void testParse() {
         ECDHClientKeyExchangeParser<ECDHClientKeyExchangeMessage> parser =
-            new ECDHClientKeyExchangeParser(new ByteArrayInputStream(message), version, config);
-        ECDHClientKeyExchangeMessage msg = parser.parse();
+            new ECDHClientKeyExchangeParser(new ByteArrayInputStream(message), version, new TlsContext(config));
+        ECDHClientKeyExchangeMessage msg = new ECDHClientKeyExchangeMessage();
+        parser.parse(msg);
         assertArrayEquals(message, msg.getCompleteResultingMessage().getValue());
         assertTrue(msg.getLength().getValue() == length);
         assertTrue(msg.getType().getValue() == type.getValue());

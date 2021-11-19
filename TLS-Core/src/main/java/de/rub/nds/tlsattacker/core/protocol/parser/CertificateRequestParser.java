@@ -10,11 +10,11 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -32,13 +32,13 @@ public class CertificateRequestParser extends HandshakeMessageParser<Certificate
      *
      * @param stream
      * @param version
-     *                Version of the Protocol
-     * @param config
-     *                A Config used in the current context
+     *                                 Version of the Protocol
+     * @param tlsContext
+     * @param talkingConnectionEndType
      */
-    public CertificateRequestParser(InputStream stream, ProtocolVersion version, Config config,
+    public CertificateRequestParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext,
         ConnectionEndType talkingConnectionEndType) {
-        super(stream, HandshakeMessageType.CERTIFICATE_REQUEST, version, config);
+        super(stream, HandshakeMessageType.CERTIFICATE_REQUEST, version, tlsContext);
         this.talkingConnectionEndType = talkingConnectionEndType;
     }
 
@@ -63,11 +63,6 @@ public class CertificateRequestParser extends HandshakeMessageParser<Certificate
             }
         }
 
-    }
-
-    @Override
-    protected CertificateRequestMessage createHandshakeMessage() {
-        return new CertificateRequestMessage();
     }
 
     /**

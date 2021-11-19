@@ -20,7 +20,11 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ClientMasterKeyHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.RSAClientComputations;
+import de.rub.nds.tlsattacker.core.protocol.parser.HandshakeMessageParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.SSL2ClientMasterKeyPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.SSL2ClientMasterKeySerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -70,6 +74,22 @@ public class SSL2ClientMasterKeyMessage extends SSL2HandshakeMessage {
     @Override
     public SSL2ClientMasterKeyHandler getHandler(TlsContext context) {
         return new SSL2ClientMasterKeyHandler(context);
+    }
+
+    @Override
+    public HandshakeMessageParser<SSL2ClientMasterKeyMessage> getParser(TlsContext tlsContext, InputStream stream) {
+        // We currently don't receive ClientMasterKey messages, only send them.
+        return null;
+    }
+
+    @Override
+    public SSL2ClientMasterKeyPreparator getPreparator(TlsContext tlsContext) {
+        return new SSL2ClientMasterKeyPreparator(tlsContext.getChooser(), this);
+    }
+
+    @Override
+    public SSL2ClientMasterKeySerializer getSerializer(TlsContext tlsContext) {
+        return new SSL2ClientMasterKeySerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     public ModifiableByteArray getCipherKind() {

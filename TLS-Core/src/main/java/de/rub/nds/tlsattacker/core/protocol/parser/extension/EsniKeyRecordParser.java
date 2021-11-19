@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.EsniDnsKeyRecordVersion;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
@@ -21,9 +20,10 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.EsniKeyRecord;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.Parser;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,21 +32,17 @@ public class EsniKeyRecordParser extends Parser<EsniKeyRecord> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final Config config;
-    private final ConnectionEndType talkingConnectionEndType;
+    private final TlsContext tlsContext;
     private final ProtocolVersion selectedVersion;
 
-    public EsniKeyRecordParser(InputStream stream, Config config, ConnectionEndType talkingConnectionEndType,
-        ProtocolVersion selectedVersion) {
+    public EsniKeyRecordParser(InputStream stream, TlsContext tlsContext, ProtocolVersion selectedVersion) {
         super(stream);
-        this.config = config;
-        this.talkingConnectionEndType = talkingConnectionEndType;
+        this.tlsContext = tlsContext;
         this.selectedVersion = selectedVersion;
     }
 
     @Override
-    public EsniKeyRecord parse() {
-        EsniKeyRecord record = new EsniKeyRecord();
+    public void parse(EsniKeyRecord record) {
         parseVersion(record);
         parseChecksum(record);
         parseKeys(record);
@@ -55,7 +51,6 @@ public class EsniKeyRecordParser extends Parser<EsniKeyRecord> {
         parseNotBefore(record);
         parseNotAfter(record);
         parseExtensions(record);
-        return record;
     }
 
     private void parseVersion(EsniKeyRecord record) {
@@ -121,10 +116,11 @@ public class EsniKeyRecordParser extends Parser<EsniKeyRecord> {
         int extensionsLength = this.parseIntField(HandshakeByteLength.EXTENSION_LENGTH);
 
         byte[] extensionListBytes = parseByteArrayField(extensionsLength);
-        ExtensionListParser extensionListParser = new ExtensionListParser(new ByteArrayInputStream(extensionListBytes),
-            config, talkingConnectionEndType, selectedVersion, false);
-        List<ExtensionMessage> parsed = extensionListParser.parse();
-        record.setExtensions(parsed);
+        ExtensionListParser extensionListParser =
+            new ExtensionListParser(new ByteArrayInputStream(extensionListBytes), tlsContext, selectedVersion, false);
+        List<ExtensionMessage> extensionList = new LinkedList<>();
+        extensionListParser.parse(extensionList);
+        record.setExtensions(extensionList);
     }
 
 }

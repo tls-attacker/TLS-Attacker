@@ -40,26 +40,7 @@ public class RenegotiationInfoExtensionHandlerTest {
         RenegotiationInfoExtensionMessage message = new RenegotiationInfoExtensionMessage();
         message.setRenegotiationInfo(EXTENSION_INFO);
         message.setExtensionLength(EXTENSION_LENGTH);
-        handler.adjustTLSContext(message);
+        handler.adjustContext(message);
         assertArrayEquals(context.getRenegotiationInfo(), EXTENSION_INFO);
     }
-
-    @Test
-    public void testGetParser() {
-        assertTrue(
-            handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof RenegotiationInfoExtensionParser);
-    }
-
-    @Test
-    public void testGetPreparator() {
-        assertTrue(handler
-            .getPreparator(new RenegotiationInfoExtensionMessage()) instanceof RenegotiationInfoExtensionPreparator);
-    }
-
-    @Test
-    public void testGetSerializer() {
-        assertTrue(handler
-            .getSerializer(new RenegotiationInfoExtensionMessage()) instanceof RenegotiationInfoExtensionSerializer);
-    }
-
 }

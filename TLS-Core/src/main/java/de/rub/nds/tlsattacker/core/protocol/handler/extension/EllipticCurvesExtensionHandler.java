@@ -10,16 +10,11 @@
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EllipticCurvesExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.EllipticCurvesExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EllipticCurvesExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.EllipticCurvesExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -65,18 +60,4 @@ public class EllipticCurvesExtensionHandler extends ExtensionHandler<EllipticCur
         }
     }
 
-    @Override
-    public EllipticCurvesExtensionParser getParser(InputStream stream) {
-        return new EllipticCurvesExtensionParser(stream, context.getConfig());
-    }
-
-    @Override
-    public EllipticCurvesExtensionPreparator getPreparator(EllipticCurvesExtensionMessage message) {
-        return new EllipticCurvesExtensionPreparator(context.getChooser(), message, getSerializer(message));
-    }
-
-    @Override
-    public EllipticCurvesExtensionSerializer getSerializer(EllipticCurvesExtensionMessage message) {
-        return new EllipticCurvesExtensionSerializer(message);
-    }
 }

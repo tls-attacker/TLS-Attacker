@@ -11,35 +11,16 @@ package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SRPExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.SRPExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SRPExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SRPExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class SrpExtensionHandler extends ExtensionHandler<SRPExtensionMessage> {
+public class SRPExtensionHandler extends ExtensionHandler<SRPExtensionMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SrpExtensionHandler(TlsContext context) {
+    public SRPExtensionHandler(TlsContext context) {
         super(context);
-    }
-
-    @Override
-    public SRPExtensionParser getParser(InputStream stream) {
-        return new SRPExtensionParser(stream, context.getConfig());
-    }
-
-    @Override
-    public SRPExtensionPreparator getPreparator(SRPExtensionMessage message) {
-        return new SRPExtensionPreparator(context.getChooser(), message, getSerializer(message));
-    }
-
-    @Override
-    public SRPExtensionSerializer getSerializer(SRPExtensionMessage message) {
-        return new SRPExtensionSerializer(message);
     }
 
     @Override

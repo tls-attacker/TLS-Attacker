@@ -30,10 +30,4 @@ public class ServerCertificateTypeExtensionParser extends ExtensionParser<Server
             msg.setCertificateTypes(parseByteArrayField(ExtensionByteLength.CERTIFICATE_TYPE_TYPE_LENGTH));
         }
     }
-
-    @Override
-    protected ServerCertificateTypeExtensionMessage createExtensionMessage() {
-        return new ServerCertificateTypeExtensionMessage();
-    }
-
 }

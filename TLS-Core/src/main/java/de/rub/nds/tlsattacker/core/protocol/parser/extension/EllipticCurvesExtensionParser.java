@@ -32,11 +32,6 @@ public class EllipticCurvesExtensionParser extends ExtensionParser<EllipticCurve
         parseSupportedGroups(msg);
     }
 
-    @Override
-    protected EllipticCurvesExtensionMessage createExtensionMessage() {
-        return new EllipticCurvesExtensionMessage();
-    }
-
     /**
      * Reads the next bytes as the SupportedCurvesLength of the Extension and writes them in the message
      *

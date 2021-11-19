@@ -35,12 +35,11 @@ public class AlertParser extends TlsMessageParser<AlertMessage> {
     }
 
     @Override
-    protected AlertMessage parseMessageContent() {
+    protected void parseMessageContent(AlertMessage message) {
         LOGGER.debug("Parsing AlertMessage");
-        AlertMessage msg = new AlertMessage();
-        parseLevel(msg);
-        parseDescription(msg);
-        return msg;
+        parseLevel(message);
+        parseDescription(message);
+        message.setCompleteResultingMessage(getAlreadyParsed());
     }
 
     /**

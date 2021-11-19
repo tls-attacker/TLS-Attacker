@@ -34,22 +34,6 @@ public class CertificateVerifyHandler extends HandshakeMessageHandler<Certificat
     }
 
     @Override
-    public CertificateVerifyParser getParser(InputStream stream) {
-        return new CertificateVerifyParser(stream, tlsContext.getChooser().getLastRecordVersion(),
-            tlsContext.getConfig());
-    }
-
-    @Override
-    public CertificateVerifyPreparator getPreparator(CertificateVerifyMessage message) {
-        return new CertificateVerifyPreparator(tlsContext.getChooser(), message);
-    }
-
-    @Override
-    public CertificateVerifySerializer getSerializer(CertificateVerifyMessage message) {
-        return new CertificateVerifySerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
-    }
-
-    @Override
     public void adjustTLSContext(CertificateVerifyMessage message) {
         // Maybe check if we can verify signature and set boolean in context
         // //TODO

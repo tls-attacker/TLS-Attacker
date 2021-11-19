@@ -19,7 +19,11 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.SupplementalDataHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.supplementaldata.SupplementalDataEntry;
+import de.rub.nds.tlsattacker.core.protocol.parser.SupplementalDataParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.SupplementalDataPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.SupplementalDataSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -87,6 +91,21 @@ public class SupplementalDataMessage extends HandshakeMessage {
     @Override
     public SupplementalDataHandler getHandler(TlsContext context) {
         return new SupplementalDataHandler(context);
+    }
+
+    @Override
+    public SupplementalDataParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new SupplementalDataParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+    }
+
+    @Override
+    public SupplementalDataPreparator getPreparator(TlsContext tlsContext) {
+        return new SupplementalDataPreparator(tlsContext.getChooser(), this);
+    }
+
+    @Override
+    public SupplementalDataSerializer getSerializer(TlsContext tlsContext) {
+        return new SupplementalDataSerializer(this, tlsContext.getSelectedProtocolVersion());
     }
 
     @Override

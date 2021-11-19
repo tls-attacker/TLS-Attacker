@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
 import org.junit.Test;
@@ -77,9 +78,10 @@ public class NewSessionTicketParserTest {
 
     @Test
     public void testParse() {
-        NewSessionTicketParser parser =
-            new NewSessionTicketParser(new ByteArrayInputStream(message), version, config, ConnectionEndType.SERVER);
-        NewSessionTicketMessage msg = parser.parse();
+        NewSessionTicketParser parser = new NewSessionTicketParser(new ByteArrayInputStream(message), version,
+            new TlsContext(config), ConnectionEndType.SERVER);
+        NewSessionTicketMessage msg = new NewSessionTicketMessage();
+        parser.parse(msg);
         assertArrayEquals(identity, msg.getTicket().getIdentity().getValue());
         assertEquals(lifetime, (long) msg.getTicketLifetimeHint().getValue());
         // For TLS 1.3 also test Nonce and AgeAdd field which are not present in

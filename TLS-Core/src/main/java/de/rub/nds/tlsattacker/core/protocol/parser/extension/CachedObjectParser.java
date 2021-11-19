@@ -19,18 +19,15 @@ import java.io.InputStream;
 
 public class CachedObjectParser extends Parser<CachedObject> {
 
-    private final CachedObject cachedObject;
     private final ConnectionEndType connectionEndType;
 
     public CachedObjectParser(InputStream stream, ConnectionEndType connectionEndType) {
         super(stream);
-        cachedObject = new CachedObject();
         this.connectionEndType = connectionEndType;
     }
 
     @Override
-    public CachedObject parse() {
-
+    public void parse(CachedObject cachedObject) {
         if (connectionEndType == ConnectionEndType.CLIENT) {
             cachedObject.setCachedInformationType(parseByteField(ExtensionByteLength.CACHED_INFO_TYPE));
             cachedObject.setHashValueLength(parseIntField(ExtensionByteLength.CACHED_INFO_HASH_LENGTH));
@@ -40,8 +37,6 @@ public class CachedObjectParser extends Parser<CachedObject> {
             cachedObject.setHashValue((ModifiableByteArray) null);
             cachedObject.setHashValueLength((ModifiableInteger) null);
         }
-
-        return cachedObject;
     }
 
 }

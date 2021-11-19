@@ -23,21 +23,6 @@ public class TrustedCaIndicationExtensionHandler extends ExtensionHandler<Truste
     }
 
     @Override
-    public TrustedCaIndicationExtensionParser getParser(InputStream stream) {
-        return new TrustedCaIndicationExtensionParser(stream, context.getConfig());
-    }
-
-    @Override
-    public TrustedCaIndicationExtensionPreparator getPreparator(TrustedCaIndicationExtensionMessage message) {
-        return new TrustedCaIndicationExtensionPreparator(context.getChooser(), message, getSerializer(message));
-    }
-
-    @Override
-    public TrustedCaIndicationExtensionSerializer getSerializer(TrustedCaIndicationExtensionMessage message) {
-        return new TrustedCaIndicationExtensionSerializer(message);
-    }
-
-    @Override
     public void adjustTLSExtensionContext(TrustedCaIndicationExtensionMessage message) {
         context.setTrustedCaIndicationExtensionCas(message.getTrustedAuthorities());
     }

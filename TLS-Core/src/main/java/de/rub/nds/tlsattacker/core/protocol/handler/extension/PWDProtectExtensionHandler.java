@@ -42,21 +42,6 @@ public class PWDProtectExtensionHandler extends ExtensionHandler<PWDProtectExten
     }
 
     @Override
-    public PWDProtectExtensionParser getParser(InputStream stream) {
-        return new PWDProtectExtensionParser(stream, context.getConfig());
-    }
-
-    @Override
-    public PWDProtectExtensionPreparator getPreparator(PWDProtectExtensionMessage message) {
-        return new PWDProtectExtensionPreparator(context.getChooser(), message, getSerializer(message));
-    }
-
-    @Override
-    public PWDProtectExtensionSerializer getSerializer(PWDProtectExtensionMessage message) {
-        return new PWDProtectExtensionSerializer(message);
-    }
-
-    @Override
     public void adjustTLSExtensionContext(PWDProtectExtensionMessage message) {
         if (context.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
             context.setClientPWDUsername(context.getConfig().getDefaultClientPWDUsername());

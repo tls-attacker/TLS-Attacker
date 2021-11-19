@@ -31,7 +31,7 @@ public class ServerNamePair extends ModifiableVariableHolder implements Serializ
     @ModifiableVariableProperty
     private ModifiableByteArray serverName;
 
-    private ServerNamePair() {
+    public ServerNamePair() {
     }
 
     public ServerNamePair(Byte typeConfig, byte[] serverNameConfig) {

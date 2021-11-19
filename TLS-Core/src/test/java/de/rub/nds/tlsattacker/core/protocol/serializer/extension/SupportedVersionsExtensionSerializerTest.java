@@ -32,8 +32,8 @@ public class SupportedVersionsExtensionSerializerTest {
     private final int versionListLength;
     private final byte[] versionList;
 
-    public SupportedVersionsExtensionSerializerTest(byte[] extension, int start, byte[] completeExtension,
-        ExtensionType type, int extensionLength, int versionListLength, byte[] versionList) {
+    public SupportedVersionsExtensionSerializerTest(byte[] extension, byte[] completeExtension, ExtensionType type,
+        int extensionLength, int versionListLength, byte[] versionList) {
         this.completeExtension = completeExtension;
         this.type = type;
         this.extensionLength = extensionLength;

@@ -15,11 +15,7 @@ import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.CertificateRequestParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateRequestPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateRequestSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.ByteArrayInputStream;
 import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -38,30 +34,6 @@ public class CertificateRequestHandlerTest {
 
     @After
     public void tearDown() {
-    }
-
-    /**
-     * Test of getParser method, of class CertificateRequestHandler.
-     */
-    @Test
-    public void testGetParser() {
-        assertTrue(handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof CertificateRequestParser);
-    }
-
-    /**
-     * Test of getPreparator method, of class CertificateRequestHandler.
-     */
-    @Test
-    public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new CertificateRequestMessage()) instanceof CertificateRequestPreparator);
-    }
-
-    /**
-     * Test of getSerializer method, of class CertificateRequestHandler.
-     */
-    @Test
-    public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new CertificateRequestMessage()) instanceof CertificateRequestSerializer);
     }
 
     /**

@@ -26,20 +26,14 @@ public class SignedCertificateTimestampSignatureParser extends Parser<SignedCert
     }
 
     @Override
-    public SignedCertificateTimestampSignature parse() {
-        SignedCertificateTimestampSignature signature = new SignedCertificateTimestampSignature();
-
+    public void parse(SignedCertificateTimestampSignature signature) {
         SignatureAndHashAlgorithm signatureAndHashAlgorithm = SignatureAndHashAlgorithm
             .getSignatureAndHashAlgorithm(parseByteArrayField(HandshakeByteLength.SIGNATURE_HASH_ALGORITHM));
         signature.setSignatureAndHashAlgorithm(signatureAndHashAlgorithm);
-
         int signatureLength = parseIntField(HandshakeByteLength.SIGNATURE_LENGTH);
-
         byte[] rawSignature = parseByteArrayField(signatureLength);
         signature.setSignature(rawSignature);
-
         signature.setEncodedSignature(getAlreadyParsed());
 
-        return signature;
     }
 }

@@ -10,14 +10,13 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.protocol.message.SupplementalDataMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.supplementaldata.SupplementalDataEntry;
 import de.rub.nds.tlsattacker.core.protocol.parser.supplementaldata.SupplementalDataEntryParser;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.LinkedList;
@@ -34,12 +33,11 @@ public class SupplementalDataParser extends HandshakeMessageParser<SupplementalD
      *
      * @param stream
      * @param version
-     *                The Version for which this message should be parsed
-     * @param config
-     *                A Config used in the current context
+     *                   The Version for which this message should be parsed
+     * @param tlsContext
      */
-    public SupplementalDataParser(InputStream stream, ProtocolVersion version, Config config) {
-        super(stream, HandshakeMessageType.SUPPLEMENTAL_DATA, version, config);
+    public SupplementalDataParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
+        super(stream, HandshakeMessageType.SUPPLEMENTAL_DATA, version, tlsContext);
     }
 
     @Override
@@ -48,11 +46,6 @@ public class SupplementalDataParser extends HandshakeMessageParser<SupplementalD
         parseSupplementalDataLength(msg);
         parseSupplementalDataBytes(msg);
         parseSupplementalDataEntries(msg);
-    }
-
-    @Override
-    protected SupplementalDataMessage createHandshakeMessage() {
-        return new SupplementalDataMessage();
     }
 
     private void parseSupplementalDataLength(SupplementalDataMessage msg) {
@@ -71,7 +64,9 @@ public class SupplementalDataParser extends HandshakeMessageParser<SupplementalD
         ByteArrayInputStream innerStream = new ByteArrayInputStream(msg.getSupplementalDataBytes().getValue());
         while (innerStream.available() > 0) {
             SupplementalDataEntryParser parser = new SupplementalDataEntryParser(innerStream);
-            entryList.add(parser.parse());
+            SupplementalDataEntry entry = new SupplementalDataEntry();
+            parser.parse(entry);
+            entryList.add(entry);
         }
         msg.setEntries(entryList);
     }

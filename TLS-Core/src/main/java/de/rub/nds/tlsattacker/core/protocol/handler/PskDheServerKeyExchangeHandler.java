@@ -28,22 +28,6 @@ public class PskDheServerKeyExchangeHandler extends DHEServerKeyExchangeHandler<
     }
 
     @Override
-    public PskDheServerKeyExchangeParser getParser(InputStream stream) {
-        return new PskDheServerKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(),
-            tlsContext.getConfig());
-    }
-
-    @Override
-    public PskDheServerKeyExchangePreparator getPreparator(PskDheServerKeyExchangeMessage message) {
-        return new PskDheServerKeyExchangePreparator(tlsContext.getChooser(), message);
-    }
-
-    @Override
-    public PskDheServerKeyExchangeSerializer getSerializer(PskDheServerKeyExchangeMessage message) {
-        return new PskDheServerKeyExchangeSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
-    }
-
-    @Override
     public void adjustTLSContext(PskDheServerKeyExchangeMessage message) {
         adjustPSKGenerator(message);
         adjustPSKModulus(message);

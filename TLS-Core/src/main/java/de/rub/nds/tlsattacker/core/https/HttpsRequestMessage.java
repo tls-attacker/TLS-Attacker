@@ -20,11 +20,12 @@ import de.rub.nds.tlsattacker.core.https.header.DateHeader;
 import de.rub.nds.tlsattacker.core.https.header.ExpiresHeader;
 import de.rub.nds.tlsattacker.core.https.header.GenericHttpsHeader;
 import de.rub.nds.tlsattacker.core.https.header.HostHeader;
-import de.rub.nds.tlsattacker.core.https.header.HttpsHeader;
+import de.rub.nds.tlsattacker.core.https.header.HttpHeader;
 import de.rub.nds.tlsattacker.core.https.header.LocationHeader;
 import de.rub.nds.tlsattacker.core.https.header.TokenBindingHeader;
 import de.rub.nds.tlsattacker.core.protocol.message.TlsMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
@@ -45,7 +46,7 @@ public class HttpsRequestMessage extends TlsMessage {
         @XmlElement(type = TokenBindingHeader.class, name = "TokenBindingHeader"),
         @XmlElement(type = TokenBindingHeader.class, name = "CookieHeader") })
     @HoldsModifiableVariable
-    private List<HttpsHeader> header;
+    private List<HttpHeader> header;
 
     private ModifiableString requestType;
 
@@ -80,11 +81,11 @@ public class HttpsRequestMessage extends TlsMessage {
             "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/59.0.3071.109 Chrome/59.0.3071.109 Safari/537.36"));
     }
 
-    public List<HttpsHeader> getHeader() {
+    public List<HttpHeader> getHeader() {
         return header;
     }
 
-    public void setHeader(List<HttpsHeader> header) {
+    public void setHeader(List<HttpHeader> header) {
         this.header = header;
     }
 
@@ -132,6 +133,22 @@ public class HttpsRequestMessage extends TlsMessage {
     @Override
     public HttpsRequestHandler getHandler(TlsContext context) {
         return new HttpsRequestHandler(context);
+    }
+
+    @Override
+    public HttpsRequestParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new HttpsRequestParser(stream, tlsContext.getChooser().getSelectedProtocolVersion(),
+            tlsContext.getConfig());
+    }
+
+    @Override
+    public HttpsRequestPreparator getPreparator(TlsContext tlsContext) {
+        return new HttpsRequestPreparator(tlsContext.getChooser(), this);
+    }
+
+    @Override
+    public HttpsRequestSerializer getSerializer(TlsContext tlsContext) {
+        return new HttpsRequestSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

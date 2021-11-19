@@ -26,7 +26,8 @@ public class ResponderIdParserTest {
     @Test
     public void testParser() {
         parser = new ResponderIdParser(new ByteArrayInputStream(payloadBytes));
-        parsedId = parser.parse();
+        parsedId = new ResponderId();
+        parser.parse(parsedId);
 
         assertEquals(idLength, parsedId.getIdLength().getValue());
         assertArrayEquals(id, parsedId.getId().getValue());

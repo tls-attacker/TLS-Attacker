@@ -37,10 +37,4 @@ public class RenegotiationInfoExtensionParser extends ExtensionParser<Renegotiat
         LOGGER.debug(
             "The RenegotiationInfoExtensionParser parsed the value " + bytesToHexString(msg.getRenegotiationInfo()));
     }
-
-    @Override
-    protected RenegotiationInfoExtensionMessage createExtensionMessage() {
-        return new RenegotiationInfoExtensionMessage();
-    }
-
 }

@@ -36,7 +36,7 @@ public class ApplicationMessageParserTest {
     private final byte[] data;
     private final Config config = Config.createConfig();
 
-    public ApplicationMessageParserTest(byte[] message, int start, byte[] expectedPart, byte[] data) {
+    public ApplicationMessageParserTest(byte[] message, byte[] expectedPart, byte[] data) {
         this.message = message;
         this.expectedPart = expectedPart;
         this.data = data;
@@ -49,7 +49,8 @@ public class ApplicationMessageParserTest {
     public void testParse() {
         ApplicationMessageParser parser =
             new ApplicationMessageParser(new ByteArrayInputStream(message), ProtocolVersion.TLS12, config);
-        ApplicationMessage applicationMessage = parser.parse();
+        ApplicationMessage applicationMessage = new ApplicationMessage();
+        parser.parse(applicationMessage);
         assertArrayEquals(applicationMessage.getCompleteResultingMessage().getValue(), expectedPart);
         assertArrayEquals(applicationMessage.getData().getValue(), data);
     }

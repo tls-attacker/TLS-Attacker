@@ -10,11 +10,11 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,12 +28,12 @@ public class CertificateVerifyParser extends HandshakeMessageParser<CertificateV
      *
      * @param stream
      * @param version
-     *                Version of the Protocol
-     * @param config
-     *                A Config used in the current context
+     *                   Version of the Protocol
+     * @param tlsContext
+     *                   A Config used in the current context
      */
-    public CertificateVerifyParser(InputStream stream, ProtocolVersion version, Config config) {
-        super(stream, HandshakeMessageType.CERTIFICATE_VERIFY, version, config);
+    public CertificateVerifyParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
+        super(stream, HandshakeMessageType.CERTIFICATE_VERIFY, version, tlsContext);
     }
 
     @Override
@@ -44,11 +44,6 @@ public class CertificateVerifyParser extends HandshakeMessageParser<CertificateV
         }
         parseSignatureLength(msg);
         parseSignature(msg);
-    }
-
-    @Override
-    protected CertificateVerifyMessage createHandshakeMessage() {
-        return new CertificateVerifyMessage();
     }
 
     /**

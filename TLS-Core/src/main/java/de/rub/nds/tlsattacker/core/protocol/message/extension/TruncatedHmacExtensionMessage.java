@@ -11,11 +11,17 @@ package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.TruncatedHmacExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.TruncatedHmacExtensionParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.extension.TruncatedHmacExtensionPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.TruncatedHmacExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 
 /**
  * This is a binary extension, which means that no extension data is used. This extension is defined in RFC6066
  */
-public class TruncatedHmacExtensionMessage extends ExtensionMessage {
+public class TruncatedHmacExtensionMessage extends ExtensionMessage<TruncatedHmacExtensionMessage> {
 
     public TruncatedHmacExtensionMessage() {
         super(ExtensionType.TRUNCATED_HMAC);
@@ -23,5 +29,25 @@ public class TruncatedHmacExtensionMessage extends ExtensionMessage {
 
     public TruncatedHmacExtensionMessage(Config config) {
         super(ExtensionType.TRUNCATED_HMAC);
+    }
+
+    @Override
+    public TruncatedHmacExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new TruncatedHmacExtensionParser(stream, tlsContext.getConfig());
+    }
+
+    @Override
+    public TruncatedHmacExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new TruncatedHmacExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+    }
+
+    @Override
+    public TruncatedHmacExtensionSerializer getSerializer(TlsContext tlsContext) {
+        return new TruncatedHmacExtensionSerializer(this);
+    }
+
+    @Override
+    public TruncatedHmacExtensionHandler getHandler(TlsContext tlsContext) {
+        return new TruncatedHmacExtensionHandler(tlsContext);
     }
 }

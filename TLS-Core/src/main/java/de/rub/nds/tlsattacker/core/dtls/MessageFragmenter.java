@@ -39,7 +39,7 @@ public class MessageFragmenter {
      */
     public static List<DtlsHandshakeMessageFragment> fragmentMessage(HandshakeMessage message, int maxFragmentLength,
         TlsContext context) {
-        ProtocolMessageSerializer serializer = message.getHandler(context).getSerializer(message);
+        ProtocolMessageSerializer serializer = message.getSerializer(context);
         byte[] bytes;
         if (serializer instanceof HandshakeMessageSerializer) {// This is necessary because of SSL2 messages...
             HandshakeMessageSerializer handshakeMessageSerializer = (HandshakeMessageSerializer) serializer;
@@ -57,7 +57,7 @@ public class MessageFragmenter {
      */
     public static List<DtlsHandshakeMessageFragment> fragmentMessage(HandshakeMessage message,
         List<DtlsHandshakeMessageFragment> fragments, TlsContext context) {
-        ProtocolMessageSerializer serializer = message.getHandler(context).getSerializer(message);
+        ProtocolMessageSerializer serializer = message.getSerializer(context);
         byte[] bytes;
         if (serializer instanceof HandshakeMessageSerializer) {// This is necessary because of SSL2 messages...
             HandshakeMessageSerializer handshakeMessageSerializer = (HandshakeMessageSerializer) serializer;
@@ -77,11 +77,11 @@ public class MessageFragmenter {
      * @return
      */
     public static DtlsHandshakeMessageFragment wrapInSingleFragment(HandshakeMessage message, TlsContext context) {
-        ProtocolMessageSerializer serializer = message.getHandler(context).getSerializer(message);
+        ProtocolMessageSerializer serializer = message.getSerializer(context);
         byte[] bytes;
         if (serializer instanceof HandshakeMessageSerializer) {// This is necessary because of SSL2 messages...
             HandshakeMessageSerializer handshakeMessageSerializer =
-                (HandshakeMessageSerializer) message.getHandler(context).getSerializer(message);
+                (HandshakeMessageSerializer) message.getSerializer(context);
             bytes = handshakeMessageSerializer.serializeHandshakeMessageContent();
         } else {
             bytes = serializer.serializeProtocolMessageContent();
@@ -117,10 +117,10 @@ public class MessageFragmenter {
 
     public static byte[] prepareMessage(ProtocolMessage message, boolean withPrepare, TlsContext context) {
         if (withPrepare) {
-            Preparator<ProtocolMessage> preparator = message.getHandler(context).getPreparator(message);
+            Preparator<ProtocolMessage> preparator = message.getPreparator(context);
             preparator.prepare();
             preparator.afterPrepare();
-            Serializer<ProtocolMessage> serializer = message.getHandler(context).getSerializer(message);
+            Serializer<ProtocolMessage> serializer = message.getSerializer(context);
             byte[] completeMessage = serializer.serialize();
             message.setCompleteResultingMessage(completeMessage);
         }
@@ -134,7 +134,7 @@ public class MessageFragmenter {
             }
 
             if (message instanceof TlsMessage) {
-                TlsMessageHandler<TlsMessage> handler = message.getHandler(context);
+                TlsMessageHandler handler = (TlsMessageHandler) message.getHandler(context);
                 handler.updateDigest(message);
             }
             if (message.getAdjustContext()) {

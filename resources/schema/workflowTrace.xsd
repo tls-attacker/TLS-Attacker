@@ -147,11 +147,11 @@
 
   <xs:element name="flushSessionCacheAction" type="flushSessionCacheAction"/>
 
+  <xs:element name="forwardDataAction" type="forwardDataAction"/>
+
   <xs:element name="forwardMessagesAction" type="forwardMessagesAction"/>
 
   <xs:element name="forwardMessagesWithPrepareAction" type="forwardMessagesWithPrepareAction"/>
-
-  <xs:element name="forwardRecordsAction" type="forwardRecordsAction"/>
 
   <xs:element name="genericReceiveAction" type="genericReceiveAction"/>
 
@@ -345,7 +345,7 @@
         <xs:element name="FindReceivedProtocolMessage" type="findReceivedProtocolMessageAction"/>
         <xs:element name="ForwardMessages" type="forwardMessagesAction"/>
         <xs:element name="ForwardMessagesWithPrepare" type="forwardMessagesWithPrepareAction"/>
-        <xs:element name="ForwardRecords" type="forwardRecordsAction"/>
+        <xs:element name="ForwardData" type="forwardDataAction"/>
         <xs:element name="GenericReceive" type="genericReceiveAction"/>
         <xs:element name="ReceiveTill" type="receiveTillAction"/>
         <xs:element name="MultiReceive" type="multiReceiveAction"/>
@@ -551,10 +551,7 @@
           <xs:element name="records" minOccurs="0">
             <xs:complexType>
               <xs:sequence>
-                <xs:choice minOccurs="0" maxOccurs="unbounded">
-                  <xs:element name="Record" type="record"/>
-                  <xs:element name="BlobRecord" type="blobRecord"/>
-                </xs:choice>
+                <xs:element name="Record" type="record" minOccurs="0" maxOccurs="unbounded"/>
               </xs:sequence>
             </xs:complexType>
           </xs:element>
@@ -2568,7 +2565,7 @@
 
   <xs:complexType name="genericHttpsHeader">
     <xs:complexContent>
-      <xs:extension base="httpsHeader">
+      <xs:extension base="httpHeader">
         <xs:sequence>
           <xs:element name="headerNameConfig" type="xs:string" minOccurs="0"/>
           <xs:element name="headerValueConfig" type="xs:string" minOccurs="0"/>
@@ -2577,7 +2574,7 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="httpsHeader" abstract="true">
+  <xs:complexType name="httpHeader" abstract="true">
     <xs:complexContent>
       <xs:extension base="modifiableVariableHolder">
         <xs:sequence>
@@ -2590,7 +2587,7 @@
 
   <xs:complexType name="contentLengthHeader">
     <xs:complexContent>
-      <xs:extension base="httpsHeader">
+      <xs:extension base="httpHeader">
         <xs:sequence>
           <xs:element name="configLength" type="xs:int"/>
           <xs:element name="length" type="modifiableInteger" minOccurs="0"/>
@@ -2601,7 +2598,7 @@
 
   <xs:complexType name="dateHeader">
     <xs:complexContent>
-      <xs:extension base="httpsHeader">
+      <xs:extension base="httpHeader">
         <xs:sequence/>
       </xs:extension>
     </xs:complexContent>
@@ -2609,7 +2606,7 @@
 
   <xs:complexType name="expiresHeader">
     <xs:complexContent>
-      <xs:extension base="httpsHeader">
+      <xs:extension base="httpHeader">
         <xs:sequence/>
       </xs:extension>
     </xs:complexContent>
@@ -2617,7 +2614,7 @@
 
   <xs:complexType name="locationHeader">
     <xs:complexContent>
-      <xs:extension base="httpsHeader">
+      <xs:extension base="httpHeader">
         <xs:sequence/>
       </xs:extension>
     </xs:complexContent>
@@ -2625,7 +2622,7 @@
 
   <xs:complexType name="hostHeader">
     <xs:complexContent>
-      <xs:extension base="httpsHeader">
+      <xs:extension base="httpHeader">
         <xs:sequence/>
       </xs:extension>
     </xs:complexContent>
@@ -2633,7 +2630,7 @@
 
   <xs:complexType name="tokenBindingHeader">
     <xs:complexContent>
-      <xs:extension base="httpsHeader">
+      <xs:extension base="httpHeader">
         <xs:sequence>
           <xs:element name="message" type="tokenBindingMessage" minOccurs="0"/>
         </xs:sequence>
@@ -2829,28 +2826,19 @@
 
   <xs:complexType name="record">
     <xs:complexContent>
-      <xs:extension base="abstractRecord">
-        <xs:sequence>
-          <xs:element name="computations" type="recordCryptoComputations" minOccurs="0"/>
-          <xs:element name="contentType" type="modifiableByte" minOccurs="0"/>
-          <xs:element name="epoch" type="modifiableInteger" minOccurs="0"/>
-          <xs:element name="length" type="modifiableInteger" minOccurs="0"/>
-          <xs:element name="protocolVersion" type="modifiableByteArray" minOccurs="0"/>
-          <xs:element name="sequenceNumber" type="modifiableBigInteger" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="abstractRecord" abstract="true">
-    <xs:complexContent>
       <xs:extension base="modifiableVariableHolder">
         <xs:sequence>
           <xs:element name="cleanProtocolMessageBytes" type="modifiableByteArray" minOccurs="0"/>
           <xs:element name="completeRecordBytes" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="computations" type="recordCryptoComputations" minOccurs="0"/>
           <xs:element name="contentMessageType" type="protocolMessageType" minOccurs="0"/>
+          <xs:element name="contentType" type="modifiableByte" minOccurs="0"/>
+          <xs:element name="epoch" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="length" type="modifiableInteger" minOccurs="0"/>
           <xs:element name="maxRecordLengthConfig" type="xs:int" minOccurs="0"/>
           <xs:element name="protocolMessageBytes" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="protocolVersion" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="sequenceNumber" type="modifiableBigInteger" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -2878,16 +2866,6 @@
           <xs:element name="paddingValid" type="xs:boolean" minOccurs="0"/>
           <xs:element name="plainRecordBytes" type="modifiableByteArray" minOccurs="0"/>
           <xs:element name="usedTls13KeySetType" type="tls13KeySetType" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="blobRecord">
-    <xs:complexContent>
-      <xs:extension base="abstractRecord">
-        <xs:sequence>
-          <xs:element name="computations" type="recordCryptoComputations" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -2958,6 +2936,7 @@
   <xs:complexType name="tlsContext">
     <xs:sequence>
       <xs:element ref="config" minOccurs="0"/>
+      <xs:element name="layerStack" type="layerStack" minOccurs="0"/>
       <xs:element name="sessionList" type="session" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="httpContext" type="httpContext" minOccurs="0"/>
       <xs:element name="keylogfile" type="keylogfile" minOccurs="0"/>
@@ -2995,7 +2974,6 @@
       <xs:element name="serverCertificate" type="certificate" minOccurs="0"/>
       <xs:element name="clientCertificate" type="certificate" minOccurs="0"/>
       <xs:element name="digest" type="messageDigestCollector" minOccurs="0"/>
-      <xs:element name="recordLayer" type="recordLayer" minOccurs="0"/>
       <xs:element name="transportHandler" type="transportHandler" minOccurs="0"/>
       <xs:element name="talkingConnectionEndType" type="connectionEndType" minOccurs="0"/>
       <xs:element name="dtlsCookie" type="xs:base64Binary" minOccurs="0"/>
@@ -3106,7 +3084,6 @@
       <xs:element name="trustedCaIndicationExtensionCas" type="trustedAuthority" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="selectedSignatureAndHashAlgorithm" type="signatureAndHashAlgorithm" minOccurs="0"/>
       <xs:element name="prfAlgorithm" type="prfAlgorithm" minOccurs="0"/>
-      <xs:element name="recordLayerType" type="recordLayerType" minOccurs="0"/>
       <xs:element name="highestProtocolVersion" type="protocolVersion" minOccurs="0"/>
       <xs:element name="clientAuthentication" type="xs:boolean" minOccurs="0"/>
       <xs:element name="clientPWDUsername" type="xs:string" minOccurs="0"/>
@@ -3122,7 +3099,7 @@
       <xs:element name="lastClientHello" type="xs:base64Binary" minOccurs="0"/>
       <xs:element name="random" type="random" minOccurs="0"/>
       <xs:element name="messageBuffer" type="protocolMessage" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
-      <xs:element name="recordBuffer" type="abstractRecord" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="recordBuffer" type="record" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="fragmentBuffer" type="dtlsHandshakeMessageFragment" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="chooser" type="chooser" minOccurs="0"/>
       <xs:element name="proposedExtensionSet" type="extensionType" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
@@ -3458,7 +3435,6 @@
       <xs:element name="createFragmentsDynamically" type="xs:boolean" minOccurs="0"/>
       <xs:element name="createRecordsDynamically" type="xs:boolean" minOccurs="0"/>
       <xs:element name="createIndividualRecords" type="xs:boolean" minOccurs="0"/>
-      <xs:element name="recordLayerType" type="recordLayerType" minOccurs="0"/>
       <xs:element name="resetWorkflowTracesBeforeSaving" type="xs:boolean" minOccurs="0"/>
       <xs:element name="quickReceive" type="xs:boolean" minOccurs="0"/>
       <xs:element name="workflowExecutorShouldOpen" type="xs:boolean" minOccurs="0"/>
@@ -3803,6 +3779,10 @@
     </xs:sequence>
   </xs:complexType>
 
+  <xs:complexType name="layerStack">
+    <xs:sequence/>
+  </xs:complexType>
+
   <xs:complexType name="session">
     <xs:sequence>
       <xs:element name="masterSecret" type="xs:base64Binary" minOccurs="0"/>
@@ -3828,13 +3808,6 @@
   <xs:complexType name="messageDigestCollector">
     <xs:sequence>
       <xs:element name="rawBytes" type="xs:base64Binary" minOccurs="0"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="recordLayer" abstract="true">
-    <xs:sequence>
-      <xs:element name="readEpoch" type="xs:int"/>
-      <xs:element name="writeEpoch" type="xs:int"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -4166,10 +4139,7 @@
           <xs:element name="receivedRecords" minOccurs="0">
             <xs:complexType>
               <xs:sequence>
-                <xs:choice minOccurs="0" maxOccurs="unbounded">
-                  <xs:element name="Record" type="record"/>
-                  <xs:element name="BlobRecord" type="blobRecord"/>
-                </xs:choice>
+                <xs:element name="Record" type="record" minOccurs="0" maxOccurs="unbounded"/>
               </xs:sequence>
             </xs:complexType>
           </xs:element>
@@ -4236,10 +4206,7 @@
           <xs:element name="records" minOccurs="0">
             <xs:complexType>
               <xs:sequence>
-                <xs:choice minOccurs="0" maxOccurs="unbounded">
-                  <xs:element name="Record" type="record"/>
-                  <xs:element name="BlobRecord" type="blobRecord"/>
-                </xs:choice>
+                <xs:element name="Record" type="record" minOccurs="0" maxOccurs="unbounded"/>
               </xs:sequence>
             </xs:complexType>
           </xs:element>
@@ -4306,10 +4273,7 @@
           <xs:element name="sendRecords" minOccurs="0">
             <xs:complexType>
               <xs:sequence>
-                <xs:choice minOccurs="0" maxOccurs="unbounded">
-                  <xs:element name="Record" type="record"/>
-                  <xs:element name="BlobRecord" type="blobRecord"/>
-                </xs:choice>
+                <xs:element name="Record" type="record" minOccurs="0" maxOccurs="unbounded"/>
               </xs:sequence>
             </xs:complexType>
           </xs:element>
@@ -4333,32 +4297,12 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="forwardRecordsAction">
+  <xs:complexType name="forwardDataAction">
     <xs:complexContent>
       <xs:extension base="tlsAction">
         <xs:sequence>
           <xs:element name="from" type="xs:string" minOccurs="0"/>
           <xs:element name="to" type="xs:string" minOccurs="0"/>
-          <xs:element name="receivedRecords" minOccurs="0">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:choice minOccurs="0" maxOccurs="unbounded">
-                  <xs:element name="Record" type="record"/>
-                  <xs:element name="BlobRecord" type="blobRecord"/>
-                </xs:choice>
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="sendRecords" minOccurs="0">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:choice minOccurs="0" maxOccurs="unbounded">
-                  <xs:element name="Record" type="record"/>
-                  <xs:element name="BlobRecord" type="blobRecord"/>
-                </xs:choice>
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -4858,7 +4802,6 @@
       <xs:enumeration value="PASSWORD_SALT"/>
       <xs:enumeration value="SESSION_TICKET"/>
       <xs:enumeration value="EXTENDED_RANDOM"/>
-      <xs:enumeration value="KEY_SHARE_OLD"/>
       <xs:enumeration value="PRE_SHARED_KEY"/>
       <xs:enumeration value="EARLY_DATA"/>
       <xs:enumeration value="SUPPORTED_VERSIONS"/>
@@ -5668,13 +5611,6 @@
       <xs:enumeration value="DEFAULT"/>
       <xs:enumeration value="THREADED_SERVER"/>
       <xs:enumeration value="DTLS"/>
-    </xs:restriction>
-  </xs:simpleType>
-
-  <xs:simpleType name="recordLayerType">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="RECORD"/>
-      <xs:enumeration value="BLOB"/>
     </xs:restriction>
   </xs:simpleType>
 

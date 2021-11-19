@@ -19,7 +19,11 @@ import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.protocol.handler.ECDHEServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.PskEcDheServerKeyExchangeHandler;
+import de.rub.nds.tlsattacker.core.protocol.parser.PskEcDheServerKeyExchangeParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.PskEcDheServerKeyExchangePreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.PskEcDheServerKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
@@ -90,6 +94,21 @@ public class PskEcDheServerKeyExchangeMessage extends ECDHEServerKeyExchangeMess
     @Override
     public ECDHEServerKeyExchangeHandler<PskEcDheServerKeyExchangeMessage> getHandler(TlsContext context) {
         return new PskEcDheServerKeyExchangeHandler(context);
+    }
+
+    @Override
+    public PskEcDheServerKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new PskEcDheServerKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+    }
+
+    @Override
+    public PskEcDheServerKeyExchangePreparator getPreparator(TlsContext tlsContext) {
+        return new PskEcDheServerKeyExchangePreparator(tlsContext.getChooser(), this);
+    }
+
+    @Override
+    public PskEcDheServerKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
+        return new PskEcDheServerKeyExchangeSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

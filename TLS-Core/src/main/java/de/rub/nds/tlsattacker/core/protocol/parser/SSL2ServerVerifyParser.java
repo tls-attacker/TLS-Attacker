@@ -10,10 +10,10 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerVerifyMessage;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,27 +22,20 @@ public class SSL2ServerVerifyParser extends SSL2HandshakeMessageParser<SSL2Serve
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SSL2ServerVerifyParser(InputStream stream, ProtocolVersion selectedProtocolVersion, Config config) {
-        super(stream, HandshakeMessageType.SSL2_SERVER_VERIFY, selectedProtocolVersion, config);
+    public SSL2ServerVerifyParser(InputStream stream, ProtocolVersion selectedProtocolVersion, TlsContext tlsContext) {
+        super(stream, HandshakeMessageType.SSL2_SERVER_VERIFY, selectedProtocolVersion, tlsContext);
     }
 
     @Override
-    protected SSL2ServerVerifyMessage parseMessageContent() {
+    protected void parseMessageContent(SSL2ServerVerifyMessage message) {
         LOGGER.debug("Parsing SSL2ServerVerify");
-        SSL2ServerVerifyMessage message = createHandshakeMessage();
         parseHandshakeMessageContent(message);
-        return message;
     }
 
     @Override
     protected void parseHandshakeMessageContent(SSL2ServerVerifyMessage msg) {
         parseMessageLength(msg);
         parseEncryptedPart(msg);
-    }
-
-    @Override
-    protected SSL2ServerVerifyMessage createHandshakeMessage() {
-        return new SSL2ServerVerifyMessage();
     }
 
     private void parseEncryptedPart(SSL2ServerVerifyMessage message) {

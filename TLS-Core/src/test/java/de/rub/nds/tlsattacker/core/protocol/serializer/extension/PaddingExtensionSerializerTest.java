@@ -35,16 +35,14 @@ public class PaddingExtensionSerializerTest {
     private final int extensionLength;
     private final byte[] extensionPayload;
     private final byte[] expectedBytes;
-    private final int startParsing;
     private PaddingExtensionMessage message;
 
     public PaddingExtensionSerializerTest(ExtensionType extensionType, int extensionLength, byte[] extensionPayload,
-        byte[] expectedBytes, int startParsing) {
+        byte[] expectedBytes) {
         this.extensionType = extensionType;
         this.extensionLength = extensionLength;
         this.extensionPayload = extensionPayload;
         this.expectedBytes = expectedBytes;
-        this.startParsing = startParsing;
     }
 
     /**

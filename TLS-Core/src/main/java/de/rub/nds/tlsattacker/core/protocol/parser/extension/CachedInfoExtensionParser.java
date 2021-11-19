@@ -44,14 +44,10 @@ public class CachedInfoExtensionParser extends ExtensionParser<CachedInfoExtensi
 
         while (innerStream.available() > 0) {
             CachedObjectParser parser = new CachedObjectParser(innerStream, connectionEndType);
-            cachedObjectList.add(parser.parse());
+            CachedObject object = new CachedObject();
+            parser.parse(object);
+            cachedObjectList.add(object);
         }
         msg.setCachedInfo(cachedObjectList);
     }
-
-    @Override
-    protected CachedInfoExtensionMessage createExtensionMessage() {
-        return new CachedInfoExtensionMessage();
-    }
-
 }

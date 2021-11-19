@@ -70,7 +70,8 @@ public class ServerNameIndicationExtensionParserTest {
     public void testParseExtensionMessageContent() {
         ServerNameIndicationExtensionParser parser =
             new ServerNameIndicationExtensionParser(new ByteArrayInputStream(extension), Config.createConfig());
-        ServerNameIndicationExtensionMessage msg = parser.parse();
+        ServerNameIndicationExtensionMessage msg = new ServerNameIndicationExtensionMessage();
+        parser.parse(msg);
 
         assertArrayEquals(msg.getExtensionBytes().getValue(), completeExtension);
         assertArrayEquals(type.getValue(), msg.getExtensionType().getValue());

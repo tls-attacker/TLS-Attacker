@@ -50,9 +50,6 @@ public enum ExtensionType {
     EXTENDED_RANDOM(new byte[] { (byte) 0, (byte) 40 }), // Shares same IANA ID
     // as old keyshare
     // extension.
-    KEY_SHARE_OLD(new byte[] { (byte) 0, (byte) 40 }), // This is the keyshare
-    // extension before TLS
-    // 1.3 Draft 23
     PRE_SHARED_KEY(new byte[] { (byte) 0, (byte) 41 }),
     EARLY_DATA(new byte[] { (byte) 0, (byte) 42 }),
     SUPPORTED_VERSIONS(new byte[] { (byte) 0, (byte) 43 }),

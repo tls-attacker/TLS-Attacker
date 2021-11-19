@@ -29,7 +29,7 @@ public class ApplicationMessageSerializerTest {
     private byte[] expectedPart;
     private byte[] data;
 
-    public ApplicationMessageSerializerTest(byte[] message, int start, byte[] expectedPart, byte[] data) {
+    public ApplicationMessageSerializerTest(byte[] message, byte[] expectedPart, byte[] data) {
         this.expectedPart = expectedPart;
         this.data = data;
     }

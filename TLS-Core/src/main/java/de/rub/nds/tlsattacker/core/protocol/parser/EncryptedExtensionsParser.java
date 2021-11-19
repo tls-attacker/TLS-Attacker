@@ -9,10 +9,10 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.EncryptedExtensionsMessage;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
@@ -26,10 +26,9 @@ public class EncryptedExtensionsParser extends HandshakeMessageParser<EncryptedE
 
     private ConnectionEndType talkingConnectionEndType;
 
-    public EncryptedExtensionsParser(InputStream stream, ProtocolVersion version, Config config,
-        ConnectionEndType talkingConnectionEndType) {
-        super(stream, HandshakeMessageType.ENCRYPTED_EXTENSIONS, version, config);
-        this.talkingConnectionEndType = talkingConnectionEndType;
+    public EncryptedExtensionsParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
+        super(stream, HandshakeMessageType.ENCRYPTED_EXTENSIONS, version, tlsContext);
+        this.talkingConnectionEndType = tlsContext.getTalkingConnectionEndType();
     }
 
     @Override
@@ -43,11 +42,6 @@ public class EncryptedExtensionsParser extends HandshakeMessageParser<EncryptedE
                 msg.setExtensions(new ArrayList<>());
             }
         }
-    }
-
-    @Override
-    protected EncryptedExtensionsMessage createHandshakeMessage() {
-        return new EncryptedExtensionsMessage();
     }
 
 }

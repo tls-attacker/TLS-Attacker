@@ -15,11 +15,17 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.TokenBindingExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.TokenBindingExtensionParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.extension.TokenBindingExtensionPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.TokenBindingExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 
 /**
  * This extension is defined in draft-ietf-tokbind-negotiation
  */
-public class TokenBindingExtensionMessage extends ExtensionMessage {
+public class TokenBindingExtensionMessage extends ExtensionMessage<TokenBindingExtensionMessage> {
 
     @ModifiableVariableProperty
     private ModifiableByteArray tokenbindingVersion;
@@ -74,4 +80,23 @@ public class TokenBindingExtensionMessage extends ExtensionMessage {
             ModifiableVariableFactory.safelySetValue(this.parameterListLength, parameterListLength);
     }
 
+    @Override
+    public TokenBindingExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new TokenBindingExtensionParser(stream, tlsContext.getConfig());
+    }
+
+    @Override
+    public TokenBindingExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new TokenBindingExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+    }
+
+    @Override
+    public TokenBindingExtensionSerializer getSerializer(TlsContext tlsContext) {
+        return new TokenBindingExtensionSerializer(this);
+    }
+
+    @Override
+    public TokenBindingExtensionHandler getHandler(TlsContext tlsContext) {
+        return new TokenBindingExtensionHandler(tlsContext);
+    }
 }

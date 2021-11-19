@@ -16,11 +16,16 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.DHEServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.DHEServerComputations;
+import de.rub.nds.tlsattacker.core.protocol.parser.DHEServerKeyExchangeParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.DHEServerKeyExchangePreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.DHEServerKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -154,6 +159,22 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     @Override
     public DHEServerKeyExchangeHandler<? extends DHEServerKeyExchangeMessage> getHandler(TlsContext context) {
         return new DHEServerKeyExchangeHandler<>(context);
+    }
+
+    @Override
+    public DHEServerKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new DHEServerKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(),
+            AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite()), tlsContext);
+    }
+
+    @Override
+    public DHEServerKeyExchangePreparator getPreparator(TlsContext tlsContext) {
+        return new DHEServerKeyExchangePreparator(tlsContext.getChooser(), this);
+    }
+
+    @Override
+    public DHEServerKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
+        return new DHEServerKeyExchangeSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

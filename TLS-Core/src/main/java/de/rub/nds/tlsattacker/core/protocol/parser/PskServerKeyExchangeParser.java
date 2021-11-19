@@ -10,11 +10,11 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.PskServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,12 +30,11 @@ public class PskServerKeyExchangeParser extends ServerKeyExchangeParser<PskServe
      *
      * @param stream
      * @param version
-     *                Version of the Protocol
-     * @param config
-     *                A Config used in the current context
+     *                   Version of the Protocol
+     * @param tlsContext
      */
-    public PskServerKeyExchangeParser(InputStream stream, ProtocolVersion version, Config config) {
-        super(stream, HandshakeMessageType.SERVER_KEY_EXCHANGE, version, config);
+    public PskServerKeyExchangeParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
+        super(stream, HandshakeMessageType.SERVER_KEY_EXCHANGE, version, tlsContext);
         this.version = version;
     }
 
@@ -44,11 +43,6 @@ public class PskServerKeyExchangeParser extends ServerKeyExchangeParser<PskServe
         LOGGER.debug("Parsing PSKECDHEServerKeyExchangeMessage");
         parsePskIdentityHintLength(msg);
         parsePskIdentityHint(msg);
-    }
-
-    @Override
-    protected PskServerKeyExchangeMessage createHandshakeMessage() {
-        return new PskServerKeyExchangeMessage();
     }
 
     private void parsePskIdentityHintLength(PskServerKeyExchangeMessage msg) {

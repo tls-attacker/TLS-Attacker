@@ -26,13 +26,11 @@ public class SupplementalDataEntryParser extends Parser<SupplementalDataEntry> {
     }
 
     @Override
-    public SupplementalDataEntry parse() {
+    public void parse(SupplementalDataEntry entry) {
         LOGGER.debug("Parsing SupplementalDataEntry");
-        SupplementalDataEntry entry = new SupplementalDataEntry();
         parseSupplementalDataEntryType(entry);
         parseSupplementalDataEntryLength(entry);
         parseSupplementalDataEntry(entry);
-        return entry;
     }
 
     private void parseSupplementalDataEntryType(SupplementalDataEntry entry) {

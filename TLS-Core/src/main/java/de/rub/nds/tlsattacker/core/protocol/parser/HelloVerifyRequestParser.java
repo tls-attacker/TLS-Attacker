@@ -10,11 +10,11 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,8 +23,8 @@ public class HelloVerifyRequestParser extends HandshakeMessageParser<HelloVerify
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public HelloVerifyRequestParser(InputStream inputStream, ProtocolVersion version, Config config) {
-        super(inputStream, HandshakeMessageType.HELLO_VERIFY_REQUEST, version, config);
+    public HelloVerifyRequestParser(InputStream inputStream, ProtocolVersion version, TlsContext tlsContext) {
+        super(inputStream, HandshakeMessageType.HELLO_VERIFY_REQUEST, version, tlsContext);
     }
 
     @Override
@@ -33,11 +33,6 @@ public class HelloVerifyRequestParser extends HandshakeMessageParser<HelloVerify
         parseProtocolVersion(msg);
         parseCookieLength(msg);
         parseCookie(msg);
-    }
-
-    @Override
-    protected HelloVerifyRequestMessage createHandshakeMessage() {
-        return new HelloVerifyRequestMessage();
     }
 
     private void parseProtocolVersion(HelloVerifyRequestMessage msg) {

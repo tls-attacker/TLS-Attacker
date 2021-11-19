@@ -20,7 +20,11 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ServerHelloHandler;
+import de.rub.nds.tlsattacker.core.protocol.parser.SSL2ServerHelloParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.SSL2ServerHelloPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.SSL2ServerHelloSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @SuppressWarnings("serial")
@@ -71,6 +75,21 @@ public class SSL2ServerHelloMessage extends SSL2HandshakeMessage {
     @Override
     public SSL2ServerHelloHandler getHandler(TlsContext context) {
         return new SSL2ServerHelloHandler(context);
+    }
+
+    @Override
+    public SSL2ServerHelloParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new SSL2ServerHelloParser(stream, tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext);
+    }
+
+    @Override
+    public SSL2ServerHelloPreparator getPreparator(TlsContext tlsContext) {
+        return new SSL2ServerHelloPreparator(tlsContext.getChooser(), this);
+    }
+
+    @Override
+    public SSL2ServerHelloSerializer getSerializer(TlsContext tlsContext) {
+        return new SSL2ServerHelloSerializer(this, tlsContext);
     }
 
     public ModifiableByte getSessionIdHit() {

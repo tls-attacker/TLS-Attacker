@@ -30,22 +30,6 @@ public class ECDHClientKeyExchangeHandler<T extends ECDHClientKeyExchangeMessage
     }
 
     @Override
-    public ECDHClientKeyExchangeParser<T> getParser(InputStream stream) {
-        return new ECDHClientKeyExchangeParser<>(stream, tlsContext.getChooser().getLastRecordVersion(),
-            tlsContext.getConfig());
-    }
-
-    @Override
-    public ECDHClientKeyExchangePreparator<T> getPreparator(T message) {
-        return new ECDHClientKeyExchangePreparator<>(tlsContext.getChooser(), message);
-    }
-
-    @Override
-    public ECDHClientKeyExchangeSerializer<T> getSerializer(T message) {
-        return new ECDHClientKeyExchangeSerializer<>(message, tlsContext.getChooser().getSelectedProtocolVersion());
-    }
-
-    @Override
     public void adjustTLSContext(T message) {
         adjustPremasterSecret(message);
         adjustMasterSecret(message);

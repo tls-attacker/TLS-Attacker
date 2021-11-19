@@ -10,32 +10,12 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.ServerHelloDoneParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.ServerHelloDonePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.ServerHelloDoneSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.InputStream;
 
 public class ServerHelloDoneHandler extends HandshakeMessageHandler<ServerHelloDoneMessage> {
 
     public ServerHelloDoneHandler(TlsContext tlsContext) {
         super(tlsContext);
-    }
-
-    @Override
-    public ServerHelloDoneParser getParser(InputStream stream) {
-        return new ServerHelloDoneParser(stream, tlsContext.getChooser().getLastRecordVersion(),
-            tlsContext.getConfig());
-    }
-
-    @Override
-    public ServerHelloDonePreparator getPreparator(ServerHelloDoneMessage message) {
-        return new ServerHelloDonePreparator(tlsContext.getChooser(), message);
-    }
-
-    @Override
-    public ServerHelloDoneSerializer getSerializer(ServerHelloDoneMessage message) {
-        return new ServerHelloDoneSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

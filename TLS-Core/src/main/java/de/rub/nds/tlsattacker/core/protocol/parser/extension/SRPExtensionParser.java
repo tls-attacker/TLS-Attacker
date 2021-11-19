@@ -32,10 +32,4 @@ public class SRPExtensionParser extends ExtensionParser<SRPExtensionMessage> {
         }
         msg.setSrpIdentifier(parseByteArrayField(msg.getSrpIdentifierLength().getValue()));
     }
-
-    @Override
-    protected SRPExtensionMessage createExtensionMessage() {
-        return new SRPExtensionMessage();
-    }
-
 }

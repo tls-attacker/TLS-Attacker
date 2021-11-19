@@ -15,12 +15,14 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.layer.DataContainer;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import java.io.Serializable;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public abstract class ExtensionMessage extends ModifiableVariableHolder implements Serializable {
+public abstract class ExtensionMessage<Self extends ExtensionMessage> extends ModifiableVariableHolder
+    implements Serializable, DataContainer<Self> {
 
     protected ExtensionType extensionTypeConstant;
 

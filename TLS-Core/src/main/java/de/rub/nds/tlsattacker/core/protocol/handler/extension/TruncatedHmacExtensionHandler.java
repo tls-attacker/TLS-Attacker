@@ -23,21 +23,6 @@ public class TruncatedHmacExtensionHandler extends ExtensionHandler<TruncatedHma
     }
 
     @Override
-    public TruncatedHmacExtensionParser getParser(InputStream stream) {
-        return new TruncatedHmacExtensionParser(stream, context.getConfig());
-    }
-
-    @Override
-    public TruncatedHmacExtensionPreparator getPreparator(TruncatedHmacExtensionMessage message) {
-        return new TruncatedHmacExtensionPreparator(context.getChooser(), message, getSerializer(message));
-    }
-
-    @Override
-    public TruncatedHmacExtensionSerializer getSerializer(TruncatedHmacExtensionMessage message) {
-        return new TruncatedHmacExtensionSerializer(message);
-    }
-
-    @Override
     public void adjustTLSExtensionContext(TruncatedHmacExtensionMessage message) {
     }
 

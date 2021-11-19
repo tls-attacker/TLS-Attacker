@@ -10,12 +10,12 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
@@ -27,9 +27,9 @@ public class NewSessionTicketParser extends HandshakeMessageParser<NewSessionTic
 
     private final ConnectionEndType talkingConnectionEndType;
 
-    public NewSessionTicketParser(InputStream stream, ProtocolVersion version, Config config,
+    public NewSessionTicketParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext,
         ConnectionEndType talkingConnectionEndType) {
-        super(stream, HandshakeMessageType.NEW_SESSION_TICKET, version, config);
+        super(stream, HandshakeMessageType.NEW_SESSION_TICKET, version, tlsContext);
         this.talkingConnectionEndType = talkingConnectionEndType;
     }
 
@@ -54,11 +54,6 @@ public class NewSessionTicketParser extends HandshakeMessageParser<NewSessionTic
             parseIdentityLength(msg);
             parseIdentity(msg);
         }
-    }
-
-    @Override
-    protected NewSessionTicketMessage createHandshakeMessage() {
-        return new NewSessionTicketMessage(!getVersion().isTLS13());
     }
 
     private void parseLifetime(NewSessionTicketMessage msg) {

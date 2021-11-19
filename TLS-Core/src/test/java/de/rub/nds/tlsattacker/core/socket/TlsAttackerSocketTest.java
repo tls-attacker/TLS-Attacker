@@ -12,6 +12,8 @@ package de.rub.nds.tlsattacker.core.socket;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
+import de.rub.nds.tlsattacker.core.layer.LayerStackType;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
@@ -42,6 +44,7 @@ public class TlsAttackerSocketTest {
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         transportHandler = new FakeTransportHandler(ConnectionEndType.CLIENT);
         context.setTransportHandler(transportHandler);
+        context.setLayerStack(LayerStackFactory.createLayerStack(LayerStackType.TLS, context));
         socket = new TlsAttackerSocket(state);
     }
 

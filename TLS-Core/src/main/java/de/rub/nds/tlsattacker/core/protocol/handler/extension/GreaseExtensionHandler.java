@@ -23,21 +23,6 @@ public class GreaseExtensionHandler extends ExtensionHandler<GreaseExtensionMess
     }
 
     @Override
-    public GreaseExtensionParser getParser(InputStream stream) {
-        return null;
-    }
-
-    @Override
-    public GreaseExtensionPreparator getPreparator(GreaseExtensionMessage message) {
-        return new GreaseExtensionPreparator(context.getChooser(), message, getSerializer(message));
-    }
-
-    @Override
-    public GreaseExtensionSerializer getSerializer(GreaseExtensionMessage message) {
-        return new GreaseExtensionSerializer(message);
-    }
-
-    @Override
     public void adjustTLSExtensionContext(GreaseExtensionMessage message) {
 
     }

@@ -117,7 +117,8 @@ public class KeySetGenerator {
         }
         LOGGER.debug("A new key block was generated: {}", ArrayConverter.bytesToHexString(keyBlock));
         KeyBlockParser parser = new KeyBlockParser(keyBlock, cipherSuite, protocolVersion);
-        KeySet keySet = parser.parse();
+        KeySet keySet = new KeySet();
+        parser.parse(keySet);
         if (cipherSuite.isExportSymmetricCipher()) {
             deriveExportKeys(keySet, context);
         }

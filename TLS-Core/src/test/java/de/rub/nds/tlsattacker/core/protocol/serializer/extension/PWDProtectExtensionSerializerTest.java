@@ -28,7 +28,6 @@ public class PWDProtectExtensionSerializerTest {
     }
 
     private final byte[] expectedBytes;
-    private final int start;
     private final ExtensionType type;
     private final int extensionLength;
     private final int usernameLength;
@@ -36,10 +35,9 @@ public class PWDProtectExtensionSerializerTest {
     private PWDProtectExtensionMessage message;
     private PWDProtectExtensionSerializer serializer;
 
-    public PWDProtectExtensionSerializerTest(byte[] expectedBytes, int start, ExtensionType type, int extensionLength,
+    public PWDProtectExtensionSerializerTest(byte[] expectedBytes, ExtensionType type, int extensionLength,
         int usernameLength, byte[] username) {
         this.expectedBytes = expectedBytes;
-        this.start = start;
         this.type = type;
         this.extensionLength = extensionLength;
         this.usernameLength = usernameLength;

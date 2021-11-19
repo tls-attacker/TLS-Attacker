@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.protocol;
 
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,15 +23,6 @@ public abstract class ProtocolMessageHandler<MessageT extends ProtocolMessage> i
     public ProtocolMessageHandler(TlsContext tlsContext) {
         this.tlsContext = tlsContext;
     }
-
-    @Override
-    public abstract ProtocolMessageParser<MessageT> getParser(InputStream stream);
-
-    @Override
-    public abstract ProtocolMessagePreparator<MessageT> getPreparator(MessageT message);
-
-    @Override
-    public abstract ProtocolMessageSerializer<MessageT> getSerializer(MessageT message);
 
     /**
      * Performs additional preparations after parsing the message (e.g. ESNI decryption/parsing).

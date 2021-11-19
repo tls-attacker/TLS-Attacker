@@ -19,9 +19,11 @@ import java.util.List;
 
 /**
  * TLS Protocol message is the message included in the Record message.
+ *
+ * @param <Self>
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public abstract class TlsMessage extends ProtocolMessage {
+public abstract class TlsMessage<Self extends ProtocolMessage> extends ProtocolMessage<Self> {
 
     /**
      * content type

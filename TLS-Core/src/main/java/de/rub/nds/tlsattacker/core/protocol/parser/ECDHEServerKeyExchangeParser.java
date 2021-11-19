@@ -10,13 +10,13 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -34,17 +34,16 @@ public class ECDHEServerKeyExchangeParser<T extends ECDHEServerKeyExchangeMessag
      *
      * @param stream
      * @param version
-     *                Version of the Protocol
-     * @param config
-     *                A Config used in the current context
+     *                   Version of the Protocol
+     * @param tlsContext
      */
-    public ECDHEServerKeyExchangeParser(InputStream stream, ProtocolVersion version, Config config) {
-        this(stream, version, null, config);
+    public ECDHEServerKeyExchangeParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
+        this(stream, version, null, tlsContext);
     }
 
     public ECDHEServerKeyExchangeParser(InputStream stream, ProtocolVersion version,
-        KeyExchangeAlgorithm keyExchangeAlgorithm, Config config) {
-        super(stream, HandshakeMessageType.SERVER_KEY_EXCHANGE, version, config);
+        KeyExchangeAlgorithm keyExchangeAlgorithm, TlsContext tlsContext) {
+        super(stream, HandshakeMessageType.SERVER_KEY_EXCHANGE, version, tlsContext);
         this.version = version;
         this.keyExchangeAlgorithm = keyExchangeAlgorithm;
     }
@@ -70,11 +69,6 @@ public class ECDHEServerKeyExchangeParser<T extends ECDHEServerKeyExchangeMessag
         parseNamedGroup(msg);
         parseSerializedPublicKeyLength(msg);
         parseSerializedPublicKey(msg);
-    }
-
-    @Override
-    protected T createHandshakeMessage() {
-        return (T) new ECDHEServerKeyExchangeMessage();
     }
 
     /**

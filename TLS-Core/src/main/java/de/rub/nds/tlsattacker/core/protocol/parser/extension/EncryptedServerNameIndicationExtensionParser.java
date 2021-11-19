@@ -50,11 +50,6 @@ public class EncryptedServerNameIndicationExtensionParser
         }
     }
 
-    @Override
-    protected EncryptedServerNameIndicationExtensionMessage createExtensionMessage() {
-        return new EncryptedServerNameIndicationExtensionMessage();
-    }
-
     private void parseNonce(EncryptedServerNameIndicationExtensionMessage msg) {
         byte[] nonce = parseByteArrayField(ExtensionByteLength.NONCE);
         msg.setServerNonce(nonce);
@@ -69,7 +64,8 @@ public class EncryptedServerNameIndicationExtensionParser
 
     private void parseKeyShareEntry(EncryptedServerNameIndicationExtensionMessage msg) {
         KeyShareEntryParser parser = new KeyShareEntryParser(getStream());
-        KeyShareEntry keyShareEntry = parser.parse();
+        KeyShareEntry keyShareEntry = new KeyShareEntry();
+        parser.parse(keyShareEntry);
         msg.setKeyShareEntry(keyShareEntry);
     }
 

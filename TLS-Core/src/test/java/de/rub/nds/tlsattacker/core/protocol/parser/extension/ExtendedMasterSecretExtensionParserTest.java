@@ -25,6 +25,7 @@ import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
 public class ExtendedMasterSecretExtensionParserTest {
+
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] {
@@ -52,7 +53,8 @@ public class ExtendedMasterSecretExtensionParserTest {
 
     @Test
     public void testParseExtensionMessageContent() {
-        message = parser.parse();
+        message = new ExtendedMasterSecretExtensionMessage();
+        parser.parse(message);
 
         assertArrayEquals(extensionType.getValue(), message.getExtensionType().getValue());
         assertEquals(extensionLength, (long) message.getExtensionLength().getValue());

@@ -12,16 +12,11 @@ package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.AlpnExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.alpn.AlpnEntry;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.AlpnExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.AlpnExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.AlpnExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.io.ByteArrayInputStream;
 import java.util.LinkedList;
 import java.util.List;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -48,24 +43,9 @@ public class AlpnExtensionHandlerTest {
         alpnEntryList.get(0).setAlpnEntry(new String(announcedProtocols));
         msg.setAlpnEntryList(alpnEntryList);
         context.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
-        handler.adjustTLSContext(msg);
+        handler.adjustContext(msg);
         List<String> alpnStringList = new LinkedList<>();
         alpnStringList.add(new String(announcedProtocols));
         assertEquals(alpnStringList, context.getProposedAlpnProtocols());
-    }
-
-    @Test
-    public void testGetParser() {
-        assertTrue(handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof AlpnExtensionParser);
-    }
-
-    @Test
-    public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new AlpnExtensionMessage()) instanceof AlpnExtensionPreparator);
-    }
-
-    @Test
-    public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new AlpnExtensionMessage()) instanceof AlpnExtensionSerializer);
     }
 }

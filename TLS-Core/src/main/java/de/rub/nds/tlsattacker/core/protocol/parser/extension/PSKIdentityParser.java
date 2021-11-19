@@ -26,13 +26,11 @@ public class PSKIdentityParser extends Parser<PSKIdentity> {
     }
 
     @Override
-    public PSKIdentity parse() {
+    public void parse(PSKIdentity pskIdentity) {
         LOGGER.debug("Parsing PSKIdentity");
-        PSKIdentity pskIdentity = new PSKIdentity();
         parseIdentityLength(pskIdentity);
         parseIdentity(pskIdentity);
         parseObfuscatedTicketAge(pskIdentity);
-        return pskIdentity;
     }
 
     private void parseIdentityLength(PSKIdentity pskIdentity) {

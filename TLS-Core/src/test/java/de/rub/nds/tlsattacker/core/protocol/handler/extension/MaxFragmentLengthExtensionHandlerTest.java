@@ -11,11 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.MaxFragmentLengthExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.MaxFragmentLengthExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.MaxFragmentLengthExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.MaxFragmentLengthExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.ByteArrayInputStream;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,7 +35,7 @@ public class MaxFragmentLengthExtensionHandlerTest {
     public void testAdjustTLSContext() {
         MaxFragmentLengthExtensionMessage msg = new MaxFragmentLengthExtensionMessage();
         msg.setMaxFragmentLength(new byte[] { 1 });
-        handler.adjustTLSContext(msg);
+        handler.adjustContext(msg);
         assertTrue(context.getMaxFragmentLength() == MaxFragmentLength.TWO_9);
     }
 
@@ -47,35 +43,7 @@ public class MaxFragmentLengthExtensionHandlerTest {
     public void testUndefinedAdjustment() {
         MaxFragmentLengthExtensionMessage msg = new MaxFragmentLengthExtensionMessage();
         msg.setMaxFragmentLength(new byte[] { 77 });
-        handler.adjustTLSContext(msg);
+        handler.adjustContext(msg);
         assertNull(context.getMaxFragmentLength());
     }
-
-    /**
-     * Test of getParser method, of class MaxFragmentLengthExtensionHandler.
-     */
-    @Test
-    public void testGetParser() {
-        assertTrue(
-            handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof MaxFragmentLengthExtensionParser);
-    }
-
-    /**
-     * Test of getPreparator method, of class MaxFragmentLengthExtensionHandler.
-     */
-    @Test
-    public void testGetPreparator() {
-        assertTrue(handler
-            .getPreparator(new MaxFragmentLengthExtensionMessage()) instanceof MaxFragmentLengthExtensionPreparator);
-    }
-
-    /**
-     * Test of getSerializer method, of class MaxFragmentLengthExtensionHandler.
-     */
-    @Test
-    public void testGetSerializer() {
-        assertTrue(handler
-            .getSerializer(new MaxFragmentLengthExtensionMessage()) instanceof MaxFragmentLengthExtensionSerializer);
-    }
-
 }

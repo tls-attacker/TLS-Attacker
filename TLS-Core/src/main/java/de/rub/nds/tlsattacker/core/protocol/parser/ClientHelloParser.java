@@ -10,11 +10,11 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
@@ -35,20 +35,18 @@ public class ClientHelloParser extends HelloMessageParser<ClientHelloMessage> {
      * @param config
      *                A Config used in the current context
      */
-
     /**
      * Constructor for the Parser class
-     * 
+     *
      * @param stream
      * @param version
      *                                 Version of the Protocol
-     * @param config
-     *                                 A Config used in the current context
+     * @param tlsContext
      * @param talkingConnectionEndType
      */
-    public ClientHelloParser(InputStream stream, ProtocolVersion version, Config config,
+    public ClientHelloParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext,
         ConnectionEndType talkingConnectionEndType) {
-        super(stream, HandshakeMessageType.CLIENT_HELLO, version, config);
+        super(stream, HandshakeMessageType.CLIENT_HELLO, version, tlsContext);
         this.talkingConnectionEndType = talkingConnectionEndType;
     }
 
@@ -77,11 +75,6 @@ public class ClientHelloParser extends HelloMessageParser<ClientHelloMessage> {
 
             }
         }
-    }
-
-    @Override
-    protected ClientHelloMessage createHandshakeMessage() {
-        return new ClientHelloMessage();
     }
 
     /**

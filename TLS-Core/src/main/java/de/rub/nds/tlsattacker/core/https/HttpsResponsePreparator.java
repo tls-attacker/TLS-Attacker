@@ -10,7 +10,7 @@
 package de.rub.nds.tlsattacker.core.https;
 
 import de.rub.nds.tlsattacker.core.https.header.ContentLengthHeader;
-import de.rub.nds.tlsattacker.core.https.header.HttpsHeader;
+import de.rub.nds.tlsattacker.core.https.header.HttpHeader;
 import de.rub.nds.tlsattacker.core.protocol.preparator.TlsMessagePreparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
@@ -30,7 +30,7 @@ public class HttpsResponsePreparator extends TlsMessagePreparator<HttpsResponseM
         message.setResponseStatusCode("200 OK");
         message.setResponseContent(chooser.getConfig().getDefaultApplicationMessageData());
 
-        for (HttpsHeader header : message.getHeader()) {
+        for (HttpHeader header : message.getHeader()) {
             if (header instanceof ContentLengthHeader) {
                 ((ContentLengthHeader) header).setConfigLength(
                     message.getResponseContent().getValue().getBytes(StandardCharsets.ISO_8859_1).length);

@@ -11,14 +11,11 @@ package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.AlpnExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.alpn.AlpnEntry;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.AlpnExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.AlpnExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.AlpnExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.LogRecord;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,21 +26,6 @@ public class AlpnExtensionHandler extends ExtensionHandler<AlpnExtensionMessage>
 
     public AlpnExtensionHandler(TlsContext context) {
         super(context);
-    }
-
-    @Override
-    public AlpnExtensionParser getParser(InputStream stream) {
-        return new AlpnExtensionParser(stream, context.getConfig());
-    }
-
-    @Override
-    public AlpnExtensionPreparator getPreparator(AlpnExtensionMessage message) {
-        return new AlpnExtensionPreparator(context.getChooser(), message, getSerializer(message));
-    }
-
-    @Override
-    public AlpnExtensionSerializer getSerializer(AlpnExtensionMessage message) {
-        return new AlpnExtensionSerializer(message);
     }
 
     @Override

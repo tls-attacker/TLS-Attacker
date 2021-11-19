@@ -15,11 +15,18 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.protocol.Handler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.SrtpExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.SrtpExtensionParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SrtpExtensionPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SrtpExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 
 /**
  * This extension is defined in RFC5764
  */
-public class SrtpExtensionMessage extends ExtensionMessage {
+public class SrtpExtensionMessage extends ExtensionMessage<SrtpExtensionMessage> {
 
     @ModifiableVariableProperty
     private ModifiableByteArray srtpProtectionProfiles;
@@ -86,6 +93,26 @@ public class SrtpExtensionMessage extends ExtensionMessage {
 
     public void setSrtpMkiLength(int srtpMkiLength) {
         this.srtpMkiLength = ModifiableVariableFactory.safelySetValue(this.srtpMkiLength, srtpMkiLength);
+    }
+
+    @Override
+    public SrtpExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new SrtpExtensionParser(stream, tlsContext.getConfig());
+    }
+
+    @Override
+    public SrtpExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new SrtpExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+    }
+
+    @Override
+    public SrtpExtensionSerializer getSerializer(TlsContext tlsContext) {
+        return new SrtpExtensionSerializer(this);
+    }
+
+    @Override
+    public SrtpExtensionHandler getHandler(TlsContext tlsContext) {
+        return new SrtpExtensionHandler(tlsContext);
     }
 
 }

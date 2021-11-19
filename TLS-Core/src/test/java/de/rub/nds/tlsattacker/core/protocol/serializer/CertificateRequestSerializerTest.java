@@ -28,7 +28,6 @@ public class CertificateRequestSerializerTest {
     }
 
     private byte[] message;
-    private int start;
     private byte[] expectedPart;
     private HandshakeMessageType type;
     private int length;
@@ -40,11 +39,10 @@ public class CertificateRequestSerializerTest {
     private byte[] distinguishedNames;
     private ProtocolVersion version;
 
-    public CertificateRequestSerializerTest(byte[] message, int start, byte[] expectedPart, HandshakeMessageType type,
-        int length, int certTypesCount, byte[] certTypes, int sigHashAlgsLength, byte[] sigHashAlgs,
-        int distinguishedNamesLength, byte[] distinguishedNames, ProtocolVersion version) {
+    public CertificateRequestSerializerTest(byte[] message, byte[] expectedPart, HandshakeMessageType type, int length,
+        int certTypesCount, byte[] certTypes, int sigHashAlgsLength, byte[] sigHashAlgs, int distinguishedNamesLength,
+        byte[] distinguishedNames, ProtocolVersion version) {
         this.message = message;
-        this.start = start;
         this.expectedPart = expectedPart;
         this.type = type;
         this.length = length;

@@ -11,12 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.UnknownMessageParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.UnknownMessagePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.UnknownMessageSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.ByteArrayInputStream;
-import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -29,32 +24,6 @@ public class UnknownHandlerTest {
     public void setUp() {
         context = new TlsContext();
         handler = new UnknownMessageHandler(context, ProtocolMessageType.UNKNOWN);
-    }
-
-    /**
-     * Test of getParser method, of class UnknownHandler.
-     */
-    @Test
-    public void testGetParser() {
-        assertTrue(handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof UnknownMessageParser);
-    }
-
-    /**
-     * Test of getPreparator method, of class UnknownHandler.
-     */
-    @Test
-    public void testGetPreparator() {
-        assertTrue(handler.getPreparator(
-            new UnknownMessage(context.getConfig(), ProtocolMessageType.UNKNOWN)) instanceof UnknownMessagePreparator);
-    }
-
-    /**
-     * Test of getSerializer method, of class UnknownHandler.
-     */
-    @Test
-    public void testGetSerializer() {
-        assertTrue(handler.getSerializer(
-            new UnknownMessage(context.getConfig(), ProtocolMessageType.UNKNOWN)) instanceof UnknownMessageSerializer);
     }
 
     /**

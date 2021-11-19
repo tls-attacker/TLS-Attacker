@@ -10,32 +10,12 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.PskRsaClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.PskRsaClientKeyExchangeParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.PskRsaClientKeyExchangePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.PskRsaClientKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.InputStream;
 
 public class PskRsaClientKeyExchangeHandler extends RSAClientKeyExchangeHandler<PskRsaClientKeyExchangeMessage> {
 
     public PskRsaClientKeyExchangeHandler(TlsContext tlsContext) {
         super(tlsContext);
-    }
-
-    @Override
-    public PskRsaClientKeyExchangeParser getParser(InputStream stream) {
-        return new PskRsaClientKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(),
-            tlsContext.getConfig());
-    }
-
-    @Override
-    public PskRsaClientKeyExchangePreparator getPreparator(PskRsaClientKeyExchangeMessage message) {
-        return new PskRsaClientKeyExchangePreparator(tlsContext.getChooser(), message);
-    }
-
-    @Override
-    public PskRsaClientKeyExchangeSerializer getSerializer(PskRsaClientKeyExchangeMessage message) {
-        return new PskRsaClientKeyExchangeSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

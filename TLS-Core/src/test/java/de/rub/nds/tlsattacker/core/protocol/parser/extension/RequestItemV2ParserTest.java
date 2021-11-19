@@ -22,6 +22,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 public class RequestItemV2ParserTest {
+
     public static void assertResponderIdList(List<ResponderId> listExpected, List<ResponderId> listActual) {
         ResponderId itemExpected;
         ResponderId itemActual;
@@ -49,7 +50,8 @@ public class RequestItemV2ParserTest {
     @Test
     public void testParser() {
         RequestItemV2Parser parser = new RequestItemV2Parser(new ByteArrayInputStream(parsingBytes));
-        RequestItemV2 item = parser.parse();
+        RequestItemV2 item = new RequestItemV2();
+        parser.parse(item);
 
         assertEquals(requestType, (long) item.getRequestType().getValue());
         assertEquals(requestLength, (long) item.getRequestLength().getValue());

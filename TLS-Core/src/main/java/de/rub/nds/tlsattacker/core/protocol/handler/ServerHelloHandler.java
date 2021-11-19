@@ -33,10 +33,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.PWDComputations;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.DragonFlyKeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
-import de.rub.nds.tlsattacker.core.protocol.parser.ServerHelloParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.keyshare.DragonFlyKeyShareEntryParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.ServerHelloPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.ServerHelloSerializer;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
@@ -45,7 +42,6 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -60,22 +56,6 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 
     public ServerHelloHandler(TlsContext tlsContext) {
         super(tlsContext);
-    }
-
-    @Override
-    public ServerHelloPreparator getPreparator(ServerHelloMessage message) {
-        return new ServerHelloPreparator(tlsContext.getChooser(), message);
-    }
-
-    @Override
-    public ServerHelloSerializer getSerializer(ServerHelloMessage message) {
-        return new ServerHelloSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
-    }
-
-    @Override
-    public ServerHelloParser getParser(InputStream stream) {
-        return new ServerHelloParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext.getConfig(),
-            tlsContext.getTalkingConnectionEndType());
     }
 
     @Override
@@ -318,7 +298,8 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         EllipticCurve curve = CurveFactory.getCurve(keyShare.getGroup());
         DragonFlyKeyShareEntryParser parser =
             new DragonFlyKeyShareEntryParser(new ByteArrayInputStream(keyShare.getPublicKey()), keyShare.getGroup());
-        DragonFlyKeyShareEntry dragonFlyKeyShareEntry = parser.parse();
+        DragonFlyKeyShareEntry dragonFlyKeyShareEntry = new DragonFlyKeyShareEntry();
+        parser.parse(dragonFlyKeyShareEntry);
         int curveSize = curve.getModulus().bitLength();
         Point keySharePoint =
             PointFormatter.fromRawFormat(keyShare.getGroup(), dragonFlyKeyShareEntry.getRawPublicKey());

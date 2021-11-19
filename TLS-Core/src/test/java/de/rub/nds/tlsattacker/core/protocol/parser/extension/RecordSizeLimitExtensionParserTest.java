@@ -55,7 +55,8 @@ public class RecordSizeLimitExtensionParserTest {
     public void testParseExtensionMessageContent() {
         RecordSizeLimitExtensionParser parser =
             new RecordSizeLimitExtensionParser(new ByteArrayInputStream(extension), Config.createConfig());
-        RecordSizeLimitExtensionMessage message = parser.parse();
+        RecordSizeLimitExtensionMessage message = new RecordSizeLimitExtensionMessage();
+        parser.parse(message);
         assertArrayEquals(message.getExtensionBytes().getValue(), completeExtension);
         assertArrayEquals(type.getValue(), message.getExtensionType().getValue());
         assertTrue(extensionLength == message.getExtensionLength().getValue());

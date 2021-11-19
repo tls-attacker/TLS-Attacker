@@ -9,11 +9,11 @@
 
 package de.rub.nds.tlsattacker.core.https.header.handler;
 
-import de.rub.nds.tlsattacker.core.https.header.HttpsHeader;
+import de.rub.nds.tlsattacker.core.https.header.HttpHeader;
 import de.rub.nds.tlsattacker.core.protocol.Handler;
 import de.rub.nds.tlsattacker.core.state.http.HttpContext;
 
-public abstract class HttpsHeaderHandler implements Handler<HttpsHeader> {
+public abstract class HttpsHeaderHandler implements Handler<HttpHeader> {
 
     private final HttpContext context;
 

@@ -12,11 +12,7 @@ package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SupportedVersionsExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.SupportedVersionsExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SupportedVersionsExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SupportedVersionsExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.ByteArrayInputStream;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
@@ -44,7 +40,7 @@ public class SupportedVersionsExtensionHandlerTest {
         SupportedVersionsExtensionMessage msg = new SupportedVersionsExtensionMessage();
         msg.setSupportedVersions(
             ArrayConverter.concatenate(ProtocolVersion.TLS12.getValue(), ProtocolVersion.TLS13.getValue()));
-        handler.adjustTLSContext(msg);
+        handler.adjustContext(msg);
         assertTrue(context.getClientSupportedProtocolVersions().size() == 2);
         assertEquals(context.getHighestClientProtocolVersion().getValue(), ProtocolVersion.TLS13.getValue());
     }
@@ -53,35 +49,8 @@ public class SupportedVersionsExtensionHandlerTest {
     public void testAdjustTLSContextBadVersions() {
         SupportedVersionsExtensionMessage msg = new SupportedVersionsExtensionMessage();
         msg.setSupportedVersions(new byte[] { 0, 1, 2, 3, 3, 3 });
-        handler.adjustTLSContext(msg);
+        handler.adjustContext(msg);
         assertTrue(context.getClientSupportedProtocolVersions().size() == 1);
         assertEquals(context.getHighestClientProtocolVersion().getValue(), ProtocolVersion.TLS12.getValue());
-    }
-
-    /**
-     * Test of getParser method, of class SupportedVersionsExtensionHandler.
-     */
-    @Test
-    public void testGetParser() {
-        assertTrue(
-            handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof SupportedVersionsExtensionParser);
-    }
-
-    /**
-     * Test of getPreparator method, of class SupportedVersionsExtensionHandler.
-     */
-    @Test
-    public void testGetPreparator() {
-        assertTrue(handler
-            .getPreparator(new SupportedVersionsExtensionMessage()) instanceof SupportedVersionsExtensionPreparator);
-    }
-
-    /**
-     * Test of getSerializer method, of class SupportedVersionsExtensionHandler.
-     */
-    @Test
-    public void testGetSerializer() {
-        assertTrue(handler
-            .getSerializer(new SupportedVersionsExtensionMessage()) instanceof SupportedVersionsExtensionSerializer);
     }
 }

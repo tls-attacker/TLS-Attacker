@@ -57,7 +57,8 @@ public class PWDProtectExtensionParserTest {
     public void testParseExtensionMessageContent() {
         PWDProtectExtensionParser parser =
             new PWDProtectExtensionParser(new ByteArrayInputStream(expectedBytes), Config.createConfig());
-        PWDProtectExtensionMessage msg = parser.parse();
+        PWDProtectExtensionMessage msg = new PWDProtectExtensionMessage();
+        parser.parse(msg);
         assertArrayEquals(type.getValue(), msg.getExtensionType().getValue());
         assertEquals(extensionLength, (long) msg.getExtensionLength().getValue());
         assertEquals(usernameLength, (long) msg.getUsernameLength().getValue());

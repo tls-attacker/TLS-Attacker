@@ -9,13 +9,8 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PWDClearExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.PWDClearExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PWDClearExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PWDClearExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.InputStream;
 
 public class PWDClearExtensionHandler extends ExtensionHandler<PWDClearExtensionMessage> {
 
@@ -28,18 +23,4 @@ public class PWDClearExtensionHandler extends ExtensionHandler<PWDClearExtension
         context.setClientPWDUsername(message.getUsername().getValue());
     }
 
-    @Override
-    public PWDClearExtensionParser getParser(InputStream stream) {
-        return new PWDClearExtensionParser(stream, context.getConfig());
-    }
-
-    @Override
-    public PWDClearExtensionPreparator getPreparator(PWDClearExtensionMessage message) {
-        return new PWDClearExtensionPreparator(context.getChooser(), message, getSerializer(message));
-    }
-
-    @Override
-    public PWDClearExtensionSerializer getSerializer(PWDClearExtensionMessage message) {
-        return new PWDClearExtensionSerializer(message);
-    }
 }

@@ -307,8 +307,9 @@ public class RecordAEADCipher extends RecordCipher {
         }
 
         @Override
-        public Object parse() {
-            throw new UnsupportedOperationException("Not supported yet.");
+        public void parse(Object t) {
+            throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods,
+                                                                           // choose Tools | Templates.
         }
 
         @Override

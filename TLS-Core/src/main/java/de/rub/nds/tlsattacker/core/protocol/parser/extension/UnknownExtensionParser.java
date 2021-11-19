@@ -49,9 +49,4 @@ public class UnknownExtensionParser extends ExtensionParser<UnknownExtensionMess
         message.setTypeConfig(message.getExtensionType().getValue());
         message.setLengthConfig(message.getExtensionLength().getValue());
     }
-
-    @Override
-    protected UnknownExtensionMessage createExtensionMessage() {
-        return new UnknownExtensionMessage();
-    }
 }

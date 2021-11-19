@@ -40,11 +40,6 @@ public class SupportedVersionsExtensionParser extends ExtensionParser<SupportedV
         }
     }
 
-    @Override
-    protected SupportedVersionsExtensionMessage createExtensionMessage() {
-        return new SupportedVersionsExtensionMessage();
-    }
-
     /**
      * Reads the next bytes as the supportedVersionLength of the Extension and writes them in the message
      *

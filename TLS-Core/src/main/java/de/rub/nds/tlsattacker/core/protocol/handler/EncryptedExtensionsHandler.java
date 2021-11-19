@@ -10,15 +10,10 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
+import de.rub.nds.tlsattacker.core.protocol.Handler;
 import de.rub.nds.tlsattacker.core.protocol.message.EncryptedExtensionsMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.EncryptedExtensionsParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.EncryptedExtensionsPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.EncryptedExtensionsSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -35,30 +30,13 @@ public class EncryptedExtensionsHandler extends HandshakeMessageHandler<Encrypte
     }
 
     @Override
-    public EncryptedExtensionsParser getParser(InputStream stream) {
-        return new EncryptedExtensionsParser(stream, tlsContext.getLastRecordVersion(), tlsContext.getConfig(),
-            tlsContext.getTalkingConnectionEndType());
-    }
-
-    @Override
-    public EncryptedExtensionsPreparator getPreparator(EncryptedExtensionsMessage message) {
-        return new EncryptedExtensionsPreparator(tlsContext.getChooser(), message);
-    }
-
-    @Override
-    public EncryptedExtensionsSerializer getSerializer(EncryptedExtensionsMessage message) {
-        return new EncryptedExtensionsSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
-    }
-
-    @Override
     public void adjustTLSContext(EncryptedExtensionsMessage message) {
         if (message.getExtensions() != null) {
             LOGGER.debug("Adjusting for EncryptedExtensions:");
             for (ExtensionMessage extension : message.getExtensions()) {
                 LOGGER.debug("Adjusting " + message.toCompactString());
-                ExtensionHandler handler =
-                    HandlerFactory.getExtensionHandler(tlsContext, extension.getExtensionTypeConstant());
-                handler.adjustTLSContext(extension);
+                Handler handler = extension.getHandler(tlsContext);
+                handler.adjustContext(extension);
             }
 
             warnOnConflictingExtensions();

@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
@@ -61,9 +62,9 @@ public class CertificateRequestParserTest {
     private ProtocolVersion version;
     private final Config config = Config.createConfig();
 
-    public CertificateRequestParserTest(byte[] message, int start, byte[] expectedPart, HandshakeMessageType type,
-        int length, int certTypesCount, byte[] certTypes, int sigHashAlgsLength, byte[] sigHashAlgs,
-        int distinguishedNamesLength, byte[] distinguishedNames, ProtocolVersion version) {
+    public CertificateRequestParserTest(byte[] message, byte[] expectedPart, HandshakeMessageType type, int length,
+        int certTypesCount, byte[] certTypes, int sigHashAlgsLength, byte[] sigHashAlgs, int distinguishedNamesLength,
+        byte[] distinguishedNames, ProtocolVersion version) {
         this.message = message;
         this.type = type;
         this.length = length;
@@ -81,9 +82,10 @@ public class CertificateRequestParserTest {
      */
     @Test
     public void testParse() {
-        CertificateRequestParser parser =
-            new CertificateRequestParser(new ByteArrayInputStream(message), version, config, ConnectionEndType.SERVER);
-        CertificateRequestMessage msg = parser.parse();
+        CertificateRequestParser parser = new CertificateRequestParser(new ByteArrayInputStream(message), version,
+            new TlsContext(config), ConnectionEndType.SERVER);
+        CertificateRequestMessage msg = new CertificateRequestMessage();
+        parser.parse(msg);
         assertArrayEquals(message, msg.getCompleteResultingMessage().getValue());
         assertTrue(msg.getLength().getValue() == length);
         assertTrue(msg.getType().getValue() == type.getValue());

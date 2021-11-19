@@ -25,10 +25,4 @@ public class ClientAuthzExtensionParser extends ExtensionParser<ClientAuthzExten
         msg.setAuthzFormatListLength(parseIntField(ExtensionByteLength.CLIENT_AUTHZ_FORMAT_LIST_LENGTH));
         msg.setAuthzFormatList(parseByteArrayField(msg.getAuthzFormatListLength().getValue()));
     }
-
-    @Override
-    protected ClientAuthzExtensionMessage createExtensionMessage() {
-        return new ClientAuthzExtensionMessage();
-    }
-
 }

@@ -19,7 +19,6 @@ import org.junit.Test;
 import java.nio.charset.Charset;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class HttpsRequestHandlerTest {
 
@@ -35,24 +34,10 @@ public class HttpsRequestHandlerTest {
         String rawMessage = "GET /index.html HTTP/1.1\r\nUser-Agent: Test\r\nHost: www.rub.de\r\n\r\n";
         HttpsRequestParser parser = new HttpsRequestParser(
             new ByteArrayInputStream(rawMessage.getBytes(Charset.forName("UTF-8"))), ProtocolVersion.TLS12, config);
-        message = parser.parse();
+        message = new HttpsRequestMessage();
+        parser.parse(message);
 
         handler = new HttpsRequestHandler(context);
-    }
-
-    @Test
-    public void testGetParser() {
-        assertTrue(handler.getParser(new ByteArrayInputStream(new byte[1])) instanceof HttpsRequestParser);
-    }
-
-    @Test
-    public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new HttpsRequestMessage()) instanceof HttpsRequestPreparator);
-    }
-
-    @Test
-    public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new HttpsRequestMessage()) instanceof HttpsRequestSerializer);
     }
 
     @Test

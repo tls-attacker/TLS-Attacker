@@ -31,10 +31,4 @@ public class PaddingExtensionParser extends ExtensionParser<PaddingExtensionMess
         LOGGER
             .debug("The padding extension parser parsed the padding bytes " + bytesToHexString(msg.getPaddingBytes()));
     }
-
-    @Override
-    protected PaddingExtensionMessage createExtensionMessage() {
-        return new PaddingExtensionMessage();
-    }
-
 }

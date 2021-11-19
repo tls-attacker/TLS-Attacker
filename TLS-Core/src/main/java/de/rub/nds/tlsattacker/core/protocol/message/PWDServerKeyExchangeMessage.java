@@ -16,12 +16,17 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.protocol.handler.PWDServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.PWDComputations;
+import de.rub.nds.tlsattacker.core.protocol.parser.PWDServerKeyExchangeParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.PWDServerKeyExchangePreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.PWDServerKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
@@ -76,6 +81,22 @@ public class PWDServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     @Override
     public PWDServerKeyExchangeHandler getHandler(TlsContext context) {
         return new PWDServerKeyExchangeHandler(context);
+    }
+
+    @Override
+    public PWDServerKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new PWDServerKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(),
+            AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite()), tlsContext);
+    }
+
+    @Override
+    public PWDServerKeyExchangePreparator getPreparator(TlsContext tlsContext) {
+        return new PWDServerKeyExchangePreparator(tlsContext.getChooser(), this);
+    }
+
+    @Override
+    public PWDServerKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
+        return new PWDServerKeyExchangeSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     public ModifiableInteger getSaltLength() {

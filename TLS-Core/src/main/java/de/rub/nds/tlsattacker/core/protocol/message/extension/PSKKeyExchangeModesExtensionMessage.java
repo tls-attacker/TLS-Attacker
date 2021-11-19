@@ -16,6 +16,15 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.PSKKeyExchangeModesExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.PSKKeyExchangeModesExtensionParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtensionPreparator;
+import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PSKKeyExchangeModesExtensionPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PSKKeyExchangeModesExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -24,7 +33,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  * RFC draft-ietf-tls-tls13-21
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class PSKKeyExchangeModesExtensionMessage extends ExtensionMessage {
+public class PSKKeyExchangeModesExtensionMessage extends ExtensionMessage<PSKKeyExchangeModesExtensionMessage> {
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] keyExchangeModesConfig;
@@ -81,5 +90,25 @@ public class PSKKeyExchangeModesExtensionMessage extends ExtensionMessage {
 
     public void setKeyExchangeModesConfig(byte[] keyExchangeModesConfig) {
         this.keyExchangeModesConfig = keyExchangeModesConfig;
+    }
+
+    @Override
+    public ExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new PSKKeyExchangeModesExtensionParser(stream, tlsContext.getConfig());
+    }
+
+    @Override
+    public ExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new PSKKeyExchangeModesExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+    }
+
+    @Override
+    public ExtensionSerializer getSerializer(TlsContext tlsContext) {
+        return new PSKKeyExchangeModesExtensionSerializer(this);
+    }
+
+    @Override
+    public PSKKeyExchangeModesExtensionHandler getHandler(TlsContext tlsContext) {
+        return new PSKKeyExchangeModesExtensionHandler(tlsContext);
     }
 }

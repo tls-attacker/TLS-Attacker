@@ -29,7 +29,8 @@ public class UnknownParserTest {
     public void testParse() {
         parser = new UnknownMessageParser(new ByteArrayInputStream(new byte[] { 0, 1, 2, 3 }), ProtocolVersion.TLS12,
             ProtocolMessageType.UNKNOWN, config);
-        UnknownMessage message = parser.parse();
+        UnknownMessage message = new UnknownMessage();
+        parser.parse(message);
         assertArrayEquals(new byte[] { 0, 1, 2, 3 }, message.getCompleteResultingMessage().getValue());
     }
 

@@ -41,21 +41,6 @@ public class PreSharedKeyExtensionHandler extends ExtensionHandler<PreSharedKeyE
     }
 
     @Override
-    public ExtensionParser getParser(InputStream stream) {
-        return new PreSharedKeyExtensionParser(stream, context.getConfig());
-    }
-
-    @Override
-    public ExtensionPreparator getPreparator(PreSharedKeyExtensionMessage message) {
-        return new PreSharedKeyExtensionPreparator(context.getChooser(), message, getSerializer(message));
-    }
-
-    @Override
-    public ExtensionSerializer getSerializer(PreSharedKeyExtensionMessage message) {
-        return new PreSharedKeyExtensionSerializer(message, context.getChooser().getConnectionEndType());
-    }
-
-    @Override
     public void adjustTLSExtensionContext(PreSharedKeyExtensionMessage message) {
         LOGGER.debug("Adjusting TLS Context for PSK Key Extension Message");
         if (context.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {

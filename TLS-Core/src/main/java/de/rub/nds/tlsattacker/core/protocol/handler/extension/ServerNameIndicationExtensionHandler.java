@@ -9,16 +9,11 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.NameType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.SNIEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.ServerNameIndicationExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ServerNameIndicationExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ServerNameIndicationExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -44,20 +39,5 @@ public class ServerNameIndicationExtensionHandler extends ExtensionHandler<Serve
             }
         }
         context.setClientSNIEntryList(sniEntryList);
-    }
-
-    @Override
-    public ServerNameIndicationExtensionParser getParser(InputStream stream) {
-        return new ServerNameIndicationExtensionParser(stream, context.getConfig());
-    }
-
-    @Override
-    public ServerNameIndicationExtensionPreparator getPreparator(ServerNameIndicationExtensionMessage message) {
-        return new ServerNameIndicationExtensionPreparator(context.getChooser(), message, getSerializer(message));
-    }
-
-    @Override
-    public ServerNameIndicationExtensionSerializer getSerializer(ServerNameIndicationExtensionMessage message) {
-        return new ServerNameIndicationExtensionSerializer(message);
     }
 }

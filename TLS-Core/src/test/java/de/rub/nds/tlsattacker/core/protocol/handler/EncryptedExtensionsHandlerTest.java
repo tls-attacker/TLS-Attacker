@@ -12,12 +12,8 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.EncryptedExtensionsMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicationExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.EncryptedExtensionsParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.EncryptedExtensionsPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.EncryptedExtensionsSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.io.ByteArrayInputStream;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,30 +30,6 @@ public class EncryptedExtensionsHandlerTest {
         context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
 
         handler = new EncryptedExtensionsHandler(context);
-    }
-
-    /**
-     * Test of getParser method, of class EncryptedExtensionsHandler.
-     */
-    @Test
-    public void testGetParser() {
-        assertTrue(handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof EncryptedExtensionsParser);
-    }
-
-    /**
-     * Test of getPreparator method, of class EncryptedExtensionsHandler.
-     */
-    @Test
-    public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new EncryptedExtensionsMessage()) instanceof EncryptedExtensionsPreparator);
-    }
-
-    /**
-     * Test of getSerializer method, of class EncryptedExtensionsHandler.
-     */
-    @Test
-    public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new EncryptedExtensionsMessage()) instanceof EncryptedExtensionsSerializer);
     }
 
     /**

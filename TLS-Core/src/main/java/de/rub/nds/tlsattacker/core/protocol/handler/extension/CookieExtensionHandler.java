@@ -26,21 +26,6 @@ public class CookieExtensionHandler extends ExtensionHandler<CookieExtensionMess
     }
 
     @Override
-    public ExtensionParser getParser(InputStream stream) {
-        return new CookieExtensionParser(stream, context.getConfig());
-    }
-
-    @Override
-    public ExtensionPreparator getPreparator(CookieExtensionMessage message) {
-        return new CookieExtensionPreparator(context.getChooser(), message, getSerializer(message));
-    }
-
-    @Override
-    public ExtensionSerializer getSerializer(CookieExtensionMessage message) {
-        return new CookieExtensionSerializer(message);
-    }
-
-    @Override
     public void adjustTLSExtensionContext(CookieExtensionMessage message) {
         context.setExtensionCookie(message.getCookie().getValue());
     }

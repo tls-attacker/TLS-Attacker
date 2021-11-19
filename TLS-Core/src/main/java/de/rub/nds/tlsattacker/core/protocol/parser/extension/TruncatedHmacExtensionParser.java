@@ -23,10 +23,4 @@ public class TruncatedHmacExtensionParser extends ExtensionParser<TruncatedHmacE
     public void parseExtensionMessageContent(TruncatedHmacExtensionMessage msg) {
         // nothing to parse here, it's a opt-in extension
     }
-
-    @Override
-    protected TruncatedHmacExtensionMessage createExtensionMessage() {
-        return new TruncatedHmacExtensionMessage();
-    }
-
 }

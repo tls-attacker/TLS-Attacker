@@ -32,23 +32,6 @@ public class CertificateStatusRequestExtensionHandler
     }
 
     @Override
-    public CertificateStatusRequestExtensionParser getParser(InputStream stream) {
-        // TODO make sure this is the correct version
-        return new CertificateStatusRequestExtensionParser(stream, context.getConfig(),
-            context.getChooser().getSelectedProtocolVersion());
-    }
-
-    @Override
-    public CertificateStatusRequestExtensionPreparator getPreparator(CertificateStatusRequestExtensionMessage message) {
-        return new CertificateStatusRequestExtensionPreparator(context.getChooser(), message, getSerializer(message));
-    }
-
-    @Override
-    public CertificateStatusRequestExtensionSerializer getSerializer(CertificateStatusRequestExtensionMessage message) {
-        return new CertificateStatusRequestExtensionSerializer(message);
-    }
-
-    @Override
     public void adjustTLSExtensionContext(CertificateStatusRequestExtensionMessage message) {
         if (context.getTalkingConnectionEndType() == CLIENT) {
             context.setCertificateStatusRequestExtensionRequestType(CertificateStatusRequestType

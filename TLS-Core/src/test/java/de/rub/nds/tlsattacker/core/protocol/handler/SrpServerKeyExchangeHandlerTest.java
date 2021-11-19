@@ -33,30 +33,6 @@ public class SrpServerKeyExchangeHandlerTest {
     }
 
     /**
-     * Test of getParser method, of class SrpServerKeyExchangeHandler.
-     */
-    @Test
-    public void testGetParser() {
-        assertTrue(handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof SrpServerKeyExchangeParser);
-    }
-
-    /**
-     * Test of getPreparator method, of class SrpServerKeyExchangeHandler.
-     */
-    @Test
-    public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new SrpServerKeyExchangeMessage()) instanceof SrpServerKeyExchangePreparator);
-    }
-
-    /**
-     * Test of getSerializer method, of class SrpServerKeyExchangeHandler.
-     */
-    @Test
-    public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new SrpServerKeyExchangeMessage()) instanceof SrpServerKeyExchangeSerializer);
-    }
-
-    /**
      * Test of adjustTLSContext method, of class SrpServerKeyExchangeHandler.
      */
 

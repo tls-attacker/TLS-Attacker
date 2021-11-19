@@ -23,10 +23,4 @@ public class ClientCertificateUrlExtensionParser extends ExtensionParser<ClientC
     public void parseExtensionMessageContent(ClientCertificateUrlExtensionMessage msg) {
         // nothing to parse here, it's an opt-in extension.
     }
-
-    @Override
-    protected ClientCertificateUrlExtensionMessage createExtensionMessage() {
-        return new ClientCertificateUrlExtensionMessage();
-    }
-
 }

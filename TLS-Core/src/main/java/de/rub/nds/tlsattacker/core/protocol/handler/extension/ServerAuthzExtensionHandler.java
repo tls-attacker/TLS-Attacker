@@ -11,31 +11,12 @@ package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.constants.AuthzDataFormat;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerAuthzExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.ServerAuthzExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ServerAuthzExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ServerAuthzExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.InputStream;
 
 public class ServerAuthzExtensionHandler extends ExtensionHandler<ServerAuthzExtensionMessage> {
 
     public ServerAuthzExtensionHandler(TlsContext context) {
         super(context);
-    }
-
-    @Override
-    public ServerAuthzExtensionParser getParser(InputStream stream) {
-        return new ServerAuthzExtensionParser(stream, context.getConfig());
-    }
-
-    @Override
-    public ServerAuthzExtensionPreparator getPreparator(ServerAuthzExtensionMessage message) {
-        return new ServerAuthzExtensionPreparator(context.getChooser(), message, getSerializer(message));
-    }
-
-    @Override
-    public ServerAuthzExtensionSerializer getSerializer(ServerAuthzExtensionMessage message) {
-        return new ServerAuthzExtensionSerializer(message);
     }
 
     @Override

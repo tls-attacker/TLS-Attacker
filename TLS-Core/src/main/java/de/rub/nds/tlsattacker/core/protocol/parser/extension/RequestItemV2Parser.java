@@ -25,9 +25,7 @@ public class RequestItemV2Parser extends Parser<RequestItemV2> {
     }
 
     @Override
-    public RequestItemV2 parse() {
-        RequestItemV2 item = new RequestItemV2();
-
+    public void parse(RequestItemV2 item) {
         item.setRequestType(parseIntField(ExtensionByteLength.CERTIFICATE_STATUS_REQUEST_STATUS_TYPE));
         item.setRequestLength(parseIntField(ExtensionByteLength.CERTIFICATE_STATUS_REQUEST_V2_REQUEST_LENGTH));
         item.setResponderIdListLength(parseIntField(ExtensionByteLength.CERTIFICATE_STATUS_REQUEST_V2_RESPONDER_ID));
@@ -40,10 +38,9 @@ public class RequestItemV2Parser extends Parser<RequestItemV2> {
         ByteArrayInputStream innerStream = new ByteArrayInputStream(item.getResponderIdListBytes().getValue());
         while (innerStream.available() > 0) {
             ResponderIdParser parser = new ResponderIdParser(innerStream);
-            responderIds.add(parser.parse());
+            ResponderId id = new ResponderId();
+            parser.parse(id);
+            responderIds.add(id);
         }
-        item.setResponderIdList(responderIds);
-
-        return item;
     }
 }

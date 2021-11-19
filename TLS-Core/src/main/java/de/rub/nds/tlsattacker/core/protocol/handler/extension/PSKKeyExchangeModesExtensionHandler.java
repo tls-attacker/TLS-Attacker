@@ -9,17 +9,9 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.PskKeyExchangeMode;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PSKKeyExchangeModesExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.PSKKeyExchangeModesExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PSKKeyExchangeModesExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PSKKeyExchangeModesExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.InputStream;
 import java.util.LinkedList;
 
 /**
@@ -29,21 +21,6 @@ public class PSKKeyExchangeModesExtensionHandler extends ExtensionHandler<PSKKey
 
     public PSKKeyExchangeModesExtensionHandler(TlsContext context) {
         super(context);
-    }
-
-    @Override
-    public ExtensionParser getParser(InputStream stream) {
-        return new PSKKeyExchangeModesExtensionParser(stream, context.getConfig());
-    }
-
-    @Override
-    public ExtensionPreparator getPreparator(PSKKeyExchangeModesExtensionMessage message) {
-        return new PSKKeyExchangeModesExtensionPreparator(context.getChooser(), message, getSerializer(message));
-    }
-
-    @Override
-    public ExtensionSerializer getSerializer(PSKKeyExchangeModesExtensionMessage message) {
-        return new PSKKeyExchangeModesExtensionSerializer(message);
     }
 
     @Override

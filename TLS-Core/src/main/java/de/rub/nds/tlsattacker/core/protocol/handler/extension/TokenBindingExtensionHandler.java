@@ -27,21 +27,6 @@ public class TokenBindingExtensionHandler extends ExtensionHandler<TokenBindingE
     }
 
     @Override
-    public TokenBindingExtensionParser getParser(InputStream stream) {
-        return new TokenBindingExtensionParser(stream, context.getConfig());
-    }
-
-    @Override
-    public TokenBindingExtensionPreparator getPreparator(TokenBindingExtensionMessage message) {
-        return new TokenBindingExtensionPreparator(context.getChooser(), message, getSerializer(message));
-    }
-
-    @Override
-    public TokenBindingExtensionSerializer getSerializer(TokenBindingExtensionMessage message) {
-        return new TokenBindingExtensionSerializer(message);
-    }
-
-    @Override
     public void adjustTLSExtensionContext(TokenBindingExtensionMessage message) {
         context
             .setTokenBindingVersion(TokenBindingVersion.getExtensionType(message.getTokenbindingVersion().getValue()));

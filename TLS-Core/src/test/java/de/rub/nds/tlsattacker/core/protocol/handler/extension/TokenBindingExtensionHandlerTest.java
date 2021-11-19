@@ -12,14 +12,9 @@ package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TokenBindingExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.TokenBindingExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.TokenBindingExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.TokenBindingExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.ByteArrayInputStream;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -46,28 +41,10 @@ public class TokenBindingExtensionHandlerTest {
         TokenBindingExtensionMessage message = new TokenBindingExtensionMessage();
         message.setTokenbindingVersion(tokenbindingVersion.getByteValue());
         message.setTokenbindingKeyParameters(keyParameterByteArrayRepresentation);
-        handler.adjustTLSContext(message);
+        handler.adjustContext(message);
 
         assertEquals(tokenbindingVersion, context.getTokenBindingVersion());
         assertArrayEquals(keyParameter, context.getTokenBindingKeyParameters()
             .toArray(new TokenBindingKeyParameters[context.getTokenBindingKeyParameters().size()]));
     }
-
-    @Test
-    public void testGetParser() {
-        assertTrue(handler.getParser(new ByteArrayInputStream(new byte[0])) instanceof TokenBindingExtensionParser);
-    }
-
-    @Test
-    public void testGetPreparator() {
-        assertTrue(
-            handler.getPreparator(new TokenBindingExtensionMessage()) instanceof TokenBindingExtensionPreparator);
-    }
-
-    @Test
-    public void testGetSerializer() {
-        assertTrue(
-            handler.getSerializer(new TokenBindingExtensionMessage()) instanceof TokenBindingExtensionSerializer);
-    }
-
 }

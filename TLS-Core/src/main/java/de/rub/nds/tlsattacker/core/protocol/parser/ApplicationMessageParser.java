@@ -24,6 +24,7 @@ public class ApplicationMessageParser extends TlsMessageParser<ApplicationMessag
     /**
      * Constructor for the Parser class
      *
+     * @param stream
      * @param version
      *                Version of the Protocol
      * @param config
@@ -34,11 +35,10 @@ public class ApplicationMessageParser extends TlsMessageParser<ApplicationMessag
     }
 
     @Override
-    protected ApplicationMessage parseMessageContent() {
+    protected void parseMessageContent(ApplicationMessage message) {
         LOGGER.debug("Parsing ApplicationMessage");
-        ApplicationMessage msg = new ApplicationMessage();
-        parseData(msg);
-        return msg;
+        parseData(message);
+        message.setCompleteResultingMessage(getAlreadyParsed());
     }
 
     /**

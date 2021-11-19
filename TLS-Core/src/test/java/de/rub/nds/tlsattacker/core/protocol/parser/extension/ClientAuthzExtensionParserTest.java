@@ -52,7 +52,8 @@ public class ClientAuthzExtensionParserTest {
     @Test
     public void testParseExtensionMessageContent() {
         parser = new ClientAuthzExtensionParser(new ByteArrayInputStream(expectedBytes), Config.createConfig());
-        msg = parser.parse();
+        msg = new ClientAuthzExtensionMessage();
+        parser.parse(msg);
 
         assertArrayEquals(extensionType.getValue(), msg.getExtensionType().getValue());
         assertEquals(extensionLength, (long) msg.getExtensionLength().getValue());

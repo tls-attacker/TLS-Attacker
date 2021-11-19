@@ -19,11 +19,12 @@ import de.rub.nds.tlsattacker.core.https.header.DateHeader;
 import de.rub.nds.tlsattacker.core.https.header.ExpiresHeader;
 import de.rub.nds.tlsattacker.core.https.header.GenericHttpsHeader;
 import de.rub.nds.tlsattacker.core.https.header.HostHeader;
-import de.rub.nds.tlsattacker.core.https.header.HttpsHeader;
+import de.rub.nds.tlsattacker.core.https.header.HttpHeader;
 import de.rub.nds.tlsattacker.core.https.header.LocationHeader;
 import de.rub.nds.tlsattacker.core.https.header.TokenBindingHeader;
 import de.rub.nds.tlsattacker.core.protocol.message.TlsMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
@@ -48,7 +49,7 @@ public class HttpsResponseMessage extends TlsMessage {
         @XmlElement(type = HostHeader.class, name = "HostHeader"),
         @XmlElement(type = TokenBindingHeader.class, name = "TokenBindingHeader") })
     @HoldsModifiableVariable
-    private List<HttpsHeader> header;
+    private List<HttpHeader> header;
 
     public HttpsResponseMessage() {
         protocolMessageType = ProtocolMessageType.APPLICATION_DATA;
@@ -103,11 +104,11 @@ public class HttpsResponseMessage extends TlsMessage {
         this.responseContent = ModifiableVariableFactory.safelySetValue(this.responseContent, responseContent);
     }
 
-    public List<HttpsHeader> getHeader() {
+    public List<HttpHeader> getHeader() {
         return header;
     }
 
-    public void setHeader(List<HttpsHeader> header) {
+    public void setHeader(List<HttpHeader> header) {
         this.header = header;
     }
 
@@ -119,6 +120,22 @@ public class HttpsResponseMessage extends TlsMessage {
     @Override
     public HttpsResponseHandler getHandler(TlsContext context) {
         return new HttpsResponseHandler(context);
+    }
+
+    @Override
+    public HttpsResponseParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new HttpsResponseParser(stream, tlsContext.getChooser().getSelectedProtocolVersion(),
+            tlsContext.getConfig());
+    }
+
+    @Override
+    public HttpsResponsePreparator getPreparator(TlsContext tlsContext) {
+        return new HttpsResponsePreparator(tlsContext.getChooser(), this);
+    }
+
+    @Override
+    public HttpsResponseSerializer getSerializer(TlsContext tlsContext) {
+        return new HttpsResponseSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

@@ -10,32 +10,12 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.PskEcDheServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.PskEcDheServerKeyExchangeParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.PskEcDheServerKeyExchangePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.PskEcDheServerKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.InputStream;
 
 public class PskEcDheServerKeyExchangeHandler extends ECDHEServerKeyExchangeHandler<PskEcDheServerKeyExchangeMessage> {
 
     public PskEcDheServerKeyExchangeHandler(TlsContext tlsContext) {
         super(tlsContext);
-    }
-
-    @Override
-    public PskEcDheServerKeyExchangeParser getParser(InputStream stream) {
-        return new PskEcDheServerKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(),
-            tlsContext.getConfig());
-    }
-
-    @Override
-    public PskEcDheServerKeyExchangePreparator getPreparator(PskEcDheServerKeyExchangeMessage message) {
-        return new PskEcDheServerKeyExchangePreparator(tlsContext.getChooser(), message);
-    }
-
-    @Override
-    public PskEcDheServerKeyExchangeSerializer getSerializer(PskEcDheServerKeyExchangeMessage message) {
-        return new PskEcDheServerKeyExchangeSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

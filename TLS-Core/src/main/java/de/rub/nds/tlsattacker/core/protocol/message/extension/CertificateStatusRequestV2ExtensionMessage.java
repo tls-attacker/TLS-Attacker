@@ -16,13 +16,20 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.CertificateStatusRequestV2ExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.RequestItemV2;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.CertificateStatusRequestV2ExtensionParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.extension.CertificateStatusRequestV2ExtensionPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.CertificateStatusRequestV2ExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 import java.util.List;
 
 /**
  * RFC 6961
  */
-public class CertificateStatusRequestV2ExtensionMessage extends ExtensionMessage {
+public class CertificateStatusRequestV2ExtensionMessage
+    extends ExtensionMessage<CertificateStatusRequestV2ExtensionMessage> {
 
     @ModifiableVariableProperty
     ModifiableInteger statusRequestListLength;
@@ -70,5 +77,26 @@ public class CertificateStatusRequestV2ExtensionMessage extends ExtensionMessage
 
     public void setStatusRequestBytes(byte[] statusRequestBytes) {
         this.statusRequestBytes = ModifiableVariableFactory.safelySetValue(this.statusRequestBytes, statusRequestBytes);
+    }
+
+    @Override
+    public CertificateStatusRequestV2ExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new CertificateStatusRequestV2ExtensionParser(stream, tlsContext.getConfig());
+    }
+
+    @Override
+    public CertificateStatusRequestV2ExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new CertificateStatusRequestV2ExtensionPreparator(tlsContext.getChooser(), this,
+            getSerializer(tlsContext));
+    }
+
+    @Override
+    public CertificateStatusRequestV2ExtensionSerializer getSerializer(TlsContext tlsContext) {
+        return new CertificateStatusRequestV2ExtensionSerializer(this);
+    }
+
+    @Override
+    public CertificateStatusRequestV2ExtensionHandler getHandler(TlsContext tlsContext) {
+        return new CertificateStatusRequestV2ExtensionHandler(tlsContext);
     }
 }

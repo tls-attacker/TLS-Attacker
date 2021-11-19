@@ -39,22 +39,7 @@ public class SessionTicketTLSExtensionParser extends ExtensionParser<SessionTick
      */
     @Override
     public void parseExtensionMessageContent(SessionTicketTLSExtensionMessage msg) {
-        if (msg.getExtensionLength().getValue() > 65535) {
-            LOGGER.warn("The SessionTLS ticket length shouldn't exceed 2 bytes as defined in RFC 4507. " + "Length was "
-                + msg.getExtensionLength().getValue());
-        }
-        msg.setTicket(parseByteArrayField(msg.getExtensionLength().getValue()));
+        msg.setTicket(parseTillEnd());
         LOGGER.debug("The session ticket TLS parser parsed the value " + bytesToHexString(msg.getTicket()));
     }
-
-    /**
-     * Creates a new SessionTicketTLSExtensionMessage
-     *
-     * @return An empty SessionTicketTLSExtensionMessage
-     */
-    @Override
-    protected SessionTicketTLSExtensionMessage createExtensionMessage() {
-        return new SessionTicketTLSExtensionMessage();
-    }
-
 }

@@ -17,7 +17,11 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.ApplicationMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.TlsMessageHandler;
+import de.rub.nds.tlsattacker.core.protocol.parser.ApplicationMessageParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.ApplicationMessagePreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.ApplicationMessageSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 import java.util.Arrays;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -94,8 +98,24 @@ public class ApplicationMessage extends TlsMessage {
     }
 
     @Override
-    public TlsMessageHandler getHandler(TlsContext context) {
-        return new ApplicationMessageHandler(context);
+    public TlsMessageHandler getHandler(TlsContext tlsContext) {
+        return new ApplicationMessageHandler(tlsContext);
+    }
+
+    @Override
+    public ApplicationMessageParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new ApplicationMessageParser(stream, tlsContext.getChooser().getLastRecordVersion(),
+            tlsContext.getConfig());
+    }
+
+    @Override
+    public ApplicationMessagePreparator getPreparator(TlsContext tlsContext) {
+        return new ApplicationMessagePreparator(tlsContext.getChooser(), this);
+    }
+
+    @Override
+    public ApplicationMessageSerializer getSerializer(TlsContext tlsContext) {
+        return new ApplicationMessageSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

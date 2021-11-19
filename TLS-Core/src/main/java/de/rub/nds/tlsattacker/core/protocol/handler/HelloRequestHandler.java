@@ -10,31 +10,12 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.HelloRequestMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.HelloRequestParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.HelloRequestPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.HelloRequestSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.InputStream;
 
 public class HelloRequestHandler extends HandshakeMessageHandler<HelloRequestMessage> {
 
     public HelloRequestHandler(TlsContext tlsContext) {
         super(tlsContext);
-    }
-
-    @Override
-    public HelloRequestParser getParser(InputStream stream) {
-        return new HelloRequestParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext.getConfig());
-    }
-
-    @Override
-    public HelloRequestPreparator getPreparator(HelloRequestMessage message) {
-        return new HelloRequestPreparator(tlsContext.getChooser(), message);
-    }
-
-    @Override
-    public HelloRequestSerializer getSerializer(HelloRequestMessage message) {
-        return new HelloRequestSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

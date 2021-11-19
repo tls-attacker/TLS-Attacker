@@ -18,14 +18,17 @@ import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.AlertHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.TlsMessageHandler;
+import de.rub.nds.tlsattacker.core.protocol.parser.AlertParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.AlertPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.AlertSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 import java.util.Objects;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 @XmlRootElement
-public class AlertMessage extends TlsMessage {
+public class AlertMessage extends TlsMessage<AlertMessage> {
 
     /**
      * config array used to configure alert message
@@ -175,7 +178,23 @@ public class AlertMessage extends TlsMessage {
     }
 
     @Override
-    public TlsMessageHandler getHandler(TlsContext context) {
+    public AlertHandler getHandler(TlsContext context) {
         return new AlertHandler(context);
     }
+
+    @Override
+    public AlertParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new AlertParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext.getConfig());
+    }
+
+    @Override
+    public AlertPreparator getPreparator(TlsContext tlsContext) {
+        return new AlertPreparator(tlsContext.getChooser(), this);
+    }
+
+    @Override
+    public AlertSerializer getSerializer(TlsContext tlsContext) {
+        return new AlertSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+    }
+
 }

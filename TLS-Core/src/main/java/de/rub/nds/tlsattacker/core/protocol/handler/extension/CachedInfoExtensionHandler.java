@@ -24,21 +24,6 @@ public class CachedInfoExtensionHandler extends ExtensionHandler<CachedInfoExten
     }
 
     @Override
-    public CachedInfoExtensionParser getParser(InputStream stream) {
-        return new CachedInfoExtensionParser(stream, context.getConfig());
-    }
-
-    @Override
-    public CachedInfoExtensionPreparator getPreparator(CachedInfoExtensionMessage message) {
-        return new CachedInfoExtensionPreparator(context.getChooser(), message, getSerializer(message));
-    }
-
-    @Override
-    public CachedInfoExtensionSerializer getSerializer(CachedInfoExtensionMessage message) {
-        return new CachedInfoExtensionSerializer(message);
-    }
-
-    @Override
     public void adjustTLSExtensionContext(CachedInfoExtensionMessage message) {
         context.setCachedInfoExtensionObjects(message.getCachedInfo());
     }

@@ -10,32 +10,12 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.PskServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.PskServerKeyExchangeParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.PskServerKeyExchangePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.PskServerKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.InputStream;
 
 public class PskServerKeyExchangeHandler extends ServerKeyExchangeHandler<PskServerKeyExchangeMessage> {
 
     public PskServerKeyExchangeHandler(TlsContext tlsContext) {
         super(tlsContext);
-    }
-
-    @Override
-    public PskServerKeyExchangeParser getParser(InputStream stream) {
-        return new PskServerKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(),
-            tlsContext.getConfig());
-    }
-
-    @Override
-    public PskServerKeyExchangePreparator getPreparator(PskServerKeyExchangeMessage message) {
-        return new PskServerKeyExchangePreparator(tlsContext.getChooser(), message);
-    }
-
-    @Override
-    public PskServerKeyExchangeSerializer getSerializer(PskServerKeyExchangeMessage message) {
-        return new PskServerKeyExchangeSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

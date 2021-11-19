@@ -10,10 +10,10 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.PskEcDhClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,12 +26,12 @@ public class PskEcDhClientKeyExchangeParser extends ECDHClientKeyExchangeParser<
      * Constructor for the Parser class
      *
      * @param version
-     *                Version of the Protocol
-     * @param config
-     *                A Config used in the current context
+     *                   Version of the Protocol
+     * @param tlsContext
+     *                   A Config used in the current context
      */
-    public PskEcDhClientKeyExchangeParser(InputStream stream, ProtocolVersion version, Config config) {
-        super(stream, version, config);
+    public PskEcDhClientKeyExchangeParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
+        super(stream, version, tlsContext);
     }
 
     @Override
@@ -40,11 +40,6 @@ public class PskEcDhClientKeyExchangeParser extends ECDHClientKeyExchangeParser<
         parsePskIdentityLength(msg);
         parsePskIdentity(msg);
         super.parseEcDhParams(msg);
-    }
-
-    @Override
-    protected PskEcDhClientKeyExchangeMessage createHandshakeMessage() {
-        return new PskEcDhClientKeyExchangeMessage();
     }
 
     /**

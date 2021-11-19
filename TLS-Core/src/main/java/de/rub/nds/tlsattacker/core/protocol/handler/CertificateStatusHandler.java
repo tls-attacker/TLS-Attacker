@@ -22,22 +22,6 @@ public class CertificateStatusHandler extends HandshakeMessageHandler<Certificat
     }
 
     @Override
-    public CertificateStatusParser getParser(InputStream stream) {
-        return new CertificateStatusParser(stream, tlsContext.getChooser().getLastRecordVersion(),
-            tlsContext.getConfig());
-    }
-
-    @Override
-    public CertificateStatusPreparator getPreparator(CertificateStatusMessage message) {
-        return new CertificateStatusPreparator(tlsContext.getChooser(), message);
-    }
-
-    @Override
-    public CertificateStatusSerializer getSerializer(CertificateStatusMessage message) {
-        return new CertificateStatusSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
-    }
-
-    @Override
     public void adjustTLSContext(CertificateStatusMessage message) {
 
     }

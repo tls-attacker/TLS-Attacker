@@ -36,11 +36,10 @@ public class ChangeCipherSpecParser extends TlsMessageParser<ChangeCipherSpecMes
     }
 
     @Override
-    protected ChangeCipherSpecMessage parseMessageContent() {
+    protected void parseMessageContent(ChangeCipherSpecMessage message) {
         LOGGER.debug("Parsing ChangeCipherSpecMessage");
-        ChangeCipherSpecMessage msg = new ChangeCipherSpecMessage();
-        parseCcsProtocolType(msg);
-        return msg;
+        parseCcsProtocolType(message);
+        message.setCompleteResultingMessage(getAlreadyParsed());
     }
 
     /**

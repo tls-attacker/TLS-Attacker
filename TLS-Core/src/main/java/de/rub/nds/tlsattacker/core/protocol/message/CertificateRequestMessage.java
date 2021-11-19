@@ -21,7 +21,11 @@ import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.handler.CertificateRequestHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.parser.CertificateRequestParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateRequestPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateRequestSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -236,6 +240,22 @@ public class CertificateRequestMessage extends HandshakeMessage {
     @Override
     public CertificateRequestHandler getHandler(TlsContext context) {
         return new CertificateRequestHandler(context);
+    }
+
+    @Override
+    public CertificateRequestParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new CertificateRequestParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext,
+            tlsContext.getTalkingConnectionEndType());
+    }
+
+    @Override
+    public CertificateRequestPreparator getPreparator(TlsContext tlsContext) {
+        return new CertificateRequestPreparator(tlsContext.getChooser(), this);
+    }
+
+    @Override
+    public CertificateRequestSerializer getSerializer(TlsContext tlsContext) {
+        return new CertificateRequestSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
 }

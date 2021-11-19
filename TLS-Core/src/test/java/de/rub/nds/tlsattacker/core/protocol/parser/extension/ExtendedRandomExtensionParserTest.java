@@ -62,7 +62,8 @@ public class ExtendedRandomExtensionParserTest {
 
     @Test
     public void testParseExtensionMessageContent() {
-        message = parser.parse();
+        message = new ExtendedRandomExtensionMessage();
+        parser.parse(message);
 
         assertArrayEquals(ExtensionType.EXTENDED_RANDOM.getValue(), message.getExtensionType().getValue());
         assertEquals(extensionLength, (long) message.getExtensionLength().getValue());

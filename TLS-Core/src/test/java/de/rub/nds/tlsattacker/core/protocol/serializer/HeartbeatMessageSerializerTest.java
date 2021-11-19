@@ -26,7 +26,6 @@ public class HeartbeatMessageSerializerTest {
     }
 
     private byte[] message;
-    private int start;
     private byte[] expectedPart;
 
     private byte heartBeatType;
@@ -34,10 +33,9 @@ public class HeartbeatMessageSerializerTest {
     private byte[] payload;
     private byte[] padding;
 
-    public HeartbeatMessageSerializerTest(byte[] message, int start, byte[] expectedPart, byte heartBeatType,
-        int payloadLength, byte[] payload, byte[] padding) {
+    public HeartbeatMessageSerializerTest(byte[] message, byte[] expectedPart, byte heartBeatType, int payloadLength,
+        byte[] payload, byte[] padding) {
         this.message = message;
-        this.start = start;
         this.expectedPart = expectedPart;
         this.heartBeatType = heartBeatType;
         this.payloadLength = payloadLength;
