@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RenegotiationInfoExtensionMessage;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
@@ -28,22 +27,17 @@ public class RenegotiationInfoExtensionParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { { ExtensionType.RENEGOTIATION_INFO, 1, 0, new byte[] {},
-            ArrayConverter.hexStringToByteArray("ff01000100") } });
+        return Arrays.asList(new Object[][] { { 0, new byte[] {}, ArrayConverter.hexStringToByteArray("00") } });
     }
 
-    private final ExtensionType extensionType;
-    private final int extensionLength;
     private final int extensionPayloadLength;
     private final byte[] extensionPayload;
     private final byte[] expectedBytes;
     private RenegotiationInfoExtensionParser parser;
     private RenegotiationInfoExtensionMessage message;
 
-    public RenegotiationInfoExtensionParserTest(ExtensionType extensionType, int extensionLength,
-        int extensionPayloadLength, byte[] extensionPayload, byte[] expectedBytes) {
-        this.extensionType = extensionType;
-        this.extensionLength = extensionLength;
+    public RenegotiationInfoExtensionParserTest(int extensionPayloadLength, byte[] extensionPayload,
+        byte[] expectedBytes) {
         this.extensionPayload = extensionPayload;
         this.expectedBytes = expectedBytes;
         this.extensionPayloadLength = extensionPayloadLength;
@@ -58,9 +52,6 @@ public class RenegotiationInfoExtensionParserTest {
     public void testParseExtensionMessageContent() {
         message = new RenegotiationInfoExtensionMessage();
         parser.parse(message);
-
-        assertEquals(extensionType, message.getExtensionTypeConstant());
-        assertEquals(extensionLength, (long) message.getExtensionLength().getValue());
         assertEquals(extensionPayloadLength, (long) message.getRenegotiationInfoLength().getValue());
         assertArrayEquals(extensionPayload, message.getRenegotiationInfo().getValue());
     }

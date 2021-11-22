@@ -31,16 +31,11 @@ public class PaddingExtensionSerializerTest {
         return PaddingExtensionParserTest.generateData();
     }
 
-    private final ExtensionType extensionType;
-    private final int extensionLength;
     private final byte[] extensionPayload;
     private final byte[] expectedBytes;
     private PaddingExtensionMessage message;
 
-    public PaddingExtensionSerializerTest(ExtensionType extensionType, int extensionLength, byte[] extensionPayload,
-        byte[] expectedBytes) {
-        this.extensionType = extensionType;
-        this.extensionLength = extensionLength;
+    public PaddingExtensionSerializerTest(byte[] extensionPayload, byte[] expectedBytes) {
         this.extensionPayload = extensionPayload;
         this.expectedBytes = expectedBytes;
     }
@@ -48,17 +43,14 @@ public class PaddingExtensionSerializerTest {
     /**
      * Tests the serializer of the padding extension.
      */
-
     @Test
     public void testSerializeExtensionContent() {
         message = new PaddingExtensionMessage();
-        message.setExtensionType(extensionType.getValue());
-        message.setExtensionLength(extensionLength);
         message.setPaddingBytes(extensionPayload);
 
         PaddingExtensionSerializer serializer = new PaddingExtensionSerializer(message);
 
-        assertArrayEquals(expectedBytes, serializer.serialize());
+        assertArrayEquals(expectedBytes, serializer.serializeExtensionContent());
 
     }
 

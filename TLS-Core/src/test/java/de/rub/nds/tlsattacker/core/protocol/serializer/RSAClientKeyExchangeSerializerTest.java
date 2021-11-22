@@ -27,24 +27,14 @@ public class RSAClientKeyExchangeSerializerTest {
         return RSAClientKeyExchangeParserTest.generateData();
     }
 
-    private byte[] message;
-    private int start;
     private byte[] expectedPart;
-
-    private HandshakeMessageType type;
-    private int length;
-
     private int serializedKeyLength;
     private byte[] serializedKey;
     private ProtocolVersion version;
 
     public RSAClientKeyExchangeSerializerTest(byte[] message, HandshakeMessageType type, int length,
         int serializedKeyLength, byte[] serializedKey, ProtocolVersion version) {
-        this.message = message;
-        this.start = 0;
         this.expectedPart = message;
-        this.type = type;
-        this.length = length;
         this.serializedKeyLength = serializedKeyLength;
         this.serializedKey = serializedKey;
         this.version = version;
@@ -57,12 +47,10 @@ public class RSAClientKeyExchangeSerializerTest {
     public void testSerializeHandshakeMessageContent() {
         RSAClientKeyExchangeMessage msg = new RSAClientKeyExchangeMessage();
         msg.setCompleteResultingMessage(expectedPart);
-        msg.setType(type.getValue());
-        msg.setLength(length);
         msg.setPublicKey(serializedKey);
         msg.setPublicKeyLength(serializedKeyLength);
         RSAClientKeyExchangeSerializer serializer = new RSAClientKeyExchangeSerializer(msg, version);
-        assertArrayEquals(expectedPart, serializer.serialize());
+        assertArrayEquals(expectedPart, serializer.serializeHandshakeMessageContent());
     }
 
 }

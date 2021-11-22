@@ -27,21 +27,15 @@ public class PWDClearExtensionParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] {
-            { ArrayConverter.hexStringToByteArray("001e00050466726564"), ExtensionType.PWD_CLEAR, 5, 4, "fred" } });
+        return Arrays.asList(new Object[][] { { ArrayConverter.hexStringToByteArray("0466726564"), 4, "fred" } });
     }
 
     private final byte[] expectedBytes;
-    private final ExtensionType type;
-    private final int extensionLength;
     private final int usernameLength;
     private final String username;
 
-    public PWDClearExtensionParserTest(byte[] expectedBytes, ExtensionType type, int extensionLength,
-        int usernameLength, String username) {
+    public PWDClearExtensionParserTest(byte[] expectedBytes, int usernameLength, String username) {
         this.expectedBytes = expectedBytes;
-        this.type = type;
-        this.extensionLength = extensionLength;
         this.usernameLength = usernameLength;
         this.username = username;
     }
@@ -52,8 +46,6 @@ public class PWDClearExtensionParserTest {
             new PWDClearExtensionParser(new ByteArrayInputStream(expectedBytes), Config.createConfig());
         PWDClearExtensionMessage msg = new PWDClearExtensionMessage();
         parser.parse(msg);
-        assertArrayEquals(type.getValue(), msg.getExtensionType().getValue());
-        assertEquals(extensionLength, (long) msg.getExtensionLength().getValue());
         assertEquals(usernameLength, (long) msg.getUsernameLength().getValue());
         assertEquals(username, msg.getUsername().getValue());
     }

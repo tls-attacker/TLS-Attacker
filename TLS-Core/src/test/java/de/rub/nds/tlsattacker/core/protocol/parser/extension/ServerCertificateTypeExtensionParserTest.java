@@ -28,32 +28,26 @@ import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
 public class ServerCertificateTypeExtensionParserTest {
+
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] {
-            { ExtensionType.SERVER_CERTIFICATE_TYPE, ArrayConverter.hexStringToByteArray("0014000100"), 1, null,
-                Arrays.asList(CertificateType.X509), false },
-            { ExtensionType.SERVER_CERTIFICATE_TYPE, ArrayConverter.hexStringToByteArray("001400020100"), 2, 1,
-                Arrays.asList(CertificateType.X509), true },
-            { ExtensionType.SERVER_CERTIFICATE_TYPE, ArrayConverter.hexStringToByteArray("00140003020100"), 3, 2,
+            { ArrayConverter.hexStringToByteArray("00"), null, Arrays.asList(CertificateType.X509), false },
+            { ArrayConverter.hexStringToByteArray("0100"), 1, Arrays.asList(CertificateType.X509), true },
+            { ArrayConverter.hexStringToByteArray("020100"), 2,
                 Arrays.asList(CertificateType.OPEN_PGP, CertificateType.X509), true } });
     }
 
-    private final ExtensionType extensionType;
     private final byte[] expectedBytes;
-    private final int extensionLength;
     private final Integer certificateTypesLength;
     private final List<CertificateType> certificateTypes;
     private final boolean isClientState;
     private ServerCertificateTypeExtensionParser parser;
     private ServerCertificateTypeExtensionMessage msg;
 
-    public ServerCertificateTypeExtensionParserTest(ExtensionType extensionType, byte[] expectedBytes,
-        int extensionLength, Integer certificateTypesLength, List<CertificateType> certificateTypes,
-        boolean isClientState) {
-        this.extensionType = extensionType;
+    public ServerCertificateTypeExtensionParserTest(byte[] expectedBytes, Integer certificateTypesLength,
+        List<CertificateType> certificateTypes, boolean isClientState) {
         this.expectedBytes = expectedBytes;
-        this.extensionLength = extensionLength;
         this.certificateTypesLength = certificateTypesLength;
         this.certificateTypes = certificateTypes;
         this.isClientState = isClientState;
@@ -70,9 +64,6 @@ public class ServerCertificateTypeExtensionParserTest {
         msg = new ServerCertificateTypeExtensionMessage();
         parser.parse(msg);
 
-        assertArrayEquals(extensionType.getValue(), msg.getExtensionType().getValue());
-        assertEquals(extensionLength, (long) msg.getExtensionLength().getValue());
-
         if (certificateTypesLength != null) {
             assertEquals(certificateTypesLength, msg.getCertificateTypesLength().getValue());
         } else {
@@ -80,5 +71,4 @@ public class ServerCertificateTypeExtensionParserTest {
         }
         assertArrayEquals(CertificateType.toByteArray(certificateTypes), msg.getCertificateTypes().getValue());
     }
-
 }

@@ -28,19 +28,12 @@ public class HelloVerifyRequestSerializerTest {
     }
 
     private byte[] message;
-
-    private HandshakeMessageType type;
-    private int length;
-
     private byte[] protocolVersion;
     private byte cookieLength;
     private byte[] cookie;
 
-    public HelloVerifyRequestSerializerTest(byte[] message, HandshakeMessageType type, int length,
-        byte[] protocolVersion, byte cookieLength, byte[] cookie) {
+    public HelloVerifyRequestSerializerTest(byte[] message, byte[] protocolVersion, byte cookieLength, byte[] cookie) {
         this.message = message;
-        this.type = type;
-        this.length = length;
         this.protocolVersion = protocolVersion;
         this.cookieLength = cookieLength;
         this.cookie = cookie;
@@ -52,13 +45,9 @@ public class HelloVerifyRequestSerializerTest {
     @Test
     public void testSerializeHandshakeMessageContent() {
         HelloVerifyRequestMessage msg = new HelloVerifyRequestMessage();
-        msg.setCompleteResultingMessage(message);
-        msg.setType(type.getValue());
-        msg.setType(type.getValue());
         msg.setProtocolVersion(protocolVersion);
         msg.setCookieLength(cookieLength);
         msg.setCookie(cookie);
-        msg.setLength(length);
         HelloVerifyRequestSerializer serializer = new HelloVerifyRequestSerializer(msg, ProtocolVersion.DTLS10);
         assertArrayEquals(message, serializer.serialize());
     }

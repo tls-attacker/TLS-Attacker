@@ -10,19 +10,14 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptThenMacExtensionMessage;
 import java.io.ByteArrayInputStream;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
 public class EncryptThenMacExtensionParserTest {
 
-    private final ExtensionType extensionType = ExtensionType.ENCRYPT_THEN_MAC;
-    private final byte[] expectedBytes = new byte[] { 0x00, 0x16, 0x00, 0x00 };
-    private final int extensionLength = 0;
+    private final byte[] expectedBytes = new byte[0];
     private EncryptThenMacExtensionParser parser;
     private EncryptThenMacExtensionMessage message;
 
@@ -35,8 +30,5 @@ public class EncryptThenMacExtensionParserTest {
     public void testParseExtensionMessageContent() {
         message = new EncryptThenMacExtensionMessage();
         parser.parse(message);
-
-        assertArrayEquals(extensionType.getValue(), message.getExtensionType().getValue());
-        assertEquals(extensionLength, (long) message.getExtensionLength().getValue());
     }
 }

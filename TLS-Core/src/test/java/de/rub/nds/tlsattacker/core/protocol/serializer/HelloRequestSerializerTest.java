@@ -28,19 +28,9 @@ public class HelloRequestSerializerTest {
     }
 
     private final byte[] message;
-    private final int start;
-    private final byte[] expectedPart;
 
-    private final HandshakeMessageType type;
-    private final int length;
-
-    public HelloRequestSerializerTest(byte[] message, int start, byte[] expectedPart, HandshakeMessageType type,
-        int length) {
+    public HelloRequestSerializerTest(byte[] message) {
         this.message = message;
-        this.start = start;
-        this.expectedPart = expectedPart;
-        this.type = type;
-        this.length = length;
     }
 
     /**
@@ -49,11 +39,8 @@ public class HelloRequestSerializerTest {
     @Test
     public void testSerializeHandshakeMessageContent() {
         HelloRequestMessage msg = new HelloRequestMessage();
-        msg.setCompleteResultingMessage(expectedPart);
-        msg.setLength(length);
-        msg.setType(type.getValue());
         HelloRequestSerializer serializer = new HelloRequestSerializer(msg, ProtocolVersion.TLS12);
-        assertArrayEquals(expectedPart, serializer.serialize());
+        assertArrayEquals(message, serializer.serializeHandshakeMessageContent());
     }
 
 }

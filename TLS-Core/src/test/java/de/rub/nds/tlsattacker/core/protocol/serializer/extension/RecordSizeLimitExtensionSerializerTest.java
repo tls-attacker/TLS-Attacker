@@ -10,8 +10,6 @@
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
-import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RecordSizeLimitExtensionMessage;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -32,11 +30,9 @@ public class RecordSizeLimitExtensionSerializerTest {
     @Test
     public void testSerializeBytes() {
         message = new RecordSizeLimitExtensionMessage();
-        message.setExtensionType(ExtensionType.RECORD_SIZE_LIMIT.getValue());
-        message.setExtensionLength(ExtensionByteLength.RECORD_SIZE_LIMIT_LENGTH);
         message.setRecordSizeLimit(new byte[] { 0x20, 0x00 });
         serializer = new RecordSizeLimitExtensionSerializer(message);
-        byte[] result = serializer.serialize();
-        assertArrayEquals(ArrayConverter.hexStringToByteArray("001C00022000"), result);
+        byte[] result = serializer.serializeExtensionContent();
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("2000"), result);
     }
 }

@@ -32,8 +32,8 @@ public class PWDServerKeyExchangeParserTest {
     @Test
     public void testParse() {
 
-        byte[] message = ArrayConverter.hexStringToByteArray(
-            ("0c 00 00 87 20 96 3c 77 cd c1\n" + "     3a 2a 8d 75 cd dd d1 e0 44 99 29 84 37 11 c2 1d\n"
+        byte[] message = ArrayConverter
+            .hexStringToByteArray(("20 96 3c 77 cd c1\n" + "     3a 2a 8d 75 cd dd d1 e0 44 99 29 84 37 11 c2 1d\n"
                 + "     47 ce 6e 63 83 cd da 37 e4 7d a3 03 00 1a 41 04\n"
                 + "     22 bb d5 6b 48 1d 7f a9 0c 35 e8 d4 2f cd 06 61\n"
                 + "     8a 07 78 de 50 6b 1b c3 88 82 ab c7 31 32 ee f3\n"
@@ -57,9 +57,6 @@ public class PWDServerKeyExchangeParserTest {
             ProtocolVersion.TLS12, new TlsContext(config));
         PWDServerKeyExchangeMessage msg = new PWDServerKeyExchangeMessage();
         parser.parse(msg);
-        assertArrayEquals(message, msg.getCompleteResultingMessage().getValue());
-        assertEquals(135, (long) msg.getLength().getValue());
-        assertEquals(HandshakeMessageType.SERVER_KEY_EXCHANGE.getValue(), (long) msg.getType().getValue());
         assertEquals(32, (long) msg.getSaltLength().getValue());
         assertEquals(EllipticCurveType.NAMED_CURVE.getValue(), (long) msg.getGroupType().getValue());
         assertArrayEquals(NamedGroup.BRAINPOOLP256R1.getValue(), msg.getNamedGroup().getValue());

@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.MaxFragmentLengthExtensionMessage;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
@@ -30,17 +29,10 @@ public class MaxFragmentLengthExtensionParserTest {
     }
 
     private final byte[] extension;
-    private final byte[] completeExtension;
-    private final ExtensionType type;
-    private final int extensionLength;
     private final byte[] maxFragmentLength;
 
-    public MaxFragmentLengthExtensionParserTest(byte[] extension, byte[] completeExtension, ExtensionType type,
-        int extensionLength, byte[] maxFragmentLength) {
+    public MaxFragmentLengthExtensionParserTest(byte[] extension, byte[] maxFragmentLength) {
         this.extension = extension;
-        this.completeExtension = completeExtension;
-        this.type = type;
-        this.extensionLength = extensionLength;
         this.maxFragmentLength = maxFragmentLength;
     }
 
@@ -53,9 +45,6 @@ public class MaxFragmentLengthExtensionParserTest {
             new MaxFragmentLengthExtensionParser(new ByteArrayInputStream(extension), Config.createConfig());
         MaxFragmentLengthExtensionMessage msg = new MaxFragmentLengthExtensionMessage();
         parser.parse(msg);
-        assertArrayEquals(msg.getExtensionBytes().getValue(), completeExtension);
-        assertArrayEquals(type.getValue(), msg.getExtensionType().getValue());
-        assertTrue(extensionLength == msg.getExtensionLength().getValue());
         assertTrue(maxFragmentLength == msg.getMaxFragmentLength().getValue());
     }
 }

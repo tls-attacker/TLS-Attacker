@@ -9,9 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.CertificateRequestTls13ParserTest;
@@ -32,21 +29,16 @@ public class CertificateRequestTls13SerializerTest {
     }
 
     private byte[] message;
-    private HandshakeMessageType type;
     private int certificateRequestContextLength;
     private byte[] certificateRequestContext;
-    private int extensionLength;
     private byte[] extensionBytes;
     private ProtocolVersion version;
 
-    public CertificateRequestTls13SerializerTest(byte[] message, HandshakeMessageType type,
-        int certificateRequestContextLength, byte[] certificateRequestContext, int extensionLength,
-        byte[] extensionBytes, ProtocolVersion version) {
+    public CertificateRequestTls13SerializerTest(byte[] message, int certificateRequestContextLength,
+        byte[] certificateRequestContext, byte[] extensionBytes, ProtocolVersion version) {
         this.message = message;
-        this.type = type;
         this.certificateRequestContextLength = certificateRequestContextLength;
         this.certificateRequestContext = certificateRequestContext;
-        this.extensionLength = extensionLength;
         this.extensionBytes = extensionBytes;
         this.version = version;
     }
@@ -57,15 +49,11 @@ public class CertificateRequestTls13SerializerTest {
     @Test
     public void testSerializeHandshakeMessageContent() {
         CertificateRequestMessage msg = new CertificateRequestMessage();
-        msg.setCompleteResultingMessage(message);
-        msg.setLength(message.length - HandshakeByteLength.MESSAGE_LENGTH_FIELD - HandshakeByteLength.MESSAGE_TYPE);
-        msg.setType(type.getValue());
         msg.setCertificateRequestContext(certificateRequestContext);
         msg.setCertificateRequestContextLength(certificateRequestContextLength);
-        msg.setExtensionsLength(extensionLength);
         msg.setExtensionBytes(extensionBytes);
         CertificateRequestSerializer serializer = new CertificateRequestSerializer(msg, version);
-        assertArrayEquals(this.message, serializer.serialize());
+        assertArrayEquals(this.message, serializer.serializeHandshakeMessageContent());
     }
 
 }

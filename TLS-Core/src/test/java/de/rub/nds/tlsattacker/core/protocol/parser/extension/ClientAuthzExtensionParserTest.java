@@ -27,24 +27,18 @@ public class ClientAuthzExtensionParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(
-            new Object[][] { { ExtensionType.CLIENT_AUTHZ, ArrayConverter.hexStringToByteArray("000700050400010203"), 5,
-                4, ArrayConverter.hexStringToByteArray("00010203") } });
+        return Arrays.asList(new Object[][] { { ArrayConverter.hexStringToByteArray("0400010203"), 4,
+            ArrayConverter.hexStringToByteArray("00010203") } });
     }
 
-    private final ExtensionType extensionType;
     private final byte[] expectedBytes;
-    private final int extensionLength;
     private final int authzFormatListLength;
     private final byte[] authzFormatList;
     private ClientAuthzExtensionParser parser;
     private ClientAuthzExtensionMessage msg;
 
-    public ClientAuthzExtensionParserTest(ExtensionType extensionType, byte[] expectedBytes, int extensionLength,
-        int authzFormatListLength, byte[] authzFormatList) {
-        this.extensionType = extensionType;
+    public ClientAuthzExtensionParserTest(byte[] expectedBytes, int authzFormatListLength, byte[] authzFormatList) {
         this.expectedBytes = expectedBytes;
-        this.extensionLength = extensionLength;
         this.authzFormatListLength = authzFormatListLength;
         this.authzFormatList = authzFormatList;
     }
@@ -54,10 +48,6 @@ public class ClientAuthzExtensionParserTest {
         parser = new ClientAuthzExtensionParser(new ByteArrayInputStream(expectedBytes), Config.createConfig());
         msg = new ClientAuthzExtensionMessage();
         parser.parse(msg);
-
-        assertArrayEquals(extensionType.getValue(), msg.getExtensionType().getValue());
-        assertEquals(extensionLength, (long) msg.getExtensionLength().getValue());
-
         assertEquals(authzFormatListLength, (long) msg.getAuthzFormatListLength().getValue());
         assertArrayEquals(authzFormatList, msg.getAuthzFormatList().getValue());
     }

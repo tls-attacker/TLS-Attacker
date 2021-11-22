@@ -34,33 +34,28 @@ public class CachedInfoExtensionParserTest {
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] {
-            { ExtensionType.CACHED_INFO, ConnectionEndType.SERVER, 2, new byte[] { 0x01, 0x02 },
+            { ConnectionEndType.SERVER, 2, new byte[] { 0x01, 0x02 },
                 Arrays.asList(new CachedObject((byte) 1, null, null), new CachedObject((byte) 2, null, null)),
-                ArrayConverter.hexStringToByteArray("0019000400020102"), 4 },
-            { ExtensionType.CACHED_INFO, ConnectionEndType.CLIENT, 13,
-                ArrayConverter.hexStringToByteArray("01060102030405060203070809"),
+                ArrayConverter.hexStringToByteArray("00020102") },
+            { ConnectionEndType.CLIENT, 13, ArrayConverter.hexStringToByteArray("01060102030405060203070809"),
                 Arrays.asList(new CachedObject((byte) 1, 6, ArrayConverter.hexStringToByteArray("010203040506")),
                     new CachedObject((byte) 2, 3, new byte[] { 0x07, 0x08, 0x09 })),
-                ArrayConverter.hexStringToByteArray("0019000f000d01060102030405060203070809"), 15 } });
+                ArrayConverter.hexStringToByteArray("000d01060102030405060203070809") } });
     }
 
-    private final ExtensionType type;
     private final ConnectionEndType connectionEndType;
     private final int cachedInfoLength;
     private final byte[] cachedInfoBytes;
     private final List<CachedObject> cachedObjectList;
     private final byte[] extensionBytes;
-    private final int extensionLength;
 
-    public CachedInfoExtensionParserTest(ExtensionType type, ConnectionEndType connectionEndType, int cachedInfoLength,
-        byte[] cachedInfoBytes, List<CachedObject> cachedObjectList, byte[] extensionBytes, int extensionLength) {
-        this.type = type;
+    public CachedInfoExtensionParserTest(ConnectionEndType connectionEndType, int cachedInfoLength,
+        byte[] cachedInfoBytes, List<CachedObject> cachedObjectList, byte[] extensionBytes) {
         this.connectionEndType = connectionEndType;
         this.cachedInfoLength = cachedInfoLength;
         this.cachedInfoBytes = cachedInfoBytes;
         this.cachedObjectList = cachedObjectList;
         this.extensionBytes = extensionBytes;
-        this.extensionLength = extensionLength;
     }
 
     @Test
@@ -72,8 +67,6 @@ public class CachedInfoExtensionParserTest {
         CachedInfoExtensionMessage msg = new CachedInfoExtensionMessage();
         parser.parse(msg);
 
-        assertArrayEquals(type.getValue(), msg.getExtensionType().getValue());
-        assertEquals(extensionLength, (long) msg.getExtensionLength().getValue());
         assertArrayEquals(cachedInfoBytes, msg.getCachedInfoBytes().getValue());
         assertEquals(cachedInfoLength, (long) msg.getCachedInfoLength().getValue());
         assertCachedObjectList(cachedObjectList, msg.getCachedInfo());

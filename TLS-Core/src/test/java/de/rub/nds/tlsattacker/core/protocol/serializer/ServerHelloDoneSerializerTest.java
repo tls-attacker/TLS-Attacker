@@ -28,20 +28,10 @@ public class ServerHelloDoneSerializerTest {
     }
 
     private byte[] message;
-    private int start;
-    private byte[] expectedPart;
-
-    private HandshakeMessageType type;
-    private int length;
     private ProtocolVersion version;
 
-    public ServerHelloDoneSerializerTest(byte[] message, HandshakeMessageType type, int length,
-        ProtocolVersion version) {
+    public ServerHelloDoneSerializerTest(byte[] message, ProtocolVersion version) {
         this.message = message;
-        this.start = 0;
-        this.expectedPart = message;
-        this.type = type;
-        this.length = length;
         this.version = version;
     }
 
@@ -51,11 +41,8 @@ public class ServerHelloDoneSerializerTest {
     @Test
     public void testSerializeHandshakeMessageContent() {
         ServerHelloDoneMessage msg = new ServerHelloDoneMessage();
-        msg.setCompleteResultingMessage(expectedPart);
-        msg.setType(type.getValue());
-        msg.setLength(length);
         ServerHelloDoneSerializer serializer = new ServerHelloDoneSerializer(msg, version);
-        assertArrayEquals(expectedPart, serializer.serialize());
+        assertArrayEquals(message, serializer.serializeHandshakeMessageContent());
     }
 
 }

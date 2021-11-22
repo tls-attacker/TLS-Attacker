@@ -33,7 +33,7 @@ public class ServerNameIndicationExtensionParser extends ExtensionParser<ServerN
 
     @Override
     public void parseExtensionMessageContent(ServerNameIndicationExtensionMessage msg) {
-        if (msg.getExtensionLength().getValue() > 0) {
+        if (getBytesLeft() > 0) {
             parseServerNameListLength(msg);
             parseServerNameListBytes(msg);
             pairList = new LinkedList<>();

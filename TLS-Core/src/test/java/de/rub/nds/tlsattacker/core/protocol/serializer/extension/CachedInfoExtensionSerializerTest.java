@@ -26,30 +26,27 @@ import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
 public class CachedInfoExtensionSerializerTest {
+
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return CachedInfoExtensionParserTest.generateData();
     }
 
-    private final ExtensionType type;
     private final ConnectionEndType isClientState;
     private final int cachedInfoLength;
     private final byte[] cachedInfoBytes;
     private final List<CachedObject> cachedObjectList;
     private final byte[] extensionBytes;
-    private final int extensionLength;
     private CachedInfoExtensionSerializer serializer;
     private CachedInfoExtensionMessage msg;
 
-    public CachedInfoExtensionSerializerTest(ExtensionType type, ConnectionEndType isClientState, int cachedInfoLength,
-        byte[] cachedInfoBytes, List<CachedObject> cachedObjectList, byte[] extensionBytes, int extensionLength) {
-        this.type = type;
+    public CachedInfoExtensionSerializerTest(ConnectionEndType isClientState, int cachedInfoLength,
+        byte[] cachedInfoBytes, List<CachedObject> cachedObjectList, byte[] extensionBytes) {
         this.isClientState = isClientState;
         this.cachedInfoLength = cachedInfoLength;
         this.cachedInfoBytes = cachedInfoBytes;
         this.cachedObjectList = cachedObjectList;
         this.extensionBytes = extensionBytes;
-        this.extensionLength = extensionLength;
     }
 
     @Before
@@ -61,14 +58,12 @@ public class CachedInfoExtensionSerializerTest {
     @Test
     public void testSerializeExtensionContent() {
         msg.setCachedInfo(cachedObjectList);
-        msg.setExtensionType(type.getValue());
-        msg.setExtensionLength(extensionLength);
         msg.setCachedInfoLength(cachedInfoLength);
 
         CachedInfoExtensionPreparator preparator = new CachedInfoExtensionPreparator(new TlsContext().getChooser(), msg,
             new CachedInfoExtensionSerializer(msg));
         preparator.prepare();
 
-        assertArrayEquals(extensionBytes, serializer.serialize());
+        assertArrayEquals(extensionBytes, serializer.serializeExtensionContent());
     }
 }

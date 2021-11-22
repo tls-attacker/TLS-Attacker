@@ -27,19 +27,14 @@ public class SRPExtensionSerializerTest {
         return SRPExtensionParserTest.generateData();
     }
 
-    private final ExtensionType extensionType;
     private final byte[] extensionBytes;
-    private final int extensionLength;
     private final int srpIdentifierLength;
     private final byte[] srpIdentifier;
     private SRPExtensionSerializer serializer;
     private SRPExtensionMessage message;
 
-    public SRPExtensionSerializerTest(ExtensionType extensionType, byte[] extensionBytes, int extensionLength,
-        int srpIdentifierLength, byte[] srpIdentifier) {
-        this.extensionType = extensionType;
+    public SRPExtensionSerializerTest(byte[] extensionBytes, int srpIdentifierLength, byte[] srpIdentifier) {
         this.extensionBytes = extensionBytes;
-        this.extensionLength = extensionLength;
         this.srpIdentifierLength = srpIdentifierLength;
         this.srpIdentifier = srpIdentifier;
     }
@@ -52,12 +47,10 @@ public class SRPExtensionSerializerTest {
 
     @Test
     public void testSerializeExtensionContent() {
-        message.setExtensionType(extensionType.getValue());
-        message.setExtensionLength(extensionLength);
         message.setSrpIdentifierLength(srpIdentifierLength);
         message.setSrpIdentifier(srpIdentifier);
 
-        assertArrayEquals(extensionBytes, serializer.serialize());
+        assertArrayEquals(extensionBytes, serializer.serializeExtensionContent());
     }
 
 }

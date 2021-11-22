@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
@@ -27,27 +26,16 @@ public class SignatureAndHashAlgorithmsExtensionParserTest {
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] { {
-            ArrayConverter
-                .hexStringToByteArray("000d0020001e060106020603050105020503040104020403030103020303020102020203"),
-            ArrayConverter
-                .hexStringToByteArray("000d0020001e060106020603050105020503040104020403030103020303020102020203"),
-            ExtensionType.SIGNATURE_AND_HASH_ALGORITHMS, 32, 30,
+            ArrayConverter.hexStringToByteArray("001e060106020603050105020503040104020403030103020303020102020203"), 30,
             ArrayConverter.hexStringToByteArray("060106020603050105020503040104020403030103020303020102020203") } });
     }
 
     private byte[] extension;
-    private byte[] completeExtension;
-    private ExtensionType type;
-    private int extensionLength;
     private int algoListLength;
     private byte[] algoList;
 
-    public SignatureAndHashAlgorithmsExtensionParserTest(byte[] extension, byte[] completeExtension, ExtensionType type,
-        int extensionLength, int algoListLength, byte[] algoList) {
+    public SignatureAndHashAlgorithmsExtensionParserTest(byte[] extension, int algoListLength, byte[] algoList) {
         this.extension = extension;
-        this.completeExtension = completeExtension;
-        this.type = type;
-        this.extensionLength = extensionLength;
         this.algoListLength = algoListLength;
         this.algoList = algoList;
     }
@@ -61,9 +49,6 @@ public class SignatureAndHashAlgorithmsExtensionParserTest {
             new SignatureAndHashAlgorithmsExtensionParser(new ByteArrayInputStream(extension), Config.createConfig());
         SignatureAndHashAlgorithmsExtensionMessage msg = new SignatureAndHashAlgorithmsExtensionMessage();
         parser.parse(msg);
-        assertArrayEquals(msg.getExtensionBytes().getValue(), completeExtension);
-        assertArrayEquals(type.getValue(), msg.getExtensionType().getValue());
-        assertTrue(extensionLength == msg.getExtensionLength().getValue());
         assertArrayEquals(msg.getSignatureAndHashAlgorithms().getValue(), algoList);
         assertTrue(algoListLength == msg.getSignatureAndHashAlgorithmsLength().getValue());
     }

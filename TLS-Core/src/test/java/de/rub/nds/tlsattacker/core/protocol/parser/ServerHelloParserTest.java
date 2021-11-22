@@ -37,31 +37,29 @@ public class ServerHelloParserTest {
     @Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] { { ArrayConverter.hexStringToByteArray(
-            "020000480303378f93cbcafda4c9ba43dafb49ab847ba1ae86a29d2679e7b9aac8e25c207e01200919fe8a189912807ee0621a45f4e6440a297f13574d2229fdbc96427b0e2d10002f000000"),
-            HandshakeMessageType.SERVER_HELLO.getValue(), 72, ProtocolVersion.TLS12, ProtocolVersion.TLS12.getValue(),
+            "0303378f93cbcafda4c9ba43dafb49ab847ba1ae86a29d2679e7b9aac8e25c207e01200919fe8a189912807ee0621a45f4e6440a297f13574d2229fdbc96427b0e2d10002f000000"),
+            ProtocolVersion.TLS12, ProtocolVersion.TLS12.getValue(),
             new byte[] { (byte) 0x37, (byte) 0x8f, (byte) 0x93, (byte) 0xcb },
             ArrayConverter.hexStringToByteArray("378f93cbcafda4c9ba43dafb49ab847ba1ae86a29d2679e7b9aac8e25c207e01"), 32,
             ArrayConverter.hexStringToByteArray("0919fe8a189912807ee0621a45f4e6440a297f13574d2229fdbc96427b0e2d10"),
             CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA.getByteValue(), CompressionMethod.NULL.getValue(), 0 },
             { ArrayConverter.hexStringToByteArray(
-                "0200003603013a40a6187edfd84f419fb68b7ab2aaa83ffb0e88a61c7d741be0467faeaa56f100003500000eff0100010000230000000f000101"),
-                HandshakeMessageType.SERVER_HELLO.getValue(), 54, ProtocolVersion.TLS10,
-                ProtocolVersion.TLS10.getValue(), new byte[] { (byte) 0x3a, (byte) 0x40, (byte) 0xa6, (byte) 0x18 },
+                "03013a40a6187edfd84f419fb68b7ab2aaa83ffb0e88a61c7d741be0467faeaa56f100003500000eff0100010000230000000f000101"),
+                ProtocolVersion.TLS10, ProtocolVersion.TLS10.getValue(),
+                new byte[] { (byte) 0x3a, (byte) 0x40, (byte) 0xa6, (byte) 0x18 },
                 ArrayConverter.hexStringToByteArray("3a40a6187edfd84f419fb68b7ab2aaa83ffb0e88a61c7d741be0467faeaa56f1"),
                 0, new byte[0], CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA.getByteValue(),
                 CompressionMethod.NULL.getValue(), 14 },
             { ArrayConverter.hexStringToByteArray(
-                "020000360302697b9fc9eeba3fc98a15c6c08f3b8818fb1413b95f57679673fe55721872117b00003500000eff0100010000230000000f000101"),
-                HandshakeMessageType.SERVER_HELLO.getValue(), 54, ProtocolVersion.TLS11,
-                ProtocolVersion.TLS11.getValue(), new byte[] { (byte) 0x69, (byte) 0x7b, (byte) 0x9f, (byte) 0xc9 },
+                "0302697b9fc9eeba3fc98a15c6c08f3b8818fb1413b95f57679673fe55721872117b00003500000eff0100010000230000000f000101"),
+                ProtocolVersion.TLS11, ProtocolVersion.TLS11.getValue(),
+                new byte[] { (byte) 0x69, (byte) 0x7b, (byte) 0x9f, (byte) 0xc9 },
                 ArrayConverter.hexStringToByteArray("697b9fc9eeba3fc98a15c6c08f3b8818fb1413b95f57679673fe55721872117b"),
                 0, new byte[0], CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA.getByteValue(),
                 CompressionMethod.NULL.getValue(), 14 } });
     }
 
     private final byte[] message;
-    private final byte messageType;
-    private final int messageLength;
     private final ProtocolVersion version;
     private final byte[] protocolVersion;
     private final byte[] unixTime;
@@ -73,12 +71,10 @@ public class ServerHelloParserTest {
     private final Integer extensionLength;
     private final Config config = Config.createConfig();
 
-    public ServerHelloParserTest(byte[] message, byte messageType, int messageLength, ProtocolVersion version,
-        byte[] protocolVersion, byte[] unixTime, byte[] random, int sessionIdLength, byte[] sessionID,
-        byte[] selectedCiphersuite, byte selectedCompression, Integer extensionLength) {
+    public ServerHelloParserTest(byte[] message, ProtocolVersion version, byte[] protocolVersion, byte[] unixTime,
+        byte[] random, int sessionIdLength, byte[] sessionID, byte[] selectedCiphersuite, byte selectedCompression,
+        Integer extensionLength) {
         this.message = message;
-        this.messageType = messageType;
-        this.messageLength = messageLength;
         this.version = version;
         this.protocolVersion = protocolVersion;
         this.unixTime = unixTime;
@@ -99,8 +95,6 @@ public class ServerHelloParserTest {
             new TlsContext(config), ConnectionEndType.SERVER);
         ServerHelloMessage helloMessage = new ServerHelloMessage();
         parser.parse(helloMessage);
-        assertTrue(helloMessage.getType().getValue() == messageType);
-        assertTrue(helloMessage.getLength().getValue() == messageLength);
         assertArrayEquals(helloMessage.getProtocolVersion().getValue(), protocolVersion);
         assertArrayEquals(helloMessage.getUnixTime().getValue(), unixTime);
         assertArrayEquals(helloMessage.getRandom().getValue(), random);
@@ -113,9 +107,5 @@ public class ServerHelloParserTest {
         } else {
             assertTrue(helloMessage.getExtensionsLength().getValue() == extensionLength.intValue());
         }
-        LOGGER.debug("Complete should be:" + ArrayConverter.bytesToHexString(message));
-        LOGGER.debug(
-            "Complete was:" + ArrayConverter.bytesToHexString(helloMessage.getCompleteResultingMessage().getValue()));
-        assertArrayEquals(helloMessage.getCompleteResultingMessage().getValue(), message);
     }
 }

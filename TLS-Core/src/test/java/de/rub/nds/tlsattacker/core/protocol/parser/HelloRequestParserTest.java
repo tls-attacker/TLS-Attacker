@@ -10,14 +10,12 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloRequestMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
-import static org.junit.Assert.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -33,14 +31,10 @@ public class HelloRequestParserTest {
     // TODO get a true message
     private final byte[] message;
 
-    private final HandshakeMessageType type;
-    private final int length;
     private final Config config = Config.createConfig();
 
-    public HelloRequestParserTest(byte[] message, byte[] expectedPart, HandshakeMessageType type, int length) {
+    public HelloRequestParserTest(byte[] message) {
         this.message = message;
-        this.type = type;
-        this.length = length;
     }
 
     /**
@@ -52,9 +46,6 @@ public class HelloRequestParserTest {
             new HelloRequestParser(new ByteArrayInputStream(message), ProtocolVersion.TLS12, new TlsContext(config));
         HelloRequestMessage msg = new HelloRequestMessage();
         parser.parse(msg);
-        assertArrayEquals(message, msg.getCompleteResultingMessage().getValue());
-        assertTrue(msg.getLength().getValue() == length);
-        assertTrue(msg.getType().getValue() == type.getValue());
     }
 
 }

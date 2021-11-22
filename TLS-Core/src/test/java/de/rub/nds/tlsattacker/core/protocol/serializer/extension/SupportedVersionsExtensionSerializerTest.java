@@ -26,17 +26,12 @@ public class SupportedVersionsExtensionSerializerTest {
         return SupportedVersionsExtensionParserTest.generateData();
     }
 
-    private final byte[] completeExtension;
-    private final ExtensionType type;
-    private final int extensionLength;
+    private final byte[] extension;
     private final int versionListLength;
     private final byte[] versionList;
 
-    public SupportedVersionsExtensionSerializerTest(byte[] extension, byte[] completeExtension, ExtensionType type,
-        int extensionLength, int versionListLength, byte[] versionList) {
-        this.completeExtension = completeExtension;
-        this.type = type;
-        this.extensionLength = extensionLength;
+    public SupportedVersionsExtensionSerializerTest(byte[] extension, int versionListLength, byte[] versionList) {
+        this.extension = extension;
         this.versionListLength = versionListLength;
         this.versionList = versionList;
     }
@@ -47,11 +42,9 @@ public class SupportedVersionsExtensionSerializerTest {
     @Test
     public void testSerializeExtensionContent() {
         SupportedVersionsExtensionMessage msg = new SupportedVersionsExtensionMessage();
-        msg.setExtensionType(type.getValue());
-        msg.setExtensionLength(extensionLength);
         msg.setSupportedVersions(versionList);
         msg.setSupportedVersionsLength(versionListLength);
         SupportedVersionsExtensionSerializer serializer = new SupportedVersionsExtensionSerializer(msg);
-        assertArrayEquals(completeExtension, serializer.serialize());
+        assertArrayEquals(extension, serializer.serializeExtensionContent());
     }
 }

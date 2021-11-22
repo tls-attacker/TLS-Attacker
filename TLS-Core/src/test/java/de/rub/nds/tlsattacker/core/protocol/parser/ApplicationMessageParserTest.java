@@ -25,21 +25,15 @@ public class ApplicationMessageParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] {
-            { new byte[] { 0, 1, 2, 3, 4, 5, 6 }, new byte[] { 0, 1, 2, 3, 4, 5, 6 },
-                new byte[] { 0, 1, 2, 3, 4, 5, 6 } },
-            { new byte[] { 2, 3, 4, 5, 6 }, new byte[] { 2, 3, 4, 5, 6 }, new byte[] { 2, 3, 4, 5, 6 } } });
+        return Arrays
+            .asList(new Object[][] { { new byte[] { 0, 1, 2, 3, 4, 5, 6 } }, { new byte[] { 2, 3, 4, 5, 6 } } });
     }
 
     private final byte[] message;
-    private final byte[] expectedPart;
-    private final byte[] data;
     private final Config config = Config.createConfig();
 
-    public ApplicationMessageParserTest(byte[] message, byte[] expectedPart, byte[] data) {
+    public ApplicationMessageParserTest(byte[] message) {
         this.message = message;
-        this.expectedPart = expectedPart;
-        this.data = data;
     }
 
     /**
@@ -51,8 +45,8 @@ public class ApplicationMessageParserTest {
             new ApplicationMessageParser(new ByteArrayInputStream(message), ProtocolVersion.TLS12, config);
         ApplicationMessage applicationMessage = new ApplicationMessage();
         parser.parse(applicationMessage);
-        assertArrayEquals(applicationMessage.getCompleteResultingMessage().getValue(), expectedPart);
-        assertArrayEquals(applicationMessage.getData().getValue(), data);
+        assertArrayEquals(applicationMessage.getCompleteResultingMessage().getValue(), message);
+        assertArrayEquals(applicationMessage.getData().getValue(), message);
     }
 
 }

@@ -30,8 +30,8 @@ public class CertificateStatusParser extends HandshakeMessageParser<CertificateS
     @Override
     protected void parseHandshakeMessageContent(CertificateStatusMessage message) {
         LOGGER.debug("Parsing CertificateStatusMessage");
-        CertificateStatusGenericParser parser = new CertificateStatusGenericParser(
-            new ByteArrayInputStream(parseByteArrayField(message.getLength().getValue())));
+        CertificateStatusGenericParser parser =
+            new CertificateStatusGenericParser(new ByteArrayInputStream(parseByteArrayField(getBytesLeft())));
         CertificateStatusObject certificateStatusObject = new CertificateStatusObject();
         parser.parse(certificateStatusObject);
 

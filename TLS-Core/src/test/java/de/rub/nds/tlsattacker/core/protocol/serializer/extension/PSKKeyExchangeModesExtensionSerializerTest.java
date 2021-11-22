@@ -32,24 +32,4 @@ public class PSKKeyExchangeModesExtensionSerializerTest {
         assertArrayEquals(new byte[] { 0 },
             new PSKKeyExchangeModesExtensionSerializer(invalidEmptyMsg).serializeExtensionContent());
     }
-
-    @Test
-    public void testSerialize() {
-        PSKKeyExchangeModesExtensionMessage validMsg = new PSKKeyExchangeModesExtensionMessage();
-        validMsg.setExtensionType(validMsg.getExtensionTypeConstant().getValue());
-        validMsg.setExtensionLength(3);
-        validMsg.setKeyExchangeModesListLength(2);
-        validMsg.setKeyExchangeModesListBytes(new byte[] { 0, 1 });
-
-        PSKKeyExchangeModesExtensionSerializer validSerializer = new PSKKeyExchangeModesExtensionSerializer(validMsg);
-        byte[] serializedMsg = validSerializer.serialize();
-
-        assertArrayEquals(new byte[] { 0, // extension_type
-            // psk_key_exchange_modes(45), 2 bytes
-            45, 0, // length of extension_data, 2 bytes
-            3, 2, // extension_data: length of ke_modes
-            0, // ke_modes[0]
-            1 // ke_modes[1]
-        }, serializedMsg);
-    }
 }

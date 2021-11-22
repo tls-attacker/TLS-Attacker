@@ -29,8 +29,6 @@ public class DHEServerKeyExchangeSerializerTest {
 
     private final byte[] expectedPart;
 
-    private final HandshakeMessageType type;
-    private final int length;
     private final int pLength;
     private final byte[] p;
     private final int gLength;
@@ -42,12 +40,10 @@ public class DHEServerKeyExchangeSerializerTest {
     private final byte[] signature;
     private final ProtocolVersion version;
 
-    public DHEServerKeyExchangeSerializerTest(byte[] message, HandshakeMessageType type, int length, int pLength,
-        byte[] p, int gLength, byte[] g, int serializedKeyLength, byte[] serializedKey, byte[] signatureAndHashAlgo,
-        int sigLength, byte[] signature, ProtocolVersion version) {
+    public DHEServerKeyExchangeSerializerTest(byte[] message, int pLength, byte[] p, int gLength, byte[] g,
+        int serializedKeyLength, byte[] serializedKey, byte[] signatureAndHashAlgo, int sigLength, byte[] signature,
+        ProtocolVersion version) {
         this.expectedPart = message;
-        this.type = type;
-        this.length = length;
         this.pLength = pLength;
         this.p = p;
         this.gLength = gLength;
@@ -66,9 +62,6 @@ public class DHEServerKeyExchangeSerializerTest {
     @Test
     public void testSerializeHandshakeMessageContent() {
         DHEServerKeyExchangeMessage msg = new DHEServerKeyExchangeMessage();
-        msg.setCompleteResultingMessage(expectedPart);
-        msg.setType(type.getValue());
-        msg.setLength(length);
         msg.setModulusLength(pLength);
         msg.setModulus(p);
         msg.setGeneratorLength(gLength);
@@ -81,7 +74,7 @@ public class DHEServerKeyExchangeSerializerTest {
         }
         msg.setSignatureLength(sigLength);
         DHEServerKeyExchangeSerializer serializer = new DHEServerKeyExchangeSerializer(msg, version);
-        assertArrayEquals(expectedPart, serializer.serialize());
+        assertArrayEquals(expectedPart, serializer.serializeHandshakeMessageContent());
 
     }
 

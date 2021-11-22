@@ -9,7 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.GreaseExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.GreaseExtensionParserTest;
 import org.junit.Test;
@@ -22,23 +21,17 @@ import static org.junit.Assert.assertArrayEquals;
 
 @RunWith(Parameterized.class)
 public class GreaseExtensionSerializerTest {
+
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return GreaseExtensionParserTest.generateData();
     }
 
     private final byte[] extension;
-    private final byte[] completeExtension;
-    private final ExtensionType type;
-    private final int extensionLength;
     private final byte[] randomData;
 
-    public GreaseExtensionSerializerTest(byte[] extension, byte[] completeExtension, ExtensionType type,
-        int extensionLength, byte[] randomData) {
+    public GreaseExtensionSerializerTest(byte[] extension, byte[] randomData) {
         this.extension = extension;
-        this.completeExtension = completeExtension;
-        this.type = type;
-        this.extensionLength = extensionLength;
         this.randomData = randomData;
     }
 
@@ -48,10 +41,8 @@ public class GreaseExtensionSerializerTest {
     @Test
     public void testSerializeExtensionContent() {
         GreaseExtensionMessage msg = new GreaseExtensionMessage();
-        msg.setExtensionType(type.getValue());
         msg.setRandomData(randomData);
-        msg.setExtensionLength(randomData.length);
         GreaseExtensionSerializer serializer = new GreaseExtensionSerializer(msg);
-        assertArrayEquals(completeExtension, serializer.serialize());
+        assertArrayEquals(extension, serializer.serializeExtensionContent());
     }
 }

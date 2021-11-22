@@ -83,7 +83,6 @@ public class SSL2ServerHelloParserTest {
             new SSL2ServerHelloParser(new ByteArrayInputStream(message), version, new TlsContext(config));
         SSL2ServerHelloMessage msg = new SSL2ServerHelloMessage();
         parser.parse(msg);
-        assertArrayEquals(message, msg.getCompleteResultingMessage().getValue());
         assertTrue(msg.getMessageLength().getValue() == messageLength);
         assertTrue(msg.getType().getValue() == type.getValue());
         assertTrue(msg.getSessionIdHit().getValue() == sessionIdHit);

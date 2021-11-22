@@ -24,26 +24,22 @@ import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
 public class ServerCertificateTypeExtensionSerializerTest {
+
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return ServerCertificateTypeExtensionParserTest.generateData();
     }
 
-    private final ExtensionType extensionType;
     private final byte[] expectedBytes;
-    private final int extensionLength;
     private final Integer certificateTypesLength;
     private final List<CertificateType> certificateTypes;
     private final boolean isClientState;
     private ServerCertificateTypeExtensionSerializer serializer;
     private ServerCertificateTypeExtensionMessage msg;
 
-    public ServerCertificateTypeExtensionSerializerTest(ExtensionType extensionType, byte[] expectedBytes,
-        int extensionLength, Integer certificateTypesLength, List<CertificateType> certificateTypes,
-        boolean isClientState) {
-        this.extensionType = extensionType;
+    public ServerCertificateTypeExtensionSerializerTest(byte[] expectedBytes, Integer certificateTypesLength,
+        List<CertificateType> certificateTypes, boolean isClientState) {
         this.expectedBytes = expectedBytes;
-        this.extensionLength = extensionLength;
         this.certificateTypesLength = certificateTypesLength;
         this.certificateTypes = certificateTypes;
         this.isClientState = isClientState;
@@ -57,8 +53,6 @@ public class ServerCertificateTypeExtensionSerializerTest {
 
     @Test
     public void testSerializeExtensionContent() {
-        msg.setExtensionType(extensionType.getValue());
-        msg.setExtensionLength(extensionLength);
         msg.setCertificateTypes(CertificateType.toByteArray(certificateTypes));
         if (certificateTypesLength != null) {
             msg.setCertificateTypesLength(certificateTypesLength);
@@ -67,6 +61,6 @@ public class ServerCertificateTypeExtensionSerializerTest {
         }
         msg.setIsClientMessage(isClientState);
 
-        assertArrayEquals(expectedBytes, serializer.serialize());
+        assertArrayEquals(expectedBytes, serializer.serializeExtensionContent());
     }
 }

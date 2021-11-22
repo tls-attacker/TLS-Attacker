@@ -9,7 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.FinishedMessageParserTest;
@@ -28,19 +27,12 @@ public class FinishedSerializerTest {
     }
 
     private final byte[] expectedPart;
-
-    private final HandshakeMessageType type;
-    private final int length;
-
     private final byte[] verifyData;
 
     private final ProtocolVersion version;
 
-    public FinishedSerializerTest(byte[] message, byte[] expectedPart, HandshakeMessageType type, int length,
-        byte[] verifyData, ProtocolVersion version) {
+    public FinishedSerializerTest(byte[] expectedPart, byte[] verifyData, ProtocolVersion version) {
         this.expectedPart = expectedPart;
-        this.type = type;
-        this.length = length;
         this.verifyData = verifyData;
         this.version = version;
     }
@@ -51,8 +43,6 @@ public class FinishedSerializerTest {
     @Test
     public void testSerializeHandshakeMessageContent() {
         FinishedMessage msg = new FinishedMessage();
-        msg.setLength(length);
-        msg.setType(type.getValue());
         msg.setVerifyData(verifyData);
         msg.setCompleteResultingMessage(expectedPart);
         FinishedSerializer serializer = new FinishedSerializer(msg, version);

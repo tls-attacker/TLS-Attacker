@@ -16,9 +16,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class ClientCertificateUrlExtensionSerializerTest {
-    private final ExtensionType extensionType = ExtensionType.CLIENT_CERTIFICATE_URL;
-    private final byte[] expectedBytes = new byte[] { 0x00, 0x02, 0x00, 0x00 };
-    private final int extensionLength = 0;
+    private final byte[] expectedBytes = new byte[] {};
     private ClientCertificateUrlExtensionMessage message;
     private ClientCertificateUrlExtensionSerializer serializer;
 
@@ -30,9 +28,6 @@ public class ClientCertificateUrlExtensionSerializerTest {
 
     @Test
     public void testSerializeExtensionContent() {
-        message.setExtensionType(extensionType.getValue());
-        message.setExtensionLength(extensionLength);
-
-        assertArrayEquals(expectedBytes, serializer.serialize());
+        assertArrayEquals(expectedBytes, serializer.serializeExtensionContent());
     }
 }

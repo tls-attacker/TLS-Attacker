@@ -28,12 +28,10 @@ public class ExtendedRandomExtensionParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { { ExtensionType.EXTENDED_RANDOM, 3,
-            ArrayConverter.hexStringToByteArray("AB"), ArrayConverter.hexStringToByteArray("002800030001AB") } });
+        return Arrays.asList(new Object[][] {
+            { ArrayConverter.hexStringToByteArray("AB"), ArrayConverter.hexStringToByteArray("0001AB") } });
     }
 
-    private final ExtensionType extensionType;
-    private final int extensionLength;
     private final byte[] extendedRandom;
     private final byte[] expectedBytes;
     private ExtendedRandomExtensionParser parser;
@@ -47,10 +45,7 @@ public class ExtendedRandomExtensionParserTest {
      * @param extendedRandom
      * @param expectedBytes
      */
-    public ExtendedRandomExtensionParserTest(ExtensionType extensionType, int extensionLength, byte[] extendedRandom,
-        byte[] expectedBytes) {
-        this.extensionType = extensionType;
-        this.extensionLength = extensionLength;
+    public ExtendedRandomExtensionParserTest(byte[] extendedRandom, byte[] expectedBytes) {
         this.extendedRandom = extendedRandom;
         this.expectedBytes = expectedBytes;
     }
@@ -64,9 +59,6 @@ public class ExtendedRandomExtensionParserTest {
     public void testParseExtensionMessageContent() {
         message = new ExtendedRandomExtensionMessage();
         parser.parse(message);
-
-        assertArrayEquals(ExtensionType.EXTENDED_RANDOM.getValue(), message.getExtensionType().getValue());
-        assertEquals(extensionLength, (long) message.getExtensionLength().getValue());
         assertArrayEquals(extendedRandom, message.getExtendedRandom().getValue());
 
     }

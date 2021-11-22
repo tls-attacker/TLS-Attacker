@@ -9,7 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.CertificateMessageParserTest;
@@ -27,24 +26,14 @@ public class CertificateMessageSerializerTest {
         return CertificateMessageParserTest.generateData();
     }
 
-    private byte[] message;
-    private int start;
     private byte[] expectedPart;
-
-    private HandshakeMessageType type;
-    private int length;
-
     private int certificatesLength;
     private byte[] certificateBytes;
     private ProtocolVersion version;
 
-    public CertificateMessageSerializerTest(byte[] message, HandshakeMessageType type, int length,
-        int certificatesLength, byte[] certificateBytes, ProtocolVersion version) {
-        this.message = message;
-        this.start = 0;
+    public CertificateMessageSerializerTest(byte[] message, int certificatesLength, byte[] certificateBytes,
+        ProtocolVersion version) {
         this.expectedPart = message;
-        this.type = type;
-        this.length = length;
         this.certificatesLength = certificatesLength;
         this.certificateBytes = certificateBytes;
         this.version = version;
@@ -58,9 +47,7 @@ public class CertificateMessageSerializerTest {
         CertificateMessage message = new CertificateMessage();
         message.setCertificatesListLength(certificatesLength);
         message.setCertificatesListBytes(certificateBytes);
-        message.setLength(length);
-        message.setType(type.getValue());
         CertificateMessageSerializer serializer = new CertificateMessageSerializer(message, version);
-        assertArrayEquals(expectedPart, serializer.serialize());
+        assertArrayEquals(expectedPart, serializer.serializeHandshakeMessageContent());
     }
 }

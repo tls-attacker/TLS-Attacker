@@ -29,18 +29,13 @@ public class PskDheServerKeyExchangeSerializerTest {
     }
 
     private final byte[] expectedPart;
-
-    private HandshakeMessageType type;
-    private int length;
     private int PskIdentityHintLength;
     private byte[] PskIdentityHint;
     private ProtocolVersion version;
 
-    public PskDheServerKeyExchangeSerializerTest(byte[] message, HandshakeMessageType type, int length,
-        int PskIdentityHintLength, byte[] PskIdentityHint, ProtocolVersion version) {
+    public PskDheServerKeyExchangeSerializerTest(byte[] message, int PskIdentityHintLength, byte[] PskIdentityHint,
+        ProtocolVersion version) {
         this.expectedPart = message;
-        this.type = type;
-        this.length = length;
         this.version = version;
         this.PskIdentityHintLength = PskIdentityHintLength;
         this.PskIdentityHint = PskIdentityHint;
@@ -52,9 +47,6 @@ public class PskDheServerKeyExchangeSerializerTest {
     @Test
     public void testSerializeHandshakeMessageContent() {
         PskDheServerKeyExchangeMessage msg = new PskDheServerKeyExchangeMessage();
-        msg.setCompleteResultingMessage(expectedPart);
-        msg.setType(type.getValue());
-        msg.setLength(length);
         msg.setIdentityHint(PskIdentityHint);
         msg.setIdentityHintLength(PskIdentityHintLength);
         msg.setModulusLength(128);
@@ -67,7 +59,7 @@ public class PskDheServerKeyExchangeSerializerTest {
             "70dd13c4bca8c96983bdf065ce9517eb44114a4cf4cdbc55b3bfdabde8510faa38142139409378b90e3ceba61167056fc8b0ee088132183e48b986ed468eeaaf435c9dea3a5d9c01b63a3aae176971a2e1142674675dedca8a8e91093cd42246b4fa37893d7e66534a59461935274955e5dc623c9897a6c4a8501f37427e079d"));
         msg.setPublicKeyLength(128);
         PskDheServerKeyExchangeSerializer serializer = new PskDheServerKeyExchangeSerializer(msg, version);
-        assertArrayEquals(expectedPart, serializer.serialize());
+        assertArrayEquals(expectedPart, serializer.serializeHandshakeMessageContent());
 
     }
 

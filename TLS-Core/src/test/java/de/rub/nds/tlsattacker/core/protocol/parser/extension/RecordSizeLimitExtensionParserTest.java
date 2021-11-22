@@ -26,25 +26,15 @@ public class RecordSizeLimitExtensionParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { { ArrayConverter.hexStringToByteArray("001C00022000"), 0,
-            ArrayConverter.hexStringToByteArray("001C00022000"), ExtensionType.RECORD_SIZE_LIMIT, 2,
-            ArrayConverter.hexStringToByteArray("2000") } });
+        return Arrays.asList(new Object[][] {
+            { ArrayConverter.hexStringToByteArray("2000"), ArrayConverter.hexStringToByteArray("2000") } });
     }
 
     private final byte[] extension;
-    private final int start;
-    private final byte[] completeExtension;
-    private final ExtensionType type;
-    private final int extensionLength;
     private final byte[] recordSizeLimit;
 
-    public RecordSizeLimitExtensionParserTest(byte[] extension, int start, byte[] completeExtension, ExtensionType type,
-        int extensionLength, byte[] recordSizeLimit) {
+    public RecordSizeLimitExtensionParserTest(byte[] extension, byte[] recordSizeLimit) {
         this.extension = extension;
-        this.start = start;
-        this.completeExtension = completeExtension;
-        this.type = type;
-        this.extensionLength = extensionLength;
         this.recordSizeLimit = recordSizeLimit;
     }
 
@@ -57,9 +47,6 @@ public class RecordSizeLimitExtensionParserTest {
             new RecordSizeLimitExtensionParser(new ByteArrayInputStream(extension), Config.createConfig());
         RecordSizeLimitExtensionMessage message = new RecordSizeLimitExtensionMessage();
         parser.parse(message);
-        assertArrayEquals(message.getExtensionBytes().getValue(), completeExtension);
-        assertArrayEquals(type.getValue(), message.getExtensionType().getValue());
-        assertTrue(extensionLength == message.getExtensionLength().getValue());
         assertArrayEquals(recordSizeLimit, message.getRecordSizeLimit().getValue());
     }
 }

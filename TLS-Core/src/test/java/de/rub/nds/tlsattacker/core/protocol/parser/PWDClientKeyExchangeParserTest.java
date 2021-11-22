@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.PWDClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
@@ -28,8 +27,8 @@ public class PWDClientKeyExchangeParserTest {
 
     @Test
     public void testParse() {
-        byte[] message = ArrayConverter.hexStringToByteArray(
-            ("10 00 00 63 41 04 a0 c6 9b 45 0b\n" + "     85 ae e3 9f 64 6b 6e 64 d3 c1 08 39 5f 4b a1 19\n"
+        byte[] message = ArrayConverter
+            .hexStringToByteArray((" 41 04 a0 c6 9b 45 0b\n" + "     85 ae e3 9f 64 6b 6e 64 d3 c1 08 39 5f 4b a1 19\n"
                 + "     2d bf eb f0 de c5 b1 89 13 1f 59 5d d4 ba cd bd\n"
                 + "     d6 83 8d 92 19 fd 54 29 91 b2 c0 b0 e4 c4 46 bf\n"
                 + "     e5 8f 3c 03 39 f7 56 e8 9e fd a0 20 66 92 44\n"
@@ -48,9 +47,6 @@ public class PWDClientKeyExchangeParserTest {
             ProtocolVersion.TLS12, new TlsContext(config));
         PWDClientKeyExchangeMessage msg = new PWDClientKeyExchangeMessage();
         parser.parse(msg);
-        assertArrayEquals(message, msg.getCompleteResultingMessage().getValue());
-        assertEquals(99, (long) msg.getLength().getValue());
-        assertEquals(HandshakeMessageType.CLIENT_KEY_EXCHANGE.getValue(), (long) msg.getType().getValue());
         assertEquals(65, (long) msg.getElementLength().getValue());
         assertArrayEquals(element, msg.getElement().getValue());
         assertEquals(32, (long) msg.getScalarLength().getValue());

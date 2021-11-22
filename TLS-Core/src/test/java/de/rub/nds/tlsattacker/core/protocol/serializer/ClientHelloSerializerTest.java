@@ -9,7 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.ClientHelloParserTest;
@@ -29,8 +28,6 @@ public class ClientHelloSerializerTest {
     private final byte[] expectedPart;
 
     private final ProtocolVersion version;
-    private final HandshakeMessageType type;
-    private final int length;
     private final byte[] protocolVersion;
     private final byte[] unixTime;
     private final byte[] random;
@@ -45,13 +42,11 @@ public class ClientHelloSerializerTest {
     private final Byte cookieLength;
     private final byte[] cookie;
 
-    public ClientHelloSerializerTest(byte[] message, HandshakeMessageType type, int length, ProtocolVersion version,
-        byte[] protocolVersion, byte[] unixTime, byte[] random, int sessionIdLength, byte[] sessionID,
-        int cipherSuitesLength, byte[] cipherSuites, int compressionsLength, byte[] compressions,
-        Integer extensionLength, byte[] extensionBytes, Byte cookieLength, byte[] cookie, int numberOfExtensions) {
+    public ClientHelloSerializerTest(byte[] message, ProtocolVersion version, byte[] protocolVersion, byte[] unixTime,
+        byte[] random, int sessionIdLength, byte[] sessionID, int cipherSuitesLength, byte[] cipherSuites,
+        int compressionsLength, byte[] compressions, Integer extensionLength, byte[] extensionBytes, Byte cookieLength,
+        byte[] cookie, int numberOfExtensions) {
         this.expectedPart = message;
-        this.type = type;
-        this.length = length;
         this.version = version;
         this.protocolVersion = protocolVersion;
         this.unixTime = unixTime;
@@ -74,8 +69,6 @@ public class ClientHelloSerializerTest {
     @Test
     public void testSerializeHandshakeMessageContent() {
         ClientHelloMessage clientMessage = new ClientHelloMessage();
-        clientMessage.setLength(length);
-        clientMessage.setType(type.getValue());
         clientMessage.setCipherSuiteLength(cipherSuitesLength);
         clientMessage.setCipherSuites(cipherSuites);
         clientMessage.setCompressionLength(compressionsLength);
@@ -97,6 +90,6 @@ public class ClientHelloSerializerTest {
         clientMessage.setRandom(random);
         clientMessage.setProtocolVersion(protocolVersion);
         ClientHelloSerializer serializer = new ClientHelloSerializer(clientMessage, version);
-        assertArrayEquals(expectedPart, serializer.serialize());
+        assertArrayEquals(expectedPart, serializer.serializeHandshakeMessageContent());
     }
 }

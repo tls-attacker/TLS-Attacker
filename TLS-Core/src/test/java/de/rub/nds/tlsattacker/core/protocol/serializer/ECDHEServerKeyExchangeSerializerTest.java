@@ -9,7 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.ECDHEServerKeyExchangeParserTest;
@@ -28,9 +27,6 @@ public class ECDHEServerKeyExchangeSerializerTest {
     }
 
     private final byte[] expectedPart;
-
-    private final HandshakeMessageType type;
-    private final int length;
     private final byte curveType;
     private final byte[] namedGroup;
     private final int pubKeyLength;
@@ -40,12 +36,9 @@ public class ECDHEServerKeyExchangeSerializerTest {
     private final byte[] signature;
     private final ProtocolVersion version;
 
-    public ECDHEServerKeyExchangeSerializerTest(byte[] message, HandshakeMessageType type, int length, byte curveType,
-        byte[] namedGroup, int pubKeyLength, byte[] pubKey, byte[] signatureAndHashAlgo, int sigLength,
-        byte[] signature, ProtocolVersion version) {
+    public ECDHEServerKeyExchangeSerializerTest(byte[] message, byte curveType, byte[] namedGroup, int pubKeyLength,
+        byte[] pubKey, byte[] signatureAndHashAlgo, int sigLength, byte[] signature, ProtocolVersion version) {
         this.expectedPart = message;
-        this.type = type;
-        this.length = length;
         this.curveType = curveType;
         this.namedGroup = namedGroup;
         this.pubKeyLength = pubKeyLength;
@@ -64,8 +57,6 @@ public class ECDHEServerKeyExchangeSerializerTest {
         ECDHEServerKeyExchangeMessage msg = new ECDHEServerKeyExchangeMessage();
         msg.setCompleteResultingMessage(expectedPart);
         msg.setCurveType(curveType);
-        msg.setLength(length);
-        msg.setType(type.getValue());
         msg.setNamedGroup(namedGroup);
         msg.setPublicKey(pubKey);
         msg.setPublicKeyLength(pubKeyLength);

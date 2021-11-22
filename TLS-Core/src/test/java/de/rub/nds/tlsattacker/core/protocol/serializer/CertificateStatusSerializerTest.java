@@ -30,20 +30,14 @@ public class CertificateStatusSerializerTest {
     }
 
     private byte[] message;
-    private HandshakeMessageType type;
-    private int length;
     private int certificateStatusType;
     private int ocspResponseLength;
     private byte[] ocspResponseBytes;
     private ProtocolVersion version;
-    private byte[] expectedPart;
 
     public CertificateStatusSerializerTest(byte[] message, HandshakeMessageType type, int length,
         int certificateStatusType, int ocspResponseLength, byte[] ocspResponseBytes, ProtocolVersion version) {
         this.message = message;
-        this.expectedPart = message;
-        this.type = type;
-        this.length = length;
         this.certificateStatusType = certificateStatusType;
         this.ocspResponseLength = ocspResponseLength;
         this.ocspResponseBytes = ocspResponseBytes;
@@ -53,12 +47,10 @@ public class CertificateStatusSerializerTest {
     @Test
     public void testSerializeHandshakeMessageContent() {
         CertificateStatusMessage message = new CertificateStatusMessage();
-        message.setType(type.getValue());
-        message.setLength(length);
         message.setCertificateStatusType(certificateStatusType);
         message.setOcspResponseLength(ocspResponseLength);
         message.setOcspResponseBytes(ocspResponseBytes);
         CertificateStatusSerializer serializer = new CertificateStatusSerializer(message, version);
-        assertArrayEquals(expectedPart, serializer.serialize());
+        assertArrayEquals(this.message, serializer.serializeHandshakeMessageContent());
     }
 }

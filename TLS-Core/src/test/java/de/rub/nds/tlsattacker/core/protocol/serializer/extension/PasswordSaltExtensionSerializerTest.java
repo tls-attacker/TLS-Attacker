@@ -9,7 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PasswordSaltExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.PasswordSaltExtensionParserTest;
 import java.util.Collection;
@@ -27,18 +26,13 @@ public class PasswordSaltExtensionSerializerTest {
     }
 
     private final byte[] expectedBytes;
-    private final ExtensionType type;
-    private final int extensionLength;
     private final int saltLength;
     private final byte[] salt;
     private PasswordSaltExtensionSerializer serializer;
     private PasswordSaltExtensionMessage msg;
 
-    public PasswordSaltExtensionSerializerTest(byte[] expectedBytes, ExtensionType type, int extensionLength,
-        int saltLength, byte[] salt) {
+    public PasswordSaltExtensionSerializerTest(byte[] expectedBytes, int saltLength, byte[] salt) {
         this.expectedBytes = expectedBytes;
-        this.type = type;
-        this.extensionLength = extensionLength;
         this.saltLength = saltLength;
         this.salt = salt;
     }
@@ -51,11 +45,9 @@ public class PasswordSaltExtensionSerializerTest {
 
     @Test
     public void testSerializeExtensionContent() {
-        msg.setExtensionType(type.getValue());
-        msg.setExtensionLength(extensionLength);
         msg.setSalt(salt);
         msg.setSaltLength(saltLength);
 
-        assertArrayEquals(expectedBytes, serializer.serialize());
+        assertArrayEquals(expectedBytes, serializer.serializeExtensionContent());
     }
 }

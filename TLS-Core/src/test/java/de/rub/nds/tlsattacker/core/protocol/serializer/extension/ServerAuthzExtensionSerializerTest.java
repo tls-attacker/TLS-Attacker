@@ -9,7 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerAuthzExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ClientAuthzExtensionParserTest;
 import java.util.Collection;
@@ -26,19 +25,14 @@ public class ServerAuthzExtensionSerializerTest {
         return ClientAuthzExtensionParserTest.generateData();
     }
 
-    private final ExtensionType extensionType;
     private final byte[] expectedBytes;
-    private final int extensionLength;
     private final int authzFormatListLength;
     private final byte[] authzFormatList;
     private ServerAuthzExtensionMessage msg;
     private ServerAuthzExtensionSerializer serializer;
 
-    public ServerAuthzExtensionSerializerTest(ExtensionType extensionType, byte[] expectedBytes, int extensionLength,
-        int authzFormatListLength, byte[] authzFormatList) {
-        this.extensionType = extensionType;
+    public ServerAuthzExtensionSerializerTest(byte[] expectedBytes, int authzFormatListLength, byte[] authzFormatList) {
         this.expectedBytes = expectedBytes;
-        this.extensionLength = extensionLength;
         this.authzFormatListLength = authzFormatListLength;
         this.authzFormatList = authzFormatList;
     }
@@ -48,11 +42,9 @@ public class ServerAuthzExtensionSerializerTest {
         msg = new ServerAuthzExtensionMessage();
         serializer = new ServerAuthzExtensionSerializer(msg);
 
-        msg.setExtensionType(extensionType.getValue());
-        msg.setExtensionLength(extensionLength);
         msg.setAuthzFormatListLength(authzFormatListLength);
         msg.setAuthzFormatList(authzFormatList);
 
-        assertArrayEquals(expectedBytes, serializer.serialize());
+        assertArrayEquals(expectedBytes, serializer.serializeExtensionContent());
     }
 }

@@ -28,9 +28,6 @@ public class CertificateRequestSerializerTest {
     }
 
     private byte[] message;
-    private byte[] expectedPart;
-    private HandshakeMessageType type;
-    private int length;
     private int certTypesCount;
     private byte[] certTypes;
     private int sigHashAlgsLength;
@@ -39,13 +36,9 @@ public class CertificateRequestSerializerTest {
     private byte[] distinguishedNames;
     private ProtocolVersion version;
 
-    public CertificateRequestSerializerTest(byte[] message, byte[] expectedPart, HandshakeMessageType type, int length,
-        int certTypesCount, byte[] certTypes, int sigHashAlgsLength, byte[] sigHashAlgs, int distinguishedNamesLength,
-        byte[] distinguishedNames, ProtocolVersion version) {
+    public CertificateRequestSerializerTest(byte[] message, int certTypesCount, byte[] certTypes, int sigHashAlgsLength,
+        byte[] sigHashAlgs, int distinguishedNamesLength, byte[] distinguishedNames, ProtocolVersion version) {
         this.message = message;
-        this.expectedPart = expectedPart;
-        this.type = type;
-        this.length = length;
         this.certTypesCount = certTypesCount;
         this.certTypes = certTypes;
         this.sigHashAlgsLength = sigHashAlgsLength;
@@ -61,8 +54,6 @@ public class CertificateRequestSerializerTest {
     @Test
     public void testSerializeHandshakeMessageContent() {
         CertificateRequestMessage message = new CertificateRequestMessage();
-        message.setLength(length);
-        message.setType(type.getValue());
         message.setClientCertificateTypesCount(certTypesCount);
         message.setClientCertificateTypes(certTypes);
         message.setSignatureHashAlgorithmsLength(sigHashAlgsLength);
@@ -70,7 +61,7 @@ public class CertificateRequestSerializerTest {
         message.setDistinguishedNamesLength(distinguishedNamesLength);
         message.setDistinguishedNames(distinguishedNames);
         CertificateRequestSerializer serializer = new CertificateRequestSerializer(message, version);
-        assertArrayEquals(expectedPart, serializer.serialize());
+        assertArrayEquals(this.message, serializer.serializeHandshakeMessageContent());
     }
 
 }

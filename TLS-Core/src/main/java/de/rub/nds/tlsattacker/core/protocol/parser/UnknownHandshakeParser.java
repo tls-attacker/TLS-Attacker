@@ -50,7 +50,7 @@ public class UnknownHandshakeParser extends HandshakeMessageParser<UnknownHandsh
      *            Message to write in
      */
     private void parseData(UnknownHandshakeMessage msg) {
-        msg.setData(parseByteArrayField(msg.getLength().getValue()));
+        msg.setData(parseByteArrayField(getBytesLeft()));
         LOGGER.debug("Data: " + ArrayConverter.bytesToHexString(msg.getData().getValue()));
     }
 }

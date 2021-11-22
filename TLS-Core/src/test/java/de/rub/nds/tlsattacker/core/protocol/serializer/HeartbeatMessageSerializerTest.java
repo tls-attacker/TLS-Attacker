@@ -20,12 +20,12 @@ import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
 public class HeartbeatMessageSerializerTest {
+
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return HeartbeatMessageParserTest.generateData();
     }
 
-    private byte[] message;
     private byte[] expectedPart;
 
     private byte heartBeatType;
@@ -33,9 +33,8 @@ public class HeartbeatMessageSerializerTest {
     private byte[] payload;
     private byte[] padding;
 
-    public HeartbeatMessageSerializerTest(byte[] message, byte[] expectedPart, byte heartBeatType, int payloadLength,
-        byte[] payload, byte[] padding) {
-        this.message = message;
+    public HeartbeatMessageSerializerTest(byte[] expectedPart, byte heartBeatType, int payloadLength, byte[] payload,
+        byte[] padding) {
         this.expectedPart = expectedPart;
         this.heartBeatType = heartBeatType;
         this.payloadLength = payloadLength;

@@ -68,9 +68,7 @@ public class CertificateStatusRequestV2ExtensionParserTest {
     private final byte[] statusRequestBytes = hexStringToByteArray(
         "010015000B00030102030004040506070006010203040506010015000B00030102030004040506070006010203040506");
     private final byte[] parseBytes = hexStringToByteArray(
-        "001100340030010015000B00030102030004040506070006010203040506010015000B00030102030004040506070006010203040506");
-    private final int extensionLength = 52;
-    private final ExtensionType type = ExtensionType.STATUS_REQUEST_V2;
+        "0030010015000B00030102030004040506070006010203040506010015000B00030102030004040506070006010203040506");
 
     @Test
     public void testParser() {
@@ -83,8 +81,6 @@ public class CertificateStatusRequestV2ExtensionParserTest {
         CertificateStatusRequestV2ExtensionMessage msg = new CertificateStatusRequestV2ExtensionMessage();
         parser.parse(msg);
 
-        assertArrayEquals(type.getValue(), msg.getExtensionType().getValue());
-        assertEquals(extensionLength, (long) msg.getExtensionLength().getValue());
         assertEquals(listLength, (long) msg.getStatusRequestListLength().getValue());
         assertArrayEquals(statusRequestBytes, msg.getStatusRequestBytes().getValue());
         assertRequestItemV2List(list, msg.getStatusRequestList());

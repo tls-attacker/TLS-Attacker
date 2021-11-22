@@ -28,20 +28,11 @@ public class KeyShareExtensionSerializerTest {
     }
 
     private byte[] extension;
-    private int start;
-    private byte[] completeExtension;
-    private ExtensionType type;
-    private int extensionLength;
     private int keyShareListLength;
     private byte[] keyShareList;
 
-    public KeyShareExtensionSerializerTest(byte[] extension, byte[] completeExtension, ExtensionType type,
-        int extensionLength, int keyShareListLength, byte[] keyShareList) {
+    public KeyShareExtensionSerializerTest(byte[] extension, int keyShareListLength, byte[] keyShareList) {
         this.extension = extension;
-        this.start = start;
-        this.completeExtension = completeExtension;
-        this.type = type;
-        this.extensionLength = extensionLength;
         this.keyShareListLength = keyShareListLength;
         this.keyShareList = keyShareList;
     }
@@ -52,12 +43,10 @@ public class KeyShareExtensionSerializerTest {
     @Test
     public void testSerializeExtensionContent() {
         KeyShareExtensionMessage msg = new KeyShareExtensionMessage();
-        msg.setExtensionType(type.getValue());
-        msg.setExtensionLength(extensionLength);
         msg.setKeyShareListBytes(keyShareList);
         msg.setKeyShareListLength(keyShareListLength);
         KeyShareExtensionSerializer serializer = new KeyShareExtensionSerializer(msg, ConnectionEndType.CLIENT);
-        assertArrayEquals(completeExtension, serializer.serialize());
+        assertArrayEquals(extension, serializer.serializeExtensionContent());
     }
 
 }

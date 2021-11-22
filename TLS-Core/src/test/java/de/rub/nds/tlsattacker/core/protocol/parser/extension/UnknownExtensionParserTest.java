@@ -30,31 +30,14 @@ public class UnknownExtensionParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] {
-            { ArrayConverter.hexStringToByteArray("00230000"), ArrayConverter.hexStringToByteArray("00230000"),
-                ArrayConverter.hexStringToByteArray("0023"), 0, null, },
-            { ArrayConverter.hexStringToByteArray("000f000101"), ArrayConverter.hexStringToByteArray("000f000101"),
-                ArrayConverter.hexStringToByteArray("000f"), 1, ArrayConverter.hexStringToByteArray("01"), },
-            { ArrayConverter.hexStringToByteArray("000f00010100"), ArrayConverter.hexStringToByteArray("000f000101"),
-                ArrayConverter.hexStringToByteArray("000f"), 1, ArrayConverter.hexStringToByteArray("01"), },
-            { ArrayConverter.hexStringToByteArray("00000000"), ArrayConverter.hexStringToByteArray("00000000"),
-                ArrayConverter.hexStringToByteArray("0000"), 0, null, },
-            { ArrayConverter.hexStringToByteArray("0000FFFF"), ArrayConverter.hexStringToByteArray("0000FFFF"),
-                ArrayConverter.hexStringToByteArray("0000"), 0xFFFF, null, } });
+        return Arrays.asList(new Object[][] { { new byte[0] }, { ArrayConverter.hexStringToByteArray("01") },
+            { ArrayConverter.hexStringToByteArray("0100") } });
     }
 
-    private final byte[] array;
     private final byte[] message;
-    private final byte[] type;
-    private final Integer extensionLength;
-    private final byte[] data;
 
-    public UnknownExtensionParserTest(byte[] array, byte[] message, byte[] type, Integer extensionLength, byte[] data) {
-        this.array = array;
+    public UnknownExtensionParserTest(byte[] message) {
         this.message = message;
-        this.type = type;
-        this.extensionLength = extensionLength;
-        this.data = data;
     }
 
     @Before
@@ -67,24 +50,10 @@ public class UnknownExtensionParserTest {
     @Test
     public void testParse() {
         UnknownExtensionParser parser =
-            new UnknownExtensionParser(new ByteArrayInputStream(array), Config.createConfig());
+            new UnknownExtensionParser(new ByteArrayInputStream(message), Config.createConfig());
         UnknownExtensionMessage unknownMessage = new UnknownExtensionMessage();
         parser.parse(unknownMessage);
-        assertArrayEquals(message, unknownMessage.getExtensionBytes().getValue());
-        if (type != null) {
-            assertArrayEquals(type, unknownMessage.getExtensionType().getValue());
-        } else {
-            assertNull(unknownMessage.getExtensionType());
-        }
-        if (extensionLength != null) {
-            assertTrue(extensionLength.intValue() == unknownMessage.getExtensionLength().getValue());
-        } else {
-            assertNull(unknownMessage.getExtensionLength());
-        }
-        if (data != null) {
-            assertArrayEquals(data, unknownMessage.getExtensionData().getValue());
-        } else {
-            assertNull(unknownMessage.getExtensionData());
-        }
+        assertArrayEquals(message, unknownMessage.getExtensionData().getValue());
+
     }
 }

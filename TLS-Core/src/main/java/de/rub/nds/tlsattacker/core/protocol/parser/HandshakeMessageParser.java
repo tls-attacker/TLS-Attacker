@@ -62,38 +62,10 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
         this.tlsContext = tlsContext;
     }
 
-    /**
-     * Reads the next bytes as a HandshakeMessageType and writes them in the message
-     *
-     * @param message
-     *                Message to write in
-     */
-    private void parseType(HandshakeMessage message) {
-        message.setType(parseByteField(HandshakeByteLength.MESSAGE_TYPE));
-        if (message.getType().getValue() != expectedType.getValue() && expectedType != HandshakeMessageType.UNKNOWN) {
-            LOGGER.warn("Parsed wrong message type. Parsed:" + message.getType().getValue() + " but expected:"
-                + expectedType.getValue());
-        }
-        LOGGER.debug("Type:" + message.getType().getValue());
-    }
-
-    /**
-     * Reads the next bytes as the MessageLength and writes them in the message
-     *
-     * @param message
-     *                Message to write in
-     */
-    private void parseLength(HandshakeMessage message) {
-        message.setLength(parseIntField(HandshakeByteLength.MESSAGE_LENGTH_FIELD));
-        LOGGER.debug("Length:" + message.getLength().getValue());
-    }
-
     @Override
     protected void parseMessageContent(T message) {
-        parseType(message);
-        parseLength(message);
+        // TODO Cleanup function mess
         parseHandshakeMessageContent(message);
-        message.setCompleteResultingMessage(getAlreadyParsed());
     }
 
     protected abstract void parseHandshakeMessageContent(T msg);

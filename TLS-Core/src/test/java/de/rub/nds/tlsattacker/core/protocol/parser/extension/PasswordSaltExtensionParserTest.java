@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PasswordSaltExtensionMessage;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
@@ -26,23 +25,17 @@ public class PasswordSaltExtensionParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(
-            new Object[][] { { ArrayConverter.hexStringToByteArray("001f00120010843711c21d47ce6e6383cdda37e47da3"),
-                ExtensionType.PASSWORD_SALT, 18, 16,
+        return Arrays
+            .asList(new Object[][] { { ArrayConverter.hexStringToByteArray("0010843711c21d47ce6e6383cdda37e47da3"), 16,
                 ArrayConverter.hexStringToByteArray("843711c21d47ce6e6383cdda37e47da3") } });
     }
 
     private final byte[] expectedBytes;
-    private final ExtensionType type;
-    private final int extensionLength;
     private final int saltLength;
     private final byte[] salt;
 
-    public PasswordSaltExtensionParserTest(byte[] expectedBytes, ExtensionType type, int extensionLength,
-        int saltLength, byte[] salt) {
+    public PasswordSaltExtensionParserTest(byte[] expectedBytes, int saltLength, byte[] salt) {
         this.expectedBytes = expectedBytes;
-        this.type = type;
-        this.extensionLength = extensionLength;
         this.saltLength = saltLength;
         this.salt = salt;
     }
@@ -53,8 +46,6 @@ public class PasswordSaltExtensionParserTest {
             new PasswordSaltExtensionParser(new ByteArrayInputStream(expectedBytes), Config.createConfig());
         PasswordSaltExtensionMessage msg = new PasswordSaltExtensionMessage();
         parser.parse(msg);
-        assertArrayEquals(type.getValue(), msg.getExtensionType().getValue());
-        assertEquals(extensionLength, (long) msg.getExtensionLength().getValue());
         assertEquals(saltLength, (long) msg.getSaltLength().getValue());
         assertArrayEquals(salt, msg.getSalt().getValue());
     }

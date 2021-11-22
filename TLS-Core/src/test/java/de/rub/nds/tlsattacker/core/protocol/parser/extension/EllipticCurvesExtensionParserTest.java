@@ -27,25 +27,17 @@ public class EllipticCurvesExtensionParserTest {
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] {
-            { ArrayConverter.hexStringToByteArray("000a001c001a00170019001c001b0018001a0016000e000d000b000c0009000a"),
-                ArrayConverter.hexStringToByteArray("000a001c001a00170019001c001b0018001a0016000e000d000b000c0009000a"),
-                ExtensionType.ELLIPTIC_CURVES, 28, 26,
+            { ArrayConverter.hexStringToByteArray("001a00170019001c001b0018001a0016000e000d000b000c0009000a"), 26,
                 ArrayConverter.hexStringToByteArray("00170019001c001b0018001a0016000e000d000b000c0009000a") } });
     }
 
     private final byte[] extension;
-    private final byte[] completeExtension;
-    private final ExtensionType type;
-    private final int extensionLength;
+
     private final int curvesLength;
     private final byte[] curves;
 
-    public EllipticCurvesExtensionParserTest(byte[] extension, byte[] completeExtension, ExtensionType type,
-        int extensionLength, int curvesLength, byte[] curves) {
+    public EllipticCurvesExtensionParserTest(byte[] extension, int curvesLength, byte[] curves) {
         this.extension = extension;
-        this.completeExtension = completeExtension;
-        this.type = type;
-        this.extensionLength = extensionLength;
         this.curvesLength = curvesLength;
         this.curves = curves;
     }
@@ -59,9 +51,6 @@ public class EllipticCurvesExtensionParserTest {
             new EllipticCurvesExtensionParser(new ByteArrayInputStream(extension), Config.createConfig());
         EllipticCurvesExtensionMessage msg = new EllipticCurvesExtensionMessage();
         parser.parse(msg);
-        assertArrayEquals(msg.getExtensionBytes().getValue(), completeExtension);
-        assertArrayEquals(type.getValue(), msg.getExtensionType().getValue());
-        assertTrue(extensionLength == msg.getExtensionLength().getValue());
         assertArrayEquals(msg.getSupportedGroups().getValue(), curves);
         assertTrue(curvesLength == msg.getSupportedGroupsLength().getValue());
     }

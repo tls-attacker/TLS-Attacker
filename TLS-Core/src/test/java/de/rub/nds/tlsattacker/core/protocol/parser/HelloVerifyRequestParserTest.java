@@ -28,27 +28,21 @@ public class HelloVerifyRequestParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] {
-            { ArrayConverter.hexStringToByteArray("03000017feff1415520276466763250a851c5b9eaeb44676ff3381"),
-                HandshakeMessageType.HELLO_VERIFY_REQUEST, 23, ProtocolVersion.DTLS10.getValue(), (byte) 20,
+        return Arrays.asList(
+            new Object[][] { { ArrayConverter.hexStringToByteArray("feff1415520276466763250a851c5b9eaeb44676ff3381"),
+                ProtocolVersion.DTLS10.getValue(), (byte) 20,
                 ArrayConverter.hexStringToByteArray("15520276466763250a851c5b9eaeb44676ff3381") } });
     }
 
     private final byte[] message;
-
-    private final HandshakeMessageType type;
-    private final int length;
 
     private final byte[] protocolVersion;
     private final byte cookieLength;
     private final byte[] cookie;
     private final Config config = Config.createConfig();
 
-    public HelloVerifyRequestParserTest(byte[] message, HandshakeMessageType type, int length, byte[] protocolVersion,
-        byte cookieLength, byte[] cookie) {
+    public HelloVerifyRequestParserTest(byte[] message, byte[] protocolVersion, byte cookieLength, byte[] cookie) {
         this.message = message;
-        this.type = type;
-        this.length = length;
         this.protocolVersion = protocolVersion;
         this.cookieLength = cookieLength;
         this.cookie = cookie;
@@ -63,9 +57,6 @@ public class HelloVerifyRequestParserTest {
             ProtocolVersion.DTLS10, new TlsContext(config));
         HelloVerifyRequestMessage msg = new HelloVerifyRequestMessage();
         parser.parse(msg);
-        assertArrayEquals(message, msg.getCompleteResultingMessage().getValue());
-        assertTrue(msg.getLength().getValue() == length);
-        assertTrue(msg.getType().getValue() == type.getValue());
         assertArrayEquals(protocolVersion, msg.getProtocolVersion().getValue());
         assertArrayEquals(cookie, msg.getCookie().getValue());
         assertTrue(cookieLength == msg.getCookieLength().getValue());

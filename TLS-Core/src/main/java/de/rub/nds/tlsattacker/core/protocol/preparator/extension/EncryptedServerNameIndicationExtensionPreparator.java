@@ -142,21 +142,16 @@ public class EncryptedServerNameIndicationExtensionPreparator
     public void prepareAfterParse() {
         LOGGER.debug("PreparingAfterParse EncryptedServerNameIndicationExtension");
         if (this.esniPreparatorMode == EsniPreparatorMode.SERVER) {
-            try {
-                prepareClientRandom(msg);
-                prepareEsniContents(msg);
-                prepareEsniContentsHash(msg);
-                prepareEsniServerSharedSecret(msg);
-                prepareEsniMasterSecret(msg);
-                prepareEsniKey(msg);
-                prepareEsniIv(msg);
-                prepareClientHelloKeyShare(msg);
-                parseEncryptedSni(msg);
-                parseClientEsniInnerBytes(msg);
-            } catch (NullPointerException e) {
-                throw new PreparationException(
-                    "Missing parameters to prepareAfterParse EncryptedServerNameIndicationExtension", e);
-            }
+            prepareClientRandom(msg);
+            prepareEsniContents(msg);
+            prepareEsniContentsHash(msg);
+            prepareEsniServerSharedSecret(msg);
+            prepareEsniMasterSecret(msg);
+            prepareEsniKey(msg);
+            prepareEsniIv(msg);
+            prepareClientHelloKeyShare(msg);
+            parseEncryptedSni(msg);
+            parseClientEsniInnerBytes(msg);
         }
     }
 

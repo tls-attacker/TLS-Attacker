@@ -30,30 +30,22 @@ public class SupplementalDataParserTest {
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] {
-            { ArrayConverter.hexStringToByteArray("1700001100000e4002000a0008010005aaaaaaaaaa"),
-                HandshakeMessageType.SUPPLEMENTAL_DATA, 17, 14,
+            { ArrayConverter.hexStringToByteArray("00000e4002000a0008010005aaaaaaaaaa"), 14,
                 ArrayConverter.hexStringToByteArray("4002000a0008010005aaaaaaaaaa"), ProtocolVersion.TLS11 },
-            { ArrayConverter
-                .hexStringToByteArray("1700001F00001c4002000a0008010005aaaaaaaaaa4002000a0008010005aaaaaaaaaa"),
-                HandshakeMessageType.SUPPLEMENTAL_DATA, 31, 28,
+            { ArrayConverter.hexStringToByteArray("00001c4002000a0008010005aaaaaaaaaa4002000a0008010005aaaaaaaaaa"), 28,
                 ArrayConverter.hexStringToByteArray("4002000a0008010005aaaaaaaaaa4002000a0008010005aaaaaaaaaa"),
                 ProtocolVersion.TLS11 } });
     }
 
     private byte[] message;
-    private HandshakeMessageType type;
-    private int length;
-
     private int supplementalDataLength;
     private byte[] supplementalDataBytes;
     private ProtocolVersion version;
     private final Config config = Config.createConfig();
 
-    public SupplementalDataParserTest(byte[] message, HandshakeMessageType type, int length, int supplementalDataLength,
-        byte[] supplementalDataBytes, ProtocolVersion version) {
+    public SupplementalDataParserTest(byte[] message, int supplementalDataLength, byte[] supplementalDataBytes,
+        ProtocolVersion version) {
         this.message = message;
-        this.type = type;
-        this.length = length;
         this.supplementalDataLength = supplementalDataLength;
         this.supplementalDataBytes = supplementalDataBytes;
         this.version = version;
@@ -65,9 +57,6 @@ public class SupplementalDataParserTest {
             new SupplementalDataParser(new ByteArrayInputStream(message), version, new TlsContext(config));
         SupplementalDataMessage suppDataMessage = new SupplementalDataMessage();
         parser.parse(suppDataMessage);
-        assertArrayEquals(suppDataMessage.getCompleteResultingMessage().getValue(), message);
-        assertTrue(suppDataMessage.getType().getValue() == type.getValue());
-        assertTrue(suppDataMessage.getLength().getValue() == length);
         assertTrue(suppDataMessage.getSupplementalDataLength().getValue() == supplementalDataLength);
         assertArrayEquals(suppDataMessage.getSupplementalDataBytes().getValue(), supplementalDataBytes);
     }

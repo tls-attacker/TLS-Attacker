@@ -28,18 +28,13 @@ public class PWDProtectExtensionSerializerTest {
     }
 
     private final byte[] expectedBytes;
-    private final ExtensionType type;
-    private final int extensionLength;
     private final int usernameLength;
     private final byte[] username;
     private PWDProtectExtensionMessage message;
     private PWDProtectExtensionSerializer serializer;
 
-    public PWDProtectExtensionSerializerTest(byte[] expectedBytes, ExtensionType type, int extensionLength,
-        int usernameLength, byte[] username) {
+    public PWDProtectExtensionSerializerTest(byte[] expectedBytes, int usernameLength, byte[] username) {
         this.expectedBytes = expectedBytes;
-        this.type = type;
-        this.extensionLength = extensionLength;
         this.usernameLength = usernameLength;
         this.username = username;
     }
@@ -52,12 +47,10 @@ public class PWDProtectExtensionSerializerTest {
 
     @Test
     public void testSerializeExtensionContent() {
-        message.setExtensionType(type.getValue());
-        message.setExtensionLength(extensionLength);
         message.setUsername(username);
         message.setUsernameLength(usernameLength);
 
-        assertArrayEquals(expectedBytes, serializer.serialize());
+        assertArrayEquals(expectedBytes, serializer.serializeExtensionContent());
     }
 
 }

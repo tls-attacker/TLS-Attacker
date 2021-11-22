@@ -26,19 +26,14 @@ public class ClientAuthzExtensionSerializerTest {
         return ClientAuthzExtensionParserTest.generateData();
     }
 
-    private final ExtensionType extensionType;
     private final byte[] expectedBytes;
-    private final int extensionLength;
     private final int authzFormatListLength;
     private final byte[] authzFormatList;
     private ClientAuthzExtensionMessage msg;
     private ClientAuthzExtensionSerializer serializer;
 
-    public ClientAuthzExtensionSerializerTest(ExtensionType extensionType, byte[] expectedBytes, int extensionLength,
-        int authzFormatListLength, byte[] authzFormatList) {
-        this.extensionType = extensionType;
+    public ClientAuthzExtensionSerializerTest(byte[] expectedBytes, int authzFormatListLength, byte[] authzFormatList) {
         this.expectedBytes = expectedBytes;
-        this.extensionLength = extensionLength;
         this.authzFormatListLength = authzFormatListLength;
         this.authzFormatList = authzFormatList;
     }
@@ -47,12 +42,9 @@ public class ClientAuthzExtensionSerializerTest {
     public void testSerializeExtensionContent() {
         msg = new ClientAuthzExtensionMessage();
         serializer = new ClientAuthzExtensionSerializer(msg);
-
-        msg.setExtensionType(extensionType.getValue());
-        msg.setExtensionLength(extensionLength);
         msg.setAuthzFormatListLength(authzFormatListLength);
         msg.setAuthzFormatList(authzFormatList);
 
-        assertArrayEquals(expectedBytes, serializer.serialize());
+        assertArrayEquals(expectedBytes, serializer.serializeExtensionContent());
     }
 }

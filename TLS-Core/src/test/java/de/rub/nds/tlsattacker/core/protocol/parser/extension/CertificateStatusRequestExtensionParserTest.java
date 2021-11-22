@@ -33,16 +33,13 @@ public class CertificateStatusRequestExtensionParserTest {
      */
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] {
-            { ExtensionType.STATUS_REQUEST, ArrayConverter.hexStringToByteArray("000500050100000000"), 5, 1, 0,
-                new byte[0], 0, new byte[0] },
-            { ExtensionType.STATUS_REQUEST, ArrayConverter.hexStringToByteArray("0005000701000102000103"), 7, 1, 1,
-                new byte[] { 0x02 }, 1, new byte[] { 0x03 } } });
+        return Arrays.asList(
+            new Object[][] { { ArrayConverter.hexStringToByteArray("0100000000"), 1, 0, new byte[0], 0, new byte[0] },
+                { ArrayConverter.hexStringToByteArray("01000102000103"), 1, 1, new byte[] { 0x02 }, 1,
+                    new byte[] { 0x03 } } });
     }
 
-    private final ExtensionType extensionType;
     private final byte[] expectedBytes;
-    private final int extensionLength;
     private final int certificateStatusRequestType;
     private final int responderIDListLength;
     private final byte[] responderIDList;
@@ -51,12 +48,9 @@ public class CertificateStatusRequestExtensionParserTest {
     private CertificateStatusRequestExtensionParser parser;
     private CertificateStatusRequestExtensionMessage message;
 
-    public CertificateStatusRequestExtensionParserTest(ExtensionType extensionType, byte[] expectedBytes,
-        int extensionLength, int certificateStatusRequestType, int responderIDListLength, byte[] responderIDList,
-        int requestExtensionLength, byte[] requestExtension) {
-        this.extensionType = extensionType;
+    public CertificateStatusRequestExtensionParserTest(byte[] expectedBytes, int certificateStatusRequestType,
+        int responderIDListLength, byte[] responderIDList, int requestExtensionLength, byte[] requestExtension) {
         this.expectedBytes = expectedBytes;
-        this.extensionLength = extensionLength;
         this.certificateStatusRequestType = certificateStatusRequestType;
         this.responderIDListLength = responderIDListLength;
         this.responderIDList = responderIDList;
@@ -74,9 +68,6 @@ public class CertificateStatusRequestExtensionParserTest {
     public void testParseExtensionMessageContent() {
         message = new CertificateStatusRequestExtensionMessage();
         parser.parse(message);
-
-        assertArrayEquals(extensionType.getValue(), message.getExtensionType().getValue());
-        assertEquals(extensionLength, (long) message.getExtensionLength().getValue());
 
         assertEquals(certificateStatusRequestType, (long) message.getCertificateStatusRequestType().getValue());
 

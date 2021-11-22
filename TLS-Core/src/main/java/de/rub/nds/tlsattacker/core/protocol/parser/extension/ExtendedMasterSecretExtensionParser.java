@@ -9,7 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
 import java.io.InputStream;
@@ -32,11 +31,6 @@ public class ExtendedMasterSecretExtensionParser extends ExtensionParser<Extende
      */
     @Override
     public void parseExtensionMessageContent(ExtendedMasterSecretExtensionMessage msg) {
-        byte[] auxData = parseByteArrayField(msg.getExtensionLength().getValue());
-        if (auxData.length > 0) {
-            LOGGER.warn("There shouldn't be any data in the body of" + " the extended master secret extension."
-                + "Data send by server: " + ArrayConverter.bytesToHexString(auxData));
-        }
     }
 
 }

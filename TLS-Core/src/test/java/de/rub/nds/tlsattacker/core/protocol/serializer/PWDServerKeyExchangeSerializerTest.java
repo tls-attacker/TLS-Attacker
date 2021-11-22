@@ -22,8 +22,8 @@ public class PWDServerKeyExchangeSerializerTest {
 
     @Test
     public void serializeHandshakeMessageContent() {
-        byte[] message = ArrayConverter.hexStringToByteArray(
-            ("0c 00 00 87 20 96 3c 77 cd c1\n" + "     3a 2a 8d 75 cd dd d1 e0 44 99 29 84 37 11 c2 1d\n"
+        byte[] message = ArrayConverter
+            .hexStringToByteArray(("20 96 3c 77 cd c1\n" + "     3a 2a 8d 75 cd dd d1 e0 44 99 29 84 37 11 c2 1d\n"
                 + "     47 ce 6e 63 83 cd da 37 e4 7d a3 03 00 1a 41 04\n"
                 + "     22 bb d5 6b 48 1d 7f a9 0c 35 e8 d4 2f cd 06 61\n"
                 + "     8a 07 78 de 50 6b 1b c3 88 82 ab c7 31 32 ee f3\n"
@@ -53,9 +53,7 @@ public class PWDServerKeyExchangeSerializerTest {
         msg.setElementLength(65);
         msg.setScalar(scalar);
         msg.setScalarLength(32);
-        msg.setType(HandshakeMessageType.SERVER_KEY_EXCHANGE.getValue());
-        msg.setLength(135);
         PWDServerKeyExchangeSerializer serializer = new PWDServerKeyExchangeSerializer(msg, ProtocolVersion.TLS12);
-        assertArrayEquals(message, serializer.serialize());
+        assertArrayEquals(message, serializer.serializeHandshakeMessageContent());
     }
 }

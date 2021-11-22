@@ -29,26 +29,22 @@ public class SrtpExtensionParserTest {
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] {
-            { ExtensionType.USE_SRTP, ArrayConverter.hexStringToByteArray("000e0009000400010006020102"), 9, 4,
+            { ArrayConverter.hexStringToByteArray("000400010006020102"), 4,
                 ArrayConverter.hexStringToByteArray("00010006"), 2, new byte[] { 0x01, 0x02 } },
-            { ExtensionType.USE_SRTP, ArrayConverter.hexStringToByteArray("000e000900040001000600"), 9, 4,
-                ArrayConverter.hexStringToByteArray("00010006"), 0, new byte[0] } });
+            { ArrayConverter.hexStringToByteArray("00040001000600"), 4, ArrayConverter.hexStringToByteArray("00010006"),
+                0, new byte[0] } });
     }
 
-    private final ExtensionType extensionType;
     private final byte[] expectedBytes;
-    private final int extensionLength;
     private final int srtpProtectionProfilesLength;
     private final byte[] srtpProtectionProfiles;
     private final int srtpMkiLength;
     private final byte[] srtpMki;
     private SrtpExtensionParser parser;
 
-    public SrtpExtensionParserTest(ExtensionType extensionType, byte[] expectedBytes, int extensionLength,
-        int srtpProtectionProfilesLength, byte[] srtpProtectionProfiles, int srtpMkiLength, byte[] srtpMki) {
-        this.extensionType = extensionType;
+    public SrtpExtensionParserTest(byte[] expectedBytes, int srtpProtectionProfilesLength,
+        byte[] srtpProtectionProfiles, int srtpMkiLength, byte[] srtpMki) {
         this.expectedBytes = expectedBytes;
-        this.extensionLength = extensionLength;
         this.srtpProtectionProfilesLength = srtpProtectionProfilesLength;
         this.srtpProtectionProfiles = srtpProtectionProfiles;
         this.srtpMkiLength = srtpMkiLength;
@@ -64,9 +60,6 @@ public class SrtpExtensionParserTest {
     public void testParseExtensionMessageContent() {
         SrtpExtensionMessage msg = new SrtpExtensionMessage();
         parser.parse(msg);
-
-        assertArrayEquals(extensionType.getValue(), msg.getExtensionType().getValue());
-        assertEquals(extensionLength, (long) msg.getExtensionLength().getValue());
         assertArrayEquals(srtpProtectionProfiles, msg.getSrtpProtectionProfiles().getValue());
         assertEquals(srtpProtectionProfilesLength, (long) msg.getSrtpProtectionProfilesLength().getValue());
         assertEquals(srtpMkiLength, (long) msg.getSrtpMkiLength().getValue());

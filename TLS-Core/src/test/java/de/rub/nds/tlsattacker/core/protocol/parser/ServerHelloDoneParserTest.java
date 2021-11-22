@@ -28,26 +28,17 @@ public class ServerHelloDoneParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] {
-            { ArrayConverter.hexStringToByteArray("0e000000"), HandshakeMessageType.SERVER_HELLO_DONE, 0,
-                ProtocolVersion.TLS12 },
-            { ArrayConverter.hexStringToByteArray("0e000000"), HandshakeMessageType.SERVER_HELLO_DONE, 0,
-                ProtocolVersion.TLS10 },
-            { ArrayConverter.hexStringToByteArray("0e000000"), HandshakeMessageType.SERVER_HELLO_DONE, 0,
-                ProtocolVersion.TLS11 } });
+        return Arrays.asList(new Object[][] { { new byte[0], ProtocolVersion.TLS12 },
+            { new byte[0], ProtocolVersion.TLS10 }, { new byte[0], ProtocolVersion.TLS11 } });
     }
 
     private byte[] message;
 
-    private HandshakeMessageType type;
-    private int length;
     private ProtocolVersion version;
     private final Config config = Config.createConfig();
 
-    public ServerHelloDoneParserTest(byte[] message, HandshakeMessageType type, int length, ProtocolVersion version) {
+    public ServerHelloDoneParserTest(byte[] message, ProtocolVersion version) {
         this.message = message;
-        this.type = type;
-        this.length = length;
         this.version = version;
     }
 
@@ -60,9 +51,6 @@ public class ServerHelloDoneParserTest {
             new ServerHelloDoneParser(new ByteArrayInputStream(message), version, new TlsContext(config));
         ServerHelloDoneMessage msg = new ServerHelloDoneMessage();
         parser.parse(msg);
-        assertArrayEquals(message, msg.getCompleteResultingMessage().getValue());
-        assertTrue(msg.getLength().getValue() == length);
-        assertTrue(msg.getType().getValue() == type.getValue());
 
     }
 

@@ -25,19 +25,17 @@ public class AlertParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { { new byte[] { 1, 2 }, new byte[] { 1, 2 }, (byte) 1, (byte) 2 },
-            { new byte[] { 4, 3 }, new byte[] { 4, 3 }, (byte) 4, (byte) 3 } });
+        return Arrays.asList(new Object[][] { { new byte[] { 1, 2 }, (byte) 1, (byte) 2 },
+            { new byte[] { 4, 3 }, (byte) 4, (byte) 3 } });
     }
 
     private final byte[] message;
-    private final byte[] expectedPart;
     private final byte level;
     private final byte description;
     private final Config config = Config.createConfig();
 
-    public AlertParserTest(byte[] message, byte[] expectedPart, byte level, byte description) {
+    public AlertParserTest(byte[] message, byte level, byte description) {
         this.message = message;
-        this.expectedPart = expectedPart;
         this.level = level;
         this.description = description;
     }
@@ -50,7 +48,7 @@ public class AlertParserTest {
         AlertParser parser = new AlertParser(new ByteArrayInputStream(message), ProtocolVersion.TLS12, config);
         AlertMessage alert = new AlertMessage();
         parser.parse(alert);
-        assertArrayEquals(expectedPart, alert.getCompleteResultingMessage().getValue());
+        assertArrayEquals(message, alert.getCompleteResultingMessage().getValue());
         assertTrue(level == alert.getLevel().getValue());
         assertTrue(description == alert.getDescription().getValue());
     }

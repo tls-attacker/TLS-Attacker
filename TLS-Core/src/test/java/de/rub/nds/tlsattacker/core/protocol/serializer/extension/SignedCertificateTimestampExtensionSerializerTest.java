@@ -20,21 +20,17 @@ import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
 public class SignedCertificateTimestampExtensionSerializerTest {
+
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return SignedCertificateTimestampExtensionParserTest.generateData();
     }
 
-    private final ExtensionType extensionType;
-    private final int extensionLength;
     private final byte[] timestamp;
     private final byte[] expectedBytes;
     private SignedCertificateTimestampExtensionMessage message;
 
-    public SignedCertificateTimestampExtensionSerializerTest(ExtensionType extensionType, int extensionLength,
-        byte[] timestamp, byte[] expectedBytes) {
-        this.extensionType = extensionType;
-        this.extensionLength = extensionLength;
+    public SignedCertificateTimestampExtensionSerializerTest(byte[] timestamp, byte[] expectedBytes) {
         this.timestamp = timestamp;
         this.expectedBytes = expectedBytes;
     }
@@ -42,12 +38,10 @@ public class SignedCertificateTimestampExtensionSerializerTest {
     @Test
     public void testSerializeExtensionContent() {
         message = new SignedCertificateTimestampExtensionMessage();
-        message.setExtensionType(extensionType.getValue());
-        message.setExtensionLength(extensionLength);
         message.setSignedTimestamp(timestamp);
 
         SignedCertificateTimestampExtensionSerializer serializer =
             new SignedCertificateTimestampExtensionSerializer(message);
-        assertArrayEquals(expectedBytes, serializer.serialize());
+        assertArrayEquals(expectedBytes, serializer.serializeExtensionContent());
     }
 }

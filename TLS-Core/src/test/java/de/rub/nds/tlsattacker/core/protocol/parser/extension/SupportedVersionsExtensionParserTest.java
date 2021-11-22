@@ -27,25 +27,16 @@ public class SupportedVersionsExtensionParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { {
-            ArrayConverter.hexStringToByteArray("002B000D0C000203000301030203037F14"),
-            ArrayConverter.hexStringToByteArray("002B000D0C000203000301030203037F14"), ExtensionType.SUPPORTED_VERSIONS,
-            13, 12, ArrayConverter.hexStringToByteArray("000203000301030203037F14") } });
+        return Arrays.asList(new Object[][] { { ArrayConverter.hexStringToByteArray("0C000203000301030203037F14"), 12,
+            ArrayConverter.hexStringToByteArray("000203000301030203037F14") } });
     }
 
     private final byte[] extension;
-    private final byte[] completeExtension;
-    private final ExtensionType type;
-    private final int extensionLength;
     private final int versionListLength;
     private final byte[] versionList;
 
-    public SupportedVersionsExtensionParserTest(byte[] extension, byte[] completeExtension, ExtensionType type,
-        int extensionLength, int versionListLength, byte[] versionList) {
+    public SupportedVersionsExtensionParserTest(byte[] extension, int versionListLength, byte[] versionList) {
         this.extension = extension;
-        this.completeExtension = completeExtension;
-        this.type = type;
-        this.extensionLength = extensionLength;
         this.versionListLength = versionListLength;
         this.versionList = versionList;
     }
@@ -59,9 +50,6 @@ public class SupportedVersionsExtensionParserTest {
             new SupportedVersionsExtensionParser(new ByteArrayInputStream(extension), Config.createConfig());
         SupportedVersionsExtensionMessage msg = new SupportedVersionsExtensionMessage();
         parser.parse(msg);
-        assertArrayEquals(msg.getExtensionBytes().getValue(), completeExtension);
-        assertArrayEquals(type.getValue(), msg.getExtensionType().getValue());
-        assertTrue(extensionLength == msg.getExtensionLength().getValue());
         assertArrayEquals(msg.getSupportedVersions().getValue(), versionList);
         assertTrue(versionListLength == msg.getSupportedVersionsLength().getValue());
     }

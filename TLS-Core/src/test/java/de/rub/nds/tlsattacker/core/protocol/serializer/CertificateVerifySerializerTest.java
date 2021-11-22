@@ -9,7 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.CertificateVerifyMessageParserTest;
@@ -28,19 +27,12 @@ public class CertificateVerifySerializerTest {
     }
 
     private final byte[] expectedPart;
-
-    private final HandshakeMessageType type;
-    private final int length;
-
     private final byte[] sigHashAlgo;
     private final int signatureLength;
     private final byte[] signature;
 
-    public CertificateVerifySerializerTest(byte[] message, byte[] expectedPart, HandshakeMessageType type, int length,
-        byte[] sigHashAlgo, int signatureLength, byte[] signature) {
-        this.expectedPart = expectedPart;
-        this.type = type;
-        this.length = length;
+    public CertificateVerifySerializerTest(byte[] message, byte[] sigHashAlgo, int signatureLength, byte[] signature) {
+        this.expectedPart = message;
         this.sigHashAlgo = sigHashAlgo;
         this.signatureLength = signatureLength;
         this.signature = signature;
@@ -52,13 +44,11 @@ public class CertificateVerifySerializerTest {
     @Test
     public void testSerializeHandshakeMessageContent() {
         CertificateVerifyMessage message = new CertificateVerifyMessage();
-        message.setLength(length);
-        message.setType(type.getValue());
         message.setSignature(signature);
         message.setSignatureLength(signatureLength);
         message.setSignatureHashAlgorithm(sigHashAlgo);
         CertificateVerifySerializer serializer = new CertificateVerifySerializer(message, ProtocolVersion.TLS12);
-        assertArrayEquals(expectedPart, serializer.serialize());
+        assertArrayEquals(expectedPart, serializer.serializeHandshakeMessageContent());
     }
 
 }

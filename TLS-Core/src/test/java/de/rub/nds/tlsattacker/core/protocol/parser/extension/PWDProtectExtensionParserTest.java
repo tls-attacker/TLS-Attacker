@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PWDProtectExtensionMessage;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
@@ -34,21 +33,16 @@ public class PWDProtectExtensionParserTest {
      */
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { { ArrayConverter.hexStringToByteArray("001d00050466726564"),
-            ExtensionType.PWD_PROTECT, 5, 4, ArrayConverter.hexStringToByteArray("66726564") } });
+        return Arrays.asList(new Object[][] { { ArrayConverter.hexStringToByteArray("0466726564"), 4,
+            ArrayConverter.hexStringToByteArray("66726564") } });
     }
 
     private final byte[] expectedBytes;
-    private final ExtensionType type;
-    private final int extensionLength;
     private final int usernameLength;
     private final byte[] username;
 
-    public PWDProtectExtensionParserTest(byte[] expectedBytes, ExtensionType type, int extensionLength,
-        int usernameLength, byte[] username) {
+    public PWDProtectExtensionParserTest(byte[] expectedBytes, int usernameLength, byte[] username) {
         this.expectedBytes = expectedBytes;
-        this.type = type;
-        this.extensionLength = extensionLength;
         this.usernameLength = usernameLength;
         this.username = username;
     }
@@ -59,8 +53,6 @@ public class PWDProtectExtensionParserTest {
             new PWDProtectExtensionParser(new ByteArrayInputStream(expectedBytes), Config.createConfig());
         PWDProtectExtensionMessage msg = new PWDProtectExtensionMessage();
         parser.parse(msg);
-        assertArrayEquals(type.getValue(), msg.getExtensionType().getValue());
-        assertEquals(extensionLength, (long) msg.getExtensionLength().getValue());
         assertEquals(usernameLength, (long) msg.getUsernameLength().getValue());
         assertArrayEquals(username, msg.getUsername().getValue());
     }

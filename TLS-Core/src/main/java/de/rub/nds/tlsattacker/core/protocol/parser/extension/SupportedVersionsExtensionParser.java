@@ -30,7 +30,7 @@ public class SupportedVersionsExtensionParser extends ExtensionParser<SupportedV
     public void parseExtensionMessageContent(SupportedVersionsExtensionMessage msg) {
         LOGGER.debug("Parsing SupportedVersionsExtensionMessage");
         // TODO Don't guess
-        if (msg.getExtensionLength().getValue() == HandshakeByteLength.VERSION) {
+        if (getBytesLeft() == HandshakeByteLength.VERSION) {
             // This looks like a ServerProtocolVersionExtension
             msg.setSupportedVersions(parseByteArrayField(HandshakeByteLength.VERSION));
         } else {

@@ -48,8 +48,6 @@ public class SSL2ClientMasterKeySerializerTest {
         byte[] expectedClientMasterKeyMessage) {
         this.expectedClientMasterKeyMessage = expectedClientMasterKeyMessage;
         this.message = new SSL2ClientMasterKeyMessage();
-        this.message.setMessageLength(messageLength);
-        this.message.setType(messageType);
         this.message.setCipherKind(cipher);
         this.message.setClearKeyLength(clearKeyLength);
         this.message.setEncryptedKeyLength(encryptedKeyLength);

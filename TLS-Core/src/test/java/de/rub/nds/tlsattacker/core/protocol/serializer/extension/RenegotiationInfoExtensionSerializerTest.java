@@ -9,7 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RenegotiationInfoExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.RenegotiationInfoExtensionParserTest;
 import java.util.Collection;
@@ -20,21 +19,18 @@ import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
 public class RenegotiationInfoExtensionSerializerTest {
+
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return RenegotiationInfoExtensionParserTest.generateData();
     }
 
-    private final ExtensionType extensionType;
-    private final int extensionLength;
     private final int extensionPayloadLength;
     private final byte[] extensionPayload;
     private final byte[] expectedBytes;
 
-    public RenegotiationInfoExtensionSerializerTest(ExtensionType extensionType, int extensionLength,
-        int extensionPayloadLength, byte[] extensionPayload, byte[] expectedBytes) {
-        this.extensionType = extensionType;
-        this.extensionLength = extensionLength;
+    public RenegotiationInfoExtensionSerializerTest(int extensionPayloadLength, byte[] extensionPayload,
+        byte[] expectedBytes) {
         this.extensionPayload = extensionPayload;
         this.expectedBytes = expectedBytes;
         this.extensionPayloadLength = extensionPayloadLength;
@@ -43,12 +39,10 @@ public class RenegotiationInfoExtensionSerializerTest {
     @Test
     public void testSerializeExtensionContent() {
         RenegotiationInfoExtensionMessage message = new RenegotiationInfoExtensionMessage();
-        message.setExtensionType(extensionType.getValue());
-        message.setExtensionLength(extensionLength);
         message.setRenegotiationInfo(extensionPayload);
         message.setRenegotiationInfoLength(extensionPayloadLength);
         RenegotiationInfoExtensionSerializer serializer = new RenegotiationInfoExtensionSerializer(message);
 
-        assertArrayEquals(expectedBytes, serializer.serialize());
+        assertArrayEquals(expectedBytes, serializer.serializeExtensionContent());
     }
 }

@@ -12,7 +12,6 @@ package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 import java.util.Collection;
 import static org.junit.Assert.assertArrayEquals;
 
-import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedRandomExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtendedRandomExtensionParserTest;
 import org.junit.Test;
@@ -27,16 +26,11 @@ public class ExtendedRandomExtensionSerializerTest {
         return ExtendedRandomExtensionParserTest.generateData();
     }
 
-    private final ExtensionType extensionType;
-    private final int extensionLength;
     private final byte[] extendedRandom;
     private final byte[] expectedBytes;
     private ExtendedRandomExtensionMessage message;
 
-    public ExtendedRandomExtensionSerializerTest(ExtensionType extensionType, int extensionLength,
-        byte[] extendedRandom, byte[] expectedBytes) {
-        this.extensionType = extensionType;
-        this.extensionLength = extensionLength;
+    public ExtendedRandomExtensionSerializerTest(byte[] extendedRandom, byte[] expectedBytes) {
         this.extendedRandom = extendedRandom;
         this.expectedBytes = expectedBytes;
     }
@@ -44,14 +38,12 @@ public class ExtendedRandomExtensionSerializerTest {
     @Test
     public void testSerializeExtensionContent() {
         message = new ExtendedRandomExtensionMessage();
-        message.setExtensionType(extensionType.getValue());
-        message.setExtensionLength(extensionLength);
         message.setExtendedRandom(extendedRandom);
         message.setExtendedRandomLength(extendedRandom.length);
 
         ExtendedRandomExtensionSerializer serializer = new ExtendedRandomExtensionSerializer(message);
 
-        assertArrayEquals(expectedBytes, serializer.serialize());
+        assertArrayEquals(expectedBytes, serializer.serializeExtensionContent());
     }
 
 }

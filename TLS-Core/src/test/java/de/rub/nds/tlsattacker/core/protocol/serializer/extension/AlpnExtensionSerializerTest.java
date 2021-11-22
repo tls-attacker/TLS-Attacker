@@ -27,19 +27,15 @@ public class AlpnExtensionSerializerTest {
         return AlpnExtensionParserTest.generateData();
     }
 
-    private final ExtensionType extensionType;
     private final byte[] expectedBytes;
-    private final int extensionLength;
     private final int proposedAlpnProtocolsLength;
     private final byte[] proposedAlpnProtocols;
     private AlpnExtensionSerializer serializer;
     private AlpnExtensionMessage message;
 
-    public AlpnExtensionSerializerTest(ExtensionType extensionType, byte[] expectedBytes, int extensionLength,
-        int proposedAlpnProtocolsLength, byte[] proposedAlpnProtocols) {
-        this.extensionType = extensionType;
+    public AlpnExtensionSerializerTest(byte[] expectedBytes, int proposedAlpnProtocolsLength,
+        byte[] proposedAlpnProtocols) {
         this.expectedBytes = expectedBytes;
-        this.extensionLength = extensionLength;
         this.proposedAlpnProtocolsLength = proposedAlpnProtocolsLength;
         this.proposedAlpnProtocols = proposedAlpnProtocols;
     }
@@ -52,12 +48,10 @@ public class AlpnExtensionSerializerTest {
 
     @Test
     public void testSerializeExtensionContent() {
-        message.setExtensionType(extensionType.getValue());
-        message.setExtensionLength(extensionLength);
         message.setProposedAlpnProtocolsLength(proposedAlpnProtocolsLength);
         message.setProposedAlpnProtocols(proposedAlpnProtocols);
 
-        assertArrayEquals(expectedBytes, serializer.serialize());
+        assertArrayEquals(expectedBytes, serializer.serializeExtensionContent());
     }
 
 }

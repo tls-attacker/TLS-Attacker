@@ -26,26 +26,18 @@ public class ExtendedMasterSecretExtensionSerializerTest {
         return ExtendedMasterSecretExtensionParserTest.generateData();
     }
 
-    private final ExtensionType extensionType;
-    private final int extensionLength;
     private final byte[] expectedBytes;
     private ExtendedMasterSecretExtensionMessage message;
 
-    public ExtendedMasterSecretExtensionSerializerTest(ExtensionType extensionType, int extensionLength,
-        byte[] expectedBytes) {
-        this.extensionType = extensionType;
-        this.extensionLength = extensionLength;
+    public ExtendedMasterSecretExtensionSerializerTest(byte[] expectedBytes) {
         this.expectedBytes = expectedBytes;
     }
 
     @Test
     public void testSerializeExtensionContent() {
         message = new ExtendedMasterSecretExtensionMessage();
-        message.setExtensionType(extensionType.getValue());
-        message.setExtensionLength(extensionLength);
-
         ExtendedMasterSecretExtensionSerializer serializer = new ExtendedMasterSecretExtensionSerializer(message);
 
-        assertArrayEquals(expectedBytes, serializer.serialize());
+        assertArrayEquals(expectedBytes, serializer.serializeExtensionContent());
     }
 }

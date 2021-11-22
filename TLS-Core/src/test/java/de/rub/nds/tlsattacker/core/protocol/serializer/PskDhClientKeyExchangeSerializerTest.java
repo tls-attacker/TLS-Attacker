@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.PskDhClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.PskDhClientKeyExchangeParserTest;
@@ -30,18 +29,13 @@ public class PskDhClientKeyExchangeSerializerTest {
 
     private final byte[] expectedPart;
 
-    private HandshakeMessageType type;
-    private int length;
-
     private int serializedPskIdentityLength;
     private byte[] serializedPskIdentity;
     private ProtocolVersion version;
 
-    public PskDhClientKeyExchangeSerializerTest(byte[] message, HandshakeMessageType type, int length,
-        int serializedPskIdentityLength, byte[] serializedPskIdentity, ProtocolVersion version) {
+    public PskDhClientKeyExchangeSerializerTest(byte[] message, int serializedPskIdentityLength,
+        byte[] serializedPskIdentity, ProtocolVersion version) {
         this.expectedPart = message;
-        this.type = type;
-        this.length = length;
         this.serializedPskIdentityLength = serializedPskIdentityLength;
         this.serializedPskIdentity = serializedPskIdentity;
         this.version = version;
@@ -53,16 +47,13 @@ public class PskDhClientKeyExchangeSerializerTest {
     @Test
     public void testSerializeHandshakeMessageContent() {
         PskDhClientKeyExchangeMessage msg = new PskDhClientKeyExchangeMessage();
-        msg.setCompleteResultingMessage(expectedPart);
         msg.setIdentity(serializedPskIdentity);
         msg.setIdentityLength(serializedPskIdentityLength);
         msg.setPublicKey(ArrayConverter.hexStringToByteArray(
             "32d08c13c3c7ef291e4bc7854eed91ddef2737260c09573aa8def5ce79e964a5598797470501ee6ff8be72cd8c3bbaf46ab55b77851029db3cfb38a12040a15bc8512dba290d9cae345ecf24f347e1c80c65b230e265e13c8a571e0842539536d062a6141de09017d27ac2d64c0d29cbaa19d5e55c3c6c5035c87788ac776177"));
         msg.setPublicKeyLength(128);
-        msg.setType(type.getValue());
-        msg.setLength(length);
         PskDhClientKeyExchangeSerializer serializer = new PskDhClientKeyExchangeSerializer(msg, version);
-        assertArrayEquals(expectedPart, serializer.serialize());
+        assertArrayEquals(expectedPart, serializer.serializeHandshakeMessageContent());
     }
 
 }

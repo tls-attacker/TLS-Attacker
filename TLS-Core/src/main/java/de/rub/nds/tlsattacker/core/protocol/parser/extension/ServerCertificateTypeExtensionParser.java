@@ -23,7 +23,7 @@ public class ServerCertificateTypeExtensionParser extends ExtensionParser<Server
     @Override
     public void parseExtensionMessageContent(ServerCertificateTypeExtensionMessage msg) {
         // TODO DO NOT GUESS
-        if (msg.getExtensionLength().getValue() != 1) {
+        if (getBytesLeft() != 1) {
             msg.setCertificateTypesLength(parseIntField(ExtensionByteLength.CERTIFICATE_TYPE_TYPE_LENGTH));
             msg.setCertificateTypes(parseByteArrayField(msg.getCertificateTypesLength().getValue()));
         } else {

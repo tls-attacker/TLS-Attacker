@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SRPExtensionMessage;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
@@ -25,26 +24,21 @@ import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
 public class SRPExtensionParserTest {
+
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(
-            new Object[][] { { ExtensionType.SRP, new byte[] { 0x00, 0x0C, 0x00, 0x05, 0x04, 0x01, 0x02, 0x03, 0x04 },
-                5, 4, ArrayConverter.hexStringToByteArray("01020304") } });
+        return Arrays.asList(new Object[][] {
+            { new byte[] { 0x04, 0x01, 0x02, 0x03, 0x04 }, 4, ArrayConverter.hexStringToByteArray("01020304") } });
     }
 
-    private final ExtensionType extensionType;
     private final byte[] extensionBytes;
-    private final int extensionLength;
     private final int srpIdentifierLength;
     private final byte[] srpIdentifier;
     private SRPExtensionParser parser;
     private SRPExtensionMessage message;
 
-    public SRPExtensionParserTest(ExtensionType extensionType, byte[] extensionBytes, int extensionLength,
-        int startParsing, int srpIdentifierLength, byte[] srpIdentifier) {
-        this.extensionType = extensionType;
+    public SRPExtensionParserTest(byte[] extensionBytes, int srpIdentifierLength, byte[] srpIdentifier) {
         this.extensionBytes = extensionBytes;
-        this.extensionLength = extensionLength;
         this.srpIdentifierLength = srpIdentifierLength;
         this.srpIdentifier = srpIdentifier;
     }
@@ -59,9 +53,6 @@ public class SRPExtensionParserTest {
     public void testParseExtensionMessageContent() {
         message = new SRPExtensionMessage();
         parser.parse(message);
-
-        assertArrayEquals(extensionType.getValue(), message.getExtensionType().getValue());
-        assertEquals(extensionLength, (long) message.getExtensionLength().getValue());
 
         assertEquals(srpIdentifierLength, (long) message.getSrpIdentifierLength().getValue());
         assertArrayEquals(srpIdentifier, message.getSrpIdentifier().getValue());

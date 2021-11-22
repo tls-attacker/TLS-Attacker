@@ -9,7 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TrustedCaIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.TrustedCaIndicationExtensionParserTest;
@@ -24,24 +23,19 @@ import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
 public class TrustedCaIndicationExtensionSerializerTest {
+
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return TrustedCaIndicationExtensionParserTest.generateData();
     }
 
-    private final ExtensionType type;
     private final byte[] extensionBytes;
-    private final int startposition;
-    private final int extensionLength;
     private final List<TrustedAuthority> trustedAuthoritiesList;
     private final int trustedAuthoritiesLength;
 
-    public TrustedCaIndicationExtensionSerializerTest(ExtensionType type, byte[] extensionBytes, int startposition,
-        int extensionLength, List<TrustedAuthority> trustedAuthoritiesList, int trustedAuthoritiesLength) {
-        this.type = type;
+    public TrustedCaIndicationExtensionSerializerTest(byte[] extensionBytes,
+        List<TrustedAuthority> trustedAuthoritiesList, int trustedAuthoritiesLength) {
         this.extensionBytes = extensionBytes;
-        this.startposition = startposition;
-        this.extensionLength = extensionLength;
         this.trustedAuthoritiesList = trustedAuthoritiesList;
         this.trustedAuthoritiesLength = trustedAuthoritiesLength;
     }
@@ -54,13 +48,11 @@ public class TrustedCaIndicationExtensionSerializerTest {
             preparator.prepare();
         }
 
-        msg.setExtensionType(type.getValue());
-        msg.setExtensionLength(extensionLength);
         msg.setTrustedAuthoritiesLength(trustedAuthoritiesLength);
         msg.setTrustedAuthorities(trustedAuthoritiesList);
 
         TrustedCaIndicationExtensionSerializer serializer = new TrustedCaIndicationExtensionSerializer(msg);
-        byte[] test = serializer.serialize();
+        byte[] test = serializer.serializeExtensionContent();
         assertArrayEquals(extensionBytes, test);
     }
 

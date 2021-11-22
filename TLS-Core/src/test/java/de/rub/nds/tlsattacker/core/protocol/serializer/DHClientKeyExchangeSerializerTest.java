@@ -28,19 +28,13 @@ public class DHClientKeyExchangeSerializerTest {
     }
 
     private final byte[] expectedPart;
-
-    private final HandshakeMessageType type;
-    private final int length;
-
     private final int serializedKeyLength;
     private final byte[] serializedKey;
     private final ProtocolVersion version;
 
-    public DHClientKeyExchangeSerializerTest(byte[] message, HandshakeMessageType type, int length,
-        int serializedKeyLength, byte[] serializedKey, ProtocolVersion version) {
+    public DHClientKeyExchangeSerializerTest(byte[] message, int serializedKeyLength, byte[] serializedKey,
+        ProtocolVersion version) {
         this.expectedPart = message;
-        this.type = type;
-        this.length = length;
         this.serializedKeyLength = serializedKeyLength;
         this.serializedKey = serializedKey;
         this.version = version;
@@ -55,10 +49,8 @@ public class DHClientKeyExchangeSerializerTest {
         msg.setCompleteResultingMessage(expectedPart);
         msg.setPublicKey(serializedKey);
         msg.setPublicKeyLength(serializedKeyLength);
-        msg.setType(type.getValue());
-        msg.setLength(length);
         DHClientKeyExchangeSerializer serializer = new DHClientKeyExchangeSerializer(msg, version);
-        assertArrayEquals(expectedPart, serializer.serialize());
+        assertArrayEquals(expectedPart, serializer.serializeHandshakeMessageContent());
     }
 
 }

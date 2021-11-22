@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
-import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateTypeExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ClientCertificateTypeExtensionParserTest;
 import java.util.Collection;
@@ -23,26 +22,22 @@ import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
 public class ClientCertificateTypeExtensionSerializerTest {
+
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return ClientCertificateTypeExtensionParserTest.generateData();
     }
 
-    private final ExtensionType extensionType;
     private final byte[] expectedBytes;
-    private final int extensionLength;
     private final Integer certificateTypesLength;
     private final List<CertificateType> certificateTypes;
     private final boolean isClientState;
     private ClientCertificateTypeExtensionSerializer serializer;
     private ClientCertificateTypeExtensionMessage msg;
 
-    public ClientCertificateTypeExtensionSerializerTest(ExtensionType extensionType, byte[] expectedBytes,
-        int extensionLength, Integer certificateTypesLength, List<CertificateType> certificateTypes,
-        boolean isClientState) {
-        this.extensionType = extensionType;
+    public ClientCertificateTypeExtensionSerializerTest(byte[] expectedBytes, Integer certificateTypesLength,
+        List<CertificateType> certificateTypes, boolean isClientState) {
         this.expectedBytes = expectedBytes;
-        this.extensionLength = extensionLength;
         this.certificateTypesLength = certificateTypesLength;
         this.certificateTypes = certificateTypes;
         this.isClientState = isClientState;
@@ -56,8 +51,6 @@ public class ClientCertificateTypeExtensionSerializerTest {
 
     @Test
     public void testSerializeExtensionContent() {
-        msg.setExtensionType(extensionType.getValue());
-        msg.setExtensionLength(extensionLength);
         msg.setCertificateTypes(CertificateType.toByteArray(certificateTypes));
         if (certificateTypesLength != null) {
             msg.setCertificateTypesLength(certificateTypesLength);
@@ -66,6 +59,6 @@ public class ClientCertificateTypeExtensionSerializerTest {
         }
         msg.setIsClientMessage(isClientState);
 
-        assertArrayEquals(expectedBytes, serializer.serialize());
+        assertArrayEquals(expectedBytes, serializer.serializeExtensionContent());
     }
 }

@@ -21,14 +21,13 @@ import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
 public class CertificateStatusRequestExtensionSerializerTest {
+
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return CertificateStatusRequestExtensionParserTest.generateData();
     }
 
-    private final ExtensionType extensionType;
     private final byte[] expectedBytes;
-    private final int extensionLength;
     private final int certificateStatusRequestType;
     private final int responderIDListLength;
     private final byte[] responderIDList;
@@ -37,12 +36,9 @@ public class CertificateStatusRequestExtensionSerializerTest {
     private CertificateStatusRequestExtensionMessage message;
     private CertificateStatusRequestExtensionSerializer serializer;
 
-    public CertificateStatusRequestExtensionSerializerTest(ExtensionType extensionType, byte[] expectedBytes,
-        int extensionLength, int certificateStatusRequestType, int responderIDListLength, byte[] responderIDList,
-        int requestExtensionLength, byte[] requestExtension) {
-        this.extensionType = extensionType;
+    public CertificateStatusRequestExtensionSerializerTest(byte[] expectedBytes, int certificateStatusRequestType,
+        int responderIDListLength, byte[] responderIDList, int requestExtensionLength, byte[] requestExtension) {
         this.expectedBytes = expectedBytes;
-        this.extensionLength = extensionLength;
         this.certificateStatusRequestType = certificateStatusRequestType;
         this.responderIDListLength = responderIDListLength;
         this.responderIDList = responderIDList;
@@ -58,10 +54,6 @@ public class CertificateStatusRequestExtensionSerializerTest {
 
     @Test
     public void testSerializeExtensionContent() {
-
-        message.setExtensionType(extensionType.getValue());
-        message.setExtensionLength(extensionLength);
-
         message.setCertificateStatusRequestType(certificateStatusRequestType);
 
         message.setResponderIDListLength(responderIDListLength);
@@ -70,7 +62,7 @@ public class CertificateStatusRequestExtensionSerializerTest {
         message.setRequestExtensionLength(requestExtensionLength);
         message.setRequestExtension(requestExtension);
 
-        assertArrayEquals(expectedBytes, serializer.serialize());
+        assertArrayEquals(expectedBytes, serializer.serializeExtensionContent());
     }
 
 }

@@ -10,19 +10,14 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateUrlExtensionMessage;
 import java.io.ByteArrayInputStream;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
 public class ClientCertificateUrlExtensionParserTest {
 
-    private final ExtensionType extensionType = ExtensionType.CLIENT_CERTIFICATE_URL;
-    private final byte[] expectedBytes = new byte[] { 0x00, 0x02, 0x00, 0x00 };
-    private final int extensionLength = 0;
+    private final byte[] expectedBytes = new byte[0];
     private ClientCertificateUrlExtensionParser parser;
     private ClientCertificateUrlExtensionMessage message;
 
@@ -36,8 +31,5 @@ public class ClientCertificateUrlExtensionParserTest {
     public void testParseExtensionMessageContent() {
         message = new ClientCertificateUrlExtensionMessage();
         parser.parse(message);
-
-        assertArrayEquals(extensionType.getValue(), message.getExtensionType().getValue());
-        assertEquals(extensionLength, (long) message.getExtensionLength().getValue());
     }
 }

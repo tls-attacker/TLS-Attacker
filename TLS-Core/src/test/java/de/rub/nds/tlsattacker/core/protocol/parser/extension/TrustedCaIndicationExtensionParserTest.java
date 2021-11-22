@@ -36,26 +36,19 @@ public class TrustedCaIndicationExtensionParserTest {
         return Arrays
             .asList(
                 new Object[][] {
-                    { ExtensionType.TRUSTED_CA_KEYS,
-                        ArrayConverter.hexStringToByteArray("0003000B0009000200050102030405"), 0, 11,
+                    { ArrayConverter.hexStringToByteArray("0009000200050102030405"),
                         Arrays.asList(new TrustedAuthority((byte) 0, null, null, null),
                             new TrustedAuthority((byte) 2, null, 5, new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05 })),
                         9 } });
     }
 
-    private final ExtensionType type;
     private final byte[] extensionBytes;
-    private final int startposition;
-    private final int extensionLength;
     private final List<TrustedAuthority> trustedAuthoritiesList;
     private final int trustedAuthoritiesLength;
 
-    public TrustedCaIndicationExtensionParserTest(ExtensionType type, byte[] extensionBytes, int startposition,
-        int extensionLength, List<TrustedAuthority> trustedAuthoritiesList, int trustedAuthoritiesLength) {
-        this.type = type;
+    public TrustedCaIndicationExtensionParserTest(byte[] extensionBytes, List<TrustedAuthority> trustedAuthoritiesList,
+        int trustedAuthoritiesLength) {
         this.extensionBytes = extensionBytes;
-        this.startposition = startposition;
-        this.extensionLength = extensionLength;
         this.trustedAuthoritiesList = trustedAuthoritiesList;
         this.trustedAuthoritiesLength = trustedAuthoritiesLength;
     }
@@ -74,10 +67,6 @@ public class TrustedCaIndicationExtensionParserTest {
             new TrustedCaIndicationExtensionParser(new ByteArrayInputStream(extensionBytes), Config.createConfig());
         TrustedCaIndicationExtensionMessage msg = new TrustedCaIndicationExtensionMessage();
         parser.parse(msg);
-
-        assertArrayEquals(type.getValue(), msg.getExtensionType().getValue());
-        assertEquals(extensionLength, (long) msg.getExtensionLength().getValue());
-
         assertEquals(trustedAuthoritiesLength, (long) msg.getTrustedAuthoritiesLength().getValue());
         assertCachedObjectList(trustedAuthoritiesList, msg.getTrustedAuthorities());
     }
