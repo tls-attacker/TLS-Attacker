@@ -64,8 +64,8 @@ public class PseudoRandomFunction {
     public static final String IV_BLOCK_LABEL = "IV block";
 
     /**
-     * sByte is a constant additional salt byte that is used in the computeSSL3 method
-     * for computing a pseudo random bit stream as described in the RFC 6101
+     * sByte is a constant additional salt byte that is used in the computeSSL3 method for computing a pseudo random bit
+     * stream as described in the RFC 6101
      */
     private static final byte sByte = 0x41;
 
@@ -94,10 +94,10 @@ public class PseudoRandomFunction {
 
         ByteArrayOutputStream pseudoRandomBitStream = new ByteArrayOutputStream();
         /*
-         * RFC 6101: 6.1. Converting the Master Secret into Keys and MAC Secrets
-         * To generate the key material, compute pseudoRandomBitStream = MD5(master_secret + SHA(`A' + master_secret +
-         * ServerHello.random + ClientHello.random)) + MD5(master_secret + SHA(`BB' + master_secret + ServerHello.random
-         * + ClientHello.random)) + MD5(master_secret + SHA(`CCC' + master_secret + ServerHello.random +
+         * RFC 6101: 6.1. Converting the Master Secret into Keys and MAC Secrets To generate the key material, compute
+         * pseudoRandomBitStream = MD5(master_secret + SHA(`A' + master_secret + ServerHello.random +
+         * ClientHello.random)) + MD5(master_secret + SHA(`BB' + master_secret + ServerHello.random +
+         * ClientHello.random)) + MD5(master_secret + SHA(`CCC' + master_secret + ServerHello.random +
          * ClientHello.random)) + [...]; until enough output has been generated.
          */
         for (int i = 0; pseudoRandomBitStream.size() <= size; i++) {

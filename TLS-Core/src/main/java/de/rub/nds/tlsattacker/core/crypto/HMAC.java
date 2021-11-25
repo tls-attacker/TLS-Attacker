@@ -85,7 +85,7 @@ public class HMAC {
      *               the hmac key
      **/
     public void init(byte[] secret) throws NoSuchAlgorithmException {
-        if (secret == null){
+        if (secret == null) {
             LOGGER.warn("Secret is null! Continuing to init hmac with a secret set to zero bytes...");
             secret = new byte[0];
         }
