@@ -142,7 +142,7 @@ public class PseudoRandomFunction {
         }
 
         if (secret == null) {
-            LOGGER.warn("Secret is null! Continuing to compute PRF with a secret set to zero bytes.");
+            LOGGER.warn("Secret is null! Continuing to compute PRF with a secret set to zero bytes...");
             secret = new byte[0];
         }
 
