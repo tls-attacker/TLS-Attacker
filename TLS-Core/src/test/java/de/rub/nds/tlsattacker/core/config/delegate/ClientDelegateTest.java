@@ -139,28 +139,6 @@ public class ClientDelegateTest {
             123);
         checkHostIsAsExpected("https://localhost:123/test.php?a=b#", InetAddress.getByName("localhost").getHostName(),
             123);
-        checkHostIsAsExpected("127.0.0.1", InetAddress.getByName("127.0.0.1").getHostName(), 443);
-        checkHostIsAsExpected("127.0.0.1:123", InetAddress.getByName("127.0.0.1").getHostName(), 123);
-        checkHostIsAsExpected("127.0.0.1:123/", InetAddress.getByName("127.0.0.1").getHostName(), 123);
-        checkHostIsAsExpected("127.0.0.1:123/test.php", InetAddress.getByName("127.0.0.1").getHostName(), 123);
-        checkHostIsAsExpected("127.0.0.1:123/test.php?a=b", InetAddress.getByName("127.0.0.1").getHostName(), 123);
-        checkHostIsAsExpected("127.0.0.1:123/test.php?a=b#", InetAddress.getByName("127.0.0.1").getHostName(), 123);
-        checkHostIsAsExpected("http://127.0.0.1", InetAddress.getByName("127.0.0.1").getHostName(), 443);
-        checkHostIsAsExpected("http://127.0.0.1:123", InetAddress.getByName("127.0.0.1").getHostName(), 123);
-        checkHostIsAsExpected("http://127.0.0.1:123/", InetAddress.getByName("127.0.0.1").getHostName(), 123);
-        checkHostIsAsExpected("http://127.0.0.1:123/test.php", InetAddress.getByName("127.0.0.1").getHostName(), 123);
-        checkHostIsAsExpected("http://127.0.0.1:123/test.php?a=b", InetAddress.getByName("127.0.0.1").getHostName(),
-            123);
-        checkHostIsAsExpected("http://127.0.0.1:123/test.php?a=b#", InetAddress.getByName("127.0.0.1").getHostName(),
-            123);
-        checkHostIsAsExpected("https://127.0.0.1", InetAddress.getByName("127.0.0.1").getHostName(), 443);
-        checkHostIsAsExpected("https://127.0.0.1:123", InetAddress.getByName("127.0.0.1").getHostName(), 123);
-        checkHostIsAsExpected("https://127.0.0.1:123/", InetAddress.getByName("127.0.0.1").getHostName(), 123);
-        checkHostIsAsExpected("https://127.0.0.1:123/test.php", InetAddress.getByName("127.0.0.1").getHostName(), 123);
-        checkHostIsAsExpected("https://127.0.0.1:123/test.php?a=b", InetAddress.getByName("127.0.0.1").getHostName(),
-            123);
-        checkHostIsAsExpected("https://127.0.0.1:123/test.php?a=b#", InetAddress.getByName("127.0.0.1").getHostName(),
-            123);
     }
 
     @Test
