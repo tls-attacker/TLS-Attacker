@@ -18,11 +18,11 @@ import de.rub.nds.tlsattacker.core.protocol.message.EndOfEarlyDataMessage;
 public class EndOfEarlyDataSerializer extends HandshakeMessageSerializer<EndOfEarlyDataMessage> {
 
     public EndOfEarlyDataSerializer(EndOfEarlyDataMessage message, ProtocolVersion version) {
-        super(message, version);
+        super(message);
     }
 
     @Override
-    public byte[] serializeHandshakeMessageContent() {
+    public byte[] serializeProtocolMessageContent() {
         return getAlreadySerialized(); // empty message
     }
 

@@ -35,10 +35,10 @@ public class ClientHelloHandlerTest {
     }
 
     /**
-     * Test of adjustTLSContext method, of class ClientHelloHandler.
+     * Test of adjustContext method, of class ClientHelloHandler.
      */
     @Test
-    public void testAdjustTLSContext() {
+    public void testadjustContext() {
         ClientHelloMessage message = new ClientHelloMessage();
         message.setCompleteResultingMessage(new byte[0]);
         message.setUnixTime(new byte[] { 0, 1, 2 });
@@ -48,7 +48,7 @@ public class ClientHelloHandlerTest {
         message.setSessionId(new byte[] { 6, 6, 6 });
         message.setProtocolVersion(ProtocolVersion.TLS12.getValue());
 
-        handler.adjustTLSContext(message);
+        handler.adjustContext(message);
         assertArrayEquals(context.getClientRandom(), new byte[] { 0, 1, 2, 3, 4, 5 });
         assertTrue(context.getClientSupportedCompressions().contains(CompressionMethod.DEFLATE));
         assertTrue(context.getClientSupportedCompressions().contains(CompressionMethod.NULL));
@@ -62,7 +62,7 @@ public class ClientHelloHandlerTest {
     }
 
     @Test
-    public void testAdjustTLSContextWithCookie() {
+    public void testadjustContextWithCookie() {
         ClientHelloMessage message = new ClientHelloMessage();
         message.setCompleteResultingMessage(new byte[0]);
         message.setUnixTime(new byte[] { 0, 1, 2 });
@@ -72,7 +72,7 @@ public class ClientHelloHandlerTest {
         message.setSessionId(new byte[] { 6, 6, 6 });
         message.setCookie(new byte[] { 2, 2, 3, });
         message.setProtocolVersion(ProtocolVersion.TLS12.getValue());
-        handler.adjustTLSContext(message);
+        handler.adjustContext(message);
         assertArrayEquals(context.getClientRandom(), new byte[] { 0, 1, 2, 3, 4, 5 });
         assertTrue(context.getClientSupportedCompressions().contains(CompressionMethod.DEFLATE));
         assertTrue(context.getClientSupportedCompressions().contains(CompressionMethod.NULL));

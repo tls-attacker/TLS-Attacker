@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageSerializer;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,7 +22,7 @@ import org.apache.logging.log4j.Logger;
  * @param <T>
  *            Type of the HandshakeMessages to serialize
  */
-public abstract class HandshakeMessageSerializer<T extends HandshakeMessage> extends TlsMessageSerializer<T> {
+public abstract class HandshakeMessageSerializer<T extends HandshakeMessage> extends ProtocolMessageSerializer<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -31,11 +31,9 @@ public abstract class HandshakeMessageSerializer<T extends HandshakeMessage> ext
      *
      * @param message
      *                Message that should be serialized
-     * @param version
-     *                Version of the Protocol
      */
-    public HandshakeMessageSerializer(T message, ProtocolVersion version) {
-        super(message, version);
+    public HandshakeMessageSerializer(T message) {
+        super(message);
     }
 
     /**
@@ -55,14 +53,12 @@ public abstract class HandshakeMessageSerializer<T extends HandshakeMessage> ext
     }
 
     @Override
-    public byte[] serializeProtocolMessageContent() {
+    protected byte[] serializeBytes() {
         writeType();
         writeLength();
-        serializeHandshakeMessageContent();
+        serializeProtocolMessageContent();
         return getAlreadySerialized();
     }
-
-    public abstract byte[] serializeHandshakeMessageContent();
 
     /**
      * Checks if the message has an ExtensionsLength field

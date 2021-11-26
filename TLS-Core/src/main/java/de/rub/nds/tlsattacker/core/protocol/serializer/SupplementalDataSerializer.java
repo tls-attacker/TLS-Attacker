@@ -30,12 +30,12 @@ public class SupplementalDataSerializer extends HandshakeMessageSerializer<Suppl
      *                The Version for which this message should be serialized
      */
     public SupplementalDataSerializer(SupplementalDataMessage message, ProtocolVersion version) {
-        super(message, version);
+        super(message);
         this.msg = message;
     }
 
     @Override
-    public byte[] serializeHandshakeMessageContent() {
+    public byte[] serializeProtocolMessageContent() {
         throw new UnsupportedOperationException("Not Implemented");
     }
 }

@@ -15,8 +15,9 @@ import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerStream;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.transport.tcp.TcpTransportHandler;
 import java.io.IOException;
-import java.net.Socket;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,10 +25,23 @@ public class TcpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> 
 
     private static Logger LOGGER = LogManager.getLogger();
 
-    private final Socket socket;
+    private final TlsContext context;
 
-    public TcpLayer(Socket socket) {
-        this.socket = socket;
+    /**
+     * TODO: This should be replaced - I dont think its necesarry to have the transport module at all after this
+     */
+    private TcpTransportHandler handler;
+
+    public TcpLayer(TlsContext context) {
+        this.context = context;
+        if (context.getTransportHandler() == null) {
+            throw new RuntimeException("TransportHandler is not set in context!");
+        }
+        if (!(context.getTransportHandler() instanceof TcpTransportHandler)) {
+            throw new RuntimeException("Trying to set TCP layer with non TCP TransportHandler");
+        }
+        handler = (TcpTransportHandler) context.getTransportHandler();
+
     }
 
     @Override
@@ -38,10 +52,12 @@ public class TcpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> 
     @Override
     public LayerProcessingResult sendData() throws IOException {
         LayerConfiguration<DataContainer> configuration = getLayerConfiguration();
-        for (DataContainer container : configuration.getContainerList()) {
-            // TODO Send container data
+        if (configuration.getContainerList() != null) {
+            for (DataContainer container : configuration.getContainerList()) {
+                // TODO Send container data
+            }
         }
-        throw new UnsupportedOperationException("Implement configureable TCP packet container");
+        return getLayerResult();
     }
 
     @Override
@@ -55,21 +71,43 @@ public class TcpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> 
 
     @Override
     public LayerProcessingResult sendData(LayerProcessingHint hint, byte[] data) throws IOException {
-        socket.getOutputStream().write(data);
-        getResultDataStream().write(data);
+        if (handler.getSocket() == null) {
+            throw new RuntimeException("TCP Layer not initialized");
+        }
+        handler.getSocket().getOutputStream().write(data);
+        getDataForHigherLayerStream().write(data);
         return new LayerProcessingResult(null, null);// Not implemented
     }
 
     @Override
     public byte[] retrieveMoreData(LayerProcessingHint hint) throws IOException {
-        byte[] data = new byte[socket.getInputStream().available()];
-        socket.getInputStream().read(data);
-        getResultDataStream().write(data);
+        if (handler.getSocket() == null) {
+            throw new RuntimeException("TCP Layer not initialized");
+        }
+        byte[] data = new byte[handler.getSocket().getInputStream().available()];
+        handler.getSocket().getInputStream().read(data);
+        getDataForHigherLayerStream().write(data);
         return data;
     }
 
     @Override
     public HintedLayerStream getDataStream() {
         return new HintedLayerStream(null, this);
+    }
+
+    @Override
+    public void preInititialize() throws IOException {
+        handler.preInitialize();
+    }
+
+    @Override
+    public void inititialize() throws IOException {
+        handler.initialize();
+    }
+
+    @Override
+    public LayerProcessingResult receiveData() throws IOException {
+        throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
+                                                                       // Tools | Templates.
     }
 }

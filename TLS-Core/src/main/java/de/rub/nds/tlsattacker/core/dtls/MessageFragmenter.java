@@ -13,12 +13,11 @@ import static de.rub.nds.tlsattacker.core.dtls.FragmentCollector.LOGGER;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.protocol.Preparator;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageSerializer;
 import de.rub.nds.tlsattacker.core.protocol.Serializer;
-import de.rub.nds.tlsattacker.core.protocol.handler.TlsMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.TlsMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.HandshakeMessageSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.LinkedList;
@@ -43,7 +42,7 @@ public class MessageFragmenter {
         byte[] bytes;
         if (serializer instanceof HandshakeMessageSerializer) {// This is necessary because of SSL2 messages...
             HandshakeMessageSerializer handshakeMessageSerializer = (HandshakeMessageSerializer) serializer;
-            bytes = handshakeMessageSerializer.serializeHandshakeMessageContent();
+            bytes = handshakeMessageSerializer.serializeProtocolMessageContent();
         } else {
             bytes = serializer.serializeProtocolMessageContent();
         }
@@ -61,7 +60,7 @@ public class MessageFragmenter {
         byte[] bytes;
         if (serializer instanceof HandshakeMessageSerializer) {// This is necessary because of SSL2 messages...
             HandshakeMessageSerializer handshakeMessageSerializer = (HandshakeMessageSerializer) serializer;
-            bytes = handshakeMessageSerializer.serializeHandshakeMessageContent();
+            bytes = handshakeMessageSerializer.serializeProtocolMessageContent();
         } else {
             bytes = serializer.serializeProtocolMessageContent();
         }
@@ -82,7 +81,7 @@ public class MessageFragmenter {
         if (serializer instanceof HandshakeMessageSerializer) {// This is necessary because of SSL2 messages...
             HandshakeMessageSerializer handshakeMessageSerializer =
                 (HandshakeMessageSerializer) message.getSerializer(context);
-            bytes = handshakeMessageSerializer.serializeHandshakeMessageContent();
+            bytes = handshakeMessageSerializer.serializeProtocolMessageContent();
         } else {
             bytes = serializer.serializeProtocolMessageContent();
         }
@@ -133,10 +132,8 @@ public class MessageFragmenter {
                 }
             }
 
-            if (message instanceof TlsMessage) {
-                TlsMessageHandler handler = (TlsMessageHandler) message.getHandler(context);
-                handler.updateDigest(message);
-            }
+            ProtocolMessageHandler handler = message.getHandler(context);
+            handler.updateDigest(message);
             if (message.getAdjustContext()) {
 
                 message.getHandler(context).adjustContext(message);

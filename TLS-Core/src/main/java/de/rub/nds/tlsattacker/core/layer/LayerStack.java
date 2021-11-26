@@ -39,6 +39,7 @@ public class LayerStack {
             if (i != layers.length - 1) {
                 layer.setLowerLayer(layerList.get(i + 1));
             }
+            layer.setInitialized(true);
         }
     }
 
@@ -61,6 +62,9 @@ public class LayerStack {
 
     public List<LayerProcessingResult> sendData(List<LayerConfiguration> layerConfigurationList) throws IOException {
         if (layerList.size() != layerConfigurationList.size()) {
+            System.out.println("Layer size: " + layerList.size());
+            System.out.println("Configuration size: " + layerConfigurationList.size());
+
             throw new RuntimeException(
                 "Illegal LayerConfiguration list provided. Each layer needs a configuration entry (null is fine too if no explict configuration is desired). Expected "
                     + layerList.size() + " but found " + layerConfigurationList.size());
@@ -100,13 +104,25 @@ public class LayerStack {
             i++;
         }
 
-        ProtocolLayer receive = layerList.get(layerList.size() - 1);
-        receive.retrieveMoreData(null);
+        ProtocolLayer layer = layerList.get(0);
+        layer.retrieveMoreData(null);
         // Gather results
         List<LayerProcessingResult> resultList = new LinkedList<>();
-        layerList.forEach(layer -> {
-            resultList.add(layer.getLayerResult());
+        layerList.forEach(tempLayer -> {
+            resultList.add(tempLayer.getLayerResult());
         });
         return resultList;
+    }
+
+    public void initialize() throws IOException {
+        for (ProtocolLayer layer : layerList) {
+            layer.inititialize();
+        }
+    }
+
+    public void preInitialize() throws IOException {
+        for (ProtocolLayer layer : layerList) {
+            layer.preInititialize();
+        }
     }
 }

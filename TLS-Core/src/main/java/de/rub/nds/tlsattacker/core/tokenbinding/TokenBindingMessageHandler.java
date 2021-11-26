@@ -9,18 +9,17 @@
 
 package de.rub.nds.tlsattacker.core.tokenbinding;
 
-import de.rub.nds.tlsattacker.core.protocol.handler.TlsMessageHandler;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.InputStream;
 
-public class TokenBindingMessageHandler extends TlsMessageHandler<TokenBindingMessage> {
+public class TokenBindingMessageHandler extends ProtocolMessageHandler<TokenBindingMessage> {
 
     public TokenBindingMessageHandler(TlsContext tlsContext) {
         super(tlsContext);
     }
 
     @Override
-    public void adjustTLSContext(TokenBindingMessage message) {
+    public void adjustContext(TokenBindingMessage message) {
 
     }
 

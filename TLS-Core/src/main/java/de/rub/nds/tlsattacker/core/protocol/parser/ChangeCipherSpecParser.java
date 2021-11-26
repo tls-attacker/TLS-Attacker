@@ -13,12 +13,13 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ChangeCipherSpecByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ChangeCipherSpecParser extends TlsMessageParser<ChangeCipherSpecMessage> {
+public class ChangeCipherSpecParser extends ProtocolMessageParser<ChangeCipherSpecMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -32,7 +33,7 @@ public class ChangeCipherSpecParser extends TlsMessageParser<ChangeCipherSpecMes
      *                A Config used in the current context
      */
     public ChangeCipherSpecParser(InputStream stream, ProtocolVersion version, Config config) {
-        super(stream, version, config);
+        super(stream, config);
     }
 
     @Override

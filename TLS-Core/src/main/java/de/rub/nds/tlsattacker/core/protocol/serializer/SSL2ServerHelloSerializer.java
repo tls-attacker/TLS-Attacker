@@ -21,17 +21,16 @@ public class SSL2ServerHelloSerializer extends HandshakeMessageSerializer<SSL2Se
     private static final Logger LOGGER = LogManager.getLogger();
 
     public SSL2ServerHelloSerializer(SSL2ServerHelloMessage message, TlsContext tlsContext) {
-        super(message, tlsContext.getChooser().getSelectedProtocolVersion());
+        super(message);
+    }
+
+    @Override
+    protected byte[] serializeBytes() {
+        return serializeProtocolMessageContent();
     }
 
     @Override
     public byte[] serializeProtocolMessageContent() {
-        serializeHandshakeMessageContent();
-        return getAlreadySerialized();
-    }
-
-    @Override
-    public byte[] serializeHandshakeMessageContent() {
         LOGGER.debug("Serialize SSL2ServerHello");
         writeMessageLength();
         writeType();

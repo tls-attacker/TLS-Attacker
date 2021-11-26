@@ -34,7 +34,7 @@ public class AlpnExtensionHandlerTest {
     }
 
     @Test
-    public void testAdjustTLSContext() {
+    public void testadjustContext() {
         AlpnExtensionMessage msg = new AlpnExtensionMessage();
         msg.setProposedAlpnProtocolsLength(announcedProtocolsLength);
         msg.setProposedAlpnProtocols(announcedProtocols);

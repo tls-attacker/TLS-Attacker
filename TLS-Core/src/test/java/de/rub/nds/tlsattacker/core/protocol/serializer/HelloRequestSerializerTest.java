@@ -34,13 +34,13 @@ public class HelloRequestSerializerTest {
     }
 
     /**
-     * Test of serializeHandshakeMessageContent method, of class HelloRequestSerializer.
+     * Test of serializeProtocolMessageContent method, of class HelloRequestSerializer.
      */
     @Test
-    public void testSerializeHandshakeMessageContent() {
+    public void testserializeProtocolMessageContent() {
         HelloRequestMessage msg = new HelloRequestMessage();
         HelloRequestSerializer serializer = new HelloRequestSerializer(msg, ProtocolVersion.TLS12);
-        assertArrayEquals(message, serializer.serializeHandshakeMessageContent());
+        assertArrayEquals(message, serializer.serializeProtocolMessageContent());
     }
 
 }

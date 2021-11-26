@@ -20,20 +20,18 @@ import de.rub.nds.tlsattacker.core.https.header.HostHeader;
 import de.rub.nds.tlsattacker.core.https.header.HttpHeader;
 import de.rub.nds.tlsattacker.core.https.header.LocationHeader;
 import de.rub.nds.tlsattacker.core.https.header.TokenBindingHeader;
-
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageParser;
 import java.nio.charset.Charset;
-
-import de.rub.nds.tlsattacker.core.protocol.parser.TlsMessageParser;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class HttpsRequestParser extends TlsMessageParser<HttpsRequestMessage> {
+public class HttpsRequestParser extends ProtocolMessageParser<HttpsRequestMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     public HttpsRequestParser(InputStream stream, ProtocolVersion version, Config config) {
-        super(stream, version, config);
+        super(stream, config);
     }
 
     @Override

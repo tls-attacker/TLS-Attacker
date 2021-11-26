@@ -19,6 +19,6 @@ public class PskServerKeyExchangeHandler extends ServerKeyExchangeHandler<PskSer
     }
 
     @Override
-    public void adjustTLSContext(PskServerKeyExchangeMessage message) {
+    public void adjustContext(PskServerKeyExchangeMessage message) {
     }
 }

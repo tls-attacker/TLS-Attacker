@@ -27,7 +27,7 @@ public class DHClientKeyExchangeHandler<T extends DHClientKeyExchangeMessage> ex
     }
 
     @Override
-    public void adjustTLSContext(T message) {
+    public void adjustContext(T message) {
         adjustPremasterSecret(message);
         adjustMasterSecret(message);
         adjustClientPublicKey(message);

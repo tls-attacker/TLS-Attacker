@@ -59,6 +59,6 @@ public class CertificateTypeExtensionSerializerTest {
         }
         msg.setIsClientMessage(isClientState);
 
-        assertArrayEquals(expectedBytes, serializer.serialize());
+        assertArrayEquals(expectedBytes, serializer.serializeExtensionContent());
     }
 }

@@ -35,9 +35,8 @@ public class HeartbeatMessageParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(
-            new Object[][] { { heartbeatRequest, heartbeatRequest, (byte) 0x1, 18, requestPayload, requestPadding },
-                { heartbeatResponse, heartbeatResponse, (byte) 0x2, 18, responsePayload, responsePadding } });
+        return Arrays.asList(new Object[][] { { heartbeatRequest, (byte) 0x1, 18, requestPayload, requestPadding },
+            { heartbeatResponse, (byte) 0x2, 18, responsePayload, responsePadding } });
     }
 
     private final byte[] message;
@@ -49,10 +48,9 @@ public class HeartbeatMessageParserTest {
     private final byte[] padding;
     private final Config config = Config.createConfig();
 
-    public HeartbeatMessageParserTest(byte[] message, byte[] expectedPart, byte heartBeatType, int payloadLength,
-        byte[] payload, byte[] padding) {
+    public HeartbeatMessageParserTest(byte[] message, byte heartBeatType, int payloadLength, byte[] payload,
+        byte[] padding) {
         this.message = message;
-        // this.expectedPart = expectedPart;
         this.heartBeatType = heartBeatType;
         this.payloadLength = payloadLength;
         this.payload = payload;

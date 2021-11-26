@@ -10,10 +10,16 @@
 package de.rub.nds.tlsattacker.core.unittest.helper;
 
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import de.rub.nds.tlsattacker.transport.TransportHandler;
+import de.rub.nds.tlsattacker.transport.tcp.TcpTransportHandler;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import static org.mockito.Mockito.*;
 
-public class FakeTransportHandler extends TransportHandler {
+public class FakeTransportHandler extends TcpTransportHandler {
     /**
      * Data that will be returned on a fetchData() call
      */
@@ -78,6 +84,42 @@ public class FakeTransportHandler extends TransportHandler {
 
     @Override
     public void preInitialize() throws IOException {
+    }
+
+    @Override
+    public Integer getSrcPort() {
+        throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
+                                                                       // Tools | Templates.
+    }
+
+    @Override
+    public void setSrcPort(int port) {
+        throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
+                                                                       // Tools | Templates.
+    }
+
+    @Override
+    public Integer getDstPort() {
+        throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
+                                                                       // Tools | Templates.
+    }
+
+    @Override
+    public void setDstPort(int port) {
+        throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
+                                                                       // Tools | Templates.
+    }
+
+    @Override
+    public Socket getSocket() {
+        Socket socket = mock(Socket.class);
+        try {
+            when(socket.getInputStream()).thenReturn(new ByteArrayInputStream(fetchableByte));
+            when(socket.getOutputStream()).thenReturn(new ByteArrayOutputStream());
+        } catch (IOException ex) {
+            Logger.getLogger(FakeTransportHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return socket;
     }
 
 }

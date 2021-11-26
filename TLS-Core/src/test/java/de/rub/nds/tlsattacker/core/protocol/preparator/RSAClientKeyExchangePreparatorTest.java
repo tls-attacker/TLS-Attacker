@@ -97,7 +97,7 @@ public class RSAClientKeyExchangePreparatorTest {
         certMessage.setCertificatesListLength(637);
         Security.addProvider(new BouncyCastleProvider());
         CertificateMessageHandler handler = new CertificateMessageHandler(context);
-        handler.adjustTLSContext(certMessage);
+        handler.adjustContext(certMessage);
 
         Certificate cert = parseCertificate(certMessage.getCertificatesListLength().getValue(),
             certMessage.getCertificatesListBytes().getValue());

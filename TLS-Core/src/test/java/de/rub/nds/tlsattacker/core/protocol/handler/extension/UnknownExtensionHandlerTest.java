@@ -26,10 +26,10 @@ public class UnknownExtensionHandlerTest {
     }
 
     /**
-     * Test of adjustTLSContext method, of class UnknownExtensionHandler.
+     * Test of adjustContext method, of class UnknownExtensionHandler.
      */
     @Test
-    public void testAdjustTLSContext() {
+    public void testadjustContext() {
         UnknownExtensionMessage msg = new UnknownExtensionMessage();
         handler.adjustContext(msg);
         // TODO Check that context does not change

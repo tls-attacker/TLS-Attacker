@@ -19,7 +19,7 @@ public class GOSTClientKeyExchangeHandler extends ClientKeyExchangeHandler<GOSTC
     }
 
     @Override
-    public void adjustTLSContext(GOSTClientKeyExchangeMessage message) {
+    public void adjustContext(GOSTClientKeyExchangeMessage message) {
         adjustPremasterSecret(message);
         adjustMasterSecret(message);
         spawnNewSession();

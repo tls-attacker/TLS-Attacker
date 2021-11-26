@@ -38,7 +38,7 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
     }
 
     @Override
-    public void adjustTLSContext(NewSessionTicketMessage message) {
+    public void adjustContext(NewSessionTicketMessage message) {
         if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
             adjustPskSets(message);
         } else {

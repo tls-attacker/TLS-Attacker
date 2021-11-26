@@ -27,22 +27,20 @@ public class UnknownHandshakeSerializerTest {
     }
 
     private byte[] message;
-    private byte[] data;
 
-    public UnknownHandshakeSerializerTest(byte[] message, byte[] data) {
+    public UnknownHandshakeSerializerTest(byte[] message) {
         this.message = message;
-        this.data = data;
     }
 
     /**
-     * Test of serializeHandshakeMessageContent method, of class UnknownHandshakeSerializer.
+     * Test of serializeProtocolMessageContent method, of class UnknownHandshakeSerializer.
      */
     @Test
-    public void testSerializeHandshakeMessageContent() {
+    public void testserializeProtocolMessageContent() {
         UnknownHandshakeMessage msg = new UnknownHandshakeMessage();
-        msg.setData(data);
+        msg.setData(message);
         UnknownHandshakeSerializer serializer = new UnknownHandshakeSerializer(msg, ProtocolVersion.TLS12);
-        assertArrayEquals(message, serializer.serializeHandshakeMessageContent());
+        assertArrayEquals(message, serializer.serializeProtocolMessageContent());
     }
 
 }

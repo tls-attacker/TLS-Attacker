@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientMasterKeyMessage;
 import java.util.Arrays;
@@ -21,18 +20,17 @@ public class SSL2ClientMasterKeySerializer extends HandshakeMessageSerializer<SS
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SSL2ClientMasterKeySerializer(SSL2ClientMasterKeyMessage message, ProtocolVersion version) {
-        super(message, version);
+    public SSL2ClientMasterKeySerializer(SSL2ClientMasterKeyMessage message) {
+        super(message);
+    }
+
+    @Override
+    protected byte[] serializeBytes() {
+        return serializeProtocolMessageContent();
     }
 
     @Override
     public byte[] serializeProtocolMessageContent() {
-        serializeHandshakeMessageContent();
-        return getAlreadySerialized();
-    }
-
-    @Override
-    public byte[] serializeHandshakeMessageContent() {
         LOGGER.debug("Serializing SSL2ClientMasterKey");
         writeMessageLength();
         writeType();

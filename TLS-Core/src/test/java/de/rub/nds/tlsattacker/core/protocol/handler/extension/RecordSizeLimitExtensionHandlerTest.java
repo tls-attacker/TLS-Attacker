@@ -38,10 +38,10 @@ public class RecordSizeLimitExtensionHandlerTest {
     }
 
     /**
-     * Test of adjustTLSContext method, of class RecordSizeLimitExtensionHandler.
+     * Test of adjustContext method, of class RecordSizeLimitExtensionHandler.
      */
     @Test
-    public void testAdjustTLSContextConnectionPeer() {
+    public void testadjustContextConnectionPeer() {
         context.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
 
         RecordSizeLimitExtensionMessage msg = new RecordSizeLimitExtensionMessage();
@@ -52,14 +52,14 @@ public class RecordSizeLimitExtensionHandlerTest {
     }
 
     @Test(expected = AdjustmentException.class)
-    public void testAdjustTLSContextInvalidSize() {
+    public void testadjustContextInvalidSize() {
         RecordSizeLimitExtensionMessage msg = new RecordSizeLimitExtensionMessage();
         msg.setRecordSizeLimit(new byte[] { (byte) 0x05, (byte) 0x39, (byte) 0x00 });
         assertNull(context.getOutboundRecordSizeLimit());
         handler.adjustContext(msg);
     }
 
-    public void testAdjustTLSContextSizeTooSmall() {
+    public void testadjustContextSizeTooSmall() {
         RecordSizeLimitExtensionMessage msg = new RecordSizeLimitExtensionMessage();
         msg.setRecordSizeLimit(new byte[] { (byte) 0x00, (byte) 0x2A });
         assertNull(context.getOutboundRecordSizeLimit());

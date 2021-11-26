@@ -28,7 +28,7 @@ public class HelloVerifyRequestHandler extends HandshakeMessageHandler<HelloVeri
     }
 
     @Override
-    public void adjustTLSContext(HelloVerifyRequestMessage message) {
+    public void adjustContext(HelloVerifyRequestMessage message) {
         adjustDTLSCookie(message);
     }
 

@@ -57,10 +57,10 @@ public class DHEServerKeyExchangeSerializerTest {
     }
 
     /**
-     * Test of serializeHandshakeMessageContent method, of class DHEServerKeyExchangeSerializer.
+     * Test of serializeProtocolMessageContent method, of class DHEServerKeyExchangeSerializer.
      */
     @Test
-    public void testSerializeHandshakeMessageContent() {
+    public void testserializeProtocolMessageContent() {
         DHEServerKeyExchangeMessage msg = new DHEServerKeyExchangeMessage();
         msg.setModulusLength(pLength);
         msg.setModulus(p);
@@ -74,7 +74,7 @@ public class DHEServerKeyExchangeSerializerTest {
         }
         msg.setSignatureLength(sigLength);
         DHEServerKeyExchangeSerializer serializer = new DHEServerKeyExchangeSerializer(msg, version);
-        assertArrayEquals(expectedPart, serializer.serializeHandshakeMessageContent());
+        assertArrayEquals(expectedPart, serializer.serializeProtocolMessageContent());
 
     }
 

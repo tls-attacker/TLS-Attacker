@@ -33,11 +33,11 @@ public class SrpServerKeyExchangeHandlerTest {
     }
 
     /**
-     * Test of adjustTLSContext method, of class SrpServerKeyExchangeHandler.
+     * Test of adjustContext method, of class SrpServerKeyExchangeHandler.
      */
 
     @Test
-    public void testAdjustTLSContext() {
+    public void testadjustContext() {
         SrpServerKeyExchangeMessage message = new SrpServerKeyExchangeMessage();
         message.setModulus(BigInteger.TEN.toByteArray());
         message.setGenerator(BigInteger.ONE.toByteArray());
@@ -46,7 +46,7 @@ public class SrpServerKeyExchangeHandlerTest {
         context.setSelectedCipherSuite(CipherSuite.TLS_SRP_SHA_WITH_AES_128_CBC_SHA);
         message.prepareComputations();
         message.getComputations().setPrivateKey(BigInteger.ZERO);
-        handler.adjustTLSContext(message);
+        handler.adjustContext(message);
 
         assertEquals(BigInteger.TEN, context.getSRPModulus());
         assertEquals(BigInteger.ONE, context.getSRPGenerator());
@@ -59,13 +59,13 @@ public class SrpServerKeyExchangeHandlerTest {
     }
 
     @Test
-    public void testAdjustTLSContextWithoutComputations() {
+    public void testadjustContextWithoutComputations() {
         SrpServerKeyExchangeMessage message = new SrpServerKeyExchangeMessage();
         message.setModulus(BigInteger.TEN.toByteArray());
         message.setGenerator(BigInteger.ONE.toByteArray());
         message.setSalt(BigInteger.TEN.toByteArray());
         message.setPublicKey(new byte[] { 0, 1, 2, 3 });
-        handler.adjustTLSContext(message);
+        handler.adjustContext(message);
 
         assertEquals(BigInteger.TEN, context.getSRPModulus());
         assertEquals(BigInteger.ONE, context.getSRPGenerator());

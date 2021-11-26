@@ -10,12 +10,13 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ApplicationMessageHandler extends TlsMessageHandler<ApplicationMessage> {
+public class ApplicationMessageHandler extends ProtocolMessageHandler<ApplicationMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -24,7 +25,7 @@ public class ApplicationMessageHandler extends TlsMessageHandler<ApplicationMess
     }
 
     @Override
-    public void adjustTLSContext(ApplicationMessage message) {
+    public void adjustContext(ApplicationMessage message) {
         tlsContext.setLastHandledApplicationMessageData(message.getData().getValue());
         String readableAppData = ArrayConverter.bytesToHexString(tlsContext.getLastHandledApplicationMessageData());
         if (tlsContext.getTalkingConnectionEndType() == tlsContext.getChooser().getMyConnectionPeer()) {

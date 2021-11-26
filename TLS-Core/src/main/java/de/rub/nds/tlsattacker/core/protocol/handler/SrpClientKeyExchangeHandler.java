@@ -23,7 +23,7 @@ public class SrpClientKeyExchangeHandler extends ClientKeyExchangeHandler<SrpCli
     }
 
     @Override
-    public void adjustTLSContext(SrpClientKeyExchangeMessage message) {
+    public void adjustContext(SrpClientKeyExchangeMessage message) {
         adjustPremasterSecret(message);
         adjustMasterSecret(message);
         spawnNewSession();

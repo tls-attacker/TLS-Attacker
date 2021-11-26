@@ -73,7 +73,7 @@ public class FinishedPreparatorTest {
         String serverHelloDoneHex = "0e000000";
         String clientKeyExchangeHex =
             "1000008200807431f17d9c25a9e56809040950bb7122f3564b3c50ea9537a1b4f57af7350c39c3d6729e098cefa805ad6b5a2079b665980534d0a5dacd9d11e7ff57b224ab0268387a4d4dcbbc460aace7e4d4543249bafed5f2e6bcf22465dde88ab86a198b05090578a6131be51922b8448ca62705131db5f48211147c68c07425c883d7b3";
-        String finishedHex = "1400000c0e1e6bd7845c5a971778234b";
+        String finishedHex = "0e1e6bd7845c5a971778234b";
 
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_NULL_SHA256);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
@@ -85,9 +85,8 @@ public class FinishedPreparatorTest {
             clientKeyExchangeHex);
 
         preparator.prepare();
-        // TODO might be wrong
-        Assert.assertArrayEquals(ArrayConverter.hexStringToByteArray(finishedHex),
-            message.getCompleteResultingMessage().getValue());
+
+        Assert.assertArrayEquals(ArrayConverter.hexStringToByteArray(finishedHex), message.getVerifyData().getValue());
     }
 
     @Test
@@ -101,7 +100,7 @@ public class FinishedPreparatorTest {
         String serverHelloDoneHex = "0e000000";
         String clientKeyExchangeHex =
             "100000801a4dc552ddd7e1e25dbaff38dd447b3a6fdc85120e2f760fefdab88e5adbbc710f3d0843f07c9f4f5ac01bc4cea02c4030c272074aa04b1b80a71123b73ea4efbe928b54a83fe4b39472bf66a953c7dc11cfb13ea08f92047996799ce702eb72a7c69bdfd98b91a09bcb836414752d93d3641740f8ed5cfff682225434052230";
-        String finishedHex = "14000024ca89059c0d65ae7d5e0c11d99e7de49f830776fa43be27550285015fe254946754b8306f";
+        String finishedHex = "ca89059c0d65ae7d5e0c11d99e7de49f830776fa43be27550285015fe254946754b8306f";
 
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_NULL_MD5);
         context.setSelectedProtocolVersion(ProtocolVersion.SSL3);
@@ -113,11 +112,7 @@ public class FinishedPreparatorTest {
 
         preparator.prepare();
 
-        // TODO might be wrong
-        Assert.assertEquals(ArrayConverter.hexStringToByteArray(finishedHex).length,
-            message.getCompleteResultingMessage().getValue().length);
-        Assert.assertArrayEquals(ArrayConverter.hexStringToByteArray(finishedHex),
-            message.getCompleteResultingMessage().getValue());
+        Assert.assertArrayEquals(ArrayConverter.hexStringToByteArray(finishedHex), message.getVerifyData().getValue());
     }
 
     /**

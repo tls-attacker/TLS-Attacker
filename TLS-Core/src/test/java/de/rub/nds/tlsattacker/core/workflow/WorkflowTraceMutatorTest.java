@@ -110,7 +110,7 @@ public class WorkflowTraceMutatorTest {
     public void testReplaceReceivingMessageProtocolMessage() throws WorkflowTraceMutationException {
         trace.addTlsAction(rcvServerHello);
 
-        TlsMessage replaceMsg = new FinishedMessage();
+        ProtocolMessage replaceMsg = new FinishedMessage();
         WorkflowTraceMutator.replaceReceivingMessage(trace, ProtocolMessageType.HANDSHAKE, replaceMsg);
 
         ReceiveAction action = (ReceiveAction) WorkflowTraceUtil

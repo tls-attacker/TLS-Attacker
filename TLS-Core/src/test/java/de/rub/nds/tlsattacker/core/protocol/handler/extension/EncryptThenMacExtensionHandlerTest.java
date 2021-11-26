@@ -32,7 +32,7 @@ public class EncryptThenMacExtensionHandlerTest {
     }
 
     @Test
-    public void testAdjustTLSContext() {
+    public void testadjustContext() {
         EncryptThenMacExtensionMessage message = new EncryptThenMacExtensionMessage();
         handler.adjustContext(message);
         assertTrue(context.isExtensionProposed(ExtensionType.ENCRYPT_THEN_MAC));

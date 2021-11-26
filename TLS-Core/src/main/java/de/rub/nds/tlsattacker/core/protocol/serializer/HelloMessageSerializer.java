@@ -40,7 +40,7 @@ public abstract class HelloMessageSerializer<T extends HelloMessage> extends Han
      *                Version of the protocol
      */
     public HelloMessageSerializer(T message, ProtocolVersion version) {
-        super(message, version);
+        super(message);
         this.msg = message;
     }
 

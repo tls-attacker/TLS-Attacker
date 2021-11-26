@@ -19,7 +19,7 @@ public class SSL2ServerVerifyHandler extends HandshakeMessageHandler<SSL2ServerV
     }
 
     @Override
-    public void adjustTLSContext(SSL2ServerVerifyMessage message) {
+    public void adjustContext(SSL2ServerVerifyMessage message) {
     }
 
 }

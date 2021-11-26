@@ -42,5 +42,6 @@ public class RequestItemV2Parser extends Parser<RequestItemV2> {
             parser.parse(id);
             responderIds.add(id);
         }
+        item.setResponderIdList(responderIds);
     }
 }

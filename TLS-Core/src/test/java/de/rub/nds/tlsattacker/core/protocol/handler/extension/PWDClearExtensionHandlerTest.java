@@ -27,7 +27,7 @@ public class PWDClearExtensionHandlerTest {
     }
 
     @Test
-    public void testAdjustTLSContext() {
+    public void testadjustContext() {
         PWDClearExtensionMessage message = new PWDClearExtensionMessage();
         message.setUsername("jens");
         handler.adjustContext(message);

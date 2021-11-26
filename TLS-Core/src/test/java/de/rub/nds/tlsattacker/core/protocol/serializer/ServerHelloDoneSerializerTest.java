@@ -36,13 +36,13 @@ public class ServerHelloDoneSerializerTest {
     }
 
     /**
-     * Test of serializeHandshakeMessageContent method, of class ServerHelloDoneSerializer.
+     * Test of serializeProtocolMessageContent method, of class ServerHelloDoneSerializer.
      */
     @Test
-    public void testSerializeHandshakeMessageContent() {
+    public void testserializeProtocolMessageContent() {
         ServerHelloDoneMessage msg = new ServerHelloDoneMessage();
         ServerHelloDoneSerializer serializer = new ServerHelloDoneSerializer(msg, version);
-        assertArrayEquals(message, serializer.serializeHandshakeMessageContent());
+        assertArrayEquals(message, serializer.serializeProtocolMessageContent());
     }
 
 }

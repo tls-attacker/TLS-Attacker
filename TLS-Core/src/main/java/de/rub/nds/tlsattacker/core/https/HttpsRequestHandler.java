@@ -9,18 +9,17 @@
 
 package de.rub.nds.tlsattacker.core.https;
 
-import de.rub.nds.tlsattacker.core.protocol.handler.TlsMessageHandler;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.InputStream;
 
-public class HttpsRequestHandler extends TlsMessageHandler<HttpsRequestMessage> {
+public class HttpsRequestHandler extends ProtocolMessageHandler<HttpsRequestMessage> {
 
     public HttpsRequestHandler(TlsContext tlsContext) {
         super(tlsContext);
     }
 
     @Override
-    public void adjustTLSContext(HttpsRequestMessage message) {
+    public void adjustContext(HttpsRequestMessage message) {
         tlsContext.getHttpContext().setLastRequestPath(message.getRequestPath().getValue());
     }
 

@@ -35,25 +35,25 @@ public class HttpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer>
     @Override
     public LayerProcessingResult sendData() throws IOException {
         throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
-                                                                       // Tools | Templates.
+        // Tools | Templates.
     }
 
     @Override
     public LayerProcessingResult sendData(byte[] data) throws IOException {
         throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
-                                                                       // Tools | Templates.
+        // Tools | Templates.
     }
 
     @Override
     public LayerProcessingResult sendData(LayerProcessingHint hint) throws IOException {
         throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
-                                                                       // Tools | Templates.
+        // Tools | Templates.
     }
 
     @Override
     public LayerProcessingResult sendData(LayerProcessingHint hint, byte[] additionalData) throws IOException {
         throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
-                                                                       // Tools | Templates.
+        // Tools | Templates.
     }
 
     @Override
@@ -82,4 +82,19 @@ public class HttpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer>
         return new HintedLayerStream(null, this);
     }
 
+    @Override
+    public void preInititialize() throws IOException {
+        // Nothing to do here
+    }
+
+    @Override
+    public void inititialize() throws IOException {
+        // Nothing to do here
+    }
+
+    @Override
+    public LayerProcessingResult receiveData() throws IOException {
+        throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
+                                                                       // Tools | Templates.
+    }
 }

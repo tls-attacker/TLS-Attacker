@@ -28,7 +28,7 @@ public class RSAServerKeyExchangeSerializer<T extends RSAServerKeyExchangeMessag
     }
 
     @Override
-    public byte[] serializeHandshakeMessageContent() {
+    public byte[] serializeProtocolMessageContent() {
         LOGGER.debug("Serializing RSAServerKeyExchangeMessage");
         writeModulusLength(msg);
         writeModulus(msg);

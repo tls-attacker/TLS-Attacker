@@ -31,7 +31,7 @@ public class PWDProtectExtensionHandlerTest {
     }
 
     @Test
-    public void testAdjustTLSContext() {
+    public void testadjustContext() {
         PWDProtectExtensionMessage message = new PWDProtectExtensionMessage();
         message.setUsername(ArrayConverter.hexStringToByteArray(
             "DA87739AC04C2A6D222FC15E31C471451DE3FE7E78B6E3485CA21E12BFE1CB4C4191D4CD9257145CBFA26DFCA1839C1588D0F1F6"));

@@ -33,10 +33,10 @@ public class SessionTicketTlsExtensionHandlerTest {
     }
 
     /**
-     * Tests the adjustTLSContext of the SessionTicketTlsExtensionHandler class
+     * Tests the adjustContext of the SessionTicketTlsExtensionHandler class
      */
     @Test
-    public void testAdjustTLSContext() {
+    public void testadjustContext() {
         SessionTicketTLSExtensionMessage message = new SessionTicketTLSExtensionMessage();
         message.setTicket(SESSION_TICKET);
         message.setExtensionLength(EXTENSION_LENGTH);

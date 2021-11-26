@@ -38,7 +38,7 @@ public class SignedCertificateTimestampExtensionHandlerTest {
     }
 
     @Test
-    public void testAdjustTLSContext() {
+    public void testadjustContext() {
         SignedCertificateTimestampExtensionMessage messageOne = new SignedCertificateTimestampExtensionMessage();
         messageOne.setSignedTimestamp(firstTimestamp);
         messageOne.setExtensionLength(lengthFirstPackage);

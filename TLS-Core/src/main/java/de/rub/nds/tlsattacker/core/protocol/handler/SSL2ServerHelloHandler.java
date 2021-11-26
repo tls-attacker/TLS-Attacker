@@ -54,7 +54,7 @@ public class SSL2ServerHelloHandler extends HandshakeMessageHandler<SSL2ServerHe
     }
 
     @Override
-    public void adjustTLSContext(SSL2ServerHelloMessage message) {
+    public void adjustContext(SSL2ServerHelloMessage message) {
         byte[] serverRandom = message.getSessionId().getValue();
         if (serverRandom != null) {
             tlsContext.setServerRandom(serverRandom);

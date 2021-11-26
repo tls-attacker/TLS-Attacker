@@ -32,13 +32,13 @@ public class HelloVerifyRequestHandlerTest {
     }
 
     /**
-     * Test of adjustTLSContext method, of class HelloVerifyRequestHandler.
+     * Test of adjustContext method, of class HelloVerifyRequestHandler.
      */
     @Test
-    public void testAdjustTLSContext() {
+    public void testadjustContext() {
         HelloVerifyRequestMessage message = new HelloVerifyRequestMessage();
         message.setCookie(new byte[] { 0, 1, 2, 3 });
-        handler.adjustTLSContext(message);
+        handler.adjustContext(message);
         assertArrayEquals(new byte[] { 0, 1, 2, 3 }, context.getDtlsCookie());
     }
 

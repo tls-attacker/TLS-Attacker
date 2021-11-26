@@ -34,7 +34,7 @@ public class PWDClientKeyExchangeHandlerTest {
     }
 
     @Test
-    public void testAdjustTLSContext() {
+    public void testadjustContext() {
         context.setSelectedCipherSuite(CipherSuite.TLS_ECCPWD_WITH_AES_128_GCM_SHA256);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         context.getConfig().setDefaultSelectedNamedGroup(NamedGroup.BRAINPOOLP256R1);
@@ -54,7 +54,7 @@ public class PWDClientKeyExchangeHandlerTest {
         PWDClientKeyExchangeMessage message = new PWDClientKeyExchangeMessage();
         PWDClientKeyExchangePreparator prep = new PWDClientKeyExchangePreparator(context.getChooser(), message);
         prep.prepare();
-        handler.adjustTLSContext(message);
+        handler.adjustContext(message);
 
         assertArrayEquals(
             ArrayConverter.hexStringToByteArray("782FB8A017109CF92CA56D67BCBE4C19196E6EFC7CD396A91512BB66ED65E9BA"),

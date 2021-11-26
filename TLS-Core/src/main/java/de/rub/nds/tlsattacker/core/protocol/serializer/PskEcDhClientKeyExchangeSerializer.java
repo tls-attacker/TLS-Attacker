@@ -37,7 +37,7 @@ public class PskEcDhClientKeyExchangeSerializer
     }
 
     @Override
-    public byte[] serializeHandshakeMessageContent() {
+    public byte[] serializeProtocolMessageContent() {
         LOGGER.debug("Serializing PSKECDHClientKeyExchangeMessage");
         writePSKIdentityLength(msg);
         writePSKIdentity(msg);

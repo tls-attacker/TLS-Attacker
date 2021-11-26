@@ -21,14 +21,13 @@ import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
 public class SrtpExtensionSerializerTest {
+
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return SrtpExtensionParserTest.generateData();
     }
 
-    private final ExtensionType extensionType;
     private final byte[] expectedBytes;
-    private final int extensionLength;
     private final int srtpProtectionProfilesLength;
     private final byte[] srtpProtectionProfiles;
     private final int srtpMkiLength;
@@ -36,11 +35,9 @@ public class SrtpExtensionSerializerTest {
     private SrtpExtensionSerializer serializer;
     private SrtpExtensionMessage msg;
 
-    public SrtpExtensionSerializerTest(ExtensionType extensionType, byte[] expectedBytes, int extensionLength,
-        int srtpProtectionProfilesLength, byte[] srtpProtectionProfiles, int srtpMkiLength, byte[] srtpMki) {
-        this.extensionType = extensionType;
+    public SrtpExtensionSerializerTest(byte[] expectedBytes, int srtpProtectionProfilesLength,
+        byte[] srtpProtectionProfiles, int srtpMkiLength, byte[] srtpMki) {
         this.expectedBytes = expectedBytes;
-        this.extensionLength = extensionLength;
         this.srtpProtectionProfilesLength = srtpProtectionProfilesLength;
         this.srtpProtectionProfiles = srtpProtectionProfiles;
         this.srtpMkiLength = srtpMkiLength;
@@ -55,15 +52,11 @@ public class SrtpExtensionSerializerTest {
 
     @Test
     public void testSerializeExtensionContent() {
-        msg.setExtensionType(extensionType.getValue());
-        msg.setExtensionLength(extensionLength);
-
         msg.setSrtpProtectionProfilesLength(srtpProtectionProfilesLength);
         msg.setSrtpProtectionProfiles(srtpProtectionProfiles);
         msg.setSrtpMkiLength(srtpMkiLength);
         msg.setSrtpMki(srtpMki);
-
-        assertArrayEquals(expectedBytes, serializer.serialize());
+        assertArrayEquals(expectedBytes, serializer.serializeExtensionContent());
     }
 
 }

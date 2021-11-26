@@ -40,7 +40,7 @@ public class ExtendedRandomExtensionHandlerTest {
     }
 
     @Test
-    public void testAdjustTLSContext() {
+    public void testadjustContext() {
         // Short Extended Random Test
         ExtendedRandomExtensionMessage message = new ExtendedRandomExtensionMessage();
         message.setExtendedRandom(EXTENDED_RANDOM_SHORT);

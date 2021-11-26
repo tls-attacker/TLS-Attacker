@@ -15,6 +15,8 @@ import de.rub.nds.modifiablevariable.bool.ModifiableBoolean;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.layer.DataContainer;
+import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
+import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
 
@@ -28,6 +30,12 @@ import java.util.Random;
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class ProtocolMessage<Self extends ProtocolMessage> extends ModifiableVariableHolder
     implements DataContainer<Self> {
+
+    /**
+     * content type
+     */
+    @XmlTransient
+    protected ProtocolMessageType protocolMessageType;
 
     @XmlTransient
     protected boolean goingToBeSentDefault = true;
@@ -132,7 +140,7 @@ public abstract class ProtocolMessage<Self extends ProtocolMessage> extends Modi
     public abstract String toShortString();
 
     public boolean addToTypes(List<ProtocolMessageType> protocolMessageTypes) {
-        return false;
+        return protocolMessageTypes.add(getProtocolMessageType());
     }
 
     @Override
@@ -147,4 +155,15 @@ public abstract class ProtocolMessage<Self extends ProtocolMessage> extends Modi
     @Override
     public abstract ProtocolMessageParser<Self> getParser(TlsContext context, InputStream stream);
 
+    public ProtocolMessageType getProtocolMessageType() {
+        return protocolMessageType;
+    }
+
+    public boolean isHandshakeMessage() {
+        return this instanceof HandshakeMessage;
+    }
+
+    public boolean isDtlsHandshakeMessageFragment() {
+        return this instanceof DtlsHandshakeMessageFragment;
+    }
 }

@@ -36,7 +36,7 @@ public class CachedInfoExtensionHandlerTest {
     }
 
     @Test
-    public void testAdjustTLSContext() {
+    public void testadjustContext() {
         CachedInfoExtensionMessage msg = new CachedInfoExtensionMessage();
         msg.setCachedInfo(cachedObjects);
         CachedInfoExtensionPreparator preparator =

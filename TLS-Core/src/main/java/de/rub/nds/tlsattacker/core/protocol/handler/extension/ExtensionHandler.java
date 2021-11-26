@@ -37,6 +37,7 @@ public abstract class ExtensionHandler<MessageT extends ExtensionMessage> implem
      * @param message
      *                The message for which the Context should be adjusted
      */
+    @Override
     public final void adjustContext(MessageT message) {
         markExtensionInContext(message);
         adjustTLSExtensionContext(message);

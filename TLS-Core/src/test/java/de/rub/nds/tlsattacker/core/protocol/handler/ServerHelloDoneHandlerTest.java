@@ -31,12 +31,12 @@ public class ServerHelloDoneHandlerTest {
     }
 
     /**
-     * Test of adjustTLSContext method, of class ServerHelloDoneHandler.
+     * Test of adjustContext method, of class ServerHelloDoneHandler.
      */
     @Test
-    public void testAdjustTLSContext() {
+    public void testadjustContext() {
         ServerHelloDoneMessage message = new ServerHelloDoneMessage();
-        handler.adjustTLSContext(message);
+        handler.adjustContext(message);
         // TODO make sure nothing changed
     }
 

@@ -29,12 +29,12 @@ public class ServerHelloDoneSerializer extends HandshakeMessageSerializer<Server
      *                Version of the Protocol
      */
     public ServerHelloDoneSerializer(ServerHelloDoneMessage message, ProtocolVersion version) {
-        super(message, version);
+        super(message);
         this.msg = message;
     }
 
     @Override
-    public byte[] serializeHandshakeMessageContent() {
+    public byte[] serializeProtocolMessageContent() {
         LOGGER.debug("Serializing ServerHelloDoneMessage");
         return getAlreadySerialized();
     }

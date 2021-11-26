@@ -32,11 +32,11 @@ public class CertificateStatusRequestV2ExtensionMessage
     extends ExtensionMessage<CertificateStatusRequestV2ExtensionMessage> {
 
     @ModifiableVariableProperty
-    ModifiableInteger statusRequestListLength;
+    private ModifiableInteger statusRequestListLength;
     @HoldsModifiableVariable
-    List<RequestItemV2> statusRequestList;
+    private List<RequestItemV2> statusRequestList;
     @ModifiableVariableProperty
-    ModifiableByteArray statusRequestBytes;
+    private ModifiableByteArray statusRequestBytes;
 
     public CertificateStatusRequestV2ExtensionMessage() {
         super(ExtensionType.STATUS_REQUEST_V2);

@@ -33,10 +33,10 @@ public class SupportedVersionsExtensionHandlerTest {
     }
 
     /**
-     * Test of adjustTLSContext method, of class SupportedVersionsExtensionHandler.
+     * Test of adjustContext method, of class SupportedVersionsExtensionHandler.
      */
     @Test
-    public void testAdjustTLSContext() {
+    public void testadjustContext() {
         SupportedVersionsExtensionMessage msg = new SupportedVersionsExtensionMessage();
         msg.setSupportedVersions(
             ArrayConverter.concatenate(ProtocolVersion.TLS12.getValue(), ProtocolVersion.TLS13.getValue()));
@@ -46,7 +46,7 @@ public class SupportedVersionsExtensionHandlerTest {
     }
 
     @Test
-    public void testAdjustTLSContextBadVersions() {
+    public void testadjustContextBadVersions() {
         SupportedVersionsExtensionMessage msg = new SupportedVersionsExtensionMessage();
         msg.setSupportedVersions(new byte[] { 0, 1, 2, 3, 3, 3 });
         handler.adjustContext(msg);

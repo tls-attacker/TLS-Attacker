@@ -37,7 +37,7 @@ public class TokenBindingExtensionHandlerTest {
     }
 
     @Test
-    public void testAdjustTLSContext() {
+    public void testadjustContext() {
         TokenBindingExtensionMessage message = new TokenBindingExtensionMessage();
         message.setTokenbindingVersion(tokenbindingVersion.getByteValue());
         message.setTokenbindingKeyParameters(keyParameterByteArrayRepresentation);

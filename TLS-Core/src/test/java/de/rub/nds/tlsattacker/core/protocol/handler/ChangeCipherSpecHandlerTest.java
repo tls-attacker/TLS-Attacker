@@ -33,14 +33,14 @@ public class ChangeCipherSpecHandlerTest {
     }
 
     /**
-     * Test of adjustTLSContext method, of class ChangeCipherSpecHandler.
+     * Test of adjustContext method, of class ChangeCipherSpecHandler.
      */
     @Test
-    public void testAdjustTLSContext() {
+    public void testadjustContext() {
         ChangeCipherSpecMessage message = new ChangeCipherSpecMessage();
         context.setSelectedCipherSuite(CipherSuite.getImplemented().get(0));
         context.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
-        handler.adjustTLSContext(message);
+        handler.adjustContext(message);
         // TODO check that change did actually work
     }
 

@@ -58,7 +58,7 @@ public class ServerHelloSerializer extends HelloMessageSerializer<ServerHelloMes
     }
 
     @Override
-    public byte[] serializeHandshakeMessageContent() {
+    public byte[] serializeProtocolMessageContent() {
         LOGGER.debug("Serializing ServerHelloMessage");
         writeProtocolVersion();
         writeRandom();

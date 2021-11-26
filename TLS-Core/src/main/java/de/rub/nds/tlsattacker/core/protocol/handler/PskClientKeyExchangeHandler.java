@@ -19,7 +19,7 @@ public class PskClientKeyExchangeHandler extends ClientKeyExchangeHandler<PskCli
     }
 
     @Override
-    public void adjustTLSContext(PskClientKeyExchangeMessage message) {
+    public void adjustContext(PskClientKeyExchangeMessage message) {
         adjustPremasterSecret(message);
         adjustMasterSecret(message);
         spawnNewSession();

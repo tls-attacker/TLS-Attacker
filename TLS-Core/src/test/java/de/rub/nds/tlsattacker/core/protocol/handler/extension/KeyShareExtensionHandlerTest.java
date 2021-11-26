@@ -47,10 +47,10 @@ public class KeyShareExtensionHandlerTest {
     }
 
     /**
-     * Test of adjustTLSContext method, of class KeyShareExtensionHandler. Group: ECDH_X25519
+     * Test of adjustContext method, of class KeyShareExtensionHandler. Group: ECDH_X25519
      */
     @Test
-    public void testAdjustTLSContext() {
+    public void testadjustContext() {
         context.setConnection(new OutboundConnection());
         context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
         context.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);

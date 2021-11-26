@@ -51,7 +51,7 @@ public class PreSharedKeyExtensionHandlerTest {
     }
 
     @Test
-    public void testAdjustTlsContext() {
+    public void testadjustContext() {
         int selectedIdentity = 1;
         PreSharedKeyExtensionMessage msg = new PreSharedKeyExtensionMessage();
         msg.setSelectedIdentity(selectedIdentity);
@@ -62,7 +62,7 @@ public class PreSharedKeyExtensionHandlerTest {
     }
 
     @Test
-    public void testAdjustTlsContextWithoutSelectedIdentity() {
+    public void testadjustContextWithoutSelectedIdentity() {
         PreSharedKeyExtensionMessage msg = new PreSharedKeyExtensionMessage();
         handler.adjustContext(msg);
 
@@ -71,7 +71,7 @@ public class PreSharedKeyExtensionHandlerTest {
     }
 
     @Test
-    public void testAdjustTlsContextServerEndType() {
+    public void testadjustContextServerEndType() {
         context.setConnection(new InboundConnection());
         PreSharedKeyExtensionMessage msg = new PreSharedKeyExtensionMessage();
 

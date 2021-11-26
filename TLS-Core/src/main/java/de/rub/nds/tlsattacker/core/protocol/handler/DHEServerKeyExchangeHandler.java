@@ -24,7 +24,7 @@ public class DHEServerKeyExchangeHandler<T extends DHEServerKeyExchangeMessage> 
     }
 
     @Override
-    public void adjustTLSContext(T message) {
+    public void adjustContext(T message) {
         adjustDhGenerator(message);
         adjustDhModulus(message);
         adjustServerPublicKey(message);

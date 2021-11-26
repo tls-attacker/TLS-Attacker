@@ -9,9 +9,9 @@
 
 package de.rub.nds.tlsattacker.core.layer.stream;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
-import de.rub.nds.tlsattacker.transport.socket.SocketState;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -66,10 +66,32 @@ public class HintedLayerStream extends InputStream {
                 }
                 return outputStream.toByteArray();
             } else {
-                // cachedSocketState = SocketState.CLOSED;
                 return new byte[0];
             }
 
         }
+    }
+
+    public byte[] readChunk(int size) throws IOException {
+        byte[] chunk = new byte[size];
+        int read = stream.read(chunk);
+        if (read != size) {
+            throw new IOException(
+                "Could not read " + size + " bytes from the stream. Only " + read + " bytes available");
+        }
+        return chunk;
+    }
+
+    public byte readByte() throws IOException {
+        return (byte) read();
+    }
+
+    public int readInt(int size) throws IOException {
+        byte[] readChunk = readChunk(size);
+        return ArrayConverter.bytesToInt(readChunk);
+    }
+
+    public LayerProcessingHint getHint() {
+        return hint;
     }
 }

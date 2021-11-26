@@ -30,12 +30,12 @@ public class HelloVerifyRequestSerializer extends HandshakeMessageSerializer<Hel
      *                Version of the Protocol
      */
     public HelloVerifyRequestSerializer(HelloVerifyRequestMessage message, ProtocolVersion version) {
-        super(message, version);
+        super(message);
         this.msg = message;
     }
 
     @Override
-    public byte[] serializeHandshakeMessageContent() {
+    public byte[] serializeProtocolMessageContent() {
         LOGGER.debug("Serializing HelloVerifyRequestMessage");
         writeProtocolVersion(msg);
         writeCookieLength(msg);

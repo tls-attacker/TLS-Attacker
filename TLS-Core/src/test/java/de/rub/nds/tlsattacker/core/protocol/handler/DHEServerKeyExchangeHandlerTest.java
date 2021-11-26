@@ -34,10 +34,10 @@ public class DHEServerKeyExchangeHandlerTest {
     }
 
     /**
-     * Test of adjustTLSContext method, of class DHEServerKeyExchangeHandler.
+     * Test of adjustContext method, of class DHEServerKeyExchangeHandler.
      */
     @Test
-    public void testAdjustTLSContext() {
+    public void testadjustContext() {
         DHEServerKeyExchangeMessage message = new DHEServerKeyExchangeMessage();
         message.setModulus(BigInteger.TEN.toByteArray());
         message.setGenerator(BigInteger.ONE.toByteArray());
@@ -45,16 +45,16 @@ public class DHEServerKeyExchangeHandlerTest {
         context.setSelectedCipherSuite(CipherSuite.TLS_DHE_RSA_WITH_AES_128_CBC_SHA);
         message.prepareComputations();
         message.getComputations().setPrivateKey(BigInteger.ZERO);
-        handler.adjustTLSContext(message);
+        handler.adjustContext(message);
 
     }
 
     @Test
-    public void testAdjustTLSContextWithoutComputations() {
+    public void testadjustContextWithoutComputations() {
         DHEServerKeyExchangeMessage message = new DHEServerKeyExchangeMessage();
         message.setModulus(BigInteger.TEN.toByteArray());
         message.setGenerator(BigInteger.ONE.toByteArray());
         message.setPublicKey(new byte[] { 0, 1, 2, 3 });
-        handler.adjustTLSContext(message);
+        handler.adjustContext(message);
     }
 }

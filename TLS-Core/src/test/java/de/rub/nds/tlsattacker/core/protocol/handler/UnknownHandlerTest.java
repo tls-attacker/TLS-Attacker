@@ -27,12 +27,12 @@ public class UnknownHandlerTest {
     }
 
     /**
-     * Test of adjustTLSContext method, of class UnknownHandler.
+     * Test of adjustContext method, of class UnknownHandler.
      */
     @Test
-    public void testAdjustTLSContext() {
+    public void testadjustContext() {
         UnknownMessage message = new UnknownMessage(context.getConfig(), ProtocolMessageType.UNKNOWN);
-        handler.adjustTLSContext(message);
+        handler.adjustContext(message);
     }
 
 }

@@ -21,17 +21,11 @@ public class SSL2ClientHelloSerializer extends HandshakeMessageSerializer<SSL2Cl
     private static final Logger LOGGER = LogManager.getLogger();
 
     public SSL2ClientHelloSerializer(SSL2ClientHelloMessage message, ProtocolVersion version) {
-        super(message, version);
+        super(message);
     }
 
     @Override
     public byte[] serializeProtocolMessageContent() {
-        serializeHandshakeMessageContent();
-        return getAlreadySerialized();
-    }
-
-    @Override
-    public byte[] serializeHandshakeMessageContent() {
         LOGGER.debug("Serializing SSL2ClientHello");
         writeMessageLength();
         writeType();
@@ -43,6 +37,11 @@ public class SSL2ClientHelloSerializer extends HandshakeMessageSerializer<SSL2Cl
         writeSessionID();
         writeChallenge();
         return getAlreadySerialized();
+    }
+
+    @Override
+    protected byte[] serializeBytes() {
+        return serializeProtocolMessageContent();
     }
 
     /**

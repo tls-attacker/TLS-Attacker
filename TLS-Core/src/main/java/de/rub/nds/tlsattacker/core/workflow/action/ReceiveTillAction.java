@@ -20,7 +20,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -37,7 +36,6 @@ public class ReceiveTillAction extends MessageAction implements ReceivingAction 
 
     @HoldsModifiableVariable
     @XmlElements(value = { @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
-        @XmlElement(type = TlsMessage.class, name = "TlsMessage"),
         @XmlElement(type = CertificateMessage.class, name = "Certificate"),
         @XmlElement(type = CertificateVerifyMessage.class, name = "CertificateVerify"),
         @XmlElement(type = CertificateRequestMessage.class, name = "CertificateRequest"),
@@ -83,18 +81,18 @@ public class ReceiveTillAction extends MessageAction implements ReceivingAction 
         @XmlElement(type = SrpClientKeyExchangeMessage.class, name = "SrpClientKeyExchange"),
         @XmlElement(type = EndOfEarlyDataMessage.class, name = "EndOfEarlyData"),
         @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensions") })
-    protected TlsMessage waitTillMessage;
+    protected ProtocolMessage waitTillMessage;
 
     public ReceiveTillAction() {
         super();
     }
 
-    public ReceiveTillAction(TlsMessage waitTillMessage) {
+    public ReceiveTillAction(ProtocolMessage waitTillMessage) {
         super();
         this.waitTillMessage = waitTillMessage;
     }
 
-    public ReceiveTillAction(String connectionAliasAlias, TlsMessage waitTillMessage) {
+    public ReceiveTillAction(String connectionAliasAlias, ProtocolMessage waitTillMessage) {
         super(connectionAliasAlias);
         this.waitTillMessage = waitTillMessage;
     }
@@ -176,7 +174,7 @@ public class ReceiveTillAction extends MessageAction implements ReceivingAction 
         return false;
     }
 
-    public TlsMessage getWaitTillMessage() {
+    public ProtocolMessage getWaitTillMessage() {
         return waitTillMessage;
     }
 
@@ -192,7 +190,7 @@ public class ReceiveTillAction extends MessageAction implements ReceivingAction 
         this.fragments = fragments;
     }
 
-    public void setWaitTillMessage(TlsMessage waitTillMessage) {
+    public void setWaitTillMessage(ProtocolMessage waitTillMessage) {
         this.waitTillMessage = waitTillMessage;
     }
 

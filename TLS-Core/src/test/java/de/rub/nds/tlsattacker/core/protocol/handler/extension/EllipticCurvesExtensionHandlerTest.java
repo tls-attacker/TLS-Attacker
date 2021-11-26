@@ -28,10 +28,10 @@ public class EllipticCurvesExtensionHandlerTest {
     }
 
     /**
-     * Test of adjustTLSContext method, of class EllipticCurvesExtensionHandler.
+     * Test of adjustContext method, of class EllipticCurvesExtensionHandler.
      */
     @Test
-    public void testAdjustTLSContext() {
+    public void testadjustContext() {
         EllipticCurvesExtensionMessage msg = new EllipticCurvesExtensionMessage();
         msg.setSupportedGroups(new byte[] { 0, 1, 0, 2 });
         handler.adjustContext(msg);
@@ -41,7 +41,7 @@ public class EllipticCurvesExtensionHandlerTest {
     }
 
     @Test
-    public void testAdjustTLSContextUnknownCurve() {
+    public void testadjustContextUnknownCurve() {
         EllipticCurvesExtensionMessage msg = new EllipticCurvesExtensionMessage();
         msg.setSupportedGroups(new byte[] { (byte) 0xFF, (byte) 0xEE });
         handler.adjustContext(msg);

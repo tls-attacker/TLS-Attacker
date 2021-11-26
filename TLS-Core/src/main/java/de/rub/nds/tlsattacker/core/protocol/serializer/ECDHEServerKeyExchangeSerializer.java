@@ -39,7 +39,7 @@ public class ECDHEServerKeyExchangeSerializer<T extends ECDHEServerKeyExchangeMe
     }
 
     @Override
-    public byte[] serializeHandshakeMessageContent() {
+    public byte[] serializeProtocolMessageContent() {
         LOGGER.debug("Serializing ECDHEServerKeyExchangeMessage");
         writeCurveType(msg);
         writeNamedGroup(msg);

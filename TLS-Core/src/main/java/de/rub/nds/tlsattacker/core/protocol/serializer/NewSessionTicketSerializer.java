@@ -23,6 +23,8 @@ public class NewSessionTicketSerializer extends HandshakeMessageSerializer<NewSe
 
     private final NewSessionTicketMessage msg;
 
+    private ProtocolVersion version;
+
     /**
      * Constructor for the NewSessionTicketMessageSerializer
      *
@@ -32,12 +34,13 @@ public class NewSessionTicketSerializer extends HandshakeMessageSerializer<NewSe
      *                Version of the Protocol
      */
     public NewSessionTicketSerializer(NewSessionTicketMessage message, ProtocolVersion version) {
-        super(message, version);
+        super(message);
         this.msg = message;
+        this.version = version;
     }
 
     @Override
-    public byte[] serializeHandshakeMessageContent() {
+    public byte[] serializeProtocolMessageContent() {
         LOGGER.debug("Serializing NewSessionTicketMessage");
         writeLifetimeHint(msg);
         if (version.isTLS13()) {
@@ -49,8 +52,7 @@ public class NewSessionTicketSerializer extends HandshakeMessageSerializer<NewSe
             writeTicketIdentity(msg);
             writeExtensions();
         } else {
-            throw new UnsupportedOperationException(
-                "NewSessionTicket message is currently not supported for not TLS 1.3");
+            throw new UnsupportedOperationException("NewSessionTicket message is currently only supported for TLS 1.3");
         }
 
         return getAlreadySerialized();

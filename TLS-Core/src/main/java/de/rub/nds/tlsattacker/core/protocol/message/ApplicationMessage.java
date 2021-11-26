@@ -15,8 +15,8 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.handler.ApplicationMessageHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.TlsMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.ApplicationMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ApplicationMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ApplicationMessageSerializer;
@@ -27,7 +27,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 @XmlRootElement
-public class ApplicationMessage extends TlsMessage {
+public class ApplicationMessage extends ProtocolMessage<ApplicationMessage> {
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] dataConfig = null;
@@ -98,7 +98,7 @@ public class ApplicationMessage extends TlsMessage {
     }
 
     @Override
-    public TlsMessageHandler getHandler(TlsContext tlsContext) {
+    public ApplicationMessageHandler getHandler(TlsContext tlsContext) {
         return new ApplicationMessageHandler(tlsContext);
     }
 

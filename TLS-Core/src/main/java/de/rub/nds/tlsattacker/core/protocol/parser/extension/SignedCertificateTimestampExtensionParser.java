@@ -34,7 +34,7 @@ public class SignedCertificateTimestampExtensionParser
      */
     @Override
     public void parseExtensionMessageContent(SignedCertificateTimestampExtensionMessage msg) {
-        msg.setSignedTimestamp(parseByteArrayField(msg.getExtensionLength().getValue()));
+        msg.setSignedTimestamp(parseByteArrayField(getBytesLeft()));
         LOGGER.debug("The signed certificate timestamp extension parser parsed the value "
             + bytesToHexString(msg.getSignedTimestamp()));
     }

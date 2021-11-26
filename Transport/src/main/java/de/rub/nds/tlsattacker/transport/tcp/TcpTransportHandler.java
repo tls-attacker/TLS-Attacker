@@ -97,6 +97,10 @@ public abstract class TcpTransportHandler extends TransportHandler {
         return getSocketState(false);
     }
 
+    public Socket getSocket() {
+        return socket;
+    }
+
     public abstract Integer getSrcPort();
 
     public abstract void setSrcPort(int port);

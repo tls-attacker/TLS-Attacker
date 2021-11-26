@@ -41,8 +41,8 @@ public class HttpsRequestHandlerTest {
     }
 
     @Test
-    public void testAdjustTLSContext() {
-        handler.adjustTLSContext(message);
+    public void testadjustContext() {
+        handler.adjustContext(message);
         assertEquals(context.getHttpContext().getLastRequestPath(), message.getRequestPath().getValue());
     }
 }

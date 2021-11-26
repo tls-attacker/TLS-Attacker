@@ -36,7 +36,7 @@ public class SrpClientKeyExchangeSerializer extends ClientKeyExchangeSerializer<
     }
 
     @Override
-    public byte[] serializeHandshakeMessageContent() {
+    public byte[] serializeProtocolMessageContent() {
         LOGGER.debug("Serializing SRPClientKeyExchangeMessage");
         writeSerializedPublicKeyLength(msg);
         writeSerializedPublicKey(msg);

@@ -41,7 +41,6 @@ public abstract class MessageAction extends ConnectionBoundAction {
     @XmlElementWrapper
     @HoldsModifiableVariable
     @XmlElements(value = { @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
-        @XmlElement(type = TlsMessage.class, name = "TlsMessage"),
         @XmlElement(type = CertificateMessage.class, name = "Certificate"),
         @XmlElement(type = CertificateVerifyMessage.class, name = "CertificateVerify"),
         @XmlElement(type = CertificateRequestMessage.class, name = "CertificateRequest"),

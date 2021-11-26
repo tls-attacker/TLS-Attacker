@@ -13,11 +13,7 @@ import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.ECDHClientKeyExchangeParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.ECDHClientKeyExchangePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.ECDHClientKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -30,7 +26,7 @@ public class ECDHClientKeyExchangeHandler<T extends ECDHClientKeyExchangeMessage
     }
 
     @Override
-    public void adjustTLSContext(T message) {
+    public void adjustContext(T message) {
         adjustPremasterSecret(message);
         adjustMasterSecret(message);
         adjustClientPublicKey(message);

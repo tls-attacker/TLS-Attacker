@@ -19,7 +19,7 @@ public class PskEcDheServerKeyExchangeHandler extends ECDHEServerKeyExchangeHand
     }
 
     @Override
-    public void adjustTLSContext(PskEcDheServerKeyExchangeMessage message) {
+    public void adjustContext(PskEcDheServerKeyExchangeMessage message) {
         super.adjustECParameter(message);
         if (message.getComputations() != null) {
             tlsContext.setServerEcPrivateKey(message.getComputations().getPrivateKey().getValue());

@@ -27,11 +27,11 @@ public class HelloRequestSerializer extends HandshakeMessageSerializer<HelloRequ
      *                Version of the Protocol
      */
     public HelloRequestSerializer(HelloRequestMessage message, ProtocolVersion version) {
-        super(message, version);
+        super(message);
     }
 
     @Override
-    public byte[] serializeHandshakeMessageContent() {
+    public byte[] serializeProtocolMessageContent() {
         LOGGER.debug("Serializing HelloRequestMessage");
         return getAlreadySerialized();
     }

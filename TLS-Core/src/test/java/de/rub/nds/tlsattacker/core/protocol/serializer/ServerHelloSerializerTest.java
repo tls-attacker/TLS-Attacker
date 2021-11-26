@@ -36,9 +36,8 @@ public class ServerHelloSerializerTest {
             ArrayConverter.hexStringToByteArray("0919fe8a189912807ee0621a45f4e6440a297f13574d2229fdbc96427b0e2d10"),
             CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA.getByteValue(), CompressionMethod.NULL.getValue(), 0 },
             { ArrayConverter.hexStringToByteArray(
-                "020000460303378f93cbcafda4c9ba43dafb49ab847ba1ae86a29d2679e7b9aac8e25c207e01200919fe8a189912807ee0621a45f4e6440a297f13574d2229fdbc96427b0e2d10002f00"),
-                HandshakeMessageType.SERVER_HELLO.getValue(), 70, ProtocolVersion.TLS12.getValue(),
-                new byte[] { (byte) 0x37, (byte) 0x8f, (byte) 0x93, (byte) 0xcb },
+                "0303378f93cbcafda4c9ba43dafb49ab847ba1ae86a29d2679e7b9aac8e25c207e01200919fe8a189912807ee0621a45f4e6440a297f13574d2229fdbc96427b0e2d10002f00"),
+                ProtocolVersion.TLS12.getValue(), new byte[] { (byte) 0x37, (byte) 0x8f, (byte) 0x93, (byte) 0xcb },
                 ArrayConverter.hexStringToByteArray("378f93cbcafda4c9ba43dafb49ab847ba1ae86a29d2679e7b9aac8e25c207e01"),
                 32,
                 ArrayConverter.hexStringToByteArray("0919fe8a189912807ee0621a45f4e6440a297f13574d2229fdbc96427b0e2d10"),
@@ -75,7 +74,7 @@ public class ServerHelloSerializerTest {
     @Test
     public void serialize() {
         ServerHelloSerializer serializer = new ServerHelloSerializer(helloMessage, ProtocolVersion.TLS12);
-        byte[] serialised = serializer.serializeHandshakeMessageContent();
+        byte[] serialised = serializer.serializeProtocolMessageContent();
         assertArrayEquals(serialised, message);
     }
 

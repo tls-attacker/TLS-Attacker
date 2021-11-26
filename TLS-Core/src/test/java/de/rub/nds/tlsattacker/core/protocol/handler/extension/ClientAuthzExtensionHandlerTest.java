@@ -35,7 +35,7 @@ public class ClientAuthzExtensionHandlerTest {
     }
 
     @Test
-    public void testAdjustTLSContext() {
+    public void testadjustContext() {
         ClientAuthzExtensionMessage msg = new ClientAuthzExtensionMessage();
         msg.setAuthzFormatList(authzFormatListAsBytes);
 

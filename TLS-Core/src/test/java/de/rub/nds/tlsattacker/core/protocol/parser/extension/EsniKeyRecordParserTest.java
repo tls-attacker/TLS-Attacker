@@ -310,7 +310,7 @@ public class EsniKeyRecordParserTest {
         byte[] expectedExtensionNonce = ArrayConverter.hexStringToByteArray("a7284c9a52f15c13644b947261774657");
         EncryptedServerNameIndicationExtensionMessage resultExtension =
             (EncryptedServerNameIndicationExtensionMessage) esniKeyRecord.getExtensions().get(0);
-        byte[] resultExtensionNonce = resultExtension.getServerNonce().getOriginalValue();
+        byte[] resultExtensionNonce = resultExtension.getServerNonce().getValue();
 
         int expectedExtensionsLength = 1;
         int resultExtensionsLength = esniKeyRecord.getExtensions().size();

@@ -12,21 +12,18 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.ChangeCipherSpecParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.ChangeCipherSpecPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.ChangeCipherSpecSerializer;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ChangeCipherSpecHandler extends TlsMessageHandler<ChangeCipherSpecMessage> {
+public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipherSpecMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -35,7 +32,7 @@ public class ChangeCipherSpecHandler extends TlsMessageHandler<ChangeCipherSpecM
     }
 
     @Override
-    public void adjustTLSContext(ChangeCipherSpecMessage message) {
+    public void adjustContext(ChangeCipherSpecMessage message) {
         if (tlsContext.getTalkingConnectionEndType() != tlsContext.getChooser().getConnectionEndType()
             && tlsContext.getChooser().getSelectedProtocolVersion() != ProtocolVersion.TLS13) {
             LOGGER.debug("Adjusting decrypting cipher for " + tlsContext.getTalkingConnectionEndType());
@@ -45,7 +42,7 @@ public class ChangeCipherSpecHandler extends TlsMessageHandler<ChangeCipherSpecM
     }
 
     @Override
-    public void adjustTlsContextAfterSerialize(ChangeCipherSpecMessage message) {
+    public void adjustContextAfterSerialize(ChangeCipherSpecMessage message) {
         if (!tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
             LOGGER.debug("Adjusting encrypting cipher for " + tlsContext.getTalkingConnectionEndType());
             tlsContext.getRecordLayer().updateEncryptionCipher(getRecordCipher());

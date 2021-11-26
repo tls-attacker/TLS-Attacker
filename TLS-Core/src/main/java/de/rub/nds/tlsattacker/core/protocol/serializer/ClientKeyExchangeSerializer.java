@@ -19,6 +19,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.ClientKeyExchangeMessage;
 public abstract class ClientKeyExchangeSerializer<T extends ClientKeyExchangeMessage>
     extends HandshakeMessageSerializer<T> {
 
+    protected ProtocolVersion version;
+
     /**
      * Constructor for the ClientKeyExchangeSerializer
      *
@@ -28,7 +30,8 @@ public abstract class ClientKeyExchangeSerializer<T extends ClientKeyExchangeMes
      *                Version of the Protocol
      */
     public ClientKeyExchangeSerializer(T message, ProtocolVersion version) {
-        super(message, version);
+        super(message);
+        this.version = version;
     }
 
 }

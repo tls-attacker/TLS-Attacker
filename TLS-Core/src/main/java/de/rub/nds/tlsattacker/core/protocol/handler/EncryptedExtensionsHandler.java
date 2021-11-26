@@ -30,7 +30,7 @@ public class EncryptedExtensionsHandler extends HandshakeMessageHandler<Encrypte
     }
 
     @Override
-    public void adjustTLSContext(EncryptedExtensionsMessage message) {
+    public void adjustContext(EncryptedExtensionsMessage message) {
         if (message.getExtensions() != null) {
             LOGGER.debug("Adjusting for EncryptedExtensions:");
             for (ExtensionMessage extension : message.getExtensions()) {

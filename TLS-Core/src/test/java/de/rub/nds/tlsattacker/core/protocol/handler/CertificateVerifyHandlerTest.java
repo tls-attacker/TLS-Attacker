@@ -31,12 +31,12 @@ public class CertificateVerifyHandlerTest {
     }
 
     /**
-     * Test of adjustTLSContext method, of class CertificateVerifyHandler.
+     * Test of adjustContext method, of class CertificateVerifyHandler.
      */
     @Test
-    public void testAdjustTLSContext() {
+    public void testadjustContext() {
         CertificateVerifyMessage message = new CertificateVerifyMessage();
-        handler.adjustTLSContext(message);
+        handler.adjustContext(message);
         // TODO make sure that nothing changed
     }
 

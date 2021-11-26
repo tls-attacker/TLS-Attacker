@@ -26,9 +26,9 @@ public class ECPointFormatExtensionParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { { ArrayConverter.hexStringToByteArray("000b000403000102"),
-            ArrayConverter.hexStringToByteArray("000b000403000102"), ExtensionType.EC_POINT_FORMATS, 4, 3,
-            new byte[] { 0, 1, 2 } } }); // is the same for TLS10 and TLS11
+        return Arrays.asList(new Object[][] {
+            { ArrayConverter.hexStringToByteArray("03000102"), ArrayConverter.hexStringToByteArray("03000102"),
+                ExtensionType.EC_POINT_FORMATS, 4, 3, new byte[] { 0, 1, 2 } } }); // is the same for TLS10 and TLS11
     }
 
     private byte[] extension;
@@ -57,9 +57,6 @@ public class ECPointFormatExtensionParserTest {
             new ECPointFormatExtensionParser(new ByteArrayInputStream(extension), Config.createConfig());
         ECPointFormatExtensionMessage msg = new ECPointFormatExtensionMessage();
         parser.parse(msg);
-        assertArrayEquals(msg.getExtensionBytes().getValue(), completeExtension);
-        assertArrayEquals(type.getValue(), msg.getExtensionType().getValue());
-        assertTrue(extensionLength == msg.getExtensionLength().getValue());
         assertArrayEquals(msg.getPointFormats().getValue(), pointFormats);
         assertTrue(pointFormatLength == msg.getPointFormatsLength().getValue());
     }

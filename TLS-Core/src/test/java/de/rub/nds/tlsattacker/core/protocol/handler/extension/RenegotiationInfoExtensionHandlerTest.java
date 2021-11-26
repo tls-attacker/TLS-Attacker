@@ -36,7 +36,7 @@ public class RenegotiationInfoExtensionHandlerTest {
     }
 
     @Test
-    public void testAdjustTLSContext() {
+    public void testadjustContext() {
         RenegotiationInfoExtensionMessage message = new RenegotiationInfoExtensionMessage();
         message.setRenegotiationInfo(EXTENSION_INFO);
         message.setExtensionLength(EXTENSION_LENGTH);

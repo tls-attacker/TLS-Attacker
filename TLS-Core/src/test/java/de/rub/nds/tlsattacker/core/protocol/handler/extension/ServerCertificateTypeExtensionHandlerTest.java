@@ -33,7 +33,7 @@ public class ServerCertificateTypeExtensionHandlerTest {
     }
 
     @Test
-    public void testAdjustTLSContext() {
+    public void testadjustContext() {
         ServerCertificateTypeExtensionMessage msg = new ServerCertificateTypeExtensionMessage();
         msg.setCertificateTypes(CertificateType.toByteArray(certList));
 

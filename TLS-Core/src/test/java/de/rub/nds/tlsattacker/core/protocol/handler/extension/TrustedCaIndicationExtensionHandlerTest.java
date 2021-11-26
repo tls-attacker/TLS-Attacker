@@ -39,7 +39,7 @@ public class TrustedCaIndicationExtensionHandlerTest {
     }
 
     @Test
-    public void testAdjustTLSContext() {
+    public void testadjustContext() {
         TrustedCaIndicationExtensionMessage msg = new TrustedCaIndicationExtensionMessage();
 
         msg.setTrustedAuthorities(trustedAuthorities);

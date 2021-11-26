@@ -41,15 +41,15 @@ public class ECDHClientKeyExchangeSerializerTest {
     }
 
     /**
-     * Test of serializeHandshakeMessageContent method, of class ECDHClientKeyExchangeSerializer.
+     * Test of serializeProtocolMessageContent method, of class ECDHClientKeyExchangeSerializer.
      */
     @Test
-    public void testSerializeHandshakeMessageContent() {
+    public void testserializeProtocolMessageContent() {
         ECDHClientKeyExchangeMessage msg = new ECDHClientKeyExchangeMessage();
         msg.setPublicKey(serializedKey);
         msg.setPublicKeyLength(serializedKeyLength);
         ECDHClientKeyExchangeSerializer serializer = new ECDHClientKeyExchangeSerializer(msg, version);
-        assertArrayEquals(this.message, serializer.serializeHandshakeMessageContent());
+        assertArrayEquals(this.message, serializer.serializeProtocolMessageContent());
     }
 
 }

@@ -32,6 +32,6 @@ public class UserMappingExtensionSerializerTest {
     public void testSerializeExtensionContent() {
         msg.setUserMappingType(hintType.getValue());
 
-        assertArrayEquals(extensionBytes, serializer.serialize());
+        assertArrayEquals(extensionBytes, serializer.serializeExtensionContent());
     }
 }

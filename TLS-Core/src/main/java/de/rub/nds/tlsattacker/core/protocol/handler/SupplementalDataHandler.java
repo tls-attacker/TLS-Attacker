@@ -19,7 +19,7 @@ public class SupplementalDataHandler extends HandshakeMessageHandler<Supplementa
     }
 
     @Override
-    public void adjustTLSContext(SupplementalDataMessage message) {
+    public void adjustContext(SupplementalDataMessage message) {
 
     }
 }

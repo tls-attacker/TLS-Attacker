@@ -32,10 +32,10 @@ public class ServerNameIndicationExtensionHandlerTest {
     }
 
     /**
-     * Test of adjustTLSContext method, of class ServerNameIndicationExtensionHandler.
+     * Test of adjustContext method, of class ServerNameIndicationExtensionHandler.
      */
     @Test
-    public void testAdjustTLSContext() {
+    public void testadjustContext() {
         ServerNameIndicationExtensionMessage msg = new ServerNameIndicationExtensionMessage();
         List<ServerNamePair> pairList = new LinkedList<>();
         ServerNamePair pair = new ServerNamePair(NameType.HOST_NAME.getValue(), "localhost".getBytes());
@@ -51,7 +51,7 @@ public class ServerNameIndicationExtensionHandlerTest {
     }
 
     @Test
-    public void testUndefinedAdjustTLSContext() {
+    public void testUndefinedadjustContext() {
         ServerNameIndicationExtensionMessage msg = new ServerNameIndicationExtensionMessage();
         List<ServerNamePair> pairList = new LinkedList<>();
         ServerNamePair pair = new ServerNamePair((byte) 99, "localhost".getBytes());

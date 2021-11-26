@@ -14,7 +14,6 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.TlsMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.workflow.action.*;
@@ -196,8 +195,7 @@ public class WorkflowTraceUtil {
     private static List<ProtocolMessage> filterMessageList(List<ProtocolMessage> messages, ProtocolMessageType type) {
         List<ProtocolMessage> returnedMessages = new LinkedList<>();
         for (ProtocolMessage protocolMessage : messages) {
-            if (protocolMessage instanceof TlsMessage
-                && ((TlsMessage) protocolMessage).getProtocolMessageType() == type) {
+            if (protocolMessage.getProtocolMessageType() == type) {
                 returnedMessages.add(protocolMessage);
             }
         }
@@ -248,7 +246,7 @@ public class WorkflowTraceUtil {
     public static List<ProtocolMessage> getAllReceivedMessages(WorkflowTrace trace, ProtocolMessageType type) {
         List<ProtocolMessage> receivedMessage = new LinkedList<>();
         for (ProtocolMessage message : getAllReceivedMessages(trace)) {
-            if (message instanceof TlsMessage && ((TlsMessage) message).getProtocolMessageType() == type) {
+            if (message.getProtocolMessageType() == type) {
                 receivedMessage.add(message);
             }
         }
@@ -267,11 +265,7 @@ public class WorkflowTraceUtil {
         WorkflowTrace trace) {
         List<ProtocolMessage> receivedMessages = getAllReceivedMessages(trace);
         for (ProtocolMessage message : receivedMessages) {
-            if (!(message instanceof TlsMessage)) {
-                continue;
-            }
-
-            if (((TlsMessage) message).getProtocolMessageType() == protocolMessageType) {
+            if (message.getProtocolMessageType() == protocolMessageType) {
                 return true;
             }
             if (message instanceof HandshakeMessage) {

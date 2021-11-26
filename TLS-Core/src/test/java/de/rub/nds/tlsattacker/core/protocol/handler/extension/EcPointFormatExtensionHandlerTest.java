@@ -28,10 +28,10 @@ public class EcPointFormatExtensionHandlerTest {
     }
 
     /**
-     * Test of adjustTLSContext method, of class EcPointFormatExtensionHandler.
+     * Test of adjustContext method, of class EcPointFormatExtensionHandler.
      */
     @Test
-    public void testAdjustTLSContext() {
+    public void testadjustContext() {
         ECPointFormatExtensionMessage msg = new ECPointFormatExtensionMessage();
         msg.setPointFormats(new byte[] { 0, 1 });
         handler.adjustContext(msg);

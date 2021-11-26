@@ -9,7 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.RSAClientKeyExchangeParserTest;
@@ -32,8 +31,8 @@ public class RSAClientKeyExchangeSerializerTest {
     private byte[] serializedKey;
     private ProtocolVersion version;
 
-    public RSAClientKeyExchangeSerializerTest(byte[] message, HandshakeMessageType type, int length,
-        int serializedKeyLength, byte[] serializedKey, ProtocolVersion version) {
+    public RSAClientKeyExchangeSerializerTest(byte[] message, int serializedKeyLength, byte[] serializedKey,
+        ProtocolVersion version) {
         this.expectedPart = message;
         this.serializedKeyLength = serializedKeyLength;
         this.serializedKey = serializedKey;
@@ -41,16 +40,16 @@ public class RSAClientKeyExchangeSerializerTest {
     }
 
     /**
-     * Test of serializeHandshakeMessageContent method, of class RSAClientKeyExchangeSerializer.
+     * Test of serializeProtocolMessageContent method, of class RSAClientKeyExchangeSerializer.
      */
     @Test
-    public void testSerializeHandshakeMessageContent() {
+    public void testserializeProtocolMessageContent() {
         RSAClientKeyExchangeMessage msg = new RSAClientKeyExchangeMessage();
         msg.setCompleteResultingMessage(expectedPart);
         msg.setPublicKey(serializedKey);
         msg.setPublicKeyLength(serializedKeyLength);
         RSAClientKeyExchangeSerializer serializer = new RSAClientKeyExchangeSerializer(msg, version);
-        assertArrayEquals(expectedPart, serializer.serializeHandshakeMessageContent());
+        assertArrayEquals(expectedPart, serializer.serializeProtocolMessageContent());
     }
 
 }

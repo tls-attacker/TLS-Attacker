@@ -10,11 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.CertificateVerifyParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateVerifyPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateVerifySerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.InputStream;
 
 /**
  * Handling of the CertificateVerify protocol message: http://tools.ietf.org/html/rfc5246#section-7.4.8
@@ -34,7 +30,7 @@ public class CertificateVerifyHandler extends HandshakeMessageHandler<Certificat
     }
 
     @Override
-    public void adjustTLSContext(CertificateVerifyMessage message) {
+    public void adjustContext(CertificateVerifyMessage message) {
         // Maybe check if we can verify signature and set boolean in context
         // //TODO
         // Don't adjust the TLSContext

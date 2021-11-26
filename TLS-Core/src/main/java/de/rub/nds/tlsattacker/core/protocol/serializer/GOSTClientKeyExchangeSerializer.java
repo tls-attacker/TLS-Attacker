@@ -26,7 +26,7 @@ public class GOSTClientKeyExchangeSerializer extends ClientKeyExchangeSerializer
     }
 
     @Override
-    public byte[] serializeHandshakeMessageContent() {
+    public byte[] serializeProtocolMessageContent() {
         LOGGER.debug("Serializing GOSTClientKeyExchangeMessage");
         appendBytes(message.getKeyTransportBlob().getValue());
         return getAlreadySerialized();

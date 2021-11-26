@@ -21,12 +21,12 @@ public class EncryptedExtensionsSerializer extends HandshakeMessageSerializer<En
     private final EncryptedExtensionsMessage msg;
 
     public EncryptedExtensionsSerializer(EncryptedExtensionsMessage message, ProtocolVersion version) {
-        super(message, version);
+        super(message);
         this.msg = message;
     }
 
     @Override
-    public byte[] serializeHandshakeMessageContent() {
+    public byte[] serializeProtocolMessageContent() {
         LOGGER.debug("Serializing EncryptedExtensionsMessage");
         if (hasExtensionLengthField()) {
             writeExtensionLength();

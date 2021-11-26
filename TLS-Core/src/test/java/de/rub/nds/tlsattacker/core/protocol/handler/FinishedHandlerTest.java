@@ -16,6 +16,8 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
+import de.rub.nds.tlsattacker.core.layer.LayerStack;
+import de.rub.nds.tlsattacker.core.layer.impl.RecordLayer;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -33,6 +35,7 @@ public class FinishedHandlerTest {
     @Before
     public void setUp() {
         context = new TlsContext();
+        context.setLayerStack(new LayerStack(new RecordLayer(context)));
         handler = new FinishedHandler(context);
     }
 
@@ -41,14 +44,14 @@ public class FinishedHandlerTest {
     }
 
     /**
-     * Test of adjustTLSContext method, of class FinishedHandler.
+     * Test of adjustContext method, of class FinishedHandler.
      */
     @Test
-    public void testAdjustTLSContext() {
+    public void testadjustContext() {
         FinishedMessage message = new FinishedMessage();
         message.setVerifyData(new byte[] { 0, 1, 2, 3, 4 });
 
-        handler.adjustTLSContext(message);
+        handler.adjustContext(message);
 
         assertArrayEquals(new byte[] { 0, 1, 2, 3, 4 }, context.getLastClientVerifyData());
         assertArrayEquals(null, context.getLastServerVerifyData());
@@ -61,11 +64,11 @@ public class FinishedHandlerTest {
     }
 
     @Test
-    public void testAdjustTlsContextAfterSerializedTls12() {
+    public void testadjustContextAfterSerializedTls12() {
         FinishedMessage message = new FinishedMessage();
         message.setVerifyData(new byte[] { 0, 1, 2, 3, 4 });
 
-        handler.adjustTlsContextAfterSerialize(message);
+        handler.adjustContextAfterSerialize(message);
 
         assertArrayEquals(null, context.getLastClientVerifyData());
         assertArrayEquals(null, context.getLastServerVerifyData());
@@ -78,7 +81,7 @@ public class FinishedHandlerTest {
     }
 
     @Test
-    public void testAdjustTLSContextTls13ServerOutbound() {
+    public void testadjustContextTls13ServerOutbound() {
         FinishedMessage message = new FinishedMessage();
         context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
         context.setConnection(new OutboundConnection());
@@ -87,7 +90,7 @@ public class FinishedHandlerTest {
         context.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
         message.setVerifyData(new byte[] { 0, 1, 2, 3, 4 });
 
-        handler.adjustTLSContext(message);
+        handler.adjustContext(message);
 
         assertArrayEquals(new byte[] { 0, 1, 2, 3, 4 }, context.getLastServerVerifyData());
         assertArrayEquals(null, context.getLastClientVerifyData());
@@ -107,7 +110,7 @@ public class FinishedHandlerTest {
     }
 
     @Test
-    public void testAdjustTLSContextTls13ServerInbound() {
+    public void testadjustContextTls13ServerInbound() {
         FinishedMessage message = new FinishedMessage();
         context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
         context.setConnection(new InboundConnection());
@@ -116,7 +119,7 @@ public class FinishedHandlerTest {
         context.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
         message.setVerifyData(new byte[] { 0, 1, 2, 3, 4 });
 
-        handler.adjustTLSContext(message);
+        handler.adjustContext(message);
 
         assertEquals(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS, context.getActiveClientKeySetType());
         assertEquals(Tls13KeySetType.NONE, context.getActiveServerKeySetType());
@@ -129,7 +132,7 @@ public class FinishedHandlerTest {
     }
 
     @Test
-    public void testAdjustTLSContextTls13ClientOutbound() {
+    public void testadjustContextTls13ClientOutbound() {
         FinishedMessage message = new FinishedMessage();
         context.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
         context.setConnection(new OutboundConnection());
@@ -138,7 +141,7 @@ public class FinishedHandlerTest {
         context.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
         message.setVerifyData(new byte[] { 0, 1, 2, 3, 4 });
 
-        handler.adjustTLSContext(message);
+        handler.adjustContext(message);
 
         assertEquals(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS, context.getActiveClientKeySetType());
         assertEquals(Tls13KeySetType.NONE, context.getActiveServerKeySetType());
@@ -152,7 +155,7 @@ public class FinishedHandlerTest {
     }
 
     @Test
-    public void testAdjustTLSContextTls13ClientInbound() {
+    public void testadjustContextTls13ClientInbound() {
         FinishedMessage message = new FinishedMessage();
         context.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
         context.setConnection(new InboundConnection());
@@ -161,7 +164,7 @@ public class FinishedHandlerTest {
         context.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
         message.setVerifyData(new byte[] { 0, 1, 2, 3, 4 });
 
-        handler.adjustTLSContext(message);
+        handler.adjustContext(message);
 
         assertEquals(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS, context.getActiveClientKeySetType());
         assertEquals(Tls13KeySetType.NONE, context.getActiveServerKeySetType());
@@ -174,7 +177,7 @@ public class FinishedHandlerTest {
     }
 
     @Test
-    public void testAdjustTlsContextAfterSerializedTls13ClientInbound() {
+    public void testadjustContextAfterSerializedTls13ClientInbound() {
         FinishedMessage message = new FinishedMessage();
         context.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
         context.setConnection(new InboundConnection());
@@ -183,7 +186,7 @@ public class FinishedHandlerTest {
         context.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
         message.setVerifyData(new byte[] { 0, 1, 2, 3, 4 });
 
-        handler.adjustTlsContextAfterSerialize(message);
+        handler.adjustContextAfterSerialize(message);
 
         assertEquals(Tls13KeySetType.NONE, context.getActiveClientKeySetType());
         assertEquals(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS, context.getActiveServerKeySetType());
@@ -202,7 +205,7 @@ public class FinishedHandlerTest {
     }
 
     @Test
-    public void testAdjustTlsContextAfterSerializedTls13ClientOutbound() {
+    public void testadjustContextAfterSerializedTls13ClientOutbound() {
         FinishedMessage message = new FinishedMessage();
         context.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
         context.setConnection(new OutboundConnection());
@@ -211,7 +214,7 @@ public class FinishedHandlerTest {
         context.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
         message.setVerifyData(new byte[] { 0, 1, 2, 3, 4 });
 
-        handler.adjustTlsContextAfterSerialize(message);
+        handler.adjustContextAfterSerialize(message);
 
         assertEquals(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS, context.getActiveClientKeySetType());
         assertEquals(Tls13KeySetType.NONE, context.getActiveServerKeySetType());
@@ -220,7 +223,7 @@ public class FinishedHandlerTest {
     }
 
     @Test
-    public void testAdjustTlsContextAfterSerializeTls13ServerOutbound() {
+    public void testadjustContextAfterSerializeTls13ServerOutbound() {
         FinishedMessage message = new FinishedMessage();
         context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
         context.setConnection(new OutboundConnection());
@@ -229,7 +232,7 @@ public class FinishedHandlerTest {
         context.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
         message.setVerifyData(new byte[] { 0, 1, 2, 3, 4 });
 
-        handler.adjustTlsContextAfterSerialize(message);
+        handler.adjustContextAfterSerialize(message);
 
         assertArrayEquals(null, context.getLastServerVerifyData());
         assertArrayEquals(null, context.getLastClientVerifyData());
@@ -239,7 +242,7 @@ public class FinishedHandlerTest {
     }
 
     @Test
-    public void testAdjustTlsContextAfterSerializeTls13ServerInbound() {
+    public void testadjustContextAfterSerializeTls13ServerInbound() {
         FinishedMessage message = new FinishedMessage();
         context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
         context.setConnection(new InboundConnection());
@@ -248,7 +251,7 @@ public class FinishedHandlerTest {
         context.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
         message.setVerifyData(new byte[] { 0, 1, 2, 3, 4 });
 
-        handler.adjustTlsContextAfterSerialize(message);
+        handler.adjustContextAfterSerialize(message);
 
         assertArrayEquals(null, context.getLastServerVerifyData());
         assertArrayEquals(null, context.getLastClientVerifyData());
@@ -268,7 +271,7 @@ public class FinishedHandlerTest {
     }
 
     @Test
-    public void testAdjustTLSContextTls13ServerInboundWithoutEarlyData() {
+    public void testadjustContextTls13ServerInboundWithoutEarlyData() {
         FinishedMessage message = new FinishedMessage();
         context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
         context.setConnection(new InboundConnection());
@@ -278,7 +281,7 @@ public class FinishedHandlerTest {
         message.setVerifyData(new byte[] { 0, 1, 2, 3, 4 });
         context.getNegotiatedExtensionSet().remove(ExtensionType.EARLY_DATA);
 
-        handler.adjustTLSContext(message);
+        handler.adjustContext(message);
 
         assertEquals(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS, context.getActiveClientKeySetType());
         assertEquals(Tls13KeySetType.NONE, context.getActiveServerKeySetType());
@@ -292,7 +295,7 @@ public class FinishedHandlerTest {
     }
 
     @Test
-    public void testAdjustTLSContextTls13ServerInboundWithEarlyData() {
+    public void testadjustContextTls13ServerInboundWithEarlyData() {
         FinishedMessage message = new FinishedMessage();
         context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
         context.setConnection(new InboundConnection());
@@ -302,7 +305,7 @@ public class FinishedHandlerTest {
         message.setVerifyData(new byte[] { 0, 1, 2, 3, 4 });
         context.getNegotiatedExtensionSet().add(ExtensionType.EARLY_DATA);
 
-        handler.adjustTLSContext(message);
+        handler.adjustContext(message);
 
         assertEquals(Tls13KeySetType.NONE, context.getActiveClientKeySetType());
         assertEquals(Tls13KeySetType.NONE, context.getActiveServerKeySetType());

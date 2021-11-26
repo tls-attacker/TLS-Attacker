@@ -13,17 +13,17 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
-import de.rub.nds.tlsattacker.core.protocol.parser.TlsMessageParser;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageParser;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class TokenBindingMessageParser extends TlsMessageParser<TokenBindingMessage> {
+public class TokenBindingMessageParser extends ProtocolMessageParser<TokenBindingMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     public TokenBindingMessageParser(InputStream stream, ProtocolVersion version, Config config) {
-        super(stream, version, config);
+        super(stream, config);
     }
 
     @Override

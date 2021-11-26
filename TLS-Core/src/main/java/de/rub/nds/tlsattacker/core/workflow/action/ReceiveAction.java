@@ -44,7 +44,6 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     @HoldsModifiableVariable
     @XmlElementWrapper
     @XmlElements(value = { @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
-        @XmlElement(type = TlsMessage.class, name = "TlsMessage"),
         @XmlElement(type = CertificateMessage.class, name = "Certificate"),
         @XmlElement(type = CertificateVerifyMessage.class, name = "CertificateVerify"),
         @XmlElement(type = CertificateRequestMessage.class, name = "CertificateRequest"),
@@ -387,10 +386,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     public List<ProtocolMessageType> getGoingToReceiveProtocolMessageTypes() {
         List<ProtocolMessageType> protocolMessageTypes = new ArrayList<>();
         for (ProtocolMessage msg : expectedMessages) {
-            if (!(msg instanceof TlsMessage)) {
-                continue;
-            }
-            protocolMessageTypes.add(((TlsMessage) msg).getProtocolMessageType());
+            protocolMessageTypes.add(msg.getProtocolMessageType());
         }
         return protocolMessageTypes;
     }

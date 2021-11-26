@@ -10,11 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateStatusMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.CertificateStatusParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateStatusPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateStatusSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.InputStream;
 
 public class CertificateStatusHandler extends HandshakeMessageHandler<CertificateStatusMessage> {
     public CertificateStatusHandler(TlsContext tlsContext) {
@@ -22,7 +18,7 @@ public class CertificateStatusHandler extends HandshakeMessageHandler<Certificat
     }
 
     @Override
-    public void adjustTLSContext(CertificateStatusMessage message) {
+    public void adjustContext(CertificateStatusMessage message) {
 
     }
 }

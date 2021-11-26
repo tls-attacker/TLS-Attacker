@@ -31,12 +31,12 @@ public class HelloRequestHandlerTest {
     }
 
     /**
-     * Test of adjustTLSContext method, of class HelloRequestHandler.
+     * Test of adjustContext method, of class HelloRequestHandler.
      */
     @Test
-    public void testAdjustTLSContext() {
+    public void testadjustContext() {
         HelloRequestMessage message = new HelloRequestMessage();
-        handler.adjustTLSContext(message);
+        handler.adjustContext(message);
         // TODO make sure nothing changed
     }
 

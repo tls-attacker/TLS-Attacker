@@ -30,7 +30,7 @@ public class UserMappingExtensionHandlerTest {
     }
 
     @Test
-    public void testAdjustTLSContext() {
+    public void testadjustContext() {
         UserMappingExtensionMessage msg = new UserMappingExtensionMessage();
         msg.setUserMappingType(hintType.getValue());
         handler.adjustContext(msg);

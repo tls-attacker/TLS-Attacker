@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionListParser;
@@ -32,7 +33,7 @@ import org.apache.logging.log4j.Logger;
  * @param <T>
  *            Type of the HandshakeMessages to parse
  */
-public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends TlsMessageParser<T> {
+public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends ProtocolMessageParser<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -56,7 +57,7 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
      */
     public HandshakeMessageParser(InputStream stream, HandshakeMessageType expectedType, ProtocolVersion version,
         TlsContext tlsContext) {
-        super(stream, version, tlsContext.getConfig());
+        super(stream, tlsContext.getConfig());
         this.expectedType = expectedType;
         this.version = version;
         this.tlsContext = tlsContext;
@@ -126,7 +127,6 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
         return message.getExtensionsLength().getValue() > 0;
     }
 
-    @Override
     protected ProtocolVersion getVersion() {
         return version;
     }

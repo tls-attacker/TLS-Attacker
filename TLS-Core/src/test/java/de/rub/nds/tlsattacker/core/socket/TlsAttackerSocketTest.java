@@ -12,8 +12,10 @@ package de.rub.nds.tlsattacker.core.socket;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.layer.LayerStack;
 import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
 import de.rub.nds.tlsattacker.core.layer.LayerStackType;
+import de.rub.nds.tlsattacker.core.layer.impl.RecordLayer;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
@@ -37,7 +39,7 @@ public class TlsAttackerSocketTest {
     }
 
     @Before
-    public void setUp() {
+    public void setUp() throws IOException {
         Config config = Config.createConfig();
         state = new State(config, new WorkflowTrace());
         context = state.getTlsContext();
@@ -46,11 +48,13 @@ public class TlsAttackerSocketTest {
         context.setTransportHandler(transportHandler);
         context.setLayerStack(LayerStackFactory.createLayerStack(LayerStackType.TLS, context));
         socket = new TlsAttackerSocket(state);
+        context.getLayerStack().preInitialize();
+        context.getLayerStack().initialize();
     }
 
     /**
      * Test of sendRawBytes method, of class TlsAttackerSocket.
-     * 
+     *
      * @throws java.lang.Exception
      */
     @Test
@@ -61,7 +65,7 @@ public class TlsAttackerSocketTest {
 
     /**
      * Test of receiveRawBytes method, of class TlsAttackerSocket.
-     * 
+     *
      * @throws java.lang.Exception
      */
     @Test
@@ -96,7 +100,7 @@ public class TlsAttackerSocketTest {
 
     /**
      * Test of receiveBytes method, of class TlsAttackerSocket.
-     * 
+     *
      * @throws java.lang.Exception
      */
     @Test
@@ -108,7 +112,7 @@ public class TlsAttackerSocketTest {
 
     /**
      * Test of receiveString method, of class TlsAttackerSocket.
-     * 
+     *
      * @throws java.lang.Exception
      */
     @Test

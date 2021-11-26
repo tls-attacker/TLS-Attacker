@@ -12,12 +12,13 @@ package de.rub.nds.tlsattacker.core.protocol.parser;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.AlertByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class AlertParser extends TlsMessageParser<AlertMessage> {
+public class AlertParser extends ProtocolMessageParser<AlertMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -31,7 +32,7 @@ public class AlertParser extends TlsMessageParser<AlertMessage> {
      *                A Config used in the current context
      */
     public AlertParser(InputStream stream, ProtocolVersion version, Config config) {
-        super(stream, version, config);
+        super(stream, config);
     }
 
     @Override

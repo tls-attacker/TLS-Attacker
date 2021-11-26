@@ -11,11 +11,12 @@ package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageSerializer;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ApplicationMessageSerializer extends TlsMessageSerializer<ApplicationMessage> {
+public class ApplicationMessageSerializer extends ProtocolMessageSerializer<ApplicationMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -28,7 +29,7 @@ public class ApplicationMessageSerializer extends TlsMessageSerializer<Applicati
      *                Version of the Protocol
      */
     public ApplicationMessageSerializer(ApplicationMessage message, ProtocolVersion version) {
-        super(message, version);
+        super(message);
     }
 
     @Override
@@ -46,4 +47,8 @@ public class ApplicationMessageSerializer extends TlsMessageSerializer<Applicati
         LOGGER.debug("Data: " + ArrayConverter.bytesToHexString(message.getData().getValue()));
     }
 
+    @Override
+    protected byte[] serializeBytes() {
+        return serializeProtocolMessageContent();
+    }
 }

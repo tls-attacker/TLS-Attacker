@@ -28,7 +28,7 @@ public class PskDheServerKeyExchangeHandler extends DHEServerKeyExchangeHandler<
     }
 
     @Override
-    public void adjustTLSContext(PskDheServerKeyExchangeMessage message) {
+    public void adjustContext(PskDheServerKeyExchangeMessage message) {
         adjustPSKGenerator(message);
         adjustPSKModulus(message);
         adjustServerPublicKey(message);

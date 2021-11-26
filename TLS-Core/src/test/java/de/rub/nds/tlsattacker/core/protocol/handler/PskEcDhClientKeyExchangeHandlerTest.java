@@ -35,10 +35,10 @@ public class PskEcDhClientKeyExchangeHandlerTest {
     }
 
     /**
-     * Test of adjustTLSContext method, of class PskEcDhClientKeyExchangeHandler.
+     * Test of adjustContext method, of class PskEcDhClientKeyExchangeHandler.
      */
     @Test
-    public void testAdjustTLSContext() {
+    public void testadjustContext() {
         PskEcDhClientKeyExchangeMessage message = new PskEcDhClientKeyExchangeMessage();
         context.setSelectedCipherSuite(CipherSuite.TLS_ECDHE_PSK_WITH_AES_128_CBC_SHA);
         message.prepareComputations();
@@ -50,7 +50,7 @@ public class PskEcDhClientKeyExchangeHandlerTest {
 
         context.setSelectedCipherSuite(CipherSuite.TLS_ECDHE_PSK_WITH_AES_128_CBC_SHA);
 
-        handler.adjustTLSContext(message);
+        handler.adjustContext(message);
         assertArrayEquals(
             ArrayConverter.hexStringToByteArray(
                 "0303d3fad5b20109834717bac4e7762e217add183d0c4852ab054f65ba6e93b1ed83ca5c5fa614cd3b810f4766c66feb"),

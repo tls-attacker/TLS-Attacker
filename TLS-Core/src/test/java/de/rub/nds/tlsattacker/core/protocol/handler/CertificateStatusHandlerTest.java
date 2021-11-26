@@ -26,9 +26,9 @@ public class CertificateStatusHandlerTest {
     }
 
     @Test
-    public void testAdjustTLSContext() {
+    public void testadjustContext() {
         CertificateStatusMessage message = new CertificateStatusMessage();
-        handler.adjustTLSContext(message);
+        handler.adjustContext(message);
         // TODO: make sure that nothing changed
     }
 }

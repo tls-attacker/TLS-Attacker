@@ -32,7 +32,7 @@ public class CertificateStatusRequestV2ExtensionHandlerTest {
     }
 
     @Test
-    public void testAdjustTLSContext() {
+    public void testadjustContext() {
         itemList.get(0).setResponderIdList(idList);
         CertificateStatusRequestV2ExtensionMessage msg = new CertificateStatusRequestV2ExtensionMessage();
         msg.setStatusRequestList(itemList);

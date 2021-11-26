@@ -26,12 +26,10 @@ public class ApplicationMessageSerializerTest {
         return ApplicationMessageParserTest.generateData();
     }
 
-    private byte[] expectedPart;
-    private byte[] data;
+    private byte[] message;
 
-    public ApplicationMessageSerializerTest(byte[] message, byte[] expectedPart, byte[] data) {
-        this.expectedPart = expectedPart;
-        this.data = data;
+    public ApplicationMessageSerializerTest(byte[] message) {
+        this.message = message;
     }
 
     /**
@@ -40,10 +38,10 @@ public class ApplicationMessageSerializerTest {
     @Test
     public void testSerializeProtocolMessageContent() {
         ApplicationMessage message = new ApplicationMessage();
-        message.setData(data);
-        message.setCompleteResultingMessage(expectedPart);
+        message.setData(this.message);
+        message.setCompleteResultingMessage(this.message);
         ApplicationMessageSerializer serializer = new ApplicationMessageSerializer(message, ProtocolVersion.TLS12);
-        assertArrayEquals(expectedPart, serializer.serialize());
+        assertArrayEquals(this.message, serializer.serialize());
     }
 
 }

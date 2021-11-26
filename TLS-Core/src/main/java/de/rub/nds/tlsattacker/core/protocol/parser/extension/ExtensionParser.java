@@ -45,6 +45,6 @@ public abstract class ExtensionParser<Extension extends ExtensionMessage> extend
      * @return         True if extension did specify Data in its length field
      */
     protected boolean hasExtensionData(ExtensionMessage message) {
-        return message.getExtensionLength().getValue() > 0;
+        return getBytesLeft() > 0;
     }
 }

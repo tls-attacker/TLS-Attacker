@@ -41,13 +41,13 @@ public class ApplicationMessageHandlerTest {
     }
 
     /**
-     * Test of adjustTLSContext method, of class ApplicationMessageHandler.
+     * Test of adjustContext method, of class ApplicationMessageHandler.
      */
     @Test
-    public void testAdjustTLSContext() {
+    public void testadjustContext() {
         ApplicationMessage message = new ApplicationMessage();
         message.setData(new byte[] { 0, 1, 2, 3, 4, 5, 6 });
-        handler.adjustTLSContext(message);
+        handler.adjustContext(message);
         // TODO test that nothing changes (mockito) // ugly
     }
 

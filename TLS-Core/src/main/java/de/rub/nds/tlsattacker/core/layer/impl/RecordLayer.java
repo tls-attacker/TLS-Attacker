@@ -67,8 +67,8 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
 
     @Override
     public LayerProcessingResult sendData() throws IOException {
-        throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
-        // Tools | Templates.
+        // TODO Check if we still got stuff to send
+        return getLayerResult();
     }
 
     @Override
@@ -92,7 +92,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
             LOGGER.warn("Sending record without a LayerProcessing hint. Using \"UNKNOWN\" as the type");
         }
 
-        CleanRecordByteSeperator separator = new CleanRecordByteSeperator(getLayerConfiguration().getContainerList(),
+        CleanRecordByteSeperator separator = new CleanRecordByteSeperator(
             context.getChooser().getOutboundMaxRecordDataSize(), new ByteArrayInputStream(data));
         List<Record> records = new LinkedList<>();
         separator.parse(records);
@@ -121,7 +121,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
             }
         }
         getLowerLayer().sendData(stream.toByteArray());
-        getResultDataStream().write(stream.toByteArray());
+        getDataForHigherLayerStream().write(stream.toByteArray());
         return new LayerProcessingResult<>(records, stream.toByteArray());
     }
 
@@ -223,5 +223,21 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
 
     public void setReadEpoch(int readEpoch) {
         this.readEpoch = readEpoch;
+    }
+
+    @Override
+    public void preInititialize() throws IOException {
+        // Nothing to do here
+    }
+
+    @Override
+    public void inititialize() throws IOException {
+        // Nothing to do here
+    }
+
+    @Override
+    public LayerProcessingResult receiveData() throws IOException {
+        throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
+                                                                       // Tools | Templates.
     }
 }

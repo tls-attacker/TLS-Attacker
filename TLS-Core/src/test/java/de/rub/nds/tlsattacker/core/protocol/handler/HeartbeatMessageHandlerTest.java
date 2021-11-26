@@ -31,12 +31,12 @@ public class HeartbeatMessageHandlerTest {
     }
 
     /**
-     * Test of adjustTLSContext method, of class HeartbeatMessageHandler.
+     * Test of adjustContext method, of class HeartbeatMessageHandler.
      */
     @Test
-    public void testAdjustTLSContext() {
+    public void testadjustContext() {
         HeartbeatMessage message = new HeartbeatMessage();
-        handler.adjustTLSContext(message);
+        handler.adjustContext(message);
         // TODO check that context did not change
     }
 

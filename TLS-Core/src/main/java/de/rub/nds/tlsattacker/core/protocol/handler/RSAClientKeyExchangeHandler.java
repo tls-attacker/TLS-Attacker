@@ -19,7 +19,7 @@ public class RSAClientKeyExchangeHandler<T extends RSAClientKeyExchangeMessage> 
     }
 
     @Override
-    public void adjustTLSContext(T message) {
+    public void adjustContext(T message) {
         adjustPremasterSecret(message);
         adjustMasterSecret(message);
         spawnNewSession();

@@ -33,7 +33,7 @@ public class CertificateStatusRequestExtensionHandlerTest {
     }
 
     @Test
-    public void testAdjustTLSContext() {
+    public void testadjustContext() {
         CertificateStatusRequestExtensionMessage message = new CertificateStatusRequestExtensionMessage();
         message.setCertificateStatusRequestType(
             certificateStatusRequestExtensionRequestType.getCertificateStatusRequestValue());

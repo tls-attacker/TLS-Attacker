@@ -35,7 +35,7 @@ public class PWDClientKeyExchangeSerializer extends ClientKeyExchangeSerializer<
     }
 
     @Override
-    public byte[] serializeHandshakeMessageContent() {
+    public byte[] serializeProtocolMessageContent() {
         LOGGER.debug("Serializing PWDClientKeyExchangeMessage");
         writeElementLength(msg);
         writeElement(msg);

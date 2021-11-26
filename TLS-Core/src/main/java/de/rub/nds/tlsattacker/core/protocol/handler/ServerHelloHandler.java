@@ -59,7 +59,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
     }
 
     @Override
-    public void adjustTLSContext(ServerHelloMessage message) {
+    public void adjustContext(ServerHelloMessage message) {
         adjustSelectedProtocolVersion(message);
         adjustSelectedCompression(message);
         adjustSelectedSessionID(message);
@@ -175,7 +175,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
     }
 
     @Override
-    public void adjustTlsContextAfterSerialize(ServerHelloMessage message) {
+    public void adjustContextAfterSerialize(ServerHelloMessage message) {
         if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13() && !message.isTls13HelloRetryRequest()) {
             setServerRecordCipher();
         }

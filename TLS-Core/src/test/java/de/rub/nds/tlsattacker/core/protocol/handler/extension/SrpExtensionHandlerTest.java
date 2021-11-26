@@ -29,7 +29,7 @@ public class SrpExtensionHandlerTest {
     }
 
     @Test
-    public void testAdjustTLSContext() {
+    public void testadjustContext() {
         SRPExtensionMessage msg = new SRPExtensionMessage();
         msg.setSrpIdentifier(SRP_IDENTIFIER);
         msg.setSrpIdentifierLength(SRP_IDENTIFIER_LENGTH);

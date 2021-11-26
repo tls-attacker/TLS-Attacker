@@ -30,8 +30,8 @@ public class AlertSerializerTest {
     private final byte level;
     private final byte description;
 
-    public AlertSerializerTest(byte[] message, byte[] expectedPart, byte level, byte description) {
-        this.expectedPart = expectedPart;
+    public AlertSerializerTest(byte[] message, byte level, byte description) {
+        this.expectedPart = message;
         this.level = level;
         this.description = description;
     }

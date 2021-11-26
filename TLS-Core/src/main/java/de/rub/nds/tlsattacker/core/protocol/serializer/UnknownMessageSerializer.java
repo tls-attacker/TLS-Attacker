@@ -11,11 +11,12 @@ package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageSerializer;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class UnknownMessageSerializer extends TlsMessageSerializer<UnknownMessage> {
+public class UnknownMessageSerializer extends ProtocolMessageSerializer<UnknownMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -28,7 +29,12 @@ public class UnknownMessageSerializer extends TlsMessageSerializer<UnknownMessag
      *                Version of the Protocol
      */
     public UnknownMessageSerializer(UnknownMessage message, ProtocolVersion version) {
-        super(message, version);
+        super(message);
+    }
+
+    @Override
+    protected byte[] serializeBytes() {
+        return serializeProtocolMessageContent();
     }
 
     @Override

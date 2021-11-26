@@ -89,7 +89,7 @@ public class SSL2ClientMasterKeyMessage extends SSL2HandshakeMessage {
 
     @Override
     public SSL2ClientMasterKeySerializer getSerializer(TlsContext tlsContext) {
-        return new SSL2ClientMasterKeySerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new SSL2ClientMasterKeySerializer(this);
     }
 
     public ModifiableByteArray getCipherKind() {

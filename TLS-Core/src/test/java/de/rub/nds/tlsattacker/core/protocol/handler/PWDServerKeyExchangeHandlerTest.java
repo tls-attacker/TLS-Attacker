@@ -31,7 +31,7 @@ public class PWDServerKeyExchangeHandlerTest {
     }
 
     @Test
-    public void testAdjustTLSContext() {
+    public void testadjustContext() {
         PWDServerKeyExchangeMessage message = new PWDServerKeyExchangeMessage();
         message.setNamedGroup(NamedGroup.BRAINPOOLP256R1.getValue());
         byte[] element = ArrayConverter.hexStringToByteArray(
@@ -42,7 +42,7 @@ public class PWDServerKeyExchangeHandlerTest {
         message.setElement(element);
         message.setScalar(scalar.toByteArray());
         message.setSalt(salt);
-        handler.adjustTLSContext(message);
+        handler.adjustContext(message);
 
         assertArrayEquals(
             ArrayConverter.bigIntegerToByteArray(

@@ -64,7 +64,6 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
     @HoldsModifiableVariable
     @XmlElementWrapper
     @XmlElements(value = { @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
-        @XmlElement(type = TlsMessage.class, name = "TlsMessage"),
         @XmlElement(type = CertificateMessage.class, name = "Certificate"),
         @XmlElement(type = CertificateVerifyMessage.class, name = "CertificateVerify"),
         @XmlElement(type = CertificateRequestMessage.class, name = "CertificateRequest"),
@@ -126,7 +125,6 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
     @XmlElementWrapper
     @HoldsModifiableVariable
     @XmlElements(value = { @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
-        @XmlElement(type = TlsMessage.class, name = "TlsMessage"),
         @XmlElement(type = CertificateMessage.class, name = "Certificate"),
         @XmlElement(type = CertificateVerifyMessage.class, name = "CertificateVerify"),
         @XmlElement(type = CertificateRequestMessage.class, name = "CertificateRequest"),
@@ -185,7 +183,6 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
     @HoldsModifiableVariable
     @XmlElementWrapper
     @XmlElements(value = { @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
-        @XmlElement(type = TlsMessage.class, name = "TlsMessage"),
         @XmlElement(type = CertificateMessage.class, name = "Certificate"),
         @XmlElement(type = CertificateVerifyMessage.class, name = "CertificateVerify"),
         @XmlElement(type = CertificateRequestMessage.class, name = "CertificateRequest"),
@@ -288,10 +285,12 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
         List<LayerProcessingResult> processingResult;
         try {
             processingResult = layerStack.receiveData(layerConfigurationList);
-            messages = new ArrayList<>(processingResult.get(0).getUsedContainers()); // TODO Automatically get correct
-                                                                                     // index in result
-            records = new ArrayList<>(processingResult.get(1).getUsedContainers()); // TODO Automatically get correct
-                                                                                    // index in result
+            receivedMessages = new ArrayList<>(processingResult.get(0).getUsedContainers()); // TODO Automatically get
+            // correct
+            // index in result
+            receivedRecords = new ArrayList<>(processingResult.get(1).getUsedContainers()); // TODO Automatically get
+            // correct
+            // index in result
         } catch (IOException ex) {
             LOGGER.warn("Received an IOException");
         }
@@ -326,10 +325,10 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
             layerConfigurationList.add(new SpecificContainerLayerConfiguration(records));
             layerConfigurationList.add(new SpecificContainerLayerConfiguration((List) null));
             List<LayerProcessingResult> processingResult = layerStack.sendData(layerConfigurationList);
-            receivedMessages = new ArrayList<>(processingResult.get(0).getUsedContainers()); // TODO Automatically get
-                                                                                             // correct index in result
-            receivedRecords = new ArrayList<>(processingResult.get(1).getUsedContainers()); // TODO Automatically get
-                                                                                            // correct index in result
+            messages = new ArrayList<>(processingResult.get(0).getUsedContainers()); // TODO Automatically get
+            // correct index in result
+            records = new ArrayList<>(processingResult.get(1).getUsedContainers()); // TODO Automatically get
+            // correct index in result
 
             if (executedAsPlanned) {
                 executedAsPlanned = checkMessageListsEquals(sendMessages, messages);
@@ -640,10 +639,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
 
         List<ProtocolMessageType> types = new ArrayList<>();
         for (ProtocolMessage msg : messages) {
-            if (!(msg instanceof TlsMessage)) {
-                continue;
-            }
-            types.add(((TlsMessage) msg).getProtocolMessageType());
+            types.add(msg.getProtocolMessageType());
         }
         return types;
     }

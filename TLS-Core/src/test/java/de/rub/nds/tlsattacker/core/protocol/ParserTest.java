@@ -111,12 +111,6 @@ public class ParserTest {
         assertArrayEquals(parser.getAlreadyParsed(), new byte[] { 0, 1, 2, 3 });
     }
 
-    @Test(expected = ParserException.class)
-    public void testConstructorException() {
-        byte[] base = new byte[] { 0, 1 };
-        new ParserImpl(base);
-    }
-
     @Test
     public void testEnoughBytesLeft() {
         assertTrue(parser.enoughBytesLeft(9));

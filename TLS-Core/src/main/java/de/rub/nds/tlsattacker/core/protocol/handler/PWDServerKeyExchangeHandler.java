@@ -27,7 +27,7 @@ public class PWDServerKeyExchangeHandler extends ServerKeyExchangeHandler<PWDSer
     }
 
     @Override
-    public void adjustTLSContext(PWDServerKeyExchangeMessage message) {
+    public void adjustContext(PWDServerKeyExchangeMessage message) {
         tlsContext.setSelectedGroup(NamedGroup.getNamedGroup(message.getNamedGroup().getValue()));
         tlsContext.setServerPWDSalt(message.getSalt().getValue());
         tlsContext.setServerPWDElement(PointFormatter

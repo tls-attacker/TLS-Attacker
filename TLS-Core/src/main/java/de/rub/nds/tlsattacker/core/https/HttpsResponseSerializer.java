@@ -12,19 +12,19 @@ package de.rub.nds.tlsattacker.core.https;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.https.header.HttpHeader;
 import de.rub.nds.tlsattacker.core.https.header.serializer.HttpsHeaderSerializer;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageSerializer;
 import java.nio.charset.StandardCharsets;
-import de.rub.nds.tlsattacker.core.protocol.serializer.TlsMessageSerializer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class HttpsResponseSerializer extends TlsMessageSerializer<HttpsResponseMessage> {
+public class HttpsResponseSerializer extends ProtocolMessageSerializer<HttpsResponseMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     private final HttpsResponseMessage message;
 
     public HttpsResponseSerializer(HttpsResponseMessage message, ProtocolVersion version) {
-        super(message, version);
+        super(message);
         this.message = message;
     }
 
@@ -44,4 +44,8 @@ public class HttpsResponseSerializer extends TlsMessageSerializer<HttpsResponseM
         return getAlreadySerialized();
     }
 
+    @Override
+    protected byte[] serializeBytes() {
+        return serializeProtocolMessageContent();
+    }
 }

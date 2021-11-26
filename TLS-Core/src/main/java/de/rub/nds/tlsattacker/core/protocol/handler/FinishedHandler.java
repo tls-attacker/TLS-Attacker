@@ -38,7 +38,7 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
     }
 
     @Override
-    public void adjustTLSContext(FinishedMessage message) {
+    public void adjustContext(FinishedMessage message) {
         if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
             if (tlsContext.getTalkingConnectionEndType() != tlsContext.getChooser().getConnectionEndType()) {
                 if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.SERVER) {
@@ -101,7 +101,7 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
     }
 
     @Override
-    public void adjustTlsContextAfterSerialize(FinishedMessage message) {
+    public void adjustContextAfterSerialize(FinishedMessage message) {
         if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
             if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
                 setClientRecordCipher(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS);

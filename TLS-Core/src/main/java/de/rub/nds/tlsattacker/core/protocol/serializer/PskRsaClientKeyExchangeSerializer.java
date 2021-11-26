@@ -36,7 +36,7 @@ public class PskRsaClientKeyExchangeSerializer extends RSAClientKeyExchangeSeria
     }
 
     @Override
-    public byte[] serializeHandshakeMessageContent() {
+    public byte[] serializeProtocolMessageContent() {
         LOGGER.debug("Serializing PSKRSAClientKeyExchangeMessage");
         writePSKIdentityLength(msg);
         writePSKIdentity(msg);

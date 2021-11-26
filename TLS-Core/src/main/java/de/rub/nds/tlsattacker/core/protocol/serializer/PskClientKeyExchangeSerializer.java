@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.PskClientKeyExchangeMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class PskClientKeyExchangeSerializer extends HandshakeMessageSerializer<PskClientKeyExchangeMessage> {
+public class PskClientKeyExchangeSerializer extends ClientKeyExchangeSerializer<PskClientKeyExchangeMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -36,7 +36,7 @@ public class PskClientKeyExchangeSerializer extends HandshakeMessageSerializer<P
     }
 
     @Override
-    public byte[] serializeHandshakeMessageContent() {
+    public byte[] serializeProtocolMessageContent() {
         LOGGER.debug("Serializing PSKClientKeyExchangeMessage");
         writePskIdentityLength(msg);
         writePskIdentity(msg);

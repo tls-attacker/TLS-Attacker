@@ -32,7 +32,7 @@ public class EndOfEarlyDataHandler extends HandshakeMessageHandler<EndOfEarlyDat
     }
 
     @Override
-    public void adjustTLSContext(EndOfEarlyDataMessage message) {
+    public void adjustContext(EndOfEarlyDataMessage message) {
         if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {
             adjustClientCipherAfterEarly();
         }

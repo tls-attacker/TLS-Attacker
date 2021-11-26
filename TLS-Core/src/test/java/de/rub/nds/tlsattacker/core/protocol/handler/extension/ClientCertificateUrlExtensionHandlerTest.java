@@ -27,7 +27,7 @@ public class ClientCertificateUrlExtensionHandlerTest {
     }
 
     @Test
-    public void testAdjustTLSContext() {
+    public void testadjustContext() {
         ClientCertificateUrlExtensionMessage message = new ClientCertificateUrlExtensionMessage();
         handler.adjustContext(message);
         assertTrue(context.isExtensionProposed(ExtensionType.CLIENT_CERTIFICATE_URL));

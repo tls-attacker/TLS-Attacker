@@ -38,7 +38,7 @@ public class ClientCertificateTypeExtensionHandlerTest {
     }
 
     @Test
-    public void testAdjustTLSContext() {
+    public void testadjustContext() {
         ClientCertificateTypeExtensionMessage msg = new ClientCertificateTypeExtensionMessage();
         msg.setCertificateTypes(CertificateType.toByteArray(certList));
 

@@ -31,10 +31,10 @@ public class PaddingExtensionHandlerTest {
     }
 
     /**
-     * Test of adjustTLSContext method, of class PaddingExtensionHandler.
+     * Test of adjustContext method, of class PaddingExtensionHandler.
      */
     @Test
-    public void testAdjustTLSContext() {
+    public void testadjustContext() {
         PaddingExtensionMessage msg = new PaddingExtensionMessage();
         msg.setPaddingBytes(extensionPayload);
         handler.adjustContext(msg);

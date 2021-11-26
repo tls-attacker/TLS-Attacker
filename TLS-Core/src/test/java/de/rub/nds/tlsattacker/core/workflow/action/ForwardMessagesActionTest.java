@@ -93,6 +93,11 @@ public class ForwardMessagesActionTest {
         context2.setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
         context1.setLayerStack(LayerStackFactory.createLayerStack(LayerStackType.TLS, context1));
         context2.setLayerStack(LayerStackFactory.createLayerStack(LayerStackType.TLS, context2));
+        context1.getLayerStack().initialize();
+        context1.getLayerStack().preInitialize();
+        context2.getLayerStack().preInitialize();
+        context1.getLayerStack().initialize();
+        context2.getLayerStack().initialize();
     }
 
     @Test

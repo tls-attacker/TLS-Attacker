@@ -43,7 +43,7 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
     }
 
     @Override
-    public void adjustTLSContext(ClientHelloMessage message) {
+    public void adjustContext(ClientHelloMessage message) {
         adjustProtocolVersion(message);
         adjustSessionID(message);
         adjustClientSupportedCipherSuites(message);
@@ -150,7 +150,7 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
     }
 
     @Override
-    public void adjustTlsContextAfterSerialize(ClientHelloMessage message) {
+    public void adjustContextAfterSerialize(ClientHelloMessage message) {
         if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT
             && tlsContext.isExtensionProposed(ExtensionType.EARLY_DATA)) {
             try {

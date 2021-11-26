@@ -37,7 +37,7 @@ public class ServerHelloDoneParser extends HandshakeMessageParser<ServerHelloDon
     @Override
     protected void parseHandshakeMessageContent(ServerHelloDoneMessage msg) {
         LOGGER.debug("Parsing ServerHelloDoneMessage");
-        if (msg.getLength().getValue() != 0) {
+        if (getBytesLeft() != 0) {
             LOGGER.warn("Parsed ServerHelloDone with non-zero length! Not parsing payload.");
         }
     }

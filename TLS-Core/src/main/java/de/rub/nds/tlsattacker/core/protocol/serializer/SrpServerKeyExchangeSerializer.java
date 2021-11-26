@@ -36,7 +36,7 @@ public class SrpServerKeyExchangeSerializer extends ServerKeyExchangeSerializer<
     }
 
     @Override
-    public byte[] serializeHandshakeMessageContent() {
+    public byte[] serializeProtocolMessageContent() {
         LOGGER.debug("Serializing SRPServerKeyExchangeMessage");
         writeModulusLength(msg);
         writeModulus(msg);

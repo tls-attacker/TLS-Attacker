@@ -17,10 +17,5 @@ public abstract class ProtocolMessageSerializer<T extends ProtocolMessage> exten
         this.message = message;
     }
 
-    @Override
-    protected final byte[] serializeBytes() {
-        return serializeProtocolMessageContent();
-    }
-
     public abstract byte[] serializeProtocolMessageContent();
 }

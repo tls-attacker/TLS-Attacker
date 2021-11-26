@@ -29,10 +29,10 @@ public class HeartbeatExtensionHandlerTest {
     }
 
     /**
-     * Test of adjustTLSContext method, of class HeartbeatExtensionHandler.
+     * Test of adjustContext method, of class HeartbeatExtensionHandler.
      */
     @Test
-    public void testAdjustTLSContext() {
+    public void testadjustContext() {
         HeartbeatExtensionMessage msg = new HeartbeatExtensionMessage();
         msg.setHeartbeatMode(new byte[] { 1 });
         handler.adjustContext(msg);

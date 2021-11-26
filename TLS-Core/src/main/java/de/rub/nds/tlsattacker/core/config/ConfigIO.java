@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.config;
 
 import de.rub.nds.tlsattacker.core.config.filter.ConfigDisplayFilter;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -22,7 +21,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import javax.xml.XMLConstants;
-import javax.xml.bind.DataBindingException;
 import java.nio.charset.StandardCharsets;
 import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBContext;

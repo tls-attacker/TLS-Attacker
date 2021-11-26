@@ -87,7 +87,7 @@
 //                        flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition, context);
 //                    if (lastMessage.getAdjustContext() && lastMessage instanceof TlsMessage) {
 //                        TlsMessageHandler<TlsMessage> tlsMessageHandler = lastMessage.getHandler(context);
-//                        tlsMessageHandler.adjustTlsContextAfterSerialize((TlsMessage) lastMessage);
+//                        tlsMessageHandler.adjustContextAfterSerialize((TlsMessage) lastMessage);
 //                    }
 //                    lastMessage = null;
 //                }
@@ -134,7 +134,7 @@
 //                recordPosition = flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition, context);
 //                if (protocolMessage instanceof TlsMessage && protocolMessage.getAdjustContext()) {
 //                    TlsMessageHandler<TlsMessage> protocolMessageHandler = protocolMessage.getHandler(context);
-//                    protocolMessageHandler.adjustTlsContextAfterSerialize((TlsMessage) protocolMessage);
+//                    protocolMessageHandler.adjustContextAfterSerialize((TlsMessage) protocolMessage);
 //                }
 //                lastMessage = null;
 //            }
@@ -142,7 +142,7 @@
 //        recordPosition = flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition, context);
 //        if (lastMessage instanceof TlsMessage && lastMessage.getAdjustContext()) {
 //            TlsMessageHandler<TlsMessage> handler = lastMessage.getHandler(context);
-//            handler.adjustTlsContextAfterSerialize((TlsMessage) lastMessage);
+//            handler.adjustContextAfterSerialize((TlsMessage) lastMessage);
 //        }
 //        sendData(messageBytesCollector, context);
 //

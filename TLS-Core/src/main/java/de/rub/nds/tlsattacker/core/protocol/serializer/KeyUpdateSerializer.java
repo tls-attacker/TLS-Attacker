@@ -31,12 +31,12 @@ public class KeyUpdateSerializer extends HandshakeMessageSerializer<KeyUpdateMes
      */
 
     public KeyUpdateSerializer(KeyUpdateMessage message, ProtocolVersion version) {
-        super(message, version);
+        super(message);
         this.msg = message;
     }
 
     @Override
-    public byte[] serializeHandshakeMessageContent() {
+    public byte[] serializeProtocolMessageContent() {
         LOGGER.debug("Serializing KeyUpdateMessage");
         writeKeyUpdateData(msg);
         return getAlreadySerialized();

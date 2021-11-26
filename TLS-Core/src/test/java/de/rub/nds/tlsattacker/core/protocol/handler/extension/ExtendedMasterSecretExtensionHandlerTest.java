@@ -34,7 +34,7 @@ public class ExtendedMasterSecretExtensionHandlerTest {
     }
 
     @Test
-    public void testAdjustTLSContext() {
+    public void testadjustContext() {
         ExtendedMasterSecretExtensionMessage msg = new ExtendedMasterSecretExtensionMessage();
         context.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
         handler.adjustContext(msg);

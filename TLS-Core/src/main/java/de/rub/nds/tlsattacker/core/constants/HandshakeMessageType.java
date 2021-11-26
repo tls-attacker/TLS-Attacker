@@ -28,7 +28,7 @@ public enum HandshakeMessageType {
     SSL2_SERVER_HELLO((byte) 4),
     END_OF_EARLY_DATA((byte) 5),
     SSL2_SERVER_VERIFY((byte) 5),
-    HELLO_RETRY_REQUEST((byte) 6),
+    // HELLO_RETRY_REQUEST((byte) 6), ONLY IN TLS 1.3 DRAFT
     ENCRYPTED_EXTENSIONS((byte) 8),
     CERTIFICATE((byte) 11),
     SERVER_KEY_EXCHANGE((byte) 12),

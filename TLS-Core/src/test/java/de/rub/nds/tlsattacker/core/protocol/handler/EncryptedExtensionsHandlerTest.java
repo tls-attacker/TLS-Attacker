@@ -33,28 +33,28 @@ public class EncryptedExtensionsHandlerTest {
     }
 
     /**
-     * Test of adjustTLSContext method, of class EncryptedExtensionsHandler.
+     * Test of adjustContext method, of class EncryptedExtensionsHandler.
      */
     @Test
-    public void testAdjustTLSContextWithoutExtensions() {
+    public void testadjustContextWithoutExtensions() {
         EncryptedExtensionsMessage message = new EncryptedExtensionsMessage();
-        handler.adjustTLSContext(message);
+        handler.adjustContext(message);
 
         assertTrue(context.getProposedExtensions().isEmpty());
         assertTrue(context.getNegotiatedExtensionSet().isEmpty());
     }
 
     /**
-     * Test of adjustTLSContext method, of class EncryptedExtensionsHandler.
+     * Test of adjustContext method, of class EncryptedExtensionsHandler.
      */
     @Test
-    public void testAdjustTLSContextWithSNI() {
+    public void testadjustContextWithSNI() {
         EncryptedExtensionsMessage message = new EncryptedExtensionsMessage();
         // "[T]he server SHALL include an extension of type 'server_name' in the
         // (extended) server hello. The
         // 'extension_data' field of this extension SHALL be empty."
         message.addExtension(new ServerNameIndicationExtensionMessage());
-        handler.adjustTLSContext(message);
+        handler.adjustContext(message);
 
         assertTrue(context.isExtensionNegotiated(ExtensionType.SERVER_NAME_INDICATION));
     }

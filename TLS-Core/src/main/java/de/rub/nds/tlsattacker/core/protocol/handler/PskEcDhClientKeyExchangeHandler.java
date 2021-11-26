@@ -19,7 +19,7 @@ public class PskEcDhClientKeyExchangeHandler extends ECDHClientKeyExchangeHandle
     }
 
     @Override
-    public void adjustTLSContext(PskEcDhClientKeyExchangeMessage message) {
+    public void adjustContext(PskEcDhClientKeyExchangeMessage message) {
         adjustPremasterSecret(message);
         adjustMasterSecret(message);
         spawnNewSession();

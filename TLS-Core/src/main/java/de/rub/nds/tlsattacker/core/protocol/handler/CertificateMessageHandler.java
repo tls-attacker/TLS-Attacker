@@ -18,7 +18,6 @@ import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.protocol.Handler;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificateEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificatePair;
@@ -53,7 +52,7 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
     }
 
     @Override
-    public void adjustTLSContext(CertificateMessage message) {
+    public void adjustContext(CertificateMessage message) {
         switch (selectTypeInternally()) {
             case OPEN_PGP:
                 throw new UnsupportedOperationException("We do not support OpenPGP keys");

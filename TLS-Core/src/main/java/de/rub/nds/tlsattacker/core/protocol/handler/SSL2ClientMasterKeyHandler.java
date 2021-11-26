@@ -19,7 +19,7 @@ public class SSL2ClientMasterKeyHandler extends HandshakeMessageHandler<SSL2Clie
     }
 
     @Override
-    public void adjustTLSContext(SSL2ClientMasterKeyMessage message) {
+    public void adjustContext(SSL2ClientMasterKeyMessage message) {
         byte[] premasterSecret = message.getComputations().getPremasterSecret().getValue();
         tlsContext.setPreMasterSecret(premasterSecret);
         tlsContext.setClearKey(message.getClearKeyData().getValue());

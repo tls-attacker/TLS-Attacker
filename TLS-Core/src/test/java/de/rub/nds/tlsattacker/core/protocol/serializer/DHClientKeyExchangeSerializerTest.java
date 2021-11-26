@@ -41,16 +41,16 @@ public class DHClientKeyExchangeSerializerTest {
     }
 
     /**
-     * Test of serializeHandshakeMessageContent method, of class DHClientKeyExchangeSerializer.
+     * Test of serializeProtocolMessageContent method, of class DHClientKeyExchangeSerializer.
      */
     @Test
-    public void testSerializeHandshakeMessageContent() {
+    public void testserializeProtocolMessageContent() {
         DHClientKeyExchangeMessage msg = new DHClientKeyExchangeMessage();
         msg.setCompleteResultingMessage(expectedPart);
         msg.setPublicKey(serializedKey);
         msg.setPublicKeyLength(serializedKeyLength);
         DHClientKeyExchangeSerializer serializer = new DHClientKeyExchangeSerializer(msg, version);
-        assertArrayEquals(expectedPart, serializer.serializeHandshakeMessageContent());
+        assertArrayEquals(expectedPart, serializer.serializeProtocolMessageContent());
     }
 
 }

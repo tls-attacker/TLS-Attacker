@@ -19,7 +19,7 @@ public class PskRsaClientKeyExchangeHandler extends RSAClientKeyExchangeHandler<
     }
 
     @Override
-    public void adjustTLSContext(PskRsaClientKeyExchangeMessage message) {
+    public void adjustContext(PskRsaClientKeyExchangeMessage message) {
         adjustPremasterSecret(message);
         adjustMasterSecret(message);
         spawnNewSession();

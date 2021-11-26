@@ -43,11 +43,11 @@ public class ECDHClientKeyExchangeHandlerTest {
     }
 
     /**
-     * Test of adjustTLSContext method, of class ECDHClientKeyExchangeHandler.
+     * Test of adjustContext method, of class ECDHClientKeyExchangeHandler.
      */
     @SuppressWarnings("SpellCheckingInspection")
     @Test
-    public void testAdjustTLSContext() {
+    public void testadjustContext() {
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         context.setSelectedCipherSuite(CipherSuite.TLS_ECDH_RSA_WITH_AES_128_CBC_SHA256);
         context.setClientRandom(new byte[] {});
@@ -63,7 +63,7 @@ public class ECDHClientKeyExchangeHandlerTest {
         ECDHClientKeyExchangeMessage message = new ECDHClientKeyExchangeMessage(context.getConfig());
         ECDHClientKeyExchangePreparator prep = new ECDHClientKeyExchangePreparator(context.getChooser(), message);
         prep.prepare();
-        handler.adjustTLSContext(message);
+        handler.adjustContext(message);
         assertArrayEquals(ArrayConverter.hexStringToByteArray("273CF78A3DB2E37EE97935DEF45E3C82F126807C31A498E9"),
             context.getPreMasterSecret());
         assertArrayEquals(

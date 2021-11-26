@@ -48,6 +48,8 @@ public class SSL2ClientMasterKeySerializerTest {
         byte[] expectedClientMasterKeyMessage) {
         this.expectedClientMasterKeyMessage = expectedClientMasterKeyMessage;
         this.message = new SSL2ClientMasterKeyMessage();
+        this.message.setMessageLength(messageLength);
+        this.message.setType(messageType);
         this.message.setCipherKind(cipher);
         this.message.setClearKeyLength(clearKeyLength);
         this.message.setEncryptedKeyLength(encryptedKeyLength);
@@ -60,8 +62,8 @@ public class SSL2ClientMasterKeySerializerTest {
 
     @Test
     public void test() {
-        SSL2ClientMasterKeySerializer serializer = new SSL2ClientMasterKeySerializer(this.message, this.version);
-        byte[] result = serializer.serializeProtocolMessageContent();
+        SSL2ClientMasterKeySerializer serializer = new SSL2ClientMasterKeySerializer(this.message);
+        byte[] result = serializer.serialize();
         assertArrayEquals(this.expectedClientMasterKeyMessage, result);
     }
 }

@@ -23,7 +23,7 @@ public class PskDhClientKeyExchangeHandler extends DHClientKeyExchangeHandler<Ps
     }
 
     @Override
-    public void adjustTLSContext(PskDhClientKeyExchangeMessage message) {
+    public void adjustContext(PskDhClientKeyExchangeMessage message) {
         adjustPremasterSecret(message);
         adjustMasterSecret(message);
         spawnNewSession();

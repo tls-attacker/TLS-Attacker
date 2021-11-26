@@ -30,12 +30,12 @@ public class FinishedSerializer extends HandshakeMessageSerializer<FinishedMessa
      *                Version of the Protocol
      */
     public FinishedSerializer(FinishedMessage message, ProtocolVersion version) {
-        super(message, version);
+        super(message);
         this.msg = message;
     }
 
     @Override
-    public byte[] serializeHandshakeMessageContent() {
+    public byte[] serializeProtocolMessageContent() {
         LOGGER.debug("Serializing FinishedMessage");
         writeVerifyData(msg);
         return getAlreadySerialized();

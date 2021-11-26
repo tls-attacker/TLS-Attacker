@@ -23,7 +23,7 @@ public class UnknownHandshakeHandler extends HandshakeMessageHandler<UnknownHand
     }
 
     @Override
-    public void adjustTLSContext(UnknownHandshakeMessage message) {
+    public void adjustContext(UnknownHandshakeMessage message) {
         // nothing to adjust here
     }
 

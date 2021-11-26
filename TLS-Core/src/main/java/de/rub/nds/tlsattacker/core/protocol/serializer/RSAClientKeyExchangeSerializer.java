@@ -37,7 +37,7 @@ public class RSAClientKeyExchangeSerializer<T extends RSAClientKeyExchangeMessag
     }
 
     @Override
-    public byte[] serializeHandshakeMessageContent() {
+    public byte[] serializeProtocolMessageContent() {
         LOGGER.debug("Serializing RSAClientKeyExchangeMessage");
         if (!version.isSSL()) {
             writeSerializedPublicKeyLength(msg);

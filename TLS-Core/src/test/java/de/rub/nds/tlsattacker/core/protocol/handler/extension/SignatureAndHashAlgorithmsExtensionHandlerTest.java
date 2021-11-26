@@ -29,10 +29,10 @@ public class SignatureAndHashAlgorithmsExtensionHandlerTest {
     }
 
     /**
-     * Test of adjustTLSContext method, of class SignatureAndHashAlgorithmsExtensionHandler.
+     * Test of adjustContext method, of class SignatureAndHashAlgorithmsExtensionHandler.
      */
     @Test
-    public void testAdjustTLSContext() {
+    public void testadjustContext() {
         SignatureAndHashAlgorithmsExtensionMessage msg = new SignatureAndHashAlgorithmsExtensionMessage();
         msg.setSignatureAndHashAlgorithms(new byte[] { 0, 0 });
         handler.adjustContext(msg);

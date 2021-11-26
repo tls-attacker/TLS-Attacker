@@ -29,10 +29,10 @@ public class MaxFragmentLengthExtensionHandlerTest {
     }
 
     /**
-     * Test of adjustTLSContext method, of class MaxFragmentLengthExtensionHandler.
+     * Test of adjustContext method, of class MaxFragmentLengthExtensionHandler.
      */
     @Test
-    public void testAdjustTLSContext() {
+    public void testadjustContext() {
         MaxFragmentLengthExtensionMessage msg = new MaxFragmentLengthExtensionMessage();
         msg.setMaxFragmentLength(new byte[] { 1 });
         handler.adjustContext(msg);

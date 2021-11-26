@@ -21,11 +21,6 @@ import javax.xml.transform.Result;
 import javax.xml.transform.stream.StreamResult;
 import org.apache.commons.lang3.StringUtils;
 
-/**
- *
- * @author ic0ns
- * @author JonSnowWhite
- */
 public class ConfigSchemaGenerator {
 
     private static final String ROOT_NS = "";

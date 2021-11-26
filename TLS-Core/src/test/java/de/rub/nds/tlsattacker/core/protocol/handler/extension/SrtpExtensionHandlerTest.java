@@ -37,7 +37,7 @@ public class SrtpExtensionHandlerTest {
     }
 
     @Test
-    public void testAdjustTLSContext() {
+    public void testadjustContext() {
         SrtpExtensionMessage msg = new SrtpExtensionMessage();
         msg.setSrtpProtectionProfiles(profilesAsBytes);
         msg.setSrtpMki(mki);

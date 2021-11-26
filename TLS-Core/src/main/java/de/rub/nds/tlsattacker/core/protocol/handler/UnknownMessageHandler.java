@@ -10,14 +10,11 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.UnknownMessageParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.UnknownMessagePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.UnknownMessageSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.InputStream;
 
-public class UnknownMessageHandler extends TlsMessageHandler<UnknownMessage> {
+public class UnknownMessageHandler extends ProtocolMessageHandler<UnknownMessage> {
 
     private final ProtocolMessageType recordContentMessageType;
 
@@ -27,7 +24,7 @@ public class UnknownMessageHandler extends TlsMessageHandler<UnknownMessage> {
     }
 
     @Override
-    public void adjustTLSContext(UnknownMessage message) {
+    public void adjustContext(UnknownMessage message) {
         // Nothing to do
     }
 

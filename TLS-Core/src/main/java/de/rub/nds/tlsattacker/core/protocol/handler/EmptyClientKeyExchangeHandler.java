@@ -22,7 +22,7 @@ public class EmptyClientKeyExchangeHandler extends ClientKeyExchangeHandler<Empt
     }
 
     @Override
-    public void adjustTLSContext(EmptyClientKeyExchangeMessage message) {
+    public void adjustContext(EmptyClientKeyExchangeMessage message) {
         spawnNewSession();
     }
 }

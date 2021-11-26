@@ -28,7 +28,7 @@ public class PasswordSaltExtensionHandlerTest {
     }
 
     @Test
-    public void testAdjustTLSContext() {
+    public void testadjustContext() {
         PasswordSaltExtensionMessage message = new PasswordSaltExtensionMessage();
         message.setSalt(new byte[32]);
         handler.adjustContext(message);

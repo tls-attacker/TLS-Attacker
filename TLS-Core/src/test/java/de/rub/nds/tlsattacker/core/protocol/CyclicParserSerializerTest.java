@@ -54,6 +54,12 @@ public class CyclicParserSerializerTest {
 
             CONSOLE.info("Testing:" + testName);
             for (ProtocolVersion version : ProtocolVersion.values()) {
+                if (testName.contains("NewSessionTicket") && !version.isTLS13()) {
+                    continue;// Skip unsupported
+                }
+                if (testName.contains("SupplementalData") || testName.contains("ClientMasterKey")) {
+                    continue;// Not supported
+                }
                 if (version.isDTLS()) {
                     continue;
                 }
@@ -80,21 +86,22 @@ public class CyclicParserSerializerTest {
                     context.setSelectedProtocolVersion(version);
                     context.getConfig().setHighestProtocolVersion(version);
                     context.getConfig().setDefaultHighestClientProtocolVersion(version);
+                    context.getConfig().setDefaultLastRecordProtocolVersion(version);
 
                     ProtocolMessagePreparator preparator = message.getPreparator(context);
                     preparator.prepare();
                     ProtocolMessageSerializer serializer = message.getSerializer(context);
-                    byte[] serializedMessage = serializer.serialize();
+                    byte[] serializedMessage = serializer.serializeProtocolMessageContent();
                     message =
                         (ProtocolMessage) getMessageConstructor(someMessageClass).newInstance(Config.createConfig());
                     ProtocolMessageParser parser =
                         message.getParser(context, new ByteArrayInputStream(serializedMessage));
                     parser.parse(message);
-                    byte[] serializedMessage2 = message.getSerializer(context).serialize();
+                    byte[] serializedMessage2 = message.getSerializer(context).serializeProtocolMessageContent();
                     Assert.assertArrayEquals(testName + " failed", serializedMessage, serializedMessage2);
                     CONSOLE.info("......." + testName + " - " + version.name() + " works as expected!");
                 } catch (Exception ex) {
-                    LOGGER.error(ex);
+                    ex.printStackTrace();
                     fail("Could not execute " + testName + " - " + version.name());
                 }
             }

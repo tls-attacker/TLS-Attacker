@@ -30,9 +30,9 @@ public class UnknownHandshakeHandlerTest {
     }
 
     /**
-     * Test of adjustTLSContext method, of class UnknownHandshakeHandler.
+     * Test of adjustContext method, of class UnknownHandshakeHandler.
      */
     @Test
-    public void testAdjustTLSContext() {
+    public void testadjustContext() {
     }
 }

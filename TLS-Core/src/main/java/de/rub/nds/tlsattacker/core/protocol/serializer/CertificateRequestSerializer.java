@@ -22,6 +22,8 @@ public class CertificateRequestSerializer extends HandshakeMessageSerializer<Cer
 
     private final CertificateRequestMessage msg;
 
+    private final ProtocolVersion version;
+
     /**
      * Constructor for the CertificateRequestSerializer
      *
@@ -31,12 +33,13 @@ public class CertificateRequestSerializer extends HandshakeMessageSerializer<Cer
      *                Version of the Protocol
      */
     public CertificateRequestSerializer(CertificateRequestMessage message, ProtocolVersion version) {
-        super(message, version);
+        super(message);
         this.msg = message;
+        this.version = version;
     }
 
     @Override
-    public byte[] serializeHandshakeMessageContent() {
+    public byte[] serializeProtocolMessageContent() {
         LOGGER.debug("Serializing CertificateRequestMessage");
         if (version.isTLS13()) {
             writeCertificateRequestContextLength(msg);

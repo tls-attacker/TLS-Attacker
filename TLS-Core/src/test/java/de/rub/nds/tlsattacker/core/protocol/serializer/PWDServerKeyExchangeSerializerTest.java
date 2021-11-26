@@ -21,7 +21,7 @@ import org.junit.Test;
 public class PWDServerKeyExchangeSerializerTest {
 
     @Test
-    public void serializeHandshakeMessageContent() {
+    public void serializeProtocolMessageContent() {
         byte[] message = ArrayConverter
             .hexStringToByteArray(("20 96 3c 77 cd c1\n" + "     3a 2a 8d 75 cd dd d1 e0 44 99 29 84 37 11 c2 1d\n"
                 + "     47 ce 6e 63 83 cd da 37 e4 7d a3 03 00 1a 41 04\n"
@@ -54,6 +54,6 @@ public class PWDServerKeyExchangeSerializerTest {
         msg.setScalar(scalar);
         msg.setScalarLength(32);
         PWDServerKeyExchangeSerializer serializer = new PWDServerKeyExchangeSerializer(msg, ProtocolVersion.TLS12);
-        assertArrayEquals(message, serializer.serializeHandshakeMessageContent());
+        assertArrayEquals(message, serializer.serializeProtocolMessageContent());
     }
 }

@@ -20,12 +20,10 @@ import java.util.List;
  */
 public class CleanRecordByteSeperator extends Parser<List<Record>> {
 
-    private final List<Record> records;
     private final int defaultMaxSize;
 
-    public CleanRecordByteSeperator(List<Record> records, int defaultMaxSize, InputStream stream) {
+    public CleanRecordByteSeperator(int defaultMaxSize, InputStream stream) {
         super(stream);
-        this.records = records;
         this.defaultMaxSize = defaultMaxSize;
     }
 

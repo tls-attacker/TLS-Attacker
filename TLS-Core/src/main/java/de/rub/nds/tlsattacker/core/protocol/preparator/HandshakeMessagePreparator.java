@@ -14,9 +14,6 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.*;
 import de.rub.nds.tlsattacker.core.protocol.handler.HandshakeMessageHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.EncryptedServerNameIndicationExtensionHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.PreSharedKeyExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
 import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNameIndicationExtensionMessage;
@@ -26,6 +23,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.PreSharedKeyExtens
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EncryptedServerNameIndicationExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PreSharedKeyExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.HandshakeMessageSerializer;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayOutputStream;
@@ -37,7 +35,7 @@ import org.apache.logging.log4j.Logger;
  * @param <T>
  *            The HandshakeMessage that should be prepared
  */
-public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> extends TlsMessagePreparator<T> {
+public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> extends ProtocolMessagePreparator<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -65,7 +63,7 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
         if (!(message instanceof DtlsHandshakeMessageFragment)) {
             HandshakeMessageHandler<T> handler = message.getHandler(chooser.getContext());
             HandshakeMessageSerializer<T> serializer = message.getSerializer(chooser.getContext());
-            prepareMessageLength(serializer.serializeHandshakeMessageContent().length);
+            prepareMessageLength(serializer.serializeProtocolMessageContent().length);
             prepareMessageType(message.getHandshakeMessageType());
         }
     }
@@ -84,8 +82,11 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
                         ksExt.setRetryRequestMode(true);
                     }
                 }
-                ExtensionMessage message = HandlerFactory.getExtension(extensionMessage.getExtensionTypeConstant());
-                message.getPreparator(chooser.getContext()).prepare();
+                extensionMessage.getPreparator(chooser.getContext()).prepare();
+                ExtensionSerializer serializer = extensionMessage.getSerializer(chooser.getContext());
+                byte[] extensionBody = serializer.serializeExtensionContent();
+                extensionMessage.setExtensionLength(extensionBody.length);
+                extensionMessage.setExtensionBytes(serializer.serialize());
                 try {
                     stream.write(extensionMessage.getExtensionBytes().getValue());
                 } catch (IOException ex) {
@@ -101,7 +102,6 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         if (message.getExtensions() != null) {
             for (ExtensionMessage extensionMessage : message.getExtensions()) {
-                HandshakeMessageType handshakeMessageType = message.getHandshakeMessageType();
                 ExtensionMessage extension = HandlerFactory.getExtension(extensionMessage.getExtensionTypeConstant());
                 Preparator preparator = extension.getPreparator(chooser.getContext());
                 if (extension instanceof PreSharedKeyExtensionMessage && message instanceof ClientHelloMessage

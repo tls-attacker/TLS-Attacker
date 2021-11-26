@@ -19,7 +19,7 @@ public class HelloRequestHandler extends HandshakeMessageHandler<HelloRequestMes
     }
 
     @Override
-    public void adjustTLSContext(HelloRequestMessage message) {
+    public void adjustContext(HelloRequestMessage message) {
         // we adjust nothing
     }
 }

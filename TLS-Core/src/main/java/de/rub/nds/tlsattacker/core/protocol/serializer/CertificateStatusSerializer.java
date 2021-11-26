@@ -23,12 +23,12 @@ public class CertificateStatusSerializer extends HandshakeMessageSerializer<Cert
     private final CertificateStatusMessage msg;
 
     public CertificateStatusSerializer(CertificateStatusMessage message, ProtocolVersion version) {
-        super(message, version);
+        super(message);
         this.msg = message;
     }
 
     @Override
-    public byte[] serializeHandshakeMessageContent() {
+    public byte[] serializeProtocolMessageContent() {
         LOGGER.debug("Serializing CertificateStatusMessage");
         writeCertificateStatusType(msg);
         writeOcspResponseLength(msg);

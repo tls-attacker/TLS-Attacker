@@ -11,11 +11,12 @@ package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageSerializer;
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ChangeCipherSpecSerializer extends TlsMessageSerializer<ChangeCipherSpecMessage> {
+public class ChangeCipherSpecSerializer extends ProtocolMessageSerializer<ChangeCipherSpecMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -30,7 +31,7 @@ public class ChangeCipherSpecSerializer extends TlsMessageSerializer<ChangeCiphe
      *                Version of the Protocol
      */
     public ChangeCipherSpecSerializer(ChangeCipherSpecMessage message, ProtocolVersion version) {
-        super(message, version);
+        super(message);
         this.msg = message;
     }
 
@@ -47,6 +48,11 @@ public class ChangeCipherSpecSerializer extends TlsMessageSerializer<ChangeCiphe
     private void writeCcsProtocolType(ChangeCipherSpecMessage msg) {
         appendBytes(msg.getCcsProtocolType().getValue());
         LOGGER.debug("CcsProtocolType: " + ArrayConverter.bytesToHexString(msg.getCcsProtocolType().getValue()));
+    }
+
+    @Override
+    protected byte[] serializeBytes() {
+        return serializeProtocolMessageContent();
     }
 
 }
