@@ -828,13 +828,18 @@ public class TlsContext {
         return getSession(internalTicketId) != null;
     }
 
-    public byte[] getLatestSessionTicket(){
-        return getSession(sessionTicketCounter - 1).getSessionTicket();
+    public byte[] getLatestSessionTicket() {
+        Session session = getSession(getSessionTicketCounter() - 1);
+        if (session != null) {
+            return session.getSessionTicket();
+        } else {
+            return null;
+        }
     }
 
     public void addNewSession(Session session) {
-        if(session.hasTicket()) {
-            if(session.getInternalTicketId() == -2){
+        if (session.hasTicket()) {
+            if (session.getInternalTicketId() == -2) {
                 session.setInternalTicketId(sessionTicketCounter);
             }
             sessionTicketCounter++;
@@ -1612,14 +1617,6 @@ public class TlsContext {
 
     public void setServerKeyShareStoreEntry(KeyShareStoreEntry serverKeyShareStoreEntry) {
         this.serverKeyShareStoreEntry = serverKeyShareStoreEntry;
-    }
-
-    public byte[] getSessionTicketTLS() {
-        return sessionTicketTLS;
-    }
-
-    public void setSessionTicketTLS(byte[] sessionTicketTLS) {
-        this.sessionTicketTLS = sessionTicketTLS;
     }
 
     public Integer getSessionTicketCounter() {

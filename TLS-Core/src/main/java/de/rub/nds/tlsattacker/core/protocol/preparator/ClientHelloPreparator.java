@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -72,7 +73,15 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
     }
 
     private void prepareSessionID() {
-        if (msg.containsExtension(ExtensionType.SESSION_TICKET)){
+        boolean useDefaultClientTicketResumptionSessionId = false;
+        if (msg.containsExtension(ExtensionType.SESSION_TICKET)) {
+            SessionTicketTLSExtensionMessage extensionMessage =
+                msg.getExtension(SessionTicketTLSExtensionMessage.class);
+            if (extensionMessage.getSessionTicket().getEncryptedStateLength().getValue() > 0) {
+                useDefaultClientTicketResumptionSessionId = true;
+            }
+        }
+        if (useDefaultClientTicketResumptionSessionId) {
             msg.setSessionId(chooser.getConfig().getDefaultClientTicketResumptionSessionId());
         } else if (chooser.getContext().getServerSessionId() == null) {
             msg.setSessionId(chooser.getClientSessionId());

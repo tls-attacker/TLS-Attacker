@@ -9,20 +9,27 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.RunningModeType;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.SessionTicketTLSExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SessionTicketTLSExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SessionTicketTLSExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.StatePlaintext;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;
+
+import de.rub.nds.tlsattacker.core.state.serializer.StatePlaintextSerializer;
+import de.rub.nds.tlsattacker.core.util.StaticTicketCrypto;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import org.junit.Before;
 import org.junit.Test;
 
 public class SessionTicketTlsExtensionHandlerTest {
 
-    private static final int EXTENSION_LENGTH = 0;
-    private static final byte[] SESSION_TICKET = new byte[] { 0x00, 0x01, 0x02 };
+    private static final byte[] IV = ArrayConverter.hexStringToByteArray("60ac89f55a58c84bfa9820bd2ecd505d");
 
     private TlsContext context;
     private SessionTicketTlsExtensionHandler handler;
@@ -31,8 +38,13 @@ public class SessionTicketTlsExtensionHandlerTest {
      * Some initial set up.
      */
     @Before
-    public void setUp() {
-        context = new TlsContext();
+    public void setUp() throws CryptoException {
+        Config config = Config.createConfig();
+        config.setDefaultRunningMode(RunningModeType.SERVER);
+
+        context = new TlsContext(config);
+        context.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
+
         handler = new SessionTicketTlsExtensionHandler(context);
     }
 
@@ -40,14 +52,30 @@ public class SessionTicketTlsExtensionHandlerTest {
      * Tests the adjustTLSContext of the SessionTicketTlsExtensionHandler class
      */
     @Test
-    public void testAdjustTLSContext() {
+    public void testAdjustTLSContext() throws CryptoException {
+        StatePlaintext plainState = new StatePlaintext();
+        plainState.generateStatePlaintext(context.getChooser());
+        StatePlaintextSerializer plaintextSerializer = new StatePlaintextSerializer(plainState);
+        byte[] plainStateSerialized = plaintextSerializer.serialize();
+        byte[] encryptedState;
+        encryptedState = StaticTicketCrypto.encrypt(context.getConfig().getSessionTicketCipherAlgorithm(),
+            plainStateSerialized, context.getConfig().getSessionTicketEncryptionKey(), IV);
+
         SessionTicketTLSExtensionMessage message = new SessionTicketTLSExtensionMessage();
-        message.getSessionTicket().setIdentity(SESSION_TICKET);
-        message.setExtensionLength(EXTENSION_LENGTH);
+        handler.getPreparator(message).prepare();
+        message.getSessionTicket().setEncryptedState(encryptedState);
+        message.getSessionTicket().setEncryptedStateLength(encryptedState.length);
+        message.getSessionTicket().setIV(IV);
+        message.getSessionTicket().setKeyName(ArrayConverter.hexStringToByteArray("1f2f"));
+        message.getSessionTicket()
+            .setTicketNonce(ArrayConverter.hexStringToByteArray("a61601f55a58c84bfa9820bd2ecd505d"));
+        message.getSessionTicket().setTicketNonceLength(message.getSessionTicket().getTicketNonce().getValue().length);
+        message.setExtensionLength(handler.getSerializer(message).serialize().length);
+
+        context.setClientSessionId(context.getConfig().getDefaultClientTicketResumptionSessionId());
 
         handler.adjustTLSContext(message);
-
-        assertArrayEquals(SESSION_TICKET, context.getLatestSessionTicket());
+        assertTrue(context.getLatestSessionTicket() == encryptedState);
     }
 
     /**

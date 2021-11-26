@@ -508,6 +508,7 @@
       <xs:element name="httpsParsingEnabled" type="xs:boolean" minOccurs="0"/>
       <xs:element name="defaultHttpsRequestPath" type="xs:string" minOccurs="0"/>
       <xs:element name="starttlsType" type="starttlsType" minOccurs="0"/>
+      <xs:element name="dontOverrideServerSessionId" type="xs:boolean" minOccurs="0"/>
       <xs:element name="sessionTicketLifetimeHint" type="xs:long" minOccurs="0"/>
       <xs:element name="sessionTicketEncryptionKey" type="xs:string" minOccurs="0"/>
       <xs:element name="sessionTicketKeyHMAC" type="xs:string" minOccurs="0"/>

@@ -207,9 +207,11 @@ public abstract class HandshakeMessage extends TlsMessage {
     }
 
     public boolean containsExtension(ExtensionType extensionType) {
-        for (ExtensionMessage e : extensions) {
-            if (e.getExtensionTypeConstant() == extensionType) {
-                return true;
+        if (extensions != null) {
+            for (ExtensionMessage e : extensions) {
+                if (e.getExtensionTypeConstant() == extensionType) {
+                    return true;
+                }
             }
         }
         return false;

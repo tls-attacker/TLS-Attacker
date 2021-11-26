@@ -1203,8 +1203,8 @@ public class Config implements Serializable {
     private StarttlsType starttlsType = StarttlsType.NONE;
 
     /**
-     * If the server receives an empty Session Ticket, it answers with an empty Server SID by default.
-     * Set this flag to modify the value of the ServerSessionID.
+     * If the server receives an empty Session Ticket, it answers with an empty Server SID by default. Set this flag to
+     * modify the value of the ServerSessionID.
      */
     private Boolean dontOverrideServerSessionId = false;
 
@@ -1595,7 +1595,7 @@ public class Config implements Serializable {
         return dontOverrideServerSessionId;
     }
 
-    public void setDontOverrideServerSessionId(Boolean dontOverrideServerSessionId){
+    public void setDontOverrideServerSessionId(Boolean dontOverrideServerSessionId) {
         this.dontOverrideServerSessionId = dontOverrideServerSessionId;
     }
 

@@ -49,7 +49,11 @@ public class Session {
     }
 
     public byte[] getSessionTicket() {
-        return sessionTicket;
+        if (hasTicket()) {
+            return sessionTicket;
+        } else {
+            return null;
+        }
     }
 
     public void setSessionTicket(byte[] sessionTicket, Integer internalTicketId) {
@@ -66,6 +70,6 @@ public class Session {
     }
 
     public Boolean hasTicket() {
-        return this.internalTicketId != -1;
+        return this.internalTicketId != NO_TICKET;
     }
 }

@@ -67,21 +67,23 @@ public class SessionTicketTlsExtensionHandler extends ExtensionHandler<SessionTi
                 StatePlaintext statePlaintext = getStateFromTicket(message);
                 if (statePlaintext != null) {
                     LOGGER.info("Resuming Session using Ticket");
-                    context.setMasterSecret(statePlaintext.getMasterSecret().getValue());
+                    Session session = new Session(statePlaintext.getMasterSecret().getValue(),
+                        context.getClientSessionId(), message.getSessionTicket().getEncryptedState().getValue());
+                    context.setMasterSecret(session.getMasterSecret());
                     if (context.getClientSessionId().length > 0) {
                         context.setServerSessionId(context.getClientSessionId().clone());
                     }
+                    context.addNewSession(session);
                 }
             }
         } else {
             if (context.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
                 // Server receives an empty ticket
-                if(!context.getConfig().getDontOverrideServerSessionId()) {
+                if (!context.getConfig().getDontOverrideServerSessionId()) {
                     context.setServerSessionId(new byte[0]);
                 }
             }
         }
-        context.setSessionTicketTLS(message.getSessionTicket().getIdentity().getValue());
     }
 
     private StatePlaintext getStateFromTicket(SessionTicketTLSExtensionMessage message) {
