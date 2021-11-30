@@ -197,7 +197,7 @@ public class RecordGroup {
         List<RecordGroup> recordGroupList = new LinkedList<>();
         if (areAllRecordsValid()) {
             if (records.size() > 1) {
-                isolateHearbeatRecords(recordGroupList);
+                isolateHeartbeatRecords(recordGroupList);
             }
             return recordGroupList;
         } else {
@@ -223,7 +223,7 @@ public class RecordGroup {
 
     }
 
-    private void isolateHearbeatRecords(List<RecordGroup> recordGroupList) {
+    private void isolateHeartbeatRecords(List<RecordGroup> recordGroupList) {
         List<AbstractRecord> jointRecords = new LinkedList<>();
         for (AbstractRecord record : records) {
             if (record.getContentMessageType() == ProtocolMessageType.HEARTBEAT) {
