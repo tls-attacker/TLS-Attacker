@@ -44,16 +44,9 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
         prepareCompressionLength(msg);
         prepareCipherSuites(msg);
         prepareCipherSuitesLength(msg);
-        if (isDTLS()) {
-            // in the case of DTLS, we only include ClientHello in the digest if
-            // it has a non-empty cookie
-            if (hasHandshakeCookie()) {
-                prepareCookie(msg);
-                prepareCookieLength(msg);
-                msg.setIncludeInDigest(true);
-            } else {
-                msg.setIncludeInDigest(false);
-            }
+        if (isDTLS() && hasHandshakeCookie()) {
+            prepareCookie(msg);
+            prepareCookieLength(msg);
         }
         prepareExtensions();
         prepareExtensionLength();
