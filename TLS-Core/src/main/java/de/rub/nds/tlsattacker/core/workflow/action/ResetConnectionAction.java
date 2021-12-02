@@ -53,8 +53,8 @@ public class ResetConnectionAction extends ConnectionBoundAction {
         tlsContext.getRecordLayer().setWriteEpoch(0);
         tlsContext.getRecordLayer().setReadEpoch(0);
         LOGGER.info("Resetting SecureRenegotiation");
-        tlsContext.setLastClientVerifyData(new byte[0]);
-        tlsContext.setLastServerVerifyData(new byte[0]);
+        tlsContext.setLastClientVerifyData(null);
+        tlsContext.setLastServerVerifyData(null);
         LOGGER.info("Resetting MessageDigest");
         tlsContext.getDigest().reset();
         LOGGER.info("Resetting ActiveKeySets");

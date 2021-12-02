@@ -9,6 +9,7 @@
 
 package de.rub.nds.tlsattacker.core.workflow.action;
 
+import de.rub.nds.tlsattacker.core.dtls.FragmentManager;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
@@ -21,6 +22,15 @@ public class RenegotiationAction extends ConnectionBoundAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    private boolean resetLastVerifyData = false;
+
+    public RenegotiationAction() {
+    }
+
+    public RenegotiationAction(boolean resetLastVerifyData) {
+        this.resetLastVerifyData = resetLastVerifyData;
+    }
+
     @Override
     public void execute(State state) throws WorkflowExecutionException {
         TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
@@ -28,11 +38,21 @@ public class RenegotiationAction extends ConnectionBoundAction {
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
         }
+        LOGGER.info("Resetting MessageDigest");
         tlsContext.getDigest().reset();
-        tlsContext.setDtlsWriteHandshakeMessageSequence(0);
+        LOGGER.info("Resetting DTLS numbers and cookie");
+        tlsContext.setDtlsCookie(null);
         tlsContext.setDtlsReadHandshakeMessageSequence(0);
+        tlsContext.setDtlsWriteHandshakeMessageSequence(0);
+        tlsContext.getDtlsReceivedChangeCipherSpecEpochs().clear();
+        tlsContext.setDtlsFragmentManager(new FragmentManager(state.getConfig()));
+        tlsContext.getDtlsReceivedHandshakeMessageSequences().clear();
+        if (resetLastVerifyData) {
+            LOGGER.info("Resetting SecureRenegotiation");
+            tlsContext.setLastClientVerifyData(null);
+            tlsContext.setLastServerVerifyData(null);
+        }
         setExecuted(true);
-        LOGGER.info("Resetting Digest for Renegotiation");
     }
 
     @Override

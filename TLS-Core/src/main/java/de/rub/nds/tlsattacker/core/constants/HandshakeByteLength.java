@@ -73,6 +73,11 @@ public class HandshakeByteLength {
     public static final int SESSION_ID_LENGTH = 1;
 
     /**
+     * length of the dtls cookie length field indicating the dtls cookie length
+     */
+    public static final int DTLS_COOKIE_LENGTH = 1;
+
+    /**
      * unix time byte length
      */
     public static final int UNIX_TIME = 4;

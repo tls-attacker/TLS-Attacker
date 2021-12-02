@@ -43,12 +43,8 @@ public class ClientHelloSerializer extends HelloMessageSerializer<ClientHelloMes
         writeSessionIDLength();
         writeSessionID();
         if (version.isDTLS()) {
-            if (msg.getCookie() != null) {
-                appendByte(msg.getCookieLength().getValue());
-                appendBytes(msg.getCookie().getValue());
-            } else {
-                appendByte(Byte.valueOf((byte) 0));
-            }
+            writeCookieLength(msg);
+            writeCookie(msg);
         }
         writeCipherSuiteLength(msg);
         writeCipherSuites(msg);
@@ -61,6 +57,22 @@ public class ClientHelloSerializer extends HelloMessageSerializer<ClientHelloMes
             }
         }
         return getAlreadySerialized();
+    }
+
+    /**
+     * Writes the DTLS CookieLength of the ClientHelloMessage into the final byte[]
+     */
+    private void writeCookieLength(ClientHelloMessage msg) {
+        appendInt(msg.getCookieLength().getValue(), HandshakeByteLength.DTLS_COOKIE_LENGTH);
+        LOGGER.debug("CookieLength: " + msg.getCookieLength().getValue());
+    }
+
+    /**
+     * Writes the DTLS Cookie of the ClientHelloMessage into the final byte[]
+     */
+    private void writeCookie(ClientHelloMessage msg) {
+        appendBytes(msg.getCookie().getValue());
+        LOGGER.debug("Cookie: " + ArrayConverter.bytesToHexString(msg.getCookie().getValue()));
     }
 
     /**
