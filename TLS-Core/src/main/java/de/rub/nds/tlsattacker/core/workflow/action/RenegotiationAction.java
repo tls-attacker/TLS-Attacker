@@ -49,8 +49,8 @@ public class RenegotiationAction extends ConnectionBoundAction {
         tlsContext.getDtlsReceivedHandshakeMessageSequences().clear();
         if (resetLastVerifyData) {
             LOGGER.info("Resetting SecureRenegotiation");
-            tlsContext.setLastClientVerifyData(new byte[0]);
-            tlsContext.setLastServerVerifyData(new byte[0]);
+            tlsContext.setLastClientVerifyData(null);
+            tlsContext.setLastServerVerifyData(null);
         }
         setExecuted(true);
     }
