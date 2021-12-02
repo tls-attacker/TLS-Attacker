@@ -44,7 +44,7 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
         prepareCompressionLength(msg);
         prepareCipherSuites(msg);
         prepareCipherSuitesLength(msg);
-        if (isDTLS() && hasHandshakeCookie()) {
+        if (isDTLS()) {
             prepareCookie(msg);
             prepareCookieLength(msg);
         }
@@ -145,10 +145,6 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
 
     private boolean hasClientRandom() {
         return chooser.getContext().getClientRandom() != null;
-    }
-
-    private boolean hasHandshakeCookie() {
-        return chooser.getContext().getDtlsCookie() != null;
     }
 
     private void prepareCookie(ClientHelloMessage msg) {
