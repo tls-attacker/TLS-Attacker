@@ -60,7 +60,7 @@ public class ClientHelloSerializer extends HelloMessageSerializer<ClientHelloMes
     }
 
     /**
-     * Writes the CookieLength of the ClientHelloMessage into the final byte[]
+     * Writes the DTLS CookieLength of the ClientHelloMessage into the final byte[]
      */
     private void writeCookieLength(ClientHelloMessage msg) {
         appendInt(msg.getCookieLength().getValue(), HandshakeByteLength.DTLS_COOKIE_LENGTH);
