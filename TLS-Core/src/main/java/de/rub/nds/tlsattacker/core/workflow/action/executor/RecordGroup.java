@@ -196,9 +196,7 @@ public class RecordGroup {
     public List<RecordGroup> splitIntoProcessableSubgroups() {
         List<RecordGroup> recordGroupList = new LinkedList<>();
         if (areAllRecordsValid()) {
-            if (records.size() > 1) {
-                isolateHeartbeatRecords(recordGroupList);
-            }
+            isolateHeartbeatRecords(recordGroupList);
             return recordGroupList;
         } else {
             List<AbstractRecord> recordList = new LinkedList<>();
