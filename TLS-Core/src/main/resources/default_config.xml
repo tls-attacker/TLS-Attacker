@@ -40,6 +40,7 @@
         <hostname>localhost</hostname>
     </defaultServerConnection>
     <defaultRunningMode>CLIENT</defaultRunningMode>
+    <dtlsCookieExchange>true</dtlsCookieExchange>
     <clientAuthentication>false</clientAuthentication>
     <defaultClientSupportedSignatureAndHashAlgorithms>
         <defaultClientSupportedSignatureAndHashAlgorithm>DSA_SHA1</defaultClientSupportedSignatureAndHashAlgorithm>

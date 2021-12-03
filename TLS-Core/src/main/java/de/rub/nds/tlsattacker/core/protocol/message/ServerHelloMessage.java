@@ -29,6 +29,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateTypeExt
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientAuthzExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateTypeExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateUrlExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.CookieExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ECPointFormatExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptThenMacExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNameIndicationExtensionMessage;
@@ -181,6 +182,9 @@ public class ServerHelloMessage extends HelloMessage {
             }
             if (tlsConfig.isAddExtendedRandomExtension()) {
                 addExtension(new ExtendedRandomExtensionMessage());
+            }
+            if (tlsConfig.isAddCookieExtension()) {
+                addExtension(new CookieExtensionMessage());
             }
         }
     }

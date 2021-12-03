@@ -105,6 +105,7 @@
       <xs:element name="retryFailedClientTcpSocketInitialization" type="xs:boolean" minOccurs="0"/>
       <xs:element name="defaultServerConnection" type="inboundConnection" minOccurs="0"/>
       <xs:element name="defaultRunningMode" type="runningModeType" minOccurs="0"/>
+      <xs:element name="dtlsCookieExchange" type="xs:boolean" minOccurs="0"/>
       <xs:element name="clientAuthentication" type="xs:boolean" minOccurs="0"/>
       <xs:element name="defaultClientSupportedSignatureAndHashAlgorithms" minOccurs="0">
         <xs:complexType>
