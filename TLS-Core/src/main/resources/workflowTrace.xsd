@@ -1877,7 +1877,7 @@
           <xs:element name="cipherSuites" type="modifiableByteArray" minOccurs="0"/>
           <xs:element name="compressions" type="modifiableByteArray" minOccurs="0"/>
           <xs:element name="cookie" type="modifiableByteArray" minOccurs="0"/>
-          <xs:element name="cookieLength" type="modifiableByte" minOccurs="0"/>
+          <xs:element name="cookieLength" type="modifiableInteger" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>

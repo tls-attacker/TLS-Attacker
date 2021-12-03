@@ -71,6 +71,12 @@ public class KeyShareExtensionPreparator extends ExtensionPreparator<KeyShareExt
                 break;
             }
         }
+        if (serverList.isEmpty()) {
+            LOGGER.debug("Client Key Share groups not supported - falling back to default selected group");
+            KeyShareEntry keyShareEntry = new KeyShareEntry(chooser.getConfig().getDefaultSelectedNamedGroup(),
+                chooser.getConfig().getKeySharePrivate());
+            serverList.add(keyShareEntry);
+        }
         return serverList;
     }
 
