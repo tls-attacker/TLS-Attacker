@@ -57,7 +57,7 @@ public class BleichenbacherCommandConfig extends AttackConfig {
         + "queries. FULL results in a comprehensive server evaluation.")
     private Type type = Type.FAST;
 
-    @Parameter(names = "-msgPkcsConform", description = "Used by the real Bleichenbacher attack. Indicates whether the "
+    @Parameter(names = "-msg_pkcs_conform", description = "Used by the real Bleichenbacher attack. Indicates whether the "
         + "original message that we are going to decrypt is PKCS#1 conform or not (more precisely, whether it starts "
         + "with 0x00 0x02).", arity = 1)
     private boolean msgPkcsConform = true;
