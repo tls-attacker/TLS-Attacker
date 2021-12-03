@@ -53,7 +53,7 @@ public class StatePlaintextParser extends Parser<StatePlaintext> {
     }
 
     private void parseCompressionMethod(StatePlaintext statePlaintext) {
-        statePlaintext.setCompressionMethod(parseByteField(1));
+        statePlaintext.setCompressionMethod(parseByteField(HandshakeByteLength.COMPRESSION));
         LOGGER.debug("Parsed compression method from state " + statePlaintext.getCompressionMethod().getValue());
     }
 
@@ -64,7 +64,7 @@ public class StatePlaintextParser extends Parser<StatePlaintext> {
     }
 
     private void parseClientAuthenticationType(StatePlaintext statePlaintext) {
-        statePlaintext.setClientAuthenticationType(parseByteField(1));
+        statePlaintext.setClientAuthenticationType(parseByteField(HandshakeByteLength.CLIENT_AUTHENTICATION_TYPE));
         LOGGER.debug(
             "Parsed client authentication type from state " + statePlaintext.getClientAuthenticationType().getValue());
     }
