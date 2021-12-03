@@ -66,7 +66,7 @@ public class KeyShareExtensionPreparator extends ExtensionPreparator<KeyShareExt
         List<KeyShareStoreEntry> clientShares = chooser.getClientKeyShares();
         for (KeyShareStoreEntry i : clientShares) {
             if (chooser.getServerSupportedNamedGroups().contains(i.getGroup())) {
-                KeyShareEntry predefinedServerKeyShare = getPredefinedServerKeyShareEntry(i.getGroup());
+                KeyShareEntry predefinedServerKeyShare = getPredefinedKeyShareEntryFromMessage(i.getGroup());
                 if (predefinedServerKeyShare != null) {
                     LOGGER.debug("Using predefined Key Share Entry for Server Hello");
                     serverList.add(predefinedServerKeyShare);
@@ -87,7 +87,7 @@ public class KeyShareExtensionPreparator extends ExtensionPreparator<KeyShareExt
         return serverList;
     }
 
-    private KeyShareEntry getPredefinedServerKeyShareEntry(NamedGroup requiredGroup) {
+    private KeyShareEntry getPredefinedKeyShareEntryFromMessage(NamedGroup requiredGroup) {
         if (msg.getKeyShareList() != null) {
             for (KeyShareEntry entry : msg.getKeyShareList()) {
                 if (entry.getGroupConfig() == requiredGroup) {
