@@ -12,6 +12,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SessionTicketTLSExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.Session;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -20,8 +21,8 @@ import org.junit.Test;
 
 public class SessionTicketTLSExtensionPreparatorTest {
 
-    private final int extensionLength = 0;
-    private final byte[] ticket = new byte[0];
+    private final int extensionLength = 4;
+    private final byte[] ticket = new byte[] { 1, 2, 3, 4 };
     private TlsContext context;
     private SessionTicketTLSExtensionMessage message;
     private SessionTicketTLSExtensionPreparator preparator;
@@ -42,7 +43,8 @@ public class SessionTicketTLSExtensionPreparatorTest {
      */
     @Test
     public void testPreparator() {
-        context.getConfig().setTlsSessionTicket(ticket);
+        Session session = new Session(new byte[] { 1, 1, 1, 1 }, new byte[] { 2, 2, 2, 2 }, ticket);
+        context.addNewSession(session);
         preparator.prepare();
 
         assertArrayEquals(ExtensionType.SESSION_TICKET.getValue(), message.getExtensionType().getValue());

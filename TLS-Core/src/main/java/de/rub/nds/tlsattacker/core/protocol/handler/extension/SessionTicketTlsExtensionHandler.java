@@ -68,7 +68,7 @@ public class SessionTicketTlsExtensionHandler extends ExtensionHandler<SessionTi
                 if (statePlaintext != null) {
                     LOGGER.info("Resuming Session using Ticket");
                     Session session = new Session(statePlaintext.getMasterSecret().getValue(),
-                        context.getClientSessionId(), message.getSessionTicket().getEncryptedState().getValue());
+                        context.getClientSessionId(), message.getSessionTicket().getIdentity().getValue());
                     context.setMasterSecret(session.getMasterSecret());
                     if (context.getClientSessionId().length > 0) {
                         context.setServerSessionId(context.getClientSessionId().clone());

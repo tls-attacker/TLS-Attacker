@@ -43,4 +43,8 @@ public class SessionTicketTLSExtensionMessage extends ExtensionMessage {
         return sessionTicket;
     }
 
+    public void setSessionTicket(SessionTicket sessionTicket) {
+        this.sessionTicket = sessionTicket;
+    }
+
 }

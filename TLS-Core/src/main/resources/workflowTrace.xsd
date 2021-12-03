@@ -1319,7 +1319,28 @@
   <xs:complexType name="sessionTicketTLSExtensionMessage">
     <xs:complexContent>
       <xs:extension base="extensionMessage">
-        <xs:sequence/>
+        <xs:sequence>
+          <xs:element name="sessionTicket" type="sessionTicket" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="sessionTicket">
+    <xs:complexContent>
+      <xs:extension base="modifiableVariableHolder">
+        <xs:sequence>
+          <xs:element name="encryptedState" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="encryptedStateLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="IV" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="identity" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="identityLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="keyName" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="MAC" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="ticketAgeAdd" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="ticketNonce" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="ticketNonceLength" type="modifiableInteger" minOccurs="0"/>
+        </xs:sequence>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
@@ -2342,25 +2363,6 @@
       <xs:element name="assertEquals" type="xs:anyType" minOccurs="0"/>
       <xs:element name="originalValue" type="xs:long" minOccurs="0"/>
     </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="sessionTicket">
-    <xs:complexContent>
-      <xs:extension base="modifiableVariableHolder">
-        <xs:sequence>
-          <xs:element name="encryptedState" type="modifiableByteArray" minOccurs="0"/>
-          <xs:element name="encryptedStateLength" type="modifiableInteger" minOccurs="0"/>
-          <xs:element name="IV" type="modifiableByteArray" minOccurs="0"/>
-          <xs:element name="identity" type="modifiableByteArray" minOccurs="0"/>
-          <xs:element name="identityLength" type="modifiableInteger" minOccurs="0"/>
-          <xs:element name="keyName" type="modifiableByteArray" minOccurs="0"/>
-          <xs:element name="MAC" type="modifiableByteArray" minOccurs="0"/>
-          <xs:element name="ticketAgeAdd" type="modifiableByteArray" minOccurs="0"/>
-          <xs:element name="ticketNonce" type="modifiableByteArray" minOccurs="0"/>
-          <xs:element name="ticketNonceLength" type="modifiableInteger" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
   </xs:complexType>
 
   <xs:complexType name="keyUpdateMessage">

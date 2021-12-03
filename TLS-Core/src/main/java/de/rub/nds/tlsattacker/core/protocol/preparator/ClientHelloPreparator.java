@@ -77,7 +77,7 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
         if (msg.containsExtension(ExtensionType.SESSION_TICKET)) {
             SessionTicketTLSExtensionMessage extensionMessage =
                 msg.getExtension(SessionTicketTLSExtensionMessage.class);
-            if (extensionMessage.getSessionTicket().getEncryptedStateLength().getValue() > 0) {
+            if (extensionMessage.getSessionTicket().getIdentityLength().getValue() > 0) {
                 useDefaultClientTicketResumptionSessionId = true;
             }
         }
