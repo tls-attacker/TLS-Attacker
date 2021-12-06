@@ -24,7 +24,7 @@ import java.util.LinkedList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
+@XmlRootElement(name = "SupplementalData")
 public class SupplementalDataMessage extends HandshakeMessage {
 
     @HoldsModifiableVariable

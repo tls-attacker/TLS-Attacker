@@ -15,11 +15,13 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Class representing a Extended Random Extension Message, as defined as in
  * https://tools.ietf.org/html/draft-rescorla-tls-extended-random-02
  */
+@XmlRootElement(name = "ExtendedRandomExtension")
 public class ExtendedRandomExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty

@@ -18,7 +18,9 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
 import java.util.List;
+import javax.xml.bind.annotation.XmlRootElement;
 
+@XmlRootElement(name = "TrustedCaIndicationExtension")
 public class TrustedCaIndicationExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty

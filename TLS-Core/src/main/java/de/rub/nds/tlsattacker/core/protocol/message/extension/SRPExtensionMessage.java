@@ -15,10 +15,12 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * This extension is defined in RFC5054
  */
+@XmlRootElement(name = "SRPExtension")
 public class SRPExtensionMessage extends ExtensionMessage {
 
     // UTF-8 encoded and according to RFC 4013 with the SASLprep profile

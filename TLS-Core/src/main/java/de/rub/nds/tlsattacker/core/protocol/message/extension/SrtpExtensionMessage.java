@@ -15,10 +15,12 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * This extension is defined in RFC5764
  */
+@XmlRootElement(name = "SrtpExtension")
 public class SrtpExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty
