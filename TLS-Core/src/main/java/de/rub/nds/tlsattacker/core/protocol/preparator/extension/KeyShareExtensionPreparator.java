@@ -66,8 +66,15 @@ public class KeyShareExtensionPreparator extends ExtensionPreparator<KeyShareExt
         List<KeyShareStoreEntry> clientShares = chooser.getClientKeyShares();
         for (KeyShareStoreEntry i : clientShares) {
             if (chooser.getServerSupportedNamedGroups().contains(i.getGroup())) {
-                KeyShareEntry keyShareEntry = new KeyShareEntry(i.getGroup(), chooser.getConfig().getKeySharePrivate());
-                serverList.add(keyShareEntry);
+                KeyShareEntry predefinedServerKeyShare = getPredefinedKeyShareEntryFromMessage(i.getGroup());
+                if (predefinedServerKeyShare != null) {
+                    LOGGER.debug("Using predefined Key Share Entry for Server Hello");
+                    serverList.add(predefinedServerKeyShare);
+                } else {
+                    KeyShareEntry keyShareEntry =
+                        new KeyShareEntry(i.getGroup(), chooser.getConfig().getKeySharePrivate());
+                    serverList.add(keyShareEntry);
+                }
                 break;
             }
         }
@@ -78,6 +85,17 @@ public class KeyShareExtensionPreparator extends ExtensionPreparator<KeyShareExt
             serverList.add(keyShareEntry);
         }
         return serverList;
+    }
+
+    private KeyShareEntry getPredefinedKeyShareEntryFromMessage(NamedGroup requiredGroup) {
+        if (msg.getKeyShareList() != null) {
+            for (KeyShareEntry entry : msg.getKeyShareList()) {
+                if (entry.getGroupConfig() == requiredGroup) {
+                    return entry;
+                }
+            }
+        }
+        return null;
     }
 
     private List<KeyShareEntry> setupRetryRequestKeyShareEntry() {
