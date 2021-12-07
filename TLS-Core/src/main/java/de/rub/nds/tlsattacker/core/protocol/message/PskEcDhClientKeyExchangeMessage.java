@@ -20,7 +20,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.PskEcDhClientKeyExchangeHand
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
+@XmlRootElement(name = "PskEcDhClientKeyExchange")
 public class PskEcDhClientKeyExchangeMessage extends ECDHClientKeyExchangeMessage {
 
     @ModifiableVariableProperty(format = ModifiableVariableProperty.Format.PKCS1,
@@ -89,5 +89,10 @@ public class PskEcDhClientKeyExchangeMessage extends ECDHClientKeyExchangeMessag
     @Override
     public String toCompactString() {
         return "PSK_ECDH_CLIENT_KEY_EXCHANGE";
+    }
+
+    @Override
+    public String toShortString() {
+        return "PSK_ECDH_CKE";
     }
 }

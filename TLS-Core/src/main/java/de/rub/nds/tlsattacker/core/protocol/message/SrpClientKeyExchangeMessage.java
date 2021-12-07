@@ -22,7 +22,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
+@XmlRootElement(name = "SrpClientKeyExchange")
 public class SrpClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     /**
      * SRP modulus
@@ -139,6 +139,11 @@ public class SrpClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     @Override
     public String toCompactString() {
         return "SRP_CLIENT_KEY_EXCHANGE";
+    }
+
+    @Override
+    public String toShortString() {
+        return "SRP_CKE";
     }
 
     @Override

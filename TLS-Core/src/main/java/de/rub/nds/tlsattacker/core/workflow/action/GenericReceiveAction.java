@@ -10,13 +10,13 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -32,24 +32,8 @@ public class GenericReceiveAction extends MessageAction implements ReceivingActi
         super();
     }
 
-    public GenericReceiveAction(List<ProtocolMessage> messages) {
-        super(messages);
-    }
-
-    public GenericReceiveAction(ProtocolMessage... messages) {
-        this(new ArrayList<>(Arrays.asList(messages)));
-    }
-
     public GenericReceiveAction(String connectionAlias) {
         super(connectionAlias);
-    }
-
-    public GenericReceiveAction(String connectionAlias, List<ProtocolMessage> messages) {
-        super(connectionAlias, messages);
-    }
-
-    public GenericReceiveAction(String connectionAlias, ProtocolMessage... messages) {
-        super(connectionAlias, new ArrayList<>(Arrays.asList(messages)));
     }
 
     @Override
@@ -60,8 +44,11 @@ public class GenericReceiveAction extends MessageAction implements ReceivingActi
         LOGGER.debug("Receiving Messages...");
         TlsContext ctx = state.getTlsContext(getConnectionAlias());
         MessageActionResult result = receiveMessageHelper.receiveMessages(ctx);
-        records.addAll(result.getRecordList());
-        messages.addAll(result.getMessageList());
+        records = new ArrayList<>(result.getRecordList());
+        messages = new ArrayList<>(result.getMessageList());
+        if (result.getMessageFragmentList() != null) {
+            fragments = new ArrayList<>(result.getMessageFragmentList());
+        }
         setExecuted(true);
         String received = getReadableString(messages);
         LOGGER.info("Received Messages (" + ctx + "): " + received);
@@ -87,7 +74,8 @@ public class GenericReceiveAction extends MessageAction implements ReceivingActi
     public void reset() {
         messages = new LinkedList<>();
         records = new LinkedList<>();
-        setExecuted(Boolean.FALSE);
+        fragments = new LinkedList<>();
+        setExecuted(null);
     }
 
     @Override
@@ -98,6 +86,11 @@ public class GenericReceiveAction extends MessageAction implements ReceivingActi
     @Override
     public List<AbstractRecord> getReceivedRecords() {
         return records;
+    }
+
+    @Override
+    public List<DtlsHandshakeMessageFragment> getReceivedFragments() {
+        return fragments;
     }
 
     @Override

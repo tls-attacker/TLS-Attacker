@@ -24,7 +24,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
+@XmlRootElement(name = "PskServerKeyExchange")
 public class PskServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     @HoldsModifiableVariable
@@ -115,5 +115,10 @@ public class PskServerKeyExchangeMessage extends ServerKeyExchangeMessage {
             holders.add(computations);
         }
         return holders;
+    }
+
+    @Override
+    public String toShortString() {
+        return "PSK_SKE";
     }
 }

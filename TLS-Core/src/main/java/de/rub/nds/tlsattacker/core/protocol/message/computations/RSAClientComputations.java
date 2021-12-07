@@ -71,8 +71,4 @@ public class RSAClientComputations extends KeyExchangeComputations {
             .safelySetValue(this.premasterSecretProtocolVersion, premasterSecretProtocolVersion);
     }
 
-    @Override
-    public void setSecretsInConfig(Config config) {
-        LOGGER.debug("Nothing to do here, since the client has no private key");
-    }
 }

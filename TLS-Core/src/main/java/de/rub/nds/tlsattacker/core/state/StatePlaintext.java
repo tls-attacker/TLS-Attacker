@@ -21,7 +21,7 @@ public class StatePlaintext {
     private ModifiableByteArray protocolVersion;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableInteger cipherSuite;
+    private ModifiableByteArray cipherSuite;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByte compressionMethod;
@@ -56,15 +56,15 @@ public class StatePlaintext {
         this.protocolVersion = ModifiableVariableFactory.safelySetValue(this.protocolVersion, protocolVersion);
     }
 
-    public ModifiableInteger getCipherSuite() {
+    public ModifiableByteArray getCipherSuite() {
         return cipherSuite;
     }
 
-    public void setCipherSuite(ModifiableInteger cipherSuite) {
+    public void setCipherSuite(ModifiableByteArray cipherSuite) {
         this.cipherSuite = cipherSuite;
     }
 
-    public void setCipherSuite(int cipherSuite) {
+    public void setCipherSuite(byte[] cipherSuite) {
         this.cipherSuite = ModifiableVariableFactory.safelySetValue(this.cipherSuite, cipherSuite);
     }
 

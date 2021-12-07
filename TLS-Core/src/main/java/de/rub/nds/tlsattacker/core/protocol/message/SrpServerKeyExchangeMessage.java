@@ -24,7 +24,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
+@XmlRootElement(name = "SrpServerKeyExchange")
 public class SrpServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     /**
@@ -186,6 +186,11 @@ public class SrpServerKeyExchangeMessage extends ServerKeyExchangeMessage {
             sb.append("null");
         }
         return sb.toString();
+    }
+
+    @Override
+    public String toShortString() {
+        return "SRP_SKE";
     }
 
     @Override

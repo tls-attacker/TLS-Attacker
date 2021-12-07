@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.ServerHelloDoneHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
+@XmlRootElement(name = "ServerHelloDone")
 public class ServerHelloDoneMessage extends HandshakeMessage {
 
     public ServerHelloDoneMessage(Config tlsConfig) {
@@ -36,5 +36,10 @@ public class ServerHelloDoneMessage extends HandshakeMessage {
         StringBuilder sb = new StringBuilder();
         sb.append("ServerHelloDoneMessage:");
         return sb.toString();
+    }
+
+    @Override
+    public String toShortString() {
+        return "SHD";
     }
 }

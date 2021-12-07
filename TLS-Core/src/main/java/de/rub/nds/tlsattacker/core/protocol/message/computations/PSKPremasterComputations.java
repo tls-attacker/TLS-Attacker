@@ -44,13 +44,4 @@ public class PSKPremasterComputations extends KeyExchangeComputations {
     public void setPremasterSecret(byte[] value) {
         this.premasterSecret = ModifiableVariableFactory.safelySetValue(this.premasterSecret, value);
     }
-
-    @Override
-    public void setSecretsInConfig(Config config) {
-        if (psk != null && psk.getValue() != null) {
-            config.setDefaultPSKKey(psk.getValue());
-        } else {
-            LOGGER.warn("Could not adjust PSK to config. PSK is null");
-        }
-    }
 }

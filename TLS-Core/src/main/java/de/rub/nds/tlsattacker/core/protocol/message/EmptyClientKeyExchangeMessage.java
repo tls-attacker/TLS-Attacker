@@ -19,7 +19,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
+@XmlRootElement(name = "EmptyClientKeyExchange")
 public class EmptyClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     @HoldsModifiableVariable
@@ -53,6 +53,11 @@ public class EmptyClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     @Override
     public String toCompactString() {
         return "EMPTY_CLIENT_KEY_EXCHANGE";
+    }
+
+    @Override
+    public String toShortString() {
+        return "E_CKE";
     }
 
     @Override

@@ -15,14 +15,6 @@ import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.parser.cert.CleanRecordByteSeperator;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
-import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
-import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
-import de.rub.nds.tlsattacker.core.record.compressor.RecordCompressor;
-import de.rub.nds.tlsattacker.core.record.compressor.RecordDecompressor;
-import de.rub.nds.tlsattacker.core.record.crypto.Decryptor;
-import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
-import de.rub.nds.tlsattacker.core.record.crypto.RecordDecryptor;
-import de.rub.nds.tlsattacker.core.record.crypto.RecordEncryptor;
 import de.rub.nds.tlsattacker.core.record.parser.BlobRecordParser;
 import de.rub.nds.tlsattacker.core.record.parser.RecordParser;
 import de.rub.nds.tlsattacker.core.record.preparator.AbstractRecordPreparator;
@@ -30,7 +22,6 @@ import de.rub.nds.tlsattacker.core.record.serializer.AbstractRecordSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -40,33 +31,8 @@ public class TlsRecordLayer extends RecordLayer {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    protected final TlsContext tlsContext;
-
-    private final Decryptor decryptor;
-    private final Encryptor encryptor;
-
-    private RecordCompressor compressor;
-    private RecordDecompressor decompressor;
-
-    private RecordCipher cipher;
-
     public TlsRecordLayer(TlsContext tlsContext) {
-        this.tlsContext = tlsContext;
-        cipher = new RecordNullCipher(tlsContext);
-        encryptor = new RecordEncryptor(cipher, tlsContext);
-        decryptor = new RecordDecryptor(cipher, tlsContext);
-        compressor = new RecordCompressor(tlsContext);
-        decompressor = new RecordDecompressor(tlsContext);
-    }
-
-    @Override
-    public void updateCompressor() {
-        compressor.setMethod(tlsContext.getChooser().getSelectedCompressionMethod());
-    }
-
-    @Override
-    public void updateDecompressor() {
-        decompressor.setMethod(tlsContext.getChooser().getSelectedCompressionMethod());
+        super(tlsContext);
     }
 
     @Override
@@ -76,7 +42,7 @@ public class TlsRecordLayer extends RecordLayer {
         while (dataPointer != rawRecordData.length) {
             try {
                 RecordParser parser =
-                    new RecordParser(dataPointer, rawRecordData, tlsContext.getChooser().getSelectedProtocolVersion());
+                    new RecordParser(dataPointer, rawRecordData, getDecryptorCipher().getState().getVersion());
                 Record record = parser.parse();
                 records.add(record);
                 if (dataPointer == parser.getPointer()) {
@@ -98,7 +64,7 @@ public class TlsRecordLayer extends RecordLayer {
         while (dataPointer != rawRecordData.length) {
             try {
                 RecordParser parser =
-                    new RecordParser(dataPointer, rawRecordData, tlsContext.getChooser().getSelectedProtocolVersion());
+                    new RecordParser(dataPointer, rawRecordData, getDecryptorCipher().getState().getVersion());
                 Record record = parser.parse();
                 records.add(record);
                 if (dataPointer == parser.getPointer()) {
@@ -108,8 +74,8 @@ public class TlsRecordLayer extends RecordLayer {
             } catch (ParserException e) {
                 LOGGER.debug("Could not parse Record, parsing as Blob");
                 LOGGER.trace(e);
-                BlobRecordParser blobParser = new BlobRecordParser(dataPointer, rawRecordData,
-                    tlsContext.getChooser().getSelectedProtocolVersion());
+                BlobRecordParser blobParser =
+                    new BlobRecordParser(dataPointer, rawRecordData, getDecryptorCipher().getState().getVersion());
                 AbstractRecord record = blobParser.parse();
                 records.add(record);
                 if (dataPointer == blobParser.getPointer()) {
@@ -125,7 +91,7 @@ public class TlsRecordLayer extends RecordLayer {
     @Override
     public byte[] prepareRecords(byte[] data, ProtocolMessageType contentType, List<AbstractRecord> records) {
         CleanRecordByteSeperator separator =
-            new CleanRecordByteSeperator(records, tlsContext.getChooser().getOutboundMaxRecordDataSize(), 0, data);
+            new CleanRecordByteSeperator(records, getTlsContext().getChooser().getOutboundMaxRecordDataSize(), 0, data);
         records = separator.parse();
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         boolean useRecordType = false;
@@ -139,9 +105,11 @@ public class TlsRecordLayer extends RecordLayer {
                     contentType = ProtocolMessageType.UNKNOWN;
                 }
             }
-
+            if (getEncryptorCipher().getState().getVersion().isDTLS() && record instanceof Record) {
+                ((Record) record).setEpoch(getWriteEpoch());
+            }
             AbstractRecordPreparator preparator =
-                record.getRecordPreparator(tlsContext.getChooser(), encryptor, compressor, contentType);
+                record.getRecordPreparator(getTlsContext().getChooser(), getEncryptor(), getCompressor(), contentType);
             preparator.prepare();
             AbstractRecordSerializer serializer = record.getRecordSerializer();
             try {
@@ -156,69 +124,47 @@ public class TlsRecordLayer extends RecordLayer {
     }
 
     @Override
-    public void setRecordCipher(RecordCipher cipher) {
-        this.cipher = cipher;
-    }
-
-    @Override
-    public RecordCipher getRecordCipher() {
-        return cipher;
-    }
-
-    @Override
-    public void updateEncryptionCipher() {
-        encryptor.addNewRecordCipher(cipher);
-    }
-
-    @Override
-    public void updateDecryptionCipher() {
-        decryptor.addNewRecordCipher(cipher);
+    public byte[] reencrypt(List<AbstractRecord> records) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        for (AbstractRecord record : records) {
+            AbstractRecordPreparator preparator = record.getRecordPreparator(getTlsContext().getChooser(),
+                getEncryptor(), getCompressor(), record.getContentMessageType());
+            preparator.encrypt();
+            AbstractRecordSerializer serializer = record.getRecordSerializer();
+            try {
+                byte[] recordBytes = serializer.serialize();
+                record.setCompleteRecordBytes(recordBytes);
+                stream.write(record.getCompleteRecordBytes().getValue());
+            } catch (IOException ex) {
+                throw new PreparationException("Could not write Record bytes to ByteArrayStream", ex);
+            }
+        }
+        return stream.toByteArray();
     }
 
     @Override
     public void decryptAndDecompressRecord(AbstractRecord record) {
         if (record instanceof Record) {
-            if (!tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()
-                || (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()
-                    && record.getContentMessageType() == ProtocolMessageType.APPLICATION_DATA)) {
-                decryptor.decrypt(record);
-                decompressor.decompress(record);
-                ((Record) record).getComputations().setUsedTls13KeySetType(tlsContext.getActiveKeySetTypeRead());
-            } else {
+            if (record.getContentMessageType() == ProtocolMessageType.CHANGE_CIPHER_SPEC
+                && getDecryptorCipher().getState().getVersion().isTLS13()) {
                 // Do not decrypt the record
                 record.prepareComputations();
-                ((Record) record).setSequenceNumber(BigInteger.valueOf(tlsContext.getReadSequenceNumber()));
                 byte[] protocolMessageBytes = record.getProtocolMessageBytes().getValue();
                 record.setCleanProtocolMessageBytes(protocolMessageBytes);
-                // tlsContext.increaseReadSequenceNumber();
+            } else {
+                getDecryptor().decrypt(record);
+                getDecompressor().decompress(record);
+                ((Record) record).getComputations().setUsedTls13KeySetType(getTlsContext().getActiveKeySetTypeRead());
             }
         } else {
             LOGGER.warn("Decrypting received non Record:" + record.toString());
-            decryptor.decrypt(record);
-            decompressor.decompress(record);
+            getDecryptor().decrypt(record);
+            getDecompressor().decompress(record);
         }
     }
 
-    @Override
     public AbstractRecord getFreshRecord() {
-        return new Record(tlsContext.getChooser().getOutboundMaxRecordDataSize());
+        return new Record(getTlsContext().getChooser().getOutboundMaxRecordDataSize());
     }
 
-    @Override
-    public RecordCipher getEncryptorCipher() {
-        return encryptor.getRecordMostRecentCipher();
-    }
-
-    @Override
-    public RecordCipher getDecryptorCipher() {
-        return decryptor.getRecordMostRecentCipher();
-    }
-
-    public Encryptor getEncryptor() {
-        return encryptor;
-    }
-
-    public Decryptor getDecryptor() {
-        return decryptor;
-    }
 }

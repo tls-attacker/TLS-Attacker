@@ -23,7 +23,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.TlsMessageHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
+@XmlRootElement(name = "Heartbeat")
 public class HeartbeatMessage extends TlsMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
@@ -131,6 +131,11 @@ public class HeartbeatMessage extends TlsMessage {
     @Override
     public String toCompactString() {
         return "HEARTBEAT";
+    }
+
+    @Override
+    public String toShortString() {
+        return "HB";
     }
 
     @Override

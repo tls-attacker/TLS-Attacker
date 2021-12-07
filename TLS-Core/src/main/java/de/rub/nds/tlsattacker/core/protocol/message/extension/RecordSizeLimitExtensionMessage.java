@@ -13,10 +13,12 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Record Size Limit Extension described in RFC 8449
  */
+@XmlRootElement(name = "RecordSizeLimitExtension")
 public class RecordSizeLimitExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty

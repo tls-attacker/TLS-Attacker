@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
-import de.rub.nds.tlsattacker.core.protocol.message.UserMappingExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.UserMappingExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.UserMappingExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.UserMappingExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.UserMappingExtensionSerializer;

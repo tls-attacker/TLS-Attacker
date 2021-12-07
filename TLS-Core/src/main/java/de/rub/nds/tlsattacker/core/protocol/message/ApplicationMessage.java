@@ -22,7 +22,7 @@ import java.util.Arrays;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-@XmlRootElement
+@XmlRootElement(name = "Application")
 public class ApplicationMessage extends TlsMessage {
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
@@ -86,6 +86,11 @@ public class ApplicationMessage extends TlsMessage {
     @Override
     public String toCompactString() {
         return "APPLICATION";
+    }
+
+    @Override
+    public String toShortString() {
+        return "APP";
     }
 
     @Override

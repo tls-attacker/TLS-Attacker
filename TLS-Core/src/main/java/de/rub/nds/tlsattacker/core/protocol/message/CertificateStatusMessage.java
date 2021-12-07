@@ -25,7 +25,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@XmlRootElement
+@XmlRootElement(name = "CertificateStatus")
 public class CertificateStatusMessage extends HandshakeMessage {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -74,6 +74,11 @@ public class CertificateStatusMessage extends HandshakeMessage {
             builder.append("\n null");
         }
         return builder.toString();
+    }
+
+    @Override
+    public String toShortString() {
+        return "CERT_STAT";
     }
 
     public ModifiableInteger getCertificateStatusType() {

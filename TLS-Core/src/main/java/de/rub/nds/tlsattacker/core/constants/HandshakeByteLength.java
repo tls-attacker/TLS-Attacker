@@ -73,6 +73,11 @@ public class HandshakeByteLength {
     public static final int SESSION_ID_LENGTH = 1;
 
     /**
+     * length of the dtls cookie length field indicating the dtls cookie length
+     */
+    public static final int DTLS_COOKIE_LENGTH = 1;
+
+    /**
      * unix time byte length
      */
     public static final int UNIX_TIME = 4;
@@ -253,6 +258,15 @@ public class HandshakeByteLength {
      * certificate status response length field
      */
     public static final int CERTIFICATE_STATUS_RESPONSE_LENGTH = 3;
+
+    /**
+     * RSA modulus length
+     */
+    public static final int RSA_MODULUS_LENGTH = 2;
+    /**
+     * RSA public key length
+     */
+    public static final int RSA_PUBLICKEY_LENGTH = 2;
 
     /**
      * KeyUpdate Message Length

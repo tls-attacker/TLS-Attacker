@@ -15,10 +15,12 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Maximum Fragment Length Extension described in rfc3546
  */
+@XmlRootElement(name = "MaxFragmentLengthExtension")
 public class MaxFragmentLengthExtensionMessage extends ExtensionMessage {
 
     private MaxFragmentLength maxFragmentLengthConfig;

@@ -42,7 +42,7 @@ public class SessionTicketTlsExtensionHandlerTest {
     @Test
     public void testAdjustTLSContext() {
         SessionTicketTLSExtensionMessage message = new SessionTicketTLSExtensionMessage();
-        message.setTicket(SESSION_TICKET);
+        message.getSessionTicket().setIdentity(SESSION_TICKET);
         message.setExtensionLength(EXTENSION_LENGTH);
 
         handler.adjustTLSContext(message);

@@ -20,7 +20,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.PskDheServerKeyExchangeHandl
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
+@XmlRootElement(name = "PskDheServerKeyExchange")
 public class PskDheServerKeyExchangeMessage extends DHEServerKeyExchangeMessage {
 
     private ModifiableByteArray identityHint;
@@ -93,5 +93,10 @@ public class PskDheServerKeyExchangeMessage extends DHEServerKeyExchangeMessage 
     @Override
     public String toCompactString() {
         return "DHE_PSK_SERVER_KEY_EXCHANGE";
+    }
+
+    @Override
+    public String toShortString() {
+        return "PSK_DHE_CKE";
     }
 }

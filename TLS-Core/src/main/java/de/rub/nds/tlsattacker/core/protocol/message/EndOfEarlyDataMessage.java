@@ -18,7 +18,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 /**
  * RFC draft-ietf-tls-tls13-21
  */
-@XmlRootElement
+@XmlRootElement(name = "EndOfEarlyData")
 public class EndOfEarlyDataMessage extends HandshakeMessage {
 
     public EndOfEarlyDataMessage() {
@@ -32,6 +32,11 @@ public class EndOfEarlyDataMessage extends HandshakeMessage {
     @Override
     public EndOfEarlyDataHandler getHandler(TlsContext context) {
         return new EndOfEarlyDataHandler(context);
+    }
+
+    @Override
+    public String toShortString() {
+        return "EOED";
     }
 
 }

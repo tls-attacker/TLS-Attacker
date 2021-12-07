@@ -65,7 +65,7 @@ public class UdpInputStream extends InputStream {
         while (available() == 0) {
             try {
                 Thread.sleep(1);
-            } catch (InterruptedException _) {
+            } catch (InterruptedException ignored) {
             }
         }
         index++;

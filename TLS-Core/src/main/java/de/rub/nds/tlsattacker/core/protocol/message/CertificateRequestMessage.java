@@ -28,7 +28,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@XmlRootElement
+@XmlRootElement(name = "CertificateRequest")
 public class CertificateRequestMessage extends HandshakeMessage {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -226,6 +226,11 @@ public class CertificateRequestMessage extends HandshakeMessage {
         // sb.append("\n Distinguished Names: ").append(ArrayConverter
         // .bytesToHexString(distinguishedNames.getValue()));
         return sb.toString();
+    }
+
+    @Override
+    public String toShortString() {
+        return "CR";
     }
 
     @Override

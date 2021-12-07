@@ -25,6 +25,9 @@ public class SessionTicket extends ModifiableVariableHolder implements Serializa
     private ModifiableByteArray iv;
 
     @ModifiableVariableProperty()
+    private ModifiableInteger encryptedStateLength;
+
+    @ModifiableVariableProperty()
     private ModifiableByteArray encryptedState;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.HMAC)
@@ -243,5 +246,18 @@ public class SessionTicket extends ModifiableVariableHolder implements Serializa
      */
     public void setTicketNonceLength(int ticketNonceLength) {
         this.ticketNonceLength = ModifiableVariableFactory.safelySetValue(this.ticketNonceLength, ticketNonceLength);
+    }
+
+    public ModifiableInteger getEncryptedStateLength() {
+        return encryptedStateLength;
+    }
+
+    public void setEncryptedStateLength(ModifiableInteger encryptedStateLength) {
+        this.encryptedStateLength = encryptedStateLength;
+    }
+
+    public void setEncryptedStateLength(int encryptedStateLength) {
+        this.encryptedStateLength =
+            ModifiableVariableFactory.safelySetValue(this.encryptedStateLength, encryptedStateLength);
     }
 }

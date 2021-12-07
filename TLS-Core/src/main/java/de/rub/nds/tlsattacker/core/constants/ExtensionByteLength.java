@@ -94,6 +94,12 @@ public class ExtensionByteLength {
      * TicketAge length in the PreSharedKeyExtension
      */
     public static final int TICKET_AGE_LENGTH = 4;
+
+    /**
+     * Based on the suggested length of the encrypted session ticket
+     */
+    public static final int ENCRYPTED_SESSION_TICKET_STATE_LENGTH = 2;
+
     /**
      * MaxEarlyDataSize length in the EarlyDataExtension
      */

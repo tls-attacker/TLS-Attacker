@@ -19,7 +19,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.DtlsHandshakeMessageFragment
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
+@XmlRootElement(name = "DtlsHandshakeMessageFragment")
 public class DtlsHandshakeMessageFragment extends HandshakeMessage {
 
     @ModifiableVariableProperty
@@ -37,9 +37,11 @@ public class DtlsHandshakeMessageFragment extends HandshakeMessage {
     private ModifiableInteger epoch = null;
 
     private byte[] fragmentContentConfig = new byte[0];
-    private int messageSequenceConfig = 0;
-    private int offsetConfig = 0;
-    private int handshakeMessageLengthConfig = 0;
+    private int messageSequenceConfig;
+    private int offsetConfig;
+    private int handshakeMessageLengthConfig;
+    private HandshakeMessageType handshakeMessageTypeConfig;
+    private int maxFragmentLengthConfig;
 
     public DtlsHandshakeMessageFragment() {
         super(HandshakeMessageType.UNKNOWN);
@@ -52,6 +54,7 @@ public class DtlsHandshakeMessageFragment extends HandshakeMessage {
         super(handshakeMessageType);
         isIncludeInDigestDefault = false;
         adjustContextDefault = false;
+        this.handshakeMessageTypeConfig = handshakeMessageType;
         this.fragmentContentConfig = fragmentContentConfig;
         this.messageSequenceConfig = messageSequenceConfig;
         this.offsetConfig = offsetConfig;
@@ -62,6 +65,14 @@ public class DtlsHandshakeMessageFragment extends HandshakeMessage {
         super(tlsConfig, HandshakeMessageType.UNKNOWN);
         isIncludeInDigestDefault = false;
         adjustContextDefault = false;
+        this.maxFragmentLengthConfig = tlsConfig.getDtlsMaximumFragmentLength();
+    }
+
+    public DtlsHandshakeMessageFragment(Config tlsConfig, int maxFragmentLengthConfig) {
+        super(tlsConfig, HandshakeMessageType.UNKNOWN);
+        isIncludeInDigestDefault = false;
+        adjustContextDefault = false;
+        this.maxFragmentLengthConfig = maxFragmentLengthConfig;
     }
 
     public DtlsHandshakeMessageFragment(HandshakeMessageType handshakeMessageType) {
@@ -73,6 +84,22 @@ public class DtlsHandshakeMessageFragment extends HandshakeMessage {
     @Override
     public DtlsHandshakeMessageFragmentHandler getHandler(TlsContext context) {
         return new DtlsHandshakeMessageFragmentHandler(context);
+    }
+
+    public HandshakeMessageType getHandshakeMessageTypeConfig() {
+        return handshakeMessageTypeConfig;
+    }
+
+    public void setHandshakeMessageTypeConfig(HandshakeMessageType handshakeMessageTypeConfig) {
+        this.handshakeMessageTypeConfig = handshakeMessageTypeConfig;
+    }
+
+    public Integer getMaxFragmentLengthConfig() {
+        return maxFragmentLengthConfig;
+    }
+
+    public void setMaxFragmentLengthConfig(int maxFragmentLengthConfig) {
+        this.maxFragmentLengthConfig = maxFragmentLengthConfig;
     }
 
     public byte[] getFragmentContentConfig() {
@@ -170,6 +197,11 @@ public class DtlsHandshakeMessageFragment extends HandshakeMessage {
     @Override
     public String toCompactString() {
         return this.getHandshakeMessageType().name().toUpperCase() + "_DTLS_FRAGMENT";
+    }
+
+    @Override
+    public String toShortString() {
+        return "DTLS_FRAG";
     }
 
 }

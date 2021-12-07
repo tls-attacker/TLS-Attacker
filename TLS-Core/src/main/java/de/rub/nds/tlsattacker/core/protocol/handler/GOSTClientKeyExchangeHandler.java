@@ -52,7 +52,6 @@ public class GOSTClientKeyExchangeHandler extends ClientKeyExchangeHandler<GOSTC
     public void adjustTLSContext(GOSTClientKeyExchangeMessage message) {
         adjustPremasterSecret(message);
         adjustMasterSecret(message);
-        setRecordCipher();
         spawnNewSession();
     }
 

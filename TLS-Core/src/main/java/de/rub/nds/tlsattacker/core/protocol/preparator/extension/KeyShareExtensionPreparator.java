@@ -48,12 +48,12 @@ public class KeyShareExtensionPreparator extends ExtensionPreparator<KeyShareExt
         }
         stream = new ByteArrayOutputStream();
 
-        if (chooser.getTalkingConnectionEnd() == ConnectionEndType.SERVER) {
-            if (msg.isRetryRequestMode()) {
-                msg.setKeyShareList(setupRetryRequestKeyShareEntry());
-            } else {
-                msg.setKeyShareList(setupRegularServerKeyShareEntry());
-            }
+        if (msg.isRetryRequestMode()) {
+            LOGGER.debug("Preparing KeyShareExtension with HelloRetryRequest structure");
+            msg.setKeyShareList(setupRetryRequestKeyShareEntry());
+        } else if (chooser.getTalkingConnectionEnd() == ConnectionEndType.SERVER) {
+            LOGGER.debug("Preparing KeyShareExtension with ServerHello structure");
+            msg.setKeyShareList(setupRegularServerKeyShareEntry());
         }
 
         if (!msg.isRetryRequestMode() && msg.getKeyShareList() != null) {
@@ -66,12 +66,36 @@ public class KeyShareExtensionPreparator extends ExtensionPreparator<KeyShareExt
         List<KeyShareStoreEntry> clientShares = chooser.getClientKeyShares();
         for (KeyShareStoreEntry i : clientShares) {
             if (chooser.getServerSupportedNamedGroups().contains(i.getGroup())) {
-                KeyShareEntry keyShareEntry = new KeyShareEntry(i.getGroup(), chooser.getConfig().getKeySharePrivate());
-                serverList.add(keyShareEntry);
+                KeyShareEntry predefinedServerKeyShare = getPredefinedKeyShareEntryFromMessage(i.getGroup());
+                if (predefinedServerKeyShare != null) {
+                    LOGGER.debug("Using predefined Key Share Entry for Server Hello");
+                    serverList.add(predefinedServerKeyShare);
+                } else {
+                    KeyShareEntry keyShareEntry =
+                        new KeyShareEntry(i.getGroup(), chooser.getConfig().getKeySharePrivate());
+                    serverList.add(keyShareEntry);
+                }
                 break;
             }
         }
+        if (serverList.isEmpty()) {
+            LOGGER.debug("Client Key Share groups not supported - falling back to default selected group");
+            KeyShareEntry keyShareEntry = new KeyShareEntry(chooser.getConfig().getDefaultSelectedNamedGroup(),
+                chooser.getConfig().getKeySharePrivate());
+            serverList.add(keyShareEntry);
+        }
         return serverList;
+    }
+
+    private KeyShareEntry getPredefinedKeyShareEntryFromMessage(NamedGroup requiredGroup) {
+        if (msg.getKeyShareList() != null) {
+            for (KeyShareEntry entry : msg.getKeyShareList()) {
+                if (entry.getGroupConfig() == requiredGroup) {
+                    return entry;
+                }
+            }
+        }
+        return null;
     }
 
     private List<KeyShareEntry> setupRetryRequestKeyShareEntry() {

@@ -99,6 +99,7 @@ public class HeartbleedCommandConfig extends AttackConfig {
         config.setAddSignatureAndHashAlgorithmsExtension(true);
         config.setQuickReceive(true);
         config.setStopActionsAfterFatal(true);
+        config.setStopActionsAfterIOException(true);
         config.setStopReceivingAfterFatal(true);
         config.setEarlyStop(true);
         boolean containsEc = false;

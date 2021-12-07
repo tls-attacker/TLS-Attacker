@@ -11,9 +11,12 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import de.rub.nds.tlsattacker.core.record.cipher.CipherState;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordBlockCipher;
+import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
@@ -48,10 +51,12 @@ public class ResetConnectionActionTest {
         tlsContext.setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
         tlsContext.setRecordLayer(new TlsRecordLayer(tlsContext));
-        tlsContext.getRecordLayer()
-            .setRecordCipher(new RecordBlockCipher(tlsContext, KeySetGenerator.generateKeySet(tlsContext)));
-        tlsContext.getRecordLayer().updateEncryptionCipher();
-        tlsContext.getRecordLayer().updateDecryptionCipher();
+        RecordCipher recordCipher = new RecordBlockCipher(tlsContext,
+            new CipherState(tlsContext.getChooser().getSelectedProtocolVersion(),
+                tlsContext.getChooser().getSelectedCipherSuite(), KeySetGenerator.generateKeySet(tlsContext),
+                tlsContext.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
+        tlsContext.getRecordLayer().updateEncryptionCipher(recordCipher);
+        tlsContext.getRecordLayer().updateDecryptionCipher(recordCipher);
         tlsContext.setActiveClientKeySetType(Tls13KeySetType.EARLY_TRAFFIC_SECRETS);
         tlsContext.setActiveServerKeySetType(Tls13KeySetType.EARLY_TRAFFIC_SECRETS);
 
@@ -61,7 +66,8 @@ public class ResetConnectionActionTest {
     public void testExecute() throws IOException {
         action.execute(state);
         TlsRecordLayer layer = TlsRecordLayer.class.cast(tlsContext.getRecordLayer());
-        assertTrue(layer.getRecordCipher() instanceof RecordNullCipher);
+        assertTrue(layer.getEncryptorCipher() instanceof RecordNullCipher);
+        assertTrue(layer.getDecryptorCipher() instanceof RecordNullCipher);
         assertTrue(layer.getEncryptorCipher() instanceof RecordNullCipher);
         assertTrue(layer.getDecryptorCipher() instanceof RecordNullCipher);
         assertEquals(tlsContext.getActiveClientKeySetType(), Tls13KeySetType.NONE);

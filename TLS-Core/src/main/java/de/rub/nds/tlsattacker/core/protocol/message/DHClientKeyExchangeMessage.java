@@ -18,7 +18,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
+@XmlRootElement(name = "DHClientKeyExchange")
 public class DHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     @HoldsModifiableVariable
@@ -52,6 +52,11 @@ public class DHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     @Override
     public String toCompactString() {
         return "DH_CLIENT_KEY_EXCHANGE";
+    }
+
+    @Override
+    public String toShortString() {
+        return "DH_CKE";
     }
 
     @Override

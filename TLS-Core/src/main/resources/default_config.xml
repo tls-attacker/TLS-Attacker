@@ -40,6 +40,7 @@
         <hostname>localhost</hostname>
     </defaultServerConnection>
     <defaultRunningMode>CLIENT</defaultRunningMode>
+    <dtlsCookieExchange>true</dtlsCookieExchange>
     <clientAuthentication>false</clientAuthentication>
     <defaultClientSupportedSignatureAndHashAlgorithms>
         <defaultClientSupportedSignatureAndHashAlgorithm>DSA_SHA1</defaultClientSupportedSignatureAndHashAlgorithm>
@@ -754,6 +755,11 @@
         <defaultClientNamedGroup>BRAINPOOLP256R1</defaultClientNamedGroup>
         <defaultClientNamedGroup>BRAINPOOLP384R1</defaultClientNamedGroup>
         <defaultClientNamedGroup>BRAINPOOLP512R1</defaultClientNamedGroup>
+        <defaultClientNamedGroup>FFDHE2048</defaultClientNamedGroup>
+        <defaultClientNamedGroup>FFDHE3072</defaultClientNamedGroup>
+        <defaultClientNamedGroup>FFDHE4096</defaultClientNamedGroup>
+        <defaultClientNamedGroup>FFDHE6144</defaultClientNamedGroup>
+        <defaultClientNamedGroup>FFDHE8192</defaultClientNamedGroup>
     </defaultClientNamedGroups>
     <defaultServerNamedGroups>
         <defaultServerNamedGroup>SECP160K1</defaultServerNamedGroup>
@@ -786,6 +792,11 @@
         <defaultServerNamedGroup>BRAINPOOLP256R1</defaultServerNamedGroup>
         <defaultServerNamedGroup>BRAINPOOLP384R1</defaultServerNamedGroup>
         <defaultServerNamedGroup>BRAINPOOLP512R1</defaultServerNamedGroup>
+        <defaultServerNamedGroup>FFDHE2048</defaultServerNamedGroup>
+        <defaultServerNamedGroup>FFDHE3072</defaultServerNamedGroup>
+        <defaultServerNamedGroup>FFDHE4096</defaultServerNamedGroup>
+        <defaultServerNamedGroup>FFDHE6144</defaultServerNamedGroup>
+        <defaultServerNamedGroup>FFDHE8192</defaultServerNamedGroup>
     </defaultServerNamedGroups>
     <supportedVersions>
         <supportedVersion>TLS13</supportedVersion>
@@ -934,6 +945,7 @@
     <distinguishedNames></distinguishedNames>
     <enforceSettings>false</enforceSettings>
     <earlyStop>false</earlyStop>
+    <receiveMaximumBytes>16777216</receiveMaximumBytes>
     <stealthMode>false</stealthMode>
     <stopActionsAfterIOException>false</stopActionsAfterIOException>
     <stopTraceAfterUnexpected>false</stopTraceAfterUnexpected>
@@ -968,6 +980,7 @@
     <dtlsMaximumFragmentLength>1400</dtlsMaximumFragmentLength>
     <workflowExecutorType>DEFAULT</workflowExecutorType>
     <flushOnMessageTypeChange>true</flushOnMessageTypeChange>
+    <createFragmentsDynamically>true</createFragmentsDynamically>
     <createRecordsDynamically>true</createRecordsDynamically>
     <createIndividualRecords>true</createIndividualRecords>
     <recordLayerType>RECORD</recordLayerType>
@@ -977,6 +990,10 @@
     <workflowExecutorShouldClose>true</workflowExecutorShouldClose>
     <stopReceivingAfterFatal>false</stopReceivingAfterFatal>
     <stopActionsAfterFatal>false</stopActionsAfterFatal>
+    <finishWithCloseNotify>false</finishWithCloseNotify>
+    <ignoreRetransmittedCcsInDtls>false</ignoreRetransmittedCcsInDtls>
+    <addRetransmissionsToWorkflowTraceInDtls>false</addRetransmissionsToWorkflowTraceInDtls>
+    <maxDtlsRetransmissions>3</maxDtlsRetransmissions>
     <stopReceivingAfterWarning>false</stopReceivingAfterWarning>
     <stopActionsAfterWarning>false</stopActionsAfterWarning>
     <defaultSelectedCipherSuite>TLS_RSA_WITH_AES_128_CBC_SHA</defaultSelectedCipherSuite>
@@ -1027,13 +1044,14 @@
     <defaultServerSupportedCompressionMethods>
         <defaultServerSupportedCompressionMethod>NULL</defaultServerSupportedCompressionMethod>
     </defaultServerSupportedCompressionMethods>
-    <defaultMasterSecret></defaultMasterSecret>
+    <defaultMasterSecret>00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00</defaultMasterSecret>
     <defaultPreMasterSecret></defaultPreMasterSecret>
     <defaultClientExtendedRandom>AA BB CC DD EE FF AA BB CC DD EE FF AA BB CC DD EE FF AA BB CC DD EE FF AA BB CC DD EE FF AA BB</defaultClientExtendedRandom>
     <defaultServerExtendedRandom>AA BB CC DD EE FF AA BB CC DD EE FF AA BB CC DD EE FF AA BB CC DD EE FF AA BB CC DD EE FF AA BB</defaultServerExtendedRandom>
     <defaultClientRandom>00 11 22 33 44 55 66 77 88 99 AA BB CC DD EE FF FF EE DD CC BB AA 99 88 77 66 55 44 33 22 11 00</defaultClientRandom>
     <defaultServerRandom>00 11 22 33 44 55 66 77 88 99 AA BB CC DD EE FF FF EE DD CC BB AA 99 88 77 66 55 44 33 22 11 00</defaultServerRandom>
     <defaultClientSessionId></defaultClientSessionId>
+    <defaultClientTicketResumptionSessionId>33 2C AC 09 A5 C5 69 74 E3 D4 9C 07 41 F3 96 C5 F1 C9 0B 41 52 9D D6 43 48 5E 65 B1 C0 61 9D 2B</defaultClientTicketResumptionSessionId>
     <defaultServerSessionId></defaultServerSessionId>
     <defaultSelectedCompressionMethod>NULL</defaultSelectedCompressionMethod>
     <dtlsDefaultCookie></dtlsDefaultCookie>
@@ -1111,14 +1129,17 @@
     <defaultTokenBindingRsaModulus>145906768007583323230186939349070635292401872375357164399581871019873438799005358938369571402670149802121818086292467422828157022922076746906543401224889672472407926969987100581290103199317858753663710862357656510507883714297115637342788911463535102712032765166518411726859837988672111837205085526346618740053</defaultTokenBindingRsaModulus>
     <useFreshRandom>true</useFreshRandom>
     <chooserType>DEFAULT</chooserType>
+    <useAllProvidedDtlsFragments>false</useAllProvidedDtlsFragments>
     <useAllProvidedRecords>false</useAllProvidedRecords>
     <httpsParsingEnabled>false</httpsParsingEnabled>
     <defaultHttpsRequestPath>/</defaultHttpsRequestPath>
     <starttlsType>NONE</starttlsType>
-    <sessionTicketLifetimeHint>0</sessionTicketLifetimeHint>
-    <sessionTicketKeyAES>53 65 63 75 72 65 53 54 69 63 6B 65 74 4B 65 79</sessionTicketKeyAES>
+    <sessionTicketLifetimeHint>7200</sessionTicketLifetimeHint>
+    <sessionTicketEncryptionKey>53 65 63 75 72 65 53 54 69 63 6B 65 74 4B 65 79</sessionTicketEncryptionKey>
     <sessionTicketKeyHMAC>53 65 63 75 72 65 53 54 69 63 6B 65 74 4B 65 79 53 65 63 75 72 65 53 54 69 63 6B 65 74 4B 65 79</sessionTicketKeyHMAC>
     <sessionTicketKeyName>54 4C 53 2D 41 74 74 61 63 6B 65 72 20 4B 65 79</sessionTicketKeyName>
+    <sessionTicketCipherAlgorithm>AES_128_CBC</sessionTicketCipherAlgorithm>
+    <sessionTicketMacAlgorithm>HMAC_SHA256</sessionTicketMacAlgorithm>
     <defaultSessionTicketAgeAdd>CB 8D BE 8E</defaultSessionTicketAgeAdd>
     <defaultSessionTicketNonce>00</defaultSessionTicketNonce>
     <defaultSessionTicketIdentity>52 66 D2 1A BE 0F 51 56 10 6E B1 F0 EC 54 A4 8A 90 FB C1 36 DE 99 0A 88 81 19 22 11 CC 83 AA 79 92 CE B6 7D 7A 40 B3 F3 04 FD EA 87 E4 CA 61 04 2C 19 64 1F D7 49 39 75 EC 69 A3 EC 3F 5F B6 40 4A A4 AC 5A CD 5E FB EA 15 D4 54 D8 98 88 A4 6F C4 E6 C6 B9 A3 E0 EE 08 EA 21 53 83 72 CE D8 D0 AC A4 53 CE AE 44 CE 37 2A 53 88 AB 4C EF 67 C5 EA E8 CC 1C 72 73 5D 26 46 C1 9B 2C 50 A4 EE 9B C9 7E 70 C6 B5 7C AB 27 6A 11 A5 9F C5 CB E0 F5 D2 51 9E 16 4F BF 9F 07 A9 DD 05 3B CF C0 89 39 B4 75 C7 A2 E7 6F 04 EF 2A 06 CC 96 72 BD 40 34</defaultSessionTicketIdentity>

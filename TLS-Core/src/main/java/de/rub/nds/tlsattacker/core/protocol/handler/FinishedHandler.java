@@ -147,16 +147,13 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
         tlsContext.setActiveServerKeySetType(keySetType);
         LOGGER.debug("Setting cipher for server to use " + keySetType);
         KeySet serverKeySet = getKeySet(tlsContext, tlsContext.getActiveServerKeySetType());
-        RecordCipher recordCipherServer = RecordCipherFactory.getRecordCipher(tlsContext, serverKeySet,
-            tlsContext.getChooser().getSelectedCipherSuite());
-        tlsContext.getRecordLayer().setRecordCipher(recordCipherServer);
 
         if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
-            tlsContext.setReadSequenceNumber(0);
-            tlsContext.getRecordLayer().updateDecryptionCipher();
+            tlsContext.getRecordLayer()
+                .updateDecryptionCipher(RecordCipherFactory.getRecordCipher(tlsContext, serverKeySet));
         } else {
-            tlsContext.setWriteSequenceNumber(0);
-            tlsContext.getRecordLayer().updateEncryptionCipher();
+            tlsContext.getRecordLayer()
+                .updateEncryptionCipher(RecordCipherFactory.getRecordCipher(tlsContext, serverKeySet));
         }
     }
 
@@ -164,16 +161,13 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
         tlsContext.setActiveClientKeySetType(keySetType);
         LOGGER.debug("Setting cipher for client to use " + keySetType);
         KeySet clientKeySet = getKeySet(tlsContext, tlsContext.getActiveClientKeySetType());
-        RecordCipher recordCipherClient = RecordCipherFactory.getRecordCipher(tlsContext, clientKeySet,
-            tlsContext.getChooser().getSelectedCipherSuite());
-        tlsContext.getRecordLayer().setRecordCipher(recordCipherClient);
 
         if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {
-            tlsContext.setReadSequenceNumber(0);
-            tlsContext.getRecordLayer().updateDecryptionCipher();
+            tlsContext.getRecordLayer()
+                .updateDecryptionCipher(RecordCipherFactory.getRecordCipher(tlsContext, clientKeySet));
         } else {
-            tlsContext.setWriteSequenceNumber(0);
-            tlsContext.getRecordLayer().updateEncryptionCipher();
+            tlsContext.getRecordLayer()
+                .updateEncryptionCipher(RecordCipherFactory.getRecordCipher(tlsContext, clientKeySet));
         }
     }
 }

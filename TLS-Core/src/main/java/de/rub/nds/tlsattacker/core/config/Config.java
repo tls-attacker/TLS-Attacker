@@ -23,6 +23,7 @@ import de.rub.nds.tlsattacker.core.constants.CertificateKeyType;
 import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestType;
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
 import de.rub.nds.tlsattacker.core.constants.ChooserType;
+import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ClientAuthenticationType;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
@@ -35,6 +36,7 @@ import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
 import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.core.constants.KeyUpdateRequest;
+import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
 import de.rub.nds.tlsattacker.core.constants.NameType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
@@ -221,6 +223,11 @@ public class Config implements Serializable {
     private InboundConnection defaultServerConnection;
 
     private RunningModeType defaultRunningMode = RunningModeType.CLIENT;
+
+    /**
+     * If default generated WorkflowTraces should contain cookie exchange
+     */
+    private Boolean dtlsCookieExchange = true;
 
     /**
      * If default generated WorkflowTraces should contain client Authentication
@@ -803,6 +810,11 @@ public class Config implements Serializable {
     private Boolean earlyStop = false;
 
     /**
+     * The maximum number of bytes that can be received during a receive process. Default: 2^24.
+     */
+    private Integer receiveMaximumBytes = 16777216;
+
+    /**
      * If true, Random of the context is not seeded with an explicit value, thus client/server randoms are not
      * deterministic.
      */
@@ -909,6 +921,12 @@ public class Config implements Serializable {
     private Boolean flushOnMessageTypeChange = true;
 
     /**
+     * If there is not enough space in the defined fragments, new fragments are dynamically added if not set,
+     * protocolmessage bytes that wont fit are discarded
+     */
+    private Boolean createFragmentsDynamically = true;
+
+    /**
      * If there is not enough space in the defined records, new records are dynamically added if not set, protocol
      * message bytes that wont fit are discarded
      */
@@ -948,6 +966,27 @@ public class Config implements Serializable {
     private Boolean stopReceivingAfterFatal = false;
 
     private Boolean stopActionsAfterFatal = false;
+
+    /**
+     * If the WorkflowExecutor should take care of terminating the connection with a Alert(fatal, close_notify) message
+     */
+    private Boolean finishWithCloseNotify = false;
+
+    /**
+     * In DTLS, TLS-Attacker will not process further ChangeCipherSpec messages except the first received per epoch
+     * value
+     */
+    private Boolean ignoreRetransmittedCcsInDtls = false;
+
+    /**
+     * If retransmissions are received in DTLS should they included to the workflow trace
+     */
+    private Boolean addRetransmissionsToWorkflowTraceInDtls = false;
+
+    /**
+     * How many retransmissions in DTLS should be executed during the handshake
+     */
+    private Integer maxDtlsRetransmissions = 3;
 
     private Boolean stopReceivingAfterWarning = false;
 
@@ -1005,7 +1044,7 @@ public class Config implements Serializable {
     private List<CompressionMethod> defaultServerSupportedCompressionMethods;
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private byte[] defaultMasterSecret = new byte[0];
+    private byte[] defaultMasterSecret = new byte[48];
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultPreMasterSecret = new byte[0];
@@ -1028,6 +1067,10 @@ public class Config implements Serializable {
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultClientSessionId = new byte[0];
+
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
+    private byte[] defaultClientTicketResumptionSessionId =
+        ArrayConverter.hexStringToByteArray("332CAC09A5C56974E3D49C0741F396C5F1C90B41529DD643485E65B1C0619D2B");;
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultServerSessionId = new byte[0];
@@ -1149,6 +1192,8 @@ public class Config implements Serializable {
 
     private ChooserType chooserType = ChooserType.DEFAULT;
 
+    private Boolean useAllProvidedDtlsFragments = false;
+
     private Boolean useAllProvidedRecords = false;
 
     private Boolean httpsParsingEnabled = false;
@@ -1166,10 +1211,10 @@ public class Config implements Serializable {
      * The Ticket Lifetime Hint, Ticket Key and Ticket Key Name used in the Extension defined in RFC5077, followed by
      * additional TLS 1.3 draft 21 NewSessionTicket parameters.
      */
-    private Long sessionTicketLifetimeHint = 0L;
+    private Long sessionTicketLifetimeHint = 7200L;
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private byte[] sessionTicketKeyAES = ArrayConverter.hexStringToByteArray("536563757265535469636b65744b6579"); // SecureSTicketKey
+    private byte[] sessionTicketEncryptionKey = ArrayConverter.hexStringToByteArray("536563757265535469636b65744b6579"); // SecureSTicketKey
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] sessionTicketKeyHMAC =
@@ -1177,6 +1222,10 @@ public class Config implements Serializable {
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] sessionTicketKeyName = ArrayConverter.hexStringToByteArray("544c532d41747461636b6572204b6579"); // TLS-Attacker
+
+    private CipherAlgorithm sessionTicketCipherAlgorithm = CipherAlgorithm.AES_128_CBC;
+
+    private MacAlgorithm sessionTicketMacAlgorithm = MacAlgorithm.HMAC_SHA256;
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultSessionTicketAgeAdd = ArrayConverter.hexStringToByteArray("cb8dbe8e");
@@ -1549,12 +1598,12 @@ public class Config implements Serializable {
         this.sessionTicketLifetimeHint = sessionTicketLifetimeHint;
     }
 
-    public byte[] getSessionTicketKeyAES() {
-        return Arrays.copyOf(sessionTicketKeyAES, sessionTicketKeyAES.length);
+    public byte[] getSessionTicketEncryptionKey() {
+        return Arrays.copyOf(sessionTicketEncryptionKey, sessionTicketEncryptionKey.length);
     }
 
-    public void setSessionTicketKeyAES(byte[] sessionTicketKeyAES) {
-        this.sessionTicketKeyAES = sessionTicketKeyAES;
+    public void setSessionTicketEncryptionKey(byte[] sessionTicketEncryptionKey) {
+        this.sessionTicketEncryptionKey = sessionTicketEncryptionKey;
     }
 
     public byte[] getSessionTicketKeyHMAC() {
@@ -1603,6 +1652,14 @@ public class Config implements Serializable {
 
     public void setUseFreshRandom(Boolean useFreshRandom) {
         this.useFreshRandom = useFreshRandom;
+    }
+
+    public Boolean isUseAllProvidedDtlsFragments() {
+        return useAllProvidedDtlsFragments;
+    }
+
+    public void setUseAllProvidedDtlsFragments(Boolean useAllProvidedDtlsFragments) {
+        this.useAllProvidedDtlsFragments = useAllProvidedDtlsFragments;
     }
 
     public Boolean isUseAllProvidedRecords() {
@@ -2285,6 +2342,14 @@ public class Config implements Serializable {
         this.quickReceive = quickReceive;
     }
 
+    public Integer getReceiveMaximumBytes() {
+        return receiveMaximumBytes;
+    }
+
+    public void setReceiveMaximumBytes(int receiveMaximumBytes) {
+        this.receiveMaximumBytes = receiveMaximumBytes;
+    }
+
     public Boolean isResetWorkflowTracesBeforeSaving() {
         return resetWorkflowTracesBeforeSaving;
     }
@@ -2307,6 +2372,14 @@ public class Config implements Serializable {
 
     public void setFlushOnMessageTypeChange(Boolean flushOnMessageTypeChange) {
         this.flushOnMessageTypeChange = flushOnMessageTypeChange;
+    }
+
+    public Boolean isCreateFragmentsDynamically() {
+        return createFragmentsDynamically;
+    }
+
+    public void setCreateFragmentsDynamically(Boolean createFragmentsDynamically) {
+        this.createFragmentsDynamically = createFragmentsDynamically;
     }
 
     public Boolean isCreateRecordsDynamically() {
@@ -2547,6 +2620,14 @@ public class Config implements Serializable {
 
     public final void setDefaultClientSupportedCipherSuites(CipherSuite... defaultClientSupportedCipherSuites) {
         this.defaultClientSupportedCipherSuites = new ArrayList(Arrays.asList(defaultClientSupportedCipherSuites));
+    }
+
+    public Boolean isDtlsCookieExchange() {
+        return dtlsCookieExchange;
+    }
+
+    public void setDtlsCookieExchange(Boolean dtlsCookieExchange) {
+        this.dtlsCookieExchange = dtlsCookieExchange;
     }
 
     public Boolean isClientAuthentication() {
@@ -3163,6 +3244,38 @@ public class Config implements Serializable {
 
     public void setStopActionsAfterFatal(Boolean stopActionsAfterFatal) {
         this.stopActionsAfterFatal = stopActionsAfterFatal;
+    }
+
+    public Boolean isFinishWithCloseNotify() {
+        return finishWithCloseNotify;
+    }
+
+    public void setFinishWithCloseNotify(Boolean finishWithCloseNotify) {
+        this.finishWithCloseNotify = finishWithCloseNotify;
+    }
+
+    public Boolean isIgnoreRetransmittedCcsInDtls() {
+        return ignoreRetransmittedCcsInDtls;
+    }
+
+    public void setIgnoreRetransmittedCssInDtls(Boolean ignoreRetransmittedCcs) {
+        this.ignoreRetransmittedCcsInDtls = ignoreRetransmittedCcs;
+    }
+
+    public Boolean isAddRetransmissionsToWorkflowTraceInDtls() {
+        return addRetransmissionsToWorkflowTraceInDtls;
+    }
+
+    public void setAddRetransmissionsToWorkflowTraceInDtls(Boolean addRetransmissionsToWorkflowTrace) {
+        this.addRetransmissionsToWorkflowTraceInDtls = addRetransmissionsToWorkflowTrace;
+    }
+
+    public int getMaxDtlsRetransmissions() {
+        return maxDtlsRetransmissions;
+    }
+
+    public void setMaxDtlsRetransmissions(int maxRetransmissions) {
+        this.maxDtlsRetransmissions = maxRetransmissions;
     }
 
     public List<FilterType> getOutputFilters() {
@@ -3948,5 +4061,29 @@ public class Config implements Serializable {
 
     public void setDefaultKeyUpdateRequestMode(KeyUpdateRequest defaultKeyUpdateRequestMode) {
         this.defaultKeyUpdateRequestMode = defaultKeyUpdateRequestMode;
+    }
+
+    public CipherAlgorithm getSessionTicketCipherAlgorithm() {
+        return sessionTicketCipherAlgorithm;
+    }
+
+    public void setSessionTicketCipherAlgorithm(CipherAlgorithm sessionTicketCipherAlgorithm) {
+        this.sessionTicketCipherAlgorithm = sessionTicketCipherAlgorithm;
+    }
+
+    public MacAlgorithm getSessionTicketMacAlgorithm() {
+        return sessionTicketMacAlgorithm;
+    }
+
+    public void setSessionTicketMacAlgorithm(MacAlgorithm sessionTicketMacAlgorithm) {
+        this.sessionTicketMacAlgorithm = sessionTicketMacAlgorithm;
+    }
+
+    public byte[] getDefaultClientTicketResumptionSessionId() {
+        return defaultClientTicketResumptionSessionId;
+    }
+
+    public void setDefaultClientTicketResumptionSessionId(byte[] defaultClientTicketResumptionSessionId) {
+        this.defaultClientTicketResumptionSessionId = defaultClientTicketResumptionSessionId;
     }
 }

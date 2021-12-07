@@ -32,7 +32,7 @@ public class KeyShareExtensionSerializer extends ExtensionSerializer<KeyShareExt
     @Override
     public byte[] serializeExtensionContent() {
         LOGGER.debug("Serializing KeyShareExtensionMessage");
-        if (connection == ConnectionEndType.CLIENT) {
+        if (connection == ConnectionEndType.CLIENT && msg.getKeyShareListLength() != null) {
             writeKeyShareListLength(msg);
         }
         writeKeyShareListBytes(msg);

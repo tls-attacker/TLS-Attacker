@@ -20,7 +20,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 /**
  * This extension is defined in RFC-ietf-tls-rfc-4492bis-17
  */
-@XmlRootElement
+@XmlRootElement(name = "ECPointFormat")
 public class ECPointFormatExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)

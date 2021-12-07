@@ -117,9 +117,4 @@ public class SRPClientComputations extends KeyExchangeComputations {
     public void setGenerator(BigInteger generator) {
         this.generator = ModifiableVariableFactory.safelySetValue(this.generator, generator);
     }
-
-    @Override
-    public void setSecretsInConfig(Config config) {
-        config.setDefaultSRPPassword(srpPassword.getValue());
-    }
 }

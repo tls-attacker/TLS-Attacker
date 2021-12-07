@@ -18,10 +18,12 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.RequestItemV2;
 import java.util.List;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * RFC 6961
  */
+@XmlRootElement(name = "CertificateStatusRequestV2Extension")
 public class CertificateStatusRequestV2ExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty

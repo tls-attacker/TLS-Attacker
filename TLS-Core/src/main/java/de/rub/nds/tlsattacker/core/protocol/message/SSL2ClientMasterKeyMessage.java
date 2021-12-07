@@ -26,7 +26,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @SuppressWarnings("serial")
-@XmlRootElement
+@XmlRootElement(name = "SSL2ClientMasterKey")
 public class SSL2ClientMasterKeyMessage extends SSL2HandshakeMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
@@ -184,6 +184,11 @@ public class SSL2ClientMasterKeyMessage extends SSL2HandshakeMessage {
             sb.append("\n Key Arg Data: ").append(ArrayConverter.bytesToHexString(getKeyArgData().getValue()));
         }
         return sb.toString();
+    }
+
+    @Override
+    public String toShortString() {
+        return "SSL2_CMKM";
     }
 
     @Override

@@ -45,8 +45,7 @@ public abstract class TlsMessageHandler<MessageT extends TlsMessage> extends Pro
 
         if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS()) {
             DtlsHandshakeMessageFragment fragment =
-                new MessageFragmenter(tlsContext.getConfig().getDtlsMaximumFragmentLength())
-                    .wrapInSingleFragment(handshakeMessage, tlsContext);
+                MessageFragmenter.wrapInSingleFragment(handshakeMessage, tlsContext);
             tlsContext.getDigest().append(fragment.getCompleteResultingMessage().getValue());
         } else {
             tlsContext.getDigest().append(message.getCompleteResultingMessage().getValue());

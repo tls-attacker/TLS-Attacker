@@ -22,7 +22,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
+@XmlRootElement(name = "PWDClientKeyExchange")
 public class PWDClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
@@ -144,6 +144,11 @@ public class PWDClientKeyExchangeMessage extends ClientKeyExchangeMessage {
             allModifiableVariableHolders.add(computations);
         }
         return allModifiableVariableHolders;
+    }
+
+    @Override
+    public String toShortString() {
+        return "PWD_CKE";
     }
 
 }

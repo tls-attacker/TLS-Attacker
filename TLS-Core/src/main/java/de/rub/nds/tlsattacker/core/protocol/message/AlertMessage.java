@@ -24,7 +24,7 @@ import java.util.Objects;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-@XmlRootElement
+@XmlRootElement(name = "Alert")
 public class AlertMessage extends TlsMessage {
 
     /**
@@ -141,6 +141,15 @@ public class AlertMessage extends TlsMessage {
         }
         sb.append("Alert(").append(levelString).append(",").append(descriptionString).append(")");
         return sb.toString();
+    }
+
+    @Override
+    public String toShortString() {
+        AlertDescription alertDescription = AlertDescription.getAlertDescription(description.getValue());
+        if (alertDescription == null) {
+            return "UKNOWN ALERT";
+        }
+        return alertDescription.toString();
     }
 
     @Override

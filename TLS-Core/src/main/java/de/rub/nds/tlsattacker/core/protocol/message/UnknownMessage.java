@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.UnknownMessageHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
+@XmlRootElement(name = "UnknownMessage")
 public class UnknownMessage extends TlsMessage {
 
     private byte[] dataConfig;
@@ -78,5 +78,10 @@ public class UnknownMessage extends TlsMessage {
             sb.append("null");
         }
         return sb.toString();
+    }
+
+    @Override
+    public String toShortString() {
+        return "?";
     }
 }

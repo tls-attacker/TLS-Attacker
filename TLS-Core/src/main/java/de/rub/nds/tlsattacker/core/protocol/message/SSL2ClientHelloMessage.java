@@ -22,7 +22,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @SuppressWarnings("serial")
-@XmlRootElement
+@XmlRootElement(name = "SSL2ClientHello")
 public class SSL2ClientHelloMessage extends SSL2HandshakeMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
@@ -177,6 +177,11 @@ public class SSL2ClientHelloMessage extends SSL2HandshakeMessage {
             sb.append("null");
         }
         return sb.toString();
+    }
+
+    @Override
+    public String toShortString() {
+        return "SSL2_CH";
     }
 
     @Override

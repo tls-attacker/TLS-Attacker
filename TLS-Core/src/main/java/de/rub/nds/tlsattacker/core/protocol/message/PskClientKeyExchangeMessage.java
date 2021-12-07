@@ -24,7 +24,7 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
+@XmlRootElement(name = "PskClientKeyExchange")
 public class PskClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     @HoldsModifiableVariable
@@ -116,6 +116,11 @@ public class PskClientKeyExchangeMessage extends ClientKeyExchangeMessage {
             holders.add(computations);
         }
         return holders;
+    }
+
+    @Override
+    public String toShortString() {
+        return "PSK_CKE";
     }
 
 }

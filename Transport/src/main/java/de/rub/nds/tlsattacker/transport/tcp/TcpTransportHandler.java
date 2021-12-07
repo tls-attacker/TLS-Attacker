@@ -85,6 +85,7 @@ public abstract class TcpTransportHandler extends TransportHandler {
     @Override
     public void setTimeout(long timeout) {
         try {
+            this.timeout = timeout;
             socket.setSoTimeout((int) timeout);
         } catch (SocketException ex) {
             LOGGER.error("Could not adjust socket timeout", ex);

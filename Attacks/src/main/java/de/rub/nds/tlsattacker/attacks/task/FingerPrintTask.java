@@ -12,8 +12,8 @@ package de.rub.nds.tlsattacker.attacks.task;
 import de.rub.nds.tlsattacker.attacks.util.response.ResponseExtractor;
 import de.rub.nds.tlsattacker.attacks.util.response.ResponseFingerprint;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.workflow.DefaultWorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.task.TlsTask;
 import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
@@ -41,7 +41,8 @@ public class FingerPrintTask extends TlsTask {
     @Override
     public boolean execute() {
         try {
-            WorkflowExecutor executor = new DefaultWorkflowExecutor(state);
+            WorkflowExecutor executor =
+                WorkflowExecutorFactory.createWorkflowExecutor(state.getConfig().getWorkflowExecutorType(), state);
             executor.executeWorkflow();
 
             if (!state.getWorkflowTrace().executedAsPlanned()) {
@@ -74,5 +75,4 @@ public class FingerPrintTask extends TlsTask {
     public void reset() {
         state.reset();
     }
-
 }

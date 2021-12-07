@@ -19,7 +19,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.ChangeCipherSpecHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
+@XmlRootElement(name = "ChangeCipherSpec")
 public class ChangeCipherSpecMessage extends TlsMessage {
 
     @ModifiableVariableProperty
@@ -58,6 +58,11 @@ public class ChangeCipherSpecMessage extends TlsMessage {
             sb.append("null");
         }
         return sb.toString();
+    }
+
+    @Override
+    public String toShortString() {
+        return "CCS";
     }
 
     @Override

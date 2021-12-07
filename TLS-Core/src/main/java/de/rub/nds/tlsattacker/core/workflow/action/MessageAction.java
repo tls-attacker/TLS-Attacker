@@ -9,6 +9,15 @@
 
 package de.rub.nds.tlsattacker.core.workflow.action;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlTransient;
+
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.https.HttpsRequestMessage;
 import de.rub.nds.tlsattacker.core.https.HttpsResponseMessage;
@@ -19,13 +28,7 @@ import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ReceiveMessageHelper;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.SendMessageHelper;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlElements;
-import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlElementRef;
 
 public abstract class MessageAction extends ConnectionBoundAction {
 
@@ -36,57 +39,7 @@ public abstract class MessageAction extends ConnectionBoundAction {
 
     @XmlElementWrapper
     @HoldsModifiableVariable
-    @XmlElements(value = { @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
-        @XmlElement(type = TlsMessage.class, name = "TlsMessage"),
-        @XmlElement(type = CertificateMessage.class, name = "Certificate"),
-        @XmlElement(type = CertificateVerifyMessage.class, name = "CertificateVerify"),
-        @XmlElement(type = CertificateRequestMessage.class, name = "CertificateRequest"),
-        @XmlElement(type = CertificateStatusMessage.class, name = "CertificateStatus"),
-        @XmlElement(type = ClientHelloMessage.class, name = "ClientHello"),
-        @XmlElement(type = HelloVerifyRequestMessage.class, name = "HelloVerifyRequest"),
-        @XmlElement(type = DHClientKeyExchangeMessage.class, name = "DHClientKeyExchange"),
-        @XmlElement(type = DHEServerKeyExchangeMessage.class, name = "DHEServerKeyExchange"),
-        @XmlElement(type = ECDHClientKeyExchangeMessage.class, name = "ECDHClientKeyExchange"),
-        @XmlElement(type = ECDHEServerKeyExchangeMessage.class, name = "ECDHEServerKeyExchange"),
-        @XmlElement(type = EmptyClientKeyExchangeMessage.class, name = "EmptyClientKeyExchange"),
-        @XmlElement(type = PskClientKeyExchangeMessage.class, name = "PSKClientKeyExchange"),
-        @XmlElement(type = PWDServerKeyExchangeMessage.class, name = "PWDServerKeyExchange"),
-        @XmlElement(type = PWDClientKeyExchangeMessage.class, name = "PWDClientKeyExchange"),
-        @XmlElement(type = FinishedMessage.class, name = "Finished"),
-        @XmlElement(type = RSAClientKeyExchangeMessage.class, name = "RSAClientKeyExchange"),
-        @XmlElement(type = GOSTClientKeyExchangeMessage.class, name = "GOSTClientKeyExchange"),
-        @XmlElement(type = ServerHelloDoneMessage.class, name = "ServerHelloDone"),
-        @XmlElement(type = ServerHelloMessage.class, name = "ServerHello"),
-        @XmlElement(type = AlertMessage.class, name = "Alert"),
-        @XmlElement(type = NewSessionTicketMessage.class, name = "NewSessionTicket"),
-        @XmlElement(type = KeyUpdateMessage.class, name = "KeyUpdate"),
-        @XmlElement(type = ApplicationMessage.class, name = "Application"),
-        @XmlElement(type = ChangeCipherSpecMessage.class, name = "ChangeCipherSpec"),
-        @XmlElement(type = SSL2ClientHelloMessage.class, name = "SSL2ClientHello"),
-        @XmlElement(type = SSL2ServerHelloMessage.class, name = "SSL2ServerHello"),
-        @XmlElement(type = SSL2ClientMasterKeyMessage.class, name = "SSL2ClientMasterKey"),
-        @XmlElement(type = SSL2ServerVerifyMessage.class, name = "SSL2ServerVerify"),
-        @XmlElement(type = UnknownMessage.class, name = "UnknownMessage"),
-        @XmlElement(type = UnknownHandshakeMessage.class, name = "UnknownHandshakeMessage"),
-        @XmlElement(type = HelloRequestMessage.class, name = "HelloRequest"),
-        @XmlElement(type = HeartbeatMessage.class, name = "Heartbeat"),
-        @XmlElement(type = SupplementalDataMessage.class, name = "SupplementalDataMessage"),
-        @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensionMessage"),
-        @XmlElement(type = HttpsRequestMessage.class, name = "HttpsRequest"),
-        @XmlElement(type = HttpsResponseMessage.class, name = "HttpsResponse"),
-        @XmlElement(type = PskClientKeyExchangeMessage.class, name = "PskClientKeyExchange"),
-        @XmlElement(type = PskDhClientKeyExchangeMessage.class, name = "PskDhClientKeyExchange"),
-        @XmlElement(type = PskDheServerKeyExchangeMessage.class, name = "PskDheServerKeyExchange"),
-        @XmlElement(type = PskEcDhClientKeyExchangeMessage.class, name = "PskEcDhClientKeyExchange"),
-        @XmlElement(type = PskEcDheServerKeyExchangeMessage.class, name = "PskEcDheServerKeyExchange"),
-        @XmlElement(type = PskRsaClientKeyExchangeMessage.class, name = "PskRsaClientKeyExchange"),
-        @XmlElement(type = PskServerKeyExchangeMessage.class, name = "PskServerKeyExchange"),
-        @XmlElement(type = SrpServerKeyExchangeMessage.class, name = "SrpServerKeyExchange"),
-        @XmlElement(type = SrpClientKeyExchangeMessage.class, name = "SrpClientKeyExchange"),
-        @XmlElement(type = EndOfEarlyDataMessage.class, name = "EndOfEarlyData"),
-        @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensions"),
-        @XmlElement(type = DtlsHandshakeMessageFragment.class, name = "DtlsHandshakeMessageFragment"),
-        @XmlElement(type = HelloRetryRequestMessage.class, name = "HelloRetryRequest") })
+    @XmlElementRef
     protected List<ProtocolMessage> messages = new ArrayList<>();
 
     @HoldsModifiableVariable
@@ -94,6 +47,11 @@ public abstract class MessageAction extends ConnectionBoundAction {
     @XmlElements(value = { @XmlElement(type = Record.class, name = "Record"),
         @XmlElement(type = BlobRecord.class, name = "BlobRecord") })
     protected List<AbstractRecord> records = new ArrayList<>();
+
+    @HoldsModifiableVariable
+    @XmlElementWrapper
+    @XmlElements(value = { @XmlElement(type = DtlsHandshakeMessageFragment.class, name = "DtlsFragment") })
+    protected List<DtlsHandshakeMessageFragment> fragments = new ArrayList<>();
 
     @XmlTransient
     protected ReceiveMessageHelper receiveMessageHelper;
@@ -194,6 +152,18 @@ public abstract class MessageAction extends ConnectionBoundAction {
         this.records = new ArrayList<>(Arrays.asList(records));
     }
 
+    public List<DtlsHandshakeMessageFragment> getFragments() {
+        return fragments;
+    }
+
+    public void setFragments(List<DtlsHandshakeMessageFragment> fragments) {
+        this.fragments = fragments;
+    }
+
+    public void setFragments(DtlsHandshakeMessageFragment... fragments) {
+        this.fragments = new ArrayList<>(Arrays.asList(fragments));
+    }
+
     public void clearRecords() {
         this.records = null;
     }
@@ -229,6 +199,9 @@ public abstract class MessageAction extends ConnectionBoundAction {
         if (records == null || records.isEmpty()) {
             records = null;
         }
+        if (fragments == null || fragments.isEmpty()) {
+            fragments = null;
+        }
     }
 
     private void initEmptyLists() {
@@ -237,6 +210,9 @@ public abstract class MessageAction extends ConnectionBoundAction {
         }
         if (records == null) {
             records = new ArrayList<>();
+        }
+        if (fragments == null) {
+            fragments = new ArrayList<>();
         }
     }
 

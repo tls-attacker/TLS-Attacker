@@ -196,7 +196,7 @@ public class RecordGroup {
     public List<RecordGroup> splitIntoProcessableSubgroups() {
         List<RecordGroup> recordGroupList = new LinkedList<>();
         if (areAllRecordsValid()) {
-            recordGroupList.add(this);
+            isolateHeartbeatRecords(recordGroupList);
             return recordGroupList;
         } else {
             List<AbstractRecord> recordList = new LinkedList<>();
@@ -219,6 +219,26 @@ public class RecordGroup {
         }
         return recordGroupList;
 
+    }
+
+    private void isolateHeartbeatRecords(List<RecordGroup> recordGroupList) {
+        List<AbstractRecord> jointRecords = new LinkedList<>();
+        for (AbstractRecord record : records) {
+            if (record.getContentMessageType() == ProtocolMessageType.HEARTBEAT) {
+                if (!jointRecords.isEmpty()) {
+                    recordGroupList.add(new RecordGroup(jointRecords));
+                    jointRecords = new LinkedList<>();
+                }
+                List<AbstractRecord> heartbeatList = new LinkedList<>();
+                heartbeatList.add(record);
+                recordGroupList.add(new RecordGroup(heartbeatList));
+            } else {
+                jointRecords.add(record);
+            }
+        }
+        if (!jointRecords.isEmpty()) {
+            recordGroupList.add(new RecordGroup(jointRecords));
+        }
     }
 
     public void checkRecordDataSize(TlsContext context, int recordIndex) {

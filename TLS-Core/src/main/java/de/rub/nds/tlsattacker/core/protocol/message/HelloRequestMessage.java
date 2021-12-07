@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.HelloRequestHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
+@XmlRootElement(name = "HelloRequest")
 public class HelloRequestMessage extends HandshakeMessage {
 
     public HelloRequestMessage(Config tlsConfig) {
@@ -39,5 +39,10 @@ public class HelloRequestMessage extends HandshakeMessage {
         sb.append("HelloRequestMessage:");
 
         return sb.toString();
+    }
+
+    @Override
+    public String toShortString() {
+        return "HR";
     }
 }

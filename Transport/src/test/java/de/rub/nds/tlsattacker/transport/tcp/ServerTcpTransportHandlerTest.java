@@ -9,24 +9,18 @@
 
 package de.rub.nds.tlsattacker.transport.tcp;
 
-import de.rub.nds.tlsattacker.transport.nonblocking.SocketOpenerCallable;
 import de.rub.nds.tlsattacker.util.FreePortFinder;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.FutureTask;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import static org.junit.Assert.*;
 
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
 public class ServerTcpTransportHandlerTest {
 
-    private static final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(1);
     private ServerTcpTransportHandler handler;
 
     @Before
@@ -39,11 +33,6 @@ public class ServerTcpTransportHandlerTest {
         if (handler.isInitialized()) {
             handler.closeConnection();
         }
-    }
-
-    @AfterClass
-    public static void closeExecutor() {
-        executor.shutdown();
     }
 
     /**
@@ -59,13 +48,13 @@ public class ServerTcpTransportHandlerTest {
     @Test
     public void testCloseClientConnection() throws IOException, InterruptedException, ExecutionException {
         handler.closeClientConnection(); // should do nothing
-        SocketOpenerCallable callable = new SocketOpenerCallable("localhost", handler.getSrcPort());
-        FutureTask task = new FutureTask(callable);
+
         // gives the server time to start
-        executor.schedule(task, 1, TimeUnit.SECONDS);
+        handler.preInitialize();
+        Socket socket = new Socket("localhost", handler.getSrcPort());
+
         handler.initialize();
         assertTrue(handler.isInitialized());
-        Socket socket = (Socket) task.get();
         assertNotNull(socket);
         assertTrue(socket.isConnected());
         try {
@@ -100,30 +89,24 @@ public class ServerTcpTransportHandlerTest {
      */
     @Test
     public void testInitialize() throws Exception {
-        SocketOpenerCallable callable = new SocketOpenerCallable("localhost", handler.getSrcPort());
-        FutureTask task = new FutureTask(callable);
-        // gives the server time to start
-        executor.schedule(task, 1, TimeUnit.SECONDS);
+        assertFalse(handler.isInitialized());
+        handler.preInitialize();
+        Socket socket = new Socket("localhost", handler.getSrcPort());
+        assertFalse(handler.isInitialized());
+
         handler.initialize();
         assertTrue(handler.isInitialized());
     }
 
     @Test
     public void fullTest() throws IOException, InterruptedException, ExecutionException {
-        SocketOpenerCallable callable = new SocketOpenerCallable("localhost", handler.getSrcPort());
-        FutureTask<Socket> task = new FutureTask(callable);
-        // gives the server time to start
-        executor.schedule(task, 1, TimeUnit.SECONDS);
+        handler.preInitialize();
+        Socket socket = new Socket("localhost", handler.getSrcPort());
+
         handler.initialize();
-        long time = System.currentTimeMillis();
-        long timeout = 1000;
-        while (!task.isDone()) {
-            if (System.currentTimeMillis() > time + timeout) {
-                fail("Starting task timed out.");
-            }
-        }
+
         assertTrue(handler.isInitialized());
-        Socket socket = task.get();
+
         socket.getOutputStream().write(new byte[] { 0, 1, 2, 3 });
         assertArrayEquals(new byte[] { 0, 1, 2, 3 }, handler.fetchData());
         handler.sendData(new byte[] { 4, 3, 2, 1 });

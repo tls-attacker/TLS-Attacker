@@ -19,10 +19,12 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import java.util.LinkedList;
 import java.util.List;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * RFC7924
  */
+@XmlRootElement(name = "CachedInfoExtension")
 public class CachedInfoExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty

@@ -9,23 +9,19 @@
 
 package de.rub.nds.tlsattacker.attacks.padding;
 
+import java.util.LinkedList;
+
 import de.rub.nds.tlsattacker.attacks.constants.PaddingRecordGeneratorType;
 import de.rub.nds.tlsattacker.attacks.padding.vector.PaddingVector;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
-import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.GenericReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ReceiveTillAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
-import de.rub.nds.tlsattacker.core.workflow.action.SendDynamicClientKeyExchangeAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
-import java.util.LinkedList;
+import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 
 /**
  *
@@ -47,19 +43,21 @@ public class ClassicDynamicPaddingTraceGenerator extends PaddingTraceGenerator {
      */
     @Override
     public WorkflowTrace getPaddingOracleWorkflowTrace(Config config, PaddingVector vector) {
+        RunningModeType runningMode = config.getDefaultRunningMode();
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
-        WorkflowTrace trace = factory.createTlsEntryWorkflowTrace(config.getDefaultClientConnection());
-        trace.addTlsAction(new SendAction(new ClientHelloMessage(config)));
-        trace.addTlsAction(new ReceiveTillAction(new ServerHelloDoneMessage()));
-        trace.addTlsAction(new SendDynamicClientKeyExchangeAction());
-        trace.addTlsAction(new SendAction(new ChangeCipherSpecMessage(), new FinishedMessage()));
-        trace.addTlsAction(new ReceiveAction(new ChangeCipherSpecMessage(), new FinishedMessage()));
+        WorkflowTrace trace = factory.createWorkflowTrace(WorkflowTraceType.DYNAMIC_HANDSHAKE, runningMode);
+
+        if (runningMode == RunningModeType.SERVER) {
+            // we assume that the client sends the first application message
+            trace.addTlsAction(new ReceiveAction(new ApplicationMessage()));
+        }
         ApplicationMessage applicationMessage = new ApplicationMessage(config);
         SendAction sendAction = new SendAction(applicationMessage);
-        sendAction.setRecords(new LinkedList<AbstractRecord>());
+        sendAction.setRecords(new LinkedList<>());
         sendAction.getRecords().add(vector.createRecord());
         trace.addTlsAction(sendAction);
         trace.addTlsAction(new GenericReceiveAction());
+
         return trace;
     }
 }

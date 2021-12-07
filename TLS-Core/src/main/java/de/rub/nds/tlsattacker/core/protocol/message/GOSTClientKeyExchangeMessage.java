@@ -22,7 +22,7 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
+@XmlRootElement(name = "GOSTClientKeyExchange")
 public class GOSTClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     @HoldsModifiableVariable
@@ -82,6 +82,11 @@ public class GOSTClientKeyExchangeMessage extends ClientKeyExchangeMessage {
             holders.add(computations);
         }
         return holders;
+    }
+
+    @Override
+    public String toShortString() {
+        return "GOST_CKE";
     }
 
 }

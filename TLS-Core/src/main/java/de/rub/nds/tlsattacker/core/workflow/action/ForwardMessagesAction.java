@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -63,55 +64,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
 
     @HoldsModifiableVariable
     @XmlElementWrapper
-    @XmlElements(value = { @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
-        @XmlElement(type = TlsMessage.class, name = "TlsMessage"),
-        @XmlElement(type = CertificateMessage.class, name = "Certificate"),
-        @XmlElement(type = CertificateVerifyMessage.class, name = "CertificateVerify"),
-        @XmlElement(type = CertificateRequestMessage.class, name = "CertificateRequest"),
-        @XmlElement(type = CertificateStatusMessage.class, name = "CertificateStatus"),
-        @XmlElement(type = ClientHelloMessage.class, name = "ClientHello"),
-        @XmlElement(type = HelloVerifyRequestMessage.class, name = "HelloVerifyRequest"),
-        @XmlElement(type = DHClientKeyExchangeMessage.class, name = "DHClientKeyExchange"),
-        @XmlElement(type = DHEServerKeyExchangeMessage.class, name = "DHEServerKeyExchange"),
-        @XmlElement(type = ECDHClientKeyExchangeMessage.class, name = "ECDHClientKeyExchange"),
-        @XmlElement(type = ECDHEServerKeyExchangeMessage.class, name = "ECDHEServerKeyExchange"),
-        @XmlElement(type = PskClientKeyExchangeMessage.class, name = "PSKClientKeyExchange"),
-        @XmlElement(type = PWDServerKeyExchangeMessage.class, name = "PWDServerKeyExchange"),
-        @XmlElement(type = PWDClientKeyExchangeMessage.class, name = "PWDClientKeyExchange"),
-        @XmlElement(type = FinishedMessage.class, name = "Finished"),
-        @XmlElement(type = RSAClientKeyExchangeMessage.class, name = "RSAClientKeyExchange"),
-        @XmlElement(type = GOSTClientKeyExchangeMessage.class, name = "GOSTClientKeyExchange"),
-        @XmlElement(type = ServerHelloDoneMessage.class, name = "ServerHelloDone"),
-        @XmlElement(type = ServerHelloMessage.class, name = "ServerHello"),
-        @XmlElement(type = AlertMessage.class, name = "Alert"),
-        @XmlElement(type = NewSessionTicketMessage.class, name = "NewSessionTicket"),
-        @XmlElement(type = KeyUpdateMessage.class, name = "KeyUpdate"),
-        @XmlElement(type = ApplicationMessage.class, name = "Application"),
-        @XmlElement(type = ChangeCipherSpecMessage.class, name = "ChangeCipherSpec"),
-        @XmlElement(type = SSL2ClientHelloMessage.class, name = "SSL2ClientHello"),
-        @XmlElement(type = SSL2ServerHelloMessage.class, name = "SSL2ServerHello"),
-        @XmlElement(type = SSL2ClientMasterKeyMessage.class, name = "SSL2ClientMasterKey"),
-        @XmlElement(type = SSL2ServerVerifyMessage.class, name = "SSL2ServerVerify"),
-        @XmlElement(type = UnknownMessage.class, name = "UnknownMessage"),
-        @XmlElement(type = UnknownHandshakeMessage.class, name = "UnknownHandshakeMessage"),
-        @XmlElement(type = HelloRequestMessage.class, name = "HelloRequest"),
-        @XmlElement(type = HeartbeatMessage.class, name = "Heartbeat"),
-        @XmlElement(type = SupplementalDataMessage.class, name = "SupplementalDataMessage"),
-        @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensionMessage"),
-        @XmlElement(type = HttpsRequestMessage.class, name = "HttpsRequest"),
-        @XmlElement(type = HttpsResponseMessage.class, name = "HttpsResponse"),
-        @XmlElement(type = PskClientKeyExchangeMessage.class, name = "PskClientKeyExchange"),
-        @XmlElement(type = PskDhClientKeyExchangeMessage.class, name = "PskDhClientKeyExchange"),
-        @XmlElement(type = PskDheServerKeyExchangeMessage.class, name = "PskDheServerKeyExchange"),
-        @XmlElement(type = PskEcDhClientKeyExchangeMessage.class, name = "PskEcDhClientKeyExchange"),
-        @XmlElement(type = PskEcDheServerKeyExchangeMessage.class, name = "PskEcDheServerKeyExchange"),
-        @XmlElement(type = PskRsaClientKeyExchangeMessage.class, name = "PskRsaClientKeyExchange"),
-        @XmlElement(type = PskServerKeyExchangeMessage.class, name = "PskServerKeyExchange"),
-        @XmlElement(type = SrpServerKeyExchangeMessage.class, name = "SrpServerKeyExchange"),
-        @XmlElement(type = SrpClientKeyExchangeMessage.class, name = "SrpClientKeyExchange"),
-        @XmlElement(type = EndOfEarlyDataMessage.class, name = "EndOfEarlyData"),
-        @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensions"),
-        @XmlElement(type = HelloRetryRequestMessage.class, name = "HelloRetryRequest") })
+    @XmlElementRef
     protected List<ProtocolMessage> receivedMessages;
 
     @HoldsModifiableVariable
@@ -120,54 +73,14 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
         @XmlElement(type = BlobRecord.class, name = "BlobRecord") })
     protected List<AbstractRecord> receivedRecords;
 
+    @HoldsModifiableVariable
+    @XmlElementWrapper
+    @XmlElements(value = { @XmlElement(type = DtlsHandshakeMessageFragment.class, name = "DtlsFragment") })
+    protected List<DtlsHandshakeMessageFragment> receivedFragments;
+
     @XmlElementWrapper
     @HoldsModifiableVariable
-    @XmlElements(value = { @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
-        @XmlElement(type = TlsMessage.class, name = "TlsMessage"),
-        @XmlElement(type = CertificateMessage.class, name = "Certificate"),
-        @XmlElement(type = CertificateVerifyMessage.class, name = "CertificateVerify"),
-        @XmlElement(type = CertificateRequestMessage.class, name = "CertificateRequest"),
-        @XmlElement(type = ClientHelloMessage.class, name = "ClientHello"),
-        @XmlElement(type = HelloVerifyRequestMessage.class, name = "HelloVerifyRequest"),
-        @XmlElement(type = DHClientKeyExchangeMessage.class, name = "DHClientKeyExchange"),
-        @XmlElement(type = DHEServerKeyExchangeMessage.class, name = "DHEServerKeyExchange"),
-        @XmlElement(type = ECDHClientKeyExchangeMessage.class, name = "ECDHClientKeyExchange"),
-        @XmlElement(type = ECDHEServerKeyExchangeMessage.class, name = "ECDHEServerKeyExchange"),
-        @XmlElement(type = PskClientKeyExchangeMessage.class, name = "PSKClientKeyExchange"),
-        @XmlElement(type = FinishedMessage.class, name = "Finished"),
-        @XmlElement(type = RSAClientKeyExchangeMessage.class, name = "RSAClientKeyExchange"),
-        @XmlElement(type = GOSTClientKeyExchangeMessage.class, name = "GOSTClientKeyExchange"),
-        @XmlElement(type = ServerHelloDoneMessage.class, name = "ServerHelloDone"),
-        @XmlElement(type = ServerHelloMessage.class, name = "ServerHello"),
-        @XmlElement(type = AlertMessage.class, name = "Alert"),
-        @XmlElement(type = NewSessionTicketMessage.class, name = "NewSessionTicket"),
-        @XmlElement(type = KeyUpdateMessage.class, name = "KeyUpdate"),
-        @XmlElement(type = ApplicationMessage.class, name = "Application"),
-        @XmlElement(type = ChangeCipherSpecMessage.class, name = "ChangeCipherSpec"),
-        @XmlElement(type = SSL2ClientHelloMessage.class, name = "SSL2ClientHello"),
-        @XmlElement(type = SSL2ServerHelloMessage.class, name = "SSL2ServerHello"),
-        @XmlElement(type = SSL2ClientMasterKeyMessage.class, name = "SSL2ClientMasterKey"),
-        @XmlElement(type = SSL2ServerVerifyMessage.class, name = "SSL2ServerVerify"),
-        @XmlElement(type = UnknownMessage.class, name = "UnknownMessage"),
-        @XmlElement(type = UnknownHandshakeMessage.class, name = "UnknownHandshakeMessage"),
-        @XmlElement(type = HelloRequestMessage.class, name = "HelloRequest"),
-        @XmlElement(type = HeartbeatMessage.class, name = "Heartbeat"),
-        @XmlElement(type = SupplementalDataMessage.class, name = "SupplementalDataMessage"),
-        @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensionMessage"),
-        @XmlElement(type = HttpsRequestMessage.class, name = "HttpsRequest"),
-        @XmlElement(type = HttpsResponseMessage.class, name = "HttpsResponse"),
-        @XmlElement(type = PskClientKeyExchangeMessage.class, name = "PskClientKeyExchange"),
-        @XmlElement(type = PskDhClientKeyExchangeMessage.class, name = "PskDhClientKeyExchange"),
-        @XmlElement(type = PskDheServerKeyExchangeMessage.class, name = "PskDheServerKeyExchange"),
-        @XmlElement(type = PskEcDhClientKeyExchangeMessage.class, name = "PskEcDhClientKeyExchange"),
-        @XmlElement(type = PskEcDheServerKeyExchangeMessage.class, name = "PskEcDheServerKeyExchange"),
-        @XmlElement(type = PskRsaClientKeyExchangeMessage.class, name = "PskRsaClientKeyExchange"),
-        @XmlElement(type = PskServerKeyExchangeMessage.class, name = "PskServerKeyExchange"),
-        @XmlElement(type = SrpServerKeyExchangeMessage.class, name = "SrpServerKeyExchange"),
-        @XmlElement(type = SrpClientKeyExchangeMessage.class, name = "SrpClientKeyExchange"),
-        @XmlElement(type = EndOfEarlyDataMessage.class, name = "EndOfEarlyData"),
-        @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensions"),
-        @XmlElement(type = HelloRetryRequestMessage.class, name = "HelloRetryRequest") })
+    @XmlElementRef
     protected List<ProtocolMessage> messages;
 
     @HoldsModifiableVariable
@@ -178,52 +91,12 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
 
     @HoldsModifiableVariable
     @XmlElementWrapper
-    @XmlElements(value = { @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
-        @XmlElement(type = TlsMessage.class, name = "TlsMessage"),
-        @XmlElement(type = CertificateMessage.class, name = "Certificate"),
-        @XmlElement(type = CertificateVerifyMessage.class, name = "CertificateVerify"),
-        @XmlElement(type = CertificateRequestMessage.class, name = "CertificateRequest"),
-        @XmlElement(type = ClientHelloMessage.class, name = "ClientHello"),
-        @XmlElement(type = HelloVerifyRequestMessage.class, name = "HelloVerifyRequest"),
-        @XmlElement(type = DHClientKeyExchangeMessage.class, name = "DHClientKeyExchange"),
-        @XmlElement(type = DHEServerKeyExchangeMessage.class, name = "DHEServerKeyExchange"),
-        @XmlElement(type = ECDHClientKeyExchangeMessage.class, name = "ECDHClientKeyExchange"),
-        @XmlElement(type = ECDHEServerKeyExchangeMessage.class, name = "ECDHEServerKeyExchange"),
-        @XmlElement(type = PskClientKeyExchangeMessage.class, name = "PSKClientKeyExchange"),
-        @XmlElement(type = FinishedMessage.class, name = "Finished"),
-        @XmlElement(type = RSAClientKeyExchangeMessage.class, name = "RSAClientKeyExchange"),
-        @XmlElement(type = GOSTClientKeyExchangeMessage.class, name = "GOSTClientKeyExchange"),
-        @XmlElement(type = ServerHelloDoneMessage.class, name = "ServerHelloDone"),
-        @XmlElement(type = ServerHelloMessage.class, name = "ServerHello"),
-        @XmlElement(type = AlertMessage.class, name = "Alert"),
-        @XmlElement(type = NewSessionTicketMessage.class, name = "NewSessionTicket"),
-        @XmlElement(type = KeyUpdateMessage.class, name = "KeyUpdate"),
-        @XmlElement(type = ApplicationMessage.class, name = "Application"),
-        @XmlElement(type = ChangeCipherSpecMessage.class, name = "ChangeCipherSpec"),
-        @XmlElement(type = SSL2ClientHelloMessage.class, name = "SSL2ClientHello"),
-        @XmlElement(type = SSL2ServerHelloMessage.class, name = "SSL2ServerHello"),
-        @XmlElement(type = SSL2ClientMasterKeyMessage.class, name = "SSL2ClientMasterKey"),
-        @XmlElement(type = SSL2ServerVerifyMessage.class, name = "SSL2ServerVerify"),
-        @XmlElement(type = UnknownMessage.class, name = "UnknownMessage"),
-        @XmlElement(type = UnknownHandshakeMessage.class, name = "UnknownHandshakeMessage"),
-        @XmlElement(type = HelloRequestMessage.class, name = "HelloRequest"),
-        @XmlElement(type = HeartbeatMessage.class, name = "Heartbeat"),
-        @XmlElement(type = SupplementalDataMessage.class, name = "SupplementalDataMessage"),
-        @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensionMessage"),
-        @XmlElement(type = HttpsRequestMessage.class, name = "HttpsRequest"),
-        @XmlElement(type = HttpsResponseMessage.class, name = "HttpsResponse"),
-        @XmlElement(type = PskClientKeyExchangeMessage.class, name = "PskClientKeyExchange"),
-        @XmlElement(type = PskDhClientKeyExchangeMessage.class, name = "PskDhClientKeyExchange"),
-        @XmlElement(type = PskDheServerKeyExchangeMessage.class, name = "PskDheServerKeyExchange"),
-        @XmlElement(type = PskEcDhClientKeyExchangeMessage.class, name = "PskEcDhClientKeyExchange"),
-        @XmlElement(type = PskEcDheServerKeyExchangeMessage.class, name = "PskEcDheServerKeyExchange"),
-        @XmlElement(type = PskRsaClientKeyExchangeMessage.class, name = "PskRsaClientKeyExchange"),
-        @XmlElement(type = PskServerKeyExchangeMessage.class, name = "PskServerKeyExchange"),
-        @XmlElement(type = SrpServerKeyExchangeMessage.class, name = "SrpServerKeyExchange"),
-        @XmlElement(type = SrpClientKeyExchangeMessage.class, name = "SrpClientKeyExchange"),
-        @XmlElement(type = EndOfEarlyDataMessage.class, name = "EndOfEarlyData"),
-        @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensions"),
-        @XmlElement(type = HelloRetryRequestMessage.class, name = "HelloRetryRequest") })
+    @XmlElements(value = { @XmlElement(type = DtlsHandshakeMessageFragment.class, name = "DtlsFragment") })
+    protected List<DtlsHandshakeMessageFragment> fragments;
+
+    @HoldsModifiableVariable
+    @XmlElementWrapper
+    @XmlElementRef
     protected List<ProtocolMessage> sendMessages;
 
     @HoldsModifiableVariable
@@ -231,6 +104,11 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
     @XmlElements(value = { @XmlElement(type = Record.class, name = "Record"),
         @XmlElement(type = BlobRecord.class, name = "BlobRecord") })
     protected List<AbstractRecord> sendRecords;
+
+    @HoldsModifiableVariable
+    @XmlElementWrapper
+    @XmlElements(value = { @XmlElement(type = DtlsHandshakeMessageFragment.class, name = "DtlsFragment") })
+    protected List<DtlsHandshakeMessageFragment> sendFragments;
 
     @XmlTransient
     protected ReceiveMessageHelper receiveMessageHelper;
@@ -299,7 +177,9 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
         MessageActionResult result = receiveMessageHelper.receiveMessages(messages, receiveFromCtx);
         receivedRecords = result.getRecordList();
         receivedMessages = result.getMessageList();
-
+        if (result.getMessageFragmentList() != null) {
+            receivedFragments = new ArrayList<>(result.getMessageFragmentList());
+        }
         String expected = getReadableString(receivedMessages);
         LOGGER.debug("Receive Expected (" + receiveFromAlias + "): " + expected);
         String received = getReadableString(receivedMessages);
@@ -325,10 +205,13 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
     private void forwardMessages(TlsContext forwardToCtx) {
         LOGGER.info("Forwarding messages (" + forwardToAlias + "): " + getReadableString(messages));
         try {
-            MessageActionResult result =
-                sendMessageHelper.sendMessages(receivedMessages, receivedRecords, forwardToCtx, withPrepare);
+            MessageActionResult result = sendMessageHelper.sendMessages(receivedMessages, receivedFragments,
+                receivedRecords, forwardToCtx, withPrepare);
             sendMessages = result.getMessageList();
             sendRecords = result.getRecordList();
+            if (result.getMessageFragmentList() != null) {
+                sendFragments = new ArrayList<>(result.getMessageFragmentList());
+            }
             if (executedAsPlanned) {
                 executedAsPlanned = checkMessageListsEquals(sendMessages, messages);
             }
@@ -387,8 +270,10 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
     public void reset() {
         receivedMessages = null;
         receivedRecords = null;
+        receivedFragments = null;
         sendMessages = null;
         sendRecords = null;
+        sendFragments = null;
         executedAsPlanned = false;
         setExecuted(null);
     }
@@ -404,6 +289,11 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
     }
 
     @Override
+    public List<DtlsHandshakeMessageFragment> getReceivedFragments() {
+        return receivedFragments;
+    }
+
+    @Override
     public List<ProtocolMessage> getSendMessages() {
         return sendMessages;
     }
@@ -411,6 +301,11 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
     @Override
     public List<AbstractRecord> getSendRecords() {
         return sendRecords;
+    }
+
+    @Override
+    public List<DtlsHandshakeMessageFragment> getSendFragments() {
+        return sendFragments;
     }
 
     public List<ProtocolMessage> getMessages() {
@@ -433,10 +328,12 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
         hash = 89 * hash + Objects.hashCode(this.executedAsPlanned);
         hash = 89 * hash + Objects.hashCode(this.receivedMessages);
         hash = 89 * hash + Objects.hashCode(this.receivedRecords);
+        hash = 89 * hash + Objects.hashCode(this.receivedFragments);
         hash = 89 * hash + Objects.hashCode(this.sendMessages);
         hash = 89 * hash + Objects.hashCode(this.sendRecords);
         hash = 89 * hash + Objects.hashCode(this.messages);
         hash = 89 * hash + Objects.hashCode(this.records);
+        hash = 89 * hash + Objects.hashCode(this.fragments);
         return hash;
     }
 
@@ -471,10 +368,16 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
         if (!Objects.equals(this.receivedRecords, other.receivedRecords)) {
             return false;
         }
+        if (!Objects.equals(this.receivedFragments, other.receivedFragments)) {
+            return false;
+        }
         if (!checkMessageListsEquals(this.sendMessages, other.sendMessages)) {
             return false;
         }
         if (!Objects.equals(this.sendRecords, other.sendRecords)) {
+            return false;
+        }
+        if (!Objects.equals(this.sendFragments, other.sendFragments)) {
             return false;
         }
         if (!checkMessageListsEquals(this.messages, other.messages)) {
@@ -557,17 +460,26 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
         if (records == null || records.isEmpty()) {
             records = null;
         }
+        if (fragments == null || fragments.isEmpty()) {
+            fragments = null;
+        }
         if (receivedMessages == null || receivedMessages.isEmpty()) {
             receivedMessages = null;
         }
         if (receivedRecords == null || receivedRecords.isEmpty()) {
             receivedRecords = null;
         }
+        if (receivedFragments == null || receivedFragments.isEmpty()) {
+            receivedFragments = null;
+        }
         if (sendMessages == null || sendMessages.isEmpty()) {
             sendMessages = null;
         }
         if (sendRecords == null || sendRecords.isEmpty()) {
             sendRecords = null;
+        }
+        if (sendFragments == null || sendFragments.isEmpty()) {
+            sendFragments = null;
         }
     }
 
@@ -578,17 +490,26 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
         if (records == null) {
             records = new ArrayList<>();
         }
+        if (fragments == null) {
+            fragments = new ArrayList<>();
+        }
         if (receivedMessages == null) {
             receivedMessages = new ArrayList<>();
         }
         if (receivedRecords == null) {
             receivedRecords = new ArrayList<>();
         }
+        if (receivedFragments == null) {
+            receivedFragments = new ArrayList<>();
+        }
         if (sendMessages == null) {
             sendMessages = new ArrayList<>();
         }
         if (sendRecords == null) {
             sendRecords = new ArrayList<>();
+        }
+        if (sendFragments == null) {
+            sendFragments = new ArrayList<>();
         }
     }
 

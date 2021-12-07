@@ -50,7 +50,6 @@ public class DHClientKeyExchangeHandler<T extends DHClientKeyExchangeMessage> ex
         adjustPremasterSecret(message);
         adjustMasterSecret(message);
         adjustClientPublicKey(message);
-        setRecordCipher();
         spawnNewSession();
     }
 

@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.serializer.AbstractRecordSerializer;
@@ -83,6 +84,7 @@ public class PopAndSendRecordAction extends MessageAction implements SendingActi
     public void reset() {
         messages = new LinkedList<>();
         records = new LinkedList<>();
+        fragments = new LinkedList<>();
         setExecuted(null);
         asPlanned = null;
     }
@@ -95,6 +97,11 @@ public class PopAndSendRecordAction extends MessageAction implements SendingActi
     @Override
     public List<AbstractRecord> getSendRecords() {
         return records;
+    }
+
+    @Override
+    public List<DtlsHandshakeMessageFragment> getSendFragments() {
+        return fragments;
     }
 
     @Override

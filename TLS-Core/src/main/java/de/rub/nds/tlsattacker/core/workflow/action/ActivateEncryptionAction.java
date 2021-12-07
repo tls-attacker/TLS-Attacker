@@ -9,78 +9,17 @@
 
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
-import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
-import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.security.NoSuchAlgorithmException;
 import javax.xml.bind.annotation.XmlRootElement;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 @XmlRootElement
-public class ActivateEncryptionAction extends ConnectionBoundAction {
-
-    private static final Logger LOGGER = LogManager.getLogger();
-
-    private final boolean resetSequenceNumbers;
-
-    public ActivateEncryptionAction() {
-        this(true);
-    }
-
-    public ActivateEncryptionAction(boolean resetSequenceNumbers) {
-        this.resetSequenceNumbers = resetSequenceNumbers;
-    }
+public class ActivateEncryptionAction extends ActivateCryptoAction {
 
     @Override
-    public boolean equals(Object o) {
-        return o instanceof ActivateEncryptionAction;
-    }
-
-    @Override
-    public void execute(State state) throws WorkflowExecutionException {
-        TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
-
-        if (isExecuted()) {
-            throw new WorkflowExecutionException("Action already executed!");
-        }
-
-        KeySet keySet;
-        try {
-            keySet = KeySetGenerator.generateKeySet(tlsContext);
-        } catch (NoSuchAlgorithmException | CryptoException ex) {
-            throw new UnsupportedOperationException("The specified Algorithm is not supported", ex);
-        }
-        LOGGER.debug("Setting new Cipher in RecordLayer");
-        RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(tlsContext, keySet);
-        tlsContext.getRecordLayer().setRecordCipher(recordCipher);
-
-        tlsContext.getRecordLayer().updateDecryptionCipher();
-        tlsContext.getRecordLayer().updateEncryptionCipher();
-
-        if (resetSequenceNumbers) {
-            tlsContext.setReadSequenceNumber(0);
-            tlsContext.setWriteSequenceNumber(0);
-        }
-
-        LOGGER.info("Activated Encryption/Decryption");
-        setExecuted(true);
-    }
-
-    @Override
-    public void reset() {
-        setExecuted(false);
-        setExecuted(null);
-    }
-
-    @Override
-    public boolean executedAsPlanned() {
-        return isExecuted();
+    protected void activateCrypto(TlsContext tlsContext, RecordCipher recordCipher) {
+        LOGGER.info("Setting new encryption cipher and activating encryption");
+        tlsContext.getRecordLayer().updateEncryptionCipher(recordCipher);
     }
 
 }

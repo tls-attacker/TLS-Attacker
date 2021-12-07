@@ -20,7 +20,7 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
+@XmlRootElement(name = "RSAClientKeyExchange")
 public class RSAClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     @HoldsModifiableVariable
@@ -71,6 +71,11 @@ public class RSAClientKeyExchangeMessage extends ClientKeyExchangeMessage {
             holders.add(computations);
         }
         return holders;
+    }
+
+    @Override
+    public String toShortString() {
+        return "RSA_CKE";
     }
 
 }

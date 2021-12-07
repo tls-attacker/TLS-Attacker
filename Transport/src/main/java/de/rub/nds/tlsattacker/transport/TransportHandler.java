@@ -36,25 +36,29 @@ public abstract class TransportHandler {
 
     private boolean initialized = false;
 
-    private final ConnectionEndType type;
+    private final ConnectionEndType connectionEndType;
 
     protected SocketState cachedSocketState = null;
 
     public TransportHandler(Connection con) {
         this.firstTimeout = con.getFirstTimeout();
-        this.type = con.getLocalConnectionEndType();
+        this.connectionEndType = con.getLocalConnectionEndType();
         this.timeout = con.getTimeout();
     }
 
     public TransportHandler(long firstTimeout, long timeout, ConnectionEndType type) {
         this.firstTimeout = firstTimeout;
         this.timeout = timeout;
-        this.type = type;
+        this.connectionEndType = type;
     }
 
     public abstract void closeConnection() throws IOException;
 
     public abstract void closeClientConnection() throws IOException;
+
+    public ConnectionEndType getConnectionEndType() {
+        return connectionEndType;
+    }
 
     /**
      * Reads the specified amount of data from the stream
@@ -74,9 +78,9 @@ public abstract class TransportHandler {
     @SuppressWarnings({ "checkstyle:EmptyCatchBlock", "CheckStyle" })
     public byte[] fetchData() throws IOException {
         if (firstReceived) {
-            setTimeout(timeout);
-        } else {
             setTimeout(firstTimeout);
+        } else {
+            setTimeout(timeout);
         }
         firstReceived = false;
         try {
@@ -122,6 +126,8 @@ public abstract class TransportHandler {
         this.inStream = inStream;
         initialized = true;
     }
+
+    public abstract void preInitialize() throws IOException;
 
     public abstract void initialize() throws IOException;
 

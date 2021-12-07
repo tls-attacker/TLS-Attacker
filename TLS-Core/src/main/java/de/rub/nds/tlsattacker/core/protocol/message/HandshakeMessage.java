@@ -80,6 +80,9 @@ public abstract class HandshakeMessage extends TlsMessage {
     protected boolean isIncludeInDigestDefault = true;
 
     @XmlTransient
+    protected boolean isRetranmissionDefault = false;
+
+    @XmlTransient
     protected final HandshakeMessageType handshakeMessageType;
 
     /**
@@ -93,58 +96,14 @@ public abstract class HandshakeMessage extends TlsMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.BEHAVIOR_SWITCH)
     private ModifiableBoolean includeInDigest = null;
 
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.NONE)
+    private ModifiableBoolean retransmission = null;
+
     /**
      * List of extensions
      */
     @XmlElementWrapper
-    @XmlElements(value = {
-        @XmlElement(type = EncryptedServerNameIndicationExtensionMessage.class,
-            name = "EncryptedServerNameIndicationExtension"),
-        @XmlElement(type = ECPointFormatExtensionMessage.class, name = "ECPointFormat"),
-        @XmlElement(type = EllipticCurvesExtensionMessage.class, name = "SupportedGroups"),
-        @XmlElement(type = EllipticCurvesExtensionMessage.class, name = "EllipticCurves"),
-        @XmlElement(type = ExtendedMasterSecretExtensionMessage.class, name = "ExtendedMasterSecretExtension"),
-        @XmlElement(type = GreaseExtensionMessage.class, name = "GreaseExtension"),
-        @XmlElement(type = HeartbeatExtensionMessage.class, name = "HeartbeatExtension"),
-        @XmlElement(type = MaxFragmentLengthExtensionMessage.class, name = "MaxFragmentLengthExtension"),
-        @XmlElement(type = RecordSizeLimitExtensionMessage.class, name = "RecordSizeLimitExtension"),
-        @XmlElement(type = PaddingExtensionMessage.class, name = "PaddingExtension"),
-        @XmlElement(type = RenegotiationInfoExtensionMessage.class, name = "RenegotiationInfoExtension"),
-        @XmlElement(type = ServerNameIndicationExtensionMessage.class, name = "ServerNameIndicationExtension"),
-        @XmlElement(type = SessionTicketTLSExtensionMessage.class, name = "SessionTicketTLSExtension"),
-        @XmlElement(type = SignatureAndHashAlgorithmsExtensionMessage.class,
-            name = "SignatureAndHashAlgorithmsExtension"),
-        @XmlElement(type = SignedCertificateTimestampExtensionMessage.class,
-            name = "SignedCertificateTimestampExtension"),
-        @XmlElement(type = ExtendedRandomExtensionMessage.class, name = "ExtendedRandomExtension"),
-        @XmlElement(type = TokenBindingExtensionMessage.class, name = "TokenBindingExtension"),
-        @XmlElement(type = KeyShareExtensionMessage.class, name = "KeyShareExtension"),
-        @XmlElement(type = SupportedVersionsExtensionMessage.class, name = "SupportedVersions"),
-        @XmlElement(type = AlpnExtensionMessage.class, name = "ALPNExtension"),
-        @XmlElement(type = CertificateStatusRequestExtensionMessage.class, name = "CertificateStatusRequestExtension"),
-        @XmlElement(type = CertificateStatusRequestV2ExtensionMessage.class,
-            name = "CertificateStatusRequestV2Extension"),
-        @XmlElement(type = CertificateTypeExtensionMessage.class, name = "CertificateTypeExtension"),
-        @XmlElement(type = ClientCertificateUrlExtensionMessage.class, name = "ClientCertificateUrlExtension"),
-        @XmlElement(type = ClientCertificateTypeExtensionMessage.class, name = "ClientCertificateTypeExtension"),
-        @XmlElement(type = ClientAuthzExtensionMessage.class, name = "ClientAuthorizationExtension"),
-        @XmlElement(type = EncryptThenMacExtensionMessage.class, name = "EncryptThenMacExtension"),
-        @XmlElement(type = ServerAuthzExtensionMessage.class, name = "ServerAuthorizationExtension"),
-        @XmlElement(type = ServerCertificateTypeExtensionMessage.class, name = "ServerCertificateTypeExtension"),
-        @XmlElement(type = SRPExtensionMessage.class, name = "SRPExtension"),
-        @XmlElement(type = SrtpExtensionMessage.class, name = "SRTPExtension"),
-        @XmlElement(type = TrustedCaIndicationExtensionMessage.class, name = "TrustedCaIndicationExtension"),
-        @XmlElement(type = TruncatedHmacExtensionMessage.class, name = "TruncatedHmacExtension"),
-        @XmlElement(type = EarlyDataExtensionMessage.class, name = "EarlyDataExtension"),
-        @XmlElement(type = PSKKeyExchangeModesExtensionMessage.class, name = "PSKKeyExchangeModesExtension"),
-        @XmlElement(type = PreSharedKeyExtensionMessage.class, name = "PreSharedKeyExtension"),
-        @XmlElement(type = UnknownExtensionMessage.class, name = "UnknownExtension"),
-        @XmlElement(type = PWDClearExtensionMessage.class, name = "PWDClear"),
-        @XmlElement(type = PWDProtectExtensionMessage.class, name = "PWDProtect"),
-        @XmlElement(type = PasswordSaltExtensionMessage.class, name = "PasswordSalt"),
-        @XmlElement(type = CachedInfoExtensionMessage.class, name = "CachedInfoExtension"),
-        @XmlElement(type = CookieExtensionMessage.class, name = "CookieExtension"),
-        @XmlElement(type = DtlsHandshakeMessageFragment.class, name = "DtlsHandshakeMessageFragment"), })
+    @XmlElementRef
     @HoldsModifiableVariable
     private List<ExtensionMessage> extensions;
 
@@ -244,6 +203,13 @@ public abstract class HandshakeMessage extends TlsMessage {
         return includeInDigest.getValue();
     }
 
+    public boolean isRetransmission() {
+        if (retransmission == null) {
+            return isRetranmissionDefault;
+        }
+        return retransmission.getValue();
+    }
+
     public void setType(ModifiableByte type) {
         this.type = type;
     }
@@ -280,6 +246,18 @@ public abstract class HandshakeMessage extends TlsMessage {
         return this.includeInDigest;
     }
 
+    public void setRetransmission(ModifiableBoolean retransmission) {
+        this.retransmission = retransmission;
+    }
+
+    public void setRetransmission(boolean retransmission) {
+        this.retransmission = ModifiableVariableFactory.safelySetValue(this.retransmission, retransmission);
+    }
+
+    public ModifiableBoolean isRetransmissionModifiableBoolean() {
+        return this.retransmission;
+    }
+
     public ModifiableInteger getMessageSequence() {
         return messageSequence;
     }
@@ -313,7 +291,12 @@ public abstract class HandshakeMessage extends TlsMessage {
 
     @Override
     public String toCompactString() {
-        return handshakeMessageType.getName();
+        StringBuilder sb = new StringBuilder();
+        sb.append(handshakeMessageType.getName());
+        if (isRetransmission()) {
+            sb.append(" (retransmission)");
+        }
+        return sb.toString();
     }
 
     @Override

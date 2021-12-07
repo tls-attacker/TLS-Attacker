@@ -11,7 +11,9 @@ package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import javax.xml.bind.annotation.XmlRootElement;
 
+@XmlRootElement(name = "ClientCertificateUrlExtension")
 public class ClientCertificateUrlExtensionMessage extends ExtensionMessage {
 
     public ClientCertificateUrlExtensionMessage() {

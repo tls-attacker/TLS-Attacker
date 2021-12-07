@@ -20,7 +20,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @SuppressWarnings("serial")
-@XmlRootElement
+@XmlRootElement(name = "SSL2ServerVerify")
 public class SSL2ServerVerifyMessage extends SSL2HandshakeMessage {
 
     // TODO, nit: The type byte is encrypted for ServerVerify messages.
@@ -40,6 +40,11 @@ public class SSL2ServerVerifyMessage extends SSL2HandshakeMessage {
     @Override
     public String toCompactString() {
         return "SSL2 ServerVerify Message";
+    }
+
+    @Override
+    public String toShortString() {
+        return "SSL2_SV";
     }
 
     @Override

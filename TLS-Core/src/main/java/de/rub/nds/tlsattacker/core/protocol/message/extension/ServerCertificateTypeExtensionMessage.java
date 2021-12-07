@@ -16,10 +16,12 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * This extension is defined in RFC7250
  */
+@XmlRootElement(name = "ServerCertificateTypeExtension")
 public class ServerCertificateTypeExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty

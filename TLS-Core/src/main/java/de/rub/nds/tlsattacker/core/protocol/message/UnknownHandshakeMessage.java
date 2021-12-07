@@ -19,7 +19,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.UnknownHandshakeHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
+@XmlRootElement(name = "UnknownHandshakeMessage")
 public class UnknownHandshakeMessage extends HandshakeMessage {
 
     private byte[] dataConfig;
@@ -71,6 +71,11 @@ public class UnknownHandshakeMessage extends HandshakeMessage {
             sb.append("null");
         }
         return sb.toString();
+    }
+
+    @Override
+    public String toShortString() {
+        return "HS(?)";
     }
 
 }

@@ -393,7 +393,9 @@ public enum SignatureAndHashAlgorithm {
         }
 
         if (sigHashAlgo == null) {
-            LOGGER.warn("Could not auto select SignatureAndHashAlgorithm, setting default value");
+            LOGGER.warn(
+                "Could not auto select SignatureAndHashAlgorithm for certPublicKeyType={}, setting default value",
+                certPublicKeyType);
             sigHashAlgo = SignatureAndHashAlgorithm.RSA_SHA256;
         }
 
