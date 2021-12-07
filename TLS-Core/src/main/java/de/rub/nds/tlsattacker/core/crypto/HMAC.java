@@ -64,7 +64,6 @@ public class HMAC {
         }
     }
 
-    /* Implements getter and setter methods */
     public void setSecret(byte[] newSecret) {
         this.secret = newSecret;
     }
