@@ -108,7 +108,7 @@ public class HMAC {
     /**
      * Computes the hmac and returnes it.
      *
-     * @param data
+     * @param  data
      * @return                          the computed hmac of the hmac instance
      *
      * @throws NoSuchAlgorithmException

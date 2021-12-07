@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.crypto;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -62,28 +63,31 @@ public class PseudoRandomFunction {
     public static final String IV_BLOCK_LABEL = "IV block";
 
     /**
-     * sByte is a constant additional salt byte that is used in the computeSSL3
-     * method for computing a pseudo random bit stream as described in the RFC
-     * 6101
+     * sByte is a constant additional salt byte that is used in the computeSSL3 method for computing a pseudo random bit
+     * stream as described in the RFC 6101
      */
     private static final byte sByte = 0x41;
 
     /**
      * Computes the PRF output for SSL3 of the provided size
      *
-     * @param master_secret the master secret
+     * @param  master_secret
+     *                                  the master secret
      *
-     * @param client_random the client random
+     * @param  client_random
+     *                                  the client random
      *
-     * @param server_random the server random
+     * @param  server_random
+     *                                  the server random
      *
-     * @param size the size of the key block
+     * @param  size
+     *                                  the size of the key block
      *
-     * @return the key block as pseudo random bit stream
+     * @return                          the key block as pseudo random bit stream
      * @throws NoSuchAlgorithmException
      */
     public static byte[] computeSSL3(byte[] master_secret, byte[] client_random, byte[] server_random, int size)
-            throws NoSuchAlgorithmException, IOException {
+        throws NoSuchAlgorithmException, IOException {
         MessageDigest md5 = MessageDigest.getInstance("MD5");
         MessageDigest sha1 = MessageDigest.getInstance("SHA-1");
 
@@ -104,7 +108,7 @@ public class PseudoRandomFunction {
             }
 
             outputSha.write(sha1
-                    .digest(ArrayConverter.concatenate(salt.toByteArray(), master_secret, server_random, client_random)));
+                .digest(ArrayConverter.concatenate(salt.toByteArray(), master_secret, server_random, client_random)));
             outputMd5.write(md5.digest(ArrayConverter.concatenate(master_secret, outputSha.toByteArray())));
 
             pseudoRandomBitStream.write(outputMd5.toByteArray());
@@ -113,19 +117,23 @@ public class PseudoRandomFunction {
     }
 
     /**
-     * Computes the PRF output for TLS1.0 - TLS1.2 of the provided size using
-     * the given mac algorithm
+     * Computes the PRF output for TLS1.0 - TLS1.2 of the provided size using the given mac algorithm
      *
-     * @param prfAlgorithm PRFAlgorithm
-     * @param secret The Secret
-     * @param label The Label
-     * @param seed The Seed
-     * @param size The size
-     * @return the Prf output
+     * @param  prfAlgorithm
+     *                                                                PRFAlgorithm
+     * @param  secret
+     *                                                                The Secret
+     * @param  label
+     *                                                                The Label
+     * @param  seed
+     *                                                                The Seed
+     * @param  size
+     *                                                                The size
+     * @return                                                        the Prf output
      * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     public static byte[] compute(PRFAlgorithm prfAlgorithm, byte[] secret, String label, byte[] seed, int size)
-            throws CryptoException {
+        throws CryptoException {
 
         if (prfAlgorithm == null) {
             LOGGER.warn("Trying to compute PRF without specified PRF algorithm. Using TLS 1.0/TLS 1.1 as default.");
@@ -151,7 +159,7 @@ public class PseudoRandomFunction {
                     return computeTls12(secret, label, seed, size, MacAlgorithm.HMAC_GOSTR3411_2012_256);
                 default:
                     throw new UnsupportedOperationException(
-                            "PRF computation for different" + " protocol versions is not supported yet");
+                        "PRF computation for different" + " protocol versions is not supported yet");
             }
         }
     }
@@ -202,15 +210,20 @@ public class PseudoRandomFunction {
     /**
      * PRF computation for TLS 1.2 s
      *
-     * @param macAlgorithm PRFAlgorithm
-     * @param secret The Secret
-     * @param label The Label
-     * @param seed The Seed
-     * @param size The size of the pseudo random bit stream
-     * @return the key block material
+     * @param  macAlgorithm
+     *                      PRFAlgorithm
+     * @param  secret
+     *                      The Secret
+     * @param  label
+     *                      The Label
+     * @param  seed
+     *                      The Seed
+     * @param  size
+     *                      The size of the pseudo random bit stream
+     * @return              the key block material
      */
     private static byte[] computeTls12(byte[] secret, String label, byte[] seed, int size, MacAlgorithm macAlgorithm)
-            throws CryptoException {
+        throws CryptoException {
         try {
             byte[] labelSeed = ArrayConverter.concatenate(label.getBytes(Charset.forName("ASCII")), seed);
             HMAC hmac = new HMAC(macAlgorithm);
@@ -239,12 +252,11 @@ public class PseudoRandomFunction {
      * The PseudoRandomFunction class takes use of the p_hash function.
      */
     /**
-     * p_hash is a data expansion function as described in RFC 5246 5. HMAC and
-     * the Pseudorandom Function
+     * p_hash is a data expansion function as described in RFC 5246 5. HMAC and the Pseudorandom Function
      *
-     * @param hmac
-     * @param data
-     * @param size
+     * @param  hmac
+     * @param  data
+     * @param  size
      * @return
      * @throws NoSuchAlgorithmException
      */
