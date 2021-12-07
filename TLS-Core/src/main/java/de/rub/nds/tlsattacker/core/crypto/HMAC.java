@@ -76,29 +76,32 @@ public class HMAC {
             LOGGER.warn("Secret is null! Continuing to init hmac with a secret set to zero bytes...");
             secret = new byte[0];
         }
-        this.opad = new byte[0];
-        this.ipad = new byte[0];
         switch (this.macAlgorithm) {
             case HMAC_SHA1:
             case HMAC_MD5:
             case HMAC_SHA256:
             case HMAC_GOSTR3411_2012_256:
                 this.secret = padding(secret, 64, (byte) 0x00);
-                this.opad = padding(this.opad, 64, (byte) 0x5C);
-                this.ipad = padding(this.ipad, 64, (byte) 0x36);
+                this.opad = padding(new byte[0], 64, (byte) 0x5C);
+                this.ipad = padding(new byte[0], 64, (byte) 0x36);
                 break;
 
             case HMAC_SHA384:
                 this.secret = padding(secret, 128, (byte) 0x00);
-                this.opad = padding(this.opad, 128, (byte) 0x5C);
-                this.ipad = padding(this.ipad, 128, (byte) 0x36);
+                this.opad = padding(new byte[0], 128, (byte) 0x5C);
+                this.ipad = padding(new byte[0], 128, (byte) 0x36);
                 break;
 
             case HMAC_GOSTR3411:
                 this.secret = padding(secret, 32, (byte) 0x00);
-                this.opad = padding(this.opad, 32, (byte) 0x5C);
-                this.ipad = padding(this.ipad, 32, (byte) 0x36);
+                this.opad = padding(new byte[0], 32, (byte) 0x5C);
+                this.ipad = padding(new byte[0], 32, (byte) 0x36);
                 break;
+            default:
+                LOGGER.warn("Undefined MAC Algorithm");
+                this.secret = secret;
+                this.opad = new byte[0];
+                this.ipad = new byte[0];
         }
     }
 
