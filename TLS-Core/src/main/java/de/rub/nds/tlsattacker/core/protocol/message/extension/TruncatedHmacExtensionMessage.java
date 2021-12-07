@@ -11,10 +11,12 @@ package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * This is a binary extension, which means that no extension data is used. This extension is defined in RFC6066
  */
+@XmlRootElement(name = "TruncatedHmacExtension")
 public class TruncatedHmacExtensionMessage extends ExtensionMessage {
 
     public TruncatedHmacExtensionMessage() {

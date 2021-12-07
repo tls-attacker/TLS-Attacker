@@ -49,8 +49,8 @@ public class NewSessionTicketSerializer extends HandshakeMessageSerializer<NewSe
             writeTicketIdentity(msg);
             writeExtensions();
         } else {
-            throw new UnsupportedOperationException(
-                "NewSessionTicket message is currently not supported for not TLS 1.3");
+            writeTicketLength(msg);
+            writeTicket(msg);
         }
 
         return getAlreadySerialized();
@@ -65,22 +65,17 @@ public class NewSessionTicketSerializer extends HandshakeMessageSerializer<NewSe
     }
 
     private void writeTicketLength(NewSessionTicketMessage msg) {
-        appendBytes(ArrayConverter.intToBytes(msg.getTicketLength().getValue(),
+        appendBytes(ArrayConverter.intToBytes(msg.getTicket().getIdentityLength().getValue(),
             HandshakeByteLength.NEWSESSIONTICKET_TICKET_LENGTH));
-        LOGGER.debug("TicketLength: " + ArrayConverter.bytesToHexString(ArrayConverter
-            .intToBytes(msg.getTicketLength().getValue(), HandshakeByteLength.NEWSESSIONTICKET_TICKET_LENGTH)));
+        LOGGER.debug("TicketLength: "
+            + ArrayConverter.bytesToHexString(ArrayConverter.intToBytes(msg.getTicket().getIdentityLength().getValue(),
+                HandshakeByteLength.NEWSESSIONTICKET_TICKET_LENGTH)));
     }
 
     private void writeTicket(NewSessionTicketMessage msg) {
-        appendBytes(msg.getTicket().getKeyName().getValue());
-        LOGGER.debug("Key name: " + ArrayConverter.bytesToHexString(msg.getTicket().getKeyName().getValue()));
-        appendBytes(msg.getTicket().getIV().getValue());
-        LOGGER.debug("IV: " + ArrayConverter.bytesToHexString(msg.getTicket().getIV().getValue()));
-        appendBytes(msg.getTicket().getEncryptedState().getValue());
-        LOGGER.debug(
-            "EncryptedState: " + ArrayConverter.bytesToHexString(msg.getTicket().getEncryptedState().getValue()));
-        appendBytes(msg.getTicket().getMAC().getValue());
-        LOGGER.debug("MAC: " + ArrayConverter.bytesToHexString(msg.getTicket().getMAC().getValue()));
+        appendBytes(msg.getTicket().getIdentity().getValue());
+        LOGGER.debug("Ticket: " + ArrayConverter.bytesToHexString(msg.getTicket().getIdentity().getValue()));
+
     }
 
     private void writeTicketAgeAdd(NewSessionTicketMessage msg) {

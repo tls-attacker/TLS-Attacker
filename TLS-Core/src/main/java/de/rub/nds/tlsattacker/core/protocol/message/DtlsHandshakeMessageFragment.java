@@ -19,7 +19,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.DtlsHandshakeMessageFragment
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
+@XmlRootElement(name = "DtlsHandshakeMessageFragment")
 public class DtlsHandshakeMessageFragment extends HandshakeMessage {
 
     @ModifiableVariableProperty

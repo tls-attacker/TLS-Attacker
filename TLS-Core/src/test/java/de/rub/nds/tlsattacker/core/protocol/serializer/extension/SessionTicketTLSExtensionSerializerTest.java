@@ -61,7 +61,7 @@ public class SessionTicketTLSExtensionSerializerTest {
         message = new SessionTicketTLSExtensionMessage();
         message.setExtensionType(extensionType.getValue());
         message.setExtensionLength(extensionLength);
-        message.setTicket(sessionTicket);
+        message.getSessionTicket().setIdentity(sessionTicket);
 
         SessionTicketTLSExtensionSerializer serializer = new SessionTicketTLSExtensionSerializer(message);
 

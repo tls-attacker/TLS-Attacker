@@ -24,7 +24,7 @@ import java.util.Objects;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-@XmlRootElement
+@XmlRootElement(name = "Alert")
 public class AlertMessage extends TlsMessage {
 
     /**

@@ -9,6 +9,7 @@
 
 package de.rub.nds.tlsattacker.core.protocol.message;
 
+import de.rub.nds.tlsattacker.core.protocol.message.extension.UserMappingExtensionMessage;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
@@ -61,7 +62,7 @@ import java.util.Arrays;
 import java.util.Date;
 import javax.xml.bind.annotation.*;
 
-@XmlRootElement
+@XmlRootElement(name = "ServerHello")
 public class ServerHelloMessage extends HelloMessage {
 
     private static final byte[] HELLO_RETRY_REQUEST_RANDOM = new byte[] { (byte) 0xCF, (byte) 0x21, (byte) 0xAD,
@@ -320,6 +321,9 @@ public class ServerHelloMessage extends HelloMessage {
 
     @Override
     public String toShortString() {
+        if (isTls13HelloRetryRequest()) {
+            return "HRR";
+        }
         return "SH";
     }
 }

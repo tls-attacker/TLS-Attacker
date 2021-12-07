@@ -23,6 +23,7 @@ import de.rub.nds.tlsattacker.core.constants.CertificateKeyType;
 import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestType;
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
 import de.rub.nds.tlsattacker.core.constants.ChooserType;
+import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ClientAuthenticationType;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
@@ -35,6 +36,7 @@ import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
 import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.core.constants.KeyUpdateRequest;
+import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
 import de.rub.nds.tlsattacker.core.constants.NameType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
@@ -1042,7 +1044,7 @@ public class Config implements Serializable {
     private List<CompressionMethod> defaultServerSupportedCompressionMethods;
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private byte[] defaultMasterSecret = new byte[0];
+    private byte[] defaultMasterSecret = new byte[48];
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultPreMasterSecret = new byte[0];
@@ -1065,6 +1067,10 @@ public class Config implements Serializable {
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultClientSessionId = new byte[0];
+
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
+    private byte[] defaultClientTicketResumptionSessionId =
+        ArrayConverter.hexStringToByteArray("332CAC09A5C56974E3D49C0741F396C5F1C90B41529DD643485E65B1C0619D2B");;
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultServerSessionId = new byte[0];
@@ -1205,10 +1211,10 @@ public class Config implements Serializable {
      * The Ticket Lifetime Hint, Ticket Key and Ticket Key Name used in the Extension defined in RFC5077, followed by
      * additional TLS 1.3 draft 21 NewSessionTicket parameters.
      */
-    private Long sessionTicketLifetimeHint = 0L;
+    private Long sessionTicketLifetimeHint = 7200L;
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private byte[] sessionTicketKeyAES = ArrayConverter.hexStringToByteArray("536563757265535469636b65744b6579"); // SecureSTicketKey
+    private byte[] sessionTicketEncryptionKey = ArrayConverter.hexStringToByteArray("536563757265535469636b65744b6579"); // SecureSTicketKey
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] sessionTicketKeyHMAC =
@@ -1216,6 +1222,10 @@ public class Config implements Serializable {
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] sessionTicketKeyName = ArrayConverter.hexStringToByteArray("544c532d41747461636b6572204b6579"); // TLS-Attacker
+
+    private CipherAlgorithm sessionTicketCipherAlgorithm = CipherAlgorithm.AES_128_CBC;
+
+    private MacAlgorithm sessionTicketMacAlgorithm = MacAlgorithm.HMAC_SHA256;
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultSessionTicketAgeAdd = ArrayConverter.hexStringToByteArray("cb8dbe8e");
@@ -1588,12 +1598,12 @@ public class Config implements Serializable {
         this.sessionTicketLifetimeHint = sessionTicketLifetimeHint;
     }
 
-    public byte[] getSessionTicketKeyAES() {
-        return Arrays.copyOf(sessionTicketKeyAES, sessionTicketKeyAES.length);
+    public byte[] getSessionTicketEncryptionKey() {
+        return Arrays.copyOf(sessionTicketEncryptionKey, sessionTicketEncryptionKey.length);
     }
 
-    public void setSessionTicketKeyAES(byte[] sessionTicketKeyAES) {
-        this.sessionTicketKeyAES = sessionTicketKeyAES;
+    public void setSessionTicketEncryptionKey(byte[] sessionTicketEncryptionKey) {
+        this.sessionTicketEncryptionKey = sessionTicketEncryptionKey;
     }
 
     public byte[] getSessionTicketKeyHMAC() {
@@ -4051,5 +4061,29 @@ public class Config implements Serializable {
 
     public void setDefaultKeyUpdateRequestMode(KeyUpdateRequest defaultKeyUpdateRequestMode) {
         this.defaultKeyUpdateRequestMode = defaultKeyUpdateRequestMode;
+    }
+
+    public CipherAlgorithm getSessionTicketCipherAlgorithm() {
+        return sessionTicketCipherAlgorithm;
+    }
+
+    public void setSessionTicketCipherAlgorithm(CipherAlgorithm sessionTicketCipherAlgorithm) {
+        this.sessionTicketCipherAlgorithm = sessionTicketCipherAlgorithm;
+    }
+
+    public MacAlgorithm getSessionTicketMacAlgorithm() {
+        return sessionTicketMacAlgorithm;
+    }
+
+    public void setSessionTicketMacAlgorithm(MacAlgorithm sessionTicketMacAlgorithm) {
+        this.sessionTicketMacAlgorithm = sessionTicketMacAlgorithm;
+    }
+
+    public byte[] getDefaultClientTicketResumptionSessionId() {
+        return defaultClientTicketResumptionSessionId;
+    }
+
+    public void setDefaultClientTicketResumptionSessionId(byte[] defaultClientTicketResumptionSessionId) {
+        this.defaultClientTicketResumptionSessionId = defaultClientTicketResumptionSessionId;
     }
 }

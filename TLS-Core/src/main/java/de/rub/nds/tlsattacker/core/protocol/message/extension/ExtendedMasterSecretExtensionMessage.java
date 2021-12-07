@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * This is the extended_master_secret message.
@@ -19,6 +20,7 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
  *
  * This extension is defined in RFC7627
  */
+@XmlRootElement(name = "ExtendedMasterSecretExtension")
 public class ExtendedMasterSecretExtensionMessage extends ExtensionMessage {
 
     public ExtendedMasterSecretExtensionMessage() {

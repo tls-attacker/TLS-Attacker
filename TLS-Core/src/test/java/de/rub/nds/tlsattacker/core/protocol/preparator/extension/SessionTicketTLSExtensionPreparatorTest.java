@@ -47,7 +47,7 @@ public class SessionTicketTLSExtensionPreparatorTest {
 
         assertArrayEquals(ExtensionType.SESSION_TICKET.getValue(), message.getExtensionType().getValue());
         assertEquals(extensionLength, (long) message.getExtensionLength().getValue());
-        assertArrayEquals(ticket, message.getTicket().getValue());
+        assertArrayEquals(ticket, message.getSessionTicket().getIdentity().getValue());
     }
 
     @Test

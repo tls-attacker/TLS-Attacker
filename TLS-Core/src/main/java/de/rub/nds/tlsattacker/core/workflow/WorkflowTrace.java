@@ -108,6 +108,7 @@ public class WorkflowTrace implements Serializable {
         @XmlElement(type = ChangeWriteEpochAction.class, name = "ChangeWriteEpoch"),
         @XmlElement(type = ChangeWriteSequenceNumberAction.class, name = "ChangeWriteSequenceNumber"),
         @XmlElement(type = ClearBuffersAction.class, name = "ClearBuffers"),
+        @XmlElement(type = ClearDigestAction.class, name = "ClearDigest"),
         @XmlElement(type = ConnectionBoundAction.class, name = "ConnectionBound"),
         @XmlElement(type = CopyBufferedMessagesAction.class, name = "CopyBufferedMessages"),
         @XmlElement(type = CopyBufferedRecordsAction.class, name = "CopyBufferedRecords"),

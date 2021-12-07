@@ -20,7 +20,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.CertificateVerifyHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
+@XmlRootElement(name = "CertificateVerify")
 public class CertificateVerifyMessage extends HandshakeMessage {
 
     /**

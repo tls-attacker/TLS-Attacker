@@ -18,7 +18,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 /**
  * RFC draft-ietf-tls-tls13-21
  */
-@XmlRootElement
+@XmlRootElement(name = "EndOfEarlyData")
 public class EndOfEarlyDataMessage extends HandshakeMessage {
 
     public EndOfEarlyDataMessage() {

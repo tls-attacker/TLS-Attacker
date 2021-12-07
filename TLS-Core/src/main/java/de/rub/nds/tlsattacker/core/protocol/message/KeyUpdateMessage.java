@@ -16,10 +16,12 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.KeyUpdateRequest;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.KeyUpdateHandler;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+@XmlRootElement(name = "KeyUpdate")
 public class KeyUpdateMessage extends HandshakeMessage {
 
     private static final Logger LOGGER = LogManager.getLogger();
