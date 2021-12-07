@@ -19,24 +19,30 @@ import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.util.UnlimitedStrengthEnabler;
 
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 import java.security.Security;
+
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
 
 public class RecordStreamCipherTest {
 
     private TlsContext context;
+    private KeySet keySet;
+    private byte[] data;
 
     public RecordStreamCipherTest() {
+        keySet = generateKeySet(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
+            ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"), new byte[1],
+            ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"));
+
+        data = ArrayConverter.hexStringToByteArray("01010101010101010101010101010101");
     }
 
     @Before
@@ -73,116 +79,94 @@ public class RecordStreamCipherTest {
                         context.setSelectedProtocolVersion(version);
                         @SuppressWarnings("unused")
                         RecordStreamCipher cipher = new RecordStreamCipher(context,
-                            new CipherState(context.getChooser().getSelectedProtocolVersion(),
-                                context.getChooser().getSelectedCipherSuite(), KeySetGenerator.generateKeySet(context),
-                                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
+                            new CipherState(version, suite, KeySetGenerator.generateKeySet(context), false));
                     }
                 }
             }
         }
     }
 
-    @Test
-    public void calculateMacSHA() throws CryptoException {
-        context.setConnection(new OutboundConnection());
-        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_RC4_128_SHA);
-        context.setSelectedProtocolVersion(ProtocolVersion.TLS10);
-        byte[] data = ArrayConverter.hexStringToByteArray("01010101010101010101010101010101");
+    private KeySet generateKeySet(byte[] clientWriteKey, byte[] clientWriteMacSecret, byte[] serverWriteKey,
+        byte[] serverWriteMacSecret) {
+        KeySet tempKeySet = new KeySet();
+        tempKeySet.setClientWriteKey(clientWriteKey);
+        tempKeySet.setClientWriteMacSecret(clientWriteMacSecret);
+        tempKeySet.setServerWriteKey(serverWriteKey);
+        tempKeySet.setServerWriteMacSecret(serverWriteMacSecret);
+        return tempKeySet;
+    }
 
-        KeySet keySet = new KeySet();
-        keySet.setClientWriteKey(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"));
-        keySet.setClientWriteMacSecret(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"));
-        keySet.setClientWriteIv(new byte[8]);
-        keySet.setServerWriteIv(new byte[8]); // ServerSide is not used
-        keySet.setServerWriteKey(new byte[16]); // ServerSide is not used
-        keySet.setServerWriteMacSecret(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"));
+    private TlsContext setContext(AliasedConnection connection, CipherSuite cipherSuite,
+        ProtocolVersion protocolVersion) {
+        TlsContext context = new TlsContext();
+        context.setConnection(connection);
+        context.setSelectedCipherSuite(cipherSuite);
+        context.setSelectedProtocolVersion(protocolVersion);
+        context.setSelectedCompressionMethod(CompressionMethod.NULL);
+        return context;
+    }
+
+    private Record setRecord(BigInteger sequenceNumber, byte[] data, ProtocolVersion protocolVersion) {
+        Record record = new Record();
+        record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
+        record.setSequenceNumber(sequenceNumber);
+        record.setCleanProtocolMessageBytes(data);
+        record.setProtocolVersion(protocolVersion.getValue());
+        record.setProtocolMessageBytes(data);
+        record.prepareComputations();
+        return record;
+    }
+
+    @Test
+    public void calculateMacSHA() {
+        TlsContext context =
+            setContext(new OutboundConnection(), CipherSuite.TLS_RSA_WITH_RC4_128_SHA, ProtocolVersion.TLS10);
 
         RecordStreamCipher cipher = new RecordStreamCipher(context,
-            new CipherState(context.getChooser().getSelectedProtocolVersion(),
-                context.getChooser().getSelectedCipherSuite(), keySet,
-                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
+            new CipherState(ProtocolVersion.TLS10, CipherSuite.TLS_RSA_WITH_RC4_128_SHA, keySet, false));
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("740b1374aac883ec9171730684b9f7bf84c56cc1"),
             cipher.calculateMac(data, context.getConnection().getLocalConnectionEndType()));
 
         context.setConnection(new InboundConnection());
         cipher = new RecordStreamCipher(context,
-            new CipherState(context.getChooser().getSelectedProtocolVersion(),
-                context.getChooser().getSelectedCipherSuite(), keySet,
-                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
+            new CipherState(ProtocolVersion.TLS10, CipherSuite.TLS_RSA_WITH_RC4_128_SHA, keySet, false));
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("740b1374aac883ec9171730684b9f7bf84c56cc1"),
             cipher.calculateMac(data, context.getConnection().getLocalConnectionEndType()));
     }
 
     @Test
-    public void calculateMacMD5() throws CryptoException {
-        context.setConnection(new OutboundConnection());
-        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_RC4_128_MD5);
-        context.setSelectedProtocolVersion(ProtocolVersion.TLS10);
-
-        byte[] data = ArrayConverter.hexStringToByteArray("01010101010101010101010101010101");
-
-        KeySet keySet = new KeySet();
-        keySet.setClientWriteKey(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"));
-        keySet.setClientWriteMacSecret(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"));
-        keySet.setClientWriteIv(new byte[8]);
-        keySet.setServerWriteIv(new byte[8]); // ServerSide is not used
-        keySet.setServerWriteKey(new byte[16]); // ServerSide is not used
-        keySet.setServerWriteMacSecret(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"));
+    public void calculateMacMD5() {
+        TlsContext context =
+            setContext(new OutboundConnection(), CipherSuite.TLS_RSA_WITH_RC4_128_MD5, ProtocolVersion.TLS10);
 
         RecordStreamCipher cipher = new RecordStreamCipher(context,
-            new CipherState(context.getChooser().getSelectedProtocolVersion(),
-                context.getChooser().getSelectedCipherSuite(), keySet,
-                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
+            new CipherState(ProtocolVersion.TLS10, CipherSuite.TLS_RSA_WITH_RC4_128_MD5, keySet, false));
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("6af39a238e82675131e6a383f801674e"),
             cipher.calculateMac(data, context.getConnection().getLocalConnectionEndType()));
 
         context.setConnection(new InboundConnection());
         cipher = new RecordStreamCipher(context,
-            new CipherState(context.getChooser().getSelectedProtocolVersion(),
-                context.getChooser().getSelectedCipherSuite(), keySet,
-                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
+            new CipherState(ProtocolVersion.TLS10, CipherSuite.TLS_RSA_WITH_RC4_128_MD5, keySet, false));
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("6af39a238e82675131e6a383f801674e"),
             cipher.calculateMac(data, context.getConnection().getLocalConnectionEndType()));
     }
 
     @Test
-    public void testEncryptSSL2SHA() throws CryptoException, NoSuchAlgorithmException {
+    public void testEncryptSSL2SHA() throws CryptoException {
         /*
          * Please notice : SSL2 is not actually implemented in TLS-Attacker! There for, RC4 is also not implemented for
          * SSL2! Those tests are for test purposes only to check if the undefined behavior is working.
          */
+        TlsContext context =
+            setContext(new OutboundConnection(), CipherSuite.TLS_RSA_WITH_RC4_128_SHA, ProtocolVersion.SSL2);
 
-        context.setConnection(new OutboundConnection());
-        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_RC4_128_SHA);
-        context.setSelectedProtocolVersion(ProtocolVersion.SSL2);
-        context.setSelectedCompressionMethod(CompressionMethod.NULL);
-
-        byte[] data = ArrayConverter.hexStringToByteArray("01010101010101010101010101010101");
-
-        KeySet keySet = new KeySet();
-        keySet.setClientWriteKey(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"));
-        keySet.setClientWriteMacSecret(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"));
-        keySet.setClientWriteIv(new byte[8]); // RC4 is not a block cipher so we don't need an iv
-        keySet.setServerWriteIv(new byte[8]); // ServerSide is not used
-        keySet.setServerWriteKey(new byte[16]); // ServerSide is not used
-        keySet.setServerWriteMacSecret(new byte[20]); // ServerSide is not used
-
+        Record record = setRecord(new BigInteger("0"), data, ProtocolVersion.SSL2);
         RecordStreamCipher cipher = new RecordStreamCipher(context,
-            new CipherState(context.getChooser().getSelectedProtocolVersion(),
-                context.getChooser().getSelectedCipherSuite(), keySet,
-                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
-
-        Record record = new Record();
-        record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
-        record.prepareComputations();
-        record.setSequenceNumber(new BigInteger("0"));
-        record.setProtocolVersion(ProtocolVersion.SSL2.getValue());
-        record.setCleanProtocolMessageBytes(data);
-
+            new CipherState(ProtocolVersion.SSL2, CipherSuite.TLS_RSA_WITH_RC4_128_SHA, keySet, false));
         cipher.encrypt(record);
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("0000000000000000160010"),
@@ -225,34 +209,14 @@ public class RecordStreamCipherTest {
          * Please notice : SSL2 is not actually implemented in TLS-Attacker! There for, RC4 is also not implemented for
          * SSL2! Those tests are for test purposes only to check if the undefined behavior is working.
          */
-
-        context.setConnection(new InboundConnection());
-        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_RC4_128_SHA);
-        context.setSelectedProtocolVersion(ProtocolVersion.SSL2);
+        TlsContext context =
+            setContext(new InboundConnection(), CipherSuite.TLS_RSA_WITH_RC4_128_SHA, ProtocolVersion.SSL2);
 
         byte[] data = ArrayConverter
             .hexStringToByteArray("805264444f48ea5b98a0ceb3884c2ef704c1e230428b4e84377ab0cf1f8ac98e5d9281b5");
-
-        KeySet keySet = new KeySet();
-        keySet.setClientWriteKey(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"));
-        keySet.setClientWriteMacSecret(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"));
-        keySet.setClientWriteIv(new byte[8]);
-        keySet.setServerWriteIv(new byte[8]); // ServerSide is not used
-        keySet.setServerWriteKey(new byte[16]); // ServerSide is not used
-        keySet.setServerWriteMacSecret(new byte[20]); // ServerSide is not used
-
+        Record record = setRecord(new BigInteger("0"), data, ProtocolVersion.SSL2);
         RecordStreamCipher plaintext = new RecordStreamCipher(context,
-            new CipherState(context.getChooser().getSelectedProtocolVersion(),
-                context.getChooser().getSelectedCipherSuite(), keySet,
-                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
-
-        Record record = new Record();
-        record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
-        record.prepareComputations();
-        record.setSequenceNumber(new BigInteger("0"));
-        record.setProtocolVersion(ProtocolVersion.SSL2.getValue());
-        record.setProtocolMessageBytes(data);
-
+            new CipherState(ProtocolVersion.SSL2, CipherSuite.TLS_RSA_WITH_RC4_128_SHA, keySet, false));
         plaintext.decrypt(record);
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("0000000000000000160010"),
@@ -288,39 +252,16 @@ public class RecordStreamCipherTest {
     }
 
     @Test
-    public void testEncryptSSL2MD5() throws CryptoException, NoSuchAlgorithmException {
+    public void testEncryptSSL2MD5() throws CryptoException {
         /*
          * Please notice : SSL2 is not actually implemented in TLS-Attacker! There for, RC4 is also not implemented for
          * SSL2! Those tests are for test purposes only to check if the undefined behavior is working.
          */
-
-        context.setConnection(new OutboundConnection());
-        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_RC4_128_MD5);
-        context.setSelectedProtocolVersion(ProtocolVersion.SSL2);
-        context.setSelectedCompressionMethod(CompressionMethod.NULL);
-
-        byte[] data = ArrayConverter.hexStringToByteArray("01010101010101010101010101010101");
-
-        KeySet keySet = new KeySet();
-        keySet.setClientWriteKey(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"));
-        keySet.setClientWriteMacSecret(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"));
-        keySet.setClientWriteIv(new byte[8]); // RC4 is not a block cipher so we don't need an iv
-        keySet.setServerWriteIv(new byte[8]); // ServerSide is not used
-        keySet.setServerWriteKey(new byte[16]); // ServerSide is not used
-        keySet.setServerWriteMacSecret(new byte[20]); // ServerSide is not used
-
+        TlsContext context =
+            setContext(new OutboundConnection(), CipherSuite.TLS_RSA_WITH_RC4_128_MD5, ProtocolVersion.SSL2);
+        Record record = setRecord(new BigInteger("0"), data, ProtocolVersion.SSL2);
         RecordStreamCipher cipher = new RecordStreamCipher(context,
-            new CipherState(context.getChooser().getSelectedProtocolVersion(),
-                context.getChooser().getSelectedCipherSuite(), keySet,
-                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
-
-        Record record = new Record();
-        record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
-        record.prepareComputations();
-        record.setSequenceNumber(new BigInteger("0"));
-        record.setProtocolVersion(ProtocolVersion.SSL2.getValue());
-        record.setCleanProtocolMessageBytes(data);
-
+            new CipherState(ProtocolVersion.SSL2, CipherSuite.TLS_RSA_WITH_RC4_128_MD5, keySet, false));
         cipher.encrypt(record);
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("0000000000000000160010"),
@@ -360,34 +301,13 @@ public class RecordStreamCipherTest {
          * Please notice : SSL2 is not actually implemented in TLS-Attacker! There for, RC4 is also not implemented for
          * SSL2! Those tests are for test purposes only to check if the undefined behavior is working.
          */
-
-        context.setConnection(new InboundConnection());
-        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_RC4_128_MD5);
-        context.setSelectedProtocolVersion(ProtocolVersion.SSL2);
-
         byte[] data =
             ArrayConverter.hexStringToByteArray("805264444f48ea5b98a0ceb3884c2ef7a66207d4305ec2ab84854d93aa9dffd2");
-
-        KeySet keySet = new KeySet();
-        keySet.setClientWriteKey(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"));
-        keySet.setClientWriteMacSecret(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"));
-        keySet.setClientWriteIv(new byte[8]);
-        keySet.setServerWriteIv(new byte[8]); // ServerSide is not used
-        keySet.setServerWriteKey(new byte[16]); // ServerSide is not used
-        keySet.setServerWriteMacSecret(new byte[20]); // ServerSide is not used
-
+        TlsContext context =
+            setContext(new InboundConnection(), CipherSuite.TLS_RSA_WITH_RC4_128_MD5, ProtocolVersion.SSL2);
+        Record record = setRecord(new BigInteger("0"), data, ProtocolVersion.SSL2);
         RecordStreamCipher plaintext = new RecordStreamCipher(context,
-            new CipherState(context.getChooser().getSelectedProtocolVersion(),
-                context.getChooser().getSelectedCipherSuite(), keySet,
-                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
-
-        Record record = new Record();
-        record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
-        record.prepareComputations();
-        record.setSequenceNumber(new BigInteger("0"));
-        record.setProtocolVersion(ProtocolVersion.SSL2.getValue());
-        record.setProtocolMessageBytes(data);
-
+            new CipherState(ProtocolVersion.SSL2, CipherSuite.TLS_RSA_WITH_RC4_128_MD5, keySet, false));
         plaintext.decrypt(record);
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("0000000000000000160010"),
@@ -421,34 +341,12 @@ public class RecordStreamCipherTest {
     }
 
     @Test
-    public void testEncryptSSL3SHA() throws CryptoException, NoSuchAlgorithmException {
-        context.setConnection(new OutboundConnection());
-        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_RC4_128_SHA);
-        context.setSelectedProtocolVersion(ProtocolVersion.SSL3);
-        context.setSelectedCompressionMethod(CompressionMethod.NULL);
-
-        byte[] data = ArrayConverter.hexStringToByteArray("01010101010101010101010101010101");
-
-        KeySet keySet = new KeySet();
-        keySet.setClientWriteKey(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"));
-        keySet.setClientWriteMacSecret(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"));
-        keySet.setClientWriteIv(new byte[8]); // RC4 is not a block cipher so we don't need an iv
-        keySet.setServerWriteIv(new byte[8]); // ServerSide is not used
-        keySet.setServerWriteKey(new byte[16]); // ServerSide is not used
-        keySet.setServerWriteMacSecret(new byte[20]); // ServerSide is not used
-
+    public void testEncryptSSL3SHA() throws CryptoException {
+        TlsContext context =
+            setContext(new OutboundConnection(), CipherSuite.TLS_RSA_WITH_RC4_128_SHA, ProtocolVersion.SSL3);
+        Record record = setRecord(new BigInteger("0"), data, ProtocolVersion.SSL3);
         RecordStreamCipher cipher = new RecordStreamCipher(context,
-            new CipherState(context.getChooser().getSelectedProtocolVersion(),
-                context.getChooser().getSelectedCipherSuite(), keySet,
-                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
-
-        Record record = new Record();
-        record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
-        record.prepareComputations();
-        record.setSequenceNumber(new BigInteger("0"));
-        record.setProtocolVersion(ProtocolVersion.SSL3.getValue());
-        record.setCleanProtocolMessageBytes(data);
-
+            new CipherState(ProtocolVersion.SSL3, CipherSuite.TLS_RSA_WITH_RC4_128_SHA, keySet, false));
         cipher.encrypt(record);
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("0000000000000000160010"),
@@ -485,13 +383,7 @@ public class RecordStreamCipherTest {
             record.getProtocolMessageBytes().getValue());
 
         /* A second record is created to ensure that the internal state throughout the session will be preserved */
-        Record record2 = new Record();
-        record2.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
-        record2.prepareComputations();
-        record2.setSequenceNumber(new BigInteger("1"));
-        record2.setProtocolVersion(ProtocolVersion.SSL3.getValue());
-        record2.setCleanProtocolMessageBytes(data);
-
+        Record record2 = setRecord(new BigInteger("1"), data, ProtocolVersion.SSL3);
         cipher.encrypt(record2);
 
         /*
@@ -529,35 +421,15 @@ public class RecordStreamCipherTest {
 
     @Test
     public void testDecryptSSL3SHA() throws CryptoException {
-        context.setConnection(new InboundConnection());
-        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_RC4_128_SHA);
-        context.setSelectedProtocolVersion(ProtocolVersion.SSL3);
-
         byte[] data = ArrayConverter
             .hexStringToByteArray("805264444f48ea5b98a0ceb3884c2ef704c1e230428b4e84377ab0cf1f8ac98e5d9281b5");
         byte[] data2 = ArrayConverter
             .hexStringToByteArray("265c875f34c97ea7a57406296e9c1fa0be5fbcbd97d3e897d1a43e229f84c0f28bd49338");
-
-        KeySet keySet = new KeySet();
-        keySet.setClientWriteKey(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"));
-        keySet.setClientWriteMacSecret(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"));
-        keySet.setClientWriteIv(new byte[8]);
-        keySet.setServerWriteIv(new byte[8]); // ServerSide is not used
-        keySet.setServerWriteKey(new byte[16]); // ServerSide is not used
-        keySet.setServerWriteMacSecret(new byte[20]); // ServerSide is not used
-
+        TlsContext context =
+            setContext(new InboundConnection(), CipherSuite.TLS_RSA_WITH_RC4_128_SHA, ProtocolVersion.SSL3);
+        Record record = setRecord(new BigInteger("0"), data, ProtocolVersion.SSL3);
         RecordStreamCipher plaintext = new RecordStreamCipher(context,
-            new CipherState(context.getChooser().getSelectedProtocolVersion(),
-                context.getChooser().getSelectedCipherSuite(), keySet,
-                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
-
-        Record record = new Record();
-        record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
-        record.prepareComputations();
-        record.setSequenceNumber(new BigInteger("0"));
-        record.setProtocolVersion(ProtocolVersion.SSL3.getValue());
-        record.setProtocolMessageBytes(data);
-
+            new CipherState(ProtocolVersion.SSL3, CipherSuite.TLS_RSA_WITH_RC4_128_SHA, keySet, false));
         plaintext.decrypt(record);
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("0000000000000000160010"),
@@ -592,13 +464,7 @@ public class RecordStreamCipherTest {
             record.getProtocolMessageBytes().getValue());
 
         /* A second record is created to ensure that the internal state throughout the session will be preserved */
-        Record record2 = new Record();
-        record2.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
-        record2.prepareComputations();
-        record2.setSequenceNumber(new BigInteger("1"));
-        record2.setProtocolVersion(ProtocolVersion.SSL3.getValue());
-        record2.setProtocolMessageBytes(data2);
-
+        Record record2 = setRecord(new BigInteger("1"), data2, ProtocolVersion.SSL3);
         plaintext.decrypt(record2);
 
         /*
@@ -633,34 +499,12 @@ public class RecordStreamCipherTest {
     }
 
     @Test
-    public void testEncryptSSL3MD5() throws CryptoException, NoSuchAlgorithmException {
-        context.setConnection(new OutboundConnection());
-        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_RC4_128_MD5);
-        context.setSelectedProtocolVersion(ProtocolVersion.SSL3);
-        context.setSelectedCompressionMethod(CompressionMethod.NULL);
-
-        byte[] data = ArrayConverter.hexStringToByteArray("01010101010101010101010101010101");
-
-        KeySet keySet = new KeySet();
-        keySet.setClientWriteKey(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"));
-        keySet.setClientWriteMacSecret(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"));
-        keySet.setClientWriteIv(new byte[8]); // RC4 is not a block cipher so we don't need an iv
-        keySet.setServerWriteIv(new byte[8]); // ServerSide is not used
-        keySet.setServerWriteKey(new byte[16]); // ServerSide is not used
-        keySet.setServerWriteMacSecret(new byte[20]); // ServerSide is not used
-
+    public void testEncryptSSL3MD5() throws CryptoException {
+        TlsContext context =
+            setContext(new OutboundConnection(), CipherSuite.TLS_RSA_WITH_RC4_128_MD5, ProtocolVersion.SSL3);
+        Record record = setRecord(new BigInteger("0"), data, ProtocolVersion.SSL3);
         RecordStreamCipher cipher = new RecordStreamCipher(context,
-            new CipherState(context.getChooser().getSelectedProtocolVersion(),
-                context.getChooser().getSelectedCipherSuite(), keySet,
-                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
-
-        Record record = new Record();
-        record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
-        record.prepareComputations();
-        record.setSequenceNumber(new BigInteger("0"));
-        record.setProtocolVersion(ProtocolVersion.SSL3.getValue());
-        record.setCleanProtocolMessageBytes(data);
-
+            new CipherState(ProtocolVersion.SSL3, CipherSuite.TLS_RSA_WITH_RC4_128_MD5, keySet, false));
         cipher.encrypt(record);
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("0000000000000000160010"),
@@ -694,13 +538,7 @@ public class RecordStreamCipherTest {
             record.getProtocolMessageBytes().getValue());
 
         /* A second record is created to ensure that the internal state throughout the session will be preserved */
-        Record record2 = new Record();
-        record2.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
-        record2.prepareComputations();
-        record2.setSequenceNumber(new BigInteger("1"));
-        record2.setProtocolVersion(ProtocolVersion.SSL3.getValue());
-        record2.setCleanProtocolMessageBytes(data);
-
+        Record record2 = setRecord(new BigInteger("1"), data, ProtocolVersion.SSL3);
         cipher.encrypt(record2);
 
         /*
@@ -735,35 +573,15 @@ public class RecordStreamCipherTest {
 
     @Test
     public void testDecryptSSL3MD5() throws CryptoException {
-        context.setConnection(new InboundConnection());
-        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_RC4_128_MD5);
-        context.setSelectedProtocolVersion(ProtocolVersion.SSL3);
-
         byte[] data =
             ArrayConverter.hexStringToByteArray("805264444f48ea5b98a0ceb3884c2ef7a66207d4305ec2ab84854d93aa9dffd2");
         byte[] data2 =
             ArrayConverter.hexStringToByteArray("4492241d265c875f34c97ea7a5740629a900fe91adb02a8f27815589c0384db4");
-
-        KeySet keySet = new KeySet();
-        keySet.setClientWriteKey(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"));
-        keySet.setClientWriteMacSecret(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"));
-        keySet.setClientWriteIv(new byte[8]);
-        keySet.setServerWriteIv(new byte[8]); // ServerSide is not used
-        keySet.setServerWriteKey(new byte[16]); // ServerSide is not used
-        keySet.setServerWriteMacSecret(new byte[20]); // ServerSide is not used
-
+        TlsContext context =
+            setContext(new InboundConnection(), CipherSuite.TLS_RSA_WITH_RC4_128_MD5, ProtocolVersion.SSL3);
+        Record record = setRecord(new BigInteger("0"), data, ProtocolVersion.SSL3);
         RecordStreamCipher plaintext = new RecordStreamCipher(context,
-            new CipherState(context.getChooser().getSelectedProtocolVersion(),
-                context.getChooser().getSelectedCipherSuite(), keySet,
-                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
-
-        Record record = new Record();
-        record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
-        record.prepareComputations();
-        record.setSequenceNumber(new BigInteger("0"));
-        record.setProtocolVersion(ProtocolVersion.SSL3.getValue());
-        record.setProtocolMessageBytes(data);
-
+            new CipherState(ProtocolVersion.SSL3, CipherSuite.TLS_RSA_WITH_RC4_128_MD5, keySet, false));
         plaintext.decrypt(record);
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("0000000000000000160010"),
@@ -796,13 +614,7 @@ public class RecordStreamCipherTest {
             record.getProtocolMessageBytes().getValue());
 
         /* A second record is created to ensure that the internal state throughout the session will be preserved */
-        Record record2 = new Record();
-        record2.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
-        record2.prepareComputations();
-        record2.setSequenceNumber(new BigInteger("1"));
-        record2.setProtocolVersion(ProtocolVersion.SSL3.getValue());
-        record2.setProtocolMessageBytes(data2);
-
+        Record record2 = setRecord(new BigInteger("1"), data2, ProtocolVersion.SSL3);
         plaintext.decrypt(record2);
 
         /*
@@ -835,40 +647,13 @@ public class RecordStreamCipherTest {
     }
 
     @Test
-    public void testEncryptTLSv10SHA() throws CryptoException, NoSuchAlgorithmException {
-        /* Outbound for Clients, Inbound for Servers */
-        context.setConnection(new OutboundConnection());
-        /* Sets the Ciphersuit for the Handshake */
-        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_RC4_128_SHA);
-        /* Sets the SSL/TLS version */
-        context.setSelectedProtocolVersion(ProtocolVersion.TLS10);
-
+    public void testEncryptTLSv10SHA() throws CryptoException {
+        TlsContext context =
+            setContext(new OutboundConnection(), CipherSuite.TLS_RSA_WITH_RC4_128_SHA, ProtocolVersion.TLS10);
         /* Sets the data that should be encrypted later */
-        byte[] data = ArrayConverter.hexStringToByteArray("01010101010101010101010101010101");
-
-        KeySet keySet = new KeySet();
-
-        keySet.setClientWriteKey(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"));
-
-        keySet.setClientWriteMacSecret(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"));
-        keySet.setClientWriteIv(new byte[8]); // RC4 is not a block cipher so we don't need an iv
-        keySet.setServerWriteIv(new byte[8]); // ServerSide is not used
-        keySet.setServerWriteKey(new byte[16]); // ServerSide is not used
-        keySet.setServerWriteMacSecret(new byte[20]); // ServerSide is not used
-
+        Record record = setRecord(new BigInteger("0"), data, ProtocolVersion.TLS10);
         RecordStreamCipher cipher = new RecordStreamCipher(context,
-            new CipherState(context.getChooser().getSelectedProtocolVersion(),
-                context.getChooser().getSelectedCipherSuite(), keySet,
-                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
-
-        Record record = new Record();
-        record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
-        record.prepareComputations();
-
-        record.setSequenceNumber(new BigInteger("0"));
-        record.setProtocolVersion(ProtocolVersion.TLS10.getValue());
-        record.setCleanProtocolMessageBytes(data);
-
+            new CipherState(ProtocolVersion.TLS10, CipherSuite.TLS_RSA_WITH_RC4_128_SHA, keySet, false));
         cipher.encrypt(record);
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603010010"),
@@ -905,13 +690,7 @@ public class RecordStreamCipherTest {
             record.getProtocolMessageBytes().getValue());
 
         /* A second record is created to ensure that the internal state throughout the session will be preserved */
-        Record record2 = new Record();
-        record2.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
-        record2.prepareComputations();
-        record2.setSequenceNumber(new BigInteger("1"));
-        record2.setProtocolVersion(ProtocolVersion.TLS10.getValue());
-        record2.setCleanProtocolMessageBytes(data);
-
+        Record record2 = setRecord(new BigInteger("1"), data, ProtocolVersion.TLS10);
         cipher.encrypt(record2);
 
         /*
@@ -949,35 +728,15 @@ public class RecordStreamCipherTest {
 
     @Test
     public void testDecryptTLSv10SHA() throws CryptoException {
-        context.setConnection(new InboundConnection());
-        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_RC4_128_SHA);
-        context.setSelectedProtocolVersion(ProtocolVersion.TLS10);
-
         byte[] data = ArrayConverter
             .hexStringToByteArray("805264444f48ea5b98a0ceb3884c2ef78fa0cb307f1e7b1beef68fa824907314075768e4");
         byte[] data2 = ArrayConverter
             .hexStringToByteArray("265c875f34c97ea7a57406296e9c1fa0965267f4480ae834e8d6038f660e5557c64ec0f8");
-
-        KeySet keySet = new KeySet();
-        keySet.setClientWriteKey(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"));
-        keySet.setClientWriteMacSecret(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"));
-        keySet.setClientWriteIv(new byte[8]);
-        keySet.setServerWriteIv(new byte[8]); // ServerSide is not used
-        keySet.setServerWriteKey(new byte[16]); // ServerSide is not used
-        keySet.setServerWriteMacSecret(new byte[20]); // ServerSide is not used
-
+        TlsContext context =
+            setContext(new InboundConnection(), CipherSuite.TLS_RSA_WITH_RC4_128_SHA, ProtocolVersion.TLS10);
+        Record record = setRecord(new BigInteger("0"), data, ProtocolVersion.TLS10);
         RecordStreamCipher plaintext = new RecordStreamCipher(context,
-            new CipherState(context.getChooser().getSelectedProtocolVersion(),
-                context.getChooser().getSelectedCipherSuite(), keySet,
-                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
-
-        Record record = new Record();
-        record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
-        record.prepareComputations();
-        record.setSequenceNumber(new BigInteger("0"));
-        record.setProtocolVersion(ProtocolVersion.TLS10.getValue());
-        record.setProtocolMessageBytes(data);
-
+            new CipherState(ProtocolVersion.TLS10, CipherSuite.TLS_RSA_WITH_RC4_128_SHA, keySet, false));
         plaintext.decrypt(record);
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603010010"),
@@ -1012,13 +771,7 @@ public class RecordStreamCipherTest {
             record.getProtocolMessageBytes().getValue());
 
         /* A second record is created to ensure that the internal state throughout the session will be preserved */
-        Record record2 = new Record();
-        record2.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
-        record2.prepareComputations();
-        record2.setSequenceNumber(new BigInteger("1"));
-        record2.setProtocolVersion(ProtocolVersion.TLS10.getValue());
-        record2.setProtocolMessageBytes(data2);
-
+        Record record2 = setRecord(new BigInteger("1"), data2, ProtocolVersion.TLS10);
         plaintext.decrypt(record2);
 
         /*
@@ -1053,40 +806,12 @@ public class RecordStreamCipherTest {
     }
 
     @Test
-    public void testEncryptTLSv10MD5() throws CryptoException, NoSuchAlgorithmException {
-        /* Outbound for Clients, Inbound for Servers */
-        context.setConnection(new OutboundConnection());
-        /* Sets the Ciphersuit for the Handshake */
-        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_RC4_128_MD5);
-        /* Sets the SSL/TLS version */
-        context.setSelectedProtocolVersion(ProtocolVersion.TLS10);
-
-        /* Sets the data that should be encrypted later */
-        byte[] data = ArrayConverter.hexStringToByteArray("01010101010101010101010101010101");
-
-        KeySet keySet = new KeySet();
-
-        keySet.setClientWriteKey(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"));
-
-        keySet.setClientWriteMacSecret(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"));
-        keySet.setClientWriteIv(new byte[8]); // RC4 is not a block cipher so we don't need an iv
-        keySet.setServerWriteIv(new byte[8]); // ServerSide is not used
-        keySet.setServerWriteKey(new byte[16]); // ServerSide is not used
-        keySet.setServerWriteMacSecret(new byte[20]); // ServerSide is not used
-
+    public void testEncryptTLSv10MD5() throws CryptoException {
+        TlsContext context =
+            setContext(new OutboundConnection(), CipherSuite.TLS_RSA_WITH_RC4_128_MD5, ProtocolVersion.TLS10);
+        Record record = setRecord(new BigInteger("0"), data, ProtocolVersion.TLS10);
         RecordStreamCipher cipher = new RecordStreamCipher(context,
-            new CipherState(context.getChooser().getSelectedProtocolVersion(),
-                context.getChooser().getSelectedCipherSuite(), keySet,
-                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
-
-        Record record = new Record();
-        record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
-        record.prepareComputations();
-
-        record.setSequenceNumber(new BigInteger("0"));
-        record.setProtocolVersion(ProtocolVersion.TLS10.getValue());
-        record.setCleanProtocolMessageBytes(data);
-
+            new CipherState(ProtocolVersion.TLS10, CipherSuite.TLS_RSA_WITH_RC4_128_MD5, keySet, false));
         cipher.encrypt(record);
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603010010"),
@@ -1120,13 +845,7 @@ public class RecordStreamCipherTest {
             record.getProtocolMessageBytes().getValue());
 
         /* A second record is created to ensure that the internal state throughout the session will be preserved */
-        Record record2 = new Record();
-        record2.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
-        record2.prepareComputations();
-        record2.setSequenceNumber(new BigInteger("1"));
-        record2.setProtocolVersion(ProtocolVersion.TLS10.getValue());
-        record2.setCleanProtocolMessageBytes(data);
-
+        Record record2 = setRecord(new BigInteger("1"), data, ProtocolVersion.TLS10);
         cipher.encrypt(record2);
 
         /*
@@ -1161,35 +880,15 @@ public class RecordStreamCipherTest {
 
     @Test
     public void testDecryptTLSv10MD5() throws CryptoException {
-        context.setConnection(new InboundConnection());
-        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_RC4_128_MD5);
-        context.setSelectedProtocolVersion(ProtocolVersion.TLS10);
-
         byte[] data =
             ArrayConverter.hexStringToByteArray("805264444f48ea5b98a0ceb3884c2ef7c2e042de63c508a46747511fd5df0dd5");
         byte[] data2 =
             ArrayConverter.hexStringToByteArray("4492241d265c875f34c97ea7a5740629cee1d3d74f0a47cd6e8161d0c54bee3d");
-
-        KeySet keySet = new KeySet();
-        keySet.setClientWriteKey(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"));
-        keySet.setClientWriteMacSecret(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"));
-        keySet.setClientWriteIv(new byte[8]);
-        keySet.setServerWriteIv(new byte[8]); // ServerSide is not used
-        keySet.setServerWriteKey(new byte[16]); // ServerSide is not used
-        keySet.setServerWriteMacSecret(new byte[20]); // ServerSide is not used
-
+        TlsContext context =
+            setContext(new InboundConnection(), CipherSuite.TLS_RSA_WITH_RC4_128_MD5, ProtocolVersion.TLS10);
+        Record record = setRecord(new BigInteger("0"), data, ProtocolVersion.TLS10);
         RecordStreamCipher plaintext = new RecordStreamCipher(context,
-            new CipherState(context.getChooser().getSelectedProtocolVersion(),
-                context.getChooser().getSelectedCipherSuite(), keySet,
-                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
-
-        Record record = new Record();
-        record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
-        record.prepareComputations();
-        record.setSequenceNumber(new BigInteger("0"));
-        record.setProtocolVersion(ProtocolVersion.TLS10.getValue());
-        record.setProtocolMessageBytes(data);
-
+            new CipherState(ProtocolVersion.TLS10, CipherSuite.TLS_RSA_WITH_RC4_128_MD5, keySet, false));
         plaintext.decrypt(record);
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603010010"),
@@ -1222,13 +921,7 @@ public class RecordStreamCipherTest {
             record.getProtocolMessageBytes().getValue());
 
         /* A second record is created to ensure that the internal state throughout the session will be preserved */
-        Record record2 = new Record();
-        record2.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
-        record2.prepareComputations();
-        record2.setSequenceNumber(new BigInteger("1"));
-        record2.setProtocolVersion(ProtocolVersion.TLS10.getValue());
-        record2.setProtocolMessageBytes(data2);
-
+        Record record2 = setRecord(new BigInteger("1"), data2, ProtocolVersion.TLS10);
         plaintext.decrypt(record2);
 
         /*
@@ -1261,40 +954,12 @@ public class RecordStreamCipherTest {
     }
 
     @Test
-    public void testEncryptTLS11SHA() throws CryptoException, NoSuchAlgorithmException {
-        /* Outbound for Clients, Inbound for Servers */
-        context.setConnection(new OutboundConnection());
-        /* Sets the Ciphersuit for the Handshake */
-        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_RC4_128_SHA);
-        /* Sets the SSL/TLS version */
-        context.setSelectedProtocolVersion(ProtocolVersion.TLS11);
-
-        /* Sets the data that should be encrypted later */
-        byte[] data = ArrayConverter.hexStringToByteArray("01010101010101010101010101010101");
-
-        KeySet keySet = new KeySet();
-
-        keySet.setClientWriteKey(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"));
-
-        keySet.setClientWriteMacSecret(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"));
-        keySet.setClientWriteIv(new byte[8]); // RC4 is not a block cipher so we don't need an iv
-        keySet.setServerWriteIv(new byte[8]); // ServerSide is not used
-        keySet.setServerWriteKey(new byte[16]); // ServerSide is not used
-        keySet.setServerWriteMacSecret(new byte[20]); // ServerSide is not used
-
+    public void testEncryptTLS11SHA() throws CryptoException {
+        TlsContext context =
+            setContext(new OutboundConnection(), CipherSuite.TLS_RSA_WITH_RC4_128_SHA, ProtocolVersion.TLS11);
+        Record record = setRecord(new BigInteger("0"), data, ProtocolVersion.TLS11);
         RecordStreamCipher cipher = new RecordStreamCipher(context,
-            new CipherState(context.getChooser().getSelectedProtocolVersion(),
-                context.getChooser().getSelectedCipherSuite(), keySet,
-                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
-
-        Record record = new Record();
-        record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
-        record.prepareComputations();
-
-        record.setSequenceNumber(new BigInteger("0"));
-        record.setProtocolVersion(ProtocolVersion.TLS11.getValue());
-        record.setCleanProtocolMessageBytes(data);
-
+            new CipherState(ProtocolVersion.TLS11, CipherSuite.TLS_RSA_WITH_RC4_128_SHA, keySet, false));
         cipher.encrypt(record);
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603020010"),
@@ -1331,13 +996,7 @@ public class RecordStreamCipherTest {
             record.getProtocolMessageBytes().getValue());
 
         /* A second record is created to ensure that the internal state throughout the session will be preserved */
-        Record record2 = new Record();
-        record2.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
-        record2.prepareComputations();
-        record2.setSequenceNumber(new BigInteger("1"));
-        record2.setProtocolVersion(ProtocolVersion.TLS11.getValue());
-        record2.setCleanProtocolMessageBytes(data);
-
+        Record record2 = setRecord(new BigInteger("1"), data, ProtocolVersion.TLS11);
         cipher.encrypt(record2);
 
         /*
@@ -1375,35 +1034,16 @@ public class RecordStreamCipherTest {
 
     @Test
     public void testDecryptTLS11SHA() throws CryptoException {
-        context.setConnection(new InboundConnection());
-        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_RC4_128_SHA);
-        context.setSelectedProtocolVersion(ProtocolVersion.TLS11);
-
         byte[] data = ArrayConverter
             .hexStringToByteArray("805264444f48ea5b98a0ceb3884c2ef7d85087a2fef711b1cd6d6bb755ed1d813dba3869");
         byte[] data2 = ArrayConverter
             .hexStringToByteArray("265c875f34c97ea7a57406296e9c1fa0c95f9664f29f192828d79999b6c6f123b64c1f93");
 
-        KeySet keySet = new KeySet();
-        keySet.setClientWriteKey(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"));
-        keySet.setClientWriteMacSecret(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"));
-        keySet.setClientWriteIv(new byte[8]);
-        keySet.setServerWriteIv(new byte[8]); // ServerSide is not used
-        keySet.setServerWriteKey(new byte[16]); // ServerSide is not used
-        keySet.setServerWriteMacSecret(new byte[20]); // ServerSide is not used
-
+        TlsContext context =
+            setContext(new InboundConnection(), CipherSuite.TLS_RSA_WITH_RC4_128_SHA, ProtocolVersion.TLS11);
+        Record record = setRecord(new BigInteger("0"), data, ProtocolVersion.TLS11);
         RecordStreamCipher plaintext = new RecordStreamCipher(context,
-            new CipherState(context.getChooser().getSelectedProtocolVersion(),
-                context.getChooser().getSelectedCipherSuite(), keySet,
-                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
-
-        Record record = new Record();
-        record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
-        record.prepareComputations();
-        record.setSequenceNumber(new BigInteger("0"));
-        record.setProtocolVersion(ProtocolVersion.TLS11.getValue());
-        record.setProtocolMessageBytes(data);
-
+            new CipherState(ProtocolVersion.TLS11, CipherSuite.TLS_RSA_WITH_RC4_128_SHA, keySet, false));
         plaintext.decrypt(record);
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603020010"),
@@ -1438,13 +1078,7 @@ public class RecordStreamCipherTest {
             record.getProtocolMessageBytes().getValue());
 
         /* A second record is created to ensure that the internal state throughout the session will be preserved */
-        Record record2 = new Record();
-        record2.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
-        record2.prepareComputations();
-        record2.setSequenceNumber(new BigInteger("1"));
-        record2.setProtocolVersion(ProtocolVersion.TLS11.getValue());
-        record2.setProtocolMessageBytes(data2);
-
+        Record record2 = setRecord(new BigInteger("1"), data2, ProtocolVersion.TLS11);
         plaintext.decrypt(record2);
 
         /*
@@ -1479,40 +1113,12 @@ public class RecordStreamCipherTest {
     }
 
     @Test
-    public void testEncryptTLSv11MD5() throws CryptoException, NoSuchAlgorithmException {
-        /* Outbound for Clients, Inbound for Servers */
-        context.setConnection(new OutboundConnection());
-        /* Sets the Ciphersuit for the Handshake */
-        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_RC4_128_MD5);
-        /* Sets the SSL/TLS version */
-        context.setSelectedProtocolVersion(ProtocolVersion.TLS11);
-
-        /* Sets the data that should be encrypted later */
-        byte[] data = ArrayConverter.hexStringToByteArray("01010101010101010101010101010101");
-
-        KeySet keySet = new KeySet();
-
-        keySet.setClientWriteKey(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"));
-
-        keySet.setClientWriteMacSecret(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"));
-        keySet.setClientWriteIv(new byte[8]); // RC4 is not a block cipher so we don't need an iv
-        keySet.setServerWriteIv(new byte[8]); // ServerSide is not used
-        keySet.setServerWriteKey(new byte[16]); // ServerSide is not used
-        keySet.setServerWriteMacSecret(new byte[20]); // ServerSide is not used
-
+    public void testEncryptTLSv11MD5() throws CryptoException {
+        TlsContext context =
+            setContext(new OutboundConnection(), CipherSuite.TLS_RSA_WITH_RC4_128_MD5, ProtocolVersion.TLS11);
+        Record record = setRecord(new BigInteger("0"), data, ProtocolVersion.TLS11);
         RecordStreamCipher cipher = new RecordStreamCipher(context,
-            new CipherState(context.getChooser().getSelectedProtocolVersion(),
-                context.getChooser().getSelectedCipherSuite(), keySet,
-                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
-
-        Record record = new Record();
-        record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
-        record.prepareComputations();
-
-        record.setSequenceNumber(new BigInteger("0"));
-        record.setProtocolVersion(ProtocolVersion.TLS11.getValue());
-        record.setCleanProtocolMessageBytes(data);
-
+            new CipherState(ProtocolVersion.TLS11, CipherSuite.TLS_RSA_WITH_RC4_128_MD5, keySet, false));
         cipher.encrypt(record);
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603020010"),
@@ -1546,13 +1152,7 @@ public class RecordStreamCipherTest {
             record.getProtocolMessageBytes().getValue());
 
         /* A second record is created to ensure that the internal state throughout the session will be preserved */
-        Record record2 = new Record();
-        record2.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
-        record2.prepareComputations();
-        record2.setSequenceNumber(new BigInteger("1"));
-        record2.setProtocolVersion(ProtocolVersion.TLS11.getValue());
-        record2.setCleanProtocolMessageBytes(data);
-
+        Record record2 = setRecord(new BigInteger("1"), data, ProtocolVersion.TLS11);
         cipher.encrypt(record2);
 
         /*
@@ -1587,35 +1187,15 @@ public class RecordStreamCipherTest {
 
     @Test
     public void testDecryptTLSv11MD5() throws CryptoException {
-        context.setConnection(new InboundConnection());
-        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_RC4_128_MD5);
-        context.setSelectedProtocolVersion(ProtocolVersion.TLS11);
-
         byte[] data =
             ArrayConverter.hexStringToByteArray("805264444f48ea5b98a0ceb3884c2ef70a021369e63e4556899b399dcfe0709c");
         byte[] data2 =
             ArrayConverter.hexStringToByteArray("4492241d265c875f34c97ea7a5740629bafbfaf30b89e857be131c1a0ff5e933");
-
-        KeySet keySet = new KeySet();
-        keySet.setClientWriteKey(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"));
-        keySet.setClientWriteMacSecret(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"));
-        keySet.setClientWriteIv(new byte[8]);
-        keySet.setServerWriteIv(new byte[8]); // ServerSide is not used
-        keySet.setServerWriteKey(new byte[16]); // ServerSide is not used
-        keySet.setServerWriteMacSecret(new byte[20]); // ServerSide is not used
-
+        TlsContext context =
+            setContext(new InboundConnection(), CipherSuite.TLS_RSA_WITH_RC4_128_MD5, ProtocolVersion.TLS11);
+        Record record = setRecord(new BigInteger("0"), data, ProtocolVersion.TLS11);
         RecordStreamCipher plaintext = new RecordStreamCipher(context,
-            new CipherState(context.getChooser().getSelectedProtocolVersion(),
-                context.getChooser().getSelectedCipherSuite(), keySet,
-                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
-
-        Record record = new Record();
-        record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
-        record.prepareComputations();
-        record.setSequenceNumber(new BigInteger("0"));
-        record.setProtocolVersion(ProtocolVersion.TLS11.getValue());
-        record.setProtocolMessageBytes(data);
-
+            new CipherState(ProtocolVersion.TLS11, CipherSuite.TLS_RSA_WITH_RC4_128_MD5, keySet, false));
         plaintext.decrypt(record);
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603020010"),
@@ -1648,13 +1228,7 @@ public class RecordStreamCipherTest {
             record.getProtocolMessageBytes().getValue());
 
         /* A second record is created to ensure that the internal state throughout the session will be preserved */
-        Record record2 = new Record();
-        record2.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
-        record2.prepareComputations();
-        record2.setSequenceNumber(new BigInteger("1"));
-        record2.setProtocolVersion(ProtocolVersion.TLS11.getValue());
-        record2.setProtocolMessageBytes(data2);
-
+        Record record2 = setRecord(new BigInteger("1"), data2, ProtocolVersion.TLS11);
         plaintext.decrypt(record2);
 
         /*
@@ -1687,39 +1261,12 @@ public class RecordStreamCipherTest {
     }
 
     @Test
-    public void testEncryptTLS12SHA() throws CryptoException, NoSuchAlgorithmException {
-        /* Outbound for Clients, Inbound for Servers */
-        context.setConnection(new OutboundConnection());
-        /* Sets the Ciphersuit for the Handshake */
-        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_RC4_128_SHA);
-        /* Sets the SSL/TLS version */
-        context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
-
-        byte[] data = ArrayConverter.hexStringToByteArray("01010101010101010101010101010101");
-
-        KeySet keySet = new KeySet();
-
-        keySet.setClientWriteKey(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"));
-
-        keySet.setClientWriteMacSecret(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"));
-        keySet.setClientWriteIv(new byte[8]); // RC4 is not a block cipher so we don't need an iv
-        keySet.setServerWriteIv(new byte[8]); // ServerSide is not used
-        keySet.setServerWriteKey(new byte[16]); // ServerSide is not used
-        keySet.setServerWriteMacSecret(new byte[20]); // ServerSide is not used
-
+    public void testEncryptTLS12SHA() throws CryptoException {
+        TlsContext context =
+            setContext(new OutboundConnection(), CipherSuite.TLS_RSA_WITH_RC4_128_SHA, ProtocolVersion.TLS12);
+        Record record = setRecord(new BigInteger("0"), data, ProtocolVersion.TLS12);
         RecordStreamCipher cipher = new RecordStreamCipher(context,
-            new CipherState(context.getChooser().getSelectedProtocolVersion(),
-                context.getChooser().getSelectedCipherSuite(), keySet,
-                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
-
-        Record record = new Record();
-        record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
-        record.prepareComputations();
-
-        record.setSequenceNumber(new BigInteger("0"));
-        record.setProtocolVersion(ProtocolVersion.TLS12.getValue());
-        record.setCleanProtocolMessageBytes(data);
-
+            new CipherState(ProtocolVersion.TLS12, CipherSuite.TLS_RSA_WITH_RC4_128_SHA, keySet, false));
         cipher.encrypt(record);
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603030010"),
@@ -1756,13 +1303,7 @@ public class RecordStreamCipherTest {
             record.getProtocolMessageBytes().getValue());
 
         /* A second record is created to ensure that the internal state throughout the session will be preserved */
-        Record record2 = new Record();
-        record2.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
-        record2.prepareComputations();
-        record2.setSequenceNumber(new BigInteger("1"));
-        record2.setProtocolVersion(ProtocolVersion.TLS12.getValue());
-        record2.setCleanProtocolMessageBytes(data);
-
+        Record record2 = setRecord(new BigInteger("1"), data, ProtocolVersion.TLS12);
         cipher.encrypt(record2);
 
         /*
@@ -1800,35 +1341,15 @@ public class RecordStreamCipherTest {
 
     @Test
     public void testDecryptTLS12SHA() throws CryptoException {
-        context.setConnection(new InboundConnection());
-        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_RC4_128_SHA);
-        context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
-
         byte[] data = ArrayConverter
             .hexStringToByteArray("805264444f48ea5b98a0ceb3884c2ef7a9419b5d3406bf2c811c3eb6c1221c47d11b5e64");
         byte[] data2 = ArrayConverter
             .hexStringToByteArray("265c875f34c97ea7a57406296e9c1fa06a691b117949351ea9a3d91b0772f72f457454ff");
-
-        KeySet keySet = new KeySet();
-        keySet.setClientWriteKey(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"));
-        keySet.setClientWriteMacSecret(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"));
-        keySet.setClientWriteIv(new byte[8]);
-        keySet.setServerWriteIv(new byte[8]); // ServerSide is not used
-        keySet.setServerWriteKey(new byte[16]); // ServerSide is not used
-        keySet.setServerWriteMacSecret(new byte[20]); // ServerSide is not used
-
+        TlsContext context =
+            setContext(new InboundConnection(), CipherSuite.TLS_RSA_WITH_RC4_128_SHA, ProtocolVersion.TLS12);
+        Record record = setRecord(new BigInteger("0"), data, ProtocolVersion.TLS12);
         RecordStreamCipher plaintext = new RecordStreamCipher(context,
-            new CipherState(context.getChooser().getSelectedProtocolVersion(),
-                context.getChooser().getSelectedCipherSuite(), keySet,
-                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
-
-        Record record = new Record();
-        record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
-        record.prepareComputations();
-        record.setSequenceNumber(new BigInteger("0"));
-        record.setProtocolVersion(ProtocolVersion.TLS12.getValue());
-        record.setProtocolMessageBytes(data);
-
+            new CipherState(ProtocolVersion.TLS12, CipherSuite.TLS_RSA_WITH_RC4_128_SHA, keySet, false));
         plaintext.decrypt(record);
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603030010"),
@@ -1863,13 +1384,7 @@ public class RecordStreamCipherTest {
             record.getProtocolMessageBytes().getValue());
 
         /* A second record is created to ensure that the internal state throughout the session will be preserved */
-        Record record2 = new Record();
-        record2.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
-        record2.prepareComputations();
-        record2.setSequenceNumber(new BigInteger("1"));
-        record2.setProtocolVersion(ProtocolVersion.TLS12.getValue());
-        record2.setProtocolMessageBytes(data2);
-
+        Record record2 = setRecord(new BigInteger("1"), data2, ProtocolVersion.TLS12);
         plaintext.decrypt(record2);
 
         /*
@@ -1904,39 +1419,12 @@ public class RecordStreamCipherTest {
     }
 
     @Test
-    public void testEncryptTLSv12MD5() throws CryptoException, NoSuchAlgorithmException {
-        /* Outbound for Clients, Inbound for Servers */
-        context.setConnection(new OutboundConnection());
-        /* Sets the Ciphersuit for the Handshake */
-        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_RC4_128_MD5);
-        /* Sets the SSL/TLS version */
-        context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
-
-        byte[] data = ArrayConverter.hexStringToByteArray("01010101010101010101010101010101");
-
-        KeySet keySet = new KeySet();
-
-        keySet.setClientWriteKey(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"));
-
-        keySet.setClientWriteMacSecret(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"));
-        keySet.setClientWriteIv(new byte[8]); // RC4 is not a block cipher so we don't need an iv
-        keySet.setServerWriteIv(new byte[8]); // ServerSide is not used
-        keySet.setServerWriteKey(new byte[16]); // ServerSide is not used
-        keySet.setServerWriteMacSecret(new byte[20]); // ServerSide is not used
-
+    public void testEncryptTLSv12MD5() throws CryptoException {
+        TlsContext context =
+            setContext(new OutboundConnection(), CipherSuite.TLS_RSA_WITH_RC4_128_MD5, ProtocolVersion.TLS12);
+        Record record = setRecord(new BigInteger("0"), data, ProtocolVersion.TLS12);
         RecordStreamCipher cipher = new RecordStreamCipher(context,
-            new CipherState(context.getChooser().getSelectedProtocolVersion(),
-                context.getChooser().getSelectedCipherSuite(), keySet,
-                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
-
-        Record record = new Record();
-        record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
-        record.prepareComputations();
-
-        record.setSequenceNumber(new BigInteger("0"));
-        record.setProtocolVersion(ProtocolVersion.TLS12.getValue());
-        record.setCleanProtocolMessageBytes(data);
-
+            new CipherState(ProtocolVersion.TLS12, CipherSuite.TLS_RSA_WITH_RC4_128_MD5, keySet, false));
         cipher.encrypt(record);
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603030010"),
@@ -1970,13 +1458,7 @@ public class RecordStreamCipherTest {
             record.getProtocolMessageBytes().getValue());
 
         /* A second record is created to ensure that the internal state throughout the session will be preserved */
-        Record record2 = new Record();
-        record2.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
-        record2.prepareComputations();
-        record2.setSequenceNumber(new BigInteger("1"));
-        record2.setProtocolVersion(ProtocolVersion.TLS12.getValue());
-        record2.setCleanProtocolMessageBytes(data);
-
+        Record record2 = setRecord(new BigInteger("1"), data, ProtocolVersion.TLS12);
         cipher.encrypt(record2);
 
         /*
@@ -2011,35 +1493,15 @@ public class RecordStreamCipherTest {
 
     @Test
     public void testDecryptTLSv12MD5() throws CryptoException {
-        context.setConnection(new InboundConnection());
-        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_RC4_128_MD5);
-        context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
-
         byte[] data =
             ArrayConverter.hexStringToByteArray("805264444f48ea5b98a0ceb3884c2ef7d89ad2bbab1e26cc5bacd4b2d9b41665");
         byte[] data2 =
             ArrayConverter.hexStringToByteArray("4492241d265c875f34c97ea7a5740629337b7f945d095e2cd7df551b5a75c216");
-
-        KeySet keySet = new KeySet();
-        keySet.setClientWriteKey(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"));
-        keySet.setClientWriteMacSecret(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"));
-        keySet.setClientWriteIv(new byte[8]);
-        keySet.setServerWriteIv(new byte[8]); // ServerSide is not used
-        keySet.setServerWriteKey(new byte[16]); // ServerSide is not used
-        keySet.setServerWriteMacSecret(new byte[20]); // ServerSide is not used
-
+        TlsContext context =
+            setContext(new InboundConnection(), CipherSuite.TLS_RSA_WITH_RC4_128_MD5, ProtocolVersion.TLS12);
+        Record record = setRecord(new BigInteger("0"), data, ProtocolVersion.TLS12);
         RecordStreamCipher plaintext = new RecordStreamCipher(context,
-            new CipherState(context.getChooser().getSelectedProtocolVersion(),
-                context.getChooser().getSelectedCipherSuite(), keySet,
-                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
-
-        Record record = new Record();
-        record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
-        record.prepareComputations();
-        record.setSequenceNumber(new BigInteger("0"));
-        record.setProtocolVersion(ProtocolVersion.TLS12.getValue());
-        record.setProtocolMessageBytes(data);
-
+            new CipherState(ProtocolVersion.TLS12, CipherSuite.TLS_RSA_WITH_RC4_128_MD5, keySet, false));
         plaintext.decrypt(record);
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603030010"),
@@ -2072,13 +1534,7 @@ public class RecordStreamCipherTest {
             record.getProtocolMessageBytes().getValue());
 
         /* A second record is created to ensure that the internal state throughout the session will be preserved */
-        Record record2 = new Record();
-        record2.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
-        record2.prepareComputations();
-        record2.setSequenceNumber(new BigInteger("1"));
-        record2.setProtocolVersion(ProtocolVersion.TLS12.getValue());
-        record2.setProtocolMessageBytes(data2);
-
+        Record record2 = setRecord(new BigInteger("1"), data2, ProtocolVersion.TLS12);
         plaintext.decrypt(record2);
 
         /*
@@ -2111,42 +1567,17 @@ public class RecordStreamCipherTest {
     }
 
     @Test
-    public void testEncryptTLS13SHA() throws CryptoException, NoSuchAlgorithmException {
+    public void testEncryptTLS13SHA() throws CryptoException {
         /*
          * Please notice : RC4 is not implemented in TLS version 1.3! Those tests are for test purposes only to check if
          * the undefined behavior is working.
          */
 
-        /* Outbound for Clients, Inbound for Servers */
-        context.setConnection(new OutboundConnection());
-        /* Sets the Ciphersuit for the Handshake */
-        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_RC4_128_SHA);
-        /* Sets the SSL/TLS version */
-        context.setSelectedProtocolVersion(ProtocolVersion.TLS13);
-
-        byte[] data = ArrayConverter.hexStringToByteArray("01010101010101010101010101010101");
-
-        KeySet keySet = new KeySet();
-
-        keySet.setClientWriteKey(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"));
-        keySet.setClientWriteMacSecret(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"));
-        keySet.setClientWriteIv(new byte[8]); // RC4 is not a block cipher so we don't need an iv
-        keySet.setServerWriteIv(new byte[8]); // ServerSide is not used
-        keySet.setServerWriteKey(new byte[16]); // ServerSide is not used
-        keySet.setServerWriteMacSecret(new byte[20]); // ServerSide is not used
-
+        TlsContext context =
+            setContext(new OutboundConnection(), CipherSuite.TLS_RSA_WITH_RC4_128_SHA, ProtocolVersion.TLS13);
+        Record record = setRecord(new BigInteger("0"), data, ProtocolVersion.TLS13);
         RecordStreamCipher cipher = new RecordStreamCipher(context,
-            new CipherState(context.getChooser().getSelectedProtocolVersion(),
-                context.getChooser().getSelectedCipherSuite(), keySet,
-                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
-
-        Record record = new Record();
-        record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
-        record.prepareComputations();
-
-        record.setProtocolVersion(ProtocolVersion.TLS13.getValue());
-        record.setCleanProtocolMessageBytes(data);
-
+            new CipherState(ProtocolVersion.TLS13, CipherSuite.TLS_RSA_WITH_RC4_128_SHA, keySet, false));
         cipher.encrypt(record);
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("1603040024"),
@@ -2190,32 +1621,13 @@ public class RecordStreamCipherTest {
          * the undefined behavior is working.
          */
 
-        context.setConnection(new InboundConnection());
-        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_RC4_128_SHA);
-        context.setSelectedProtocolVersion(ProtocolVersion.TLS13);
-
         byte[] data = ArrayConverter
             .hexStringToByteArray("805264444f48ea5b98a0ceb3884c2ef731db362d9dec4802a6b3900993dc756e99f935fe");
-
-        KeySet keySet = new KeySet();
-        keySet.setClientWriteKey(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"));
-        keySet.setClientWriteMacSecret(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"));
-        keySet.setClientWriteIv(new byte[8]);
-        keySet.setServerWriteIv(new byte[8]); // ServerSide is not used
-        keySet.setServerWriteKey(new byte[16]); // ServerSide is not used
-        keySet.setServerWriteMacSecret(new byte[20]); // ServerSide is not used
-
+        TlsContext context =
+            setContext(new InboundConnection(), CipherSuite.TLS_RSA_WITH_RC4_128_SHA, ProtocolVersion.TLS13);
         RecordStreamCipher plaintext = new RecordStreamCipher(context,
-            new CipherState(context.getChooser().getSelectedProtocolVersion(),
-                context.getChooser().getSelectedCipherSuite(), keySet,
-                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
-
-        Record record = new Record();
-        record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
-        record.prepareComputations();
-        record.setSequenceNumber(new BigInteger("0"));
-        record.setProtocolVersion(ProtocolVersion.TLS13.getValue());
-        record.setProtocolMessageBytes(data);
+            new CipherState(ProtocolVersion.TLS13, CipherSuite.TLS_RSA_WITH_RC4_128_SHA, keySet, false));
+        Record record = setRecord(new BigInteger("0"), data, ProtocolVersion.TLS13);
         record.setLength(36);
         plaintext.decrypt(record);
 
@@ -2252,43 +1664,17 @@ public class RecordStreamCipherTest {
     }
 
     @Test
-    public void testEncryptTLSv13MD5() throws CryptoException, NoSuchAlgorithmException {
+    public void testEncryptTLSv13MD5() throws CryptoException {
         /*
          * Please notice : RC4 is not implemented in TLS version 1.3! Those tests are for test purposes only to check if
          * the undefined behavior is working.
          */
 
-        /* Outbound for Clients, Inbound for Servers */
-        context.setConnection(new OutboundConnection());
-        /* Sets the Ciphersuit for the Handshake */
-        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_RC4_128_MD5);
-        /* Sets the SSL/TLS version */
-        context.setSelectedProtocolVersion(ProtocolVersion.TLS13);
-
-        byte[] data = ArrayConverter.hexStringToByteArray("01010101010101010101010101010101");
-
-        KeySet keySet = new KeySet();
-
-        keySet.setClientWriteKey(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"));
-
-        keySet.setClientWriteMacSecret(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"));
-        keySet.setClientWriteIv(new byte[8]); // RC4 is not a block cipher so we don't need an iv
-        keySet.setServerWriteIv(new byte[8]); // ServerSide is not used
-        keySet.setServerWriteKey(new byte[16]); // ServerSide is not used
-        keySet.setServerWriteMacSecret(new byte[20]); // ServerSide is not used
-
+        TlsContext context =
+            setContext(new OutboundConnection(), CipherSuite.TLS_RSA_WITH_RC4_128_MD5, ProtocolVersion.TLS13);
+        Record record = setRecord(new BigInteger("0"), data, ProtocolVersion.TLS13);
         RecordStreamCipher cipher = new RecordStreamCipher(context,
-            new CipherState(context.getChooser().getSelectedProtocolVersion(),
-                context.getChooser().getSelectedCipherSuite(), keySet,
-                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
-
-        Record record = new Record();
-        record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
-        record.prepareComputations();
-
-        record.setProtocolVersion(ProtocolVersion.TLS13.getValue());
-        record.setCleanProtocolMessageBytes(data);
-
+            new CipherState(ProtocolVersion.TLS13, CipherSuite.TLS_RSA_WITH_RC4_128_MD5, keySet, false));
         cipher.encrypt(record);
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("1603040020"),
@@ -2328,33 +1714,14 @@ public class RecordStreamCipherTest {
          * Please notice : RC4 is not implemented in TLS version 1.3! Those tests are for test purposes only to check if
          * the undefined behavior is working.
          */
-
-        context.setConnection(new InboundConnection());
-        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_RC4_128_MD5);
-        context.setSelectedProtocolVersion(ProtocolVersion.TLS13);
-
         byte[] data =
             ArrayConverter.hexStringToByteArray("805264444f48ea5b98a0ceb3884c2ef707ca44db78fb78ab533ea7f5d1091838");
 
-        KeySet keySet = new KeySet();
-        keySet.setClientWriteKey(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"));
-        keySet.setClientWriteMacSecret(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"));
-        keySet.setClientWriteIv(new byte[8]);
-        keySet.setServerWriteIv(new byte[8]); // ServerSide is not used
-        keySet.setServerWriteKey(new byte[16]); // ServerSide is not used
-        keySet.setServerWriteMacSecret(new byte[20]); // ServerSide is not used
-
+        TlsContext context =
+            setContext(new InboundConnection(), CipherSuite.TLS_RSA_WITH_RC4_128_MD5, ProtocolVersion.TLS13);
         RecordStreamCipher plaintext = new RecordStreamCipher(context,
-            new CipherState(context.getChooser().getSelectedProtocolVersion(),
-                context.getChooser().getSelectedCipherSuite(), keySet,
-                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
-
-        Record record = new Record();
-        record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
-        record.prepareComputations();
-        record.setSequenceNumber(new BigInteger("0"));
-        record.setProtocolVersion(ProtocolVersion.TLS13.getValue());
-        record.setProtocolMessageBytes(data);
+            new CipherState(ProtocolVersion.TLS13, CipherSuite.TLS_RSA_WITH_RC4_128_MD5, keySet, false));
+        Record record = setRecord(new BigInteger("0"), data, ProtocolVersion.TLS13);
         record.setLength(32);
         plaintext.decrypt(record);
 
