@@ -93,7 +93,7 @@ public abstract class ClientKeyExchangeHandler<MessageT extends ClientKeyExchang
     }
 
     protected void spawnNewSession() {
-        if (!Arrays.equals(tlsContext.getChooser().getServerSessionId(), new byte[0])) {
+        if (tlsContext.getChooser().getServerSessionId().length != 0) {
             Session session =
                 new Session(tlsContext.getChooser().getServerSessionId(), tlsContext.getChooser().getMasterSecret());
             tlsContext.addNewSession(session);
