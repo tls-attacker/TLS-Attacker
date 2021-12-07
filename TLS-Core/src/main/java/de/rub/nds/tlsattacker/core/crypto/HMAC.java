@@ -64,14 +64,6 @@ public class HMAC {
         }
     }
 
-    public void setSecret(byte[] newSecret) {
-        this.secret = newSecret;
-    }
-
-    public MessageDigest getDigest() {
-        return this.digest;
-    }
-
     /**
      * Initializes the hmac with a secret and data that is to be hashed later on. It also makes sure that the key, the
      * ipad and opad have the same length by padding.
