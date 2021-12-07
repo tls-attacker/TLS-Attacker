@@ -78,8 +78,8 @@ public class RecordStreamCipherTest {
                         }
                         context.setSelectedProtocolVersion(version);
                         @SuppressWarnings("unused")
-                        RecordStreamCipher cipher =
-                            new RecordStreamCipher(context, KeySetGenerator.generateKeySet(context));
+                        RecordStreamCipher cipher = new RecordStreamCipher(context,
+                            new CipherState(version, suite, KeySetGenerator.generateKeySet(context), false));
                     }
                 }
             }
@@ -88,12 +88,12 @@ public class RecordStreamCipherTest {
 
     private KeySet generateKeySet(byte[] clientWriteKey, byte[] clientWriteMacSecret, byte[] serverWriteKey,
         byte[] serverWriteMacSecret) {
-        KeySet keySet = new KeySet();
-        keySet.setClientWriteKey(clientWriteKey);
-        keySet.setClientWriteMacSecret(clientWriteMacSecret);
-        keySet.setServerWriteKey(serverWriteKey);
-        keySet.setServerWriteMacSecret(serverWriteMacSecret);
-        return keySet;
+        KeySet tempKeySet = new KeySet();
+        tempKeySet.setClientWriteKey(clientWriteKey);
+        tempKeySet.setClientWriteMacSecret(clientWriteMacSecret);
+        tempKeySet.setServerWriteKey(serverWriteKey);
+        tempKeySet.setServerWriteMacSecret(serverWriteMacSecret);
+        return tempKeySet;
     }
 
     private TlsContext setContext(AliasedConnection connection, CipherSuite cipherSuite,
@@ -122,13 +122,15 @@ public class RecordStreamCipherTest {
         TlsContext context =
             setContext(new OutboundConnection(), CipherSuite.TLS_RSA_WITH_RC4_128_SHA, ProtocolVersion.TLS10);
 
-        RecordStreamCipher cipher = new RecordStreamCipher(context, keySet);
+        RecordStreamCipher cipher = new RecordStreamCipher(context,
+            new CipherState(ProtocolVersion.TLS10, CipherSuite.TLS_RSA_WITH_RC4_128_SHA, keySet, false));
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("740b1374aac883ec9171730684b9f7bf84c56cc1"),
             cipher.calculateMac(data, context.getConnection().getLocalConnectionEndType()));
 
         context.setConnection(new InboundConnection());
-        cipher = new RecordStreamCipher(context, keySet);
+        cipher = new RecordStreamCipher(context,
+            new CipherState(ProtocolVersion.TLS10, CipherSuite.TLS_RSA_WITH_RC4_128_SHA, keySet, false));
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("740b1374aac883ec9171730684b9f7bf84c56cc1"),
             cipher.calculateMac(data, context.getConnection().getLocalConnectionEndType()));
@@ -139,13 +141,15 @@ public class RecordStreamCipherTest {
         TlsContext context =
             setContext(new OutboundConnection(), CipherSuite.TLS_RSA_WITH_RC4_128_MD5, ProtocolVersion.TLS10);
 
-        RecordStreamCipher cipher = new RecordStreamCipher(context, keySet);
+        RecordStreamCipher cipher = new RecordStreamCipher(context,
+            new CipherState(ProtocolVersion.TLS10, CipherSuite.TLS_RSA_WITH_RC4_128_MD5, keySet, false));
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("6af39a238e82675131e6a383f801674e"),
             cipher.calculateMac(data, context.getConnection().getLocalConnectionEndType()));
 
         context.setConnection(new InboundConnection());
-        cipher = new RecordStreamCipher(context, keySet);
+        cipher = new RecordStreamCipher(context,
+            new CipherState(ProtocolVersion.TLS10, CipherSuite.TLS_RSA_WITH_RC4_128_MD5, keySet, false));
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("6af39a238e82675131e6a383f801674e"),
             cipher.calculateMac(data, context.getConnection().getLocalConnectionEndType()));
@@ -161,7 +165,8 @@ public class RecordStreamCipherTest {
             setContext(new OutboundConnection(), CipherSuite.TLS_RSA_WITH_RC4_128_SHA, ProtocolVersion.SSL2);
 
         Record record = setRecord(new BigInteger("0"), data, ProtocolVersion.SSL2);
-        RecordStreamCipher cipher = new RecordStreamCipher(context, keySet);
+        RecordStreamCipher cipher = new RecordStreamCipher(context,
+            new CipherState(ProtocolVersion.SSL2, CipherSuite.TLS_RSA_WITH_RC4_128_SHA, keySet, false));
         cipher.encrypt(record);
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("0000000000000000160010"),
@@ -210,7 +215,8 @@ public class RecordStreamCipherTest {
         byte[] data = ArrayConverter
             .hexStringToByteArray("805264444f48ea5b98a0ceb3884c2ef704c1e230428b4e84377ab0cf1f8ac98e5d9281b5");
         Record record = setRecord(new BigInteger("0"), data, ProtocolVersion.SSL2);
-        RecordStreamCipher plaintext = new RecordStreamCipher(context, keySet);
+        RecordStreamCipher plaintext = new RecordStreamCipher(context,
+            new CipherState(ProtocolVersion.SSL2, CipherSuite.TLS_RSA_WITH_RC4_128_SHA, keySet, false));
         plaintext.decrypt(record);
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("0000000000000000160010"),
@@ -254,7 +260,8 @@ public class RecordStreamCipherTest {
         TlsContext context =
             setContext(new OutboundConnection(), CipherSuite.TLS_RSA_WITH_RC4_128_MD5, ProtocolVersion.SSL2);
         Record record = setRecord(new BigInteger("0"), data, ProtocolVersion.SSL2);
-        RecordStreamCipher cipher = new RecordStreamCipher(context, keySet);
+        RecordStreamCipher cipher = new RecordStreamCipher(context,
+            new CipherState(ProtocolVersion.SSL2, CipherSuite.TLS_RSA_WITH_RC4_128_MD5, keySet, false));
         cipher.encrypt(record);
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("0000000000000000160010"),
@@ -299,7 +306,8 @@ public class RecordStreamCipherTest {
         TlsContext context =
             setContext(new InboundConnection(), CipherSuite.TLS_RSA_WITH_RC4_128_MD5, ProtocolVersion.SSL2);
         Record record = setRecord(new BigInteger("0"), data, ProtocolVersion.SSL2);
-        RecordStreamCipher plaintext = new RecordStreamCipher(context, keySet);
+        RecordStreamCipher plaintext = new RecordStreamCipher(context,
+            new CipherState(ProtocolVersion.SSL2, CipherSuite.TLS_RSA_WITH_RC4_128_MD5, keySet, false));
         plaintext.decrypt(record);
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("0000000000000000160010"),
@@ -337,7 +345,8 @@ public class RecordStreamCipherTest {
         TlsContext context =
             setContext(new OutboundConnection(), CipherSuite.TLS_RSA_WITH_RC4_128_SHA, ProtocolVersion.SSL3);
         Record record = setRecord(new BigInteger("0"), data, ProtocolVersion.SSL3);
-        RecordStreamCipher cipher = new RecordStreamCipher(context, keySet);
+        RecordStreamCipher cipher = new RecordStreamCipher(context,
+            new CipherState(ProtocolVersion.SSL3, CipherSuite.TLS_RSA_WITH_RC4_128_SHA, keySet, false));
         cipher.encrypt(record);
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("0000000000000000160010"),
@@ -419,7 +428,8 @@ public class RecordStreamCipherTest {
         TlsContext context =
             setContext(new InboundConnection(), CipherSuite.TLS_RSA_WITH_RC4_128_SHA, ProtocolVersion.SSL3);
         Record record = setRecord(new BigInteger("0"), data, ProtocolVersion.SSL3);
-        RecordStreamCipher plaintext = new RecordStreamCipher(context, keySet);
+        RecordStreamCipher plaintext = new RecordStreamCipher(context,
+            new CipherState(ProtocolVersion.SSL3, CipherSuite.TLS_RSA_WITH_RC4_128_SHA, keySet, false));
         plaintext.decrypt(record);
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("0000000000000000160010"),
@@ -493,7 +503,8 @@ public class RecordStreamCipherTest {
         TlsContext context =
             setContext(new OutboundConnection(), CipherSuite.TLS_RSA_WITH_RC4_128_MD5, ProtocolVersion.SSL3);
         Record record = setRecord(new BigInteger("0"), data, ProtocolVersion.SSL3);
-        RecordStreamCipher cipher = new RecordStreamCipher(context, keySet);
+        RecordStreamCipher cipher = new RecordStreamCipher(context,
+            new CipherState(ProtocolVersion.SSL3, CipherSuite.TLS_RSA_WITH_RC4_128_MD5, keySet, false));
         cipher.encrypt(record);
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("0000000000000000160010"),
@@ -569,7 +580,8 @@ public class RecordStreamCipherTest {
         TlsContext context =
             setContext(new InboundConnection(), CipherSuite.TLS_RSA_WITH_RC4_128_MD5, ProtocolVersion.SSL3);
         Record record = setRecord(new BigInteger("0"), data, ProtocolVersion.SSL3);
-        RecordStreamCipher plaintext = new RecordStreamCipher(context, keySet);
+        RecordStreamCipher plaintext = new RecordStreamCipher(context,
+            new CipherState(ProtocolVersion.SSL3, CipherSuite.TLS_RSA_WITH_RC4_128_MD5, keySet, false));
         plaintext.decrypt(record);
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("0000000000000000160010"),
@@ -640,7 +652,8 @@ public class RecordStreamCipherTest {
             setContext(new OutboundConnection(), CipherSuite.TLS_RSA_WITH_RC4_128_SHA, ProtocolVersion.TLS10);
         /* Sets the data that should be encrypted later */
         Record record = setRecord(new BigInteger("0"), data, ProtocolVersion.TLS10);
-        RecordStreamCipher cipher = new RecordStreamCipher(context, keySet);
+        RecordStreamCipher cipher = new RecordStreamCipher(context,
+            new CipherState(ProtocolVersion.TLS10, CipherSuite.TLS_RSA_WITH_RC4_128_SHA, keySet, false));
         cipher.encrypt(record);
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603010010"),
@@ -722,7 +735,8 @@ public class RecordStreamCipherTest {
         TlsContext context =
             setContext(new InboundConnection(), CipherSuite.TLS_RSA_WITH_RC4_128_SHA, ProtocolVersion.TLS10);
         Record record = setRecord(new BigInteger("0"), data, ProtocolVersion.TLS10);
-        RecordStreamCipher plaintext = new RecordStreamCipher(context, keySet);
+        RecordStreamCipher plaintext = new RecordStreamCipher(context,
+            new CipherState(ProtocolVersion.TLS10, CipherSuite.TLS_RSA_WITH_RC4_128_SHA, keySet, false));
         plaintext.decrypt(record);
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603010010"),
@@ -796,7 +810,8 @@ public class RecordStreamCipherTest {
         TlsContext context =
             setContext(new OutboundConnection(), CipherSuite.TLS_RSA_WITH_RC4_128_MD5, ProtocolVersion.TLS10);
         Record record = setRecord(new BigInteger("0"), data, ProtocolVersion.TLS10);
-        RecordStreamCipher cipher = new RecordStreamCipher(context, keySet);
+        RecordStreamCipher cipher = new RecordStreamCipher(context,
+            new CipherState(ProtocolVersion.TLS10, CipherSuite.TLS_RSA_WITH_RC4_128_MD5, keySet, false));
         cipher.encrypt(record);
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603010010"),
@@ -872,7 +887,8 @@ public class RecordStreamCipherTest {
         TlsContext context =
             setContext(new InboundConnection(), CipherSuite.TLS_RSA_WITH_RC4_128_MD5, ProtocolVersion.TLS10);
         Record record = setRecord(new BigInteger("0"), data, ProtocolVersion.TLS10);
-        RecordStreamCipher plaintext = new RecordStreamCipher(context, keySet);
+        RecordStreamCipher plaintext = new RecordStreamCipher(context,
+            new CipherState(ProtocolVersion.TLS10, CipherSuite.TLS_RSA_WITH_RC4_128_MD5, keySet, false));
         plaintext.decrypt(record);
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603010010"),
@@ -942,7 +958,8 @@ public class RecordStreamCipherTest {
         TlsContext context =
             setContext(new OutboundConnection(), CipherSuite.TLS_RSA_WITH_RC4_128_SHA, ProtocolVersion.TLS11);
         Record record = setRecord(new BigInteger("0"), data, ProtocolVersion.TLS11);
-        RecordStreamCipher cipher = new RecordStreamCipher(context, keySet);
+        RecordStreamCipher cipher = new RecordStreamCipher(context,
+            new CipherState(ProtocolVersion.TLS11, CipherSuite.TLS_RSA_WITH_RC4_128_SHA, keySet, false));
         cipher.encrypt(record);
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603020010"),
@@ -1025,7 +1042,8 @@ public class RecordStreamCipherTest {
         TlsContext context =
             setContext(new InboundConnection(), CipherSuite.TLS_RSA_WITH_RC4_128_SHA, ProtocolVersion.TLS11);
         Record record = setRecord(new BigInteger("0"), data, ProtocolVersion.TLS11);
-        RecordStreamCipher plaintext = new RecordStreamCipher(context, keySet);
+        RecordStreamCipher plaintext = new RecordStreamCipher(context,
+            new CipherState(ProtocolVersion.TLS11, CipherSuite.TLS_RSA_WITH_RC4_128_SHA, keySet, false));
         plaintext.decrypt(record);
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603020010"),
@@ -1099,7 +1117,8 @@ public class RecordStreamCipherTest {
         TlsContext context =
             setContext(new OutboundConnection(), CipherSuite.TLS_RSA_WITH_RC4_128_MD5, ProtocolVersion.TLS11);
         Record record = setRecord(new BigInteger("0"), data, ProtocolVersion.TLS11);
-        RecordStreamCipher cipher = new RecordStreamCipher(context, keySet);
+        RecordStreamCipher cipher = new RecordStreamCipher(context,
+            new CipherState(ProtocolVersion.TLS11, CipherSuite.TLS_RSA_WITH_RC4_128_MD5, keySet, false));
         cipher.encrypt(record);
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603020010"),
@@ -1175,7 +1194,8 @@ public class RecordStreamCipherTest {
         TlsContext context =
             setContext(new InboundConnection(), CipherSuite.TLS_RSA_WITH_RC4_128_MD5, ProtocolVersion.TLS11);
         Record record = setRecord(new BigInteger("0"), data, ProtocolVersion.TLS11);
-        RecordStreamCipher plaintext = new RecordStreamCipher(context, keySet);
+        RecordStreamCipher plaintext = new RecordStreamCipher(context,
+            new CipherState(ProtocolVersion.TLS11, CipherSuite.TLS_RSA_WITH_RC4_128_MD5, keySet, false));
         plaintext.decrypt(record);
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603020010"),
@@ -1245,7 +1265,8 @@ public class RecordStreamCipherTest {
         TlsContext context =
             setContext(new OutboundConnection(), CipherSuite.TLS_RSA_WITH_RC4_128_SHA, ProtocolVersion.TLS12);
         Record record = setRecord(new BigInteger("0"), data, ProtocolVersion.TLS12);
-        RecordStreamCipher cipher = new RecordStreamCipher(context, keySet);
+        RecordStreamCipher cipher = new RecordStreamCipher(context,
+            new CipherState(ProtocolVersion.TLS12, CipherSuite.TLS_RSA_WITH_RC4_128_SHA, keySet, false));
         cipher.encrypt(record);
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603030010"),
@@ -1327,7 +1348,8 @@ public class RecordStreamCipherTest {
         TlsContext context =
             setContext(new InboundConnection(), CipherSuite.TLS_RSA_WITH_RC4_128_SHA, ProtocolVersion.TLS12);
         Record record = setRecord(new BigInteger("0"), data, ProtocolVersion.TLS12);
-        RecordStreamCipher plaintext = new RecordStreamCipher(context, keySet);
+        RecordStreamCipher plaintext = new RecordStreamCipher(context,
+            new CipherState(ProtocolVersion.TLS12, CipherSuite.TLS_RSA_WITH_RC4_128_SHA, keySet, false));
         plaintext.decrypt(record);
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603030010"),
@@ -1401,7 +1423,8 @@ public class RecordStreamCipherTest {
         TlsContext context =
             setContext(new OutboundConnection(), CipherSuite.TLS_RSA_WITH_RC4_128_MD5, ProtocolVersion.TLS12);
         Record record = setRecord(new BigInteger("0"), data, ProtocolVersion.TLS12);
-        RecordStreamCipher cipher = new RecordStreamCipher(context, keySet);
+        RecordStreamCipher cipher = new RecordStreamCipher(context,
+            new CipherState(ProtocolVersion.TLS12, CipherSuite.TLS_RSA_WITH_RC4_128_MD5, keySet, false));
         cipher.encrypt(record);
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603030010"),
@@ -1477,7 +1500,8 @@ public class RecordStreamCipherTest {
         TlsContext context =
             setContext(new InboundConnection(), CipherSuite.TLS_RSA_WITH_RC4_128_MD5, ProtocolVersion.TLS12);
         Record record = setRecord(new BigInteger("0"), data, ProtocolVersion.TLS12);
-        RecordStreamCipher plaintext = new RecordStreamCipher(context, keySet);
+        RecordStreamCipher plaintext = new RecordStreamCipher(context,
+            new CipherState(ProtocolVersion.TLS12, CipherSuite.TLS_RSA_WITH_RC4_128_MD5, keySet, false));
         plaintext.decrypt(record);
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603030010"),
@@ -1552,7 +1576,8 @@ public class RecordStreamCipherTest {
         TlsContext context =
             setContext(new OutboundConnection(), CipherSuite.TLS_RSA_WITH_RC4_128_SHA, ProtocolVersion.TLS13);
         Record record = setRecord(new BigInteger("0"), data, ProtocolVersion.TLS13);
-        RecordStreamCipher cipher = new RecordStreamCipher(context, keySet);
+        RecordStreamCipher cipher = new RecordStreamCipher(context,
+            new CipherState(ProtocolVersion.TLS13, CipherSuite.TLS_RSA_WITH_RC4_128_SHA, keySet, false));
         cipher.encrypt(record);
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("1603040024"),
@@ -1600,7 +1625,8 @@ public class RecordStreamCipherTest {
             .hexStringToByteArray("805264444f48ea5b98a0ceb3884c2ef731db362d9dec4802a6b3900993dc756e99f935fe");
         TlsContext context =
             setContext(new InboundConnection(), CipherSuite.TLS_RSA_WITH_RC4_128_SHA, ProtocolVersion.TLS13);
-        RecordStreamCipher plaintext = new RecordStreamCipher(context, keySet);
+        RecordStreamCipher plaintext = new RecordStreamCipher(context,
+            new CipherState(ProtocolVersion.TLS13, CipherSuite.TLS_RSA_WITH_RC4_128_SHA, keySet, false));
         Record record = setRecord(new BigInteger("0"), data, ProtocolVersion.TLS13);
         record.setLength(36);
         plaintext.decrypt(record);
@@ -1647,7 +1673,8 @@ public class RecordStreamCipherTest {
         TlsContext context =
             setContext(new OutboundConnection(), CipherSuite.TLS_RSA_WITH_RC4_128_MD5, ProtocolVersion.TLS13);
         Record record = setRecord(new BigInteger("0"), data, ProtocolVersion.TLS13);
-        RecordStreamCipher cipher = new RecordStreamCipher(context, keySet);
+        RecordStreamCipher cipher = new RecordStreamCipher(context,
+            new CipherState(ProtocolVersion.TLS13, CipherSuite.TLS_RSA_WITH_RC4_128_MD5, keySet, false));
         cipher.encrypt(record);
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("1603040020"),
@@ -1692,7 +1719,8 @@ public class RecordStreamCipherTest {
 
         TlsContext context =
             setContext(new InboundConnection(), CipherSuite.TLS_RSA_WITH_RC4_128_MD5, ProtocolVersion.TLS13);
-        RecordStreamCipher plaintext = new RecordStreamCipher(context, keySet);
+        RecordStreamCipher plaintext = new RecordStreamCipher(context,
+            new CipherState(ProtocolVersion.TLS13, CipherSuite.TLS_RSA_WITH_RC4_128_MD5, keySet, false));
         Record record = setRecord(new BigInteger("0"), data, ProtocolVersion.TLS13);
         record.setLength(32);
         plaintext.decrypt(record);
