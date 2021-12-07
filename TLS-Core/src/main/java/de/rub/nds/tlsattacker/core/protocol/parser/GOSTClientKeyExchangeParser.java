@@ -27,6 +27,6 @@ public class GOSTClientKeyExchangeParser extends ClientKeyExchangeParser<GOSTCli
     @Override
     protected void parseHandshakeMessageContent(GOSTClientKeyExchangeMessage msg) {
         LOGGER.debug("Parsing GOSTClientKeyExchangeMessage");
-        msg.setKeyTransportBlob(parseByteArrayField(msg.getLength().getValue()));
+        msg.setKeyTransportBlob(parseByteArrayField(getBytesLeft()));
     }
 }

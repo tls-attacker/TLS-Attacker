@@ -116,7 +116,7 @@ public abstract class GOSTClientKeyExchangePreparator
                 msg.getComputations().setPremasterSecret(pms);
             }
         } catch (Exception e) {
-            throw new WorkflowExecutionException("Could not prepare the key agreement!", e);
+            throw new UnsupportedOperationException("Could not prepare the key agreement!", e);
         }
     }
 
@@ -205,6 +205,9 @@ public abstract class GOSTClientKeyExchangePreparator
             LOGGER.debug("Wrap result: " + ArrayConverter.bytesToHexString(result));
             return result;
         } catch (Exception E) {
+            if (E instanceof UnsupportedOperationException) {
+                throw E;
+            }
             LOGGER.warn("Could not wrap. Using byte[0]");
             return new byte[0];
         }

@@ -21,10 +21,13 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.TokenBindingExt
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.TokenBindingExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 
 /**
  * This extension is defined in draft-ietf-tokbind-negotiation
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public class TokenBindingExtensionMessage extends ExtensionMessage<TokenBindingExtensionMessage> {
 
     @ModifiableVariableProperty

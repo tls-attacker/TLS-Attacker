@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.List;
@@ -67,6 +68,9 @@ public class XmlSerialisationTest {
             trace.addTlsAction(new ReceiveAction(message));
             File f = folder.newFile();
             WorkflowTraceSerializer.write(f, trace);
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            WorkflowTraceSerializer.write(stream, trace);
+            System.out.println(new String(stream.toByteArray()));
             WorkflowTrace newWorkflowTrace = WorkflowTraceSerializer.secureRead(new FileInputStream(f));
             assertTrue(newWorkflowTrace.getTlsActions().size() == 2);
 

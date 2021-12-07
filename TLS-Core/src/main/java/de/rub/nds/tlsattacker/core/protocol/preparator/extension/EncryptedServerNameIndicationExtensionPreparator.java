@@ -545,8 +545,8 @@ public class EncryptedServerNameIndicationExtensionPreparator
                 .write(msg.getKeyShareEntry().getPublicKeyLength().getByteArray(ExtensionByteLength.KEY_SHARE_LENGTH));
             contentsStream.write(msg.getKeyShareEntry().getPublicKey().getValue());
             contentsStream.write(msg.getEncryptedSniComputation().getClientHelloRandom().getValue());
-        } catch (IOException e) {
-            throw new PreparationException("Failed to generate esniContents", e);
+        } catch (Exception e) {
+            throw new UnsupportedOperationException("Failed to generate esniContents", e);
         }
         return contentsStream.toByteArray();
     }

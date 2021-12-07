@@ -79,7 +79,7 @@ public class SSL2ClientMasterKeyMessage extends SSL2HandshakeMessage {
     @Override
     public HandshakeMessageParser<SSL2ClientMasterKeyMessage> getParser(TlsContext tlsContext, InputStream stream) {
         // We currently don't receive ClientMasterKey messages, only send them.
-        return null;
+        throw new UnsupportedOperationException("Not implemented");
     }
 
     @Override

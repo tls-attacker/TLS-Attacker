@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
+import de.rub.nds.tlsattacker.util.UnlimitedStrengthEnabler;
 import java.io.ByteArrayInputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -36,6 +37,7 @@ public class CyclicParserSerializerTest {
     @Before
     public void setUp() {
         Security.addProvider(new BouncyCastleProvider());
+        UnlimitedStrengthEnabler.enable();
     }
 
     @Test
@@ -54,15 +56,6 @@ public class CyclicParserSerializerTest {
 
             CONSOLE.info("Testing:" + testName);
             for (ProtocolVersion version : ProtocolVersion.values()) {
-                if (testName.contains("NewSessionTicket") && !version.isTLS13()) {
-                    continue;// Skip unsupported
-                }
-                if (testName.contains("SupplementalData") || testName.contains("ClientMasterKey")) {
-                    continue;// Not supported
-                }
-                if (version.isDTLS()) {
-                    continue;
-                }
                 // Trying to find equivalent preparator, message and serializer
 
                 if (someMessageClass == DtlsHandshakeMessageFragment.class) {
@@ -100,6 +93,9 @@ public class CyclicParserSerializerTest {
                     byte[] serializedMessage2 = message.getSerializer(context).serializeProtocolMessageContent();
                     Assert.assertArrayEquals(testName + " failed", serializedMessage, serializedMessage2);
                     CONSOLE.info("......." + testName + " - " + version.name() + " works as expected!");
+                } catch (UnsupportedOperationException ex) {
+                    CONSOLE.info("Unsupported! Skipping:" + testName);
+                    continue;
                 } catch (Exception ex) {
                     ex.printStackTrace();
                     fail("Could not execute " + testName + " - " + version.name());

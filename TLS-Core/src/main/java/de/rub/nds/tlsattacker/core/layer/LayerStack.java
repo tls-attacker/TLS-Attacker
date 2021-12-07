@@ -9,7 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.layer;
 
-import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedList;
