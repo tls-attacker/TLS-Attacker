@@ -108,7 +108,7 @@
         <dependency>
             <groupId>dnsjava</groupId>
             <artifactId>dnsjava</artifactId>
-            <version>2.1.9</version>
+            <version>3.4.2</version>
         </dependency>
         <dependency>
             <groupId>com.beust</groupId>
