@@ -64,7 +64,7 @@ public class DHEServerKeyExchangePreparator<T extends DHEServerKeyExchangeMessag
             setComputedGenerator(msg);
             setComputedModulus(msg);
         } else {
-            setNamedGroupParameters(ffdheGroup);
+            setNamedGroupParameters(msg, ffdheGroup);
         }
         setComputedPrivateKey(msg);
     }
@@ -172,7 +172,7 @@ public class DHEServerKeyExchangePreparator<T extends DHEServerKeyExchangeMessag
         LOGGER.debug("SignatureLength: " + msg.getSignatureLength().getValue());
     }
 
-    private void setNamedGroupParameters(NamedGroup chosenGroup) {
+    private void setNamedGroupParameters(T msg, NamedGroup chosenGroup) {
         LOGGER.debug("Negotiating NamedGroup {} for Server Key Exchange message", chosenGroup.name());
         FFDHEGroup ffdheGroup = GroupFactory.getGroup(chosenGroup);
         msg.getComputations().setGenerator(ffdheGroup.getG());

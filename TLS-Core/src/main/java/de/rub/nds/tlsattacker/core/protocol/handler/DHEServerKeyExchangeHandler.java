@@ -81,22 +81,16 @@ public class DHEServerKeyExchangeHandler<T extends DHEServerKeyExchangeMessage> 
     private void recognizeNamedGroup() {
         BigInteger serverDhGenerator = tlsContext.getServerDhGenerator();
         BigInteger serverDhModulus = tlsContext.getServerDhModulus();
-        NamedGroup matchingGroup = null;
         for (NamedGroup group : NamedGroup.getImplemented()) {
             if (group.isDhGroup()) {
                 FFDHEGroup ffdheGroup = GroupFactory.getGroup(group);
                 if (serverDhGenerator.equals(ffdheGroup.getG()) && serverDhModulus.equals(ffdheGroup.getP())) {
-                    matchingGroup = group;
+                    tlsContext.setSelectedGroup(group);
+                    LOGGER.debug("Set recognized NamedGroup {} of Server Key Exchange message as selected in context",
+                        group);
                     break;
                 }
             }
         }
-
-        if (matchingGroup != null) {
-            tlsContext.setSelectedGroup(matchingGroup);
-            LOGGER.debug("Set recognized NamedGroup {} of Server Key Exchange message as selected in context",
-                matchingGroup);
-        }
-
     }
 }
