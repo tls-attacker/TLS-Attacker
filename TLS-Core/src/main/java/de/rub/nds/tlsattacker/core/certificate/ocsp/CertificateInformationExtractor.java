@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.certificate.ocsp;
 
 import static de.rub.nds.tlsattacker.core.certificate.ExtensionObjectIdentifier.AUTHORITY_INFO_ACCESS;
@@ -170,8 +171,8 @@ public class CertificateInformationExtractor {
 
         for (Asn1Encodable singleExtension : x509ExtensionSequences) {
             if (singleExtension instanceof Asn1Sequence) {
-                Asn1ObjectIdentifier objectIdentifier
-                        = (Asn1ObjectIdentifier) (((Asn1Sequence) singleExtension).getChildren().get(0));
+                Asn1ObjectIdentifier objectIdentifier =
+                    (Asn1ObjectIdentifier) (((Asn1Sequence) singleExtension).getChildren().get(0));
                 // This is the objectIdentifier value for
                 // authorityInfoAccess
                 if (objectIdentifier.getValue().equals(AUTHORITY_INFO_ACCESS.getOID())) {
@@ -188,8 +189,8 @@ public class CertificateInformationExtractor {
          * get(0) is the Object Identifier we checked, get(1) the Octet String with the content the Octet String has a
          * sequence as child, and one of them has the desired OCSP information. Almost there!
          */
-        Asn1EncapsulatingOctetString authorityInfoAccessContent
-                = (Asn1EncapsulatingOctetString) authorityInfoAccess.getChildren().get(1);
+        Asn1EncapsulatingOctetString authorityInfoAccessContent =
+            (Asn1EncapsulatingOctetString) authorityInfoAccess.getChildren().get(1);
 
         this.authorityInfoAccessEntities = (Asn1Sequence) authorityInfoAccessContent.getChildren().get(0);
     }
@@ -202,8 +203,8 @@ public class CertificateInformationExtractor {
         // Search for X.509 'TLS Feature' extension
         for (Asn1Encodable enc : x509ExtensionSequences) {
             if (enc instanceof Asn1Sequence) {
-                Asn1ObjectIdentifier objectIdentifier
-                        = (Asn1ObjectIdentifier) (((Asn1Sequence) enc).getChildren().get(0));
+                Asn1ObjectIdentifier objectIdentifier =
+                    (Asn1ObjectIdentifier) (((Asn1Sequence) enc).getChildren().get(0));
                 // This is the objectIdentifier value for RFC 7633, which
                 // defines the TLS feature X.509 extension
                 if (objectIdentifier.getValue().equals(TLS_FEATURE.getOID())) {
@@ -222,8 +223,8 @@ public class CertificateInformationExtractor {
         // Search for X.509 'Signed Certificate Timestamp List' extension
         for (Asn1Encodable enc : x509ExtensionSequences) {
             if (enc instanceof Asn1Sequence) {
-                Asn1ObjectIdentifier objectIdentifier
-                        = (Asn1ObjectIdentifier) (((Asn1Sequence) enc).getChildren().get(0));
+                Asn1ObjectIdentifier objectIdentifier =
+                    (Asn1ObjectIdentifier) (((Asn1Sequence) enc).getChildren().get(0));
 
                 if (objectIdentifier.getValue().equals(SIGNED_CERTIFICATE_TIMESTAMP_LIST.getOID())) {
                     precertificateSctListExtension = (Asn1Sequence) enc;
@@ -243,8 +244,8 @@ public class CertificateInformationExtractor {
         // Search value inside 'TLS Feature' extension to search for
         // 'status_request'
         if (tlsFeatureExtension != null) {
-            Asn1EncapsulatingOctetString tlsFeaturesContent
-                    = (Asn1EncapsulatingOctetString) tlsFeatureExtension.getChildren().get(1);
+            Asn1EncapsulatingOctetString tlsFeaturesContent =
+                (Asn1EncapsulatingOctetString) tlsFeatureExtension.getChildren().get(1);
             Asn1Sequence tlsFeaturesContentSequence = (Asn1Sequence) tlsFeaturesContent.getChildren().get(0);
 
             for (Asn1Encodable feature : tlsFeaturesContentSequence.getChildren()) {
@@ -269,8 +270,8 @@ public class CertificateInformationExtractor {
         // Search value inside 'TLS Feature' extension to search for
         // 'status_request_v2'
         if (tlsFeatureExtension != null) {
-            Asn1EncapsulatingOctetString tlsFeaturesContent
-                    = (Asn1EncapsulatingOctetString) tlsFeatureExtension.getChildren().get(1);
+            Asn1EncapsulatingOctetString tlsFeaturesContent =
+                (Asn1EncapsulatingOctetString) tlsFeatureExtension.getChildren().get(1);
             Asn1Sequence tlsFeaturesContentSequence = (Asn1Sequence) tlsFeaturesContent.getChildren().get(0);
 
             for (Asn1Encodable feature : tlsFeaturesContentSequence.getChildren()) {
@@ -290,7 +291,7 @@ public class CertificateInformationExtractor {
         if (authorityInformationAccessInformation != null) {
             Asn1PrimitiveIa5String urlIa5String = null;
             if (authorityInformationAccessInformation.size() > 1
-                    && authorityInformationAccessInformation.get(1) instanceof Asn1PrimitiveIa5String) {
+                && authorityInformationAccessInformation.get(1) instanceof Asn1PrimitiveIa5String) {
                 urlIa5String = (Asn1PrimitiveIa5String) authorityInformationAccessInformation.get(1);
             }
             urlString = urlIa5String.getValue();
@@ -312,8 +313,8 @@ public class CertificateInformationExtractor {
         // Now let's check if we have OCSP information embedded...
         for (Asn1Encodable enc : authorityInfoAccessEntities.getChildren()) {
             if (enc instanceof Asn1Sequence) {
-                Asn1ObjectIdentifier objectIdentifier
-                        = (Asn1ObjectIdentifier) ((Asn1Sequence) enc).getChildren().get(0);
+                Asn1ObjectIdentifier objectIdentifier =
+                    (Asn1ObjectIdentifier) ((Asn1Sequence) enc).getChildren().get(0);
                 // This is the objectIdentifier value for OCSP
                 if (objectIdentifier.getValue().equals(OCSP.getOID())) {
                     ocspInformation = ((Asn1Sequence) enc).getChildren();
@@ -344,8 +345,8 @@ public class CertificateInformationExtractor {
         // Now let's check if we have OCSP information embedded...
         for (Asn1Encodable enc : authorityInfoAccessEntities.getChildren()) {
             if (enc instanceof Asn1Sequence) {
-                Asn1ObjectIdentifier objectIdentifier
-                        = (Asn1ObjectIdentifier) ((Asn1Sequence) enc).getChildren().get(0);
+                Asn1ObjectIdentifier objectIdentifier =
+                    (Asn1ObjectIdentifier) ((Asn1Sequence) enc).getChildren().get(0);
                 // This is the objectIdentifier value for OCSP
                 if (objectIdentifier.getValue().equals(CERTIFICATE_AUTHORITY_ISSUER.getOID())) {
                     certificateIssuerInformation = ((Asn1Sequence) enc).getChildren();
@@ -400,14 +401,15 @@ public class CertificateInformationExtractor {
             httpCon.disconnect();
 
             // Recreate TLS certificate length information
-            byte[] certificateWithLength = ArrayConverter
-                    .concatenate(ArrayConverter.intToBytes(response.length, HandshakeByteLength.CERTIFICATES_LENGTH), response);
+            byte[] certificateWithLength = ArrayConverter.concatenate(
+                ArrayConverter.intToBytes(response.length, HandshakeByteLength.CERTIFICATES_LENGTH), response);
             ByteArrayInputStream stream = new ByteArrayInputStream(ArrayConverter.concatenate(
-                    ArrayConverter.intToBytes(certificateWithLength.length, HandshakeByteLength.CERTIFICATES_LENGTH),
-                    certificateWithLength));
+                ArrayConverter.intToBytes(certificateWithLength.length, HandshakeByteLength.CERTIFICATES_LENGTH),
+                certificateWithLength));
 
             // Parse and create a Certificate object
-            org.bouncycastle.crypto.tls.Certificate tlsCertificate = org.bouncycastle.crypto.tls.Certificate.parse(stream);
+            org.bouncycastle.crypto.tls.Certificate tlsCertificate =
+                org.bouncycastle.crypto.tls.Certificate.parse(stream);
             return tlsCertificate.getCertificateAt(0);
         } catch (IOException ex) {
             throw new RuntimeException(ex);
