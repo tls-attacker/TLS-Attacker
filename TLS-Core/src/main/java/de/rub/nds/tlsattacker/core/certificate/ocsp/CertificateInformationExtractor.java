@@ -37,6 +37,8 @@ import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.bouncycastle.asn1.x509.Certificate;
 
 public class CertificateInformationExtractor {
@@ -70,16 +72,25 @@ public class CertificateInformationExtractor {
         return certificate.getSerialNumber().getValue();
     }
 
-    public byte[] getIssuerNameHash() throws IOException, NoSuchAlgorithmException {
-        byte[] encodedDistinguishedName = certificate.getIssuer().getEncoded();
-        MessageDigest md = MessageDigest.getInstance("SHA-1");
-        return md.digest(encodedDistinguishedName);
+    public byte[] getIssuerNameHash() {
+        try {
+            byte[] encodedDistinguishedName = certificate.getIssuer().getEncoded();
+            MessageDigest md = MessageDigest.getInstance("SHA-1");
+            return md.digest(encodedDistinguishedName);
+        } catch (NoSuchAlgorithmException | IOException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
-    public byte[] getIssuerKeyHash() throws IOException, NoSuchAlgorithmException {
+    public byte[] getIssuerKeyHash() {
         byte[] publicKey = certificate.getSubjectPublicKeyInfo().getPublicKeyData().getBytes();
-        MessageDigest md = MessageDigest.getInstance("SHA-1");
-        return md.digest(publicKey);
+        MessageDigest md;
+        try {
+            md = MessageDigest.getInstance("SHA-1");
+            return md.digest(publicKey);
+        } catch (NoSuchAlgorithmException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     public Boolean getMustStaple() throws IOException, ParserException {
