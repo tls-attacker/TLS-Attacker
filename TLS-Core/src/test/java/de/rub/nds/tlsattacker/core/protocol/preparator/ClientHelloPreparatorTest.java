@@ -15,8 +15,8 @@ import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
-import de.rub.nds.tlsattacker.core.state.Session;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.state.session.TicketSession;
 import de.rub.nds.tlsattacker.util.FixedTimeProvider;
 import de.rub.nds.tlsattacker.util.TimeHelper;
 import java.util.LinkedList;
@@ -164,7 +164,7 @@ public class ClientHelloPreparatorTest {
         context.getConfig().setDefaultClientSupportedCompressionMethods(methodList);
         context.getConfig().setHighestProtocolVersion(ProtocolVersion.TLS11);
         context.setClientSessionId(new byte[0]);
-        Session session = new Session(new byte[] { 1, 1, 1, 1 }, new byte[] { 2, 2, 2, 2 }, new byte[] { 3, 3, 3, 3 });
+        TicketSession session = new TicketSession(new byte[] { 1, 1, 1, 1 }, new byte[] { 2, 2, 2, 2 });
         context.addNewSession(session);
         SessionTicketTLSExtensionMessage extensionMessage = new SessionTicketTLSExtensionMessage();
         message.addExtension(extensionMessage);

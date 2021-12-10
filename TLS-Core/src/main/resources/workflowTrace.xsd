@@ -3015,7 +3015,6 @@
       <xs:element name="selectedClientCertificateType" type="certificateType" minOccurs="0"/>
       <xs:element name="selectedServerCertificateType" type="certificateType" minOccurs="0"/>
       <xs:element name="paddingExtensionBytes" type="xs:base64Binary" minOccurs="0"/>
-      <xs:element name="sessionTicketCounter" type="xs:int" minOccurs="0"/>
       <xs:element name="renegotiationInfo" type="xs:base64Binary" minOccurs="0"/>
       <xs:element name="certificateRequestContext" type="xs:base64Binary" minOccurs="0"/>
       <xs:element name="signedCertificateTimestamp" type="xs:base64Binary" minOccurs="0"/>
@@ -3809,10 +3808,9 @@
     </xs:sequence>
   </xs:complexType>
 
-  <xs:complexType name="session">
+  <xs:complexType name="session" abstract="true">
     <xs:sequence>
       <xs:element name="masterSecret" type="xs:base64Binary" minOccurs="0"/>
-      <xs:element name="sessionId" type="xs:base64Binary" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
 

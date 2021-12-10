@@ -55,6 +55,9 @@ import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayer;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
 import de.rub.nds.tlsattacker.core.state.http.HttpContext;
+import de.rub.nds.tlsattacker.core.state.session.IdSession;
+import de.rub.nds.tlsattacker.core.state.session.Session;
+import de.rub.nds.tlsattacker.core.state.session.TicketSession;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -284,11 +287,6 @@ public class TlsContext {
      * These are the padding bytes as used in the padding extension.
      */
     private byte[] paddingExtensionBytes;
-
-    /**
-     * Number of session Tickets present in sessionList
-     */
-    private Integer sessionTicketCounter = 0;
 
     /**
      * The renegotiation info of the RenegotiationInfo extension.
@@ -790,49 +788,32 @@ public class TlsContext {
         this.httpContext = httpContext;
     }
 
-    public Session getSession(byte[] sessionId) {
+    public Session getIdSession(byte[] sessionId) {
         for (Session session : sessionList) {
-            if (Arrays.equals(session.getSessionId(), sessionId)) {
-                return session;
-            }
-        }
-        return null;
-    }
-
-    public Session getSession(int internalTicketId) {
-        for (Session session : sessionList) {
-            if (session.getInternalTicketId() == internalTicketId) {
-                return session;
+            if (session.isIdSession()) {
+                if (((IdSession) session).getId() == sessionId) {
+                    return session;
+                }
             }
         }
         return null;
     }
 
     public boolean hasSession(byte[] sessionId) {
-        return getSession(sessionId) != null;
-    }
-
-    public boolean hasSessionTicket(int internalTicketId) {
-        return getSession(internalTicketId) != null;
+        return getIdSession(sessionId) != null;
     }
 
     public byte[] getLatestSessionTicket() {
         for (int i = sessionList.size() - 1; i >= 0; i--) {
             Session session = sessionList.get(i);
-            if (session.hasTicket()) {
-                return session.getSessionTicket();
+            if (session.isTicketSession()) {
+                return ((TicketSession) session).getTicket();
             }
         }
         return null;
     }
 
     public void addNewSession(Session session) {
-        if (session.hasTicket()) {
-            if (session.getInternalTicketId() == Session.AUTO_SET_ID) {
-                session.setInternalTicketId(sessionTicketCounter);
-            }
-            sessionTicketCounter++;
-        }
         sessionList.add(session);
     }
 
@@ -1606,10 +1587,6 @@ public class TlsContext {
 
     public void setServerKeyShareStoreEntry(KeyShareStoreEntry serverKeyShareStoreEntry) {
         this.serverKeyShareStoreEntry = serverKeyShareStoreEntry;
-    }
-
-    public Integer getSessionTicketCounter() {
-        return this.sessionTicketCounter;
     }
 
     public byte[] getSignedCertificateTimestamp() {

@@ -19,16 +19,11 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSEx
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.SessionTicketTLSExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SessionTicketTLSExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SessionTicketTLSExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.Session;
 import de.rub.nds.tlsattacker.core.state.SessionTicket;
-import de.rub.nds.tlsattacker.core.state.StatePlaintext;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;
-
-import de.rub.nds.tlsattacker.core.state.serializer.StatePlaintextSerializer;
-import de.rub.nds.tlsattacker.core.util.StaticTicketCrypto;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import org.junit.Before;
 import org.junit.Test;
@@ -58,7 +53,7 @@ public class SessionTicketTlsExtensionHandlerTest {
      * Tests the adjustTLSContext of the SessionTicketTlsExtensionHandler class
      */
     @Test
-    public void testAdjustTLSContext() throws CryptoException {
+    public void testAdjustTLSContext() {
         NewSessionTicketMessage newSessionTicketMessage = new NewSessionTicketMessage();
         newSessionTicketMessage.getHandler(context).getPreparator(newSessionTicketMessage).prepare();
         SessionTicket ticket = newSessionTicketMessage.getTicket();
@@ -70,7 +65,7 @@ public class SessionTicketTlsExtensionHandlerTest {
         context.setClientSessionId(context.getConfig().getDefaultClientTicketResumptionSessionId());
 
         handler.adjustTLSContext(message);
-        assertTrue(context.getLatestSessionTicket() == ticket.getIdentity().getValue());
+        assertArrayEquals(context.getMasterSecret(), context.getChooser().getMasterSecret());
     }
 
     /**

@@ -25,8 +25,9 @@ import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
-import de.rub.nds.tlsattacker.core.state.Session;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.state.session.Session;
+import de.rub.nds.tlsattacker.core.state.session.TicketSession;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.tcp.ClientTcpTransportHandler;
@@ -501,8 +502,7 @@ public class DefaultChooserTest {
         config.setTlsSessionTicket(sessionTicketTLS);
         assertArrayEquals(sessionTicketTLS, config.getTlsSessionTicket());
         assertArrayEquals(sessionTicketTLS, chooser.getLatestSessionTicket());
-        Session session = new Session(config.getDefaultClientTicketResumptionSessionId(),
-            config.getDefaultMasterSecret(), sessionTicketTLS2);
+        TicketSession session = new TicketSession(config.getDefaultMasterSecret(), sessionTicketTLS2);
         context.addNewSession(session);
         assertArrayEquals(sessionTicketTLS2, chooser.getLatestSessionTicket());
     }
