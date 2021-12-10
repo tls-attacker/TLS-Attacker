@@ -490,7 +490,7 @@ public class DefaultChooserTest {
     }
 
     /**
-     * Test of testGetLatestSessionTicket method, of class DefaultChooser.
+     * Test of getLatestSessionTicket method, of class DefaultChooser.
      */
     @Test
     public void testGetLatestSessionTicket() {

@@ -60,15 +60,8 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.EnumSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import de.rub.nds.tlsattacker.transport.socket.SocketState;
-import java.util.HashSet;
-import java.util.Set;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import org.apache.logging.log4j.LogManager;
@@ -291,11 +284,6 @@ public class TlsContext {
      * These are the padding bytes as used in the padding extension.
      */
     private byte[] paddingExtensionBytes;
-
-    /**
-     * This is the session ticket of the SessionTicketTLS extension.
-     */
-    private byte[] sessionTicketTLS;
 
     /**
      * Number of session Tickets present in sessionList
@@ -829,17 +817,18 @@ public class TlsContext {
     }
 
     public byte[] getLatestSessionTicket() {
-        Session session = getSession(getSessionTicketCounter() - 1);
-        if (session != null) {
-            return session.getSessionTicket();
-        } else {
-            return null;
+        for (int i = sessionList.size() - 1; i >= 0; i--) {
+            Session session = sessionList.get(i);
+            if (session.hasTicket()) {
+                return session.getSessionTicket();
+            }
         }
+        return null;
     }
 
     public void addNewSession(Session session) {
         if (session.hasTicket()) {
-            if (session.getInternalTicketId() == -2) {
+            if (session.getInternalTicketId() == Session.AUTO_SET_ID) {
                 session.setInternalTicketId(sessionTicketCounter);
             }
             sessionTicketCounter++;

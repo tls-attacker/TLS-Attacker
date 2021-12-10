@@ -40,8 +40,6 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
         LOGGER.debug("Preparing ClientHelloMessage");
         prepareProtocolVersion(msg);
         prepareRandom();
-        prepareSessionID();
-        prepareSessionIDLength();
         prepareCompressions(msg);
         prepareCompressionLength(msg);
         prepareCipherSuites(msg);
@@ -59,6 +57,8 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
         }
         prepareExtensions();
         prepareExtensionLength();
+        prepareSessionID();
+        prepareSessionIDLength();
     }
 
     // for DTLS, the random value of a second ClientHello message should be
@@ -73,15 +73,17 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
     }
 
     private void prepareSessionID() {
-        boolean useDefaultClientTicketResumptionSessionId = false;
+        boolean isResumptionWithSessionTicket = false;
         if (msg.containsExtension(ExtensionType.SESSION_TICKET)) {
             SessionTicketTLSExtensionMessage extensionMessage =
                 msg.getExtension(SessionTicketTLSExtensionMessage.class);
-            if (extensionMessage.getSessionTicket().getIdentityLength().getValue() > 0) {
-                useDefaultClientTicketResumptionSessionId = true;
+            if (extensionMessage != null) {
+                if (extensionMessage.getSessionTicket().getIdentityLength().getValue() > 0) {
+                    isResumptionWithSessionTicket = true;
+                }
             }
         }
-        if (useDefaultClientTicketResumptionSessionId) {
+        if (isResumptionWithSessionTicket && chooser.getConfig().isUseDefaultClientTicketResumptionSessionId()) {
             msg.setSessionId(chooser.getConfig().getDefaultClientTicketResumptionSessionId());
         } else if (chooser.getContext().getServerSessionId() == null) {
             msg.setSessionId(chooser.getClientSessionId());

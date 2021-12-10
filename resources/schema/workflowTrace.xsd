@@ -3015,7 +3015,6 @@
       <xs:element name="selectedClientCertificateType" type="certificateType" minOccurs="0"/>
       <xs:element name="selectedServerCertificateType" type="certificateType" minOccurs="0"/>
       <xs:element name="paddingExtensionBytes" type="xs:base64Binary" minOccurs="0"/>
-      <xs:element name="sessionTicketTLS" type="xs:base64Binary" minOccurs="0"/>
       <xs:element name="sessionTicketCounter" type="xs:int" minOccurs="0"/>
       <xs:element name="renegotiationInfo" type="xs:base64Binary" minOccurs="0"/>
       <xs:element name="certificateRequestContext" type="xs:base64Binary" minOccurs="0"/>
@@ -3528,6 +3527,7 @@
       <xs:element name="defaultServerRandom" type="xs:string" minOccurs="0"/>
       <xs:element name="defaultClientSessionId" type="xs:string" minOccurs="0"/>
       <xs:element name="defaultClientTicketResumptionSessionId" type="xs:string" minOccurs="0"/>
+      <xs:element name="useDefaultClientTicketResumptionSessionId" type="xs:boolean" minOccurs="0"/>
       <xs:element name="defaultServerSessionId" type="xs:string" minOccurs="0"/>
       <xs:element name="defaultSelectedCompressionMethod" type="compressionMethod" minOccurs="0"/>
       <xs:element name="dtlsDefaultCookie" type="xs:string" minOccurs="0"/>
@@ -3580,7 +3580,7 @@
       <xs:element name="httpsParsingEnabled" type="xs:boolean" minOccurs="0"/>
       <xs:element name="defaultHttpsRequestPath" type="xs:string" minOccurs="0"/>
       <xs:element name="starttlsType" type="starttlsType" minOccurs="0"/>
-      <xs:element name="dontOverrideServerSessionId" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="overrideServerSessionId" type="xs:boolean" minOccurs="0"/>
       <xs:element name="sessionTicketLifetimeHint" type="xs:long" minOccurs="0"/>
       <xs:element name="sessionTicketEncryptionKey" type="xs:string" minOccurs="0"/>
       <xs:element name="sessionTicketKeyHMAC" type="xs:string" minOccurs="0"/>

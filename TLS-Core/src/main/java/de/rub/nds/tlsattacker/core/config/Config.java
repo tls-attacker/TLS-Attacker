@@ -1067,6 +1067,8 @@ public class Config implements Serializable {
     private byte[] defaultClientTicketResumptionSessionId =
         ArrayConverter.hexStringToByteArray("332CAC09A5C56974E3D49C0741F396C5F1C90B41529DD643485E65B1C0619D2B");
 
+    private Boolean useDefaultClientTicketResumptionSessionId = true;
+
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultServerSessionId = new byte[0];
 
@@ -1206,7 +1208,7 @@ public class Config implements Serializable {
      * If the server receives an empty Session Ticket, it answers with an empty Server SID by default. Set this flag to
      * modify the value of the ServerSessionID.
      */
-    private Boolean dontOverrideServerSessionId = false;
+    private Boolean overrideServerSessionId = true;
 
     /**
      * The Ticket Lifetime Hint, Ticket Key and Ticket Key Name used in the Extension defined in RFC5077, followed by
@@ -1591,12 +1593,12 @@ public class Config implements Serializable {
         this.tls13BackwardsCompatibilityMode = tls13BackwardsCompatibilityMode;
     }
 
-    public Boolean getDontOverrideServerSessionId() {
-        return dontOverrideServerSessionId;
+    public Boolean isOverrideServerSessionId() {
+        return overrideServerSessionId;
     }
 
-    public void setDontOverrideServerSessionId(Boolean dontOverrideServerSessionId) {
-        this.dontOverrideServerSessionId = dontOverrideServerSessionId;
+    public void setOverrideServerSessionId(Boolean overrideServerSessionId) {
+        this.overrideServerSessionId = overrideServerSessionId;
     }
 
     public long getSessionTicketLifetimeHint() {
@@ -4086,5 +4088,13 @@ public class Config implements Serializable {
 
     public void setDefaultClientTicketResumptionSessionId(byte[] defaultClientTicketResumptionSessionId) {
         this.defaultClientTicketResumptionSessionId = defaultClientTicketResumptionSessionId;
+    }
+
+    public Boolean isUseDefaultClientTicketResumptionSessionId() {
+        return useDefaultClientTicketResumptionSessionId;
+    }
+
+    public void setUseDefaultClientTicketResumptionSessionId(Boolean useDefaultClientTicketResumptionSessionId) {
+        this.useDefaultClientTicketResumptionSessionId = useDefaultClientTicketResumptionSessionId;
     }
 }

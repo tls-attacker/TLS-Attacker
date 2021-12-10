@@ -15,8 +15,8 @@ public class Session {
     private byte[] masterSecret;
     private byte[] sessionTicket;
     private Integer internalTicketId;
-    private static final Integer NO_TICKET = -1;
-    private static final Integer AUTO_SET_ID = -2;
+    public static final Integer NO_TICKET = -1;
+    public static final Integer AUTO_SET_ID = -2;
 
     public Session(byte[] sessionId, byte[] masterSecret) {
         this.sessionId = sessionId;

@@ -13,7 +13,6 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.SessionTicketTlsExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
 import de.rub.nds.tlsattacker.core.state.Session;
@@ -22,7 +21,6 @@ import de.rub.nds.tlsattacker.util.FixedTimeProvider;
 import de.rub.nds.tlsattacker.util.TimeHelper;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -169,8 +167,6 @@ public class ClientHelloPreparatorTest {
         Session session = new Session(new byte[] { 1, 1, 1, 1 }, new byte[] { 2, 2, 2, 2 }, new byte[] { 3, 3, 3, 3 });
         context.addNewSession(session);
         SessionTicketTLSExtensionMessage extensionMessage = new SessionTicketTLSExtensionMessage();
-        SessionTicketTlsExtensionHandler extensionHandler = new SessionTicketTlsExtensionHandler(context);
-        extensionHandler.getPreparator(extensionMessage).prepare();
         message.addExtension(extensionMessage);
         preparator.prepare();
         assertArrayEquals(message.getSessionId().getValue(),
