@@ -29,6 +29,7 @@ public class ClearDigestAction extends ConnectionBoundAction {
     public void execute(State state) throws WorkflowExecutionException {
         LOGGER.debug("Resetting digest...");
         state.getTlsContext().getDigest().reset();
+        setExecuted(true);
     }
 
     @Override

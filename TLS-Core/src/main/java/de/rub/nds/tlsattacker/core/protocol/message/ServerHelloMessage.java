@@ -9,6 +9,7 @@
 
 package de.rub.nds.tlsattacker.core.protocol.message;
 
+import de.rub.nds.tlsattacker.core.protocol.message.extension.UserMappingExtensionMessage;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
@@ -29,6 +30,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateTypeExt
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientAuthzExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateTypeExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateUrlExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.CookieExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ECPointFormatExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptThenMacExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNameIndicationExtensionMessage;
@@ -60,7 +62,7 @@ import java.util.Arrays;
 import java.util.Date;
 import javax.xml.bind.annotation.*;
 
-@XmlRootElement
+@XmlRootElement(name = "ServerHello")
 public class ServerHelloMessage extends HelloMessage {
 
     private static final byte[] HELLO_RETRY_REQUEST_RANDOM = new byte[] { (byte) 0xCF, (byte) 0x21, (byte) 0xAD,
@@ -181,6 +183,9 @@ public class ServerHelloMessage extends HelloMessage {
             }
             if (tlsConfig.isAddExtendedRandomExtension()) {
                 addExtension(new ExtendedRandomExtensionMessage());
+            }
+            if (tlsConfig.isAddCookieExtension()) {
+                addExtension(new CookieExtensionMessage());
             }
         }
     }

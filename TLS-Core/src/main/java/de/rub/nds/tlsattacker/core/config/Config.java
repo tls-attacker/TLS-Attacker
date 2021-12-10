@@ -225,6 +225,11 @@ public class Config implements Serializable {
     private RunningModeType defaultRunningMode = RunningModeType.CLIENT;
 
     /**
+     * If default generated WorkflowTraces should contain cookie exchange
+     */
+    private Boolean dtlsCookieExchange = true;
+
+    /**
      * If default generated WorkflowTraces should contain client Authentication
      */
     private Boolean clientAuthentication = false;
@@ -2631,6 +2636,14 @@ public class Config implements Serializable {
 
     public final void setDefaultClientSupportedCipherSuites(CipherSuite... defaultClientSupportedCipherSuites) {
         this.defaultClientSupportedCipherSuites = new ArrayList(Arrays.asList(defaultClientSupportedCipherSuites));
+    }
+
+    public Boolean isDtlsCookieExchange() {
+        return dtlsCookieExchange;
+    }
+
+    public void setDtlsCookieExchange(Boolean dtlsCookieExchange) {
+        this.dtlsCookieExchange = dtlsCookieExchange;
     }
 
     public Boolean isClientAuthentication() {

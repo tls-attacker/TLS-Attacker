@@ -9,6 +9,7 @@
 
 package de.rub.nds.tlsattacker.core.protocol.message;
 
+import de.rub.nds.tlsattacker.core.protocol.message.extension.UserMappingExtensionMessage;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
@@ -67,7 +68,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@XmlRootElement
+@XmlRootElement(name = "ClientHello")
 public class ClientHelloMessage extends HelloMessage {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -93,10 +94,10 @@ public class ClientHelloMessage extends HelloMessage {
     private ModifiableByteArray compressions;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COOKIE)
-    private ModifiableByteArray cookie = null;
+    private ModifiableByteArray cookie;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    private ModifiableByte cookieLength = null;
+    private ModifiableInteger cookieLength;
 
     public ClientHelloMessage() {
         super(HandshakeMessageType.CLIENT_HELLO);
@@ -304,7 +305,7 @@ public class ClientHelloMessage extends HelloMessage {
         return cookie;
     }
 
-    public ModifiableByte getCookieLength() {
+    public ModifiableInteger getCookieLength() {
         return cookieLength;
     }
 
@@ -316,11 +317,11 @@ public class ClientHelloMessage extends HelloMessage {
         this.cookie = cookie;
     }
 
-    public void setCookieLength(byte cookieLength) {
+    public void setCookieLength(int cookieLength) {
         this.cookieLength = ModifiableVariableFactory.safelySetValue(this.cookieLength, cookieLength);
     }
 
-    public void setCookieLength(ModifiableByte cookieLength) {
+    public void setCookieLength(ModifiableInteger cookieLength) {
         this.cookieLength = cookieLength;
     }
 

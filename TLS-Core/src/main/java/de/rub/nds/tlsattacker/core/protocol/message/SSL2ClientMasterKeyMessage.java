@@ -26,7 +26,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @SuppressWarnings("serial")
-@XmlRootElement
+@XmlRootElement(name = "SSL2ClientMasterKey")
 public class SSL2ClientMasterKeyMessage extends SSL2HandshakeMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)

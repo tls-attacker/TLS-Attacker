@@ -17,9 +17,11 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
+import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+@XmlRootElement(name = "EncryptedServerNameIndicationExtension")
 public class EncryptedServerNameIndicationExtensionMessage extends ExtensionMessage {
 
     private static final Logger LOGGER = LogManager.getLogger();

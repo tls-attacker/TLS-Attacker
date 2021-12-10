@@ -25,7 +25,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@XmlRootElement
+@XmlRootElement(name = "CertificateStatus")
 public class CertificateStatusMessage extends HandshakeMessage {
 
     private static final Logger LOGGER = LogManager.getLogger();

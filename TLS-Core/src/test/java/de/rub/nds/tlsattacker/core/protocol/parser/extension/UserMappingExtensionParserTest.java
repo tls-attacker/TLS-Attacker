@@ -13,7 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
-import de.rub.nds.tlsattacker.core.protocol.message.UserMappingExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.UserMappingExtensionMessage;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import org.junit.Before;

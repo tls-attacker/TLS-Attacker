@@ -93,9 +93,9 @@ public abstract class ClientKeyExchangeHandler<MessageT extends ClientKeyExchang
     }
 
     protected void spawnNewSession() {
-        if (!Arrays.equals(tlsContext.getChooser().getServerSessionId(), new byte[0])) {
-            IdSession session =
-                new IdSession(tlsContext.getChooser().getMasterSecret(), tlsContext.getChooser().getServerSessionId());
+        if (tlsContext.getChooser().getServerSessionId().length != 0) {
+            Session session =
+                new Session(tlsContext.getChooser().getServerSessionId(), tlsContext.getChooser().getMasterSecret());
             tlsContext.addNewSession(session);
             LOGGER.debug("Spawning new resumable Session");
         }

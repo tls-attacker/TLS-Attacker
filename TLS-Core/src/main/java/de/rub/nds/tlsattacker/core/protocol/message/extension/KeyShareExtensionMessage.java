@@ -24,8 +24,10 @@ import java.util.LinkedList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name = "KeyShareExtension")
 public class KeyShareExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)

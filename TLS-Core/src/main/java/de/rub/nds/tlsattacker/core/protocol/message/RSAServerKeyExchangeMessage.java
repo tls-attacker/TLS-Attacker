@@ -24,7 +24,9 @@ import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.RSAServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.RSAServerComputations;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import javax.xml.bind.annotation.XmlRootElement;
 
+@XmlRootElement(name = "RSAServerKeyExchange")
 public class RSAServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)

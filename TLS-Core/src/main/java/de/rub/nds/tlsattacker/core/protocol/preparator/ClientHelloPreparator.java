@@ -45,15 +45,8 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
         prepareCipherSuites(msg);
         prepareCipherSuitesLength(msg);
         if (isDTLS()) {
-            // in the case of DTLS, we only include ClientHello in the digest if
-            // it has a non-empty cookie
-            if (hasHandshakeCookie()) {
-                prepareCookie(msg);
-                prepareCookieLength(msg);
-                msg.setIncludeInDigest(true);
-            } else {
-                msg.setIncludeInDigest(false);
-            }
+            prepareCookie(msg);
+            prepareCookieLength(msg);
         }
         prepareExtensions();
         prepareExtensionLength();
@@ -158,10 +151,6 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
 
     private boolean hasClientRandom() {
         return chooser.getContext().getClientRandom() != null;
-    }
-
-    private boolean hasHandshakeCookie() {
-        return chooser.getContext().getDtlsCookie() != null;
     }
 
     private void prepareCookie(ClientHelloMessage msg) {

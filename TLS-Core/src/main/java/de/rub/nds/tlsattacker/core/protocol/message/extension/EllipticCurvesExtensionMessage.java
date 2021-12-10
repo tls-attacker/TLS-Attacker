@@ -15,10 +15,12 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * This extension is defined in RFC-ietf-tls-rfc4492bis-17 Also known as "supported_groups" extension
  */
+@XmlRootElement(name = "EllipticCurves")
 public class EllipticCurvesExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)

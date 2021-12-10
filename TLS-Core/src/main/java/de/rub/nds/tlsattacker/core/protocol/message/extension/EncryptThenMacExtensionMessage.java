@@ -11,10 +11,12 @@ package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * RFC7366
  */
+@XmlRootElement(name = "EncryptThenMacExtension")
 public class EncryptThenMacExtensionMessage extends ExtensionMessage {
 
     public EncryptThenMacExtensionMessage() {

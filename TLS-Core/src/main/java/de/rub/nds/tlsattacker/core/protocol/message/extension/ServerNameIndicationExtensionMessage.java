@@ -20,10 +20,12 @@ import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
 import java.util.LinkedList;
 import java.util.List;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Describes Server Name Indication extension from http://tools.ietf.org/html/rfc6066
  */
+@XmlRootElement(name = "ServerNameIndicationExtension")
 public class ServerNameIndicationExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
