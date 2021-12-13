@@ -15,7 +15,8 @@ import de.rub.nds.tlsattacker.core.layer.DataContainer;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
-import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerStream;
+import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
+import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayOutputStream;
@@ -58,7 +59,7 @@ public class HttpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer>
 
     @Override
     public byte[] retrieveMoreData(LayerProcessingHint hint) throws IOException {
-        HintedLayerStream dataStream = getLowerLayer().getDataStream();
+        HintedInputStream dataStream = getLowerLayer().getDataStream();
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         while (dataStream.available() > 0) {
             if (context.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
@@ -78,8 +79,8 @@ public class HttpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer>
     }
 
     @Override
-    public HintedLayerStream getDataStream() {
-        return new HintedLayerStream(null, this);
+    public HintedLayerInputStream getDataStream() {
+        return new HintedLayerInputStream(null, this);
     }
 
     @Override

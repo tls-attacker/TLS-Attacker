@@ -299,6 +299,8 @@
 
   <xs:element name="unknownMessage" type="unknownMessage"/>
 
+  <xs:element name="userMappingExtensionMessage" type="userMappingExtensionMessage"/>
+
   <xs:element name="waitAction" type="waitAction"/>
 
   <xs:element name="workflowTrace" type="workflowTrace"/>
@@ -979,6 +981,7 @@
                   <xs:element name="EarlyDataExtension" type="earlyDataExtensionMessage"/>
                   <xs:element name="PSKKeyExchangeModesExtension" type="pskKeyExchangeModesExtensionMessage"/>
                   <xs:element name="PreSharedKeyExtension" type="preSharedKeyExtensionMessage"/>
+                  <xs:element name="UserMappingExtension" type="userMappingExtensionMessage"/>
                   <xs:element name="UnknownExtension" type="unknownExtensionMessage"/>
                   <xs:element name="PWDClear" type="pwdClearExtensionMessage"/>
                   <xs:element name="PWDProtect" type="pwdProtectExtensionMessage"/>
@@ -1349,9 +1352,9 @@
     <xs:complexContent>
       <xs:extension base="extensionMessage">
         <xs:sequence>
-          <xs:element name="tokenbindingVersion" type="modifiableByteArray" minOccurs="0"/>
-          <xs:element name="tokenbindingKeyParameters" type="modifiableByteArray" minOccurs="0"/>
           <xs:element name="parameterListLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="tokenbindingKeyParameters" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="tokenbindingVersion" type="modifiableByteArray" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -1697,6 +1700,16 @@
       <xs:element name="identity" type="modifiableByteArray" minOccurs="0"/>
       <xs:element name="obfuscatedTicketAge" type="modifiableByteArray" minOccurs="0"/>
     </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="userMappingExtensionMessage">
+    <xs:complexContent>
+      <xs:extension base="extensionMessage">
+        <xs:sequence>
+          <xs:element name="userMappingType" type="modifiableByte" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
   </xs:complexType>
 
   <xs:complexType name="unknownExtensionMessage">

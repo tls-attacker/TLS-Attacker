@@ -36,7 +36,7 @@ public class ForwardDataAction extends TlsAction {
     protected String forwardToAlias = null;
 
     @XmlTransient
-    protected Boolean executedAsPlanned = null;
+    protected boolean executedAsPlanned = false;
 
     public ForwardDataAction() {
     }
@@ -67,6 +67,7 @@ public class ForwardDataAction extends TlsAction {
 
         byte[] data = receiveData(receiveFromCtx);
         sendData(forwardToCtx, data);
+        setExecuted(true);
     }
 
     private byte[] receiveData(TlsContext receiveFromContext) {
@@ -132,7 +133,7 @@ public class ForwardDataAction extends TlsAction {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final ForwardMessagesAction other = (ForwardMessagesAction) obj;
+        final ForwardDataAction other = (ForwardDataAction) obj;
         if (!Objects.equals(this.receiveFromAlias, other.receiveFromAlias)) {
             return false;
         }

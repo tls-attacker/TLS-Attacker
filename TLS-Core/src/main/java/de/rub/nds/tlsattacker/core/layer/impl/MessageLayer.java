@@ -16,7 +16,8 @@ import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.hints.RecordLayerHint;
-import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerStream;
+import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
+import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
 import de.rub.nds.tlsattacker.core.protocol.MessageFactory;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessagePreparator;
@@ -81,7 +82,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
     }
 
     @Override
-    public HintedLayerStream getDataStream() {
+    public HintedLayerInputStream getDataStream() {
         throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
         // Tools | Templates.
     }
@@ -98,7 +99,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
 
     @Override
     public LayerProcessingResult receiveData() throws IOException {
-        HintedLayerStream dataStream = getLowerLayer().getDataStream();
+        HintedInputStream dataStream = getLowerLayer().getDataStream();
         if (dataStream.available() > 0) {
             LayerProcessingHint tempHint = dataStream.getHint();
             if (tempHint == null) {
@@ -136,18 +137,18 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
         return getLayerResult();
     }
 
-    private void readAlertProtocolData() {
+    private void readAlertProtocolData() throws IOException {
         AlertMessage message = new AlertMessage();
         readDataContainer(message, context);
     }
 
-    private void readAppDataProtocolData() {
+    private void readAppDataProtocolData() throws IOException {
         ApplicationMessage message = new ApplicationMessage();
         readDataContainer(message, context);
 
     }
 
-    private void readCcsProtocolData() {
+    private void readCcsProtocolData() throws IOException {
         ChangeCipherSpecMessage message = new ChangeCipherSpecMessage();
         readDataContainer(message, context);
     }
@@ -165,12 +166,12 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
         } while (getLowerLayer().getDataStream().available() > 0);
     }
 
-    private void readHeartbeatProtocolData() {
+    private void readHeartbeatProtocolData() throws IOException {
         HeartbeatMessage message = new HeartbeatMessage();
         readDataContainer(message, context);
     }
 
-    private void readUnknownProtocolData() {
+    private void readUnknownProtocolData() throws IOException {
         UnknownMessage message = new UnknownMessage();
         readDataContainer(message, context);
     }

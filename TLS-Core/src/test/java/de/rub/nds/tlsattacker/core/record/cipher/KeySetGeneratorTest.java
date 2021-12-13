@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.util.tests.IntegrationTests;
 import java.security.NoSuchAlgorithmException;
 import java.security.Security;
 import org.apache.logging.log4j.LogManager;
@@ -22,6 +23,7 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 public class KeySetGeneratorTest {
 
@@ -40,7 +42,7 @@ public class KeySetGeneratorTest {
      * exception
      */
     @Test
-    // @Category(IntegrationTests.class)
+    @Category(IntegrationTests.class)
     public void testGenerateKeySet() {
         for (CipherSuite suite : CipherSuite.getImplemented()) {
             for (ProtocolVersion version : ProtocolVersion.values()) {

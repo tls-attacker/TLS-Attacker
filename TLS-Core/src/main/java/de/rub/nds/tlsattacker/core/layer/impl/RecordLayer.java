@@ -16,7 +16,9 @@ import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.hints.RecordLayerHint;
-import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerStream;
+import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
+import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStreamAdapterStream;
+import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
 import de.rub.nds.tlsattacker.core.protocol.parser.cert.CleanRecordByteSeperator;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
@@ -55,7 +57,11 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
     private int writeEpoch = 0;
     private int readEpoch = 0;
 
-    private RecordLayerHint hint;
+    private HintedInputStream hintedInputStream = null;
+
+    private RecordLayerHint currentHint;
+    private RecordLayerHint cachedHint;
+    private byte[] dataCache;
 
     public RecordLayer(TlsContext context) {
         this.context = context;
@@ -126,27 +132,41 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
     }
 
     @Override
-    public byte[] retrieveMoreData(LayerProcessingHint hint) throws IOException {
+    public byte[] retrieveMoreData(LayerProcessingHint desiredHint) throws IOException {
         InputStream dataStream = getLowerLayer().getDataStream();
-
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        while (dataStream.available() > 0) {
-            try {
-                RecordParser parser = new RecordParser(dataStream, getDecryptorCipher().getState().getVersion());
-                Record record = new Record();
-                parser.parse(record);
-                addProducedContainer(record);
-                outputStream.write(record.getCleanProtocolMessageBytes().getValue());
-            } catch (ParserException e) {
-                throw new ParserException("Could not parse provided Data as Record", e);
+        if (dataCache != null) {
+            if (desiredHint.equals(cachedHint)) {
+                byte[] tempData = dataCache;
+                dataCache = null;
+                cachedHint = null;
+                return dataCache;
+            } else {
+                return null;
             }
         }
-        return outputStream.toByteArray();
+        try {
+            RecordParser parser = new RecordParser(dataStream, getDecryptorCipher().getState().getVersion());
+            Record record = new Record();
+            parser.parse(record);
+            decryptor.decrypt(record);
+            decompressor.decompress(record);
+            addProducedContainer(record);
+            currentHint = new RecordLayerHint(record.getContentMessageType());
+            if (currentHint.equals(desiredHint) || desiredHint == null) {
+                return record.getCleanProtocolMessageBytes().getValue();
+            } else {
+                cachedHint = currentHint;
+                dataCache = record.getCleanProtocolMessageBytes().getValue();
+                return null;
+            }
+        } catch (ParserException e) {
+            throw new ParserException("Could not parse provided Data as Record", e);
+        }
     }
 
     @Override
-    public HintedLayerStream getDataStream() {
-        return null;// TODO IMPLEMENT
+    public HintedInputStream getDataStream() throws IOException {
+        return new HintedLayerInputStream(currentHint, this);
     }
 
     public RecordCipher getEncryptorCipher() {
@@ -238,6 +258,6 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
     @Override
     public LayerProcessingResult receiveData() throws IOException {
         throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
-                                                                       // Tools | Templates.
+        // Tools | Templates.
     }
 }

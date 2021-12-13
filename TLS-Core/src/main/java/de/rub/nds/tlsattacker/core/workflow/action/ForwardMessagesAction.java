@@ -273,6 +273,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
         receiveMessages(receiveFromCtx);
         applyMessages(forwardToCtx);
         forwardMessages(forwardToCtx);
+        setExecuted(true);
     }
 
     void receiveMessages(TlsContext receiveFromContext) {

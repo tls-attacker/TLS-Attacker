@@ -12,10 +12,8 @@ package de.rub.nds.tlsattacker.core.socket;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.layer.LayerStack;
 import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
 import de.rub.nds.tlsattacker.core.layer.LayerStackType;
-import de.rub.nds.tlsattacker.core.layer.impl.RecordLayer;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
@@ -84,8 +82,8 @@ public class TlsAttackerSocketTest {
     public void testSend_String() throws IOException {
         socket.send("test");
         byte[] sentBytes = transportHandler.getSendByte();
-        assertArrayEquals(sentBytes, ArrayConverter.concatenate(new byte[] { 0x17, 0x03, 0x03, 0x00, 0x04 },
-            "test".getBytes(Charset.forName("ASCII"))));
+        assertArrayEquals(ArrayConverter.concatenate(new byte[] { 0x17, 0x03, 0x03, 0x00, 0x04 },
+            "test".getBytes(Charset.forName("ASCII"))), sentBytes);
     }
 
     /**
@@ -107,7 +105,7 @@ public class TlsAttackerSocketTest {
     public void testReceiveBytes() throws Exception {
         transportHandler.setFetchableByte(new byte[] { 0x17, 0x03, 0x03, 0x00, 0x03, 8, 8, 8 });
         byte[] receivedBytes = socket.receiveBytes();
-        assertArrayEquals(receivedBytes, new byte[] { 8, 8, 8 });
+        assertArrayEquals(new byte[] { 8, 8, 8 }, receivedBytes);
     }
 
     /**

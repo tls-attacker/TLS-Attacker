@@ -14,34 +14,31 @@ import de.rub.nds.tlsattacker.transport.tcp.TcpTransportHandler;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.net.Socket;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import static org.mockito.Mockito.*;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 public class FakeTransportHandler extends TcpTransportHandler {
+
     /**
      * Data that will be returned on a fetchData() call
      */
-    private byte[] fetchableByte;
-    private byte[] sendByte;
+    private ByteArrayOutputStream outputStream;
+    private ByteArrayInputStream inputStream;
+
     private Boolean opened = false;
 
     public FakeTransportHandler(ConnectionEndType type) {
         super(0, 0, type);
-        fetchableByte = new byte[0];
+        inputStream = new ByteArrayInputStream(new byte[0]);
+        outputStream = new ByteArrayOutputStream();
     }
 
     public byte[] getSendByte() {
-        return sendByte;
-    }
-
-    public byte[] getFetchableByte() {
-        return fetchableByte;
+        return outputStream.toByteArray();
     }
 
     public void setFetchableByte(byte[] fetchableByte) {
-        this.fetchableByte = fetchableByte;
+        inputStream = new ByteArrayInputStream(fetchableByte);
     }
 
     @Override
@@ -51,14 +48,14 @@ public class FakeTransportHandler extends TcpTransportHandler {
 
     @Override
     public byte[] fetchData() throws IOException {
-        byte[] answer = fetchableByte;
-        fetchableByte = new byte[0];
-        return answer;
+        byte[] data = new byte[inputStream.available()];
+        inputStream.read(data);
+        return data;
     }
 
     @Override
     public void sendData(byte[] data) throws IOException {
-        sendByte = data;
+        outputStream.write(data);
     }
 
     @Override
@@ -73,8 +70,9 @@ public class FakeTransportHandler extends TcpTransportHandler {
 
     @Override
     public void closeClientConnection() throws IOException {
-        if (!isClosed())
+        if (!isClosed()) {
             opened = false;
+        }
     }
 
     @Override
@@ -89,37 +87,35 @@ public class FakeTransportHandler extends TcpTransportHandler {
     @Override
     public Integer getSrcPort() {
         throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
-                                                                       // Tools | Templates.
+        // Tools | Templates.
     }
 
     @Override
     public void setSrcPort(int port) {
         throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
-                                                                       // Tools | Templates.
+        // Tools | Templates.
     }
 
     @Override
     public Integer getDstPort() {
         throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
-                                                                       // Tools | Templates.
+        // Tools | Templates.
     }
 
     @Override
     public void setDstPort(int port) {
         throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
-                                                                       // Tools | Templates.
+        // Tools | Templates.
     }
 
     @Override
-    public Socket getSocket() {
-        Socket socket = mock(Socket.class);
-        try {
-            when(socket.getInputStream()).thenReturn(new ByteArrayInputStream(fetchableByte));
-            when(socket.getOutputStream()).thenReturn(new ByteArrayOutputStream());
-        } catch (IOException ex) {
-            Logger.getLogger(FakeTransportHandler.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return socket;
+    public OutputStream getOutputStream() {
+        return outputStream;
+    }
+
+    @Override
+    public InputStream getInputStream() {
+        return inputStream;
     }
 
 }

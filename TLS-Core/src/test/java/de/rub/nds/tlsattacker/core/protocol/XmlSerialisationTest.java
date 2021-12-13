@@ -61,6 +61,7 @@ public class XmlSerialisationTest {
     public void testExtensionMessages() throws Exception {
         List<ExtensionMessage> extensionList = MessageFactory.generateExtensionMessages();
         for (ExtensionMessage extension : extensionList) {
+
             ClientHelloMessage message = new ClientHelloMessage();
             message.addExtension(extension);
             WorkflowTrace trace = new WorkflowTrace();
@@ -70,7 +71,6 @@ public class XmlSerialisationTest {
             WorkflowTraceSerializer.write(f, trace);
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             WorkflowTraceSerializer.write(stream, trace);
-            System.out.println(new String(stream.toByteArray()));
             WorkflowTrace newWorkflowTrace = WorkflowTraceSerializer.secureRead(new FileInputStream(f));
             assertTrue(newWorkflowTrace.getTlsActions().size() == 2);
 

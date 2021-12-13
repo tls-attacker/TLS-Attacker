@@ -43,7 +43,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class ForwardRecordsActionTest {
+public class ForwardDataActionTest {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -125,11 +125,11 @@ public class ForwardRecordsActionTest {
             pw.println("    <InboundConnection>");
             pw.println("        <alias>ctx2</alias>");
             pw.println("    </InboundConnection>");
-            pw.println("    <ForwardRecords>");
+            pw.println("    <ForwardData>");
             pw.println("        <actionOptions/>");
             pw.println("        <from>ctx1</from>");
             pw.println("        <to>ctx2</to>");
-            pw.println("    </ForwardRecords>");
+            pw.println("    </ForwardData>");
             pw.println("</workflowTrace>");
             pw.close();
             String expected = sw.toString();

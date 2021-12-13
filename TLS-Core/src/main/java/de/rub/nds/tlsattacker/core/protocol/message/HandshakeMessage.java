@@ -65,6 +65,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.TokenBindingExtens
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TruncatedHmacExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TrustedCaIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.UnknownExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.UserMappingExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.HandshakeMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.HandshakeMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.HandshakeMessageSerializer;
@@ -151,6 +152,7 @@ public abstract class HandshakeMessage extends ProtocolMessage {
         @XmlElement(type = EarlyDataExtensionMessage.class, name = "EarlyDataExtension"),
         @XmlElement(type = PSKKeyExchangeModesExtensionMessage.class, name = "PSKKeyExchangeModesExtension"),
         @XmlElement(type = PreSharedKeyExtensionMessage.class, name = "PreSharedKeyExtension"),
+        @XmlElement(type = UserMappingExtensionMessage.class, name = "UserMappingExtension"),
         @XmlElement(type = UnknownExtensionMessage.class, name = "UnknownExtension"),
         @XmlElement(type = PWDClearExtensionMessage.class, name = "PWDClear"),
         @XmlElement(type = PWDProtectExtensionMessage.class, name = "PWDProtect"),

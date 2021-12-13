@@ -13,7 +13,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.protocol.Handler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.UserMappingExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.UserMappingExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.UserMappingExtensionPreparator;

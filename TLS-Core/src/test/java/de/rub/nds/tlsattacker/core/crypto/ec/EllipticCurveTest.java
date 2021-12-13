@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.crypto.ec;
 
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import de.rub.nds.tlsattacker.util.tests.IntegrationTests;
 import java.math.BigInteger;
 import java.util.Random;
 import static org.junit.Assert.assertEquals;
@@ -18,11 +19,13 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * Testing EllipticCurve, CurveFactory, EllipticCurveOverFp and EllipticCurveOverF2m
  */
 public class EllipticCurveTest {
+
     /*
      * Please notice that these tests can provide correctness only in a probabilistic sense. (Though with a very high
      * probability, since the curve parameters are very large.)
@@ -38,6 +41,7 @@ public class EllipticCurveTest {
     }
 
     @Test
+    @Category(IntegrationTests.class)
     public void test() {
         final int implemented = 46;
         int counter = 0;

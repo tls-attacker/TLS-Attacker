@@ -15,7 +15,7 @@
 package de.rub.nds.tlsattacker.core.layer;
 
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
-import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerStream;
+import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.tlsattacker.core.protocol.Handler;
 import de.rub.nds.tlsattacker.core.protocol.Parser;
 import de.rub.nds.tlsattacker.core.protocol.Preparator;
@@ -111,13 +111,13 @@ public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container 
 
     public abstract byte[] retrieveMoreData(LayerProcessingHint hint) throws IOException;
 
-    public abstract HintedLayerStream getDataStream();
+    public abstract HintedInputStream getDataStream() throws IOException;
 
     public abstract void preInititialize() throws IOException;
 
     public abstract void inititialize() throws IOException;
 
-    public void readDataContainer(Container container, TlsContext context) {
+    public void readDataContainer(Container container, TlsContext context) throws IOException {
         Parser parser = container.getParser(context, getLowerLayer().getDataStream());
         parser.parse(container);
         Preparator preparator = container.getPreparator(context);

@@ -36,6 +36,12 @@ public class CleanRecordByteSeperator extends Parser<List<Record>> {
             }
             record.setCleanProtocolMessageBytes(parseArrayOrTillEnd(maxData));
         }
+        while (getBytesLeft() > 0) {
+            // There are still bytes left, we need to create additional records
+            Record record = new Record(defaultMaxSize);
+            record.setCleanProtocolMessageBytes(parseArrayOrTillEnd(defaultMaxSize));
+            records.add(record);
+        }
     }
 
 }

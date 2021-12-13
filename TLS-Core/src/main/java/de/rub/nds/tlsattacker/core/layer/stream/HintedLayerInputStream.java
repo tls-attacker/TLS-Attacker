@@ -9,7 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.layer.stream;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import java.io.ByteArrayInputStream;
@@ -17,16 +16,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class HintedLayerStream extends InputStream {
-
-    private final LayerProcessingHint hint;
+public class HintedLayerInputStream extends HintedInputStream {
 
     private final ProtocolLayer layer;
 
     private ByteArrayInputStream stream = new ByteArrayInputStream(new byte[0]);
 
-    public HintedLayerStream(LayerProcessingHint hint, ProtocolLayer layer) {
-        this.hint = hint;
+    public HintedLayerInputStream(LayerProcessingHint hint, ProtocolLayer layer) {
+        super(hint);
         this.layer = layer;
     }
 
@@ -35,7 +32,7 @@ public class HintedLayerStream extends InputStream {
         if (stream.available() > 0) {
             return stream.read();
         } else {
-            byte[] data = layer.retrieveMoreData(hint);
+            byte[] data = layer.retrieveMoreData(getHint());
             if (data != null) {
                 stream = new ByteArrayInputStream(data);
                 return this.read();
@@ -82,16 +79,28 @@ public class HintedLayerStream extends InputStream {
         return chunk;
     }
 
-    public byte readByte() throws IOException {
-        return (byte) read();
+    @Override
+    public int available() throws IOException {
+        if (stream.available() > 0) {
+            return stream.available();
+        } else {
+            if (layer.getLowerLayer() != null) {
+                while (layer.getLowerLayer().getDataStream().available() > 0) {
+                    byte[] data = layer.getLowerLayer().retrieveMoreData(getHint());
+                    if (data != null) {
+                        stream = new ByteArrayInputStream(data);
+                    }
+                    if (stream.available() > 0) {
+                        return stream.available();
+                    }
+                }
+            }
+            return 0;
+        }
     }
 
-    public int readInt(int size) throws IOException {
-        byte[] readChunk = readChunk(size);
-        return ArrayConverter.bytesToInt(readChunk);
-    }
-
-    public LayerProcessingHint getHint() {
-        return hint;
+    @Override
+    protected InputStream getDataSource() {
+        return stream;
     }
 }

@@ -14,7 +14,8 @@ import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
-import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerStream;
+import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
+import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStreamAdapterStream;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.tcp.TcpTransportHandler;
 import java.io.IOException;
@@ -71,28 +72,28 @@ public class TcpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> 
 
     @Override
     public LayerProcessingResult sendData(LayerProcessingHint hint, byte[] data) throws IOException {
-        if (handler.getSocket() == null) {
+        if (handler.getOutputStream() == null) {
             throw new RuntimeException("TCP Layer not initialized");
         }
-        handler.getSocket().getOutputStream().write(data);
+        handler.getOutputStream().write(data);
         getDataForHigherLayerStream().write(data);
         return new LayerProcessingResult(null, null);// Not implemented
     }
 
     @Override
     public byte[] retrieveMoreData(LayerProcessingHint hint) throws IOException {
-        if (handler.getSocket() == null) {
+        if (handler.getInputStream() == null) {
             throw new RuntimeException("TCP Layer not initialized");
         }
-        byte[] data = new byte[handler.getSocket().getInputStream().available()];
-        handler.getSocket().getInputStream().read(data);
+        byte[] data = new byte[handler.getInputStream().available()];
+        handler.getInputStream().read(data);
         getDataForHigherLayerStream().write(data);
         return data;
     }
 
     @Override
-    public HintedLayerStream getDataStream() {
-        return new HintedLayerStream(null, this);
+    public HintedInputStream getDataStream() {
+        return new HintedInputStreamAdapterStream(null, handler.getInputStream());
     }
 
     @Override
@@ -108,6 +109,6 @@ public class TcpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> 
     @Override
     public LayerProcessingResult receiveData() throws IOException {
         throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
-                                                                       // Tools | Templates.
+        // Tools | Templates.
     }
 }

@@ -27,7 +27,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 /**
  * This extension is defined in draft-ietf-tokbind-negotiation
  */
-@XmlAccessorType(XmlAccessType.FIELD)
 public class TokenBindingExtensionMessage extends ExtensionMessage<TokenBindingExtensionMessage> {
 
     @ModifiableVariableProperty
