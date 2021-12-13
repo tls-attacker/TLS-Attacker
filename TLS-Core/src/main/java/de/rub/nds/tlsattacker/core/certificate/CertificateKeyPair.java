@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.certificate;
 
-import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
+import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CertificateKeyType;
 import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
@@ -66,7 +66,7 @@ public class CertificateKeyPair implements Serializable {
 
     private final GOSTCurve gostCurve;
 
-    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private final byte[] certificateBytes;
 
     @XmlElements(value = { @XmlElement(type = CustomDhPublicKey.class, name = "DhPublicKey"),

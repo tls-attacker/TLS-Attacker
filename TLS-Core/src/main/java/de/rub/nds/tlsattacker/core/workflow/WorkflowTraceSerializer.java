@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.workflow;
 import de.rub.nds.modifiablevariable.ModifiableVariable;
 import de.rub.nds.modifiablevariable.ModificationFilter;
 import de.rub.nds.modifiablevariable.VariableModification;
-import de.rub.nds.modifiablevariable.util.XMLPrettyPrinter;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
@@ -115,12 +114,7 @@ public class WorkflowTraceSerializer {
         m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         try (ByteArrayOutputStream tempStream = new ByteArrayOutputStream()) {
             m.marshal(workflowTrace, tempStream);
-            try {
-                outputStream.write(XMLPrettyPrinter.prettyPrintXML(new String(tempStream.toByteArray())).getBytes());
-            } catch (TransformerException | XPathExpressionException | XPathFactoryConfigurationException
-                    | ParserConfigurationException | SAXException ex) {
-                throw new RuntimeException("Could not format XML");
-            }
+            outputStream.write(tempStream.toByteArray());
         }
         outputStream.close();
     }

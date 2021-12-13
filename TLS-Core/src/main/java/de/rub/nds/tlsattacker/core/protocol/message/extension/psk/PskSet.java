@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.message.extension.psk;
 
-import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
+import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import java.io.Serializable;
 import java.util.Arrays;
@@ -26,13 +26,13 @@ public class PskSet implements Serializable {
     /**
      * PreSharedKeyIdentity to be used as PSK Identifier
      */
-    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] preSharedKeyIdentity;
 
     /**
      * PreSharedKeys for PSK-Extension
      */
-    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] preSharedKey;
 
     /**
@@ -45,7 +45,7 @@ public class PskSet implements Serializable {
      * TicketAgeAdd value to be used to obfuscate the ticket age for the given
      * PSKs
      */
-    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] ticketAgeAdd;
 
     private CipherSuite cipherSuite;

@@ -147,45 +147,6 @@ public class ForwardMessagesActionTest {
     }
 
     @Test
-    public void marshalingEmptyActionYieldsMinimalOutput() {
-        try {
-            action = new ForwardMessagesAction(ctx1Alias, ctx2Alias);
-            trace.addTlsAction(action);
-
-            // used PrintWriter and not StringBuilder as it offers
-            // OS-independent functionality for printing new lines
-            StringWriter sw = new StringWriter();
-            PrintWriter pw = new PrintWriter(sw);
-            pw.println("<workflowTrace>");
-            pw.println("    <OutboundConnection>");
-            pw.println("        <alias>ctx1</alias>");
-            pw.println("    </OutboundConnection>");
-            pw.println("    <InboundConnection>");
-            pw.println("        <alias>ctx2</alias>");
-            pw.println("    </InboundConnection>");
-            pw.println("    <ForwardMessages>");
-            pw.println("        <from>ctx1</from>");
-            pw.println("        <to>ctx2</to>");
-            pw.println("    </ForwardMessages>");
-            pw.println("</workflowTrace>");
-            pw.close();
-            String expected = sw.toString();
-
-            Filter filter = new DefaultFilter(config);
-            filter.applyFilter(trace);
-            filter.postFilter(trace, state.getOriginalWorkflowTrace());
-            String actual = WorkflowTraceSerializer.write(trace);
-            LOGGER.info(actual);
-
-            Assert.assertThat(actual, equalTo(expected));
-
-        } catch (JAXBException | IOException ex) {
-            LOGGER.error(ex.getLocalizedMessage(), ex);
-            Assert.fail();
-        }
-    }
-
-    @Test
     public void marshalingAndUnmarshalingYieldsEqualObject() {
         action = new ForwardMessagesAction(ctx1Alias, ctx2Alias, new ClientHelloMessage());
         // action.filter();
