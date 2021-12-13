@@ -8,12 +8,8 @@
  */
 package de.rub.nds.tlsattacker.transport.recording;
 
-import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
 public class RecordedLine {
 
-    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] recordedMessage;
 
     public RecordedLine(byte[] recordedMessage) {
