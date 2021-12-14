@@ -78,7 +78,7 @@ public class SessionTicketTlsExtensionHandler extends ExtensionHandler<SessionTi
             if (context.getTalkingConnectionEndType() == ConnectionEndType.CLIENT
                 && context.getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {
                 // Server receives an empty ticket
-                if (context.getConfig().isOverrideServerSessionId()
+                if (context.getConfig().isOverrideSessionIdForTickets()
                     && context.getConfig().isAddSessionTicketTLSExtension()) {
                     context.setServerSessionId(new byte[0]);
                 }

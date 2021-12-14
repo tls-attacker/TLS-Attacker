@@ -1052,7 +1052,6 @@
     <defaultServerRandom>00 11 22 33 44 55 66 77 88 99 AA BB CC DD EE FF FF EE DD CC BB AA 99 88 77 66 55 44 33 22 11 00</defaultServerRandom>
     <defaultClientSessionId></defaultClientSessionId>
     <defaultClientTicketResumptionSessionId>33 2C AC 09 A5 C5 69 74 E3 D4 9C 07 41 F3 96 C5 F1 C9 0B 41 52 9D D6 43 48 5E 65 B1 C0 61 9D 2B</defaultClientTicketResumptionSessionId>
-    <useDefaultClientTicketResumptionSessionId>true</useDefaultClientTicketResumptionSessionId>
     <defaultServerSessionId></defaultServerSessionId>
     <defaultSelectedCompressionMethod>NULL</defaultSelectedCompressionMethod>
     <dtlsDefaultCookie></dtlsDefaultCookie>
@@ -1135,7 +1134,7 @@
     <httpsParsingEnabled>false</httpsParsingEnabled>
     <defaultHttpsRequestPath>/</defaultHttpsRequestPath>
     <starttlsType>NONE</starttlsType>
-    <overrideServerSessionId>true</overrideServerSessionId>
+    <overrideSessionIdForTickets>true</overrideSessionIdForTickets>
     <sessionTicketLifetimeHint>7200</sessionTicketLifetimeHint>
     <sessionTicketEncryptionKey>53 65 63 75 72 65 53 54 69 63 6B 65 74 4B 65 79</sessionTicketEncryptionKey>
     <sessionTicketKeyHMAC>53 65 63 75 72 65 53 54 69 63 6B 65 74 4B 65 79 53 65 63 75 72 65 53 54 69 63 6B 65 74 4B 65 79</sessionTicketKeyHMAC>

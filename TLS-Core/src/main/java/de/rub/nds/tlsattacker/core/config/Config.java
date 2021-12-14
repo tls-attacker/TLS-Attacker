@@ -1072,8 +1072,6 @@ public class Config implements Serializable {
     private byte[] defaultClientTicketResumptionSessionId =
         ArrayConverter.hexStringToByteArray("332CAC09A5C56974E3D49C0741F396C5F1C90B41529DD643485E65B1C0619D2B");
 
-    private Boolean useDefaultClientTicketResumptionSessionId = true;
-
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultServerSessionId = new byte[0];
 
@@ -1210,10 +1208,11 @@ public class Config implements Serializable {
     private StarttlsType starttlsType = StarttlsType.NONE;
 
     /**
-     * If the server receives an empty Session Ticket, it answers with an empty Server SID by default. Set this flag to
-     * modify the value of the ServerSessionID.
+     * By default, the Session ID is overwritten, if (1) the server receives an empty Session Ticket (it answers with an
+     * empty Server SID) (2) the client presents a sessionTicket (defaultClientTicketResumptionSessionId is used). Unset
+     * this flag if you want to modify the SessionID.
      */
-    private Boolean overrideServerSessionId = true;
+    private Boolean overrideSessionIdForTickets = true;
 
     /**
      * The Ticket Lifetime Hint, Ticket Key and Ticket Key Name used in the Extension defined in RFC5077, followed by
@@ -1598,12 +1597,12 @@ public class Config implements Serializable {
         this.tls13BackwardsCompatibilityMode = tls13BackwardsCompatibilityMode;
     }
 
-    public Boolean isOverrideServerSessionId() {
-        return overrideServerSessionId;
+    public Boolean isOverrideSessionIdForTickets() {
+        return overrideSessionIdForTickets;
     }
 
-    public void setOverrideServerSessionId(Boolean overrideServerSessionId) {
-        this.overrideServerSessionId = overrideServerSessionId;
+    public void setOverrideSessionIdForTickets(Boolean overrideSessionIdForTickets) {
+        this.overrideSessionIdForTickets = overrideSessionIdForTickets;
     }
 
     public long getSessionTicketLifetimeHint() {
@@ -4103,11 +4102,4 @@ public class Config implements Serializable {
         this.defaultClientTicketResumptionSessionId = defaultClientTicketResumptionSessionId;
     }
 
-    public Boolean isUseDefaultClientTicketResumptionSessionId() {
-        return useDefaultClientTicketResumptionSessionId;
-    }
-
-    public void setUseDefaultClientTicketResumptionSessionId(Boolean useDefaultClientTicketResumptionSessionId) {
-        this.useDefaultClientTicketResumptionSessionId = useDefaultClientTicketResumptionSessionId;
-    }
 }

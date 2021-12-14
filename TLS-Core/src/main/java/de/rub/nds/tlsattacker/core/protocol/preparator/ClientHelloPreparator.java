@@ -76,7 +76,7 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
                 }
             }
         }
-        if (isResumptionWithSessionTicket && chooser.getConfig().isUseDefaultClientTicketResumptionSessionId()) {
+        if (isResumptionWithSessionTicket && chooser.getConfig().isOverrideSessionIdForTickets()) {
             msg.setSessionId(chooser.getConfig().getDefaultClientTicketResumptionSessionId());
         } else if (chooser.getContext().getServerSessionId() == null) {
             msg.setSessionId(chooser.getClientSessionId());
