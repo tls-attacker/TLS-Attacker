@@ -790,10 +790,8 @@ public class TlsContext {
 
     public Session getIdSession(byte[] sessionId) {
         for (Session session : sessionList) {
-            if (session.isIdSession()) {
-                if (Arrays.equals(((IdSession) session).getId(), sessionId)) {
-                    return session;
-                }
+            if (session.isIdSession() && Arrays.equals(((IdSession) session).getId(), sessionId)) {
+                return session;
             }
         }
         return null;

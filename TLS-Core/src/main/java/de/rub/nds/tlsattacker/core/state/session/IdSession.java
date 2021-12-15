@@ -22,7 +22,7 @@ public class IdSession extends Session {
         return id;
     }
 
-    public void setId(byte[] ticket) {
-        this.id = ticket;
+    public void setId(byte[] id) {
+        this.id = id;
     }
 }
