@@ -68,13 +68,16 @@ public class ForwardDataAction extends TlsAction {
         byte[] data = receiveData(receiveFromCtx);
         sendData(forwardToCtx, data);
         setExecuted(true);
+        executedAsPlanned = true;
     }
 
     private byte[] receiveData(TlsContext receiveFromContext) {
         LOGGER.debug("Receiving Messages...");
         LayerStack layerStack = receiveFromContext.getLayerStack();
         try {
-            return layerStack.getLowestLayer().retrieveMoreData(null);
+            layerStack.getLowestLayer().receiveData();
+            return layerStack.getLowestLayer().getDataStream()
+                .readChunk(layerStack.getLowestLayer().getDataStream().available());
         } catch (IOException ex) {
             LOGGER.warn(ex);
             return new byte[0];
@@ -84,7 +87,7 @@ public class ForwardDataAction extends TlsAction {
     private void sendData(TlsContext forwardToContext, byte[] data) {
         LayerStack layerStack = forwardToContext.getLayerStack();
         try {
-            layerStack.getLowestLayer().sendData(data);
+            layerStack.getLowestLayer().sendData(null, data);
         } catch (IOException ex) {
             LOGGER.warn(ex);
         }

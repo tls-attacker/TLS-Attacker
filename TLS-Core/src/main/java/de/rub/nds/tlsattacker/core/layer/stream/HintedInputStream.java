@@ -46,4 +46,6 @@ public abstract class HintedInputStream extends InputStream {
     }
 
     protected abstract InputStream getDataSource();
+
+    public abstract void extendStream(byte[] bytes);
 }

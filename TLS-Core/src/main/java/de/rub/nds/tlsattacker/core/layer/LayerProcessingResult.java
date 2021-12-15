@@ -15,11 +15,8 @@ public class LayerProcessingResult<T extends DataContainer> {
 
     private List<T> usedContainers;
 
-    private byte[] resultingData;
-
-    public LayerProcessingResult(List<T> usedContainers, byte[] resultingData) {
+    public LayerProcessingResult(List<T> usedContainers) {
         this.usedContainers = usedContainers;
-        this.resultingData = resultingData;
     }
 
     public List<T> getUsedContainers() {
@@ -28,13 +25,5 @@ public class LayerProcessingResult<T extends DataContainer> {
 
     public void setUsedContainers(List<T> usedContainers) {
         this.usedContainers = usedContainers;
-    }
-
-    public byte[] getResultingData() {
-        return resultingData;
-    }
-
-    public void setResultingData(byte[] resultingData) {
-        this.resultingData = resultingData;
     }
 }

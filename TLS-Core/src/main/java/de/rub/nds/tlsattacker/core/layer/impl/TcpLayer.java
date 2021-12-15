@@ -46,12 +46,7 @@ public class TcpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> 
     }
 
     @Override
-    public LayerProcessingResult sendData(byte[] data) throws IOException {
-        return sendData(null, data);// no hint needed
-    }
-
-    @Override
-    public LayerProcessingResult sendData() throws IOException {
+    public LayerProcessingResult sendConfiguration() throws IOException {
         LayerConfiguration<DataContainer> configuration = getLayerConfiguration();
         if (configuration.getContainerList() != null) {
             for (DataContainer container : configuration.getContainerList()) {
@@ -62,33 +57,18 @@ public class TcpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> 
     }
 
     @Override
-    public LayerProcessingResult sendData(LayerProcessingHint hint) throws IOException {
-        LayerConfiguration<DataContainer> configuration = getLayerConfiguration();
-        for (DataContainer container : configuration.getContainerList()) {
-            // TODO Send container data
-        }
-        throw new UnsupportedOperationException("Implement configureable TCP packet container");
-    }
-
-    @Override
     public LayerProcessingResult sendData(LayerProcessingHint hint, byte[] data) throws IOException {
         if (handler.getOutputStream() == null) {
             throw new RuntimeException("TCP Layer not initialized");
         }
         handler.getOutputStream().write(data);
-        getDataForHigherLayerStream().write(data);
-        return new LayerProcessingResult(null, null);// Not implemented
+        return new LayerProcessingResult(null);// Not implemented
     }
 
     @Override
-    public byte[] retrieveMoreData(LayerProcessingHint hint) throws IOException {
-        if (handler.getInputStream() == null) {
-            throw new RuntimeException("TCP Layer not initialized");
-        }
-        byte[] data = new byte[handler.getInputStream().available()];
-        handler.getInputStream().read(data);
-        getDataForHigherLayerStream().write(data);
-        return data;
+    public void receiveMoreDataForHint(LayerProcessingHint hint) throws IOException {
+        // There is nothing we can do here to fill up our stream, either there is data in it
+        // or not
     }
 
     @Override
@@ -108,7 +88,6 @@ public class TcpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> 
 
     @Override
     public LayerProcessingResult receiveData() throws IOException {
-        throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
-        // Tools | Templates.
+        return new LayerProcessingResult(null);
     }
 }

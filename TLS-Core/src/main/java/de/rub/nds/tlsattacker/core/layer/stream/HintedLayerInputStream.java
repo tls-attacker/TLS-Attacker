@@ -15,6 +15,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class HintedLayerInputStream extends HintedInputStream {
 
@@ -32,43 +34,39 @@ public class HintedLayerInputStream extends HintedInputStream {
         if (stream.available() > 0) {
             return stream.read();
         } else {
-            byte[] data = layer.retrieveMoreData(getHint());
-            if (data != null) {
-                stream = new ByteArrayInputStream(data);
-                return this.read();
-            } else {
-                return -1;
-            }
+            layer.receiveMoreDataForHint(getHint());
+            // either the stream is now filled, or we ran into a timeout
+            // or the next stream is available
+            return stream.read();
         }
     }
 
     /**
      * Blocking read till either an exception is thrown or data is available
      */
-    public byte[] readChunk() throws IOException {
-        if (stream.available() != 0) {
-            byte[] data = new byte[stream.available()];
-            stream.read(data);
-            return data;
-
-        } else {
-            int read = stream.read();
-            if (read != -1) {
-                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                outputStream.write(read);
-                if (stream.available() > 0) {
-                    byte[] data = new byte[stream.available()];
-                    stream.read(data);
-                    outputStream.write(data);
-                }
-                return outputStream.toByteArray();
-            } else {
-                return new byte[0];
-            }
-
-        }
-    }
-
+//    public byte[] readChunk() throws IOException {
+//        if (stream.available() != 0) {
+//            byte[] data = new byte[stream.available()];
+//            stream.read(data);
+//            return data;
+//
+//        } else {
+//            int read = stream.read();
+//            if (read != -1) {
+//                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+//                outputStream.write(read);
+//                if (stream.available() > 0) {
+//                    byte[] data = new byte[stream.available()];
+//                    stream.read(data);
+//                    outputStream.write(data);
+//                }
+//                return outputStream.toByteArray();
+//            } else {
+//                return new byte[0];
+//            }
+//
+//        }
+//    }
     public byte[] readChunk(int size) throws IOException {
         byte[] chunk = new byte[size];
         int read = stream.read(chunk);
@@ -84,16 +82,13 @@ public class HintedLayerInputStream extends HintedInputStream {
         if (stream.available() > 0) {
             return stream.available();
         } else {
+            // we might be on a higher layer so there might actually be more data
+            // available, but we do not know until we check
+
+            // Check that we are not the bottom layer, if we are there is nothing more to do
             if (layer.getLowerLayer() != null) {
-                while (layer.getLowerLayer().getDataStream().available() > 0) {
-                    byte[] data = layer.getLowerLayer().retrieveMoreData(getHint());
-                    if (data != null) {
-                        stream = new ByteArrayInputStream(data);
-                    }
-                    if (stream.available() > 0) {
-                        return stream.available();
-                    }
-                }
+                layer.receiveMoreDataForHint(getHint());
+                return stream.available();
             }
             return 0;
         }
@@ -102,5 +97,20 @@ public class HintedLayerInputStream extends HintedInputStream {
     @Override
     protected InputStream getDataSource() {
         return stream;
+    }
+
+    @Override
+    public void extendStream(byte[] bytes) {
+        try {
+            ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+
+            byte[] data = new byte[stream.available()];
+            stream.read(data);
+            outStream.write(data);
+            outStream.write(bytes);
+            stream = new ByteArrayInputStream(outStream.toByteArray());
+        } catch (IOException ex) {
+            throw new RuntimeException("IO Exception from ByteArrayStream");
+        }
     }
 }

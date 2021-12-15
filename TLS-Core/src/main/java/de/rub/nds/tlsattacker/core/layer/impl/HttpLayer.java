@@ -34,19 +34,7 @@ public class HttpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer>
     }
 
     @Override
-    public LayerProcessingResult sendData() throws IOException {
-        throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
-        // Tools | Templates.
-    }
-
-    @Override
-    public LayerProcessingResult sendData(byte[] data) throws IOException {
-        throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
-        // Tools | Templates.
-    }
-
-    @Override
-    public LayerProcessingResult sendData(LayerProcessingHint hint) throws IOException {
+    public LayerProcessingResult sendConfiguration() throws IOException {
         throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
         // Tools | Templates.
     }
@@ -58,7 +46,7 @@ public class HttpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer>
     }
 
     @Override
-    public byte[] retrieveMoreData(LayerProcessingHint hint) throws IOException {
+    public void receiveMoreDataForHint(LayerProcessingHint hint) throws IOException {
         HintedInputStream dataStream = getLowerLayer().getDataStream();
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         while (dataStream.available() > 0) {
@@ -75,7 +63,7 @@ public class HttpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer>
                 outputStream.write(message.getResponseContent().getValue().getBytes(StandardCharsets.ISO_8859_1));
             }
         }
-        return outputStream.toByteArray();
+        dataStream.extendStream(outputStream.toByteArray());
     }
 
     @Override

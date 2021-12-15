@@ -44,7 +44,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
     }
 
     @Override
-    public LayerProcessingResult sendData() throws IOException {
+    public LayerProcessingResult sendConfiguration() throws IOException {
         LayerConfiguration<ProtocolMessage> configuration = getLayerConfiguration();
         for (ProtocolMessage message : configuration.getContainerList()) {
             ProtocolMessagePreparator preparator = message.getPreparator(context);
@@ -59,26 +59,9 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
     }
 
     @Override
-    public LayerProcessingResult sendData(byte[] data) throws IOException {
-        throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
-        // Tools | Templates.
-    }
-
-    @Override
-    public LayerProcessingResult sendData(LayerProcessingHint hint) throws IOException {
-        throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
-        // Tools | Templates.
-    }
-
-    @Override
     public LayerProcessingResult sendData(LayerProcessingHint hint, byte[] additionalData) throws IOException {
         throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
         // Tools | Templates.
-    }
-
-    @Override
-    public byte[] retrieveMoreData(LayerProcessingHint hint) throws IOException {
-        return receiveData().getResultingData();
     }
 
     @Override
@@ -174,5 +157,11 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
     private void readUnknownProtocolData() throws IOException {
         UnknownMessage message = new UnknownMessage();
         readDataContainer(message, context);
+    }
+
+    @Override
+    public void receiveMoreDataForHint(LayerProcessingHint hint) throws IOException {
+        throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
+                                                                       // Tools | Templates.
     }
 }

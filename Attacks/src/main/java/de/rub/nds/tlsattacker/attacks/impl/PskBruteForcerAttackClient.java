@@ -225,7 +225,7 @@ public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackCli
         ClientKeyExchangeMessage clientKeyExchangeMessage = (ClientKeyExchangeMessage) WorkflowTraceUtil
             .getFirstReceivedMessage(HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);
         ClientKeyExchangeHandler handler = (ClientKeyExchangeHandler) clientKeyExchangeMessage.getHandler(tlsContext);
-        handler.getPreparator(clientKeyExchangeMessage).prepareAfterParse(false);
+        clientKeyExchangeMessage.getPreparator(tlsContext).prepareAfterParse(false);
         tlsContext.setPreMasterSecret(clientKeyExchangeMessage.getComputations().getPremasterSecret().getValue());
         handler.adjustPremasterSecret(clientKeyExchangeMessage);
         handler.adjustMasterSecret(clientKeyExchangeMessage);

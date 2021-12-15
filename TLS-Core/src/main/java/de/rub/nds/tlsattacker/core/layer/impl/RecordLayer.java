@@ -17,7 +17,6 @@ import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.hints.RecordLayerHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
-import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStreamAdapterStream;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
 import de.rub.nds.tlsattacker.core.protocol.parser.cert.CleanRecordByteSeperator;
 import de.rub.nds.tlsattacker.core.record.Record;
@@ -57,12 +56,6 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
     private int writeEpoch = 0;
     private int readEpoch = 0;
 
-    private HintedInputStream hintedInputStream = null;
-
-    private RecordLayerHint currentHint;
-    private RecordLayerHint cachedHint;
-    private byte[] dataCache;
-
     public RecordLayer(TlsContext context) {
         this.context = context;
         encryptor = new RecordEncryptor(RecordCipherFactory.getNullCipher(context), context);
@@ -72,21 +65,9 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
     }
 
     @Override
-    public LayerProcessingResult sendData() throws IOException {
+    public LayerProcessingResult sendConfiguration() throws IOException {
         // TODO Check if we still got stuff to send
         return getLayerResult();
-    }
-
-    @Override
-    public LayerProcessingResult<Record> sendData(byte[] data) throws IOException {
-        throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
-        // Tools | Templates.
-    }
-
-    @Override
-    public LayerProcessingResult<Record> sendData(RecordLayerHint hint) throws IOException {
-        throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
-        // Tools | Templates.
     }
 
     @Override
@@ -125,25 +106,15 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
             } catch (IOException ex) {
                 throw new PreparationException("Could not write Record bytes to ByteArrayStream", ex);
             }
+            addProducedContainer(record);
         }
-        getLowerLayer().sendData(stream.toByteArray());
-        getDataForHigherLayerStream().write(stream.toByteArray());
-        return new LayerProcessingResult<>(records, stream.toByteArray());
+        getLowerLayer().sendData(null, stream.toByteArray());
+        return new LayerProcessingResult<>(records);
     }
 
     @Override
-    public byte[] retrieveMoreData(LayerProcessingHint desiredHint) throws IOException {
+    public void receiveMoreDataForHint(LayerProcessingHint desiredHint) throws IOException {
         InputStream dataStream = getLowerLayer().getDataStream();
-        if (dataCache != null) {
-            if (desiredHint.equals(cachedHint)) {
-                byte[] tempData = dataCache;
-                dataCache = null;
-                cachedHint = null;
-                return dataCache;
-            } else {
-                return null;
-            }
-        }
         try {
             RecordParser parser = new RecordParser(dataStream, getDecryptorCipher().getState().getVersion());
             Record record = new Record();
@@ -151,22 +122,27 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
             decryptor.decrypt(record);
             decompressor.decompress(record);
             addProducedContainer(record);
-            currentHint = new RecordLayerHint(record.getContentMessageType());
+            RecordLayerHint currentHint = new RecordLayerHint(record.getContentMessageType());
             if (currentHint.equals(desiredHint) || desiredHint == null) {
-                return record.getCleanProtocolMessageBytes().getValue();
+                if (currentInputStream == null) {
+                    currentInputStream = new HintedLayerInputStream(currentHint, this);
+                }
+                currentInputStream.extendStream(record.getCleanProtocolMessageBytes().getValue());
             } else {
-                cachedHint = currentHint;
-                dataCache = record.getCleanProtocolMessageBytes().getValue();
-                return null;
+                nextInputStream = new HintedLayerInputStream(desiredHint, this);
+                nextInputStream.extendStream(record.getCleanProtocolMessageBytes().getValue());
             }
         } catch (ParserException e) {
-            throw new ParserException("Could not parse provided Data as Record", e);
+            LOGGER.warn("Could not parse Record as a Record. Passing data to upper layer as unknown data");
+            HintedInputStream tempStream =
+                new HintedLayerInputStream(new RecordLayerHint(ProtocolMessageType.UNKNOWN), this);
+            tempStream.extendStream(dataStream.readAllBytes());
+            if (currentInputStream == null) {
+                currentInputStream = tempStream;
+            } else {
+                nextInputStream = tempStream;
+            }
         }
-    }
-
-    @Override
-    public HintedInputStream getDataStream() throws IOException {
-        return new HintedLayerInputStream(currentHint, this);
     }
 
     public RecordCipher getEncryptorCipher() {

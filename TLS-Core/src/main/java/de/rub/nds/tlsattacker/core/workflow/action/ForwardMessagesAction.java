@@ -322,18 +322,17 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
         try {
             LayerStack layerStack = forwardToCtx.getLayerStack();
             List<LayerConfiguration> layerConfigurationList = new LinkedList<>();
-            layerConfigurationList.add(new SpecificContainerLayerConfiguration(messages));
-            layerConfigurationList.add(new SpecificContainerLayerConfiguration(records));
+            layerConfigurationList.add(new SpecificContainerLayerConfiguration(receivedMessages));
+            layerConfigurationList.add(new SpecificContainerLayerConfiguration(receivedRecords));
             layerConfigurationList.add(new SpecificContainerLayerConfiguration((List) null));
             List<LayerProcessingResult> processingResult = layerStack.sendData(layerConfigurationList);
-            messages = new ArrayList<>(processingResult.get(0).getUsedContainers()); // TODO Automatically get
+            sendMessages = new ArrayList<>(processingResult.get(0).getUsedContainers()); // TODO Automatically get
             // correct index in result
-            records = new ArrayList<>(processingResult.get(1).getUsedContainers()); // TODO Automatically get
+            sendRecords = new ArrayList<>(processingResult.get(1).getUsedContainers()); // TODO Automatically get
             // correct index in result
 
-            if (executedAsPlanned) {
-                executedAsPlanned = checkMessageListsEquals(sendMessages, messages);
-            }
+            executedAsPlanned = checkMessageListsEquals(sendMessages, receivedMessages);
+
             setExecuted(true);
         } catch (IOException e) {
             LOGGER.debug(e);

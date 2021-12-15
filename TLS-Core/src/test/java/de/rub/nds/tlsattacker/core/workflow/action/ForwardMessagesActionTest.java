@@ -42,6 +42,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import static org.hamcrest.CoreMatchers.equalTo;
 import org.junit.Assert;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -64,8 +65,8 @@ public class ForwardMessagesActionTest {
     private TlsContext context2;
     private final String ctx2Alias = "ctx2";
     private AlertMessage alert;
-    ForwardMessagesAction action;
-    WorkflowTrace trace;
+    private ForwardMessagesAction action;
+    private WorkflowTrace trace;
 
     @Before
     public void setUp() throws Exception {
@@ -83,13 +84,21 @@ public class ForwardMessagesActionTest {
         context1 = state.getTlsContext(ctx1Alias);
         context2 = state.getTlsContext(ctx2Alias);
 
-        FakeTransportHandler th = new FakeTransportHandler(ConnectionEndType.SERVER);
         byte[] alertMsg = new byte[] { 0x15, 0x03, 0x03, 0x00, 0x02, 0x02, 50 };
-        th.setFetchableByte(alertMsg);
+        setFetchableData(alertMsg);
+        context2.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
+        initContexts();
+    }
+
+    public void setFetchableData(byte[] data) {
+        FakeTransportHandler th = new FakeTransportHandler(ConnectionEndType.SERVER);
+        th.setFetchableByte(data);
         context1.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
         context1.setTransportHandler(th);
 
-        context2.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
+    }
+
+    private void initContexts() throws IOException {
         context2.setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
         context1.setLayerStack(LayerStackFactory.createLayerStack(LayerStackType.TLS, context1));
         context2.setLayerStack(LayerStackFactory.createLayerStack(LayerStackType.TLS, context2));
@@ -206,9 +215,17 @@ public class ForwardMessagesActionTest {
         msg.setCompleteResultingMessage(receivedData.getBytes());
         List<ProtocolMessage> receivedMsgs = new ArrayList<>();
         receivedMsgs.add(msg);
-        // TODO ADD FAKE DATA TO RECEIVE
-
-        action = new ForwardMessagesAction(ctx1Alias, ctx2Alias);
+        setFetchableData(new byte[] { (byte) 0x17, (byte) 0x03, (byte) 0x03, (byte) 0x00, (byte) 0x01, (byte) 0xFF });// TLS
+                                                                                                                      // 1.2
+                                                                                                                      // AppData
+                                                                                                                      // Record
+                                                                                                                      // with
+                                                                                                                      // 1
+                                                                                                                      // byte
+                                                                                                                      // of
+                                                                                                                      // FF
+        initContexts();
+        action = new ForwardMessagesAction(ctx1Alias, ctx2Alias, receivedMsgs);
         action.setMessages(new ApplicationMessage());
 
         action.execute(state);
@@ -219,7 +236,6 @@ public class ForwardMessagesActionTest {
         assertThat(forwardedMsgRaw.toCompactString(), equalTo("APPLICATION"));
 
         ApplicationMessage forwardedMsg = (ApplicationMessage) forwardedMsgRaw;
-        String forwardedData = new String(forwardedMsg.getData().getValue());
-        assertThat(forwardedData, equalTo(receivedData));
+        assertArrayEquals(forwardedMsg.getData().getValue(), new byte[] { (byte) 0xFF });
     }
 }

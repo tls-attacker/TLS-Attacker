@@ -38,7 +38,6 @@ public class LayerStack {
             if (i != layers.length - 1) {
                 layer.setLowerLayer(layerList.get(i + 1));
             }
-            layer.setInitialized(true);
         }
     }
 
@@ -78,7 +77,7 @@ public class LayerStack {
 
         // Send data
         for (ProtocolLayer layer : layerList) {
-            layer.sendData();
+            layer.sendConfiguration();
         }
 
         // Gather results
@@ -102,9 +101,14 @@ public class LayerStack {
             layer.setLayerConfiguration(layerConfigurationList.get(i));
             i++;
         }
-
-        ProtocolLayer layer = layerList.get(0);
-        layer.retrieveMoreData(null);
+        layerList.get(0).receiveData();
+        // reverse order
+        for (int i = layerList.size() - 1; i <= 0; i--) {
+            ProtocolLayer layer = layerList.get(i);
+            if (layer.getLayerConfiguration() != null && !layer.executedAsPlanned()) {
+                layer.receiveData();
+            }
+        }
         // Gather results
         List<LayerProcessingResult> resultList = new LinkedList<>();
         layerList.forEach(tempLayer -> {

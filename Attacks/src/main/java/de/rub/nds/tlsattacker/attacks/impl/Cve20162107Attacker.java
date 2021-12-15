@@ -26,7 +26,6 @@ import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.TlsMessage;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
@@ -128,28 +127,21 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
             LOGGER.info("Did not receive ServerHello. Skipping...");
             return false;
         }
-        ProtocolMessage lm = WorkflowTraceUtil.getLastReceivedMessage(trace);
-        lastMessages.add(lm);
+        ProtocolMessage protocolMessage = WorkflowTraceUtil.getLastReceivedMessage(trace);
+        lastMessages.add(protocolMessage);
 
-        if (!(lm instanceof TlsMessage)) {
-            LOGGER.warn("  Last message was not a TLS message. Received {}", lm.getClass().getName());
-            return false;
-        }
-
-        TlsMessage tlsMessage = (TlsMessage) lm;
-
-        if (tlsMessage.getProtocolMessageType() == ProtocolMessageType.ALERT) {
-            AlertMessage am = ((AlertMessage) lm);
+        if (protocolMessage.getProtocolMessageType() == ProtocolMessageType.ALERT) {
+            AlertMessage am = ((AlertMessage) protocolMessage);
             LOGGER.info("  Last protocol message: Alert ({},{}) [{},{}]",
                 AlertLevel.getAlertLevel(am.getLevel().getValue()),
                 AlertDescription.getAlertDescription(am.getDescription().getValue()), am.getLevel().getValue(),
                 am.getDescription().getValue());
         } else {
-            LOGGER.info("  Last protocol message: {}", tlsMessage.getProtocolMessageType());
+            LOGGER.info("  Last protocol message: {}", protocolMessage.getProtocolMessageType());
         }
 
-        if (tlsMessage.getProtocolMessageType() == ProtocolMessageType.ALERT
-            && AlertDescription.getAlertDescription(((AlertMessage) lm).getDescription().getValue())
+        if (protocolMessage.getProtocolMessageType() == ProtocolMessageType.ALERT
+            && AlertDescription.getAlertDescription(((AlertMessage) protocolMessage).getDescription().getValue())
                 == AlertDescription.RECORD_OVERFLOW) {
             LOGGER.info("  Vulnerable");
             return true;

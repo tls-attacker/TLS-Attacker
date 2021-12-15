@@ -14,7 +14,6 @@ import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.TlsMessage;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.transport.socket.SocketState;
 import java.util.List;
@@ -97,13 +96,7 @@ public class ResponseFingerprint {
 
     public String toHumanReadable() {
         StringBuilder resultString = new StringBuilder();
-        for (ProtocolMessage msg : messageList) {
-            if (!(msg instanceof TlsMessage)) {
-                resultString.append("{").append(msg.getClass().getName()).append("} ");
-                continue;
-            }
-
-            TlsMessage message = (TlsMessage) msg;
+        for (ProtocolMessage message : messageList) {
 
             switch (message.getProtocolMessageType()) {
                 case ALERT:
