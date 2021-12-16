@@ -18,11 +18,13 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
  * RFC draft-ietf-tls-tls13-21
  */
+@XmlRootElement(name = "PSKKeyExchangeModesExtension")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class PSKKeyExchangeModesExtensionMessage extends ExtensionMessage {
 

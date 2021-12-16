@@ -22,7 +22,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
+@XmlRootElement(name = "PskRsaClientKeyExchange")
 public class PskRsaClientKeyExchangeMessage extends RSAClientKeyExchangeMessage {
 
     @HoldsModifiableVariable

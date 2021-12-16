@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.RecordSizeLimitExt
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
+@XmlRootElement(name = "EncryptedExtensions")
 public class EncryptedExtensionsMessage extends HandshakeMessage {
 
     public EncryptedExtensionsMessage() {

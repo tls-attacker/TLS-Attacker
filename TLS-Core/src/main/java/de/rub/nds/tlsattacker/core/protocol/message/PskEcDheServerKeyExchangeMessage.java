@@ -22,7 +22,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.PskEcDheServerKeyExchangeHan
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
+@XmlRootElement(name = "PskEcDheServerKeyExchange")
 public class PskEcDheServerKeyExchangeMessage extends ECDHEServerKeyExchangeMessage {
 
     private ModifiableByteArray identityHint;
