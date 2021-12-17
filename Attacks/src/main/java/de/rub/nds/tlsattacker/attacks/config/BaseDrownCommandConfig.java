@@ -28,7 +28,7 @@ public abstract class BaseDrownCommandConfig extends AttackConfig {
     @ParametersDelegate
     private StarttlsDelegate starttlsDelegate;
 
-    @Parameter(names = "-premaster_secrets_file",
+    @Parameter(names = { "-premasterSecretsFile", "-premaster_secrets_file" },
         description = "File containing captured " + "Premaster secrets to be decrypted in hex format, one per line")
     private String premasterSecretsFilePath;
 

@@ -39,10 +39,10 @@ public class PskBruteForcerAttackClientCommandConfig extends AttackConfig {
     private AttackDelegate attackDelegate;
     @ParametersDelegate
     private CipherSuiteDelegate ciphersuiteDelegate;
-    @Parameter(names = "-guess_provider_type",
+    @Parameter(names = { "-guessProviderType", "-guess_provider_type" },
         description = "Chooses how the BruteForcer will choose the keys to guess")
     private GuessProviderType guessProviderType = GuessProviderType.INCREMENTING;
-    @Parameter(names = "-guess_provider_input_file",
+    @Parameter(names = { "-guessProviderInputFile", "-guess_provider_input_file" },
         description = "Set the path to an input file which can be used in the guess provider eg. a path to a wordlist")
     private String guessProviderInputFile = null;
 

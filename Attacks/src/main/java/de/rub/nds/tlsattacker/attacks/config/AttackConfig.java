@@ -18,7 +18,7 @@ import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
  */
 public abstract class AttackConfig extends TLSDelegateConfig {
 
-    @Parameter(names = "-skip_connection_check",
+    @Parameter(names = { "-skipConnectionCheck", "-skip_connection_check" },
         description = "If set to true the Attacker will not check if the " + "target is reachable.")
     private boolean skipConnectionCheck = false;
 

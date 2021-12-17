@@ -24,15 +24,16 @@ public class SpecialDrownCommandConfig extends BaseDrownCommandConfig {
 
     public static final String COMMAND = "specialDrown";
 
-    @Parameter(names = "-oracle_type",
+    @Parameter(names = { "-oracleType", "-oracle_type" },
         description = "The oracle to use, i.e. the " + "variant of Special DROWN to be executed", required = true)
     private OracleType oracleType = OracleType.EXTRA_CLEAR;
-    @Parameter(names = "-check_data_file",
+    @Parameter(names = { "-checkDataFile", "-check_data_file" },
         description = "Path of the state file for " + "'leaky export' oracle vulnerability check")
     private String checkDataFilePath;
-    @Parameter(names = "-gen_check_data", description = "Generate state file for 'leaky export' vulnerability check")
+    @Parameter(names = { "-genCheckData", "-gen_check_data" },
+        description = "Generate state file for 'leaky export' vulnerability check")
     private boolean genCheckData;
-    @Parameter(names = "-analyze_check_data", description = "Analyze given state file for "
+    @Parameter(names = { "-analyzeCheckData", "-analyze_check_data" }, description = "Analyze given state file for "
         + "'leaky export' oracle vulnerability check, this might take a long time")
     private boolean analyzeCheckData;
     @Parameter(names = "-ssl2Cipher", description = "Name of the SSLv2 cipher suite to be used in the attack",
