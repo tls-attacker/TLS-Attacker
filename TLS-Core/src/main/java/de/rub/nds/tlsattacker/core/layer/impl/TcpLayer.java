@@ -28,21 +28,8 @@ public class TcpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> 
 
     private final TlsContext context;
 
-    /**
-     * TODO: This should be replaced - I dont think its necesarry to have the transport module at all after this
-     */
-    private TcpTransportHandler handler;
-
     public TcpLayer(TlsContext context) {
         this.context = context;
-        if (context.getTransportHandler() == null) {
-            throw new RuntimeException("TransportHandler is not set in context!");
-        }
-        if (!(context.getTransportHandler() instanceof TcpTransportHandler)) {
-            throw new RuntimeException("Trying to set TCP layer with non TCP TransportHandler");
-        }
-        handler = (TcpTransportHandler) context.getTransportHandler();
-
     }
 
     @Override
@@ -58,10 +45,12 @@ public class TcpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> 
 
     @Override
     public LayerProcessingResult sendData(LayerProcessingHint hint, byte[] data) throws IOException {
+        TcpTransportHandler handler = getTransportHandler();
         if (handler.getOutputStream() == null) {
             throw new RuntimeException("TCP Layer not initialized");
         }
         handler.getOutputStream().write(data);
+        handler.getOutputStream().flush();
         return new LayerProcessingResult(null);// Not implemented
     }
 
@@ -73,21 +62,21 @@ public class TcpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> 
 
     @Override
     public HintedInputStream getDataStream() {
-        return new HintedInputStreamAdapterStream(null, handler.getInputStream());
-    }
-
-    @Override
-    public void preInititialize() throws IOException {
-        handler.preInitialize();
-    }
-
-    @Override
-    public void inititialize() throws IOException {
-        handler.initialize();
+        return new HintedInputStreamAdapterStream(null, getTransportHandler().getInputStream());
     }
 
     @Override
     public LayerProcessingResult receiveData() throws IOException {
         return new LayerProcessingResult(null);
+    }
+
+    private TcpTransportHandler getTransportHandler() {
+        if (context.getTransportHandler() == null) {
+            throw new RuntimeException("TransportHandler is not set in context!");
+        }
+        if (!(context.getTransportHandler() instanceof TcpTransportHandler)) {
+            throw new RuntimeException("Trying to set TCP layer with non TCP TransportHandler");
+        }
+        return (TcpTransportHandler) context.getTransportHandler();
     }
 }

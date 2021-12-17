@@ -16,8 +16,6 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.layer.LayerStack;
-import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
-import de.rub.nds.tlsattacker.core.layer.LayerStackType;
 import de.rub.nds.tlsattacker.core.layer.impl.RecordLayer;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
@@ -37,7 +35,7 @@ public class ServerHelloHandlerTest {
     @Before
     public void setUp() {
         context = new TlsContext();
-        context.setLayerStack(new LayerStack(new RecordLayer(context)));
+        context.setLayerStack(new LayerStack(context, new RecordLayer(context)));
         handler = new ServerHelloHandler(context);
     }
 

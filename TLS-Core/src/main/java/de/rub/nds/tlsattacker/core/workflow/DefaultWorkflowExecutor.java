@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,11 +31,12 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
 
     @Override
     public void executeWorkflow() throws WorkflowExecutionException {
-        if (config.isWorkflowExecutorShouldOpen()) {
-            initAllTransportHandler();
-        }
-        initAllRecordLayer();
 
+        try {
+            initAllLayer();
+        } catch (IOException ex) {
+            throw new WorkflowExecutionException(ex);
+        }
         state.getWorkflowTrace().reset();
         state.setStartTimestamp(System.currentTimeMillis());
         List<TlsAction> tlsActions = state.getWorkflowTrace().getTlsActions();

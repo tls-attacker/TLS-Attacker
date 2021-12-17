@@ -63,7 +63,6 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
                 throw new AdjustmentException("Could not adjust", ex);
             }
         }
-        tlsContext.setLastClientHello(message.getCompleteResultingMessage().getValue());
     }
 
     private boolean isCookieFieldSet(ClientHelloMessage message) {
@@ -160,6 +159,7 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
                 LOGGER.warn("Encountered an exception in adjust after Serialize", ex);
             }
         }
+        tlsContext.setLastClientHello(message.getCompleteResultingMessage().getValue());
     }
 
     private void adjustEarlyTrafficSecret() throws CryptoException {

@@ -55,7 +55,7 @@ public class ResetConnectionActionTest {
             new CipherState(tlsContext.getChooser().getSelectedProtocolVersion(),
                 tlsContext.getChooser().getSelectedCipherSuite(), KeySetGenerator.generateKeySet(tlsContext),
                 tlsContext.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
-        tlsContext.setLayerStack(new LayerStack(new RecordLayer(tlsContext)));
+        tlsContext.setLayerStack(new LayerStack(tlsContext, new RecordLayer(tlsContext)));
         tlsContext.getRecordLayer().updateEncryptionCipher(recordCipher);
         tlsContext.getRecordLayer().updateDecryptionCipher(recordCipher);
         tlsContext.setActiveClientKeySetType(Tls13KeySetType.EARLY_TRAFFIC_SECRETS);

@@ -10,8 +10,10 @@
 package de.rub.nds.tlsattacker.core.layer.impl;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
+import de.rub.nds.tlsattacker.core.exceptions.TimeoutException;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
@@ -114,11 +116,16 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
 
     @Override
     public void receiveMoreDataForHint(LayerProcessingHint desiredHint) throws IOException {
+        LOGGER.debug("Trying to retrieve more data");
         InputStream dataStream = getLowerLayer().getDataStream();
         try {
             RecordParser parser = new RecordParser(dataStream, getDecryptorCipher().getState().getVersion());
             Record record = new Record();
             parser.parse(record);
+            // TODO it would be good to have a record handler here
+            ProtocolVersion protocolVersion =
+                ProtocolVersion.getProtocolVersion(record.getProtocolVersion().getValue());
+            context.setLastRecordVersion(protocolVersion);
             decryptor.decrypt(record);
             decompressor.decompress(record);
             addProducedContainer(record);
@@ -129,11 +136,11 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
                 }
                 currentInputStream.extendStream(record.getCleanProtocolMessageBytes().getValue());
             } else {
-                nextInputStream = new HintedLayerInputStream(desiredHint, this);
+                nextInputStream = new HintedLayerInputStream(currentHint, this);
                 nextInputStream.extendStream(record.getCleanProtocolMessageBytes().getValue());
             }
         } catch (ParserException e) {
-            LOGGER.warn("Could not parse Record as a Record. Passing data to upper layer as unknown data");
+            LOGGER.warn("Could not parse Record as a Record. Passing data to upper layer as unknown data", e);
             HintedInputStream tempStream =
                 new HintedLayerInputStream(new RecordLayerHint(ProtocolMessageType.UNKNOWN), this);
             tempStream.extendStream(dataStream.readAllBytes());
@@ -219,16 +226,6 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
 
     public void setReadEpoch(int readEpoch) {
         this.readEpoch = readEpoch;
-    }
-
-    @Override
-    public void preInititialize() throws IOException {
-        // Nothing to do here
-    }
-
-    @Override
-    public void inititialize() throws IOException {
-        // Nothing to do here
     }
 
     @Override

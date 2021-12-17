@@ -33,11 +33,11 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
 
     @Override
     public void executeWorkflow() throws WorkflowExecutionException {
-        if (config.isWorkflowExecutorShouldOpen()) {
-            initAllTransportHandler();
+        try {
+            initAllLayer();
+        } catch (IOException ex) {
+            throw new WorkflowExecutionException(ex);
         }
-        initAllRecordLayer();
-
         state.getWorkflowTrace().reset();
         state.setStartTimestamp(System.currentTimeMillis());
         List<TlsAction> tlsActions = state.getWorkflowTrace().getTlsActions();

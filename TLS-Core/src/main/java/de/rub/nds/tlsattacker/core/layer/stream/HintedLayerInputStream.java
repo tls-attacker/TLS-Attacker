@@ -68,6 +68,9 @@ public class HintedLayerInputStream extends HintedInputStream {
 //        }
 //    }
     public byte[] readChunk(int size) throws IOException {
+        if (size == 0) {
+            return new byte[0];
+        }
         byte[] chunk = new byte[size];
         int read = stream.read(chunk);
         if (read != size) {
@@ -79,19 +82,7 @@ public class HintedLayerInputStream extends HintedInputStream {
 
     @Override
     public int available() throws IOException {
-        if (stream.available() > 0) {
-            return stream.available();
-        } else {
-            // we might be on a higher layer so there might actually be more data
-            // available, but we do not know until we check
-
-            // Check that we are not the bottom layer, if we are there is nothing more to do
-            if (layer.getLowerLayer() != null) {
-                layer.receiveMoreDataForHint(getHint());
-                return stream.available();
-            }
-            return 0;
-        }
+        return stream.available();
     }
 
     @Override

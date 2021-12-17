@@ -102,11 +102,6 @@ public class ForwardMessagesActionTest {
         context2.setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
         context1.setLayerStack(LayerStackFactory.createLayerStack(LayerStackType.TLS, context1));
         context2.setLayerStack(LayerStackFactory.createLayerStack(LayerStackType.TLS, context2));
-        context1.getLayerStack().initialize();
-        context1.getLayerStack().preInitialize();
-        context2.getLayerStack().preInitialize();
-        context1.getLayerStack().initialize();
-        context2.getLayerStack().initialize();
     }
 
     @Test
@@ -216,14 +211,14 @@ public class ForwardMessagesActionTest {
         List<ProtocolMessage> receivedMsgs = new ArrayList<>();
         receivedMsgs.add(msg);
         setFetchableData(new byte[] { (byte) 0x17, (byte) 0x03, (byte) 0x03, (byte) 0x00, (byte) 0x01, (byte) 0xFF });// TLS
-                                                                                                                      // 1.2
-                                                                                                                      // AppData
-                                                                                                                      // Record
-                                                                                                                      // with
-                                                                                                                      // 1
-                                                                                                                      // byte
-                                                                                                                      // of
-                                                                                                                      // FF
+        // 1.2
+        // AppData
+        // Record
+        // with
+        // 1
+        // byte
+        // of
+        // FF
         initContexts();
         action = new ForwardMessagesAction(ctx1Alias, ctx2Alias, receivedMsgs);
         action.setMessages(new ApplicationMessage());

@@ -24,8 +24,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container extends DataContainer> {
+
+    private Logger LOGGER = LogManager.getLogger();
 
     private ProtocolLayer higherLayer = null;
     private ProtocolLayer lowerLayer = null;
@@ -85,6 +89,19 @@ public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container 
         return new LayerProcessingResult(producedDataContainers);
     }
 
+    public void removeDrainedInputStream() {
+        try {
+            if (currentInputStream != null && currentInputStream.available() > 0) {
+                throw new RuntimeException("Trying to drain a non-empty inputStream");
+            } else {
+                currentInputStream = null;
+            }
+        } catch (IOException ex) {
+            LOGGER.error("Could not evaluate Stream availability. Removing Stream anyways");
+            currentInputStream = null;
+        }
+    }
+
     public void clear() {
         producedDataContainers = new LinkedList<>();
         layerConfiguration = null;
@@ -111,7 +128,7 @@ public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container 
 
     /**
      * A receive call which tries to read till either a timeout occurs or the configuration is fullfilled
-     * 
+     *
      * @return
      * @throws IOException
      */
@@ -121,7 +138,7 @@ public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container 
      * Tries to fill up the current Stream with more data, if instead unprocessable data (for the calling layer) is
      * produced, the data is instead cached in the next inputstream. It may be that the current input stream is null
      * when this method is called. Afterwards there should be atleast one stream not null
-     * 
+     *
      * @param  hint
      * @throws IOException
      */
@@ -129,7 +146,7 @@ public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container 
 
     /**
      * Returns a datastream from which currently should be read
-     * 
+     *
      * @return
      * @throws IOException
      */
@@ -144,26 +161,10 @@ public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container 
                 currentInputStream = nextInputStream;
                 return currentInputStream;
             } else {
-                receiveMoreDataForHint(currentInputStream.getHint());
-                return getDataStream();
+                return currentInputStream;
             }
         }
     }
-
-    /**
-     * A preinitialisation function which can be called before execution is started for example to start a server socket
-     * 
-     * @throws IOException
-     */
-    public abstract void preInititialize() throws IOException;
-
-    /**
-     * An initialisation function which can be called before execution (after) the pre initalization. This can be used
-     * for example to connect a client socket
-     * 
-     * @throws IOException
-     */
-    public abstract void inititialize() throws IOException;
 
     protected void readDataContainer(Container container, TlsContext context) throws IOException {
         Parser parser = container.getParser(context, getLowerLayer().getDataStream());

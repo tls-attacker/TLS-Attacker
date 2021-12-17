@@ -9,6 +9,7 @@
 
 package de.rub.nds.tlsattacker.core.layer;
 
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -27,8 +28,11 @@ public class LayerStack {
      * perfectly fine to leave the layer stack and plug another component in which does the rest of the processing
      */
     private final List<ProtocolLayer> layerList;
+    // TODO This should be a context, not a TLS context
+    private final TlsContext context;
 
-    public LayerStack(ProtocolLayer... layers) {
+    public LayerStack(TlsContext context, ProtocolLayer... layers) {
+        this.context = context;
         layerList = Arrays.asList(layers);
         for (int i = 0; i < layers.length; i++) {
             ProtocolLayer layer = layerList.get(i);
@@ -59,14 +63,13 @@ public class LayerStack {
     }
 
     public List<LayerProcessingResult> sendData(List<LayerConfiguration> layerConfigurationList) throws IOException {
+        LOGGER.debug("Sending Data");
         if (layerList.size() != layerConfigurationList.size()) {
-            System.out.println("Layer size: " + layerList.size());
-            System.out.println("Configuration size: " + layerConfigurationList.size());
-
             throw new RuntimeException(
                 "Illegal LayerConfiguration list provided. Each layer needs a configuration entry (null is fine too if no explict configuration is desired). Expected "
                     + layerList.size() + " but found " + layerConfigurationList.size());
         }
+
         // Prepare layer configuration and clear previous executions
         for (int i = 0; i < layerList.size(); i++) {
             ProtocolLayer layer = layerList.get(i);
@@ -74,7 +77,7 @@ public class LayerStack {
             layer.setLayerConfiguration(layerConfigurationList.get(i));
             i++;
         }
-
+        context.setTalkingConnectionEndType(context.getConnection().getLocalConnectionEndType());
         // Send data
         for (ProtocolLayer layer : layerList) {
             layer.sendConfiguration();
@@ -89,6 +92,7 @@ public class LayerStack {
     }
 
     public List<LayerProcessingResult> receiveData(List<LayerConfiguration> layerConfigurationList) throws IOException {
+        LOGGER.debug("Receiving Data");
         if (layerList.size() != layerConfigurationList.size()) {
             throw new RuntimeException(
                 "Illegal LayerConfiguration list provided. Each layer needs a configuration entry (null is fine too if no explict configuration is desired). Expected "
@@ -101,6 +105,7 @@ public class LayerStack {
             layer.setLayerConfiguration(layerConfigurationList.get(i));
             i++;
         }
+        context.setTalkingConnectionEndType(context.getConnection().getLocalConnectionEndType().getPeer());
         layerList.get(0).receiveData();
         // reverse order
         for (int i = layerList.size() - 1; i <= 0; i--) {
@@ -109,23 +114,15 @@ public class LayerStack {
                 layer.receiveData();
             }
         }
+        return gatherResults();
+    }
+
+    public List<LayerProcessingResult> gatherResults() {
         // Gather results
         List<LayerProcessingResult> resultList = new LinkedList<>();
         layerList.forEach(tempLayer -> {
             resultList.add(tempLayer.getLayerResult());
         });
         return resultList;
-    }
-
-    public void initialize() throws IOException {
-        for (ProtocolLayer layer : layerList) {
-            layer.inititialize();
-        }
-    }
-
-    public void preInitialize() throws IOException {
-        for (ProtocolLayer layer : layerList) {
-            layer.preInititialize();
-        }
     }
 }

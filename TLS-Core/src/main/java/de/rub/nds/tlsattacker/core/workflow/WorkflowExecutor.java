@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
@@ -18,6 +17,8 @@ import de.rub.nds.tlsattacker.core.exceptions.BouncyCastleNotLoadedException;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
+import de.rub.nds.tlsattacker.core.layer.LayerStackType;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -25,7 +26,6 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;
 import de.rub.nds.tlsattacker.transport.socket.SocketState;
@@ -116,8 +116,6 @@ public abstract class WorkflowExecutor {
             getBeforeTransportInitCallback().apply(state);
             context.getTransportHandler().initialize();
             getAfterTransportInitCallback().apply(state);
-        } catch (NullPointerException | NumberFormatException ex) {
-            throw new ConfigurationException("Invalid values in " + context.getConnection().toString(), ex);
         } catch (Exception ex) {
             throw new TransportHandlerConnectException(
                 "Unable to initialize the transport handler with: " + context.getConnection().toString(), ex);
@@ -156,19 +154,6 @@ public abstract class WorkflowExecutor {
         this.afterExecutionCallback = afterExecutionCallback;
     }
 
-    public void initAllTransportHandler() {
-        for (TlsContext ctx : state.getAllTlsContexts()) {
-            AliasedConnection con = ctx.getConnection();
-            if (con.getLocalConnectionEndType() == ConnectionEndType.SERVER) {
-                LOGGER.info("Waiting for incoming connection on " + con.getHostname() + ":" + con.getPort());
-            } else {
-                LOGGER.info("Connecting to " + con.getHostname() + ":" + con.getPort());
-            }
-            initTransportHandler(ctx);
-            LOGGER.debug("Connection for " + ctx + " initialized");
-        }
-    }
-
     public void closeConnection() {
         for (TlsContext ctx : state.getAllTlsContexts()) {
             try {
@@ -180,8 +165,9 @@ public abstract class WorkflowExecutor {
         }
     }
 
-    public void initAllRecordLayer() {
+    public void initAllLayer() throws IOException {
         for (TlsContext ctx : state.getAllTlsContexts()) {
+            initTransportHandler(ctx);
             initProtocolStack(ctx);
         }
     }
@@ -244,8 +230,8 @@ public abstract class WorkflowExecutor {
         return false;
     }
 
-    private void initProtocolStack(TlsContext context) {
-        throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
-                                                                       // Tools | Templates.
+    private void initProtocolStack(TlsContext context) throws IOException {
+        context.setLayerStack(LayerStackFactory.createLayerStack(LayerStackType.TLS, context));
+
     }
 }

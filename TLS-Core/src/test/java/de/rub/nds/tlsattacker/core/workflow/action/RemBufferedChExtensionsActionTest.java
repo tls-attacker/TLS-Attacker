@@ -14,8 +14,6 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.layer.LayerStack;
-import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
-import de.rub.nds.tlsattacker.core.layer.LayerStackType;
 import de.rub.nds.tlsattacker.core.layer.impl.RecordLayer;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
@@ -92,7 +90,7 @@ public class RemBufferedChExtensionsActionTest {
         preparator.prepare();
         expectedMsgLength = ch.getLength().getValue();
         ctx.getMessageBuffer().add(ch);
-        ctx.setLayerStack(new LayerStack(new RecordLayer(ctx)));
+        ctx.setLayerStack(new LayerStack(ctx, new RecordLayer(ctx)));
         remove = new ArrayList<>();
     }
 

@@ -251,10 +251,7 @@ public abstract class MessageAction extends ConnectionBoundAction {
         layerConfigurationList.add(new SpecificContainerLayerConfiguration(recordsToSend));
         layerConfigurationList.add(new SpecificContainerLayerConfiguration((List) null));
         List<LayerProcessingResult> processingResult = layerStack.sendData(layerConfigurationList);
-        messages = new ArrayList<>(processingResult.get(0).getUsedContainers()); // TODO Automatically get correct index
-                                                                                 // in result
-        records = new ArrayList<>(processingResult.get(1).getUsedContainers()); // TODO Automatically get correct index
-                                                                                // in result
+        setContainers(processingResult);
     }
 
     protected void receive(TlsContext tlsContext, List<ProtocolMessage> protocolMessagesToReceive,
@@ -267,13 +264,20 @@ public abstract class MessageAction extends ConnectionBoundAction {
         List<LayerProcessingResult> processingResult;
         try {
             processingResult = layerStack.receiveData(layerConfigurationList);
-            messages = new ArrayList<>(processingResult.get(0).getUsedContainers()); // TODO Automatically get correct
-                                                                                     // index in result
-            records = new ArrayList<>(processingResult.get(1).getUsedContainers()); // TODO Automatically get correct
-                                                                                    // index in result
+            setContainers(processingResult);
         } catch (IOException ex) {
-            LOGGER.warn("Received an IOException");
+            LOGGER.warn("Received an IOException", ex);
+            setContainers(layerStack.gatherResults());
+
         }
+    }
+
+    private void setContainers(List<LayerProcessingResult> processingResults) {
+        // TODO Automatically get correct
+        // index in result
+        messages = new ArrayList<>(processingResults.get(0).getUsedContainers()); // TODO Automatically get correct
+        // index in result
+        records = new ArrayList<>(processingResults.get(1).getUsedContainers()); // TODO Automatically get correct
     }
 
     protected void receiveTill(TlsContext tlsContext, List<ProtocolMessage> protocolMessagesToSend,
@@ -286,12 +290,10 @@ public abstract class MessageAction extends ConnectionBoundAction {
         List<LayerProcessingResult> processingResult;
         try {
             processingResult = layerStack.receiveData(layerConfigurationList);
-            messages = new ArrayList<>(processingResult.get(0).getUsedContainers()); // TODO Automatically get correct
-                                                                                     // index in result
-            records = new ArrayList<>(processingResult.get(1).getUsedContainers()); // TODO Automatically get correct
-                                                                                    // index in result
+            setContainers(processingResult);
         } catch (IOException ex) {
-            LOGGER.warn("Received an IOException");
+            LOGGER.warn("Received an IOException", ex);
+            setContainers(layerStack.gatherResults());
         }
     }
 

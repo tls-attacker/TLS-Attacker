@@ -51,7 +51,7 @@ public class ServerTcpTransportHandler extends TcpTransportHandler {
         super(con);
         this.port = socket.getLocalPort();
         this.socket = socket;
-        socket.setSoTimeout(1);
+        socket.setSoTimeout((int) timeout);
         externalServerSocket = true;
     }
 
@@ -80,7 +80,7 @@ public class ServerTcpTransportHandler extends TcpTransportHandler {
                 throw new IOException("TransportHandler not preinitialized");
             }
             socket = serverSocket.accept();
-            socket.setSoTimeout(1);
+            socket.setSoTimeout((int) timeout);
         }
         dstPort = socket.getPort();
         cachedSocketState = null;

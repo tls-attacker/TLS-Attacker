@@ -38,7 +38,7 @@ public class TlsAttackerSocketTest {
 
     @Before
     public void setUp() throws IOException {
-        Config config = Config.createConfig();
+        Config config = new Config();
         state = new State(config, new WorkflowTrace());
         context = state.getTlsContext();
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
@@ -46,8 +46,6 @@ public class TlsAttackerSocketTest {
         context.setTransportHandler(transportHandler);
         context.setLayerStack(LayerStackFactory.createLayerStack(LayerStackType.TLS, context));
         socket = new TlsAttackerSocket(state);
-        context.getLayerStack().preInitialize();
-        context.getLayerStack().initialize();
     }
 
     /**

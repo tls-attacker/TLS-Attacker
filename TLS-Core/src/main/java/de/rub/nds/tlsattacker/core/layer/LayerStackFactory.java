@@ -28,7 +28,8 @@ public class LayerStackFactory {
             case STARTTTLS:
                 throw new UnsupportedOperationException("Not implemented yet");
             case TLS:
-                return new LayerStack(new MessageLayer(context), new RecordLayer(context), new TcpLayer(context));
+                return new LayerStack(context, new MessageLayer(context), new RecordLayer(context),
+                    new TcpLayer(context));
             default:
                 throw new RuntimeException("Unknown LayerStackType: " + type.name());
         }

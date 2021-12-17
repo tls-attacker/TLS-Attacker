@@ -47,7 +47,7 @@ public class DeactivateEncryptionActionTest {
 
         tlsContext = state.getTlsContext();
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
-        tlsContext.setLayerStack(new LayerStack(new RecordLayer(tlsContext)));
+        tlsContext.setLayerStack(new LayerStack(tlsContext, new RecordLayer(tlsContext)));
     }
 
     @After

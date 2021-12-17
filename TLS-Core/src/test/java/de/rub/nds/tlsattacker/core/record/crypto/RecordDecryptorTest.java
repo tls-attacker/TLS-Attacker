@@ -18,8 +18,6 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.layer.LayerStack;
-import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
-import de.rub.nds.tlsattacker.core.layer.LayerStackType;
 import de.rub.nds.tlsattacker.core.layer.impl.RecordLayer;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.CipherState;
@@ -52,7 +50,7 @@ public class RecordDecryptorTest {
     public void setUp() {
         Security.addProvider(new BouncyCastleProvider());
         context = new TlsContext();
-        context.setLayerStack(new LayerStack(new RecordLayer(context)));
+        context.setLayerStack(new LayerStack(context, new RecordLayer(context)));
         record = new Record();
         record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
         record.setProtocolVersion(ProtocolVersion.TLS10.getValue());

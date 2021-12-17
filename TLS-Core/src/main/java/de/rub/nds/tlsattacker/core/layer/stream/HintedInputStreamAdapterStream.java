@@ -41,4 +41,5 @@ public class HintedInputStreamAdapterStream extends HintedInputStream {
     public void extendStream(byte[] bytes) {
         throw new UnsupportedOperationException("HintedInputStreamAdapterStream is not extendable.");
     }
+
 }

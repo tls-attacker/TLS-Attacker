@@ -35,7 +35,7 @@ public class FinishedHandlerTest {
     @Before
     public void setUp() {
         context = new TlsContext();
-        context.setLayerStack(new LayerStack(new RecordLayer(context)));
+        context.setLayerStack(new LayerStack(context, new RecordLayer(context)));
         handler = new FinishedHandler(context);
     }
 

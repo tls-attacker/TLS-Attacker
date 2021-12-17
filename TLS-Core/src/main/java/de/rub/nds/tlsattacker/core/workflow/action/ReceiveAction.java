@@ -22,7 +22,6 @@ import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -151,6 +150,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
 
         LOGGER.debug("Receiving Messages...");
         receive(tlsContext, expectedMessages, null);
+
         setExecuted(true);
 
         String expected = getReadableString(expectedMessages);
