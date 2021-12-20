@@ -17,11 +17,11 @@ import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 
 public class ProxyDelegate extends Delegate {
 
-    @Parameter(names = "-proxyData",
+    @Parameter(names = { "-proxyData", "-proxy_data" },
         description = "Specify the host and port for data used in the proxy. Syntax: localhost:4444")
     private String proxyData = "localhost:4444";
 
-    @Parameter(names = "-proxyControl",
+    @Parameter(names = { "-proxyControl", "-proxy_control" },
         description = "Specify the host and port for control messages used in the proxy. Syntax: localhost:5555")
     private String proxyControl = "localhost:5555";
 

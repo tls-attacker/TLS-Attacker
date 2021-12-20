@@ -36,10 +36,12 @@ public class PaddingOracleCommandConfig extends AttackConfig {
      */
     public static final String ATTACK_COMMAND = "padding_oracle";
 
-    @Parameter(names = "-recordEngine", description = "The record generator used for the PaddingOracle")
+    @Parameter(names = { "-recordEngine", "-record_engine" },
+        description = "The record generator used for the PaddingOracle")
     private PaddingRecordGeneratorType recordGeneratorType = PaddingRecordGeneratorType.SHORT;
 
-    @Parameter(names = "-vectorEngine", description = "The vector generator used for the PaddingOracle")
+    @Parameter(names = { "-vectorEngine", "-vector_engine" },
+        description = "The vector generator used for the PaddingOracle")
     private PaddingVectorGeneratorType vectorGeneratorType = PaddingVectorGeneratorType.CLASSIC;
 
     @ParametersDelegate

@@ -19,7 +19,7 @@ import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
  */
 public class AttackDelegate extends Delegate {
 
-    @Parameter(names = "-executeAttack",
+    @Parameter(names = { "-executeAttack", "-execute_attack" },
         description = "If this value is set the Attack is not only Tested, but also " + "executed (WARNING)")
     private boolean executeAttack = false;
 
