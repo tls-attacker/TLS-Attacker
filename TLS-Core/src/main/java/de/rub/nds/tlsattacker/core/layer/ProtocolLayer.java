@@ -14,13 +14,13 @@
  */
 package de.rub.nds.tlsattacker.core.layer;
 
+import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.tlsattacker.core.protocol.Handler;
 import de.rub.nds.tlsattacker.core.protocol.Parser;
 import de.rub.nds.tlsattacker.core.protocol.Preparator;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
@@ -38,23 +38,12 @@ public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container 
 
     private List<Container> producedDataContainers;
 
-    private ByteArrayOutputStream unprocessedData;
-
     protected HintedInputStream currentInputStream = null;
 
     protected HintedInputStream nextInputStream = null;
 
     public ProtocolLayer() {
-        unprocessedData = new ByteArrayOutputStream();
         producedDataContainers = new LinkedList<>();
-    }
-
-    public ByteArrayOutputStream getUnprocessedDataStream() {
-        return unprocessedData;
-    }
-
-    public void setUnprocessedData(ByteArrayOutputStream unprocessedData) {
-        this.unprocessedData = unprocessedData;
     }
 
     public ProtocolLayer getHigherLayer() {
@@ -106,7 +95,7 @@ public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container 
         producedDataContainers = new LinkedList<>();
         layerConfiguration = null;
         currentInputStream = null;
-        unprocessedData = new ByteArrayOutputStream();
+        nextInputStream = null;
     }
 
     protected void addProducedContainer(Container container) {
@@ -115,9 +104,12 @@ public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container 
 
     public boolean executedAsPlanned() {
         int i = 0;
-        for (DataContainer container : producedDataContainers) {
+        for (DataContainer container : layerConfiguration.getContainerList()) {
 
-            if (!container.getClass().equals(layerConfiguration.getContainerList().get(i))) {
+            if (producedDataContainers.size() >= i) {
+                return false;
+            }
+            if (!container.getClass().equals(producedDataContainers.get(i).getClass())) {
                 // TODO deal with optional messages
                 return false;
             }
@@ -137,7 +129,7 @@ public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container 
     /**
      * Tries to fill up the current Stream with more data, if instead unprocessable data (for the calling layer) is
      * produced, the data is instead cached in the next inputstream. It may be that the current input stream is null
-     * when this method is called. Afterwards there should be atleast one stream not null
+     * when this method is called.
      *
      * @param  hint
      * @throws IOException
@@ -153,6 +145,10 @@ public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container 
     public HintedInputStream getDataStream() throws IOException {
         if (currentInputStream == null) {
             receiveMoreDataForHint(null);
+            if (currentInputStream == null) {
+                throw new EndOfStreamException(
+                    "Could not receive data stream from lower layer, nothing more to receive");
+            }
         }
         if (currentInputStream.available() > 0) {
             return currentInputStream;
@@ -161,6 +157,8 @@ public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container 
                 currentInputStream = nextInputStream;
                 return currentInputStream;
             } else {
+                LOGGER.debug("Trying to get datastream while no data is available");
+                this.receiveMoreDataForHint(null);
                 return currentInputStream;
             }
         }

@@ -12,6 +12,7 @@ package de.rub.nds.tlsattacker.core.layer.impl;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
 import de.rub.nds.tlsattacker.core.exceptions.TimeoutException;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
@@ -118,9 +119,13 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
                     }
                 }
             } while (!executedAsPlanned() || dataStream.available() > 0);
+            System.out.println("exite?!");
         } catch (TimeoutException E) {
             LOGGER.debug(E);
+        } catch (EndOfStreamException E) {
+            LOGGER.debug(E);
         }
+
         return getLayerResult();
     }
 
@@ -141,16 +146,16 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
     }
 
     private void readHandshakeProtocolData() throws IOException {
-        byte type = getLowerLayer().getDataStream().readByte();
+        HintedInputStream handshakeStream = getLowerLayer().getDataStream();
+        byte type = handshakeStream.readByte();
         HandshakeMessageType handshakeMessageType = HandshakeMessageType.getMessageType(type);
-        int length = getLowerLayer().getDataStream().readInt(HandshakeByteLength.MESSAGE_LENGTH_FIELD);
-        byte[] payload = getLowerLayer().getDataStream().readChunk(length);
+        int length = handshakeStream.readInt(HandshakeByteLength.MESSAGE_LENGTH_FIELD);
+        byte[] payload = handshakeStream.readChunk(length);
         HandshakeMessage handshakeMessage = MessageFactory.generateHandshakeMessage(handshakeMessageType, context);
         handshakeMessage.setType(type);
         handshakeMessage.setLength(length);
         handshakeMessage.setCompleteResultingMessage(ArrayConverter.concatenate(new byte[] { type },
             ArrayConverter.intToBytes(length, HandshakeByteLength.MESSAGE_LENGTH_FIELD), payload));
-        LOGGER.warn("Complete: " + ArrayConverter.bytesToHexString(handshakeMessage.getCompleteResultingMessage()));
         Parser parser = handshakeMessage.getParser(context, new ByteArrayInputStream(payload));
         parser.parse(handshakeMessage);
         Preparator preparator = handshakeMessage.getPreparator(context);

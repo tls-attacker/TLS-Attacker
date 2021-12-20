@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.layer.stream;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,10 +37,13 @@ public abstract class HintedInputStream extends InputStream {
     }
 
     public byte[] readChunk(int size) throws IOException {
+        if (size == 0) {
+            return new byte[0];
+        }
         byte[] chunk = new byte[size];
-        int read = getDataSource().read(chunk);
+        int read = read(chunk);
         if (read != size) {
-            throw new IOException(
+            throw new EndOfStreamException(
                 "Could not read " + size + " bytes from the stream. Only " + read + " bytes available");
         }
         return chunk;

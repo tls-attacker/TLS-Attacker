@@ -35,7 +35,7 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
     public void adjustContext(ChangeCipherSpecMessage message) {
         if (tlsContext.getTalkingConnectionEndType() != tlsContext.getChooser().getConnectionEndType()
             && tlsContext.getChooser().getSelectedProtocolVersion() != ProtocolVersion.TLS13) {
-            LOGGER.warn("Adjusting decrypting cipher for " + tlsContext.getTalkingConnectionEndType());
+            LOGGER.debug("Adjusting decrypting cipher for " + tlsContext.getTalkingConnectionEndType());
             tlsContext.getRecordLayer().updateDecryptionCipher(getRecordCipher());
             tlsContext.getRecordLayer().updateDecompressor();
         }
@@ -44,7 +44,7 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
     @Override
     public void adjustContextAfterSerialize(ChangeCipherSpecMessage message) {
         if (!tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
-            LOGGER.warn("Adjusting encrypting cipher for " + tlsContext.getTalkingConnectionEndType());
+            LOGGER.debug("Adjusting encrypting cipher for " + tlsContext.getTalkingConnectionEndType());
             tlsContext.getRecordLayer().updateEncryptionCipher(getRecordCipher());
             tlsContext.getRecordLayer().updateCompressor();
         }

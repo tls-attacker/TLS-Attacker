@@ -12,6 +12,7 @@ package de.rub.nds.tlsattacker.core.https;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.Charset;
@@ -34,7 +35,7 @@ public class HttpsResponseParserTest {
     /**
      * Test of parseMessageContent method, of class HttpsResponseParser with an invalid response.
      */
-    @Test(expected = ParserException.class)
+    @Test(expected = EndOfStreamException.class)
     public void testParseMessageContentFailed() {
         HttpsResponseParser parser = new HttpsResponseParser(
             new ByteArrayInputStream(ArrayConverter.hexStringToByteArray("AAAAAAAAAAAAAAAAAAAAAAAA")),

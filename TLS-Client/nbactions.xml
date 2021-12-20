@@ -12,7 +12,7 @@
             <properties>
                 <exec.vmArgs></exec.vmArgs>
                 <exec.args>${exec.vmArgs} -classpath %classpath ${exec.mainClass} ${exec.appArgs}</exec.args>
-                <exec.appArgs>-connect google.de:443</exec.appArgs>
+                <exec.appArgs>-connect localhost:4433 -debug</exec.appArgs>
                 <exec.mainClass>de.rub.nds.tlsattacker.client.main.TlsClient</exec.mainClass>
                 <exec.executable>java</exec.executable>
             </properties>
@@ -29,7 +29,7 @@
             <properties>
                 <exec.vmArgs>-agentlib:jdwp=transport=dt_socket,server=n,address=${jpda.address}</exec.vmArgs>
                 <exec.args>${exec.vmArgs} -classpath %classpath ${exec.mainClass} ${exec.appArgs}</exec.args>
-                <exec.appArgs>-connect google.de:443</exec.appArgs>
+                <exec.appArgs>-connect localhost:4433 -debug</exec.appArgs>
                 <exec.mainClass>de.rub.nds.tlsattacker.client.main.TlsClient</exec.mainClass>
                 <exec.executable>java</exec.executable>
                 <jpda.listen>true</jpda.listen>
@@ -49,7 +49,7 @@
                 <exec.args>${exec.vmArgs} -classpath %classpath ${exec.mainClass} ${exec.appArgs}</exec.args>
                 <exec.mainClass>de.rub.nds.tlsattacker.client.main.TlsClient</exec.mainClass>
                 <exec.executable>java</exec.executable>
-                <exec.appArgs>-connect google.de:443</exec.appArgs>
+                <exec.appArgs>-connect localhost:4433 -debug</exec.appArgs>
             </properties>
         </action>
     </actions>

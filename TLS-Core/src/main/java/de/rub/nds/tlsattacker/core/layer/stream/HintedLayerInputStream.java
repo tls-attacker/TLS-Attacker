@@ -9,14 +9,13 @@
 
 package de.rub.nds.tlsattacker.core.layer.stream;
 
+import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class HintedLayerInputStream extends HintedInputStream {
 
@@ -39,45 +38,6 @@ public class HintedLayerInputStream extends HintedInputStream {
             // or the next stream is available
             return stream.read();
         }
-    }
-
-    /**
-     * Blocking read till either an exception is thrown or data is available
-     */
-//    public byte[] readChunk() throws IOException {
-//        if (stream.available() != 0) {
-//            byte[] data = new byte[stream.available()];
-//            stream.read(data);
-//            return data;
-//
-//        } else {
-//            int read = stream.read();
-//            if (read != -1) {
-//                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-//                outputStream.write(read);
-//                if (stream.available() > 0) {
-//                    byte[] data = new byte[stream.available()];
-//                    stream.read(data);
-//                    outputStream.write(data);
-//                }
-//                return outputStream.toByteArray();
-//            } else {
-//                return new byte[0];
-//            }
-//
-//        }
-//    }
-    public byte[] readChunk(int size) throws IOException {
-        if (size == 0) {
-            return new byte[0];
-        }
-        byte[] chunk = new byte[size];
-        int read = stream.read(chunk);
-        if (read != size) {
-            throw new IOException(
-                "Could not read " + size + " bytes from the stream. Only " + read + " bytes available");
-        }
-        return chunk;
     }
 
     @Override
