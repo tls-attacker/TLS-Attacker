@@ -119,7 +119,6 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
                     }
                 }
             } while (!executedAsPlanned() || dataStream.available() > 0);
-            System.out.println("exite?!");
         } catch (TimeoutException E) {
             LOGGER.debug(E);
         } catch (EndOfStreamException E) {
