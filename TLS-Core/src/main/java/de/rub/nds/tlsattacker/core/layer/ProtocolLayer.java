@@ -106,7 +106,7 @@ public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container 
         int i = 0;
         for (DataContainer container : layerConfiguration.getContainerList()) {
 
-            if (producedDataContainers.size() >= i) {
+            if (producedDataContainers.size() <= i) {
                 return false;
             }
             if (!container.getClass().equals(producedDataContainers.get(i).getClass())) {
