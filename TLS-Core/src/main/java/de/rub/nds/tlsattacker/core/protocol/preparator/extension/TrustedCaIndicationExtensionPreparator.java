@@ -20,7 +20,6 @@ import org.apache.logging.log4j.Logger;
 
 public class TrustedCaIndicationExtensionPreparator extends ExtensionPreparator<TrustedCaIndicationExtensionMessage> {
 
-
     private static final Logger LOGGER = LogManager.getLogger();
     private final TrustedCaIndicationExtensionMessage msg;
 

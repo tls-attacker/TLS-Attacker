@@ -26,7 +26,6 @@ import org.junit.runners.Parameterized;
 @RunWith(Parameterized.class)
 public class NewSessionTicketParserTest {
 
-
     private static byte[] sessionTicketTls1_1 = ArrayConverter.hexStringToByteArray(
         "00001c2000a04c1ffe5c9ce499974ccb74375751f927457820fc83573a62c9c878781e0edde8eae72e472948aa05a224a1dbc47f9e9f1e1d93689c2321dcb62d99f6bd7cd8018f3039bb0cf6c2d74f50d81861001bf27f1aa657426293c24a77be9083176cda9fc9de3f0ee3a4b8bb53c6cf41ed4a1af299063c67267eee257c598d885d4a8a322ecf4ad521f787c1a2119d81acd45373f2299f32c2b49b4c583c85eda5e7e3");
     private static byte[] sessionTicketTls1_1_identity = ArrayConverter.hexStringToByteArray(
@@ -55,6 +54,7 @@ public class NewSessionTicketParserTest {
             { sessionTicketTls1_3, sessionTicketTls1_3_identity, sessionTicketTls1_3_lifetime,
                 sessionTicketTls1_3_AgeAdd, sessionTicketTls1_3_Nonce, ProtocolVersion.TLS13 } });
     }
+
     private final byte[] message;
     private final byte[] identity;
     private final ProtocolVersion version;

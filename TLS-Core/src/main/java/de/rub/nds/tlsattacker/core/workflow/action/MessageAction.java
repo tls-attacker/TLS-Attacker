@@ -31,7 +31,6 @@ import javax.xml.bind.annotation.XmlElements;
 
 public abstract class MessageAction extends ConnectionBoundAction {
 
-
     @XmlElementWrapper
     @HoldsModifiableVariable
     @XmlElements(value = { @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
@@ -290,6 +289,7 @@ public abstract class MessageAction extends ConnectionBoundAction {
             setContainers(layerStack.gatherResults());
         }
     }
+
     public enum MessageActionDirection {
         SENDING,
         RECEIVING

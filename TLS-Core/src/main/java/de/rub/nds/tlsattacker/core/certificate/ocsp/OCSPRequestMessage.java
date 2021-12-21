@@ -41,7 +41,6 @@ public class OCSPRequestMessage {
     Asn1Explicit extensionExplicitSequence = new Asn1Explicit();
     BigInteger nonce;
 
-
     boolean extensionsSet = false;
 
     public OCSPRequestMessage() {

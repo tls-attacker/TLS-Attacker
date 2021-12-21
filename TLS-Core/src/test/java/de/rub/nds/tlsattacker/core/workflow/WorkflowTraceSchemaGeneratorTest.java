@@ -21,7 +21,6 @@ import org.junit.Test;
  */
 public class WorkflowTraceSchemaGeneratorTest {
 
-
     @BeforeClass
     public static void setUpClass() {
     }
@@ -29,6 +28,7 @@ public class WorkflowTraceSchemaGeneratorTest {
     @AfterClass
     public static void tearDownClass() {
     }
+
     public WorkflowTraceSchemaGeneratorTest() {
     }
 

@@ -74,7 +74,6 @@ public class WorkflowTraceSchemaGenerator {
             return result;
         }
 
-
         public Map<String, StringWriter> getSchemaWriters() {
             return schemaWriters;
         }

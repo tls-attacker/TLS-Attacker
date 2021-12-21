@@ -66,7 +66,6 @@ public abstract class WorkflowExecutor {
         return 0;
     };
 
-
     protected final WorkflowExecutorType type;
 
     protected final State state;

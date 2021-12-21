@@ -51,7 +51,6 @@ public class MessageActionFactory {
         return action;
     }
 
-
     private static Set<ActionOption> getFactoryReceiveActionOptions(Config tlsConfig) {
         Set<ActionOption> globalOptions = new HashSet<>();
         if (tlsConfig.getMessageFactoryActionOptions().contains(ActionOption.CHECK_ONLY_EXPECTED)) {
@@ -63,6 +62,7 @@ public class MessageActionFactory {
 
         return globalOptions;
     }
+
     private MessageActionFactory() {
     }
 }

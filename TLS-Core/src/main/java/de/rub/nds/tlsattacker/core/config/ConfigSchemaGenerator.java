@@ -73,7 +73,6 @@ public class ConfigSchemaGenerator {
             return result;
         }
 
-
         public Map<String, StringWriter> getSchemaWriters() {
             return schemaWriters;
         }

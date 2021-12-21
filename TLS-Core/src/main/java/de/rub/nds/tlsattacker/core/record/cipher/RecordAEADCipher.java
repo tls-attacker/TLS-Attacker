@@ -297,7 +297,6 @@ public class RecordAEADCipher extends RecordCipher {
         return counter;
     }
 
-
     public byte[] preprocessIv(long sequenceNumber, byte[] iv) {
         byte[] padding = new byte[] { 0x00, 0x00, 0x00, 0x00 };
         byte[] temp = ArrayConverter.concatenate(padding, ArrayConverter.longToUint64Bytes(sequenceNumber));
@@ -316,6 +315,7 @@ public class RecordAEADCipher extends RecordCipher {
         }
         return temp;
     }
+
     /**
      * Dirty hack to get a better inputstream - should we changed in newer java versions
      */

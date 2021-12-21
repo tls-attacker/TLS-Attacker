@@ -22,7 +22,6 @@ import org.junit.Test;
  */
 public class ConfigSchemaGeneratorTest {
 
-
     @BeforeClass
     public static void setUpClass() {
     }
@@ -30,6 +29,7 @@ public class ConfigSchemaGeneratorTest {
     @AfterClass
     public static void tearDownClass() {
     }
+
     public ConfigSchemaGeneratorTest() {
     }
 

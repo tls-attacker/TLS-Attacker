@@ -53,7 +53,6 @@ public class CertificateInformationExtractor {
     private String ocspServerUrl;
     private String certificateIssuerUrl;
 
-
     public CertificateInformationExtractor(Certificate certificate) {
         this.certificate = certificate;
 
