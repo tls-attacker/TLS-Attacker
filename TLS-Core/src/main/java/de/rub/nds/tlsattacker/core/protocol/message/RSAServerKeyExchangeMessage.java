@@ -9,8 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.protocol.message;
 
-import java.util.List;
-
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
@@ -27,6 +25,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.RSAServerKeyExchangePrepa
 import de.rub.nds.tlsattacker.core.protocol.serializer.RSAServerKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
+import java.util.List;
 
 public class RSAServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 

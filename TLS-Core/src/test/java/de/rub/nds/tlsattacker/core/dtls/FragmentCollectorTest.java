@@ -14,7 +14,6 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import static de.rub.nds.tlsattacker.core.dtls.FragmentUtils.checkFragment;
 import static de.rub.nds.tlsattacker.core.dtls.FragmentUtils.fragment;
 import static de.rub.nds.tlsattacker.core.dtls.FragmentUtils.fragmentOfMsg;
-import de.rub.nds.tlsattacker.core.exceptions.IllegalDtlsFragmentException;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;

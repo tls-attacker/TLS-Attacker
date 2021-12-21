@@ -10,11 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.UnknownExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.UnknownExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.UnknownExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.UnknownExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.InputStream;
 
 public class UnknownExtensionHandler extends ExtensionHandler<UnknownExtensionMessage> {
 

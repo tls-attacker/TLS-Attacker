@@ -11,8 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol;
 
 import java.math.BigInteger;
 import static org.junit.Assert.*;
-
-import de.rub.nds.tlsattacker.core.protocol.Serializer;
 import org.junit.Before;
 import org.junit.Test;
 

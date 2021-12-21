@@ -9,8 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.certificate.ocsp;
 
-import static de.rub.nds.tlsattacker.core.certificate.ocsp.OCSPResponseTypes.BASIC;
-
 import de.rub.nds.asn1.Asn1Encodable;
 import de.rub.nds.asn1.model.Asn1ObjectIdentifier;
 import de.rub.nds.asn1.model.Asn1PrimitivePrintableString;
@@ -20,6 +18,7 @@ import de.rub.nds.asn1.model.Asn1Set;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.certificate.CrlReason;
 import de.rub.nds.tlsattacker.core.certificate.ObjectIdentifierTranslator;
+import static de.rub.nds.tlsattacker.core.certificate.ocsp.OCSPResponseTypes.BASIC;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.time.LocalDateTime;

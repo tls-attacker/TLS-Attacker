@@ -9,13 +9,11 @@
 
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import java.math.BigInteger;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
+import java.math.BigInteger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ChangeServerRsaParametersAction extends ConnectionBoundAction {
     private static final Logger LOGGER = LogManager.getLogger();

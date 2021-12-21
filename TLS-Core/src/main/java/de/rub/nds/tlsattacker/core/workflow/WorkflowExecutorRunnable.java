@@ -9,17 +9,15 @@
 
 package de.rub.nds.tlsattacker.core.workflow;
 
-import java.io.IOException;
-import java.net.Socket;
-
-import org.apache.logging.log4j.CloseableThreadContext;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.tcp.ServerTcpTransportHandler;
+import java.io.IOException;
+import java.net.Socket;
+import org.apache.logging.log4j.CloseableThreadContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Spawn a new workflow trace for incoming connection.

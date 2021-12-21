@@ -10,15 +10,14 @@
 package de.rub.nds.tlsattacker.core.certificate.ocsp;
 
 import de.rub.nds.asn1.parser.ParserException;
-import org.bouncycastle.asn1.x509.Certificate;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
+import org.bouncycastle.asn1.x509.Certificate;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 public class CertificateInformationExtractorTest {
 

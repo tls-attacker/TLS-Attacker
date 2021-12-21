@@ -12,19 +12,17 @@ package de.rub.nds.tlsattacker.core.certificate.ocsp;
 import com.google.common.io.ByteStreams;
 import de.rub.nds.asn1.Asn1Encodable;
 import de.rub.nds.asn1.model.Asn1ObjectIdentifier;
-import de.rub.nds.asn1.model.Asn1PrimitiveBitString;
 import de.rub.nds.asn1.model.Asn1PrimitivePrintableString;
 import de.rub.nds.asn1.model.Asn1Sequence;
 import de.rub.nds.asn1.model.Asn1Set;
 import de.rub.nds.asn1.parser.ParserException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
 import org.bouncycastle.crypto.tls.Certificate;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
 
 public class OCSPResponseParserTest {
 

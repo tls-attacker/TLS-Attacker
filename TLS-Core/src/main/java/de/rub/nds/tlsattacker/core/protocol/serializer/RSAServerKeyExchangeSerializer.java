@@ -9,13 +9,12 @@
 
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAServerKeyExchangeMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class RSAServerKeyExchangeSerializer<T extends RSAServerKeyExchangeMessage>
     extends ServerKeyExchangeSerializer<T> {

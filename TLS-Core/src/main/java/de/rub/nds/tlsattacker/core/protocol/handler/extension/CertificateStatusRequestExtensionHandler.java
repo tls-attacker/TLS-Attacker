@@ -10,15 +10,10 @@
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import static de.rub.nds.modifiablevariable.util.ArrayConverter.bytesToHexString;
-import static de.rub.nds.tlsattacker.transport.ConnectionEndType.CLIENT;
-
 import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.CertificateStatusRequestExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.CertificateStatusRequestExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.CertificateStatusRequestExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.InputStream;
+import static de.rub.nds.tlsattacker.transport.ConnectionEndType.CLIENT;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

@@ -25,9 +25,9 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.security.Security;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.test.TestRandomData;
-import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
+import org.junit.Test;
 
 public class TlsContextTest {
 

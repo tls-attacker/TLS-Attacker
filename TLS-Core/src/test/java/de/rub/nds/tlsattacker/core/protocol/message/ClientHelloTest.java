@@ -9,9 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.protocol.message;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
-
 import de.rub.nds.modifiablevariable.ModifiableVariable;
 import de.rub.nds.modifiablevariable.ModificationFilter;
 import de.rub.nds.modifiablevariable.VariableModification;
@@ -37,6 +34,8 @@ import org.apache.logging.log4j.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;

@@ -10,11 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownHandshakeMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.UnknownHandshakeParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.UnknownHandshakePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.UnknownHandshakeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.InputStream;
 
 public class UnknownHandshakeHandler extends HandshakeMessageHandler<UnknownHandshakeMessage> {
 

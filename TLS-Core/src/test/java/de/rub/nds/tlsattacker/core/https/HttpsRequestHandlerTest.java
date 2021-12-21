@@ -13,12 +13,10 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.ByteArrayInputStream;
+import java.nio.charset.Charset;
+import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.nio.charset.Charset;
-
-import static org.junit.Assert.assertEquals;
 
 public class HttpsRequestHandlerTest {
 

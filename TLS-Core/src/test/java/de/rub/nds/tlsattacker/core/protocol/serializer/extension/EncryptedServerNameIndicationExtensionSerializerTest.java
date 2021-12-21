@@ -9,11 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import static org.junit.Assert.assertArrayEquals;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ChooserType;
@@ -24,6 +19,9 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNam
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
+import static org.junit.Assert.assertArrayEquals;
+import org.junit.Before;
+import org.junit.Test;
 
 @SuppressWarnings("SpellCheckingInspection")
 public class EncryptedServerNameIndicationExtensionSerializerTest {

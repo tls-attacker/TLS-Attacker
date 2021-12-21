@@ -9,11 +9,10 @@
 
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import java.util.Collection;
-import static org.junit.Assert.assertArrayEquals;
-
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedRandomExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtendedRandomExtensionParserTest;
+import java.util.Collection;
+import static org.junit.Assert.assertArrayEquals;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;

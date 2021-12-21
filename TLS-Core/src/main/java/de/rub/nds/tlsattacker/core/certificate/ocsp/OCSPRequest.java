@@ -9,10 +9,9 @@
 
 package de.rub.nds.tlsattacker.core.certificate.ocsp;
 
-import static de.rub.nds.tlsattacker.core.certificate.ocsp.OCSPResponseTypes.ACCEPTABLE_RESPONSES;
-
 import com.google.common.io.ByteStreams;
 import de.rub.nds.asn1.parser.ParserException;
+import static de.rub.nds.tlsattacker.core.certificate.ocsp.OCSPResponseTypes.ACCEPTABLE_RESPONSES;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigInteger;

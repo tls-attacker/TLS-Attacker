@@ -10,8 +10,8 @@
 package de.rub.nds.tlsattacker.core.https.header.serializer;
 
 import de.rub.nds.tlsattacker.core.https.header.HttpHeader;
-import java.nio.charset.StandardCharsets;
 import de.rub.nds.tlsattacker.core.protocol.Serializer;
+import java.nio.charset.StandardCharsets;
 
 public class HttpsHeaderSerializer extends Serializer<HttpHeader> {
 

@@ -11,11 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.protocol.message.SrpServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.SrpServerKeyExchangeParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.SrpServerKeyExchangePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.SrpServerKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.ByteArrayInputStream;
 import java.math.BigInteger;
 import static org.junit.Assert.*;
 import org.junit.Before;

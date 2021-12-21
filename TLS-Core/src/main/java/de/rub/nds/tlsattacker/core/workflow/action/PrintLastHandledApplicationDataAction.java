@@ -9,11 +9,10 @@
 
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
-
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
+import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 import java.nio.charset.Charset;
 import java.util.Objects;
 import javax.xml.bind.annotation.XmlRootElement;

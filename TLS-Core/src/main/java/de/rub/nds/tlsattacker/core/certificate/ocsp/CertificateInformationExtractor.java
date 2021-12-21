@@ -9,11 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.certificate.ocsp;
 
-import static de.rub.nds.tlsattacker.core.certificate.ExtensionObjectIdentifier.AUTHORITY_INFO_ACCESS;
-import static de.rub.nds.tlsattacker.core.certificate.ExtensionObjectIdentifier.CERTIFICATE_AUTHORITY_ISSUER;
-import static de.rub.nds.tlsattacker.core.certificate.ExtensionObjectIdentifier.OCSP;
-import static de.rub.nds.tlsattacker.core.certificate.ExtensionObjectIdentifier.TLS_FEATURE;
-
 import com.google.common.io.ByteStreams;
 import de.rub.nds.asn1.Asn1Encodable;
 import de.rub.nds.asn1.model.Asn1EncapsulatingOctetString;
@@ -26,7 +21,11 @@ import de.rub.nds.asn1.parser.Asn1Parser;
 import de.rub.nds.asn1.parser.ParserException;
 import de.rub.nds.asn1.translator.ParseOcspTypesContext;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import static de.rub.nds.tlsattacker.core.certificate.ExtensionObjectIdentifier.AUTHORITY_INFO_ACCESS;
+import static de.rub.nds.tlsattacker.core.certificate.ExtensionObjectIdentifier.CERTIFICATE_AUTHORITY_ISSUER;
+import static de.rub.nds.tlsattacker.core.certificate.ExtensionObjectIdentifier.OCSP;
 import static de.rub.nds.tlsattacker.core.certificate.ExtensionObjectIdentifier.SIGNED_CERTIFICATE_TIMESTAMP_LIST;
+import static de.rub.nds.tlsattacker.core.certificate.ExtensionObjectIdentifier.TLS_FEATURE;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.util.Asn1ToolInitializer;
 import java.io.ByteArrayInputStream;

@@ -14,7 +14,6 @@ import java.io.ByteArrayInputStream;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
 import static org.junit.Assert.*;
-
 import org.junit.Before;
 import org.junit.Test;
 

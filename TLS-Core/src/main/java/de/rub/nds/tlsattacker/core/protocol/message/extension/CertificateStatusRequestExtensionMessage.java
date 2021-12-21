@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import static de.rub.nds.modifiablevariable.ModifiableVariableFactory.safelySetValue;
-
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;

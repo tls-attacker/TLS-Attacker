@@ -13,10 +13,9 @@ import de.rub.nds.tlsattacker.core.constants.CertificateTransparencyLength;
 import de.rub.nds.tlsattacker.core.protocol.Parser;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.nio.ByteBuffer;
 
 public class SignedCertificateTimestampParser extends Parser<SignedCertificateTimestamp> {
 

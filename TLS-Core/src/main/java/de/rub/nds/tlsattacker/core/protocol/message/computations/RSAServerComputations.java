@@ -9,12 +9,10 @@
 
 package de.rub.nds.tlsattacker.core.protocol.message.computations;
 
-import java.math.BigInteger;
-
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
-import de.rub.nds.tlsattacker.core.config.Config;
+import java.math.BigInteger;
 
 public class RSAServerComputations extends KeyExchangeComputations {
 

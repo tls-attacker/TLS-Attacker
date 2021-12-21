@@ -9,10 +9,9 @@
 
 package de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2;
 
-import static de.rub.nds.modifiablevariable.ModifiableVariableFactory.safelySetValue;
-
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import static de.rub.nds.modifiablevariable.ModifiableVariableFactory.safelySetValue;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;

@@ -10,14 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CookieExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.CookieExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.CookieExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.CookieExtensionSerializer;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.InputStream;
 
 public class CookieExtensionHandler extends ExtensionHandler<CookieExtensionMessage> {
 
