@@ -33,7 +33,7 @@ If you want to use this project as a dependency, you do not have to compile it y
 <dependency>
     <groupId>de.rub.nds.tlsattacker</groupId>
     <artifactId>TLS-Attacker</artifactId>
-    <version>3.7.0</version>
+    <version>3.7.3</version>
     <type>pom</type>
 </dependency>
 ```
