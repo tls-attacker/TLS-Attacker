@@ -18,10 +18,10 @@ import org.apache.logging.log4j.Logger;
 public class CertificateStatusPreparator extends HandshakeMessagePreparator<CertificateStatusMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    private final CertificateStatusMessage msg;
 
     private static final int TYPE_OCSP = 1;
     private static final int TYPE_OCSP_MULTI = 2;
+    private final CertificateStatusMessage msg;
 
     public CertificateStatusPreparator(Chooser chooser, CertificateStatusMessage message) {
         super(chooser, message);

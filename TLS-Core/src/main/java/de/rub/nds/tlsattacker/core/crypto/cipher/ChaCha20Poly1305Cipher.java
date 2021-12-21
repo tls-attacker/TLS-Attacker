@@ -29,11 +29,11 @@ public abstract class ChaCha20Poly1305Cipher extends BaseCipher {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final byte[] key;
 
     private static final int TAG_LENGTH = 16;
 
     private static final byte[] ZEROES = new byte[TAG_LENGTH - 1];
+    private final byte[] key;
 
     private boolean draftStructure;
 

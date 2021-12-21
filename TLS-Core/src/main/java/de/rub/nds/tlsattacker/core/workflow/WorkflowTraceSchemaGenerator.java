@@ -57,6 +57,9 @@ public class WorkflowTraceSchemaGenerator {
     }
 
     public static class AccumulatingSchemaOutputResolver extends SchemaOutputResolver {
+        public static String mapSystemIds() {
+            return "workflowTrace.xsd";
+        }
 
         private final Map<String, StringWriter> schemaWriters = new HashMap<>();
         private final Map<String, String> systemIds = new HashMap<>();
@@ -71,9 +74,6 @@ public class WorkflowTraceSchemaGenerator {
             return result;
         }
 
-        public static String mapSystemIds() {
-            return "workflowTrace.xsd";
-        }
 
         public Map<String, StringWriter> getSchemaWriters() {
             return schemaWriters;

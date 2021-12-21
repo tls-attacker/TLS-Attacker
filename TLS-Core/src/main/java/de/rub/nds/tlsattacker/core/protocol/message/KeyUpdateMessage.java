@@ -29,6 +29,19 @@ public class KeyUpdateMessage extends HandshakeMessage {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private ModifiableByte requestMode;
+    public KeyUpdateMessage() {
+        super(HandshakeMessageType.KEY_UPDATE);
+        this.setIncludeInDigest(false);
+    }
+    public KeyUpdateMessage(Config tlsConfig) {
+        super(tlsConfig, HandshakeMessageType.KEY_UPDATE);
+        this.setIncludeInDigest(false);
+    }
+    public KeyUpdateMessage(Config tlsConfig, KeyUpdateRequest requestUpdate) {
+        super(tlsConfig, HandshakeMessageType.KEY_UPDATE);
+        setRequestMode(requestUpdate);
+        this.setIncludeInDigest(false);
+    }
 
     @Override
     public KeyUpdateHandler getHandler(TlsContext context) {
@@ -50,21 +63,6 @@ public class KeyUpdateMessage extends HandshakeMessage {
         return new KeyUpdateSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
-    public KeyUpdateMessage() {
-        super(HandshakeMessageType.KEY_UPDATE);
-        this.setIncludeInDigest(false);
-    }
-
-    public KeyUpdateMessage(Config tlsConfig) {
-        super(tlsConfig, HandshakeMessageType.KEY_UPDATE);
-        this.setIncludeInDigest(false);
-    }
-
-    public KeyUpdateMessage(Config tlsConfig, KeyUpdateRequest requestUpdate) {
-        super(tlsConfig, HandshakeMessageType.KEY_UPDATE);
-        setRequestMode(requestUpdate);
-        this.setIncludeInDigest(false);
-    }
 
     public final void setRequestMode(KeyUpdateRequest requestMode) {
         this.requestMode = ModifiableVariableFactory.safelySetValue(this.requestMode, requestMode.getValue());

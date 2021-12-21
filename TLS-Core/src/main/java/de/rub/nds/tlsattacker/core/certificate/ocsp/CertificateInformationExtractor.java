@@ -40,6 +40,9 @@ import java.util.List;
 import org.bouncycastle.asn1.x509.Certificate;
 
 public class CertificateInformationExtractor {
+    private static final int X509_EXTENSION_ASN1_EXPLICIT_OFFSET = 3;
+    private static final int STATUS_REQUEST_TLS_EXTENSION_ID = 5;
+    private static final int STATUS_REQUEST_V2_TLS_EXTENSION_ID = 17;
 
     private final Certificate certificate;
     private List<Asn1Encodable> x509ExtensionSequences;
@@ -51,9 +54,6 @@ public class CertificateInformationExtractor {
     private String ocspServerUrl;
     private String certificateIssuerUrl;
 
-    private static final int X509_EXTENSION_ASN1_EXPLICIT_OFFSET = 3;
-    private static final int STATUS_REQUEST_TLS_EXTENSION_ID = 5;
-    private static final int STATUS_REQUEST_V2_TLS_EXTENSION_ID = 17;
 
     public CertificateInformationExtractor(Certificate certificate) {
         this.certificate = certificate;

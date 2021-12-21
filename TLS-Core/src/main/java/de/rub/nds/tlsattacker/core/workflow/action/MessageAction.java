@@ -33,10 +33,6 @@ import java.util.LinkedList;
 
 public abstract class MessageAction extends ConnectionBoundAction {
 
-    public enum MessageActionDirection {
-        SENDING,
-        RECEIVING
-    }
 
     @XmlElementWrapper
     @HoldsModifiableVariable
@@ -295,6 +291,10 @@ public abstract class MessageAction extends ConnectionBoundAction {
             LOGGER.warn("Received an IOException", ex);
             setContainers(layerStack.gatherResults());
         }
+    }
+    public enum MessageActionDirection {
+        SENDING,
+        RECEIVING
     }
 
 }

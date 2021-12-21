@@ -72,6 +72,9 @@ public class ServerHelloMessage extends HelloMessage {
         (byte) 0x02, (byte) 0x1E, (byte) 0x65, (byte) 0xB8, (byte) 0x91, (byte) 0xC2, (byte) 0xA2, (byte) 0x11,
         (byte) 0x16, (byte) 0x7A, (byte) 0xBB, (byte) 0x8C, (byte) 0x5E, (byte) 0x07, (byte) 0x9E, (byte) 0x09,
         (byte) 0xE2, (byte) 0xC8, (byte) 0xA8, (byte) 0x33, (byte) 0x9C };
+    public static byte[] getHelloRetryRequestRandom() {
+        return HELLO_RETRY_REQUEST_RANDOM;
+    }
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByteArray selectedCipherSuite;
@@ -315,9 +318,6 @@ public class ServerHelloMessage extends HelloMessage {
             tlsContext.getTalkingConnectionEndType());
     }
 
-    public static byte[] getHelloRetryRequestRandom() {
-        return HELLO_RETRY_REQUEST_RANDOM;
-    }
 
     public Boolean isAutoSetHelloRetryModeInKeyShare() {
         return autoSetHelloRetryModeInKeyShare;

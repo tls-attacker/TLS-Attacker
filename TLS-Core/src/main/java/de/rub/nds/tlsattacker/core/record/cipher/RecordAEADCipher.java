@@ -297,31 +297,6 @@ public class RecordAEADCipher extends RecordCipher {
         return counter;
     }
 
-    /**
-     * Dirty hack to get a better inputstream - should we changed in newer java versions
-     */
-    class DecryptionParser extends Parser<Object> {
-
-        public DecryptionParser(byte[] array) {
-            super(new ByteArrayInputStream(array));
-        }
-
-        @Override
-        public void parse(Object t) {
-            throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods,
-                                                                           // choose Tools | Templates.
-        }
-
-        @Override
-        public byte[] parseByteArrayField(int length) {
-            return super.parseByteArrayField(length);
-        }
-
-        @Override
-        public int getBytesLeft() {
-            return super.getBytesLeft();
-        }
-    }
 
     public byte[] preprocessIv(long sequenceNumber, byte[] iv) {
         byte[] padding = new byte[] { 0x00, 0x00, 0x00, 0x00 };
@@ -340,5 +315,30 @@ public class RecordAEADCipher extends RecordCipher {
             temp[i] ^= iv[i];
         }
         return temp;
+    }
+    /**
+     * Dirty hack to get a better inputstream - should we changed in newer java versions
+     */
+    class DecryptionParser extends Parser<Object> {
+
+        public DecryptionParser(byte[] array) {
+            super(new ByteArrayInputStream(array));
+        }
+
+        @Override
+        public void parse(Object t) {
+            throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods,
+            // choose Tools | Templates.
+        }
+
+        @Override
+        public byte[] parseByteArrayField(int length) {
+            return super.parseByteArrayField(length);
+        }
+
+        @Override
+        public int getBytesLeft() {
+            return super.getBytesLeft();
+        }
     }
 }

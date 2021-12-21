@@ -194,10 +194,6 @@ public class EncryptedServerNameIndicationExtensionMessage
         this.esniMessageTypeConfig = esniMessageTypeConfig;
     }
 
-    public enum EsniMessageType {
-        CLIENT,
-        SERVER;
-    }
 
     @Override
     public EncryptedServerNameIndicationExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
@@ -219,6 +215,10 @@ public class EncryptedServerNameIndicationExtensionMessage
     @Override
     public EncryptedServerNameIndicationExtensionHandler getHandler(TlsContext tlsContext) {
         return new EncryptedServerNameIndicationExtensionHandler(tlsContext);
+    }
+    public enum EsniMessageType {
+        CLIENT,
+        SERVER;
     }
 
 }

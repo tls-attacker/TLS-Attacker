@@ -40,6 +40,11 @@ import org.apache.logging.log4j.Logger;
 public abstract class WorkflowExecutor {
 
     private static final Logger LOGGER = LogManager.getLogger();
+    static {
+        if (!BouncyCastleProviderChecker.isLoaded()) {
+            throw new BouncyCastleNotLoadedException("BouncyCastleProvider not loaded");
+        }
+    }
 
     private Function<State, Integer> beforeTransportPreInitCallback = (State state) -> {
         LOGGER.trace("BeforePreInitCallback");
@@ -61,11 +66,6 @@ public abstract class WorkflowExecutor {
         return 0;
     };
 
-    static {
-        if (!BouncyCastleProviderChecker.isLoaded()) {
-            throw new BouncyCastleNotLoadedException("BouncyCastleProvider not loaded");
-        }
-    }
 
     protected final WorkflowExecutorType type;
 

@@ -30,6 +30,10 @@ import java.util.Random;
 import org.apache.commons.lang3.NotImplementedException;
 
 public class OCSPRequestMessage {
+    // see RFC 6960: TBSRequest -> [2] requestExtensions
+    private static final int EXTENSION_ASN1_EXPLICIT_OFFSET = 2;
+    private static final int NONCE_RANDOM_SEED = 42;
+    private static final int NONCE_LENGTH_BIT = 128;
 
     Asn1Sequence tbsRequestWrapper = new Asn1Sequence();
     Asn1Sequence tbsRequest = new Asn1Sequence();
@@ -38,10 +42,6 @@ public class OCSPRequestMessage {
     Asn1Explicit extensionExplicitSequence = new Asn1Explicit();
     BigInteger nonce;
 
-    // see RFC 6960: TBSRequest -> [2] requestExtensions
-    private static final int EXTENSION_ASN1_EXPLICIT_OFFSET = 2;
-    private static final int NONCE_RANDOM_SEED = 42;
-    private static final int NONCE_LENGTH_BIT = 128;
 
     boolean extensionsSet = false;
 

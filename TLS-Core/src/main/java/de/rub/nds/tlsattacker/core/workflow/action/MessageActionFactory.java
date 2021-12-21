@@ -51,8 +51,6 @@ public class MessageActionFactory {
         return action;
     }
 
-    private MessageActionFactory() {
-    }
 
     private static Set<ActionOption> getFactoryReceiveActionOptions(Config tlsConfig) {
         Set<ActionOption> globalOptions = new HashSet<>();
@@ -64,5 +62,7 @@ public class MessageActionFactory {
         }
 
         return globalOptions;
+    }
+    private MessageActionFactory() {
     }
 }
