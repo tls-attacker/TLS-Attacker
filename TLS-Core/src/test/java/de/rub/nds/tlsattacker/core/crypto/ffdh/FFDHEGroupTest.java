@@ -34,7 +34,7 @@ public class FFDHEGroupTest {
                 BigInteger g = group.getG();
 
                 assertTrue(p.isProbablePrime(32));
-                BigInteger q = p.subtract(BigInteger.ONE).divide(BigInteger.valueOf(2));
+                BigInteger q = p.subtract(BigInteger.ONE).divide(BigInteger.TWO);
                 assertTrue(q.isProbablePrime(32));
                 assertEquals(BigInteger.ONE, g.modPow(q, p));
 
