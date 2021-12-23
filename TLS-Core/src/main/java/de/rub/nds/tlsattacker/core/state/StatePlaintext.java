@@ -15,6 +15,9 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.mlong.ModifiableLong;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
+import de.rub.nds.tlsattacker.core.constants.ClientAuthenticationType;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import de.rub.nds.tlsattacker.util.TimeHelper;
 
 public class StatePlaintext {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
@@ -42,6 +45,30 @@ public class StatePlaintext {
     private ModifiableLong timestamp;
 
     public StatePlaintext() {
+    }
+
+    public void generateStatePlaintext(Chooser chooser) {
+        setCipherSuite(chooser.getSelectedCipherSuite().getByteValue());
+        setCompressionMethod(chooser.getSelectedCompressionMethod().getValue());
+        setMasterSecret(chooser.getMasterSecret());
+        setProtocolVersion(chooser.getSelectedProtocolVersion().getValue());
+
+        long timestamp = TimeHelper.getTime() / 1000;
+        setTimestamp(timestamp);
+
+        switch (chooser.getConfig().getClientAuthenticationType()) {
+            case ANONYMOUS:
+                setClientAuthenticationType(ClientAuthenticationType.ANONYMOUS.getValue());
+                setClientAuthenticationData(new byte[0]);
+                setClientAuthenticationDataLength(0);
+                break;
+            case CERTIFICATE_BASED:
+                throw new UnsupportedOperationException("Certificate based ClientAuthentication is not supported");
+            case PSK:
+                throw new UnsupportedOperationException("PSK ClientAuthentication is not supported");
+            default:
+                throw new UnsupportedOperationException("Unknown ClientAuthenticationType");
+        }
     }
 
     public ModifiableByteArray getProtocolVersion() {

@@ -349,9 +349,9 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public byte[] getSessionTicketTLS() {
-        if (context.getSessionTicketTLS() != null) {
-            return copy(context.getSessionTicketTLS());
+    public byte[] getLatestSessionTicket() {
+        if (context.getLatestSessionTicket() != null) {
+            return context.getLatestSessionTicket();
         } else {
             return config.getTlsSessionTicket();
         }

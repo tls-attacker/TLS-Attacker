@@ -61,7 +61,8 @@ public class NewSessionTicketPreparator extends HandshakeMessagePreparator<NewSe
         RandomHelper.getRandom().nextBytes(iv);
         newTicket.setIV(iv);
 
-        StatePlaintext plainState = generateStatePlaintext();
+        StatePlaintext plainState = new StatePlaintext();
+        plainState.generateStatePlaintext(chooser);
         StatePlaintextSerializer plaintextSerializer = new StatePlaintextSerializer(plainState);
         byte[] plainStateSerialized = plaintextSerializer.serialize();
         byte[] encryptedState;
@@ -107,39 +108,6 @@ public class NewSessionTicketPreparator extends HandshakeMessagePreparator<NewSe
             prepareTicket(msg);
         }
 
-    }
-
-    /**
-     * Generates the StatePlaintext for the SessionTicket, maybe put this as static function in the StatePlaintext class
-     * for better testing/debugging
-     *
-     * @return A struct with State information defined in https://tools.ietf.org/html/rfc5077#section-4
-     */
-    private StatePlaintext generateStatePlaintext() {
-        StatePlaintext plainState = new StatePlaintext();
-        plainState.setCipherSuite(chooser.getSelectedCipherSuite().getByteValue());
-        plainState.setCompressionMethod(chooser.getSelectedCompressionMethod().getValue());
-        plainState.setMasterSecret(chooser.getMasterSecret());
-        plainState.setProtocolVersion(chooser.getSelectedProtocolVersion().getValue());
-
-        long timestamp = TimeHelper.getTime() / 1000;
-        plainState.setTimestamp(timestamp);
-
-        switch (chooser.getConfig().getClientAuthenticationType()) {
-            case ANONYMOUS:
-                plainState.setClientAuthenticationType(ClientAuthenticationType.ANONYMOUS.getValue());
-                plainState.setClientAuthenticationData(new byte[0]);
-                plainState.setClientAuthenticationDataLength(0);
-                break;
-            case CERTIFICATE_BASED:
-                throw new UnsupportedOperationException("Certificate based ClientAuthentication is not supported");
-            case PSK:
-                throw new UnsupportedOperationException("PSK ClientAuthentication is not supported");
-            default:
-                throw new UnsupportedOperationException("Unknown ClientAuthenticationType");
-        }
-
-        return plainState;
     }
 
     private void prepareTicketTls13(NewSessionTicketMessage msg) {
