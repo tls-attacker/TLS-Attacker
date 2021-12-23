@@ -7,25 +7,14 @@
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
-package de.rub.nds.tlsattacker.core.state;
+package de.rub.nds.tlsattacker.core.state.session;
 
-public class Session {
-
-    private byte[] sessionId;
-
+public abstract class Session {
     private byte[] masterSecret;
+    protected boolean isIdSession;
 
-    public Session(byte[] sessionId, byte[] masterSecret) {
-        this.sessionId = sessionId;
+    public Session(byte[] masterSecret) {
         this.masterSecret = masterSecret;
-    }
-
-    public byte[] getSessionId() {
-        return sessionId;
-    }
-
-    public void setSessionId(byte[] sessionId) {
-        this.sessionId = sessionId;
     }
 
     public byte[] getMasterSecret() {
@@ -34,5 +23,13 @@ public class Session {
 
     public void setMasterSecret(byte[] masterSecret) {
         this.masterSecret = masterSecret;
+    }
+
+    public boolean isIdSession() {
+        return isIdSession;
+    }
+
+    public boolean isTicketSession() {
+        return !isIdSession;
     }
 }

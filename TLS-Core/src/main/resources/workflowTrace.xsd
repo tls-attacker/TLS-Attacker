@@ -1405,7 +1405,28 @@
   <xs:complexType name="sessionTicketTLSExtensionMessage">
     <xs:complexContent>
       <xs:extension base="extensionMessage">
-        <xs:sequence/>
+        <xs:sequence>
+          <xs:element name="sessionTicket" type="sessionTicket" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="sessionTicket">
+    <xs:complexContent>
+      <xs:extension base="modifiableVariableHolder">
+        <xs:sequence>
+          <xs:element name="encryptedState" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="encryptedStateLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="IV" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="identity" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="identityLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="keyName" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="MAC" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="ticketAgeAdd" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="ticketNonce" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="ticketNonceLength" type="modifiableInteger" minOccurs="0"/>
+        </xs:sequence>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
@@ -2317,25 +2338,6 @@
     </xs:sequence>
   </xs:complexType>
 
-  <xs:complexType name="sessionTicket">
-    <xs:complexContent>
-      <xs:extension base="modifiableVariableHolder">
-        <xs:sequence>
-          <xs:element name="encryptedState" type="modifiableByteArray" minOccurs="0"/>
-          <xs:element name="encryptedStateLength" type="modifiableInteger" minOccurs="0"/>
-          <xs:element name="IV" type="modifiableByteArray" minOccurs="0"/>
-          <xs:element name="identity" type="modifiableByteArray" minOccurs="0"/>
-          <xs:element name="identityLength" type="modifiableInteger" minOccurs="0"/>
-          <xs:element name="keyName" type="modifiableByteArray" minOccurs="0"/>
-          <xs:element name="MAC" type="modifiableByteArray" minOccurs="0"/>
-          <xs:element name="ticketAgeAdd" type="modifiableByteArray" minOccurs="0"/>
-          <xs:element name="ticketNonce" type="modifiableByteArray" minOccurs="0"/>
-          <xs:element name="ticketNonceLength" type="modifiableInteger" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
   <xs:complexType name="keyUpdateMessage">
     <xs:complexContent>
       <xs:extension base="handshakeMessage">
@@ -3116,7 +3118,6 @@
       <xs:element name="selectedClientCertificateType" type="certificateType" minOccurs="0"/>
       <xs:element name="selectedServerCertificateType" type="certificateType" minOccurs="0"/>
       <xs:element name="paddingExtensionBytes" type="xs:base64Binary" minOccurs="0"/>
-      <xs:element name="sessionTicketTLS" type="xs:base64Binary" minOccurs="0"/>
       <xs:element name="renegotiationInfo" type="xs:base64Binary" minOccurs="0"/>
       <xs:element name="certificateRequestContext" type="xs:base64Binary" minOccurs="0"/>
       <xs:element name="signedCertificateTimestamp" type="xs:base64Binary" minOccurs="0"/>
@@ -3681,6 +3682,7 @@
       <xs:element name="httpsParsingEnabled" type="xs:boolean" minOccurs="0"/>
       <xs:element name="defaultHttpsRequestPath" type="xs:string" minOccurs="0"/>
       <xs:element name="starttlsType" type="starttlsType" minOccurs="0"/>
+      <xs:element name="overrideSessionIdForTickets" type="xs:boolean" minOccurs="0"/>
       <xs:element name="sessionTicketLifetimeHint" type="xs:long" minOccurs="0"/>
       <xs:element name="sessionTicketEncryptionKey" type="xs:string" minOccurs="0"/>
       <xs:element name="sessionTicketKeyHMAC" type="xs:string" minOccurs="0"/>
@@ -3909,10 +3911,9 @@
     </xs:sequence>
   </xs:complexType>
 
-  <xs:complexType name="session">
+  <xs:complexType name="session" abstract="true">
     <xs:sequence>
       <xs:element name="masterSecret" type="xs:base64Binary" minOccurs="0"/>
-      <xs:element name="sessionId" type="xs:base64Binary" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
 

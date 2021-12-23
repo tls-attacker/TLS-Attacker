@@ -22,7 +22,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
 import de.rub.nds.tlsattacker.core.protocol.parser.NewSessionTicketParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.NewSessionTicketPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.NewSessionTicketSerializer;
-import de.rub.nds.tlsattacker.core.state.Session;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
@@ -30,6 +29,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.List;
 import javax.crypto.Mac;
+
+import de.rub.nds.tlsattacker.core.state.session.Session;
+import de.rub.nds.tlsattacker.core.state.session.TicketSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -62,10 +64,9 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
         if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
             adjustPskSets(message);
         } else {
-            tlsContext.setSessionTicketTLS(message.getTicket().getIdentity().getValue());
+            byte[] ticket = message.getTicket().getIdentity().getValue();
             LOGGER.debug("Adding Session for Ticket resumption using dummy SessionID");
-            Session session = new Session(tlsContext.getConfig().getDefaultClientTicketResumptionSessionId(),
-                tlsContext.getChooser().getMasterSecret());
+            TicketSession session = new TicketSession(tlsContext.getChooser().getMasterSecret(), ticket);
             tlsContext.addNewSession(session);
         }
     }

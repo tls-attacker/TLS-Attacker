@@ -20,11 +20,10 @@ import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
-import de.rub.nds.tlsattacker.core.state.Session;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.state.session.IdSession;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -94,8 +93,8 @@ public abstract class ClientKeyExchangeHandler<MessageT extends ClientKeyExchang
 
     protected void spawnNewSession() {
         if (tlsContext.getChooser().getServerSessionId().length != 0) {
-            Session session =
-                new Session(tlsContext.getChooser().getServerSessionId(), tlsContext.getChooser().getMasterSecret());
+            IdSession session =
+                new IdSession(tlsContext.getChooser().getServerSessionId(), tlsContext.getChooser().getMasterSecret());
             tlsContext.addNewSession(session);
             LOGGER.debug("Spawning new resumable Session");
         }

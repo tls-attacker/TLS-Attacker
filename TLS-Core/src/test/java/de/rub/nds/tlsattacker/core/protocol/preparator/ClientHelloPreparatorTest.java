@@ -14,11 +14,14 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.state.session.TicketSession;
 import de.rub.nds.tlsattacker.util.FixedTimeProvider;
 import de.rub.nds.tlsattacker.util.TimeHelper;
 import java.util.LinkedList;
 import java.util.List;
+
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -146,6 +149,30 @@ public class ClientHelloPreparatorTest {
         preparator.prepare();
         assertArrayEquals(message.getSessionId().getValue(), new byte[] { 0, 1, 2, 3 });
         assertTrue(4 == message.getSessionIdLength().getValue());
+    }
+
+    @Test
+    public void testPrepareTicketResumption() {
+        TimeHelper.setProvider(new FixedTimeProvider(12345678l));
+        List<CipherSuite> cipherSuiteList = new LinkedList<>();
+        cipherSuiteList.add(CipherSuite.TLS_DHE_RSA_WITH_SEED_CBC_SHA);
+        cipherSuiteList.add(CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256);
+        List<CompressionMethod> methodList = new LinkedList<>();
+        methodList.add(CompressionMethod.DEFLATE);
+        methodList.add(CompressionMethod.NULL);
+        context.getConfig().setDefaultClientSupportedCipherSuites(cipherSuiteList);
+        context.getConfig().setDefaultClientSupportedCompressionMethods(methodList);
+        context.getConfig().setHighestProtocolVersion(ProtocolVersion.TLS11);
+        context.setClientSessionId(new byte[0]);
+        TicketSession session = new TicketSession(new byte[] { 1, 1, 1, 1 }, new byte[] { 2, 2, 2, 2 });
+        context.addNewSession(session);
+        SessionTicketTLSExtensionMessage extensionMessage = new SessionTicketTLSExtensionMessage();
+        message.addExtension(extensionMessage);
+        preparator.prepare();
+        assertArrayEquals(message.getSessionId().getValue(),
+            context.getConfig().getDefaultClientTicketResumptionSessionId());
+        assertTrue(context.getConfig().getDefaultClientTicketResumptionSessionId().length
+            == message.getSessionIdLength().getValue());
     }
 
     @Test
