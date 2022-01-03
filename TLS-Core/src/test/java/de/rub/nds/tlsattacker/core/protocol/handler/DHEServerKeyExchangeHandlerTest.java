@@ -1,7 +1,7 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -98,13 +98,18 @@ public class DHEServerKeyExchangeHandlerTest {
     @Test
     public void testAdjustTlsContextWithFFDHEGroup() {
         DHEServerKeyExchangeMessage message = new DHEServerKeyExchangeMessage();
-        FFDHEGroup group = GroupFactory.getGroup(NamedGroup.FFDHE2048);
-        message.setModulus(group.getP().toByteArray());
-        message.setGenerator(group.getG().toByteArray());
-        message.setPublicKey(new byte[] { 1, 2, 3 });
-        handler.adjustTLSContext(message);
-        assertEquals(group.getG(), context.getServerDhGenerator());
-        assertEquals(group.getP(), context.getServerDhModulus());
-        assertArrayEquals(new byte[] { 1, 2, 3 }, context.getServerDhPublicKey().toByteArray());
+        for (NamedGroup namedGroup : NamedGroup.getImplemented()) {
+            if (namedGroup.isDhGroup()) {
+                FFDHEGroup group = GroupFactory.getGroup(namedGroup);
+                message.setModulus(group.getP().toByteArray());
+                message.setGenerator(group.getG().toByteArray());
+                message.setPublicKey(new byte[] { 1, 2, 3 });
+                handler.adjustTLSContext(message);
+                assertEquals(group.getG(), context.getServerDhGenerator());
+                assertEquals(group.getP(), context.getServerDhModulus());
+                assertArrayEquals(new byte[] { 1, 2, 3 }, context.getServerDhPublicKey().toByteArray());
+                assertEquals(context.getSelectedGroup(), namedGroup);
+            }
+        }
     }
 }
