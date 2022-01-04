@@ -388,8 +388,8 @@ public abstract class HandshakeMessage extends ProtocolMessage {
         this.messageContent = messageContent;
     }
 
-    public void setMessageContent(byte[] payload) {
-        this.messageContent = ModifiableVariableFactory.safelySetValue(this.messageContent, payload);
+    public void setMessageContent(byte[] content) {
+        this.messageContent = ModifiableVariableFactory.safelySetValue(this.messageContent, content);
     }
 
 }
