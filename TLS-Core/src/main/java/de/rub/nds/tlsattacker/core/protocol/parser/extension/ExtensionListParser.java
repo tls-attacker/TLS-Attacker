@@ -43,7 +43,7 @@ public class ExtensionListParser extends Parser<List<ExtensionMessage>> {
         while (getBytesLeft() > 0) {
             byte[] typeBytes = parseByteArrayField(ExtensionByteLength.TYPE);
             ExtensionType extensionType = ExtensionType.getExtensionType(typeBytes);
-            LOGGER.debug("ExtensionType: {} ({})" + ArrayConverter.bytesToHexString(typeBytes), extensionType);
+            LOGGER.debug("ExtensionType: {} ({})", typeBytes, extensionType);
             int length = parseExtensionLength();
             byte[] extensionPayload = parseByteArrayField(length);
             ExtensionMessage extension = ExtensionFactory.getExtension(extensionType);
