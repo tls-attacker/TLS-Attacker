@@ -56,12 +56,12 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
         for (ProtocolMessage message : configuration.getContainerList()) {
             ProtocolMessagePreparator preparator = message.getPreparator(context);
             preparator.prepare();
-            message.getHandler(context).adjustContext(message);
             ProtocolMessageSerializer serializer = message.getSerializer(context);
             byte[] serializedMessage = serializer.serialize();
             message.setCompleteResultingMessage(serializedMessage);
-            getLowerLayer().sendData(new RecordLayerHint(message.getProtocolMessageType()), serializedMessage);
             message.getHandler(context).updateDigest(message);
+            message.getHandler(context).adjustContext(message);
+            getLowerLayer().sendData(new RecordLayerHint(message.getProtocolMessageType()), serializedMessage);
             message.getHandler(context).adjustContextAfterSerialize(message);
             addProducedContainer(message);
         }
@@ -160,9 +160,9 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
         Preparator preparator = handshakeMessage.getPreparator(context);
         preparator.prepareAfterParse(false);// TODO REMOVE THIS CLIENTMODE FLAG
         Handler handler = handshakeMessage.getHandler(context);
+        handshakeMessage.getHandler(context).updateDigest(handshakeMessage);
         handler.adjustContext(handshakeMessage);
         addProducedContainer(handshakeMessage);
-        handshakeMessage.getHandler(context).updateDigest(handshakeMessage);
     }
 
     private void readHeartbeatProtocolData() throws IOException {

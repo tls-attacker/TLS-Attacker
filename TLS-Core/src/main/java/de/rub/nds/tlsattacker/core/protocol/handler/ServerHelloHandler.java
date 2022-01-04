@@ -254,6 +254,8 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         tlsContext.setServerEcPublicKey(publicPoint);
         tlsContext.setSelectedGroup(keyShare.getGroup());
         BigInteger privateKey = tlsContext.getConfig().getKeySharePrivate();
+        LOGGER.debug("Computing shared secret with key share {} and private key {}",
+            ArrayConverter.bytesToHexString(keyShare.getPublicKey()), privateKey);
 
         switch (keyShare.getGroup()) {
             case ECDH_X25519:
