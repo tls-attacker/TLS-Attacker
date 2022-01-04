@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -19,14 +19,14 @@ import org.apache.logging.log4j.Logger;
 import static de.rub.nds.modifiablevariable.util.ArrayConverter.bytesToHexString;
 
 public class CertificateStatusRequestExtensionPreparator
-        extends ExtensionPreparator<CertificateStatusRequestExtensionMessage> {
+    extends ExtensionPreparator<CertificateStatusRequestExtensionMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private final CertificateStatusRequestExtensionMessage msg;
 
     public CertificateStatusRequestExtensionPreparator(Chooser chooser,
-                                                       CertificateStatusRequestExtensionMessage message,
-                                                       ExtensionSerializer<CertificateStatusRequestExtensionMessage> serializer) {
+        CertificateStatusRequestExtensionMessage message,
+        ExtensionSerializer<CertificateStatusRequestExtensionMessage> serializer) {
         super(chooser, message, serializer);
         msg = message;
     }
@@ -34,17 +34,17 @@ public class CertificateStatusRequestExtensionPreparator
     @Override
     public void prepareExtensionContent() {
         msg.setCertificateStatusRequestType(
-                chooser.getConfig().getCertificateStatusRequestExtensionRequestType().getCertificateStatusRequestValue());
+            chooser.getConfig().getCertificateStatusRequestExtensionRequestType().getCertificateStatusRequestValue());
         LOGGER.debug("Prepared the CertificateStatusRequestExtension with request type " + CertificateStatusRequestType
-                .getCertificateStatusRequestType(msg.getCertificateStatusRequestType().getValue()));
+            .getCertificateStatusRequestType(msg.getCertificateStatusRequestType().getValue()));
         msg.setResponderIDList(chooser.getConfig().getCertificateStatusRequestExtensionResponderIDList());
         msg.setResponderIDListLength(msg.getResponderIDList().getValue().length);
         LOGGER.debug("Prepared the CertificateStatusRequestExtension with responder ID list "
-                + bytesToHexString(msg.getResponderIDList()));
+            + bytesToHexString(msg.getResponderIDList()));
         msg.setRequestExtension(chooser.getConfig().getCertificateStatusRequestExtensionRequestExtension());
         msg.setRequestExtensionLength(msg.getRequestExtension().getValue().length);
         LOGGER.debug("Prepared the CertificateStatusRequestExtension with request extension "
-                + bytesToHexString(msg.getRequestExtension()));
+            + bytesToHexString(msg.getRequestExtension()));
     }
 
 }

@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -57,7 +57,7 @@ public class CertificateUtils {
         } else if (key instanceof DSAPrivateKey) {
             DSAPrivateKey privKey = (DSAPrivateKey) key;
             return new CustomDSAPrivateKey(privKey.getX(), privKey.getParams().getP(), privKey.getParams().getQ(),
-                    privKey.getParams().getG());
+                privKey.getParams().getG());
         } else if (key instanceof DHPrivateKey) {
             DHPrivateKey privKey = (DHPrivateKey) key;
             return new CustomDHPrivateKey(privKey.getX(), privKey.getParams().getP(), privKey.getParams().getG());
@@ -79,7 +79,7 @@ public class CertificateUtils {
             LOGGER.trace("Found a DSA PublicKey");
             DSAPublicKey pubKey = (DSAPublicKey) key;
             return new CustomDsaPublicKey(pubKey.getParams().getP(), pubKey.getParams().getQ(),
-                    pubKey.getParams().getG(), pubKey.getY());
+                pubKey.getParams().getG(), pubKey.getY());
         } else if (key instanceof DHPublicKey) {
             LOGGER.trace("Found a DH PublicKey");
             DHPublicKey pubKey = (DHPublicKey) key;
@@ -90,7 +90,7 @@ public class CertificateUtils {
             NamedGroup group = NamedGroup.getNamedGroup(pubKey);
             if (group == null) {
                 return new CustomEcPublicKey(pubKey.getW().getAffineX(), pubKey.getW().getAffineY(),
-                        GOSTCurve.fromNamedSpec((ECNamedCurveSpec) pubKey.getParams()));
+                    GOSTCurve.fromNamedSpec((ECNamedCurveSpec) pubKey.getParams()));
             } else {
                 return new CustomEcPublicKey(pubKey.getW().getAffineX(), pubKey.getW().getAffineY(), group);
             }
@@ -104,7 +104,7 @@ public class CertificateUtils {
      *
      * @param  cert
      *              The Certificate from which the PublicKey should be extracted
-     * @return The parsed PublicKey
+     * @return      The parsed PublicKey
      */
     public static PublicKey parsePublicKey(Certificate cert) {
         try {
@@ -117,7 +117,7 @@ public class CertificateUtils {
                 // manually
                 // parse this, this may fail
                 ASN1InputStream stream = new ASN1InputStream(
-                        cert.getCertificateAt(0).getSubjectPublicKeyInfo().toASN1Primitive().getEncoded());
+                    cert.getCertificateAt(0).getSubjectPublicKeyInfo().toASN1Primitive().getEncoded());
                 DLSequence sequence = (DLSequence) stream.readObject();
                 DLSequence objectAt = (DLSequence) sequence.getObjectAt(0).toASN1Primitive();
                 DLSequence dhparams = (DLSequence) objectAt.getObjectAt(1);
@@ -140,7 +140,7 @@ public class CertificateUtils {
             ECPrivateKeySpec s = f.getKeySpec(key, ECPrivateKeySpec.class);
             k = (ECPrivateKey) f.generatePrivate(s);
         } catch (NoSuchAlgorithmException | InvalidKeySpecException | IllegalArgumentException
-                | ClassCastException ex) {
+            | ClassCastException ex) {
             LOGGER.warn("Could not convert key to EC private key!");
             LOGGER.debug(ex);
             return null;
@@ -155,7 +155,7 @@ public class CertificateUtils {
             RSAPrivateKeySpec s = f.getKeySpec(key, RSAPrivateKeySpec.class);
             k = (RSAPrivateKey) f.generatePrivate(s);
         } catch (NoSuchAlgorithmException | InvalidKeySpecException | IllegalArgumentException
-                | ClassCastException ex) {
+            | ClassCastException ex) {
             LOGGER.warn("Could not convert key to EC private key!");
             LOGGER.debug(ex);
             return null;
@@ -332,7 +332,7 @@ public class CertificateUtils {
         SubjectPublicKeyInfo keyInfo = cert.getCertificateAt(0).getSubjectPublicKeyInfo();
         ASN1ObjectIdentifier alg = keyInfo.getAlgorithm().getAlgorithm();
         return alg.equals(RosstandartObjectIdentifiers.id_tc26_gost_3410_12_256)
-                || alg.equals(RosstandartObjectIdentifiers.id_tc26_gost_3410_12_512);
+            || alg.equals(RosstandartObjectIdentifiers.id_tc26_gost_3410_12_512);
     }
 
     private CertificateUtils() {

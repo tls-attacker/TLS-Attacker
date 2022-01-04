@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -55,7 +55,7 @@ public class PWDClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         }
         prepareScalarElement(msg);
         byte[] premasterSecret = generatePremasterSecret(msg.getComputations().getPasswordElement(),
-                msg.getComputations().getPrivateKeyScalar(), curve);
+            msg.getComputations().getPrivateKeyScalar(), curve);
         preparePremasterSecret(msg, premasterSecret);
         prepareClientServerRandom(msg);
     }
@@ -66,7 +66,7 @@ public class PWDClientKeyExchangePreparator extends ClientKeyExchangePreparator<
             msg.prepareComputations();
             EllipticCurve curve = CurveFactory.getCurve(chooser.getSelectedNamedGroup());
             byte[] premasterSecret = generatePremasterSecret(chooser.getContext().getPWDPE(),
-                    chooser.getContext().getServerPWDPrivate(), curve);
+                chooser.getContext().getServerPWDPrivate(), curve);
             preparePremasterSecret(msg, premasterSecret);
             prepareClientServerRandom(msg);
         }
@@ -78,7 +78,7 @@ public class PWDClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         msg.getComputations().setPasswordElement(passwordElement);
 
         LOGGER.debug("PasswordElement.x: " + ArrayConverter
-                .bytesToHexString(ArrayConverter.bigIntegerToByteArray(passwordElement.getFieldX().getData())));
+            .bytesToHexString(ArrayConverter.bigIntegerToByteArray(passwordElement.getFieldX().getData())));
     }
 
     protected MacAlgorithm getMacAlgorithm(CipherSuite suite) {
@@ -123,11 +123,11 @@ public class PWDClientKeyExchangePreparator extends ClientKeyExchangePreparator<
     protected void prepareScalarElement(PWDClientKeyExchangeMessage msg) {
         EllipticCurve curve = CurveFactory.getCurve(chooser.getSelectedNamedGroup());
         PWDComputations.PWDKeyMaterial keyMaterial =
-                PWDComputations.generateKeyMaterial(curve, msg.getComputations().getPasswordElement(), chooser);
+            PWDComputations.generateKeyMaterial(curve, msg.getComputations().getPasswordElement(), chooser);
 
         msg.getComputations().setPrivateKeyScalar(keyMaterial.privateKeyScalar);
         LOGGER.debug("Private: "
-                + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(keyMaterial.privateKeyScalar)));
+            + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(keyMaterial.privateKeyScalar)));
 
         prepareScalar(msg, keyMaterial.scalar);
         prepareScalarLength(msg);
@@ -148,7 +148,7 @@ public class PWDClientKeyExchangePreparator extends ClientKeyExchangePreparator<
 
     protected void prepareElement(PWDClientKeyExchangeMessage msg, Point element) {
         byte[] serializedElement = PointFormatter.formatToByteArray(chooser.getConfig().getDefaultSelectedNamedGroup(),
-                element, chooser.getConfig().getDefaultSelectedPointFormat());
+            element, chooser.getConfig().getDefaultSelectedPointFormat());
         msg.setElement(serializedElement);
         LOGGER.debug("Element: " + ArrayConverter.bytesToHexString(serializedElement));
     }
@@ -167,7 +167,7 @@ public class PWDClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         } else {
             // TODO: wrong group
             peerElement =
-                    PointFormatter.formatFromByteArray(chooser.getSelectedNamedGroup(), msg.getElement().getValue());
+                PointFormatter.formatFromByteArray(chooser.getSelectedNamedGroup(), msg.getElement().getValue());
             peerScalar = new BigInteger(1, msg.getScalar().getValue());
         }
         if (peerElement == null || peerScalar == null) {
@@ -175,21 +175,21 @@ public class PWDClientKeyExchangePreparator extends ClientKeyExchangePreparator<
             return new byte[0];
         }
         Point sharedSecret =
-                curve.mult(privateKeyScalar, curve.add(curve.mult(peerScalar, passwordElement), peerElement));
+            curve.mult(privateKeyScalar, curve.add(curve.mult(peerScalar, passwordElement), peerElement));
         return ArrayConverter.bigIntegerToByteArray(sharedSecret.getFieldX().getData());
     }
 
     private void preparePremasterSecret(PWDClientKeyExchangeMessage msg, byte[] premasterSecret) {
         msg.getComputations().setPremasterSecret(premasterSecret);
         LOGGER.debug("PremasterSecret: "
-                + ArrayConverter.bytesToHexString(msg.getComputations().getPremasterSecret().getValue()));
+            + ArrayConverter.bytesToHexString(msg.getComputations().getPremasterSecret().getValue()));
     }
 
     private void prepareClientServerRandom(PWDClientKeyExchangeMessage msg) {
         byte[] clientRandom = ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
         msg.getComputations().setClientServerRandom(clientRandom);
         LOGGER.debug("ClientServerRandom: "
-                + ArrayConverter.bytesToHexString(msg.getComputations().getClientServerRandom().getValue()));
+            + ArrayConverter.bytesToHexString(msg.getComputations().getClientServerRandom().getValue()));
     }
 
 }

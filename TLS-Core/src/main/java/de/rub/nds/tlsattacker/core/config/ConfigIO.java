@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -115,7 +115,7 @@ public class ConfigIO {
      *                      The stream that provides the XML structure
      * @param  unmarshaller
      *                      The unmarshaller that will be used during the parsing
-     * @return Config a new Config that contains the parsed values from the inputStream
+     * @return              Config a new Config that contains the parsed values from the inputStream
      */
     private static Config read(InputStream stream, Unmarshaller unmarshaller) {
         if (stream == null) {
@@ -129,7 +129,7 @@ public class ConfigIO {
             XMLStreamReader xsr = xif.createXMLStreamReader(stream);
             SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
             Schema configSchema =
-                    sf.newSchema(new StreamSource(WorkflowTraceSerializer.class.getResourceAsStream("/" + xsd_source)));
+                sf.newSchema(new StreamSource(WorkflowTraceSerializer.class.getResourceAsStream("/" + xsd_source)));
             configSchema.newValidator();
             unmarshaller.setSchema(configSchema);
             Config config = (Config) unmarshaller.unmarshal(xsr);

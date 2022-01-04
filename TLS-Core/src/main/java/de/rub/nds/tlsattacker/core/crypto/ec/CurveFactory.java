@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -22,7 +22,7 @@ public class CurveFactory {
      *
      * @param  name
      *              The name of the curve, that should be returned.
-     * @return EllipticCurve for the provided NamedGroup
+     * @return      EllipticCurve for the provided NamedGroup
      */
     public static EllipticCurve getCurve(NamedGroup name) {
         if (name.isGrease()) {
@@ -93,7 +93,7 @@ public class CurveFactory {
                 return new EllipticCurveX448();
             default:
                 throw new UnsupportedOperationException(
-                        "The provided group '" + name + "' is not supported by this method.");
+                    "The provided group '" + name + "' is not supported by this method.");
 
         }
     }

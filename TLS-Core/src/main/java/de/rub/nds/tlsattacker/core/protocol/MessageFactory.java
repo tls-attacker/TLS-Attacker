@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -57,7 +57,7 @@ public class MessageFactory {
                 return new KeyUpdateMessage();
             case MESSAGE_HASH:
                 LOGGER.warn(
-                        "Received MessageHash HandshakeMessageType - not implemented yet. Treating as UnknownHandshakeMessage");
+                    "Received MessageHash HandshakeMessageType - not implemented yet. Treating as UnknownHandshakeMessage");
                 return new UnknownHandshakeMessage();
             case NEW_SESSION_TICKET:
                 return new NewSessionTicketMessage();
@@ -173,7 +173,7 @@ public class MessageFactory {
         try {
             return extensionClass.getConstructor().newInstance();
         } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | IllegalArgumentException
-                | InvocationTargetException ex) {
+            | InvocationTargetException ex) {
             throw new ObjectCreationException("Could not create Extension", ex);
         }
     }
@@ -185,7 +185,7 @@ public class MessageFactory {
         try {
             return protocolMessageClass.getConstructor().newInstance();
         } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | IllegalArgumentException
-                | InvocationTargetException ex) {
+            | InvocationTargetException ex) {
             throw new ObjectCreationException("Could not create ProtocolMessage", ex);
         }
     }

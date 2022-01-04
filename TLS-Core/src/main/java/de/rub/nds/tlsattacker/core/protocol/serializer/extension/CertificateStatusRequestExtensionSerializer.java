@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusR
 import static de.rub.nds.modifiablevariable.util.ArrayConverter.intToBytes;
 
 public class CertificateStatusRequestExtensionSerializer
-        extends ExtensionSerializer<CertificateStatusRequestExtensionMessage> {
+    extends ExtensionSerializer<CertificateStatusRequestExtensionMessage> {
 
     private final CertificateStatusRequestExtensionMessage message;
 
@@ -27,12 +27,12 @@ public class CertificateStatusRequestExtensionSerializer
     @Override
     public byte[] serializeExtensionContent() {
         appendBytes(intToBytes(message.getCertificateStatusRequestType().getValue(),
-                ExtensionByteLength.CERTIFICATE_STATUS_REQUEST_STATUS_TYPE));
+            ExtensionByteLength.CERTIFICATE_STATUS_REQUEST_STATUS_TYPE));
         appendBytes(intToBytes(message.getResponderIDListLength().getValue(),
-                ExtensionByteLength.CERTIFICATE_STATUS_REQUEST_RESPONDER_ID_LIST_LENGTH));
+            ExtensionByteLength.CERTIFICATE_STATUS_REQUEST_RESPONDER_ID_LIST_LENGTH));
         appendBytes(message.getResponderIDList().getValue());
         appendBytes(intToBytes(message.getRequestExtensionLength().getValue(),
-                ExtensionByteLength.CERTIFICATE_STATUS_REQUEST_REQUEST_EXTENSION_LENGTH));
+            ExtensionByteLength.CERTIFICATE_STATUS_REQUEST_REQUEST_EXTENSION_LENGTH));
         appendBytes(message.getRequestExtension().getValue());
 
         return getAlreadySerialized();

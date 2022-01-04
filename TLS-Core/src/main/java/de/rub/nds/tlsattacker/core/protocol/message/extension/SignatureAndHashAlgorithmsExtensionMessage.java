@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -29,7 +29,7 @@ import java.io.InputStream;
  */
 @XmlRootElement(name = "SignatureAndHashAlgorithmsExtension")
 public class SignatureAndHashAlgorithmsExtensionMessage
-        extends ExtensionMessage<SignatureAndHashAlgorithmsExtensionMessage> {
+    extends ExtensionMessage<SignatureAndHashAlgorithmsExtensionMessage> {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger signatureAndHashAlgorithmsLength;
@@ -51,7 +51,7 @@ public class SignatureAndHashAlgorithmsExtensionMessage
 
     public void setSignatureAndHashAlgorithmsLength(int length) {
         this.signatureAndHashAlgorithmsLength =
-                ModifiableVariableFactory.safelySetValue(this.signatureAndHashAlgorithmsLength, length);
+            ModifiableVariableFactory.safelySetValue(this.signatureAndHashAlgorithmsLength, length);
     }
 
     public void setSignatureAndHashAlgorithmsLength(ModifiableInteger signatureAndHashAlgorithmsLength) {
@@ -64,7 +64,7 @@ public class SignatureAndHashAlgorithmsExtensionMessage
 
     public void setSignatureAndHashAlgorithms(byte[] array) {
         this.signatureAndHashAlgorithms =
-                ModifiableVariableFactory.safelySetValue(this.signatureAndHashAlgorithms, array);
+            ModifiableVariableFactory.safelySetValue(this.signatureAndHashAlgorithms, array);
     }
 
     public void setSignatureAndHashAlgorithms(ModifiableByteArray signatureAndHashAlgorithms) {
@@ -79,7 +79,7 @@ public class SignatureAndHashAlgorithmsExtensionMessage
     @Override
     public SignatureAndHashAlgorithmsExtensionPreparator getPreparator(TlsContext tlsContext) {
         return new SignatureAndHashAlgorithmsExtensionPreparator(tlsContext.getChooser(), this,
-                getSerializer(tlsContext));
+            getSerializer(tlsContext));
     }
 
     @Override

@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -56,7 +56,7 @@ public class ServerCertificateTypeExtensionMessage extends ExtensionMessage<Serv
 
     public void setCertificateTypesLength(int certificateTypesLength) {
         this.certificateTypesLength =
-                ModifiableVariableFactory.safelySetValue(this.certificateTypesLength, certificateTypesLength);
+            ModifiableVariableFactory.safelySetValue(this.certificateTypesLength, certificateTypesLength);
     }
 
     public ModifiableByteArray getCertificateTypes() {

@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -80,7 +80,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
                 LayerProcessingHint tempHint = dataStream.getHint();
                 if (tempHint == null) {
                     LOGGER.warn(
-                            "The TLS message layer requires a processing hint. E.g. a record type. Parsing as an unknown message");
+                        "The TLS message layer requires a processing hint. E.g. a record type. Parsing as an unknown message");
                     readUnknownProtocolData();
                 } else if (tempHint instanceof RecordLayerHint) {
                     RecordLayerHint hint = (RecordLayerHint) dataStream.getHint();
@@ -143,8 +143,8 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
         HandshakeMessage handshakeMessage = MessageFactory.generateHandshakeMessage(handshakeMessageType, context);
         handshakeMessage.setType(type);
         handshakeMessage.setLength(length);
-        handshakeMessage.setCompleteResultingMessage(ArrayConverter.concatenate(new byte[]{type},
-                ArrayConverter.intToBytes(length, HandshakeByteLength.MESSAGE_LENGTH_FIELD), payload));
+        handshakeMessage.setCompleteResultingMessage(ArrayConverter.concatenate(new byte[] { type },
+            ArrayConverter.intToBytes(length, HandshakeByteLength.MESSAGE_LENGTH_FIELD), payload));
         Parser parser = handshakeMessage.getParser(context, new ByteArrayInputStream(payload));
         parser.parse(handshakeMessage);
         Preparator preparator = handshakeMessage.getPreparator(context);

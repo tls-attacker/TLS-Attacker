@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -110,19 +110,19 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
                 ExtensionMessage extension = HandlerFactory.getExtension(extensionMessage.getExtensionTypeConstant());
                 Preparator preparator = extension.getPreparator(chooser.getContext());
                 if (extension instanceof PreSharedKeyExtensionMessage && message instanceof ClientHelloMessage
-                        && chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
+                    && chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
                     ((PreSharedKeyExtensionPreparator) preparator).setClientHello((ClientHelloMessage) message);
                     preparator.afterPrepare();
                 } else if (extension instanceof EncryptedServerNameIndicationExtensionMessage
-                        && message instanceof ClientHelloMessage
-                        && chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
+                    && message instanceof ClientHelloMessage
+                    && chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
                     ClientHelloMessage clientHelloMessage = (ClientHelloMessage) message;
                     ((EncryptedServerNameIndicationExtensionPreparator) preparator)
-                            .setClientHelloMessage(clientHelloMessage);
+                        .setClientHelloMessage(clientHelloMessage);
                     preparator.afterPrepare();
                 }
                 if (extensionMessage.getExtensionBytes() != null
-                        && extensionMessage.getExtensionBytes().getValue() != null) {
+                    && extensionMessage.getExtensionBytes().getValue() != null) {
                     try {
                         stream.write(extensionMessage.getExtensionBytes().getValue());
                     } catch (IOException ex) {
@@ -130,7 +130,7 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
                     }
                 } else {
                     LOGGER.debug(
-                            "If we are in a SSLv2 or SSLv3 Connection we do not add extensions, as SSL did not contain extensions");
+                        "If we are in a SSLv2 or SSLv3 Connection we do not add extensions, as SSL did not contain extensions");
                     LOGGER.debug("If however, the extensions are prepared, we will ad themm");
                 }
             }

@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -72,7 +72,7 @@ public class HKDFunction {
      *                                                                The Salt
      * @param  ikm
      *                                                                The IKM
-     * @return The HKDF-Extracted output
+     * @return                                                        The HKDF-Extracted output
      * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     public static byte[] extract(HKDFAlgorithm hkdfAlgorithm, byte[] salt, byte[] ikm) throws CryptoException {
@@ -102,11 +102,11 @@ public class HKDFunction {
      *                                                                The info
      * @param  outLen
      *                                                                The output Length
-     * @return The expanded bytes
+     * @return                                                        The expanded bytes
      * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     public static byte[] expand(HKDFAlgorithm hkdfAlgorithm, byte[] prk, byte[] info, int outLen)
-            throws CryptoException {
+        throws CryptoException {
         try {
             Mac mac = Mac.getInstance(hkdfAlgorithm.getMacAlgorithm().getJavaName());
             SecretKeySpec keySpec = new SecretKeySpec(prk, hkdfAlgorithm.getMacAlgorithm().getJavaName());
@@ -143,8 +143,8 @@ public class HKDFunction {
         int labelLength = label.getBytes().length;
         int hashValueLength = hashValue.length;
         byte[] result =
-                ArrayConverter.concatenate(ArrayConverter.intToBytes(outLen, 2), ArrayConverter.intToBytes(labelLength, 1),
-                        label.getBytes(), ArrayConverter.intToBytes(hashValueLength, 1), hashValue);
+            ArrayConverter.concatenate(ArrayConverter.intToBytes(outLen, 2), ArrayConverter.intToBytes(labelLength, 1),
+                label.getBytes(), ArrayConverter.intToBytes(hashValueLength, 1), hashValue);
         return result;
     }
 
@@ -161,11 +161,11 @@ public class HKDFunction {
      *                                                                The label input
      * @param  toHash
      *                                                                The data to hash
-     * @return The derivedSecret
+     * @return                                                        The derivedSecret
      * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     public static byte[] deriveSecret(HKDFAlgorithm hkdfAlgorithm, String hashAlgorithm, byte[] prk, String labelIn,
-                                      byte[] toHash) throws CryptoException {
+        byte[] toHash) throws CryptoException {
         try {
             MessageDigest hashFunction = MessageDigest.getInstance(hashAlgorithm);
             hashFunction.update(toHash);
@@ -178,7 +178,7 @@ public class HKDFunction {
     }
 
     static byte[] deriveSecret(HKDFAlgorithm hkdfAlgorithm, byte[] hexStringToByteArray, String tls13Derived,
-                               byte[] hexStringToByteArray0) {
+        byte[] hexStringToByteArray0) {
         throw new UnsupportedOperationException("Not supported yet."); // To
         // change
         // body
@@ -204,11 +204,11 @@ public class HKDFunction {
      *                                                                The hash value
      * @param  outLen
      *                                                                The output length
-     * @return The expanded Label bytes
+     * @return                                                        The expanded Label bytes
      * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     public static byte[] expandLabel(HKDFAlgorithm hkdfAlgorithm, byte[] prk, String labelIn, byte[] hashValue,
-                                     int outLen) throws CryptoException {
+        int outLen) throws CryptoException {
         byte[] info = labelEncoder(hashValue, labelIn, outLen);
         return expand(hkdfAlgorithm, prk, info, outLen);
     }

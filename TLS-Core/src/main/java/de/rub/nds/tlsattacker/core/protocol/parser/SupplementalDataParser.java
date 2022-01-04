@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -57,7 +57,7 @@ public class SupplementalDataParser extends HandshakeMessageParser<SupplementalD
     private void parseSupplementalDataBytes(SupplementalDataMessage msg) {
         msg.setSupplementalDataBytes(parseByteArrayField(msg.getSupplementalDataLength().getValue()));
         LOGGER.debug(
-                "SupplementalDataBytes: " + ArrayConverter.bytesToHexString(msg.getSupplementalDataBytes().getValue()));
+            "SupplementalDataBytes: " + ArrayConverter.bytesToHexString(msg.getSupplementalDataBytes().getValue()));
     }
 
     private void parseSupplementalDataEntries(SupplementalDataMessage msg) {

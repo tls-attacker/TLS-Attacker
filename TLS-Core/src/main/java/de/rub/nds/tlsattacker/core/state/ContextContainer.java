@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -49,7 +49,7 @@ public class ContextContainer {
      * </p>
      * Convenience method, useful when working with a single context only.
      *
-     * @return the only known TLS context
+     * @return                        the only known TLS context
      * @throws ConfigurationException
      *                                if there is more than one TLS context in the container
      *
@@ -68,7 +68,7 @@ public class ContextContainer {
      * Get TLS context with the given alias.
      *
      * @param  alias
-     * @return the context with the given connection end alias
+     * @return                        the context with the given connection end alias
      * @throws ConfigurationException
      *                                if there is no TLS context with the given alias
      *
@@ -169,7 +169,7 @@ public class ContextContainer {
         TlsContext replaceMe = tlsContexts.get(alias);
         if (!replaceMe.getConnection().equals(newTlsContext.getConnection())) {
             throw new ContextHandlingException(
-                    "Cannot replace TlsContext because the new TlsContext" + " defines another connection.");
+                "Cannot replace TlsContext because the new TlsContext" + " defines another connection.");
         }
         removeTlsContext(alias);
         addTlsContext(newTlsContext);

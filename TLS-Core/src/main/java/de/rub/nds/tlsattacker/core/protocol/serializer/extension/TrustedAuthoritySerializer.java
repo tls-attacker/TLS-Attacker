@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -30,12 +30,12 @@ public class TrustedAuthoritySerializer extends Serializer<TrustedAuthority> {
             appendBytes(trustedAuthority.getSha1Hash().getValue());
         }
         if (trustedAuthority.getDistinguishedNameLength() != null
-                && trustedAuthority.getDistinguishedNameLength().getValue() != null) {
+            && trustedAuthority.getDistinguishedNameLength().getValue() != null) {
             appendInt(trustedAuthority.getDistinguishedNameLength().getValue(),
-                    ExtensionByteLength.TRUSTED_AUTHORITY_DISTINGUISHED_NAME_LENGTH);
+                ExtensionByteLength.TRUSTED_AUTHORITY_DISTINGUISHED_NAME_LENGTH);
         }
         if (trustedAuthority.getDistinguishedName() != null
-                && trustedAuthority.getDistinguishedName().getValue() != null) {
+            && trustedAuthority.getDistinguishedName().getValue() != null) {
             appendBytes(trustedAuthority.getDistinguishedName().getValue());
         }
 

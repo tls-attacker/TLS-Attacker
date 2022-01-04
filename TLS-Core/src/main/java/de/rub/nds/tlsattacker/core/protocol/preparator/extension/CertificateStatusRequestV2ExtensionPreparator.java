@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -16,13 +16,13 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.extension.RequestItemV2Se
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 public class CertificateStatusRequestV2ExtensionPreparator
-        extends ExtensionPreparator<CertificateStatusRequestV2ExtensionMessage> {
+    extends ExtensionPreparator<CertificateStatusRequestV2ExtensionMessage> {
 
     private final CertificateStatusRequestV2ExtensionMessage msg;
 
     public CertificateStatusRequestV2ExtensionPreparator(Chooser chooser,
-                                                         CertificateStatusRequestV2ExtensionMessage message,
-                                                         ExtensionSerializer<CertificateStatusRequestV2ExtensionMessage> serializer) {
+        CertificateStatusRequestV2ExtensionMessage message,
+        ExtensionSerializer<CertificateStatusRequestV2ExtensionMessage> serializer) {
         super(chooser, message, serializer);
         msg = message;
     }

@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -113,7 +113,7 @@ public class EsniKeyRecordParser extends Parser<EsniKeyRecord> {
 
         byte[] extensionListBytes = parseByteArrayField(extensionsLength);
         ExtensionListParser extensionListParser =
-                new ExtensionListParser(new ByteArrayInputStream(extensionListBytes), tlsContext, selectedVersion, false);
+            new ExtensionListParser(new ByteArrayInputStream(extensionListBytes), tlsContext, selectedVersion, false);
         List<ExtensionMessage> extensionList = new LinkedList<>();
         extensionListParser.parse(extensionList);
         record.setExtensions(extensionList);

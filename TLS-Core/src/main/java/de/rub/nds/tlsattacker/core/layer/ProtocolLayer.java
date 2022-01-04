@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -148,7 +148,7 @@ public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container 
             receiveMoreDataForHint(null);
             if (currentInputStream == null) {
                 throw new EndOfStreamException(
-                        "Could not receive data stream from lower layer, nothing more to receive");
+                    "Could not receive data stream from lower layer, nothing more to receive");
             }
         }
         if (currentInputStream.available() > 0) {

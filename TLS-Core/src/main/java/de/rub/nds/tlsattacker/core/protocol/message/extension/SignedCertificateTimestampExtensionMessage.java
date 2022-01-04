@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -28,7 +28,7 @@ import java.io.InputStream;
  */
 @XmlRootElement(name = "SignedCertificateTimestampExtension")
 public class SignedCertificateTimestampExtensionMessage
-        extends ExtensionMessage<SignedCertificateTimestampExtensionMessage> {
+    extends ExtensionMessage<SignedCertificateTimestampExtensionMessage> {
 
     @ModifiableVariableProperty
     private ModifiableByteArray singedTimestamp;
@@ -75,7 +75,7 @@ public class SignedCertificateTimestampExtensionMessage
     @Override
     public SignedCertificateTimestampExtensionPreparator getPreparator(TlsContext tlsContext) {
         return new SignedCertificateTimestampExtensionPreparator(tlsContext.getChooser(), this,
-                getSerializer(tlsContext));
+            getSerializer(tlsContext));
     }
 
     @Override

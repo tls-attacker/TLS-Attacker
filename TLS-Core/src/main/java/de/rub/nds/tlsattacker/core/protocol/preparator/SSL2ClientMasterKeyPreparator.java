@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -131,14 +131,14 @@ public class SSL2ClientMasterKeyPreparator extends HandshakeMessagePreparator<SS
     protected void preparePremasterSecret(SSL2ClientMasterKeyMessage msg) {
         msg.getComputations().setPremasterSecret(premasterSecret);
         LOGGER.debug("PremasterSecret: "
-                + ArrayConverter.bytesToHexString(msg.getComputations().getPremasterSecret().getValue()));
+            + ArrayConverter.bytesToHexString(msg.getComputations().getPremasterSecret().getValue()));
     }
 
     protected void preparePlainPaddedPremasterSecret(SSL2ClientMasterKeyMessage msg) {
-        msg.getComputations().setPlainPaddedPremasterSecret(ArrayConverter.concatenate(new byte[]{0x00, 0x02},
-                padding, new byte[]{0x00}, msg.getComputations().getPremasterSecret().getValue()));
+        msg.getComputations().setPlainPaddedPremasterSecret(ArrayConverter.concatenate(new byte[] { 0x00, 0x02 },
+            padding, new byte[] { 0x00 }, msg.getComputations().getPremasterSecret().getValue()));
         LOGGER.debug("PlainPaddedPremasterSecret: "
-                + ArrayConverter.bytesToHexString(msg.getComputations().getPlainPaddedPremasterSecret().getValue()));
+            + ArrayConverter.bytesToHexString(msg.getComputations().getPlainPaddedPremasterSecret().getValue()));
     }
 
     protected void prepareEncryptedKeyData(SSL2ClientMasterKeyMessage msg) {
@@ -180,9 +180,9 @@ public class SSL2ClientMasterKeyPreparator extends HandshakeMessagePreparator<SS
 
         BigInteger biPaddedPremasterSecret = new BigInteger(1, paddedPremasterSecret);
         BigInteger biEncrypted =
-                biPaddedPremasterSecret.modPow(chooser.getServerRSAPublicKey(), chooser.getServerRsaModulus());
+            biPaddedPremasterSecret.modPow(chooser.getServerRSAPublicKey(), chooser.getServerRsaModulus());
         encryptedPremasterSecret = ArrayConverter.bigIntegerToByteArray(biEncrypted,
-                chooser.getServerRsaModulus().bitLength() / Bits.IN_A_BYTE, true);
+            chooser.getServerRsaModulus().bitLength() / Bits.IN_A_BYTE, true);
         prepareEncryptedKeyData(message);
         prepareEncryptedKeyDataLength(message);
     }

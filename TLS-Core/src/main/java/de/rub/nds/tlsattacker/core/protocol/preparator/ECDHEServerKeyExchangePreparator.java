@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -29,7 +29,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMessage>
-        extends ServerKeyExchangePreparator<T> {
+    extends ServerKeyExchangePreparator<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -91,7 +91,7 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
             publicKeyBytes = PointFormatter.formatToByteArray(namedGroup, publicKey, pointFormat);
         } else {
             LOGGER.warn(
-                    "Could not set public key. The selected curve is probably not a real curve. Using empty public key instead");
+                "Could not set public key. The selected curve is probably not a real curve. Using empty public key instead");
             publicKeyBytes = new byte[0];
         }
         msg.setPublicKey(publicKeyBytes);
@@ -156,7 +156,7 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
                     ecParams.write(msg.getNamedGroup().getValue());
                 } catch (IOException ex) {
                     throw new PreparationException("Failed to add named group to ECDHEServerKeyExchange signature.",
-                            ex);
+                        ex);
                 }
                 break;
             default:
@@ -168,11 +168,11 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
             ecParams.write(msg.getPublicKey().getValue());
         } catch (IOException ex) {
             throw new PreparationException("Failed to add serializedPublicKey to ECDHEServerKeyExchange signature.",
-                    ex);
+                ex);
         }
 
         return ArrayConverter.concatenate(msg.getComputations().getClientServerRandom().getValue(),
-                ecParams.toByteArray());
+            ecParams.toByteArray());
 
     }
 
@@ -183,14 +183,14 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
     protected void prepareSignatureAndHashAlgorithm(T msg, SignatureAndHashAlgorithm signHashAlgo) {
         msg.setSignatureAndHashAlgorithm(signHashAlgo.getByteValue());
         LOGGER.debug("SignatureAndHashAlgorithm: "
-                + ArrayConverter.bytesToHexString(msg.getSignatureAndHashAlgorithm().getValue()));
+            + ArrayConverter.bytesToHexString(msg.getSignatureAndHashAlgorithm().getValue()));
     }
 
     protected void prepareClientServerRandom(T msg) {
         msg.getComputations()
-                .setClientServerRandom(ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom()));
+            .setClientServerRandom(ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom()));
         LOGGER.debug("ClientServerRandom: "
-                + ArrayConverter.bytesToHexString(msg.getComputations().getClientServerRandom().getValue()));
+            + ArrayConverter.bytesToHexString(msg.getComputations().getClientServerRandom().getValue()));
     }
 
     protected void prepareSignature(T msg, byte[] signature) {

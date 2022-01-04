@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -70,7 +70,7 @@ public class ClientHelloMessage extends HelloMessage {
     public ClientHelloMessage(Config tlsConfig) {
         super(tlsConfig, HandshakeMessageType.CLIENT_HELLO);
         if (!tlsConfig.getHighestProtocolVersion().isSSL()
-                || (tlsConfig.getHighestProtocolVersion().isSSL() && tlsConfig.isAddExtensionsInSSL())) {
+            || (tlsConfig.getHighestProtocolVersion().isSSL() && tlsConfig.isAddExtensionsInSSL())) {
             if (tlsConfig.isAddHeartbeatExtension()) {
                 addExtension(new HeartbeatExtensionMessage());
             }
@@ -91,7 +91,7 @@ public class ClientHelloMessage extends HelloMessage {
                 byte[] serverName;
                 if (tlsConfig.getDefaultClientConnection().getHostname() != null) {
                     serverName =
-                            tlsConfig.getDefaultClientConnection().getHostname().getBytes(Charset.forName("ASCII"));
+                        tlsConfig.getDefaultClientConnection().getHostname().getBytes(Charset.forName("ASCII"));
                 } else {
                     LOGGER.warn("SNI not correctly configured!");
                     serverName = new byte[0];
@@ -103,12 +103,12 @@ public class ClientHelloMessage extends HelloMessage {
             }
             if (tlsConfig.isAddEncryptedServerNameIndicationExtension()) {
                 EncryptedServerNameIndicationExtensionMessage extensionMessage =
-                        new EncryptedServerNameIndicationExtensionMessage();
+                    new EncryptedServerNameIndicationExtensionMessage();
                 String hostname = tlsConfig.getDefaultClientConnection().getHostname();
                 byte[] serverName;
                 if (tlsConfig.getDefaultClientConnection().getHostname() != null) {
                     serverName =
-                            tlsConfig.getDefaultClientConnection().getHostname().getBytes(Charset.forName("ASCII"));
+                        tlsConfig.getDefaultClientConnection().getHostname().getBytes(Charset.forName("ASCII"));
                 } else {
                     LOGGER.warn("SNI not correctly configured!");
                     serverName = new byte[0];
@@ -353,7 +353,7 @@ public class ClientHelloMessage extends HelloMessage {
     @Override
     public ClientHelloParser getParser(TlsContext tlsContext, InputStream stream) {
         return new ClientHelloParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext,
-                tlsContext.getTalkingConnectionEndType());
+            tlsContext.getTalkingConnectionEndType());
     }
 
     @Override

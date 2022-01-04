@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -36,11 +36,11 @@ import java.util.Date;
 @XmlRootElement(name = "ServerHello")
 public class ServerHelloMessage extends HelloMessage {
 
-    private static final byte[] HELLO_RETRY_REQUEST_RANDOM = new byte[]{(byte) 0xCF, (byte) 0x21, (byte) 0xAD,
-            (byte) 0x74, (byte) 0xE5, (byte) 0x9A, (byte) 0x61, (byte) 0x11, (byte) 0xBE, (byte) 0x1D, (byte) 0x8C,
-            (byte) 0x02, (byte) 0x1E, (byte) 0x65, (byte) 0xB8, (byte) 0x91, (byte) 0xC2, (byte) 0xA2, (byte) 0x11,
-            (byte) 0x16, (byte) 0x7A, (byte) 0xBB, (byte) 0x8C, (byte) 0x5E, (byte) 0x07, (byte) 0x9E, (byte) 0x09,
-            (byte) 0xE2, (byte) 0xC8, (byte) 0xA8, (byte) 0x33, (byte) 0x9C};
+    private static final byte[] HELLO_RETRY_REQUEST_RANDOM = new byte[] { (byte) 0xCF, (byte) 0x21, (byte) 0xAD,
+        (byte) 0x74, (byte) 0xE5, (byte) 0x9A, (byte) 0x61, (byte) 0x11, (byte) 0xBE, (byte) 0x1D, (byte) 0x8C,
+        (byte) 0x02, (byte) 0x1E, (byte) 0x65, (byte) 0xB8, (byte) 0x91, (byte) 0xC2, (byte) 0xA2, (byte) 0x11,
+        (byte) 0x16, (byte) 0x7A, (byte) 0xBB, (byte) 0x8C, (byte) 0x5E, (byte) 0x07, (byte) 0x9E, (byte) 0x09,
+        (byte) 0xE2, (byte) 0xC8, (byte) 0xA8, (byte) 0x33, (byte) 0x9C };
 
     public static byte[] getHelloRetryRequestRandom() {
         return HELLO_RETRY_REQUEST_RANDOM;
@@ -57,7 +57,7 @@ public class ServerHelloMessage extends HelloMessage {
     public ServerHelloMessage(Config tlsConfig) {
         super(tlsConfig, HandshakeMessageType.SERVER_HELLO);
         if (!tlsConfig.getHighestProtocolVersion().isSSL()
-                || (tlsConfig.getHighestProtocolVersion().isSSL() && tlsConfig.isAddExtensionsInSSL())) {
+            || (tlsConfig.getHighestProtocolVersion().isSSL() && tlsConfig.isAddExtensionsInSSL())) {
             if (tlsConfig.isAddHeartbeatExtension()) {
                 addExtension(new HeartbeatExtensionMessage());
             }
@@ -73,7 +73,7 @@ public class ServerHelloMessage extends HelloMessage {
             if (tlsConfig.isAddServerNameIndicationExtension()) {
                 ServerNameIndicationExtensionMessage extension = new ServerNameIndicationExtensionMessage();
                 ServerNamePair pair = new ServerNamePair(tlsConfig.getSniType().getValue(),
-                        tlsConfig.getDefaultServerConnection().getHostname().getBytes(Charset.forName("US-ASCII")));
+                    tlsConfig.getDefaultServerConnection().getHostname().getBytes(Charset.forName("US-ASCII")));
                 extension.getServerNameList().add(pair);
                 addExtension(extension);
             }
@@ -192,7 +192,7 @@ public class ServerHelloMessage extends HelloMessage {
 
     public void setSelectedCompressionMethod(byte value) {
         this.selectedCompressionMethod =
-                ModifiableVariableFactory.safelySetValue(this.selectedCompressionMethod, value);
+            ModifiableVariableFactory.safelySetValue(this.selectedCompressionMethod, value);
     }
 
     public Boolean isTls13HelloRetryRequest() {
@@ -213,9 +213,9 @@ public class ServerHelloMessage extends HelloMessage {
             sb.append("null");
         }
         if (getProtocolVersion() != null && getProtocolVersion().getValue() != null
-                && !ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()).isTLS13()) {
+            && !ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()).isTLS13()) {
             sb.append("\n  Server Unix Time: ")
-                    .append(new Date(ArrayConverter.bytesToLong(getUnixTime().getValue()) * 1000));
+                .append(new Date(ArrayConverter.bytesToLong(getUnixTime().getValue()) * 1000));
         }
         sb.append("\n  Server Unix Time: ");
         if (getProtocolVersion() != null) {
@@ -288,7 +288,7 @@ public class ServerHelloMessage extends HelloMessage {
     @Override
     public ServerHelloParser getParser(TlsContext tlsContext, InputStream stream) {
         return new ServerHelloParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext,
-                tlsContext.getTalkingConnectionEndType());
+            tlsContext.getTalkingConnectionEndType());
     }
 
     public Boolean isAutoSetHelloRetryModeInKeyShare() {

@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -67,8 +67,8 @@ public class LayerStack {
         LOGGER.debug("Sending Data");
         if (layerList.size() != layerConfigurationList.size()) {
             throw new RuntimeException(
-                    "Illegal LayerConfiguration list provided. Each layer needs a configuration entry (null is fine too if no explict configuration is desired). Expected "
-                            + layerList.size() + " but found " + layerConfigurationList.size());
+                "Illegal LayerConfiguration list provided. Each layer needs a configuration entry (null is fine too if no explict configuration is desired). Expected "
+                    + layerList.size() + " but found " + layerConfigurationList.size());
         }
 
         // Prepare layer configuration and clear previous executions
@@ -96,8 +96,8 @@ public class LayerStack {
         LOGGER.debug("Receiving Data");
         if (layerList.size() != layerConfigurationList.size()) {
             throw new RuntimeException(
-                    "Illegal LayerConfiguration list provided. Each layer needs a configuration entry (null is fine too if no explict configuration is desired). Expected "
-                            + layerList.size() + " but found " + layerConfigurationList.size());
+                "Illegal LayerConfiguration list provided. Each layer needs a configuration entry (null is fine too if no explict configuration is desired). Expected "
+                    + layerList.size() + " but found " + layerConfigurationList.size());
         }
         // Prepare layer configuration and clear previous executions
         for (int i = 0; i < layerList.size(); i++) {

@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -39,7 +39,7 @@ public class SupplementalDataEntry {
 
     public void setSupplementalDataEntry(byte[] supplementalDataEntry) {
         this.supplementalDataEntry =
-                ModifiableVariableFactory.safelySetValue(this.supplementalDataEntry, supplementalDataEntry);
+            ModifiableVariableFactory.safelySetValue(this.supplementalDataEntry, supplementalDataEntry);
     }
 
     public ModifiableInteger getSupplementalDataEntryType() {
@@ -52,7 +52,7 @@ public class SupplementalDataEntry {
 
     public void setSupplementalDataEntryType(int supplementalDataEntryType) {
         this.supplementalDataEntryType =
-                ModifiableVariableFactory.safelySetValue(this.supplementalDataEntryType, supplementalDataEntryType);
+            ModifiableVariableFactory.safelySetValue(this.supplementalDataEntryType, supplementalDataEntryType);
     }
 
     public ModifiableInteger getSupplementalDataEntryLength() {
@@ -65,7 +65,7 @@ public class SupplementalDataEntry {
 
     public void setSupplementalDataEntryLength(int supplementalDataEntryLength) {
         this.supplementalDataEntryLength =
-                ModifiableVariableFactory.safelySetValue(this.supplementalDataEntryLength, supplementalDataEntryLength);
+            ModifiableVariableFactory.safelySetValue(this.supplementalDataEntryLength, supplementalDataEntryLength);
     }
 
 }

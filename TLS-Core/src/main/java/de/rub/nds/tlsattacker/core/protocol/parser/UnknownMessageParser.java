@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -38,7 +38,7 @@ public class UnknownMessageParser extends ProtocolMessageParser<UnknownMessage> 
      *                                 A Config used in the current context
      */
     public UnknownMessageParser(InputStream stream, ProtocolVersion version,
-                                ProtocolMessageType recordContentMessageType, Config config) {
+        ProtocolMessageType recordContentMessageType, Config config) {
         super(stream, config);
         this.recordContentMessageType = recordContentMessageType;
         this.config = config;

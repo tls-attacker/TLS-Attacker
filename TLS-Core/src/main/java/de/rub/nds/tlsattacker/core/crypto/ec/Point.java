@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -39,11 +39,11 @@ public class Point implements Serializable {
     /*
      * Point objects are immutable. This should make deep copies in the methods of the EllipticCurve class unnecessary.
      */
-    @XmlElements(value = {@XmlElement(type = FieldElementF2m.class, name = "xFieldElementF2m"),
-            @XmlElement(type = FieldElementFp.class, name = "xFieldElementFp")})
+    @XmlElements(value = { @XmlElement(type = FieldElementF2m.class, name = "xFieldElementF2m"),
+        @XmlElement(type = FieldElementFp.class, name = "xFieldElementFp") })
     private final FieldElement fieldX;
-    @XmlElements(value = {@XmlElement(type = FieldElementF2m.class, name = "yFieldElementF2m"),
-            @XmlElement(type = FieldElementFp.class, name = "yFieldElementFp")})
+    @XmlElements(value = { @XmlElement(type = FieldElementF2m.class, name = "yFieldElementF2m"),
+        @XmlElement(type = FieldElementFp.class, name = "yFieldElementFp") })
     private final FieldElement fieldY;
     private final boolean infinity;
 

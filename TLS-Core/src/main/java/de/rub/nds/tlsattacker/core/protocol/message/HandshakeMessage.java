@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -105,7 +105,7 @@ public abstract class HandshakeMessage extends ProtocolMessage {
         }
         List<ExtensionMessage> extensionMessages = new ArrayList<>(this.getExtensions());
         Optional<ExtensionMessage> extension =
-                extensionMessages.stream().filter(i -> i.getClass().equals(extensionClass)).findFirst();
+            extensionMessages.stream().filter(i -> i.getClass().equals(extensionClass)).findFirst();
         if (extension.isPresent()) {
             return extensionClass.cast(extension.get());
         }

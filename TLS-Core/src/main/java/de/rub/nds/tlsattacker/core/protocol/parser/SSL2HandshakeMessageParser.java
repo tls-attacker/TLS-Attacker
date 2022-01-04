@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -26,7 +26,7 @@ public abstract class SSL2HandshakeMessageParser<T extends SSL2HandshakeMessage>
     private static final Logger LOGGER = LogManager.getLogger();
 
     public SSL2HandshakeMessageParser(InputStream stream, HandshakeMessageType type, ProtocolVersion version,
-                                      TlsContext tlsContext) {
+        TlsContext tlsContext) {
         super(stream, type, version, tlsContext);
     }
 
@@ -52,7 +52,7 @@ public abstract class SSL2HandshakeMessageParser<T extends SSL2HandshakeMessage>
         } else {
             // Parse remaining bytes
             length = ArrayConverter.concatenate(firstTwoBytes,
-                    parseByteArrayField(SSL2ByteLength.LONG_LENGTH - SSL2ByteLength.LENGTH));
+                parseByteArrayField(SSL2ByteLength.LONG_LENGTH - SSL2ByteLength.LENGTH));
             mask = 0x7f;
             message.setPaddingLength((int) length[2]);
         }

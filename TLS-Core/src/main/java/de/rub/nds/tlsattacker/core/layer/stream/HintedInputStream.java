@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -45,7 +45,7 @@ public abstract class HintedInputStream extends InputStream {
         int read = read(chunk);
         if (read != size) {
             throw new EndOfStreamException(
-                    "Could not read " + size + " bytes from the stream. Only " + read + " bytes available");
+                "Could not read " + size + " bytes from the stream. Only " + read + " bytes available");
         }
         return chunk;
     }

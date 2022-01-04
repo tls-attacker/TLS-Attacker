@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -59,7 +59,7 @@ public abstract class Parser<T> {
      *
      * @param  length
      *                Number of bytes to be parsed
-     * @return A subByteArray of according size from the Array
+     * @return        A subByteArray of according size from the Array
      */
     protected byte[] parseByteArrayField(int length) {
         if (length == 0) {
@@ -93,7 +93,7 @@ public abstract class Parser<T> {
      *
      * @param  length
      *                Number of bytes to be parsed
-     * @return An integer representation of the subByteArray
+     * @return        An integer representation of the subByteArray
      */
     protected int parseIntField(int length) {
         if (length == 0) {
@@ -108,7 +108,7 @@ public abstract class Parser<T> {
      *
      * @param  length
      *                Number of bytes to be parsed
-     * @return A BigInteger representation of the subByteArray
+     * @return        A BigInteger representation of the subByteArray
      */
     protected BigInteger parseBigIntField(int length) {
         if (length == 0) {
@@ -123,7 +123,7 @@ public abstract class Parser<T> {
      *
      * @param  length
      *                Number of bytes to be parsed
-     * @return An integer representation of the subByteArray
+     * @return        An integer representation of the subByteArray
      */
     protected byte parseByteField(int length) {
         if (length == 0) {
@@ -152,7 +152,7 @@ public abstract class Parser<T> {
      *
      * @param  count
      *               Number of bytes to check for
-     * @return True if there are at least count bytes left to read
+     * @return       True if there are at least count bytes left to read
      */
     protected boolean enoughBytesLeft(int count) {
         return getBytesLeft() >= count;

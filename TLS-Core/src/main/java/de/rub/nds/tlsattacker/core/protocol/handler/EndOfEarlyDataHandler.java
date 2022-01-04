@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -44,7 +44,7 @@ public class EndOfEarlyDataHandler extends HandshakeMessageHandler<EndOfEarlyDat
             tlsContext.setActiveClientKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
             LOGGER.debug("Setting cipher for client to use handshake secrets");
             KeySet clientKeySet = KeySetGenerator.generateKeySet(tlsContext,
-                    tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext.getActiveClientKeySetType());
+                tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext.getActiveClientKeySetType());
             RecordCipher recordCipherClient = RecordCipherFactory.getRecordCipher(tlsContext, clientKeySet);
             tlsContext.getRecordLayer().updateDecryptionCipher(recordCipherClient);
         } catch (CryptoException | NoSuchAlgorithmException ex) {

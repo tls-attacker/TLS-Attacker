@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -129,7 +129,7 @@ public class StatePlaintext {
 
     public void setClientAuthenticationType(byte clientAuthenticationType) {
         this.clientAuthenticationType =
-                ModifiableVariableFactory.safelySetValue(this.clientAuthenticationType, clientAuthenticationType);
+            ModifiableVariableFactory.safelySetValue(this.clientAuthenticationType, clientAuthenticationType);
     }
 
     public ModifiableInteger getClientAuthenticationDataLength() {
@@ -142,7 +142,7 @@ public class StatePlaintext {
 
     public void setClientAuthenticationDataLength(int clientAuthenticationDataLength) {
         this.clientAuthenticationDataLength = ModifiableVariableFactory
-                .safelySetValue(this.clientAuthenticationDataLength, clientAuthenticationDataLength);
+            .safelySetValue(this.clientAuthenticationDataLength, clientAuthenticationDataLength);
     }
 
     public ModifiableByteArray getClientAuthenticationData() {
@@ -155,7 +155,7 @@ public class StatePlaintext {
 
     public void setClientAuthenticationData(byte[] clientAuthenticationData) {
         this.clientAuthenticationData =
-                ModifiableVariableFactory.safelySetValue(this.clientAuthenticationData, clientAuthenticationData);
+            ModifiableVariableFactory.safelySetValue(this.clientAuthenticationData, clientAuthenticationData);
     }
 
     public ModifiableLong getTimestamp() {

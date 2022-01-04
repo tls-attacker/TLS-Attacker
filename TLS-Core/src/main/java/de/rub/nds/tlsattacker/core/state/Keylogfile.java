@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -58,7 +58,7 @@ public class Keylogfile {
 
                 FileWriter fw = new FileWriter(this.path, true);
                 fw.write(identifier + " " + DatatypeConverter.printHexBinary(context.getClientRandom()) + " "
-                        + DatatypeConverter.printHexBinary(key) + "\n");
+                    + DatatypeConverter.printHexBinary(key) + "\n");
                 fw.close();
             } catch (Exception e) {
                 LOGGER.error(e);

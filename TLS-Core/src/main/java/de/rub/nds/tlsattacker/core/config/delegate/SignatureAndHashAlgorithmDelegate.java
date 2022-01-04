@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -19,7 +19,7 @@ import java.util.List;
 public class SignatureAndHashAlgorithmDelegate extends Delegate {
 
     @Parameter(names = "-signature_hash_algo",
-            description = "Supported Signature and Hash Algorithms separated by comma eg. RSA-SHA512,DSA-SHA512")
+        description = "Supported Signature and Hash Algorithms separated by comma eg. RSA-SHA512,DSA-SHA512")
     private List<SignatureAndHashAlgorithm> signatureAndHashAlgorithms = null;
 
     public SignatureAndHashAlgorithmDelegate() {

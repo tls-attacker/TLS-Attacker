@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -50,7 +50,7 @@ public class UnknownMessageSerializer extends ProtocolMessageSerializer<UnknownM
     private void writeCompleteResultingMessage() {
         appendBytes(message.getCompleteResultingMessage().getValue());
         LOGGER.debug("CompleteResultingMessage: "
-                + ArrayConverter.bytesToHexString(message.getCompleteResultingMessage().getValue()));
+            + ArrayConverter.bytesToHexString(message.getCompleteResultingMessage().getValue()));
     }
 
 }

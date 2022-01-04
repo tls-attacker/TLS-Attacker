@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -24,18 +24,18 @@ public class CipherWrapper {
     private static final Logger LOGGER = LogManager.getLogger();
 
     public static EncryptionCipher getEncryptionCipher(CipherSuite cipherSuite, ConnectionEndType connectionEndType,
-                                                       KeySet keySet) {
+        KeySet keySet) {
         CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
         if (cipherAlg == CipherAlgorithm.GOST_28147_CNT) {
             return new GOST28147Cipher(GOSTUtils.getGostSpec(cipherSuite), keySet.getWriteKey(connectionEndType),
-                    keySet.getWriteIv(connectionEndType));
+                keySet.getWriteIv(connectionEndType));
         } else if (cipherAlg == CipherAlgorithm.CHACHA20_POLY1305) {
             return new StandardizedChaCha20Poly1305Cipher(keySet.getWriteKey(connectionEndType));
         } else if (cipherAlg == CipherAlgorithm.UNOFFICIAL_CHACHA20_POLY1305) {
             return new UnofficialChaCha20Poly1305Cipher(keySet.getWriteKey(connectionEndType));
         } else if (cipherAlg.getJavaName() != null) {
             return new JavaCipher(cipherAlg, keySet.getWriteKey(connectionEndType),
-                    AlgorithmResolver.getCipherType(cipherSuite) == CipherType.STREAM);
+                AlgorithmResolver.getCipherType(cipherSuite) == CipherType.STREAM);
         } else if (cipherAlg == CipherAlgorithm.NULL) {
             return new NullCipher();
         } else {
@@ -45,18 +45,18 @@ public class CipherWrapper {
     }
 
     public static DecryptionCipher getDecryptionCipher(CipherSuite cipherSuite, ConnectionEndType connectionEndType,
-                                                       KeySet keySet) {
+        KeySet keySet) {
         CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
         if (cipherAlg == CipherAlgorithm.GOST_28147_CNT) {
             return new GOST28147Cipher(GOSTUtils.getGostSpec(cipherSuite), keySet.getReadKey(connectionEndType),
-                    keySet.getReadIv(connectionEndType));
+                keySet.getReadIv(connectionEndType));
         } else if (cipherAlg == CipherAlgorithm.CHACHA20_POLY1305) {
             return new StandardizedChaCha20Poly1305Cipher(keySet.getReadKey(connectionEndType));
         } else if (cipherAlg == CipherAlgorithm.UNOFFICIAL_CHACHA20_POLY1305) {
             return new UnofficialChaCha20Poly1305Cipher(keySet.getReadKey(connectionEndType));
         } else if (cipherAlg.getJavaName() != null) {
             return new JavaCipher(cipherAlg, keySet.getReadKey(connectionEndType),
-                    AlgorithmResolver.getCipherType(cipherSuite) == CipherType.STREAM);
+                AlgorithmResolver.getCipherType(cipherSuite) == CipherType.STREAM);
         } else if (cipherAlg == CipherAlgorithm.NULL) {
             return new NullCipher();
         } else {

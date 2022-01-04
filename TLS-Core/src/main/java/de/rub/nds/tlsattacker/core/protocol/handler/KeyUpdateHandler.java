@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -53,7 +53,7 @@ public class KeyUpdateHandler extends HandshakeMessageHandler<KeyUpdateMessage> 
 
     private void adjustApplicationTrafficSecrets() {
         HKDFAlgorithm hkdfAlgortihm =
-                AlgorithmResolver.getHKDFAlgorithm(tlsContext.getChooser().getSelectedCipherSuite());
+            AlgorithmResolver.getHKDFAlgorithm(tlsContext.getChooser().getSelectedCipherSuite());
 
         try {
             Mac mac = Mac.getInstance(hkdfAlgortihm.getMacAlgorithm().getJavaName());
@@ -61,22 +61,22 @@ public class KeyUpdateHandler extends HandshakeMessageHandler<KeyUpdateMessage> 
             if (tlsContext.getChooser().getTalkingConnectionEnd() == ConnectionEndType.CLIENT) {
 
                 byte[] clientApplicationTrafficSecret =
-                        HKDFunction.expandLabel(hkdfAlgortihm, tlsContext.getChooser().getClientApplicationTrafficSecret(),
-                                HKDFunction.TRAFFICUPD, new byte[0], mac.getMacLength());
+                    HKDFunction.expandLabel(hkdfAlgortihm, tlsContext.getChooser().getClientApplicationTrafficSecret(),
+                        HKDFunction.TRAFFICUPD, new byte[0], mac.getMacLength());
 
                 tlsContext.setClientApplicationTrafficSecret(clientApplicationTrafficSecret);
                 LOGGER.debug("Set clientApplicationTrafficSecret in Context to "
-                        + ArrayConverter.bytesToHexString(clientApplicationTrafficSecret));
+                    + ArrayConverter.bytesToHexString(clientApplicationTrafficSecret));
 
             } else {
 
                 byte[] serverApplicationTrafficSecret =
-                        HKDFunction.expandLabel(hkdfAlgortihm, tlsContext.getChooser().getServerApplicationTrafficSecret(),
-                                HKDFunction.TRAFFICUPD, new byte[0], mac.getMacLength());
+                    HKDFunction.expandLabel(hkdfAlgortihm, tlsContext.getChooser().getServerApplicationTrafficSecret(),
+                        HKDFunction.TRAFFICUPD, new byte[0], mac.getMacLength());
 
                 tlsContext.setServerApplicationTrafficSecret(serverApplicationTrafficSecret);
                 LOGGER.debug("Set serverApplicationTrafficSecret in Context to "
-                        + ArrayConverter.bytesToHexString(serverApplicationTrafficSecret));
+                    + ArrayConverter.bytesToHexString(serverApplicationTrafficSecret));
 
             }
 
@@ -89,7 +89,7 @@ public class KeyUpdateHandler extends HandshakeMessageHandler<KeyUpdateMessage> 
         try {
             LOGGER.debug("Generating new KeySet");
             KeySet keySet =
-                    KeySetGenerator.generateKeySet(context, context.getChooser().getSelectedProtocolVersion(), keySetType);
+                KeySetGenerator.generateKeySet(context, context.getChooser().getSelectedProtocolVersion(), keySetType);
 
             return keySet;
         } catch (NoSuchAlgorithmException | CryptoException ex) {
@@ -102,7 +102,7 @@ public class KeyUpdateHandler extends HandshakeMessageHandler<KeyUpdateMessage> 
             int AEAD_IV_LENGTH = 12;
             KeySet keySet;
             HKDFAlgorithm hkdfAlgortihm =
-                    AlgorithmResolver.getHKDFAlgorithm(tlsContext.getChooser().getSelectedCipherSuite());
+                AlgorithmResolver.getHKDFAlgorithm(tlsContext.getChooser().getSelectedCipherSuite());
 
             if (tlsContext.getChooser().getTalkingConnectionEnd() == ConnectionEndType.CLIENT) {
 
@@ -121,44 +121,44 @@ public class KeyUpdateHandler extends HandshakeMessageHandler<KeyUpdateMessage> 
                 if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
 
                     keySet.setClientWriteIv(HKDFunction.expandLabel(hkdfAlgortihm,
-                            tlsContext.getClientApplicationTrafficSecret(), HKDFunction.IV, new byte[0], AEAD_IV_LENGTH));
+                        tlsContext.getClientApplicationTrafficSecret(), HKDFunction.IV, new byte[0], AEAD_IV_LENGTH));
 
                     keySet.setClientWriteKey(HKDFunction.expandLabel(hkdfAlgortihm,
-                            tlsContext.getClientApplicationTrafficSecret(), HKDFunction.KEY, new byte[0],
-                            AlgorithmResolver.getCipher(tlsContext.getChooser().getSelectedCipherSuite()).getKeySize()));
+                        tlsContext.getClientApplicationTrafficSecret(), HKDFunction.KEY, new byte[0],
+                        AlgorithmResolver.getCipher(tlsContext.getChooser().getSelectedCipherSuite()).getKeySize()));
                 } else {
 
                     keySet.setServerWriteIv(HKDFunction.expandLabel(hkdfAlgortihm,
-                            tlsContext.getServerApplicationTrafficSecret(), HKDFunction.IV, new byte[0], AEAD_IV_LENGTH));
+                        tlsContext.getServerApplicationTrafficSecret(), HKDFunction.IV, new byte[0], AEAD_IV_LENGTH));
 
                     keySet.setServerWriteKey(HKDFunction.expandLabel(hkdfAlgortihm,
-                            tlsContext.getServerApplicationTrafficSecret(), HKDFunction.KEY, new byte[0],
-                            AlgorithmResolver.getCipher(tlsContext.getChooser().getSelectedCipherSuite()).getKeySize()));
+                        tlsContext.getServerApplicationTrafficSecret(), HKDFunction.KEY, new byte[0],
+                        AlgorithmResolver.getCipher(tlsContext.getChooser().getSelectedCipherSuite()).getKeySize()));
                 }
 
                 RecordCipher recordCipherClient = RecordCipherFactory.getRecordCipher(tlsContext, keySet);
                 tlsContext.getRecordLayer().updateEncryptionCipher(recordCipherClient);
 
             } else if (tlsContext.getChooser().getTalkingConnectionEnd()
-                    != tlsContext.getChooser().getConnectionEndType()) {
+                != tlsContext.getChooser().getConnectionEndType()) {
 
                 if (tlsContext.getChooser().getTalkingConnectionEnd() == ConnectionEndType.SERVER) {
 
                     keySet.setServerWriteIv(HKDFunction.expandLabel(hkdfAlgortihm,
-                            tlsContext.getServerApplicationTrafficSecret(), HKDFunction.IV, new byte[0], AEAD_IV_LENGTH));
+                        tlsContext.getServerApplicationTrafficSecret(), HKDFunction.IV, new byte[0], AEAD_IV_LENGTH));
 
                     keySet.setServerWriteKey(HKDFunction.expandLabel(hkdfAlgortihm,
-                            tlsContext.getServerApplicationTrafficSecret(), HKDFunction.KEY, new byte[0],
-                            AlgorithmResolver.getCipher(tlsContext.getChooser().getSelectedCipherSuite()).getKeySize()));
+                        tlsContext.getServerApplicationTrafficSecret(), HKDFunction.KEY, new byte[0],
+                        AlgorithmResolver.getCipher(tlsContext.getChooser().getSelectedCipherSuite()).getKeySize()));
 
                 } else {
 
                     keySet.setClientWriteIv(HKDFunction.expandLabel(hkdfAlgortihm,
-                            tlsContext.getClientApplicationTrafficSecret(), HKDFunction.IV, new byte[0], AEAD_IV_LENGTH));
+                        tlsContext.getClientApplicationTrafficSecret(), HKDFunction.IV, new byte[0], AEAD_IV_LENGTH));
 
                     keySet.setClientWriteKey(HKDFunction.expandLabel(hkdfAlgortihm,
-                            tlsContext.getClientApplicationTrafficSecret(), HKDFunction.KEY, new byte[0],
-                            AlgorithmResolver.getCipher(tlsContext.getChooser().getSelectedCipherSuite()).getKeySize()));
+                        tlsContext.getClientApplicationTrafficSecret(), HKDFunction.KEY, new byte[0],
+                        AlgorithmResolver.getCipher(tlsContext.getChooser().getSelectedCipherSuite()).getKeySize()));
                 }
 
                 RecordCipher recordCipherClient = RecordCipherFactory.getRecordCipher(tlsContext, keySet);

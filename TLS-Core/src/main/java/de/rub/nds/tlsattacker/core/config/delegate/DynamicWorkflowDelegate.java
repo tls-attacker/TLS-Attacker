@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 public class DynamicWorkflowDelegate extends Delegate {
 
     @Parameter(names = "-dynamic_workflow",
-            description = "If this parameter is set, the workflow is only initialized with a ClientHello message (not yet implemented)")
+        description = "If this parameter is set, the workflow is only initialized with a ClientHello message (not yet implemented)")
     private Boolean dynamicWorkflow = null;
 
     public DynamicWorkflowDelegate() {

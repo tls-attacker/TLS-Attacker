@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -35,7 +35,7 @@ public class RecordPreparator extends Preparator<Record> {
     private ProtocolMessageType type;
 
     public RecordPreparator(Chooser chooser, Record record, Encryptor encryptor, ProtocolMessageType type,
-                            RecordCompressor compressor) {
+        RecordCompressor compressor) {
         super(chooser, record);
         this.record = record;
         this.encryptor = encryptor;
@@ -56,8 +56,8 @@ public class RecordPreparator extends Preparator<Record> {
     public void encrypt() {
         LOGGER.debug("Encrypting Record");
         if (chooser.getSelectedProtocolVersion().isTLS13()
-                && record.getContentMessageType() == ProtocolMessageType.CHANGE_CIPHER_SPEC
-                && !chooser.getConfig().isEncryptChangeCipherSpec()) {
+            && record.getContentMessageType() == ProtocolMessageType.CHANGE_CIPHER_SPEC
+            && !chooser.getConfig().isEncryptChangeCipherSpec()) {
             // The CCS message in TLS 1.3 is an exception that does not get
             // encrypted
             record.prepareComputations();
@@ -76,7 +76,7 @@ public class RecordPreparator extends Preparator<Record> {
 
     private void prepareProtocolVersion(Record record) {
         if (chooser.getSelectedProtocolVersion().isTLS13()
-                || chooser.getContext().getActiveKeySetTypeWrite() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
+            || chooser.getContext().getActiveKeySetTypeWrite() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
             record.setProtocolVersion(ProtocolVersion.TLS12.getValue());
         } else {
             record.setProtocolVersion(chooser.getSelectedProtocolVersion().getValue());

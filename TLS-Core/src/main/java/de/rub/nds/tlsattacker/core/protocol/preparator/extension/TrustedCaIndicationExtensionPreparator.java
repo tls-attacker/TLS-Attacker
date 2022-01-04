@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -24,7 +24,7 @@ public class TrustedCaIndicationExtensionPreparator extends ExtensionPreparator<
     private final TrustedCaIndicationExtensionMessage msg;
 
     public TrustedCaIndicationExtensionPreparator(Chooser chooser, TrustedCaIndicationExtensionMessage message,
-                                                  TrustedCaIndicationExtensionSerializer serializer) {
+        TrustedCaIndicationExtensionSerializer serializer) {
         super(chooser, message, serializer);
         msg = message;
     }
@@ -43,7 +43,7 @@ public class TrustedCaIndicationExtensionPreparator extends ExtensionPreparator<
 
     public int getLength(TrustedAuthority authority) {
         TrustedCaIndicationIdentifierType type =
-                TrustedCaIndicationIdentifierType.getIdentifierByByte(authority.getIdentifierType().getValue());
+            TrustedCaIndicationIdentifierType.getIdentifierByByte(authority.getIdentifierType().getValue());
         if (type != null) {
             switch (type) {
                 case PRE_AGREED:
@@ -52,7 +52,7 @@ public class TrustedCaIndicationExtensionPreparator extends ExtensionPreparator<
                     return ExtensionByteLength.TRUSTED_AUTHORITY_HASH;
                 case X509_NAME:
                     return (ExtensionByteLength.TRUSTED_AUTHORITY_DISTINGUISHED_NAME_LENGTH
-                            + authority.getDistinguishedNameLength().getValue());
+                        + authority.getDistinguishedNameLength().getValue());
                 case CERT_SHA1_HASH:
                     return ExtensionByteLength.TRUSTED_AUTHORITY_HASH;
                 default:

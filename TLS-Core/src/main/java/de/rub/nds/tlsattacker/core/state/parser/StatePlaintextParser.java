@@ -1,8 +1,9 @@
+
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -17,17 +18,18 @@ import de.rub.nds.tlsattacker.core.state.StatePlaintext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.ByteArrayInputStream;
+
 public class StatePlaintextParser extends Parser<StatePlaintext> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     public StatePlaintextParser(int startposition, byte[] array) {
-        super(startposition, array);
+        super(new ByteArrayInputStream(array, startposition, array.length - startposition));
     }
 
     @Override
-    public StatePlaintext parse() {
-        StatePlaintext statePlaintext = new StatePlaintext();
+    public void parse(StatePlaintext statePlaintext) {
         parseProtocolVersion(statePlaintext);
         parseCipherSuite(statePlaintext);
         parseCompressionMethod(statePlaintext);
@@ -37,19 +39,18 @@ public class StatePlaintextParser extends Parser<StatePlaintext> {
             throw new UnsupportedOperationException("Parsing for client authentication data is not implemented yet");
         }
         parseTimestamp(statePlaintext);
-        return statePlaintext;
     }
 
     private void parseProtocolVersion(StatePlaintext statePlaintext) {
         statePlaintext.setProtocolVersion(parseByteArrayField(HandshakeByteLength.VERSION));
         LOGGER.debug("Parsed protocol version from state "
-                + ArrayConverter.bytesToHexString(statePlaintext.getProtocolVersion().getValue()));
+            + ArrayConverter.bytesToHexString(statePlaintext.getProtocolVersion().getValue()));
     }
 
     private void parseCipherSuite(StatePlaintext statePlaintext) {
         statePlaintext.setCipherSuite(parseByteArrayField(HandshakeByteLength.CIPHER_SUITE));
         LOGGER.debug("Parsed cipher suite from state "
-                + ArrayConverter.bytesToHexString(statePlaintext.getCipherSuite().getValue()));
+            + ArrayConverter.bytesToHexString(statePlaintext.getCipherSuite().getValue()));
     }
 
     private void parseCompressionMethod(StatePlaintext statePlaintext) {
@@ -60,18 +61,17 @@ public class StatePlaintextParser extends Parser<StatePlaintext> {
     private void parseMasterSecret(StatePlaintext statePlaintext) {
         statePlaintext.setMasterSecret(parseByteArrayField(HandshakeByteLength.MASTER_SECRET));
         LOGGER.debug("Parsed master secret from state "
-                + ArrayConverter.bytesToHexString(statePlaintext.getMasterSecret().getValue()));
+            + ArrayConverter.bytesToHexString(statePlaintext.getMasterSecret().getValue()));
     }
 
     private void parseClientAuthenticationType(StatePlaintext statePlaintext) {
         statePlaintext.setClientAuthenticationType(parseByteField(HandshakeByteLength.CLIENT_AUTHENTICATION_TYPE));
         LOGGER.debug(
-                "Parsed client authentication type from state " + statePlaintext.getClientAuthenticationType().getValue());
+            "Parsed client authentication type from state " + statePlaintext.getClientAuthenticationType().getValue());
     }
 
     private void parseTimestamp(StatePlaintext statePlaintext) {
         statePlaintext.setTimestamp(parseIntField(HandshakeByteLength.UNIX_TIME));
         LOGGER.debug("Parsed time stamp from state " + statePlaintext.getTimestamp());
     }
-
 }

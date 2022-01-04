@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -88,7 +88,7 @@ public class CertificateRequestMessage extends HandshakeMessage {
 
     public void setClientCertificateTypesCount(int clientCertificateTypesCount) {
         this.clientCertificateTypesCount =
-                ModifiableVariableFactory.safelySetValue(this.clientCertificateTypesCount, clientCertificateTypesCount);
+            ModifiableVariableFactory.safelySetValue(this.clientCertificateTypesCount, clientCertificateTypesCount);
     }
 
     public ModifiableByteArray getClientCertificateTypes() {
@@ -101,7 +101,7 @@ public class CertificateRequestMessage extends HandshakeMessage {
 
     public void setClientCertificateTypes(byte[] clientCertificateTypes) {
         this.clientCertificateTypes =
-                ModifiableVariableFactory.safelySetValue(this.clientCertificateTypes, clientCertificateTypes);
+            ModifiableVariableFactory.safelySetValue(this.clientCertificateTypes, clientCertificateTypes);
     }
 
     public ModifiableInteger getSignatureHashAlgorithmsLength() {
@@ -114,7 +114,7 @@ public class CertificateRequestMessage extends HandshakeMessage {
 
     public void setSignatureHashAlgorithmsLength(int signatureHashAlgorithmsLength) {
         this.signatureHashAlgorithmsLength =
-                ModifiableVariableFactory.safelySetValue(this.signatureHashAlgorithmsLength, signatureHashAlgorithmsLength);
+            ModifiableVariableFactory.safelySetValue(this.signatureHashAlgorithmsLength, signatureHashAlgorithmsLength);
     }
 
     public ModifiableByteArray getSignatureHashAlgorithms() {
@@ -127,7 +127,7 @@ public class CertificateRequestMessage extends HandshakeMessage {
 
     public void setSignatureHashAlgorithms(byte[] signatureHashAlgorithms) {
         this.signatureHashAlgorithms =
-                ModifiableVariableFactory.safelySetValue(this.signatureHashAlgorithms, signatureHashAlgorithms);
+            ModifiableVariableFactory.safelySetValue(this.signatureHashAlgorithms, signatureHashAlgorithms);
     }
 
     public ModifiableInteger getDistinguishedNamesLength() {
@@ -140,7 +140,7 @@ public class CertificateRequestMessage extends HandshakeMessage {
 
     public void setDistinguishedNamesLength(int distinguishedNamesLength) {
         this.distinguishedNamesLength =
-                ModifiableVariableFactory.safelySetValue(this.distinguishedNamesLength, distinguishedNamesLength);
+            ModifiableVariableFactory.safelySetValue(this.distinguishedNamesLength, distinguishedNamesLength);
     }
 
     public ModifiableByteArray getDistinguishedNames() {
@@ -165,7 +165,7 @@ public class CertificateRequestMessage extends HandshakeMessage {
 
     public void setCertificateRequestContextLength(int certificateRequestContextLength) {
         this.certificateRequestContextLength = ModifiableVariableFactory
-                .safelySetValue(this.certificateRequestContextLength, certificateRequestContextLength);
+            .safelySetValue(this.certificateRequestContextLength, certificateRequestContextLength);
     }
 
     public ModifiableByteArray getCertificateRequestContext() {
@@ -178,7 +178,7 @@ public class CertificateRequestMessage extends HandshakeMessage {
 
     public void setCertificateRequestContext(byte[] certificateRequestContext) {
         this.certificateRequestContext =
-                ModifiableVariableFactory.safelySetValue(this.certificateRequestContext, certificateRequestContext);
+            ModifiableVariableFactory.safelySetValue(this.certificateRequestContext, certificateRequestContext);
     }
 
     @Override
@@ -195,7 +195,7 @@ public class CertificateRequestMessage extends HandshakeMessage {
         if (clientCertificateTypes != null && clientCertificateTypes.getValue() != null) {
             for (int i = 0; i < clientCertificateTypes.getValue().length; i++) {
                 sb.append(ClientCertificateType.getClientCertificateType(clientCertificateTypes.getValue()[i]))
-                        .append(", ");
+                    .append(", ");
             }
         } else {
             sb.append("null");
@@ -210,14 +210,14 @@ public class CertificateRequestMessage extends HandshakeMessage {
         if (signatureHashAlgorithms != null && signatureHashAlgorithms.getValue() != null) {
             try {
                 List<SignatureAndHashAlgorithm> signatureAndHashAlgorithms =
-                        SignatureAndHashAlgorithm.getSignatureAndHashAlgorithms(signatureHashAlgorithms.getValue());
+                    SignatureAndHashAlgorithm.getSignatureAndHashAlgorithms(signatureHashAlgorithms.getValue());
                 for (SignatureAndHashAlgorithm algo : signatureAndHashAlgorithms) {
                     sb.append(algo.name());
                 }
             } catch (Exception e) {
                 LOGGER.debug(e);
                 LOGGER.debug("Signature and HashAlgorithms contain unparseable Algorithms:"
-                        + ArrayConverter.bytesToHexString(signatureHashAlgorithms));
+                    + ArrayConverter.bytesToHexString(signatureHashAlgorithms));
             }
         } else {
             sb.append("null");
@@ -246,7 +246,7 @@ public class CertificateRequestMessage extends HandshakeMessage {
     @Override
     public CertificateRequestParser getParser(TlsContext tlsContext, InputStream stream) {
         return new CertificateRequestParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext,
-                tlsContext.getTalkingConnectionEndType());
+            tlsContext.getTalkingConnectionEndType());
     }
 
     @Override

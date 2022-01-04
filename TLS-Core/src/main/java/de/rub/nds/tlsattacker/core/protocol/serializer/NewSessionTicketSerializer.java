@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -61,17 +61,17 @@ public class NewSessionTicketSerializer extends HandshakeMessageSerializer<NewSe
 
     private void writeLifetimeHint(NewSessionTicketMessage msg) {
         appendBytes(ArrayConverter.longToBytes(msg.getTicketLifetimeHint().getValue(),
-                HandshakeByteLength.NEWSESSIONTICKET_LIFETIMEHINT_LENGTH));
+            HandshakeByteLength.NEWSESSIONTICKET_LIFETIMEHINT_LENGTH));
         LOGGER.debug("LifetimeHint: "
-                + ArrayConverter.bytesToHexString(ArrayConverter.longToBytes(msg.getTicketLifetimeHint().getValue(),
+            + ArrayConverter.bytesToHexString(ArrayConverter.longToBytes(msg.getTicketLifetimeHint().getValue(),
                 HandshakeByteLength.NEWSESSIONTICKET_LIFETIMEHINT_LENGTH)));
     }
 
     private void writeTicketLength(NewSessionTicketMessage msg) {
         appendBytes(ArrayConverter.intToBytes(msg.getTicket().getIdentityLength().getValue(),
-                HandshakeByteLength.NEWSESSIONTICKET_TICKET_LENGTH));
+            HandshakeByteLength.NEWSESSIONTICKET_TICKET_LENGTH));
         LOGGER.debug("TicketLength: "
-                + ArrayConverter.bytesToHexString(ArrayConverter.intToBytes(msg.getTicket().getIdentityLength().getValue(),
+            + ArrayConverter.bytesToHexString(ArrayConverter.intToBytes(msg.getTicket().getIdentityLength().getValue(),
                 HandshakeByteLength.NEWSESSIONTICKET_TICKET_LENGTH)));
     }
 
@@ -88,7 +88,7 @@ public class NewSessionTicketSerializer extends HandshakeMessageSerializer<NewSe
 
     private void writeTicketNonceLength(NewSessionTicketMessage msg) {
         appendBytes(ArrayConverter.intToBytes(msg.getTicket().getTicketNonceLength().getValue(),
-                HandshakeByteLength.TICKET_NONCE_LENGTH));
+            HandshakeByteLength.TICKET_NONCE_LENGTH));
         LOGGER.debug("TicketNonceLength: " + msg.getTicket().getTicketNonceLength().getValue());
     }
 
@@ -99,7 +99,7 @@ public class NewSessionTicketSerializer extends HandshakeMessageSerializer<NewSe
 
     private void writeTicketIdentityLength(NewSessionTicketMessage msg) {
         appendBytes(ArrayConverter.intToBytes(msg.getTicket().getIdentityLength().getValue(),
-                ExtensionByteLength.PSK_IDENTITY_LENGTH));
+            ExtensionByteLength.PSK_IDENTITY_LENGTH));
         LOGGER.debug("TicketIdentityLength: " + msg.getTicket().getIdentityLength().getValue());
     }
 

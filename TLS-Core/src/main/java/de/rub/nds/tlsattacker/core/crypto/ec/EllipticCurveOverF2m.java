@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -66,7 +66,7 @@ public class EllipticCurveOverF2m extends EllipticCurve {
      *                   The order of the base point.
      */
     public EllipticCurveOverF2m(BigInteger a, BigInteger b, BigInteger polynomial, BigInteger x, BigInteger y,
-                                BigInteger q) {
+        BigInteger q) {
         super(polynomial, x, y, q);
         this.curveA = new FieldElementF2m(a, this.getModulus());
         this.curveB = new FieldElementF2m(b, this.getModulus());
@@ -103,7 +103,7 @@ public class EllipticCurveOverF2m extends EllipticCurve {
         // Check if y^2 + xy == x^3 + ax^2 + b
         FieldElementF2m leftPart = (FieldElementF2m) y.mult(y).add(x.mult(y));
         FieldElementF2m rightPart =
-                (FieldElementF2m) x.mult(x.mult(x)).add(x.mult(x).mult(this.curveA)).add(this.curveB);
+            (FieldElementF2m) x.mult(x.mult(x)).add(x.mult(x).mult(this.curveA)).add(this.curveB);
 
         return leftPart.equals(rightPart);
     }
@@ -125,7 +125,7 @@ public class EllipticCurveOverF2m extends EllipticCurve {
     @Override
     protected Point additionFormular(Point p, Point q) {
         if (!(p.getFieldX() instanceof FieldElementF2m && p.getFieldY() instanceof FieldElementF2m
-                && q.getFieldX() instanceof FieldElementF2m && q.getFieldY() instanceof FieldElementF2m)) {
+            && q.getFieldX() instanceof FieldElementF2m && q.getFieldY() instanceof FieldElementF2m)) {
             LOGGER.warn("Trying to add non F2m points with F2m curve. Returning point at (0,0)");
             return this.getPoint(BigInteger.ZERO, BigInteger.ZERO);
         }
@@ -207,7 +207,7 @@ public class EllipticCurveOverF2m extends EllipticCurve {
      *
      * @param  beta
      *              An element of F2m
-     * @return The result z for the quadratic equation or null if non-existent
+     * @return      The result z for the quadratic equation or null if non-existent
      */
     public FieldElementF2m solveQuadraticEquation(FieldElement beta) {
         if (beta.getData().equals(BigInteger.ZERO)) {

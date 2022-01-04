@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -17,7 +17,7 @@ import java.io.FileInputStream;
 public class WorkflowInputDelegate extends Delegate {
 
     @Parameter(names = "-workflow_input",
-            description = "This parameter allows you to load the whole workflow trace from the specified XML configuration file")
+        description = "This parameter allows you to load the whole workflow trace from the specified XML configuration file")
     private String workflowInput = null;
 
     public WorkflowInputDelegate() {

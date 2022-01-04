@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -35,13 +35,13 @@ public class HttpsResponseMessage extends ProtocolMessage {
 
     private ModifiableString responseContent;
     @XmlElementWrapper
-    @XmlElements(value = {@XmlElement(type = GenericHttpsHeader.class, name = "HttpsHeader"),
-            @XmlElement(type = ContentLengthHeader.class, name = "ContentLengthHeader"),
-            @XmlElement(type = DateHeader.class, name = "DateHeader"),
-            @XmlElement(type = ExpiresHeader.class, name = "ExpiresHeader"),
-            @XmlElement(type = LocationHeader.class, name = "LocationHeader"),
-            @XmlElement(type = HostHeader.class, name = "HostHeader"),
-            @XmlElement(type = TokenBindingHeader.class, name = "TokenBindingHeader")})
+    @XmlElements(value = { @XmlElement(type = GenericHttpsHeader.class, name = "HttpsHeader"),
+        @XmlElement(type = ContentLengthHeader.class, name = "ContentLengthHeader"),
+        @XmlElement(type = DateHeader.class, name = "DateHeader"),
+        @XmlElement(type = ExpiresHeader.class, name = "ExpiresHeader"),
+        @XmlElement(type = LocationHeader.class, name = "LocationHeader"),
+        @XmlElement(type = HostHeader.class, name = "HostHeader"),
+        @XmlElement(type = TokenBindingHeader.class, name = "TokenBindingHeader") })
     @HoldsModifiableVariable
     private List<HttpHeader> header;
 
@@ -119,7 +119,7 @@ public class HttpsResponseMessage extends ProtocolMessage {
     @Override
     public HttpsResponseParser getParser(TlsContext tlsContext, InputStream stream) {
         return new HttpsResponseParser(stream, tlsContext.getChooser().getSelectedProtocolVersion(),
-                tlsContext.getConfig());
+            tlsContext.getConfig());
     }
 
     @Override

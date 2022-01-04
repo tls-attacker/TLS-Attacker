@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -16,7 +16,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class EncryptedServerNameIndicationExtensionSerializer
-        extends ExtensionSerializer<EncryptedServerNameIndicationExtensionMessage> {
+    extends ExtensionSerializer<EncryptedServerNameIndicationExtensionMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private final EncryptedServerNameIndicationExtensionMessage msg;
@@ -73,7 +73,7 @@ public class EncryptedServerNameIndicationExtensionSerializer
     private void writeKeyExchange(EncryptedServerNameIndicationExtensionMessage msg) {
         appendBytes(msg.getKeyShareEntry().getPublicKey().getValue());
         LOGGER.debug(
-                "KeyKeyShareEntry: " + ArrayConverter.bytesToHexString(msg.getKeyShareEntry().getPublicKey().getValue()));
+            "KeyKeyShareEntry: " + ArrayConverter.bytesToHexString(msg.getKeyShareEntry().getPublicKey().getValue()));
     }
 
     private void writeRecordDigestLength(EncryptedServerNameIndicationExtensionMessage msg) {

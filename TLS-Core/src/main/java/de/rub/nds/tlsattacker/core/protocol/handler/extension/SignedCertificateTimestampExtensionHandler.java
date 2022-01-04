@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -16,7 +16,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class SignedCertificateTimestampExtensionHandler
-        extends ExtensionHandler<SignedCertificateTimestampExtensionMessage> {
+    extends ExtensionHandler<SignedCertificateTimestampExtensionMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -40,11 +40,11 @@ public class SignedCertificateTimestampExtensionHandler
     public void adjustTLSExtensionContext(SignedCertificateTimestampExtensionMessage message) {
         if (message.getExtensionLength().getValue() > 65535) {
             LOGGER.warn("The SingedCertificateTimestamp length shouldn't exceed 2 bytes as defined in RFC 6962. "
-                    + "Length was " + message.getExtensionLength().getValue());
+                + "Length was " + message.getExtensionLength().getValue());
         }
         context.setSignedCertificateTimestamp(message.getSignedTimestamp().getValue());
         LOGGER.debug("The context SignedCertificateTimestamp was set to "
-                + ArrayConverter.bytesToHexString(message.getSignedTimestamp()));
+            + ArrayConverter.bytesToHexString(message.getSignedTimestamp()));
     }
 
 }

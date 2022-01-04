@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -161,7 +161,7 @@ public class Record extends ModifiableVariableHolder implements DataContainer {
     }
 
     public RecordPreparator getRecordPreparator(Chooser chooser, Encryptor encryptor, RecordCompressor compressor,
-                                                ProtocolMessageType type) {
+        ProtocolMessageType type) {
         return new RecordPreparator(chooser, this, encryptor, type, compressor);
     }
 
@@ -192,7 +192,7 @@ public class Record extends ModifiableVariableHolder implements DataContainer {
 
     public void setCleanProtocolMessageBytes(byte[] cleanProtocolMessageBytes) {
         this.cleanProtocolMessageBytes =
-                ModifiableVariableFactory.safelySetValue(this.cleanProtocolMessageBytes, cleanProtocolMessageBytes);
+            ModifiableVariableFactory.safelySetValue(this.cleanProtocolMessageBytes, cleanProtocolMessageBytes);
     }
 
     public void setCleanProtocolMessageBytes(ModifiableByteArray cleanProtocolMessageBytes) {
@@ -229,7 +229,7 @@ public class Record extends ModifiableVariableHolder implements DataContainer {
 
     public void setCompleteRecordBytes(byte[] completeRecordBytes) {
         this.completeRecordBytes =
-                ModifiableVariableFactory.safelySetValue(this.completeRecordBytes, completeRecordBytes);
+            ModifiableVariableFactory.safelySetValue(this.completeRecordBytes, completeRecordBytes);
     }
 
     public RecordCryptoComputations getComputations() {
@@ -249,7 +249,7 @@ public class Record extends ModifiableVariableHolder implements DataContainer {
     @Override
     public String toString() {
         return "Record{" + "contentType=" + contentType + ", protocolVersion=" + protocolVersion + ", length=" + length
-                + '}';
+            + '}';
     }
 
     @Override

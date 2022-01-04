@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -28,16 +28,16 @@ public class RenegotiationInfoExtensionHandler extends ExtensionHandler<Renegoti
     public void adjustTLSExtensionContext(RenegotiationInfoExtensionMessage message) {
         if (message.getExtensionLength().getValue() > 65535) {
             LOGGER.warn("The RenegotiationInfo length shouldn't exceed 2 bytes as defined in RFC 5246. " + "Length was "
-                    + message.getExtensionLength().getValue());
+                + message.getExtensionLength().getValue());
         }
         if (context.getTalkingConnectionEndType() != context.getChooser().getConnectionEndType()) {
             context.setRenegotiationInfo(message.getRenegotiationInfo().getValue());
             LOGGER.debug("The context RenegotiationInfo was set to "
-                    + ArrayConverter.bytesToHexString(message.getRenegotiationInfo()));
+                + ArrayConverter.bytesToHexString(message.getRenegotiationInfo()));
         }
         if (context.getTalkingConnectionEndType() == ConnectionEndType.SERVER) {
             if (message.getRenegotiationInfo().getValue().length == 1
-                    && message.getRenegotiationInfo().getValue()[0] == 0) {
+                && message.getRenegotiationInfo().getValue()[0] == 0) {
                 context.setSecureRenegotiation(true);
             }
         }

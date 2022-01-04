@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -47,11 +47,11 @@ public class PskClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         outputStream = new ByteArrayOutputStream();
         try {
             outputStream.write(ArrayConverter.intToBytes(chooser.getConfig().getDefaultPSKKey().length,
-                    HandshakeByteLength.PSK_LENGTH));
+                HandshakeByteLength.PSK_LENGTH));
             outputStream.write(
-                    ArrayConverter.intToBytes(HandshakeByteLength.PSK_ZERO, chooser.getConfig().getDefaultPSKKey().length));
+                ArrayConverter.intToBytes(HandshakeByteLength.PSK_ZERO, chooser.getConfig().getDefaultPSKKey().length));
             outputStream.write(ArrayConverter.intToBytes(chooser.getConfig().getDefaultPSKKey().length,
-                    HandshakeByteLength.PSK_LENGTH));
+                HandshakeByteLength.PSK_LENGTH));
             outputStream.write(chooser.getConfig().getDefaultPSKKey());
         } catch (IOException ex) {
             LOGGER.warn("Encountered exception while writing to ByteArrayOutputStream.");
@@ -64,14 +64,14 @@ public class PskClientKeyExchangePreparator extends ClientKeyExchangePreparator<
     private void preparePremasterSecret(PskClientKeyExchangeMessage msg) {
         msg.getComputations().setPremasterSecret(premasterSecret);
         LOGGER.debug("PremasterSecret: "
-                + ArrayConverter.bytesToHexString(msg.getComputations().getPremasterSecret().getValue()));
+            + ArrayConverter.bytesToHexString(msg.getComputations().getPremasterSecret().getValue()));
     }
 
     private void prepareClientServerRandom(PskClientKeyExchangeMessage msg) {
         clientRandom = ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
         msg.getComputations().setClientServerRandom(clientRandom);
         LOGGER.debug("ClientServerRandom: "
-                + ArrayConverter.bytesToHexString(msg.getComputations().getClientServerRandom().getValue()));
+            + ArrayConverter.bytesToHexString(msg.getComputations().getClientServerRandom().getValue()));
     }
 
     @Override

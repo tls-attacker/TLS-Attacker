@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -28,26 +28,26 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 import java.io.InputStream;
 import java.io.Serializable;
 
-@XmlSeeAlso({EncryptedServerNameIndicationExtensionMessage.class, ECPointFormatExtensionMessage.class,
-        EllipticCurvesExtensionMessage.class, EllipticCurvesExtensionMessage.class,
-        ExtendedMasterSecretExtensionMessage.class, GreaseExtensionMessage.class, HeartbeatExtensionMessage.class,
-        MaxFragmentLengthExtensionMessage.class, RecordSizeLimitExtensionMessage.class, PaddingExtensionMessage.class,
-        RenegotiationInfoExtensionMessage.class, ServerNameIndicationExtensionMessage.class,
-        SessionTicketTLSExtensionMessage.class, SignatureAndHashAlgorithmsExtensionMessage.class,
-        SignedCertificateTimestampExtensionMessage.class, ExtendedRandomExtensionMessage.class,
-        TokenBindingExtensionMessage.class, KeyShareExtensionMessage.class, SupportedVersionsExtensionMessage.class,
-        AlpnExtensionMessage.class, CertificateStatusRequestExtensionMessage.class,
-        CertificateStatusRequestV2ExtensionMessage.class, CertificateTypeExtensionMessage.class,
-        ClientCertificateUrlExtensionMessage.class, ClientCertificateTypeExtensionMessage.class,
-        ClientAuthzExtensionMessage.class, EncryptThenMacExtensionMessage.class, ServerAuthzExtensionMessage.class,
-        ServerCertificateTypeExtensionMessage.class, SrtpExtensionMessage.class, TrustedCaIndicationExtensionMessage.class,
-        TruncatedHmacExtensionMessage.class, EarlyDataExtensionMessage.class, PSKKeyExchangeModesExtensionMessage.class,
-        PreSharedKeyExtensionMessage.class, UnknownExtensionMessage.class, PWDClearExtensionMessage.class,
-        PWDProtectExtensionMessage.class, PasswordSaltExtensionMessage.class, CachedInfoExtensionMessage.class,
-        CookieExtensionMessage.class, DtlsHandshakeMessageFragment.class, UserMappingExtensionMessage.class,
-        SRPExtensionMessage.class})
+@XmlSeeAlso({ EncryptedServerNameIndicationExtensionMessage.class, ECPointFormatExtensionMessage.class,
+    EllipticCurvesExtensionMessage.class, EllipticCurvesExtensionMessage.class,
+    ExtendedMasterSecretExtensionMessage.class, GreaseExtensionMessage.class, HeartbeatExtensionMessage.class,
+    MaxFragmentLengthExtensionMessage.class, RecordSizeLimitExtensionMessage.class, PaddingExtensionMessage.class,
+    RenegotiationInfoExtensionMessage.class, ServerNameIndicationExtensionMessage.class,
+    SessionTicketTLSExtensionMessage.class, SignatureAndHashAlgorithmsExtensionMessage.class,
+    SignedCertificateTimestampExtensionMessage.class, ExtendedRandomExtensionMessage.class,
+    TokenBindingExtensionMessage.class, KeyShareExtensionMessage.class, SupportedVersionsExtensionMessage.class,
+    AlpnExtensionMessage.class, CertificateStatusRequestExtensionMessage.class,
+    CertificateStatusRequestV2ExtensionMessage.class, CertificateTypeExtensionMessage.class,
+    ClientCertificateUrlExtensionMessage.class, ClientCertificateTypeExtensionMessage.class,
+    ClientAuthzExtensionMessage.class, EncryptThenMacExtensionMessage.class, ServerAuthzExtensionMessage.class,
+    ServerCertificateTypeExtensionMessage.class, SrtpExtensionMessage.class, TrustedCaIndicationExtensionMessage.class,
+    TruncatedHmacExtensionMessage.class, EarlyDataExtensionMessage.class, PSKKeyExchangeModesExtensionMessage.class,
+    PreSharedKeyExtensionMessage.class, UnknownExtensionMessage.class, PWDClearExtensionMessage.class,
+    PWDProtectExtensionMessage.class, PasswordSaltExtensionMessage.class, CachedInfoExtensionMessage.class,
+    CookieExtensionMessage.class, DtlsHandshakeMessageFragment.class, UserMappingExtensionMessage.class,
+    SRPExtensionMessage.class })
 public abstract class ExtensionMessage<Self extends ExtensionMessage> extends ModifiableVariableHolder
-        implements Serializable, DataContainer<Self> {
+    implements Serializable, DataContainer<Self> {
 
     protected ExtensionType extensionTypeConstant;
 

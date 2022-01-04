@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -192,7 +192,7 @@ public class State {
      * @param  alias
      *               The Alias for which the TLSContext should be returned
      *
-     * @return the context with the given connection end alias
+     * @return       the context with the given connection end alias
      */
     public TlsContext getTlsContext(String alias) {
         return contextContainer.getTlsContext(alias);
@@ -245,7 +245,7 @@ public class State {
      *
      * @param  trace
      *               The workflow trace that should be filtered
-     * @return A filtered copy of the input workflow trace
+     * @return       A filtered copy of the input workflow trace
      */
     private WorkflowTrace getFilteredTraceCopy(WorkflowTrace trace) {
         WorkflowTrace filtered = WorkflowTrace.copy(trace);

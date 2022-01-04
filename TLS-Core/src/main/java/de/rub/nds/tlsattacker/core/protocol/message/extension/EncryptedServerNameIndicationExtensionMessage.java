@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -30,7 +30,7 @@ import java.io.InputStream;
 
 @XmlRootElement(name = "EncryptedServerNameIndicationExtension")
 public class EncryptedServerNameIndicationExtensionMessage
-        extends ExtensionMessage<EncryptedServerNameIndicationExtensionMessage> {
+    extends ExtensionMessage<EncryptedServerNameIndicationExtensionMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -166,7 +166,7 @@ public class EncryptedServerNameIndicationExtensionMessage
 
     public void setClientEsniInnerBytes(byte[] clientEsniInnerBytes) {
         this.clientEsniInnerBytes =
-                ModifiableVariableFactory.safelySetValue(this.clientEsniInnerBytes, clientEsniInnerBytes);
+            ModifiableVariableFactory.safelySetValue(this.clientEsniInnerBytes, clientEsniInnerBytes);
     }
 
     public EncryptedSniComputation getEncryptedSniComputation() {
@@ -200,13 +200,13 @@ public class EncryptedServerNameIndicationExtensionMessage
     @Override
     public EncryptedServerNameIndicationExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
         return new EncryptedServerNameIndicationExtensionParser(stream, tlsContext.getConfig(),
-                tlsContext.getTalkingConnectionEndType());
+            tlsContext.getTalkingConnectionEndType());
     }
 
     @Override
     public EncryptedServerNameIndicationExtensionPreparator getPreparator(TlsContext tlsContext) {
         return new EncryptedServerNameIndicationExtensionPreparator(tlsContext.getChooser(), this,
-                getSerializer(tlsContext));
+            getSerializer(tlsContext));
     }
 
     @Override

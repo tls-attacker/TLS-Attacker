@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -26,12 +26,12 @@ public class JKSLoader {
         try {
             if (alias == null || keyStore == null) {
                 throw new ConfigurationException("The certificate cannot be fetched. Have you provided correct "
-                        + "certificate alias and key? (Current alias: " + alias + ")");
+                    + "certificate alias and key? (Current alias: " + alias + ")");
             }
             java.security.cert.Certificate sunCert = keyStore.getCertificate(alias);
             if (sunCert == null) {
                 throw new ConfigurationException("The certificate cannot be fetched. Have you provided correct "
-                        + "certificate alias and key? (Current alias: " + alias + ")");
+                    + "certificate alias and key? (Current alias: " + alias + ")");
             }
 
             byte[] certBytes = sunCert.getEncoded();
@@ -41,7 +41,7 @@ public class JKSLoader {
             return cert;
         } catch (KeyStoreException | CertificateEncodingException | IOException ex) {
             throw new ConfigurationException("The certificate cannot be fetched. Have you provided correct "
-                    + "certificate alias and key? (Current alias: " + alias + ")");
+                + "certificate alias and key? (Current alias: " + alias + ")");
         }
     }
 
@@ -49,12 +49,12 @@ public class JKSLoader {
         try {
             if (alias == null || keyStore == null) {
                 throw new ConfigurationException("The certificate cannot be fetched. Have you provided correct "
-                        + "certificate alias and key? (Current alias: " + alias + ")");
+                    + "certificate alias and key? (Current alias: " + alias + ")");
             }
             java.security.cert.Certificate sunCert = keyStore.getCertificate(alias);
             if (sunCert == null) {
                 throw new ConfigurationException("The certificate cannot be fetched. Have you provided correct "
-                        + "certificate alias and key? (Current alias: " + alias + ")");
+                    + "certificate alias and key? (Current alias: " + alias + ")");
             }
             byte[] certBytes = sunCert.getEncoded();
 
@@ -67,13 +67,13 @@ public class JKSLoader {
             return tlsCerts;
         } catch (KeyStoreException | CertificateEncodingException | IOException ex) {
             throw new ConfigurationException("The certificate cannot be fetched. Have you provided correct "
-                    + "certificate alias and key? (Current alias: " + alias + ")");
+                + "certificate alias and key? (Current alias: " + alias + ")");
         }
 
     }
 
     public static X509CertificateObject loadX509Certificate(KeyStore keyStore, String alias)
-            throws KeyStoreException, CertificateEncodingException, IOException, CertificateParsingException {
+        throws KeyStoreException, CertificateEncodingException, IOException, CertificateParsingException {
         return new X509CertificateObject(loadTLSCertificate(keyStore, alias).getCertificateAt(0));
     }
 

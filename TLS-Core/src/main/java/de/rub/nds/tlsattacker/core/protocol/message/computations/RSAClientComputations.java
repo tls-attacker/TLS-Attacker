@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -23,7 +23,7 @@ public class RSAClientComputations extends KeyExchangeComputations {
     private ModifiableByteArray premasterSecretProtocolVersion;
 
     @ModifiableVariableProperty(format = ModifiableVariableProperty.Format.PKCS1,
-            type = ModifiableVariableProperty.Type.KEY_MATERIAL)
+        type = ModifiableVariableProperty.Type.KEY_MATERIAL)
     private ModifiableByteArray plainPaddedPremasterSecret;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PADDING)
@@ -42,7 +42,7 @@ public class RSAClientComputations extends KeyExchangeComputations {
 
     public void setPlainPaddedPremasterSecret(byte[] value) {
         this.plainPaddedPremasterSecret =
-                ModifiableVariableFactory.safelySetValue(this.plainPaddedPremasterSecret, value);
+            ModifiableVariableFactory.safelySetValue(this.plainPaddedPremasterSecret, value);
     }
 
     public ModifiableByteArray getPadding() {
@@ -67,7 +67,7 @@ public class RSAClientComputations extends KeyExchangeComputations {
 
     public void setPremasterSecretProtocolVersion(byte[] premasterSecretProtocolVersion) {
         this.premasterSecretProtocolVersion = ModifiableVariableFactory
-                .safelySetValue(this.premasterSecretProtocolVersion, premasterSecretProtocolVersion);
+            .safelySetValue(this.premasterSecretProtocolVersion, premasterSecretProtocolVersion);
     }
 
 }

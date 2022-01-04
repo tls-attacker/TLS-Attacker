@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -57,7 +57,7 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
                     ksEntryList.add(new KeyShareStoreEntry(type, pair.getPublicKey().getValue()));
                 } else {
                     LOGGER.warn("Empty KeyShare - Setting only selected KeyShareType: to "
-                            + ArrayConverter.bytesToHexString(pair.getGroup()));
+                        + ArrayConverter.bytesToHexString(pair.getGroup()));
                     context.setSelectedGroup(type);
                 }
             } else {
@@ -71,7 +71,7 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
         // The server has only one key
         if (ksEntryList.size() > 0) {
             context.setServerKeyShareStoreEntry(
-                    new KeyShareStoreEntry(ksEntryList.get(0).getGroup(), ksEntryList.get(0).getPublicKey()));
+                new KeyShareStoreEntry(ksEntryList.get(0).getGroup(), ksEntryList.get(0).getPublicKey()));
             NamedGroup selectedGroup = context.getServerKeyShareStoreEntry().getGroup();
             LOGGER.debug("Setting selected NamedGroup in context to " + selectedGroup);
             context.setSelectedGroup(selectedGroup);

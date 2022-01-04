@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -30,7 +30,7 @@ public class RenegotiationInfoExtensionSerializer extends ExtensionSerializer<Re
         appendInt(message.getRenegotiationInfoLength().getValue(), ExtensionByteLength.RENEGOTIATION_INFO);
         appendBytes(message.getRenegotiationInfo().getValue());
         LOGGER.debug("Serialized RenegotiationInfo extension with info of length "
-                + message.getRenegotiationInfo().getValue().length);
+            + message.getRenegotiationInfo().getValue().length);
         return getAlreadySerialized();
     }
 

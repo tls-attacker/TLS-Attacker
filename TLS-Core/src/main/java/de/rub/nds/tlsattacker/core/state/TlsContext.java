@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -647,7 +647,7 @@ public class TlsContext {
                     break;
                 default:
                     throw new ConfigurationException(
-                            "Cannot create connection for unknown running mode " + "'" + mode + "'");
+                        "Cannot create connection for unknown running mode " + "'" + mode + "'");
             }
         }
     }
@@ -1155,14 +1155,14 @@ public class TlsContext {
     }
 
     public void setClientSupportedSignatureAndHashAlgorithms(
-            List<SignatureAndHashAlgorithm> clientSupportedSignatureAndHashAlgorithms) {
+        List<SignatureAndHashAlgorithm> clientSupportedSignatureAndHashAlgorithms) {
         this.clientSupportedSignatureAndHashAlgorithms = clientSupportedSignatureAndHashAlgorithms;
     }
 
     public void setClientSupportedSignatureAndHashAlgorithms(
-            SignatureAndHashAlgorithm... clientSupportedSignatureAndHashAlgorithms) {
+        SignatureAndHashAlgorithm... clientSupportedSignatureAndHashAlgorithms) {
         this.clientSupportedSignatureAndHashAlgorithms =
-                new ArrayList(Arrays.asList(clientSupportedSignatureAndHashAlgorithms));
+            new ArrayList(Arrays.asList(clientSupportedSignatureAndHashAlgorithms));
     }
 
     public List<SNIEntry> getClientSNIEntryList() {
@@ -1302,14 +1302,14 @@ public class TlsContext {
     }
 
     public void setServerSupportedSignatureAndHashAlgorithms(
-            List<SignatureAndHashAlgorithm> serverSupportedSignatureAndHashAlgorithms) {
+        List<SignatureAndHashAlgorithm> serverSupportedSignatureAndHashAlgorithms) {
         this.serverSupportedSignatureAndHashAlgorithms = serverSupportedSignatureAndHashAlgorithms;
     }
 
     public void setServerSupportedSignatureAndHashAlgorithms(
-            SignatureAndHashAlgorithm... serverSupportedSignatureAndHashAlgorithms) {
+        SignatureAndHashAlgorithm... serverSupportedSignatureAndHashAlgorithms) {
         this.serverSupportedSignatureAndHashAlgorithms =
-                new ArrayList(Arrays.asList(serverSupportedSignatureAndHashAlgorithms));
+            new ArrayList(Arrays.asList(serverSupportedSignatureAndHashAlgorithms));
     }
 
     public ProtocolVersion getSelectedProtocolVersion() {
@@ -1615,7 +1615,7 @@ public class TlsContext {
     }
 
     public void setCertificateStatusRequestExtensionRequestType(
-            CertificateStatusRequestType certificateStatusRequestExtensionRequestType) {
+        CertificateStatusRequestType certificateStatusRequestExtensionRequestType) {
         this.certificateStatusRequestExtensionRequestType = certificateStatusRequestExtensionRequestType;
     }
 
@@ -1624,7 +1624,7 @@ public class TlsContext {
     }
 
     public void
-    setCertificateStatusRequestExtensionResponderIDList(byte[] certificateStatusRequestExtensionResponderIDList) {
+        setCertificateStatusRequestExtensionResponderIDList(byte[] certificateStatusRequestExtensionResponderIDList) {
         this.certificateStatusRequestExtensionResponderIDList = certificateStatusRequestExtensionResponderIDList;
     }
 
@@ -1633,7 +1633,7 @@ public class TlsContext {
     }
 
     public void
-    setCertificateStatusRequestExtensionRequestExtension(byte[] certificateStatusRequestExtensionRequestExtension) {
+        setCertificateStatusRequestExtensionRequestExtension(byte[] certificateStatusRequestExtensionRequestExtension) {
         this.certificateStatusRequestExtensionRequestExtension = certificateStatusRequestExtensionRequestExtension;
     }
 
@@ -1666,7 +1666,7 @@ public class TlsContext {
     }
 
     public void setSecureRealTimeTransportProtocolProtectionProfiles(
-            List<SrtpProtectionProfiles> secureRealTimeTransportProtocolProtectionProfiles) {
+        List<SrtpProtectionProfiles> secureRealTimeTransportProtocolProtectionProfiles) {
         this.secureRealTimeTransportProtocolProtectionProfiles = secureRealTimeTransportProtocolProtectionProfiles;
     }
 
@@ -1835,7 +1835,7 @@ public class TlsContext {
      *
      * @param  ext
      *             The ExtensionType to check for
-     * @return true if extension was proposed by client, false otherwise
+     * @return     true if extension was proposed by client, false otherwise
      */
     public boolean isExtensionProposed(ExtensionType ext) {
         return proposedExtensionSet.contains(ext);
@@ -1865,7 +1865,7 @@ public class TlsContext {
      *
      * @param  ext
      *             The ExtensionType to check for
-     * @return true if extension was proposed by server, false otherwise
+     * @return     true if extension was proposed by server, false otherwise
      */
     public boolean isExtensionNegotiated(ExtensionType ext) {
         return negotiatedExtensionSet.contains(ext);
@@ -1920,7 +1920,7 @@ public class TlsContext {
                 info.append(", listening on port ").append(connection.getPort());
             } else {
                 info.append(", connected to ").append(connection.getHostname()).append(":")
-                        .append(connection.getPort());
+                    .append(connection.getPort());
             }
             info.append("}");
         }
@@ -2469,7 +2469,7 @@ public class TlsContext {
      * @param  recordSizeLimit
      *                         the record_size_limit extension value for the current connection direction
      *
-     * @return the record data size limit for the target connection end type
+     * @return                 the record data size limit for the target connection end type
      */
     private Integer getMaxRecordDataSize(Integer recordSizeLimit) {
         // max_fragment_length extension applies to all records if record_size_limit extension is not active

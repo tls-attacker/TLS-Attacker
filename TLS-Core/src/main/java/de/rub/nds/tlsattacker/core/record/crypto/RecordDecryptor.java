@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -41,7 +41,7 @@ public class RecordDecryptor extends Decryptor {
         LOGGER.debug("Decrypting Record");
         RecordCipher recordCipher;
         if (context.getChooser().getSelectedProtocolVersion().isDTLS() && record.getEpoch() != null
-                && record.getEpoch().getValue() != null) {
+            && record.getEpoch().getValue() != null) {
             recordCipher = getRecordCipher(record.getEpoch().getValue());
         } else {
             recordCipher = getRecordMostRecentCipher();

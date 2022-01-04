@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -30,8 +30,8 @@ public class RecordCipherFactory {
             } else {
                 CipherType type = AlgorithmResolver.getCipherType(cipherSuite);
                 CipherState state = new CipherState(context.getChooser().getSelectedProtocolVersion(),
-                        context.getChooser().getSelectedCipherSuite(), keySet,
-                        context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC));
+                    context.getChooser().getSelectedCipherSuite(), keySet,
+                    context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC));
                 switch (type) {
                     case AEAD:
                         return new RecordAEADCipher(context, state);
@@ -56,7 +56,7 @@ public class RecordCipherFactory {
 
     public static RecordNullCipher getNullCipher(TlsContext context) {
         return new RecordNullCipher(context, new CipherState(context.getChooser().getSelectedProtocolVersion(),
-                context.getChooser().getSelectedCipherSuite(), null, null));
+            context.getChooser().getSelectedCipherSuite(), null, null));
     }
 
     private RecordCipherFactory() {

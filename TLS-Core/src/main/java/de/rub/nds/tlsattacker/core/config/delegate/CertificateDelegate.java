@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -137,7 +137,7 @@ public class CertificateDelegate extends Delegate {
             return;
         } else if (!missingParameters.isEmpty()) {
             throw new ParameterException("The following parameters are required for loading a" + " keystore: "
-                    + join(mandatoryParameters.keySet()));
+                + join(mandatoryParameters.keySet()));
         }
         try {
             ConnectionEndType type;
@@ -160,7 +160,7 @@ public class CertificateDelegate extends Delegate {
             pair.adjustInConfig(config, type);
             config.setAutoSelectCertificate(false);
         } catch (UnrecoverableKeyException | KeyStoreException | IOException | NoSuchAlgorithmException
-                | CertificateException ex) {
+            | CertificateException ex) {
             throw new ConfigurationException("Could not load private Key from Keystore", ex);
         }
     }

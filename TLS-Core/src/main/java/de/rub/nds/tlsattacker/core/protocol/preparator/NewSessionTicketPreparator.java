@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -65,7 +65,7 @@ public class NewSessionTicketPreparator extends HandshakeMessagePreparator<NewSe
         byte[] encryptedState;
         try {
             encryptedState = StaticTicketCrypto.encrypt(cipherAlgorithm, plainStateSerialized, encryptionKey,
-                    newTicket.getIV().getValue());
+                newTicket.getIV().getValue());
         } catch (CryptoException e) {
             LOGGER.warn("Could not encrypt SessionState. Using empty byte[]");
             LOGGER.debug(e);
@@ -76,8 +76,8 @@ public class NewSessionTicketPreparator extends HandshakeMessagePreparator<NewSe
         byte[] keyHMAC = config.getSessionTicketKeyHMAC();
         // Mac(Name + IV + TicketLength + Ticket)
         byte[] macInput = ArrayConverter.concatenate(config.getSessionTicketKeyName(), iv,
-                ArrayConverter.intToBytes(encryptedState.length, HandshakeByteLength.ENCRYPTED_STATE_LENGTH),
-                encryptedState);
+            ArrayConverter.intToBytes(encryptedState.length, HandshakeByteLength.ENCRYPTED_STATE_LENGTH),
+            encryptedState);
         byte[] hmac;
         try {
             hmac = StaticTicketCrypto.generateHMAC(config.getSessionTicketMacAlgorithm(), macInput, keyHMAC);

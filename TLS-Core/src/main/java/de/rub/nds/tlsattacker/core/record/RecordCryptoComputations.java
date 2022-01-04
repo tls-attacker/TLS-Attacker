@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -176,7 +176,7 @@ public class RecordCryptoComputations extends ModifiableVariableHolder implement
 
     public void setCbcInitialisationVector(byte[] initialisationVector) {
         this.cbcInitialisationVector =
-                ModifiableVariableFactory.safelySetValue(this.cbcInitialisationVector, initialisationVector);
+            ModifiableVariableFactory.safelySetValue(this.cbcInitialisationVector, initialisationVector);
     }
 
     public ModifiableByteArray getAuthenticatedMetaData() {
@@ -189,7 +189,7 @@ public class RecordCryptoComputations extends ModifiableVariableHolder implement
 
     public void setAuthenticatedMetaData(byte[] authenticatedMetaData) {
         this.authenticatedMetaData =
-                ModifiableVariableFactory.safelySetValue(this.authenticatedMetaData, authenticatedMetaData);
+            ModifiableVariableFactory.safelySetValue(this.authenticatedMetaData, authenticatedMetaData);
     }
 
     public ModifiableByteArray getAuthenticatedNonMetaData() {
@@ -202,7 +202,7 @@ public class RecordCryptoComputations extends ModifiableVariableHolder implement
 
     public void setAuthenticatedNonMetaData(byte[] authenticatedNonMetaData) {
         this.authenticatedNonMetaData =
-                ModifiableVariableFactory.safelySetValue(this.authenticatedNonMetaData, authenticatedNonMetaData);
+            ModifiableVariableFactory.safelySetValue(this.authenticatedNonMetaData, authenticatedNonMetaData);
     }
 
     public ModifiableInteger getAdditionalPaddingLength() {
@@ -215,7 +215,7 @@ public class RecordCryptoComputations extends ModifiableVariableHolder implement
 
     public void setAdditionalPaddingLength(Integer paddingLength) {
         this.additionalPaddingLength =
-                ModifiableVariableFactory.safelySetValue(this.additionalPaddingLength, paddingLength);
+            ModifiableVariableFactory.safelySetValue(this.additionalPaddingLength, paddingLength);
     }
 
     public Boolean getPaddingValid() {

@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -32,7 +32,7 @@ import java.util.List;
  */
 @XmlRootElement(name = "CertificateStatusRequestV2Extension")
 public class CertificateStatusRequestV2ExtensionMessage
-        extends ExtensionMessage<CertificateStatusRequestV2ExtensionMessage> {
+    extends ExtensionMessage<CertificateStatusRequestV2ExtensionMessage> {
 
     @ModifiableVariableProperty
     private ModifiableInteger statusRequestListLength;
@@ -59,7 +59,7 @@ public class CertificateStatusRequestV2ExtensionMessage
 
     public void setStatusRequestListLength(int statusRequestListLength) {
         this.statusRequestListLength =
-                ModifiableVariableFactory.safelySetValue(this.statusRequestListLength, statusRequestListLength);
+            ModifiableVariableFactory.safelySetValue(this.statusRequestListLength, statusRequestListLength);
     }
 
     public List<RequestItemV2> getStatusRequestList() {
@@ -90,7 +90,7 @@ public class CertificateStatusRequestV2ExtensionMessage
     @Override
     public CertificateStatusRequestV2ExtensionPreparator getPreparator(TlsContext tlsContext) {
         return new CertificateStatusRequestV2ExtensionPreparator(tlsContext.getChooser(), this,
-                getSerializer(tlsContext));
+            getSerializer(tlsContext));
     }
 
     @Override

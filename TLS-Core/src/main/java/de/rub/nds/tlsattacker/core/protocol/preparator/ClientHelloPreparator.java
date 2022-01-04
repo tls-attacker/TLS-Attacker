@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -70,7 +70,7 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
         boolean isResumptionWithSessionTicket = false;
         if (msg.containsExtension(ExtensionType.SESSION_TICKET)) {
             SessionTicketTLSExtensionMessage extensionMessage =
-                    msg.getExtension(SessionTicketTLSExtensionMessage.class);
+                msg.getExtension(SessionTicketTLSExtensionMessage.class);
             if (extensionMessage != null) {
                 if (extensionMessage.getSessionTicket().getIdentityLength().getValue() > 0) {
                     isResumptionWithSessionTicket = true;
@@ -98,7 +98,7 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
                 stream.write(compression.getArrayValue());
             } catch (IOException ex) {
                 throw new PreparationException(
-                        "Could not prepare ClientHelloMessage. Failed to write cipher suites into message", ex);
+                    "Could not prepare ClientHelloMessage. Failed to write cipher suites into message", ex);
             }
         }
         return stream.toByteArray();
@@ -111,7 +111,7 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
                 stream.write(suite.getByteValue());
             } catch (IOException ex) {
                 throw new PreparationException(
-                        "Could not prepare ClientHelloMessage. Failed to write cipher suites into message", ex);
+                    "Could not prepare ClientHelloMessage. Failed to write cipher suites into message", ex);
             }
         }
         return stream.toByteArray();

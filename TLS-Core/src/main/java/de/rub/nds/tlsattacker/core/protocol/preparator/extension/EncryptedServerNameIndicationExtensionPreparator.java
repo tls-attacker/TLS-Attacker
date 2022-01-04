@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -47,7 +47,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class EncryptedServerNameIndicationExtensionPreparator
-        extends ExtensionPreparator<EncryptedServerNameIndicationExtensionMessage> {
+    extends ExtensionPreparator<EncryptedServerNameIndicationExtensionMessage> {
 
     private static final int IV_LENGTH = 12;
 
@@ -60,8 +60,8 @@ public class EncryptedServerNameIndicationExtensionPreparator
     private EsniPreparatorMode esniPreparatorMode;
 
     public EncryptedServerNameIndicationExtensionPreparator(Chooser chooser,
-                                                            EncryptedServerNameIndicationExtensionMessage message,
-                                                            ExtensionSerializer<EncryptedServerNameIndicationExtensionMessage> serializer) {
+        EncryptedServerNameIndicationExtensionMessage message,
+        ExtensionSerializer<EncryptedServerNameIndicationExtensionMessage> serializer) {
         super(chooser, message, serializer);
         this.msg = message;
 
@@ -166,7 +166,7 @@ public class EncryptedServerNameIndicationExtensionPreparator
 
     private void prepareClientEsniInner(EncryptedServerNameIndicationExtensionMessage msg) {
         ClientEsniInnerPreparator clientEsniInnerPreparator =
-                new ClientEsniInnerPreparator(this.chooser, msg.getClientEsniInner());
+            new ClientEsniInnerPreparator(this.chooser, msg.getClientEsniInner());
         clientEsniInnerPreparator.prepare();
 
     }
@@ -176,12 +176,12 @@ public class EncryptedServerNameIndicationExtensionPreparator
         byte[] clientEsniInnerBytes = serializer.serialize();
         msg.setClientEsniInnerBytes(clientEsniInnerBytes);
         LOGGER.debug(
-                "clientEsniInnerBytes: " + ArrayConverter.bytesToHexString(msg.getClientEsniInnerBytes().getValue()));
+            "clientEsniInnerBytes: " + ArrayConverter.bytesToHexString(msg.getClientEsniInnerBytes().getValue()));
     }
 
     private void parseClientEsniInnerBytes(EncryptedServerNameIndicationExtensionMessage msg) {
         ClientEsniInnerParser parser =
-                new ClientEsniInnerParser(new ByteArrayInputStream(msg.getClientEsniInnerBytes().getValue()));
+            new ClientEsniInnerParser(new ByteArrayInputStream(msg.getClientEsniInnerBytes().getValue()));
         ClientEsniInner clientEsniInner = new ClientEsniInner();
         parser.parse(clientEsniInner);
         msg.setClientEsniInner(clientEsniInner);
@@ -197,7 +197,7 @@ public class EncryptedServerNameIndicationExtensionPreparator
         }
         msg.getEncryptedSniComputation().setEsniServerPublicKey(serverPublicKey);
         LOGGER.debug("esniServerPublicKey: "
-                + ArrayConverter.bytesToHexString(msg.getEncryptedSniComputation().getEsniServerPublicKey().getValue()));
+            + ArrayConverter.bytesToHexString(msg.getEncryptedSniComputation().getEsniServerPublicKey().getValue()));
     }
 
     private void prepareNamedGroup(EncryptedServerNameIndicationExtensionMessage msg) {
@@ -224,7 +224,7 @@ public class EncryptedServerNameIndicationExtensionPreparator
         }
         msg.getKeyShareEntry().setGroupConfig(selectedNamedGroup);
         LOGGER.debug(
-                "NamedGroup: " + ArrayConverter.bytesToHexString(msg.getKeyShareEntry().getGroupConfig().getValue()));
+            "NamedGroup: " + ArrayConverter.bytesToHexString(msg.getKeyShareEntry().getGroupConfig().getValue()));
 
     }
 
@@ -234,9 +234,9 @@ public class EncryptedServerNameIndicationExtensionPreparator
         KeyShareEntryPreparator keyShareEntryPreparator = new KeyShareEntryPreparator(chooser, keyShareEntry);
         keyShareEntryPreparator.prepare();
         LOGGER.debug("ClientPrivateKey: "
-                + ArrayConverter.bytesToHexString(msg.getKeyShareEntry().getPrivateKey().toByteArray()));
+            + ArrayConverter.bytesToHexString(msg.getKeyShareEntry().getPrivateKey().toByteArray()));
         LOGGER.debug(
-                "ClientPublicKey: " + ArrayConverter.bytesToHexString(msg.getKeyShareEntry().getPublicKey().getValue()));
+            "ClientPublicKey: " + ArrayConverter.bytesToHexString(msg.getKeyShareEntry().getPublicKey().getValue()));
     }
 
     private void prepareCipherSuite(EncryptedServerNameIndicationExtensionMessage msg) {
@@ -265,7 +265,7 @@ public class EncryptedServerNameIndicationExtensionPreparator
         byte[] recordBytes = chooser.getEsniRecordBytes();
         msg.getEncryptedSniComputation().setEsniRecordBytes(recordBytes);
         LOGGER.debug("esniRecordBytes: "
-                + ArrayConverter.bytesToHexString(msg.getEncryptedSniComputation().getEsniRecordBytes()));
+            + ArrayConverter.bytesToHexString(msg.getEncryptedSniComputation().getEsniRecordBytes()));
     }
 
     private void prepareRecordDigest(EncryptedServerNameIndicationExtensionMessage msg) {
@@ -308,7 +308,7 @@ public class EncryptedServerNameIndicationExtensionPreparator
         byte[] contents = generateEsniContents(msg);
         msg.getEncryptedSniComputation().setEsniContents(contents);
         LOGGER.debug("EsniContents: "
-                + ArrayConverter.bytesToHexString(msg.getEncryptedSniComputation().getEsniContents().getValue()));
+            + ArrayConverter.bytesToHexString(msg.getEncryptedSniComputation().getEsniContents().getValue()));
     }
 
     private void prepareEsniContentsHash(EncryptedServerNameIndicationExtensionMessage msg) {
@@ -325,7 +325,7 @@ public class EncryptedServerNameIndicationExtensionPreparator
         contentsHash = messageDigest.digest(contents);
         msg.getEncryptedSniComputation().setEsniContentsHash(contentsHash);
         LOGGER.debug("EsniContentsHash: "
-                + ArrayConverter.bytesToHexString(msg.getEncryptedSniComputation().getEsniContentsHash().getValue()));
+            + ArrayConverter.bytesToHexString(msg.getEncryptedSniComputation().getEsniContentsHash().getValue()));
     }
 
     private void prepareEsniClientSharedSecret(EncryptedServerNameIndicationExtensionMessage msg) {
@@ -335,7 +335,7 @@ public class EncryptedServerNameIndicationExtensionPreparator
         byte[] esniSharedSecret = KeyShareCalculator.computeSharedSecret(group, clientPrivateKey, serverPublicKey);
         msg.getEncryptedSniComputation().setEsniSharedSecret(esniSharedSecret);
         LOGGER.debug("esniSharedSecret: "
-                + ArrayConverter.bytesToHexString(msg.getEncryptedSniComputation().getEsniSharedSecret().getValue()));
+            + ArrayConverter.bytesToHexString(msg.getEncryptedSniComputation().getEsniSharedSecret().getValue()));
     }
 
     private void prepareEsniServerSharedSecret(EncryptedServerNameIndicationExtensionMessage msg) {
@@ -358,7 +358,7 @@ public class EncryptedServerNameIndicationExtensionPreparator
 
         msg.getEncryptedSniComputation().setEsniSharedSecret(esniSharedSecret);
         LOGGER.debug("esniSharedSecret: "
-                + ArrayConverter.bytesToHexString(msg.getEncryptedSniComputation().getEsniSharedSecret().getValue()));
+            + ArrayConverter.bytesToHexString(msg.getEncryptedSniComputation().getEsniSharedSecret().getValue()));
     }
 
     private void prepareEsniMasterSecret(EncryptedServerNameIndicationExtensionMessage msg) {
@@ -373,7 +373,7 @@ public class EncryptedServerNameIndicationExtensionPreparator
         }
         msg.getEncryptedSniComputation().setEsniMasterSecret(esniMasterSecret);
         LOGGER.debug("esniMasterSecret: "
-                + ArrayConverter.bytesToHexString(msg.getEncryptedSniComputation().getEsniMasterSecret().getValue()));
+            + ArrayConverter.bytesToHexString(msg.getEncryptedSniComputation().getEsniMasterSecret().getValue()));
     }
 
     private void prepareEsniKey(EncryptedServerNameIndicationExtensionMessage msg) {
@@ -391,7 +391,7 @@ public class EncryptedServerNameIndicationExtensionPreparator
         }
         msg.getEncryptedSniComputation().setEsniKey(key);
         LOGGER.debug(
-                "esniKey: " + ArrayConverter.bytesToHexString(msg.getEncryptedSniComputation().getEsniKey().getValue()));
+            "esniKey: " + ArrayConverter.bytesToHexString(msg.getEncryptedSniComputation().getEsniKey().getValue()));
     }
 
     private void prepareEsniIv(EncryptedServerNameIndicationExtensionMessage msg) {
@@ -407,7 +407,7 @@ public class EncryptedServerNameIndicationExtensionPreparator
         }
         msg.getEncryptedSniComputation().setEsniIv(iv);
         LOGGER.debug(
-                "esniIv: " + ArrayConverter.bytesToHexString(msg.getEncryptedSniComputation().getEsniIv().getValue()));
+            "esniIv: " + ArrayConverter.bytesToHexString(msg.getEncryptedSniComputation().getEsniIv().getValue()));
     }
 
     private void prepareClientHelloKeyShare(EncryptedServerNameIndicationExtensionMessage msg) {
@@ -448,7 +448,7 @@ public class EncryptedServerNameIndicationExtensionPreparator
         }
 
         keyShareListBytesLengthField =
-                ArrayConverter.intToBytes(keyShareListBytesLength, ExtensionByteLength.KEY_SHARE_LIST_LENGTH);
+            ArrayConverter.intToBytes(keyShareListBytesLength, ExtensionByteLength.KEY_SHARE_LIST_LENGTH);
         try {
             clientHelloKeyShareStream.write(keyShareListBytesLengthField);
             clientHelloKeyShareStream.write(keyShareListBytes);
@@ -477,7 +477,7 @@ public class EncryptedServerNameIndicationExtensionPreparator
         KeySet keySet = new KeySet();
         keySet.setClientWriteKey(key);
         EncryptionCipher encryptCipher =
-                CipherWrapper.getEncryptionCipher(cipherSuite, ConnectionEndType.CLIENT, keySet);
+            CipherWrapper.getEncryptionCipher(cipherSuite, ConnectionEndType.CLIENT, keySet);
         try {
             encryptedSni = encryptCipher.encrypt(iv, tagBitLength, aad, plainText);
         } catch (CryptoException e) {
@@ -506,7 +506,7 @@ public class EncryptedServerNameIndicationExtensionPreparator
         keySet.setClientWriteKey(key);
 
         DecryptionCipher decryptCipher =
-                CipherWrapper.getDecryptionCipher(cipherSuite, ConnectionEndType.SERVER, keySet);
+            CipherWrapper.getDecryptionCipher(cipherSuite, ConnectionEndType.SERVER, keySet);
         try {
             clientEsniInnerBytes = decryptCipher.decrypt(iv, tagBitLength, aad, cipherText);
         } catch (CryptoException e) {
@@ -515,7 +515,7 @@ public class EncryptedServerNameIndicationExtensionPreparator
 
         msg.setClientEsniInnerBytes(clientEsniInnerBytes);
         LOGGER.debug(
-                "ClientESNIInnerBytes: " + ArrayConverter.bytesToHexString(msg.getClientEsniInnerBytes().getValue()));
+            "ClientESNIInnerBytes: " + ArrayConverter.bytesToHexString(msg.getClientEsniInnerBytes().getValue()));
     }
 
     private void prepareEncryptedSniLength(EncryptedServerNameIndicationExtensionMessage msg) {
@@ -536,7 +536,7 @@ public class EncryptedServerNameIndicationExtensionPreparator
             contentsStream.write(msg.getRecordDigest().getValue());
             contentsStream.write(msg.getKeyShareEntry().getGroup().getValue());
             contentsStream
-                    .write(msg.getKeyShareEntry().getPublicKeyLength().getByteArray(ExtensionByteLength.KEY_SHARE_LENGTH));
+                .write(msg.getKeyShareEntry().getPublicKeyLength().getByteArray(ExtensionByteLength.KEY_SHARE_LENGTH));
             contentsStream.write(msg.getKeyShareEntry().getPublicKey().getValue());
             contentsStream.write(msg.getEncryptedSniComputation().getClientHelloRandom().getValue());
         } catch (Exception e) {

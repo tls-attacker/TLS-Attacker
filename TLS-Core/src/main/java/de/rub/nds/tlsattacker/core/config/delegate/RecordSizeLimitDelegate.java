@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -21,7 +21,7 @@ public class RecordSizeLimitDelegate extends Delegate {
     private static final Logger LOGGER = LogManager.getLogger();
 
     @Parameter(names = "-record_size_limit",
-            description = "Record size limit to be advertised in the corresponding TLS extension (0 < value < 65536)")
+        description = "Record size limit to be advertised in the corresponding TLS extension (0 < value < 65536)")
     private Integer recordSizeLimit = null;
 
     public RecordSizeLimitDelegate() {
@@ -53,7 +53,7 @@ public class RecordSizeLimitDelegate extends Delegate {
         // record_size_limit and max_fragment_length are not meant to be used simultaneously
         if (config.isAddMaxFragmentLengthExtension()) {
             LOGGER
-                    .warn("Configured to send record_size_limit and max_fragment_length simultaneously, resuming anyways");
+                .warn("Configured to send record_size_limit and max_fragment_length simultaneously, resuming anyways");
         }
     }
 }

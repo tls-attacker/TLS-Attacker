@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -59,13 +59,13 @@ public class PWDComputations extends KeyExchangeComputations {
             Digest digest = TlsUtils.createHash(HashAlgorithm.sha256);
             base = new byte[digest.getDigestSize()];
             byte[] usernamePW =
-                    (chooser.getClientPWDUsername() + chooser.getPWDPassword()).getBytes(StandardCharsets.ISO_8859_1);
+                (chooser.getClientPWDUsername() + chooser.getPWDPassword()).getBytes(StandardCharsets.ISO_8859_1);
             digest.update(usernamePW, 0, usernamePW.length);
             digest.doFinal(base, 0);
         } else {
             base = StaticTicketCrypto.generateHMAC(MacAlgorithm.HMAC_SHA256,
-                    (chooser.getClientPWDUsername() + chooser.getPWDPassword()).getBytes(StandardCharsets.ISO_8859_1),
-                    salt);
+                (chooser.getClientPWDUsername() + chooser.getPWDPassword()).getBytes(StandardCharsets.ISO_8859_1),
+                salt);
         }
 
         boolean found = false;
@@ -84,7 +84,7 @@ public class PWDComputations extends KeyExchangeComputations {
         do {
             counter++;
             byte[] seedInput = ArrayConverter.concatenate(base, ArrayConverter.intToBytes(counter, 1),
-                    ArrayConverter.bigIntegerToByteArray(prime));
+                ArrayConverter.bigIntegerToByteArray(prime));
             byte[] seed = StaticTicketCrypto.generateHMAC(randomFunction, seedInput, new byte[4]);
             byte[] tmp = prf(chooser, seed, context, n);
             BigInteger tmpX = new BigInteger(1, tmp).mod(prime.subtract(BigInteger.ONE)).add(BigInteger.ONE);
@@ -145,7 +145,7 @@ public class PWDComputations extends KeyExchangeComputations {
         if (chooser.getSelectedProtocolVersion().isTLS13()) {
             HKDFAlgorithm hkdfAlgorithm = AlgorithmResolver.getHKDFAlgorithm(chooser.getSelectedCipherSuite());
             DigestAlgorithm digestAlgo = AlgorithmResolver.getDigestAlgorithm(chooser.getSelectedProtocolVersion(),
-                    chooser.getSelectedCipherSuite());
+                chooser.getSelectedCipherSuite());
             MessageDigest hashFunction = null;
             try {
                 hashFunction = MessageDigest.getInstance(digestAlgo.getJavaName());
@@ -158,12 +158,12 @@ public class PWDComputations extends KeyExchangeComputations {
             return HKDFunction.expandLabel(hkdfAlgorithm, seed, "TLS-PWD Hunting And Pecking", hashValue, outlen);
         } else {
             PRFAlgorithm prf = AlgorithmResolver.getPRFAlgorithm(chooser.getSelectedProtocolVersion(),
-                    chooser.getSelectedCipherSuite());
+                chooser.getSelectedCipherSuite());
             if (prf != null) {
                 return PseudoRandomFunction.compute(prf, seed, "TLS-PWD Hunting And Pecking", context, outlen);
             } else {
                 LOGGER.warn("Could not select prf for " + chooser.getSelectedProtocolVersion() + " and "
-                        + chooser.getSelectedCipherSuite());
+                    + chooser.getSelectedCipherSuite());
                 return new byte[outlen];
             }
         }
@@ -175,11 +175,11 @@ public class PWDComputations extends KeyExchangeComputations {
         if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
             mask = new BigInteger(1, chooser.getConfig().getDefaultClientPWDMask()).mod(curve.getBasePointOrder());
             keyMaterial.privateKeyScalar =
-                    new BigInteger(1, chooser.getConfig().getDefaultClientPWDPrivate()).mod(curve.getBasePointOrder());
+                new BigInteger(1, chooser.getConfig().getDefaultClientPWDPrivate()).mod(curve.getBasePointOrder());
         } else {
             mask = new BigInteger(1, chooser.getConfig().getDefaultServerPWDMask()).mod(curve.getBasePointOrder());
             keyMaterial.privateKeyScalar =
-                    new BigInteger(1, chooser.getConfig().getDefaultServerPWDPrivate()).mod(curve.getBasePointOrder());
+                new BigInteger(1, chooser.getConfig().getDefaultServerPWDPrivate()).mod(curve.getBasePointOrder());
         }
 
         keyMaterial.scalar = mask.add(keyMaterial.privateKeyScalar).mod(curve.getBasePointOrder());

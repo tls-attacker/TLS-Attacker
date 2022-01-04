@@ -87,13 +87,7 @@ public class SendMessagesFromLastFlightAction extends MessageAction implements S
         }
 
         try {
-            MessageActionResult result =
-                sendMessageHelper.sendMessages(messages, fragments, records, tlsContext, false);
-            messages = new ArrayList<>(result.getMessageList());
-            records = new ArrayList<>(result.getRecordList());
-            if (result.getMessageFragmentList() != null) {
-                fragments = new ArrayList<>(result.getMessageFragmentList());
-            }
+            send(tlsContext, messages, records);
             setExecuted(true);
         } catch (IOException e) {
             tlsContext.setReceivedTransportHandlerException(true);

@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -24,14 +24,14 @@ import java.io.IOException;
 import java.util.List;
 
 public class SignatureAndHashAlgorithmsExtensionPreparator
-        extends ExtensionPreparator<SignatureAndHashAlgorithmsExtensionMessage> {
+    extends ExtensionPreparator<SignatureAndHashAlgorithmsExtensionMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     private final SignatureAndHashAlgorithmsExtensionMessage msg;
 
     public SignatureAndHashAlgorithmsExtensionPreparator(Chooser chooser,
-                                                         SignatureAndHashAlgorithmsExtensionMessage message, SignatureAndHashAlgorithmsExtensionSerializer serializer) {
+        SignatureAndHashAlgorithmsExtensionMessage message, SignatureAndHashAlgorithmsExtensionSerializer serializer) {
         super(chooser, message, serializer);
         this.msg = message;
     }
@@ -46,7 +46,7 @@ public class SignatureAndHashAlgorithmsExtensionPreparator
     private void prepareSignatureAndHashAlgorithms(SignatureAndHashAlgorithmsExtensionMessage msg) {
         msg.setSignatureAndHashAlgorithms(createSignatureAndHashAlgorithmsArray());
         LOGGER.debug("SignatureAndHashAlgorithms: "
-                + ArrayConverter.bytesToHexString(msg.getSignatureAndHashAlgorithms().getValue()));
+            + ArrayConverter.bytesToHexString(msg.getSignatureAndHashAlgorithms().getValue()));
     }
 
     private byte[] createSignatureAndHashAlgorithmsArray() {

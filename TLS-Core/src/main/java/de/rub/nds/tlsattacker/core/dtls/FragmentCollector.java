@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -57,7 +57,7 @@ public class FragmentCollector {
         if (wouldAdd(fragment)) {
             if (isFragmentOverwritingContent(fragment)) {
                 LOGGER.warn(
-                        "Found a fragment which tries to rewrite history. Setting interpreted to false and resetting Stream.");
+                    "Found a fragment which tries to rewrite history. Setting interpreted to false and resetting Stream.");
                 fragmentStream = new FragmentStream(fragment.getLength().getValue());
                 this.messageLength = fragment.getLength().getValue();
                 this.messageSeq = fragment.getMessageSeq().getValue();
@@ -85,7 +85,7 @@ public class FragmentCollector {
      *
      * @param  fragment
      *                  the fragment that should be tested.
-     * @return True if it would be added, false otherwise
+     * @return          True if it would be added, false otherwise
      */
     public boolean wouldAdd(DtlsHandshakeMessageFragment fragment) {
         if (config.isAcceptContentRewritingDtlsFragments() || !isFragmentOverwritingContent(fragment)) {
@@ -106,13 +106,13 @@ public class FragmentCollector {
      * with the first fragment added to the collector.
      *
      * @param  fragment
-     * @return true if fragment fits the collector, false if it doesn't
+     * @return          true if fragment fits the collector, false if it doesn't
      */
     public boolean isFitting(DtlsHandshakeMessageFragment fragment) {
         if (fragment.getType().getValue() == type && fragment.getMessageSeq().getValue() == this.messageSeq
-                && fragment.getLength().getValue() == this.messageLength) {
+            && fragment.getLength().getValue() == this.messageLength) {
             return fragmentStream.canInsertByteArray(fragment.getContent().getValue(),
-                    fragment.getFragmentOffset().getValue());
+                fragment.getFragmentOffset().getValue());
         } else {
             return false;
         }
@@ -123,11 +123,11 @@ public class FragmentCollector {
      *
      * @param  fragment
      *                  Fragment that should be tested
-     * @return True if the fragment would overwrite paste messages
+     * @return          True if the fragment would overwrite paste messages
      */
     public boolean isFragmentOverwritingContent(DtlsHandshakeMessageFragment fragment) {
         return !fragmentStream.canInsertByteArray(fragment.getContent().getValue(),
-                fragment.getFragmentOffset().getValue());
+            fragment.getFragmentOffset().getValue());
     }
 
     /**

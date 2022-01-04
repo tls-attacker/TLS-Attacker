@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -39,7 +39,7 @@ public class ServerHelloParser extends HelloMessageParser<ServerHelloMessage> {
      *                   A Config used in the current context
      */
     public ServerHelloParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext,
-                             ConnectionEndType talkingConnectionEndType) {
+        ConnectionEndType talkingConnectionEndType) {
         super(stream, HandshakeMessageType.SERVER_HELLO, version, tlsContext);
         this.talkingConnectionEndType = talkingConnectionEndType;
     }

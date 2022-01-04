@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -82,11 +82,11 @@ public class PseudoRandomFunction {
      * @param  size
      *                                  the size of the key block
      *
-     * @return the key block as pseudo random bit stream
+     * @return                          the key block as pseudo random bit stream
      * @throws NoSuchAlgorithmException
      */
     public static byte[] computeSSL3(byte[] master_secret, byte[] client_random, byte[] server_random, int size)
-            throws NoSuchAlgorithmException, IOException {
+        throws NoSuchAlgorithmException, IOException {
         MessageDigest md5 = MessageDigest.getInstance("MD5");
         MessageDigest sha1 = MessageDigest.getInstance("SHA-1");
 
@@ -107,7 +107,7 @@ public class PseudoRandomFunction {
             }
 
             outputSha.write(sha1
-                    .digest(ArrayConverter.concatenate(salt.toByteArray(), master_secret, server_random, client_random)));
+                .digest(ArrayConverter.concatenate(salt.toByteArray(), master_secret, server_random, client_random)));
             outputMd5.write(md5.digest(ArrayConverter.concatenate(master_secret, outputSha.toByteArray())));
 
             pseudoRandomBitStream.write(outputMd5.toByteArray());
@@ -128,11 +128,11 @@ public class PseudoRandomFunction {
      *                                                                The Seed
      * @param  size
      *                                                                The size
-     * @return the Prf output
+     * @return                                                        the Prf output
      * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     public static byte[] compute(PRFAlgorithm prfAlgorithm, byte[] secret, String label, byte[] seed, int size)
-            throws CryptoException {
+        throws CryptoException {
 
         if (prfAlgorithm == null) {
             LOGGER.warn("Trying to compute PRF without specified PRF algorithm. Using TLS 1.0/TLS 1.1 as default.");
@@ -158,7 +158,7 @@ public class PseudoRandomFunction {
                     return computeTls12(secret, label, seed, size, MacAlgorithm.HMAC_GOSTR3411_2012_256);
                 default:
                     throw new UnsupportedOperationException(
-                            "PRF computation for different" + " protocol versions is not supported yet");
+                        "PRF computation for different" + " protocol versions is not supported yet");
             }
         }
     }
@@ -219,10 +219,10 @@ public class PseudoRandomFunction {
      *                      The Seed
      * @param  size
      *                      The size of the pseudo random bit stream
-     * @return the key block material
+     * @return              the key block material
      */
     private static byte[] computeTls12(byte[] secret, String label, byte[] seed, int size, MacAlgorithm macAlgorithm)
-            throws CryptoException {
+        throws CryptoException {
         try {
             byte[] labelSeed = ArrayConverter.concatenate(label.getBytes(Charset.forName("ASCII")), seed);
             HMAC hmac = new HMAC(macAlgorithm);

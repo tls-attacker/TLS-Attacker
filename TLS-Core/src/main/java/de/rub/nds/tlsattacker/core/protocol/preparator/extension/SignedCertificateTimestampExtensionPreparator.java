@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -16,14 +16,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class SignedCertificateTimestampExtensionPreparator
-        extends ExtensionPreparator<SignedCertificateTimestampExtensionMessage> {
+    extends ExtensionPreparator<SignedCertificateTimestampExtensionMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     private final SignedCertificateTimestampExtensionMessage message;
 
     public SignedCertificateTimestampExtensionPreparator(Chooser chooser,
-                                                         SignedCertificateTimestampExtensionMessage message, SignedCertificateTimestampExtensionSerializer serializer) {
+        SignedCertificateTimestampExtensionMessage message, SignedCertificateTimestampExtensionSerializer serializer) {
         super(chooser, message, serializer);
         this.message = message;
     }
@@ -35,7 +35,7 @@ public class SignedCertificateTimestampExtensionPreparator
     public void prepareExtensionContent() {
         message.setSignedTimestamp(chooser.getConfig().getDefaultSignedCertificateTimestamp());
         LOGGER.debug("Prepared the SignedCertificateTimestampExtension with timestamp length "
-                + message.getSignedTimestamp().getValue().length);
+            + message.getSignedTimestamp().getValue().length);
     }
 
 }

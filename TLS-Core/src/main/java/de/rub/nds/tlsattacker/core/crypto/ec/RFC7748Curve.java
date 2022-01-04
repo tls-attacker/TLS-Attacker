@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -24,7 +24,7 @@ public abstract class RFC7748Curve extends SimulatedMontgomeryCurve {
     private static final Logger LOGGER = LogManager.getLogger();
 
     protected RFC7748Curve(BigInteger a, BigInteger b, BigInteger modulus, BigInteger basePointX, BigInteger basePointY,
-                           BigInteger basePointOrder) {
+        BigInteger basePointOrder) {
         super(a, b, modulus, basePointX, basePointY, basePointOrder);
     }
 

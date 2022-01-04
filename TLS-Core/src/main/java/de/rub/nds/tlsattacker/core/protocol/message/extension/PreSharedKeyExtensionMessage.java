@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -210,7 +210,7 @@ public class PreSharedKeyExtensionMessage extends ExtensionMessage<PreSharedKeyE
     @Override
     public ExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
         return new PreSharedKeyExtensionParser(stream, tlsContext.getConfig(),
-                tlsContext.getTalkingConnectionEndType());
+            tlsContext.getTalkingConnectionEndType());
     }
 
     @Override

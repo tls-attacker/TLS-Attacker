@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -30,7 +30,7 @@ import static de.rub.nds.modifiablevariable.ModifiableVariableFactory.safelySetV
  */
 @XmlRootElement(name = "CertificateStatusRequestExtension")
 public class CertificateStatusRequestExtensionMessage
-        extends ExtensionMessage<CertificateStatusRequestExtensionMessage> {
+    extends ExtensionMessage<CertificateStatusRequestExtensionMessage> {
 
     @ModifiableVariableProperty
     private ModifiableInteger certificateStatusRequestType;
@@ -74,7 +74,7 @@ public class CertificateStatusRequestExtensionMessage
 
     public void setCertificateStatusRequestType(int certificateStatusRequestType) {
         this.certificateStatusRequestType =
-                safelySetValue(this.certificateStatusRequestType, certificateStatusRequestType);
+            safelySetValue(this.certificateStatusRequestType, certificateStatusRequestType);
     }
 
     public ModifiableInteger getResponderIDListLength() {
@@ -154,13 +154,13 @@ public class CertificateStatusRequestExtensionMessage
     public CertificateStatusRequestExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
         // TODO make sure this is the correct version
         return new CertificateStatusRequestExtensionParser(stream, tlsContext.getConfig(),
-                tlsContext.getChooser().getSelectedProtocolVersion());
+            tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override
     public CertificateStatusRequestExtensionPreparator getPreparator(TlsContext tlsContext) {
         return new CertificateStatusRequestExtensionPreparator(tlsContext.getChooser(), this,
-                getSerializer(tlsContext));
+            getSerializer(tlsContext));
     }
 
     @Override

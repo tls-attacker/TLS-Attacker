@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -58,7 +58,7 @@ public class RecordSerializer extends Serializer<Record> {
     private void writeProtocolMessageBytes(Record record) {
         appendBytes(record.getProtocolMessageBytes().getValue());
         LOGGER.debug(
-                "ProtocolMessageBytes: " + ArrayConverter.bytesToHexString(record.getProtocolMessageBytes().getValue()));
+            "ProtocolMessageBytes: " + ArrayConverter.bytesToHexString(record.getProtocolMessageBytes().getValue()));
     }
 
 }

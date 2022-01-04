@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -57,17 +57,17 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
         EllipticCurve curve = CurveFactory.getCurve(entry.getGroupConfig());
         Point passwordElement = PWDComputations.computePasswordElement(chooser, curve);
         PWDComputations.PWDKeyMaterial keyMaterial =
-                PWDComputations.generateKeyMaterial(curve, passwordElement, chooser);
+            PWDComputations.generateKeyMaterial(curve, passwordElement, chooser);
         int curveSize = curve.getModulus().bitLength() / Bits.IN_A_BYTE;
         entry.setPrivateKey(keyMaterial.privateKeyScalar);
         byte[] serializedScalar = ArrayConverter.bigIntegerToByteArray(keyMaterial.scalar);
         entry.setPublicKey(ArrayConverter.concatenate(
-                ArrayConverter.bigIntegerToByteArray(keyMaterial.element.getFieldX().getData(), curveSize, true),
-                ArrayConverter.bigIntegerToByteArray(keyMaterial.element.getFieldY().getData(), curveSize, true),
-                ArrayConverter.intToBytes(serializedScalar.length, 1), serializedScalar));
+            ArrayConverter.bigIntegerToByteArray(keyMaterial.element.getFieldX().getData(), curveSize, true),
+            ArrayConverter.bigIntegerToByteArray(keyMaterial.element.getFieldY().getData(), curveSize, true),
+            ArrayConverter.intToBytes(serializedScalar.length, 1), serializedScalar));
         LOGGER.debug("KeyShare: " + ArrayConverter.bytesToHexString(entry.getPublicKey().getValue()));
         LOGGER.debug("PasswordElement.x: " + ArrayConverter
-                .bytesToHexString(ArrayConverter.bigIntegerToByteArray(passwordElement.getFieldX().getData())));
+            .bytesToHexString(ArrayConverter.bigIntegerToByteArray(passwordElement.getFieldX().getData())));
     }
 
     private void prepareKeyShare() {
@@ -80,7 +80,7 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
             }
         }
         byte[] serializedPoint = KeyShareCalculator.createPublicKey(entry.getGroupConfig(), entry.getPrivateKey(),
-                chooser.getConfig().getDefaultSelectedPointFormat());
+            chooser.getConfig().getDefaultSelectedPointFormat());
         entry.setPublicKey(serializedPoint);
 
         LOGGER.debug("KeyShare: " + ArrayConverter.bytesToHexString(entry.getPublicKey().getValue()));

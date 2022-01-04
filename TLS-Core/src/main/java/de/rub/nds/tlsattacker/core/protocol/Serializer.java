@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -61,7 +61,7 @@ public abstract class Serializer<T> {
         int reconvertedInt = ArrayConverter.bytesToInt(bytes);
         if (reconvertedInt != i) {
             LOGGER.warn("Int \"" + i + "\" is too long to write in field of size " + length + ". Only using last "
-                    + length + " bytes.");
+                + length + " bytes.");
         }
         appendBytes(ArrayConverter.intToBytes(i, length));
     }

@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -41,7 +41,7 @@ public class CertificateRequestHandler extends HandshakeMessageHandler<Certifica
             adjustClientCertificateTypes(message);
             adjustDistinguishedNames(message);
             if (tlsContext.getChooser().getSelectedProtocolVersion() == ProtocolVersion.TLS12
-                    || tlsContext.getChooser().getSelectedProtocolVersion() == ProtocolVersion.DTLS12) {
+                || tlsContext.getChooser().getSelectedProtocolVersion() == ProtocolVersion.DTLS12) {
                 adjustServerSupportedSignatureAndHashAlgorithms(message);
             }
         }
@@ -51,7 +51,7 @@ public class CertificateRequestHandler extends HandshakeMessageHandler<Certifica
         List<SignatureAndHashAlgorithm> algoList;
         if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
             SignatureAndHashAlgorithmsExtensionMessage extension =
-                    message.getExtension(SignatureAndHashAlgorithmsExtensionMessage.class);
+                message.getExtension(SignatureAndHashAlgorithmsExtensionMessage.class);
             if (extension != null) {
                 algoList = convertSignatureAndHashAlgorithms(extension.getSignatureAndHashAlgorithms().getValue());
             } else {
@@ -77,7 +77,7 @@ public class CertificateRequestHandler extends HandshakeMessageHandler<Certifica
             byte[] distinguishedNames = message.getDistinguishedNames().getValue();
             tlsContext.setDistinguishedNames(distinguishedNames);
             LOGGER.debug(
-                    "Set DistinguishedNames in Context to " + ArrayConverter.bytesToHexString(distinguishedNames, false));
+                "Set DistinguishedNames in Context to " + ArrayConverter.bytesToHexString(distinguishedNames, false));
         } else {
             LOGGER.debug("Not adjusting DistinguishedNames");
         }
@@ -85,7 +85,7 @@ public class CertificateRequestHandler extends HandshakeMessageHandler<Certifica
 
     private void adjustClientCertificateTypes(CertificateRequestMessage message) {
         List<ClientCertificateType> clientCertTypes =
-                convertClientCertificateTypes(message.getClientCertificateTypes().getValue());
+            convertClientCertificateTypes(message.getClientCertificateTypes().getValue());
         tlsContext.setClientCertificateTypes(clientCertTypes);
         LOGGER.debug("Set ClientCertificateType in Context to " + clientCertTypes.toString());
     }
@@ -106,7 +106,7 @@ public class CertificateRequestHandler extends HandshakeMessageHandler<Certifica
     private List<SignatureAndHashAlgorithm> convertSignatureAndHashAlgorithms(byte[] bytesToConvert) {
         if (bytesToConvert.length % 2 != 0) {
             LOGGER.warn("Cannot convert:" + ArrayConverter.bytesToHexString(bytesToConvert, false)
-                    + " to a List<SignatureAndHashAlgorithm>");
+                + " to a List<SignatureAndHashAlgorithm>");
             return new LinkedList<>();
         }
         List<SignatureAndHashAlgorithm> list = new LinkedList<>();
@@ -123,12 +123,12 @@ public class CertificateRequestHandler extends HandshakeMessageHandler<Certifica
 
     private void adjustSelectedSignatureAndHashAlgorithm() {
         if (Collections.disjoint(tlsContext.getChooser().getClientSupportedSignatureAndHashAlgorithms(),
-                tlsContext.getChooser().getServerSupportedSignatureAndHashAlgorithms())) {
+            tlsContext.getChooser().getServerSupportedSignatureAndHashAlgorithms())) {
             LOGGER.warn("Client and Server have no signature and hash algorithm in common");
         } else {
             Sets.SetView<SignatureAndHashAlgorithm> intersection = Sets.intersection(
-                    Sets.newHashSet(tlsContext.getChooser().getClientSupportedSignatureAndHashAlgorithms()),
-                    Sets.newHashSet(tlsContext.getChooser().getServerSupportedSignatureAndHashAlgorithms()));
+                Sets.newHashSet(tlsContext.getChooser().getClientSupportedSignatureAndHashAlgorithms()),
+                Sets.newHashSet(tlsContext.getChooser().getServerSupportedSignatureAndHashAlgorithms()));
             SignatureAndHashAlgorithm algo = (SignatureAndHashAlgorithm) intersection.toArray()[0];
             tlsContext.setSelectedSignatureAndHashAlgorithm(algo);
             LOGGER.debug("Adjusting selected signature and hash algorithm to: " + algo.name());

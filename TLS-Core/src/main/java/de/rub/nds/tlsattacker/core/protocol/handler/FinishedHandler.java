@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -46,7 +46,7 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
                     setClientRecordCipher(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS);
                 }
             } else if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT
-                    || !tlsContext.isExtensionNegotiated(ExtensionType.EARLY_DATA)) {
+                || !tlsContext.isExtensionNegotiated(ExtensionType.EARLY_DATA)) {
                 setClientRecordCipher(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
 
                 if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
@@ -72,25 +72,25 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
 
     private void adjustApplicationTrafficSecrets() {
         HKDFAlgorithm hkdfAlgorithm =
-                AlgorithmResolver.getHKDFAlgorithm(tlsContext.getChooser().getSelectedCipherSuite());
+            AlgorithmResolver.getHKDFAlgorithm(tlsContext.getChooser().getSelectedCipherSuite());
         DigestAlgorithm digestAlgo = AlgorithmResolver.getDigestAlgorithm(
-                tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext.getChooser().getSelectedCipherSuite());
+            tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext.getChooser().getSelectedCipherSuite());
         try {
             int macLength = Mac.getInstance(hkdfAlgorithm.getMacAlgorithm().getJavaName()).getMacLength();
             byte[] saltMasterSecret = HKDFunction.deriveSecret(hkdfAlgorithm, digestAlgo.getJavaName(),
-                    tlsContext.getChooser().getHandshakeSecret(), HKDFunction.DERIVED,
-                    ArrayConverter.hexStringToByteArray(""));
+                tlsContext.getChooser().getHandshakeSecret(), HKDFunction.DERIVED,
+                ArrayConverter.hexStringToByteArray(""));
             byte[] masterSecret = HKDFunction.extract(hkdfAlgorithm, saltMasterSecret, new byte[macLength]);
             byte[] clientApplicationTrafficSecret = HKDFunction.deriveSecret(hkdfAlgorithm, digestAlgo.getJavaName(),
-                    masterSecret, HKDFunction.CLIENT_APPLICATION_TRAFFIC_SECRET, tlsContext.getDigest().getRawBytes());
+                masterSecret, HKDFunction.CLIENT_APPLICATION_TRAFFIC_SECRET, tlsContext.getDigest().getRawBytes());
             tlsContext.setClientApplicationTrafficSecret(clientApplicationTrafficSecret);
             LOGGER.debug("Set clientApplicationTrafficSecret in Context to "
-                    + ArrayConverter.bytesToHexString(clientApplicationTrafficSecret));
+                + ArrayConverter.bytesToHexString(clientApplicationTrafficSecret));
             byte[] serverApplicationTrafficSecret = HKDFunction.deriveSecret(hkdfAlgorithm, digestAlgo.getJavaName(),
-                    masterSecret, HKDFunction.SERVER_APPLICATION_TRAFFIC_SECRET, tlsContext.getDigest().getRawBytes());
+                masterSecret, HKDFunction.SERVER_APPLICATION_TRAFFIC_SECRET, tlsContext.getDigest().getRawBytes());
             tlsContext.setServerApplicationTrafficSecret(serverApplicationTrafficSecret);
             LOGGER.debug("Set serverApplicationTrafficSecret in Context to "
-                    + ArrayConverter.bytesToHexString(serverApplicationTrafficSecret));
+                + ArrayConverter.bytesToHexString(serverApplicationTrafficSecret));
             tlsContext.setMasterSecret(masterSecret);
             LOGGER.debug("Set masterSecret in Context to " + ArrayConverter.bytesToHexString(masterSecret));
         } catch (NoSuchAlgorithmException | CryptoException ex) {
@@ -115,7 +115,7 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
         try {
             LOGGER.debug("Generating new KeySet");
             KeySet keySet =
-                    KeySetGenerator.generateKeySet(context, context.getChooser().getSelectedProtocolVersion(), keySetType);
+                KeySetGenerator.generateKeySet(context, context.getChooser().getSelectedProtocolVersion(), keySetType);
             return keySet;
         } catch (NoSuchAlgorithmException | CryptoException ex) {
             throw new UnsupportedOperationException("The specified Algorithm is not supported", ex);
@@ -129,10 +129,10 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
 
         if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
             tlsContext.getRecordLayer()
-                    .updateDecryptionCipher(RecordCipherFactory.getRecordCipher(tlsContext, serverKeySet));
+                .updateDecryptionCipher(RecordCipherFactory.getRecordCipher(tlsContext, serverKeySet));
         } else {
             tlsContext.getRecordLayer()
-                    .updateEncryptionCipher(RecordCipherFactory.getRecordCipher(tlsContext, serverKeySet));
+                .updateEncryptionCipher(RecordCipherFactory.getRecordCipher(tlsContext, serverKeySet));
         }
     }
 
@@ -143,10 +143,10 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
 
         if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {
             tlsContext.getRecordLayer()
-                    .updateDecryptionCipher(RecordCipherFactory.getRecordCipher(tlsContext, clientKeySet));
+                .updateDecryptionCipher(RecordCipherFactory.getRecordCipher(tlsContext, clientKeySet));
         } else {
             tlsContext.getRecordLayer()
-                    .updateEncryptionCipher(RecordCipherFactory.getRecordCipher(tlsContext, clientKeySet));
+                .updateEncryptionCipher(RecordCipherFactory.getRecordCipher(tlsContext, clientKeySet));
         }
     }
 }

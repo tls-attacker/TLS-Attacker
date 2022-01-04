@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -63,7 +63,7 @@ public class HeartbeatMessage<HeartbeatMessage> extends ProtocolMessage {
 
     public void setHeartbeatMessageType(byte heartbeatMessageType) {
         this.heartbeatMessageType =
-                ModifiableVariableFactory.safelySetValue(this.heartbeatMessageType, heartbeatMessageType);
+            ModifiableVariableFactory.safelySetValue(this.heartbeatMessageType, heartbeatMessageType);
     }
 
     public ModifiableInteger getPayloadLength() {
@@ -151,7 +151,7 @@ public class HeartbeatMessage<HeartbeatMessage> extends ProtocolMessage {
     @Override
     public HeartbeatMessageParser getParser(TlsContext tlsContext, InputStream stream) {
         return new HeartbeatMessageParser(stream, tlsContext.getChooser().getLastRecordVersion(),
-                tlsContext.getConfig());
+            tlsContext.getConfig());
     }
 
     @Override

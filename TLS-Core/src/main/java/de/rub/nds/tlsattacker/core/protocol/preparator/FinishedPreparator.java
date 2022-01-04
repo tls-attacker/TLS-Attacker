@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -62,16 +62,16 @@ public class FinishedPreparator extends HandshakeMessagePreparator<FinishedMessa
                 LOGGER.debug("Connection End: " + chooser.getConnectionEndType());
                 if (chooser.getConnectionEndType() == ConnectionEndType.SERVER) {
                     finishedKey = HKDFunction.expandLabel(hkdfAlgorithm, chooser.getServerHandshakeTrafficSecret(),
-                            HKDFunction.FINISHED, new byte[0], mac.getMacLength());
+                        HKDFunction.FINISHED, new byte[0], mac.getMacLength());
                 } else {
                     finishedKey = HKDFunction.expandLabel(hkdfAlgorithm, chooser.getClientHandshakeTrafficSecret(),
-                            HKDFunction.FINISHED, new byte[0], mac.getMacLength());
+                        HKDFunction.FINISHED, new byte[0], mac.getMacLength());
                 }
                 LOGGER.debug("Finished key: " + ArrayConverter.bytesToHexString(finishedKey));
                 SecretKeySpec keySpec = new SecretKeySpec(finishedKey, mac.getAlgorithm());
                 mac.init(keySpec);
                 mac.update(chooser.getContext().getDigest().digest(chooser.getSelectedProtocolVersion(),
-                        chooser.getSelectedCipherSuite()));
+                    chooser.getSelectedCipherSuite()));
                 return mac.doFinal();
             } catch (NoSuchAlgorithmException | InvalidKeyException ex) {
                 throw new CryptoException(ex);
@@ -90,7 +90,7 @@ public class FinishedPreparator extends HandshakeMessagePreparator<FinishedMessa
             byte[] masterSecret = chooser.getMasterSecret();
             LOGGER.debug("Using MasterSecret:" + ArrayConverter.bytesToHexString(masterSecret));
             byte[] handshakeMessageHash = chooser.getContext().getDigest().digest(chooser.getSelectedProtocolVersion(),
-                    chooser.getSelectedCipherSuite());
+                chooser.getSelectedCipherSuite());
             LOGGER.debug("Using HandshakeMessage Hash:" + ArrayConverter.bytesToHexString(handshakeMessageHash));
 
             String label;
@@ -101,7 +101,7 @@ public class FinishedPreparator extends HandshakeMessagePreparator<FinishedMessa
                 label = PseudoRandomFunction.CLIENT_FINISHED_LABEL;
             }
             byte[] res = PseudoRandomFunction.compute(prfAlgorithm, masterSecret, label, handshakeMessageHash,
-                    HandshakeByteLength.VERIFY_DATA);
+                HandshakeByteLength.VERIFY_DATA);
             return res;
         }
     }

@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -48,7 +48,7 @@ public abstract class EllipticCurve {
      *                       The order of the base point.
      */
     protected EllipticCurve(BigInteger modulus, BigInteger basePointX, BigInteger basePointY,
-                            BigInteger basePointOrder) {
+        BigInteger basePointOrder) {
         this.modulus = modulus;
         this.basePoint = this.getPoint(basePointX, basePointY);
         this.basePointOrder = basePointOrder;

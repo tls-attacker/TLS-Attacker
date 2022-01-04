@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -83,7 +83,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
         }
 
         CleanRecordByteSeperator separator = new CleanRecordByteSeperator(
-                context.getChooser().getOutboundMaxRecordDataSize(), new ByteArrayInputStream(data));
+            context.getChooser().getOutboundMaxRecordDataSize(), new ByteArrayInputStream(data));
         List<Record> records = new LinkedList<>();
         separator.parse(records);
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -99,7 +99,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
                 ((Record) record).setEpoch(writeEpoch);
             }
             RecordPreparator preparator =
-                    record.getRecordPreparator(context.getChooser(), encryptor, compressor, contentType);
+                record.getRecordPreparator(context.getChooser(), encryptor, compressor, contentType);
             preparator.prepare();
             RecordSerializer serializer = record.getRecordSerializer();
             try {
@@ -125,7 +125,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
             parser.parse(record);
             // TODO it would be good to have a record handler here
             ProtocolVersion protocolVersion =
-                    ProtocolVersion.getProtocolVersion(record.getProtocolVersion().getValue());
+                ProtocolVersion.getProtocolVersion(record.getProtocolVersion().getValue());
             context.setLastRecordVersion(protocolVersion);
             decryptor.decrypt(record);
             decompressor.decompress(record);
@@ -146,7 +146,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
         } catch (ParserException e) {
             LOGGER.warn("Could not parse Record as a Record. Passing data to upper layer as unknown data", e);
             HintedInputStream tempStream =
-                    new HintedLayerInputStream(new RecordLayerHint(ProtocolMessageType.UNKNOWN), this);
+                new HintedLayerInputStream(new RecordLayerHint(ProtocolMessageType.UNKNOWN), this);
             tempStream.extendStream(dataStream.readAllBytes());
             if (currentInputStream == null) {
                 currentInputStream = tempStream;
@@ -184,6 +184,24 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
         LOGGER.debug("Activating new DecryptionCipher (" + decryptionCipher.getClass().getSimpleName() + ")");
         decryptor.addNewRecordCipher(decryptionCipher);
         readEpoch++;
+    }
+
+    public byte[] reencrypt(List<Record> records) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        for (Record record : records) {
+            RecordPreparator preparator = record.getRecordPreparator(this.context.getChooser(), getEncryptor(),
+                getCompressor(), record.getContentMessageType());
+            preparator.encrypt();
+            RecordSerializer serializer = record.getRecordSerializer();
+            try {
+                byte[] recordBytes = serializer.serialize();
+                record.setCompleteRecordBytes(recordBytes);
+                stream.write(record.getCompleteRecordBytes().getValue());
+            } catch (IOException ex) {
+                throw new PreparationException("Could not write Record bytes to ByteArrayStream", ex);
+            }
+        }
+        return stream.toByteArray();
     }
 
     public void resetEncryptor() {

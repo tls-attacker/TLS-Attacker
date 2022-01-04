@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -49,7 +49,7 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
      * @param talkingConnectionEndType
      */
     public CertificateMessageParser(InputStream stream, TlsContext tlsContext, ProtocolVersion version,
-                                    ConnectionEndType talkingConnectionEndType) {
+        ConnectionEndType talkingConnectionEndType) {
         super(stream, HandshakeMessageType.CERTIFICATE, version, tlsContext);
         this.talkingConnectionEndType = talkingConnectionEndType;
         this.tlsContext = tlsContext;
@@ -133,7 +133,7 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
         List<CertificateEntry> entryList = new LinkedList<>();
         for (CertificatePair pair : msg.getCertificatesList()) {
             ExtensionListParser parser = new ExtensionListParser(
-                    new ByteArrayInputStream(pair.getExtensions().getValue()), tlsContext, getVersion(), false);
+                new ByteArrayInputStream(pair.getExtensions().getValue()), tlsContext, getVersion(), false);
             List<ExtensionMessage> extensionMessages = new LinkedList<>();
             parser.parse(extensionMessages);
             entryList.add(new CertificateEntry(pair.getCertificate().getValue(), extensionMessages));

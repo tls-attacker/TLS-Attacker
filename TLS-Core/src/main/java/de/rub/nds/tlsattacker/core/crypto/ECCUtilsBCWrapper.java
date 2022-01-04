@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -29,21 +29,21 @@ public class ECCUtilsBCWrapper {
      *                      The Array of ECPointFormats
      * @param  input
      *                      The input stream to read from
-     * @return ECDomainParameters
+     * @return              ECDomainParameters
      * @throws IOException
      *                      If something goes wrong while reading from the Stream
      */
     public static ECDomainParameters readECParameters(NamedGroup[] namedGroups, ECPointFormat[] pointFormats,
-                                                      InputStream input) throws IOException {
+        InputStream input) throws IOException {
         int[] nc = convertNamedCurves(namedGroups);
         short[] pf = convertPointFormats(pointFormats);
         return TlsECCUtils.readECParameters(nc, pf, input);
     }
 
     public static ECDomainParameters readECParameters(NamedGroup namedGroup, ECPointFormat pointFormat,
-                                                      InputStream input) throws IOException {
-        int[] nc = convertNamedCurves(new NamedGroup[]{namedGroup});
-        short[] pf = convertPointFormats(new ECPointFormat[]{pointFormat});
+        InputStream input) throws IOException {
+        int[] nc = convertNamedCurves(new NamedGroup[] { namedGroup });
+        short[] pf = convertPointFormats(new ECPointFormat[] { pointFormat });
         return TlsECCUtils.readECParameters(nc, pf, input);
     }
 
@@ -52,7 +52,7 @@ public class ECCUtilsBCWrapper {
      *
      * @param  input
      *                     The input stream to read from
-     * @return ECDomainParameters
+     * @return             ECDomainParameters
      * @throws IOException
      *                     If something goes wrong while reading from the Stream
      */
@@ -67,7 +67,7 @@ public class ECCUtilsBCWrapper {
      *
      * @param  namedGroups
      *                     The NamedCurves to convert
-     * @return int[] of the NamedCurves in BC Style
+     * @return             int[] of the NamedCurves in BC Style
      */
     private static int[] convertNamedCurves(NamedGroup[] namedGroups) {
         if (namedGroups == null || namedGroups.length == 0) {
@@ -85,7 +85,7 @@ public class ECCUtilsBCWrapper {
      *
      * @param  pointFormats
      *                      The pointFormats to convert
-     * @return The converted PointFormats
+     * @return              The converted PointFormats
      */
     private static short[] convertPointFormats(ECPointFormat[] pointFormats) {
         if (pointFormats == null || pointFormats.length == 0) {

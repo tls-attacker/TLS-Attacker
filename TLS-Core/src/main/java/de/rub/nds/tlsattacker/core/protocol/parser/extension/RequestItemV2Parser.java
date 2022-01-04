@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -32,7 +32,7 @@ public class RequestItemV2Parser extends Parser<RequestItemV2> {
         item.setResponderIdListLength(parseIntField(ExtensionByteLength.CERTIFICATE_STATUS_REQUEST_V2_RESPONDER_ID));
         item.setResponderIdListBytes(parseByteArrayField(item.getResponderIdListLength().getValue()));
         item.setRequestExtensionsLength(
-                parseIntField(ExtensionByteLength.CERTIFICATE_STATUS_REQUEST_V2_REQUEST_EXTENSION));
+            parseIntField(ExtensionByteLength.CERTIFICATE_STATUS_REQUEST_V2_REQUEST_EXTENSION));
         item.setRequestExtensions(parseByteArrayField(item.getRequestExtensionsLength().getValue()));
 
         List<ResponderId> responderIds = new LinkedList<>();

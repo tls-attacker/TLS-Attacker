@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -38,7 +38,7 @@ public class FragmentManager {
         FragmentCollector collector = fragments.get(key);
         if (collector == null) {
             collector = new FragmentCollector(config, fragment.getType().getValue(),
-                    fragment.getMessageSeq().getValue(), fragment.getLength().getValue());
+                fragment.getMessageSeq().getValue(), fragment.getLength().getValue());
             fragments.put(key, collector);
         }
         if (collector.wouldAdd(fragment)) {
@@ -62,7 +62,7 @@ public class FragmentManager {
     }
 
     public List<DtlsHandshakeMessageFragment> getOrderedCombinedUninterpretedMessageFragments(boolean onlyIfComplete,
-                                                                                              boolean skipMessageSequences) {
+        boolean skipMessageSequences) {
         List<DtlsHandshakeMessageFragment> handshakeFragmentList = new LinkedList<>();
         List<FragmentKey> orderedFragmentKeys = new ArrayList<>(fragments.keySet());
         orderedFragmentKeys.sort(new Comparator<FragmentKey>() {
@@ -82,7 +82,7 @@ public class FragmentManager {
             FragmentCollector fragmentCollector = fragments.get(key);
             if (fragmentCollector == null) {
                 LOGGER.error("Trying to access unreceived message fragment. Not processing: msg_sqn: "
-                        + key.getMessageSeq() + " epoch: " + key.getEpoch());
+                    + key.getMessageSeq() + " epoch: " + key.getEpoch());
                 if (!skipMessageSequences) {
                     break;
                 } else {
@@ -91,12 +91,12 @@ public class FragmentManager {
             }
             if (!fragmentCollector.isInterpreted()) {
                 if (!skipMessageSequences && key.getMessageSeq() != lastInterpretedMessageSeq + 1
-                        && !fragmentCollector.isRetransmission()) {
+                    && !fragmentCollector.isRetransmission()) {
                     break;
                 }
                 if (onlyIfComplete && !fragmentCollector.isMessageComplete()) {
                     LOGGER.debug("Incomplete message. Not processing: msg_sqn: " + key.getMessageSeq() + " epoch: "
-                            + key.getEpoch());
+                        + key.getEpoch());
                 } else {
                     handshakeFragmentList.add(fragmentCollector.buildCombinedFragment());
                     fragmentCollector.setInterpreted(true);

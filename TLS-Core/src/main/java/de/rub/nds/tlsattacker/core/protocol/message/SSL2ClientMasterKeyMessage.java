@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -199,7 +199,7 @@ public class SSL2ClientMasterKeyMessage extends SSL2HandshakeMessage {
         }
         if (getEncryptedKeyData() != null && getEncryptedKeyData().getValue() != null) {
             sb.append("\n Encrypted Key Data: ")
-                    .append(ArrayConverter.bytesToHexString(getEncryptedKeyData().getValue()));
+                .append(ArrayConverter.bytesToHexString(getEncryptedKeyData().getValue()));
         }
         if (getKeyArgData() != null && getKeyArgData().getValue() != null) {
             sb.append("\n Key Arg Data: ").append(ArrayConverter.bytesToHexString(getKeyArgData().getValue()));
