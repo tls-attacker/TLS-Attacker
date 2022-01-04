@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
 import de.rub.nds.tlsattacker.core.state.SessionTicket;
@@ -50,24 +51,13 @@ public class SessionTicketTLSExtensionParser extends ExtensionParser<SessionTick
      */
     @Override
     public void parseExtensionMessageContent(SessionTicketTLSExtensionMessage msg) {
-        if (msg.getExtensionLength().getValue() > 65535) {
-            LOGGER.warn("The SessionTLS ticket length shouldn't exceed 2 bytes as defined in RFC 4507. " + "Length was "
-                + msg.getExtensionLength().getValue());
-        }
+        SessionTicket ticket = new SessionTicket();
+        msg.setSessionTicket(ticket);
+        // only parse if the extension indicates data
         if (msg.getExtensionLength().getValue() > 0) {
-            LOGGER.debug("Parsing session ticket as resumption offer");
-            msg.getSessionTicket().setIdentityLength(msg.getExtensionLength().getValue());
-            msg.getSessionTicket()
-                .setIdentity(parseByteArrayField(msg.getSessionTicket().getIdentityLength().getValue()));
-            SessionTicketParser ticketParser =
-                new SessionTicketParser(0, msg.getSessionTicket().getIdentity().getValue(), msg.getSessionTicket(),
-                    configTicketKeyName, configCipherAlgorithm, configMacAlgorithm);
-            ticketParser.parse(msg.getSessionTicket());
-        } else {
-            LOGGER.debug("Parsing extension as indication for ticket support");
-            msg.getSessionTicket().setIdentity(new byte[0]);
-            msg.getSessionTicket().setIdentityLength(0);
-            LOGGER.debug("Parsed session ticket identity " + bytesToHexString(msg.getSessionTicket().getIdentity()));
+            SessionTicketParser ticketParser = new SessionTicketParser(0, msg.getPayloadBytes().getValue(),
+                msg.getSessionTicket(), configTicketKeyName, configCipherAlgorithm, configMacAlgorithm);
+            ticketParser.parse(ticket);
         }
     }
 }

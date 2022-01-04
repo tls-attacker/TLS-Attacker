@@ -22,7 +22,7 @@ import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
 
-import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
 public class SessionTicketTLSExtensionParserTest {
@@ -71,6 +71,7 @@ public class SessionTicketTLSExtensionParserTest {
     public void setUp() {
         parser = new SessionTicketTLSExtensionParser(new ByteArrayInputStream(expectedBytes), Config.createConfig());
         message = new SessionTicketTLSExtensionMessage();
+        message.setExtensionLength(0);
     }
 
     /**
@@ -79,7 +80,7 @@ public class SessionTicketTLSExtensionParserTest {
     @Test
     public void testParseExtensionMessageContent() {
         parser.parse(message);
-        assertArrayEquals(sessionTicket, message.getSessionTicket().getIdentity().getValue());
+        assertNull(message.getSessionTicket().getIdentity());
     }
 
 }

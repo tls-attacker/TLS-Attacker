@@ -45,7 +45,7 @@ import java.io.Serializable;
     PreSharedKeyExtensionMessage.class, UnknownExtensionMessage.class, PWDClearExtensionMessage.class,
     PWDProtectExtensionMessage.class, PasswordSaltExtensionMessage.class, CachedInfoExtensionMessage.class,
     CookieExtensionMessage.class, DtlsHandshakeMessageFragment.class, UserMappingExtensionMessage.class,
-    SRPExtensionMessage.class, CachedInfoExtensionMessage.class})
+    SRPExtensionMessage.class, CachedInfoExtensionMessage.class })
 public abstract class ExtensionMessage<Self extends ExtensionMessage> extends ModifiableVariableHolder
     implements Serializable, DataContainer<Self> {
 
@@ -59,6 +59,9 @@ public abstract class ExtensionMessage<Self extends ExtensionMessage> extends Mo
 
     @ModifiableVariableProperty
     private ModifiableByteArray extensionBytes;
+
+    @ModifiableVariableProperty
+    private ModifiableByteArray payloadBytes;
 
     public ExtensionMessage() {
     }
@@ -101,6 +104,14 @@ public abstract class ExtensionMessage<Self extends ExtensionMessage> extends Mo
 
     public void setExtensionBytes(ModifiableByteArray extensionBytes) {
         this.extensionBytes = extensionBytes;
+    }
+
+    public ModifiableByteArray getPayloadBytes() {
+        return payloadBytes;
+    }
+
+    public void setPayloadBytes(ModifiableByteArray payloadBytes) {
+        this.payloadBytes = payloadBytes;
     }
 
     public ExtensionType getExtensionTypeConstant() {

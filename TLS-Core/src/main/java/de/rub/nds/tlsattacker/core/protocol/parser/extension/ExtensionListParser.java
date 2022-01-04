@@ -9,6 +9,9 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
+import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.VariableModification;
+import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
@@ -50,6 +53,9 @@ public class ExtensionListParser extends Parser<List<ExtensionMessage>> {
             ExtensionMessage extension = ExtensionFactory.getExtension(extensionType);
             extension.setExtensionType(typeBytes);
             extension.setExtensionLength(length);
+            ModifiableByteArray modifiableByteArray = ModifiableVariableFactory.createByteArrayModifiableVariable();
+            modifiableByteArray.setOriginalValue(extensionPayload);
+            extension.setPayloadBytes(modifiableByteArray);
             extension.setExtensionBytes(ArrayConverter.concatenate(typeBytes,
                 ArrayConverter.intToBytes(length, ExtensionByteLength.EXTENSIONS_LENGTH), extensionPayload));
             Parser parser = extension.getParser(tlsContext, new ByteArrayInputStream(extensionPayload));
@@ -63,9 +69,6 @@ public class ExtensionListParser extends Parser<List<ExtensionMessage>> {
 
     /**
      * Reads the next bytes as the length of the Extension and writes them in the message
-     *
-     * @param msg
-     *            Message to write in
      */
     private int parseExtensionLength() {
         int length = parseIntField(ExtensionByteLength.EXTENSIONS_LENGTH);
