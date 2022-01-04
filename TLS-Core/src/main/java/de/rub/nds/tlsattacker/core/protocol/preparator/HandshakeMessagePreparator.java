@@ -53,17 +53,28 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
         LOGGER.debug("Type: " + message.getType().getValue());
     }
 
+    private void prepareMessageContent(byte[] content) {
+        message.setMessageContent(content);
+        LOGGER.debug(
+            "Handshake message content: " + ArrayConverter.bytesToHexString(message.getMessageContent().getValue()));
+    }
+
     @Override
     protected void prepareProtocolMessageContents() {
         if (chooser.getSelectedProtocolVersion().isDTLS()) {
             message.setMessageSequence(chooser.getContext().getDtlsWriteHandshakeMessageSequence());
         }
         prepareHandshakeMessageContents();
+        prepareEncapsulatingFields();
 
+    }
+
+    public void prepareEncapsulatingFields() {
+        HandshakeMessageSerializer<T> serializer = message.getSerializer(chooser.getContext());
+        byte[] content = serializer.serializeProtocolMessageContent();
+        prepareMessageContent(content);
         if (!(message instanceof DtlsHandshakeMessageFragment)) {
-            HandshakeMessageHandler<T> handler = message.getHandler(chooser.getContext());
-            HandshakeMessageSerializer<T> serializer = message.getSerializer(chooser.getContext());
-            prepareMessageLength(serializer.serializeProtocolMessageContent().length);
+            prepareMessageLength(message.getMessageContent().getValue().length);
             prepareMessageType(message.getHandshakeMessageType());
         }
     }
@@ -83,10 +94,6 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
                     }
                 }
                 extensionMessage.getPreparator(chooser.getContext()).prepare();
-                ExtensionSerializer serializer = extensionMessage.getSerializer(chooser.getContext());
-                byte[] extensionBody = serializer.serializeExtensionContent();
-                extensionMessage.setExtensionLength(extensionBody.length);
-                extensionMessage.setExtensionBytes(serializer.serialize());
                 try {
                     stream.write(extensionMessage.getExtensionBytes().getValue());
                 } catch (IOException ex) {
@@ -126,7 +133,7 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
                 } else {
                     LOGGER.debug(
                         "If we are in a SSLv2 or SSLv3 Connection we do not add extensions, as SSL did not contain extensions");
-                    LOGGER.debug("If however, the extensions are prepared, we will ad themm");
+                    LOGGER.debug("If however, the extensions are prepared, we will add them");
                 }
             }
         }

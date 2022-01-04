@@ -153,6 +153,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
         HandshakeMessage handshakeMessage = MessageFactory.generateHandshakeMessage(handshakeMessageType, context);
         handshakeMessage.setType(type);
         handshakeMessage.setLength(length);
+        handshakeMessage.setMessageContent(payload);
         handshakeMessage.setCompleteResultingMessage(ArrayConverter.concatenate(new byte[] { type },
             ArrayConverter.intToBytes(length, HandshakeByteLength.MESSAGE_LENGTH_FIELD), payload));
         Parser parser = handshakeMessage.getParser(context, new ByteArrayInputStream(payload));

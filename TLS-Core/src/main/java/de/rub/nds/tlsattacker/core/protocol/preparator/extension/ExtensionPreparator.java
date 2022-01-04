@@ -40,6 +40,7 @@ public abstract class ExtensionPreparator<T extends ExtensionMessage> extends Pr
         prepareExtensionType(msg);
         prepareExtensionContent();
         content = serializer.serializeExtensionContent();
+        prepareExtensionContent(msg);
         prepareExtensionLength(msg);
         prepareExtensionBytes(msg);
     }
@@ -49,6 +50,7 @@ public abstract class ExtensionPreparator<T extends ExtensionMessage> extends Pr
         prepareExtensionType(msg);
         afterPrepareExtensionContent();
         content = serializer.serializeExtensionContent();
+        prepareExtensionContent(msg);
         prepareExtensionLength(msg);
         prepareExtensionBytes(msg);
     }
@@ -72,6 +74,11 @@ public abstract class ExtensionPreparator<T extends ExtensionMessage> extends Pr
     private void prepareExtensionBytes(ExtensionMessage msg) {
         msg.setExtensionBytes(serializer.serialize());
         LOGGER.debug("ExtensionBytes: " + ArrayConverter.bytesToHexString(msg.getExtensionBytes().getValue()));
+    }
+
+    private void prepareExtensionContent(ExtensionMessage msg) {
+        msg.setExtensionContent(content);
+        LOGGER.debug("ExtensionContent: " + ArrayConverter.bytesToHexString(msg.getExtensionContent().getValue()));
     }
 
 }

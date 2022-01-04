@@ -106,6 +106,7 @@ public abstract class HandshakeMessage extends ProtocolMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.NONE)
     private ModifiableBoolean retransmission = null;
 
+    private ModifiableByteArray messageContent = null;
     /**
      * List of extensions
      */
@@ -378,5 +379,17 @@ public abstract class HandshakeMessage extends ProtocolMessage {
 
     @Override
     public abstract HandshakeMessageHandler getHandler(TlsContext context);
+
+    public ModifiableByteArray getMessageContent() {
+        return messageContent;
+    }
+
+    public void setMessageContent(ModifiableByteArray messageContent) {
+        this.messageContent = messageContent;
+    }
+
+    public void setMessageContent(byte[] payload) {
+        this.messageContent = ModifiableVariableFactory.safelySetValue(this.messageContent, payload);
+    }
 
 }

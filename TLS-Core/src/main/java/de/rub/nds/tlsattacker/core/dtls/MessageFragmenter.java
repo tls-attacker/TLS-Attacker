@@ -18,6 +18,7 @@ import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageSerializer;
 import de.rub.nds.tlsattacker.core.protocol.Serializer;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
+import de.rub.nds.tlsattacker.core.protocol.preparator.HandshakeMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.HandshakeMessageSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.LinkedList;
@@ -119,6 +120,10 @@ public class MessageFragmenter {
             Preparator<ProtocolMessage> preparator = message.getPreparator(context);
             preparator.prepare();
             preparator.afterPrepare();
+            if (preparator instanceof HandshakeMessagePreparator) {
+                // re-prepare to cover changes caused by afterPrepare
+                ((HandshakeMessagePreparator) preparator).prepareEncapsulatingFields();
+            }
             Serializer<ProtocolMessage> serializer = message.getSerializer(context);
             byte[] completeMessage = serializer.serialize();
             message.setCompleteResultingMessage(completeMessage);
