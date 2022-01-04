@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -15,10 +15,11 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.SrpServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.InputStream;
-import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.InputStream;
+import java.util.Arrays;
 
 public class SrpServerKeyExchangeParser extends ServerKeyExchangeParser<SrpServerKeyExchangeMessage> {
 
@@ -33,7 +34,7 @@ public class SrpServerKeyExchangeParser extends ServerKeyExchangeParser<SrpServe
      * @param version
      *                   Version of the Protocol
      * @param tlsContext
-     * 
+     *
      */
     public SrpServerKeyExchangeParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
         super(stream, HandshakeMessageType.SERVER_KEY_EXCHANGE, version, tlsContext);
@@ -173,7 +174,7 @@ public class SrpServerKeyExchangeParser extends ServerKeyExchangeParser<SrpServe
     private void parseSignatureAndHashAlgorithm(SrpServerKeyExchangeMessage msg) {
         msg.setSignatureAndHashAlgorithm(parseByteArrayField(HandshakeByteLength.SIGNATURE_HASH_ALGORITHM));
         LOGGER.debug("SignatureAndHashAlgorithm: "
-            + ArrayConverter.bytesToHexString(msg.getSignatureAndHashAlgorithm().getValue()));
+                + ArrayConverter.bytesToHexString(msg.getSignatureAndHashAlgorithm().getValue()));
     }
 
     /**

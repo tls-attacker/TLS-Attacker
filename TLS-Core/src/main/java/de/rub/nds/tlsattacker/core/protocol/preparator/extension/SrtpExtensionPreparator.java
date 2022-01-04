@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -14,9 +14,10 @@ import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfiles;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SrtpExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import java.io.ByteArrayOutputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.ByteArrayOutputStream;
 
 public class SrtpExtensionPreparator extends ExtensionPreparator<SrtpExtensionMessage> {
 
@@ -25,7 +26,7 @@ public class SrtpExtensionPreparator extends ExtensionPreparator<SrtpExtensionMe
     private final SrtpExtensionMessage msg;
 
     public SrtpExtensionPreparator(Chooser chooser, SrtpExtensionMessage message,
-        ExtensionSerializer<SrtpExtensionMessage> serializer) {
+                                   ExtensionSerializer<SrtpExtensionMessage> serializer) {
         super(chooser, message, serializer);
         msg = message;
     }
@@ -34,16 +35,16 @@ public class SrtpExtensionPreparator extends ExtensionPreparator<SrtpExtensionMe
     public void prepareExtensionContent() {
         ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
         for (SrtpProtectionProfiles profile : chooser.getConfig()
-            .getSecureRealTimeTransportProtocolProtectionProfiles()) {
+                .getSecureRealTimeTransportProtocolProtectionProfiles()) {
             byteStream.write(profile.getMinor());
             byteStream.write(profile.getMajor());
         }
         msg.setSrtpProtectionProfiles(byteStream.toByteArray());
         LOGGER.debug("Prepared the SRTP extension with protection profiles "
-            + ArrayConverter.bytesToHexString(msg.getSrtpProtectionProfiles()));
+                + ArrayConverter.bytesToHexString(msg.getSrtpProtectionProfiles()));
         msg.setSrtpProtectionProfilesLength(msg.getSrtpProtectionProfiles().getValue().length);
         LOGGER.debug("Prepared the SRTP extension with protection profiles length "
-            + msg.getSrtpProtectionProfilesLength().getValue());
+                + msg.getSrtpProtectionProfilesLength().getValue());
 
         if (chooser.getConfig().getSecureRealTimeTransportProtocolMasterKeyIdentifier().length != 0) {
             msg.setSrtpMki(chooser.getConfig().getSecureRealTimeTransportProtocolMasterKeyIdentifier());

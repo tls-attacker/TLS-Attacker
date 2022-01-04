@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -11,14 +11,10 @@ package de.rub.nds.tlsattacker.core.dtls;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.*;
 
 /**
  * Manages multiple message fragment collectors. A user can add fragments, check if the message corresponding to a
@@ -42,7 +38,7 @@ public class FragmentManager {
         FragmentCollector collector = fragments.get(key);
         if (collector == null) {
             collector = new FragmentCollector(config, fragment.getType().getValue(),
-                fragment.getMessageSeq().getValue(), fragment.getLength().getValue());
+                    fragment.getMessageSeq().getValue(), fragment.getLength().getValue());
             fragments.put(key, collector);
         }
         if (collector.wouldAdd(fragment)) {
@@ -66,7 +62,7 @@ public class FragmentManager {
     }
 
     public List<DtlsHandshakeMessageFragment> getOrderedCombinedUninterpretedMessageFragments(boolean onlyIfComplete,
-        boolean skipMessageSequences) {
+                                                                                              boolean skipMessageSequences) {
         List<DtlsHandshakeMessageFragment> handshakeFragmentList = new LinkedList<>();
         List<FragmentKey> orderedFragmentKeys = new ArrayList<>(fragments.keySet());
         orderedFragmentKeys.sort(new Comparator<FragmentKey>() {
@@ -86,7 +82,7 @@ public class FragmentManager {
             FragmentCollector fragmentCollector = fragments.get(key);
             if (fragmentCollector == null) {
                 LOGGER.error("Trying to access unreceived message fragment. Not processing: msg_sqn: "
-                    + key.getMessageSeq() + " epoch: " + key.getEpoch());
+                        + key.getMessageSeq() + " epoch: " + key.getEpoch());
                 if (!skipMessageSequences) {
                     break;
                 } else {
@@ -95,12 +91,12 @@ public class FragmentManager {
             }
             if (!fragmentCollector.isInterpreted()) {
                 if (!skipMessageSequences && key.getMessageSeq() != lastInterpretedMessageSeq + 1
-                    && !fragmentCollector.isRetransmission()) {
+                        && !fragmentCollector.isRetransmission()) {
                     break;
                 }
                 if (onlyIfComplete && !fragmentCollector.isMessageComplete()) {
                     LOGGER.debug("Incomplete message. Not processing: msg_sqn: " + key.getMessageSeq() + " epoch: "
-                        + key.getEpoch());
+                            + key.getEpoch());
                 } else {
                     handshakeFragmentList.add(fragmentCollector.buildCombinedFragment());
                     fragmentCollector.setInterpreted(true);
@@ -123,7 +119,7 @@ public class FragmentManager {
     /**
      * Returns the stored fragmented message with the given messageSeq and epoch, as a single combined fragment. Returns
      * null if no message was stored with this messageSeq, or if the message is incomplete.
-     * 
+     *
      * @param  messageSeq
      * @param  epoch
      * @return

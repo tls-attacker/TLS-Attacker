@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -11,32 +11,20 @@ package de.rub.nds.tlsattacker.core.config;
 
 import de.rub.nds.tlsattacker.core.config.filter.ConfigDisplayFilter;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.xml.sax.SAXException;
+
 import javax.xml.XMLConstants;
-import javax.xml.bind.JAXB;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.ValidationEvent;
-import javax.xml.bind.ValidationEventHandler;
+import javax.xml.bind.*;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.xml.sax.SAXException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 public class ConfigIO {
 
@@ -122,12 +110,12 @@ public class ConfigIO {
 
     /**
      * Reads the XML from the given inputStream with the provided unmarshaller into a new Config
-     * 
+     *
      * @param  stream
      *                      The stream that provides the XML structure
      * @param  unmarshaller
      *                      The unmarshaller that will be used during the parsing
-     * @return              Config a new Config that contains the parsed values from the inputStream
+     * @return Config a new Config that contains the parsed values from the inputStream
      */
     private static Config read(InputStream stream, Unmarshaller unmarshaller) {
         if (stream == null) {
@@ -141,7 +129,7 @@ public class ConfigIO {
             XMLStreamReader xsr = xif.createXMLStreamReader(stream);
             SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
             Schema configSchema =
-                sf.newSchema(new StreamSource(WorkflowTraceSerializer.class.getResourceAsStream("/" + xsd_source)));
+                    sf.newSchema(new StreamSource(WorkflowTraceSerializer.class.getResourceAsStream("/" + xsd_source)));
             configSchema.newValidator();
             unmarshaller.setSchema(configSchema);
             Config config = (Config) unmarshaller.unmarshal(xsr);

@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -22,9 +22,10 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.AlpnExtensionParser
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.AlpnExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.AlpnExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+
+import javax.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.List;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * This extension is defined in RFC7301
@@ -66,7 +67,7 @@ public class AlpnExtensionMessage extends ExtensionMessage<AlpnExtensionMessage>
 
     public void setProposedAlpnProtocolsLength(int proposedAlpnProtocolsLength) {
         this.proposedAlpnProtocolsLength =
-            ModifiableVariableFactory.safelySetValue(this.proposedAlpnProtocolsLength, proposedAlpnProtocolsLength);
+                ModifiableVariableFactory.safelySetValue(this.proposedAlpnProtocolsLength, proposedAlpnProtocolsLength);
     }
 
     public ModifiableByteArray getProposedAlpnProtocols() {
@@ -79,7 +80,7 @@ public class AlpnExtensionMessage extends ExtensionMessage<AlpnExtensionMessage>
 
     public void setProposedAlpnProtocols(byte[] proposedAlpnProtocols) {
         this.proposedAlpnProtocols =
-            ModifiableVariableFactory.safelySetValue(this.proposedAlpnProtocols, proposedAlpnProtocols);
+                ModifiableVariableFactory.safelySetValue(this.proposedAlpnProtocols, proposedAlpnProtocols);
     }
 
     @Override

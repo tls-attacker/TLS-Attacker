@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -19,7 +19,7 @@ public class CertificateTypeExtensionPreparator extends ExtensionPreparator<Cert
     private final CertificateTypeExtensionMessage msg;
 
     public CertificateTypeExtensionPreparator(Chooser chooser, CertificateTypeExtensionMessage message,
-        ExtensionSerializer<CertificateTypeExtensionMessage> serializer) {
+                                              ExtensionSerializer<CertificateTypeExtensionMessage> serializer) {
         super(chooser, message, serializer);
         msg = message;
     }

@@ -10,10 +10,12 @@
 package de.rub.nds.tlsattacker.core.config.converters;
 
 import com.beust.jcommander.ParameterException;
-import java.math.BigInteger;
-import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.math.BigInteger;
+
+import static org.junit.Assert.assertEquals;
 
 public class BigIntegerConverterTest {
     private BigIntegerConverter converter;

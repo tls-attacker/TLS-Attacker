@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -23,7 +23,7 @@ public class SRPExtensionPreparator extends ExtensionPreparator<SRPExtensionMess
     private final SRPExtensionMessage message;
 
     public SRPExtensionPreparator(Chooser chooser, SRPExtensionMessage message,
-        ExtensionSerializer<SRPExtensionMessage> serializer) {
+                                  ExtensionSerializer<SRPExtensionMessage> serializer) {
         super(chooser, message, serializer);
         this.message = message;
     }
@@ -32,10 +32,10 @@ public class SRPExtensionPreparator extends ExtensionPreparator<SRPExtensionMess
     public void prepareExtensionContent() {
         message.setSrpIdentifier(chooser.getConfig().getSecureRemotePasswordExtensionIdentifier());
         LOGGER.debug("Prepared the SRP Extension with user identifier "
-            + ArrayConverter.bytesToHexString(message.getSrpIdentifier().getValue()));
+                + ArrayConverter.bytesToHexString(message.getSrpIdentifier().getValue()));
         message.setSrpIdentifierLength(message.getSrpIdentifier().getValue().length);
         LOGGER.debug(
-            "Prepared the SRP Extension with user identifier length " + message.getSrpIdentifierLength().getValue());
+                "Prepared the SRP Extension with user identifier length " + message.getSrpIdentifierLength().getValue());
     }
 
 }

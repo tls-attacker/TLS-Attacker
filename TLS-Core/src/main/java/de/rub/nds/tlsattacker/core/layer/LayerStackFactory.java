@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -29,7 +29,7 @@ public class LayerStackFactory {
                 throw new UnsupportedOperationException("Not implemented yet");
             case TLS:
                 return new LayerStack(context, new MessageLayer(context), new RecordLayer(context),
-                    new TcpLayer(context));
+                        new TcpLayer(context));
             default:
                 throw new RuntimeException("Unknown LayerStackType: " + type.name());
         }

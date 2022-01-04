@@ -19,12 +19,13 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.state.session.TicketSession;
 import de.rub.nds.tlsattacker.util.FixedTimeProvider;
 import de.rub.nds.tlsattacker.util.TimeHelper;
+import org.junit.Before;
+import org.junit.Test;
+
 import java.util.LinkedList;
 import java.util.List;
 
 import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
 
 public class ClientHelloPreparatorTest {
 

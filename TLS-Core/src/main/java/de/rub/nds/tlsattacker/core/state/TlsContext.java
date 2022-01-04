@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -13,30 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.BadRandom;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
-import de.rub.nds.tlsattacker.core.constants.AuthzDataFormat;
-import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestType;
-import de.rub.nds.tlsattacker.core.constants.CertificateType;
-import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
-import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
-import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
-import de.rub.nds.tlsattacker.core.constants.EsniDnsKeyRecordVersion;
-import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
-import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
-import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
-import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.constants.PskKeyExchangeMode;
-import de.rub.nds.tlsattacker.core.constants.RunningModeType;
-import de.rub.nds.tlsattacker.core.constants.SSL2CipherSuite;
-import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfiles;
-import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
-import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
-import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
-import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
+import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.crypto.MessageDigestCollector;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.dtls.FragmentManager;
@@ -63,22 +40,14 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.socket.SocketState;
-import java.math.BigInteger;
-import java.util.*;
-import de.rub.nds.tlsattacker.transport.socket.SocketState;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.EnumSet;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.tls.Certificate;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import java.math.BigInteger;
+import java.util.*;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class TlsContext {
@@ -678,7 +647,7 @@ public class TlsContext {
                     break;
                 default:
                     throw new ConfigurationException(
-                        "Cannot create connection for unknown running mode " + "'" + mode + "'");
+                            "Cannot create connection for unknown running mode " + "'" + mode + "'");
             }
         }
     }
@@ -1186,14 +1155,14 @@ public class TlsContext {
     }
 
     public void setClientSupportedSignatureAndHashAlgorithms(
-        List<SignatureAndHashAlgorithm> clientSupportedSignatureAndHashAlgorithms) {
+            List<SignatureAndHashAlgorithm> clientSupportedSignatureAndHashAlgorithms) {
         this.clientSupportedSignatureAndHashAlgorithms = clientSupportedSignatureAndHashAlgorithms;
     }
 
     public void setClientSupportedSignatureAndHashAlgorithms(
-        SignatureAndHashAlgorithm... clientSupportedSignatureAndHashAlgorithms) {
+            SignatureAndHashAlgorithm... clientSupportedSignatureAndHashAlgorithms) {
         this.clientSupportedSignatureAndHashAlgorithms =
-            new ArrayList(Arrays.asList(clientSupportedSignatureAndHashAlgorithms));
+                new ArrayList(Arrays.asList(clientSupportedSignatureAndHashAlgorithms));
     }
 
     public List<SNIEntry> getClientSNIEntryList() {
@@ -1333,14 +1302,14 @@ public class TlsContext {
     }
 
     public void setServerSupportedSignatureAndHashAlgorithms(
-        List<SignatureAndHashAlgorithm> serverSupportedSignatureAndHashAlgorithms) {
+            List<SignatureAndHashAlgorithm> serverSupportedSignatureAndHashAlgorithms) {
         this.serverSupportedSignatureAndHashAlgorithms = serverSupportedSignatureAndHashAlgorithms;
     }
 
     public void setServerSupportedSignatureAndHashAlgorithms(
-        SignatureAndHashAlgorithm... serverSupportedSignatureAndHashAlgorithms) {
+            SignatureAndHashAlgorithm... serverSupportedSignatureAndHashAlgorithms) {
         this.serverSupportedSignatureAndHashAlgorithms =
-            new ArrayList(Arrays.asList(serverSupportedSignatureAndHashAlgorithms));
+                new ArrayList(Arrays.asList(serverSupportedSignatureAndHashAlgorithms));
     }
 
     public ProtocolVersion getSelectedProtocolVersion() {
@@ -1646,7 +1615,7 @@ public class TlsContext {
     }
 
     public void setCertificateStatusRequestExtensionRequestType(
-        CertificateStatusRequestType certificateStatusRequestExtensionRequestType) {
+            CertificateStatusRequestType certificateStatusRequestExtensionRequestType) {
         this.certificateStatusRequestExtensionRequestType = certificateStatusRequestExtensionRequestType;
     }
 
@@ -1655,7 +1624,7 @@ public class TlsContext {
     }
 
     public void
-        setCertificateStatusRequestExtensionResponderIDList(byte[] certificateStatusRequestExtensionResponderIDList) {
+    setCertificateStatusRequestExtensionResponderIDList(byte[] certificateStatusRequestExtensionResponderIDList) {
         this.certificateStatusRequestExtensionResponderIDList = certificateStatusRequestExtensionResponderIDList;
     }
 
@@ -1664,7 +1633,7 @@ public class TlsContext {
     }
 
     public void
-        setCertificateStatusRequestExtensionRequestExtension(byte[] certificateStatusRequestExtensionRequestExtension) {
+    setCertificateStatusRequestExtensionRequestExtension(byte[] certificateStatusRequestExtensionRequestExtension) {
         this.certificateStatusRequestExtensionRequestExtension = certificateStatusRequestExtensionRequestExtension;
     }
 
@@ -1697,7 +1666,7 @@ public class TlsContext {
     }
 
     public void setSecureRealTimeTransportProtocolProtectionProfiles(
-        List<SrtpProtectionProfiles> secureRealTimeTransportProtocolProtectionProfiles) {
+            List<SrtpProtectionProfiles> secureRealTimeTransportProtocolProtectionProfiles) {
         this.secureRealTimeTransportProtocolProtectionProfiles = secureRealTimeTransportProtocolProtectionProfiles;
     }
 
@@ -1866,7 +1835,7 @@ public class TlsContext {
      *
      * @param  ext
      *             The ExtensionType to check for
-     * @return     true if extension was proposed by client, false otherwise
+     * @return true if extension was proposed by client, false otherwise
      */
     public boolean isExtensionProposed(ExtensionType ext) {
         return proposedExtensionSet.contains(ext);
@@ -1896,7 +1865,7 @@ public class TlsContext {
      *
      * @param  ext
      *             The ExtensionType to check for
-     * @return     true if extension was proposed by server, false otherwise
+     * @return true if extension was proposed by server, false otherwise
      */
     public boolean isExtensionNegotiated(ExtensionType ext) {
         return negotiatedExtensionSet.contains(ext);
@@ -1951,7 +1920,7 @@ public class TlsContext {
                 info.append(", listening on port ").append(connection.getPort());
             } else {
                 info.append(", connected to ").append(connection.getHostname()).append(":")
-                    .append(connection.getPort());
+                        .append(connection.getPort());
             }
             info.append("}");
         }
@@ -2500,7 +2469,7 @@ public class TlsContext {
      * @param  recordSizeLimit
      *                         the record_size_limit extension value for the current connection direction
      *
-     * @return                 the record data size limit for the target connection end type
+     * @return the record data size limit for the target connection end type
      */
     private Integer getMaxRecordDataSize(Integer recordSizeLimit) {
         // max_fragment_length extension applies to all records if record_size_limit extension is not active

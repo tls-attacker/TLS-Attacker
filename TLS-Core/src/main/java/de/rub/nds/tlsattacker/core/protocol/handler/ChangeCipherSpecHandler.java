@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -19,9 +19,10 @@ import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.security.NoSuchAlgorithmException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.security.NoSuchAlgorithmException;
 
 public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipherSpecMessage> {
 
@@ -34,7 +35,7 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
     @Override
     public void adjustContext(ChangeCipherSpecMessage message) {
         if (tlsContext.getTalkingConnectionEndType() != tlsContext.getChooser().getConnectionEndType()
-            && tlsContext.getChooser().getSelectedProtocolVersion() != ProtocolVersion.TLS13) {
+                && tlsContext.getChooser().getSelectedProtocolVersion() != ProtocolVersion.TLS13) {
             LOGGER.debug("Adjusting decrypting cipher for " + tlsContext.getTalkingConnectionEndType());
             tlsContext.getRecordLayer().updateDecryptionCipher(getRecordCipher());
             tlsContext.getRecordLayer().updateDecompressor();
@@ -53,7 +54,7 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
     private RecordCipher getRecordCipher() {
         try {
             KeySet keySet = KeySetGenerator.generateKeySet(tlsContext,
-                tlsContext.getChooser().getSelectedProtocolVersion(), Tls13KeySetType.NONE);
+                    tlsContext.getChooser().getSelectedProtocolVersion(), Tls13KeySetType.NONE);
             return RecordCipherFactory.getRecordCipher(tlsContext, keySet);
         } catch (NoSuchAlgorithmException | CryptoException ex) {
             throw new UnsupportedOperationException("The specified Algorithm is not supported", ex);

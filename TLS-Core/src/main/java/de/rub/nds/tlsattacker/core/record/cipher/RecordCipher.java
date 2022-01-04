@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -19,11 +19,12 @@ import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Random;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public abstract class RecordCipher {
 
@@ -67,7 +68,7 @@ public abstract class RecordCipher {
      *                         The Record for which the data should be collected
      * @param  protocolVersion
      *                         According to which ProtocolVersion the AdditionalAuthenticationData is collected
-     * @return                 The AdditionalAuthenticatedData
+     * @return The AdditionalAuthenticatedData
      */
     protected final byte[] collectAdditionalAuthenticatedData(Record record, ProtocolVersion protocolVersion) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -77,19 +78,19 @@ public abstract class RecordCipher {
                 stream.write(record.getProtocolVersion().getValue());
                 if (record.getLength() != null && record.getLength().getValue() != null) {
                     stream.write(
-                        ArrayConverter.intToBytes(record.getLength().getValue(), RecordByteLength.RECORD_LENGTH));
+                            ArrayConverter.intToBytes(record.getLength().getValue(), RecordByteLength.RECORD_LENGTH));
                 } else {
                     // It may happen that the record does not have a length prepared - in that case we will need to add
                     // the length of the data content
                     // This is mostly interessting for fuzzing
                     stream.write(ArrayConverter.intToBytes(record.getCleanProtocolMessageBytes().getValue().length,
-                        RecordByteLength.RECORD_LENGTH));
+                            RecordByteLength.RECORD_LENGTH));
                 }
                 return stream.toByteArray();
             } else {
                 if (protocolVersion.isDTLS() && record.getEpoch() != null) {
                     stream.write(ArrayConverter.intToBytes(record.getEpoch().getValue().shortValue(),
-                        RecordByteLength.DTLS_EPOCH));
+                            RecordByteLength.DTLS_EPOCH));
                     stream.write(ArrayConverter.longToUint48Bytes(record.getSequenceNumber().getValue().longValue()));
                 } else {
                     stream.write(ArrayConverter.longToUint64Bytes(record.getSequenceNumber().getValue().longValue()));
@@ -105,7 +106,7 @@ public abstract class RecordCipher {
                 stream.write(version);
                 int length;
                 if (record.getComputations().getAuthenticatedNonMetaData() == null
-                    || record.getComputations().getAuthenticatedNonMetaData().getOriginalValue() == null) {
+                        || record.getComputations().getAuthenticatedNonMetaData().getOriginalValue() == null) {
                     // This case is required for TLS 1.2 aead encryption
                     length = record.getComputations().getPlainRecordBytes().getValue().length;
                 } else {

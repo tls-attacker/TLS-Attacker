@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -19,13 +19,14 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.extension.KeyShareEntrySe
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.KeyShareExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class KeyShareExtensionPreparator extends ExtensionPreparator<KeyShareExtensionMessage> {
 
@@ -35,7 +36,7 @@ public class KeyShareExtensionPreparator extends ExtensionPreparator<KeyShareExt
     private ByteArrayOutputStream stream;
 
     public KeyShareExtensionPreparator(Chooser chooser, KeyShareExtensionMessage message,
-        KeyShareExtensionSerializer serializer) {
+                                       KeyShareExtensionSerializer serializer) {
         super(chooser, message, serializer);
         this.msg = message;
     }
@@ -72,7 +73,7 @@ public class KeyShareExtensionPreparator extends ExtensionPreparator<KeyShareExt
                     serverList.add(predefinedServerKeyShare);
                 } else {
                     KeyShareEntry keyShareEntry =
-                        new KeyShareEntry(i.getGroup(), chooser.getConfig().getKeySharePrivate());
+                            new KeyShareEntry(i.getGroup(), chooser.getConfig().getKeySharePrivate());
                     serverList.add(keyShareEntry);
                 }
                 break;
@@ -81,7 +82,7 @@ public class KeyShareExtensionPreparator extends ExtensionPreparator<KeyShareExt
         if (serverList.isEmpty()) {
             LOGGER.debug("Client Key Share groups not supported - falling back to default selected group");
             KeyShareEntry keyShareEntry = new KeyShareEntry(chooser.getConfig().getDefaultSelectedNamedGroup(),
-                chooser.getConfig().getKeySharePrivate());
+                    chooser.getConfig().getKeySharePrivate());
             serverList.add(keyShareEntry);
         }
         return serverList;

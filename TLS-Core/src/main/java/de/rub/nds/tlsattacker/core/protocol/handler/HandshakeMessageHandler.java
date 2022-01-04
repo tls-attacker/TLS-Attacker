@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -24,7 +24,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
  *                            The ProtocolMessage that should be handled
  */
 public abstract class HandshakeMessageHandler<HandshakeMessageT extends HandshakeMessage>
-    extends ProtocolMessageHandler<HandshakeMessageT> {
+        extends ProtocolMessageHandler<HandshakeMessageT> {
 
     public HandshakeMessageHandler(TlsContext tlsContext) {
         super(tlsContext);
@@ -51,8 +51,8 @@ public abstract class HandshakeMessageHandler<HandshakeMessageT extends Handshak
 
                 if (extensionMessage instanceof EncryptedServerNameIndicationExtensionMessage) {
                     EncryptedServerNameIndicationExtensionPreparator preparator =
-                        (EncryptedServerNameIndicationExtensionPreparator) ((EncryptedServerNameIndicationExtensionMessage) extensionMessage)
-                            .getPreparator(tlsContext);
+                            (EncryptedServerNameIndicationExtensionPreparator) ((EncryptedServerNameIndicationExtensionMessage) extensionMessage)
+                                    .getPreparator(tlsContext);
                     if (message instanceof ClientHelloMessage) {
                         preparator.setClientHelloMessage((ClientHelloMessage) message);
                     }

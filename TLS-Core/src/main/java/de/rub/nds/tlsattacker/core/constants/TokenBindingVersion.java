@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.constants;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;

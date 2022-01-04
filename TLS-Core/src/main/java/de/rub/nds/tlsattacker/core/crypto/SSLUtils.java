@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -13,14 +13,15 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.text.MessageFormat;
 import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.crypto.Digest;
 import org.bouncycastle.crypto.tls.HashAlgorithm;
 import org.bouncycastle.crypto.tls.TlsUtils;
 import org.bouncycastle.util.Arrays;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.text.MessageFormat;
 
 /**
  * SSLUtils is a class with static methods that are supposed to calculate SSL-specific data.
@@ -28,7 +29,7 @@ import org.bouncycastle.util.Arrays;
 public class SSLUtils {
 
     private static final MessageFormat ILLEGAL_MAC_ALGORITHM =
-        new MessageFormat("{0}, is not a valid MacAlgorithm for SSLv3, only MD5 and SHA-1 are available.");
+            new MessageFormat("{0}, is not a valid MacAlgorithm for SSLv3, only MD5 and SHA-1 are available.");
 
     public static final byte[] MD5_PAD1 = ArrayConverter.hexStringToByteArray(StringUtils.repeat("36", 48));
     public static final byte[] MD5_PAD2 = ArrayConverter.hexStringToByteArray(StringUtils.repeat("5c", 48));
@@ -66,7 +67,7 @@ public class SSLUtils {
      *                         the premastersecret
      * @param  random
      *                         The random bytes to use
-     * @return                 master_secret
+     * @return master_secret
      */
     public static byte[] calculateMasterSecretSSL3(byte[] preMasterSecret, byte[] random) {
         Digest md5 = TlsUtils.createHash(HashAlgorithm.md5);
@@ -105,7 +106,7 @@ public class SSLUtils {
      *                      The Randombytes
      * @param  size
      *                      The size
-     * @return              masterSecret
+     * @return masterSecret
      */
     public static byte[] calculateKeyBlockSSL3(byte[] masterSecret, byte[] random, int size) {
         Digest md5 = TlsUtils.createHash(HashAlgorithm.md5);
@@ -142,7 +143,7 @@ public class SSLUtils {
     /**
      * @param  chooser
      *                 The Chooser to use
-     * @return         0x53525652 if ConnectionEndType.SERVER, 0x434C4E54 else. See RFC-6101: 5.6.9. Finished: enum {
+     * @return 0x53525652 if ConnectionEndType.SERVER, 0x434C4E54 else. See RFC-6101: 5.6.9. Finished: enum {
      *                 client(0x434C4E54), server(0x53525652) } Sender;
      */
     public static byte[] getSenderConstant(Chooser chooser) {
@@ -152,13 +153,13 @@ public class SSLUtils {
     /**
      * @param  connectionEndType
      *                           The ConnectionEndType
-     * @return                   0x53525652 if ConnectionEndType.SERVER, 0x434C4E54 else. See RFC-6101: 5.6.9. Finished:
+     * @return 0x53525652 if ConnectionEndType.SERVER, 0x434C4E54 else. See RFC-6101: 5.6.9. Finished:
      *                           enum { client(0x434C4E54), server(0x53525652) } Sender;
      */
     public static byte[] getSenderConstant(ConnectionEndType connectionEndType) {
         if (null == connectionEndType) {
             throw new IllegalStateException(
-                "The ConnectionEnd should be either of Type Client or Server but it is " + connectionEndType);
+                    "The ConnectionEnd should be either of Type Client or Server but it is " + connectionEndType);
         } else {
             switch (connectionEndType) {
                 case SERVER:
@@ -167,7 +168,7 @@ public class SSLUtils {
                     return SSLUtils.Sender.CLIENT.getValue();
                 default:
                     throw new IllegalStateException(
-                        "The ConnectionEnd should be either of Type Client or Server but it is " + connectionEndType);
+                            "The ConnectionEnd should be either of Type Client or Server but it is " + connectionEndType);
             }
         }
     }
@@ -179,7 +180,7 @@ public class SSLUtils {
      *
      * @param  macAlgorithm
      *                      The macAlgorithm to use
-     * @return              the pad_1
+     * @return the pad_1
      */
     public static byte[] getPad1(MacAlgorithm macAlgorithm) {
         if (null == macAlgorithm) {
@@ -201,7 +202,7 @@ public class SSLUtils {
      *
      * @param  macAlgorithm
      *                      The mac algorithm to use
-     * @return              pad_2
+     * @return pad_2
      */
     public static byte[] getPad2(MacAlgorithm macAlgorithm) {
         if (null == macAlgorithm) {
@@ -249,7 +250,7 @@ public class SSLUtils {
      *                        is MAC_write_secret from the defined hashFunction.
      * @param  macAlgorithm
      *                        should resolve to either MD5 or SHA-1
-     * @return                full calculated MAC-Bytes
+     * @return full calculated MAC-Bytes
      */
     public static byte[] calculateSSLMac(byte[] input, byte[] macWriteSecret, MacAlgorithm macAlgorithm) {
         final byte[] pad1 = SSLUtils.getPad1(macAlgorithm);
@@ -277,7 +278,7 @@ public class SSLUtils {
      *                           handshake_messages
      * @param  masterSecret
      *                           master_secret
-     * @return                   CertificateVerify.signature
+     * @return CertificateVerify.signature
      */
     public static byte[] calculateSSLCertificateVerifySignature(byte[] handshakeMessages, byte[] masterSecret) {
         return calculateSSLMd5SHASignature(handshakeMessages, masterSecret);
@@ -295,10 +296,10 @@ public class SSLUtils {
      *                           master_secret
      * @param  connectionEndType
      *                           Sender
-     * @return                   Finished
+     * @return Finished
      */
     public static byte[] calculateFinishedData(byte[] handshakeMessages, byte[] masterSecret,
-        ConnectionEndType connectionEndType) {
+                                               ConnectionEndType connectionEndType) {
         final byte[] input = ArrayConverter.concatenate(handshakeMessages, getSenderConstant(connectionEndType));
         return calculateSSLMd5SHASignature(input, masterSecret);
     }
@@ -311,7 +312,7 @@ public class SSLUtils {
      *                      The input
      * @param  masterSecret
      *                      the master secret
-     * @return              the calculated ssl md5 sha signature
+     * @return the calculated ssl md5 sha signature
      */
     private static byte[] calculateSSLMd5SHASignature(byte[] input, byte[] masterSecret) {
         try {
@@ -328,7 +329,7 @@ public class SSLUtils {
             return ArrayConverter.concatenate(outerMD5, outerSHA);
         } catch (NoSuchAlgorithmException e) {
             throw new IllegalStateException(
-                "Either MD5 or SHA-1 algorithm is not provided by the Execution-Environment, check your providers.", e);
+                    "Either MD5 or SHA-1 algorithm is not provided by the Execution-Environment, check your providers.", e);
         }
     }
 

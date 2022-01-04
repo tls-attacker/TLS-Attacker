@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -12,19 +12,13 @@ package de.rub.nds.tlsattacker.core.https;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
-import de.rub.nds.tlsattacker.core.https.header.ContentLengthHeader;
-import de.rub.nds.tlsattacker.core.https.header.DateHeader;
-import de.rub.nds.tlsattacker.core.https.header.ExpiresHeader;
-import de.rub.nds.tlsattacker.core.https.header.GenericHttpsHeader;
-import de.rub.nds.tlsattacker.core.https.header.HostHeader;
-import de.rub.nds.tlsattacker.core.https.header.HttpHeader;
-import de.rub.nds.tlsattacker.core.https.header.LocationHeader;
-import de.rub.nds.tlsattacker.core.https.header.TokenBindingHeader;
+import de.rub.nds.tlsattacker.core.https.header.*;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageParser;
-import java.io.InputStream;
-import java.nio.charset.Charset;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.InputStream;
+import java.nio.charset.Charset;
 
 public class HttpsRequestParser extends ProtocolMessageParser<HttpsRequestMessage> {
 

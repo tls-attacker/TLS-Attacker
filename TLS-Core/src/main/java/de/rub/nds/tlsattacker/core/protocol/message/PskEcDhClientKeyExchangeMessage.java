@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -21,14 +21,15 @@ import de.rub.nds.tlsattacker.core.protocol.parser.PskEcDhClientKeyExchangeParse
 import de.rub.nds.tlsattacker.core.protocol.preparator.PskEcDhClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.PskEcDhClientKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.InputStream;
+
 import javax.xml.bind.annotation.XmlRootElement;
+import java.io.InputStream;
 
 @XmlRootElement(name = "PskEcDhClientKeyExchange")
 public class PskEcDhClientKeyExchangeMessage extends ECDHClientKeyExchangeMessage {
 
     @ModifiableVariableProperty(format = ModifiableVariableProperty.Format.PKCS1,
-        type = ModifiableVariableProperty.Type.PUBLIC_KEY)
+            type = ModifiableVariableProperty.Type.PUBLIC_KEY)
     private ModifiableByteArray identity;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)

@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -23,10 +23,11 @@ import de.rub.nds.tlsattacker.core.protocol.parser.SupplementalDataParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.SupplementalDataPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.SupplementalDataSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+
+import javax.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "SupplementalData")
 public class SupplementalDataMessage extends HandshakeMessage {
@@ -72,7 +73,7 @@ public class SupplementalDataMessage extends HandshakeMessage {
 
     public void setSupplementalDataLength(int supplementalDataLength) {
         this.supplementalDataLength =
-            ModifiableVariableFactory.safelySetValue(this.supplementalDataLength, supplementalDataLength);
+                ModifiableVariableFactory.safelySetValue(this.supplementalDataLength, supplementalDataLength);
     }
 
     public ModifiableByteArray getSupplementalDataBytes() {
@@ -85,7 +86,7 @@ public class SupplementalDataMessage extends HandshakeMessage {
 
     public void setSupplementalDataBytes(byte[] supplementalDataBytes) {
         this.supplementalDataBytes =
-            ModifiableVariableFactory.safelySetValue(this.supplementalDataBytes, supplementalDataBytes);
+                ModifiableVariableFactory.safelySetValue(this.supplementalDataBytes, supplementalDataBytes);
     }
 
     @Override
@@ -124,7 +125,7 @@ public class SupplementalDataMessage extends HandshakeMessage {
                 sb.append("\n   Supplemental Data Type: ").append(entry.getSupplementalDataEntryType().getValue());
                 sb.append("\n   Supplemental Data Length: ").append(entry.getSupplementalDataEntryLength().getValue());
                 sb.append("\n   Supplemental Data : ")
-                    .append(ArrayConverter.bytesToHexString(entry.getSupplementalDataEntry().getValue()));
+                        .append(ArrayConverter.bytesToHexString(entry.getSupplementalDataEntry().getValue()));
             }
         } else {
             sb.append("null");

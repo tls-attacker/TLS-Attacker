@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -16,10 +16,11 @@ import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 public class SSL2ClientHelloPreparator extends HandshakeMessagePreparator<SSL2ClientHelloMessage> {
 
@@ -53,7 +54,7 @@ public class SSL2ClientHelloPreparator extends HandshakeMessagePreparator<SSL2Cl
         prepareChallengeLength(message);
         prepareCipherSuiteLength(message);
         int length = SSL2ByteLength.CHALLENGE_LENGTH + SSL2ByteLength.CIPHERSUITE_LENGTH + SSL2ByteLength.MESSAGE_TYPE
-            + SSL2ByteLength.SESSIONID_LENGTH;
+                + SSL2ByteLength.SESSIONID_LENGTH;
         length += message.getChallenge().getValue().length;
         length += message.getCipherSuites().getValue().length;
         length += message.getSessionId().getValue().length;
@@ -85,7 +86,7 @@ public class SSL2ClientHelloPreparator extends HandshakeMessagePreparator<SSL2Cl
                 }
             } catch (IOException ex) {
                 throw new PreparationException(
-                    "Could not prepare SSL2ClientHello. Failed to write Cipher suites into message", ex);
+                        "Could not prepare SSL2ClientHello. Failed to write Cipher suites into message", ex);
             }
         }
         message.setCipherSuites(cipherStream.toByteArray());

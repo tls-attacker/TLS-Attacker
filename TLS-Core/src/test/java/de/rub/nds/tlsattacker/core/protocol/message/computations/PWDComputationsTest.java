@@ -18,9 +18,11 @@ import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.math.BigInteger;
-import static org.junit.Assert.*;
 import org.junit.Test;
+
+import java.math.BigInteger;
+
+import static org.junit.Assert.assertArrayEquals;
 
 public class PWDComputationsTest {
 

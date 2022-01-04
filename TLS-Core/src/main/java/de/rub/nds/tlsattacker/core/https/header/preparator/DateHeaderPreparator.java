@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -12,6 +12,7 @@ package de.rub.nds.tlsattacker.core.https.header.preparator;
 import de.rub.nds.tlsattacker.core.https.header.DateHeader;
 import de.rub.nds.tlsattacker.core.protocol.Preparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;

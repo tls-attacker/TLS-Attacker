@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -15,10 +15,11 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.ECPointFormatExten
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ECPointFormatExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.io.ByteArrayOutputStream;
-import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.ByteArrayOutputStream;
+import java.util.List;
 
 public class ECPointFormatExtensionPreparator extends ExtensionPreparator<ECPointFormatExtensionMessage> {
 
@@ -27,7 +28,7 @@ public class ECPointFormatExtensionPreparator extends ExtensionPreparator<ECPoin
     private final ECPointFormatExtensionMessage msg;
 
     public ECPointFormatExtensionPreparator(Chooser chooser, ECPointFormatExtensionMessage message,
-        ECPointFormatExtensionSerializer serializer) {
+                                            ECPointFormatExtensionSerializer serializer) {
         super(chooser, message, serializer);
         this.msg = message;
     }

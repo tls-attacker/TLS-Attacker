@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -17,10 +17,11 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientEsniInner;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ServerNamePairSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 public class ClientEsniInnerPreparator extends Preparator<ClientEsniInner> {
 
@@ -68,7 +69,7 @@ public class ClientEsniInnerPreparator extends Preparator<ClientEsniInner> {
     private void prepareServerNameListBytes(ClientEsniInner msg) {
         msg.setServerNameListBytes(serverNamePairListStream.toByteArray());
         LOGGER
-            .debug("ServerNameListBytes: " + ArrayConverter.bytesToHexString(msg.getServerNameListBytes().getValue()));
+                .debug("ServerNameListBytes: " + ArrayConverter.bytesToHexString(msg.getServerNameListBytes().getValue()));
     }
 
     private void prepareServerNameListLength(ClientEsniInner msg) {
@@ -80,7 +81,7 @@ public class ClientEsniInnerPreparator extends Preparator<ClientEsniInner> {
         byte[] padding;
         int paddedLength = chooser.getEsniPaddedLength();
         int paddingLength =
-            paddedLength - msg.getServerNameListBytes().getValue().length - ExtensionByteLength.SERVER_NAME_LIST;
+                paddedLength - msg.getServerNameListBytes().getValue().length - ExtensionByteLength.SERVER_NAME_LIST;
         if (paddingLength > 65536) {
             LOGGER.warn("ESNI Inner PaddingLength is greater than 65536. Limiting it to 65536");
             paddingLength = 65536;

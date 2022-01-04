@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -21,16 +21,17 @@ import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory
 import de.rub.nds.tlsattacker.core.workflow.filter.Filter;
 import de.rub.nds.tlsattacker.core.workflow.filter.FilterFactory;
 import de.rub.nds.tlsattacker.core.workflow.filter.FilterType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import javax.xml.bind.JAXBException;
+import javax.xml.stream.XMLStreamException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Random;
-import javax.xml.bind.JAXBException;
-import javax.xml.stream.XMLStreamException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * The central object passed around during program execution. The state initializes and holds the workflow trace, the
@@ -191,7 +192,7 @@ public class State {
      * @param  alias
      *               The Alias for which the TLSContext should be returned
      *
-     * @return       the context with the given connection end alias
+     * @return the context with the given connection end alias
      */
     public TlsContext getTlsContext(String alias) {
         return contextContainer.getTlsContext(alias);
@@ -244,7 +245,7 @@ public class State {
      *
      * @param  trace
      *               The workflow trace that should be filtered
-     * @return       A filtered copy of the input workflow trace
+     * @return A filtered copy of the input workflow trace
      */
     private WorkflowTrace getFilteredTraceCopy(WorkflowTrace trace) {
         WorkflowTrace filtered = WorkflowTrace.copy(trace);

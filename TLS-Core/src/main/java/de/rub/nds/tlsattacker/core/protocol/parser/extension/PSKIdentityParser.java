@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -13,9 +13,10 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.Parser;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PSKIdentity;
-import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.InputStream;
 
 public class PSKIdentityParser extends Parser<PSKIdentity> {
 
@@ -46,7 +47,7 @@ public class PSKIdentityParser extends Parser<PSKIdentity> {
     private void parseObfuscatedTicketAge(PSKIdentity pskIdentity) {
         pskIdentity.setObfuscatedTicketAge(parseByteArrayField(ExtensionByteLength.TICKET_AGE_LENGTH));
         LOGGER.debug("Obfuscated ticket age:"
-            + ArrayConverter.bytesToHexString(pskIdentity.getObfuscatedTicketAge().getValue()));
+                + ArrayConverter.bytesToHexString(pskIdentity.getObfuscatedTicketAge().getValue()));
     }
 
 }

@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -13,16 +13,13 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
-import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
-import de.rub.nds.tlsattacker.core.crypto.ec.Point;
-import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
-import de.rub.nds.tlsattacker.core.crypto.ec.RFC7748Curve;
+import de.rub.nds.tlsattacker.core.crypto.ec.*;
 import de.rub.nds.tlsattacker.core.crypto.ffdh.FFDHEGroup;
 import de.rub.nds.tlsattacker.core.crypto.ffdh.GroupFactory;
-import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.math.BigInteger;
 
 public class KeyShareCalculator {
 
@@ -42,7 +39,7 @@ public class KeyShareCalculator {
             FFDHEGroup ffdheGroup = GroupFactory.getGroup(group);
             BigInteger publicKey = ffdheGroup.getG().modPow(privateKey.abs(), ffdheGroup.getP().abs());
             return ArrayConverter.bigIntegerToNullPaddedByteArray(publicKey,
-                ffdheGroup.getP().bitLength() / Bits.IN_A_BYTE);
+                    ffdheGroup.getP().bitLength() / Bits.IN_A_BYTE);
         } else {
             throw new IllegalArgumentException("Cannot create Public Key for group " + group.name());
         }
@@ -88,9 +85,9 @@ public class KeyShareCalculator {
                 case SECT571R1:
                     Point sharedPoint = curve.mult(privateKey, publicPoint);
                     int elementLength =
-                        ArrayConverter.bigIntegerToByteArray(sharedPoint.getFieldX().getModulus()).length;
+                            ArrayConverter.bigIntegerToByteArray(sharedPoint.getFieldX().getModulus()).length;
                     return ArrayConverter.bigIntegerToNullPaddedByteArray(sharedPoint.getFieldX().getData(),
-                        elementLength);
+                            elementLength);
                 default:
                     throw new UnsupportedOperationException("KeyShare type " + group + " is unsupported");
             }
@@ -98,7 +95,7 @@ public class KeyShareCalculator {
             FFDHEGroup ffdheGroup = GroupFactory.getGroup(group);
             BigInteger sharedElement = new BigInteger(publicKey).modPow(privateKey.abs(), ffdheGroup.getP().abs());
             return ArrayConverter.bigIntegerToNullPaddedByteArray(sharedElement,
-                ffdheGroup.getP().bitLength() / Bits.IN_A_BYTE);
+                    ffdheGroup.getP().bitLength() / Bits.IN_A_BYTE);
         }
     }
 }

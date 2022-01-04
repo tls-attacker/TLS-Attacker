@@ -11,12 +11,14 @@ package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SrtpExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.SrtpExtensionParserTest;
-import java.util.Collection;
-import static org.junit.Assert.assertArrayEquals;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+
+import java.util.Collection;
+
+import static org.junit.Assert.assertArrayEquals;
 
 @RunWith(Parameterized.class)
 public class SrtpExtensionSerializerTest {

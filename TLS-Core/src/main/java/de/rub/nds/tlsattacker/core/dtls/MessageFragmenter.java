@@ -1,28 +1,26 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.dtls;
 
-import static de.rub.nds.tlsattacker.core.dtls.FragmentCollector.LOGGER;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
-import de.rub.nds.tlsattacker.core.protocol.Preparator;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageHandler;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageSerializer;
-import de.rub.nds.tlsattacker.core.protocol.Serializer;
+import de.rub.nds.tlsattacker.core.protocol.*;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.HandshakeMessageSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import org.bouncycastle.util.Arrays;
+
 import java.util.LinkedList;
 import java.util.List;
-import org.bouncycastle.util.Arrays;
+
+import static de.rub.nds.tlsattacker.core.dtls.FragmentCollector.LOGGER;
 
 /**
  * Class used to split HandshakeMessages into DTLS fragments.
@@ -37,10 +35,10 @@ public class MessageFragmenter {
      * @return
      */
     public static List<DtlsHandshakeMessageFragment> fragmentMessage(HandshakeMessage message, int maxFragmentLength,
-        TlsContext context) {
+                                                                     TlsContext context) {
         byte[] bytes = getSerializedBytes(message, context);
         List<DtlsHandshakeMessageFragment> dtlsFragments =
-            generateFragments(message, bytes, maxFragmentLength, context);
+                generateFragments(message, bytes, maxFragmentLength, context);
         return dtlsFragments;
     }
 
@@ -48,7 +46,7 @@ public class MessageFragmenter {
      * Takes a message and splits it into prepared fragments.
      */
     public static List<DtlsHandshakeMessageFragment> fragmentMessage(HandshakeMessage message,
-        List<DtlsHandshakeMessageFragment> fragments, TlsContext context) {
+                                                                     List<DtlsHandshakeMessageFragment> fragments, TlsContext context) {
         byte[] bytes = getSerializedBytes(message, context);
         List<DtlsHandshakeMessageFragment> dtlsFragments = generateFragments(message, bytes, fragments, context);
         return dtlsFragments;
@@ -80,12 +78,12 @@ public class MessageFragmenter {
     }
 
     private static List<DtlsHandshakeMessageFragment> generateFragments(HandshakeMessage message, byte[] handshakeBytes,
-        int maxFragmentLength, TlsContext context) {
+                                                                        int maxFragmentLength, TlsContext context) {
         List<DtlsHandshakeMessageFragment> fragments = new LinkedList<>();
         int currentOffset = 0;
         do {
             byte[] fragmentBytes = Arrays.copyOfRange(handshakeBytes, currentOffset,
-                Math.min(currentOffset + maxFragmentLength, handshakeBytes.length));
+                    Math.min(currentOffset + maxFragmentLength, handshakeBytes.length));
             int sequence;
             if (message.getMessageSequence() != null) {
                 sequence = message.getMessageSequence().getValue();
@@ -95,7 +93,7 @@ public class MessageFragmenter {
                 sequence = 0;
             }
             DtlsHandshakeMessageFragment fragment = new DtlsHandshakeMessageFragment(message.getHandshakeMessageType(),
-                fragmentBytes, sequence, currentOffset, handshakeBytes.length);
+                    fragmentBytes, sequence, currentOffset, handshakeBytes.length);
             prepareMessage(fragment, true, context);
             fragments.add(fragment);
             currentOffset += maxFragmentLength;
@@ -116,8 +114,8 @@ public class MessageFragmenter {
         try {
             if (message.getAdjustContext()) {
                 if (context.getConfig().getDefaultSelectedProtocolVersion().isDTLS()
-                    && (message instanceof HandshakeMessage)
-                    && !((HandshakeMessage) message).isDtlsHandshakeMessageFragment()) {
+                        && (message instanceof HandshakeMessage)
+                        && !((HandshakeMessage) message).isDtlsHandshakeMessageFragment()) {
                     context.increaseDtlsWriteHandshakeMessageSequence();
                 }
             }
@@ -137,7 +135,7 @@ public class MessageFragmenter {
     }
 
     private static List<DtlsHandshakeMessageFragment> generateFragments(HandshakeMessage message, byte[] handshakeBytes,
-        List<DtlsHandshakeMessageFragment> fragments, TlsContext context) {
+                                                                        List<DtlsHandshakeMessageFragment> fragments, TlsContext context) {
         int currentOffset = 0;
         for (DtlsHandshakeMessageFragment fragment : fragments) {
             Integer maxFragmentLength = fragment.getMaxFragmentLengthConfig();
@@ -145,7 +143,7 @@ public class MessageFragmenter {
                 maxFragmentLength = context.getConfig().getDtlsMaximumFragmentLength();
             }
             byte[] fragmentBytes = Arrays.copyOfRange(handshakeBytes, currentOffset,
-                Math.min(currentOffset + maxFragmentLength, handshakeBytes.length));
+                    Math.min(currentOffset + maxFragmentLength, handshakeBytes.length));
             fragment.setHandshakeMessageTypeConfig(message.getHandshakeMessageType());
             fragment.setFragmentContentConfig(fragmentBytes);
             int sequence;

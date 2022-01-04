@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -21,10 +21,11 @@ import de.rub.nds.tlsattacker.core.protocol.parser.ApplicationMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ApplicationMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ApplicationMessageSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.InputStream;
-import java.util.Arrays;
+
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.io.InputStream;
+import java.util.Arrays;
 
 @XmlRootElement(name = "Application")
 public class ApplicationMessage extends ProtocolMessage<ApplicationMessage> {
@@ -105,7 +106,7 @@ public class ApplicationMessage extends ProtocolMessage<ApplicationMessage> {
     @Override
     public ApplicationMessageParser getParser(TlsContext tlsContext, InputStream stream) {
         return new ApplicationMessageParser(stream, tlsContext.getChooser().getLastRecordVersion(),
-            tlsContext.getConfig());
+                tlsContext.getConfig());
     }
 
     @Override

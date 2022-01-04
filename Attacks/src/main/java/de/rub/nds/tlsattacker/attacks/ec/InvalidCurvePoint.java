@@ -12,6 +12,7 @@
 package de.rub.nds.tlsattacker.attacks.ec;
 
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+
 import java.math.BigInteger;
 
 /**

@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -22,9 +22,10 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.TrustedCaIndication
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.TrustedCaIndicationExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.TrustedCaIndicationExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+
+import javax.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.List;
-import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "TrustedCaIndicationExtension")
 public class TrustedCaIndicationExtensionMessage extends ExtensionMessage<TrustedCaIndicationExtensionMessage> {
@@ -54,7 +55,7 @@ public class TrustedCaIndicationExtensionMessage extends ExtensionMessage<Truste
 
     public void setTrustedAuthoritiesLength(int trustedAuthoritiesLength) {
         this.trustedAuthoritiesLength =
-            ModifiableVariableFactory.safelySetValue(this.trustedAuthoritiesLength, trustedAuthoritiesLength);
+                ModifiableVariableFactory.safelySetValue(this.trustedAuthoritiesLength, trustedAuthoritiesLength);
     }
 
     public List<TrustedAuthority> getTrustedAuthorities() {
@@ -75,7 +76,7 @@ public class TrustedCaIndicationExtensionMessage extends ExtensionMessage<Truste
 
     public void setTrustedAuthoritiesBytes(byte[] trustedAuthoritiesBytes) {
         this.trustedAuthoritiesBytes =
-            ModifiableVariableFactory.safelySetValue(this.trustedAuthoritiesBytes, trustedAuthoritiesBytes);
+                ModifiableVariableFactory.safelySetValue(this.trustedAuthoritiesBytes, trustedAuthoritiesBytes);
     }
 
     @Override

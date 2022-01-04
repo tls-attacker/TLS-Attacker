@@ -1,25 +1,25 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.state.parser;
 
-import static de.rub.nds.modifiablevariable.util.ArrayConverter.bytesToHexString;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.Parser;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
 import de.rub.nds.tlsattacker.core.state.SessionTicket;
-import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.Arrays;
+
+import static de.rub.nds.modifiablevariable.util.ArrayConverter.bytesToHexString;
 
 public class SessionTicketParser extends Parser<SessionTicket> {
 
@@ -30,7 +30,7 @@ public class SessionTicketParser extends Parser<SessionTicket> {
     private final SessionTicket sessionTicket;
 
     public SessionTicketParser(int startposition, byte[] array, SessionTicket sessionTicket, byte[] configTicketKeyName,
-        CipherAlgorithm configCipherAlgorithm, MacAlgorithm configMacAlgorithm) {
+                               CipherAlgorithm configCipherAlgorithm, MacAlgorithm configMacAlgorithm) {
         super(startposition, array);
         this.configTicketKeyName = configTicketKeyName;
         this.configCipherAlgorithm = configCipherAlgorithm;
@@ -53,7 +53,7 @@ public class SessionTicketParser extends Parser<SessionTicket> {
         LOGGER.debug("Parsed session ticket key name " + bytesToHexString(sessionTicket.getKeyName().getValue()));
         if (!Arrays.equals(sessionTicket.getKeyName().getValue(), configTicketKeyName)) {
             LOGGER.warn(
-                "Parsed session ticket key name does not match expected key name - subsequent parsing will probably fail");
+                    "Parsed session ticket key name does not match expected key name - subsequent parsing will probably fail");
         }
     }
 
@@ -70,7 +70,7 @@ public class SessionTicketParser extends Parser<SessionTicket> {
     private void parseEncryptedState(SessionTicket sessionTicket) {
         sessionTicket.setEncryptedState(parseByteArrayField(sessionTicket.getEncryptedStateLength().getValue()));
         LOGGER.debug(
-            "Parsed session ticket encrypted state " + bytesToHexString(sessionTicket.getEncryptedState().getValue()));
+                "Parsed session ticket encrypted state " + bytesToHexString(sessionTicket.getEncryptedState().getValue()));
     }
 
     private void parseMAC(SessionTicket sessionTicket) {

@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -17,9 +17,10 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.InputStream;
 
 public class NewSessionTicketParser extends HandshakeMessageParser<NewSessionTicketMessage> {
 
@@ -28,7 +29,7 @@ public class NewSessionTicketParser extends HandshakeMessageParser<NewSessionTic
     private final ConnectionEndType talkingConnectionEndType;
 
     public NewSessionTicketParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext,
-        ConnectionEndType talkingConnectionEndType) {
+                                  ConnectionEndType talkingConnectionEndType) {
         super(stream, HandshakeMessageType.NEW_SESSION_TICKET, version, tlsContext);
         this.talkingConnectionEndType = talkingConnectionEndType;
     }

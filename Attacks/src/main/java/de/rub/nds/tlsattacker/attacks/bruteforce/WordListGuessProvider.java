@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.attacks.bruteforce;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;

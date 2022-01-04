@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -13,12 +13,13 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class PointFormatter {
 
@@ -36,9 +37,9 @@ public class PointFormatter {
                     stream.write(0x04);
                     try {
                         stream.write(
-                            ArrayConverter.bigIntegerToNullPaddedByteArray(point.getFieldX().getData(), elementLength));
+                                ArrayConverter.bigIntegerToNullPaddedByteArray(point.getFieldX().getData(), elementLength));
                         stream.write(
-                            ArrayConverter.bigIntegerToNullPaddedByteArray(point.getFieldY().getData(), elementLength));
+                                ArrayConverter.bigIntegerToNullPaddedByteArray(point.getFieldY().getData(), elementLength));
                     } catch (IOException ex) {
                         throw new PreparationException("Could not serialize ec point", ex);
                     }
@@ -47,14 +48,14 @@ public class PointFormatter {
                 case ANSIX962_COMPRESSED_PRIME:
                     EllipticCurve curve = CurveFactory.getCurve(group);
                     if (curve.createAPointOnCurve(point.getFieldX().getData()).getFieldY().getData()
-                        .equals(point.getFieldY().getData())) {
+                            .equals(point.getFieldY().getData())) {
                         stream.write(0x03);
                     } else {
                         stream.write(0x02);
                     }
                     try {
                         stream.write(
-                            ArrayConverter.bigIntegerToNullPaddedByteArray(point.getFieldX().getData(), elementLength));
+                                ArrayConverter.bigIntegerToNullPaddedByteArray(point.getFieldX().getData(), elementLength));
                     } catch (IOException ex) {
                         throw new PreparationException("Could not serialize ec point", ex);
                     }
@@ -66,7 +67,7 @@ public class PointFormatter {
         } else {
             try {
                 byte[] coordinate =
-                    ArrayConverter.bigIntegerToNullPaddedByteArray(point.getFieldX().getData(), elementLength);
+                        ArrayConverter.bigIntegerToNullPaddedByteArray(point.getFieldX().getData(), elementLength);
                 stream.write(coordinate);
             } catch (IOException ex) {
                 throw new PreparationException("Could not serialize ec point", ex);
@@ -135,7 +136,7 @@ public class PointFormatter {
                 case 3:
                     if (compressedPoint.length != elementLength + 1) {
                         LOGGER.warn("Could not parse point. Point needs to be " + (elementLength + 1)
-                            + " bytes long, but was " + compressedPoint.length + "bytes long. Returning Basepoint");
+                                + " bytes long, but was " + compressedPoint.length + "bytes long. Returning Basepoint");
 
                         return curve.getBasePoint();
                     }
@@ -154,7 +155,7 @@ public class PointFormatter {
                 case 4:
                     if (compressedPoint.length != elementLength * 2 + 1) {
                         LOGGER.warn("Could not parse point. Point needs to be " + (elementLength * 2 + 1)
-                            + " bytes long, but was " + compressedPoint.length + "bytes long. Returning Basepoint");
+                                + " bytes long, but was " + compressedPoint.length + "bytes long. Returning Basepoint");
                         return curve.getBasePoint();
                     }
 
@@ -175,7 +176,7 @@ public class PointFormatter {
         } else {
             if (compressedPoint.length != elementLength) {
                 LOGGER.warn("Could not parse point. Point needs to be " + elementLength + " bytes long, but was "
-                    + compressedPoint.length + "bytes long. Returning Basepoint");
+                        + compressedPoint.length + "bytes long. Returning Basepoint");
                 return curve.getBasePoint();
             }
             byte[] coordX = new byte[elementLength];

@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -25,13 +25,14 @@ import de.rub.nds.tlsattacker.core.protocol.parser.CertificateMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateMessageSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.InputStream;
-import java.util.LinkedList;
-import java.util.List;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import java.io.InputStream;
+import java.util.LinkedList;
+import java.util.List;
 
 @XmlRootElement(name = "Certificate")
 public class CertificateMessage extends HandshakeMessage {
@@ -197,7 +198,7 @@ public class CertificateMessage extends HandshakeMessage {
     @Override
     public CertificateMessageParser getParser(TlsContext tlsContext, InputStream stream) {
         return new CertificateMessageParser(stream, tlsContext, tlsContext.getChooser().getSelectedProtocolVersion(),
-            tlsContext.getTalkingConnectionEndType());
+                tlsContext.getTalkingConnectionEndType());
     }
 
     @Override

@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.attacks.config;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
-import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 
 public class GeneralDrownCommandConfig extends BaseDrownCommandConfig {
 

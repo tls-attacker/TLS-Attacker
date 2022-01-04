@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -15,12 +15,13 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMessage> {
 
@@ -65,7 +66,7 @@ public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMe
         msg.setKeyShareListBytes(parseByteArrayField(NamedGroup.LENGTH));
         entryList = new LinkedList<>();
         KeyShareEntryParser parser =
-            new KeyShareEntryParser(new ByteArrayInputStream(msg.getKeyShareListBytes().getValue()));
+                new KeyShareEntryParser(new ByteArrayInputStream(msg.getKeyShareListBytes().getValue()));
         KeyShareEntry entry = new KeyShareEntry();
         parser.parse(entry);
         entryList.add(entry);

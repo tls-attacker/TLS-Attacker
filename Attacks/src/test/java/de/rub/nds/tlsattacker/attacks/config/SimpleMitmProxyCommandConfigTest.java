@@ -10,8 +10,9 @@
 package de.rub.nds.tlsattacker.attacks.config;
 
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
-import java.io.InputStream;
 import org.junit.Test;
+
+import java.io.InputStream;
 
 /**
  *

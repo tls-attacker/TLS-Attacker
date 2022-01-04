@@ -1,18 +1,19 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.dtls;
 
-import java.io.ByteArrayOutputStream;
-import java.util.HashMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.ByteArrayOutputStream;
+import java.util.HashMap;
 
 public class FragmentStream {
 
@@ -52,12 +53,12 @@ public class FragmentStream {
      *
      * @param  tillIndex
      *                   Bytes till the maximum index
-     * @return           true if all keys are in the map, otherwise false
+     * @return true if all keys are in the map, otherwise false
      */
     public boolean isComplete(int tillIndex) {
         if (tillIndex < 0) {
             throw new IllegalArgumentException(
-                "Cannot check stream for completeness with negative index: " + tillIndex);
+                    "Cannot check stream for completeness with negative index: " + tillIndex);
         }
         for (int i = 0; i < tillIndex; i++) {
             if (!fragmentByteMap.containsKey(i)) {
@@ -72,7 +73,7 @@ public class FragmentStream {
      *
      * @param  fillingByte
      *                     the byte with which we fill holes in the fragment
-     * @return             the stream
+     * @return the stream
      */
     public byte[] getCompleteFilledStream(byte fillingByte) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -88,12 +89,12 @@ public class FragmentStream {
         }
         if (fillingCounter > 0) {
             LOGGER.warn("Had to fill " + fillingCounter
-                + " missing bytes in HandshakeMessageFragments. This will _likely_ result in invalid messages");
+                    + " missing bytes in HandshakeMessageFragments. This will _likely_ result in invalid messages");
         }
         for (Integer i : fragmentByteMap.keySet()) {
             if (i > intendedSize) {
                 LOGGER.warn("Found fragment greater than intended message size(intended size: " + intendedSize
-                    + " but found byte for: " + i + "). Ignoring");
+                        + " but found byte for: " + i + "). Ignoring");
             }
         }
         return stream.toByteArray();
@@ -121,7 +122,7 @@ public class FragmentStream {
         for (Integer i : fragmentByteMap.keySet()) {
             if (i > intendedSize) {
                 LOGGER.warn("Found fragment greater than intended message size(intended size: " + intendedSize
-                    + " but found byte for: " + i + "). Ignoring");
+                        + " but found byte for: " + i + "). Ignoring");
             }
         }
         return stream.toByteArray();

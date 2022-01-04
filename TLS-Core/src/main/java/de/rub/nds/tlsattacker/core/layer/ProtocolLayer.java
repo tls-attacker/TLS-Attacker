@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -21,11 +21,12 @@ import de.rub.nds.tlsattacker.core.protocol.Handler;
 import de.rub.nds.tlsattacker.core.protocol.Parser;
 import de.rub.nds.tlsattacker.core.protocol.Preparator;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container extends DataContainer> {
 
@@ -147,7 +148,7 @@ public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container 
             receiveMoreDataForHint(null);
             if (currentInputStream == null) {
                 throw new EndOfStreamException(
-                    "Could not receive data stream from lower layer, nothing more to receive");
+                        "Could not receive data stream from lower layer, nothing more to receive");
             }
         }
         if (currentInputStream.available() > 0) {

@@ -10,13 +10,7 @@
 package de.rub.nds.tlsattacker.core.crypto.keys;
 
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import java.math.BigInteger;
-import java.security.Security;
-import java.security.spec.ECParameterSpec;
-import java.util.ArrayList;
-import java.util.List;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import static org.junit.Assert.assertNotNull;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ErrorCollector;
@@ -24,6 +18,14 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
+
+import java.math.BigInteger;
+import java.security.Security;
+import java.security.spec.ECParameterSpec;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(Parameterized.class)
 public class CustomECPrivateKeyTest {

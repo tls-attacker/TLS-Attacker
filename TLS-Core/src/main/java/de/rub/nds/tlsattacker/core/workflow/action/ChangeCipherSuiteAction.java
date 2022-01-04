@@ -17,11 +17,12 @@ import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.security.NoSuchAlgorithmException;
-import java.util.Objects;
-import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import javax.xml.bind.annotation.XmlRootElement;
+import java.security.NoSuchAlgorithmException;
+import java.util.Objects;
 
 @XmlRootElement
 public class ChangeCipherSuiteAction extends ConnectionBoundAction {

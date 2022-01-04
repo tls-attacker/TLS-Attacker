@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -14,12 +14,13 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.Preparator;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PSKIdentity;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.math.BigInteger;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class PSKIdentityPreparator extends Preparator<PSKIdentity> {
 
@@ -46,7 +47,7 @@ public class PSKIdentityPreparator extends Preparator<PSKIdentity> {
 
     private void prepareObfuscatedTicketAge() {
         pskIdentity.setObfuscatedTicketAge(
-            getObfuscatedTicketAge(pskIdentity.getTicketAgeAddConfig(), pskIdentity.getTicketAgeConfig()));
+                getObfuscatedTicketAge(pskIdentity.getTicketAgeAddConfig(), pskIdentity.getTicketAgeConfig()));
     }
 
     private byte[] getObfuscatedTicketAge(byte[] ticketAgeAdd, String ticketAge) {
@@ -59,7 +60,7 @@ public class PSKIdentityPreparator extends Preparator<PSKIdentity> {
             difference = difference.add(addValue);
             difference = difference.mod(mod);
             byte[] obfTicketAge =
-                ArrayConverter.longToBytes(difference.longValue(), ExtensionByteLength.TICKET_AGE_LENGTH);
+                    ArrayConverter.longToBytes(difference.longValue(), ExtensionByteLength.TICKET_AGE_LENGTH);
 
             LOGGER.debug("Calculated ObfuscatedTicketAge: " + ArrayConverter.bytesToHexString(obfTicketAge));
             return obfTicketAge;

@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -26,8 +26,9 @@ import de.rub.nds.tlsattacker.core.protocol.parser.PWDServerKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.PWDServerKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.PWDServerKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.InputStream;
+
 import javax.xml.bind.annotation.XmlRootElement;
+import java.io.InputStream;
 
 @XmlRootElement(name = "PWDServerKeyExchange")
 public class PWDServerKeyExchangeMessage extends ServerKeyExchangeMessage {
@@ -86,7 +87,7 @@ public class PWDServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     @Override
     public PWDServerKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
         return new PWDServerKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(),
-            AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite()), tlsContext);
+                AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite()), tlsContext);
     }
 
     @Override

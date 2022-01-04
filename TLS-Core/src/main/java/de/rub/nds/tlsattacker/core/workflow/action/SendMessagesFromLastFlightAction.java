@@ -22,18 +22,19 @@ import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
-import de.rub.nds.tlsattacker.core.record.AbstractRecord;
+import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class SendMessagesFromLastFlightAction extends MessageAction implements SendingAction {
 
@@ -110,7 +111,7 @@ public class SendMessagesFromLastFlightAction extends MessageAction implements S
             }
         }
         if (getRecords() != null) {
-            for (AbstractRecord record : getRecords()) {
+            for (Record record : getRecords()) {
                 holders.addAll(record.getAllModifiableVariableHolders());
             }
         }
@@ -169,7 +170,7 @@ public class SendMessagesFromLastFlightAction extends MessageAction implements S
     }
 
     @Override
-    public List<AbstractRecord> getSendRecords() {
+    public List<Record> getSendRecords() {
         return records;
     }
 

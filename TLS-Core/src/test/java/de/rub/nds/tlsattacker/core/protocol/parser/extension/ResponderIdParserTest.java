@@ -10,10 +10,12 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.ResponderId;
+import org.junit.Test;
+
 import java.io.ByteArrayInputStream;
+
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import org.junit.Test;
 
 public class ResponderIdParserTest {
 

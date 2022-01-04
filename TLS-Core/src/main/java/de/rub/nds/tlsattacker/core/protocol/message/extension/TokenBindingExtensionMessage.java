@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -20,8 +20,9 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.TokenBindingExtensi
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.TokenBindingExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.TokenBindingExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.InputStream;
+
 import javax.xml.bind.annotation.XmlRootElement;
+import java.io.InputStream;
 
 /**
  * This extension is defined in draft-ietf-tokbind-negotiation
@@ -53,7 +54,7 @@ public class TokenBindingExtensionMessage extends ExtensionMessage<TokenBindingE
 
     public void setTokenbindingVersion(byte[] tokenbindingVersion) {
         this.tokenbindingVersion =
-            ModifiableVariableFactory.safelySetValue(this.tokenbindingVersion, tokenbindingVersion);
+                ModifiableVariableFactory.safelySetValue(this.tokenbindingVersion, tokenbindingVersion);
     }
 
     public ModifiableByteArray getTokenbindingKeyParameters() {
@@ -66,7 +67,7 @@ public class TokenBindingExtensionMessage extends ExtensionMessage<TokenBindingE
 
     public void setTokenbindingKeyParameters(byte[] tokenbindingParameters) {
         this.tokenbindingKeyParameters =
-            ModifiableVariableFactory.safelySetValue(this.tokenbindingKeyParameters, tokenbindingParameters);
+                ModifiableVariableFactory.safelySetValue(this.tokenbindingKeyParameters, tokenbindingParameters);
     }
 
     public ModifiableInteger getParameterListLength() {
@@ -79,7 +80,7 @@ public class TokenBindingExtensionMessage extends ExtensionMessage<TokenBindingE
 
     public void setParameterListLength(int parameterListLength) {
         this.parameterListLength =
-            ModifiableVariableFactory.safelySetValue(this.parameterListLength, parameterListLength);
+                ModifiableVariableFactory.safelySetValue(this.parameterListLength, parameterListLength);
     }
 
     @Override

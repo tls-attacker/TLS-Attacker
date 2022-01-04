@@ -9,49 +9,23 @@
 
 package de.rub.nds.tlsattacker.attacks;
 
-import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
-
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.JCommander.Builder;
 import com.beust.jcommander.ParameterException;
-import de.rub.nds.tlsattacker.attacks.config.BleichenbacherCommandConfig;
-import de.rub.nds.tlsattacker.attacks.config.Cve20162107CommandConfig;
-import de.rub.nds.tlsattacker.attacks.config.EarlyCCSCommandConfig;
-import de.rub.nds.tlsattacker.attacks.config.EarlyFinishedCommandConfig;
-import de.rub.nds.tlsattacker.attacks.config.GeneralDrownCommandConfig;
-import de.rub.nds.tlsattacker.attacks.config.HeartbleedCommandConfig;
-import de.rub.nds.tlsattacker.attacks.config.InvalidCurveAttackConfig;
-import de.rub.nds.tlsattacker.attacks.config.Lucky13CommandConfig;
-import de.rub.nds.tlsattacker.attacks.config.PaddingOracleCommandConfig;
-import de.rub.nds.tlsattacker.attacks.config.PoodleCommandConfig;
-import de.rub.nds.tlsattacker.attacks.config.PskBruteForcerAttackClientCommandConfig;
-import de.rub.nds.tlsattacker.attacks.config.PskBruteForcerAttackServerCommandConfig;
-import de.rub.nds.tlsattacker.attacks.config.SimpleMitmProxyCommandConfig;
-import de.rub.nds.tlsattacker.attacks.config.SpecialDrownCommandConfig;
-import de.rub.nds.tlsattacker.attacks.config.TLSPoodleCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.*;
 import de.rub.nds.tlsattacker.attacks.config.delegate.GeneralAttackDelegate;
-import de.rub.nds.tlsattacker.attacks.impl.Attacker;
-import de.rub.nds.tlsattacker.attacks.impl.BleichenbacherAttacker;
-import de.rub.nds.tlsattacker.attacks.impl.Cve20162107Attacker;
-import de.rub.nds.tlsattacker.attacks.impl.EarlyCCSAttacker;
-import de.rub.nds.tlsattacker.attacks.impl.EarlyFinishedAttacker;
-import de.rub.nds.tlsattacker.attacks.impl.HeartbleedAttacker;
-import de.rub.nds.tlsattacker.attacks.impl.InvalidCurveAttacker;
-import de.rub.nds.tlsattacker.attacks.impl.Lucky13Attacker;
-import de.rub.nds.tlsattacker.attacks.impl.PaddingOracleAttacker;
-import de.rub.nds.tlsattacker.attacks.impl.PoodleAttacker;
-import de.rub.nds.tlsattacker.attacks.impl.PskBruteForcerAttackClient;
-import de.rub.nds.tlsattacker.attacks.impl.PskBruteForcerAttackServer;
-import de.rub.nds.tlsattacker.attacks.impl.SimpleMitmProxy;
-import de.rub.nds.tlsattacker.attacks.impl.TLSPoodleAttacker;
+import de.rub.nds.tlsattacker.attacks.impl.*;
 import de.rub.nds.tlsattacker.attacks.impl.drown.GeneralDrownAttacker;
 import de.rub.nds.tlsattacker.attacks.impl.drown.SpecialDrownAttacker;
 import de.rub.nds.tlsattacker.core.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.Objects;
+
+import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 
 /**
  *

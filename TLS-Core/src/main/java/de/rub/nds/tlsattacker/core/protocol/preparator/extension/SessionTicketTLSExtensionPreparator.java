@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -23,7 +23,7 @@ public class SessionTicketTLSExtensionPreparator extends ExtensionPreparator<Ses
     private final SessionTicketTLSExtensionMessage message;
 
     public SessionTicketTLSExtensionPreparator(Chooser chooser, SessionTicketTLSExtensionMessage message,
-        SessionTicketTLSExtensionSerializer serializer) {
+                                               SessionTicketTLSExtensionSerializer serializer) {
         super(chooser, message, serializer);
         this.message = message;
     }
@@ -36,7 +36,7 @@ public class SessionTicketTLSExtensionPreparator extends ExtensionPreparator<Ses
         message.getSessionTicket().setIdentity(chooser.getLatestSessionTicket());
         message.getSessionTicket().setIdentityLength(chooser.getLatestSessionTicket().length);
         LOGGER.debug("Prepared the SessionTicketTLSExtension with Ticket "
-            + ArrayConverter.bytesToHexString(message.getSessionTicket().getIdentity().getValue()));
+                + ArrayConverter.bytesToHexString(message.getSessionTicket().getIdentity().getValue()));
     }
 
 }

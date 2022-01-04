@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -22,9 +22,10 @@ import de.rub.nds.tlsattacker.core.protocol.parser.SrpClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.SrpClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.SrpClientKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+
+import javax.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.List;
-import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "SrpClientKeyExchange")
 public class SrpClientKeyExchangeMessage extends ClientKeyExchangeMessage {

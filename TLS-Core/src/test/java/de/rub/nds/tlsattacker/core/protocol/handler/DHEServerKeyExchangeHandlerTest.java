@@ -12,10 +12,11 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.math.BigInteger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.math.BigInteger;
 
 public class DHEServerKeyExchangeHandlerTest {
 

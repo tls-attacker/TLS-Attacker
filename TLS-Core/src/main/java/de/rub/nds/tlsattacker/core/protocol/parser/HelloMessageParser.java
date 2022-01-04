@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -15,10 +15,11 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.InputStream;
-import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.InputStream;
+import java.util.Arrays;
 
 /**
  * An abstract Parser class for Hello Messages
@@ -42,7 +43,7 @@ public abstract class HelloMessageParser<T extends HelloMessage> extends Handsha
      *                   A Config used in the current context
      */
     public HelloMessageParser(InputStream stream, HandshakeMessageType type, ProtocolVersion version,
-        TlsContext tlsContext) {
+                              TlsContext tlsContext) {
         super(stream, type, version, tlsContext);
     }
 

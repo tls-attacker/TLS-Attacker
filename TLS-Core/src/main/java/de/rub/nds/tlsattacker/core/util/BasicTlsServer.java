@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -10,24 +10,16 @@
 package de.rub.nds.tlsattacker.core.util;
 
 import de.rub.nds.modifiablevariable.util.BadRandom;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import javax.net.ssl.*;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
-import java.security.KeyManagementException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
+import java.security.*;
 import java.security.cert.CertificateException;
-import javax.net.ssl.KeyManager;
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLServerSocketFactory;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.TrustManagerFactory;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class BasicTlsServer extends Thread {
 
@@ -46,7 +38,7 @@ public class BasicTlsServer extends Thread {
     private volatile boolean initialized;
 
     public BasicTlsServer(KeyStore keyStore, String password, String protocol, int port) throws KeyStoreException,
-        IOException, NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException, KeyManagementException {
+            IOException, NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException, KeyManagementException {
 
         this.port = port;
 
@@ -65,7 +57,7 @@ public class BasicTlsServer extends Thread {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Provider: " + sslContext.getProvider());
             LOGGER.debug("Supported cipher suites ("
-                + sslContext.getServerSocketFactory().getSupportedCipherSuites().length + ")");
+                    + sslContext.getServerSocketFactory().getSupportedCipherSuites().length + ")");
             for (String c : sslContext.getServerSocketFactory().getSupportedCipherSuites()) {
                 LOGGER.debug(" " + c);
             }

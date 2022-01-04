@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -12,13 +12,14 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.util.BigIntegers;
 
+import java.math.BigInteger;
+
 public class DHClientKeyExchangePreparator<T extends DHClientKeyExchangeMessage>
-    extends ClientKeyExchangePreparator<T> {
+        extends ClientKeyExchangePreparator<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -82,7 +83,7 @@ public class DHClientKeyExchangePreparator<T extends DHClientKeyExchangeMessage>
         msg.getComputations().setPremasterSecret(premasterSecret);
         premasterSecret = msg.getComputations().getPremasterSecret().getValue();
         LOGGER.debug("PremasterSecret: "
-            + ArrayConverter.bytesToHexString(msg.getComputations().getPremasterSecret().getValue()));
+                + ArrayConverter.bytesToHexString(msg.getComputations().getPremasterSecret().getValue()));
     }
 
     protected void preparePublicKey(T msg) {
@@ -100,7 +101,7 @@ public class DHClientKeyExchangePreparator<T extends DHClientKeyExchangeMessage>
         msg.getComputations().setClientServerRandom(random);
         random = msg.getComputations().getClientServerRandom().getValue();
         LOGGER.debug("ClientServerRandom: "
-            + ArrayConverter.bytesToHexString(msg.getComputations().getClientServerRandom().getValue()));
+                + ArrayConverter.bytesToHexString(msg.getComputations().getClientServerRandom().getValue()));
     }
 
     @Override
@@ -112,12 +113,12 @@ public class DHClientKeyExchangePreparator<T extends DHClientKeyExchangeMessage>
         setComputationPrivateKey(msg, clientMode);
         if (clientMode) {
             clientPublicKey = calculatePublicKey(msg.getComputations().getGenerator().getValue(),
-                msg.getComputations().getModulus().getValue(), msg.getComputations().getPrivateKey().getValue());
+                    msg.getComputations().getModulus().getValue(), msg.getComputations().getPrivateKey().getValue());
             preparePublicKey(msg);
         }
         setComputationPublicKey(msg, clientMode);
         premasterSecret = calculatePremasterSecret(msg.getComputations().getModulus().getValue(),
-            msg.getComputations().getPrivateKey().getValue(), msg.getComputations().getPublicKey().getValue());
+                msg.getComputations().getPrivateKey().getValue(), msg.getComputations().getPublicKey().getValue());
         preparePremasterSecret(msg);
 
     }

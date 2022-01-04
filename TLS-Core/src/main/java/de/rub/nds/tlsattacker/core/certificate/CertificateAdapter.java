@@ -10,10 +10,11 @@
 package de.rub.nds.tlsattacker.core.certificate;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import org.bouncycastle.crypto.tls.Certificate;
+
+import javax.xml.bind.annotation.adapters.XmlAdapter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import javax.xml.bind.annotation.adapters.XmlAdapter;
-import org.bouncycastle.crypto.tls.Certificate;
 
 public class CertificateAdapter extends XmlAdapter<String, Certificate> {
 

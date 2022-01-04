@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -45,6 +45,6 @@ public class PSKKeyExchangeModesExtensionSerializer extends ExtensionSerializer<
     private void writeKeyExchangeModesListBytes(PSKKeyExchangeModesExtensionMessage msg) {
         appendBytes(msg.getKeyExchangeModesListBytes().getValue());
         LOGGER.debug("KeyExchangeModesListBytes: "
-            + ArrayConverter.bytesToHexString(msg.getKeyExchangeModesListBytes().getValue()));
+                + ArrayConverter.bytesToHexString(msg.getKeyExchangeModesListBytes().getValue()));
     }
 }

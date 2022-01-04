@@ -9,10 +9,10 @@
 
 package de.rub.nds.tlsattacker.util;
 
+import javax.crypto.Cipher;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.security.NoSuchAlgorithmException;
-import javax.crypto.Cipher;
 
 /**
  * restriction. Partially taken from: https://github.com/jruby/jruby/blob/0 c345e1b186bd457ebd96143c0816abe93b18fdf

@@ -1,17 +1,18 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.crypto.ec;
 
-import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.math.BigInteger;
 
 /**
  * An elliptic curve over a galois field F_p, where p is a prime number.
@@ -93,7 +94,7 @@ public class EllipticCurveOverFp extends EllipticCurve {
         // Check if y^2 == x^3 + ax + b
         FieldElementFp leftPart = (FieldElementFp) y.mult(y);
         FieldElementFp rightPart =
-            (FieldElementFp) x.mult(x.mult(x)).add(x.mult(this.getFieldA())).add(this.getFieldB());
+                (FieldElementFp) x.mult(x.mult(x)).add(x.mult(this.getFieldA())).add(this.getFieldB());
 
         return leftPart.equals(rightPart);
     }
@@ -113,7 +114,7 @@ public class EllipticCurveOverFp extends EllipticCurve {
     @Override
     protected Point additionFormular(Point p, Point q) {
         if (!(p.getFieldX() instanceof FieldElementFp && p.getFieldY() instanceof FieldElementFp
-            && q.getFieldX() instanceof FieldElementFp && q.getFieldY() instanceof FieldElementFp)) {
+                && q.getFieldX() instanceof FieldElementFp && q.getFieldY() instanceof FieldElementFp)) {
             LOGGER.warn("Trying to add non Fp points with Fp curve. Returning point at (0,0)");
             return this.getPoint(BigInteger.ZERO, BigInteger.ZERO);
         }

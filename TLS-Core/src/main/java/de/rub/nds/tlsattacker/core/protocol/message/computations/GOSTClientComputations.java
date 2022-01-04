@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -44,9 +44,9 @@ public class GOSTClientComputations extends KeyExchangeComputations {
 
     public void setClientPublicKey(Point point) {
         this.clientPublicKeyX =
-            ModifiableVariableFactory.safelySetValue(this.clientPublicKeyX, point.getFieldX().getData());
+                ModifiableVariableFactory.safelySetValue(this.clientPublicKeyX, point.getFieldX().getData());
         this.clientPublicKeyY =
-            ModifiableVariableFactory.safelySetValue(this.clientPublicKeyY, point.getFieldY().getData());
+                ModifiableVariableFactory.safelySetValue(this.clientPublicKeyY, point.getFieldY().getData());
     }
 
     public ModifiableBigInteger getClientPublicKeyX() {

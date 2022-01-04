@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -24,9 +24,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificatePair;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.ASN1InputStream;
@@ -34,6 +31,10 @@ import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.DERBitString;
 import org.bouncycastle.asn1.DLSequence;
 import org.bouncycastle.crypto.tls.Certificate;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 public class CertificateMessageHandler extends HandshakeMessageHandler<CertificateMessage> {
 
@@ -72,7 +73,7 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
                             group = NamedGroup.SECP256R1;
                         } else {
                             throw new UnsupportedOperationException(
-                                "We currently do only support secp256r1 public keys. Sorry...");
+                                    "We currently do only support secp256r1 public keys. Sorry...");
                         }
                         DERBitString publicKey = (DERBitString) dlSeq.getObjectAt(1);
                         byte[] pointBytes = publicKey.getBytes();
@@ -86,7 +87,7 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
                         }
                     } else {
                         throw new UnsupportedOperationException(
-                            "We currently do only support EC raw public keys. Sorry...");
+                                "We currently do only support EC raw public keys. Sorry...");
                     }
 
                     asn1Stream.close();
@@ -105,10 +106,10 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
                         for (CertificatePair pair : message.getCertificatesList()) {
 
                             stream.write(ArrayConverter.intToBytes(pair.getCertificateLength().getValue(),
-                                HandshakeByteLength.CERTIFICATE_LENGTH));
+                                    HandshakeByteLength.CERTIFICATE_LENGTH));
                             stream.write(pair.getCertificate().getValue());
                             certificatesLength +=
-                                pair.getCertificateLength().getValue() + HandshakeByteLength.CERTIFICATE_LENGTH;
+                                    pair.getCertificateLength().getValue() + HandshakeByteLength.CERTIFICATE_LENGTH;
                         }
                     } catch (IOException ex) {
                         throw new AdjustmentException("Could not concatenate certificates bytes", ex);
@@ -116,7 +117,7 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
                     cert = parseCertificate(certificatesLength, stream.toByteArray());
                 } else {
                     cert = parseCertificate(message.getCertificatesListLength().getValue(),
-                        message.getCertificatesListBytes().getValue());
+                            message.getCertificatesListBytes().getValue());
                 }
                 if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
                     LOGGER.debug("Setting ClientCertificate in Context");
@@ -128,7 +129,7 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
                 if (message.getCertificateKeyPair() != null) {
                     LOGGER.debug("Found a certificate key pair. Adjusting in context");
                     message.getCertificateKeyPair().adjustInContext(tlsContext,
-                        tlsContext.getTalkingConnectionEndType());
+                            tlsContext.getTalkingConnectionEndType());
                 } else if (cert != null) {
                     if (cert.isEmpty()) {
                         LOGGER.debug("Certificate is empty - no adjustments");
@@ -137,7 +138,7 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
                         CertificateKeyPair pair = new CertificateKeyPair(cert);
                         message.setCertificateKeyPair(pair);
                         message.getCertificateKeyPair().adjustInContext(tlsContext,
-                            tlsContext.getTalkingConnectionEndType());
+                                tlsContext.getTalkingConnectionEndType());
                     }
 
                 } else {
@@ -157,13 +158,13 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
     private Certificate parseCertificate(int lengthBytes, byte[] bytesToParse) {
         try {
             ByteArrayInputStream stream = new ByteArrayInputStream(ArrayConverter.concatenate(
-                ArrayConverter.intToBytes(lengthBytes, HandshakeByteLength.CERTIFICATES_LENGTH), bytesToParse));
+                    ArrayConverter.intToBytes(lengthBytes, HandshakeByteLength.CERTIFICATES_LENGTH), bytesToParse));
             return Certificate.parse(stream);
         } catch (Exception e) {
             // This could really be anything. From classCast exception to
             // Arrayindexoutofbounds
             LOGGER.warn("Could not parse Certificate bytes into Certificate object:"
-                + ArrayConverter.bytesToHexString(bytesToParse, false), e);
+                    + ArrayConverter.bytesToHexString(bytesToParse, false), e);
             LOGGER.debug(e);
             return null;
         }

@@ -18,10 +18,12 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ClientEsniInner
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
-import java.nio.charset.StandardCharsets;
-import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.nio.charset.StandardCharsets;
+
+import static org.junit.Assert.assertArrayEquals;
 
 public class ClientEsniInnerSerializerTest {
 

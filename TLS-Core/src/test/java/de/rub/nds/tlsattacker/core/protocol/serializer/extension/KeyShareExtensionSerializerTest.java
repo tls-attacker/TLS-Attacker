@@ -12,11 +12,13 @@ package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.KeyShareExtensionParserTest;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.util.Collection;
-import static org.junit.Assert.assertArrayEquals;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+
+import java.util.Collection;
+
+import static org.junit.Assert.assertArrayEquals;
 
 @RunWith(Parameterized.class)
 public class KeyShareExtensionSerializerTest {

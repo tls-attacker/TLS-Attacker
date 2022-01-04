@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -16,16 +16,17 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2HandshakeMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.InputStream;
 
 public abstract class SSL2HandshakeMessageParser<T extends SSL2HandshakeMessage> extends HandshakeMessageParser<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     public SSL2HandshakeMessageParser(InputStream stream, HandshakeMessageType type, ProtocolVersion version,
-        TlsContext tlsContext) {
+                                      TlsContext tlsContext) {
         super(stream, type, version, tlsContext);
     }
 
@@ -51,7 +52,7 @@ public abstract class SSL2HandshakeMessageParser<T extends SSL2HandshakeMessage>
         } else {
             // Parse remaining bytes
             length = ArrayConverter.concatenate(firstTwoBytes,
-                parseByteArrayField(SSL2ByteLength.LONG_LENGTH - SSL2ByteLength.LENGTH));
+                    parseByteArrayField(SSL2ByteLength.LONG_LENGTH - SSL2ByteLength.LENGTH));
             mask = 0x7f;
             message.setPaddingLength((int) length[2]);
         }

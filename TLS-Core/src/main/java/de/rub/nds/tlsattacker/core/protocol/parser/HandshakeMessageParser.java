@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -19,12 +19,13 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionListParser;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * An abstract Parser class for HandshakeMessages
@@ -55,7 +56,7 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
      * @param tlsContext
      */
     public HandshakeMessageParser(InputStream stream, HandshakeMessageType expectedType, ProtocolVersion version,
-        TlsContext tlsContext) {
+                                  TlsContext tlsContext) {
         super(stream, tlsContext.getConfig());
         this.expectedType = expectedType;
         this.version = version;
@@ -92,7 +93,7 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
      * @param helloRetryRequestHint
      */
     protected void parseExtensionBytes(T message, ProtocolVersion version, ConnectionEndType talkingConnectionEndType,
-        boolean helloRetryRequestHint) {
+                                       boolean helloRetryRequestHint) {
         byte[] extensionBytes = parseByteArrayField(message.getExtensionsLength().getValue());
         message.setExtensionBytes(extensionBytes);
         LOGGER.debug("ExtensionBytes:" + ArrayConverter.bytesToHexString(extensionBytes, false));
@@ -109,7 +110,7 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
      *
      * @param  message
      *                 Message to check
-     * @return         True if the message has an Extension field
+     * @return True if the message has an Extension field
      */
     protected boolean hasExtensionLengthField(T message) {
         return getBytesLeft() > 0;
@@ -120,7 +121,7 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
      *
      * @param  message
      *                 Message to check
-     * @return         True if the message has Extensions
+     * @return True if the message has Extensions
      */
     protected boolean hasExtensions(T message) {
         return message.getExtensionsLength().getValue() > 0;

@@ -1,21 +1,17 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.SessionTicketTLSExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SessionTicketTLSExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SessionTicketTLSExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.StatePlaintext;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.state.parser.StatePlaintextParser;
@@ -42,7 +38,7 @@ public class SessionTicketTLSExtensionHandler extends ExtensionHandler<SessionTi
     public void adjustTLSExtensionContext(SessionTicketTLSExtensionMessage message) {
         if (message.getExtensionLength().getValue() > 65535) {
             LOGGER.warn("The SessionTLS ticket length shouldn't exceed 2 bytes as defined in RFC 4507. " + "Length was "
-                + message.getExtensionLength().getValue());
+                    + message.getExtensionLength().getValue());
         }
 
         if (message.getExtensionLength().getValue() > 0) {
@@ -62,10 +58,10 @@ public class SessionTicketTLSExtensionHandler extends ExtensionHandler<SessionTi
             }
         } else {
             if (context.getTalkingConnectionEndType() == ConnectionEndType.CLIENT
-                && context.getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {
+                    && context.getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {
                 // Server receives an empty ticket
                 if (context.getConfig().isOverrideSessionIdForTickets()
-                    && context.getConfig().isAddSessionTicketTLSExtension()) {
+                        && context.getConfig().isAddSessionTicketTLSExtension()) {
                     context.setServerSessionId(new byte[0]);
                 }
             }
@@ -75,7 +71,7 @@ public class SessionTicketTLSExtensionHandler extends ExtensionHandler<SessionTi
     private StatePlaintext getStateFromTicket(SessionTicketTLSExtensionMessage message) {
         try {
             byte[] decryptedState = decryptState(message.getSessionTicket().getEncryptedState().getValue(),
-                message.getSessionTicket().getIV().getValue());
+                    message.getSessionTicket().getIV().getValue());
             StatePlaintextParser stateParser = new StatePlaintextParser(0, decryptedState);
             return stateParser.parse();
         } catch (CryptoException ex) {
@@ -87,6 +83,6 @@ public class SessionTicketTLSExtensionHandler extends ExtensionHandler<SessionTi
     private byte[] decryptState(byte[] encryptedState, byte[] iv) throws CryptoException {
         Config config = context.getConfig();
         return StaticTicketCrypto.decrypt(config.getSessionTicketCipherAlgorithm(), encryptedState,
-            config.getSessionTicketEncryptionKey(), iv);
+                config.getSessionTicketEncryptionKey(), iv);
     }
 }

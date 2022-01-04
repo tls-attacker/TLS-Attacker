@@ -9,9 +9,10 @@
 
 package de.rub.nds.tlsattacker.core.workflow;
 
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+
 import java.security.Provider;
 import java.security.Security;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 public class BouncyCastleProviderChecker {
 

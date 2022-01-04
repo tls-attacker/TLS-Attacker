@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -49,13 +49,13 @@ public class SessionTicketSerializer extends Serializer<SessionTicket> {
 
     private void writeEncryptedStateLength(SessionTicket sessionTicket) {
         appendInt(sessionTicket.getEncryptedStateLength().getValue(),
-            ExtensionByteLength.ENCRYPTED_SESSION_TICKET_STATE_LENGTH);
+                ExtensionByteLength.ENCRYPTED_SESSION_TICKET_STATE_LENGTH);
     }
 
     private void writeEncryptedState(SessionTicket sessionTicket) {
         appendBytes(sessionTicket.getEncryptedState().getValue());
         LOGGER.debug("EncryptedState: "
-            + ArrayConverter.bytesToHexString(sessionTicket.getEncryptedState().getValue(), true, true));
+                + ArrayConverter.bytesToHexString(sessionTicket.getEncryptedState().getValue(), true, true));
     }
 
     private void writeMAC(SessionTicket sessionTicket) {

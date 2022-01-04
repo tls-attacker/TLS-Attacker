@@ -13,12 +13,14 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.TrustedCaIndicatio
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.TrustedAuthorityPreparator;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.util.Arrays;
-import java.util.List;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
 public class TrustedCaIndicationExtensionHandlerTest {
 

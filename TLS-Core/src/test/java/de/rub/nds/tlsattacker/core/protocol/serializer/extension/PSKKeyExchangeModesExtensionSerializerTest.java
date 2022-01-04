@@ -10,8 +10,9 @@
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PSKKeyExchangeModesExtensionMessage;
-import static org.junit.Assert.*;
 import org.junit.Test;
+
+import static org.junit.Assert.assertArrayEquals;
 
 public class PSKKeyExchangeModesExtensionSerializerTest {
 

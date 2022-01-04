@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -16,13 +16,14 @@ import de.rub.nds.tlsattacker.core.crypto.keys.CustomRSAPrivateKey;
 import de.rub.nds.tlsattacker.core.util.GOSTUtils;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import org.bouncycastle.jcajce.provider.asymmetric.ecgost.BCECGOST3410PrivateKey;
+import org.bouncycastle.jcajce.provider.asymmetric.ecgost12.BCECGOST3410_2012PrivateKey;
+
+import javax.crypto.interfaces.DHPrivateKey;
 import java.math.BigInteger;
 import java.security.interfaces.DSAPrivateKey;
 import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.RSAPrivateKey;
-import javax.crypto.interfaces.DHPrivateKey;
-import org.bouncycastle.jcajce.provider.asymmetric.ecgost.BCECGOST3410PrivateKey;
-import org.bouncycastle.jcajce.provider.asymmetric.ecgost12.BCECGOST3410_2012PrivateKey;
 
 public class KeyGenerator {
 
@@ -66,21 +67,21 @@ public class KeyGenerator {
     public static DHPrivateKey getDHPrivateKey(Chooser chooser) {
         if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
             return new CustomDHPrivateKey(chooser.getClientDhPrivateKey(), chooser.getClientDhModulus(),
-                chooser.getClientDhGenerator());
+                    chooser.getClientDhGenerator());
         } else {
             return new CustomDHPrivateKey(chooser.getServerDhPrivateKey(), chooser.getServerDhModulus(),
-                chooser.getServerDhGenerator());
+                    chooser.getServerDhGenerator());
         }
     }
 
     public static DSAPrivateKey getDSAPrivateKey(Chooser chooser) {
         if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
             return new CustomDSAPrivateKey(chooser.getDsaClientPrivateKey(), chooser.getDsaClientPrimeP(),
-                chooser.getDsaClientPrimeQ(), chooser.getDsaClientGenerator());
+                    chooser.getDsaClientPrimeQ(), chooser.getDsaClientGenerator());
         } else {
 
             return new CustomDSAPrivateKey(chooser.getDsaServerPrivateKey(), chooser.getDsaServerPrimeP(),
-                chooser.getDsaServerPrimeQ(), chooser.getDsaServerGenerator());
+                    chooser.getDsaServerPrimeQ(), chooser.getDsaServerGenerator());
         }
     }
 

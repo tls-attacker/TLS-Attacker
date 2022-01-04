@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -23,7 +23,7 @@ public class PaddingExtensionPreparator extends ExtensionPreparator<PaddingExten
     private final PaddingExtensionMessage message;
 
     public PaddingExtensionPreparator(Chooser chooser, PaddingExtensionMessage message,
-        PaddingExtensionSerializer serializer) {
+                                      PaddingExtensionSerializer serializer) {
         super(chooser, message, serializer);
         this.message = message;
     }
@@ -35,8 +35,8 @@ public class PaddingExtensionPreparator extends ExtensionPreparator<PaddingExten
     public void prepareExtensionContent() {
         message.setPaddingBytes(chooser.getConfig().getDefaultPaddingExtensionBytes());
         LOGGER.debug("Prepared PaddingExtension with "
-            + ArrayConverter.bytesToHexString(chooser.getConfig().getDefaultPaddingExtensionBytes())
-            + " padding bytes.");
+                + ArrayConverter.bytesToHexString(chooser.getConfig().getDefaultPaddingExtensionBytes())
+                + " padding bytes.");
     }
 
 }

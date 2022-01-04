@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -14,23 +14,17 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.https.header.ContentLengthHeader;
-import de.rub.nds.tlsattacker.core.https.header.DateHeader;
-import de.rub.nds.tlsattacker.core.https.header.ExpiresHeader;
-import de.rub.nds.tlsattacker.core.https.header.GenericHttpsHeader;
-import de.rub.nds.tlsattacker.core.https.header.HostHeader;
-import de.rub.nds.tlsattacker.core.https.header.HttpHeader;
-import de.rub.nds.tlsattacker.core.https.header.LocationHeader;
-import de.rub.nds.tlsattacker.core.https.header.TokenBindingHeader;
+import de.rub.nds.tlsattacker.core.https.header.*;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.InputStream;
-import java.util.LinkedList;
-import java.util.List;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.io.InputStream;
+import java.util.LinkedList;
+import java.util.List;
 
 @XmlRootElement
 public class HttpsResponseMessage extends ProtocolMessage {
@@ -41,13 +35,13 @@ public class HttpsResponseMessage extends ProtocolMessage {
 
     private ModifiableString responseContent;
     @XmlElementWrapper
-    @XmlElements(value = { @XmlElement(type = GenericHttpsHeader.class, name = "HttpsHeader"),
-        @XmlElement(type = ContentLengthHeader.class, name = "ContentLengthHeader"),
-        @XmlElement(type = DateHeader.class, name = "DateHeader"),
-        @XmlElement(type = ExpiresHeader.class, name = "ExpiresHeader"),
-        @XmlElement(type = LocationHeader.class, name = "LocationHeader"),
-        @XmlElement(type = HostHeader.class, name = "HostHeader"),
-        @XmlElement(type = TokenBindingHeader.class, name = "TokenBindingHeader") })
+    @XmlElements(value = {@XmlElement(type = GenericHttpsHeader.class, name = "HttpsHeader"),
+            @XmlElement(type = ContentLengthHeader.class, name = "ContentLengthHeader"),
+            @XmlElement(type = DateHeader.class, name = "DateHeader"),
+            @XmlElement(type = ExpiresHeader.class, name = "ExpiresHeader"),
+            @XmlElement(type = LocationHeader.class, name = "LocationHeader"),
+            @XmlElement(type = HostHeader.class, name = "HostHeader"),
+            @XmlElement(type = TokenBindingHeader.class, name = "TokenBindingHeader")})
     @HoldsModifiableVariable
     private List<HttpHeader> header;
 
@@ -125,7 +119,7 @@ public class HttpsResponseMessage extends ProtocolMessage {
     @Override
     public HttpsResponseParser getParser(TlsContext tlsContext, InputStream stream) {
         return new HttpsResponseParser(stream, tlsContext.getChooser().getSelectedProtocolVersion(),
-            tlsContext.getConfig());
+                tlsContext.getConfig());
     }
 
     @Override

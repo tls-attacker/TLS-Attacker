@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -15,14 +15,15 @@ import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+
 public class SignatureAndHashAlgorithmsExtensionHandler
-    extends ExtensionHandler<SignatureAndHashAlgorithmsExtensionMessage> {
+        extends ExtensionHandler<SignatureAndHashAlgorithmsExtensionMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -36,11 +37,11 @@ public class SignatureAndHashAlgorithmsExtensionHandler
         byte[] signatureAndHashBytes = message.getSignatureAndHashAlgorithms().getValue();
         if (signatureAndHashBytes.length % HandshakeByteLength.SIGNATURE_HASH_ALGORITHM != 0) {
             throw new AdjustmentException(
-                "Cannot adjust ClientSupportedSignature and Hash algorithms to a reasonable Value");
+                    "Cannot adjust ClientSupportedSignature and Hash algorithms to a reasonable Value");
         }
         for (int i = 0; i < signatureAndHashBytes.length; i += HandshakeByteLength.SIGNATURE_HASH_ALGORITHM) {
             byte[] algoBytes =
-                Arrays.copyOfRange(signatureAndHashBytes, i, i + HandshakeByteLength.SIGNATURE_HASH_ALGORITHM);
+                    Arrays.copyOfRange(signatureAndHashBytes, i, i + HandshakeByteLength.SIGNATURE_HASH_ALGORITHM);
             SignatureAndHashAlgorithm algo = SignatureAndHashAlgorithm.getSignatureAndHashAlgorithm(algoBytes);
             if (algo == null || algo.getSignatureAlgorithm() == null || algo.getHashAlgorithm() == null) {
                 LOGGER.warn("Unknown SignatureAndHashAlgorithm:" + ArrayConverter.bytesToHexString(algoBytes));

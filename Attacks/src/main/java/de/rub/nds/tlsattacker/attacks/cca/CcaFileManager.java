@@ -10,12 +10,13 @@
 package de.rub.nds.tlsattacker.attacks.cca;
 
 import de.rub.nds.x509attacker.filesystem.BinaryFileReader;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class CcaFileManager {
 

@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -12,19 +12,16 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
-import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
-import de.rub.nds.tlsattacker.core.crypto.ec.Point;
-import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
-import de.rub.nds.tlsattacker.core.crypto.ec.RFC7748Curve;
+import de.rub.nds.tlsattacker.core.crypto.ec.*;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.math.BigInteger;
+
 public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMessage>
-    extends ClientKeyExchangePreparator<T> {
+        extends ClientKeyExchangePreparator<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -50,7 +47,7 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
         if (curve instanceof RFC7748Curve) {
             RFC7748Curve rfc7748Curve = (RFC7748Curve) curve;
             return rfc7748Curve.computeSharedSecretFromDecodedPoint(msg.getComputations().getPrivateKey().getValue(),
-                publicKey);
+                    publicKey);
         } else {
             Point sharedPoint = curve.mult(privateKey, publicKey);
             if (sharedPoint == null) {
@@ -74,14 +71,14 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
     protected void preparePremasterSecret(T msg) {
         msg.getComputations().setPremasterSecret(premasterSecret);
         LOGGER.debug("PremasterSecret: "
-            + ArrayConverter.bytesToHexString(msg.getComputations().getPremasterSecret().getValue()));
+                + ArrayConverter.bytesToHexString(msg.getComputations().getPremasterSecret().getValue()));
     }
 
     protected void prepareClientServerRandom(T msg) {
         random = ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
         msg.getComputations().setClientServerRandom(random);
         LOGGER.debug("ClientServerRandom: "
-            + ArrayConverter.bytesToHexString(msg.getComputations().getClientServerRandom().getValue()));
+                + ArrayConverter.bytesToHexString(msg.getComputations().getClientServerRandom().getValue()));
     }
 
     @Override
@@ -122,7 +119,7 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
             msg.getComputations().setPublicKeyX(publicKey.getFieldX().getData());
             msg.getComputations().setPublicKeyY(publicKey.getFieldY().getData());
             publicKey = curve.getPoint(msg.getComputations().getPublicKeyX().getValue(),
-                msg.getComputations().getPublicKeyY().getValue());
+                    msg.getComputations().getPublicKeyY().getValue());
             publicKeyBytes = PointFormatter.formatToByteArray(usedGroup, publicKey, pointFormat);
         }
         msg.setPublicKey(publicKeyBytes);

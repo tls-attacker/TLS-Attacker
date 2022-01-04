@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -12,10 +12,14 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
-import de.rub.nds.tlsattacker.core.protocol.*;
+import de.rub.nds.tlsattacker.core.protocol.Preparator;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.handler.HandshakeMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
-import de.rub.nds.tlsattacker.core.protocol.message.*;
+import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
+import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
@@ -26,10 +30,11 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.HandshakeMessageSerialize
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 /**
  * @param <T>
@@ -105,19 +110,19 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
                 ExtensionMessage extension = HandlerFactory.getExtension(extensionMessage.getExtensionTypeConstant());
                 Preparator preparator = extension.getPreparator(chooser.getContext());
                 if (extension instanceof PreSharedKeyExtensionMessage && message instanceof ClientHelloMessage
-                    && chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
+                        && chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
                     ((PreSharedKeyExtensionPreparator) preparator).setClientHello((ClientHelloMessage) message);
                     preparator.afterPrepare();
                 } else if (extension instanceof EncryptedServerNameIndicationExtensionMessage
-                    && message instanceof ClientHelloMessage
-                    && chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
+                        && message instanceof ClientHelloMessage
+                        && chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
                     ClientHelloMessage clientHelloMessage = (ClientHelloMessage) message;
                     ((EncryptedServerNameIndicationExtensionPreparator) preparator)
-                        .setClientHelloMessage(clientHelloMessage);
+                            .setClientHelloMessage(clientHelloMessage);
                     preparator.afterPrepare();
                 }
                 if (extensionMessage.getExtensionBytes() != null
-                    && extensionMessage.getExtensionBytes().getValue() != null) {
+                        && extensionMessage.getExtensionBytes().getValue() != null) {
                     try {
                         stream.write(extensionMessage.getExtensionBytes().getValue());
                     } catch (IOException ex) {
@@ -125,7 +130,7 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
                     }
                 } else {
                     LOGGER.debug(
-                        "If we are in a SSLv2 or SSLv3 Connection we do not add extensions, as SSL did not contain extensions");
+                            "If we are in a SSLv2 or SSLv3 Connection we do not add extensions, as SSL did not contain extensions");
                     LOGGER.debug("If however, the extensions are prepared, we will ad themm");
                 }
             }

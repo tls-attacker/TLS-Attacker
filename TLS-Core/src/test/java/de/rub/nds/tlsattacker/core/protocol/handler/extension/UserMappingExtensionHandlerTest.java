@@ -12,15 +12,12 @@ package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.UserMappingExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.UserMappingExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.UserMappingExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.UserMappingExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.UserMappingExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class UserMappingExtensionHandlerTest {
     private final UserMappingExtensionHintType hintType = UserMappingExtensionHintType.UPN_DOMAIN_HINT;

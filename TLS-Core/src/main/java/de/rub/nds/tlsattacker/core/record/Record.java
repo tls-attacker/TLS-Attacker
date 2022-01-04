@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -19,11 +19,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.layer.DataContainer;
-import de.rub.nds.tlsattacker.core.protocol.Handler;
-import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
-import de.rub.nds.tlsattacker.core.protocol.Parser;
-import de.rub.nds.tlsattacker.core.protocol.Preparator;
-import de.rub.nds.tlsattacker.core.protocol.Serializer;
+import de.rub.nds.tlsattacker.core.protocol.*;
 import de.rub.nds.tlsattacker.core.record.compressor.RecordCompressor;
 import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
 import de.rub.nds.tlsattacker.core.record.parser.RecordParser;
@@ -31,6 +27,7 @@ import de.rub.nds.tlsattacker.core.record.preparator.RecordPreparator;
 import de.rub.nds.tlsattacker.core.record.serializer.RecordSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.util.List;
@@ -164,7 +161,7 @@ public class Record extends ModifiableVariableHolder implements DataContainer {
     }
 
     public RecordPreparator getRecordPreparator(Chooser chooser, Encryptor encryptor, RecordCompressor compressor,
-        ProtocolMessageType type) {
+                                                ProtocolMessageType type) {
         return new RecordPreparator(chooser, this, encryptor, type, compressor);
     }
 
@@ -195,7 +192,7 @@ public class Record extends ModifiableVariableHolder implements DataContainer {
 
     public void setCleanProtocolMessageBytes(byte[] cleanProtocolMessageBytes) {
         this.cleanProtocolMessageBytes =
-            ModifiableVariableFactory.safelySetValue(this.cleanProtocolMessageBytes, cleanProtocolMessageBytes);
+                ModifiableVariableFactory.safelySetValue(this.cleanProtocolMessageBytes, cleanProtocolMessageBytes);
     }
 
     public void setCleanProtocolMessageBytes(ModifiableByteArray cleanProtocolMessageBytes) {
@@ -232,7 +229,7 @@ public class Record extends ModifiableVariableHolder implements DataContainer {
 
     public void setCompleteRecordBytes(byte[] completeRecordBytes) {
         this.completeRecordBytes =
-            ModifiableVariableFactory.safelySetValue(this.completeRecordBytes, completeRecordBytes);
+                ModifiableVariableFactory.safelySetValue(this.completeRecordBytes, completeRecordBytes);
     }
 
     public RecordCryptoComputations getComputations() {
@@ -252,7 +249,7 @@ public class Record extends ModifiableVariableHolder implements DataContainer {
     @Override
     public String toString() {
         return "Record{" + "contentType=" + contentType + ", protocolVersion=" + protocolVersion + ", length=" + length
-            + '}';
+                + '}';
     }
 
     @Override
@@ -334,7 +331,7 @@ public class Record extends ModifiableVariableHolder implements DataContainer {
     @Override
     public Handler getHandler(TlsContext context) {
         throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
-                                                                       // Tools | Templates.
+        // Tools | Templates.
     }
 
 }

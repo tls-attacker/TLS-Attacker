@@ -11,15 +11,14 @@ package de.rub.nds.tlsattacker.core.crypto.ec;
 
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.util.tests.IntegrationTests;
-import java.math.BigInteger;
-import java.util.Random;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+
+import java.math.BigInteger;
+import java.util.Random;
+
+import static org.junit.Assert.*;
 
 /**
  * Testing EllipticCurve, CurveFactory, EllipticCurveOverFp and EllipticCurveOverF2m

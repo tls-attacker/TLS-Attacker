@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.config.converters.ByteArrayConverter;
 public class SessionResumptionDelegate extends Delegate {
 
     @Parameter(names = "-session_id", description = "The session ID to resume in hex",
-        converter = ByteArrayConverter.class)
+            converter = ByteArrayConverter.class)
     private byte[] sessionId = null;
 
     public SessionResumptionDelegate() {

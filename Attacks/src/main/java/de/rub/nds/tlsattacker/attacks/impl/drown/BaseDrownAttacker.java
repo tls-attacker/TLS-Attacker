@@ -9,20 +9,21 @@
 
 package de.rub.nds.tlsattacker.attacks.impl.drown;
 
-import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
-
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.attacks.config.BaseDrownCommandConfig;
 import de.rub.nds.tlsattacker.attacks.constants.DrownVulnerabilityType;
 import de.rub.nds.tlsattacker.attacks.impl.Attacker;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 
 abstract class BaseDrownAttacker extends Attacker<BaseDrownCommandConfig> {
 

@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -15,9 +15,10 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.RecordByteLength;
 import de.rub.nds.tlsattacker.core.protocol.Parser;
 import de.rub.nds.tlsattacker.core.record.Record;
-import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.InputStream;
 
 public class RecordParser extends Parser<Record> {
 
@@ -35,7 +36,7 @@ public class RecordParser extends Parser<Record> {
         LOGGER.debug("Parsing Record");
         parseContentType(record);
         ProtocolMessageType protocolMessageType =
-            ProtocolMessageType.getContentType(record.getContentType().getValue());
+                ProtocolMessageType.getContentType(record.getContentType().getValue());
         if (protocolMessageType == null) {
             protocolMessageType = ProtocolMessageType.UNKNOWN;
         }
@@ -78,6 +79,6 @@ public class RecordParser extends Parser<Record> {
     private void parseProtocolMessageBytes(Record record) {
         record.setProtocolMessageBytes(parseByteArrayField(record.getLength().getValue()));
         LOGGER.debug(
-            "ProtocolMessageBytes: " + ArrayConverter.bytesToHexString(record.getProtocolMessageBytes().getValue()));
+                "ProtocolMessageBytes: " + ArrayConverter.bytesToHexString(record.getProtocolMessageBytes().getValue()));
     }
 }

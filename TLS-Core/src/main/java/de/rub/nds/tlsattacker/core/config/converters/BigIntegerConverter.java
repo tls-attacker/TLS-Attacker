@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.config.converters;
 
 import com.beust.jcommander.IStringConverter;
 import com.beust.jcommander.ParameterException;
+
 import java.math.BigInteger;
 
 /**
@@ -30,7 +31,7 @@ public class BigIntegerConverter implements IStringConverter<BigInteger> {
             }
         } catch (IllegalArgumentException e) {
             throw new ParameterException("Value " + value + " cannot be converted to a BigInteger. "
-                + "The value can be hexadecimal (starting with 0x) or decimal.");
+                    + "The value can be hexadecimal (starting with 0x) or decimal.");
         }
     }
 }

@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -40,7 +40,7 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
         prepareCipherSuite();
         prepareCompressionMethod();
         if (!chooser.getConfig().getHighestProtocolVersion().isSSL()
-            || (chooser.getConfig().getHighestProtocolVersion().isSSL()
+                || (chooser.getConfig().getHighestProtocolVersion().isSSL()
                 && chooser.getConfig().isAddExtensionsInSSL())) {
             prepareExtensions();
             prepareExtensionLength();
@@ -65,7 +65,7 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
             msg.setSelectedCipherSuite(selectedSuite.getByteValue());
         }
         LOGGER
-            .debug("SelectedCipherSuite: " + ArrayConverter.bytesToHexString(msg.getSelectedCipherSuite().getValue()));
+                .debug("SelectedCipherSuite: " + ArrayConverter.bytesToHexString(msg.getSelectedCipherSuite().getValue()));
     }
 
     private void prepareCompressionMethod() {
@@ -110,7 +110,7 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
             msg.setProtocolVersion(ourVersion.getValue());
         } else {
             if (chooser.getHighestClientProtocolVersion().isDTLS()
-                && chooser.getConfig().getHighestProtocolVersion().isDTLS()) {
+                    && chooser.getConfig().getHighestProtocolVersion().isDTLS()) {
                 // We both want dtls
                 if (intRepresentationClientVersion <= intRepresentationOurVersion) {
                     msg.setProtocolVersion(ourVersion.getValue());
@@ -119,7 +119,7 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
                 }
             }
             if (!chooser.getHighestClientProtocolVersion().isDTLS()
-                && !chooser.getConfig().getHighestProtocolVersion().isDTLS()) {
+                    && !chooser.getConfig().getHighestProtocolVersion().isDTLS()) {
                 // We both want tls
                 if (intRepresentationClientVersion >= intRepresentationOurVersion) {
                     msg.setProtocolVersion(ourVersion.getValue());

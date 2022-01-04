@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -20,17 +20,16 @@ import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.state.session.TicketSession;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import javax.crypto.Mac;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.List;
-import javax.crypto.Mac;
-
-import de.rub.nds.tlsattacker.core.state.session.Session;
-import de.rub.nds.tlsattacker.core.state.session.TicketSession;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionTicketMessage> {
 
@@ -101,19 +100,19 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
         try {
             LOGGER.debug("Deriving PSK from current session");
             HKDFAlgorithm hkdfAlgorithm =
-                AlgorithmResolver.getHKDFAlgorithm(tlsContext.getChooser().getSelectedCipherSuite());
+                    AlgorithmResolver.getHKDFAlgorithm(tlsContext.getChooser().getSelectedCipherSuite());
             DigestAlgorithm digestAlgo = AlgorithmResolver.getDigestAlgorithm(
-                tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext.getChooser().getSelectedCipherSuite());
+                    tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext.getChooser().getSelectedCipherSuite());
             int macLength = Mac.getInstance(hkdfAlgorithm.getMacAlgorithm().getJavaName()).getMacLength();
             byte[] resumptionMasterSecret = HKDFunction.deriveSecret(hkdfAlgorithm, digestAlgo.getJavaName(),
-                tlsContext.getChooser().getMasterSecret(), HKDFunction.RESUMPTION_MASTER_SECRET,
-                tlsContext.getDigest().getRawBytes());
+                    tlsContext.getChooser().getMasterSecret(), HKDFunction.RESUMPTION_MASTER_SECRET,
+                    tlsContext.getDigest().getRawBytes());
             tlsContext.setResumptionMasterSecret(resumptionMasterSecret);
             LOGGER.debug("Derived ResumptionMasterSecret: " + ArrayConverter.bytesToHexString(resumptionMasterSecret));
             LOGGER.debug("Handshake Transcript Raw Bytes: "
-                + ArrayConverter.bytesToHexString(tlsContext.getDigest().getRawBytes()));
+                    + ArrayConverter.bytesToHexString(tlsContext.getDigest().getRawBytes()));
             byte[] psk = HKDFunction.expandLabel(hkdfAlgorithm, resumptionMasterSecret, HKDFunction.RESUMPTION,
-                pskSet.getTicketNonce(), macLength);
+                    pskSet.getTicketNonce(), macLength);
             LOGGER.debug("New derived pre-shared-key: " + ArrayConverter.bytesToHexString(psk));
             return psk;
 

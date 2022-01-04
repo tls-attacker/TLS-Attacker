@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -33,13 +33,13 @@ public class ExtendedRandomExtensionHandler extends ExtensionHandler<ExtendedRan
         if (context.getTalkingConnectionEndType().equals(ConnectionEndType.SERVER)) {
             context.setServerExtendedRandom(message.getExtendedRandom().getValue());
             LOGGER.debug("The context server extended Random was set to "
-                + ArrayConverter.bytesToHexString(message.getExtendedRandom()));
+                    + ArrayConverter.bytesToHexString(message.getExtendedRandom()));
 
         }
         if (context.getTalkingConnectionEndType().equals(ConnectionEndType.CLIENT)) {
             context.setClientExtendedRandom(message.getExtendedRandom().getValue());
             LOGGER.debug("The context client extended Random was set to "
-                + ArrayConverter.bytesToHexString(message.getExtendedRandom()));
+                    + ArrayConverter.bytesToHexString(message.getExtendedRandom()));
 
         }
 
@@ -49,9 +49,9 @@ public class ExtendedRandomExtensionHandler extends ExtensionHandler<ExtendedRan
         if (!(context.getClientExtendedRandom() == null) && !(context.getServerExtendedRandom() == null)) {
             LOGGER.debug("Extended Random was agreed on. Concatenating extended Randoms to normal Randoms.");
             byte[] clientConcatRandom =
-                ArrayConverter.concatenate(context.getClientRandom(), context.getClientExtendedRandom());
+                    ArrayConverter.concatenate(context.getClientRandom(), context.getClientExtendedRandom());
             byte[] serverConcatRandom =
-                ArrayConverter.concatenate(context.getServerRandom(), context.getServerExtendedRandom());
+                    ArrayConverter.concatenate(context.getServerRandom(), context.getServerExtendedRandom());
             context.setClientRandom(clientConcatRandom);
             LOGGER.debug("ClientRandom: " + ArrayConverter.bytesToHexString(context.getClientRandom()));
             context.setServerRandom(serverConcatRandom);

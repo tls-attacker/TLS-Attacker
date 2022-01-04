@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -17,6 +17,9 @@ import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -24,8 +27,6 @@ import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class TlsAttackerSocket {
 
@@ -52,7 +53,7 @@ public class TlsAttackerSocket {
     /**
      * Listens without Encryption etc
      *
-     * @return                     The Raw received Bytes
+     * @return The Raw received Bytes
      * @throws java.io.IOException
      *                             If something goes wrong during the receive
      */
@@ -103,13 +104,13 @@ public class TlsAttackerSocket {
     /**
      * Receives bytes and decrypts ApplicationMessage contents
      *
-     * @return                     Received bytes The bytes which are received
+     * @return Received bytes The bytes which are received
      * @throws java.io.IOException
      *                             If something goes wrong during the receive
      */
     public byte[] receiveBytes() throws IOException {
         ReceiveAction action =
-            new ReceiveAction(state.getTlsContext().getConnection().getAlias(), new ApplicationMessage());
+                new ReceiveAction(state.getTlsContext().getConnection().getAlias(), new ApplicationMessage());
         action.execute(state);
         List<ProtocolMessage> receivedMessages = action.getReceivedMessages();
 
@@ -129,7 +130,7 @@ public class TlsAttackerSocket {
     /**
      * Receives bytes and decrypts ApplicationMessage contents in converts them to Strings
      *
-     * @return                     The received String
+     * @return The received String
      * @throws java.io.IOException
      *                             If something goes wrong during the receive
      */

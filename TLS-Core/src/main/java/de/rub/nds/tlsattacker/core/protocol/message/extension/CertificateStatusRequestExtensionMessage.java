@@ -1,15 +1,14 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
-import static de.rub.nds.modifiablevariable.ModifiableVariableFactory.safelySetValue;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
@@ -20,15 +19,18 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.CertificateStatusRe
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.CertificateStatusRequestExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.CertificateStatusRequestExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.InputStream;
+
 import javax.xml.bind.annotation.XmlRootElement;
+import java.io.InputStream;
+
+import static de.rub.nds.modifiablevariable.ModifiableVariableFactory.safelySetValue;
 
 /**
  * This extension is defined in RFC6066
  */
 @XmlRootElement(name = "CertificateStatusRequestExtension")
 public class CertificateStatusRequestExtensionMessage
-    extends ExtensionMessage<CertificateStatusRequestExtensionMessage> {
+        extends ExtensionMessage<CertificateStatusRequestExtensionMessage> {
 
     @ModifiableVariableProperty
     private ModifiableInteger certificateStatusRequestType;
@@ -72,7 +74,7 @@ public class CertificateStatusRequestExtensionMessage
 
     public void setCertificateStatusRequestType(int certificateStatusRequestType) {
         this.certificateStatusRequestType =
-            safelySetValue(this.certificateStatusRequestType, certificateStatusRequestType);
+                safelySetValue(this.certificateStatusRequestType, certificateStatusRequestType);
     }
 
     public ModifiableInteger getResponderIDListLength() {
@@ -152,13 +154,13 @@ public class CertificateStatusRequestExtensionMessage
     public CertificateStatusRequestExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
         // TODO make sure this is the correct version
         return new CertificateStatusRequestExtensionParser(stream, tlsContext.getConfig(),
-            tlsContext.getChooser().getSelectedProtocolVersion());
+                tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override
     public CertificateStatusRequestExtensionPreparator getPreparator(TlsContext tlsContext) {
         return new CertificateStatusRequestExtensionPreparator(tlsContext.getChooser(), this,
-            getSerializer(tlsContext));
+                getSerializer(tlsContext));
     }
 
     @Override

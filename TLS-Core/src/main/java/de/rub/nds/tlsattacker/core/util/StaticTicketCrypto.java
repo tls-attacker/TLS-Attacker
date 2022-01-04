@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -14,26 +14,23 @@ import de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import javax.crypto.*;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.Mac;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class StaticTicketCrypto {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     public static byte[] encrypt(CipherAlgorithm cipherAlgorithm, byte[] plaintextUnpadded, byte[] key, byte[] iv)
-        throws CryptoException {
+            throws CryptoException {
         byte[] result = new byte[0];
         try {
             byte[] plaintext = addPadding(plaintextUnpadded, cipherAlgorithm.getKeySize());
@@ -44,14 +41,14 @@ public class StaticTicketCrypto {
             cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
             result = cipher.doFinal(plaintext);
         } catch (InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException
-            | BadPaddingException | NoSuchPaddingException | NoSuchAlgorithmException ex) {
+                | BadPaddingException | NoSuchPaddingException | NoSuchAlgorithmException ex) {
             throw new CryptoException("Error while StatePlaintext Encryption. See Debug-Log for more Information.", ex);
         }
         return result;
     }
 
     public static byte[] decrypt(CipherAlgorithm cipherAlgorithm, byte[] ciphertext, byte[] key, byte[] iv)
-        throws CryptoException {
+            throws CryptoException {
         byte[] result = new byte[0];
         try {
             Cipher cipher = Cipher.getInstance(cipherAlgorithm.getJavaName());
@@ -62,7 +59,7 @@ public class StaticTicketCrypto {
             result = cipher.doFinal(ciphertext);
             result = removePadding(result);
         } catch (InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException
-            | BadPaddingException | NoSuchPaddingException | NoSuchAlgorithmException ex) {
+                | BadPaddingException | NoSuchPaddingException | NoSuchAlgorithmException ex) {
             LOGGER.warn("Encountered exception while encrypting the StatePlaintext with " + cipherAlgorithm.name());
             LOGGER.debug(ex);
             throw new CryptoException("Error while StatePlaintext Decryption. See Debug-Log for more Information.");
@@ -79,7 +76,7 @@ public class StaticTicketCrypto {
             result = mac.doFinal(plaintext);
         } catch (InvalidKeyException | NoSuchAlgorithmException ex) {
             LOGGER.warn(
-                "Encountered exception while generating the HMAC " + macAlgorithm.name() + " of an encryptedState.");
+                    "Encountered exception while generating the HMAC " + macAlgorithm.name() + " of an encryptedState.");
             LOGGER.debug(ex);
             throw new CryptoException("Error while HMAC generation. See Debug-Log for more Information.");
         }
@@ -87,7 +84,7 @@ public class StaticTicketCrypto {
     }
 
     public static boolean verifyHMAC(MacAlgorithm macAlgo, byte[] mac, byte[] plaintext, byte[] key)
-        throws CryptoException {
+            throws CryptoException {
         byte[] newMAC = generateHMAC(macAlgo, plaintext, key);
         boolean result = Arrays.equals(mac, newMAC);
         return result;

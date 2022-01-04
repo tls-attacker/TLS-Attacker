@@ -11,22 +11,14 @@ package de.rub.nds.tlsattacker.core.certificate.ocsp;
 
 import com.google.common.io.ByteStreams;
 import de.rub.nds.asn1.Asn1Encodable;
-import de.rub.nds.asn1.model.Asn1EncapsulatingOctetString;
-import de.rub.nds.asn1.model.Asn1Explicit;
-import de.rub.nds.asn1.model.Asn1Integer;
-import de.rub.nds.asn1.model.Asn1ObjectIdentifier;
-import de.rub.nds.asn1.model.Asn1PrimitiveIa5String;
-import de.rub.nds.asn1.model.Asn1Sequence;
+import de.rub.nds.asn1.model.*;
 import de.rub.nds.asn1.parser.Asn1Parser;
 import de.rub.nds.asn1.translator.ParseOcspTypesContext;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import static de.rub.nds.tlsattacker.core.certificate.ExtensionObjectIdentifier.AUTHORITY_INFO_ACCESS;
-import static de.rub.nds.tlsattacker.core.certificate.ExtensionObjectIdentifier.CERTIFICATE_AUTHORITY_ISSUER;
-import static de.rub.nds.tlsattacker.core.certificate.ExtensionObjectIdentifier.OCSP;
-import static de.rub.nds.tlsattacker.core.certificate.ExtensionObjectIdentifier.SIGNED_CERTIFICATE_TIMESTAMP_LIST;
-import static de.rub.nds.tlsattacker.core.certificate.ExtensionObjectIdentifier.TLS_FEATURE;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.util.Asn1ToolInitializer;
+import org.bouncycastle.asn1.x509.Certificate;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -35,7 +27,8 @@ import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
-import org.bouncycastle.asn1.x509.Certificate;
+
+import static de.rub.nds.tlsattacker.core.certificate.ExtensionObjectIdentifier.*;
 
 public class CertificateInformationExtractor {
     private static final int X509_EXTENSION_ASN1_EXPLICIT_OFFSET = 3;

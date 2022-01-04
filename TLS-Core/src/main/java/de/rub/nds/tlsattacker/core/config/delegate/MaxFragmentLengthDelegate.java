@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -17,7 +17,7 @@ public class MaxFragmentLengthDelegate extends Delegate {
 
     // TODO Add validator, and extend unit test
     @Parameter(names = "-max_fragment_length",
-        description = "Maximum fragment length definition for the max fragment length TLS extension (possible byte values 1,2,3, or 4)")
+            description = "Maximum fragment length definition for the max fragment length TLS extension (possible byte values 1,2,3, or 4)")
     private Integer maxFragmentLength = null;
 
     public MaxFragmentLengthDelegate() {
@@ -43,7 +43,7 @@ public class MaxFragmentLengthDelegate extends Delegate {
         // record_size_limit and max_fragment_length are not meant to be used simultaneously
         if (config.isAddRecordSizeLimitExtension()) {
             LOGGER
-                .warn("Configured to send record_size_limit and max_fragment_length simultaneously, resuming anyways");
+                    .warn("Configured to send record_size_limit and max_fragment_length simultaneously, resuming anyways");
         }
     }
 }

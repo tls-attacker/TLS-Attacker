@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -12,6 +12,7 @@ package de.rub.nds.tlsattacker.core.layer.stream;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
+
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -44,7 +45,7 @@ public abstract class HintedInputStream extends InputStream {
         int read = read(chunk);
         if (read != size) {
             throw new EndOfStreamException(
-                "Could not read " + size + " bytes from the stream. Only " + read + " bytes available");
+                    "Could not read " + size + " bytes from the stream. Only " + read + " bytes available");
         }
         return chunk;
     }

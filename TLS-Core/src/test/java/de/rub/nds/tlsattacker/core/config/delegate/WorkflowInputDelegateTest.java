@@ -13,16 +13,18 @@ import com.beust.jcommander.JCommander;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import javax.xml.bind.JAXBException;
 import org.apache.commons.lang3.builder.EqualsBuilder;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+
+import javax.xml.bind.JAXBException;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class WorkflowInputDelegateTest {
 

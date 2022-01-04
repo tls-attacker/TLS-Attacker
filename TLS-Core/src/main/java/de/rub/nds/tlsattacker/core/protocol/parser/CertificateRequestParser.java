@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -16,10 +16,11 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.io.InputStream;
-import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.InputStream;
+import java.util.Arrays;
 
 public class CertificateRequestParser extends HandshakeMessageParser<CertificateRequestMessage> {
 
@@ -37,7 +38,7 @@ public class CertificateRequestParser extends HandshakeMessageParser<Certificate
      * @param talkingConnectionEndType
      */
     public CertificateRequestParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext,
-        ConnectionEndType talkingConnectionEndType) {
+                                    ConnectionEndType talkingConnectionEndType) {
         super(stream, HandshakeMessageType.CERTIFICATE_REQUEST, version, tlsContext);
         this.talkingConnectionEndType = talkingConnectionEndType;
     }
@@ -107,7 +108,7 @@ public class CertificateRequestParser extends HandshakeMessageParser<Certificate
     private void parseSignatureHashAlgorithms(CertificateRequestMessage msg) {
         msg.setSignatureHashAlgorithms(parseByteArrayField(msg.getSignatureHashAlgorithmsLength().getValue()));
         LOGGER.debug(
-            "SignatureHashAlgorithms: " + ArrayConverter.bytesToHexString(msg.getSignatureHashAlgorithms().getValue()));
+                "SignatureHashAlgorithms: " + ArrayConverter.bytesToHexString(msg.getSignatureHashAlgorithms().getValue()));
     }
 
     /**
@@ -126,7 +127,7 @@ public class CertificateRequestParser extends HandshakeMessageParser<Certificate
      *
      * @param  msg
      *             Message to check
-     * @return     True if the field has a value greater than Zero
+     * @return True if the field has a value greater than Zero
      */
     private boolean hasDistinguishedNamesLength(CertificateRequestMessage msg) {
         return msg.getDistinguishedNamesLength().getValue() != 0;
@@ -151,6 +152,6 @@ public class CertificateRequestParser extends HandshakeMessageParser<Certificate
     private void parseCertificateRequestContext(CertificateRequestMessage msg) {
         msg.setCertificateRequestContext(parseByteArrayField(msg.getCertificateRequestContextLength().getValue()));
         LOGGER.debug("CertificateRequestContext: "
-            + ArrayConverter.bytesToHexString(msg.getCertificateRequestContext().getValue()));
+                + ArrayConverter.bytesToHexString(msg.getCertificateRequestContext().getValue()));
     }
 }

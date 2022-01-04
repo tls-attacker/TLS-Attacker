@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -10,13 +10,14 @@
 package de.rub.nds.tlsattacker.core.protocol.message.supplementaldata;
 
 import de.rub.nds.tlsattacker.core.constants.Bits;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public enum SupplementalDataType {
 
-    USER_MAPPING_DATA(new byte[] { (byte) 0, (byte) 0 }),
-    AUTHZ_DATA(new byte[] { (byte) 0x40, (byte) 0x02 }),
+    USER_MAPPING_DATA(new byte[]{(byte) 0, (byte) 0}),
+    AUTHZ_DATA(new byte[]{(byte) 0x40, (byte) 0x02}),
     UNKNOWN(new byte[0]);
 
     private byte[] value;
@@ -26,6 +27,7 @@ public enum SupplementalDataType {
     }
 
     private static final Map<Integer, SupplementalDataType> MAP;
+
     static {
         MAP = new HashMap<>();
         for (SupplementalDataType s : SupplementalDataType.values()) {

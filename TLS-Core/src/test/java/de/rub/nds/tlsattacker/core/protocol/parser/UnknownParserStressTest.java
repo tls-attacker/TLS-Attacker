@@ -13,11 +13,13 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.util.tests.IntegrationTests;
-import java.io.ByteArrayInputStream;
-import java.util.Random;
-import static org.junit.Assert.*;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+
+import java.io.ByteArrayInputStream;
+import java.util.Random;
+
+import static org.junit.Assert.assertArrayEquals;
 
 public class UnknownParserStressTest {
 

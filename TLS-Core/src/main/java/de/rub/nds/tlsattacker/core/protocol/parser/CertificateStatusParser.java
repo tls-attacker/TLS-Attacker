@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -14,10 +14,11 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateStatusMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.certificatestatus.CertificateStatusObject;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 
 public class CertificateStatusParser extends HandshakeMessageParser<CertificateStatusMessage> {
 
@@ -31,7 +32,7 @@ public class CertificateStatusParser extends HandshakeMessageParser<CertificateS
     protected void parseHandshakeMessageContent(CertificateStatusMessage message) {
         LOGGER.debug("Parsing CertificateStatusMessage");
         CertificateStatusGenericParser parser =
-            new CertificateStatusGenericParser(new ByteArrayInputStream(parseByteArrayField(getBytesLeft())));
+                new CertificateStatusGenericParser(new ByteArrayInputStream(parseByteArrayField(getBytesLeft())));
         CertificateStatusObject certificateStatusObject = new CertificateStatusObject();
         parser.parse(certificateStatusObject);
 

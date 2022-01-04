@@ -17,10 +17,12 @@ import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import org.junit.Test;
+
 import java.util.LinkedList;
 import java.util.List;
+
 import static org.junit.Assert.*;
-import org.junit.Test;
 
 public class CertificateRequestPreparatorTest {
 

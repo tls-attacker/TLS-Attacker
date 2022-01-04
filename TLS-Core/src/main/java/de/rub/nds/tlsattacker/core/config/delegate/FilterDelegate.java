@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -12,6 +12,7 @@ package de.rub.nds.tlsattacker.core.config.delegate;
 import com.beust.jcommander.Parameter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.workflow.filter.FilterType;
+
 import java.util.List;
 
 public class FilterDelegate extends Delegate {
@@ -20,7 +21,7 @@ public class FilterDelegate extends Delegate {
     // for List<Enum>.
     // Known issue: https://github.com/cbeust/jcommander/issues/402
     @Parameter(names = "-output_filter", description = "Apply given filters to the workflow trace "
-        + "before writing to output file. Supply as comma separated list. Try also: -list filters.")
+            + "before writing to output file. Supply as comma separated list. Try also: -list filters.")
     private List<FilterType> filters = null;
 
     public FilterDelegate() {

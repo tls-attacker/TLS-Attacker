@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -20,8 +20,9 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.SRPExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SRPExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SRPExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.InputStream;
+
 import javax.xml.bind.annotation.XmlRootElement;
+import java.io.InputStream;
 
 /**
  * This extension is defined in RFC5054
@@ -66,7 +67,7 @@ public class SRPExtensionMessage extends ExtensionMessage<SRPExtensionMessage> {
 
     public void setSrpIdentifierLength(int srpIdentifierLength) {
         this.srpIdentifierLength =
-            ModifiableVariableFactory.safelySetValue(this.srpIdentifierLength, srpIdentifierLength);
+                ModifiableVariableFactory.safelySetValue(this.srpIdentifierLength, srpIdentifierLength);
     }
 
     @Override

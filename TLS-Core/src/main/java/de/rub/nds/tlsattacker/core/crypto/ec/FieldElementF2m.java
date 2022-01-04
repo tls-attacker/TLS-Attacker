@@ -1,18 +1,19 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.crypto.ec;
 
-import java.io.Serializable;
-import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.Serializable;
+import java.math.BigInteger;
 
 /**
  * An element of a galois field F_{2^m}.<br />
@@ -141,7 +142,7 @@ public class FieldElementF2m extends FieldElement implements Serializable {
         }
         // q is the quotient.
         // f is the remainder.
-        BigInteger[] result = { q, f };
+        BigInteger[] result = {q, f};
         return result;
     }
 
@@ -157,7 +158,7 @@ public class FieldElementF2m extends FieldElement implements Serializable {
 
     /**
      * Returns (this^2)^exponent)
-     * 
+     *
      * @param exponent
      */
     public FieldElementF2m squarePow(int exponent) {

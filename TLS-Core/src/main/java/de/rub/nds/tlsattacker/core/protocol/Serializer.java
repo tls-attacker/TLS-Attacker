@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
@@ -10,11 +10,12 @@
 package de.rub.nds.tlsattacker.core.protocol;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * The Serializer is responsible to write an Object T into a byte[] form. This is comparable to byte[] serialization.
@@ -60,7 +61,7 @@ public abstract class Serializer<T> {
         int reconvertedInt = ArrayConverter.bytesToInt(bytes);
         if (reconvertedInt != i) {
             LOGGER.warn("Int \"" + i + "\" is too long to write in field of size " + length + ". Only using last "
-                + length + " bytes.");
+                    + length + " bytes.");
         }
         appendBytes(ArrayConverter.intToBytes(i, length));
     }
