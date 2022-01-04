@@ -45,7 +45,7 @@ import java.io.Serializable;
     PreSharedKeyExtensionMessage.class, UnknownExtensionMessage.class, PWDClearExtensionMessage.class,
     PWDProtectExtensionMessage.class, PasswordSaltExtensionMessage.class, CachedInfoExtensionMessage.class,
     CookieExtensionMessage.class, DtlsHandshakeMessageFragment.class, UserMappingExtensionMessage.class,
-    SRPExtensionMessage.class })
+    SRPExtensionMessage.class, CachedInfoExtensionMessage.class})
 public abstract class ExtensionMessage<Self extends ExtensionMessage> extends ModifiableVariableHolder
     implements Serializable, DataContainer<Self> {
 

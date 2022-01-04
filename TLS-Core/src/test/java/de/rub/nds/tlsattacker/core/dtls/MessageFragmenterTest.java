@@ -37,16 +37,14 @@ public class MessageFragmenterTest {
     public static Collection<Object[]> generateData() {
         Collection<Object[]> data = ClientHelloParserTest.generateData();
         for (Object[] obj : data) {
-            obj[3] = ProtocolVersion.DTLS12;
-            obj[4] = ProtocolVersion.DTLS12.getValue();
+            obj[1] = ProtocolVersion.DTLS12;
+            obj[2] = ProtocolVersion.DTLS12.getValue();
         }
         return data;
     }
 
     private final byte[] expectedPart;
     private final ProtocolVersion version;
-    private final HandshakeMessageType type;
-    private final int length;
     private final byte[] protocolVersion;
     private final byte[] unixTime;
     private final byte[] random;
@@ -64,13 +62,11 @@ public class MessageFragmenterTest {
     private TlsContext tlsContext;
     private ClientHelloMessage clientMessage;
 
-    public MessageFragmenterTest(byte[] message, HandshakeMessageType type, int length, ProtocolVersion version,
-        byte[] protocolVersion, byte[] unixTime, byte[] random, int sessionIdLength, byte[] sessionID,
-        int cipherSuitesLength, byte[] cipherSuites, int compressionsLength, byte[] compressions,
-        Integer extensionLength, byte[] extensionBytes, Byte cookieLength, byte[] cookie, int numberOfExtensions) {
+    public MessageFragmenterTest(byte[] message, ProtocolVersion version, byte[] protocolVersion, byte[] unixTime,
+        byte[] random, int sessionIdLength, byte[] sessionID, int cipherSuitesLength, byte[] cipherSuites,
+        int compressionsLength, byte[] compressions, Integer extensionLength, byte[] extensionBytes, Byte cookieLength,
+        byte[] cookie, int numberOfExtensions) {
         this.expectedPart = message;
-        this.type = type;
-        this.length = length;
         this.version = version;
         this.protocolVersion = protocolVersion;
         this.unixTime = unixTime;
@@ -91,9 +87,6 @@ public class MessageFragmenterTest {
     public void setUp() {
         tlsContext = new TlsContext();
         clientMessage = new ClientHelloMessage(Config.createConfig());
-
-        clientMessage.setLength(length);
-        clientMessage.setType(type.getValue());
         clientMessage.setCipherSuiteLength(cipherSuitesLength);
         clientMessage.setCipherSuites(cipherSuites);
         clientMessage.setCompressionLength(compressionsLength);

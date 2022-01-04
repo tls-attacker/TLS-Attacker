@@ -9,7 +9,9 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,23 +34,34 @@ public class SessionTicketTLSExtensionParserTest {
      */
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { { new byte[0], new byte[0] } });
+        return Arrays.asList(new Object[][] {
+            { ExtensionType.SESSION_TICKET, 0, new byte[0], ArrayConverter.hexStringToByteArray("00230000"), 0 } });
     }
 
+    private final ExtensionType extensionType;
+    private final int extensionLength;
     private final byte[] sessionTicket;
     private final byte[] expectedBytes;
+    private final int startParsing;
     private SessionTicketTLSExtensionParser parser;
     private SessionTicketTLSExtensionMessage message;
 
     /**
      * Constructor for parameterized setup.
      *
+     * @param extensionType
+     * @param extensionLength
      * @param sessionTicket
      * @param expectedBytes
+     * @param startParsing
      */
-    public SessionTicketTLSExtensionParserTest(byte[] sessionTicket, byte[] expectedBytes) {
+    public SessionTicketTLSExtensionParserTest(ExtensionType extensionType, int extensionLength, byte[] sessionTicket,
+        byte[] expectedBytes, int startParsing) {
+        this.extensionType = extensionType;
+        this.extensionLength = extensionLength;
         this.sessionTicket = sessionTicket;
         this.expectedBytes = expectedBytes;
+        this.startParsing = startParsing;
     }
 
     /**
@@ -65,7 +78,6 @@ public class SessionTicketTLSExtensionParserTest {
      */
     @Test
     public void testParseExtensionMessageContent() {
-        message = new SessionTicketTLSExtensionMessage();
         parser.parse(message);
         assertArrayEquals(sessionTicket, message.getSessionTicket().getIdentity().getValue());
     }

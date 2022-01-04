@@ -7,6 +7,8 @@
 
   <xs:element name="Application" type="applicationMessage"/>
 
+  <xs:element name="CachedInfoExtension" type="cachedInfoExtensionMessage"/>
+
   <xs:element name="Certificate" type="certificateMessage"/>
 
   <xs:element name="CertificateRequest" type="certificateRequestMessage"/>
@@ -1075,6 +1077,7 @@
                   <xs:element ref="PWDClearExtension"/>
                   <xs:element ref="PWDProtectExtension"/>
                   <xs:element ref="PasswordSaltExtension"/>
+                  <xs:element ref="CachedInfoExtension"/>
                   <xs:element ref="CookieExtension"/>
                   <xs:element ref="userMappingExtensionMessage"/>
                   <xs:element ref="SRPExtension"/>

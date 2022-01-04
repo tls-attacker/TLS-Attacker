@@ -23,6 +23,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.CachedInfoExten
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.CachedInfoExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
+import javax.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
@@ -30,6 +31,7 @@ import java.util.List;
 /**
  * RFC7924
  */
+@XmlRootElement(name = "CachedInfoExtension")
 public class CachedInfoExtensionMessage extends ExtensionMessage<CachedInfoExtensionMessage> {
 
     @ModifiableVariableProperty
