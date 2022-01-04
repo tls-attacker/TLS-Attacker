@@ -128,7 +128,7 @@ public abstract class Chooser {
 
     public abstract PRFAlgorithm getPRFAlgorithm();
 
-    public abstract byte[] getSessionTicketTLS();
+    public abstract byte[] getLatestSessionTicket();
 
     public abstract byte[] getSignedCertificateTimestamp();
 

@@ -21,10 +21,12 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EllipticCurvesE
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.EllipticCurvesExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * This extension is defined in RFC-ietf-tls-rfc4492bis-17 Also known as "supported_groups" extension
  */
+@XmlRootElement(name = "EllipticCurves")
 public class EllipticCurvesExtensionMessage extends ExtensionMessage<EllipticCurvesExtensionMessage> {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)

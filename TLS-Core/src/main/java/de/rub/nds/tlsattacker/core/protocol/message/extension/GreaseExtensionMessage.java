@@ -24,6 +24,10 @@ import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Random;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement(name = "GreaseExtension")
 public class GreaseExtensionMessage extends ExtensionMessage<GreaseExtensionMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();

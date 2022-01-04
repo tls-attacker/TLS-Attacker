@@ -19,10 +19,12 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.RecordSizeLimit
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.RecordSizeLimitExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Record Size Limit Extension described in RFC 8449
  */
+@XmlRootElement(name = "RecordSizeLimitExtension")
 public class RecordSizeLimitExtensionMessage extends ExtensionMessage<RecordSizeLimitExtensionMessage> {
 
     @ModifiableVariableProperty

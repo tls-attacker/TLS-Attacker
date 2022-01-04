@@ -21,11 +21,13 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtendedRandomE
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtendedRandomExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Class representing a Extended Random Extension Message, as defined as in
  * https://tools.ietf.org/html/draft-rescorla-tls-extended-random-02
  */
+@XmlRootElement(name = "ExtendedRandomExtension")
 public class ExtendedRandomExtensionMessage extends ExtensionMessage<ExtendedRandomExtensionMessage> {
 
     @ModifiableVariableProperty

@@ -21,10 +21,12 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.TokenBindingExt
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.TokenBindingExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * This extension is defined in draft-ietf-tokbind-negotiation
  */
+@XmlRootElement(name = "TokenBindingExtension")
 public class TokenBindingExtensionMessage extends ExtensionMessage<TokenBindingExtensionMessage> {
 
     @ModifiableVariableProperty

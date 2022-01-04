@@ -11,24 +11,38 @@ package de.rub.nds.tlsattacker.attacks.util.response;
 
 import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
-import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
+import de.rub.nds.tlsattacker.core.https.HttpsRequestMessage;
+import de.rub.nds.tlsattacker.core.https.HttpsResponseMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.*;
+import de.rub.nds.tlsattacker.core.record.AbstractRecord;
+import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.transport.socket.SocketState;
+
+import javax.xml.bind.annotation.*;
 import java.util.List;
 
 /**
  *
  *
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public class ResponseFingerprint {
+    @XmlElementWrapper
+    @XmlElementRef
+    private List<ProtocolMessage> messageList;
 
-    private final List<ProtocolMessage> messageList;
+    @XmlElementWrapper
+    @XmlElements(value = { @XmlElement(type = Record.class, name = "Record"),
+        @XmlElement(type = BlobRecord.class, name = "BlobRecord") })
+    private List<AbstractRecord> recordList;
 
     private final List<Record> recordList;
+    private SocketState socketState;
 
-    private final SocketState socketState;
+    public ResponseFingerprint() {
+    }
 
     /**
      *

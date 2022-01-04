@@ -21,7 +21,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
+@XmlRootElement(name = "UnknownMessage")
 public class UnknownMessage extends ProtocolMessage {
 
     private byte[] dataConfig;

@@ -230,7 +230,7 @@ public class WorkflowConfigurationFactory {
         workflowTrace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.CLIENT,
             new ClientHelloMessage(config)));
 
-        if (config.getHighestProtocolVersion().isDTLS()) {
+        if (config.getHighestProtocolVersion().isDTLS() && config.isDtlsCookieExchange()) {
             workflowTrace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.SERVER,
                 new HelloVerifyRequestMessage(config)));
             workflowTrace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.CLIENT,
@@ -373,7 +373,7 @@ public class WorkflowConfigurationFactory {
         trace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.CLIENT,
             new ClientHelloMessage(config)));
 
-        if (config.getHighestProtocolVersion().isDTLS()) {
+        if (config.getHighestProtocolVersion().isDTLS() && config.isDtlsCookieExchange()) {
             trace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.SERVER,
                 new HelloVerifyRequestMessage(config)));
             trace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.CLIENT,
@@ -437,7 +437,6 @@ public class WorkflowConfigurationFactory {
     private WorkflowTrace createFullResumptionWorkflow() {
         AliasedConnection conEnd = getConnection();
         WorkflowTrace trace = this.createHandshakeWorkflow(conEnd);
-
         if (config.getHighestProtocolVersion().isDTLS() && config.isFinishWithCloseNotify()) {
             AlertMessage alert = new AlertMessage();
             alert.setConfig(AlertLevel.WARNING, AlertDescription.CLOSE_NOTIFY);
@@ -458,7 +457,7 @@ public class WorkflowConfigurationFactory {
         MessageAction action = MessageActionFactory.createAction(config, connection, ConnectionEndType.CLIENT,
             new ClientHelloMessage(config));
         trace.addTlsAction(action);
-        if (config.getHighestProtocolVersion().isDTLS()) {
+        if (config.getHighestProtocolVersion().isDTLS() && config.isDtlsCookieExchange()) {
             action = MessageActionFactory.createAction(config, connection, ConnectionEndType.SERVER,
                 new HelloVerifyRequestMessage(config));
             trace.addTlsAction(action);
@@ -980,7 +979,7 @@ public class WorkflowConfigurationFactory {
         }
         trace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.CLIENT,
             new ClientHelloMessage(config)));
-        if (config.getHighestProtocolVersion().isDTLS()) {
+        if (config.getHighestProtocolVersion().isDTLS() && config.isDtlsCookieExchange()) {
             trace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.SERVER,
                 new HelloVerifyRequestMessage(config)));
             trace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.CLIENT,
@@ -1047,7 +1046,7 @@ public class WorkflowConfigurationFactory {
         if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
             if (config.getHighestProtocolVersion().isTLS13()) {
                 trace.addTlsAction(new ReceiveTillAction(new FinishedMessage()));
-            } else if (config.getHighestProtocolVersion().isDTLS()) {
+            } else if (config.getHighestProtocolVersion().isDTLS() && config.isDtlsCookieExchange()) {
                 trace.addTlsAction(new ReceiveAction(new HelloVerifyRequestMessage(config)));
                 trace.addTlsAction(new SendAction(new ClientHelloMessage(config)));
                 trace.addTlsAction(new ReceiveTillAction(new ServerHelloDoneMessage()));

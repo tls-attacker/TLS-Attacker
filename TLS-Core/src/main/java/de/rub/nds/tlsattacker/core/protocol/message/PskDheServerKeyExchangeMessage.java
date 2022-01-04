@@ -24,7 +24,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
+@XmlRootElement(name = "PskDheServerKeyExchange")
 public class PskDheServerKeyExchangeMessage extends DHEServerKeyExchangeMessage {
 
     private ModifiableByteArray identityHint;

@@ -83,9 +83,9 @@ public class FinishedPreparator extends HandshakeMessagePreparator<FinishedMessa
             final ConnectionEndType endType = chooser.getConnectionEndType();
             return SSLUtils.calculateFinishedData(handshakeMessageContent, masterSecret, endType);
         } else {
-            LOGGER.trace("Calculating VerifyData:");
+            LOGGER.debug("Calculating VerifyData:");
             PRFAlgorithm prfAlgorithm = chooser.getPRFAlgorithm();
-            LOGGER.trace("Using PRF:" + prfAlgorithm.name());
+            LOGGER.debug("Using PRF:" + prfAlgorithm.name());
             byte[] masterSecret = chooser.getMasterSecret();
             LOGGER.debug("Using MasterSecret:" + ArrayConverter.bytesToHexString(masterSecret));
             byte[] handshakeMessageHash = chooser.getContext().getDigest().digest(chooser.getSelectedProtocolVersion(),

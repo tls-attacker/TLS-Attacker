@@ -24,7 +24,7 @@ import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @SuppressWarnings("serial")
-@XmlRootElement
+@XmlRootElement(name = "SSL2ServerVerify")
 public class SSL2ServerVerifyMessage extends SSL2HandshakeMessage {
 
     // TODO, nit: The type byte is encrypted for ServerVerify messages.

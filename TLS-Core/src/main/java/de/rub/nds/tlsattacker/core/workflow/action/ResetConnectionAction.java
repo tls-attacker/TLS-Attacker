@@ -46,20 +46,23 @@ public class ResetConnectionAction extends ConnectionBoundAction {
             LOGGER.debug("Could not close client connection", ex);
         }
         LOGGER.info("Resetting Cipher");
-        tlsContext.getRecordLayer().setWriteEpoch(0);
-        tlsContext.getRecordLayer().setReadEpoch(0);
         tlsContext.getRecordLayer().resetDecryptor();
         tlsContext.getRecordLayer().resetEncryptor();
         tlsContext.getRecordLayer().updateDecryptionCipher(RecordCipherFactory.getNullCipher(tlsContext));
         tlsContext.getRecordLayer().updateEncryptionCipher(RecordCipherFactory.getNullCipher(tlsContext));
+        tlsContext.getRecordLayer().setWriteEpoch(0);
+        tlsContext.getRecordLayer().setReadEpoch(0);
         LOGGER.info("Resetting SecureRenegotiation");
-        tlsContext.setLastClientVerifyData(new byte[0]);
-        tlsContext.setLastServerVerifyData(new byte[0]);
+        tlsContext.setLastClientVerifyData(null);
+        tlsContext.setLastServerVerifyData(null);
         LOGGER.info("Resetting MessageDigest");
         tlsContext.getDigest().reset();
         LOGGER.info("Resetting ActiveKeySets");
         tlsContext.setActiveClientKeySetType(Tls13KeySetType.NONE);
         tlsContext.setActiveServerKeySetType(Tls13KeySetType.NONE);
+        LOGGER.info("Resetting TLS 1.3 HRR values");
+        tlsContext.setExtensionCookie(null);
+        tlsContext.setLastClientHello(null);
         LOGGER.info("Resetting DTLS numbers and cookie");
         tlsContext.setDtlsCookie(null);
         tlsContext.setDtlsReadHandshakeMessageSequence(0);

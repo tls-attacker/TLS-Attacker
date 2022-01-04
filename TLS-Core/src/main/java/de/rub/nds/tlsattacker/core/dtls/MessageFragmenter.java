@@ -38,14 +38,7 @@ public class MessageFragmenter {
      */
     public static List<DtlsHandshakeMessageFragment> fragmentMessage(HandshakeMessage message, int maxFragmentLength,
         TlsContext context) {
-        ProtocolMessageSerializer serializer = message.getSerializer(context);
-        byte[] bytes;
-        if (serializer instanceof HandshakeMessageSerializer) {// This is necessary because of SSL2 messages...
-            HandshakeMessageSerializer handshakeMessageSerializer = (HandshakeMessageSerializer) serializer;
-            bytes = handshakeMessageSerializer.serializeProtocolMessageContent();
-        } else {
-            bytes = serializer.serializeProtocolMessageContent();
-        }
+        byte[] bytes = getSerializedBytes(message, context);
         List<DtlsHandshakeMessageFragment> dtlsFragments =
             generateFragments(message, bytes, maxFragmentLength, context);
         return dtlsFragments;
@@ -56,14 +49,7 @@ public class MessageFragmenter {
      */
     public static List<DtlsHandshakeMessageFragment> fragmentMessage(HandshakeMessage message,
         List<DtlsHandshakeMessageFragment> fragments, TlsContext context) {
-        ProtocolMessageSerializer serializer = message.getSerializer(context);
-        byte[] bytes;
-        if (serializer instanceof HandshakeMessageSerializer) {// This is necessary because of SSL2 messages...
-            HandshakeMessageSerializer handshakeMessageSerializer = (HandshakeMessageSerializer) serializer;
-            bytes = handshakeMessageSerializer.serializeProtocolMessageContent();
-        } else {
-            bytes = serializer.serializeProtocolMessageContent();
-        }
+        byte[] bytes = getSerializedBytes(message, context);
         List<DtlsHandshakeMessageFragment> dtlsFragments = generateFragments(message, bytes, fragments, context);
         return dtlsFragments;
     }
@@ -76,17 +62,21 @@ public class MessageFragmenter {
      * @return
      */
     public static DtlsHandshakeMessageFragment wrapInSingleFragment(HandshakeMessage message, TlsContext context) {
-        ProtocolMessageSerializer serializer = message.getSerializer(context);
+        byte[] bytes = getSerializedBytes(message, context);
+        List<DtlsHandshakeMessageFragment> fragments = generateFragments(message, bytes, bytes.length, context);
+        return fragments.get(0);
+    }
+
+    private static byte[] getSerializedBytes(HandshakeMessage message, TlsContext context) {
+        ProtocolMessageSerializer serializer = message.getHandler(context).getSerializer(message);
         byte[] bytes;
         if (serializer instanceof HandshakeMessageSerializer) {// This is necessary because of SSL2 messages...
-            HandshakeMessageSerializer handshakeMessageSerializer =
-                (HandshakeMessageSerializer) message.getSerializer(context);
-            bytes = handshakeMessageSerializer.serializeProtocolMessageContent();
+            HandshakeMessageSerializer handshakeMessageSerializer = (HandshakeMessageSerializer) serializer;
+            bytes = handshakeMessageSerializer.serializeHandshakeMessageContent();
         } else {
             bytes = serializer.serializeProtocolMessageContent();
         }
-        List<DtlsHandshakeMessageFragment> fragments = generateFragments(message, bytes, bytes.length, context);
-        return fragments.get(0);
+        return bytes;
     }
 
     private static List<DtlsHandshakeMessageFragment> generateFragments(HandshakeMessage message, byte[] handshakeBytes,

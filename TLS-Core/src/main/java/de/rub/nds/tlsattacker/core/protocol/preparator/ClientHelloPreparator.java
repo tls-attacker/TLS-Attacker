@@ -12,9 +12,11 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -38,25 +40,18 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
         LOGGER.debug("Preparing ClientHelloMessage");
         prepareProtocolVersion(msg);
         prepareRandom();
-        prepareSessionID();
-        prepareSessionIDLength();
         prepareCompressions(msg);
         prepareCompressionLength(msg);
         prepareCipherSuites(msg);
         prepareCipherSuitesLength(msg);
         if (isDTLS()) {
-            // in the case of DTLS, we only include ClientHello in the digest if
-            // it has a non-empty cookie
-            if (hasHandshakeCookie()) {
-                prepareCookie(msg);
-                prepareCookieLength(msg);
-                msg.setIncludeInDigest(true);
-            } else {
-                msg.setIncludeInDigest(false);
-            }
+            prepareCookie(msg);
+            prepareCookieLength(msg);
         }
         prepareExtensions();
         prepareExtensionLength();
+        prepareSessionID();
+        prepareSessionIDLength();
     }
 
     // for DTLS, the random value of a second ClientHello message should be
@@ -71,18 +66,22 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
     }
 
     private void prepareSessionID() {
-        if (chooser.getConfig().getHighestProtocolVersion().isTLS13()) {
-            if (chooser.getContext().getServerSessionId() == null) {
-                msg.setSessionId(chooser.getClientSessionId());
-            } else {
-                msg.setSessionId(chooser.getServerSessionId());
+        boolean isResumptionWithSessionTicket = false;
+        if (msg.containsExtension(ExtensionType.SESSION_TICKET)) {
+            SessionTicketTLSExtensionMessage extensionMessage =
+                msg.getExtension(SessionTicketTLSExtensionMessage.class);
+            if (extensionMessage != null) {
+                if (extensionMessage.getSessionTicket().getIdentityLength().getValue() > 0) {
+                    isResumptionWithSessionTicket = true;
+                }
             }
+        }
+        if (isResumptionWithSessionTicket && chooser.getConfig().isOverrideSessionIdForTickets()) {
+            msg.setSessionId(chooser.getConfig().getDefaultClientTicketResumptionSessionId());
+        } else if (chooser.getContext().getServerSessionId() == null) {
+            msg.setSessionId(chooser.getClientSessionId());
         } else {
-            if (chooser.getContext().getServerSessionId() == null) {
-                msg.setSessionId(chooser.getClientSessionId());
-            } else {
-                msg.setSessionId(chooser.getServerSessionId());
-            }
+            msg.setSessionId(chooser.getServerSessionId());
         }
         LOGGER.debug("SessionId: " + ArrayConverter.bytesToHexString(msg.getSessionId().getValue()));
     }
@@ -152,10 +151,6 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
 
     private boolean hasClientRandom() {
         return chooser.getContext().getClientRandom() != null;
-    }
-
-    private boolean hasHandshakeCookie() {
-        return chooser.getContext().getDtlsCookie() != null;
     }
 
     private void prepareCookie(ClientHelloMessage msg) {

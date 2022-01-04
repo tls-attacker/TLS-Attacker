@@ -17,9 +17,12 @@ import java.io.OutputStream;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.lang3.NotImplementedException;
 import org.bouncycastle.asn1.x509.Certificate;
 
@@ -78,29 +81,29 @@ public class OCSPRequest {
         this.requestMessage = requestMessage;
     }
 
-    public OCSPResponse makeRequest() throws IOException, NoSuchAlgorithmException, ParserException {
+    public OCSPResponse makeRequest() {
         if (this.requestMessage == null) {
             this.requestMessage = createDefaultRequestMessage();
         }
         return performRequest(requestMessage, "POST");
     }
 
-    public OCSPResponse makeRequest(OCSPRequestMessage requestMessage) throws IOException, ParserException {
+    public OCSPResponse makeRequest(OCSPRequestMessage requestMessage) {
         return performRequest(requestMessage, "POST");
     }
 
-    public OCSPResponse makeGetRequest() throws IOException, NoSuchAlgorithmException, ParserException {
+    public OCSPResponse makeGetRequest() {
         if (this.requestMessage == null) {
             this.requestMessage = createDefaultRequestMessage();
         }
         return performRequest(requestMessage, "GET");
     }
 
-    public OCSPResponse makeGetRequest(OCSPRequestMessage requestMessage) throws IOException, ParserException {
+    public OCSPResponse makeGetRequest(OCSPRequestMessage requestMessage) {
         return performRequest(requestMessage, "GET");
     }
 
-    public OCSPRequestMessage createDefaultRequestMessage() throws IOException, NoSuchAlgorithmException {
+    public OCSPRequestMessage createDefaultRequestMessage() {
         BigInteger serialNumber = infoExtractorMain.getSerialNumber();
         byte[] issuerNameHash;
         byte[] issuerKeyHash;
@@ -123,40 +126,45 @@ public class OCSPRequest {
         return requestMessage;
     }
 
-    private OCSPResponse performRequest(OCSPRequestMessage requestMessage, String requestMethod)
-        throws IOException, ParserException {
-        byte[] encodedRequest = requestMessage.getEncodedRequest();
-        HttpURLConnection httpCon = null;
-        if (requestMethod.equals("POST")) {
-            httpCon = (HttpURLConnection) serverUrl.openConnection();
-            httpCon.setRequestMethod("POST");
-            httpCon.setRequestProperty("Content-Type", "application/ocsp-request");
+    private OCSPResponse performRequest(OCSPRequestMessage requestMessage, String requestMethod) {
+        try {
 
-            httpCon.setDoOutput(true);
-            OutputStream os = httpCon.getOutputStream();
-            os.write(encodedRequest);
-            os.flush();
-            os.close();
-        } else if (requestMethod.equals("GET")) {
-            byte[] encoded = Base64.getEncoder().encode(encodedRequest);
-            URL requestUrl = new URL(serverUrl.toExternalForm() + "/" + new String(encoded));
-            httpCon = (HttpURLConnection) requestUrl.openConnection();
-            httpCon.setRequestMethod("GET");
-        } else {
-            throw new NotImplementedException("Request type is neither POST nor GET.");
+            byte[] encodedRequest = requestMessage.getEncodedRequest();
+            HttpURLConnection httpCon = null;
+            if (requestMethod.equals("POST")) {
+                httpCon = (HttpURLConnection) serverUrl.openConnection();
+                httpCon.setRequestMethod("POST");
+                httpCon.setRequestProperty("Content-Type", "application/ocsp-request");
+
+                httpCon.setDoOutput(true);
+                OutputStream os = httpCon.getOutputStream();
+                os.write(encodedRequest);
+                os.flush();
+                os.close();
+
+            } else if (requestMethod.equals("GET")) {
+                byte[] encoded = Base64.getEncoder().encode(encodedRequest);
+                URL requestUrl = new URL(serverUrl.toExternalForm() + "/" + new String(encoded));
+                httpCon = (HttpURLConnection) requestUrl.openConnection();
+                httpCon.setRequestMethod("GET");
+            } else {
+                throw new NotImplementedException("Request type is neither POST nor GET.");
+            }
+
+            httpCon.setConnectTimeout(5000);
+            int status = httpCon.getResponseCode();
+            byte[] response;
+            if (status == 200) {
+                response = ByteStreams.toByteArray(httpCon.getInputStream());
+            } else {
+                throw new RuntimeException("Response not successful: Received status code " + status);
+            }
+
+            httpCon.disconnect();
+
+            return OCSPResponseParser.parseResponse(response);
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
         }
-
-        httpCon.setConnectTimeout(5000);
-        int status = httpCon.getResponseCode();
-        byte[] response;
-        if (status == 200) {
-            response = ByteStreams.toByteArray(httpCon.getInputStream());
-        } else {
-            throw new RuntimeException("Response not successful: Received status code " + status);
-        }
-
-        httpCon.disconnect();
-
-        return OCSPResponseParser.parseResponse(response);
     }
 }

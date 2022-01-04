@@ -16,6 +16,7 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import javax.xml.bind.annotation.XmlRootElement;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.CertificateTypeExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.CertificateTypeExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.CertificateTypeExtensionPreparator;
@@ -26,6 +27,7 @@ import java.io.InputStream;
 /**
  * This extension is defined in RFC6091
  */
+@XmlRootElement(name = "CertificateTypeExtension")
 public class CertificateTypeExtensionMessage extends ExtensionMessage<CertificateTypeExtensionMessage> {
 
     @ModifiableVariableProperty

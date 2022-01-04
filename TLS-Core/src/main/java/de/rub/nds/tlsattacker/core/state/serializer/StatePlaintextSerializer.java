@@ -49,7 +49,7 @@ public class StatePlaintextSerializer extends Serializer<StatePlaintext> {
     }
 
     private void writeCipherSuite(StatePlaintext statePlaintext) {
-        appendInt(statePlaintext.getCipherSuite().getValue(), HandshakeByteLength.CIPHER_SUITE);
+        appendBytes(statePlaintext.getCipherSuite().getValue());
         LOGGER.debug("CipherSuite: " + CipherSuite.getCipherSuite(statePlaintext.getCipherSuite().getValue()).name());
     }
 

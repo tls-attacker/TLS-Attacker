@@ -9,6 +9,10 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import de.rub.nds.tlsattacker.core.crypto.ffdh.FFDHEGroup;
+import de.rub.nds.tlsattacker.core.crypto.ffdh.GroupFactory;
 import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.math.BigInteger;
@@ -28,6 +32,7 @@ public class DHEServerKeyExchangeHandler<T extends DHEServerKeyExchangeMessage> 
         adjustDhGenerator(message);
         adjustDhModulus(message);
         adjustServerPublicKey(message);
+        recognizeNamedGroup();
         if (message.getComputations() != null && message.getComputations().getPrivateKey() != null) {
             adjustServerPrivateKey(message);
         }
@@ -51,5 +56,21 @@ public class DHEServerKeyExchangeHandler<T extends DHEServerKeyExchangeMessage> 
     private void adjustServerPrivateKey(T message) {
         tlsContext.setServerDhPrivateKey(message.getComputations().getPrivateKey().getValue());
         LOGGER.debug("Server PrivateKey: " + tlsContext.getServerDhPrivateKey());
+    }
+
+    private void recognizeNamedGroup() {
+        BigInteger serverDhGenerator = tlsContext.getServerDhGenerator();
+        BigInteger serverDhModulus = tlsContext.getServerDhModulus();
+        for (NamedGroup group : NamedGroup.getImplemented()) {
+            if (group.isDhGroup()) {
+                FFDHEGroup ffdheGroup = GroupFactory.getGroup(group);
+                if (serverDhGenerator.equals(ffdheGroup.getG()) && serverDhModulus.equals(ffdheGroup.getP())) {
+                    tlsContext.setSelectedGroup(group);
+                    LOGGER.debug("Set recognized NamedGroup {} of Server Key Exchange message as selected in context",
+                        group);
+                    break;
+                }
+            }
+        }
     }
 }
