@@ -20,10 +20,12 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SignedCertifica
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SignedCertificateTimestampExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * This extension is defined in RFC6962
  */
+@XmlRootElement(name = "SignedCertificateTimestampExtension")
 public class SignedCertificateTimestampExtensionMessage
     extends ExtensionMessage<SignedCertificateTimestampExtensionMessage> {
 

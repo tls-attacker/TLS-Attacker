@@ -9,8 +9,6 @@
 
 package de.rub.nds.tlsattacker.attacks.impl;
 
-import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
-
 import de.rub.nds.tlsattacker.attacks.config.PaddingOracleCommandConfig;
 import de.rub.nds.tlsattacker.attacks.exception.AttackFailedException;
 import de.rub.nds.tlsattacker.attacks.exception.OracleUnstableException;
@@ -31,6 +29,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.ParallelExecutor;
 import de.rub.nds.tlsattacker.core.workflow.task.TlsTask;
+import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.Level;

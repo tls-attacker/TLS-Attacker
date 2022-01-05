@@ -19,10 +19,12 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EarlyDataExtens
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.EarlyDataExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * RFC draft-ietf-tls-tls13-21
  */
+@XmlRootElement(name = "EarlyDataExtension")
 public class EarlyDataExtensionMessage extends ExtensionMessage<EarlyDataExtensionMessage> {
 
     private ModifiableInteger maxEarlyDataSize;

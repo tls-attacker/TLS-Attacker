@@ -185,6 +185,24 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
         readEpoch++;
     }
 
+    public byte[] reencrypt(List<Record> records) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        for (Record record : records) {
+            RecordPreparator preparator = record.getRecordPreparator(this.context.getChooser(), getEncryptor(),
+                getCompressor(), record.getContentMessageType());
+            preparator.encrypt();
+            RecordSerializer serializer = record.getRecordSerializer();
+            try {
+                byte[] recordBytes = serializer.serialize();
+                record.setCompleteRecordBytes(recordBytes);
+                stream.write(record.getCompleteRecordBytes().getValue());
+            } catch (IOException ex) {
+                throw new PreparationException("Could not write Record bytes to ByteArrayStream", ex);
+            }
+        }
+        return stream.toByteArray();
+    }
+
     public void resetEncryptor() {
         encryptor.removeAllCiphers();
     }

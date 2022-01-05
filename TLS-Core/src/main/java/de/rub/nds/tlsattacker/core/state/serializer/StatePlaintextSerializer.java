@@ -10,11 +10,7 @@
 package de.rub.nds.tlsattacker.core.state.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.constants.ClientAuthenticationType;
-import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
-import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.protocol.Serializer;
 import de.rub.nds.tlsattacker.core.state.StatePlaintext;
 import org.apache.logging.log4j.LogManager;
@@ -49,7 +45,7 @@ public class StatePlaintextSerializer extends Serializer<StatePlaintext> {
     }
 
     private void writeCipherSuite(StatePlaintext statePlaintext) {
-        appendInt(statePlaintext.getCipherSuite().getValue(), HandshakeByteLength.CIPHER_SUITE);
+        appendBytes(statePlaintext.getCipherSuite().getValue());
         LOGGER.debug("CipherSuite: " + CipherSuite.getCipherSuite(statePlaintext.getCipherSuite().getValue()).name());
     }
 

@@ -14,11 +14,7 @@ import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.tlsattacker.attacks.config.delegate.AttackDelegate;
 import de.rub.nds.tlsattacker.attacks.pkcs1.BleichenbacherWorkflowType;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.config.delegate.CipherSuiteDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.StarttlsDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.*;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
@@ -57,15 +53,18 @@ public class BleichenbacherCommandConfig extends AttackConfig {
         + "queries. FULL results in a comprehensive server evaluation.")
     private Type type = Type.FAST;
 
-    @Parameter(names = "-msgPkcsConform", description = "Used by the real Bleichenbacher attack. Indicates whether the "
-        + "original message that we are going to decrypt is PKCS#1 conform or not (more precisely, whether it starts "
-        + "with 0x00 0x02).", arity = 1)
+    @Parameter(names = { "-msgPkcsConform", "-msg_pkcs_conform" },
+        description = "Used by the real Bleichenbacher attack. Indicates whether the "
+            + "original message that we are going to decrypt is PKCS#1 conform or not (more precisely, whether it starts "
+            + "with 0x00 0x02).",
+        arity = 1)
     private boolean msgPkcsConform = true;
 
     @ParametersDelegate
     private StarttlsDelegate starttlsDelegate;
 
-    @Parameter(names = "-workflowType", description = "Which workflow traces should be tested with")
+    @Parameter(names = { "-workflowType", "-workflow_type" },
+        description = "Which workflow traces should be tested with")
     private BleichenbacherWorkflowType workflowType = BleichenbacherWorkflowType.CKE_CCS_FIN;
 
     /**

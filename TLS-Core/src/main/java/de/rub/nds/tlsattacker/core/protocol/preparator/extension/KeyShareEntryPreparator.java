@@ -15,7 +15,6 @@ import de.rub.nds.tlsattacker.core.crypto.KeyShareCalculator;
 import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
 import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
-import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.Preparator;
@@ -80,20 +79,10 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
                 entry.setPrivateKey(chooser.getServerEcPrivateKey());
             }
         }
-        if (entry.getGroupConfig().isStandardCurve() || entry.getGroupConfig().isGrease()) {
-            Point ecPublicKey = KeyShareCalculator.createPublicKey(entry.getGroupConfig(), entry.getPrivateKey());
-            // TODO We currently just use the default point format
-            byte[] serializedPoint = PointFormatter.formatToByteArray(entry.getGroupConfig(), ecPublicKey,
-                chooser.getConfig().getDefaultSelectedPointFormat());
-            entry.setPublicKey(serializedPoint);
-        } else if (entry.getGroupConfig().isCurve() && !entry.getGroupConfig().isStandardCurve()) {
-            byte[] publicKey =
-                KeyShareCalculator.createMontgomeryKeyShare(entry.getGroupConfig(), entry.getPrivateKey());
-            entry.setPublicKey(publicKey);
-        } else {
-            throw new UnsupportedOperationException(
-                "The group \"" + entry.getGroupConfig().name() + "\" is not supported yet");
-        }
+        byte[] serializedPoint = KeyShareCalculator.createPublicKey(entry.getGroupConfig(), entry.getPrivateKey(),
+            chooser.getConfig().getDefaultSelectedPointFormat());
+        entry.setPublicKey(serializedPoint);
+
         LOGGER.debug("KeyShare: " + ArrayConverter.bytesToHexString(entry.getPublicKey().getValue()));
     }
 

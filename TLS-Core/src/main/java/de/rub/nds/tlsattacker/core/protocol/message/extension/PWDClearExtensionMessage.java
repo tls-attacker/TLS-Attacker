@@ -21,10 +21,12 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PWDClearExtensi
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PWDClearExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * This extension is defined in RFC8492
  */
+@XmlRootElement(name = "PWDClearExtension")
 public class PWDClearExtensionMessage extends ExtensionMessage<PWDClearExtensionMessage> {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)

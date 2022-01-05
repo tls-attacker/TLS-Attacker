@@ -10,20 +10,9 @@
 package de.rub.nds.tlsattacker.core.certificate.ocsp;
 
 import de.rub.nds.asn1.Asn1Encodable;
-import de.rub.nds.asn1.model.Asn1EncapsulatingBitString;
-import de.rub.nds.asn1.model.Asn1EncapsulatingOctetString;
-import de.rub.nds.asn1.model.Asn1EndOfContent;
-import de.rub.nds.asn1.model.Asn1Enumerated;
-import de.rub.nds.asn1.model.Asn1Explicit;
-import de.rub.nds.asn1.model.Asn1Integer;
-import de.rub.nds.asn1.model.Asn1Null;
-import de.rub.nds.asn1.model.Asn1ObjectIdentifier;
-import de.rub.nds.asn1.model.Asn1PrimitiveGeneralizedTime;
-import de.rub.nds.asn1.model.Asn1PrimitiveOctetString;
-import de.rub.nds.asn1.model.Asn1Sequence;
+import de.rub.nds.asn1.model.*;
 import de.rub.nds.tlsattacker.core.util.Asn1ToolInitializer;
 import java.math.BigInteger;
-import java.security.cert.CertificateParsingException;
 import java.util.List;
 
 public class CertificateStatusParser {

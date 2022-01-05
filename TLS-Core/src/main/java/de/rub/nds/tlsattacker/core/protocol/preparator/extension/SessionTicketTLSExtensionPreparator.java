@@ -33,9 +33,10 @@ public class SessionTicketTLSExtensionPreparator extends ExtensionPreparator<Ses
      */
     @Override
     public void prepareExtensionContent() {
-        message.setTicket(chooser.getSessionTicketTLS());
+        message.getSessionTicket().setIdentity(chooser.getLatestSessionTicket());
+        message.getSessionTicket().setIdentityLength(chooser.getLatestSessionTicket().length);
         LOGGER.debug("Prepared the SessionTicketTLSExtension with Ticket "
-            + ArrayConverter.bytesToHexString(message.getTicket().getValue()));
+            + ArrayConverter.bytesToHexString(message.getSessionTicket().getIdentity().getValue()));
     }
 
 }

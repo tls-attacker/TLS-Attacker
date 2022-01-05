@@ -9,9 +9,14 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
+import de.rub.nds.tlsattacker.core.state.StatePlaintext;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.state.parser.StatePlaintextParser;
+import de.rub.nds.tlsattacker.core.util.StaticTicketCrypto;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -35,9 +40,52 @@ public class SessionTicketTLSExtensionHandler extends ExtensionHandler<SessionTi
             LOGGER.warn("The SessionTLS ticket length shouldn't exceed 2 bytes as defined in RFC 4507. " + "Length was "
                 + message.getExtensionLength().getValue());
         }
-        context.setSessionTicketTLS(message.getTicket().getValue());
-        LOGGER
-            .debug("The context SessionTLS ticket was set to " + ArrayConverter.bytesToHexString(message.getTicket()));
+
+        if (message.getExtensionLength().getValue() > 0) {
+            LOGGER.debug("Adjusting for client offered session ticket");
+            if (context.getTalkingConnectionEndType() != context.getChooser().getConnectionEndType()) {
+                // Server receives a ticket presented by the client
+                StatePlaintext statePlaintext = getStateFromTicket(message);
+                if (statePlaintext != null) {
+                    LOGGER.info("Resuming Session using Ticket");
+                    LOGGER.debug("Restoring MasterSecret from SessionTicket");
+                    context.setMasterSecret(statePlaintext.getMasterSecret().getValue());
+                    if (context.getClientSessionId().length > 0) {
+                        LOGGER.debug("Setting ServerSessionId equal to ClientSessionId");
+                        context.setServerSessionId(context.getClientSessionId().clone());
+                    }
+                }
+            }
+        } else {
+            if (context.getTalkingConnectionEndType() == ConnectionEndType.CLIENT
+                && context.getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {
+                // Server receives an empty ticket
+                if (context.getConfig().isOverrideSessionIdForTickets()
+                    && context.getConfig().isAddSessionTicketTLSExtension()) {
+                    context.setServerSessionId(new byte[0]);
+                }
+            }
+        }
     }
 
+    private StatePlaintext getStateFromTicket(SessionTicketTLSExtensionMessage message) {
+        try {
+            byte[] decryptedState = decryptState(message.getSessionTicket().getEncryptedState().getValue(),
+                message.getSessionTicket().getIV().getValue());
+            StatePlaintextParser stateParser = new StatePlaintextParser(0, decryptedState);
+            StatePlaintext plainState = new StatePlaintext();
+            plainState.generateStatePlaintext(context.getChooser());
+            stateParser.parse(plainState);
+            return plainState;
+        } catch (CryptoException ex) {
+            LOGGER.warn("Was unable to decrypt session ticket ", ex);
+            return null;
+        }
+    }
+
+    private byte[] decryptState(byte[] encryptedState, byte[] iv) throws CryptoException {
+        Config config = context.getConfig();
+        return StaticTicketCrypto.decrypt(config.getSessionTicketCipherAlgorithm(), encryptedState,
+            config.getSessionTicketEncryptionKey(), iv);
+    }
 }

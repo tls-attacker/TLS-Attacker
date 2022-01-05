@@ -17,10 +17,12 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EncryptThenMacE
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.EncryptThenMacExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * RFC7366
  */
+@XmlRootElement(name = "EncryptThenMacExtension")
 public class EncryptThenMacExtensionMessage extends ExtensionMessage<EncryptThenMacExtensionMessage> {
 
     public EncryptThenMacExtensionMessage() {

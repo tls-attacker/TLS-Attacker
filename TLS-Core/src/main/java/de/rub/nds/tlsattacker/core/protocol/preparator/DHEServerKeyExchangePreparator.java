@@ -11,14 +11,18 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.SignatureCalculator;
+import de.rub.nds.tlsattacker.core.crypto.ffdh.FFDHEGroup;
+import de.rub.nds.tlsattacker.core.crypto.ffdh.GroupFactory;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.math.BigInteger;
 
 public class DHEServerKeyExchangePreparator<T extends DHEServerKeyExchangeMessage>
     extends ServerKeyExchangePreparator<T> {
@@ -56,8 +60,13 @@ public class DHEServerKeyExchangePreparator<T extends DHEServerKeyExchangeMessag
 
     protected void setDheParams() {
         msg.prepareComputations();
-        setComputedGenerator(msg);
-        setComputedModulus(msg);
+        NamedGroup ffdheGroup = getMatchingNamedGroup();
+        if (ffdheGroup == null) {
+            setComputedGenerator(msg);
+            setComputedModulus(msg);
+        } else {
+            setNamedGroupParameters(msg, ffdheGroup);
+        }
         setComputedPrivateKey(msg);
     }
 
@@ -162,5 +171,25 @@ public class DHEServerKeyExchangePreparator<T extends DHEServerKeyExchangeMessag
     protected void prepareSignatureLength(T msg) {
         msg.setSignatureLength(msg.getSignature().getValue().length);
         LOGGER.debug("SignatureLength: " + msg.getSignatureLength().getValue());
+    }
+
+    private void setNamedGroupParameters(T msg, NamedGroup chosenGroup) {
+        LOGGER.debug("Negotiating NamedGroup {} for Server Key Exchange message", chosenGroup.name());
+        FFDHEGroup ffdheGroup = GroupFactory.getGroup(chosenGroup);
+        msg.getComputations().setGenerator(ffdheGroup.getG());
+        msg.getComputations().setModulus(ffdheGroup.getP());
+    }
+
+    private NamedGroup getMatchingNamedGroup() {
+        if (chooser.getContext().getClientNamedGroupsList() != null) {
+            for (NamedGroup serverGroup : chooser.getConfig().getDefaultServerNamedGroups()) {
+                if (serverGroup.isDhGroup() && chooser.getContext().getClientNamedGroupsList().contains(serverGroup)) {
+                    return serverGroup;
+                }
+            }
+        } else if (chooser.getConfig().getDefaultSelectedNamedGroup().isDhGroup()) {
+            return chooser.getConfig().getDefaultSelectedNamedGroup();
+        }
+        return null;
     }
 }

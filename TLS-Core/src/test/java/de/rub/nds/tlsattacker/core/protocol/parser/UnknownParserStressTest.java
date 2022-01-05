@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.util.tests.IntegrationTests;
 import java.io.ByteArrayInputStream;
 import java.util.Random;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 

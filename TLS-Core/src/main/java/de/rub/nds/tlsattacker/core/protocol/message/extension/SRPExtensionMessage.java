@@ -21,10 +21,12 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SRPExtensionPre
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SRPExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * This extension is defined in RFC5054
  */
+@XmlRootElement(name = "SRPExtension")
 public class SRPExtensionMessage extends ExtensionMessage<SRPExtensionMessage> {
 
     // UTF-8 encoded and according to RFC 4013 with the SASLprep profile

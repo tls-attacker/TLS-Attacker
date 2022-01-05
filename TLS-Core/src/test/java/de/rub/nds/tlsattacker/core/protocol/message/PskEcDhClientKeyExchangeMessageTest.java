@@ -10,7 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import org.junit.After;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
