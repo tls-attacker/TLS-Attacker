@@ -1,7 +1,7 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -160,9 +160,11 @@ public abstract class HandshakeMessage extends TlsMessage {
     }
 
     public boolean containsExtension(ExtensionType extensionType) {
-        for (ExtensionMessage e : extensions) {
-            if (e.getExtensionTypeConstant() == extensionType) {
-                return true;
+        if (extensions != null) {
+            for (ExtensionMessage e : extensions) {
+                if (e.getExtensionTypeConstant() == extensionType) {
+                    return true;
+                }
             }
         }
         return false;

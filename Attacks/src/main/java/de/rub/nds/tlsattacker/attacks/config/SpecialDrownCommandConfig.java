@@ -1,7 +1,7 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -24,15 +24,16 @@ public class SpecialDrownCommandConfig extends BaseDrownCommandConfig {
 
     public static final String COMMAND = "specialDrown";
 
-    @Parameter(names = "-oracleType",
+    @Parameter(names = { "-oracleType", "-oracle_type" },
         description = "The oracle to use, i.e. the " + "variant of Special DROWN to be executed", required = true)
     private OracleType oracleType = OracleType.EXTRA_CLEAR;
-    @Parameter(names = "-checkDataFile",
+    @Parameter(names = { "-checkDataFile", "-check_data_file" },
         description = "Path of the state file for " + "'leaky export' oracle vulnerability check")
     private String checkDataFilePath;
-    @Parameter(names = "-genCheckData", description = "Generate state file for 'leaky export' vulnerability check")
+    @Parameter(names = { "-genCheckData", "-gen_check_data" },
+        description = "Generate state file for 'leaky export' vulnerability check")
     private boolean genCheckData;
-    @Parameter(names = "-analyzeCheckData", description = "Analyze given state file for "
+    @Parameter(names = { "-analyzeCheckData", "-analyze_check_data" }, description = "Analyze given state file for "
         + "'leaky export' oracle vulnerability check, this might take a long time")
     private boolean analyzeCheckData;
     @Parameter(names = "-ssl2Cipher", description = "Name of the SSLv2 cipher suite to be used in the attack",

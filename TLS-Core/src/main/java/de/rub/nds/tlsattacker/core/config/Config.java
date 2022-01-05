@@ -1,7 +1,7 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -1070,7 +1070,7 @@ public class Config implements Serializable {
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultClientTicketResumptionSessionId =
-        ArrayConverter.hexStringToByteArray("332CAC09A5C56974E3D49C0741F396C5F1C90B41529DD643485E65B1C0619D2B");;
+        ArrayConverter.hexStringToByteArray("332CAC09A5C56974E3D49C0741F396C5F1C90B41529DD643485E65B1C0619D2B");
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultServerSessionId = new byte[0];
@@ -1206,6 +1206,13 @@ public class Config implements Serializable {
     private String defaultHttpsRequestPath = "/";
 
     private StarttlsType starttlsType = StarttlsType.NONE;
+
+    /**
+     * By default, the Session ID is overwritten, if (1) the server receives an empty Session Ticket (it answers with an
+     * empty Server SID) (2) the client presents a sessionTicket (defaultClientTicketResumptionSessionId is used). Unset
+     * this flag if you want to modify the SessionID.
+     */
+    private Boolean overrideSessionIdForTickets = true;
 
     /**
      * The Ticket Lifetime Hint, Ticket Key and Ticket Key Name used in the Extension defined in RFC5077, followed by
@@ -1588,6 +1595,14 @@ public class Config implements Serializable {
 
     public void setTls13BackwardsCompatibilityMode(Boolean tls13BackwardsCompatibilityMode) {
         this.tls13BackwardsCompatibilityMode = tls13BackwardsCompatibilityMode;
+    }
+
+    public Boolean isOverrideSessionIdForTickets() {
+        return overrideSessionIdForTickets;
+    }
+
+    public void setOverrideSessionIdForTickets(Boolean overrideSessionIdForTickets) {
+        this.overrideSessionIdForTickets = overrideSessionIdForTickets;
     }
 
     public long getSessionTicketLifetimeHint() {
@@ -4086,4 +4101,5 @@ public class Config implements Serializable {
     public void setDefaultClientTicketResumptionSessionId(byte[] defaultClientTicketResumptionSessionId) {
         this.defaultClientTicketResumptionSessionId = defaultClientTicketResumptionSessionId;
     }
+
 }

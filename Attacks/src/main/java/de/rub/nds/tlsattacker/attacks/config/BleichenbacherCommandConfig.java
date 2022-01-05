@@ -1,7 +1,7 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -57,15 +57,18 @@ public class BleichenbacherCommandConfig extends AttackConfig {
         + "queries. FULL results in a comprehensive server evaluation.")
     private Type type = Type.FAST;
 
-    @Parameter(names = "-msgPkcsConform", description = "Used by the real Bleichenbacher attack. Indicates whether the "
-        + "original message that we are going to decrypt is PKCS#1 conform or not (more precisely, whether it starts "
-        + "with 0x00 0x02).", arity = 1)
+    @Parameter(names = { "-msgPkcsConform", "-msg_pkcs_conform" },
+        description = "Used by the real Bleichenbacher attack. Indicates whether the "
+            + "original message that we are going to decrypt is PKCS#1 conform or not (more precisely, whether it starts "
+            + "with 0x00 0x02).",
+        arity = 1)
     private boolean msgPkcsConform = true;
 
     @ParametersDelegate
     private StarttlsDelegate starttlsDelegate;
 
-    @Parameter(names = "-workflowType", description = "Which workflow traces should be tested with")
+    @Parameter(names = { "-workflowType", "-workflow_type" },
+        description = "Which workflow traces should be tested with")
     private BleichenbacherWorkflowType workflowType = BleichenbacherWorkflowType.CKE_CCS_FIN;
 
     /**

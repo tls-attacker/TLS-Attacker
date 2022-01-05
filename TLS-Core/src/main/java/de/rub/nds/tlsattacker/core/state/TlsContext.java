@@ -1,7 +1,7 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -55,20 +55,16 @@ import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayer;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
 import de.rub.nds.tlsattacker.core.state.http.HttpContext;
+import de.rub.nds.tlsattacker.core.state.session.IdSession;
+import de.rub.nds.tlsattacker.core.state.session.Session;
+import de.rub.nds.tlsattacker.core.state.session.TicketSession;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.EnumSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import de.rub.nds.tlsattacker.transport.socket.SocketState;
-import java.util.HashSet;
-import java.util.Set;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import org.apache.logging.log4j.LogManager;
@@ -291,11 +287,6 @@ public class TlsContext {
      * These are the padding bytes as used in the padding extension.
      */
     private byte[] paddingExtensionBytes;
-
-    /**
-     * This is the session ticket of the SessionTicketTLS extension.
-     */
-    private byte[] sessionTicketTLS;
 
     /**
      * The renegotiation info of the RenegotiationInfo extension.
@@ -797,9 +788,9 @@ public class TlsContext {
         this.httpContext = httpContext;
     }
 
-    public Session getSession(byte[] sessionId) {
+    public Session getIdSession(byte[] sessionId) {
         for (Session session : sessionList) {
-            if (Arrays.equals(session.getSessionId(), sessionId)) {
+            if (session.isIdSession() && Arrays.equals(((IdSession) session).getId(), sessionId)) {
                 return session;
             }
         }
@@ -807,7 +798,17 @@ public class TlsContext {
     }
 
     public boolean hasSession(byte[] sessionId) {
-        return getSession(sessionId) != null;
+        return getIdSession(sessionId) != null;
+    }
+
+    public byte[] getLatestSessionTicket() {
+        for (int i = sessionList.size() - 1; i >= 0; i--) {
+            Session session = sessionList.get(i);
+            if (session.isTicketSession()) {
+                return ((TicketSession) session).getTicket();
+            }
+        }
+        return null;
     }
 
     public void addNewSession(Session session) {
@@ -1584,14 +1585,6 @@ public class TlsContext {
 
     public void setServerKeyShareStoreEntry(KeyShareStoreEntry serverKeyShareStoreEntry) {
         this.serverKeyShareStoreEntry = serverKeyShareStoreEntry;
-    }
-
-    public byte[] getSessionTicketTLS() {
-        return sessionTicketTLS;
-    }
-
-    public void setSessionTicketTLS(byte[] sessionTicketTLS) {
-        this.sessionTicketTLS = sessionTicketTLS;
     }
 
     public byte[] getSignedCertificateTimestamp() {

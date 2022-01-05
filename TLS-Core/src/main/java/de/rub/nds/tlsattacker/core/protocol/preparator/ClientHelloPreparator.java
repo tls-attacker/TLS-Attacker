@@ -1,7 +1,7 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -12,9 +12,11 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -38,8 +40,6 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
         LOGGER.debug("Preparing ClientHelloMessage");
         prepareProtocolVersion(msg);
         prepareRandom();
-        prepareSessionID();
-        prepareSessionIDLength();
         prepareCompressions(msg);
         prepareCompressionLength(msg);
         prepareCipherSuites(msg);
@@ -50,6 +50,8 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
         }
         prepareExtensions();
         prepareExtensionLength();
+        prepareSessionID();
+        prepareSessionIDLength();
     }
 
     // for DTLS, the random value of a second ClientHello message should be
@@ -64,18 +66,22 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
     }
 
     private void prepareSessionID() {
-        if (chooser.getConfig().getHighestProtocolVersion().isTLS13()) {
-            if (chooser.getContext().getServerSessionId() == null) {
-                msg.setSessionId(chooser.getClientSessionId());
-            } else {
-                msg.setSessionId(chooser.getServerSessionId());
+        boolean isResumptionWithSessionTicket = false;
+        if (msg.containsExtension(ExtensionType.SESSION_TICKET)) {
+            SessionTicketTLSExtensionMessage extensionMessage =
+                msg.getExtension(SessionTicketTLSExtensionMessage.class);
+            if (extensionMessage != null) {
+                if (extensionMessage.getSessionTicket().getIdentityLength().getValue() > 0) {
+                    isResumptionWithSessionTicket = true;
+                }
             }
+        }
+        if (isResumptionWithSessionTicket && chooser.getConfig().isOverrideSessionIdForTickets()) {
+            msg.setSessionId(chooser.getConfig().getDefaultClientTicketResumptionSessionId());
+        } else if (chooser.getContext().getServerSessionId() == null) {
+            msg.setSessionId(chooser.getClientSessionId());
         } else {
-            if (chooser.getContext().getServerSessionId() == null) {
-                msg.setSessionId(chooser.getClientSessionId());
-            } else {
-                msg.setSessionId(chooser.getServerSessionId());
-            }
+            msg.setSessionId(chooser.getServerSessionId());
         }
         LOGGER.debug("SessionId: " + ArrayConverter.bytesToHexString(msg.getSessionId().getValue()));
     }

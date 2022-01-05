@@ -1,7 +1,7 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -19,7 +19,7 @@ import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
  */
 public class AttackDelegate extends Delegate {
 
-    @Parameter(names = "-executeAttack",
+    @Parameter(names = { "-executeAttack", "-execute_attack" },
         description = "If this value is set the Attack is not only Tested, but also " + "executed (WARNING)")
     private boolean executeAttack = false;
 

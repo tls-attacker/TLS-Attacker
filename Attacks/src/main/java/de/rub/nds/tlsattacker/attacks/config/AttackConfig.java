@@ -1,7 +1,7 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -18,7 +18,7 @@ import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
  */
 public abstract class AttackConfig extends TLSDelegateConfig {
 
-    @Parameter(names = "-skipConnectionCheck",
+    @Parameter(names = { "-skipConnectionCheck", "-skip_connection_check" },
         description = "If set to true the Attacker will not check if the " + "target is reachable.")
     private boolean skipConnectionCheck = false;
 

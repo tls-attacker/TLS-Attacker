@@ -1,7 +1,7 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -17,11 +17,11 @@ import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 
 public class ProxyDelegate extends Delegate {
 
-    @Parameter(names = "-proxyData",
+    @Parameter(names = { "-proxyData", "-proxy_data" },
         description = "Specify the host and port for data used in the proxy. Syntax: localhost:4444")
     private String proxyData = "localhost:4444";
 
-    @Parameter(names = "-proxyControl",
+    @Parameter(names = { "-proxyControl", "-proxy_control" },
         description = "Specify the host and port for control messages used in the proxy. Syntax: localhost:5555")
     private String proxyControl = "localhost:5555";
 

@@ -1,7 +1,7 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -49,17 +49,18 @@ public class PskBruteForcerAttackServerCommandConfig extends AttackConfig {
     @ParametersDelegate
     private AttackDelegate attackDelegate;
 
-    @Parameter(names = "-guessProviderType", description = "Chooses how the BruteForcer will choose the keys to guess")
+    @Parameter(names = { "-guessProviderType", "-guess_provider_type" },
+        description = "Chooses how the BruteForcer will choose the keys to guess")
     private GuessProviderType guessProviderType = GuessProviderType.INCREMENTING;
 
-    @Parameter(names = "-guessProviderInputFile",
+    @Parameter(names = { "-guessProviderInputFile", "-guess_provider_input_file" },
         description = "Set the path to an input file which can be used in the guess provider eg. a path to a wordlist")
     private String guessProviderInputFile = null;
 
-    @Parameter(names = "-clientIdentity", description = "Set a Client Identity")
+    @Parameter(names = { "-clientIdentity", "-client_identity" }, description = "Set a Client Identity")
     private String clientIdentity;
 
-    @Parameter(names = "-pskIdentity", description = "Set the Psk Identity, that should be used")
+    @Parameter(names = { "-pskIdentity", "-psk_identity" }, description = "Set the Psk Identity, that should be used")
     private String pskIdentity = "Client_identity";
 
     /**

@@ -1,7 +1,7 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -15,11 +15,11 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSEx
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.SessionTicketTLSExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SessionTicketTLSExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SessionTicketTLSExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.Session;
 import de.rub.nds.tlsattacker.core.state.StatePlaintext;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.state.parser.StatePlaintextParser;
 import de.rub.nds.tlsattacker.core.util.StaticTicketCrypto;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -62,17 +62,28 @@ public class SessionTicketTlsExtensionHandler extends ExtensionHandler<SessionTi
         if (message.getExtensionLength().getValue() > 0) {
             LOGGER.debug("Adjusting for client offered session ticket");
             if (context.getTalkingConnectionEndType() != context.getChooser().getConnectionEndType()) {
+                // Server receives a ticket presented by the client
                 StatePlaintext statePlaintext = getStateFromTicket(message);
                 if (statePlaintext != null) {
                     LOGGER.info("Resuming Session using Ticket");
+                    LOGGER.debug("Restoring MasterSecret from SessionTicket");
                     context.setMasterSecret(statePlaintext.getMasterSecret().getValue());
-                    // TODO: rework interaction with SessionID
+                    if (context.getClientSessionId().length > 0) {
+                        LOGGER.debug("Setting ServerSessionId equal to ClientSessionId");
+                        context.setServerSessionId(context.getClientSessionId().clone());
+                    }
                 }
-            } else {
-                // TODO: rework interaction with SessionID, use ticket value
+            }
+        } else {
+            if (context.getTalkingConnectionEndType() == ConnectionEndType.CLIENT
+                && context.getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {
+                // Server receives an empty ticket
+                if (context.getConfig().isOverrideSessionIdForTickets()
+                    && context.getConfig().isAddSessionTicketTLSExtension()) {
+                    context.setServerSessionId(new byte[0]);
+                }
             }
         }
-        context.setSessionTicketTLS(message.getSessionTicket().getIdentity().getValue());
     }
 
     private StatePlaintext getStateFromTicket(SessionTicketTLSExtensionMessage message) {

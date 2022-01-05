@@ -1,7 +1,7 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -15,13 +15,14 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SessionTicketTL
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import de.rub.nds.tlsattacker.core.state.session.TicketSession;
 import org.junit.Before;
 import org.junit.Test;
 
 public class SessionTicketTLSExtensionPreparatorTest {
 
-    private final int extensionLength = 0;
-    private final byte[] ticket = new byte[0];
+    private final int extensionLength = 4;
+    private final byte[] ticket = new byte[] { 1, 2, 3, 4 };
     private TlsContext context;
     private SessionTicketTLSExtensionMessage message;
     private SessionTicketTLSExtensionPreparator preparator;
@@ -42,7 +43,8 @@ public class SessionTicketTLSExtensionPreparatorTest {
      */
     @Test
     public void testPreparator() {
-        context.getConfig().setTlsSessionTicket(ticket);
+        TicketSession session = new TicketSession(new byte[] { 1, 1, 1, 1 }, ticket);
+        context.addNewSession(session);
         preparator.prepare();
 
         assertArrayEquals(ExtensionType.SESSION_TICKET.getValue(), message.getExtensionType().getValue());

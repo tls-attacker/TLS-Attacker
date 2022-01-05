@@ -1,7 +1,7 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -349,9 +349,9 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public byte[] getSessionTicketTLS() {
-        if (context.getSessionTicketTLS() != null) {
-            return copy(context.getSessionTicketTLS());
+    public byte[] getLatestSessionTicket() {
+        if (context.getLatestSessionTicket() != null) {
+            return context.getLatestSessionTicket();
         } else {
             return config.getTlsSessionTicket();
         }

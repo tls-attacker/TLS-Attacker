@@ -1,7 +1,7 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -26,6 +26,8 @@ import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.state.session.Session;
+import de.rub.nds.tlsattacker.core.state.session.TicketSession;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.tcp.ClientTcpTransportHandler;
@@ -489,18 +491,20 @@ public class DefaultChooserTest {
     }
 
     /**
-     * Test of getSessionTicketTLS method, of class DefaultChooser.
+     * Test of getLatestSessionTicket method, of class DefaultChooser.
      */
     @Test
-    public void testGetSessionTicketTLS() {
-        context.setSessionTicketTLS(null);
+    public void testGetLatestSessionTicket() {
+        List<Session> sessionList = new LinkedList<>();
+        context.setSessionList(sessionList);
         byte[] sessionTicketTLS = ArrayConverter.hexStringToByteArray("122131123987891238098123");
         byte[] sessionTicketTLS2 = ArrayConverter.hexStringToByteArray("1221311239878912380981281294");
         config.setTlsSessionTicket(sessionTicketTLS);
         assertArrayEquals(sessionTicketTLS, config.getTlsSessionTicket());
-        assertArrayEquals(sessionTicketTLS, chooser.getSessionTicketTLS());
-        context.setSessionTicketTLS(sessionTicketTLS2);
-        assertArrayEquals(sessionTicketTLS2, chooser.getSessionTicketTLS());
+        assertArrayEquals(sessionTicketTLS, chooser.getLatestSessionTicket());
+        TicketSession session = new TicketSession(config.getDefaultMasterSecret(), sessionTicketTLS2);
+        context.addNewSession(session);
+        assertArrayEquals(sessionTicketTLS2, chooser.getLatestSessionTicket());
     }
 
     /**
