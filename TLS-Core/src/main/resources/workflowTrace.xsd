@@ -563,7 +563,7 @@
               </xs:sequence>
             </xs:complexType>
           </xs:element>
-          <xs:element name="usedMessageLayerConfiguration" type="layerConfiguration" minOccurs="0"/>
+          <xs:element name="layerStackProcessingResult" type="layerStackProcessingResult" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -2876,15 +2876,7 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="layerConfiguration" abstract="true">
-    <xs:sequence>
-      <xs:element name="allowTrailingContainers" type="xs:boolean"/>
-      <xs:element name="containerFilterList" type="dataContainerFilter" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
-      <xs:element name="processTrailingContainers" type="xs:boolean"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="dataContainerFilter" abstract="true">
+  <xs:complexType name="layerStackProcessingResult">
     <xs:sequence/>
   </xs:complexType>
 

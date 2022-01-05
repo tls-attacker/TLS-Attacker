@@ -13,9 +13,10 @@ import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.https.HttpsRequestMessage;
 import de.rub.nds.tlsattacker.core.https.HttpsResponseMessage;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
-import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.LayerStack;
+import de.rub.nds.tlsattacker.core.layer.LayerStackProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.SpecificContainerLayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.core.record.Record;
@@ -95,7 +96,7 @@ public abstract class MessageAction extends ConnectionBoundAction {
     @XmlElements(value = { @XmlElement(type = DtlsHandshakeMessageFragment.class, name = "DtlsFragment") })
     protected List<DtlsHandshakeMessageFragment> fragments = new ArrayList<>();
 
-    private LayerConfiguration usedMessageLayerConfiguration;
+    private LayerStackProcessingResult layerStackProcessingResult;
 
     public MessageAction() {
     }
@@ -246,8 +247,7 @@ public abstract class MessageAction extends ConnectionBoundAction {
         layerConfigurationList.add(messageLayerConfig);
         layerConfigurationList.add(new SpecificContainerLayerConfiguration(recordsToSend));
         layerConfigurationList.add(new SpecificContainerLayerConfiguration((List) null));
-        setUsedMessageLayerConfiguration(messageLayerConfig);
-        List<LayerProcessingResult> processingResult = layerStack.sendData(layerConfigurationList);
+        LayerStackProcessingResult processingResult = layerStack.sendData(layerConfigurationList);
         setContainers(processingResult);
     }
 
@@ -259,24 +259,31 @@ public abstract class MessageAction extends ConnectionBoundAction {
         layerConfigurationList.add(messageLayerConfig);
         layerConfigurationList.add(new SpecificContainerLayerConfiguration(recordsToReceive));
         layerConfigurationList.add(new SpecificContainerLayerConfiguration((List) null));
-        setUsedMessageLayerConfiguration(messageLayerConfig);
-        List<LayerProcessingResult> processingResult;
+        LayerStackProcessingResult processingResult;
         try {
             processingResult = layerStack.receiveData(layerConfigurationList);
             setContainers(processingResult);
+            setLayerStackProcessingResult(processingResult);
         } catch (IOException ex) {
             LOGGER.warn("Received an IOException", ex);
-            setContainers(layerStack.gatherResults());
-
+            LayerStackProcessingResult reconstructedResult = layerStack.gatherResults();
+            setContainers(reconstructedResult);
+            setLayerStackProcessingResult(reconstructedResult);
         }
     }
 
-    private void setContainers(List<LayerProcessingResult> processingResults) {
+    private void setContainers(LayerStackProcessingResult processingResults) {
         // TODO Automatically get correct
         // index in result
-        messages = new ArrayList<>(processingResults.get(0).getUsedContainers()); // TODO Automatically get correct
+        messages = new ArrayList<>(processingResults.getResultForLayer(ImplementedLayers.MESSAGE).getUsedContainers()); // TODO
+                                                                                                                        // Automatically
+                                                                                                                        // get
+                                                                                                                        // correct
         // index in result
-        records = new ArrayList<>(processingResults.get(1).getUsedContainers()); // TODO Automatically get correct
+        records = new ArrayList<>(processingResults.getResultForLayer(ImplementedLayers.RECORD).getUsedContainers()); // TODO
+                                                                                                                      // Automatically
+                                                                                                                      // get
+                                                                                                                      // correct
     }
 
     protected void receiveTill(TlsContext tlsContext, List<ProtocolMessage> protocolMessagesToSend,
@@ -286,13 +293,16 @@ public abstract class MessageAction extends ConnectionBoundAction {
         layerConfigurationList.add(new SpecificContainerLayerConfiguration(protocolMessagesToSend));
         layerConfigurationList.add(new SpecificContainerLayerConfiguration(recordsToSend));
         layerConfigurationList.add(new SpecificContainerLayerConfiguration((List) null));
-        List<LayerProcessingResult> processingResult;
+        LayerStackProcessingResult processingResult;
         try {
             processingResult = layerStack.receiveData(layerConfigurationList);
             setContainers(processingResult);
+            setLayerStackProcessingResult(processingResult);
         } catch (IOException ex) {
             LOGGER.warn("Received an IOException", ex);
-            setContainers(layerStack.gatherResults());
+            LayerStackProcessingResult reconstructedResult = layerStack.gatherResults();
+            setContainers(reconstructedResult);
+            setLayerStackProcessingResult(reconstructedResult);
         }
     }
 
@@ -301,12 +311,12 @@ public abstract class MessageAction extends ConnectionBoundAction {
         RECEIVING
     }
 
-    private void setUsedMessageLayerConfiguration(LayerConfiguration usedMessageLayerConfiguration) {
-        this.usedMessageLayerConfiguration = usedMessageLayerConfiguration;
+    public LayerStackProcessingResult getLayerStackProcessingResult() {
+        return layerStackProcessingResult;
     }
 
-    public LayerConfiguration getUsedMessageLayerConfiguration() {
-        return usedMessageLayerConfiguration;
+    public void setLayerStackProcessingResult(LayerStackProcessingResult layerStackProcessingResult) {
+        this.layerStackProcessingResult = layerStackProcessingResult;
     }
 
 }

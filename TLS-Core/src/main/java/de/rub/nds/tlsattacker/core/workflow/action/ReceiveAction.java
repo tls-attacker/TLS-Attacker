@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.https.HttpsRequestMessage;
 import de.rub.nds.tlsattacker.core.https.HttpsResponseMessage;
+import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.core.record.Record;
@@ -207,10 +208,10 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
 
     @Override
     public boolean executedAsPlanned() {
-        if (getUsedMessageLayerConfiguration() == null) {
+        if (getLayerStackProcessingResult().getResultForLayer(ImplementedLayers.MESSAGE) == null) {
             return false;
         }
-        return getUsedMessageLayerConfiguration().executedAsPlanned(messages);
+        return getLayerStackProcessingResult().getResultForLayer(ImplementedLayers.MESSAGE).isExecutedAsPlanned();
     }
 
     public List<ProtocolMessage> getExpectedMessages() {

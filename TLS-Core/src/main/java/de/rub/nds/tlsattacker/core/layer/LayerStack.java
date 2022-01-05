@@ -62,7 +62,7 @@ public class LayerStack {
         return layerList.get(layerList.size() - 1);
     }
 
-    public List<LayerProcessingResult> sendData(List<LayerConfiguration> layerConfigurationList) throws IOException {
+    public LayerStackProcessingResult sendData(List<LayerConfiguration> layerConfigurationList) throws IOException {
         LOGGER.debug("Sending Data");
         if (layerList.size() != layerConfigurationList.size()) {
             throw new RuntimeException(
@@ -88,10 +88,10 @@ public class LayerStack {
         layerList.forEach(layer -> {
             resultList.add(layer.getLayerResult());
         });
-        return resultList;
+        return new LayerStackProcessingResult(resultList);
     }
 
-    public List<LayerProcessingResult> receiveData(List<LayerConfiguration> layerConfigurationList) throws IOException {
+    public LayerStackProcessingResult receiveData(List<LayerConfiguration> layerConfigurationList) throws IOException {
         LOGGER.debug("Receiving Data");
         if (layerList.size() != layerConfigurationList.size()) {
             throw new RuntimeException(
@@ -116,12 +116,12 @@ public class LayerStack {
         return gatherResults();
     }
 
-    public List<LayerProcessingResult> gatherResults() {
+    public LayerStackProcessingResult gatherResults() {
         // Gather results
         List<LayerProcessingResult> resultList = new LinkedList<>();
         layerList.forEach(tempLayer -> {
             resultList.add(tempLayer.getLayerResult());
         });
-        return resultList;
+        return new LayerStackProcessingResult(resultList);
     }
 }

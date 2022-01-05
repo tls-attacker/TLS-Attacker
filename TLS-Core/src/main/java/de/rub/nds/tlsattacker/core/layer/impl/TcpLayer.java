@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.layer.DataContainer;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
+import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStreamAdapterStream;
@@ -29,6 +30,7 @@ public class TcpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> 
     private final TlsContext context;
 
     public TcpLayer(TlsContext context) {
+        super(ImplementedLayers.TCP);
         this.context = context;
     }
 
@@ -51,7 +53,7 @@ public class TcpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> 
         }
         handler.getOutputStream().write(data);
         handler.getOutputStream().flush();
-        return new LayerProcessingResult(null);// Not implemented
+        return new LayerProcessingResult(null, getLayerType(), true);// Not implemented
     }
 
     @Override
@@ -67,7 +69,7 @@ public class TcpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> 
 
     @Override
     public LayerProcessingResult receiveData() throws IOException {
-        return new LayerProcessingResult(null);
+        return new LayerProcessingResult(null, getLayerType(), true);
     }
 
     private TcpTransportHandler getTransportHandler() {

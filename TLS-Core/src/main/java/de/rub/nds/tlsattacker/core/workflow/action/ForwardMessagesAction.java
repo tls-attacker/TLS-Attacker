@@ -19,7 +19,9 @@ import de.rub.nds.tlsattacker.core.https.HttpsResponseMessage;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.LayerStack;
+import de.rub.nds.tlsattacker.core.layer.LayerStackProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.SpecificContainerLayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.*;
@@ -283,13 +285,19 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
         layerConfigurationList.add(new SpecificContainerLayerConfiguration(messages));
         layerConfigurationList.add(new SpecificContainerLayerConfiguration((List) null));
         layerConfigurationList.add(new SpecificContainerLayerConfiguration((List) null));
-        List<LayerProcessingResult> processingResult;
+        LayerStackProcessingResult processingResult;
         try {
             processingResult = layerStack.receiveData(layerConfigurationList);
-            receivedMessages = new ArrayList<>(processingResult.get(0).getUsedContainers()); // TODO Automatically get
+            receivedMessages =
+                new ArrayList<>(processingResult.getResultForLayer(ImplementedLayers.MESSAGE).getUsedContainers()); // TODO
+                                                                                                                    // Automatically
+                                                                                                                    // get
             // correct
             // index in result
-            receivedRecords = new ArrayList<>(processingResult.get(1).getUsedContainers()); // TODO Automatically get
+            receivedRecords =
+                new ArrayList<>(processingResult.getResultForLayer(ImplementedLayers.RECORD).getUsedContainers()); // TODO
+                                                                                                                   // Automatically
+                                                                                                                   // get
             // correct
             // index in result
         } catch (IOException ex) {
@@ -325,10 +333,16 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
             layerConfigurationList.add(new SpecificContainerLayerConfiguration(receivedMessages));
             layerConfigurationList.add(new SpecificContainerLayerConfiguration(receivedRecords));
             layerConfigurationList.add(new SpecificContainerLayerConfiguration((List) null));
-            List<LayerProcessingResult> processingResult = layerStack.sendData(layerConfigurationList);
-            sendMessages = new ArrayList<>(processingResult.get(0).getUsedContainers()); // TODO Automatically get
+            LayerStackProcessingResult processingResult = layerStack.sendData(layerConfigurationList);
+            sendMessages =
+                new ArrayList<>(processingResult.getResultForLayer(ImplementedLayers.MESSAGE).getUsedContainers()); // TODO
+                                                                                                                    // Automatically
+                                                                                                                    // get
             // correct index in result
-            sendRecords = new ArrayList<>(processingResult.get(1).getUsedContainers()); // TODO Automatically get
+            sendRecords =
+                new ArrayList<>(processingResult.getResultForLayer(ImplementedLayers.RECORD).getUsedContainers()); // TODO
+                                                                                                                   // Automatically
+                                                                                                                   // get
             // correct index in result
 
             executedAsPlanned = checkMessageListsEquals(sendMessages, receivedMessages);

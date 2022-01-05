@@ -7,12 +7,16 @@
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
-package de.rub.nds.tlsattacker.core.layer;
+package de.rub.nds.tlsattacker.core.layer.constant;
 
-public enum LayerStackType {
-    TLS,
-    DTLS,
-    QUIC,
-    OPEN_VPN,
-    STARTTTLS,
+public enum ImplementedLayers implements LayerType {
+    TCP,
+    RECORD,
+    MESSAGE,
+    HTTP;
+
+    @Override
+    public String getName() {
+        return this.name();
+    }
 }

@@ -33,31 +33,32 @@ public class SpecificContainerLayerConfiguration<Container extends DataContainer
         }
         int j = 0;
         List<Container> expectedContainers = getContainerList();
-        for (int i = 0; i < expectedContainers.size(); i++) {
-            if (j >= list.size() && expectedContainers.get(i).isRequired()) {
-                return mayReceiveMoreContainers;
-            } else if (j < list.size()) {
-                if (!expectedContainers.get(i).getClass().equals(list.get(j).getClass())
-                    && expectedContainers.get(i).isRequired()) {
-                    if (containerCanBeFiltered(list.get(j))) {
-                        j++;
-                        i--;
-                    } else {
-                        return false;
-                    }
+        if (expectedContainers != null) {
+            for (int i = 0; i < expectedContainers.size(); i++) {
+                if (j >= list.size() && expectedContainers.get(i).isRequired()) {
+                    return mayReceiveMoreContainers;
+                } else if (j < list.size()) {
+                    if (!expectedContainers.get(i).getClass().equals(list.get(j).getClass())
+                        && expectedContainers.get(i).isRequired()) {
+                        if (containerCanBeFiltered(list.get(j))) {
+                            j++;
+                            i--;
+                        } else {
+                            return false;
+                        }
 
-                } else if (expectedContainers.get(i).getClass().equals(list.get(j).getClass())) {
-                    j++;
+                    } else if (expectedContainers.get(i).getClass().equals(list.get(j).getClass())) {
+                        j++;
+                    }
+                }
+            }
+
+            for (; j < list.size(); j++) {
+                if (!containerCanBeFiltered(list.get(j)) && !isAllowTrailingContainers()) {
+                    return false;
                 }
             }
         }
-
-        for (; j < list.size(); j++) {
-            if (!containerCanBeFiltered(list.get(j)) && !isAllowTrailingContainers()) {
-                return false;
-            }
-        }
-
         return true;
     }
 

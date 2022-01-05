@@ -9,14 +9,19 @@
 
 package de.rub.nds.tlsattacker.core.layer;
 
+import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
 import java.util.List;
 
 public class LayerProcessingResult<T extends DataContainer> {
 
     private List<T> usedContainers;
+    private LayerType layerType;
+    private boolean executedAsPlanned;
 
-    public LayerProcessingResult(List<T> usedContainers) {
+    public LayerProcessingResult(List<T> usedContainers, LayerType layerType, boolean executedAsPlanned) {
         this.usedContainers = usedContainers;
+        this.layerType = layerType;
+        this.executedAsPlanned = executedAsPlanned;
     }
 
     public List<T> getUsedContainers() {
@@ -25,5 +30,21 @@ public class LayerProcessingResult<T extends DataContainer> {
 
     public void setUsedContainers(List<T> usedContainers) {
         this.usedContainers = usedContainers;
+    }
+
+    public LayerType getLayerType() {
+        return layerType;
+    }
+
+    public boolean isExecutedAsPlanned() {
+        return executedAsPlanned;
+    }
+
+    public void setExecutedAsPlanned(boolean executedAsPlanned) {
+        this.executedAsPlanned = executedAsPlanned;
+    }
+
+    public void setLayerType(LayerType layerType) {
+        this.layerType = layerType;
     }
 }
