@@ -27,7 +27,7 @@ public class SpecificContainerLayerConfiguration<Container extends DataContainer
         return evaluateContainers(list, false);
     }
 
-    private boolean evaluateContainers(List<Container> list, boolean mightStillReceiveMissing) {
+    private boolean evaluateContainers(List<Container> list, boolean mayReceiveMoreContainers) {
         if (list == null) {
             return false;
         }
@@ -35,7 +35,7 @@ public class SpecificContainerLayerConfiguration<Container extends DataContainer
         List<Container> expectedContainers = getContainerList();
         for (int i = 0; i < expectedContainers.size(); i++) {
             if (j >= list.size() && expectedContainers.get(i).isRequired()) {
-                return mightStillReceiveMissing;
+                return mayReceiveMoreContainers;
             } else if (j < list.size()) {
                 if (!expectedContainers.get(i).getClass().equals(list.get(j).getClass())
                     && expectedContainers.get(i).isRequired()) {
@@ -63,7 +63,7 @@ public class SpecificContainerLayerConfiguration<Container extends DataContainer
 
     @Override
     public boolean failedEarly(List<Container> list) {
-        return evaluateContainers(list, true);
+        return !evaluateContainers(list, true);
     }
 
 }

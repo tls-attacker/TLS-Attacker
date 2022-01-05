@@ -26,7 +26,7 @@ public class TillContainerLayerConfiguration<Container extends DataContainer> ex
 
     @Override
     public boolean failedEarly(List<Container> list) {
-        return true;
+        return false;
     }
 
 }

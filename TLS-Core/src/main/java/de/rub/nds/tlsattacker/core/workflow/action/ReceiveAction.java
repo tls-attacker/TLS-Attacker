@@ -207,37 +207,10 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
 
     @Override
     public boolean executedAsPlanned() {
-        if (messages == null) {
+        if (getUsedMessageLayerConfiguration() == null) {
             return false;
         }
-        int j = 0;
-        for (int i = 0; i < expectedMessages.size(); i++) {
-            if (j >= messages.size() && expectedMessages.get(i).isRequired()) {
-                return false;
-            } else if (j < messages.size()) {
-                if (!Objects.equals(expectedMessages.get(i).getClass(), messages.get(j).getClass())
-                    && expectedMessages.get(i).isRequired()) {
-                    if (receivedMessageCanBeIgnored(messages.get(j))) {
-                        j++;
-                        i--;
-                    } else {
-                        return false;
-                    }
-
-                } else if (Objects.equals(expectedMessages.get(i).getClass(), messages.get(j).getClass())) {
-                    j++;
-                }
-            }
-        }
-
-        for (; j < messages.size(); j++) {
-            if (!receivedMessageCanBeIgnored(messages.get(j))
-                && !getActionOptions().contains(ActionOption.CHECK_ONLY_EXPECTED)) {
-                return false; // additional messages are not allowed
-            }
-        }
-
-        return true;
+        return getUsedMessageLayerConfiguration().executedAsPlanned(messages);
     }
 
     public List<ProtocolMessage> getExpectedMessages() {

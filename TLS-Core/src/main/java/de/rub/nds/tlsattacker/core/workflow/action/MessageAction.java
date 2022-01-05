@@ -95,6 +95,8 @@ public abstract class MessageAction extends ConnectionBoundAction {
     @XmlElements(value = { @XmlElement(type = DtlsHandshakeMessageFragment.class, name = "DtlsFragment") })
     protected List<DtlsHandshakeMessageFragment> fragments = new ArrayList<>();
 
+    private LayerConfiguration usedMessageLayerConfiguration;
+
     public MessageAction() {
     }
 
@@ -240,9 +242,11 @@ public abstract class MessageAction extends ConnectionBoundAction {
         throws IOException {
         LayerStack layerStack = tlsContext.getLayerStack();
         List<LayerConfiguration> layerConfigurationList = new LinkedList<>();
-        layerConfigurationList.add(new SpecificContainerLayerConfiguration(protocolMessagesToSend));
+        LayerConfiguration messageLayerConfig = new SpecificContainerLayerConfiguration(protocolMessagesToSend);
+        layerConfigurationList.add(messageLayerConfig);
         layerConfigurationList.add(new SpecificContainerLayerConfiguration(recordsToSend));
         layerConfigurationList.add(new SpecificContainerLayerConfiguration((List) null));
+        setUsedMessageLayerConfiguration(messageLayerConfig);
         List<LayerProcessingResult> processingResult = layerStack.sendData(layerConfigurationList);
         setContainers(processingResult);
     }
@@ -251,9 +255,11 @@ public abstract class MessageAction extends ConnectionBoundAction {
         List<Record> recordsToReceive) {
         LayerStack layerStack = tlsContext.getLayerStack();
         List<LayerConfiguration> layerConfigurationList = new LinkedList<>();
-        layerConfigurationList.add(new SpecificContainerLayerConfiguration(protocolMessagesToReceive));
+        LayerConfiguration messageLayerConfig = new SpecificContainerLayerConfiguration(protocolMessagesToReceive);
+        layerConfigurationList.add(messageLayerConfig);
         layerConfigurationList.add(new SpecificContainerLayerConfiguration(recordsToReceive));
         layerConfigurationList.add(new SpecificContainerLayerConfiguration((List) null));
+        setUsedMessageLayerConfiguration(messageLayerConfig);
         List<LayerProcessingResult> processingResult;
         try {
             processingResult = layerStack.receiveData(layerConfigurationList);
@@ -293,6 +299,14 @@ public abstract class MessageAction extends ConnectionBoundAction {
     public enum MessageActionDirection {
         SENDING,
         RECEIVING
+    }
+
+    private void setUsedMessageLayerConfiguration(LayerConfiguration usedMessageLayerConfiguration) {
+        this.usedMessageLayerConfiguration = usedMessageLayerConfiguration;
+    }
+
+    public LayerConfiguration getUsedMessageLayerConfiguration() {
+        return usedMessageLayerConfiguration;
     }
 
 }
