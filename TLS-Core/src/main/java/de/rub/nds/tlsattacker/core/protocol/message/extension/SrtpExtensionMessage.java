@@ -21,10 +21,12 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SrtpExtensionPr
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SrtpExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * This extension is defined in RFC5764
  */
+@XmlRootElement(name = "SrtpExtension")
 public class SrtpExtensionMessage extends ExtensionMessage<SrtpExtensionMessage> {
 
     @ModifiableVariableProperty

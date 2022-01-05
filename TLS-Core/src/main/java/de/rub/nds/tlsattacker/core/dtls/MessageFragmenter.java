@@ -11,11 +11,7 @@ package de.rub.nds.tlsattacker.core.dtls;
 
 import static de.rub.nds.tlsattacker.core.dtls.FragmentCollector.LOGGER;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
-import de.rub.nds.tlsattacker.core.protocol.Preparator;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageHandler;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageSerializer;
-import de.rub.nds.tlsattacker.core.protocol.Serializer;
+import de.rub.nds.tlsattacker.core.protocol.*;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.preparator.HandshakeMessagePreparator;
@@ -39,14 +35,7 @@ public class MessageFragmenter {
      */
     public static List<DtlsHandshakeMessageFragment> fragmentMessage(HandshakeMessage message, int maxFragmentLength,
         TlsContext context) {
-        ProtocolMessageSerializer serializer = message.getSerializer(context);
-        byte[] bytes;
-        if (serializer instanceof HandshakeMessageSerializer) {// This is necessary because of SSL2 messages...
-            HandshakeMessageSerializer handshakeMessageSerializer = (HandshakeMessageSerializer) serializer;
-            bytes = handshakeMessageSerializer.serializeProtocolMessageContent();
-        } else {
-            bytes = serializer.serializeProtocolMessageContent();
-        }
+        byte[] bytes = getSerializedBytes(message, context);
         List<DtlsHandshakeMessageFragment> dtlsFragments =
             generateFragments(message, bytes, maxFragmentLength, context);
         return dtlsFragments;
@@ -57,16 +46,16 @@ public class MessageFragmenter {
      */
     public static List<DtlsHandshakeMessageFragment> fragmentMessage(HandshakeMessage message,
         List<DtlsHandshakeMessageFragment> fragments, TlsContext context) {
-        ProtocolMessageSerializer serializer = message.getSerializer(context);
-        byte[] bytes;
-        if (serializer instanceof HandshakeMessageSerializer) {// This is necessary because of SSL2 messages...
-            HandshakeMessageSerializer handshakeMessageSerializer = (HandshakeMessageSerializer) serializer;
-            bytes = handshakeMessageSerializer.serializeProtocolMessageContent();
-        } else {
-            bytes = serializer.serializeProtocolMessageContent();
-        }
+        byte[] bytes = getSerializedBytes(message, context);
         List<DtlsHandshakeMessageFragment> dtlsFragments = generateFragments(message, bytes, fragments, context);
         return dtlsFragments;
+    }
+
+    private static byte[] getSerializedBytes(HandshakeMessage message, TlsContext context) {
+        HandshakeMessageSerializer serializer = message.getSerializer(context);
+        byte[] bytes;
+        bytes = serializer.serializeProtocolMessageContent();
+        return bytes;
     }
 
     /**
@@ -77,15 +66,7 @@ public class MessageFragmenter {
      * @return
      */
     public static DtlsHandshakeMessageFragment wrapInSingleFragment(HandshakeMessage message, TlsContext context) {
-        ProtocolMessageSerializer serializer = message.getSerializer(context);
-        byte[] bytes;
-        if (serializer instanceof HandshakeMessageSerializer) {// This is necessary because of SSL2 messages...
-            HandshakeMessageSerializer handshakeMessageSerializer =
-                (HandshakeMessageSerializer) message.getSerializer(context);
-            bytes = handshakeMessageSerializer.serializeProtocolMessageContent();
-        } else {
-            bytes = serializer.serializeProtocolMessageContent();
-        }
+        byte[] bytes = getSerializedBytes(message, context);
         List<DtlsHandshakeMessageFragment> fragments = generateFragments(message, bytes, bytes.length, context);
         return fragments.get(0);
     }
@@ -107,7 +88,7 @@ public class MessageFragmenter {
             }
             DtlsHandshakeMessageFragment fragment = new DtlsHandshakeMessageFragment(message.getHandshakeMessageType(),
                 fragmentBytes, sequence, currentOffset, handshakeBytes.length);
-            prepareMessage(fragment, true, context);
+            fragment.getPreparator(context).prepare();
             fragments.add(fragment);
             currentOffset += maxFragmentLength;
         } while (currentOffset < handshakeBytes.length);

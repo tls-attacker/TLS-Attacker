@@ -57,7 +57,7 @@ public class EncryptedServerNameIndicationExtensionSerializerTest {
             new EncryptedServerNameIndicationExtensionSerializer(msg);
         msg.setEsniMessageTypeConfig(EncryptedServerNameIndicationExtensionMessage.EsniMessageType.CLIENT);
 
-        msg.getKeyShareEntry().setGroup(namedGroup);
+        msg.getKeyShareEntry().setGroup(Modifiable.explicit(namedGroup));
         msg.getKeyShareEntry().setPublicKey(Modifiable.explicit(clientPulicKey));
         msg.getKeyShareEntry().setPublicKeyLength(Modifiable.explicit(clientPulicKey.length));
 

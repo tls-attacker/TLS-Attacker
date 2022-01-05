@@ -21,19 +21,8 @@ import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.hints.RecordLayerHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
-import de.rub.nds.tlsattacker.core.protocol.Handler;
-import de.rub.nds.tlsattacker.core.protocol.MessageFactory;
-import de.rub.nds.tlsattacker.core.protocol.Parser;
-import de.rub.nds.tlsattacker.core.protocol.Preparator;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessagePreparator;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageSerializer;
-import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
+import de.rub.nds.tlsattacker.core.protocol.*;
+import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -56,12 +45,12 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
         for (ProtocolMessage message : configuration.getContainerList()) {
             ProtocolMessagePreparator preparator = message.getPreparator(context);
             preparator.prepare();
-            message.getHandler(context).adjustContext(message);
             ProtocolMessageSerializer serializer = message.getSerializer(context);
             byte[] serializedMessage = serializer.serialize();
             message.setCompleteResultingMessage(serializedMessage);
-            getLowerLayer().sendData(new RecordLayerHint(message.getProtocolMessageType()), serializedMessage);
             message.getHandler(context).updateDigest(message);
+            message.getHandler(context).adjustContext(message);
+            getLowerLayer().sendData(new RecordLayerHint(message.getProtocolMessageType()), serializedMessage);
             message.getHandler(context).adjustContextAfterSerialize(message);
             addProducedContainer(message);
         }
@@ -161,9 +150,9 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
         Preparator preparator = handshakeMessage.getPreparator(context);
         preparator.prepareAfterParse(false);// TODO REMOVE THIS CLIENTMODE FLAG
         Handler handler = handshakeMessage.getHandler(context);
+        handshakeMessage.getHandler(context).updateDigest(handshakeMessage);
         handler.adjustContext(handshakeMessage);
         addProducedContainer(handshakeMessage);
-        handshakeMessage.getHandler(context).updateDigest(handshakeMessage);
     }
 
     private void readHeartbeatProtocolData() throws IOException {

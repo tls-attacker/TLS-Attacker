@@ -22,19 +22,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElements;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.*;
 import javax.xml.stream.XMLStreamException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -102,7 +93,12 @@ public class WorkflowTrace implements Serializable {
         @XmlElement(type = ChangeProtocolVersionAction.class, name = "ChangeProtocolVersion"),
         @XmlElement(type = ChangeServerRandomAction.class, name = "ChangeServerRandom"),
         @XmlElement(type = ChangeConnectionTimeoutAction.class, name = "ChangeConnectionTimeout"),
+        @XmlElement(type = ChangeReadEpochAction.class, name = "ChangeReadEpoch"),
+        @XmlElement(type = ChangeReadSequenceNumberAction.class, name = "ChangeReadSequenceNumber"),
+        @XmlElement(type = ChangeWriteEpochAction.class, name = "ChangeWriteEpoch"),
+        @XmlElement(type = ChangeWriteSequenceNumberAction.class, name = "ChangeWriteSequenceNumber"),
         @XmlElement(type = ClearBuffersAction.class, name = "ClearBuffers"),
+        @XmlElement(type = ClearDigestAction.class, name = "ClearDigest"),
         @XmlElement(type = ConnectionBoundAction.class, name = "ConnectionBound"),
         @XmlElement(type = CopyBufferedMessagesAction.class, name = "CopyBufferedMessages"),
         @XmlElement(type = CopyBufferedRecordsAction.class, name = "CopyBufferedRecords"),
@@ -144,6 +140,8 @@ public class WorkflowTrace implements Serializable {
         @XmlElement(type = SendDynamicServerKeyExchangeAction.class, name = "SendDynamicServerKeyExchange"),
         @XmlElement(type = SendDynamicServerCertificateAction.class, name = "SendDynamicCertificate"),
         @XmlElement(type = SendRaccoonCkeAction.class, name = "SendRaccoonCke"),
+        @XmlElement(type = SendMessagesFromLastFlightAction.class, name = "SendMessagesFromLastFlight"),
+        @XmlElement(type = SendRecordsFromLastFlightAction.class, name = "SendRecordsFromLastFlight"),
         @XmlElement(type = SetEncryptChangeCipherSpecConfigAction.class, name = "SetEncryptChangeCipherSpecConfig"),
         @XmlElement(type = WaitAction.class, name = "Wait"),
         @XmlElement(type = SendAsciiAction.class, name = "SendAscii"),

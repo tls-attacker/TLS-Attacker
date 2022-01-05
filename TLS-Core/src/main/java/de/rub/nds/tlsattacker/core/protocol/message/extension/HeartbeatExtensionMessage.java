@@ -21,10 +21,12 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.HeartbeatExtens
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.HeartbeatExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * This extension is defined in RFC6520
  */
+@XmlRootElement(name = "HeartbeatExtension")
 public class HeartbeatExtensionMessage extends ExtensionMessage<HeartbeatExtensionMessage> {
 
     private HeartbeatMode heartbeatModeConfig;

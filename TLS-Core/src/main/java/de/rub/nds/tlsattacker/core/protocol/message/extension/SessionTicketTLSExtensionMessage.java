@@ -9,64 +9,46 @@
 
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
-import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
-import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
-import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.SessionTicketTLSExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.SessionTicketTLSExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SessionTicketTLSExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SessionTicketTLSExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.SessionTicket;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * This extension is defined in RFC4507
  */
+@XmlRootElement(name = "SessionTicketTLSExtension")
 public class SessionTicketTLSExtensionMessage extends ExtensionMessage<SessionTicketTLSExtensionMessage> {
 
-    @ModifiableVariableProperty
-    private ModifiableByteArray ticket;
+    @HoldsModifiableVariable
+    private SessionTicket sessionTicket;
 
     /**
      * Constructor
      */
     public SessionTicketTLSExtensionMessage() {
         super(ExtensionType.SESSION_TICKET);
+        sessionTicket = new SessionTicket();
     }
 
     public SessionTicketTLSExtensionMessage(Config config) {
         super(ExtensionType.SESSION_TICKET);
+        sessionTicket = new SessionTicket();
     }
 
-    /**
-     * Returns the saved SessionTicket
-     *
-     * @return the Raw ticket
-     */
-    public ModifiableByteArray getTicket() {
-        return ticket;
+    public SessionTicket getSessionTicket() {
+        return sessionTicket;
     }
 
-    /**
-     * Sets the SessionTicket
-     *
-     * @param ticket
-     *               the Raw ticket bytes
-     */
-    public void setTicket(ModifiableByteArray ticket) {
-        this.ticket = ticket;
-    }
-
-    /**
-     * Sets the SessionTicket
-     *
-     * @param array
-     *              the Raw ticket bytes
-     */
-    public void setTicket(byte[] array) {
-        this.ticket = ModifiableVariableFactory.safelySetValue(ticket, array);
+    public void setSessionTicket(SessionTicket sessionTicket) {
+        this.sessionTicket = sessionTicket;
     }
 
     @Override

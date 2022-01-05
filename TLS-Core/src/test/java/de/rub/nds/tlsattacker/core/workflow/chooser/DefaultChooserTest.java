@@ -11,21 +11,11 @@ package de.rub.nds.tlsattacker.core.workflow.chooser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
-import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
-import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
-import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
-import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
-import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
-import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
-import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
+import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.state.session.Session;
+import de.rub.nds.tlsattacker.core.state.session.TicketSession;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.tcp.ClientTcpTransportHandler;
@@ -33,10 +23,7 @@ import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -489,18 +476,20 @@ public class DefaultChooserTest {
     }
 
     /**
-     * Test of getSessionTicketTLS method, of class DefaultChooser.
+     * Test of getLatestSessionTicket method, of class DefaultChooser.
      */
     @Test
-    public void testGetSessionTicketTLS() {
-        context.setSessionTicketTLS(null);
+    public void testGetLatestSessionTicket() {
+        List<Session> sessionList = new LinkedList<>();
+        context.setSessionList(sessionList);
         byte[] sessionTicketTLS = ArrayConverter.hexStringToByteArray("122131123987891238098123");
         byte[] sessionTicketTLS2 = ArrayConverter.hexStringToByteArray("1221311239878912380981281294");
         config.setTlsSessionTicket(sessionTicketTLS);
         assertArrayEquals(sessionTicketTLS, config.getTlsSessionTicket());
-        assertArrayEquals(sessionTicketTLS, chooser.getSessionTicketTLS());
-        context.setSessionTicketTLS(sessionTicketTLS2);
-        assertArrayEquals(sessionTicketTLS2, chooser.getSessionTicketTLS());
+        assertArrayEquals(sessionTicketTLS, chooser.getLatestSessionTicket());
+        TicketSession session = new TicketSession(config.getDefaultMasterSecret(), sessionTicketTLS2);
+        context.addNewSession(session);
+        assertArrayEquals(sessionTicketTLS2, chooser.getLatestSessionTicket());
     }
 
     /**

@@ -9,16 +9,26 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import static de.rub.nds.modifiablevariable.util.ArrayConverter.bytesToHexString;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
+import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
-import java.io.InputStream;
+import de.rub.nds.tlsattacker.core.state.SessionTicket;
+import de.rub.nds.tlsattacker.core.state.parser.SessionTicketParser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.InputStream;
+
+import static de.rub.nds.modifiablevariable.util.ArrayConverter.bytesToHexString;
 
 public class SessionTicketTLSExtensionParser extends ExtensionParser<SessionTicketTLSExtensionMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
+    private final byte[] configTicketKeyName;
+    private final CipherAlgorithm configCipherAlgorithm;
+    private final MacAlgorithm configMacAlgorithm;
 
     /**
      * Constructor
@@ -28,6 +38,9 @@ public class SessionTicketTLSExtensionParser extends ExtensionParser<SessionTick
      */
     public SessionTicketTLSExtensionParser(InputStream stream, Config config) {
         super(stream, config);
+        configTicketKeyName = config.getSessionTicketKeyName();
+        configCipherAlgorithm = config.getSessionTicketCipherAlgorithm();
+        configMacAlgorithm = config.getSessionTicketMacAlgorithm();
     }
 
     /**
@@ -38,7 +51,13 @@ public class SessionTicketTLSExtensionParser extends ExtensionParser<SessionTick
      */
     @Override
     public void parseExtensionMessageContent(SessionTicketTLSExtensionMessage msg) {
-        msg.setTicket(parseTillEnd());
-        LOGGER.debug("The session ticket TLS parser parsed the value " + bytesToHexString(msg.getTicket()));
+        SessionTicket ticket = new SessionTicket();
+        msg.setSessionTicket(ticket);
+        // only parse if the extension indicates data
+        if (msg.getExtensionLength().getValue() > 0) {
+            SessionTicketParser ticketParser = new SessionTicketParser(0, msg.getExtensionContent().getValue(),
+                msg.getSessionTicket(), configTicketKeyName, configCipherAlgorithm, configMacAlgorithm);
+            ticketParser.parse(ticket);
+        }
     }
 }

@@ -10,9 +10,7 @@
 package de.rub.nds.tlsattacker.core.crypto.ec;
 
 import java.math.BigInteger;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 

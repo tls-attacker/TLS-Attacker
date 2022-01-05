@@ -68,7 +68,7 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
 
     private void adjustServerKeyShareStore(List<KeyShareStoreEntry> ksEntryList) {
         // The server has only one key
-        if (ksEntryList.size() > 0) {
+        if (!ksEntryList.isEmpty()) {
             context.setServerKeyShareStoreEntry(
                 new KeyShareStoreEntry(ksEntryList.get(0).getGroup(), ksEntryList.get(0).getPublicKey()));
             NamedGroup selectedGroup = context.getServerKeyShareStoreEntry().getGroup();
@@ -78,7 +78,7 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
     }
 
     private void adjustRetryRequestKeyShare(KeyShareExtensionMessage message) {
-        if (message.getKeyShareList().size() > 0) {
+        if (!message.getKeyShareList().isEmpty()) {
             NamedGroup selectedGroup = message.getKeyShareList().get(0).getGroupConfig();
             LOGGER.debug("Setting selected NamedGroup from HelloRetryRequest in context to " + selectedGroup);
             context.setSelectedGroup(selectedGroup);

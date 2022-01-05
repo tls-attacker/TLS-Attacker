@@ -11,21 +11,11 @@ package de.rub.nds.tlsattacker.core.certificate.ocsp;
 
 import com.google.common.io.ByteStreams;
 import de.rub.nds.asn1.Asn1Encodable;
-import de.rub.nds.asn1.model.Asn1EncapsulatingOctetString;
-import de.rub.nds.asn1.model.Asn1Explicit;
-import de.rub.nds.asn1.model.Asn1Integer;
-import de.rub.nds.asn1.model.Asn1ObjectIdentifier;
-import de.rub.nds.asn1.model.Asn1PrimitiveIa5String;
-import de.rub.nds.asn1.model.Asn1Sequence;
+import de.rub.nds.asn1.model.*;
 import de.rub.nds.asn1.parser.Asn1Parser;
-import de.rub.nds.asn1.parser.ParserException;
 import de.rub.nds.asn1.translator.ParseOcspTypesContext;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import static de.rub.nds.tlsattacker.core.certificate.ExtensionObjectIdentifier.AUTHORITY_INFO_ACCESS;
-import static de.rub.nds.tlsattacker.core.certificate.ExtensionObjectIdentifier.CERTIFICATE_AUTHORITY_ISSUER;
-import static de.rub.nds.tlsattacker.core.certificate.ExtensionObjectIdentifier.OCSP;
-import static de.rub.nds.tlsattacker.core.certificate.ExtensionObjectIdentifier.SIGNED_CERTIFICATE_TIMESTAMP_LIST;
-import static de.rub.nds.tlsattacker.core.certificate.ExtensionObjectIdentifier.TLS_FEATURE;
+import static de.rub.nds.tlsattacker.core.certificate.ExtensionObjectIdentifier.*;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.util.Asn1ToolInitializer;
 import java.io.ByteArrayInputStream;
@@ -68,33 +58,42 @@ public class CertificateInformationExtractor {
         return certificate.getSerialNumber().getValue();
     }
 
-    public byte[] getIssuerNameHash() throws IOException, NoSuchAlgorithmException {
-        byte[] encodedDistinguishedName = certificate.getIssuer().getEncoded();
-        MessageDigest md = MessageDigest.getInstance("SHA-1");
-        return md.digest(encodedDistinguishedName);
+    public byte[] getIssuerNameHash() {
+        try {
+            byte[] encodedDistinguishedName = certificate.getIssuer().getEncoded();
+            MessageDigest md = MessageDigest.getInstance("SHA-1");
+            return md.digest(encodedDistinguishedName);
+        } catch (NoSuchAlgorithmException | IOException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
-    public byte[] getIssuerKeyHash() throws IOException, NoSuchAlgorithmException {
+    public byte[] getIssuerKeyHash() {
         byte[] publicKey = certificate.getSubjectPublicKeyInfo().getPublicKeyData().getBytes();
-        MessageDigest md = MessageDigest.getInstance("SHA-1");
-        return md.digest(publicKey);
+        MessageDigest md;
+        try {
+            md = MessageDigest.getInstance("SHA-1");
+            return md.digest(publicKey);
+        } catch (NoSuchAlgorithmException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
-    public Boolean getMustStaple() throws IOException, ParserException {
+    public Boolean getMustStaple() {
         if (mustStaple == null) {
             mustStaple = parseMustStaple();
         }
         return mustStaple;
     }
 
-    public Boolean getMustStaplev2() throws IOException, ParserException {
+    public Boolean getMustStaplev2() {
         if (mustStaplev2 == null) {
             mustStaplev2 = parseMustStaplev2();
         }
         return mustStaplev2;
     }
 
-    public String getOcspServerUrl() throws IOException, ParserException, NoSuchFieldException {
+    public String getOcspServerUrl() {
         if (ocspServerUrl == null) {
             ocspServerUrl = parseOcspServerUrl();
         }
@@ -102,7 +101,7 @@ public class CertificateInformationExtractor {
         return ocspServerUrl;
     }
 
-    public String getCertificateIssuerUrl() throws IOException, ParserException, NoSuchFieldException {
+    public String getCertificateIssuerUrl() {
         if (certificateIssuerUrl == null) {
             certificateIssuerUrl = parseCertificateIssuerUrl();
         }
@@ -110,17 +109,22 @@ public class CertificateInformationExtractor {
         return certificateIssuerUrl;
     }
 
-    public Asn1Sequence getPrecertificateSCTs() throws IOException, ParserException {
+    public Asn1Sequence getPrecertificateSCTs() {
         if (precertificateSctListExtension == null) {
             extractPrecertificateSCTs();
         }
         return precertificateSctListExtension;
     }
 
-    private void extractX509Extensions() throws IOException, ParserException {
+    private void extractX509Extensions() {
         String ocspUrlResult = null;
 
-        byte[] certAsn1 = certificate.getEncoded();
+        byte[] certAsn1;
+        try {
+            certAsn1 = certificate.getEncoded();
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
 
         // Parse ASN.1 structure of the certificate
         Asn1Parser asn1Parser = new Asn1Parser(certAsn1, false);
@@ -146,7 +150,7 @@ public class CertificateInformationExtractor {
         x509ExtensionSequences = ((Asn1Sequence) x509Extensions.getChildren().get(0)).getChildren();
     }
 
-    private void extractAuthorityInfoAccessEntities() throws NoSuchFieldException {
+    private void extractAuthorityInfoAccessEntities() {
         // Now that we found the extensions, search for the
         // 'authorityInfoAccess' extension
         Asn1Sequence authorityInfoAccess = null;
@@ -165,7 +169,7 @@ public class CertificateInformationExtractor {
         }
 
         if (authorityInfoAccess == null) {
-            throw new NoSuchFieldException("No 'Authority Info Access' entry found in certificate.");
+            throw new RuntimeException("No 'Authority Info Access' entry found in certificate.");
         }
         /*
          * get(0) is the Object Identifier we checked, get(1) the Octet String with the content the Octet String has a
@@ -177,7 +181,7 @@ public class CertificateInformationExtractor {
         this.authorityInfoAccessEntities = (Asn1Sequence) authorityInfoAccessContent.getChildren().get(0);
     }
 
-    private void extractTlsFeatureExtension() throws IOException, ParserException {
+    private void extractTlsFeatureExtension() {
         if (x509ExtensionSequences == null) {
             extractX509Extensions();
         }
@@ -197,7 +201,7 @@ public class CertificateInformationExtractor {
         }
     }
 
-    private void extractPrecertificateSCTs() throws IOException, ParserException {
+    private void extractPrecertificateSCTs() {
         if (x509ExtensionSequences == null) {
             extractX509Extensions();
         }
@@ -216,7 +220,7 @@ public class CertificateInformationExtractor {
         }
     }
 
-    private boolean parseMustStaple() throws IOException, ParserException {
+    private boolean parseMustStaple() {
         if (tlsFeatureExtension == null) {
             extractTlsFeatureExtension();
         }
@@ -242,7 +246,7 @@ public class CertificateInformationExtractor {
         return foundMustStaple;
     }
 
-    private boolean parseMustStaplev2() throws IOException, ParserException {
+    private boolean parseMustStaplev2() {
         if (tlsFeatureExtension == null) {
             extractTlsFeatureExtension();
         }
@@ -282,7 +286,7 @@ public class CertificateInformationExtractor {
         return urlString;
     }
 
-    private String parseOcspServerUrl() throws IOException, ParserException, NoSuchFieldException {
+    private String parseOcspServerUrl() {
         if (x509ExtensionSequences == null) {
             extractX509Extensions();
         }
@@ -306,7 +310,7 @@ public class CertificateInformationExtractor {
         }
 
         if (ocspInformation == null) {
-            throw new NoSuchFieldException("No OCSP entry found in certificate.");
+            throw new RuntimeException("No OCSP entry found in certificate.");
         }
 
         // If we found the OCSP information, let's extract it and we're
@@ -314,7 +318,7 @@ public class CertificateInformationExtractor {
         return getStringFromInformationAccessEntry(ocspInformation);
     }
 
-    private String parseCertificateIssuerUrl() throws IOException, ParserException, NoSuchFieldException {
+    private String parseCertificateIssuerUrl() {
         if (x509ExtensionSequences == null) {
             extractX509Extensions();
         }
@@ -338,7 +342,7 @@ public class CertificateInformationExtractor {
         }
 
         if (certificateIssuerInformation == null) {
-            throw new NoSuchFieldException("No Certificate Issuer entry found in certificate.");
+            throw new RuntimeException("No Certificate Issuer entry found in certificate.");
         }
 
         // If we found the OCSP information, let's extract it and we're
@@ -346,7 +350,7 @@ public class CertificateInformationExtractor {
         return getStringFromInformationAccessEntry(certificateIssuerInformation);
     }
 
-    public Certificate retrieveIssuerCertificate() throws IOException, ParserException, NoSuchFieldException {
+    public Certificate retrieveIssuerCertificate() {
         /*
          * Certificate chain recreation sucks. We only support .crt / DER-encoded certificates for extraction, as this
          * seems to be the most common one out there and is somewhat easy to parse with BouncyCastle. This only works
@@ -358,37 +362,43 @@ public class CertificateInformationExtractor {
         // Get URL for the issuer certificate from main certificate
         String issuerCertificateUrlString = getCertificateIssuerUrl();
         URL issuerCertificateUrl;
+        try {
+            if (issuerCertificateUrlString != null) {
 
-        if (issuerCertificateUrlString != null) {
-            issuerCertificateUrl = new URL(issuerCertificateUrlString);
-        } else {
-            throw new RuntimeException("Didn't get any issuer certificate URL from certificate.");
+                issuerCertificateUrl = new URL(issuerCertificateUrlString);
+
+            } else {
+                throw new RuntimeException("Didn't get any issuer certificate URL from certificate.");
+            }
+
+            // Download certificate from URL
+            HttpURLConnection httpCon = (HttpURLConnection) issuerCertificateUrl.openConnection();
+            httpCon.setConnectTimeout(5000);
+            httpCon.setRequestMethod("GET");
+
+            int status = httpCon.getResponseCode();
+            byte[] response;
+            if (status == 200) {
+                response = ByteStreams.toByteArray(httpCon.getInputStream());
+            } else {
+                throw new RuntimeException("Response not successful: Received status code " + status);
+            }
+
+            httpCon.disconnect();
+
+            // Recreate TLS certificate length information
+            byte[] certificateWithLength = ArrayConverter.concatenate(
+                ArrayConverter.intToBytes(response.length, HandshakeByteLength.CERTIFICATES_LENGTH), response);
+            ByteArrayInputStream stream = new ByteArrayInputStream(ArrayConverter.concatenate(
+                ArrayConverter.intToBytes(certificateWithLength.length, HandshakeByteLength.CERTIFICATES_LENGTH),
+                certificateWithLength));
+
+            // Parse and create a Certificate object
+            org.bouncycastle.crypto.tls.Certificate tlsCertificate =
+                org.bouncycastle.crypto.tls.Certificate.parse(stream);
+            return tlsCertificate.getCertificateAt(0);
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
         }
-
-        // Download certificate from URL
-        HttpURLConnection httpCon = (HttpURLConnection) issuerCertificateUrl.openConnection();
-        httpCon.setConnectTimeout(5000);
-        httpCon.setRequestMethod("GET");
-
-        int status = httpCon.getResponseCode();
-        byte[] response;
-        if (status == 200) {
-            response = ByteStreams.toByteArray(httpCon.getInputStream());
-        } else {
-            throw new RuntimeException("Response not successful: Received status code " + status);
-        }
-
-        httpCon.disconnect();
-
-        // Recreate TLS certificate length information
-        byte[] certificateWithLength = ArrayConverter
-            .concatenate(ArrayConverter.intToBytes(response.length, HandshakeByteLength.CERTIFICATES_LENGTH), response);
-        ByteArrayInputStream stream = new ByteArrayInputStream(ArrayConverter.concatenate(
-            ArrayConverter.intToBytes(certificateWithLength.length, HandshakeByteLength.CERTIFICATES_LENGTH),
-            certificateWithLength));
-
-        // Parse and create a Certificate object
-        org.bouncycastle.crypto.tls.Certificate tlsCertificate = org.bouncycastle.crypto.tls.Certificate.parse(stream);
-        return tlsCertificate.getCertificateAt(0);
     }
 }

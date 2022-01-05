@@ -9,7 +9,7 @@
 
 package de.rub.nds.tlsattacker.core.protocol.message;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 public class PWDClientKeyExchangeMessageTest {

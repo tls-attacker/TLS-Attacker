@@ -15,42 +15,7 @@ import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.certificate.CertificateKeyPair;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
-import de.rub.nds.tlsattacker.core.constants.AlertDescription;
-import de.rub.nds.tlsattacker.core.constants.AlertLevel;
-import de.rub.nds.tlsattacker.core.constants.AlpnProtocol;
-import de.rub.nds.tlsattacker.core.constants.AuthzDataFormat;
-import de.rub.nds.tlsattacker.core.constants.CertificateKeyType;
-import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestType;
-import de.rub.nds.tlsattacker.core.constants.CertificateType;
-import de.rub.nds.tlsattacker.core.constants.ChooserType;
-import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.constants.ClientAuthenticationType;
-import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
-import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
-import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
-import de.rub.nds.tlsattacker.core.constants.EsniDnsKeyRecordVersion;
-import de.rub.nds.tlsattacker.core.constants.EsniVersion;
-import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
-import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
-import de.rub.nds.tlsattacker.core.constants.KeyUpdateRequest;
-import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
-import de.rub.nds.tlsattacker.core.constants.NameType;
-import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.constants.PskKeyExchangeMode;
-import de.rub.nds.tlsattacker.core.constants.RecordSizeLimit;
-import de.rub.nds.tlsattacker.core.constants.RunningModeType;
-import de.rub.nds.tlsattacker.core.constants.SSL2CipherSuite;
-import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfiles;
-import de.rub.nds.tlsattacker.core.constants.StarttlsType;
-import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
-import de.rub.nds.tlsattacker.core.constants.TokenBindingType;
-import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
-import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
+import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
 import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
@@ -66,12 +31,7 @@ import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.core.workflow.filter.FilterType;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
@@ -80,12 +40,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -206,6 +161,11 @@ public class Config implements Serializable {
     private InboundConnection defaultServerConnection;
 
     private RunningModeType defaultRunningMode = RunningModeType.CLIENT;
+
+    /**
+     * If default generated WorkflowTraces should contain cookie exchange
+     */
+    private Boolean dtlsCookieExchange = true;
 
     /**
      * If default generated WorkflowTraces should contain client Authentication
@@ -1017,7 +977,7 @@ public class Config implements Serializable {
     private List<CompressionMethod> defaultServerSupportedCompressionMethods;
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private byte[] defaultMasterSecret = new byte[0];
+    private byte[] defaultMasterSecret = new byte[48];
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultPreMasterSecret = new byte[0];
@@ -1040,6 +1000,10 @@ public class Config implements Serializable {
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultClientSessionId = new byte[0];
+
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
+    private byte[] defaultClientTicketResumptionSessionId =
+        ArrayConverter.hexStringToByteArray("332CAC09A5C56974E3D49C0741F396C5F1C90B41529DD643485E65B1C0619D2B");
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultServerSessionId = new byte[0];
@@ -1177,13 +1141,20 @@ public class Config implements Serializable {
     private StarttlsType starttlsType = StarttlsType.NONE;
 
     /**
+     * By default, the Session ID is overwritten, if (1) the server receives an empty Session Ticket (it answers with an
+     * empty Server SID) (2) the client presents a sessionTicket (defaultClientTicketResumptionSessionId is used). Unset
+     * this flag if you want to modify the SessionID.
+     */
+    private Boolean overrideSessionIdForTickets = true;
+
+    /**
      * The Ticket Lifetime Hint, Ticket Key and Ticket Key Name used in the Extension defined in RFC5077, followed by
      * additional TLS 1.3 draft 21 NewSessionTicket parameters.
      */
-    private Long sessionTicketLifetimeHint = 0L;
+    private Long sessionTicketLifetimeHint = 7200L;
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private byte[] sessionTicketKeyAES = ArrayConverter.hexStringToByteArray("536563757265535469636b65744b6579"); // SecureSTicketKey
+    private byte[] sessionTicketEncryptionKey = ArrayConverter.hexStringToByteArray("536563757265535469636b65744b6579"); // SecureSTicketKey
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] sessionTicketKeyHMAC =
@@ -1191,6 +1162,10 @@ public class Config implements Serializable {
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] sessionTicketKeyName = ArrayConverter.hexStringToByteArray("544c532d41747461636b6572204b6579"); // TLS-Attacker
+
+    private CipherAlgorithm sessionTicketCipherAlgorithm = CipherAlgorithm.AES_128_CBC;
+
+    private MacAlgorithm sessionTicketMacAlgorithm = MacAlgorithm.HMAC_SHA256;
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultSessionTicketAgeAdd = ArrayConverter.hexStringToByteArray("cb8dbe8e");
@@ -1555,6 +1530,14 @@ public class Config implements Serializable {
         this.tls13BackwardsCompatibilityMode = tls13BackwardsCompatibilityMode;
     }
 
+    public Boolean isOverrideSessionIdForTickets() {
+        return overrideSessionIdForTickets;
+    }
+
+    public void setOverrideSessionIdForTickets(Boolean overrideSessionIdForTickets) {
+        this.overrideSessionIdForTickets = overrideSessionIdForTickets;
+    }
+
     public long getSessionTicketLifetimeHint() {
         return sessionTicketLifetimeHint;
     }
@@ -1563,12 +1546,12 @@ public class Config implements Serializable {
         this.sessionTicketLifetimeHint = sessionTicketLifetimeHint;
     }
 
-    public byte[] getSessionTicketKeyAES() {
-        return Arrays.copyOf(sessionTicketKeyAES, sessionTicketKeyAES.length);
+    public byte[] getSessionTicketEncryptionKey() {
+        return Arrays.copyOf(sessionTicketEncryptionKey, sessionTicketEncryptionKey.length);
     }
 
-    public void setSessionTicketKeyAES(byte[] sessionTicketKeyAES) {
-        this.sessionTicketKeyAES = sessionTicketKeyAES;
+    public void setSessionTicketEncryptionKey(byte[] sessionTicketEncryptionKey) {
+        this.sessionTicketEncryptionKey = sessionTicketEncryptionKey;
     }
 
     public byte[] getSessionTicketKeyHMAC() {
@@ -2577,6 +2560,14 @@ public class Config implements Serializable {
 
     public final void setDefaultClientSupportedCipherSuites(CipherSuite... defaultClientSupportedCipherSuites) {
         this.defaultClientSupportedCipherSuites = new ArrayList(Arrays.asList(defaultClientSupportedCipherSuites));
+    }
+
+    public Boolean isDtlsCookieExchange() {
+        return dtlsCookieExchange;
+    }
+
+    public void setDtlsCookieExchange(Boolean dtlsCookieExchange) {
+        this.dtlsCookieExchange = dtlsCookieExchange;
     }
 
     public Boolean isClientAuthentication() {
@@ -4011,4 +4002,29 @@ public class Config implements Serializable {
     public void setDefaultKeyUpdateRequestMode(KeyUpdateRequest defaultKeyUpdateRequestMode) {
         this.defaultKeyUpdateRequestMode = defaultKeyUpdateRequestMode;
     }
+
+    public CipherAlgorithm getSessionTicketCipherAlgorithm() {
+        return sessionTicketCipherAlgorithm;
+    }
+
+    public void setSessionTicketCipherAlgorithm(CipherAlgorithm sessionTicketCipherAlgorithm) {
+        this.sessionTicketCipherAlgorithm = sessionTicketCipherAlgorithm;
+    }
+
+    public MacAlgorithm getSessionTicketMacAlgorithm() {
+        return sessionTicketMacAlgorithm;
+    }
+
+    public void setSessionTicketMacAlgorithm(MacAlgorithm sessionTicketMacAlgorithm) {
+        this.sessionTicketMacAlgorithm = sessionTicketMacAlgorithm;
+    }
+
+    public byte[] getDefaultClientTicketResumptionSessionId() {
+        return defaultClientTicketResumptionSessionId;
+    }
+
+    public void setDefaultClientTicketResumptionSessionId(byte[] defaultClientTicketResumptionSessionId) {
+        this.defaultClientTicketResumptionSessionId = defaultClientTicketResumptionSessionId;
+    }
+
 }

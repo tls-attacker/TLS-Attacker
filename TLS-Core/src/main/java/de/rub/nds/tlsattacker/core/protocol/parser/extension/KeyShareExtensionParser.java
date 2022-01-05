@@ -15,6 +15,8 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.LinkedList;
@@ -30,8 +32,11 @@ public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMe
 
     private boolean helloRetryRequestHint = false;
 
-    public KeyShareExtensionParser(InputStream stream, Config config) {
+    private ConnectionEndType talkingConnectionEndType;
+
+    public KeyShareExtensionParser(InputStream stream, Config config, TlsContext context) {
         super(stream, config);
+        talkingConnectionEndType = context.getTalkingConnectionEndType();
     }
 
     @Override
@@ -46,30 +51,37 @@ public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMe
 
     private void parseRegularKeyShare(KeyShareExtensionMessage msg) {
         LOGGER.debug("Parsing KeyShareExtensionMessage as regular KeyShareExtension");
-        parseKeyShareListLength(msg);
-        parseKeyShareListBytes(msg);
-
-        ByteArrayInputStream innerStream = new ByteArrayInputStream(msg.getKeyShareListBytes().getValue());
         entryList = new LinkedList<>();
-        while (innerStream.available() > 0) {
-            KeyShareEntryParser parser = new KeyShareEntryParser(innerStream);
-            KeyShareEntry entry = new KeyShareEntry();
-            parser.parse(entry);
-            entryList.add(entry);
+        if (talkingConnectionEndType == ConnectionEndType.CLIENT) {
+            parseKeyShareListLength(msg);
+            parseKeyShareListBytes(msg);
+            ByteArrayInputStream innerStream = new ByteArrayInputStream(msg.getKeyShareListBytes().getValue());
+            while (innerStream.available() > 0) {
+                KeyShareEntry entry = parseKeyShareEntry(innerStream);
+                entryList.add(entry);
+            }
+        } else {
+            byte[] keyShareBytes = parseByteArrayField(msg.getExtensionLength().getValue());
+            entryList.add(parseKeyShareEntry(new ByteArrayInputStream(keyShareBytes)));
         }
-        parseKeyShareList(msg);
+
+        setKeyShareList(msg);
+    }
+
+    private KeyShareEntry parseKeyShareEntry(ByteArrayInputStream innerStream) {
+        KeyShareEntryParser parser = new KeyShareEntryParser(innerStream);
+        KeyShareEntry entry = new KeyShareEntry();
+        parser.parse(entry);
+        return entry;
     }
 
     private void parseHRRKeyShare(KeyShareExtensionMessage msg) {
         LOGGER.debug("Parsing KeyShareExtensionMessage as HelloRetryRequest KeyShareExtension");
         msg.setKeyShareListBytes(parseByteArrayField(NamedGroup.LENGTH));
         entryList = new LinkedList<>();
-        KeyShareEntryParser parser =
-            new KeyShareEntryParser(new ByteArrayInputStream(msg.getKeyShareListBytes().getValue()));
-        KeyShareEntry entry = new KeyShareEntry();
-        parser.parse(entry);
+        KeyShareEntry entry = parseKeyShareEntry(new ByteArrayInputStream(msg.getKeyShareListBytes().getValue()));
         entryList.add(entry);
-        parseKeyShareList(msg);
+        setKeyShareList(msg);
     }
 
     /**
@@ -100,7 +112,7 @@ public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMe
      * @param msg
      *            Message to write in
      */
-    private void parseKeyShareList(KeyShareExtensionMessage msg) {
+    private void setKeyShareList(KeyShareExtensionMessage msg) {
         msg.setKeyShareList(entryList);
     }
 

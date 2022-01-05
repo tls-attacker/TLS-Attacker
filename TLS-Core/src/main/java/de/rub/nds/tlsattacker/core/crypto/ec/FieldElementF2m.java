@@ -157,7 +157,7 @@ public class FieldElementF2m extends FieldElement implements Serializable {
 
     /**
      * Returns (this^2)^exponent)
-     * 
+     *
      * @param exponent
      */
     public FieldElementF2m squarePow(int exponent) {

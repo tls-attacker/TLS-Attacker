@@ -9,9 +9,6 @@
 
 package de.rub.nds.tlsattacker.attacks.cca;
 
-import static de.rub.nds.tlsattacker.core.certificate.PemUtil.readPrivateKey;
-import static de.rub.nds.tlsattacker.core.certificate.PemUtil.readPublicKey;
-
 import de.rub.nds.asn1.Asn1Encodable;
 import de.rub.nds.asn1.encoder.Asn1EncoderForX509;
 import de.rub.nds.asn1.model.Asn1Sequence;
@@ -21,18 +18,11 @@ import de.rub.nds.asn1tool.xmlparser.Asn1XmlContent;
 import de.rub.nds.asn1tool.xmlparser.XmlParser;
 import de.rub.nds.tlsattacker.attacks.impl.Attacker;
 import de.rub.nds.tlsattacker.core.certificate.PemUtil;
+import static de.rub.nds.tlsattacker.core.certificate.PemUtil.readPrivateKey;
+import static de.rub.nds.tlsattacker.core.certificate.PemUtil.readPublicKey;
 import de.rub.nds.tlsattacker.core.config.delegate.CcaDelegate;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.crypto.keys.CustomDHPrivateKey;
-import de.rub.nds.tlsattacker.core.crypto.keys.CustomDSAPrivateKey;
-import de.rub.nds.tlsattacker.core.crypto.keys.CustomDhPublicKey;
-import de.rub.nds.tlsattacker.core.crypto.keys.CustomDsaPublicKey;
-import de.rub.nds.tlsattacker.core.crypto.keys.CustomECPrivateKey;
-import de.rub.nds.tlsattacker.core.crypto.keys.CustomEcPublicKey;
-import de.rub.nds.tlsattacker.core.crypto.keys.CustomPrivateKey;
-import de.rub.nds.tlsattacker.core.crypto.keys.CustomPublicKey;
-import de.rub.nds.tlsattacker.core.crypto.keys.CustomRSAPrivateKey;
-import de.rub.nds.tlsattacker.core.crypto.keys.CustomRsaPublicKey;
+import de.rub.nds.tlsattacker.core.crypto.keys.*;
 import de.rub.nds.x509attacker.X509Attributes;
 import de.rub.nds.x509attacker.filesystem.CertificateFileWriter;
 import de.rub.nds.x509attacker.keyfilemanager.KeyFileManager;
@@ -49,12 +39,7 @@ import java.security.PublicKey;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
-import java.security.interfaces.DSAPrivateKey;
-import java.security.interfaces.DSAPublicKey;
-import java.security.interfaces.ECPrivateKey;
-import java.security.interfaces.ECPublicKey;
-import java.security.interfaces.RSAPrivateKey;
-import java.security.interfaces.RSAPublicKey;
+import java.security.interfaces.*;
 import java.security.spec.ECPoint;
 import java.util.HashMap;
 import java.util.List;

@@ -21,10 +21,12 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.RenegotiationIn
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.RenegotiationInfoExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * This extension is defined in RFC5746
  */
+@XmlRootElement(name = "RenegotiationInfoExtension")
 public class RenegotiationInfoExtensionMessage extends ExtensionMessage<RenegotiationInfoExtensionMessage> {
 
     @ModifiableVariableProperty

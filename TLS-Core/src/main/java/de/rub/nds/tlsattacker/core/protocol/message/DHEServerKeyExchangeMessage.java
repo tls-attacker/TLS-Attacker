@@ -29,7 +29,7 @@ import java.io.InputStream;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
+@XmlRootElement(name = "DHEClientKeyExchange")
 public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     /**

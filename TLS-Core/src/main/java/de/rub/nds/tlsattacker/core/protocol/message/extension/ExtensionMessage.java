@@ -18,15 +18,33 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.layer.DataContainer;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
 import java.io.Serializable;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
 
-@XmlRootElement
+@XmlSeeAlso({ EncryptedServerNameIndicationExtensionMessage.class, ECPointFormatExtensionMessage.class,
+    EllipticCurvesExtensionMessage.class, EllipticCurvesExtensionMessage.class,
+    ExtendedMasterSecretExtensionMessage.class, GreaseExtensionMessage.class, HeartbeatExtensionMessage.class,
+    MaxFragmentLengthExtensionMessage.class, RecordSizeLimitExtensionMessage.class, PaddingExtensionMessage.class,
+    RenegotiationInfoExtensionMessage.class, ServerNameIndicationExtensionMessage.class,
+    SessionTicketTLSExtensionMessage.class, SignatureAndHashAlgorithmsExtensionMessage.class,
+    SignedCertificateTimestampExtensionMessage.class, ExtendedRandomExtensionMessage.class,
+    TokenBindingExtensionMessage.class, KeyShareExtensionMessage.class, SupportedVersionsExtensionMessage.class,
+    AlpnExtensionMessage.class, CertificateStatusRequestExtensionMessage.class,
+    CertificateStatusRequestV2ExtensionMessage.class, CertificateTypeExtensionMessage.class,
+    ClientCertificateUrlExtensionMessage.class, ClientCertificateTypeExtensionMessage.class,
+    ClientAuthzExtensionMessage.class, EncryptThenMacExtensionMessage.class, ServerAuthzExtensionMessage.class,
+    ServerCertificateTypeExtensionMessage.class, SrtpExtensionMessage.class, TrustedCaIndicationExtensionMessage.class,
+    TruncatedHmacExtensionMessage.class, EarlyDataExtensionMessage.class, PSKKeyExchangeModesExtensionMessage.class,
+    PreSharedKeyExtensionMessage.class, UnknownExtensionMessage.class, PWDClearExtensionMessage.class,
+    PWDProtectExtensionMessage.class, PasswordSaltExtensionMessage.class, CachedInfoExtensionMessage.class,
+    CookieExtensionMessage.class, DtlsHandshakeMessageFragment.class, UserMappingExtensionMessage.class,
+    SRPExtensionMessage.class, CachedInfoExtensionMessage.class })
 public abstract class ExtensionMessage<Self extends ExtensionMessage> extends ModifiableVariableHolder
     implements Serializable, DataContainer<Self> {
 

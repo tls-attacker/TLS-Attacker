@@ -15,13 +15,16 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.mlong.ModifiableLong;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
+import de.rub.nds.tlsattacker.core.constants.ClientAuthenticationType;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import de.rub.nds.tlsattacker.util.TimeHelper;
 
 public class StatePlaintext {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByteArray protocolVersion;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableInteger cipherSuite;
+    private ModifiableByteArray cipherSuite;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByte compressionMethod;
@@ -44,6 +47,30 @@ public class StatePlaintext {
     public StatePlaintext() {
     }
 
+    public void generateStatePlaintext(Chooser chooser) {
+        setCipherSuite(chooser.getSelectedCipherSuite().getByteValue());
+        setCompressionMethod(chooser.getSelectedCompressionMethod().getValue());
+        setMasterSecret(chooser.getMasterSecret());
+        setProtocolVersion(chooser.getSelectedProtocolVersion().getValue());
+
+        long timestamp = TimeHelper.getTime() / 1000;
+        setTimestamp(timestamp);
+
+        switch (chooser.getConfig().getClientAuthenticationType()) {
+            case ANONYMOUS:
+                setClientAuthenticationType(ClientAuthenticationType.ANONYMOUS.getValue());
+                setClientAuthenticationData(new byte[0]);
+                setClientAuthenticationDataLength(0);
+                break;
+            case CERTIFICATE_BASED:
+                throw new UnsupportedOperationException("Certificate based ClientAuthentication is not supported");
+            case PSK:
+                throw new UnsupportedOperationException("PSK ClientAuthentication is not supported");
+            default:
+                throw new UnsupportedOperationException("Unknown ClientAuthenticationType");
+        }
+    }
+
     public ModifiableByteArray getProtocolVersion() {
         return protocolVersion;
     }
@@ -56,15 +83,15 @@ public class StatePlaintext {
         this.protocolVersion = ModifiableVariableFactory.safelySetValue(this.protocolVersion, protocolVersion);
     }
 
-    public ModifiableInteger getCipherSuite() {
+    public ModifiableByteArray getCipherSuite() {
         return cipherSuite;
     }
 
-    public void setCipherSuite(ModifiableInteger cipherSuite) {
+    public void setCipherSuite(ModifiableByteArray cipherSuite) {
         this.cipherSuite = cipherSuite;
     }
 
-    public void setCipherSuite(int cipherSuite) {
+    public void setCipherSuite(byte[] cipherSuite) {
         this.cipherSuite = ModifiableVariableFactory.safelySetValue(this.cipherSuite, cipherSuite);
     }
 
