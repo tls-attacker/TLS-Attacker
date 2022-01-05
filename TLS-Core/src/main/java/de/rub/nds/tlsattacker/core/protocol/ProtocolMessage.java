@@ -61,6 +61,7 @@ public abstract class ProtocolMessage<Self extends ProtocolMessage> extends Modi
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.BEHAVIOR_SWITCH)
     private ModifiableBoolean adjustContext;
 
+    @Override
     public boolean isRequired() {
         if (required == null || required.getValue() == null) {
             return requiredDefault;

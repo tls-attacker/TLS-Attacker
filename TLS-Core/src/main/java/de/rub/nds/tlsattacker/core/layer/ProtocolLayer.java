@@ -109,7 +109,7 @@ public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container 
             if (producedDataContainers.size() <= i) {
                 return false;
             }
-            if (!container.getClass().equals(producedDataContainers.get(i).getClass())) {
+            if (!container.getClass().equals(producedDataContainers.get(i).getClass()) && container.isRequired()) {
                 // TODO deal with optional messages
                 return false;
             }
