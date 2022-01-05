@@ -289,16 +289,10 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
         try {
             processingResult = layerStack.receiveData(layerConfigurationList);
             receivedMessages =
-                new ArrayList<>(processingResult.getResultForLayer(ImplementedLayers.MESSAGE).getUsedContainers()); // TODO
-                                                                                                                    // Automatically
-                                                                                                                    // get
-            // correct
+                new ArrayList<>(processingResult.getResultForLayer(ImplementedLayers.MESSAGE).getUsedContainers());
             // index in result
             receivedRecords =
-                new ArrayList<>(processingResult.getResultForLayer(ImplementedLayers.RECORD).getUsedContainers()); // TODO
-                                                                                                                   // Automatically
-                                                                                                                   // get
-            // correct
+                new ArrayList<>(processingResult.getResultForLayer(ImplementedLayers.RECORD).getUsedContainers());
             // index in result
         } catch (IOException ex) {
             LOGGER.warn("Received an IOException");
@@ -335,15 +329,9 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
             layerConfigurationList.add(new SpecificContainerLayerConfiguration((List) null));
             LayerStackProcessingResult processingResult = layerStack.sendData(layerConfigurationList);
             sendMessages =
-                new ArrayList<>(processingResult.getResultForLayer(ImplementedLayers.MESSAGE).getUsedContainers()); // TODO
-                                                                                                                    // Automatically
-                                                                                                                    // get
-            // correct index in result
+                new ArrayList<>(processingResult.getResultForLayer(ImplementedLayers.MESSAGE).getUsedContainers());
             sendRecords =
-                new ArrayList<>(processingResult.getResultForLayer(ImplementedLayers.RECORD).getUsedContainers()); // TODO
-                                                                                                                   // Automatically
-                                                                                                                   // get
-            // correct index in result
+                new ArrayList<>(processingResult.getResultForLayer(ImplementedLayers.RECORD).getUsedContainers());
 
             executedAsPlanned = checkMessageListsEquals(sendMessages, receivedMessages);
 

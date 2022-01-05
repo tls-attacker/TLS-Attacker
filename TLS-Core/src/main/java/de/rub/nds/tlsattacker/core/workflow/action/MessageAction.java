@@ -273,17 +273,8 @@ public abstract class MessageAction extends ConnectionBoundAction {
     }
 
     private void setContainers(LayerStackProcessingResult processingResults) {
-        // TODO Automatically get correct
-        // index in result
-        messages = new ArrayList<>(processingResults.getResultForLayer(ImplementedLayers.MESSAGE).getUsedContainers()); // TODO
-                                                                                                                        // Automatically
-                                                                                                                        // get
-                                                                                                                        // correct
-        // index in result
-        records = new ArrayList<>(processingResults.getResultForLayer(ImplementedLayers.RECORD).getUsedContainers()); // TODO
-                                                                                                                      // Automatically
-                                                                                                                      // get
-                                                                                                                      // correct
+        messages = new ArrayList<>(processingResults.getResultForLayer(ImplementedLayers.MESSAGE).getUsedContainers());
+        records = new ArrayList<>(processingResults.getResultForLayer(ImplementedLayers.RECORD).getUsedContainers());
     }
 
     protected void receiveTill(TlsContext tlsContext, List<ProtocolMessage> protocolMessagesToSend,
