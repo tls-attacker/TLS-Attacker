@@ -12,9 +12,7 @@ package de.rub.nds.tlsattacker.core.dtls;
 import de.rub.nds.tlsattacker.core.config.Config;
 import static de.rub.nds.tlsattacker.core.dtls.FragmentUtils.fragment;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 

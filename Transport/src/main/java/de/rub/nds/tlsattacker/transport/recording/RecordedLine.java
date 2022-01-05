@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.transport.recording;
 
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
+
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 public class RecordedLine {

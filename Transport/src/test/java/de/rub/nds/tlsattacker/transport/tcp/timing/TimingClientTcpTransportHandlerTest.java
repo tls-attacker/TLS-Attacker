@@ -9,14 +9,16 @@
 
 package de.rub.nds.tlsattacker.transport.tcp.timing;
 
+import org.junit.Before;
+import org.junit.Test;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+
 import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
 
 public class TimingClientTcpTransportHandlerTest {
 

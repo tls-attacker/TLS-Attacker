@@ -12,7 +12,6 @@ package de.rub.nds.tlsattacker.core.protocol.message;
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
-import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.mlong.ModifiableLong;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
@@ -28,17 +27,14 @@ import java.io.InputStream;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
+@XmlRootElement(name = "NewSessionTicket")
 public class NewSessionTicketMessage extends HandshakeMessage {
 
     @ModifiableVariableProperty()
     private ModifiableLong ticketLifetimeHint;
 
-    @ModifiableVariableProperty()
-    private ModifiableInteger ticketLength;
-
     @HoldsModifiableVariable
-    private SessionTicket ticket;
+    private final SessionTicket ticket;
 
     public NewSessionTicketMessage() {
         super(HandshakeMessageType.NEW_SESSION_TICKET);
@@ -81,24 +77,6 @@ public class NewSessionTicketMessage extends HandshakeMessage {
         return ticket;
     }
 
-    public void prepareTicket() {
-        if (ticket == null) {
-            ticket = new SessionTicket();
-        }
-    }
-
-    public ModifiableInteger getTicketLength() {
-        return ticketLength;
-    }
-
-    public void setTicketLength(int ticketLength) {
-        this.ticketLength = ModifiableVariableFactory.safelySetValue(this.ticketLength, ticketLength);
-    }
-
-    public void setTicketLength(ModifiableInteger ticketLength) {
-        this.ticketLength = ticketLength;
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -110,8 +88,8 @@ public class NewSessionTicketMessage extends HandshakeMessage {
             sb.append("null");
         }
         sb.append("\n  TicketLength: ");
-        if (ticketLength != null && ticketLength.getValue() != null) {
-            sb.append(ticketLength.getValue());
+        if (getTicket().getIdentityLength() != null && getTicket().getIdentityLength().getValue() != null) {
+            sb.append(getTicket().getIdentityLength().getValue());
         } else {
             sb.append("null");
         }

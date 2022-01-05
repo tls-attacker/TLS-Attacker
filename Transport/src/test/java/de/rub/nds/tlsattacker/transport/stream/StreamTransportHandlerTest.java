@@ -10,12 +10,14 @@
 package de.rub.nds.tlsattacker.transport.stream;
 
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import org.junit.Before;
+import org.junit.Test;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+
 import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
 
 public class StreamTransportHandlerTest {
 

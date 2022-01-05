@@ -26,7 +26,7 @@ import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @SuppressWarnings("serial")
-@XmlRootElement
+@XmlRootElement(name = "SSL2ClientHello")
 public class SSL2ClientHelloMessage extends SSL2HandshakeMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)

@@ -12,25 +12,7 @@ package de.rub.nds.tlsattacker.client.config;
 import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.TLSDelegateConfig;
-import de.rub.nds.tlsattacker.core.config.delegate.CertificateDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.CipherSuiteDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.CompressionDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.ConfigOutputDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.FilterDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.HeartbeatDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.ListDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.MaxFragmentLengthDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.NamedGroupsDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.SignatureAndHashAlgorithmDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.StarttlsDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.TimeoutDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.TransportHandlerDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.WorkflowInputDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.WorkflowOutputDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.WorkflowTypeDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.*;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 
 public class ClientCommandConfig extends TLSDelegateConfig {

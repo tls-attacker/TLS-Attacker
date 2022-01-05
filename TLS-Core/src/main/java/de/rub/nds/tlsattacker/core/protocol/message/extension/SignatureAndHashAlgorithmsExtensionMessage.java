@@ -21,10 +21,12 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SignatureAndHas
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SignatureAndHashAlgorithmsExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * This extension is defined in RFC5246
  */
+@XmlRootElement(name = "SignatureAndHashAlgorithmsExtension")
 public class SignatureAndHashAlgorithmsExtensionMessage
     extends ExtensionMessage<SignatureAndHashAlgorithmsExtensionMessage> {
 

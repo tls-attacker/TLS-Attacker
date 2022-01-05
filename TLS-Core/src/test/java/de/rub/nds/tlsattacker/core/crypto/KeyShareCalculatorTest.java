@@ -9,6 +9,7 @@
 
 package de.rub.nds.tlsattacker.core.crypto;
 
+import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import java.math.BigInteger;
 import java.util.LinkedList;
@@ -55,12 +56,7 @@ public class KeyShareCalculatorTest {
         somePrivateKeyList.add(new BigInteger(256, new Random(0)));
         for (BigInteger bigInt : somePrivateKeyList) {
             for (NamedGroup group : NamedGroup.getImplemented()) {
-                if (group.isStandardCurve()) {
-                    KeyShareCalculator.createPublicKey(group, bigInt);
-                } else {
-                    KeyShareCalculator.createMontgomeryKeyShare(group, bigInt);
-                }
-                // Note this test has to be extended once we support more groups
+                KeyShareCalculator.createPublicKey(group, bigInt, ECPointFormat.UNCOMPRESSED);
             }
         }
     }

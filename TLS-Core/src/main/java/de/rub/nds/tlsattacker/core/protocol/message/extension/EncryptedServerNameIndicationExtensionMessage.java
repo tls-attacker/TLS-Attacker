@@ -23,9 +23,11 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EncryptedServer
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.EncryptedServerNameIndicationExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
+import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+@XmlRootElement(name = "EncryptedServerNameIndicationExtension")
 public class EncryptedServerNameIndicationExtensionMessage
     extends ExtensionMessage<EncryptedServerNameIndicationExtensionMessage> {
 
@@ -220,5 +222,4 @@ public class EncryptedServerNameIndicationExtensionMessage
         CLIENT,
         SERVER;
     }
-
 }

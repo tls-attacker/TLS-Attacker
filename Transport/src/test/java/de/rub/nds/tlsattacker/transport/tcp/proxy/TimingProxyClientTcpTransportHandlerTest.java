@@ -9,17 +9,18 @@
 
 package de.rub.nds.tlsattacker.transport.tcp.proxy;
 
+import de.rub.nds.tlsattacker.util.tests.IntegrationTests;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
-import static org.junit.Assert.*;
 
-import de.rub.nds.tlsattacker.util.tests.IntegrationTests;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import static org.junit.Assert.*;
 
 public class TimingProxyClientTcpTransportHandlerTest {
 

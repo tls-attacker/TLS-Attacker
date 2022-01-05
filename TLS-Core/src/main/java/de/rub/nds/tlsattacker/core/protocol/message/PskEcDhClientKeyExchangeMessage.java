@@ -24,7 +24,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
+@XmlRootElement(name = "PskEcDhClientKeyExchange")
 public class PskEcDhClientKeyExchangeMessage extends ECDHClientKeyExchangeMessage {
 
     @ModifiableVariableProperty(format = ModifiableVariableProperty.Format.PKCS1,

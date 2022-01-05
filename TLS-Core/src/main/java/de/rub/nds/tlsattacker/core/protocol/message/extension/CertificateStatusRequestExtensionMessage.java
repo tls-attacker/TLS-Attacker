@@ -21,10 +21,12 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.CertificateStat
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.CertificateStatusRequestExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * This extension is defined in RFC6066
  */
+@XmlRootElement(name = "CertificateStatusRequestExtension")
 public class CertificateStatusRequestExtensionMessage
     extends ExtensionMessage<CertificateStatusRequestExtensionMessage> {
 

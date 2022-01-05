@@ -11,12 +11,7 @@ package de.rub.nds.tlsattacker.core.dtls;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -123,7 +118,7 @@ public class FragmentManager {
     /**
      * Returns the stored fragmented message with the given messageSeq and epoch, as a single combined fragment. Returns
      * null if no message was stored with this messageSeq, or if the message is incomplete.
-     * 
+     *
      * @param  messageSeq
      * @param  epoch
      * @return

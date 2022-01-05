@@ -20,10 +20,12 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PaddingExtensio
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PaddingExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * This extension is defined in RFC7685
  */
+@XmlRootElement(name = "PaddingExtension")
 public class PaddingExtensionMessage extends ExtensionMessage<PaddingExtensionMessage> {
 
     /**

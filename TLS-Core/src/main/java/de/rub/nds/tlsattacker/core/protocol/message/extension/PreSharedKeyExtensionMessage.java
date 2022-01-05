@@ -31,10 +31,12 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * RFC draft-ietf-tls-tls13-21
  */
+@XmlRootElement(name = "PreSharedKeyExtension")
 public class PreSharedKeyExtensionMessage extends ExtensionMessage<PreSharedKeyExtensionMessage> {
 
     private ModifiableInteger identityListLength;

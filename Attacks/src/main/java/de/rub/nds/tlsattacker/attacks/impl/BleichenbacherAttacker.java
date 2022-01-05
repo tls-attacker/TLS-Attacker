@@ -9,8 +9,6 @@
 
 package de.rub.nds.tlsattacker.attacks.impl;
 
-import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
-
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.attacks.config.BleichenbacherCommandConfig;
 import de.rub.nds.tlsattacker.attacks.exception.AttackFailedException;
@@ -36,6 +34,7 @@ import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.util.CertificateFetcher;
 import de.rub.nds.tlsattacker.core.workflow.ParallelExecutor;
 import de.rub.nds.tlsattacker.core.workflow.task.TlsTask;
+import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 import java.math.BigInteger;
 import java.security.interfaces.RSAPublicKey;
 import java.util.LinkedList;

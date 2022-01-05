@@ -15,8 +15,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -32,24 +30,8 @@ public class GenericReceiveAction extends MessageAction implements ReceivingActi
         super();
     }
 
-    public GenericReceiveAction(List<ProtocolMessage> messages) {
-        super(messages);
-    }
-
-    public GenericReceiveAction(ProtocolMessage... messages) {
-        this(new ArrayList<>(Arrays.asList(messages)));
-    }
-
     public GenericReceiveAction(String connectionAlias) {
         super(connectionAlias);
-    }
-
-    public GenericReceiveAction(String connectionAlias, List<ProtocolMessage> messages) {
-        super(connectionAlias, messages);
-    }
-
-    public GenericReceiveAction(String connectionAlias, ProtocolMessage... messages) {
-        super(connectionAlias, new ArrayList<>(Arrays.asList(messages)));
     }
 
     @Override

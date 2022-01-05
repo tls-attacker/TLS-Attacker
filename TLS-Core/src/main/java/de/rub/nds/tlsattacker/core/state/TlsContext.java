@@ -13,30 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.BadRandom;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
-import de.rub.nds.tlsattacker.core.constants.AuthzDataFormat;
-import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestType;
-import de.rub.nds.tlsattacker.core.constants.CertificateType;
-import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
-import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
-import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
-import de.rub.nds.tlsattacker.core.constants.EsniDnsKeyRecordVersion;
-import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
-import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
-import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
-import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.constants.PskKeyExchangeMode;
-import de.rub.nds.tlsattacker.core.constants.RunningModeType;
-import de.rub.nds.tlsattacker.core.constants.SSL2CipherSuite;
-import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfiles;
-import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
-import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
-import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
-import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
+import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.crypto.MessageDigestCollector;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.dtls.FragmentManager;
@@ -55,20 +32,16 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.T
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
 import de.rub.nds.tlsattacker.core.state.http.HttpContext;
+import de.rub.nds.tlsattacker.core.state.session.IdSession;
+import de.rub.nds.tlsattacker.core.state.session.Session;
+import de.rub.nds.tlsattacker.core.state.session.TicketSession;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.socket.SocketState;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.EnumSet;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import org.apache.logging.log4j.LogManager;
@@ -291,11 +264,6 @@ public class TlsContext {
      * These are the padding bytes as used in the padding extension.
      */
     private byte[] paddingExtensionBytes;
-
-    /**
-     * This is the session ticket of the SessionTicketTLS extension.
-     */
-    private byte[] sessionTicketTLS;
 
     /**
      * The renegotiation info of the RenegotiationInfo extension.
@@ -802,9 +770,9 @@ public class TlsContext {
         this.httpContext = httpContext;
     }
 
-    public Session getSession(byte[] sessionId) {
+    public Session getIdSession(byte[] sessionId) {
         for (Session session : sessionList) {
-            if (Arrays.equals(session.getSessionId(), sessionId)) {
+            if (session.isIdSession() && Arrays.equals(((IdSession) session).getId(), sessionId)) {
                 return session;
             }
         }
@@ -812,7 +780,17 @@ public class TlsContext {
     }
 
     public boolean hasSession(byte[] sessionId) {
-        return getSession(sessionId) != null;
+        return getIdSession(sessionId) != null;
+    }
+
+    public byte[] getLatestSessionTicket() {
+        for (int i = sessionList.size() - 1; i >= 0; i--) {
+            Session session = sessionList.get(i);
+            if (session.isTicketSession()) {
+                return ((TicketSession) session).getTicket();
+            }
+        }
+        return null;
     }
 
     public void addNewSession(Session session) {
@@ -1585,14 +1563,6 @@ public class TlsContext {
 
     public void setServerKeyShareStoreEntry(KeyShareStoreEntry serverKeyShareStoreEntry) {
         this.serverKeyShareStoreEntry = serverKeyShareStoreEntry;
-    }
-
-    public byte[] getSessionTicketTLS() {
-        return sessionTicketTLS;
-    }
-
-    public void setSessionTicketTLS(byte[] sessionTicketTLS) {
-        this.sessionTicketTLS = sessionTicketTLS;
     }
 
     public byte[] getSignedCertificateTimestamp() {

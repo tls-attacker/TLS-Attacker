@@ -22,15 +22,9 @@ import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import javax.xml.bind.annotation.XmlElement;
+import java.util.*;
+import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -42,55 +36,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
 
     @HoldsModifiableVariable
     @XmlElementWrapper
-    @XmlElements(value = { @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
-        @XmlElement(type = CertificateMessage.class, name = "Certificate"),
-        @XmlElement(type = CertificateVerifyMessage.class, name = "CertificateVerify"),
-        @XmlElement(type = CertificateRequestMessage.class, name = "CertificateRequest"),
-        @XmlElement(type = CertificateStatusMessage.class, name = "CertificateStatus"),
-        @XmlElement(type = ClientHelloMessage.class, name = "ClientHello"),
-        @XmlElement(type = HelloVerifyRequestMessage.class, name = "HelloVerifyRequest"),
-        @XmlElement(type = DHClientKeyExchangeMessage.class, name = "DHClientKeyExchange"),
-        @XmlElement(type = DHEServerKeyExchangeMessage.class, name = "DHEServerKeyExchange"),
-        @XmlElement(type = ECDHClientKeyExchangeMessage.class, name = "ECDHClientKeyExchange"),
-        @XmlElement(type = ECDHEServerKeyExchangeMessage.class, name = "ECDHEServerKeyExchange"),
-        @XmlElement(type = PskClientKeyExchangeMessage.class, name = "PSKClientKeyExchange"),
-        @XmlElement(type = PWDServerKeyExchangeMessage.class, name = "PWDServerKeyExchange"),
-        @XmlElement(type = PWDClientKeyExchangeMessage.class, name = "PWDClientKeyExchange"),
-        @XmlElement(type = FinishedMessage.class, name = "Finished"),
-        @XmlElement(type = RSAClientKeyExchangeMessage.class, name = "RSAClientKeyExchange"),
-        @XmlElement(type = ServerHelloDoneMessage.class, name = "ServerHelloDone"),
-        @XmlElement(type = ServerHelloMessage.class, name = "ServerHello"),
-        @XmlElement(type = AlertMessage.class, name = "Alert"),
-        @XmlElement(type = NewSessionTicketMessage.class, name = "NewSessionTicket"),
-        @XmlElement(type = KeyUpdateMessage.class, name = "KeyUpdate"),
-        @XmlElement(type = ApplicationMessage.class, name = "Application"),
-        @XmlElement(type = ChangeCipherSpecMessage.class, name = "ChangeCipherSpec"),
-        @XmlElement(type = SSL2ClientHelloMessage.class, name = "SSL2ClientHello"),
-        @XmlElement(type = SSL2ServerHelloMessage.class, name = "SSL2ServerHello"),
-        @XmlElement(type = SSL2ClientMasterKeyMessage.class, name = "SSL2ClientMasterKey"),
-        @XmlElement(type = SSL2ServerVerifyMessage.class, name = "SSL2ServerVerify"),
-        @XmlElement(type = UnknownMessage.class, name = "UnknownMessage"),
-        @XmlElement(type = UnknownHandshakeMessage.class, name = "UnknownHandshakeMessage"),
-        @XmlElement(type = HelloRequestMessage.class, name = "HelloRequest"),
-        @XmlElement(type = HeartbeatMessage.class, name = "Heartbeat"),
-        @XmlElement(type = SupplementalDataMessage.class, name = "SupplementalDataMessage"),
-        @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensionMessage"),
-        @XmlElement(type = HttpsRequestMessage.class, name = "HttpsRequest"),
-        @XmlElement(type = HttpsResponseMessage.class, name = "HttpsResponse"),
-        @XmlElement(type = PskClientKeyExchangeMessage.class, name = "PskClientKeyExchange"),
-        @XmlElement(type = PskDhClientKeyExchangeMessage.class, name = "PskDhClientKeyExchange"),
-        @XmlElement(type = PskDheServerKeyExchangeMessage.class, name = "PskDheServerKeyExchange"),
-        @XmlElement(type = PskEcDhClientKeyExchangeMessage.class, name = "PskEcDhClientKeyExchange"),
-        @XmlElement(type = PskEcDheServerKeyExchangeMessage.class, name = "PskEcDheServerKeyExchange"),
-        @XmlElement(type = PskRsaClientKeyExchangeMessage.class, name = "PskRsaClientKeyExchange"),
-        @XmlElement(type = PskServerKeyExchangeMessage.class, name = "PskServerKeyExchange"),
-        @XmlElement(type = SrpServerKeyExchangeMessage.class, name = "SrpServerKeyExchange"),
-        @XmlElement(type = SrpClientKeyExchangeMessage.class, name = "SrpClientKeyExchange"),
-        @XmlElement(type = EndOfEarlyDataMessage.class, name = "EndOfEarlyData"),
-        @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensions"),
-        @XmlElement(type = GOSTClientKeyExchangeMessage.class, name = "GostClientKeyExchangeMessage"),
-        @XmlElement(type = EmptyClientKeyExchangeMessage.class, name = "EmptyClientKeyExchangeMessage"),
-        @XmlElement(type = DtlsHandshakeMessageFragment.class, name = "DtlsHandshakeMessageFragment") })
+    @XmlElementRef
     protected List<ProtocolMessage> expectedMessages = new ArrayList<>();
 
     public ReceiveAction() {
@@ -207,6 +153,15 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
 
     @Override
     public boolean executedAsPlanned() {
+        return receivedAsPlanned(getMessages(), getExpectedMessages(), getActionOptions());
+    }
+
+    public static boolean receivedAsPlanned(List<ProtocolMessage> messages, List<ProtocolMessage> expectedMessages) {
+        return receivedAsPlanned(messages, expectedMessages, new HashSet<>());
+    }
+
+    public static boolean receivedAsPlanned(List<ProtocolMessage> messages, List<ProtocolMessage> expectedMessages,
+        Set<ActionOption> actionOptions) {
         if (messages == null) {
             return false;
         }
@@ -217,7 +172,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
             } else if (j < messages.size()) {
                 if (!Objects.equals(expectedMessages.get(i).getClass(), messages.get(j).getClass())
                     && expectedMessages.get(i).isRequired()) {
-                    if (receivedMessageCanBeIgnored(messages.get(j))) {
+                    if (receivedMessageCanBeIgnored(messages.get(j), actionOptions)) {
                         j++;
                         i--;
                     } else {
@@ -231,8 +186,8 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         }
 
         for (; j < messages.size(); j++) {
-            if (!receivedMessageCanBeIgnored(messages.get(j))
-                && !getActionOptions().contains(ActionOption.CHECK_ONLY_EXPECTED)) {
+            if (!receivedMessageCanBeIgnored(messages.get(j), actionOptions)
+                && !actionOptions.contains(ActionOption.CHECK_ONLY_EXPECTED)) {
                 return false; // additional messages are not allowed
             }
         }
@@ -361,16 +316,25 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         }
     }
 
-    private boolean receivedMessageCanBeIgnored(ProtocolMessage msg) {
-        if (getActionOptions().contains(ActionOption.IGNORE_UNEXPECTED_WARNINGS)) {
+    private static boolean receivedMessageCanBeIgnored(ProtocolMessage msg, Set<ActionOption> actionOptions) {
+        if (actionOptions.contains(ActionOption.IGNORE_UNEXPECTED_WARNINGS)) {
             if (msg instanceof AlertMessage) {
                 AlertMessage alert = (AlertMessage) msg;
                 if (alert.getLevel().getOriginalValue() == AlertLevel.WARNING.getValue()) {
                     return true;
                 }
             }
-        } else if (getActionOptions().contains(ActionOption.IGNORE_UNEXPECTED_NEW_SESSION_TICKETS)
+        } else if (actionOptions.contains(ActionOption.IGNORE_UNEXPECTED_NEW_SESSION_TICKETS)
             && msg instanceof NewSessionTicketMessage) {
+            return true;
+        } else if (actionOptions.contains(ActionOption.IGNORE_UNEXPECTED_KEY_UPDATE_MESSAGES)
+            && msg instanceof KeyUpdateMessage) {
+            return true;
+        } else if (actionOptions.contains(ActionOption.IGNORE_UNEXPECTED_APP_DATA)
+            && msg instanceof ApplicationMessage) {
+            return true;
+        } else if (actionOptions.contains(ActionOption.IGNORE_UNEXPECTED_HTTPS_MESSAGES)
+            && (msg instanceof HttpsResponseMessage || msg instanceof HttpsRequestMessage)) {
             return true;
         }
 

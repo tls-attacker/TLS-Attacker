@@ -21,10 +21,12 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.CookieExtension
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.CookieExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * The cookie extension used in TLS 1.3
  */
+@XmlRootElement(name = "CookieExtension")
 public class CookieExtensionMessage extends ExtensionMessage<CookieExtensionMessage> {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
