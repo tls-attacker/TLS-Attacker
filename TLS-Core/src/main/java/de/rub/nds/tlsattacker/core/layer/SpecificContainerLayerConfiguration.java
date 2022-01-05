@@ -24,8 +24,10 @@ public class SpecificContainerLayerConfiguration<Container extends DataContainer
 
     /**
      * Determines if the LayerConfiguration, based on the final list of DataContainers, is satisfied
-     * @param list The list of DataContainers
-     * @return The final evaluation result
+     * 
+     * @param  list
+     *              The list of DataContainers
+     * @return      The final evaluation result
      */
     @Override
     public boolean executedAsPlanned(List<Container> list) {
@@ -82,8 +84,10 @@ public class SpecificContainerLayerConfiguration<Container extends DataContainer
     /**
      * Determines if the LayerConfiguration, based on the current list of DataContainers, can possibly still be
      * satisfied
-     * @param list The list of DataContainers
-     * @return The evaluation result based on the current DataContainers
+     * 
+     * @param  list
+     *              The list of DataContainers
+     * @return      The evaluation result based on the current DataContainers
      */
     @Override
     public boolean failedEarly(List<Container> list) {
