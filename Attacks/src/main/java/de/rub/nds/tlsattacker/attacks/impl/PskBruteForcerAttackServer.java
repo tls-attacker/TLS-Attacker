@@ -9,8 +9,6 @@
 
 package de.rub.nds.tlsattacker.attacks.impl;
 
-import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
-
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.attacks.bruteforce.GuessProvider;
 import de.rub.nds.tlsattacker.attacks.bruteforce.GuessProviderFactory;
@@ -26,6 +24,7 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
+import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

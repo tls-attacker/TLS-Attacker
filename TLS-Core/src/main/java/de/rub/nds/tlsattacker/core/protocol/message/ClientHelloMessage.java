@@ -13,52 +13,12 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.handler.ClientHelloHandler;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.AlpnExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.CachedInfoExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestV2ExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateTypeExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientAuthzExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateTypeExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateUrlExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.CookieExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ECPointFormatExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.EarlyDataExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.EllipticCurvesExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptThenMacExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNameIndicationExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedRandomExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.HeartbeatExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.MaxFragmentLengthExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.PSKKeyExchangeModesExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.PWDClearExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.PWDProtectExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.PreSharedKeyExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.RecordSizeLimitExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.RenegotiationInfoExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.SRPExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerAuthzExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerCertificateTypeExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicationExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.SignedCertificateTimestampExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.SrtpExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.SupportedVersionsExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.TokenBindingExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.TruncatedHmacExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.TrustedCaIndicationExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.UserMappingExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.*;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
 import de.rub.nds.tlsattacker.core.protocol.parser.ClientHelloParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ClientHelloPreparator;
@@ -71,7 +31,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@XmlRootElement
+@XmlRootElement(name = "ClientHello")
 public class ClientHelloMessage extends HelloMessage {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -97,10 +57,10 @@ public class ClientHelloMessage extends HelloMessage {
     private ModifiableByteArray compressions;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COOKIE)
-    private ModifiableByteArray cookie = null;
+    private ModifiableByteArray cookie;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    private ModifiableByte cookieLength = null;
+    private ModifiableInteger cookieLength;
 
     public ClientHelloMessage() {
         super(HandshakeMessageType.CLIENT_HELLO);
@@ -308,7 +268,7 @@ public class ClientHelloMessage extends HelloMessage {
         return cookie;
     }
 
-    public ModifiableByte getCookieLength() {
+    public ModifiableInteger getCookieLength() {
         return cookieLength;
     }
 
@@ -320,11 +280,11 @@ public class ClientHelloMessage extends HelloMessage {
         this.cookie = cookie;
     }
 
-    public void setCookieLength(byte cookieLength) {
+    public void setCookieLength(int cookieLength) {
         this.cookieLength = ModifiableVariableFactory.safelySetValue(this.cookieLength, cookieLength);
     }
 
-    public void setCookieLength(ModifiableByte cookieLength) {
+    public void setCookieLength(ModifiableInteger cookieLength) {
         this.cookieLength = cookieLength;
     }
 

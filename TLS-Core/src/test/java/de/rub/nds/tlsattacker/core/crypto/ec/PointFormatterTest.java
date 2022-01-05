@@ -15,12 +15,8 @@ import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.util.tests.IntegrationTests;
 import java.math.BigInteger;
 import java.util.Random;
-import org.junit.After;
-import org.junit.AfterClass;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
+import static org.junit.Assert.assertArrayEquals;
 import org.junit.experimental.categories.Category;
 
 public class PointFormatterTest {

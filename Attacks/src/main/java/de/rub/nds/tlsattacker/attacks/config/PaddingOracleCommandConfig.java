@@ -14,11 +14,7 @@ import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.tlsattacker.attacks.constants.PaddingRecordGeneratorType;
 import de.rub.nds.tlsattacker.attacks.constants.PaddingVectorGeneratorType;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.config.delegate.CipherSuiteDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.StarttlsDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.*;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
@@ -36,10 +32,12 @@ public class PaddingOracleCommandConfig extends AttackConfig {
      */
     public static final String ATTACK_COMMAND = "padding_oracle";
 
-    @Parameter(names = "-recordEngine", description = "The record generator used for the PaddingOracle")
+    @Parameter(names = { "-recordEngine", "-record_engine" },
+        description = "The record generator used for the PaddingOracle")
     private PaddingRecordGeneratorType recordGeneratorType = PaddingRecordGeneratorType.SHORT;
 
-    @Parameter(names = "-vectorEngine", description = "The vector generator used for the PaddingOracle")
+    @Parameter(names = { "-vectorEngine", "-vector_engine" },
+        description = "The vector generator used for the PaddingOracle")
     private PaddingVectorGeneratorType vectorGeneratorType = PaddingVectorGeneratorType.CLASSIC;
 
     @ParametersDelegate

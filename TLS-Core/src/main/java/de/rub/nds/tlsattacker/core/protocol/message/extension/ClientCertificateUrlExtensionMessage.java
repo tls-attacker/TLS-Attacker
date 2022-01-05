@@ -17,7 +17,9 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ClientCertifica
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ClientCertificateUrlExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
+import javax.xml.bind.annotation.XmlRootElement;
 
+@XmlRootElement(name = "ClientCertificateUrlExtension")
 public class ClientCertificateUrlExtensionMessage extends ExtensionMessage<ClientCertificateUrlExtensionMessage> {
 
     public ClientCertificateUrlExtensionMessage() {

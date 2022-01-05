@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import java.io.ByteArrayInputStream;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
 import org.junit.Test;
 
 public class UnknownParserTest {

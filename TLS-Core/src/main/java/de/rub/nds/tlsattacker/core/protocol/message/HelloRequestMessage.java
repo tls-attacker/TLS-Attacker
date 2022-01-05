@@ -19,7 +19,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
+@XmlRootElement(name = "HelloRequest")
 public class HelloRequestMessage extends HandshakeMessage {
 
     public HelloRequestMessage(Config tlsConfig) {

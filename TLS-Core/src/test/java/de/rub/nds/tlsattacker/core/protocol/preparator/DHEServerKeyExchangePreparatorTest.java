@@ -16,7 +16,8 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Test;
 

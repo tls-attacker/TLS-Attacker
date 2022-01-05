@@ -11,23 +11,10 @@ package de.rub.nds.tlsattacker.core.config;
 
 import de.rub.nds.tlsattacker.core.config.filter.ConfigDisplayFilter;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import javax.xml.XMLConstants;
-import javax.xml.bind.JAXB;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.ValidationEvent;
-import javax.xml.bind.ValidationEventHandler;
+import javax.xml.bind.*;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -122,7 +109,7 @@ public class ConfigIO {
 
     /**
      * Reads the XML from the given inputStream with the provided unmarshaller into a new Config
-     * 
+     *
      * @param  stream
      *                      The stream that provides the XML structure
      * @param  unmarshaller

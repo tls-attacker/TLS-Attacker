@@ -60,7 +60,7 @@ public class KeyUpdateHandler extends HandshakeMessageHandler<KeyUpdateMessage> 
             if (tlsContext.getChooser().getTalkingConnectionEnd() == ConnectionEndType.CLIENT) {
 
                 byte[] clientApplicationTrafficSecret =
-                    HKDFunction.expandLabel(hkdfAlgortihm, tlsContext.getClientApplicationTrafficSecret(),
+                    HKDFunction.expandLabel(hkdfAlgortihm, tlsContext.getChooser().getClientApplicationTrafficSecret(),
                         HKDFunction.TRAFFICUPD, new byte[0], mac.getMacLength());
 
                 tlsContext.setClientApplicationTrafficSecret(clientApplicationTrafficSecret);
@@ -70,7 +70,7 @@ public class KeyUpdateHandler extends HandshakeMessageHandler<KeyUpdateMessage> 
             } else {
 
                 byte[] serverApplicationTrafficSecret =
-                    HKDFunction.expandLabel(hkdfAlgortihm, tlsContext.getServerApplicationTrafficSecret(),
+                    HKDFunction.expandLabel(hkdfAlgortihm, tlsContext.getChooser().getServerApplicationTrafficSecret(),
                         HKDFunction.TRAFFICUPD, new byte[0], mac.getMacLength());
 
                 tlsContext.setServerApplicationTrafficSecret(serverApplicationTrafficSecret);

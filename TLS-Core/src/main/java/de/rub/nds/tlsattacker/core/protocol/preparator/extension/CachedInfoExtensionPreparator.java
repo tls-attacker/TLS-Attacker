@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedO
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.CachedObjectSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 

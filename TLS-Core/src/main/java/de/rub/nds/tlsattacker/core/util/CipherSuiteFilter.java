@@ -19,7 +19,7 @@ public class CipherSuiteFilter {
     /**
      * CipherSuite filtering based on the key exchange method and on the ephemeral property. This method is useful for
      * establishing new workflows.
-     * 
+     *
      * @param cipherSuites
      *                     The CipherSuites that should be filtered
      */

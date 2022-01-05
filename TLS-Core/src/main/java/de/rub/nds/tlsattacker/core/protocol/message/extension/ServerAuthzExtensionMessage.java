@@ -21,10 +21,12 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ServerAuthzExte
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ServerAuthzExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * This extension is defined in RFC5878
  */
+@XmlRootElement(name = "ServerAuthorizationExtension")
 public class ServerAuthzExtensionMessage extends ExtensionMessage<ServerAuthzExtensionMessage> {
 
     @ModifiableVariableProperty

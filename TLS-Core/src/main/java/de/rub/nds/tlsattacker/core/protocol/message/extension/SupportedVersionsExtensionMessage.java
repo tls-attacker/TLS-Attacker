@@ -21,7 +21,9 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SupportedVersio
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SupportedVersionsExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
+import javax.xml.bind.annotation.XmlRootElement;
 
+@XmlRootElement(name = "SupportedVersions")
 public class SupportedVersionsExtensionMessage extends ExtensionMessage<SupportedVersionsExtensionMessage> {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)

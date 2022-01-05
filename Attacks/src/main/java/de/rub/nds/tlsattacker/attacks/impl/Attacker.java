@@ -9,11 +9,10 @@
 
 package de.rub.nds.tlsattacker.attacks.impl;
 
-import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
-
 import de.rub.nds.tlsattacker.attacks.config.AttackConfig;
 import de.rub.nds.tlsattacker.attacks.connectivity.ConnectivityChecker;
 import de.rub.nds.tlsattacker.core.config.Config;
+import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

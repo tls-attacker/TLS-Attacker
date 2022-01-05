@@ -21,10 +21,11 @@ import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.security.NoSuchAlgorithmException;
-import javax.crypto.Mac;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import javax.crypto.Mac;
+import java.security.NoSuchAlgorithmException;
 
 public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
 

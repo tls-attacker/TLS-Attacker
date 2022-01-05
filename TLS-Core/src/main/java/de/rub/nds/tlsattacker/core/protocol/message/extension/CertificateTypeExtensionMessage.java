@@ -22,10 +22,12 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.CertificateType
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.CertificateTypeExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * This extension is defined in RFC6091
  */
+@XmlRootElement(name = "CertificateTypeExtension")
 public class CertificateTypeExtensionMessage extends ExtensionMessage<CertificateTypeExtensionMessage> {
 
     @ModifiableVariableProperty

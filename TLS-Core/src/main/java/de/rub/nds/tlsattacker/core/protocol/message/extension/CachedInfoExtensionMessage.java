@@ -25,10 +25,12 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * RFC7924
  */
+@XmlRootElement(name = "CachedInfoExtension")
 public class CachedInfoExtensionMessage extends ExtensionMessage<CachedInfoExtensionMessage> {
 
     @ModifiableVariableProperty

@@ -23,49 +23,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.handler.HandshakeMessageHandler;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.AlpnExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.CachedInfoExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestV2ExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateTypeExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientAuthzExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateTypeExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateUrlExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.CookieExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ECPointFormatExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.EarlyDataExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.EllipticCurvesExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptThenMacExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNameIndicationExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedRandomExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.GreaseExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.HeartbeatExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.MaxFragmentLengthExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.PSKKeyExchangeModesExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.PWDClearExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.PWDProtectExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.PasswordSaltExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.PreSharedKeyExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.RecordSizeLimitExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.RenegotiationInfoExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.SRPExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerAuthzExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerCertificateTypeExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicationExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.SignedCertificateTimestampExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.SrtpExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.SupportedVersionsExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.TokenBindingExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.TruncatedHmacExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.TrustedCaIndicationExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.UnknownExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.UserMappingExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.HandshakeMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.HandshakeMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.HandshakeMessageSerializer;
@@ -75,7 +33,9 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.XmlElementRef;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlTransient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -110,55 +70,7 @@ public abstract class HandshakeMessage extends ProtocolMessage {
      * List of extensions
      */
     @XmlElementWrapper
-    @XmlElements(value = {
-        @XmlElement(type = EncryptedServerNameIndicationExtensionMessage.class,
-            name = "EncryptedServerNameIndicationExtension"),
-        @XmlElement(type = ECPointFormatExtensionMessage.class, name = "ECPointFormat"),
-        @XmlElement(type = EllipticCurvesExtensionMessage.class, name = "SupportedGroups"),
-        @XmlElement(type = EllipticCurvesExtensionMessage.class, name = "EllipticCurves"),
-        @XmlElement(type = ExtendedMasterSecretExtensionMessage.class, name = "ExtendedMasterSecretExtension"),
-        @XmlElement(type = GreaseExtensionMessage.class, name = "GreaseExtension"),
-        @XmlElement(type = HeartbeatExtensionMessage.class, name = "HeartbeatExtension"),
-        @XmlElement(type = MaxFragmentLengthExtensionMessage.class, name = "MaxFragmentLengthExtension"),
-        @XmlElement(type = RecordSizeLimitExtensionMessage.class, name = "RecordSizeLimitExtension"),
-        @XmlElement(type = PaddingExtensionMessage.class, name = "PaddingExtension"),
-        @XmlElement(type = RenegotiationInfoExtensionMessage.class, name = "RenegotiationInfoExtension"),
-        @XmlElement(type = ServerNameIndicationExtensionMessage.class, name = "ServerNameIndicationExtension"),
-        @XmlElement(type = SessionTicketTLSExtensionMessage.class, name = "SessionTicketTLSExtension"),
-        @XmlElement(type = SignatureAndHashAlgorithmsExtensionMessage.class,
-            name = "SignatureAndHashAlgorithmsExtension"),
-        @XmlElement(type = SignedCertificateTimestampExtensionMessage.class,
-            name = "SignedCertificateTimestampExtension"),
-        @XmlElement(type = ExtendedRandomExtensionMessage.class, name = "ExtendedRandomExtension"),
-        @XmlElement(type = TokenBindingExtensionMessage.class, name = "TokenBindingExtension"),
-        @XmlElement(type = KeyShareExtensionMessage.class, name = "KeyShareExtension"),
-        @XmlElement(type = SupportedVersionsExtensionMessage.class, name = "SupportedVersions"),
-        @XmlElement(type = AlpnExtensionMessage.class, name = "ALPNExtension"),
-        @XmlElement(type = CertificateStatusRequestExtensionMessage.class, name = "CertificateStatusRequestExtension"),
-        @XmlElement(type = CertificateStatusRequestV2ExtensionMessage.class,
-            name = "CertificateStatusRequestV2Extension"),
-        @XmlElement(type = CertificateTypeExtensionMessage.class, name = "CertificateTypeExtension"),
-        @XmlElement(type = ClientCertificateUrlExtensionMessage.class, name = "ClientCertificateUrlExtension"),
-        @XmlElement(type = ClientCertificateTypeExtensionMessage.class, name = "ClientCertificateTypeExtension"),
-        @XmlElement(type = ClientAuthzExtensionMessage.class, name = "ClientAuthorizationExtension"),
-        @XmlElement(type = EncryptThenMacExtensionMessage.class, name = "EncryptThenMacExtension"),
-        @XmlElement(type = ServerAuthzExtensionMessage.class, name = "ServerAuthorizationExtension"),
-        @XmlElement(type = ServerCertificateTypeExtensionMessage.class, name = "ServerCertificateTypeExtension"),
-        @XmlElement(type = SRPExtensionMessage.class, name = "SRPExtension"),
-        @XmlElement(type = SrtpExtensionMessage.class, name = "SRTPExtension"),
-        @XmlElement(type = TrustedCaIndicationExtensionMessage.class, name = "TrustedCaIndicationExtension"),
-        @XmlElement(type = TruncatedHmacExtensionMessage.class, name = "TruncatedHmacExtension"),
-        @XmlElement(type = EarlyDataExtensionMessage.class, name = "EarlyDataExtension"),
-        @XmlElement(type = PSKKeyExchangeModesExtensionMessage.class, name = "PSKKeyExchangeModesExtension"),
-        @XmlElement(type = PreSharedKeyExtensionMessage.class, name = "PreSharedKeyExtension"),
-        @XmlElement(type = UserMappingExtensionMessage.class, name = "UserMappingExtension"),
-        @XmlElement(type = UnknownExtensionMessage.class, name = "UnknownExtension"),
-        @XmlElement(type = PWDClearExtensionMessage.class, name = "PWDClear"),
-        @XmlElement(type = PWDProtectExtensionMessage.class, name = "PWDProtect"),
-        @XmlElement(type = PasswordSaltExtensionMessage.class, name = "PasswordSalt"),
-        @XmlElement(type = CachedInfoExtensionMessage.class, name = "CachedInfoExtension"),
-        @XmlElement(type = CookieExtensionMessage.class, name = "CookieExtension"),
-        @XmlElement(type = DtlsHandshakeMessageFragment.class, name = "DtlsHandshakeMessageFragment"), })
+    @XmlElementRef
     @HoldsModifiableVariable
     private List<ExtensionMessage> extensions;
 
@@ -215,9 +127,11 @@ public abstract class HandshakeMessage extends ProtocolMessage {
     }
 
     public boolean containsExtension(ExtensionType extensionType) {
-        for (ExtensionMessage e : extensions) {
-            if (e.getExtensionTypeConstant() == extensionType) {
-                return true;
+        if (extensions != null) {
+            for (ExtensionMessage e : extensions) {
+                if (e.getExtensionTypeConstant() == extensionType) {
+                    return true;
+                }
             }
         }
         return false;

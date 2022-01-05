@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtendedMasterS
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtendedMasterSecretExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * This is the extended_master_secret message.
@@ -25,6 +26,7 @@ import java.io.InputStream;
  *
  * This extension is defined in RFC7627
  */
+@XmlRootElement(name = "ExtendedMasterSecretExtension")
 public class ExtendedMasterSecretExtensionMessage extends ExtensionMessage<ExtendedMasterSecretExtensionMessage> {
 
     public ExtendedMasterSecretExtensionMessage() {

@@ -21,10 +21,12 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.MaxFragmentLeng
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.MaxFragmentLengthExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Maximum Fragment Length Extension described in rfc3546
  */
+@XmlRootElement(name = "MaxFragmentLengthExtension")
 public class MaxFragmentLengthExtensionMessage extends ExtensionMessage<MaxFragmentLengthExtensionMessage> {
 
     private MaxFragmentLength maxFragmentLengthConfig;

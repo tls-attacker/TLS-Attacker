@@ -9,6 +9,7 @@
 
 package de.rub.nds.tlsattacker.core.record.crypto;
 
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
@@ -50,8 +51,16 @@ public class RecordDecryptor extends Decryptor {
         if (version == null || !version.isDTLS()) {
             record.setSequenceNumber(BigInteger.valueOf(recordCipher.getState().getReadSequenceNumber()));
         }
+
         try {
-            recordCipher.decrypt(record);
+            if (!context.getChooser().getSelectedProtocolVersion().isTLS13()
+                || record.getContentMessageType() != ProtocolMessageType.CHANGE_CIPHER_SPEC) {
+                recordCipher.decrypt(record);
+                recordCipher.getState().increaseReadSequenceNumber();
+            } else {
+                LOGGER.debug("Skipping decryption for legacy CCS");
+                new RecordNullCipher(context, recordCipher.getState()).decrypt(record);
+            }
         } catch (CryptoException | ParserException ex) {
             LOGGER.warn("Could not decrypt Record. Using NullCipher instead", ex);
             try {
@@ -60,6 +69,5 @@ public class RecordDecryptor extends Decryptor {
                 LOGGER.warn("Could not decrypt Record with null cipher", ex1);
             }
         }
-        recordCipher.getState().increaseReadSequenceNumber();
     }
 }

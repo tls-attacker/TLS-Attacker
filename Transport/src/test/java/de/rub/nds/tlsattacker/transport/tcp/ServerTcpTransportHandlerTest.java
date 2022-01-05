@@ -10,14 +10,15 @@
 package de.rub.nds.tlsattacker.transport.tcp;
 
 import de.rub.nds.tlsattacker.util.FreePortFinder;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import java.io.IOException;
 import java.net.Socket;
 import java.util.concurrent.ExecutionException;
-import org.junit.After;
-import static org.junit.Assert.*;
 
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.*;
 
 public class ServerTcpTransportHandlerTest {
 

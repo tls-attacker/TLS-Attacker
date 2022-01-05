@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import java.util.LinkedList;
 import org.apache.commons.lang3.builder.EqualsBuilder;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -28,7 +28,7 @@ import java.io.InputStream;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
+@XmlRootElement(name = "PskServerKeyExchange")
 public class PskServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     @HoldsModifiableVariable

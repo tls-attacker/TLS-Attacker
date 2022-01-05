@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.PskDheServerKeyExchangeMessa
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.math.BigInteger;
 import org.junit.After;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNull;
 import org.junit.Before;
 import org.junit.Test;
 

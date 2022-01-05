@@ -33,7 +33,7 @@ public class SrpServerKeyExchangeParser extends ServerKeyExchangeParser<SrpServe
      * @param version
      *                   Version of the Protocol
      * @param tlsContext
-     * 
+     *
      */
     public SrpServerKeyExchangeParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
         super(stream, HandshakeMessageType.SERVER_KEY_EXCHANGE, version, tlsContext);
