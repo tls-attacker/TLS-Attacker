@@ -204,7 +204,7 @@ public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackCli
             state.getWorkflowTrace().addTlsAction(action);
         }
         WorkflowExecutor workflowExecutor =
-            WorkflowExecutorFactory.createWorkflowExecutor(WorkflowExecutorType.DEFAULT, state);
+            WorkflowExecutorFactory.createWorkflowExecutor(state.getConfig().getWorkflowExecutorType(), state);
         workflowExecutor.executeWorkflow();
         // Glue client hello action back on
         state.getWorkflowTrace().addTlsAction(0, clientHelloAction);
@@ -216,7 +216,7 @@ public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackCli
         trace.addTlsAction(new ReceiveAction(new ClientHelloMessage()));
         State state = new State(tlsConfig, trace);
         WorkflowExecutor workflowExecutor =
-            WorkflowExecutorFactory.createWorkflowExecutor(WorkflowExecutorType.DEFAULT, state);
+            WorkflowExecutorFactory.createWorkflowExecutor(state.getConfig().getWorkflowExecutorType(), state);
         workflowExecutor.executeWorkflow();
         return state;
     }
