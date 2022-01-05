@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -26,7 +27,7 @@ import java.io.InputStream;
 import java.io.Serializable;
 import javax.xml.bind.annotation.XmlSeeAlso;
 
-@XmlSeeAlso({EncryptedServerNameIndicationExtensionMessage.class, ECPointFormatExtensionMessage.class,
+@XmlSeeAlso({ EncryptedServerNameIndicationExtensionMessage.class, ECPointFormatExtensionMessage.class,
     EllipticCurvesExtensionMessage.class, EllipticCurvesExtensionMessage.class,
     ExtendedMasterSecretExtensionMessage.class, GreaseExtensionMessage.class, HeartbeatExtensionMessage.class,
     MaxFragmentLengthExtensionMessage.class, RecordSizeLimitExtensionMessage.class, PaddingExtensionMessage.class,
@@ -43,9 +44,9 @@ import javax.xml.bind.annotation.XmlSeeAlso;
     PreSharedKeyExtensionMessage.class, UnknownExtensionMessage.class, PWDClearExtensionMessage.class,
     PWDProtectExtensionMessage.class, PasswordSaltExtensionMessage.class, CachedInfoExtensionMessage.class,
     CookieExtensionMessage.class, DtlsHandshakeMessageFragment.class, UserMappingExtensionMessage.class,
-    SRPExtensionMessage.class, CachedInfoExtensionMessage.class})
+    SRPExtensionMessage.class, CachedInfoExtensionMessage.class })
 public abstract class ExtensionMessage<Self extends ExtensionMessage> extends ModifiableVariableHolder
-        implements Serializable, DataContainer<Self> {
+    implements Serializable, DataContainer<Self> {
 
     protected ExtensionType extensionTypeConstant;
 
