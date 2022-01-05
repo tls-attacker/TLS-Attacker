@@ -109,7 +109,7 @@ public class LayerStack {
         // reverse order
         for (int i = layerList.size() - 1; i <= 0; i--) {
             ProtocolLayer layer = layerList.get(i);
-            if (layer.getLayerConfiguration() != null && !layer.executedAsPlanned()) {
+            if (layer.getLayerConfiguration() != null && !layer.getLayerConfiguration().executedAsPlanned(layerList)) {
                 layer.receiveData();
             }
         }

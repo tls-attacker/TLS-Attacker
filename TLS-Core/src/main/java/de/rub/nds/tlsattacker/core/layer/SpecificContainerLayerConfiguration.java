@@ -22,11 +22,26 @@ public class SpecificContainerLayerConfiguration<Container extends DataContainer
         super(containers);
     }
 
+    /**
+     * Determines if the LayerConfiguration, based on the final list of DataContainers, is satisfied
+     */
     @Override
     public boolean executedAsPlanned(List<Container> list) {
         return evaluateContainers(list, false);
     }
 
+    /**
+     * Compares the received DataContainers to the list of expected DataContainers. An expected DataContainer may be
+     * skipped if it is not marked as required. An unexpected DataContainer may be ignored if a DataContainerFilter
+     * applies.
+     *
+     * @param list
+     *                                 The list of received DataContainers
+     * @param mayReceiveMoreContainers
+     *                                 Determines if an incomplete result is acceptable. This is the case if no
+     *                                 contradictory DataContainer has been received yet and the LayerConfiguration can
+     *                                 be satisfied if additional DataContainers get provided
+     */
     private boolean evaluateContainers(List<Container> list, boolean mayReceiveMoreContainers) {
         if (list == null) {
             return false;
@@ -62,6 +77,10 @@ public class SpecificContainerLayerConfiguration<Container extends DataContainer
         return true;
     }
 
+    /**
+     * Determines if the LayerConfiguration, based on the current list of DataContainers, can possibly still be
+     * satisfied
+     */
     @Override
     public boolean failedEarly(List<Container> list) {
         return !evaluateContainers(list, true);

@@ -27,7 +27,7 @@ public class LayerStackProcessingResult {
     public LayerProcessingResult getResultForLayer(LayerType layerType) {
         if (layerProcessingResultList != null) {
             for (LayerProcessingResult layerResult : layerProcessingResultList) {
-                if (layerResult.getLayerType().getName().equals(layerType.getName())) {
+                if (layerResult.getLayerType().equals(layerType)) {
                     return layerResult;
                 }
             }

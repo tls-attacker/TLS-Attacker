@@ -110,22 +110,6 @@ public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container 
         producedDataContainers.add(container);
     }
 
-    public boolean executedAsPlanned() {
-        int i = 0;
-        for (DataContainer container : layerConfiguration.getContainerList()) {
-
-            if (producedDataContainers.size() <= i) {
-                return false;
-            }
-            if (!container.getClass().equals(producedDataContainers.get(i).getClass()) && container.isRequired()) {
-                // TODO deal with optional messages
-                return false;
-            }
-            i++;
-        }
-        return true;
-    }
-
     /**
      * A receive call which tries to read till either a timeout occurs or the configuration is fullfilled
      *
