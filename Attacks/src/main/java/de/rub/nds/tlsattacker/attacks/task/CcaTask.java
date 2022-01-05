@@ -14,7 +14,6 @@ import de.rub.nds.tlsattacker.attacks.cca.CcaWorkflowGenerator;
 import de.rub.nds.tlsattacker.attacks.cca.vector.CcaVector;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.workflow.DefaultWorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.task.TlsTask;
@@ -58,7 +57,7 @@ public class CcaTask extends TlsTask {
     public boolean execute() {
         state = prepareState();
         try {
-            WorkflowExecutor executor = new DefaultWorkflowExecutor(state);
+            WorkflowExecutor executor = getExecutor(state);
             executor.executeWorkflow();
             return true;
         } finally {

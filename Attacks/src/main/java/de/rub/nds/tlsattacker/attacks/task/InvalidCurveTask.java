@@ -14,7 +14,6 @@ import de.rub.nds.tlsattacker.attacks.util.response.ResponseFingerprint;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.task.TlsTask;
 import de.rub.nds.tlsattacker.transport.socket.SocketState;
 import java.io.IOException;
@@ -51,8 +50,7 @@ public class InvalidCurveTask extends TlsTask {
     @Override
     public boolean execute() {
         try {
-            WorkflowExecutor executor =
-                WorkflowExecutorFactory.createWorkflowExecutor(state.getConfig().getWorkflowExecutorType(), state);
+            WorkflowExecutor executor = getExecutor(state);
             executor.executeWorkflow();
 
             if (getState().getTlsContext().getServerEcPublicKey() != null) {
