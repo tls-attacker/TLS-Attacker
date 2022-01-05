@@ -9,18 +9,16 @@
 
 package de.rub.nds.tlsattacker.core.dtls;
 
+import static de.rub.nds.tlsattacker.core.dtls.FragmentCollector.LOGGER;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.protocol.*;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.HandshakeMessageSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import org.bouncycastle.util.Arrays;
-
 import java.util.LinkedList;
 import java.util.List;
-
-import static de.rub.nds.tlsattacker.core.dtls.FragmentCollector.LOGGER;
+import org.bouncycastle.util.Arrays;
 
 /**
  * Class used to split HandshakeMessages into DTLS fragments.

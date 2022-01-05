@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.attacks.impl.drown;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.ExtraClearDrownOracle;
-
 import java.math.BigInteger;
 import java.util.concurrent.Callable;
 

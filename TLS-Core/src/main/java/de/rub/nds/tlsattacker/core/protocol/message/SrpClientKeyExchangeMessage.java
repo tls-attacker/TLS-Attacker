@@ -22,10 +22,9 @@ import de.rub.nds.tlsattacker.core.protocol.parser.SrpClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.SrpClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.SrpClientKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-
-import javax.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.List;
+import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "SrpClientKeyExchange")
 public class SrpClientKeyExchangeMessage extends ClientKeyExchangeMessage {

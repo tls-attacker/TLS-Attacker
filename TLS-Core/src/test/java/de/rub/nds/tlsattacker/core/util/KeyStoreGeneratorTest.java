@@ -10,14 +10,12 @@
 package de.rub.nds.tlsattacker.core.util;
 
 import de.rub.nds.modifiablevariable.util.BadRandom;
-import org.junit.Test;
-
 import java.security.KeyPair;
 import java.security.KeyStore;
 import java.util.Random;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import org.junit.Test;
 
 public class KeyStoreGeneratorTest {
 

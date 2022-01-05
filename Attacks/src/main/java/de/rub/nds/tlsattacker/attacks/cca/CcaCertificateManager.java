@@ -18,6 +18,8 @@ import de.rub.nds.asn1tool.xmlparser.Asn1XmlContent;
 import de.rub.nds.asn1tool.xmlparser.XmlParser;
 import de.rub.nds.tlsattacker.attacks.impl.Attacker;
 import de.rub.nds.tlsattacker.core.certificate.PemUtil;
+import static de.rub.nds.tlsattacker.core.certificate.PemUtil.readPrivateKey;
+import static de.rub.nds.tlsattacker.core.certificate.PemUtil.readPublicKey;
 import de.rub.nds.tlsattacker.core.config.delegate.CcaDelegate;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.crypto.keys.*;
@@ -28,12 +30,6 @@ import de.rub.nds.x509attacker.keyfilemanager.KeyFileManagerException;
 import de.rub.nds.x509attacker.linker.Linker;
 import de.rub.nds.x509attacker.registry.Registry;
 import de.rub.nds.x509attacker.xmlsignatureengine.XmlSignatureEngine;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import javax.crypto.interfaces.DHPrivateKey;
-import javax.crypto.interfaces.DHPublicKey;
-import javax.security.auth.x500.X500Principal;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -49,9 +45,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
-
-import static de.rub.nds.tlsattacker.core.certificate.PemUtil.readPrivateKey;
-import static de.rub.nds.tlsattacker.core.certificate.PemUtil.readPublicKey;
+import javax.crypto.interfaces.DHPrivateKey;
+import javax.crypto.interfaces.DHPublicKey;
+import javax.security.auth.x500.X500Principal;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class CcaCertificateManager {
 

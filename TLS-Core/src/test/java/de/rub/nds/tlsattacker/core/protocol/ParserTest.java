@@ -10,14 +10,12 @@
 package de.rub.nds.tlsattacker.core.protocol;
 
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
-import org.junit.Before;
-import org.junit.Test;
-
 import java.io.ByteArrayInputStream;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
-
 import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
 
 public class ParserTest {
 

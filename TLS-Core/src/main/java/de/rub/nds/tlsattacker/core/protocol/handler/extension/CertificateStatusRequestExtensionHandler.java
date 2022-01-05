@@ -9,14 +9,13 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import static de.rub.nds.modifiablevariable.util.ArrayConverter.bytesToHexString;
 import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestExtensionMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import static de.rub.nds.tlsattacker.transport.ConnectionEndType.CLIENT;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import static de.rub.nds.modifiablevariable.util.ArrayConverter.bytesToHexString;
-import static de.rub.nds.tlsattacker.transport.ConnectionEndType.CLIENT;
 
 public class CertificateStatusRequestExtensionHandler
     extends ExtensionHandler<CertificateStatusRequestExtensionMessage> {

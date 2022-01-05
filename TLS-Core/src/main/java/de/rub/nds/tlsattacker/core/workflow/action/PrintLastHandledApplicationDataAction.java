@@ -12,14 +12,12 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import javax.xml.bind.annotation.XmlRootElement;
+import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 import java.nio.charset.Charset;
 import java.util.Objects;
-
-import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
+import javax.xml.bind.annotation.XmlRootElement;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * A simple action to print the last handled application data to console. Per default, this prints the raw byte values

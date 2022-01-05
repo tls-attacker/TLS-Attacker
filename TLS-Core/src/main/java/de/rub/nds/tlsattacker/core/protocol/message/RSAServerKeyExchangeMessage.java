@@ -24,10 +24,9 @@ import de.rub.nds.tlsattacker.core.protocol.parser.RSAServerKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.RSAServerKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.RSAServerKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-
-import javax.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.List;
+import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "RSAServerKeyExchange")
 public class RSAServerKeyExchangeMessage extends ServerKeyExchangeMessage {

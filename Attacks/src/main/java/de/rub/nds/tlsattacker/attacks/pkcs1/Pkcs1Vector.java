@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.attacks.pkcs1;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.attacks.general.Vector;
-
 import java.util.Arrays;
 
 /**

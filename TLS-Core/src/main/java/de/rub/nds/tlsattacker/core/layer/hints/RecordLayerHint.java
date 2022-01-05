@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.layer.hints;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-
 import java.util.Objects;
 
 public class RecordLayerHint implements LayerProcessingHint {

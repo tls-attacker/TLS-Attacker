@@ -9,20 +9,18 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
+import static de.rub.nds.modifiablevariable.util.ArrayConverter.hexStringToByteArray;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestV2ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.RequestItemV2;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.ResponderId;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.RequestItemV2Preparator;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import org.junit.Test;
-
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.List;
-
-import static de.rub.nds.modifiablevariable.util.ArrayConverter.hexStringToByteArray;
 import static org.junit.Assert.*;
+import org.junit.Test;
 
 public class CertificateStatusRequestV2ExtensionParserTest {
     public static void assertRequestItemV2List(List<RequestItemV2> listExpected, List<RequestItemV2> listActual) {

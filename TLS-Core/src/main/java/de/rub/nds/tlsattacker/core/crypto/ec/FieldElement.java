@@ -9,11 +9,11 @@
 
 package de.rub.nds.tlsattacker.core.crypto.ec;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Objects;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 
 /**
  * Can be used to store elements of a galois field.<br />

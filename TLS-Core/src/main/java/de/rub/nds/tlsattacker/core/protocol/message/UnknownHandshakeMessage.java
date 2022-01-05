@@ -20,9 +20,8 @@ import de.rub.nds.tlsattacker.core.protocol.parser.UnknownHandshakeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.UnknownHandshakePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.UnknownHandshakeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-
-import javax.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
+import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "UnknownHandshakeMessage")
 public class UnknownHandshakeMessage extends HandshakeMessage {

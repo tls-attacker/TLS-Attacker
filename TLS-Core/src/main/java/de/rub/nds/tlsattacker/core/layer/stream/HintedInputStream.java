@@ -12,7 +12,6 @@ package de.rub.nds.tlsattacker.core.layer.stream;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
-
 import java.io.IOException;
 import java.io.InputStream;
 

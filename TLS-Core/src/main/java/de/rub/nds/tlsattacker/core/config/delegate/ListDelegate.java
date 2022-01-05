@@ -18,9 +18,8 @@ import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.core.workflow.filter.FilterType;
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.EnumSet;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Plot a list of supported parameters.

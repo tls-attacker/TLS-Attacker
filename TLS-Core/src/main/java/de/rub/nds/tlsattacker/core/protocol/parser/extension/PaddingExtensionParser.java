@@ -9,14 +9,12 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
+import static de.rub.nds.modifiablevariable.util.ArrayConverter.bytesToHexString;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.io.InputStream;
-
-import static de.rub.nds.modifiablevariable.util.ArrayConverter.bytesToHexString;
 
 public class PaddingExtensionParser extends ExtensionParser<PaddingExtensionMessage> {
 

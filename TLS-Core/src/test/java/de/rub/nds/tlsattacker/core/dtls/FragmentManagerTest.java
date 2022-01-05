@@ -10,12 +10,11 @@
 package de.rub.nds.tlsattacker.core.dtls;
 
 import de.rub.nds.tlsattacker.core.config.Config;
+import static de.rub.nds.tlsattacker.core.dtls.FragmentUtils.fragment;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-
-import static de.rub.nds.tlsattacker.core.dtls.FragmentUtils.fragment;
-import static org.junit.Assert.*;
 
 public class FragmentManagerTest {
 

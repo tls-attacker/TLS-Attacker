@@ -12,10 +12,9 @@ package de.rub.nds.tlsattacker.core.crypto.keys;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-
+import java.security.PrivateKey;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import java.security.PrivateKey;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class CustomPrivateKey implements PrivateKey {

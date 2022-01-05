@@ -19,15 +19,13 @@ import de.rub.nds.tlsattacker.core.state.session.TicketSession;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.tcp.ClientTcpTransportHandler;
-import org.junit.Before;
-import org.junit.Test;
-
 import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
-
 import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
 
 @SuppressWarnings("SpellCheckingInspection")
 public class DefaultChooserTest {

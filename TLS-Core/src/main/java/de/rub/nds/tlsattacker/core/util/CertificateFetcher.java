@@ -22,14 +22,13 @@ import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveTillAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
+import java.io.IOException;
+import java.security.PublicKey;
+import java.security.cert.CertificateParsingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.tls.Certificate;
 import org.bouncycastle.jce.provider.X509CertificateObject;
-
-import java.io.IOException;
-import java.security.PublicKey;
-import java.security.cert.CertificateParsingException;
 
 public class CertificateFetcher {
 

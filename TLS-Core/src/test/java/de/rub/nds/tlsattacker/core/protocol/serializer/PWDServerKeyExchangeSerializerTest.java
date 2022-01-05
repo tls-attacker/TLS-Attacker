@@ -14,9 +14,8 @@ import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.PWDServerKeyExchangeMessage;
-import org.junit.Test;
-
 import static org.junit.Assert.assertArrayEquals;
+import org.junit.Test;
 
 public class PWDServerKeyExchangeSerializerTest {
 

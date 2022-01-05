@@ -9,12 +9,10 @@
 
 package de.rub.nds.tlsattacker.core.crypto.ec;
 
+import java.math.BigInteger;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.math.BigInteger;
-
-import static org.junit.Assert.*;
 
 public class FieldElementF2mTest {
 

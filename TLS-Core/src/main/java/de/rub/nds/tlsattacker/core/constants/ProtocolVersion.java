@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.constants;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.exceptions.UnknownProtocolVersionException;
-
 import java.util.*;
 
 public enum ProtocolVersion {

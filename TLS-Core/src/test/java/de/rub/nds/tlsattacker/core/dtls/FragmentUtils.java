@@ -12,7 +12,6 @@ package de.rub.nds.tlsattacker.core.dtls;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import org.bouncycastle.util.Arrays;
-
 import static org.junit.Assert.*;
 
 public class FragmentUtils {

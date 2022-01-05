@@ -17,14 +17,13 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.https.header.*;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-
+import java.io.InputStream;
+import java.util.LinkedList;
+import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.io.InputStream;
-import java.util.LinkedList;
-import java.util.List;
 
 @XmlRootElement
 public class HttpsResponseMessage extends ProtocolMessage {

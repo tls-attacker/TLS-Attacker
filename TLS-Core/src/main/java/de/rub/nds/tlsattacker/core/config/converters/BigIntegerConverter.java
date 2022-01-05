@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.config.converters;
 
 import com.beust.jcommander.IStringConverter;
 import com.beust.jcommander.ParameterException;
-
 import java.math.BigInteger;
 
 /**

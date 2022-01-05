@@ -16,9 +16,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.transport.socket.SocketState;
-
-import javax.xml.bind.annotation.*;
 import java.util.List;
+import javax.xml.bind.annotation.*;
 
 /**
  *

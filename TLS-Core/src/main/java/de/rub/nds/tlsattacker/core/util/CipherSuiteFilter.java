@@ -12,7 +12,6 @@ package de.rub.nds.tlsattacker.core.util;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
-
 import java.util.List;
 
 public class CipherSuiteFilter {

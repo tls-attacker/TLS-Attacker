@@ -23,17 +23,15 @@ import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.transport.recording.ClientRecordingTcpTransportHandler;
 import de.rub.nds.tlsattacker.util.FixedTimeProvider;
 import de.rub.nds.tlsattacker.util.TimeHelper;
-import org.bouncycastle.operator.OperatorCreationException;
-import org.junit.After;
-import org.junit.Before;
-
 import java.io.IOException;
 import java.security.*;
 import java.security.cert.CertificateException;
 import java.util.Random;
 import java.util.logging.Logger;
-
+import org.bouncycastle.operator.OperatorCreationException;
+import org.junit.After;
 import static org.junit.Assert.assertTrue;
+import org.junit.Before;
 
 public class RecordedWorkflowTest {
 

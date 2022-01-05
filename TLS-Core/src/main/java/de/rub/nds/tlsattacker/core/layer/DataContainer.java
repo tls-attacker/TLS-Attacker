@@ -14,7 +14,6 @@ import de.rub.nds.tlsattacker.core.protocol.Parser;
 import de.rub.nds.tlsattacker.core.protocol.Preparator;
 import de.rub.nds.tlsattacker.core.protocol.Serializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-
 import java.io.InputStream;
 
 public interface DataContainer<T extends DataContainer> {

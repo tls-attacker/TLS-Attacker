@@ -9,10 +9,9 @@
 
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
+import static de.rub.nds.modifiablevariable.util.ArrayConverter.intToBytes;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestExtensionMessage;
-
-import static de.rub.nds.modifiablevariable.util.ArrayConverter.intToBytes;
 
 public class CertificateStatusRequestExtensionSerializer
     extends ExtensionSerializer<CertificateStatusRequestExtensionMessage> {

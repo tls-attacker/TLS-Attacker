@@ -12,7 +12,6 @@ package de.rub.nds.tlsattacker.core.certificate.ocsp;
 import de.rub.nds.asn1.Asn1Encodable;
 import de.rub.nds.asn1.model.*;
 import de.rub.nds.tlsattacker.core.util.Asn1ToolInitializer;
-
 import java.math.BigInteger;
 import java.util.List;
 

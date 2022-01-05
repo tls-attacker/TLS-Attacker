@@ -11,10 +11,9 @@ package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
 import de.rub.nds.tlsattacker.core.config.Config;
+import static de.rub.nds.tlsattacker.core.constants.RecordSizeLimit.MAX_RECORD_SIZE_LIMIT;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import static de.rub.nds.tlsattacker.core.constants.RecordSizeLimit.MAX_RECORD_SIZE_LIMIT;
 
 public class RecordSizeLimitDelegate extends Delegate {
 

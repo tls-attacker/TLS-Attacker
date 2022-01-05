@@ -9,13 +9,12 @@
 
 package de.rub.nds.tlsattacker.core.certificate;
 
+import java.security.Security;
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.*;
-
-import java.security.Security;
-import java.util.List;
 
 /**
  *

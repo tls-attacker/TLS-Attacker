@@ -17,15 +17,13 @@ import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ECDHClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 import java.math.BigInteger;
 import java.security.Security;
-
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.junit.After;
 import static org.junit.Assert.assertArrayEquals;
+import org.junit.Before;
+import org.junit.Test;
 
 public class ECDHClientKeyExchangeHandlerTest {
 

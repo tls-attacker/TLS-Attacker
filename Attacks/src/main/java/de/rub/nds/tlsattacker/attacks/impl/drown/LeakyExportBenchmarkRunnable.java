@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.attacks.impl.drown;
 
 import de.rub.nds.tlsattacker.core.constants.SSL2CipherSuite;
-
 import java.util.Arrays;
 
 /**

@@ -15,7 +15,6 @@ import de.rub.nds.tlsattacker.core.https.header.handler.HttpsHeaderHandler;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.Preparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-
 import java.io.Serializable;
 
 public abstract class HttpHeader extends ModifiableVariableHolder implements Serializable {

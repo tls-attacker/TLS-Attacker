@@ -20,8 +20,6 @@ import de.rub.nds.tlsattacker.core.util.CertificateUtils;
 import de.rub.nds.tlsattacker.core.util.JKSLoader;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.util.KeystoreHandler;
-import org.bouncycastle.crypto.tls.Certificate;
-
 import java.io.File;
 import java.io.IOException;
 import java.security.*;
@@ -30,8 +28,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import static org.apache.commons.lang3.StringUtils.join;
+import org.bouncycastle.crypto.tls.Certificate;
 
 public class CertificateDelegate extends Delegate {
 

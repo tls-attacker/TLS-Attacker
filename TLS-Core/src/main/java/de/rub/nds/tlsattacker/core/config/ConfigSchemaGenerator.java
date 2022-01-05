@@ -9,18 +9,17 @@
 
 package de.rub.nds.tlsattacker.core.config;
 
-import org.apache.commons.lang3.StringUtils;
-
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.SchemaOutputResolver;
-import javax.xml.transform.Result;
-import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.SchemaOutputResolver;
+import javax.xml.transform.Result;
+import javax.xml.transform.stream.StreamResult;
+import org.apache.commons.lang3.StringUtils;
 
 public class ConfigSchemaGenerator {
 

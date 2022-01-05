@@ -12,11 +12,10 @@ package de.rub.nds.tlsattacker.attacks.pkcs1;
 import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.Pkcs1Oracle;
 import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.StdPlainPkcs1Oracle;
 import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.TestPkcs1Oracle;
-import org.junit.Assert;
-import org.junit.Test;
-
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * @version 0.1

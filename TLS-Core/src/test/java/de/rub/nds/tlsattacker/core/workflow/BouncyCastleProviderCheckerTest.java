@@ -9,15 +9,13 @@
 
 package de.rub.nds.tlsattacker.core.workflow;
 
+import java.security.Security;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.security.Security;
-
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import org.junit.Before;
+import org.junit.Test;
 
 public class BouncyCastleProviderCheckerTest {
     @Before

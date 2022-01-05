@@ -9,6 +9,7 @@
 
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
+import static de.rub.nds.modifiablevariable.ModifiableVariableFactory.safelySetValue;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
@@ -19,11 +20,8 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.CertificateStatusRe
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.CertificateStatusRequestExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.CertificateStatusRequestExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-
-import javax.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
-
-import static de.rub.nds.modifiablevariable.ModifiableVariableFactory.safelySetValue;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * This extension is defined in RFC6066

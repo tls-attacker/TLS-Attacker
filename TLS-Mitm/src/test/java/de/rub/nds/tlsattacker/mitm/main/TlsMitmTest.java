@@ -18,18 +18,16 @@ import de.rub.nds.tlsattacker.core.util.KeyStoreGenerator;
 import de.rub.nds.tlsattacker.util.FixedTimeProvider;
 import de.rub.nds.tlsattacker.util.TimeHelper;
 import de.rub.nds.tlsattacker.util.tests.IntegrationTests;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.bouncycastle.operator.OperatorCreationException;
-import org.junit.*;
-import org.junit.experimental.categories.Category;
-
 import java.io.IOException;
 import java.security.*;
 import java.security.cert.CertificateException;
 import java.util.Random;
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.bouncycastle.operator.OperatorCreationException;
+import org.junit.*;
 import static org.junit.Assert.fail;
+import org.junit.experimental.categories.Category;
 
 public class TlsMitmTest {
 

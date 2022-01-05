@@ -23,10 +23,9 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-
-import javax.xml.bind.annotation.XmlSeeAlso;
 import java.io.InputStream;
 import java.io.Serializable;
+import javax.xml.bind.annotation.XmlSeeAlso;
 
 @XmlSeeAlso({ EncryptedServerNameIndicationExtensionMessage.class, ECPointFormatExtensionMessage.class,
     EllipticCurvesExtensionMessage.class, EllipticCurvesExtensionMessage.class,

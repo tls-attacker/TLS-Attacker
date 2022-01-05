@@ -20,7 +20,6 @@ import de.rub.nds.tlsattacker.attacks.padding.vector.TripleVector;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-
 import java.util.LinkedList;
 import java.util.List;
 

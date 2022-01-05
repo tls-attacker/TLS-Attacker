@@ -13,7 +13,6 @@ import de.rub.nds.tlsattacker.core.https.header.ContentLengthHeader;
 import de.rub.nds.tlsattacker.core.https.header.HttpHeader;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessagePreparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-
 import java.nio.charset.StandardCharsets;
 
 public class HttpsResponsePreparator extends ProtocolMessagePreparator<HttpsResponseMessage> {

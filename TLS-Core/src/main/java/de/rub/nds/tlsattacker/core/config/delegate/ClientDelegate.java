@@ -14,9 +14,8 @@ import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
-import org.bouncycastle.util.IPAddress;
-
 import java.net.*;
+import org.bouncycastle.util.IPAddress;
 
 public class ClientDelegate extends Delegate {
 

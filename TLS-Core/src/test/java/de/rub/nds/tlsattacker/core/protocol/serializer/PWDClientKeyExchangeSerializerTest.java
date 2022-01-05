@@ -12,9 +12,8 @@ package de.rub.nds.tlsattacker.core.protocol.serializer;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.PWDClientKeyExchangeMessage;
-import org.junit.Test;
-
 import static org.junit.Assert.assertArrayEquals;
+import org.junit.Test;
 
 public class PWDClientKeyExchangeSerializerTest {
 

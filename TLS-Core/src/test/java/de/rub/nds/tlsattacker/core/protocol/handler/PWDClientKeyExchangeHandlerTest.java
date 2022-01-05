@@ -17,12 +17,10 @@ import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.protocol.message.PWDClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.preparator.PWDClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.math.BigInteger;
+import static org.junit.Assert.assertArrayEquals;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.math.BigInteger;
-
-import static org.junit.Assert.assertArrayEquals;
 
 public class PWDClientKeyExchangeHandlerTest {
 

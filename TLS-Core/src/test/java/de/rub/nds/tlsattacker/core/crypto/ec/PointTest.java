@@ -9,12 +9,10 @@
 
 package de.rub.nds.tlsattacker.core.crypto.ec;
 
-import org.junit.Test;
-
 import java.math.BigInteger;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import org.junit.Test;
 
 public class PointTest {
 

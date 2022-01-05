@@ -12,7 +12,6 @@ package de.rub.nds.tlsattacker.attacks.padding;
 import de.rub.nds.tlsattacker.attacks.padding.vector.PaddingVector;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-
 import java.util.List;
 
 /**

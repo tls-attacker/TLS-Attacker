@@ -27,14 +27,12 @@ import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.util.tests.SlowTests;
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-
-import static org.junit.Assert.*;
 
 public class ResetConnectionActionTest {
 

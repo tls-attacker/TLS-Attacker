@@ -12,13 +12,11 @@ package de.rub.nds.tlsattacker.core.certificate;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.crypto.keys.CustomECPrivateKey;
 import de.rub.nds.tlsattacker.core.crypto.keys.CustomEcPublicKey;
-import org.junit.Test;
-
 import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
-
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertThat;
+import org.junit.Test;
 
 public class PemUtilTest {
 

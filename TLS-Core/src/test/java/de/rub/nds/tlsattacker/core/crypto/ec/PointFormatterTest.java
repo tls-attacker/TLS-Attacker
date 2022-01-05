@@ -13,13 +13,11 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.util.tests.IntegrationTests;
-import org.junit.*;
-import org.junit.experimental.categories.Category;
-
 import java.math.BigInteger;
 import java.util.Random;
-
+import org.junit.*;
 import static org.junit.Assert.assertArrayEquals;
+import org.junit.experimental.categories.Category;
 
 public class PointFormatterTest {
 

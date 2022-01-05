@@ -11,11 +11,10 @@ package de.rub.nds.tlsattacker.core.crypto.ec;
 
 import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-
-import javax.xml.bind.annotation.*;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Objects;
+import javax.xml.bind.annotation.*;
 
 /**
  * Can be used to store a point of an elliptic curve.

@@ -15,12 +15,11 @@ import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.util.CertificateUtils;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.tls.Certificate;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 
 public class SSL2ServerHelloHandler extends HandshakeMessageHandler<SSL2ServerHelloMessage> {
 

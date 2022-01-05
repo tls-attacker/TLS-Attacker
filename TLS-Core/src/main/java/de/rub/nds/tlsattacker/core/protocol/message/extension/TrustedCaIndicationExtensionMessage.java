@@ -22,10 +22,9 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.TrustedCaIndication
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.TrustedCaIndicationExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.TrustedCaIndicationExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-
-import javax.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.List;
+import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "TrustedCaIndicationExtension")
 public class TrustedCaIndicationExtensionMessage extends ExtensionMessage<TrustedCaIndicationExtensionMessage> {

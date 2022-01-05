@@ -11,14 +11,12 @@ package de.rub.nds.tlsattacker.core.crypto;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
-import junit.framework.TestCase;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.junit.Test;
-
 import java.security.NoSuchAlgorithmException;
 import java.security.Security;
-
+import junit.framework.TestCase;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import static org.junit.Assert.assertArrayEquals;
+import org.junit.Test;
 
 public class HMACTest extends TestCase {
 

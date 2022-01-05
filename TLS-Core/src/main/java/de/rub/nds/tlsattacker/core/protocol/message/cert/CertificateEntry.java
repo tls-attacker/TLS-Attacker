@@ -11,11 +11,10 @@ package de.rub.nds.tlsattacker.core.protocol.message.cert;
 
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
-
+import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import java.util.List;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CertificateEntry {

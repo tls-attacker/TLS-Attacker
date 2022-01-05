@@ -18,12 +18,11 @@ import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.*;
-import org.hamcrest.Matchers;
-import org.junit.*;
-
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import org.hamcrest.Matchers;
+import org.junit.*;
 
 public class WorkflowConfigurationFactoryTest {
 

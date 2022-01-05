@@ -13,6 +13,10 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.security.Security;
+import java.util.Random;
 import mockit.Expectations;
 import mockit.Mocked;
 import org.apache.commons.lang3.StringUtils;
@@ -21,14 +25,8 @@ import org.bouncycastle.crypto.tls.SecurityParameters;
 import org.bouncycastle.crypto.tls.TlsContext;
 import org.bouncycastle.crypto.tls.TlsUtils;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.junit.Test;
-
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-import java.security.Security;
-import java.util.Random;
-
 import static org.junit.Assert.assertArrayEquals;
+import org.junit.Test;
 
 public class PseudoRandomFunctionTest {
 

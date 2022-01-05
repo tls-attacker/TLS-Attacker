@@ -12,13 +12,11 @@ package de.rub.nds.tlsattacker.core.util;
 import de.rub.nds.modifiablevariable.util.ModifiableVariableAnalyzer;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
-import org.junit.Test;
-
 import java.lang.reflect.Field;
 import java.util.List;
-
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 
 public class ModifiableVariableAnalyzerTest {
 

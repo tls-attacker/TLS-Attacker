@@ -11,10 +11,9 @@ package de.rub.nds.tlsattacker.attacks.pkcs1;
 
 import de.rub.nds.tlsattacker.attacks.config.BleichenbacherCommandConfig;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.util.List;
 
 /**
  *

@@ -26,11 +26,10 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.GOST12ClientKeyExchangePr
 import de.rub.nds.tlsattacker.core.protocol.preparator.GOSTClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.GOSTClientKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.List;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "GOSTClientKeyExchange")
 public class GOSTClientKeyExchangeMessage extends ClientKeyExchangeMessage {

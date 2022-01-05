@@ -10,10 +10,9 @@
 package de.rub.nds.tlsattacker.core.protocol;
 
 import de.rub.nds.tlsattacker.core.config.Config;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.io.InputStream;
 
 public abstract class ProtocolMessageParser<Message extends ProtocolMessage> extends Parser<Message> {
 

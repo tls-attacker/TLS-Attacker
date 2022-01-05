@@ -15,7 +15,6 @@ import de.rub.nds.tlsattacker.attacks.config.delegate.ProxyDelegate;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.*;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-
 import java.util.LinkedList;
 import java.util.List;
 

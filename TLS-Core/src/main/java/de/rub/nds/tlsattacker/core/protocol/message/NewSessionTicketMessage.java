@@ -23,10 +23,9 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.NewSessionTicketPreparato
 import de.rub.nds.tlsattacker.core.protocol.serializer.NewSessionTicketSerializer;
 import de.rub.nds.tlsattacker.core.state.SessionTicket;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-
-import javax.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.List;
+import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "NewSessionTicket")
 public class NewSessionTicketMessage extends HandshakeMessage {

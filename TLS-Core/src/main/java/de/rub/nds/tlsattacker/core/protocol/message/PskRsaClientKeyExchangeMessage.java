@@ -22,10 +22,9 @@ import de.rub.nds.tlsattacker.core.protocol.parser.PskRsaClientKeyExchangeParser
 import de.rub.nds.tlsattacker.core.protocol.preparator.PskRsaClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.PskRsaClientKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-
+import java.io.InputStream;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.io.InputStream;
 
 @XmlRootElement(name = "PskRsaClientKeyExchange")
 public class PskRsaClientKeyExchangeMessage extends RSAClientKeyExchangeMessage {

@@ -16,9 +16,8 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.TruncatedHmacExtens
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.TruncatedHmacExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.TruncatedHmacExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-
-import javax.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * This is a binary extension, which means that no extension data is used. This extension is defined in RFC6066

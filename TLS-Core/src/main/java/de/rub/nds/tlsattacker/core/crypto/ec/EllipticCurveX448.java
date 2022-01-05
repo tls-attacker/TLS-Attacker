@@ -10,9 +10,8 @@
 package de.rub.nds.tlsattacker.core.crypto.ec;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import org.apache.commons.lang3.ArrayUtils;
-
 import java.math.BigInteger;
+import org.apache.commons.lang3.ArrayUtils;
 
 /**
  * X448

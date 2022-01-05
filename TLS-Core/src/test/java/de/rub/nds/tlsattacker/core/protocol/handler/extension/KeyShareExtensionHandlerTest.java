@@ -18,14 +18,12 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareE
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import org.junit.Before;
-import org.junit.Test;
-
 import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
-
 import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
 
 public class KeyShareExtensionHandlerTest {
 
