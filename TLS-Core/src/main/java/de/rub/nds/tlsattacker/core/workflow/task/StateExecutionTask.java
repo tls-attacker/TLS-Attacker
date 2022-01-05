@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.workflow.task;
 
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 
 /**
  * Do not use this Task if you want to rely on the socket state
@@ -27,21 +26,7 @@ public class StateExecutionTask extends TlsTask {
 
     @Override
     public boolean execute() {
-
-        WorkflowExecutor executor =
-            WorkflowExecutorFactory.createWorkflowExecutor(state.getConfig().getWorkflowExecutorType(), state);
-        if (getBeforeTransportPreInitCallback() != null) {
-            executor.setBeforeTransportPreInitCallback(getBeforeTransportPreInitCallback());
-        }
-        if (getBeforeTransportInitCallback() != null) {
-            executor.setBeforeTransportInitCallback(getBeforeTransportInitCallback());
-        }
-        if (getAfterTransportInitCallback() != null) {
-            executor.setAfterTransportInitCallback(getAfterTransportInitCallback());
-        }
-        if (getAfterExecutionCallback() != null) {
-            executor.setAfterExecutionCallback(getAfterExecutionCallback());
-        }
+        WorkflowExecutor executor = getExecutor(state);
         executor.executeWorkflow();
         if (state.getTlsContext().isReceivedTransportHandlerException()) {
             throw new RuntimeException("TransportHandler exception received.");

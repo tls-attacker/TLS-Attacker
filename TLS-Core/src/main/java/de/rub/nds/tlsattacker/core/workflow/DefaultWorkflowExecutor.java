@@ -95,7 +95,9 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
         }
 
         try {
-            getAfterExecutionCallback().apply(state);
+            if (getAfterExecutionCallback() != null) {
+                getAfterExecutionCallback().apply(state);
+            }
         } catch (Exception ex) {
             LOGGER.trace("Error during AfterExecutionCallback", ex);
         }

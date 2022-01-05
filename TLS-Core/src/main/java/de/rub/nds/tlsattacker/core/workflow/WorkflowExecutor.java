@@ -42,25 +42,13 @@ public abstract class WorkflowExecutor {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private Function<State, Integer> beforeTransportPreInitCallback = (State state) -> {
-        LOGGER.trace("BeforePreInitCallback");
-        return 0;
-    };
+    private Function<State, Integer> beforeTransportPreInitCallback = null;
 
-    private Function<State, Integer> beforeTransportInitCallback = (State state) -> {
-        LOGGER.trace("BeforeInitCallback");
-        return 0;
-    };
+    private Function<State, Integer> beforeTransportInitCallback = null;
 
-    private Function<State, Integer> afterTransportInitCallback = (State state) -> {
-        LOGGER.trace("AfterTransportInitCallback");
-        return 0;
-    };
+    private Function<State, Integer> afterTransportInitCallback = null;
 
-    private Function<State, Integer> afterExecutionCallback = (State state) -> {
-        LOGGER.trace("AfterExecutionCallback");
-        return 0;
-    };
+    private Function<State, Integer> afterExecutionCallback = null;
 
     static {
         if (!BouncyCastleProviderChecker.isLoaded()) {
@@ -112,11 +100,17 @@ public abstract class WorkflowExecutor {
         }
 
         try {
-            getBeforeTransportPreInitCallback().apply(state);
+            if (getBeforeTransportPreInitCallback() != null) {
+                getBeforeTransportPreInitCallback().apply(state);
+            }
             context.getTransportHandler().preInitialize();
-            getBeforeTransportInitCallback().apply(state);
+            if (getBeforeTransportInitCallback() != null) {
+                getBeforeTransportInitCallback().apply(state);
+            }
             context.getTransportHandler().initialize();
-            getAfterTransportInitCallback().apply(state);
+            if (getAfterTransportInitCallback() != null) {
+                getAfterTransportInitCallback().apply(state);
+            }
         } catch (NullPointerException | NumberFormatException ex) {
             throw new ConfigurationException("Invalid values in " + context.getConnection().toString(), ex);
         } catch (Exception ex) {
