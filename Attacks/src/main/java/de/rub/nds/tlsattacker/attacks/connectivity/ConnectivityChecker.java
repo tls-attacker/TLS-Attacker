@@ -117,7 +117,7 @@ public class ConnectivityChecker {
         }
     }
 
-    public boolean speaksDTls(Config config) {
+    public boolean speaksDtls(Config config) {
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
         WorkflowTrace trace = factory.createTlsEntryWorkflowTrace(config.getDefaultClientConnection());
         trace.addTlsAction(new SendAction(new ClientHelloMessage(config)));
