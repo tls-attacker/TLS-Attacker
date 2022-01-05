@@ -118,7 +118,8 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
                             break;
                     }
                 }
-            } while (!executedAsPlanned() || dataStream.available() > 0);
+            } while (getLayerConfiguration().successRequiresMoreContainers(getLayerResult().getUsedContainers())
+                || dataStream.available() > 0);
         } catch (TimeoutException E) {
             LOGGER.debug(E);
         } catch (EndOfStreamException E) {

@@ -23,9 +23,47 @@ public class SpecificContainerLayerConfiguration<Container extends DataContainer
     }
 
     @Override
-    public boolean isFullfilled(List<Container> list) {
-        // TODO Return true if the exact list of the configuration has been received
+    public boolean executedAsPlanned(List<Container> list) {
+        return evaluateContainers(list, false);
+    }
+
+    private boolean evaluateContainers(List<Container> list, boolean mightStillReceiveMissing) {
+        if (list == null) {
+            return false;
+        }
+        int j = 0;
+        List<Container> expectedContainers = getContainerList();
+        for (int i = 0; i < expectedContainers.size(); i++) {
+            if (j >= list.size() && expectedContainers.get(i).isRequired()) {
+                return mightStillReceiveMissing;
+            } else if (j < list.size()) {
+                if (!expectedContainers.get(i).getClass().equals(list.get(j).getClass())
+                    && expectedContainers.get(i).isRequired()) {
+                    if (containerCanBeFiltered(list.get(j))) {
+                        j++;
+                        i--;
+                    } else {
+                        return false;
+                    }
+
+                } else if (expectedContainers.get(i).getClass().equals(list.get(j).getClass())) {
+                    j++;
+                }
+            }
+        }
+
+        for (; j < list.size(); j++) {
+            if (!containerCanBeFiltered(list.get(j)) && !isAllowTrailingContainers()) {
+                return false;
+            }
+        }
+
         return true;
+    }
+
+    @Override
+    public boolean failedEarly(List<Container> list) {
+        return evaluateContainers(list, true);
     }
 
 }

@@ -28,7 +28,7 @@ public interface DataContainer<T extends DataContainer> {
 
     // TODO Replace with Context
     public Handler<T> getHandler(TlsContext context);
-    
+
     public default boolean isRequired() {
         return true;
     }
