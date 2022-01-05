@@ -14,8 +14,6 @@ import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
-import de.rub.nds.tlsattacker.core.record.AbstractRecord;
-import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.transport.socket.SocketState;
 
@@ -33,11 +31,8 @@ public class ResponseFingerprint {
     private List<ProtocolMessage> messageList;
 
     @XmlElementWrapper
-    @XmlElements(value = { @XmlElement(type = Record.class, name = "Record"),
-        @XmlElement(type = BlobRecord.class, name = "BlobRecord") })
-    private List<AbstractRecord> recordList;
-
-    private final List<Record> recordList;
+    @XmlElements(value = { @XmlElement(type = Record.class, name = "Record") })
+    private List<Record> recordList;
     private SocketState socketState;
 
     public ResponseFingerprint() {
