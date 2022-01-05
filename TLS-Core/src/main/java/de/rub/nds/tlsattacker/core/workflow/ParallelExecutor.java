@@ -100,7 +100,7 @@ public class ParallelExecutor {
         return addTask(new StateExecutionTask(state, reexecutions));
     }
 
-    public void bulkExecuteStateTasks(List<State> stateList) {
+    public void bulkExecuteStateTasks(Iterable<State> stateList) {
         List<Future> futureList = new LinkedList<>();
         for (State state : stateList) {
             futureList.add(addStateTask(state));
@@ -118,7 +118,7 @@ public class ParallelExecutor {
         this.bulkExecuteStateTasks(new ArrayList<>(Arrays.asList(states)));
     }
 
-    public List<ITask> bulkExecuteTasks(List<TlsTask> taskList) {
+    public List<ITask> bulkExecuteTasks(Iterable<TlsTask> taskList) {
         List<Future<ITask>> futureList = new LinkedList<>();
         List<ITask> resultList = new ArrayList<>(futureList.size());
         for (TlsTask tlStask : taskList) {
