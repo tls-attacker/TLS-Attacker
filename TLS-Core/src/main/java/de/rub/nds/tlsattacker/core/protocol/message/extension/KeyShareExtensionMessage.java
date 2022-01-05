@@ -120,7 +120,7 @@ public class KeyShareExtensionMessage extends ExtensionMessage {
 
     @Override
     public KeyShareExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new KeyShareExtensionParser(stream, tlsContext.getConfig());
+        return new KeyShareExtensionParser(stream, tlsContext.getConfig(), tlsContext);
     }
 
     @Override

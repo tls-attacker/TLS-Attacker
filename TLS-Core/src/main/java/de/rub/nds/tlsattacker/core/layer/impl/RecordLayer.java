@@ -94,7 +94,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
                 contentType = type;
             }
 
-            if (encryptor.getRecordCipher(readEpoch).getState().getVersion().isDTLS() && record instanceof Record) {
+            if (encryptor.getRecordCipher(writeEpoch).getState().getVersion().isDTLS() && record instanceof Record) {
                 ((Record) record).setEpoch(writeEpoch);
             }
             RecordPreparator preparator =
