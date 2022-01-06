@@ -9,10 +9,8 @@
 
 package de.rub.nds.tlsattacker.core.layer;
 
-public enum LayerStackType {
-    TLS,
-    DTLS,
-    QUIC,
-    OPEN_VPN,
-    STARTTTLS,
+public abstract class DataContainerFilter {
+
+    public abstract boolean filterApplies(DataContainer container);
+
 }

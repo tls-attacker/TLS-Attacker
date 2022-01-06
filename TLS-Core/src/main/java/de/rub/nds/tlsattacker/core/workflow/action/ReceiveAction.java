@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.https.HttpsRequestMessage;
 import de.rub.nds.tlsattacker.core.https.HttpsResponseMessage;
+import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.core.record.Record;
@@ -153,46 +154,10 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
 
     @Override
     public boolean executedAsPlanned() {
-        return receivedAsPlanned(getMessages(), getExpectedMessages(), getActionOptions());
-    }
-
-    public static boolean receivedAsPlanned(List<ProtocolMessage> messages, List<ProtocolMessage> expectedMessages) {
-        return receivedAsPlanned(messages, expectedMessages, new HashSet<>());
-    }
-
-    public static boolean receivedAsPlanned(List<ProtocolMessage> messages, List<ProtocolMessage> expectedMessages,
-        Set<ActionOption> actionOptions) {
-        if (messages == null) {
+        if (getLayerStackProcessingResult().getResultForLayer(ImplementedLayers.MESSAGE) == null) {
             return false;
         }
-        int j = 0;
-        for (int i = 0; i < expectedMessages.size(); i++) {
-            if (j >= messages.size() && expectedMessages.get(i).isRequired()) {
-                return false;
-            } else if (j < messages.size()) {
-                if (!Objects.equals(expectedMessages.get(i).getClass(), messages.get(j).getClass())
-                    && expectedMessages.get(i).isRequired()) {
-                    if (receivedMessageCanBeIgnored(messages.get(j), actionOptions)) {
-                        j++;
-                        i--;
-                    } else {
-                        return false;
-                    }
-
-                } else if (Objects.equals(expectedMessages.get(i).getClass(), messages.get(j).getClass())) {
-                    j++;
-                }
-            }
-        }
-
-        for (; j < messages.size(); j++) {
-            if (!receivedMessageCanBeIgnored(messages.get(j), actionOptions)
-                && !actionOptions.contains(ActionOption.CHECK_ONLY_EXPECTED)) {
-                return false; // additional messages are not allowed
-            }
-        }
-
-        return true;
+        return getLayerStackProcessingResult().getResultForLayer(ImplementedLayers.MESSAGE).isExecutedAsPlanned();
     }
 
     public List<ProtocolMessage> getExpectedMessages() {

@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
+import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.hints.RecordLayerHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
@@ -59,6 +60,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
     private int readEpoch = 0;
 
     public RecordLayer(TlsContext context) {
+        super(ImplementedLayers.RECORD);
         this.context = context;
         encryptor = new RecordEncryptor(RecordCipherFactory.getNullCipher(context), context);
         decryptor = new RecordDecryptor(RecordCipherFactory.getNullCipher(context), context);
@@ -111,7 +113,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
             addProducedContainer(record);
         }
         getLowerLayer().sendData(null, stream.toByteArray());
-        return new LayerProcessingResult<>(records);
+        return new LayerProcessingResult<>(records, getLayerType(), true);
     }
 
     @Override

@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.https.HttpsResponseMessage;
 import de.rub.nds.tlsattacker.core.layer.DataContainer;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
+import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
@@ -30,6 +31,7 @@ public class HttpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer>
     private TlsContext context;
 
     public HttpLayer(TlsContext context) {
+        super(ImplementedLayers.HTTP);
         this.context = context;
     }
 

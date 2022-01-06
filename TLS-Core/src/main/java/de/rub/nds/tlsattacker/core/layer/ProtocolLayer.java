@@ -15,6 +15,7 @@
 package de.rub.nds.tlsattacker.core.layer;
 
 import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
+import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.tlsattacker.core.protocol.Handler;
@@ -42,8 +43,11 @@ public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container 
 
     protected HintedInputStream nextInputStream = null;
 
-    public ProtocolLayer() {
+    private LayerType layerType;
+
+    public ProtocolLayer(LayerType layerType) {
         producedDataContainers = new LinkedList<>();
+        this.layerType = layerType;
     }
 
     public ProtocolLayer getHigherLayer() {
@@ -75,7 +79,11 @@ public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container 
     }
 
     public LayerProcessingResult<Container> getLayerResult() {
-        return new LayerProcessingResult(producedDataContainers);
+        boolean isExecutedAsPlanned = true;
+        if (getLayerConfiguration() != null) {
+            isExecutedAsPlanned = getLayerConfiguration().executedAsPlanned(producedDataContainers);
+        }
+        return new LayerProcessingResult(producedDataContainers, getLayerType(), isExecutedAsPlanned);
     }
 
     public void removeDrainedInputStream() {
@@ -100,22 +108,6 @@ public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container 
 
     protected void addProducedContainer(Container container) {
         producedDataContainers.add(container);
-    }
-
-    public boolean executedAsPlanned() {
-        int i = 0;
-        for (DataContainer container : layerConfiguration.getContainerList()) {
-
-            if (producedDataContainers.size() <= i) {
-                return false;
-            }
-            if (!container.getClass().equals(producedDataContainers.get(i).getClass())) {
-                // TODO deal with optional messages
-                return false;
-            }
-            i++;
-        }
-        return true;
     }
 
     /**
@@ -172,5 +164,9 @@ public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container 
         Handler handler = container.getHandler(context);
         handler.adjustContext(container);
         addProducedContainer(container);
+    }
+
+    public LayerType getLayerType() {
+        return layerType;
     }
 }

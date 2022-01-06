@@ -10,13 +10,23 @@
 package de.rub.nds.tlsattacker.core.layer;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class TillContainerLayerConfiguration<Container extends DataContainer> extends LayerConfiguration<Container> {
 
     @Override
-    public boolean isFullfilled(List<Container> list) {
-        // TODO check that this is fullfilled
-        return true;
+    public boolean executedAsPlanned(List<Container> list) {
+        List<Class<? extends DataContainer>> missingExpectedContainers =
+            getContainerList().stream().map(DataContainer::getClass).collect(Collectors.toList());
+        if (list != null) {
+            list.forEach(receivedContainer -> missingExpectedContainers.remove(receivedContainer.getClass()));
+        }
+        return missingExpectedContainers.isEmpty();
+    }
+
+    @Override
+    public boolean failedEarly(List<Container> list) {
+        return false;
     }
 
 }
