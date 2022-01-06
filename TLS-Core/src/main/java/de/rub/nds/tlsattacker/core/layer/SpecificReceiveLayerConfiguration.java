@@ -9,29 +9,28 @@
 
 package de.rub.nds.tlsattacker.core.layer;
 
+import java.util.Arrays;
 import java.util.List;
 
-public class SpecificContainerLayerConfiguration<Container extends DataContainer>
-    extends LayerConfiguration<Container> {
+public class SpecificReceiveLayerConfiguration<Container extends DataContainer> extends LayerConfiguration<Container> {
 
-    public SpecificContainerLayerConfiguration(List<Container> containerList) {
+    private List<DataContainerFilter> containerFilterList;
+
+    private boolean allowTrailingContainers = false;
+
+    private boolean processTrailingContainers = true;
+
+    public SpecificReceiveLayerConfiguration(List<Container> containerList) {
         super(containerList);
     }
 
-    public SpecificContainerLayerConfiguration(Container... containers) {
+    public SpecificReceiveLayerConfiguration(Container... containers) {
         super(containers);
     }
 
-    /**
-     * Determines if the LayerConfiguration, based on the final list of DataContainers, is satisfied
-     * 
-     * @param  list
-     *              The list of DataContainers
-     * @return      The final evaluation result
-     */
     @Override
     public boolean executedAsPlanned(List<Container> list) {
-        return evaluateContainers(list, false);
+        return evaluateReceivedContainers(list, false);
     }
 
     /**
@@ -46,7 +45,7 @@ public class SpecificContainerLayerConfiguration<Container extends DataContainer
      *                                 contradictory DataContainer has been received yet and the LayerConfiguration can
      *                                 be satisfied if additional DataContainers get provided
      */
-    private boolean evaluateContainers(List<Container> list, boolean mayReceiveMoreContainers) {
+    private boolean evaluateReceivedContainers(List<Container> list, boolean mayReceiveMoreContainers) {
         if (list == null) {
             return false;
         }
@@ -81,17 +80,48 @@ public class SpecificContainerLayerConfiguration<Container extends DataContainer
         return true;
     }
 
-    /**
-     * Determines if the LayerConfiguration, based on the current list of DataContainers, can possibly still be
-     * satisfied
-     * 
-     * @param  list
-     *              The list of DataContainers
-     * @return      The evaluation result based on the current DataContainers
-     */
     @Override
     public boolean failedEarly(List<Container> list) {
-        return !evaluateContainers(list, true);
+        return !evaluateReceivedContainers(list, true);
+    }
+
+    public void setContainerFilterList(DataContainerFilter... containerFilters) {
+        this.setContainerFilterList(Arrays.asList(containerFilters));
+    }
+
+    public boolean containerCanBeFiltered(Container container) {
+        if (getContainerFilterList() != null) {
+            for (DataContainerFilter containerFilter : getContainerFilterList()) {
+                if (containerFilter.filterApplies(container)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean isAllowTrailingContainers() {
+        return allowTrailingContainers;
+    }
+
+    public void setAllowTrailingContainers(boolean allowTrailingContainers) {
+        this.allowTrailingContainers = allowTrailingContainers;
+    }
+
+    public List<DataContainerFilter> getContainerFilterList() {
+        return containerFilterList;
+    }
+
+    public void setContainerFilterList(List<DataContainerFilter> containerFilterList) {
+        this.containerFilterList = containerFilterList;
+    }
+
+    public boolean isProcessTrailingContainers() {
+        return processTrailingContainers;
+    }
+
+    public void setProcessTrailingContainers(boolean processTrailingContainers) {
+        this.processTrailingContainers = processTrailingContainers;
     }
 
 }
