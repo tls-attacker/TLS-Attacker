@@ -279,7 +279,7 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
         if (individualConfig.getHighestProtocolVersion().isTLS13()) {
             trace = new WorkflowConfigurationFactory(individualConfig).createWorkflowTrace(WorkflowTraceType.HANDSHAKE,
                 RunningModeType.CLIENT);
-            trace.addTlsAction(new ReceiveAction(ActionOption.CHECK_ONLY_EXPECTED, new NewSessionTicketMessage(false)));
+            trace.addTlsAction(new ReceiveAction(ActionOption.CHECK_ONLY_EXPECTED, new NewSessionTicketMessage()));
             trace.addTlsAction(new ResetConnectionAction());
 
             // make sure no explicit PreMasterSecret is set upon execution
