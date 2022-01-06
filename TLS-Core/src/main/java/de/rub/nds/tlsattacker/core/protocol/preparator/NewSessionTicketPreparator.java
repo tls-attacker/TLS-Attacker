@@ -128,4 +128,11 @@ public class NewSessionTicketPreparator extends HandshakeMessagePreparator<NewSe
         msg.getTicket().setTicketNonce(chooser.getConfig().getDefaultSessionTicketNonce());
         msg.getTicket().setTicketNonceLength(msg.getTicket().getTicketNonce().getValue().length);
     }
+
+    @Override
+    public void prepareAfterParse(boolean clientMode) {
+        if (chooser.getSelectedProtocolVersion().isTLS13()) {
+            msg.setIncludeInDigest(false);
+        }
+    }
 }

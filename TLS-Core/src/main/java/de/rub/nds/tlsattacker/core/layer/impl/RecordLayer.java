@@ -100,6 +100,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
             RecordPreparator preparator =
                 record.getRecordPreparator(context.getChooser(), encryptor, compressor, contentType);
             preparator.prepare();
+            preparator.afterPrepare();
             RecordSerializer serializer = record.getRecordSerializer();
             try {
                 byte[] recordBytes = serializer.serialize();

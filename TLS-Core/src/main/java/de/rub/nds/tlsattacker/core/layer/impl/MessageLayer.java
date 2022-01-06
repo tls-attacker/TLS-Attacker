@@ -45,6 +45,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
         for (ProtocolMessage message : configuration.getContainerList()) {
             ProtocolMessagePreparator preparator = message.getPreparator(context);
             preparator.prepare();
+            preparator.afterPrepare();
             ProtocolMessageSerializer serializer = message.getSerializer(context);
             byte[] serializedMessage = serializer.serialize();
             message.setCompleteResultingMessage(serializedMessage);

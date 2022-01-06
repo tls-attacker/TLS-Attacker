@@ -101,10 +101,6 @@ public class MessageFragmenter {
             Preparator<ProtocolMessage> preparator = message.getPreparator(context);
             preparator.prepare();
             preparator.afterPrepare();
-            if (preparator instanceof HandshakeMessagePreparator) {
-                // re-prepare to cover changes caused by afterPrepare
-                ((HandshakeMessagePreparator) preparator).prepareEncapsulatingFields();
-            }
             Serializer<ProtocolMessage> serializer = message.getSerializer(context);
             byte[] completeMessage = serializer.serialize();
             message.setCompleteResultingMessage(completeMessage);
