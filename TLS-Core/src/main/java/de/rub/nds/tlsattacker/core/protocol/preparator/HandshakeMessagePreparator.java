@@ -113,13 +113,12 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         if (message.getExtensions() != null) {
             for (ExtensionMessage extensionMessage : message.getExtensions()) {
-                ExtensionMessage extension = HandlerFactory.getExtension(extensionMessage.getExtensionTypeConstant());
-                Preparator preparator = extension.getPreparator(chooser.getContext());
-                if (extension instanceof PreSharedKeyExtensionMessage && message instanceof ClientHelloMessage
+                Preparator preparator = extensionMessage.getPreparator(chooser.getContext());
+                if (extensionMessage instanceof PreSharedKeyExtensionMessage && message instanceof ClientHelloMessage
                     && chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
                     ((PreSharedKeyExtensionPreparator) preparator).setClientHello((ClientHelloMessage) message);
                     preparator.afterPrepare();
-                } else if (extension instanceof EncryptedServerNameIndicationExtensionMessage
+                } else if (extensionMessage instanceof EncryptedServerNameIndicationExtensionMessage
                     && message instanceof ClientHelloMessage
                     && chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
                     ClientHelloMessage clientHelloMessage = (ClientHelloMessage) message;
@@ -142,6 +141,7 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
             }
         }
         message.setExtensionBytes(stream.toByteArray());
+        prepareEncapsulatingFields();
         LOGGER.debug("ExtensionBytes: " + ArrayConverter.bytesToHexString(message.getExtensionBytes().getValue()));
     }
 
