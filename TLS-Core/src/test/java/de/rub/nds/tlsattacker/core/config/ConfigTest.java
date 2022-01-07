@@ -349,7 +349,25 @@ public class ConfigTest {
     public void generateTls13Config() {
         Config config = new Config();
         stripConfig(config);
+        setUpBasicTls13Config(config);
 
+        writeToConfig(config, "tls13.config");
+    }
+
+    @Test
+    public void generateTls13ZeroRttConfig() {
+        Config config = new Config();
+        stripConfig(config);
+        setUpBasicTls13Config(config);
+        config.setAddPSKKeyExchangeModesExtension(true);
+        config.setAddPreSharedKeyExtension(true);
+        config.setAddEarlyDataExtension(true);
+        config.setSessionTicketLifetimeHint(3600);
+
+        writeToConfig(config, "tls13zerortt.config");
+    }
+
+    private void setUpBasicTls13Config(Config config) {
         config.setHighestProtocolVersion(ProtocolVersion.TLS13);
         config.setSupportedVersions(ProtocolVersion.TLS13);
 
@@ -404,8 +422,6 @@ public class ConfigTest {
         config.setAddSupportedVersionsExtension(true);
         config.setAddKeyShareExtension(true);
         config.setAddRenegotiationInfoExtension(false);
-
-        writeToConfig(config, "tls13.config");
     }
 
     @Test
