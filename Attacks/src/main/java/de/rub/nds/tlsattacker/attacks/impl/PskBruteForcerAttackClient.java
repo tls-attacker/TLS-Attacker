@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
 import de.rub.nds.tlsattacker.core.protocol.handler.ClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
@@ -253,7 +253,7 @@ public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackCli
     private byte[] computeControlValue(WorkflowTrace trace, TlsContext tlsContext) throws CryptoException {
         tlsContext.getDigest().reset();
         for (MessageAction messageAction : trace.getMessageActions()) {
-            for (ProtocolMessage message : messageAction.getMessages()) {
+            for (TlsMessage message : messageAction.getMessages()) {
                 if (message instanceof ChangeCipherSpecMessage) {
                     break;
                 }

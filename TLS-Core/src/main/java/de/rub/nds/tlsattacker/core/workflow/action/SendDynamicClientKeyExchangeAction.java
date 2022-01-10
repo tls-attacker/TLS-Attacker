@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.record.Record;
@@ -89,7 +89,7 @@ public class SendDynamicClientKeyExchangeAction extends MessageAction implements
         }
         sb.append("\tMessages:");
         if (messages != null) {
-            for (ProtocolMessage message : messages) {
+            for (TlsMessage message : messages) {
                 sb.append(message.toCompactString());
                 sb.append(", ");
             }
@@ -105,7 +105,7 @@ public class SendDynamicClientKeyExchangeAction extends MessageAction implements
         StringBuilder sb = new StringBuilder(super.toCompactString());
         if ((messages != null) && (!messages.isEmpty())) {
             sb.append(" (");
-            for (ProtocolMessage message : messages) {
+            for (TlsMessage message : messages) {
                 sb.append(message.toCompactString());
                 sb.append(",");
             }
@@ -130,7 +130,7 @@ public class SendDynamicClientKeyExchangeAction extends MessageAction implements
     public void reset() {
         List<ModifiableVariableHolder> holders = new LinkedList<>();
         if (messages != null) {
-            for (ProtocolMessage message : messages) {
+            for (TlsMessage message : messages) {
                 holders.addAll(message.getAllModifiableVariableHolders());
             }
         }
@@ -173,7 +173,7 @@ public class SendDynamicClientKeyExchangeAction extends MessageAction implements
     }
 
     @Override
-    public List<ProtocolMessage> getSendMessages() {
+    public List<TlsMessage> getSendMessages() {
         return messages;
     }
 

@@ -10,7 +10,7 @@
 package de.rub.nds.tlsattacker.attacks.util.response;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceivingAction;
@@ -36,7 +36,7 @@ public class ResponseExtractor {
      * @return
      */
     public static ResponseFingerprint getFingerprint(State state, ReceivingAction action) {
-        List<ProtocolMessage> messageList = action.getReceivedMessages();
+        List<TlsMessage> messageList = action.getReceivedMessages();
         List<Record> recordList = action.getReceivedRecords();
         SocketState socketState = extractSocketState(state);
         return new ResponseFingerprint(messageList, recordList, socketState);
@@ -72,11 +72,11 @@ public class ResponseExtractor {
         return classList;
     }
 
-    private static List<Class<ProtocolMessage>> extractMessageClasses(ReceivingAction action) {
-        List<Class<ProtocolMessage>> classList = new LinkedList<>();
+    private static List<Class<TlsMessage>> extractMessageClasses(ReceivingAction action) {
+        List<Class<TlsMessage>> classList = new LinkedList<>();
         if (action.getReceivedMessages() != null) {
-            for (ProtocolMessage message : action.getReceivedMessages()) {
-                classList.add((Class<ProtocolMessage>) message.getClass());
+            for (TlsMessage message : action.getReceivedMessages()) {
+                classList.add((Class<TlsMessage>) message.getClass());
             }
         }
         return classList;

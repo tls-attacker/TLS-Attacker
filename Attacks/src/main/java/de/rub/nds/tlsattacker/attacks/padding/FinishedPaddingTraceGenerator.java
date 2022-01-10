@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.attacks.constants.PaddingRecordGeneratorType;
 import de.rub.nds.tlsattacker.attacks.padding.vector.PaddingVector;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
@@ -52,7 +52,7 @@ public class FinishedPaddingTraceGenerator extends PaddingTraceGenerator {
         }
         SendAction sendAction = (SendAction) trace.getLastSendingAction();
         LinkedList<Record> recordList = new LinkedList<>();
-        for (ProtocolMessage msg : sendAction.getMessages()) {
+        for (TlsMessage msg : sendAction.getMessages()) {
             if (msg instanceof FinishedMessage) {
                 recordList.add(vector.createRecord());
             } else {

@@ -9,6 +9,13 @@
 
 package de.rub.nds.tlsattacker.core.layer.impl;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.LinkedList;
+import java.util.List;
+
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
@@ -17,6 +24,7 @@ import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
+import de.rub.nds.tlsattacker.core.layer.context.RecordContext;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.hints.RecordLayerHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
@@ -34,21 +42,14 @@ import de.rub.nds.tlsattacker.core.record.crypto.RecordEncryptor;
 import de.rub.nds.tlsattacker.core.record.parser.RecordParser;
 import de.rub.nds.tlsattacker.core.record.preparator.RecordPreparator;
 import de.rub.nds.tlsattacker.core.record.serializer.RecordSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.LinkedList;
-import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
+public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record, RecordContext> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final TlsContext context;
+    private final RecordContext context;
 
     private final Decryptor decryptor;
     private final Encryptor encryptor;
@@ -59,7 +60,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
     private int writeEpoch = 0;
     private int readEpoch = 0;
 
-    public RecordLayer(TlsContext context) {
+    public RecordLayer(RecordContext context) {
         super(ImplementedLayers.RECORD);
         this.context = context;
         encryptor = new RecordEncryptor(RecordCipherFactory.getNullCipher(context), context);

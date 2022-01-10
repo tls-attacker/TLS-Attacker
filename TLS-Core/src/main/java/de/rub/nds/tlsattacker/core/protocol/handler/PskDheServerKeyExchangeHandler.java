@@ -34,22 +34,22 @@ public class PskDheServerKeyExchangeHandler extends DHEServerKeyExchangeHandler<
     }
 
     private void adjustPSKGenerator(PskDheServerKeyExchangeMessage message) {
-        tlsContext.setPSKGenerator(new BigInteger(1, message.getGenerator().getValue()));
-        LOGGER.debug("PSK Generator: " + tlsContext.getPSKGenerator());
+        context.setPSKGenerator(new BigInteger(1, message.getGenerator().getValue()));
+        LOGGER.debug("PSK Generator: " + context.getPSKGenerator());
     }
 
     private void adjustPSKModulus(PskDheServerKeyExchangeMessage message) {
-        tlsContext.setPSKModulus(new BigInteger(1, message.getModulus().getValue()));
-        LOGGER.debug("PSK Modulus: " + tlsContext.getPSKModulus());
+        context.setPSKModulus(new BigInteger(1, message.getModulus().getValue()));
+        LOGGER.debug("PSK Modulus: " + context.getPSKModulus());
     }
 
     private void adjustServerPublicKey(PskDheServerKeyExchangeMessage message) {
-        tlsContext.setServerPSKPublicKey(new BigInteger(1, message.getPublicKey().getValue()));
-        LOGGER.debug("Server PublicKey: " + tlsContext.getServerPSKPublicKey());
+        context.setServerPSKPublicKey(new BigInteger(1, message.getPublicKey().getValue()));
+        LOGGER.debug("Server PublicKey: " + context.getServerPSKPublicKey());
     }
 
     private void adjustServerPrivateKey(PskDheServerKeyExchangeMessage message) {
-        tlsContext.setServerPSKPrivateKey(message.getComputations().getPrivateKey().getValue());
-        LOGGER.debug("Server PrivateKey: " + tlsContext.getServerPSKPrivateKey());
+        context.setServerPSKPrivateKey(message.getComputations().getPrivateKey().getValue());
+        LOGGER.debug("Server PrivateKey: " + context.getServerPSKPrivateKey());
     }
 }

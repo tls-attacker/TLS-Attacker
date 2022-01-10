@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -109,7 +109,7 @@ public class TLSPoodleAttacker extends Attacker<TLSPoodleCommandConfig> {
         // We have to manually initialize the 3 records for the sending action,
         // since o/w they are not yet initialized at this stage.
         SendingAction lastSendingAction = WorkflowTraceUtil.getLastSendingAction(trace);
-        List<ProtocolMessage> sendMessages = lastSendingAction.getSendMessages();
+        List<TlsMessage> sendMessages = lastSendingAction.getSendMessages();
         assert (sendMessages.get(sendMessages.size() - 1) instanceof FinishedMessage);
         List<Record> sendRecords = lastSendingAction.getSendRecords();
         sendRecords.add(new Record()); // Key Exchange

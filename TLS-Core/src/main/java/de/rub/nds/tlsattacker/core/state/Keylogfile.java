@@ -14,6 +14,8 @@ import java.io.FileWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import javax.xml.bind.DatatypeConverter;
+
+import de.rub.nds.tlsattacker.core.layer.context.RecordContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,9 +23,9 @@ public class Keylogfile {
     private static final Logger LOGGER = LogManager.getLogger();
     private String path;
     private boolean writeKeylog;
-    private TlsContext context;
+    private RecordContext context;
 
-    Keylogfile(TlsContext context) {
+    public Keylogfile(RecordContext context) {
         this.context = context;
         path = context.getConfig().getKeylogFilePath();
         Path outputPath;

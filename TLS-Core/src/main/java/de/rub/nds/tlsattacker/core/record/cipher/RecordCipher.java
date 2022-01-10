@@ -16,8 +16,8 @@ import de.rub.nds.tlsattacker.core.crypto.cipher.DecryptionCipher;
 import de.rub.nds.tlsattacker.core.crypto.cipher.EncryptionCipher;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.layer.context.RecordContext;
 import de.rub.nds.tlsattacker.core.record.Record;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -40,13 +40,13 @@ public abstract class RecordCipher {
     /**
      * TLS context
      */
-    private TlsContext context;
+    private RecordContext context;
     /**
      * cipher state
      */
     private CipherState state;
 
-    public RecordCipher(TlsContext context, CipherState state) {
+    public RecordCipher(RecordContext context, CipherState state) {
         this.context = context;
         this.state = state;
     }

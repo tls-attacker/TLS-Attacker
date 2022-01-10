@@ -19,7 +19,7 @@ import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
 import de.rub.nds.tlsattacker.core.layer.constant.LayerStackType;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
@@ -209,9 +209,9 @@ public abstract class WorkflowExecutor {
      * Check if a at least one TLS context received a warning alert.
      */
     public boolean isReceivedWarningAlert() {
-        List<ProtocolMessage> allReceivedMessages =
+        List<TlsMessage> allReceivedMessages =
             WorkflowTraceUtil.getAllReceivedMessages(state.getWorkflowTrace(), ProtocolMessageType.ALERT);
-        for (ProtocolMessage message : allReceivedMessages) {
+        for (TlsMessage message : allReceivedMessages) {
             AlertMessage alert = (AlertMessage) message;
             if (alert.getLevel().getValue() == AlertLevel.WARNING.getValue()) {
                 return true;

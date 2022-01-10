@@ -35,7 +35,7 @@ public class EncryptedExtensionsHandler extends HandshakeMessageHandler<Encrypte
             LOGGER.debug("Adjusting for EncryptedExtensions:");
             for (ExtensionMessage extension : message.getExtensions()) {
                 LOGGER.debug("Adjusting " + message.toCompactString());
-                Handler handler = extension.getHandler(tlsContext);
+                Handler handler = extension.getHandler(context);
                 handler.adjustContext(extension);
             }
 
@@ -44,9 +44,9 @@ public class EncryptedExtensionsHandler extends HandshakeMessageHandler<Encrypte
     }
 
     private void warnOnConflictingExtensions() {
-        if (tlsContext.getTalkingConnectionEndType() == tlsContext.getChooser().getMyConnectionPeer()) {
-            if (tlsContext.isExtensionNegotiated(ExtensionType.MAX_FRAGMENT_LENGTH)
-                && tlsContext.isExtensionNegotiated(ExtensionType.RECORD_SIZE_LIMIT)) {
+        if (context.getTalkingConnectionEndType() == context.getChooser().getMyConnectionPeer()) {
+            if (context.isExtensionNegotiated(ExtensionType.MAX_FRAGMENT_LENGTH)
+                && context.isExtensionNegotiated(ExtensionType.RECORD_SIZE_LIMIT)) {
                 LOGGER.warn("Server sent max_fragment_length AND record_size_limit extensions");
             }
         }

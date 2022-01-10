@@ -9,25 +9,27 @@
 
 package de.rub.nds.tlsattacker.core.certificate;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
-import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.*;
-import de.rub.nds.tlsattacker.core.crypto.keys.*;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.core.util.CertificateUtils;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.*;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.CertificateException;
 import java.util.Arrays;
 import java.util.Objects;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.*;
+import de.rub.nds.tlsattacker.core.crypto.keys.*;
+import de.rub.nds.tlsattacker.core.layer.context.RecordContext;
+import de.rub.nds.tlsattacker.core.util.CertificateUtils;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
@@ -361,7 +363,7 @@ public class CertificateKeyPair implements Serializable {
         }
     }
 
-    public void adjustInContext(TlsContext context, ConnectionEndType connectionEnd) {
+    public void adjustInContext(RecordContext context, ConnectionEndType connectionEnd) {
         if (context.getSelectedProtocolVersion() != ProtocolVersion.TLS13) {
             publicKey.adjustInContext(context, connectionEnd);
         }

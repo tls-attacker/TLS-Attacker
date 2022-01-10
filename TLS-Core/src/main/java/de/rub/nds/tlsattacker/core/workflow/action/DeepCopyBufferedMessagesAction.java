@@ -10,7 +10,7 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import java.io.*;
@@ -47,18 +47,18 @@ public class DeepCopyBufferedMessagesAction extends CopyContextFieldAction {
     }
 
     private void deepCopyMessages(TlsContext src, TlsContext dst) {
-        LinkedList<ProtocolMessage> messageBuffer = new LinkedList<>();
+        LinkedList<TlsMessage> messageBuffer = new LinkedList<>();
         ObjectOutputStream outStream;
         ObjectInputStream inStream;
         try {
-            for (ProtocolMessage message : src.getMessageBuffer()) {
+            for (TlsMessage message : src.getMessageBuffer()) {
 
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 outStream = new ObjectOutputStream(stream);
                 outStream.writeObject(message);
                 outStream.close();
                 inStream = new ObjectInputStream(new ByteArrayInputStream(stream.toByteArray()));
-                ProtocolMessage messageCopy = (ProtocolMessage) inStream.readObject();
+                TlsMessage messageCopy = (TlsMessage) inStream.readObject();
 
                 messageBuffer.add(messageCopy);
                 setExecuted(true);

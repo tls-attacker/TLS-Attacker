@@ -12,20 +12,21 @@ package de.rub.nds.tlsattacker.core.protocol;
 import de.rub.nds.tlsattacker.core.dtls.MessageFragmenter;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
+import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public abstract class ProtocolMessageHandler<MessageT extends ProtocolMessage> implements Handler<MessageT> {
+public abstract class ProtocolMessageHandler<MessageT extends TlsMessage> implements Handler<MessageT> {
 
     protected static final Logger LOGGER = LogManager.getLogger();
     /**
-     * tls context
+     * context
      */
-    protected final TlsContext tlsContext;
+    protected final Context context;
 
-    public ProtocolMessageHandler(TlsContext tlsContext) {
-        this.tlsContext = tlsContext;
+    public ProtocolMessageHandler(Context context) {
+        this.context = context;
     }
 
     /**
@@ -36,7 +37,7 @@ public abstract class ProtocolMessageHandler<MessageT extends ProtocolMessage> i
     public void prepareAfterParse(MessageT message) {
     }
 
-    public void updateDigest(ProtocolMessage message) {
+    public void updateDigest(TlsMessage message) {
         if (!(message instanceof HandshakeMessage)) {
             return;
         }
@@ -47,12 +48,12 @@ public abstract class ProtocolMessageHandler<MessageT extends ProtocolMessage> i
             return;
         }
 
-        if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS()) {
+        if (context.getChooser().getSelectedProtocolVersion().isDTLS()) {
             DtlsHandshakeMessageFragment fragment =
-                MessageFragmenter.wrapInSingleFragment(handshakeMessage, tlsContext);
-            tlsContext.getDigest().append(fragment.getCompleteResultingMessage().getValue());
+                MessageFragmenter.wrapInSingleFragment(handshakeMessage, context);
+            context.getDigest().append(fragment.getCompleteResultingMessage().getValue());
         } else {
-            tlsContext.getDigest().append(message.getCompleteResultingMessage().getValue());
+            context.getDigest().append(message.getCompleteResultingMessage().getValue());
         }
         LOGGER.debug("Included in digest: " + message.toCompactString());
     }

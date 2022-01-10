@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
@@ -27,11 +27,11 @@ public abstract class Chooser {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    protected final TlsContext context;
+    protected final Context context;
 
     protected final Config config;
 
-    public Chooser(TlsContext context, Config config) {
+    public Chooser(Context context, Config config) {
         this.config = config;
         this.context = context;
     }
@@ -40,7 +40,7 @@ public abstract class Chooser {
         return config;
     }
 
-    public TlsContext getContext() {
+    public Context getContext() {
         return context;
     }
 

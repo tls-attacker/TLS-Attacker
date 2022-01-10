@@ -9,17 +9,19 @@
 
 package de.rub.nds.tlsattacker.core.crypto.keys;
 
-import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.Serializable;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.layer.context.RecordContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class CustomPublicKey implements Serializable {
 
-    public abstract void adjustInContext(TlsContext context, ConnectionEndType ownerOfKey);
+    public abstract void adjustInContext(RecordContext context, ConnectionEndType ownerOfKey);
 
     public abstract void adjustInConfig(Config config, ConnectionEndType ownerOfKey);
 

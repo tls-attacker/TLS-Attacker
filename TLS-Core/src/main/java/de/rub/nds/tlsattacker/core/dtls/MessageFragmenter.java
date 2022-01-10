@@ -95,12 +95,12 @@ public class MessageFragmenter {
         return fragments;
     }
 
-    public static byte[] prepareMessage(ProtocolMessage message, boolean withPrepare, TlsContext context) {
+    public static byte[] prepareMessage(TlsMessage message, boolean withPrepare, TlsContext context) {
         if (withPrepare) {
-            Preparator<ProtocolMessage> preparator = message.getPreparator(context);
+            Preparator<TlsMessage> preparator = message.getPreparator(context);
             preparator.prepare();
             preparator.afterPrepare();
-            Serializer<ProtocolMessage> serializer = message.getSerializer(context);
+            Serializer<TlsMessage> serializer = message.getSerializer(context);
             byte[] completeMessage = serializer.serialize();
             message.setCompleteResultingMessage(completeMessage);
         }

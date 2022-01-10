@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.crypto.MD5Utils;
 import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
 import de.rub.nds.tlsattacker.core.crypto.SSLUtils;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.RecordContext;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
@@ -28,7 +28,7 @@ public class KeySetGenerator {
 
     private static final int AEAD_IV_LENGTH = 12;
 
-    public static KeySet generateKeySet(TlsContext context, ProtocolVersion protocolVersion, Tls13KeySetType keySetType)
+    public static KeySet generateKeySet(RecordContext context, ProtocolVersion protocolVersion, Tls13KeySetType keySetType)
         throws NoSuchAlgorithmException, CryptoException {
         if (protocolVersion.isTLS13()) {
             return getTls13KeySet(context, keySetType);
@@ -38,12 +38,12 @@ public class KeySetGenerator {
 
     }
 
-    public static KeySet generateKeySet(TlsContext context) throws NoSuchAlgorithmException, CryptoException {
+    public static KeySet generateKeySet(RecordContext context) throws NoSuchAlgorithmException, CryptoException {
         return generateKeySet(context, context.getChooser().getSelectedProtocolVersion(),
             context.getActiveKeySetTypeWrite());
     }
 
-    private static KeySet getTls13KeySet(TlsContext context, Tls13KeySetType keySetType) throws CryptoException {
+    private static KeySet getTls13KeySet(RecordContext context, Tls13KeySetType keySetType) throws CryptoException {
         CipherSuite cipherSuite = context.getChooser().getSelectedCipherSuite();
         byte[] clientSecret = new byte[0];
         byte[] serverSecret = new byte[0];
@@ -92,7 +92,7 @@ public class KeySetGenerator {
         return keySet;
     }
 
-    private static KeySet getTlsKeySet(TlsContext context) throws CryptoException {
+    private static KeySet getTlsKeySet(RecordContext context) throws CryptoException {
         ProtocolVersion protocolVersion = context.getChooser().getSelectedProtocolVersion();
         CipherSuite cipherSuite = context.getChooser().getSelectedCipherSuite();
         byte[] masterSecret = context.getChooser().getMasterSecret();
@@ -118,7 +118,7 @@ public class KeySetGenerator {
         return keySet;
     }
 
-    private static void deriveExportKeys(KeySet keySet, TlsContext context) throws CryptoException {
+    private static void deriveExportKeys(KeySet keySet, RecordContext context) throws CryptoException {
         ProtocolVersion protocolVersion = context.getChooser().getSelectedProtocolVersion();
         CipherSuite cipherSuite = context.getChooser().getSelectedCipherSuite();
         byte[] clientRandom = context.getChooser().getClientRandom();

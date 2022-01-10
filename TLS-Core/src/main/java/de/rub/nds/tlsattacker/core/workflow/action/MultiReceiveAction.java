@@ -9,7 +9,7 @@
 
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.util.Arrays;
@@ -69,13 +69,13 @@ public class MultiReceiveAction extends GenericReceiveAction {
     }
 
     private boolean compareExpectedActionsWithReceivedActions(ReceiveAction actionCandidate) {
-        List<ProtocolMessage> expectedMessagesCandidate = actionCandidate.getExpectedMessages();
+        List<TlsMessage> expectedMessagesCandidate = actionCandidate.getExpectedMessages();
         if (expectedMessagesCandidate.size() != super.getReceivedMessages().size()) {
             return false;
         }
         for (int i = 0; i < expectedMessagesCandidate.size(); i++) {
-            ProtocolMessage expectedMessageCandidate = expectedMessagesCandidate.get(i);
-            ProtocolMessage receivedMessage = getReceivedMessages().get(i);
+            TlsMessage expectedMessageCandidate = expectedMessagesCandidate.get(i);
+            TlsMessage receivedMessage = getReceivedMessages().get(i);
             if (expectedMessageCandidate.getClass().equals(receivedMessage.getClass())) {
                 return false;
                 // could contain different AlertMessages

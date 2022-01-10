@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.layer.LayerStack;
 import de.rub.nds.tlsattacker.core.layer.LayerStackProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.SpecificContainerLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
@@ -34,7 +34,7 @@ public abstract class MessageAction extends ConnectionBoundAction {
     @XmlElementWrapper
     @HoldsModifiableVariable
     @XmlElementRef
-    protected List<ProtocolMessage> messages = new ArrayList<>();
+    protected List<TlsMessage> messages = new ArrayList<>();
 
     @HoldsModifiableVariable
     @XmlElementWrapper
@@ -51,11 +51,11 @@ public abstract class MessageAction extends ConnectionBoundAction {
     public MessageAction() {
     }
 
-    public MessageAction(List<ProtocolMessage> messages) {
+    public MessageAction(List<TlsMessage> messages) {
         this.messages = new ArrayList<>(messages);
     }
 
-    public MessageAction(ProtocolMessage... messages) {
+    public MessageAction(TlsMessage... messages) {
         this.messages = new ArrayList<>(Arrays.asList(messages));
     }
 
@@ -63,29 +63,29 @@ public abstract class MessageAction extends ConnectionBoundAction {
         super(connectionAlias);
     }
 
-    public MessageAction(String connectionAlias, List<ProtocolMessage> messages) {
+    public MessageAction(String connectionAlias, List<TlsMessage> messages) {
         super(connectionAlias);
         this.messages = new ArrayList<>(messages);
     }
 
-    public MessageAction(String connectionAlias, ProtocolMessage... messages) {
+    public MessageAction(String connectionAlias, TlsMessage... messages) {
         this(connectionAlias, new ArrayList<>(Arrays.asList(messages)));
     }
 
-    public String getReadableString(ProtocolMessage... messages) {
+    public String getReadableString(TlsMessage... messages) {
         return getReadableString(Arrays.asList(messages));
     }
 
-    public String getReadableString(List<ProtocolMessage> messages) {
+    public String getReadableString(List<TlsMessage> messages) {
         return getReadableString(messages, false);
     }
 
-    public String getReadableString(List<ProtocolMessage> messages, Boolean verbose) {
+    public String getReadableString(List<TlsMessage> messages, Boolean verbose) {
         StringBuilder builder = new StringBuilder();
         if (messages == null) {
             return builder.toString();
         }
-        for (ProtocolMessage message : messages) {
+        for (TlsMessage message : messages) {
             if (verbose) {
                 builder.append(message.toString());
             } else {
@@ -99,15 +99,15 @@ public abstract class MessageAction extends ConnectionBoundAction {
         return builder.toString();
     }
 
-    public List<ProtocolMessage> getMessages() {
+    public List<TlsMessage> getMessages() {
         return messages;
     }
 
-    public void setMessages(List<ProtocolMessage> messages) {
+    public void setMessages(List<TlsMessage> messages) {
         this.messages = messages;
     }
 
-    public void setMessages(ProtocolMessage... messages) {
+    public void setMessages(TlsMessage... messages) {
         this.messages = new ArrayList(Arrays.asList(messages));
     }
 
@@ -189,11 +189,11 @@ public abstract class MessageAction extends ConnectionBoundAction {
 
     public abstract MessageActionDirection getMessageDirection();
 
-    protected void send(TlsContext tlsContext, List<ProtocolMessage> protocolMessagesToSend, List<Record> recordsToSend)
+    protected void send(TlsContext tlsContext, List<TlsMessage> tlsMessagesToSend, List<Record> recordsToSend)
         throws IOException {
         LayerStack layerStack = tlsContext.getLayerStack();
         List<LayerConfiguration> layerConfigurationList = new LinkedList<>();
-        LayerConfiguration messageLayerConfig = new SpecificContainerLayerConfiguration(protocolMessagesToSend);
+        LayerConfiguration messageLayerConfig = new SpecificContainerLayerConfiguration(tlsMessagesToSend);
         layerConfigurationList.add(messageLayerConfig);
         layerConfigurationList.add(new SpecificContainerLayerConfiguration(recordsToSend));
         layerConfigurationList.add(new SpecificContainerLayerConfiguration((List) null));
@@ -201,11 +201,11 @@ public abstract class MessageAction extends ConnectionBoundAction {
         setContainers(processingResult);
     }
 
-    protected void receive(TlsContext tlsContext, List<ProtocolMessage> protocolMessagesToReceive,
+    protected void receive(TlsContext tlsContext, List<TlsMessage> tlsMessagesToReceive,
         List<Record> recordsToReceive) {
         LayerStack layerStack = tlsContext.getLayerStack();
         List<LayerConfiguration> layerConfigurationList = new LinkedList<>();
-        LayerConfiguration messageLayerConfig = new SpecificContainerLayerConfiguration(protocolMessagesToReceive);
+        LayerConfiguration messageLayerConfig = new SpecificContainerLayerConfiguration(tlsMessagesToReceive);
         layerConfigurationList.add(messageLayerConfig);
         layerConfigurationList.add(new SpecificContainerLayerConfiguration(recordsToReceive));
         layerConfigurationList.add(new SpecificContainerLayerConfiguration((List) null));
@@ -227,11 +227,11 @@ public abstract class MessageAction extends ConnectionBoundAction {
         records = new ArrayList<>(processingResults.getResultForLayer(ImplementedLayers.RECORD).getUsedContainers());
     }
 
-    protected void receiveTill(TlsContext tlsContext, List<ProtocolMessage> protocolMessagesToSend,
+    protected void receiveTill(TlsContext tlsContext, List<TlsMessage> tlsMessagesToSend,
         List<Record> recordsToSend) {
         LayerStack layerStack = tlsContext.getLayerStack();
         List<LayerConfiguration> layerConfigurationList = new LinkedList<>();
-        layerConfigurationList.add(new SpecificContainerLayerConfiguration(protocolMessagesToSend));
+        layerConfigurationList.add(new SpecificContainerLayerConfiguration(tlsMessagesToSend));
         layerConfigurationList.add(new SpecificContainerLayerConfiguration(recordsToSend));
         layerConfigurationList.add(new SpecificContainerLayerConfiguration((List) null));
         LayerStackProcessingResult processingResult;

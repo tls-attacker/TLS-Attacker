@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.socket;
 
 import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -95,7 +95,7 @@ public class TlsAttackerSocket {
         } while (actuallyRead > 0);
     }
 
-    public void send(ProtocolMessage message) {
+    public void send(TlsMessage message) {
         SendAction action = new SendAction(state.getTlsContext().getConnection().getAlias(), message);
         action.execute(state);
     }
@@ -111,10 +111,10 @@ public class TlsAttackerSocket {
         ReceiveAction action =
             new ReceiveAction(state.getTlsContext().getConnection().getAlias(), new ApplicationMessage());
         action.execute(state);
-        List<ProtocolMessage> receivedMessages = action.getReceivedMessages();
+        List<TlsMessage> receivedMessages = action.getReceivedMessages();
 
         List<ApplicationMessage> receivedAppMessages = new LinkedList<>();
-        for (ProtocolMessage message : receivedMessages) {
+        for (TlsMessage message : receivedMessages) {
             if (message instanceof ApplicationMessage) {
                 receivedAppMessages.add((ApplicationMessage) message);
             }

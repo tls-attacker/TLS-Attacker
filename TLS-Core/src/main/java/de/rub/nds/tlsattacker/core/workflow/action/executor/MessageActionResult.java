@@ -9,7 +9,7 @@
 
 package de.rub.nds.tlsattacker.core.workflow.action.executor;
 
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.record.Record;
 import java.util.Arrays;
@@ -20,11 +20,11 @@ public class MessageActionResult {
 
     private final List<Record> recordList;
 
-    private final List<ProtocolMessage> messageList;
+    private final List<TlsMessage> messageList;
 
     private final List<DtlsHandshakeMessageFragment> messageFragmentList;
 
-    public MessageActionResult(List<Record> recordList, List<ProtocolMessage> messageList,
+    public MessageActionResult(List<Record> recordList, List<TlsMessage> messageList,
         List<DtlsHandshakeMessageFragment> messageFragmentList) {
         this.recordList = recordList;
         this.messageList = messageList;
@@ -42,7 +42,7 @@ public class MessageActionResult {
         return recordList;
     }
 
-    public List<ProtocolMessage> getMessageList() {
+    public List<TlsMessage> getMessageList() {
         return messageList;
     }
 
@@ -58,7 +58,7 @@ public class MessageActionResult {
         results.add(0, this);
         List<Record> recordList = new LinkedList<>();
         List<DtlsHandshakeMessageFragment> messageFragmentList = null;
-        List<ProtocolMessage> messageList = new LinkedList<>();
+        List<TlsMessage> messageList = new LinkedList<>();
 
         for (MessageActionResult result : results) {
             recordList.addAll(result.getRecordList());

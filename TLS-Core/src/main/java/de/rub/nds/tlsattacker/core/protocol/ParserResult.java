@@ -11,19 +11,19 @@ package de.rub.nds.tlsattacker.core.protocol;
 
 public class ParserResult {
 
-    private ProtocolMessage message;
+    private TlsMessage message;
     private int parserPosition;
 
-    public ParserResult(ProtocolMessage message, int parserPosition) {
+    public ParserResult(TlsMessage message, int parserPosition) {
         this.message = message;
         this.parserPosition = parserPosition;
     }
 
-    public ProtocolMessage getMessage() {
+    public TlsMessage getMessage() {
         return message;
     }
 
-    public void setMessage(ProtocolMessage message) {
+    public void setMessage(TlsMessage message) {
         this.message = message;
     }
 

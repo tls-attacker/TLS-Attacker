@@ -39,7 +39,7 @@ public class DHClientKeyExchangeHandler<T extends DHClientKeyExchangeMessage> ex
         if (message.getPublicKey().getValue().length == 0) {
             LOGGER.debug("Empty DH Key");
         } else {
-            tlsContext.setClientDhPublicKey(new BigInteger(message.getPublicKey().getValue()));
+            context.setClientDhPublicKey(new BigInteger(message.getPublicKey().getValue()));
         }
     }
 }

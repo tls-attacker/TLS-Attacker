@@ -15,12 +15,11 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
-import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.LayerStack;
 import de.rub.nds.tlsattacker.core.layer.LayerStackProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.SpecificContainerLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
@@ -55,7 +54,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
     @HoldsModifiableVariable
     @XmlElementWrapper
     @XmlElementRef
-    protected List<ProtocolMessage> receivedMessages;
+    protected List<TlsMessage> receivedMessages;
 
     @HoldsModifiableVariable
     @XmlElementWrapper
@@ -70,7 +69,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
     @XmlElementWrapper
     @HoldsModifiableVariable
     @XmlElementRef
-    protected List<ProtocolMessage> messages;
+    protected List<TlsMessage> messages;
 
     @HoldsModifiableVariable
     @XmlElementWrapper
@@ -85,7 +84,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
     @HoldsModifiableVariable
     @XmlElementWrapper
     @XmlElementRef
-    protected List<ProtocolMessage> sendMessages;
+    protected List<TlsMessage> sendMessages;
 
     @HoldsModifiableVariable
     @XmlElementWrapper
@@ -100,13 +99,13 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
     public ForwardMessagesAction() {
     }
 
-    public ForwardMessagesAction(String receiveFromAlias, String forwardToAlias, List<ProtocolMessage> messages) {
+    public ForwardMessagesAction(String receiveFromAlias, String forwardToAlias, List<TlsMessage> messages) {
         this.messages = messages;
         this.receiveFromAlias = receiveFromAlias;
         this.forwardToAlias = forwardToAlias;
     }
 
-    public ForwardMessagesAction(String receiveFromAlias, String forwardToAlias, ProtocolMessage... messages) {
+    public ForwardMessagesAction(String receiveFromAlias, String forwardToAlias, TlsMessage... messages) {
         this(receiveFromAlias, forwardToAlias, new ArrayList<>(Arrays.asList(messages)));
     }
 
@@ -169,7 +168,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
      * @param tlsContext
      */
     private void applyMessages(TlsContext ctx) {
-        for (ProtocolMessage msg : receivedMessages) {
+        for (TlsMessage msg : receivedMessages) {
             LOGGER.debug("Applying " + msg.toCompactString() + " to forward context " + ctx);
             ProtocolMessageHandler h = msg.getHandler(ctx);
             h.adjustContext(msg);
@@ -210,8 +209,8 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
 
     // TODO: yes, the correct way would be implement equals() for all
     // ProtocolMessages...
-    private boolean checkMessageListsEquals(List<ProtocolMessage> expectedMessages,
-        List<ProtocolMessage> actualMessages) {
+    private boolean checkMessageListsEquals(List<TlsMessage> expectedMessages,
+        List<TlsMessage> actualMessages) {
         boolean actualEmpty = true;
         boolean expectedEmpty = true;
         if (actualMessages != null && !actualMessages.isEmpty()) {
@@ -256,7 +255,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
     }
 
     @Override
-    public List<ProtocolMessage> getReceivedMessages() {
+    public List<TlsMessage> getReceivedMessages() {
         return receivedMessages;
     }
 
@@ -271,7 +270,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
     }
 
     @Override
-    public List<ProtocolMessage> getSendMessages() {
+    public List<TlsMessage> getSendMessages() {
         return sendMessages;
     }
 
@@ -285,15 +284,15 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
         return sendFragments;
     }
 
-    public List<ProtocolMessage> getMessages() {
+    public List<TlsMessage> getMessages() {
         return messages;
     }
 
-    public void setMessages(List<ProtocolMessage> messages) {
+    public void setMessages(List<TlsMessage> messages) {
         this.messages = messages;
     }
 
-    public void setMessages(ProtocolMessage... messages) {
+    public void setMessages(TlsMessage... messages) {
         this.messages = new ArrayList(Arrays.asList(messages));
     }
 
@@ -383,16 +382,16 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
         }
     }
 
-    public String getReadableString(List<ProtocolMessage> messages) {
+    public String getReadableString(List<TlsMessage> messages) {
         return getReadableString(messages, false);
     }
 
-    public String getReadableString(List<ProtocolMessage> messages, Boolean verbose) {
+    public String getReadableString(List<TlsMessage> messages, Boolean verbose) {
         StringBuilder builder = new StringBuilder();
         if (messages == null) {
             return builder.toString();
         }
-        for (ProtocolMessage message : messages) {
+        for (TlsMessage message : messages) {
             if (verbose) {
                 builder.append(message.toString());
             } else {
@@ -497,7 +496,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
         }
 
         List<ProtocolMessageType> types = new ArrayList<>();
-        for (ProtocolMessage msg : messages) {
+        for (TlsMessage msg : messages) {
             types.add(msg.getProtocolMessageType());
         }
         return types;
@@ -510,7 +509,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
         }
 
         List<HandshakeMessageType> types = new ArrayList<>();
-        for (ProtocolMessage msg : messages) {
+        for (TlsMessage msg : messages) {
             if (!(msg instanceof HandshakeMessage)) {
                 continue;
             }

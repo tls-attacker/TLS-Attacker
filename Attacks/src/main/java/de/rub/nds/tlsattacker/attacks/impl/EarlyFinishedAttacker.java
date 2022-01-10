@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -70,7 +70,7 @@ public class EarlyFinishedAttacker extends Attacker<EarlyFinishedCommandConfig> 
         OutboundConnection connection = tlsConfig.getDefaultClientConnection();
         WorkflowTrace workflowTrace = workflowConfigurationFactory.createHelloWorkflow(connection);
         workflowTrace.addTlsAction(new SendDynamicClientKeyExchangeAction(connection.getAlias()));
-        List<ProtocolMessage> messages = new LinkedList<>();
+        List<TlsMessage> messages = new LinkedList<>();
         messages.add(new ChangeCipherSpecMessage(tlsConfig));
         workflowTrace
             .addTlsAction(MessageActionFactory.createAction(tlsConfig, connection, ConnectionEndType.CLIENT, messages));

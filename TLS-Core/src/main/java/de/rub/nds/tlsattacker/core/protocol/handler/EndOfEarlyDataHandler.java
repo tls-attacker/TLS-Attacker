@@ -34,19 +34,19 @@ public class EndOfEarlyDataHandler extends HandshakeMessageHandler<EndOfEarlyDat
 
     @Override
     public void adjustContext(EndOfEarlyDataMessage message) {
-        if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {
+        if (context.getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {
             adjustClientCipherAfterEarly();
         }
     }
 
     private void adjustClientCipherAfterEarly() {
         try {
-            tlsContext.setActiveClientKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
+            context.setActiveClientKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
             LOGGER.debug("Setting cipher for client to use handshake secrets");
-            KeySet clientKeySet = KeySetGenerator.generateKeySet(tlsContext,
-                tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext.getActiveClientKeySetType());
-            RecordCipher recordCipherClient = RecordCipherFactory.getRecordCipher(tlsContext, clientKeySet);
-            tlsContext.getRecordLayer().updateDecryptionCipher(recordCipherClient);
+            KeySet clientKeySet = KeySetGenerator.generateKeySet(context,
+                context.getChooser().getSelectedProtocolVersion(), context.getActiveClientKeySetType());
+            RecordCipher recordCipherClient = RecordCipherFactory.getRecordCipher(context, clientKeySet);
+            context.getRecordLayer().updateDecryptionCipher(recordCipherClient);
         } catch (CryptoException | NoSuchAlgorithmException ex) {
             LOGGER.error("Generating KeySet failed", ex);
             throw new WorkflowExecutionException(ex.toString());

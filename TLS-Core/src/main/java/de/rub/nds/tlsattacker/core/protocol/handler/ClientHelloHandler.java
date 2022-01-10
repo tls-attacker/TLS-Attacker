@@ -48,8 +48,8 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
         adjustExtensions(message);
         warnOnConflictingExtensions();
         adjustRandomContext(message);
-        if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()
-            && tlsContext.isExtensionNegotiated(ExtensionType.EARLY_DATA)) {
+        if (context.getChooser().getSelectedProtocolVersion().isTLS13()
+            && context.isExtensionNegotiated(ExtensionType.EARLY_DATA)) {
             try {
                 adjustEarlyTrafficSecret();
                 setClientRecordCipherEarly();
@@ -65,7 +65,7 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
 
     private void adjustClientSupportedCipherSuites(ClientHelloMessage message) {
         List<CipherSuite> suiteList = convertCipherSuites(message.getCipherSuites().getValue());
-        tlsContext.setClientSupportedCipherSuites(suiteList);
+        context.setClientSupportedCipherSuites(suiteList);
         if (suiteList != null) {
             LOGGER.debug("Set ClientSupportedCipherSuites in Context to " + suiteList.toString());
         } else {
@@ -75,26 +75,26 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
 
     private void adjustClientSupportedCompressions(ClientHelloMessage message) {
         List<CompressionMethod> compressionList = convertCompressionMethods(message.getCompressions().getValue());
-        tlsContext.setClientSupportedCompressions(compressionList);
+        context.setClientSupportedCompressions(compressionList);
         LOGGER.debug("Set ClientSupportedCompressions in Context to " + compressionList.toString());
     }
 
     private void adjustDTLSCookie(ClientHelloMessage message) {
         byte[] dtlsCookie = message.getCookie().getValue();
-        tlsContext.setDtlsCookie(dtlsCookie);
+        context.setDtlsCookie(dtlsCookie);
         LOGGER.debug("Set DTLS Cookie in Context to " + ArrayConverter.bytesToHexString(dtlsCookie));
     }
 
     private void adjustSessionID(ClientHelloMessage message) {
         byte[] sessionId = message.getSessionId().getValue();
-        tlsContext.setClientSessionId(sessionId);
+        context.setClientSessionId(sessionId);
         LOGGER.debug("Set SessionId in Context to " + ArrayConverter.bytesToHexString(sessionId, false));
     }
 
     private void adjustProtocolVersion(ClientHelloMessage message) {
         ProtocolVersion version = ProtocolVersion.getProtocolVersion(message.getProtocolVersion().getValue());
         if (version != null) {
-            tlsContext.setHighestClientProtocolVersion(version);
+            context.setHighestClientProtocolVersion(version);
             LOGGER.debug("Set HighestClientProtocolVersion in Context to " + version.name());
         } else {
             LOGGER.warn("Did not Adjust ProtocolVersion since version is undefined "
@@ -103,8 +103,8 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
     }
 
     private void adjustRandomContext(ClientHelloMessage message) {
-        tlsContext.setClientRandom(message.getRandom().getValue());
-        LOGGER.debug("Set ClientRandom in Context to " + ArrayConverter.bytesToHexString(tlsContext.getClientRandom()));
+        context.setClientRandom(message.getRandom().getValue());
+        LOGGER.debug("Set ClientRandom in Context to " + ArrayConverter.bytesToHexString(context.getClientRandom()));
     }
 
     private List<CompressionMethod> convertCompressionMethods(byte[] bytesToConvert) {
@@ -144,8 +144,8 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
 
     @Override
     public void adjustContextAfterSerialize(ClientHelloMessage message) {
-        if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT
-            && tlsContext.isExtensionProposed(ExtensionType.EARLY_DATA)) {
+        if (context.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT
+            && context.isExtensionProposed(ExtensionType.EARLY_DATA)) {
             try {
                 adjustEarlyTrafficSecret();
                 setClientRecordCipherEarly();
@@ -153,38 +153,38 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
                 LOGGER.warn("Encountered an exception in adjust after Serialize", ex);
             }
         }
-        tlsContext.setLastClientHello(message.getCompleteResultingMessage().getValue());
+        context.setLastClientHello(message.getCompleteResultingMessage().getValue());
     }
 
     private void adjustEarlyTrafficSecret() throws CryptoException {
         HKDFAlgorithm hkdfAlgorithm =
-            AlgorithmResolver.getHKDFAlgorithm(tlsContext.getChooser().getEarlyDataCipherSuite());
+            AlgorithmResolver.getHKDFAlgorithm(context.getChooser().getEarlyDataCipherSuite());
         DigestAlgorithm digestAlgo = AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS13,
-            tlsContext.getChooser().getEarlyDataCipherSuite());
+            context.getChooser().getEarlyDataCipherSuite());
 
-        byte[] earlySecret = HKDFunction.extract(hkdfAlgorithm, new byte[0], tlsContext.getChooser().getEarlyDataPsk());
-        tlsContext.setEarlySecret(earlySecret);
+        byte[] earlySecret = HKDFunction.extract(hkdfAlgorithm, new byte[0], context.getChooser().getEarlyDataPsk());
+        context.setEarlySecret(earlySecret);
         byte[] earlyTrafficSecret =
-            HKDFunction.deriveSecret(hkdfAlgorithm, digestAlgo.getJavaName(), tlsContext.getChooser().getEarlySecret(),
-                HKDFunction.CLIENT_EARLY_TRAFFIC_SECRET, tlsContext.getDigest().getRawBytes());
-        tlsContext.setClientEarlyTrafficSecret(earlyTrafficSecret);
+            HKDFunction.deriveSecret(hkdfAlgorithm, digestAlgo.getJavaName(), context.getChooser().getEarlySecret(),
+                HKDFunction.CLIENT_EARLY_TRAFFIC_SECRET, context.getDigest().getRawBytes());
+        context.setClientEarlyTrafficSecret(earlyTrafficSecret);
         LOGGER.debug("EarlyTrafficSecret: " + ArrayConverter.bytesToHexString(earlyTrafficSecret));
     }
 
     private void setClientRecordCipherEarly() throws CryptoException {
         try {
-            tlsContext.setActiveClientKeySetType(Tls13KeySetType.EARLY_TRAFFIC_SECRETS);
+            context.setActiveClientKeySetType(Tls13KeySetType.EARLY_TRAFFIC_SECRETS);
             LOGGER.debug("Setting cipher for client to use early secrets");
 
-            KeySet clientKeySet = KeySetGenerator.generateKeySet(tlsContext, ProtocolVersion.TLS13,
-                tlsContext.getActiveClientKeySetType());
+            KeySet clientKeySet = KeySetGenerator.generateKeySet(context, ProtocolVersion.TLS13,
+                context.getActiveClientKeySetType());
 
-            if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {
-                tlsContext.getRecordLayer().updateDecryptionCipher(RecordCipherFactory.getRecordCipher(tlsContext,
-                    clientKeySet, tlsContext.getChooser().getEarlyDataCipherSuite()));
+            if (context.getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {
+                context.getRecordLayer().updateDecryptionCipher(RecordCipherFactory.getRecordCipher(context,
+                    clientKeySet, context.getChooser().getEarlyDataCipherSuite()));
             } else {
-                tlsContext.getRecordLayer().updateEncryptionCipher(RecordCipherFactory.getRecordCipher(tlsContext,
-                    clientKeySet, tlsContext.getChooser().getEarlyDataCipherSuite()));
+                context.getRecordLayer().updateEncryptionCipher(RecordCipherFactory.getRecordCipher(context,
+                    clientKeySet, context.getChooser().getEarlyDataCipherSuite()));
             }
         } catch (NoSuchAlgorithmException ex) {
             LOGGER.error("Unable to generate KeySet - unknown algorithm");
@@ -193,9 +193,9 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
     }
 
     private void warnOnConflictingExtensions() {
-        if (tlsContext.getTalkingConnectionEndType() == tlsContext.getChooser().getMyConnectionPeer()) {
-            if (tlsContext.isExtensionProposed(ExtensionType.MAX_FRAGMENT_LENGTH)
-                && tlsContext.isExtensionProposed(ExtensionType.RECORD_SIZE_LIMIT)) {
+        if (context.getTalkingConnectionEndType() == context.getChooser().getMyConnectionPeer()) {
+            if (context.isExtensionProposed(ExtensionType.MAX_FRAGMENT_LENGTH)
+                && context.isExtensionProposed(ExtensionType.RECORD_SIZE_LIMIT)) {
                 // RFC 8449 says 'A server that supports the "record_size_limit" extension MUST ignore a
                 // "max_fragment_length" that appears in a ClientHello if both extensions appear.', this happens
                 // implicitly when determining max record data size

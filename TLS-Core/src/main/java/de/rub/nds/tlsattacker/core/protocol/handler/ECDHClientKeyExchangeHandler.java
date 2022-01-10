@@ -35,9 +35,9 @@ public class ECDHClientKeyExchangeHandler<T extends ECDHClientKeyExchangeMessage
 
     private void adjustClientPublicKey(T message) {
         byte[] serializedPoint = message.getPublicKey().getValue();
-        NamedGroup usedGroup = tlsContext.getChooser().getSelectedNamedGroup();
+        NamedGroup usedGroup = context.getChooser().getSelectedNamedGroup();
         LOGGER.debug("Adjusting EC Point");
         Point publicKey = PointFormatter.formatFromByteArray(usedGroup, serializedPoint);
-        tlsContext.setClientEcPublicKey(publicKey);
+        context.setClientEcPublicKey(publicKey);
     }
 }

@@ -13,9 +13,9 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.crypto.cipher.CipherWrapper;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import de.rub.nds.tlsattacker.core.layer.context.RecordContext;
 import de.rub.nds.tlsattacker.core.protocol.Parser;
 import de.rub.nds.tlsattacker.core.record.Record;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
@@ -45,7 +45,7 @@ public class RecordAEADCipher extends RecordCipher {
      */
     private final int aeadExplicitLength;
 
-    public RecordAEADCipher(TlsContext context, CipherState state) {
+    public RecordAEADCipher(RecordContext context, CipherState state) {
         super(context, state);
         encryptCipher = CipherWrapper.getEncryptionCipher(getState().getCipherSuite(), getLocalConnectionEndType(),
             getState().getKeySet());

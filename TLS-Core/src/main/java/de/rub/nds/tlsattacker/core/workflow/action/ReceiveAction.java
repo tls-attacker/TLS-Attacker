@@ -14,10 +14,10 @@ import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.https.HttpsRequestMessage;
-import de.rub.nds.tlsattacker.core.https.HttpsResponseMessage;
+import de.rub.nds.tlsattacker.core.http.HttpRequestMessage;
+import de.rub.nds.tlsattacker.core.http.HttpResponseMessage;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -38,39 +38,39 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     @HoldsModifiableVariable
     @XmlElementWrapper
     @XmlElementRef
-    protected List<ProtocolMessage> expectedMessages = new ArrayList<>();
+    protected List<TlsMessage> expectedMessages = new ArrayList<>();
 
     public ReceiveAction() {
         super();
     }
 
-    public ReceiveAction(List<ProtocolMessage> expectedMessages) {
+    public ReceiveAction(List<TlsMessage> expectedMessages) {
         super();
         this.expectedMessages = expectedMessages;
     }
 
-    public ReceiveAction(ProtocolMessage... expectedMessages) {
+    public ReceiveAction(TlsMessage... expectedMessages) {
         super();
         this.expectedMessages = new ArrayList(Arrays.asList(expectedMessages));
     }
 
-    public ReceiveAction(Set<ActionOption> myActionOptions, List<ProtocolMessage> messages) {
+    public ReceiveAction(Set<ActionOption> myActionOptions, List<TlsMessage> messages) {
         this(messages);
         setActionOptions(myActionOptions);
     }
 
-    public ReceiveAction(Set<ActionOption> actionOptions, ProtocolMessage... messages) {
+    public ReceiveAction(Set<ActionOption> actionOptions, TlsMessage... messages) {
         this(actionOptions, new ArrayList(Arrays.asList(messages)));
     }
 
-    public ReceiveAction(ActionOption actionOption, List<ProtocolMessage> messages) {
+    public ReceiveAction(ActionOption actionOption, List<TlsMessage> messages) {
         this(messages);
         HashSet myActionOptions = new HashSet();
         myActionOptions.add(actionOption);
         setActionOptions(myActionOptions);
     }
 
-    public ReceiveAction(ActionOption actionOption, ProtocolMessage... messages) {
+    public ReceiveAction(ActionOption actionOption, TlsMessage... messages) {
         this(actionOption, new ArrayList<>(Arrays.asList(messages)));
     }
 
@@ -78,12 +78,12 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         super(connectionAlias);
     }
 
-    public ReceiveAction(String connectionAliasAlias, List<ProtocolMessage> messages) {
+    public ReceiveAction(String connectionAliasAlias, List<TlsMessage> messages) {
         super(connectionAliasAlias);
         this.expectedMessages = messages;
     }
 
-    public ReceiveAction(String connectionAliasAlias, ProtocolMessage... messages) {
+    public ReceiveAction(String connectionAliasAlias, TlsMessage... messages) {
         this(connectionAliasAlias, new ArrayList<>(Arrays.asList(messages)));
     }
 
@@ -116,7 +116,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
 
         sb.append("\tExpected:");
         if ((expectedMessages != null)) {
-            for (ProtocolMessage message : expectedMessages) {
+            for (TlsMessage message : expectedMessages) {
                 sb.append(message.toCompactString());
                 sb.append(", ");
             }
@@ -125,7 +125,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         }
         sb.append("\n\tActual:");
         if ((messages != null) && (!messages.isEmpty())) {
-            for (ProtocolMessage message : messages) {
+            for (TlsMessage message : messages) {
                 sb.append(message.toCompactString());
                 sb.append(", ");
             }
@@ -141,7 +141,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         StringBuilder sb = new StringBuilder(super.toCompactString());
         if ((expectedMessages != null) && (!expectedMessages.isEmpty())) {
             sb.append(" (");
-            for (ProtocolMessage message : expectedMessages) {
+            for (TlsMessage message : expectedMessages) {
                 sb.append(message.toCompactString());
                 sb.append(",");
             }
@@ -160,11 +160,11 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         return getLayerStackProcessingResult().getResultForLayer(ImplementedLayers.MESSAGE).isExecutedAsPlanned();
     }
 
-    public List<ProtocolMessage> getExpectedMessages() {
+    public List<TlsMessage> getExpectedMessages() {
         return expectedMessages;
     }
 
-    void setReceivedMessages(List<ProtocolMessage> receivedMessages) {
+    void setReceivedMessages(List<TlsMessage> receivedMessages) {
         this.messages = receivedMessages;
     }
 
@@ -176,11 +176,11 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         this.fragments = fragments;
     }
 
-    public void setExpectedMessages(List<ProtocolMessage> expectedMessages) {
+    public void setExpectedMessages(List<TlsMessage> expectedMessages) {
         this.expectedMessages = expectedMessages;
     }
 
-    public void setExpectedMessages(ProtocolMessage... expectedMessages) {
+    public void setExpectedMessages(TlsMessage... expectedMessages) {
         this.expectedMessages = new ArrayList(Arrays.asList(expectedMessages));
     }
 
@@ -193,7 +193,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     }
 
     @Override
-    public List<ProtocolMessage> getReceivedMessages() {
+    public List<TlsMessage> getReceivedMessages() {
         return messages;
     }
 
@@ -281,7 +281,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         }
     }
 
-    private static boolean receivedMessageCanBeIgnored(ProtocolMessage msg, Set<ActionOption> actionOptions) {
+    private static boolean receivedMessageCanBeIgnored(TlsMessage msg, Set<ActionOption> actionOptions) {
         if (actionOptions.contains(ActionOption.IGNORE_UNEXPECTED_WARNINGS)) {
             if (msg instanceof AlertMessage) {
                 AlertMessage alert = (AlertMessage) msg;
@@ -299,7 +299,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
             && msg instanceof ApplicationMessage) {
             return true;
         } else if (actionOptions.contains(ActionOption.IGNORE_UNEXPECTED_HTTPS_MESSAGES)
-            && (msg instanceof HttpsResponseMessage || msg instanceof HttpsRequestMessage)) {
+            && (msg instanceof HttpResponseMessage || msg instanceof HttpRequestMessage)) {
             return true;
         }
 
@@ -314,7 +314,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     @Override
     public List<ProtocolMessageType> getGoingToReceiveProtocolMessageTypes() {
         List<ProtocolMessageType> protocolMessageTypes = new ArrayList<>();
-        for (ProtocolMessage msg : expectedMessages) {
+        for (TlsMessage msg : expectedMessages) {
             protocolMessageTypes.add(msg.getProtocolMessageType());
         }
         return protocolMessageTypes;
@@ -323,7 +323,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     @Override
     public List<HandshakeMessageType> getGoingToReceiveHandshakeMessageTypes() {
         List<HandshakeMessageType> handshakeMessageTypes = new ArrayList<>();
-        for (ProtocolMessage msg : expectedMessages) {
+        for (TlsMessage msg : expectedMessages) {
             if (msg instanceof HandshakeMessage) {
                 handshakeMessageTypes.add(((HandshakeMessage) msg).getHandshakeMessageType());
             }

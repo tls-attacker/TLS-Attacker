@@ -44,7 +44,7 @@ public abstract class ClientKeyExchangeHandler<MessageT extends ClientKeyExchang
     public void adjustPremasterSecret(ClientKeyExchangeMessage message) {
         if (message.getComputations().getPremasterSecret() != null) {
             byte[] premasterSecret = message.getComputations().getPremasterSecret().getValue();
-            tlsContext.setPreMasterSecret(premasterSecret);
+            context.setPreMasterSecret(premasterSecret);
             LOGGER.debug("Set PremasterSecret in Context to " + ArrayConverter.bytesToHexString(premasterSecret));
         } else {
             LOGGER.debug("Did not set in Context PremasterSecret");
@@ -52,7 +52,7 @@ public abstract class ClientKeyExchangeHandler<MessageT extends ClientKeyExchang
     }
 
     protected byte[] calculateMasterSecret(ClientKeyExchangeMessage message) throws CryptoException {
-        Chooser chooser = tlsContext.getChooser();
+        Chooser chooser = context.getChooser();
         if (chooser.getSelectedProtocolVersion() == ProtocolVersion.SSL3) {
             LOGGER.debug("Calculate SSL MasterSecret with Client and Server Nonces, which are: "
                 + ArrayConverter.bytesToHexString(message.getComputations().getClientServerRandom().getValue()));
@@ -63,7 +63,7 @@ public abstract class ClientKeyExchangeHandler<MessageT extends ClientKeyExchang
                 chooser.getSelectedCipherSuite());
             if (chooser.isUseExtendedMasterSecret()) {
                 LOGGER.debug("Calculating ExtendedMasterSecret");
-                byte[] sessionHash = tlsContext.getDigest().digest(chooser.getSelectedProtocolVersion(),
+                byte[] sessionHash = context.getDigest().digest(chooser.getSelectedProtocolVersion(),
                     chooser.getSelectedCipherSuite());
                 LOGGER.debug("Premastersecret: " + ArrayConverter.bytesToHexString(chooser.getPreMasterSecret()));
 
@@ -88,15 +88,15 @@ public abstract class ClientKeyExchangeHandler<MessageT extends ClientKeyExchang
         } catch (CryptoException ex) {
             throw new UnsupportedOperationException("Could not calculate masterSecret", ex);
         }
-        tlsContext.setMasterSecret(masterSecret);
+        context.setMasterSecret(masterSecret);
         LOGGER.debug("Set MasterSecret in Context to " + ArrayConverter.bytesToHexString(masterSecret));
     }
 
     protected void spawnNewSession() {
-        if (tlsContext.getChooser().getServerSessionId().length != 0) {
+        if (context.getChooser().getServerSessionId().length != 0) {
             IdSession session =
-                new IdSession(tlsContext.getChooser().getServerSessionId(), tlsContext.getChooser().getMasterSecret());
-            tlsContext.addNewSession(session);
+                new IdSession(context.getChooser().getServerSessionId(), context.getChooser().getMasterSecret());
+            context.addNewSession(session);
             LOGGER.debug("Spawning new resumable Session");
         }
     }

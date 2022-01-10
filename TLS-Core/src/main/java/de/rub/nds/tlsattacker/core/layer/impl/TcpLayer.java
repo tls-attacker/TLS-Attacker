@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
+import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStreamAdapterStream;
@@ -23,7 +24,7 @@ import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class TcpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> {// TODO change types
+public class TcpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer, TcpContext> {// TODO change types
 
     private static Logger LOGGER = LogManager.getLogger();
 

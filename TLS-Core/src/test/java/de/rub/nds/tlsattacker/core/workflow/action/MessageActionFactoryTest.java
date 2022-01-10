@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -67,7 +67,7 @@ public class MessageActionFactoryTest {
      */
     @Test
     public void testCreateActionMultiple() {
-        List<ProtocolMessage> messages = new LinkedList<>();
+        List<TlsMessage> messages = new LinkedList<>();
         messages.add(new ChangeCipherSpecMessage());
         messages.add(new AlertMessage(config));
         MessageAction action =

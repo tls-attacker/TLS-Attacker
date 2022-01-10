@@ -9,7 +9,7 @@
 
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
@@ -30,13 +30,13 @@ public class ForwardMessagesWithPrepareAction extends ForwardMessagesAction {
     }
 
     public ForwardMessagesWithPrepareAction(String receiveFromAlias, String forwardToAlias,
-        List<ProtocolMessage> messages) {
+        List<TlsMessage> messages) {
         super(receiveFromAlias, forwardToAlias, messages);
         withPrepare = true;
     }
 
     public ForwardMessagesWithPrepareAction(String receiveFromAlias, String forwardToAlias,
-        ProtocolMessage... messages) {
+        TlsMessage... messages) {
         super(receiveFromAlias, forwardToAlias, messages);
         withPrepare = true;
     }

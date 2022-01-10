@@ -12,8 +12,8 @@ package de.rub.nds.tlsattacker.core.workflow;
 import de.rub.nds.modifiablevariable.string.StringExplicitValueModification;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.*;
-import de.rub.nds.tlsattacker.core.https.HttpsRequestMessage;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.http.HttpRequestMessage;
+import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -71,7 +71,7 @@ public class SerializationFullTest {
         trace.addTlsAction(new DeactivateEncryptionAction());
         trace.addTlsAction(new RenegotiationAction());
         trace.addTlsAction(new GenericReceiveAction());
-        List<ProtocolMessage> messages = new LinkedList<>();
+        List<TlsMessage> messages = new LinkedList<>();
         messages.add(new AlertMessage());
         messages.add(new ApplicationMessage());
         messages.add(new CertificateMessage());
@@ -94,7 +94,7 @@ public class SerializationFullTest {
         messages.add(new UnknownHandshakeMessage());
         messages.add(new UnknownMessage(config, ProtocolMessageType.UNKNOWN));
         messages.add(new ServerHelloMessage());
-        HttpsRequestMessage message = new HttpsRequestMessage();
+        HttpRequestMessage message = new HttpRequestMessage();
         message.setRequestPath("someString");
         message.getRequestPath().setModification(new StringExplicitValueModification("replacedString"));
         messages.add(message);

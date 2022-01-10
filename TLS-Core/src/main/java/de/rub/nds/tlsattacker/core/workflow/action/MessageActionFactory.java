@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.*;
@@ -19,18 +19,18 @@ import java.util.*;
 public class MessageActionFactory {
 
     public static MessageAction createAction(Config tlsConfig, AliasedConnection connection,
-        ConnectionEndType sendingConnectionEndType, ProtocolMessage... protocolMessages) {
+        ConnectionEndType sendingConnectionEndType, TlsMessage... tlsMessages) {
         return createAction(tlsConfig, connection, sendingConnectionEndType,
-            new ArrayList<>(Arrays.asList(protocolMessages)));
+            new ArrayList<>(Arrays.asList(tlsMessages)));
     }
 
     public static MessageAction createAction(Config tlsConfig, AliasedConnection connection,
-        ConnectionEndType sendingConnectionEnd, List<ProtocolMessage> protocolMessages) {
+        ConnectionEndType sendingConnectionEnd, List<TlsMessage> tlsMessages) {
         MessageAction action;
         if (connection.getLocalConnectionEndType() == sendingConnectionEnd) {
-            action = new SendAction(protocolMessages);
+            action = new SendAction(tlsMessages);
         } else {
-            action = new ReceiveAction(getFactoryReceiveActionOptions(tlsConfig), protocolMessages);
+            action = new ReceiveAction(getFactoryReceiveActionOptions(tlsConfig), tlsMessages);
         }
         action.setConnectionAlias(connection.getAlias());
         return action;

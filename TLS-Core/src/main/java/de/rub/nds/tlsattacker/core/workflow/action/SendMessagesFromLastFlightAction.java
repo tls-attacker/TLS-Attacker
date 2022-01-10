@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.record.Record;
@@ -63,7 +63,7 @@ public class SendMessagesFromLastFlightAction extends MessageAction implements S
         for (int i = depth; i > 0; i--) {
             messages = new ArrayList<>(sendActions.get(ownIndex - i).getSendMessages());
         }
-        for (ProtocolMessage message : messages) {
+        for (TlsMessage message : messages) {
             message.setAdjustContext(false);
             if (message instanceof HandshakeMessage) {
                 ((HandshakeMessage) message).setIncludeInDigest(false);
@@ -90,7 +90,7 @@ public class SendMessagesFromLastFlightAction extends MessageAction implements S
     public void reset() {
         List<ModifiableVariableHolder> holders = new LinkedList<>();
         if (messages != null) {
-            for (ProtocolMessage message : messages) {
+            for (TlsMessage message : messages) {
                 holders.addAll(message.getAllModifiableVariableHolders());
             }
         }
@@ -149,7 +149,7 @@ public class SendMessagesFromLastFlightAction extends MessageAction implements S
     }
 
     @Override
-    public List<ProtocolMessage> getSendMessages() {
+    public List<TlsMessage> getSendMessages() {
         return messages;
     }
 

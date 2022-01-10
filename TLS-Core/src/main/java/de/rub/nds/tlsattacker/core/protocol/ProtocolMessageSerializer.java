@@ -9,7 +9,7 @@
 
 package de.rub.nds.tlsattacker.core.protocol;
 
-public abstract class ProtocolMessageSerializer<T extends ProtocolMessage> extends Serializer<T> {
+public abstract class ProtocolMessageSerializer<T extends TlsMessage> extends Serializer<T> {
 
     protected final T message;
 

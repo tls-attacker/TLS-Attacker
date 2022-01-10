@@ -13,8 +13,8 @@ import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CipherType;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.layer.context.RecordContext;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,7 +22,7 @@ public class RecordCipherFactory {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public static RecordCipher getRecordCipher(TlsContext context, KeySet keySet, CipherSuite cipherSuite) {
+    public static RecordCipher getRecordCipher(RecordContext context, KeySet keySet, CipherSuite cipherSuite) {
         try {
             if (context.getChooser().getSelectedCipherSuite() == null || !cipherSuite.isImplemented()) {
                 LOGGER.warn("Cipher " + cipherSuite.name() + " not implemented. Using Null Cipher instead");
@@ -50,11 +50,11 @@ public class RecordCipherFactory {
         }
     }
 
-    public static RecordCipher getRecordCipher(TlsContext context, KeySet keySet) {
+    public static RecordCipher getRecordCipher(RecordContext context, KeySet keySet) {
         return getRecordCipher(context, keySet, context.getChooser().getSelectedCipherSuite());
     }
 
-    public static RecordNullCipher getNullCipher(TlsContext context) {
+    public static RecordNullCipher getNullCipher(RecordContext context) {
         return new RecordNullCipher(context, new CipherState(context.getChooser().getSelectedProtocolVersion(),
             context.getChooser().getSelectedCipherSuite(), null, null));
     }

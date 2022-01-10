@@ -26,9 +26,9 @@ public class ApplicationMessageHandler extends ProtocolMessageHandler<Applicatio
 
     @Override
     public void adjustContext(ApplicationMessage message) {
-        tlsContext.setLastHandledApplicationMessageData(message.getData().getValue());
-        String readableAppData = ArrayConverter.bytesToHexString(tlsContext.getLastHandledApplicationMessageData());
-        if (tlsContext.getTalkingConnectionEndType() == tlsContext.getChooser().getMyConnectionPeer()) {
+        context.setLastHandledApplicationMessageData(message.getData().getValue());
+        String readableAppData = ArrayConverter.bytesToHexString(context.getLastHandledApplicationMessageData());
+        if (context.getTalkingConnectionEndType() == context.getChooser().getMyConnectionPeer()) {
             LOGGER.debug("Received Data:" + readableAppData);
         } else {
             LOGGER.debug("Send Data:" + readableAppData);

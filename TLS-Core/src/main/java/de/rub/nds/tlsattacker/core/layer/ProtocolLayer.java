@@ -16,19 +16,25 @@ package de.rub.nds.tlsattacker.core.layer;
 
 import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
 import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
+import de.rub.nds.tlsattacker.core.layer.context.LayerContext;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.tlsattacker.core.protocol.Handler;
 import de.rub.nds.tlsattacker.core.protocol.Parser;
 import de.rub.nds.tlsattacker.core.protocol.Preparator;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container extends DataContainer> {
+/**
+ * Models a protocol layer (e.g. TCP, HTTP, TLS)
+ * @param <Hint> Hint to expect from the upper layer. A hint indicates the message to be received
+ * @param <Container> Class that provides parsers, serializers etc. for this layer
+ * @param <Context> The context associated with this layer, contains connection data
+ */
+public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container extends DataContainer, Context extends LayerContext> {
 
     private Logger LOGGER = LogManager.getLogger();
 
@@ -156,7 +162,7 @@ public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container 
         }
     }
 
-    protected void readDataContainer(Container container, TlsContext context) throws IOException {
+    protected void readDataContainer(Container container, Context context) throws IOException {
         Parser parser = container.getParser(context, getLowerLayer().getDataStream());
         parser.parse(container);
         Preparator preparator = container.getPreparator(context);

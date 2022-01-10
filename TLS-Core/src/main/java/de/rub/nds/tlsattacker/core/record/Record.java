@@ -19,20 +19,20 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.layer.DataContainer;
+import de.rub.nds.tlsattacker.core.layer.context.RecordContext;
 import de.rub.nds.tlsattacker.core.protocol.*;
 import de.rub.nds.tlsattacker.core.record.compressor.RecordCompressor;
 import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
 import de.rub.nds.tlsattacker.core.record.parser.RecordParser;
 import de.rub.nds.tlsattacker.core.record.preparator.RecordPreparator;
 import de.rub.nds.tlsattacker.core.record.serializer.RecordSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Objects;
 
-public class Record extends ModifiableVariableHolder implements DataContainer {
+public class Record extends ModifiableVariableHolder implements DataContainer<Record, RecordContext> {
 
     /**
      * maximum length configuration for this record
@@ -172,7 +172,7 @@ public class Record extends ModifiableVariableHolder implements DataContainer {
         return new RecordSerializer(this);
     }
 
-    public void adjustContext(TlsContext context) {
+    public void adjustContext(RecordContext context) {
         ProtocolVersion version = ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue());
         context.setLastRecordVersion(version);
     }
@@ -313,22 +313,22 @@ public class Record extends ModifiableVariableHolder implements DataContainer {
 
     // TODO Fix this mess for records
     @Override
-    public Parser getParser(TlsContext context, InputStream stream) {
+    public Parser getParser(RecordContext context, InputStream stream) {
         return new RecordParser(stream, context.getLastRecordVersion());
     }
 
     @Override
-    public Preparator getPreparator(TlsContext context) {
+    public Preparator getPreparator(RecordContext context) {
         return new RecordPreparator(context.getChooser(), this, null, contentMessageType, null);
     }
 
     @Override
-    public Serializer getSerializer(TlsContext context) {
+    public Serializer getSerializer(RecordContext context) {
         return new RecordSerializer(this);
     }
 
     @Override
-    public Handler getHandler(TlsContext context) {
+    public Handler getHandler(RecordContext context) {
         throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
         // Tools | Templates.
     }

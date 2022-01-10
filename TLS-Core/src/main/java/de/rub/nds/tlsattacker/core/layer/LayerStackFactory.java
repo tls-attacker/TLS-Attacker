@@ -13,11 +13,12 @@ import de.rub.nds.tlsattacker.core.layer.constant.LayerStackType;
 import de.rub.nds.tlsattacker.core.layer.impl.MessageLayer;
 import de.rub.nds.tlsattacker.core.layer.impl.RecordLayer;
 import de.rub.nds.tlsattacker.core.layer.impl.TcpLayer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 public class LayerStackFactory {
 
-    public static LayerStack createLayerStack(LayerStackType type, TlsContext context) {
+    public static LayerStack createLayerStack(LayerStackType type, Context context) {
 
         switch (type) {
             case DTLS:
@@ -29,8 +30,8 @@ public class LayerStackFactory {
             case STARTTTLS:
                 throw new UnsupportedOperationException("Not implemented yet");
             case TLS:
-                return new LayerStack(context, new MessageLayer(context), new RecordLayer(context),
-                    new TcpLayer(context));
+                return new LayerStack(context, new MessageLayer(context.getMessageContext()),
+                        new RecordLayer(context.getRecordContext()), new TcpLayer(context.getTcpContext()));
             default:
                 throw new RuntimeException("Unknown LayerStackType: " + type.name());
         }

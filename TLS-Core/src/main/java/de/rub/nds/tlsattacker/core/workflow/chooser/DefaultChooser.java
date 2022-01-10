@@ -12,9 +12,10 @@ package de.rub.nds.tlsattacker.core.workflow.chooser;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
+import de.rub.nds.tlsattacker.core.layer.context.*;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
@@ -25,8 +26,17 @@ import org.bouncycastle.util.Arrays;
 
 public class DefaultChooser extends Chooser {
 
-    DefaultChooser(TlsContext context, Config config) {
+    private final HttpContext httpContext;
+    private final MessageContext messageContext;
+    private final RecordContext recordContext;
+    private final TcpContext tcpContext;
+
+    DefaultChooser(Context context, Config config) {
         super(context, config);
+        httpContext = context.getHttpContext();
+        messageContext = context.getMessageContext();
+        recordContext = context.getRecordContext();
+        tcpContext = context.getTcpContext();
     }
 
     @Override

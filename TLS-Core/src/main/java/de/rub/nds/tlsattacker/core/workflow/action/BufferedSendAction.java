@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -66,7 +66,7 @@ public class BufferedSendAction extends MessageAction implements SendingAction {
     public String toString() {
         StringBuilder sb = new StringBuilder("BufferedSend Action:\n");
         sb.append("Messages:\n");
-        for (ProtocolMessage message : messages) {
+        for (TlsMessage message : messages) {
             sb.append(message.toCompactString());
             sb.append(", ");
         }
@@ -97,7 +97,7 @@ public class BufferedSendAction extends MessageAction implements SendingAction {
     }
 
     @Override
-    public List<ProtocolMessage> getSendMessages() {
+    public List<TlsMessage> getSendMessages() {
         return messages;
     }
 

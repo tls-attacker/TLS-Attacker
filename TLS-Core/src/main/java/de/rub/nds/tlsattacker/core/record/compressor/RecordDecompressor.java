@@ -11,16 +11,16 @@ package de.rub.nds.tlsattacker.core.record.compressor;
 
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.layer.context.RecordContext;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.compressor.compression.CompressionAlgorithm;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 public class RecordDecompressor extends Decompressor<Record> {
 
     private CompressionAlgorithm algorithm;
     private ProtocolVersion version;
 
-    public RecordDecompressor(TlsContext context) {
+    public RecordDecompressor(RecordContext context) {
         version = context.getChooser().getSelectedProtocolVersion();
         if (version.isTLS13()) {
             setMethod(CompressionMethod.NULL);

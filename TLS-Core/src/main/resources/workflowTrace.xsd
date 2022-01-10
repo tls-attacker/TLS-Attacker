@@ -663,7 +663,7 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="protocolMessage" abstract="true">
+  <xs:complexType name="tlsMessage" abstract="true">
     <xs:complexContent>
       <xs:extension base="modifiableVariableHolder">
         <xs:sequence>
@@ -1030,7 +1030,7 @@
 
   <xs:complexType name="handshakeMessage" abstract="true">
     <xs:complexContent>
-      <xs:extension base="protocolMessage">
+      <xs:extension base="tlsMessage">
         <xs:sequence>
           <xs:element name="type" type="modifiableByte" minOccurs="0"/>
           <xs:element name="length" type="modifiableInteger" minOccurs="0"/>
@@ -2266,7 +2266,7 @@
 
   <xs:complexType name="alertMessage">
     <xs:complexContent>
-      <xs:extension base="protocolMessage">
+      <xs:extension base="tlsMessage">
         <xs:sequence>
           <xs:element name="config" type="xs:string" minOccurs="0"/>
           <xs:element name="level" type="modifiableByte" minOccurs="0"/>
@@ -2341,7 +2341,7 @@
 
   <xs:complexType name="applicationMessage">
     <xs:complexContent>
-      <xs:extension base="protocolMessage">
+      <xs:extension base="tlsMessage">
         <xs:sequence>
           <xs:element name="dataConfig" type="xs:string" minOccurs="0"/>
           <xs:element name="data" type="modifiableByteArray" minOccurs="0"/>
@@ -2352,7 +2352,7 @@
 
   <xs:complexType name="changeCipherSpecMessage">
     <xs:complexContent>
-      <xs:extension base="protocolMessage">
+      <xs:extension base="tlsMessage">
         <xs:sequence>
           <xs:element name="ccsProtocolType" type="modifiableByteArray" minOccurs="0"/>
         </xs:sequence>
@@ -2434,7 +2434,7 @@
 
   <xs:complexType name="unknownMessage">
     <xs:complexContent>
-      <xs:extension base="protocolMessage">
+      <xs:extension base="tlsMessage">
         <xs:sequence>
           <xs:element name="dataConfig" type="xs:base64Binary" minOccurs="0"/>
           <xs:element name="recordContentMessageType" type="protocolMessageType" minOccurs="0"/>
@@ -2464,7 +2464,7 @@
 
   <xs:complexType name="heartbeatMessage">
     <xs:complexContent>
-      <xs:extension base="protocolMessage">
+      <xs:extension base="tlsMessage">
         <xs:sequence>
           <xs:element name="heartbeatMessageType" type="modifiableByte" minOccurs="0"/>
           <xs:element name="payloadLength" type="modifiableInteger" minOccurs="0"/>
@@ -2505,7 +2505,7 @@
 
   <xs:complexType name="httpsRequestMessage">
     <xs:complexContent>
-      <xs:extension base="protocolMessage">
+      <xs:extension base="tlsMessage">
         <xs:sequence>
           <xs:element name="header" minOccurs="0">
             <xs:complexType>
@@ -2608,7 +2608,7 @@
 
   <xs:complexType name="tokenBindingMessage">
     <xs:complexContent>
-      <xs:extension base="protocolMessage">
+      <xs:extension base="tlsMessage">
         <xs:sequence>
           <xs:element name="tokenbindingsLength" type="modifiableInteger" minOccurs="0"/>
           <xs:element name="tokenbindingType" type="modifiableByte" minOccurs="0"/>
@@ -2631,7 +2631,7 @@
 
   <xs:complexType name="httpsResponseMessage">
     <xs:complexContent>
-      <xs:extension base="protocolMessage">
+      <xs:extension base="tlsMessage">
         <xs:sequence>
           <xs:element name="responseProtocol" type="modifiableString" minOccurs="0"/>
           <xs:element name="responseStatusCode" type="modifiableString" minOccurs="0"/>
@@ -3199,7 +3199,7 @@
       <xs:element name="lastServerVerifyData" type="xs:base64Binary" minOccurs="0"/>
       <xs:element name="lastClientHello" type="xs:base64Binary" minOccurs="0"/>
       <xs:element name="random" type="random" minOccurs="0"/>
-      <xs:element name="messageBuffer" type="protocolMessage" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="messageBuffer" type="tlsMessage" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="recordBuffer" type="record" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="fragmentBuffer" type="dtlsHandshakeMessageFragment" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="chooser" type="chooser" minOccurs="0"/>

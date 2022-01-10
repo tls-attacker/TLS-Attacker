@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
+import de.rub.nds.tlsattacker.core.layer.context.RecordContext;
 import de.rub.nds.tlsattacker.core.protocol.Preparator;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.compressor.RecordCompressor;
@@ -30,17 +31,20 @@ public class RecordPreparator extends Preparator<Record> {
 
     private final Record record;
     private final Encryptor encryptor;
+    private final RecordContext context;
     private final RecordCompressor compressor;
 
     private ProtocolMessageType type;
 
-    public RecordPreparator(Chooser chooser, Record record, Encryptor encryptor, ProtocolMessageType type,
-        RecordCompressor compressor) {
-        super(chooser, record);
+    public RecordPreparator(RecordContext context, Record record, Encryptor encryptor, ProtocolMessageType type,
+                            RecordCompressor compressor) {
+        super(context.getChooser(), record);
         this.record = record;
         this.encryptor = encryptor;
+        this.context = context;
         this.compressor = compressor;
         this.type = type;
+
     }
 
     @Override
@@ -76,7 +80,7 @@ public class RecordPreparator extends Preparator<Record> {
 
     private void prepareProtocolVersion(Record record) {
         if (chooser.getSelectedProtocolVersion().isTLS13()
-            || chooser.getContext().getActiveKeySetTypeWrite() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
+            || context.getActiveKeySetTypeWrite() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
             record.setProtocolVersion(ProtocolVersion.TLS12.getValue());
         } else {
             record.setProtocolVersion(chooser.getSelectedProtocolVersion().getValue());

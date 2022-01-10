@@ -10,11 +10,11 @@
 package de.rub.nds.tlsattacker.core.record.crypto;
 
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import de.rub.nds.tlsattacker.core.layer.context.RecordContext;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,11 +23,11 @@ public class RecordEncryptor extends Encryptor {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final TlsContext context;
+    private final RecordContext context;
 
     private final RecordNullCipher nullCipher;
 
-    public RecordEncryptor(RecordCipher recordCipher, TlsContext context) {
+    public RecordEncryptor(RecordCipher recordCipher, RecordContext context) {
         super(recordCipher);
         this.context = context;
         nullCipher = RecordCipherFactory.getNullCipher(context);

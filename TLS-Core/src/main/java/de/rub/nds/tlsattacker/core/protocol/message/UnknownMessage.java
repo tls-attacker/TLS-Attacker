@@ -12,7 +12,7 @@ package de.rub.nds.tlsattacker.core.protocol.message;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
 import de.rub.nds.tlsattacker.core.protocol.handler.UnknownMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.UnknownMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.UnknownMessagePreparator;
@@ -22,7 +22,7 @@ import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "UnknownMessage")
-public class UnknownMessage extends ProtocolMessage {
+public class UnknownMessage extends TlsMessage {
 
     private byte[] dataConfig;
 

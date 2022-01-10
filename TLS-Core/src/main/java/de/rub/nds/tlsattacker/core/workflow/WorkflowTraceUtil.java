@@ -12,7 +12,7 @@ package de.rub.nds.tlsattacker.core.workflow;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.record.Record;
@@ -29,8 +29,8 @@ public class WorkflowTraceUtil {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public static ProtocolMessage getFirstReceivedMessage(ProtocolMessageType type, WorkflowTrace trace) {
-        List<ProtocolMessage> messageList = getAllReceivedMessages(trace);
+    public static TlsMessage getFirstReceivedMessage(ProtocolMessageType type, WorkflowTrace trace) {
+        List<TlsMessage> messageList = getAllReceivedMessages(trace);
         messageList = filterMessageList(messageList, type);
         if (messageList.isEmpty()) {
             return null;
@@ -40,7 +40,7 @@ public class WorkflowTraceUtil {
     }
 
     public static HandshakeMessage getFirstReceivedMessage(HandshakeMessageType type, WorkflowTrace trace) {
-        List<ProtocolMessage> messageList = getAllReceivedMessages(trace);
+        List<TlsMessage> messageList = getAllReceivedMessages(trace);
         List<HandshakeMessage> handshakeMessageList = filterHandshakeMessagesFromList(messageList);
         handshakeMessageList = filterMessageList(handshakeMessageList, type);
         if (handshakeMessageList.isEmpty()) {
@@ -51,7 +51,7 @@ public class WorkflowTraceUtil {
     }
 
     public static HandshakeMessage getLastReceivedMessage(HandshakeMessageType type, WorkflowTrace trace) {
-        List<ProtocolMessage> messageList = getAllReceivedMessages(trace);
+        List<TlsMessage> messageList = getAllReceivedMessages(trace);
         List<HandshakeMessage> handshakeMessageList = filterHandshakeMessagesFromList(messageList);
         handshakeMessageList = filterMessageList(handshakeMessageList, type);
         if (handshakeMessageList.isEmpty()) {
@@ -61,8 +61,8 @@ public class WorkflowTraceUtil {
         }
     }
 
-    public static ProtocolMessage getLastReceivedMessage(ProtocolMessageType type, WorkflowTrace trace) {
-        List<ProtocolMessage> messageList = getAllReceivedMessages(trace);
+    public static TlsMessage getLastReceivedMessage(ProtocolMessageType type, WorkflowTrace trace) {
+        List<TlsMessage> messageList = getAllReceivedMessages(trace);
         messageList = filterMessageList(messageList, type);
         if (messageList.isEmpty()) {
             return null;
@@ -71,8 +71,8 @@ public class WorkflowTraceUtil {
         }
     }
 
-    public static ProtocolMessage getLastReceivedMessage(WorkflowTrace trace) {
-        List<ProtocolMessage> messageList = getAllReceivedMessages(trace);
+    public static TlsMessage getLastReceivedMessage(WorkflowTrace trace) {
+        List<TlsMessage> messageList = getAllReceivedMessages(trace);
         if (messageList.isEmpty()) {
             return null;
         } else {
@@ -89,8 +89,8 @@ public class WorkflowTraceUtil {
         }
     }
 
-    public static ProtocolMessage getFirstSendMessage(ProtocolMessageType type, WorkflowTrace trace) {
-        List<ProtocolMessage> messageList = getAllSendMessages(trace);
+    public static TlsMessage getFirstSendMessage(ProtocolMessageType type, WorkflowTrace trace) {
+        List<TlsMessage> messageList = getAllSendMessages(trace);
         messageList = filterMessageList(messageList, type);
         if (messageList.isEmpty()) {
             return null;
@@ -100,7 +100,7 @@ public class WorkflowTraceUtil {
     }
 
     public static HandshakeMessage getFirstSendMessage(HandshakeMessageType type, WorkflowTrace trace) {
-        List<ProtocolMessage> messageList = getAllSendMessages(trace);
+        List<TlsMessage> messageList = getAllSendMessages(trace);
         List<HandshakeMessage> handshakeMessageList = filterHandshakeMessagesFromList(messageList);
         handshakeMessageList = filterMessageList(handshakeMessageList, type);
         if (handshakeMessageList.isEmpty()) {
@@ -156,7 +156,7 @@ public class WorkflowTraceUtil {
     }
 
     public static HandshakeMessage getLastSendMessage(HandshakeMessageType type, WorkflowTrace trace) {
-        List<ProtocolMessage> messageList = getAllSendMessages(trace);
+        List<TlsMessage> messageList = getAllSendMessages(trace);
         List<HandshakeMessage> handshakeMessageList = filterHandshakeMessagesFromList(messageList);
         handshakeMessageList = filterMessageList(handshakeMessageList, type);
         if (handshakeMessageList.isEmpty()) {
@@ -166,8 +166,8 @@ public class WorkflowTraceUtil {
         }
     }
 
-    public static ProtocolMessage getLastSendMessage(ProtocolMessageType type, WorkflowTrace trace) {
-        List<ProtocolMessage> messageList = getAllSendMessages(trace);
+    public static TlsMessage getLastSendMessage(ProtocolMessageType type, WorkflowTrace trace) {
+        List<TlsMessage> messageList = getAllSendMessages(trace);
         messageList = filterMessageList(messageList, type);
         if (messageList.isEmpty()) {
             return null;
@@ -192,11 +192,11 @@ public class WorkflowTraceUtil {
         return getFirstSendMessage(type, trace) != null;
     }
 
-    private static List<ProtocolMessage> filterMessageList(List<ProtocolMessage> messages, ProtocolMessageType type) {
-        List<ProtocolMessage> returnedMessages = new LinkedList<>();
-        for (ProtocolMessage protocolMessage : messages) {
-            if (protocolMessage.getProtocolMessageType() == type) {
-                returnedMessages.add(protocolMessage);
+    private static List<TlsMessage> filterMessageList(List<TlsMessage> messages, ProtocolMessageType type) {
+        List<TlsMessage> returnedMessages = new LinkedList<>();
+        for (TlsMessage tlsMessage : messages) {
+            if (tlsMessage.getProtocolMessageType() == type) {
+                returnedMessages.add(tlsMessage);
             }
         }
         return returnedMessages;
@@ -223,18 +223,18 @@ public class WorkflowTraceUtil {
         return resultList;
     }
 
-    public static List<HandshakeMessage> filterHandshakeMessagesFromList(List<ProtocolMessage> messages) {
+    public static List<HandshakeMessage> filterHandshakeMessagesFromList(List<TlsMessage> messages) {
         List<HandshakeMessage> returnedMessages = new LinkedList<>();
-        for (ProtocolMessage protocolMessage : messages) {
-            if (protocolMessage instanceof HandshakeMessage) {
-                returnedMessages.add((HandshakeMessage) protocolMessage);
+        for (TlsMessage tlsMessage : messages) {
+            if (tlsMessage instanceof HandshakeMessage) {
+                returnedMessages.add((HandshakeMessage) tlsMessage);
             }
         }
         return returnedMessages;
     }
 
-    public static List<ProtocolMessage> getAllReceivedMessages(WorkflowTrace trace) {
-        List<ProtocolMessage> receivedMessage = new LinkedList<>();
+    public static List<TlsMessage> getAllReceivedMessages(WorkflowTrace trace) {
+        List<TlsMessage> receivedMessage = new LinkedList<>();
         for (ReceivingAction action : trace.getReceivingActions()) {
             if (action.getReceivedMessages() != null) {
                 receivedMessage.addAll(action.getReceivedMessages());
@@ -243,9 +243,9 @@ public class WorkflowTraceUtil {
         return receivedMessage;
     }
 
-    public static List<ProtocolMessage> getAllReceivedMessages(WorkflowTrace trace, ProtocolMessageType type) {
-        List<ProtocolMessage> receivedMessage = new LinkedList<>();
-        for (ProtocolMessage message : getAllReceivedMessages(trace)) {
+    public static List<TlsMessage> getAllReceivedMessages(WorkflowTrace trace, ProtocolMessageType type) {
+        List<TlsMessage> receivedMessage = new LinkedList<>();
+        for (TlsMessage message : getAllReceivedMessages(trace)) {
             if (message.getProtocolMessageType() == type) {
                 receivedMessage.add(message);
             }
@@ -253,8 +253,8 @@ public class WorkflowTraceUtil {
         return receivedMessage;
     }
 
-    public static List<ProtocolMessage> getAllSendMessages(WorkflowTrace trace) {
-        List<ProtocolMessage> sendMessages = new LinkedList<>();
+    public static List<TlsMessage> getAllSendMessages(WorkflowTrace trace) {
+        List<TlsMessage> sendMessages = new LinkedList<>();
         for (SendingAction action : trace.getSendingActions()) {
             sendMessages.addAll(action.getSendMessages());
         }
@@ -263,8 +263,8 @@ public class WorkflowTraceUtil {
 
     public static Boolean didReceiveTypeBeforeType(ProtocolMessageType protocolMessageType, HandshakeMessageType type,
         WorkflowTrace trace) {
-        List<ProtocolMessage> receivedMessages = getAllReceivedMessages(trace);
-        for (ProtocolMessage message : receivedMessages) {
+        List<TlsMessage> receivedMessages = getAllReceivedMessages(trace);
+        for (TlsMessage message : receivedMessages) {
             if (message.getProtocolMessageType() == protocolMessageType) {
                 return true;
             }

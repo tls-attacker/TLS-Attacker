@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.attacks.util.response;
 
 import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.record.Record;
@@ -27,7 +27,7 @@ import javax.xml.bind.annotation.*;
 public class ResponseFingerprint {
     @XmlElementWrapper
     @XmlElementRef
-    private List<ProtocolMessage> messageList;
+    private List<TlsMessage> messageList;
 
     @XmlElementWrapper
     @XmlElements(value = { @XmlElement(type = Record.class, name = "Record") })
@@ -43,7 +43,7 @@ public class ResponseFingerprint {
      * @param recordList
      * @param socketState
      */
-    public ResponseFingerprint(List<ProtocolMessage> messageList, List<Record> recordList, SocketState socketState) {
+    public ResponseFingerprint(List<TlsMessage> messageList, List<Record> recordList, SocketState socketState) {
         this.messageList = messageList;
         this.recordList = recordList;
         this.socketState = socketState;
@@ -69,7 +69,7 @@ public class ResponseFingerprint {
      *
      * @return
      */
-    public List<ProtocolMessage> getMessageList() {
+    public List<TlsMessage> getMessageList() {
         return messageList;
     }
 
@@ -81,7 +81,7 @@ public class ResponseFingerprint {
     public String toString() {
 
         StringBuilder messages = new StringBuilder();
-        for (ProtocolMessage someMessage : this.messageList) {
+        for (TlsMessage someMessage : this.messageList) {
             messages.append(someMessage.toCompactString()).append(",");
         }
         StringBuilder records = new StringBuilder();
@@ -95,7 +95,7 @@ public class ResponseFingerprint {
 
     public String toShortString() {
         StringBuilder messages = new StringBuilder();
-        for (ProtocolMessage someMessage : this.messageList) {
+        for (TlsMessage someMessage : this.messageList) {
             messages.append(someMessage.toShortString()).append(",");
         }
         return messages.append("|").append(socketState).toString();
@@ -103,7 +103,7 @@ public class ResponseFingerprint {
 
     public String toHumanReadable() {
         StringBuilder resultString = new StringBuilder();
-        for (ProtocolMessage message : messageList) {
+        for (TlsMessage message : messageList) {
 
             switch (message.getProtocolMessageType()) {
                 case ALERT:
@@ -231,8 +231,8 @@ public class ResponseFingerprint {
             minNumberOfMessages = this.messageList.size();
         }
         for (int i = 0; i < minNumberOfMessages; i++) {
-            ProtocolMessage messageOne = this.getMessageList().get(i);
-            ProtocolMessage messageTwo = fingerprint.getMessageList().get(i);
+            TlsMessage messageOne = this.getMessageList().get(i);
+            TlsMessage messageTwo = fingerprint.getMessageList().get(i);
             if (!checkMessagesAreRoughlyEqual(messageOne, messageTwo)) {
                 return false;
             }
@@ -241,7 +241,7 @@ public class ResponseFingerprint {
 
     }
 
-    private boolean checkMessagesAreRoughlyEqual(ProtocolMessage messageOne, ProtocolMessage messageTwo) {
+    private boolean checkMessagesAreRoughlyEqual(TlsMessage messageOne, TlsMessage messageTwo) {
         if (!messageOne.getClass().equals(messageTwo.getClass())) {
             return false;
         }

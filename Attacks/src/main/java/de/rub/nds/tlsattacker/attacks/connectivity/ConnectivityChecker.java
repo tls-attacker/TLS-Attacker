@@ -12,7 +12,7 @@ package de.rub.nds.tlsattacker.attacks.connectivity;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -95,7 +95,7 @@ public class ConnectivityChecker {
             if (receiveTillAction.getRecords().get(0) instanceof Record) {
                 return true;
             } else {
-                for (ProtocolMessage message : receiveTillAction.getReceivedMessages()) {
+                for (TlsMessage message : receiveTillAction.getReceivedMessages()) {
                     if (message instanceof ServerHelloMessage || message instanceof ServerHelloDoneMessage
                         || message instanceof SSL2ServerHelloMessage) {
                         return true;
@@ -122,7 +122,7 @@ public class ConnectivityChecker {
             if (reveiceAction.getRecords().get(0) instanceof Record) {
                 return true;
             } else {
-                for (ProtocolMessage message : reveiceAction.getReceivedMessages()) {
+                for (TlsMessage message : reveiceAction.getReceivedMessages()) {
                     if (message instanceof HelloVerifyRequestMessage || message instanceof ServerHelloMessage) {
                         return true;
                     }
