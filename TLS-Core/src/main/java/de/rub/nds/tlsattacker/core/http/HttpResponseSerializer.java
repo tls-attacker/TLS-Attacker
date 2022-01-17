@@ -32,7 +32,7 @@ public class HttpResponseSerializer extends Serializer<HttpResponseMessage> {
     protected byte[] serializeBytes() {
         StringBuilder builder = new StringBuilder();
         builder.append(message.getResponseProtocol().getValue()).append(" ")
-                .append(message.getResponseStatusCode().getValue()).append("\r\n");
+            .append(message.getResponseStatusCode().getValue()).append("\r\n");
         for (HttpHeader header : message.getHeader()) {
             HttpHeaderSerializer serializer = new HttpHeaderSerializer(header);
             builder.append(new String(serializer.serialize()));

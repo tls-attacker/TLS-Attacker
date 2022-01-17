@@ -12,7 +12,7 @@ package de.rub.nds.tlsattacker.core.protocol;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 import de.rub.nds.tlsattacker.util.UnlimitedStrengthEnabler;
 import de.rub.nds.tlsattacker.util.tests.IntegrationTests;
@@ -67,8 +67,8 @@ public class CyclicParserSerializerTest {
                 try {
                     Constructor tempConstructor = getMessageConstructor(someMessageClass);
                     if (tempConstructor != null) {
-                        message = (TlsMessage) getMessageConstructor(someMessageClass)
-                            .newInstance(Config.createConfig());
+                        message =
+                            (TlsMessage) getMessageConstructor(someMessageClass).newInstance(Config.createConfig());
                     } else {
                         fail("Could not find Constructor for " + testName);
                     }
@@ -88,8 +88,7 @@ public class CyclicParserSerializerTest {
                     preparator.prepare();
                     ProtocolMessageSerializer serializer = message.getSerializer(context);
                     byte[] serializedMessage = serializer.serializeProtocolMessageContent();
-                    message =
-                        (TlsMessage) getMessageConstructor(someMessageClass).newInstance(Config.createConfig());
+                    message = (TlsMessage) getMessageConstructor(someMessageClass).newInstance(Config.createConfig());
                     ProtocolMessageParser parser =
                         message.getParser(context, new ByteArrayInputStream(serializedMessage));
                     parser.parse(message);

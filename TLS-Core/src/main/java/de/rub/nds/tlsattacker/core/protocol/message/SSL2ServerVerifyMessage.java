@@ -14,12 +14,12 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.constants.TlsMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ServerVerifyHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.SSL2ServerVerifyParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.SSL2ServerVerifyPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.HandshakeMessageSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -33,7 +33,7 @@ public class SSL2ServerVerifyMessage extends SSL2HandshakeMessage {
 
     public SSL2ServerVerifyMessage() {
         super(HandshakeMessageType.SSL2_SERVER_VERIFY);
-        this.protocolMessageType = ProtocolMessageType.HANDSHAKE;
+        this.protocolMessageType = TlsMessageType.HANDSHAKE;
     }
 
     public SSL2ServerVerifyMessage(Config config) {
@@ -56,17 +56,17 @@ public class SSL2ServerVerifyMessage extends SSL2HandshakeMessage {
     }
 
     @Override
-    public SSL2ServerVerifyParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new SSL2ServerVerifyParser(stream, tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext);
+    public SSL2ServerVerifyParser getParser(TlsContext context, InputStream stream) {
+        return new SSL2ServerVerifyParser(stream, context.getChooser().getSelectedProtocolVersion(), context);
     }
 
     @Override
-    public SSL2ServerVerifyPreparator getPreparator(TlsContext tlsContext) {
-        return new SSL2ServerVerifyPreparator(tlsContext.getChooser(), this);
+    public SSL2ServerVerifyPreparator getPreparator(TlsContext context) {
+        return new SSL2ServerVerifyPreparator(context.getChooser(), this);
     }
 
     @Override
-    public HandshakeMessageSerializer<SSL2ServerVerifyMessage> getSerializer(TlsContext tlsContext) {
+    public HandshakeMessageSerializer<SSL2ServerVerifyMessage> getSerializer(TlsContext context) {
         // We currently don't send ServerVerify messages, only receive them.
         return null;
     }

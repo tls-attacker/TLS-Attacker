@@ -22,7 +22,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.computations.PWDComputations
 import de.rub.nds.tlsattacker.core.protocol.parser.PWDClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.PWDClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.PWDClientKeyExchangeSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -70,19 +70,19 @@ public class PWDClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     }
 
     @Override
-    public PWDClientKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new PWDClientKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(),
-            AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite()), tlsContext);
+    public PWDClientKeyExchangeParser getParser(TlsContext context, InputStream stream) {
+        return new PWDClientKeyExchangeParser(stream, context.getChooser().getLastRecordVersion(),
+            AlgorithmResolver.getKeyExchangeAlgorithm(context.getChooser().getSelectedCipherSuite()), context);
     }
 
     @Override
-    public PWDClientKeyExchangePreparator getPreparator(TlsContext tlsContext) {
-        return new PWDClientKeyExchangePreparator(tlsContext.getChooser(), this);
+    public PWDClientKeyExchangePreparator getPreparator(TlsContext context) {
+        return new PWDClientKeyExchangePreparator(context.getChooser(), this);
     }
 
     @Override
-    public PWDClientKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
-        return new PWDClientKeyExchangeSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+    public PWDClientKeyExchangeSerializer getSerializer(TlsContext context) {
+        return new PWDClientKeyExchangeSerializer(this, context.getChooser().getSelectedProtocolVersion());
     }
 
     public ModifiableInteger getElementLength() {

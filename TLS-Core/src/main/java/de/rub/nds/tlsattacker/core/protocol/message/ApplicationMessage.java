@@ -14,13 +14,13 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.constants.TlsMessageType;
 import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
 import de.rub.nds.tlsattacker.core.protocol.handler.ApplicationMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.ApplicationMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ApplicationMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ApplicationMessageSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import java.util.Arrays;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -38,17 +38,17 @@ public class ApplicationMessage extends TlsMessage<ApplicationMessage> {
     public ApplicationMessage(Config tlsConfig, byte[] dataConfig) {
         super();
         this.dataConfig = dataConfig;
-        this.protocolMessageType = ProtocolMessageType.APPLICATION_DATA;
+        this.protocolMessageType = TlsMessageType.APPLICATION_DATA;
     }
 
     public ApplicationMessage() {
         super();
-        this.protocolMessageType = ProtocolMessageType.APPLICATION_DATA;
+        this.protocolMessageType = TlsMessageType.APPLICATION_DATA;
     }
 
     public ApplicationMessage(Config tlsConfig) {
         super();
-        this.protocolMessageType = ProtocolMessageType.APPLICATION_DATA;
+        this.protocolMessageType = TlsMessageType.APPLICATION_DATA;
     }
 
     public ModifiableByteArray getData() {
@@ -98,24 +98,23 @@ public class ApplicationMessage extends TlsMessage<ApplicationMessage> {
     }
 
     @Override
-    public ApplicationMessageHandler getHandler(TlsContext tlsContext) {
-        return new ApplicationMessageHandler(tlsContext);
+    public ApplicationMessageHandler getHandler(TlsContext context) {
+        return new ApplicationMessageHandler(context);
     }
 
     @Override
-    public ApplicationMessageParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new ApplicationMessageParser(stream, tlsContext.getChooser().getLastRecordVersion(),
-            tlsContext.getConfig());
+    public ApplicationMessageParser getParser(TlsContext context, InputStream stream) {
+        return new ApplicationMessageParser(stream, context.getChooser().getLastRecordVersion(), context.getConfig());
     }
 
     @Override
-    public ApplicationMessagePreparator getPreparator(TlsContext tlsContext) {
-        return new ApplicationMessagePreparator(tlsContext.getChooser(), this);
+    public ApplicationMessagePreparator getPreparator(TlsContext context) {
+        return new ApplicationMessagePreparator(context.getChooser(), this);
     }
 
     @Override
-    public ApplicationMessageSerializer getSerializer(TlsContext tlsContext) {
-        return new ApplicationMessageSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+    public ApplicationMessageSerializer getSerializer(TlsContext context) {
+        return new ApplicationMessageSerializer(this, context.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

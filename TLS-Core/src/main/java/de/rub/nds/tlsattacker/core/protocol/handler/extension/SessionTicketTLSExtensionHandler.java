@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
 import de.rub.nds.tlsattacker.core.state.StatePlaintext;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.state.parser.StatePlaintextParser;
 import de.rub.nds.tlsattacker.core.util.StaticTicketCrypto;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -28,7 +28,7 @@ public class SessionTicketTLSExtensionHandler extends ExtensionHandler<SessionTi
      * Constructor
      *
      * @param context
-     *                The TlsContext which the Handler should adjust
+     *                The RecordContext which the Handler should adjust
      */
     public SessionTicketTLSExtensionHandler(TlsContext context) {
         super(context);

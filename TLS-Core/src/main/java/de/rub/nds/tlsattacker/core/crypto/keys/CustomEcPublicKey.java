@@ -26,7 +26,7 @@ import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
-import de.rub.nds.tlsattacker.core.layer.context.RecordContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -79,7 +79,7 @@ public class CustomEcPublicKey extends CustomPublicKey implements ECPublicKey {
     }
 
     @Override
-    public void adjustInContext(RecordContext context, ConnectionEndType ownerOfKey) {
+    public void adjustInContext(TlsContext context, ConnectionEndType ownerOfKey) {
         LOGGER.debug("Adjusting EC public key in context");
         if (null == ownerOfKey) {
             throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");

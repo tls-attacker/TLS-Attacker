@@ -21,7 +21,7 @@ import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientMasterKeyMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerVerifyMessage;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
@@ -133,7 +133,7 @@ public class SpecialDrownAttacker extends BaseDrownAttacker {
             .getFirstReceivedMessage(HandshakeMessageType.SSL2_SERVER_VERIFY, trace);
         CONSOLE.info("Completed server connection");
         LeakyExportCheckData checkData =
-            new LeakyExportCheckData(state.getTlsContext(), clientMasterKeyMessage, serverVerifyMessage);
+            new LeakyExportCheckData(state.getContext().getTlsContext(), clientMasterKeyMessage, serverVerifyMessage);
 
         try {
             FileOutputStream fileStream = new FileOutputStream(dataFilePath);
@@ -251,7 +251,7 @@ public class SpecialDrownAttacker extends BaseDrownAttacker {
         Config tlsConfig = getTlsConfig();
         SSL2CipherSuite cipherSuite = tlsConfig.getDefaultSSL2CipherSuite();
         State state = new State(tlsConfig);
-        TlsContext context = state.getTlsContext();
+        TlsContext context = state.getContext().getTlsContext();
 
         byte[] encrypted = new byte[40];
         context.getRandom().nextBytes(encrypted);

@@ -13,7 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.PskDhClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,12 +27,12 @@ public class PskDhClientKeyExchangeParser extends DHClientKeyExchangeParser<PskD
      *
      * @param stream
      * @param version
-     *                   Version of the Protocol
-     * @param tlsContext
-     *                   A Config used in the current context
+     *                Version of the Protocol
+     * @param context
+     *                A Config used in the current context
      */
-    public PskDhClientKeyExchangeParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
-        super(stream, version, tlsContext);
+    public PskDhClientKeyExchangeParser(InputStream stream, ProtocolVersion version, TlsContext context) {
+        super(stream, version, context);
     }
 
     @Override

@@ -18,7 +18,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.SignedCertificateT
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.SignedCertificateTimestampExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SignedCertificateTimestampExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SignedCertificateTimestampExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -67,23 +67,22 @@ public class SignedCertificateTimestampExtensionMessage
     }
 
     @Override
-    public SignedCertificateTimestampExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new SignedCertificateTimestampExtensionParser(stream, tlsContext.getConfig());
+    public SignedCertificateTimestampExtensionParser getParser(TlsContext context, InputStream stream) {
+        return new SignedCertificateTimestampExtensionParser(stream, context.getConfig());
     }
 
     @Override
-    public SignedCertificateTimestampExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new SignedCertificateTimestampExtensionPreparator(tlsContext.getChooser(), this,
-            getSerializer(tlsContext));
+    public SignedCertificateTimestampExtensionPreparator getPreparator(TlsContext context) {
+        return new SignedCertificateTimestampExtensionPreparator(context.getChooser(), this, getSerializer(context));
     }
 
     @Override
-    public SignedCertificateTimestampExtensionSerializer getSerializer(TlsContext tlsContext) {
+    public SignedCertificateTimestampExtensionSerializer getSerializer(TlsContext context) {
         return new SignedCertificateTimestampExtensionSerializer(this);
     }
 
     @Override
-    public SignedCertificateTimestampExtensionHandler getHandler(TlsContext tlsContext) {
-        return new SignedCertificateTimestampExtensionHandler(tlsContext);
+    public SignedCertificateTimestampExtensionHandler getHandler(TlsContext context) {
+        return new SignedCertificateTimestampExtensionHandler(context);
     }
 }

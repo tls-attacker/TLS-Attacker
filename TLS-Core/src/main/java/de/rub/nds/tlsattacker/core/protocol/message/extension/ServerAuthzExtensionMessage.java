@@ -19,7 +19,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.ServerAuthzExtensi
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ServerAuthzExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ServerAuthzExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ServerAuthzExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -68,22 +68,22 @@ public class ServerAuthzExtensionMessage extends ExtensionMessage<ServerAuthzExt
     }
 
     @Override
-    public ServerAuthzExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new ServerAuthzExtensionParser(stream, tlsContext.getConfig());
+    public ServerAuthzExtensionParser getParser(TlsContext context, InputStream stream) {
+        return new ServerAuthzExtensionParser(stream, context.getConfig());
     }
 
     @Override
-    public ServerAuthzExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new ServerAuthzExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+    public ServerAuthzExtensionPreparator getPreparator(TlsContext context) {
+        return new ServerAuthzExtensionPreparator(context.getChooser(), this, getSerializer(context));
     }
 
     @Override
-    public ServerAuthzExtensionSerializer getSerializer(TlsContext tlsContext) {
+    public ServerAuthzExtensionSerializer getSerializer(TlsContext context) {
         return new ServerAuthzExtensionSerializer(this);
     }
 
     @Override
-    public ServerAuthzExtensionHandler getHandler(TlsContext tlsContext) {
-        return new ServerAuthzExtensionHandler(tlsContext);
+    public ServerAuthzExtensionHandler getHandler(TlsContext context) {
+        return new ServerAuthzExtensionHandler(context);
     }
 }

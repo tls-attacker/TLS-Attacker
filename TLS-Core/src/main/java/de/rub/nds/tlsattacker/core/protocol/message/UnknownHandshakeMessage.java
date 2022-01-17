@@ -19,7 +19,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.UnknownHandshakeHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.UnknownHandshakeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.UnknownHandshakePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.UnknownHandshakeSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -65,18 +65,18 @@ public class UnknownHandshakeMessage extends HandshakeMessage {
     }
 
     @Override
-    public UnknownHandshakeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new UnknownHandshakeParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+    public UnknownHandshakeParser getParser(TlsContext context, InputStream stream) {
+        return new UnknownHandshakeParser(stream, context.getChooser().getLastRecordVersion(), context);
     }
 
     @Override
-    public UnknownHandshakePreparator getPreparator(TlsContext tlsContext) {
-        return new UnknownHandshakePreparator(tlsContext.getChooser(), this);
+    public UnknownHandshakePreparator getPreparator(TlsContext context) {
+        return new UnknownHandshakePreparator(context.getChooser(), this);
     }
 
     @Override
-    public UnknownHandshakeSerializer getSerializer(TlsContext tlsContext) {
-        return new UnknownHandshakeSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+    public UnknownHandshakeSerializer getSerializer(TlsContext context) {
+        return new UnknownHandshakeSerializer(this, context.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

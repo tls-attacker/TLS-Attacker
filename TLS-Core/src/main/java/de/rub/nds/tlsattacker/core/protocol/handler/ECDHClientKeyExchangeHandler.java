@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,8 +21,8 @@ public class ECDHClientKeyExchangeHandler<T extends ECDHClientKeyExchangeMessage
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ECDHClientKeyExchangeHandler(TlsContext tlsContext) {
-        super(tlsContext);
+    public ECDHClientKeyExchangeHandler(TlsContext context) {
+        super(context);
     }
 
     @Override

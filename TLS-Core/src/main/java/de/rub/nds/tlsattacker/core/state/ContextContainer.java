@@ -28,43 +28,43 @@ public class ContextContainer {
 
     private final Set<String> knownAliases = new HashSet<>();
 
-    private final Map<String, TlsContext> tlsContexts = new HashMap<>();
+    private final Map<String, Context> contexts = new HashMap<>();
 
     /**
-     * An inbound TLS context is a context bound to an incoming connection. I.e. it represents a connection that we
-     * accepted from a connecting client.
+     * An inbound context is a context bound to an incoming connection. I.e. it represents a connection that we accepted
+     * from a connecting client.
      */
-    private final List<TlsContext> inboundTlsContexts = new ArrayList<>();
+    private final List<Context> inboundContexts = new ArrayList<>();
 
     /**
-     * An outbound TLS context is a context bound to an outgoing connection. I.e. it represents a connection established
-     * by us to a remote server.
+     * An outbound context is a context bound to an outgoing connection. I.e. it represents a connection established by
+     * us to a remote server.
      */
-    private final List<TlsContext> outboundTlsContexts = new ArrayList<>();
+    private final List<Context> outboundContexts = new ArrayList<>();
 
     /**
-     * Get the only defined TLS context.
+     * Get the only defined context.
      * <p>
      * </p>
      * Convenience method, useful when working with a single context only.
      *
-     * @return                        the only known TLS context
+     * @return                        the only known context
      * @throws ConfigurationException
-     *                                if there is more than one TLS context in the container
+     *                                if there is more than one context in the container
      *
      */
-    public TlsContext getTlsContext() {
-        if (tlsContexts.isEmpty()) {
+    public Context getContext() {
+        if (contexts.isEmpty()) {
             throw new ConfigurationException("No context defined.");
         }
-        if (tlsContexts.size() > 1) {
-            throw new ConfigurationException("getTlsContext requires an alias if multiple contexts are defined");
+        if (contexts.size() > 1) {
+            throw new ConfigurationException("getContext requires an alias if multiple contexts are defined");
         }
-        return tlsContexts.entrySet().iterator().next().getValue();
+        return contexts.entrySet().iterator().next().getValue();
     }
 
     /**
-     * Get TLS context with the given alias.
+     * Get context with the given alias.
      *
      * @param  alias
      * @return                        the context with the given connection end alias
@@ -72,15 +72,15 @@ public class ContextContainer {
      *                                if there is no TLS context with the given alias
      *
      */
-    public TlsContext getTlsContext(String alias) {
-        TlsContext ctx = tlsContexts.get(alias);
+    public Context getContext(String alias) {
+        Context ctx = contexts.get(alias);
         if (ctx == null) {
             throw new ConfigurationException("No context defined with alias '" + alias + "'.");
         }
         return ctx;
     }
 
-    public void addTlsContext(TlsContext context) {
+    public void addContext(Context context) {
         AliasedConnection con = context.getConnection();
         String alias = con.getAlias();
         if (alias == null) {
@@ -90,28 +90,28 @@ public class ContextContainer {
             throw new ConfigurationException("Connection end alias already in use: " + alias);
         }
 
-        tlsContexts.put(alias, context);
+        contexts.put(alias, context);
         knownAliases.add(alias);
 
         if (con.getLocalConnectionEndType() == ConnectionEndType.SERVER) {
             LOGGER.debug("Adding context " + alias + " to inboundTlsContexts");
-            inboundTlsContexts.add(context);
+            inboundContexts.add(context);
         } else {
             LOGGER.debug("Adding context " + alias + " to outboundTlsContexts");
-            outboundTlsContexts.add(context);
+            outboundContexts.add(context);
         }
     }
 
-    public List<TlsContext> getAllContexts() {
-        return new ArrayList<>(tlsContexts.values());
+    public List<Context> getAllContexts() {
+        return new ArrayList<>(contexts.values());
     }
 
-    public List<TlsContext> getInboundTlsContexts() {
-        return inboundTlsContexts;
+    public List<Context> getInboundTlsContexts() {
+        return inboundContexts;
     }
 
-    public List<TlsContext> getOutboundTlsContexts() {
-        return outboundTlsContexts;
+    public List<Context> getOutboundContexts() {
+        return outboundContexts;
     }
 
     public boolean containsAlias(String alias) {
@@ -127,22 +127,22 @@ public class ContextContainer {
     }
 
     public boolean isEmpty() {
-        return tlsContexts.isEmpty();
+        return contexts.isEmpty();
     }
 
     public void clear() {
-        tlsContexts.clear();
+        contexts.clear();
         knownAliases.clear();
-        inboundTlsContexts.clear();
-        outboundTlsContexts.clear();
+        inboundContexts.clear();
+        outboundContexts.clear();
     }
 
     public void removeTlsContext(String alias) {
         if (containsAlias(alias)) {
-            TlsContext removeMe = tlsContexts.get(alias);
-            inboundTlsContexts.remove(removeMe);
-            outboundTlsContexts.remove(removeMe);
-            tlsContexts.remove(alias);
+            Context removeMe = contexts.get(alias);
+            inboundContexts.remove(removeMe);
+            outboundContexts.remove(removeMe);
+            contexts.remove(alias);
             knownAliases.remove(alias);
         } else {
             LOGGER.debug("No context with alias " + alias + " found, nothing to remove");
@@ -160,17 +160,17 @@ public class ContextContainer {
      * @throws ConfigurationException
      *                                if the connections of new and old TlsContext differ
      */
-    public void replaceTlsContext(TlsContext newTlsContext) {
+    public void replaceTlsContext(Context newTlsContext) {
         String alias = newTlsContext.getConnection().getAlias();
         if (!containsAlias(alias)) {
             throw new ConfigurationException("No TlsContext to replace for alias " + alias);
         }
-        TlsContext replaceMe = tlsContexts.get(alias);
+        Context replaceMe = contexts.get(alias);
         if (!replaceMe.getConnection().equals(newTlsContext.getConnection())) {
             throw new ContextHandlingException(
                 "Cannot replace TlsContext because the new TlsContext" + " defines another connection.");
         }
         removeTlsContext(alias);
-        addTlsContext(newTlsContext);
+        addContext(newTlsContext);
     }
 }

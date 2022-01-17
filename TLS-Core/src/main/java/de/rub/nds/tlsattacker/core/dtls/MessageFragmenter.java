@@ -11,11 +11,11 @@ package de.rub.nds.tlsattacker.core.dtls;
 
 import static de.rub.nds.tlsattacker.core.dtls.FragmentCollector.LOGGER;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.*;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.HandshakeMessageSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.LinkedList;
 import java.util.List;
 import org.bouncycastle.util.Arrays;

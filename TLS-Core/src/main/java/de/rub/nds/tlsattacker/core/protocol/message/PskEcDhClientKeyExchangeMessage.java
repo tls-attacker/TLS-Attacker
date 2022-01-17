@@ -20,7 +20,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.PskEcDhClientKeyExchangeHand
 import de.rub.nds.tlsattacker.core.protocol.parser.PskEcDhClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.PskEcDhClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.PskEcDhClientKeyExchangeSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -91,18 +91,18 @@ public class PskEcDhClientKeyExchangeMessage extends ECDHClientKeyExchangeMessag
     }
 
     @Override
-    public PskEcDhClientKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new PskEcDhClientKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+    public PskEcDhClientKeyExchangeParser getParser(TlsContext context, InputStream stream) {
+        return new PskEcDhClientKeyExchangeParser(stream, context.getChooser().getLastRecordVersion(), context);
     }
 
     @Override
-    public PskEcDhClientKeyExchangePreparator getPreparator(TlsContext tlsContext) {
-        return new PskEcDhClientKeyExchangePreparator(tlsContext.getChooser(), this);
+    public PskEcDhClientKeyExchangePreparator getPreparator(TlsContext context) {
+        return new PskEcDhClientKeyExchangePreparator(context.getChooser(), this);
     }
 
     @Override
-    public PskEcDhClientKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
-        return new PskEcDhClientKeyExchangeSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+    public PskEcDhClientKeyExchangeSerializer getSerializer(TlsContext context) {
+        return new PskEcDhClientKeyExchangeSerializer(this, context.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

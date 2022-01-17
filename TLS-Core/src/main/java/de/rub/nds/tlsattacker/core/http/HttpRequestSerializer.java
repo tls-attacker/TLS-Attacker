@@ -32,7 +32,7 @@ public class HttpRequestSerializer extends Serializer<HttpRequestMessage> {
     protected byte[] serializeBytes() {
         StringBuilder builder = new StringBuilder();
         builder.append(message.getRequestType().getValue()).append(" ").append(message.getRequestPath().getValue())
-                .append(" ").append(message.getRequestProtocol().getValue()).append("\r\n");
+            .append(" ").append(message.getRequestProtocol().getValue()).append("\r\n");
         for (HttpHeader header : message.getHeader()) {
             HttpHeaderSerializer serializer = new HttpHeaderSerializer(header);
             builder.append(new String(serializer.serialize(), StandardCharsets.ISO_8859_1));

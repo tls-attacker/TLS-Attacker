@@ -15,11 +15,11 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.PasswordSaltExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.PasswordSaltExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PasswordSaltExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PasswordSaltExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -68,22 +68,22 @@ public class PasswordSaltExtensionMessage extends ExtensionMessage<PasswordSaltE
     }
 
     @Override
-    public PasswordSaltExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new PasswordSaltExtensionParser(stream, tlsContext.getConfig());
+    public PasswordSaltExtensionParser getParser(TlsContext context, InputStream stream) {
+        return new PasswordSaltExtensionParser(stream, context.getConfig());
     }
 
     @Override
-    public PasswordSaltExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new PasswordSaltExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+    public PasswordSaltExtensionPreparator getPreparator(TlsContext context) {
+        return new PasswordSaltExtensionPreparator(context.getChooser(), this, getSerializer(context));
     }
 
     @Override
-    public PasswordSaltExtensionSerializer getSerializer(TlsContext tlsContext) {
+    public PasswordSaltExtensionSerializer getSerializer(TlsContext context) {
         return new PasswordSaltExtensionSerializer(this);
     }
 
     @Override
-    public PasswordSaltExtensionHandler getHandler(TlsContext tlsContext) {
-        return new PasswordSaltExtensionHandler(tlsContext);
+    public PasswordSaltExtensionHandler getHandler(TlsContext context) {
+        return new PasswordSaltExtensionHandler(context);
     }
 }

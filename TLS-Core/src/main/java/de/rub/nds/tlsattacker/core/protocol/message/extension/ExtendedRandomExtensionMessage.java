@@ -15,11 +15,11 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtendedRandomExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtendedRandomExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtendedRandomExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtendedRandomExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -69,22 +69,22 @@ public class ExtendedRandomExtensionMessage extends ExtensionMessage<ExtendedRan
     }
 
     @Override
-    public ExtendedRandomExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new ExtendedRandomExtensionParser(stream, tlsContext.getConfig());
+    public ExtendedRandomExtensionParser getParser(TlsContext context, InputStream stream) {
+        return new ExtendedRandomExtensionParser(stream, context.getConfig());
     }
 
     @Override
-    public ExtendedRandomExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new ExtendedRandomExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+    public ExtendedRandomExtensionPreparator getPreparator(TlsContext context) {
+        return new ExtendedRandomExtensionPreparator(context.getChooser(), this, getSerializer(context));
     }
 
     @Override
-    public ExtendedRandomExtensionSerializer getSerializer(TlsContext tlsContext) {
+    public ExtendedRandomExtensionSerializer getSerializer(TlsContext context) {
         return new ExtendedRandomExtensionSerializer(this);
     }
 
     @Override
-    public ExtendedRandomExtensionHandler getHandler(TlsContext tlsContext) {
-        return new ExtendedRandomExtensionHandler(tlsContext);
+    public ExtendedRandomExtensionHandler getHandler(TlsContext context) {
+        return new ExtendedRandomExtensionHandler(context);
     }
 }

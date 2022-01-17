@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.attacks.constants.EarlyFinishedVulnerabilityType;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.constants.TlsMessageType;
 import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
@@ -89,7 +89,7 @@ public class EarlyFinishedAttacker extends Attacker<EarlyFinishedCommandConfig> 
             ConsoleLogger.CONSOLE.warn("Could not complete Workflow - Vulnerability unknown");
             return EarlyFinishedVulnerabilityType.UNKNOWN;
         }
-        if (WorkflowTraceUtil.didReceiveMessage(ProtocolMessageType.ALERT, workflowTrace)) {
+        if (WorkflowTraceUtil.didReceiveMessage(TlsMessageType.ALERT, workflowTrace)) {
             ConsoleLogger.CONSOLE.info("Not vulnerable (definitely), Alert message found");
             return EarlyFinishedVulnerabilityType.NOT_VULNERABLE;
         } else if (WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.FINISHED, workflowTrace)) {

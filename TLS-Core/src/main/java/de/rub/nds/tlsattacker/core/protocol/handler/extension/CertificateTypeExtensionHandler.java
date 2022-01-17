@@ -10,8 +10,8 @@
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateTypeExtensionMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 public class CertificateTypeExtensionHandler extends ExtensionHandler<CertificateTypeExtensionMessage> {
 

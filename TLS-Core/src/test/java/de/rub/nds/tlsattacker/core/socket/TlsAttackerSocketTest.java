@@ -14,8 +14,9 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
 import de.rub.nds.tlsattacker.core.layer.constant.LayerStackType;
+import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -30,7 +31,7 @@ public class TlsAttackerSocketTest {
 
     private TlsAttackerSocket socket;
     private State state;
-    private TlsContext context;
+    private Context context;
 
     private FakeTransportHandler transportHandler;
 
@@ -41,10 +42,10 @@ public class TlsAttackerSocketTest {
     public void setUp() throws IOException {
         Config config = new Config();
         state = new State(config, new WorkflowTrace());
-        context = state.getTlsContext();
-        context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
+        context = state.getContext();
+        context.getTlsContext().setSelectedProtocolVersion(ProtocolVersion.TLS12);
         transportHandler = new FakeTransportHandler(ConnectionEndType.CLIENT);
-        context.setTransportHandler(transportHandler);
+        context.getTcpContext().setTransportHandler(transportHandler);
         context.setLayerStack(LayerStackFactory.createLayerStack(LayerStackType.TLS, context));
         socket = new TlsAttackerSocket(state);
     }

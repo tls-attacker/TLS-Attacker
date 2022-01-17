@@ -16,11 +16,11 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.CertificateTypeExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.CertificateTypeExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.CertificateTypeExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.CertificateTypeExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -83,17 +83,17 @@ public class CertificateTypeExtensionMessage extends ExtensionMessage<Certificat
     }
 
     @Override
-    public CertificateTypeExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new CertificateTypeExtensionParser(stream, tlsContext.getConfig());
+    public CertificateTypeExtensionParser getParser(TlsContext context, InputStream stream) {
+        return new CertificateTypeExtensionParser(stream, context.getConfig());
     }
 
     @Override
-    public CertificateTypeExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new CertificateTypeExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+    public CertificateTypeExtensionPreparator getPreparator(TlsContext context) {
+        return new CertificateTypeExtensionPreparator(context.getChooser(), this, getSerializer(context));
     }
 
     @Override
-    public CertificateTypeExtensionSerializer getSerializer(TlsContext tlsContext) {
+    public CertificateTypeExtensionSerializer getSerializer(TlsContext context) {
         return new CertificateTypeExtensionSerializer(this);
     }
 

@@ -56,7 +56,7 @@ public class FingerPrintTask extends TlsTask {
             return true;
         } finally {
             try {
-                state.getTlsContext().getTransportHandler().closeConnection();
+                state.getContext().getTcpContext().getTransportHandler().closeConnection();
             } catch (IOException ex) {
                 LOGGER.debug(ex);
             }

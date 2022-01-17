@@ -58,7 +58,7 @@ public class CertificatePairPreparator extends Preparator<CertificatePair> {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         if (pair.getExtensionsConfig() != null) {
             for (ExtensionMessage extensionMessage : pair.getExtensionsConfig()) {
-                extensionMessage.getPreparator(chooser.getContext()).prepare();
+                extensionMessage.getPreparator(chooser.getContext().getTlsContext()).prepare();
                 try {
                     stream.write(extensionMessage.getExtensionBytes().getValue());
                 } catch (IOException ex) {

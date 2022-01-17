@@ -10,7 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.PskDheServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,8 +19,8 @@ public class PskDheServerKeyExchangeHandler extends DHEServerKeyExchangeHandler<
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public PskDheServerKeyExchangeHandler(TlsContext tlsContext) {
-        super(tlsContext);
+    public PskDheServerKeyExchangeHandler(TlsContext context) {
+        super(context);
     }
 
     @Override

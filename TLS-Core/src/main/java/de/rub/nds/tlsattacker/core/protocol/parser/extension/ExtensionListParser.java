@@ -9,15 +9,13 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
-import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.Parser;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.List;
@@ -28,14 +26,14 @@ public class ExtensionListParser extends Parser<List<ExtensionMessage>> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final TlsContext tlsContext;
+    private final TlsContext context;
     private final ProtocolVersion selectedVersion;
     private final boolean helloRetryRequestHint;
 
-    public ExtensionListParser(InputStream stream, TlsContext tlsContext, ProtocolVersion selectedVersion,
+    public ExtensionListParser(InputStream stream, TlsContext context, ProtocolVersion selectedVersion,
         boolean helloRetryRequestHint) {
         super(stream);
-        this.tlsContext = tlsContext;
+        this.context = context;
         this.selectedVersion = selectedVersion;
         this.helloRetryRequestHint = helloRetryRequestHint;
     }
@@ -54,7 +52,7 @@ public class ExtensionListParser extends Parser<List<ExtensionMessage>> {
             extension.setPayloadBytes(extensionPayload);
             extension.setExtensionBytes(ArrayConverter.concatenate(typeBytes,
                 ArrayConverter.intToBytes(length, ExtensionByteLength.EXTENSIONS_LENGTH), extensionPayload));
-            Parser parser = extension.getParser(tlsContext, new ByteArrayInputStream(extensionPayload));
+            Parser parser = extension.getParser(context, new ByteArrayInputStream(extensionPayload));
             if (parser instanceof KeyShareExtensionParser) {
                 ((KeyShareExtensionParser) parser).setHelloRetryRequestHint(helloRetryRequestHint);
             }

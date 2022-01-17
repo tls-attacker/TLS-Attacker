@@ -14,11 +14,11 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.PaddingExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.PaddingExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PaddingExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PaddingExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -55,22 +55,22 @@ public class PaddingExtensionMessage extends ExtensionMessage<PaddingExtensionMe
     }
 
     @Override
-    public PaddingExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new PaddingExtensionParser(stream, tlsContext.getConfig());
+    public PaddingExtensionParser getParser(TlsContext context, InputStream stream) {
+        return new PaddingExtensionParser(stream, context.getConfig());
     }
 
     @Override
-    public PaddingExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new PaddingExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+    public PaddingExtensionPreparator getPreparator(TlsContext context) {
+        return new PaddingExtensionPreparator(context.getChooser(), this, getSerializer(context));
     }
 
     @Override
-    public PaddingExtensionSerializer getSerializer(TlsContext tlsContext) {
+    public PaddingExtensionSerializer getSerializer(TlsContext context) {
         return new PaddingExtensionSerializer(this);
     }
 
     @Override
-    public PaddingExtensionHandler getHandler(TlsContext tlsContext) {
-        return new PaddingExtensionHandler(tlsContext);
+    public PaddingExtensionHandler getHandler(TlsContext context) {
+        return new PaddingExtensionHandler(context);
     }
 }

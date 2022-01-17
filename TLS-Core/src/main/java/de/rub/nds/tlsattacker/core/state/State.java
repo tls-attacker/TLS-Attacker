@@ -14,6 +14,8 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.core.layer.LayerStack;
+import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceNormalizer;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
@@ -71,11 +73,11 @@ public class State {
     private Throwable executionException;
 
     public State() {
-        this(Config.createConfig());
+        this(new Config());
     }
 
     public State(WorkflowTrace trace) {
-        this(Config.createConfig(), trace);
+        this(new Config(), trace);
     }
 
     public State(Config config) {
@@ -99,7 +101,7 @@ public class State {
     }
 
     /**
-     * Normalize trace and initialize TLS contexts.
+     * Normalize trace and initialize contexts.
      */
     public final void initState() {
         // Keep a snapshot to restore user defined trace values after filtering.
@@ -112,8 +114,9 @@ public class State {
         workflowTrace.setDirty(false);
 
         for (AliasedConnection con : workflowTrace.getConnections()) {
-            TlsContext ctx = new TlsContext(config, con);
-            addTlsContext(ctx);
+            Context ctx = new Context(config, con);
+            LayerStack layerStack = LayerStackFactory.createLayerStack(config.getLayers(), ctx);
+            addContext(ctx);
         }
     }
 
@@ -162,7 +165,7 @@ public class State {
      * @param newTlsContext
      *                      The new TlsContext to replace the old with
      */
-    public void replaceTlsContext(TlsContext newTlsContext) {
+    public void replaceTlsContext(Context newTlsContext) {
         contextContainer.replaceTlsContext(newTlsContext);
     }
 
@@ -176,8 +179,8 @@ public class State {
      *
      * @return the only context known to the state
      */
-    public TlsContext getTlsContext() {
-        return contextContainer.getTlsContext();
+    public Context getContext() {
+        return contextContainer.getContext();
     }
 
     /**
@@ -193,20 +196,20 @@ public class State {
      *
      * @return       the context with the given connection end alias
      */
-    public TlsContext getTlsContext(String alias) {
-        return contextContainer.getTlsContext(alias);
+    public Context getContext(String alias) {
+        return contextContainer.getContext(alias);
     }
 
-    public List<TlsContext> getAllTlsContexts() {
+    public List<Context> getAllTlsContexts() {
         return contextContainer.getAllContexts();
     }
 
-    public List<TlsContext> getInboundTlsContexts() {
+    public List<Context> getInboundTlsContexts() {
         return contextContainer.getInboundTlsContexts();
     }
 
-    public List<TlsContext> getOutboundTlsContexts() {
-        return contextContainer.getOutboundTlsContexts();
+    public List<Context> getOutboundTlsContexts() {
+        return contextContainer.getOutboundContexts();
     }
 
     public RunningModeType getRunningMode() {
@@ -217,8 +220,8 @@ public class State {
         this.runningMode = runningMode;
     }
 
-    private void addTlsContext(TlsContext context) {
-        contextContainer.addTlsContext(context);
+    private void addContext(Context context) {
+        contextContainer.addContext(context);
     }
 
     /**

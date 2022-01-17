@@ -12,7 +12,7 @@ package de.rub.nds.tlsattacker.core.constants;
 import java.util.HashMap;
 import java.util.Map;
 
-public enum ProtocolMessageType {
+public enum TlsMessageType {
     UNKNOWN((byte) 99),
     CHANGE_CIPHER_SPEC((byte) 20),
     ALERT((byte) 21),
@@ -22,20 +22,20 @@ public enum ProtocolMessageType {
 
     private byte value;
 
-    private static final Map<Byte, ProtocolMessageType> MAP;
+    private static final Map<Byte, TlsMessageType> MAP;
 
-    private ProtocolMessageType(byte value) {
+    private TlsMessageType(byte value) {
         this.value = value;
     }
 
     static {
         MAP = new HashMap<>();
-        for (ProtocolMessageType cm : ProtocolMessageType.values()) {
+        for (TlsMessageType cm : TlsMessageType.values()) {
             MAP.put(cm.value, cm);
         }
     }
 
-    public static ProtocolMessageType getContentType(byte value) {
+    public static TlsMessageType getContentType(byte value) {
         return MAP.get(value);
     }
 

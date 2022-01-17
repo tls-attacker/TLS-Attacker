@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.constants.TlsMessageType;
 import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.core.workflow.action.*;
@@ -67,9 +67,9 @@ public class WorkflowTraceMutatorTest {
         trace.addTlsAction(sClientHello);
 
         TlsMessage replaceMsg = new FinishedMessage();
-        WorkflowTraceMutator.replaceSendingMessage(trace, ProtocolMessageType.HANDSHAKE, replaceMsg);
+        WorkflowTraceMutator.replaceSendingMessage(trace, TlsMessageType.HANDSHAKE, replaceMsg);
 
-        assertEquals(replaceMsg, WorkflowTraceUtil.getFirstSendMessage(ProtocolMessageType.HANDSHAKE, trace));
+        assertEquals(replaceMsg, WorkflowTraceUtil.getFirstSendMessage(TlsMessageType.HANDSHAKE, trace));
     }
 
     @Test
@@ -79,17 +79,17 @@ public class WorkflowTraceMutatorTest {
         HandshakeMessage replaceMsg = new FinishedMessage();
         WorkflowTraceMutator.replaceSendingMessage(trace, HandshakeMessageType.CLIENT_HELLO, replaceMsg);
 
-        assertEquals(replaceMsg, WorkflowTraceUtil.getFirstSendMessage(ProtocolMessageType.HANDSHAKE, trace));
+        assertEquals(replaceMsg, WorkflowTraceUtil.getFirstSendMessage(TlsMessageType.HANDSHAKE, trace));
     }
 
     @Test
     public void testDeleteSendingMessageProtocolMessage() {
         trace.addTlsAction(sClientHello);
 
-        WorkflowTraceMutator.deleteSendingMessage(trace, ProtocolMessageType.ALERT);
+        WorkflowTraceMutator.deleteSendingMessage(trace, TlsMessageType.ALERT);
         assertEquals(1, trace.getSendingActions().size());
 
-        WorkflowTraceMutator.deleteSendingMessage(trace, ProtocolMessageType.HANDSHAKE);
+        WorkflowTraceMutator.deleteSendingMessage(trace, TlsMessageType.HANDSHAKE);
         assertEquals(0, trace.getSendingActions().size());
     }
 
@@ -109,10 +109,10 @@ public class WorkflowTraceMutatorTest {
         trace.addTlsAction(rcvServerHello);
 
         TlsMessage replaceMsg = new FinishedMessage();
-        WorkflowTraceMutator.replaceReceivingMessage(trace, ProtocolMessageType.HANDSHAKE, replaceMsg);
+        WorkflowTraceMutator.replaceReceivingMessage(trace, TlsMessageType.HANDSHAKE, replaceMsg);
 
-        ReceiveAction action = (ReceiveAction) WorkflowTraceUtil
-            .getReceivingActionsForMessage(ProtocolMessageType.HANDSHAKE, trace).get(0);
+        ReceiveAction action =
+            (ReceiveAction) WorkflowTraceUtil.getReceivingActionsForMessage(TlsMessageType.HANDSHAKE, trace).get(0);
         assertEquals(replaceMsg, action.getExpectedMessages().get(0));
     }
 
@@ -123,8 +123,8 @@ public class WorkflowTraceMutatorTest {
         HandshakeMessage replaceMsg = new FinishedMessage();
         WorkflowTraceMutator.replaceReceivingMessage(trace, HandshakeMessageType.SERVER_HELLO, replaceMsg);
 
-        ReceiveAction action = (ReceiveAction) WorkflowTraceUtil
-            .getReceivingActionsForMessage(ProtocolMessageType.HANDSHAKE, trace).get(0);
+        ReceiveAction action =
+            (ReceiveAction) WorkflowTraceUtil.getReceivingActionsForMessage(TlsMessageType.HANDSHAKE, trace).get(0);
         assertEquals(replaceMsg, action.getExpectedMessages().get(0));
     }
 
@@ -132,10 +132,10 @@ public class WorkflowTraceMutatorTest {
     public void testDeleteReceivingMessageProtocolMessage() throws WorkflowTraceMutationException {
         trace.addTlsAction(rcvServerHello);
 
-        WorkflowTraceMutator.deleteReceivingMessage(trace, ProtocolMessageType.HANDSHAKE);
+        WorkflowTraceMutator.deleteReceivingMessage(trace, TlsMessageType.HANDSHAKE);
 
         List<ReceivingAction> actions =
-            WorkflowTraceUtil.getReceivingActionsForMessage(ProtocolMessageType.HANDSHAKE, trace);
+            WorkflowTraceUtil.getReceivingActionsForMessage(TlsMessageType.HANDSHAKE, trace);
         assertEquals(0, actions.size());
     }
 
@@ -146,7 +146,7 @@ public class WorkflowTraceMutatorTest {
         WorkflowTraceMutator.deleteReceivingMessage(trace, HandshakeMessageType.SERVER_HELLO);
 
         List<ReceivingAction> actions =
-            WorkflowTraceUtil.getReceivingActionsForMessage(ProtocolMessageType.HANDSHAKE, trace);
+            WorkflowTraceUtil.getReceivingActionsForMessage(TlsMessageType.HANDSHAKE, trace);
         assertEquals(0, actions.size());
     }
 
@@ -171,7 +171,7 @@ public class WorkflowTraceMutatorTest {
         assertEquals(3, trace.getTlsActions().size());
 
         WorkflowTraceMutator.deleteSendingMessage(trace, HandshakeMessageType.CLIENT_KEY_EXCHANGE);
-        WorkflowTraceMutator.deleteSendingMessage(trace, ProtocolMessageType.CHANGE_CIPHER_SPEC);
+        WorkflowTraceMutator.deleteSendingMessage(trace, TlsMessageType.CHANGE_CIPHER_SPEC);
         assertEquals(2, trace.getTlsActions().size());
     }
 

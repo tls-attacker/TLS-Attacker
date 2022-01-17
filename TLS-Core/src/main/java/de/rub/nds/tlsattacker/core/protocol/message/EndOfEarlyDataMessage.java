@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.EndOfEarlyDataHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.EndOfEarlyDataParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.EndOfEarlyDataPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.EndOfEarlyDataSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -39,18 +39,18 @@ public class EndOfEarlyDataMessage extends HandshakeMessage {
     }
 
     @Override
-    public EndOfEarlyDataParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new EndOfEarlyDataParser(stream, tlsContext.getLastRecordVersion(), tlsContext);
+    public EndOfEarlyDataParser getParser(TlsContext context, InputStream stream) {
+        return new EndOfEarlyDataParser(stream, context.getLastRecordVersion(), context);
     }
 
     @Override
-    public EndOfEarlyDataPreparator getPreparator(TlsContext tlsContext) {
-        return new EndOfEarlyDataPreparator(tlsContext.getChooser(), this);
+    public EndOfEarlyDataPreparator getPreparator(TlsContext context) {
+        return new EndOfEarlyDataPreparator(context.getChooser(), this);
     }
 
     @Override
-    public EndOfEarlyDataSerializer getSerializer(TlsContext tlsContext) {
-        return new EndOfEarlyDataSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+    public EndOfEarlyDataSerializer getSerializer(TlsContext context) {
+        return new EndOfEarlyDataSerializer(this, context.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

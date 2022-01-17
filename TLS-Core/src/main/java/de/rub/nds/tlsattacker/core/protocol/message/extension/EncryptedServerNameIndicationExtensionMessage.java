@@ -16,12 +16,12 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.EncryptedServerNameIndicationExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.EncryptedServerNameIndicationExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EncryptedServerNameIndicationExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.EncryptedServerNameIndicationExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
@@ -197,25 +197,24 @@ public class EncryptedServerNameIndicationExtensionMessage
     }
 
     @Override
-    public EncryptedServerNameIndicationExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new EncryptedServerNameIndicationExtensionParser(stream, tlsContext.getConfig(),
-            tlsContext.getTalkingConnectionEndType());
+    public EncryptedServerNameIndicationExtensionParser getParser(TlsContext context, InputStream stream) {
+        return new EncryptedServerNameIndicationExtensionParser(stream, context.getConfig(),
+            context.getTalkingConnectionEndType());
     }
 
     @Override
-    public EncryptedServerNameIndicationExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new EncryptedServerNameIndicationExtensionPreparator(tlsContext.getChooser(), this,
-            getSerializer(tlsContext));
+    public EncryptedServerNameIndicationExtensionPreparator getPreparator(TlsContext context) {
+        return new EncryptedServerNameIndicationExtensionPreparator(context.getChooser(), this, getSerializer(context));
     }
 
     @Override
-    public EncryptedServerNameIndicationExtensionSerializer getSerializer(TlsContext tlsContext) {
+    public EncryptedServerNameIndicationExtensionSerializer getSerializer(TlsContext context) {
         return new EncryptedServerNameIndicationExtensionSerializer(this);
     }
 
     @Override
-    public EncryptedServerNameIndicationExtensionHandler getHandler(TlsContext tlsContext) {
-        return new EncryptedServerNameIndicationExtensionHandler(tlsContext);
+    public EncryptedServerNameIndicationExtensionHandler getHandler(TlsContext context) {
+        return new EncryptedServerNameIndicationExtensionHandler(context);
     }
 
     public enum EsniMessageType {

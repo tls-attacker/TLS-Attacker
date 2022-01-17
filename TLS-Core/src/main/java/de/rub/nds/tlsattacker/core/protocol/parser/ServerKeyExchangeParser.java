@@ -12,7 +12,7 @@ package de.rub.nds.tlsattacker.core.protocol.parser;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 
 /**
@@ -29,12 +29,12 @@ public abstract class ServerKeyExchangeParser<T extends ServerKeyExchangeMessage
      *                     The Handshake message type that is expected
      * @param version
      *                     Version of the Protocol
-     * @param tlsContext
+     * @param context
      *                     A Config used in the current context
      */
     public ServerKeyExchangeParser(InputStream stream, HandshakeMessageType expectedType, ProtocolVersion version,
-        TlsContext tlsContext) {
-        super(stream, expectedType, version, tlsContext);
+        TlsContext context) {
+        super(stream, expectedType, version, context);
     }
 
 }

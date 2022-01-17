@@ -20,7 +20,7 @@ import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.state.session.IdSession;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
@@ -37,8 +37,8 @@ public abstract class ClientKeyExchangeHandler<MessageT extends ClientKeyExchang
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ClientKeyExchangeHandler(TlsContext tlsContext) {
-        super(tlsContext);
+    public ClientKeyExchangeHandler(TlsContext context) {
+        super(context);
     }
 
     public void adjustPremasterSecret(ClientKeyExchangeMessage message) {
@@ -63,8 +63,8 @@ public abstract class ClientKeyExchangeHandler<MessageT extends ClientKeyExchang
                 chooser.getSelectedCipherSuite());
             if (chooser.isUseExtendedMasterSecret()) {
                 LOGGER.debug("Calculating ExtendedMasterSecret");
-                byte[] sessionHash = context.getDigest().digest(chooser.getSelectedProtocolVersion(),
-                    chooser.getSelectedCipherSuite());
+                byte[] sessionHash =
+                    context.getDigest().digest(chooser.getSelectedProtocolVersion(), chooser.getSelectedCipherSuite());
                 LOGGER.debug("Premastersecret: " + ArrayConverter.bytesToHexString(chooser.getPreMasterSecret()));
 
                 LOGGER.debug("SessionHash: " + ArrayConverter.bytesToHexString(sessionHash));

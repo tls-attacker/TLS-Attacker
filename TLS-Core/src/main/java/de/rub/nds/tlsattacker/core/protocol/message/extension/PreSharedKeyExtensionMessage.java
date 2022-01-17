@@ -26,7 +26,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtensionPrepar
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PreSharedKeyExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PreSharedKeyExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.InputStream;
 import java.util.LinkedList;
@@ -207,23 +207,22 @@ public class PreSharedKeyExtensionMessage extends ExtensionMessage<PreSharedKeyE
     }
 
     @Override
-    public ExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new PreSharedKeyExtensionParser(stream, tlsContext.getConfig(),
-            tlsContext.getTalkingConnectionEndType());
+    public ExtensionParser getParser(TlsContext context, InputStream stream) {
+        return new PreSharedKeyExtensionParser(stream, context.getConfig(), context.getTalkingConnectionEndType());
     }
 
     @Override
-    public ExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new PreSharedKeyExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+    public ExtensionPreparator getPreparator(TlsContext context) {
+        return new PreSharedKeyExtensionPreparator(context.getChooser(), this, getSerializer(context));
     }
 
     @Override
-    public ExtensionSerializer getSerializer(TlsContext tlsContext) {
-        return new PreSharedKeyExtensionSerializer(this, tlsContext.getChooser().getConnectionEndType());
+    public ExtensionSerializer getSerializer(TlsContext context) {
+        return new PreSharedKeyExtensionSerializer(this, context.getChooser().getConnectionEndType());
     }
 
     @Override
-    public PreSharedKeyExtensionHandler getHandler(TlsContext tlsContext) {
-        return new PreSharedKeyExtensionHandler(tlsContext);
+    public PreSharedKeyExtensionHandler getHandler(TlsContext context) {
+        return new PreSharedKeyExtensionHandler(context);
     }
 }

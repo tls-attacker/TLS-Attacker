@@ -28,12 +28,12 @@ public class ChangeServerRsaParametersAction extends ConnectionBoundAction {
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
-        oldModulus = state.getTlsContext().getServerRSAModulus();
-        oldPublicExponent = state.getTlsContext().getServerRSAPublicKey();
-        oldPrivateExponent = state.getTlsContext().getServerRSAPrivateKey();
-        state.getTlsContext().setServerRSAModulus(modulus);
-        state.getTlsContext().setServerRSAPublicKey(publicExponent);
-        state.getTlsContext().setServerRSAPrivateKey(privateExponent);
+        oldModulus = state.getContext().getTlsContext().getServerRSAModulus();
+        oldPublicExponent = state.getContext().getTlsContext().getServerRSAPublicKey();
+        oldPrivateExponent = state.getContext().getTlsContext().getServerRSAPrivateKey();
+        state.getContext().getTlsContext().setServerRSAModulus(modulus);
+        state.getContext().getTlsContext().setServerRSAPublicKey(publicExponent);
+        state.getContext().getTlsContext().setServerRSAPrivateKey(privateExponent);
         setExecuted(true);
         LOGGER.info("Changed N,e,d");
     }

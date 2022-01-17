@@ -22,7 +22,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.computations.PSKPremasterCom
 import de.rub.nds.tlsattacker.core.protocol.parser.PskClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.PskClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.PskClientKeyExchangeSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
@@ -102,18 +102,18 @@ public class PskClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     }
 
     @Override
-    public PskClientKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new PskClientKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+    public PskClientKeyExchangeParser getParser(TlsContext context, InputStream stream) {
+        return new PskClientKeyExchangeParser(stream, context.getChooser().getLastRecordVersion(), context);
     }
 
     @Override
-    public PskClientKeyExchangePreparator getPreparator(TlsContext tlsContext) {
-        return new PskClientKeyExchangePreparator(tlsContext.getChooser(), this);
+    public PskClientKeyExchangePreparator getPreparator(TlsContext context) {
+        return new PskClientKeyExchangePreparator(context.getChooser(), this);
     }
 
     @Override
-    public PskClientKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
-        return new PskClientKeyExchangeSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+    public PskClientKeyExchangeSerializer getSerializer(TlsContext context) {
+        return new PskClientKeyExchangeSerializer(this, context.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

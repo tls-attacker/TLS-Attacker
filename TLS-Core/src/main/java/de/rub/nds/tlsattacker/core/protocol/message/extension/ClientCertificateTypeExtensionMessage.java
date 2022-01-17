@@ -16,11 +16,11 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ClientCertificateTypeExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ClientCertificateTypeExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ClientCertificateTypeExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ClientCertificateTypeExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -83,17 +83,17 @@ public class ClientCertificateTypeExtensionMessage extends ExtensionMessage<Clie
     }
 
     @Override
-    public ClientCertificateTypeExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new ClientCertificateTypeExtensionParser(stream, tlsContext.getConfig());
+    public ClientCertificateTypeExtensionParser getParser(TlsContext context, InputStream stream) {
+        return new ClientCertificateTypeExtensionParser(stream, context.getConfig());
     }
 
     @Override
-    public ClientCertificateTypeExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new ClientCertificateTypeExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+    public ClientCertificateTypeExtensionPreparator getPreparator(TlsContext context) {
+        return new ClientCertificateTypeExtensionPreparator(context.getChooser(), this, getSerializer(context));
     }
 
     @Override
-    public ClientCertificateTypeExtensionSerializer getSerializer(TlsContext tlsContext) {
+    public ClientCertificateTypeExtensionSerializer getSerializer(TlsContext context) {
         return new ClientCertificateTypeExtensionSerializer(this);
     }
 

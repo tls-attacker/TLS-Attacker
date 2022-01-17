@@ -122,7 +122,7 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
         TlsMessage tlsMessage = WorkflowTraceUtil.getLastReceivedMessage(trace);
         lastMessages.add(tlsMessage);
 
-        if (tlsMessage.getProtocolMessageType() == ProtocolMessageType.ALERT) {
+        if (tlsMessage.getProtocolMessageType() == TlsMessageType.ALERT) {
             AlertMessage am = ((AlertMessage) tlsMessage);
             LOGGER.info("  Last protocol message: Alert ({},{}) [{},{}]",
                 AlertLevel.getAlertLevel(am.getLevel().getValue()),
@@ -132,7 +132,7 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
             LOGGER.info("  Last protocol message: {}", tlsMessage.getProtocolMessageType());
         }
 
-        if (tlsMessage.getProtocolMessageType() == ProtocolMessageType.ALERT
+        if (tlsMessage.getProtocolMessageType() == TlsMessageType.ALERT
             && AlertDescription.getAlertDescription(((AlertMessage) tlsMessage).getDescription().getValue())
                 == AlertDescription.RECORD_OVERFLOW) {
             LOGGER.info("  Vulnerable");

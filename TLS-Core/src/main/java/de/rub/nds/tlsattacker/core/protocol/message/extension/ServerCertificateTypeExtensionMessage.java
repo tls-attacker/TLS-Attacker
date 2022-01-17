@@ -20,7 +20,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.ServerCertificateT
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ServerCertificateTypeExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ServerCertificateTypeExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ServerCertificateTypeExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -83,22 +83,22 @@ public class ServerCertificateTypeExtensionMessage extends ExtensionMessage<Serv
     }
 
     @Override
-    public ServerCertificateTypeExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new ServerCertificateTypeExtensionParser(stream, tlsContext.getConfig());
+    public ServerCertificateTypeExtensionParser getParser(TlsContext context, InputStream stream) {
+        return new ServerCertificateTypeExtensionParser(stream, context.getConfig());
     }
 
     @Override
-    public ServerCertificateTypeExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new ServerCertificateTypeExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+    public ServerCertificateTypeExtensionPreparator getPreparator(TlsContext context) {
+        return new ServerCertificateTypeExtensionPreparator(context.getChooser(), this, getSerializer(context));
     }
 
     @Override
-    public ServerCertificateTypeExtensionSerializer getSerializer(TlsContext tlsContext) {
+    public ServerCertificateTypeExtensionSerializer getSerializer(TlsContext context) {
         return new ServerCertificateTypeExtensionSerializer(this);
     }
 
     @Override
-    public ServerCertificateTypeExtensionHandler getHandler(TlsContext tlsContext) {
-        return new ServerCertificateTypeExtensionHandler(tlsContext);
+    public ServerCertificateTypeExtensionHandler getHandler(TlsContext context) {
+        return new ServerCertificateTypeExtensionHandler(context);
     }
 }

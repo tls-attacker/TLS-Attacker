@@ -18,7 +18,7 @@ import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.security.NoSuchAlgorithmException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,8 +27,8 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChangeCipherSpecHandler(TlsContext tlsContext) {
-        super(tlsContext);
+    public ChangeCipherSpecHandler(TlsContext context) {
+        super(context);
     }
 
     @Override
@@ -52,8 +52,8 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
 
     private RecordCipher getRecordCipher() {
         try {
-            KeySet keySet = KeySetGenerator.generateKeySet(context,
-                context.getChooser().getSelectedProtocolVersion(), Tls13KeySetType.NONE);
+            KeySet keySet = KeySetGenerator.generateKeySet(context, context.getChooser().getSelectedProtocolVersion(),
+                Tls13KeySetType.NONE);
             return RecordCipherFactory.getRecordCipher(context, keySet);
         } catch (NoSuchAlgorithmException | CryptoException ex) {
             throw new UnsupportedOperationException("The specified Algorithm is not supported", ex);

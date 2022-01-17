@@ -10,7 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.ServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -23,7 +23,7 @@ public abstract class ServerKeyExchangeHandler<MessageT extends ServerKeyExchang
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ServerKeyExchangeHandler(TlsContext tlsContext) {
-        super(tlsContext);
+    public ServerKeyExchangeHandler(TlsContext context) {
+        super(context);
     }
 }

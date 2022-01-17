@@ -24,7 +24,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.layer.context.RecordContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -88,7 +88,7 @@ public class CustomECPrivateKey extends CustomPrivateKey implements ECPrivateKey
     }
 
     @Override
-    public void adjustInContext(RecordContext context, ConnectionEndType ownerOfKey) {
+    public void adjustInContext(TlsContext context, ConnectionEndType ownerOfKey) {
         LOGGER.debug("Adjusting EC private key in context");
         if (null == ownerOfKey) {
             throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");

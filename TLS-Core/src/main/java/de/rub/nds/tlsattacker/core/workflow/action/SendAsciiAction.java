@@ -10,8 +10,9 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import java.io.IOException;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -36,7 +37,8 @@ public class SendAsciiAction extends AsciiAction {
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
-        TlsContext tlsContext = state.getTlsContext();
+        TlsContext tlsContext = state.getContext().getTlsContext();
+        TcpContext tcpContext = state.getContext().getTcpContext();
 
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
@@ -44,7 +46,7 @@ public class SendAsciiAction extends AsciiAction {
 
         try {
             LOGGER.info("Sending ASCII message: " + getAsciiText());
-            tlsContext.getTransportHandler().sendData(getAsciiText().getBytes(getEncoding()));
+            tcpContext.getTransportHandler().sendData(getAsciiText().getBytes(getEncoding()));
             setExecuted(true);
         } catch (IOException e) {
             LOGGER.debug(e);

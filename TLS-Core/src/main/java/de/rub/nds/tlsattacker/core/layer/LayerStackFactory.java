@@ -9,12 +9,16 @@
 
 package de.rub.nds.tlsattacker.core.layer;
 
+import de.rub.nds.tlsattacker.core.constants.ChooserType;
 import de.rub.nds.tlsattacker.core.layer.constant.LayerStackType;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
 import de.rub.nds.tlsattacker.core.layer.impl.MessageLayer;
 import de.rub.nds.tlsattacker.core.layer.impl.RecordLayer;
 import de.rub.nds.tlsattacker.core.layer.impl.TcpLayer;
 import de.rub.nds.tlsattacker.core.state.Context;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
 
 public class LayerStackFactory {
 
@@ -22,16 +26,23 @@ public class LayerStackFactory {
 
         switch (type) {
             case DTLS:
-                throw new UnsupportedOperationException("Not implemented yet");
             case OPEN_VPN:
-                throw new UnsupportedOperationException("Not implemented yet");
             case QUIC:
-                throw new UnsupportedOperationException("Not implemented yet");
             case STARTTTLS:
                 throw new UnsupportedOperationException("Not implemented yet");
             case TLS:
-                return new LayerStack(context, new MessageLayer(context.getMessageContext()),
-                        new RecordLayer(context.getRecordContext()), new TcpLayer(context.getTcpContext()));
+                /*
+                 * initialize layer contexts
+                 */
+                // Chooser chooser = ChooserFactory.getChooser(ChooserType.DEFAULT, context, context.getConfig());
+                // chooser.set
+                // context.setChooser(chooser);
+                TlsContext tlsContext = new TlsContext(context);
+                TcpContext tcpContext = new TcpContext(context);
+                LayerStack layerStack = new LayerStack(context, new MessageLayer(tlsContext),
+                    new RecordLayer(tlsContext), new TcpLayer(tcpContext));
+                context.setLayerStack(layerStack);
+                return layerStack;
             default:
                 throw new RuntimeException("Unknown LayerStackType: " + type.name());
         }

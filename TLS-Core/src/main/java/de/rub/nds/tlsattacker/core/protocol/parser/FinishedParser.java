@@ -13,7 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,12 +26,12 @@ public class FinishedParser extends HandshakeMessageParser<FinishedMessage> {
      * Constructor for the Parser class
      *
      * @param stream
-     * @param tlsContext
+     * @param context
      * @param version
-     *                   Version of the Protocol
+     *                Version of the Protocol
      */
-    public FinishedParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
-        super(stream, HandshakeMessageType.FINISHED, version, tlsContext);
+    public FinishedParser(InputStream stream, ProtocolVersion version, TlsContext context) {
+        super(stream, HandshakeMessageType.FINISHED, version, context);
     }
 
     @Override

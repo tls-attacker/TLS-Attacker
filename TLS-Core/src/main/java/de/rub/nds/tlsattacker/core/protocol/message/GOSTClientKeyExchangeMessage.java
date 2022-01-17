@@ -25,7 +25,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.GOST01ClientKeyExchangePr
 import de.rub.nds.tlsattacker.core.protocol.preparator.GOST12ClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.preparator.GOSTClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.GOSTClientKeyExchangeSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
@@ -85,24 +85,24 @@ public class GOSTClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     }
 
     @Override
-    public GOSTClientKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new GOSTClientKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+    public GOSTClientKeyExchangeParser getParser(TlsContext context, InputStream stream) {
+        return new GOSTClientKeyExchangeParser(stream, context.getChooser().getLastRecordVersion(), context);
     }
 
     @Override
-    public GOSTClientKeyExchangePreparator getPreparator(TlsContext tlsContext) {
-        CipherSuite cipherSuite = tlsContext.getChooser().getSelectedCipherSuite();
+    public GOSTClientKeyExchangePreparator getPreparator(TlsContext context) {
+        CipherSuite cipherSuite = context.getChooser().getSelectedCipherSuite();
         KeyExchangeAlgorithm exchangeAlg = AlgorithmResolver.getKeyExchangeAlgorithm(cipherSuite);
         if (exchangeAlg == KeyExchangeAlgorithm.VKO_GOST12) {
-            return new GOST12ClientKeyExchangePreparator(tlsContext.getChooser(), this);
+            return new GOST12ClientKeyExchangePreparator(context.getChooser(), this);
         } else {
-            return new GOST01ClientKeyExchangePreparator(tlsContext.getChooser(), this);
+            return new GOST01ClientKeyExchangePreparator(context.getChooser(), this);
         }
     }
 
     @Override
-    public GOSTClientKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
-        return new GOSTClientKeyExchangeSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+    public GOSTClientKeyExchangeSerializer getSerializer(TlsContext context) {
+        return new GOSTClientKeyExchangeSerializer(this, context.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

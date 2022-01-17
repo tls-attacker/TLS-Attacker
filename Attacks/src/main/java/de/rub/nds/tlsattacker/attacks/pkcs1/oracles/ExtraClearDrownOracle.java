@@ -76,8 +76,8 @@ public class ExtraClearDrownOracle extends Pkcs1Oracle {
             LOGGER.info("Number of queries so far: {}", numberOfQueries);
         }
 
-        if (conResult.serverVerifyMessage != null
-            && ServerVerifyChecker.check(conResult.serverVerifyMessage, conResult.state.getTlsContext(), true)) {
+        if (conResult.serverVerifyMessage != null && ServerVerifyChecker.check(conResult.serverVerifyMessage,
+            conResult.state.getContext().getTlsContext(), true)) {
             return true;
         }
 
@@ -122,9 +122,10 @@ public class ExtraClearDrownOracle extends Pkcs1Oracle {
             keyCandidate[pos] = (byte) b;
             // ServerVerifyChecker will read the (symmetric) key from the TLS
             // context
-            conResult.state.getTlsContext().setPreMasterSecret(keyCandidate);
+            conResult.state.getContext().getTlsContext().setPreMasterSecret(keyCandidate);
 
-            if (ServerVerifyChecker.check(conResult.serverVerifyMessage, conResult.state.getTlsContext(), true)) {
+            if (ServerVerifyChecker.check(conResult.serverVerifyMessage, conResult.state.getContext().getTlsContext(),
+                true)) {
                 return (byte) b;
             }
         }

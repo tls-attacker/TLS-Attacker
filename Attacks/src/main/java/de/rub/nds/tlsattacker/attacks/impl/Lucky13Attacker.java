@@ -106,7 +106,7 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
         }
 
         TimingProxyClientTcpTransportHandler transportHandler =
-            (TimingProxyClientTcpTransportHandler) state.getTlsContext().getTransportHandler();
+            (TimingProxyClientTcpTransportHandler) state.getContext().getTcpContext().getTransportHandler();
         lastResult = transportHandler.getLastMeasurement();
         try {
             transportHandler.closeConnection();

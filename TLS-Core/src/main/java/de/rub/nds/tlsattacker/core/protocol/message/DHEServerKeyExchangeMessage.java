@@ -24,7 +24,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.computations.DHEServerComput
 import de.rub.nds.tlsattacker.core.protocol.parser.DHEServerKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.DHEServerKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.DHEServerKeyExchangeSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -162,19 +162,19 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     }
 
     @Override
-    public DHEServerKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new DHEServerKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(),
-            AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite()), tlsContext);
+    public DHEServerKeyExchangeParser getParser(TlsContext context, InputStream stream) {
+        return new DHEServerKeyExchangeParser(stream, context.getChooser().getLastRecordVersion(),
+            AlgorithmResolver.getKeyExchangeAlgorithm(context.getChooser().getSelectedCipherSuite()), context);
     }
 
     @Override
-    public DHEServerKeyExchangePreparator getPreparator(TlsContext tlsContext) {
-        return new DHEServerKeyExchangePreparator(tlsContext.getChooser(), this);
+    public DHEServerKeyExchangePreparator getPreparator(TlsContext context) {
+        return new DHEServerKeyExchangePreparator(context.getChooser(), this);
     }
 
     @Override
-    public DHEServerKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
-        return new DHEServerKeyExchangeSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+    public DHEServerKeyExchangeSerializer getSerializer(TlsContext context) {
+        return new DHEServerKeyExchangeSerializer(this, context.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

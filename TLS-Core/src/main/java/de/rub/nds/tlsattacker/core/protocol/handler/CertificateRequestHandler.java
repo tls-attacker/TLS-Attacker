@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -27,8 +27,8 @@ public class CertificateRequestHandler extends HandshakeMessageHandler<Certifica
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public CertificateRequestHandler(TlsContext tlsContext) {
-        super(tlsContext);
+    public CertificateRequestHandler(TlsContext context) {
+        super(context);
     }
 
     @Override
@@ -125,9 +125,9 @@ public class CertificateRequestHandler extends HandshakeMessageHandler<Certifica
             context.getChooser().getServerSupportedSignatureAndHashAlgorithms())) {
             LOGGER.warn("Client and Server have no signature and hash algorithm in common");
         } else {
-            Sets.SetView<SignatureAndHashAlgorithm> intersection = Sets.intersection(
-                Sets.newHashSet(context.getChooser().getClientSupportedSignatureAndHashAlgorithms()),
-                Sets.newHashSet(context.getChooser().getServerSupportedSignatureAndHashAlgorithms()));
+            Sets.SetView<SignatureAndHashAlgorithm> intersection =
+                Sets.intersection(Sets.newHashSet(context.getChooser().getClientSupportedSignatureAndHashAlgorithms()),
+                    Sets.newHashSet(context.getChooser().getServerSupportedSignatureAndHashAlgorithms()));
             SignatureAndHashAlgorithm algo = (SignatureAndHashAlgorithm) intersection.toArray()[0];
             context.setSelectedSignatureAndHashAlgorithm(algo);
             LOGGER.debug("Adjusting selected signature and hash algorithm to: " + algo.name());

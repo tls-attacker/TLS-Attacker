@@ -27,7 +27,7 @@ import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.crypto.keys.*;
-import de.rub.nds.tlsattacker.core.layer.context.RecordContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.util.CertificateUtils;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import org.apache.logging.log4j.LogManager;
@@ -363,7 +363,7 @@ public class CertificateKeyPair implements Serializable {
         }
     }
 
-    public void adjustInContext(RecordContext context, ConnectionEndType connectionEnd) {
+    public void adjustInContext(TlsContext context, ConnectionEndType connectionEnd) {
         if (context.getSelectedProtocolVersion() != ProtocolVersion.TLS13) {
             publicKey.adjustInContext(context, connectionEnd);
         }

@@ -21,7 +21,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.alpn.AlpnEntry;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.AlpnExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.AlpnExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.AlpnExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -83,17 +83,17 @@ public class AlpnExtensionMessage extends ExtensionMessage<AlpnExtensionMessage>
     }
 
     @Override
-    public AlpnExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new AlpnExtensionParser(stream, tlsContext.getConfig());
+    public AlpnExtensionParser getParser(TlsContext context, InputStream stream) {
+        return new AlpnExtensionParser(stream, context.getConfig());
     }
 
     @Override
-    public AlpnExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new AlpnExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+    public AlpnExtensionPreparator getPreparator(TlsContext context) {
+        return new AlpnExtensionPreparator(context.getChooser(), this, getSerializer(context));
     }
 
     @Override
-    public AlpnExtensionSerializer getSerializer(TlsContext tlsContext) {
+    public AlpnExtensionSerializer getSerializer(TlsContext context) {
         return new AlpnExtensionSerializer(this);
     }
 

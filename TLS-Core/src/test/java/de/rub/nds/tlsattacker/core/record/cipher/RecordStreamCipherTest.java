@@ -18,7 +18,7 @@ import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.util.UnlimitedStrengthEnabler;
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
@@ -105,7 +105,7 @@ public class RecordStreamCipherTest {
 
     private Record setRecord(BigInteger sequenceNumber, byte[] data, ProtocolVersion protocolVersion) {
         Record record = new Record();
-        record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
+        record.setContentType(TlsMessageType.HANDSHAKE.getValue());
         record.setSequenceNumber(sequenceNumber);
         record.setCleanProtocolMessageBytes(data);
         record.setProtocolVersion(protocolVersion.getValue());

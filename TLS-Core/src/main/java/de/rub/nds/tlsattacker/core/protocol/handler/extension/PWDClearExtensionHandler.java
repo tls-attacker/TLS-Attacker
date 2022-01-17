@@ -9,8 +9,8 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PWDClearExtensionMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 public class PWDClearExtensionHandler extends ExtensionHandler<PWDClearExtensionMessage> {
 

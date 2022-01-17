@@ -9,7 +9,7 @@
 
 package de.rub.nds.tlsattacker.attacks.util.response;
 
-import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.constants.TlsMessageType;
 import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -53,9 +53,10 @@ public class ResponseExtractor {
     }
 
     private static SocketState extractSocketState(State state) {
-        if (state.getTlsContext().getTransportHandler() instanceof ClientTcpTransportHandler) {
+        if (state.getContext().getTcpContext().getTransportHandler() instanceof ClientTcpTransportHandler) {
             SocketState socketState =
-                (((ClientTcpTransportHandler) (state.getTlsContext().getTransportHandler())).getSocketState());
+                (((ClientTcpTransportHandler) (state.getContext().getTcpContext().getTransportHandler()))
+                    .getSocketState());
             return socketState;
         } else {
             return null;
@@ -87,7 +88,7 @@ public class ResponseExtractor {
             for (Record abstractRecord : action.getReceivedRecords()) {
                 if (abstractRecord instanceof Record) {
                     Record record = (Record) abstractRecord;
-                    if (record.getContentMessageType() == ProtocolMessageType.ALERT) {
+                    if (record.getContentMessageType() == TlsMessageType.ALERT) {
                         if (record.getLength().getValue() > 6) {
                             return true;
                         }

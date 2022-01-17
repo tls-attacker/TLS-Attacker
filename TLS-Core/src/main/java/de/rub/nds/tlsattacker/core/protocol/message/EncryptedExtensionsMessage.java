@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.RecordSizeLimitExt
 import de.rub.nds.tlsattacker.core.protocol.parser.EncryptedExtensionsParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.EncryptedExtensionsPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.EncryptedExtensionsSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -61,18 +61,18 @@ public class EncryptedExtensionsMessage extends HandshakeMessage {
     }
 
     @Override
-    public EncryptedExtensionsParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new EncryptedExtensionsParser(stream, tlsContext.getLastRecordVersion(), tlsContext);
+    public EncryptedExtensionsParser getParser(TlsContext context, InputStream stream) {
+        return new EncryptedExtensionsParser(stream, context.getLastRecordVersion(), context);
     }
 
     @Override
-    public EncryptedExtensionsPreparator getPreparator(TlsContext tlsContext) {
-        return new EncryptedExtensionsPreparator(tlsContext.getChooser(), this);
+    public EncryptedExtensionsPreparator getPreparator(TlsContext context) {
+        return new EncryptedExtensionsPreparator(context.getChooser(), this);
     }
 
     @Override
-    public EncryptedExtensionsSerializer getSerializer(TlsContext tlsContext) {
-        return new EncryptedExtensionsSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+    public EncryptedExtensionsSerializer getSerializer(TlsContext context) {
+        return new EncryptedExtensionsSerializer(this, context.getChooser().getSelectedProtocolVersion());
     }
 
 }

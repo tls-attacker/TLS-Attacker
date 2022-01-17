@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.constants.NameType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.SNIEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.util.LinkedList;
 import java.util.List;
 import static org.junit.Assert.assertEquals;

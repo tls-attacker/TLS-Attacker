@@ -14,13 +14,13 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.constants.TlsMessageType;
 import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
 import de.rub.nds.tlsattacker.core.protocol.handler.ChangeCipherSpecHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.ChangeCipherSpecParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ChangeCipherSpecPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ChangeCipherSpecSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -32,12 +32,12 @@ public class ChangeCipherSpecMessage extends TlsMessage<ChangeCipherSpecMessage>
 
     public ChangeCipherSpecMessage(Config tlsConfig) {
         super();
-        this.protocolMessageType = ProtocolMessageType.CHANGE_CIPHER_SPEC;
+        this.protocolMessageType = TlsMessageType.CHANGE_CIPHER_SPEC;
     }
 
     public ChangeCipherSpecMessage() {
         super();
-        this.protocolMessageType = ProtocolMessageType.CHANGE_CIPHER_SPEC;
+        this.protocolMessageType = TlsMessageType.CHANGE_CIPHER_SPEC;
     }
 
     public ModifiableByteArray getCcsProtocolType() {
@@ -81,18 +81,17 @@ public class ChangeCipherSpecMessage extends TlsMessage<ChangeCipherSpecMessage>
     }
 
     @Override
-    public ChangeCipherSpecParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new ChangeCipherSpecParser(stream, tlsContext.getChooser().getLastRecordVersion(),
-            tlsContext.getConfig());
+    public ChangeCipherSpecParser getParser(TlsContext context, InputStream stream) {
+        return new ChangeCipherSpecParser(stream, context.getChooser().getLastRecordVersion(), context.getConfig());
     }
 
     @Override
-    public ChangeCipherSpecPreparator getPreparator(TlsContext tlsContext) {
-        return new ChangeCipherSpecPreparator(tlsContext.getChooser(), this);
+    public ChangeCipherSpecPreparator getPreparator(TlsContext context) {
+        return new ChangeCipherSpecPreparator(context.getChooser(), this);
     }
 
     @Override
-    public ChangeCipherSpecSerializer getSerializer(TlsContext tlsContext) {
-        return new ChangeCipherSpecSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+    public ChangeCipherSpecSerializer getSerializer(TlsContext context) {
+        return new ChangeCipherSpecSerializer(this, context.getChooser().getSelectedProtocolVersion());
     }
 }

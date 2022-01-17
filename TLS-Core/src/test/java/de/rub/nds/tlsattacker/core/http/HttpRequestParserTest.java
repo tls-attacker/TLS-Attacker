@@ -36,8 +36,7 @@ public class HttpRequestParserTest {
     @Test(expected = EndOfStreamException.class)
     public void testParseMessageContentFailed() {
         HttpRequestParser parser = new HttpRequestParser(
-            new ByteArrayInputStream(ArrayConverter.hexStringToByteArray("AAAAAAAAAAAAAAAAAAAAAAAA")),
-            ProtocolVersion.TLS12, config);
+            new ByteArrayInputStream(ArrayConverter.hexStringToByteArray("AAAAAAAAAAAAAAAAAAAAAAAA")));
         HttpRequestMessage message = new HttpRequestMessage();
         parser.parse(message);
     }
@@ -49,8 +48,8 @@ public class HttpRequestParserTest {
     public void testParseMessageContentSuccess() {
         String stringMessage = "GET /index.html HTTP/1.1\r\nUser-Agent: Test\r\nHost: www.rub.de\r\n\r\n";
 
-        HttpRequestParser parser = new HttpRequestParser(
-            new ByteArrayInputStream(stringMessage.getBytes(Charset.forName("UTF-8"))), ProtocolVersion.TLS12, config);
+        HttpRequestParser parser =
+            new HttpRequestParser(new ByteArrayInputStream(stringMessage.getBytes(Charset.forName("UTF-8"))));
         HttpRequestMessage message = new HttpRequestMessage();
         parser.parse(message);
 

@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.HelloRequestHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.HelloRequestParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.HelloRequestPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.HelloRequestSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -38,18 +38,18 @@ public class HelloRequestMessage extends HandshakeMessage {
     }
 
     @Override
-    public HelloRequestParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new HelloRequestParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+    public HelloRequestParser getParser(TlsContext context, InputStream stream) {
+        return new HelloRequestParser(stream, context.getChooser().getLastRecordVersion(), context);
     }
 
     @Override
-    public HelloRequestPreparator getPreparator(TlsContext tlsContext) {
-        return new HelloRequestPreparator(tlsContext.getChooser(), this);
+    public HelloRequestPreparator getPreparator(TlsContext context) {
+        return new HelloRequestPreparator(context.getChooser(), this);
     }
 
     @Override
-    public HelloRequestSerializer getSerializer(TlsContext tlsContext) {
-        return new HelloRequestSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+    public HelloRequestSerializer getSerializer(TlsContext context) {
+        return new HelloRequestSerializer(this, context.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

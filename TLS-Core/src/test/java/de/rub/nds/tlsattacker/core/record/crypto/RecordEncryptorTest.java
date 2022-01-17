@@ -12,13 +12,13 @@ package de.rub.nds.tlsattacker.core.record.crypto;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.constants.TlsMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.*;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 import java.security.Security;
@@ -45,7 +45,7 @@ public class RecordEncryptorTest {
         context = new TlsContext();
         record = new Record();
         record.prepareComputations();
-        record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
+        record.setContentType(TlsMessageType.HANDSHAKE.getValue());
         record.setProtocolVersion(ProtocolVersion.TLS10.getValue());
         record.setSequenceNumber(BigInteger.ZERO);
     }
@@ -66,7 +66,7 @@ public class RecordEncryptorTest {
         context.setServerRandom(
             ArrayConverter.hexStringToByteArray("59D5EAEF4D34A1FC14E3417E6ED24FD5FB39B5009D9CB3181CECDAFB46D1EBD4"));
         record.setCleanProtocolMessageBytes(ArrayConverter.hexStringToByteArray("1400000CB692015BE123B8364314FE1C"));
-        record.setContentMessageType(ProtocolMessageType.HANDSHAKE);
+        record.setContentMessageType(TlsMessageType.HANDSHAKE);
         record.setProtocolVersion(ProtocolVersion.TLS12.getValue());
         recordCipher = new RecordBlockCipher(context,
             new CipherState(context.getChooser().getSelectedProtocolVersion(),
@@ -108,7 +108,7 @@ public class RecordEncryptorTest {
             ArrayConverter.hexStringToByteArray("2488DFEE45765EEF369F30AFE356B9463624C6D617503AAB6B592B8CBDB55AB2"));
 
         record.setCleanProtocolMessageBytes(ArrayConverter.hexStringToByteArray("27BE1FB155ACFBF9E78D0C259E693123"));
-        record.setContentMessageType(ProtocolMessageType.HANDSHAKE);
+        record.setContentMessageType(TlsMessageType.HANDSHAKE);
         record.setProtocolVersion(ProtocolVersion.TLS12.getValue());
 
         recordCipher = new RecordBlockCipher(context,
@@ -152,7 +152,7 @@ public class RecordEncryptorTest {
 
         record = new Record();
         record.prepareComputations();
-        record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
+        record.setContentType(TlsMessageType.HANDSHAKE.getValue());
         record.setProtocolVersion(ProtocolVersion.TLS10.getValue());
         record.setSequenceNumber(BigInteger.ZERO);
 
@@ -183,7 +183,7 @@ public class RecordEncryptorTest {
         context.setServerRandom(
             ArrayConverter.hexStringToByteArray("A36EF73D371D709E9ED42DDA38DA8F750AD4BB6D21D4E496A22A20BD6349EFFA"));
         record.setCleanProtocolMessageBytes(ArrayConverter.hexStringToByteArray("1400000CDF6663DF2F42C83E1EA94381"));
-        record.setContentMessageType(ProtocolMessageType.HANDSHAKE);
+        record.setContentMessageType(TlsMessageType.HANDSHAKE);
         record.setProtocolVersion(ProtocolVersion.TLS12.getValue());
         recordCipher = new RecordStreamCipher(context,
             new CipherState(context.getChooser().getSelectedProtocolVersion(),
@@ -219,7 +219,7 @@ public class RecordEncryptorTest {
         context.setServerRandom(
             ArrayConverter.hexStringToByteArray("41C2F030D70B2944BE2B1905BB8488C873E056B030413788D5D1ECADC17C3C39"));
         record.setCleanProtocolMessageBytes(ArrayConverter.hexStringToByteArray("1400000C0C821172BB87E255D5C6E078"));
-        record.setContentMessageType(ProtocolMessageType.HANDSHAKE);
+        record.setContentMessageType(TlsMessageType.HANDSHAKE);
         record.setProtocolVersion(ProtocolVersion.TLS12.getValue());
         recordCipher = new RecordAEADCipher(context,
             new CipherState(context.getChooser().getSelectedProtocolVersion(),
@@ -253,7 +253,7 @@ public class RecordEncryptorTest {
         context.setServerRandom(
             ArrayConverter.hexStringToByteArray("D4370EDB60688FCF49CA9C3A81B55B5E347E0CFC4323FB7196257B17BE344723"));
         record.setCleanProtocolMessageBytes(ArrayConverter.hexStringToByteArray("1400000CD424FAF2BEA85BCE69DC07D2"));
-        record.setContentMessageType(ProtocolMessageType.HANDSHAKE);
+        record.setContentMessageType(TlsMessageType.HANDSHAKE);
         record.setProtocolVersion(ProtocolVersion.TLS10.getValue());
         recordCipher = new RecordBlockCipher(context,
             new CipherState(context.getChooser().getSelectedProtocolVersion(),
@@ -290,7 +290,7 @@ public class RecordEncryptorTest {
         context.setServerRandom(
             ArrayConverter.hexStringToByteArray("38EC0B0DC6860F09D55DFE8188ACD81D31E0AFD0BD1EF7177C3FB0BC867271FD"));
         record.setCleanProtocolMessageBytes(ArrayConverter.hexStringToByteArray("1400000C5BD2239FEE954F5C5CC2A66D"));
-        record.setContentMessageType(ProtocolMessageType.HANDSHAKE);
+        record.setContentMessageType(TlsMessageType.HANDSHAKE);
         record.setProtocolVersion(ProtocolVersion.TLS10.getValue());
         recordCipher = new RecordStreamCipher(context,
             new CipherState(context.getChooser().getSelectedProtocolVersion(),
@@ -321,7 +321,7 @@ public class RecordEncryptorTest {
         context.addNegotiatedExtension(ExtensionType.ENCRYPT_THEN_MAC);
         context.setMasterSecret(ArrayConverter.hexStringToByteArray(""));
         record.setCleanProtocolMessageBytes(ArrayConverter.hexStringToByteArray("080000020000"));
-        record.setContentMessageType(ProtocolMessageType.HANDSHAKE);
+        record.setContentMessageType(TlsMessageType.HANDSHAKE);
         recordCipher = new RecordStreamCipher(context,
             new CipherState(context.getChooser().getSelectedProtocolVersion(),
                 context.getChooser().getSelectedCipherSuite(), KeySetGenerator.generateKeySet(context),
@@ -338,7 +338,7 @@ public class RecordEncryptorTest {
         context.addNegotiatedExtension(ExtensionType.ENCRYPT_THEN_MAC);
         context.setMasterSecret(ArrayConverter.hexStringToByteArray(""));
         record.setCleanProtocolMessageBytes(ArrayConverter.hexStringToByteArray("080000020000"));
-        record.setContentMessageType(ProtocolMessageType.HANDSHAKE);
+        record.setContentMessageType(TlsMessageType.HANDSHAKE);
         recordCipher = new RecordAEADCipher(context,
             new CipherState(context.getChooser().getSelectedProtocolVersion(),
                 context.getChooser().getSelectedCipherSuite(), KeySetGenerator.generateKeySet(context),

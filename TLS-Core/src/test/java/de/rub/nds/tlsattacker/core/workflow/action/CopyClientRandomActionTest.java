@@ -12,7 +12,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import org.junit.After;
 import static org.junit.Assert.*;
@@ -37,8 +37,8 @@ public class CopyClientRandomActionTest {
 
         // TLS-Contexts are created during state initialization
         state = new State(config, trace);
-        tlsContextServer1 = state.getTlsContext("server1");
-        tlsContextServer2 = state.getTlsContext("server2");
+        tlsContextServer1 = state.getContext("server1").getTlsContext();
+        tlsContextServer2 = state.getContext("server2").getTlsContext();
 
         tlsContextServer1.setClientRandom(new byte[] { 1, 2 });
         tlsContextServer2.setClientRandom(new byte[] { 0, 0 });

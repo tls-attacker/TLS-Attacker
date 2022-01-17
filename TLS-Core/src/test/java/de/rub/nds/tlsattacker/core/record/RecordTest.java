@@ -20,14 +20,14 @@ package de.rub.nds.tlsattacker.core.record;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ChooserType;
-import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.constants.TlsMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.record.compressor.RecordCompressor;
 import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
 import de.rub.nds.tlsattacker.core.record.parser.RecordParser;
 import de.rub.nds.tlsattacker.core.record.preparator.RecordPreparator;
 import de.rub.nds.tlsattacker.core.record.serializer.RecordSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
 import java.io.ByteArrayInputStream;
@@ -41,12 +41,14 @@ public class RecordTest {
     Chooser chooser;
     Encryptor encryptor;
     RecordCompressor compressor;
+    Context context;
 
     @Before
     public void setUp() {
         record = new Record();
         Config config = Config.createConfig();
-        chooser = ChooserFactory.getChooser(ChooserType.DEFAULT, new TlsContext(config), config);
+        context = new Context(new Config());
+        chooser = ChooserFactory.getChooser(ChooserType.DEFAULT, context, config);
     }
 
     /**
@@ -54,7 +56,8 @@ public class RecordTest {
      */
     @Test
     public void testGetRecordPreparator() {
-        assertEquals(record.getRecordPreparator(chooser, encryptor, compressor, ProtocolMessageType.ALERT).getClass(),
+        assertEquals(
+            record.getRecordPreparator(context.getTlsContext(), encryptor, compressor, TlsMessageType.ALERT).getClass(),
             RecordPreparator.class);
     }
 

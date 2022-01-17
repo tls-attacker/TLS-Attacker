@@ -17,13 +17,15 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ClientMasterKeyHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.RSAClientComputations;
 import de.rub.nds.tlsattacker.core.protocol.parser.HandshakeMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.SSL2ClientMasterKeyPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.SSL2ClientMasterKeySerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.state.Context;
+
 import java.io.InputStream;
 import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
@@ -77,18 +79,18 @@ public class SSL2ClientMasterKeyMessage extends SSL2HandshakeMessage {
     }
 
     @Override
-    public HandshakeMessageParser<SSL2ClientMasterKeyMessage> getParser(TlsContext tlsContext, InputStream stream) {
+    public HandshakeMessageParser<SSL2ClientMasterKeyMessage> getParser(TlsContext context, InputStream stream) {
         // We currently don't receive ClientMasterKey messages, only send them.
         throw new UnsupportedOperationException("Not implemented");
     }
 
     @Override
-    public SSL2ClientMasterKeyPreparator getPreparator(TlsContext tlsContext) {
-        return new SSL2ClientMasterKeyPreparator(tlsContext.getChooser(), this);
+    public SSL2ClientMasterKeyPreparator getPreparator(TlsContext context) {
+        return new SSL2ClientMasterKeyPreparator(context.getChooser(), this);
     }
 
     @Override
-    public SSL2ClientMasterKeySerializer getSerializer(TlsContext tlsContext) {
+    public SSL2ClientMasterKeySerializer getSerializer(TlsContext context) {
         return new SSL2ClientMasterKeySerializer(this);
     }
 

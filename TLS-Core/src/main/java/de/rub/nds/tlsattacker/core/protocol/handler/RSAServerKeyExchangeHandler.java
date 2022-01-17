@@ -10,13 +10,13 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.RSAServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.math.BigInteger;
 
 public class RSAServerKeyExchangeHandler extends ServerKeyExchangeHandler<RSAServerKeyExchangeMessage> {
 
-    public RSAServerKeyExchangeHandler(TlsContext tlsContext) {
-        super(tlsContext);
+    public RSAServerKeyExchangeHandler(TlsContext context) {
+        super(context);
     }
 
     @Override

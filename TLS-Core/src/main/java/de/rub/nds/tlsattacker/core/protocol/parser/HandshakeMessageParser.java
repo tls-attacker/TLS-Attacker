@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionListParser;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -42,7 +42,7 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
     private final HandshakeMessageType expectedType;
 
     private ProtocolVersion version;
-    private TlsContext tlsContext;
+    private TlsContext context;
 
     /**
      * Constructor for the Parser class
@@ -52,14 +52,14 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
      *                     The expected type of the parsed HandshakeMessage
      * @param version
      *                     The Version with which this message should be parsed
-     * @param tlsContext
+     * @param context
      */
     public HandshakeMessageParser(InputStream stream, HandshakeMessageType expectedType, ProtocolVersion version,
-        TlsContext tlsContext) {
-        super(stream, tlsContext.getConfig());
+        TlsContext context) {
+        super(stream, context.getConfig());
         this.expectedType = expectedType;
         this.version = version;
-        this.tlsContext = tlsContext;
+        this.context = context;
     }
 
     @Override
@@ -98,7 +98,7 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
         LOGGER.debug("ExtensionBytes:" + ArrayConverter.bytesToHexString(extensionBytes, false));
 
         ByteArrayInputStream innerStream = new ByteArrayInputStream(extensionBytes);
-        ExtensionListParser parser = new ExtensionListParser(innerStream, tlsContext, version, helloRetryRequestHint);
+        ExtensionListParser parser = new ExtensionListParser(innerStream, context, version, helloRetryRequestHint);
         List<ExtensionMessage> extensionMessages = new LinkedList<>();
         parser.parse(extensionMessages);
         message.setExtensions(extensionMessages);

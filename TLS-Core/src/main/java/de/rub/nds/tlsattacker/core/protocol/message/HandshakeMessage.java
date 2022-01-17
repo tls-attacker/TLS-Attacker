@@ -19,7 +19,8 @@ import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.constants.TlsMessageType;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
 import de.rub.nds.tlsattacker.core.protocol.handler.HandshakeMessageHandler;
@@ -27,7 +28,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.HandshakeMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.HandshakeMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.HandshakeMessageSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -84,13 +84,13 @@ public abstract class HandshakeMessage extends TlsMessage {
 
     public HandshakeMessage(HandshakeMessageType handshakeMessageType) {
         super();
-        this.protocolMessageType = ProtocolMessageType.HANDSHAKE;
+        this.protocolMessageType = TlsMessageType.HANDSHAKE;
         this.handshakeMessageType = handshakeMessageType;
     }
 
     public HandshakeMessage(Config tlsConfig, HandshakeMessageType handshakeMessageType) {
         super();
-        this.protocolMessageType = ProtocolMessageType.HANDSHAKE;
+        this.protocolMessageType = TlsMessageType.HANDSHAKE;
         this.handshakeMessageType = handshakeMessageType;
     }
 

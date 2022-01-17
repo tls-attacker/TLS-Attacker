@@ -43,7 +43,7 @@ public class StateExecutionTask extends TlsTask {
             executor.setAfterExecutionCallback(getAfterExecutionCallback());
         }
         executor.executeWorkflow();
-        if (state.getTlsContext().isReceivedTransportHandlerException()) {
+        if (state.getContext().getTlsContext().isReceivedTransportHandlerException()) {
             throw new RuntimeException("TransportHandler exception received.");
         }
         return true;

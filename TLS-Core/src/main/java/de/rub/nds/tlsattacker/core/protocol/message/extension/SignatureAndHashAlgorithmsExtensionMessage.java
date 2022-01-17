@@ -19,7 +19,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.SignatureAndHashAl
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.SignatureAndHashAlgorithmsExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SignatureAndHashAlgorithmsExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SignatureAndHashAlgorithmsExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -71,23 +71,22 @@ public class SignatureAndHashAlgorithmsExtensionMessage
     }
 
     @Override
-    public SignatureAndHashAlgorithmsExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new SignatureAndHashAlgorithmsExtensionParser(stream, tlsContext.getConfig());
+    public SignatureAndHashAlgorithmsExtensionParser getParser(TlsContext context, InputStream stream) {
+        return new SignatureAndHashAlgorithmsExtensionParser(stream, context.getConfig());
     }
 
     @Override
-    public SignatureAndHashAlgorithmsExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new SignatureAndHashAlgorithmsExtensionPreparator(tlsContext.getChooser(), this,
-            getSerializer(tlsContext));
+    public SignatureAndHashAlgorithmsExtensionPreparator getPreparator(TlsContext context) {
+        return new SignatureAndHashAlgorithmsExtensionPreparator(context.getChooser(), this, getSerializer(context));
     }
 
     @Override
-    public SignatureAndHashAlgorithmsExtensionSerializer getSerializer(TlsContext tlsContext) {
+    public SignatureAndHashAlgorithmsExtensionSerializer getSerializer(TlsContext context) {
         return new SignatureAndHashAlgorithmsExtensionSerializer(this);
     }
 
     @Override
-    public SignatureAndHashAlgorithmsExtensionHandler getHandler(TlsContext tlsContext) {
-        return new SignatureAndHashAlgorithmsExtensionHandler(tlsContext);
+    public SignatureAndHashAlgorithmsExtensionHandler getHandler(TlsContext context) {
+        return new SignatureAndHashAlgorithmsExtensionHandler(context);
     }
 }

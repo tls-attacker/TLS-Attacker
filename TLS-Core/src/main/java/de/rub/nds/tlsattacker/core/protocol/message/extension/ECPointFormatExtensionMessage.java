@@ -15,11 +15,11 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ECPointFormatExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ECPointFormatExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ECPointFormatExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ECPointFormatExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -68,22 +68,22 @@ public class ECPointFormatExtensionMessage extends ExtensionMessage<ECPointForma
     }
 
     @Override
-    public ECPointFormatExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new ECPointFormatExtensionParser(stream, tlsContext.getConfig());
+    public ECPointFormatExtensionParser getParser(TlsContext context, InputStream stream) {
+        return new ECPointFormatExtensionParser(stream, context.getConfig());
     }
 
     @Override
-    public ECPointFormatExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new ECPointFormatExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+    public ECPointFormatExtensionPreparator getPreparator(TlsContext context) {
+        return new ECPointFormatExtensionPreparator(context.getChooser(), this, getSerializer(context));
     }
 
     @Override
-    public ECPointFormatExtensionSerializer getSerializer(TlsContext tlsContext) {
+    public ECPointFormatExtensionSerializer getSerializer(TlsContext context) {
         return new ECPointFormatExtensionSerializer(this);
     }
 
     @Override
-    public ECPointFormatExtensionHandler getHandler(TlsContext tlsContext) {
-        return new ECPointFormatExtensionHandler(tlsContext);
+    public ECPointFormatExtensionHandler getHandler(TlsContext context) {
+        return new ECPointFormatExtensionHandler(context);
     }
 }

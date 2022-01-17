@@ -37,8 +37,7 @@ public class HttpResponseParserTest {
     @Test(expected = EndOfStreamException.class)
     public void testParseMessageContentFailed() {
         HttpResponseParser parser = new HttpResponseParser(
-            new ByteArrayInputStream(ArrayConverter.hexStringToByteArray("AAAAAAAAAAAAAAAAAAAAAAAA")),
-            ProtocolVersion.TLS12, config);
+            new ByteArrayInputStream(ArrayConverter.hexStringToByteArray("AAAAAAAAAAAAAAAAAAAAAAAA")), config);
         HttpResponseMessage message = new HttpResponseMessage();
         parser.parse(message);
     }
@@ -51,8 +50,8 @@ public class HttpResponseParserTest {
         String message = "HTTP/1.1 200 OK\r\nDate: Mon, 27 Jul 2009 12:28:53 GMT\r\nServer: Apache/2.2.14 (Win32)\r\n"
             + "Last-Modified: Wed, 22 Jul 2009 19:15:56 GMT\r\nContent-Length: 88\r\nContent-Type: text/html\r\nConnection: Closed\r\n\r\ntest";
 
-        HttpResponseParser parser = new HttpResponseParser(
-            new ByteArrayInputStream(message.getBytes(Charset.forName("UTF-8"))), ProtocolVersion.TLS12, config);
+        HttpResponseParser parser =
+            new HttpResponseParser(new ByteArrayInputStream(message.getBytes(Charset.forName("UTF-8"))), config);
         HttpResponseMessage parsedMessage = new HttpResponseMessage();
         parser.parse(parsedMessage);
 

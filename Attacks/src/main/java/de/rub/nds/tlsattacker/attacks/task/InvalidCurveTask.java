@@ -54,8 +54,8 @@ public class InvalidCurveTask extends TlsTask {
                 WorkflowExecutorFactory.createWorkflowExecutor(state.getConfig().getWorkflowExecutorType(), state);
             executor.executeWorkflow();
 
-            if (getState().getTlsContext().getServerEcPublicKey() != null) {
-                receivedEcKey = getState().getTlsContext().getServerEcPublicKey();
+            if (getState().getContext().getTlsContext().getServerEcPublicKey() != null) {
+                receivedEcKey = getState().getContext().getTlsContext().getServerEcPublicKey();
             }
 
             if (!state.getWorkflowTrace().executedAsPlanned()) {
@@ -71,7 +71,7 @@ public class InvalidCurveTask extends TlsTask {
             return true;
         } finally {
             try {
-                getState().getTlsContext().getTransportHandler().closeConnection();
+                getState().getContext().getTcpContext().getTransportHandler().closeConnection();
             } catch (IOException ex) {
                 LOGGER.debug(ex);
             }

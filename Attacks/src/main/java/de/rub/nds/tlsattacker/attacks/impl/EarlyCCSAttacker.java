@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.attacks.config.EarlyCCSCommandConfig;
 import de.rub.nds.tlsattacker.attacks.constants.EarlyCcsVulnerabilityType;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.constants.TlsMessageType;
 import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -131,7 +131,7 @@ public class EarlyCCSAttacker extends Attacker<EarlyCCSCommandConfig> {
         WorkflowExecutor workflowExecutor =
             WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getWorkflowExecutorType(), state);
         workflowExecutor.executeWorkflow();
-        if (WorkflowTraceUtil.didReceiveMessage(ProtocolMessageType.ALERT, workflowTrace)) {
+        if (WorkflowTraceUtil.didReceiveMessage(TlsMessageType.ALERT, workflowTrace)) {
             CONSOLE.info("Not vulnerable (definitely), Alert message found");
             return false;
         } else if (WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.FINISHED, workflowTrace)) {

@@ -12,6 +12,7 @@ package de.rub.nds.tlsattacker.core.workflow;
 import de.rub.nds.tlsattacker.core.config.ConfigIO;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceivingAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendingAction;
@@ -105,12 +106,13 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
         }
 
         if (config.isFinishWithCloseNotify()) {
-            int currentEpoch = state.getTlsContext().getRecordLayer().getWriteEpoch();
+            TlsContext tlsContext = state.getContext().getTlsContext();
+            int currentEpoch = tlsContext.getRecordLayer().getWriteEpoch();
             for (int epoch = currentEpoch; epoch >= 0; epoch--) {
-                state.getTlsContext().getRecordLayer().setWriteEpoch(epoch);
+                tlsContext.getRecordLayer().setWriteEpoch(epoch);
                 sendCloseNotify();
             }
-            state.getTlsContext().getRecordLayer().setWriteEpoch(currentEpoch);
+            tlsContext.getRecordLayer().setWriteEpoch(currentEpoch);
         }
 
         setFinalSocketState();

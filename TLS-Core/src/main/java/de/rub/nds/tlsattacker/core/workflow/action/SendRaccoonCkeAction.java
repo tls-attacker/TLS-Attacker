@@ -19,7 +19,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.IOException;
@@ -73,7 +73,7 @@ public class SendRaccoonCkeAction extends MessageAction implements SendingAction
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
-        TlsContext tlsContext = state.getTlsContext(connectionAlias);
+        TlsContext tlsContext = state.getContext(connectionAlias).getTlsContext();
 
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
@@ -102,7 +102,7 @@ public class SendRaccoonCkeAction extends MessageAction implements SendingAction
     private DHClientKeyExchangeMessage generateRaccoonDhClientKeyExchangeMessage(State state, boolean withNullByte) {
 
         DHClientKeyExchangeMessage cke = new DHClientKeyExchangeMessage(state.getConfig());
-        Chooser chooser = state.getTlsContext().getChooser();
+        Chooser chooser = state.getContext().getChooser();
         byte[] clientPublicKey = getClientPublicKey(chooser.getServerDhGenerator(), chooser.getServerDhModulus(),
             chooser.getServerDhPublicKey(), initialSecret, withNullByte);
         cke.setPublicKey(Modifiable.explicit(clientPublicKey));

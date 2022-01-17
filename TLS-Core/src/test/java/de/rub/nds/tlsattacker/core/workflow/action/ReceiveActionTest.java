@@ -16,8 +16,9 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
 import de.rub.nds.tlsattacker.core.layer.constant.LayerStackType;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
+import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -39,7 +40,7 @@ import org.junit.experimental.categories.Category;
 public class ReceiveActionTest {
 
     private State state;
-    private TlsContext tlsContext;
+    private Context context;
 
     private ReceiveAction action;
 
@@ -56,10 +57,10 @@ public class ReceiveActionTest {
         trace.addTlsAction(action);
         state = new State(trace);
 
-        tlsContext = state.getTlsContext();
-        tlsContext.setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
-        tlsContext.setLayerStack(LayerStackFactory.createLayerStack(LayerStackType.TLS, tlsContext));
-        tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
+        context = state.getContext();
+        context.getTcpContext().setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
+        context.setLayerStack(LayerStackFactory.createLayerStack(LayerStackType.TLS, context));
+        context.getTlsContext().setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
     }
 
     @After
@@ -73,7 +74,7 @@ public class ReceiveActionTest {
      */
     @Test
     public void testExecute() throws Exception {
-        ((FakeTransportHandler) tlsContext.getTransportHandler())
+        ((FakeTransportHandler) context.getTcpContext().getTransportHandler())
             .setFetchableByte(new byte[] { 0x15, 0x03, 0x03, 0x00, 0x02, 0x02, 50 });
         action.execute(state);
         assertTrue(action.executedAsPlanned());

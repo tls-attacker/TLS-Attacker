@@ -19,7 +19,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.RenegotiationInfoE
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.RenegotiationInfoExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.RenegotiationInfoExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.RenegotiationInfoExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -69,23 +69,23 @@ public class RenegotiationInfoExtensionMessage extends ExtensionMessage<Renegoti
     }
 
     @Override
-    public RenegotiationInfoExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new RenegotiationInfoExtensionParser(stream, tlsContext.getConfig());
+    public RenegotiationInfoExtensionParser getParser(TlsContext context, InputStream stream) {
+        return new RenegotiationInfoExtensionParser(stream, context.getConfig());
     }
 
     @Override
-    public RenegotiationInfoExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new RenegotiationInfoExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+    public RenegotiationInfoExtensionPreparator getPreparator(TlsContext context) {
+        return new RenegotiationInfoExtensionPreparator(context.getChooser(), this, getSerializer(context));
     }
 
     @Override
-    public RenegotiationInfoExtensionSerializer getSerializer(TlsContext tlsContext) {
+    public RenegotiationInfoExtensionSerializer getSerializer(TlsContext context) {
         return new RenegotiationInfoExtensionSerializer(this);
     }
 
     @Override
-    public RenegotiationInfoExtensionHandler getHandler(TlsContext tlsContext) {
-        return new RenegotiationInfoExtensionHandler(tlsContext);
+    public RenegotiationInfoExtensionHandler getHandler(TlsContext context) {
+        return new RenegotiationInfoExtensionHandler(context);
     }
 
 }

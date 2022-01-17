@@ -10,7 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.SrpClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 
 /**
  * Handler for SRP ClientKeyExchange messages
@@ -18,8 +18,8 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
  */
 public class SrpClientKeyExchangeHandler extends ClientKeyExchangeHandler<SrpClientKeyExchangeMessage> {
 
-    public SrpClientKeyExchangeHandler(TlsContext tlsContext) {
-        super(tlsContext);
+    public SrpClientKeyExchangeHandler(TlsContext context) {
+        super(context);
     }
 
     @Override

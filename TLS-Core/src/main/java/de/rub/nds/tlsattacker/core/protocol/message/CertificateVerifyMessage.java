@@ -20,7 +20,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.CertificateVerifyHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.CertificateVerifyParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateVerifyPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateVerifySerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -124,17 +124,17 @@ public class CertificateVerifyMessage extends HandshakeMessage {
     }
 
     @Override
-    public CertificateVerifyParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new CertificateVerifyParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+    public CertificateVerifyParser getParser(TlsContext context, InputStream stream) {
+        return new CertificateVerifyParser(stream, context.getChooser().getLastRecordVersion(), context);
     }
 
     @Override
-    public CertificateVerifyPreparator getPreparator(TlsContext tlsContext) {
-        return new CertificateVerifyPreparator(tlsContext.getChooser(), this);
+    public CertificateVerifyPreparator getPreparator(TlsContext context) {
+        return new CertificateVerifyPreparator(context.getChooser(), this);
     }
 
     @Override
-    public CertificateVerifySerializer getSerializer(TlsContext tlsContext) {
-        return new CertificateVerifySerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+    public CertificateVerifySerializer getSerializer(TlsContext context) {
+        return new CertificateVerifySerializer(this, context.getChooser().getSelectedProtocolVersion());
     }
 }

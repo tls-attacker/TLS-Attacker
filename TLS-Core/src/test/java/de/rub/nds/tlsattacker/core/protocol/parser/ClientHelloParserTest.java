@@ -13,7 +13,8 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
@@ -113,7 +114,7 @@ public class ClientHelloParserTest {
     @Test
     public void testParse() {
         ClientHelloParser parser = new ClientHelloParser(new ByteArrayInputStream(message), version,
-            new TlsContext(config), ConnectionEndType.CLIENT);
+            new TlsContext(new Context(config)), ConnectionEndType.CLIENT);
         ClientHelloMessage msg = new ClientHelloMessage();
         parser.parse(msg);
         assertArrayEquals(cipherSuites, msg.getCipherSuites().getValue());

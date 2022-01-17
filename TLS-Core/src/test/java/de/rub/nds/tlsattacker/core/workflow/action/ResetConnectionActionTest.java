@@ -21,8 +21,8 @@ import de.rub.nds.tlsattacker.core.record.cipher.RecordBlockCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
+import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -37,7 +37,7 @@ import org.junit.experimental.categories.Category;
 public class ResetConnectionActionTest {
 
     private State state;
-    private TlsContext tlsContext;
+    private Context context;
 
     private ResetConnectionAction action;
 
@@ -48,32 +48,32 @@ public class ResetConnectionActionTest {
         WorkflowTrace trace = new WorkflowTrace();
         trace.addTlsAction(action);
         state = new State(config, trace);
-        tlsContext = state.getTlsContext();
-        tlsContext.setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
-        tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
-        RecordCipher recordCipher = new RecordBlockCipher(tlsContext,
-            new CipherState(tlsContext.getChooser().getSelectedProtocolVersion(),
-                tlsContext.getChooser().getSelectedCipherSuite(), KeySetGenerator.generateKeySet(tlsContext),
-                tlsContext.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
-        tlsContext.setLayerStack(new LayerStack(tlsContext, new RecordLayer(tlsContext)));
-        tlsContext.getRecordLayer().updateEncryptionCipher(recordCipher);
-        tlsContext.getRecordLayer().updateDecryptionCipher(recordCipher);
-        tlsContext.setActiveClientKeySetType(Tls13KeySetType.EARLY_TRAFFIC_SECRETS);
-        tlsContext.setActiveServerKeySetType(Tls13KeySetType.EARLY_TRAFFIC_SECRETS);
+        context = state.getContext();
+        context.getTcpContext().setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
+        context.getTlsContext().setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
+        RecordCipher recordCipher = new RecordBlockCipher(context.getTlsContext(),
+            new CipherState(context.getChooser().getSelectedProtocolVersion(),
+                context.getChooser().getSelectedCipherSuite(), KeySetGenerator.generateKeySet(context.getTlsContext()),
+                context.getTlsContext().isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
+        context.setLayerStack(new LayerStack(context, new RecordLayer(context.getTlsContext())));
+        context.getTlsContext().getRecordLayer().updateEncryptionCipher(recordCipher);
+        context.getTlsContext().getRecordLayer().updateDecryptionCipher(recordCipher);
+        context.getTlsContext().setActiveClientKeySetType(Tls13KeySetType.EARLY_TRAFFIC_SECRETS);
+        context.getTlsContext().setActiveServerKeySetType(Tls13KeySetType.EARLY_TRAFFIC_SECRETS);
 
     }
 
     @Test
     public void testExecute() throws IOException {
         action.execute(state);
-        RecordLayer layer = RecordLayer.class.cast(tlsContext.getRecordLayer());
+        RecordLayer layer = context.getTlsContext().getRecordLayer();
         assertTrue(layer.getEncryptorCipher() instanceof RecordNullCipher);
         assertTrue(layer.getDecryptorCipher() instanceof RecordNullCipher);
         assertTrue(layer.getEncryptorCipher() instanceof RecordNullCipher);
         assertTrue(layer.getDecryptorCipher() instanceof RecordNullCipher);
-        assertEquals(tlsContext.getActiveClientKeySetType(), Tls13KeySetType.NONE);
-        assertEquals(tlsContext.getActiveServerKeySetType(), Tls13KeySetType.NONE);
-        assertFalse(tlsContext.getTransportHandler().isClosed());
+        assertEquals(context.getTlsContext().getActiveClientKeySetType(), Tls13KeySetType.NONE);
+        assertEquals(context.getTlsContext().getActiveServerKeySetType(), Tls13KeySetType.NONE);
+        assertFalse(context.getTcpContext().getTransportHandler().isClosed());
         assertTrue(action.isExecuted());
     }
 

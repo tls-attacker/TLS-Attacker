@@ -11,11 +11,11 @@ package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtendedMasterSecretExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtendedMasterSecretExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtendedMasterSecretExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtendedMasterSecretExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -38,23 +38,23 @@ public class ExtendedMasterSecretExtensionMessage extends ExtensionMessage<Exten
     }
 
     @Override
-    public ExtendedMasterSecretExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new ExtendedMasterSecretExtensionParser(stream, tlsContext.getConfig());
+    public ExtendedMasterSecretExtensionParser getParser(TlsContext context, InputStream stream) {
+        return new ExtendedMasterSecretExtensionParser(stream, context.getConfig());
     }
 
     @Override
-    public ExtendedMasterSecretExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new ExtendedMasterSecretExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+    public ExtendedMasterSecretExtensionPreparator getPreparator(TlsContext context) {
+        return new ExtendedMasterSecretExtensionPreparator(context.getChooser(), this, getSerializer(context));
     }
 
     @Override
-    public ExtendedMasterSecretExtensionSerializer getSerializer(TlsContext tlsContext) {
+    public ExtendedMasterSecretExtensionSerializer getSerializer(TlsContext context) {
         return new ExtendedMasterSecretExtensionSerializer(this);
     }
 
     @Override
-    public ExtendedMasterSecretExtensionHandler getHandler(TlsContext tlsContext) {
-        return new ExtendedMasterSecretExtensionHandler(tlsContext);
+    public ExtendedMasterSecretExtensionHandler getHandler(TlsContext context) {
+        return new ExtendedMasterSecretExtensionHandler(context);
     }
 
 }

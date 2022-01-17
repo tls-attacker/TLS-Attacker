@@ -19,7 +19,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificatePair;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.cert.CertificatePairParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionListParser;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -34,24 +34,24 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
 
     private final ConnectionEndType talkingConnectionEndType;
 
-    private TlsContext tlsContext;
+    private TlsContext context;
 
     /**
      * Constructor for the Parser class
      *
      * @param stream
-     * @param tlsContext
+     * @param context
      * @param version
      *                                 Version of the Protocol
      * @param config
      *                                 A Config used in the current context
      * @param talkingConnectionEndType
      */
-    public CertificateMessageParser(InputStream stream, TlsContext tlsContext, ProtocolVersion version,
+    public CertificateMessageParser(InputStream stream, TlsContext context, ProtocolVersion version,
         ConnectionEndType talkingConnectionEndType) {
-        super(stream, HandshakeMessageType.CERTIFICATE, version, tlsContext);
+        super(stream, HandshakeMessageType.CERTIFICATE, version, context);
         this.talkingConnectionEndType = talkingConnectionEndType;
-        this.tlsContext = tlsContext;
+        this.context = context;
     }
 
     @Override
@@ -132,7 +132,7 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
         List<CertificateEntry> entryList = new LinkedList<>();
         for (CertificatePair pair : msg.getCertificatesList()) {
             ExtensionListParser parser = new ExtensionListParser(
-                new ByteArrayInputStream(pair.getExtensions().getValue()), tlsContext, getVersion(), false);
+                new ByteArrayInputStream(pair.getExtensions().getValue()), context, getVersion(), false);
             List<ExtensionMessage> extensionMessages = new LinkedList<>();
             parser.parse(extensionMessages);
             entryList.add(new CertificateEntry(pair.getCertificate().getValue(), extensionMessages));

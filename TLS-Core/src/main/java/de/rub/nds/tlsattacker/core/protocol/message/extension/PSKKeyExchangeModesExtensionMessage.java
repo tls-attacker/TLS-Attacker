@@ -16,6 +16,7 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.PSKKeyExchangeModesExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.PSKKeyExchangeModesExtensionParser;
@@ -23,7 +24,6 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtensionPrepar
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PSKKeyExchangeModesExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PSKKeyExchangeModesExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -95,22 +95,22 @@ public class PSKKeyExchangeModesExtensionMessage extends ExtensionMessage<PSKKey
     }
 
     @Override
-    public ExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new PSKKeyExchangeModesExtensionParser(stream, tlsContext.getConfig());
+    public ExtensionParser getParser(TlsContext context, InputStream stream) {
+        return new PSKKeyExchangeModesExtensionParser(stream, context.getConfig());
     }
 
     @Override
-    public ExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new PSKKeyExchangeModesExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+    public ExtensionPreparator getPreparator(TlsContext context) {
+        return new PSKKeyExchangeModesExtensionPreparator(context.getChooser(), this, getSerializer(context));
     }
 
     @Override
-    public ExtensionSerializer getSerializer(TlsContext tlsContext) {
+    public ExtensionSerializer getSerializer(TlsContext context) {
         return new PSKKeyExchangeModesExtensionSerializer(this);
     }
 
     @Override
-    public PSKKeyExchangeModesExtensionHandler getHandler(TlsContext tlsContext) {
-        return new PSKKeyExchangeModesExtensionHandler(tlsContext);
+    public PSKKeyExchangeModesExtensionHandler getHandler(TlsContext context) {
+        return new PSKKeyExchangeModesExtensionHandler(context);
     }
 }

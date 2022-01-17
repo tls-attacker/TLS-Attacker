@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.EsniKeyRecord;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.EsniKeyRecordParser;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.ByteArrayInputStream;
 import java.util.Base64;
 import java.util.LinkedList;
@@ -36,7 +36,7 @@ public class EsniKeyDnsRequestAction extends TlsAction {
     @Override
     public void execute(State state) throws WorkflowExecutionException {
         TlsContext tlsContext;
-        tlsContext = state.getTlsContext();
+        tlsContext = state.getContext().getTlsContext();
         Config tlsConfig = state.getConfig();
 
         if (isExecuted()) {

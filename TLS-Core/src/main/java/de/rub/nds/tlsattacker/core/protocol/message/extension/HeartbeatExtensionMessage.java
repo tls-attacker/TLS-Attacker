@@ -15,11 +15,11 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.HeartbeatExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.HeartbeatExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.HeartbeatExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.HeartbeatExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -63,22 +63,22 @@ public class HeartbeatExtensionMessage extends ExtensionMessage<HeartbeatExtensi
     }
 
     @Override
-    public HeartbeatExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new HeartbeatExtensionParser(stream, tlsContext.getConfig());
+    public HeartbeatExtensionParser getParser(TlsContext context, InputStream stream) {
+        return new HeartbeatExtensionParser(stream, context.getConfig());
     }
 
     @Override
-    public HeartbeatExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new HeartbeatExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+    public HeartbeatExtensionPreparator getPreparator(TlsContext context) {
+        return new HeartbeatExtensionPreparator(context.getChooser(), this, getSerializer(context));
     }
 
     @Override
-    public HeartbeatExtensionSerializer getSerializer(TlsContext tlsContext) {
+    public HeartbeatExtensionSerializer getSerializer(TlsContext context) {
         return new HeartbeatExtensionSerializer(this);
     }
 
     @Override
-    public HeartbeatExtensionHandler getHandler(TlsContext tlsContext) {
-        return new HeartbeatExtensionHandler(tlsContext);
+    public HeartbeatExtensionHandler getHandler(TlsContext context) {
+        return new HeartbeatExtensionHandler(context);
     }
 }

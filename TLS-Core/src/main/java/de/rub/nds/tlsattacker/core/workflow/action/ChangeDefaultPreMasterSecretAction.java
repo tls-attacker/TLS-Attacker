@@ -13,7 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.util.Arrays;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -55,7 +55,7 @@ public class ChangeDefaultPreMasterSecretAction extends ConnectionBoundAction {
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
-        TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
+        TlsContext tlsContext = state.getContext(getConnectionAlias()).getTlsContext();
 
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");

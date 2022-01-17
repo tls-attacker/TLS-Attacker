@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
@@ -27,9 +27,9 @@ public class NewSessionTicketParser extends HandshakeMessageParser<NewSessionTic
 
     private final ConnectionEndType talkingConnectionEndType;
 
-    public NewSessionTicketParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext,
+    public NewSessionTicketParser(InputStream stream, ProtocolVersion version, TlsContext context,
         ConnectionEndType talkingConnectionEndType) {
-        super(stream, HandshakeMessageType.NEW_SESSION_TICKET, version, tlsContext);
+        super(stream, HandshakeMessageType.NEW_SESSION_TICKET, version, context);
         this.talkingConnectionEndType = talkingConnectionEndType;
     }
 

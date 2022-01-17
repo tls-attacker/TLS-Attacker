@@ -10,7 +10,7 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.constants.TlsMessageType;
 import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.record.Record;
@@ -25,7 +25,7 @@ public interface ReceivingAction {
 
     public abstract List<DtlsHandshakeMessageFragment> getReceivedFragments();
 
-    public default List<ProtocolMessageType> getGoingToReceiveProtocolMessageTypes() {
+    public default List<TlsMessageType> getGoingToReceiveProtocolMessageTypes() {
         return new ArrayList<>();
     }
 

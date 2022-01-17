@@ -10,12 +10,12 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 
 public class ServerHelloDoneHandler extends HandshakeMessageHandler<ServerHelloDoneMessage> {
 
-    public ServerHelloDoneHandler(TlsContext tlsContext) {
-        super(tlsContext);
+    public ServerHelloDoneHandler(TlsContext context) {
+        super(context);
     }
 
     @Override

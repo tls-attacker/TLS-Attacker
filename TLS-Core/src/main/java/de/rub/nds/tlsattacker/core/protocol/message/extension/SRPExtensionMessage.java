@@ -19,7 +19,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.SRPExtensionHandle
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.SRPExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SRPExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SRPExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -70,23 +70,23 @@ public class SRPExtensionMessage extends ExtensionMessage<SRPExtensionMessage> {
     }
 
     @Override
-    public SRPExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new SRPExtensionParser(stream, tlsContext.getConfig());
+    public SRPExtensionParser getParser(TlsContext context, InputStream stream) {
+        return new SRPExtensionParser(stream, context.getConfig());
     }
 
     @Override
-    public SRPExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new SRPExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+    public SRPExtensionPreparator getPreparator(TlsContext context) {
+        return new SRPExtensionPreparator(context.getChooser(), this, getSerializer(context));
     }
 
     @Override
-    public SRPExtensionSerializer getSerializer(TlsContext tlsContext) {
+    public SRPExtensionSerializer getSerializer(TlsContext context) {
         return new SRPExtensionSerializer(this);
     }
 
     @Override
-    public SRPExtensionHandler getHandler(TlsContext tlsContext) {
-        return new SRPExtensionHandler(tlsContext);
+    public SRPExtensionHandler getHandler(TlsContext context) {
+        return new SRPExtensionHandler(context);
     }
 
 }

@@ -13,7 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.crypto.cipher.CipherWrapper;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import de.rub.nds.tlsattacker.core.layer.context.RecordContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.Parser;
 import de.rub.nds.tlsattacker.core.record.Record;
 import java.io.ByteArrayInputStream;
@@ -45,7 +45,7 @@ public class RecordAEADCipher extends RecordCipher {
      */
     private final int aeadExplicitLength;
 
-    public RecordAEADCipher(RecordContext context, CipherState state) {
+    public RecordAEADCipher(TlsContext context, CipherState state) {
         super(context, state);
         encryptCipher = CipherWrapper.getEncryptionCipher(getState().getCipherSuite(), getLocalConnectionEndType(),
             getState().getKeySet());
@@ -144,7 +144,7 @@ public class RecordAEADCipher extends RecordCipher {
             // For TLS1.3 we need the length beforehand to compute the
             // authenticatedMetaData
             record.setLength(record.getComputations().getPlainRecordBytes().getValue().length + AEAD_TAG_LENGTH);
-            record.setContentType(ProtocolMessageType.APPLICATION_DATA.getValue());
+            record.setContentType(TlsMessageType.APPLICATION_DATA.getValue());
         } else {
             record.getComputations().setPlainRecordBytes(record.getCleanProtocolMessageBytes().getValue());
         }
@@ -270,7 +270,7 @@ public class RecordAEADCipher extends RecordCipher {
                 record.getComputations().setPadding(padding);
                 record.setCleanProtocolMessageBytes(cleanBytes);
                 record.setContentType(contentType[0]);
-                record.setContentMessageType(ProtocolMessageType.getContentType(contentType[0]));
+                record.setContentMessageType(TlsMessageType.getContentType(contentType[0]));
             } else {
                 record.setCleanProtocolMessageBytes(plainRecordBytes);
             }

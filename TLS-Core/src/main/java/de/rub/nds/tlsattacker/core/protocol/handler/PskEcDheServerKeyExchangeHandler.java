@@ -10,12 +10,12 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.PskEcDheServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 
 public class PskEcDheServerKeyExchangeHandler extends ECDHEServerKeyExchangeHandler<PskEcDheServerKeyExchangeMessage> {
 
-    public PskEcDheServerKeyExchangeHandler(TlsContext tlsContext) {
-        super(tlsContext);
+    public PskEcDheServerKeyExchangeHandler(TlsContext context) {
+        super(context);
     }
 
     @Override

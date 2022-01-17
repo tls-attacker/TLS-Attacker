@@ -25,7 +25,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair
 import de.rub.nds.tlsattacker.core.protocol.parser.ServerHelloParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ServerHelloPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ServerHelloSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.Arrays;
@@ -275,19 +275,19 @@ public class ServerHelloMessage extends HelloMessage {
     }
 
     @Override
-    public ServerHelloPreparator getPreparator(TlsContext tlsContext) {
-        return new ServerHelloPreparator(tlsContext.getChooser(), this);
+    public ServerHelloPreparator getPreparator(TlsContext context) {
+        return new ServerHelloPreparator(context.getChooser(), this);
     }
 
     @Override
-    public ServerHelloSerializer getSerializer(TlsContext tlsContext) {
-        return new ServerHelloSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+    public ServerHelloSerializer getSerializer(TlsContext context) {
+        return new ServerHelloSerializer(this, context.getChooser().getSelectedProtocolVersion());
     }
 
     @Override
-    public ServerHelloParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new ServerHelloParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext,
-            tlsContext.getTalkingConnectionEndType());
+    public ServerHelloParser getParser(TlsContext context, InputStream stream) {
+        return new ServerHelloParser(stream, context.getChooser().getLastRecordVersion(), context,
+            context.getTalkingConnectionEndType());
     }
 
     public Boolean isAutoSetHelloRetryModeInKeyShare() {

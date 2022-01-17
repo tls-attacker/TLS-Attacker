@@ -42,8 +42,7 @@ public class MessageIO {
         return context;
     }
 
-    public static void write(File file, TlsMessage message)
-        throws FileNotFoundException, JAXBException, IOException {
+    public static void write(File file, TlsMessage message) throws FileNotFoundException, JAXBException, IOException {
         if (!file.exists()) {
             file.createNewFile();
         }
@@ -71,8 +70,7 @@ public class MessageIO {
         return message;
     }
 
-    public static TlsMessage copyTlsAction(TlsMessage message)
-        throws JAXBException, IOException, XMLStreamException {
+    public static TlsMessage copyTlsAction(TlsMessage message) throws JAXBException, IOException, XMLStreamException {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         MessageIO.write(stream, message);
         stream.flush();

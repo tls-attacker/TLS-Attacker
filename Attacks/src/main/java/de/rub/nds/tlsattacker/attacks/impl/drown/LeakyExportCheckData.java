@@ -12,7 +12,7 @@ package de.rub.nds.tlsattacker.attacks.impl.drown;
 import de.rub.nds.tlsattacker.core.constants.SSL2CipherSuite;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientMasterKeyMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerVerifyMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.Serializable;
 
 /**

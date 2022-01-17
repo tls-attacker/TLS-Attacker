@@ -17,13 +17,13 @@ import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.constants.TlsMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ServerHelloHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.SSL2ServerHelloParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.SSL2ServerHelloPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.SSL2ServerHelloSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -60,7 +60,7 @@ public class SSL2ServerHelloMessage extends SSL2HandshakeMessage {
 
     public SSL2ServerHelloMessage() {
         super(HandshakeMessageType.SSL2_SERVER_HELLO);
-        this.protocolMessageType = ProtocolMessageType.HANDSHAKE;
+        this.protocolMessageType = TlsMessageType.HANDSHAKE;
     }
 
     public SSL2ServerHelloMessage(Config config) {
@@ -78,18 +78,18 @@ public class SSL2ServerHelloMessage extends SSL2HandshakeMessage {
     }
 
     @Override
-    public SSL2ServerHelloParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new SSL2ServerHelloParser(stream, tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext);
+    public SSL2ServerHelloParser getParser(TlsContext context, InputStream stream) {
+        return new SSL2ServerHelloParser(stream, context.getChooser().getSelectedProtocolVersion(), context);
     }
 
     @Override
-    public SSL2ServerHelloPreparator getPreparator(TlsContext tlsContext) {
-        return new SSL2ServerHelloPreparator(tlsContext.getChooser(), this);
+    public SSL2ServerHelloPreparator getPreparator(TlsContext context) {
+        return new SSL2ServerHelloPreparator(context.getChooser(), this);
     }
 
     @Override
-    public SSL2ServerHelloSerializer getSerializer(TlsContext tlsContext) {
-        return new SSL2ServerHelloSerializer(this, tlsContext);
+    public SSL2ServerHelloSerializer getSerializer(TlsContext context) {
+        return new SSL2ServerHelloSerializer(this, context);
     }
 
     public ModifiableByte getSessionIdHit() {

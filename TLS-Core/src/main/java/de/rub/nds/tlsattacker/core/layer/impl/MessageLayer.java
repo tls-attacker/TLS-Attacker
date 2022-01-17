@@ -18,8 +18,7 @@ import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
-import de.rub.nds.tlsattacker.core.layer.context.MessageContext;
-import de.rub.nds.tlsattacker.core.layer.context.RecordContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.hints.RecordLayerHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
@@ -31,13 +30,13 @@ import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class MessageLayer extends ProtocolLayer<LayerProcessingHint, TlsMessage, MessageContext> {
+public class MessageLayer extends ProtocolLayer<LayerProcessingHint, TlsMessage, TlsContext> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final MessageContext context;
+    private final TlsContext context;
 
-    public MessageLayer(MessageContext context) {
+    public MessageLayer(TlsContext context) {
         super(ImplementedLayers.MESSAGE);
         this.context = context;
     }

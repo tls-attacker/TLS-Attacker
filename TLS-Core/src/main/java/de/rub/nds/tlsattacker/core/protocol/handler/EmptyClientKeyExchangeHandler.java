@@ -10,15 +10,15 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.EmptyClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 
 /**
  * Handler for Empty ClientKeyExchange messages
  */
 public class EmptyClientKeyExchangeHandler extends ClientKeyExchangeHandler<EmptyClientKeyExchangeMessage> {
 
-    public EmptyClientKeyExchangeHandler(TlsContext tlsContext) {
-        super(tlsContext);
+    public EmptyClientKeyExchangeHandler(TlsContext context) {
+        super(context);
     }
 
     @Override

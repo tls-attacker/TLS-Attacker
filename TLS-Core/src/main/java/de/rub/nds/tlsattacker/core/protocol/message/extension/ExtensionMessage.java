@@ -16,13 +16,14 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.layer.DataContainer;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+
 import java.io.InputStream;
 import java.io.Serializable;
 import javax.xml.bind.annotation.XmlSeeAlso;
@@ -46,7 +47,7 @@ import javax.xml.bind.annotation.XmlSeeAlso;
     CookieExtensionMessage.class, DtlsHandshakeMessageFragment.class, UserMappingExtensionMessage.class,
     SRPExtensionMessage.class, CachedInfoExtensionMessage.class })
 public abstract class ExtensionMessage<Self extends ExtensionMessage> extends ModifiableVariableHolder
-    implements Serializable, DataContainer<Self> {
+    implements Serializable, DataContainer<Self, TlsContext> {
 
     protected ExtensionType extensionTypeConstant;
 

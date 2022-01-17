@@ -16,7 +16,7 @@ import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 
-import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.constants.TlsMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
@@ -24,7 +24,7 @@ import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
-import de.rub.nds.tlsattacker.core.layer.context.RecordContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.hints.RecordLayerHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
@@ -45,11 +45,11 @@ import de.rub.nds.tlsattacker.core.record.serializer.RecordSerializer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record, RecordContext> {
+public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record, TlsContext> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final RecordContext context;
+    private final TlsContext context;
 
     private final Decryptor decryptor;
     private final Encryptor encryptor;
@@ -60,7 +60,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record, RecordCo
     private int writeEpoch = 0;
     private int readEpoch = 0;
 
-    public RecordLayer(RecordContext context) {
+    public RecordLayer(TlsContext context) {
         super(ImplementedLayers.RECORD);
         this.context = context;
         encryptor = new RecordEncryptor(RecordCipherFactory.getNullCipher(context), context);
@@ -77,7 +77,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record, RecordCo
 
     @Override
     public LayerProcessingResult<Record> sendData(RecordLayerHint hint, byte[] data) throws IOException {
-        ProtocolMessageType type = ProtocolMessageType.UNKNOWN;
+        TlsMessageType type = TlsMessageType.UNKNOWN;
         if (hint != null) {
             type = hint.getType();
         } else {
@@ -92,7 +92,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record, RecordCo
 
         for (Record record : records) {
 
-            ProtocolMessageType contentType = record.getContentMessageType();
+            TlsMessageType contentType = record.getContentMessageType();
             if (contentType == null) {
                 contentType = type;
             }
@@ -100,8 +100,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record, RecordCo
             if (encryptor.getRecordCipher(writeEpoch).getState().getVersion().isDTLS() && record instanceof Record) {
                 ((Record) record).setEpoch(writeEpoch);
             }
-            RecordPreparator preparator =
-                record.getRecordPreparator(context.getChooser(), encryptor, compressor, contentType);
+            RecordPreparator preparator = record.getRecordPreparator(context, encryptor, compressor, contentType);
             preparator.prepare();
             RecordSerializer serializer = record.getRecordSerializer();
             try {
@@ -148,7 +147,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record, RecordCo
         } catch (ParserException e) {
             LOGGER.warn("Could not parse Record as a Record. Passing data to upper layer as unknown data", e);
             HintedInputStream tempStream =
-                new HintedLayerInputStream(new RecordLayerHint(ProtocolMessageType.UNKNOWN), this);
+                new HintedLayerInputStream(new RecordLayerHint(TlsMessageType.UNKNOWN), this);
             tempStream.extendStream(dataStream.readAllBytes());
             if (currentInputStream == null) {
                 currentInputStream = tempStream;
@@ -191,8 +190,8 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record, RecordCo
     public byte[] reencrypt(List<Record> records) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         for (Record record : records) {
-            RecordPreparator preparator = record.getRecordPreparator(this.context.getChooser(), getEncryptor(),
-                getCompressor(), record.getContentMessageType());
+            RecordPreparator preparator = record.getRecordPreparator(this.context, getEncryptor(), getCompressor(),
+                record.getContentMessageType());
             preparator.encrypt();
             RecordSerializer serializer = record.getRecordSerializer();
             try {

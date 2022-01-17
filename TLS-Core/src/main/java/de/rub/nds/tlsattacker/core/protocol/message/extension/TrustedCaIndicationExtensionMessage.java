@@ -21,7 +21,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.T
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.TrustedCaIndicationExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.TrustedCaIndicationExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.TrustedCaIndicationExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -79,22 +79,22 @@ public class TrustedCaIndicationExtensionMessage extends ExtensionMessage<Truste
     }
 
     @Override
-    public TrustedCaIndicationExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new TrustedCaIndicationExtensionParser(stream, tlsContext.getConfig());
+    public TrustedCaIndicationExtensionParser getParser(TlsContext context, InputStream stream) {
+        return new TrustedCaIndicationExtensionParser(stream, context.getConfig());
     }
 
     @Override
-    public TrustedCaIndicationExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new TrustedCaIndicationExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+    public TrustedCaIndicationExtensionPreparator getPreparator(TlsContext context) {
+        return new TrustedCaIndicationExtensionPreparator(context.getChooser(), this, getSerializer(context));
     }
 
     @Override
-    public TrustedCaIndicationExtensionSerializer getSerializer(TlsContext tlsContext) {
+    public TrustedCaIndicationExtensionSerializer getSerializer(TlsContext context) {
         return new TrustedCaIndicationExtensionSerializer(this);
     }
 
     @Override
-    public TrustedCaIndicationExtensionHandler getHandler(TlsContext tlsContext) {
-        return new TrustedCaIndicationExtensionHandler(tlsContext);
+    public TrustedCaIndicationExtensionHandler getHandler(TlsContext context) {
+        return new TrustedCaIndicationExtensionHandler(context);
     }
 }

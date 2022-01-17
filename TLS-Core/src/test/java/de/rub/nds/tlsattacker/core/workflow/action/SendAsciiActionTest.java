@@ -10,8 +10,8 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -23,7 +23,7 @@ import org.junit.Test;
 public class SendAsciiActionTest {
 
     private State state;
-    private TlsContext tlsContext;
+    private TcpContext tcpContext;
     private final String expString = "STARTTLS";
     private SendAsciiAction action;
 
@@ -35,8 +35,8 @@ public class SendAsciiActionTest {
         trace.addTlsAction(action);
         state = new State(trace);
 
-        tlsContext = state.getTlsContext();
-        tlsContext.setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
+        tcpContext = state.getContext().getTcpContext();
+        tcpContext.setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
 
     }
 

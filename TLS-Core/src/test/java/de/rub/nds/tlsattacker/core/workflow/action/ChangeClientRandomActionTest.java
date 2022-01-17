@@ -12,7 +12,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.util.tests.SlowTests;
 import java.security.InvalidAlgorithmParameterException;
@@ -39,7 +39,7 @@ public class ChangeClientRandomActionTest {
         trace.addTlsAction(action);
         state = new State(trace);
 
-        tlsContext = state.getTlsContext();
+        tlsContext = state.getContext().getTlsContext();
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
     }
 

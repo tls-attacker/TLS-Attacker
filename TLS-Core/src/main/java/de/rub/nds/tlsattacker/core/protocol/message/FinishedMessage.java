@@ -19,7 +19,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.FinishedHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.FinishedParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.FinishedPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.FinishedSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -73,17 +73,17 @@ public class FinishedMessage extends HandshakeMessage {
     }
 
     @Override
-    public FinishedParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new FinishedParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+    public FinishedParser getParser(TlsContext context, InputStream stream) {
+        return new FinishedParser(stream, context.getChooser().getLastRecordVersion(), context);
     }
 
     @Override
-    public FinishedPreparator getPreparator(TlsContext tlsContext) {
-        return new FinishedPreparator(tlsContext.getChooser(), this);
+    public FinishedPreparator getPreparator(TlsContext context) {
+        return new FinishedPreparator(context.getChooser(), this);
     }
 
     @Override
-    public FinishedSerializer getSerializer(TlsContext tlsContext) {
-        return new FinishedSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+    public FinishedSerializer getSerializer(TlsContext context) {
+        return new FinishedSerializer(this, context.getChooser().getSelectedProtocolVersion());
     }
 }

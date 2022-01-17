@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.layer.LayerStack;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.impl.RecordLayer;
 import de.rub.nds.tlsattacker.core.record.cipher.CipherState;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordAEADCipher;
@@ -29,7 +30,7 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-public class RecordContextTest {
+public class TlsContextTest {
 
     private Config config;
 
@@ -40,7 +41,7 @@ public class RecordContextTest {
     @Before
     public void setUp() {
         config = Config.createConfig();
-        context = new TlsContext(config);
+        context = new TlsContext(new Context(config));
         assertNotNull(context.getChooser());
 
         Security.addProvider(new BouncyCastleProvider());
@@ -55,12 +56,12 @@ public class RecordContextTest {
     }
 
     private void activateEncryptionInContext() {
-        context.setConnection(new OutboundConnection());
+        context.getContext().setConnection(new OutboundConnection());
         context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_GCM_SHA256);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         context.setRandom(new TestRandomData(ArrayConverter.hexStringToByteArray("FFEEDDCC")));
-        context.setLayerStack(new LayerStack(context, new RecordLayer(context)));
+        context.getContext().setLayerStack(new LayerStack(context.getContext(), new RecordLayer(context)));
 
         context.getRecordLayer()
             .updateEncryptionCipher(new RecordAEADCipher(context,

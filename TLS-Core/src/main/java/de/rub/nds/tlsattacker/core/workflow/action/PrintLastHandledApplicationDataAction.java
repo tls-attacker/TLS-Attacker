@@ -50,7 +50,7 @@ public class PrintLastHandledApplicationDataAction extends ConnectionBoundAction
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
-        byte[] rawBytes = state.getTlsContext(getConnectionAlias()).getLastHandledApplicationMessageData();
+        byte[] rawBytes = state.getContext(getConnectionAlias()).getTlsContext().getLastHandledApplicationMessageData();
         if (rawBytes != null) {
             if (stringEncoding != null) {
                 lastHandledApplicationData = new String(rawBytes, Charset.forName(stringEncoding));

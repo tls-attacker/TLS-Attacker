@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.constants.TlsMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
@@ -25,7 +25,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.IOException;
 import java.util.*;
 import javax.xml.bind.annotation.*;
@@ -125,8 +125,8 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
 
         assertAliasesSetProperly();
 
-        TlsContext receiveFromCtx = state.getTlsContext(receiveFromAlias);
-        TlsContext forwardToCtx = state.getTlsContext(forwardToAlias);
+        TlsContext receiveFromCtx = state.getContext(receiveFromAlias).getTlsContext();
+        TlsContext forwardToCtx = state.getContext(forwardToAlias).getTlsContext();
 
         receiveMessages(receiveFromCtx);
         applyMessages(forwardToCtx);
@@ -164,8 +164,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
     /**
      * Apply the contents of the messages to the given TLS context.
      *
-     * @param protocolMessages
-     * @param tlsContext
+     * @param ctx
      */
     private void applyMessages(TlsContext ctx) {
         for (TlsMessage msg : receivedMessages) {
@@ -209,8 +208,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
 
     // TODO: yes, the correct way would be implement equals() for all
     // ProtocolMessages...
-    private boolean checkMessageListsEquals(List<TlsMessage> expectedMessages,
-        List<TlsMessage> actualMessages) {
+    private boolean checkMessageListsEquals(List<TlsMessage> expectedMessages, List<TlsMessage> actualMessages) {
         boolean actualEmpty = true;
         boolean expectedEmpty = true;
         if (actualMessages != null && !actualMessages.isEmpty()) {
@@ -490,12 +488,12 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
     }
 
     @Override
-    public List<ProtocolMessageType> getGoingToReceiveProtocolMessageTypes() {
+    public List<TlsMessageType> getGoingToReceiveProtocolMessageTypes() {
         if (this.messages == null) {
             return new ArrayList<>();
         }
 
-        List<ProtocolMessageType> types = new ArrayList<>();
+        List<TlsMessageType> types = new ArrayList<>();
         for (TlsMessage msg : messages) {
             types.add(msg.getProtocolMessageType());
         }
@@ -519,7 +517,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
     }
 
     @Override
-    public List<ProtocolMessageType> getGoingToSendProtocolMessageTypes() {
+    public List<TlsMessageType> getGoingToSendProtocolMessageTypes() {
         return this.getGoingToReceiveProtocolMessageTypes();
     }
 

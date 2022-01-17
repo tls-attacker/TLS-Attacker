@@ -18,7 +18,7 @@ import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.record.Record;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -227,8 +227,7 @@ public abstract class MessageAction extends ConnectionBoundAction {
         records = new ArrayList<>(processingResults.getResultForLayer(ImplementedLayers.RECORD).getUsedContainers());
     }
 
-    protected void receiveTill(TlsContext tlsContext, List<TlsMessage> tlsMessagesToSend,
-        List<Record> recordsToSend) {
+    protected void receiveTill(TlsContext tlsContext, List<TlsMessage> tlsMessagesToSend, List<Record> recordsToSend) {
         LayerStack layerStack = tlsContext.getLayerStack();
         List<LayerConfiguration> layerConfigurationList = new LinkedList<>();
         layerConfigurationList.add(new SpecificContainerLayerConfiguration(tlsMessagesToSend));

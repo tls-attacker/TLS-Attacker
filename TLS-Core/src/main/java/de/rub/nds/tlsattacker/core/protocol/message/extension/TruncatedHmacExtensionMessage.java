@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.TruncatedHmacExten
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.TruncatedHmacExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.TruncatedHmacExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.TruncatedHmacExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -34,22 +34,22 @@ public class TruncatedHmacExtensionMessage extends ExtensionMessage<TruncatedHma
     }
 
     @Override
-    public TruncatedHmacExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new TruncatedHmacExtensionParser(stream, tlsContext.getConfig());
+    public TruncatedHmacExtensionParser getParser(TlsContext context, InputStream stream) {
+        return new TruncatedHmacExtensionParser(stream, context.getConfig());
     }
 
     @Override
-    public TruncatedHmacExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new TruncatedHmacExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+    public TruncatedHmacExtensionPreparator getPreparator(TlsContext context) {
+        return new TruncatedHmacExtensionPreparator(context.getChooser(), this, getSerializer(context));
     }
 
     @Override
-    public TruncatedHmacExtensionSerializer getSerializer(TlsContext tlsContext) {
+    public TruncatedHmacExtensionSerializer getSerializer(TlsContext context) {
         return new TruncatedHmacExtensionSerializer(this);
     }
 
     @Override
-    public TruncatedHmacExtensionHandler getHandler(TlsContext tlsContext) {
-        return new TruncatedHmacExtensionHandler(tlsContext);
+    public TruncatedHmacExtensionHandler getHandler(TlsContext context) {
+        return new TruncatedHmacExtensionHandler(context);
     }
 }

@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.RecordSizeLimitExt
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.RecordSizeLimitExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.RecordSizeLimitExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.RecordSizeLimitExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -47,13 +47,13 @@ public class RecordSizeLimitExtensionMessage extends ExtensionMessage<RecordSize
     }
 
     @Override
-    public RecordSizeLimitExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new RecordSizeLimitExtensionParser(stream, tlsContext.getConfig());
+    public RecordSizeLimitExtensionParser getParser(TlsContext context, InputStream stream) {
+        return new RecordSizeLimitExtensionParser(stream, context.getConfig());
     }
 
     @Override
-    public RecordSizeLimitExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new RecordSizeLimitExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+    public RecordSizeLimitExtensionPreparator getPreparator(TlsContext context) {
+        return new RecordSizeLimitExtensionPreparator(context.getChooser(), this, getSerializer(context));
     }
 
     @Override
@@ -62,8 +62,8 @@ public class RecordSizeLimitExtensionMessage extends ExtensionMessage<RecordSize
     }
 
     @Override
-    public RecordSizeLimitExtensionHandler getHandler(TlsContext tlsContext) {
-        return new RecordSizeLimitExtensionHandler(tlsContext);
+    public RecordSizeLimitExtensionHandler getHandler(TlsContext context) {
+        return new RecordSizeLimitExtensionHandler(context);
     }
 
 }

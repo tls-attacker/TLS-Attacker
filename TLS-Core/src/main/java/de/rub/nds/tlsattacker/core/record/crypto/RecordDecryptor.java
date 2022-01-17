@@ -9,11 +9,11 @@
 
 package de.rub.nds.tlsattacker.core.record.crypto;
 
-import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.constants.TlsMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
-import de.rub.nds.tlsattacker.core.layer.context.RecordContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
@@ -26,11 +26,11 @@ public class RecordDecryptor extends Decryptor {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final RecordContext context;
+    private final TlsContext context;
 
     private RecordNullCipher nullCipher;
 
-    public RecordDecryptor(RecordCipher recordCipher, RecordContext context) {
+    public RecordDecryptor(RecordCipher recordCipher, TlsContext context) {
         super(recordCipher);
         this.context = context;
         nullCipher = RecordCipherFactory.getNullCipher(context);
@@ -54,7 +54,7 @@ public class RecordDecryptor extends Decryptor {
 
         try {
             if (!context.getChooser().getSelectedProtocolVersion().isTLS13()
-                || record.getContentMessageType() != ProtocolMessageType.CHANGE_CIPHER_SPEC) {
+                || record.getContentMessageType() != TlsMessageType.CHANGE_CIPHER_SPEC) {
                 recordCipher.decrypt(record);
                 recordCipher.getState().increaseReadSequenceNumber();
             } else {

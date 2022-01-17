@@ -27,7 +27,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.keyshare.DragonFlyK
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.state.session.Session;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -45,8 +45,8 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ServerHelloHandler(TlsContext tlsContext) {
-        super(tlsContext);
+    public ServerHelloHandler(TlsContext context) {
+        super(context);
     }
 
     @Override
@@ -148,11 +148,9 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         KeySet serverKeySet = getTls13KeySet(context, context.getActiveServerKeySetType());
 
         if (context.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
-            context.getRecordLayer()
-                .updateDecryptionCipher(RecordCipherFactory.getRecordCipher(context, serverKeySet));
+            context.getRecordLayer().updateDecryptionCipher(RecordCipherFactory.getRecordCipher(context, serverKeySet));
         } else {
-            context.getRecordLayer()
-                .updateEncryptionCipher(RecordCipherFactory.getRecordCipher(context, serverKeySet));
+            context.getRecordLayer().updateEncryptionCipher(RecordCipherFactory.getRecordCipher(context, serverKeySet));
         }
     }
 
@@ -174,15 +172,14 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
     }
 
     private void adjustHandshakeTrafficSecrets(KeyShareStoreEntry keyShareStoreEntry) {
-        HKDFAlgorithm hkdfAlgorithm =
-            AlgorithmResolver.getHKDFAlgorithm(context.getChooser().getSelectedCipherSuite());
+        HKDFAlgorithm hkdfAlgorithm = AlgorithmResolver.getHKDFAlgorithm(context.getChooser().getSelectedCipherSuite());
         DigestAlgorithm digestAlgo = AlgorithmResolver.getDigestAlgorithm(
             context.getChooser().getSelectedProtocolVersion(), context.getChooser().getSelectedCipherSuite());
 
         try {
             int macLength = Mac.getInstance(hkdfAlgorithm.getMacAlgorithm().getJavaName()).getMacLength();
-            byte[] psk = (context.getConfig().isUsePsk() || context.getPsk() != null)
-                ? context.getChooser().getPsk() : new byte[macLength]; // use PSK if available
+            byte[] psk = (context.getConfig().isUsePsk() || context.getPsk() != null) ? context.getChooser().getPsk()
+                : new byte[macLength]; // use PSK if available
             byte[] earlySecret = HKDFunction.extract(hkdfAlgorithm, new byte[0], psk);
             byte[] saltHandshakeSecret = HKDFunction.deriveSecret(hkdfAlgorithm, digestAlgo.getJavaName(), earlySecret,
                 HKDFunction.DERIVED, new byte[0]);

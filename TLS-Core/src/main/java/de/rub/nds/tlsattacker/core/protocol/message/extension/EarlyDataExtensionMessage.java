@@ -13,11 +13,11 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.EarlyDataExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.EarlyDataExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EarlyDataExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.EarlyDataExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -72,17 +72,17 @@ public class EarlyDataExtensionMessage extends ExtensionMessage<EarlyDataExtensi
     }
 
     @Override
-    public EarlyDataExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new EarlyDataExtensionParser(stream, tlsContext.getConfig());
+    public EarlyDataExtensionParser getParser(TlsContext context, InputStream stream) {
+        return new EarlyDataExtensionParser(stream, context.getConfig());
     }
 
     @Override
-    public EarlyDataExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new EarlyDataExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+    public EarlyDataExtensionPreparator getPreparator(TlsContext context) {
+        return new EarlyDataExtensionPreparator(context.getChooser(), this, getSerializer(context));
     }
 
     @Override
-    public EarlyDataExtensionSerializer getSerializer(TlsContext tlsContext) {
+    public EarlyDataExtensionSerializer getSerializer(TlsContext context) {
         return new EarlyDataExtensionSerializer(this);
     }
 

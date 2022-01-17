@@ -12,7 +12,7 @@ package de.rub.nds.tlsattacker.core.protocol.parser;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.EncryptedExtensionsMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -25,9 +25,9 @@ public class EncryptedExtensionsParser extends HandshakeMessageParser<EncryptedE
 
     private ConnectionEndType talkingConnectionEndType;
 
-    public EncryptedExtensionsParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
-        super(stream, HandshakeMessageType.ENCRYPTED_EXTENSIONS, version, tlsContext);
-        this.talkingConnectionEndType = tlsContext.getTalkingConnectionEndType();
+    public EncryptedExtensionsParser(InputStream stream, ProtocolVersion version, TlsContext context) {
+        super(stream, HandshakeMessageType.ENCRYPTED_EXTENSIONS, version, context);
+        this.talkingConnectionEndType = context.getTalkingConnectionEndType();
     }
 
     @Override

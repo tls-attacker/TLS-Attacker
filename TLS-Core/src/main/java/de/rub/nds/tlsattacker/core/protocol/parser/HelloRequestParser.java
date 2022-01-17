@@ -12,7 +12,7 @@ package de.rub.nds.tlsattacker.core.protocol.parser;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloRequestMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,12 +25,12 @@ public class HelloRequestParser extends HandshakeMessageParser<HelloRequestMessa
      * Constructor for the Parser class
      *
      * @param inputStream
-     * @param tlsContext
+     * @param context
      * @param version
      *                    Version of the Protocol
      */
-    public HelloRequestParser(InputStream inputStream, ProtocolVersion version, TlsContext tlsContext) {
-        super(inputStream, HandshakeMessageType.HELLO_REQUEST, version, tlsContext);
+    public HelloRequestParser(InputStream inputStream, ProtocolVersion version, TlsContext context) {
+        super(inputStream, HandshakeMessageType.HELLO_REQUEST, version, context);
     }
 
     /**

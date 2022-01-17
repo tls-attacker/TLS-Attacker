@@ -30,11 +30,16 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * Models a protocol layer (e.g. TCP, HTTP, TLS)
- * @param <Hint> Hint to expect from the upper layer. A hint indicates the message to be received
- * @param <Container> Class that provides parsers, serializers etc. for this layer
- * @param <Context> The context associated with this layer, contains connection data
+ * 
+ * @param <Hint>
+ *                    Hint to expect from the upper layer. A hint indicates the message to be received
+ * @param <Container>
+ *                    Class that provides parsers, serializers etc. for this layer
+ * @param <Context>
+ *                    The context associated with this layer, contains connection data
  */
-public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container extends DataContainer, Context extends LayerContext> {
+public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container extends DataContainer,
+    Context extends LayerContext> {
 
     private Logger LOGGER = LogManager.getLogger();
 

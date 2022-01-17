@@ -19,7 +19,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -71,8 +71,7 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
     }
 
     private void adjustApplicationTrafficSecrets() {
-        HKDFAlgorithm hkdfAlgorithm =
-            AlgorithmResolver.getHKDFAlgorithm(context.getChooser().getSelectedCipherSuite());
+        HKDFAlgorithm hkdfAlgorithm = AlgorithmResolver.getHKDFAlgorithm(context.getChooser().getSelectedCipherSuite());
         DigestAlgorithm digestAlgo = AlgorithmResolver.getDigestAlgorithm(
             context.getChooser().getSelectedProtocolVersion(), context.getChooser().getSelectedCipherSuite());
         try {
@@ -128,11 +127,9 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
         KeySet serverKeySet = getKeySet(context, context.getActiveServerKeySetType());
 
         if (context.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
-            context.getRecordLayer()
-                .updateDecryptionCipher(RecordCipherFactory.getRecordCipher(context, serverKeySet));
+            context.getRecordLayer().updateDecryptionCipher(RecordCipherFactory.getRecordCipher(context, serverKeySet));
         } else {
-            context.getRecordLayer()
-                .updateEncryptionCipher(RecordCipherFactory.getRecordCipher(context, serverKeySet));
+            context.getRecordLayer().updateEncryptionCipher(RecordCipherFactory.getRecordCipher(context, serverKeySet));
         }
     }
 
@@ -142,11 +139,9 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
         KeySet clientKeySet = getKeySet(context, context.getActiveClientKeySetType());
 
         if (context.getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {
-            context.getRecordLayer()
-                .updateDecryptionCipher(RecordCipherFactory.getRecordCipher(context, clientKeySet));
+            context.getRecordLayer().updateDecryptionCipher(RecordCipherFactory.getRecordCipher(context, clientKeySet));
         } else {
-            context.getRecordLayer()
-                .updateEncryptionCipher(RecordCipherFactory.getRecordCipher(context, clientKeySet));
+            context.getRecordLayer().updateEncryptionCipher(RecordCipherFactory.getRecordCipher(context, clientKeySet));
         }
     }
 }

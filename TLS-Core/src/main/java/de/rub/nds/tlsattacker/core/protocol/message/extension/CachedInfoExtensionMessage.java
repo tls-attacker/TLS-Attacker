@@ -16,12 +16,12 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.CachedInfoExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.CachedInfoExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.CachedInfoExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.CachedInfoExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
@@ -85,23 +85,23 @@ public class CachedInfoExtensionMessage extends ExtensionMessage<CachedInfoExten
     }
 
     @Override
-    public CachedInfoExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new CachedInfoExtensionParser(stream, tlsContext.getConfig());
+    public CachedInfoExtensionParser getParser(TlsContext context, InputStream stream) {
+        return new CachedInfoExtensionParser(stream, context.getConfig());
     }
 
     @Override
-    public CachedInfoExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new CachedInfoExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+    public CachedInfoExtensionPreparator getPreparator(TlsContext context) {
+        return new CachedInfoExtensionPreparator(context.getChooser(), this, getSerializer(context));
     }
 
     @Override
-    public CachedInfoExtensionSerializer getSerializer(TlsContext tlsContext) {
+    public CachedInfoExtensionSerializer getSerializer(TlsContext context) {
         return new CachedInfoExtensionSerializer(this);
     }
 
     @Override
-    public CachedInfoExtensionHandler getHandler(TlsContext tlsContext) {
-        return new CachedInfoExtensionHandler(tlsContext);
+    public CachedInfoExtensionHandler getHandler(TlsContext context) {
+        return new CachedInfoExtensionHandler(context);
     }
 
 }

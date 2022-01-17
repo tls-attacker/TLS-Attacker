@@ -19,7 +19,6 @@ public class HttpRequestPreparator extends Preparator<HttpRequestMessage> {
 
     private final HttpContext httpContext;
 
-
     public HttpRequestPreparator(HttpContext httpContext, HttpRequestMessage message) {
         super(httpContext.getChooser(), message);
         this.httpContext = httpContext;

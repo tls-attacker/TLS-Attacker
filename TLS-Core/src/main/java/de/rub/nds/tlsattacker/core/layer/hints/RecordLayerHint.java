@@ -9,14 +9,14 @@
 
 package de.rub.nds.tlsattacker.core.layer.hints;
 
-import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.constants.TlsMessageType;
 import java.util.Objects;
 
 public class RecordLayerHint implements LayerProcessingHint {
 
-    private final ProtocolMessageType type;
+    private final TlsMessageType type;
 
-    public RecordLayerHint(ProtocolMessageType type) {
+    public RecordLayerHint(TlsMessageType type) {
         this.type = type;
     }
 
@@ -37,7 +37,7 @@ public class RecordLayerHint implements LayerProcessingHint {
         return hash;
     }
 
-    public ProtocolMessageType getType() {
+    public TlsMessageType getType() {
         return type;
     }
 }

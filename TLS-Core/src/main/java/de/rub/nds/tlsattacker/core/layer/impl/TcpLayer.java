@@ -18,7 +18,6 @@ import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStreamAdapterStream;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.tcp.TcpTransportHandler;
 import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
@@ -28,9 +27,9 @@ public class TcpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer, 
 
     private static Logger LOGGER = LogManager.getLogger();
 
-    private final TlsContext context;
+    private final TcpContext context;
 
-    public TcpLayer(TlsContext context) {
+    public TcpLayer(TcpContext context) {
         super(ImplementedLayers.TCP);
         this.context = context;
     }

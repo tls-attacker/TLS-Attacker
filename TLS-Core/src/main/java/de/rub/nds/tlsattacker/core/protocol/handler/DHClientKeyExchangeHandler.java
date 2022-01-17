@@ -10,7 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -23,8 +23,8 @@ public class DHClientKeyExchangeHandler<T extends DHClientKeyExchangeMessage> ex
 
     private Logger LOGGER = LogManager.getLogger();
 
-    public DHClientKeyExchangeHandler(TlsContext tlsContext) {
-        super(tlsContext);
+    public DHClientKeyExchangeHandler(TlsContext context) {
+        super(context);
     }
 
     @Override

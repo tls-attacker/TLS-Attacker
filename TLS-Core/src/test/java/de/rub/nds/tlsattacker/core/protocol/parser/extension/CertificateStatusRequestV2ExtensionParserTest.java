@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusR
 import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.RequestItemV2;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.ResponderId;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.RequestItemV2Preparator;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.List;

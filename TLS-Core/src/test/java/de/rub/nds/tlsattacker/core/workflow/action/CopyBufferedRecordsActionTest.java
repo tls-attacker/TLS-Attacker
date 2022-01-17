@@ -10,9 +10,9 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.constants.TlsMessageType;
 import de.rub.nds.tlsattacker.core.record.Record;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.util.LinkedList;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -36,7 +36,7 @@ public class CopyBufferedRecordsActionTest {
         LinkedList<Record> recordBuffer = new LinkedList<>();
 
         record.setProtocolMessageBytes(byteArray);
-        record.setContentMessageType(ProtocolMessageType.HANDSHAKE);
+        record.setContentMessageType(TlsMessageType.HANDSHAKE);
         record.setMaxRecordLengthConfig(18);
         record.setCleanProtocolMessageBytes(new byte[1]);
         record.setCompleteRecordBytes(new byte[1]);

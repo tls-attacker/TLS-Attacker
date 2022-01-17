@@ -12,7 +12,7 @@ package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;

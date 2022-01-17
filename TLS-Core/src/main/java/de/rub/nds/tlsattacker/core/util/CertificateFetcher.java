@@ -64,14 +64,14 @@ public class CertificateFetcher {
         try {
             workflowExecutor.executeWorkflow();
 
-            if (!state.getTlsContext().getTransportHandler().isClosed()) {
-                state.getTlsContext().getTransportHandler().closeConnection();
+            if (!state.getContext().getTcpContext().getTransportHandler().isClosed()) {
+                state.getContext().getTcpContext().getTransportHandler().closeConnection();
             }
         } catch (IOException | WorkflowExecutionException e) {
             LOGGER.warn("Could not fetch ServerCertificate");
             LOGGER.debug(e);
         }
-        return state.getTlsContext().getServerCertificate();
+        return state.getContext().getTlsContext().getServerCertificate();
     }
 
     private CertificateFetcher() {

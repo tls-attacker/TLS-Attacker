@@ -12,9 +12,10 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.dtls.FragmentManager;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.IOException;
 import java.util.Objects;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -37,11 +38,12 @@ public class ResetConnectionAction extends ConnectionBoundAction {
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
-        TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
+        TlsContext tlsContext = state.getContext(getConnectionAlias()).getTlsContext();
+        TcpContext tcpContext = state.getContext(getConnectionAlias()).getTcpContext();
 
         LOGGER.info("Terminating Connection");
         try {
-            tlsContext.getTransportHandler().closeClientConnection();
+            tcpContext.getTransportHandler().closeClientConnection();
         } catch (IOException ex) {
             LOGGER.debug("Could not close client connection", ex);
         }
@@ -73,7 +75,7 @@ public class ResetConnectionAction extends ConnectionBoundAction {
 
         LOGGER.info("Reopening Connection");
         try {
-            tlsContext.getTransportHandler().initialize();
+            tcpContext.getTransportHandler().initialize();
             asPlanned = true;
         } catch (IOException ex) {
             LOGGER.debug("Could not initialize TransportHandler", ex);

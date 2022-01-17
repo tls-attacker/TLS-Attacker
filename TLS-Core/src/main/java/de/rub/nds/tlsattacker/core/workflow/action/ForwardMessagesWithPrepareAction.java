@@ -29,14 +29,12 @@ public class ForwardMessagesWithPrepareAction extends ForwardMessagesAction {
         withPrepare = true;
     }
 
-    public ForwardMessagesWithPrepareAction(String receiveFromAlias, String forwardToAlias,
-        List<TlsMessage> messages) {
+    public ForwardMessagesWithPrepareAction(String receiveFromAlias, String forwardToAlias, List<TlsMessage> messages) {
         super(receiveFromAlias, forwardToAlias, messages);
         withPrepare = true;
     }
 
-    public ForwardMessagesWithPrepareAction(String receiveFromAlias, String forwardToAlias,
-        TlsMessage... messages) {
+    public ForwardMessagesWithPrepareAction(String receiveFromAlias, String forwardToAlias, TlsMessage... messages) {
         super(receiveFromAlias, forwardToAlias, messages);
         withPrepare = true;
     }

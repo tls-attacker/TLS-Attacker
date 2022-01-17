@@ -16,7 +16,6 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.http.header.*;
 import de.rub.nds.tlsattacker.core.layer.DataContainer;
 import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
-import de.rub.nds.tlsattacker.core.layer.http.header.*;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import java.io.InputStream;
 import java.util.LinkedList;
@@ -27,7 +26,8 @@ import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class HttpResponseMessage extends ModifiableVariableHolder implements DataContainer<HttpResponseMessage, HttpContext> {
+public class HttpResponseMessage extends ModifiableVariableHolder
+    implements DataContainer<HttpResponseMessage, HttpContext> {
 
     private ModifiableString responseProtocol;
 

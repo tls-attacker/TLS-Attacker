@@ -447,27 +447,28 @@ public class WorkflowConfigurationFactory {
     }
 
     private WorkflowTrace createHttpsWorkflow() {
-        AliasedConnection connection = getConnection();
-        WorkflowTrace trace = createHandshakeWorkflow(connection);
-        MessageAction action = MessageActionFactory.createAction(config, connection, ConnectionEndType.CLIENT,
-            new HttpRequestMessage(config));
-        trace.addTlsAction(action);
-        action = MessageActionFactory.createAction(config, connection, ConnectionEndType.SERVER,
-            new HttpResponseMessage(config));
-        trace.addTlsAction(action);
-        return trace;
+        // TODO: how to send HTTP messages now that they are now longer TLS Message
+        throw new UnsupportedOperationException("Cannot send HTTP messages yet");
+        /*
+         * AliasedConnection connection = getConnection(); WorkflowTrace trace = createHandshakeWorkflow(connection);
+         * MessageAction action = MessageActionFactory.createAction(config, connection, ConnectionEndType.CLIENT, new
+         * HttpRequestMessage(config)); trace.addTlsAction(action); action = MessageActionFactory.createAction(config,
+         * connection, ConnectionEndType.SERVER, new HttpResponseMessage(config));
+         * 
+         * trace.addTlsAction(action); return trace;
+         */
     }
 
     private WorkflowTrace createHttpsDynamicWorkflow() {
-        AliasedConnection connection = getConnection();
-        WorkflowTrace trace = createDynamicHandshakeWorkflow();
-        MessageAction action = MessageActionFactory.createAction(config, connection, ConnectionEndType.CLIENT,
-            new HttpRequestMessage(config));
-        trace.addTlsAction(action);
-        action = MessageActionFactory.createAction(config, connection, ConnectionEndType.SERVER,
-            new HttpResponseMessage(config));
-        trace.addTlsAction(action);
-        return trace;
+        // TODO: how to send HTTP messages now that they are now longer TLS Message
+        throw new UnsupportedOperationException("Cannot send HTTP messages yet");
+        /*
+         * AliasedConnection connection = getConnection(); WorkflowTrace trace = createDynamicHandshakeWorkflow();
+         * MessageAction action = MessageActionFactory.createAction(config, connection, ConnectionEndType.CLIENT, new
+         * HttpRequestMessage(config)); trace.addTlsAction(action); action = MessageActionFactory.createAction(config,
+         * connection, ConnectionEndType.SERVER, new HttpResponseMessage(config)); trace.addTlsAction(action); return
+         * trace;
+         */
     }
 
     private WorkflowTrace createSimpleMitmProxyWorkflow() {

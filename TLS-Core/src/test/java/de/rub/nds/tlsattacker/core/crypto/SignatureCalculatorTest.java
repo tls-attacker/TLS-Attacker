@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import static de.rub.nds.tlsattacker.core.constants.ProtocolVersion.SSL3;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.security.*;
 import java.security.interfaces.DSAPrivateKey;
 import java.security.interfaces.ECPrivateKey;
@@ -40,7 +40,7 @@ public class SignatureCalculatorTest {
     public void setUp() {
         Security.addProvider(new BouncyCastleProvider());
         context = new TlsContext();
-        context.setConnection(new InboundConnection());
+        context.getContext().setConnection(new InboundConnection());
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         data = new byte[0];
     }

@@ -19,7 +19,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ClientHelloPreparator;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.util.tests.SlowTests;
 import java.security.InvalidAlgorithmParameterException;
@@ -69,7 +69,7 @@ public class RemBufferedChExtensionsActionTest {
         expectedBytes = ArrayConverter.hexStringToByteArray("000B00020100000A000A000800130017001800190017000000160000");
         expectedLength = 28;
 
-        Config config = Config.createConfig();
+        Config config = new Config();
         config.setAddECPointFormatExtension(true);
         config.setAddEllipticCurveExtension(true);
         config.setAddEncryptThenMacExtension(true);
@@ -84,13 +84,12 @@ public class RemBufferedChExtensionsActionTest {
         trace = new WorkflowTrace();
         trace.addTlsAction(action);
         state = new State(config, trace);
-        ctx = state.getTlsContext();
+        ctx = state.getContext().getTlsContext();
         ch = new ClientHelloMessage(config);
         preparator = new ClientHelloPreparator(ctx.getChooser(), ch);
         preparator.prepare();
         expectedMsgLength = ch.getLength().getValue();
         ctx.getMessageBuffer().add(ch);
-        ctx.setLayerStack(new LayerStack(ctx, new RecordLayer(ctx)));
         remove = new ArrayList<>();
     }
 

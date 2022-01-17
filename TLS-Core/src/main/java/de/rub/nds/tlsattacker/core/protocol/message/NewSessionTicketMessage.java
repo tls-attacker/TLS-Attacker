@@ -22,7 +22,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.NewSessionTicketParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.NewSessionTicketPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.NewSessionTicketSerializer;
 import de.rub.nds.tlsattacker.core.state.SessionTicket;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -122,19 +122,19 @@ public class NewSessionTicketMessage extends HandshakeMessage {
     }
 
     @Override
-    public NewSessionTicketParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new NewSessionTicketParser(stream, tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext,
-            tlsContext.getTalkingConnectionEndType());
+    public NewSessionTicketParser getParser(TlsContext context, InputStream stream) {
+        return new NewSessionTicketParser(stream, context.getChooser().getSelectedProtocolVersion(), context,
+            context.getTalkingConnectionEndType());
     }
 
     @Override
-    public NewSessionTicketPreparator getPreparator(TlsContext tlsContext) {
-        return new NewSessionTicketPreparator(tlsContext.getChooser(), this);
+    public NewSessionTicketPreparator getPreparator(TlsContext context) {
+        return new NewSessionTicketPreparator(context.getChooser(), this);
     }
 
     @Override
-    public NewSessionTicketSerializer getSerializer(TlsContext tlsContext) {
-        return new NewSessionTicketSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+    public NewSessionTicketSerializer getSerializer(TlsContext context) {
+        return new NewSessionTicketSerializer(this, context.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

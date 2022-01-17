@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -46,13 +46,13 @@ public class ChangeConnectionTimeoutAction extends ConnectionBoundAction {
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
-        TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
+        TlsContext tlsContext = state.getContext(getConnectionAlias()).getTlsContext();
 
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
         }
-        oldValue = tlsContext.getTransportHandler().getTimeout();
-        tlsContext.getTransportHandler().setTimeout(newValue);
+        oldValue = tlsContext.getContext().getTcpContext().getTransportHandler().getTimeout();
+        tlsContext.getContext().getTcpContext().getTransportHandler().setTimeout(newValue);
         LOGGER.info("Changed Timeout from " + oldValue == null ? oldValue : null + " to " + newValue);
         setExecuted(true);
     }

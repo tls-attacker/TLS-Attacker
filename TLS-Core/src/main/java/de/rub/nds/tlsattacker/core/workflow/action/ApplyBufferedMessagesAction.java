@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
@@ -38,7 +38,7 @@ public class ApplyBufferedMessagesAction extends ConnectionBoundAction {
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
-        TlsContext ctx = state.getTlsContext(connectionAlias);
+        TlsContext ctx = state.getContext(connectionAlias).getTlsContext();
 
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");

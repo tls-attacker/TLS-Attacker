@@ -46,7 +46,7 @@ public class SSL2ClientHelloPreparator extends HandshakeMessagePreparator<SSL2Cl
         // By Default we just set a fixed value with ssl2 cipher suites
         prepareCipherSuites(message);
         byte[] challenge = new byte[16];
-        chooser.getContext().getRandom().nextBytes(challenge);
+        chooser.getContext().getTlsContext().getRandom().nextBytes(challenge);
         prepareChallenge(message, challenge);
         prepareSessionID(message);
         prepareSessionIDLength(message);

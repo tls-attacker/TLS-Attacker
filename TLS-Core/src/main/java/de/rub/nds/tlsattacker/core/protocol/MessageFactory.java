@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.ObjectCreationException;
-import de.rub.nds.tlsattacker.core.layer.context.MessageContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import java.lang.reflect.InvocationTargetException;
@@ -28,7 +28,7 @@ public class MessageFactory {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public static HandshakeMessage generateHandshakeMessage(HandshakeMessageType type, MessageContext context) {
+    public static HandshakeMessage generateHandshakeMessage(HandshakeMessageType type, TlsContext context) {
         switch (type) {
             case CERTIFICATE:
                 return new CertificateMessage();
@@ -74,7 +74,7 @@ public class MessageFactory {
 
     }
 
-    private static ServerKeyExchangeMessage getServerKeyExchangeMessage(MessageContext context) {
+    private static ServerKeyExchangeMessage getServerKeyExchangeMessage(TlsContext context) {
         CipherSuite cs = context.getChooser().getSelectedCipherSuite();
         KeyExchangeAlgorithm algorithm = AlgorithmResolver.getKeyExchangeAlgorithm(cs);
         switch (algorithm) {
@@ -107,7 +107,7 @@ public class MessageFactory {
         }
     }
 
-    private static ClientKeyExchangeMessage getClientKeyExchangeMessage(MessageContext context) {
+    private static ClientKeyExchangeMessage getClientKeyExchangeMessage(TlsContext context) {
         CipherSuite cs = context.getChooser().getSelectedCipherSuite();
         KeyExchangeAlgorithm algorithm = AlgorithmResolver.getKeyExchangeAlgorithm(cs);
         switch (algorithm) {

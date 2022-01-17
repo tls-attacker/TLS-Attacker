@@ -10,7 +10,7 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.util.tests.SlowTests;
 import java.io.IOException;
@@ -44,7 +44,7 @@ public class PrintLastHandledApplicationDataActionTest {
         trace.addTlsAction(action);
         state = new State(trace);
 
-        ctx = state.getTlsContext();
+        ctx = state.getContext().getTlsContext();
         ctx.setLastHandledApplicationMessageData(expectedAppDataEncodedString.getBytes());
     }
 

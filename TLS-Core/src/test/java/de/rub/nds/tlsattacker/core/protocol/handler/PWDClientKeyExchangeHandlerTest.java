@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.protocol.message.PWDClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.preparator.PWDClientKeyExchangePreparator;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.math.BigInteger;
 import static org.junit.Assert.assertArrayEquals;
 import org.junit.Before;

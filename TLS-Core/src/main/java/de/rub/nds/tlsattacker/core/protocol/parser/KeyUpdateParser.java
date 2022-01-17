@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.KeyUpdateRequest;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.KeyUpdateMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,8 +22,8 @@ import org.apache.logging.log4j.Logger;
 public class KeyUpdateParser extends HandshakeMessageParser<KeyUpdateMessage> {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public KeyUpdateParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
-        super(stream, HandshakeMessageType.KEY_UPDATE, version, tlsContext);
+    public KeyUpdateParser(InputStream stream, ProtocolVersion version, TlsContext context) {
+        super(stream, HandshakeMessageType.KEY_UPDATE, version, context);
     }
 
     @Override

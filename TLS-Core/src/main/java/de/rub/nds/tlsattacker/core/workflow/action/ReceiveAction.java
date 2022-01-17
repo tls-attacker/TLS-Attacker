@@ -12,16 +12,17 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.constants.TlsMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.http.HttpRequestMessage;
 import de.rub.nds.tlsattacker.core.http.HttpResponseMessage;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
+import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import java.util.*;
 import javax.xml.bind.annotation.XmlElementRef;
@@ -89,7 +90,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
-        TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
+        TlsContext tlsContext = state.getContext(getConnectionAlias()).getTlsContext();
 
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
@@ -281,7 +282,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         }
     }
 
-    private static boolean receivedMessageCanBeIgnored(TlsMessage msg, Set<ActionOption> actionOptions) {
+    private static boolean receivedMessageCanBeIgnored(ModifiableVariableHolder msg, Set<ActionOption> actionOptions) {
         if (actionOptions.contains(ActionOption.IGNORE_UNEXPECTED_WARNINGS)) {
             if (msg instanceof AlertMessage) {
                 AlertMessage alert = (AlertMessage) msg;
@@ -312,8 +313,8 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     }
 
     @Override
-    public List<ProtocolMessageType> getGoingToReceiveProtocolMessageTypes() {
-        List<ProtocolMessageType> protocolMessageTypes = new ArrayList<>();
+    public List<TlsMessageType> getGoingToReceiveProtocolMessageTypes() {
+        List<TlsMessageType> protocolMessageTypes = new ArrayList<>();
         for (TlsMessage msg : expectedMessages) {
             protocolMessageTypes.add(msg.getProtocolMessageType());
         }

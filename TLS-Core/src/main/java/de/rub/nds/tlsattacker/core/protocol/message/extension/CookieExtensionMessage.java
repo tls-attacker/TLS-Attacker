@@ -15,11 +15,11 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.CookieExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.CookieExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.CookieExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.CookieExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -68,23 +68,23 @@ public class CookieExtensionMessage extends ExtensionMessage<CookieExtensionMess
     }
 
     @Override
-    public CookieExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new CookieExtensionParser(stream, tlsContext.getConfig());
+    public CookieExtensionParser getParser(TlsContext context, InputStream stream) {
+        return new CookieExtensionParser(stream, context.getConfig());
     }
 
     @Override
-    public CookieExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new CookieExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+    public CookieExtensionPreparator getPreparator(TlsContext context) {
+        return new CookieExtensionPreparator(context.getChooser(), this, getSerializer(context));
     }
 
     @Override
-    public CookieExtensionSerializer getSerializer(TlsContext tlsContext) {
+    public CookieExtensionSerializer getSerializer(TlsContext context) {
         return new CookieExtensionSerializer(this);
     }
 
     @Override
-    public CookieExtensionHandler getHandler(TlsContext tlsContext) {
-        return new CookieExtensionHandler(tlsContext);
+    public CookieExtensionHandler getHandler(TlsContext context) {
+        return new CookieExtensionHandler(context);
     }
 
 }

@@ -23,7 +23,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair
 import de.rub.nds.tlsattacker.core.protocol.parser.ClientHelloParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ClientHelloPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ClientHelloSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.Date;
@@ -350,18 +350,18 @@ public class ClientHelloMessage extends HelloMessage {
     }
 
     @Override
-    public ClientHelloParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new ClientHelloParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext,
-            tlsContext.getTalkingConnectionEndType());
+    public ClientHelloParser getParser(TlsContext context, InputStream stream) {
+        return new ClientHelloParser(stream, context.getChooser().getLastRecordVersion(), context,
+            context.getTalkingConnectionEndType());
     }
 
     @Override
-    public ClientHelloPreparator getPreparator(TlsContext tlsContext) {
-        return new ClientHelloPreparator(tlsContext.getChooser(), this);
+    public ClientHelloPreparator getPreparator(TlsContext context) {
+        return new ClientHelloPreparator(context.getChooser(), this);
     }
 
     @Override
-    public ClientHelloSerializer getSerializer(TlsContext tlsContext) {
-        return new ClientHelloSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+    public ClientHelloSerializer getSerializer(TlsContext context) {
+        return new ClientHelloSerializer(this, context.getChooser().getSelectedProtocolVersion());
     }
 }

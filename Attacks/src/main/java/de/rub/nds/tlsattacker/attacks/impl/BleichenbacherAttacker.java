@@ -165,8 +165,10 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
                 erroneousScans = true;
                 LOGGER.warn("Could not extract fingerprint for " + pair.toString());
             } else {
-                testedSuite = pair.getFingerPrintTask().getState().getTlsContext().getSelectedCipherSuite();
-                testedVersion = pair.getFingerPrintTask().getState().getTlsContext().getSelectedProtocolVersion();
+                testedSuite =
+                    pair.getFingerPrintTask().getState().getContext().getTlsContext().getSelectedCipherSuite();
+                testedVersion =
+                    pair.getFingerPrintTask().getState().getContext().getTlsContext().getSelectedProtocolVersion();
                 if (testedSuite == null || testedVersion == null) {
                     LOGGER.fatal("Could not find ServerHello after successful extraction");
                     throw new OracleUnstableException("Fatal Extraction error");
@@ -179,8 +181,9 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         // currently a limitation of our script as the attack vectors are generated statically and not dynamically. We
         // will adjust this in future versions.
         for (FingerprintTaskVectorPair pair : stateVectorPairList) {
-            if (pair.getFingerPrintTask().getState().getTlsContext().getServerRSAModulus() != null && !pair
-                .getFingerPrintTask().getState().getTlsContext().getServerRSAModulus().equals(publicKey.getModulus())) {
+            if (pair.getFingerPrintTask().getState().getContext().getTlsContext().getServerRSAModulus() != null
+                && !pair.getFingerPrintTask().getState().getContext().getTlsContext().getServerRSAModulus()
+                    .equals(publicKey.getModulus())) {
                 throw new OracleUnstableException(
                     "Server sent us a different publickey during the scan. Aborting test");
             }
@@ -271,9 +274,10 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         if (stateVectorPair.getFingerPrintTask().isHasError()) {
             LOGGER.warn("Could not extract fingerprint for " + stateVectorPair.toString());
         } else {
-            testedSuite = stateVectorPair.getFingerPrintTask().getState().getTlsContext().getSelectedCipherSuite();
-            testedVersion =
-                stateVectorPair.getFingerPrintTask().getState().getTlsContext().getSelectedProtocolVersion();
+            testedSuite =
+                stateVectorPair.getFingerPrintTask().getState().getContext().getTlsContext().getSelectedCipherSuite();
+            testedVersion = stateVectorPair.getFingerPrintTask().getState().getContext().getTlsContext()
+                .getSelectedProtocolVersion();
             if (testedSuite == null || testedVersion == null) {
                 LOGGER.fatal("Could not find ServerHello after successful extraction");
                 throw new OracleUnstableException("Fatal Extraction error");

@@ -23,7 +23,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.computations.RSAServerComput
 import de.rub.nds.tlsattacker.core.protocol.parser.RSAServerKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.RSAServerKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.RSAServerKeyExchangeSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -65,18 +65,18 @@ public class RSAServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     }
 
     @Override
-    public RSAServerKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new RSAServerKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+    public RSAServerKeyExchangeParser getParser(TlsContext context, InputStream stream) {
+        return new RSAServerKeyExchangeParser(stream, context.getChooser().getLastRecordVersion(), context);
     }
 
     @Override
-    public RSAServerKeyExchangePreparator getPreparator(TlsContext tlsContext) {
-        return new RSAServerKeyExchangePreparator(tlsContext.getChooser(), this);
+    public RSAServerKeyExchangePreparator getPreparator(TlsContext context) {
+        return new RSAServerKeyExchangePreparator(context.getChooser(), this);
     }
 
     @Override
-    public RSAServerKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
-        return new RSAServerKeyExchangeSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+    public RSAServerKeyExchangeSerializer getSerializer(TlsContext context) {
+        return new RSAServerKeyExchangeSerializer(this, context.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

@@ -22,7 +22,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificateEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificatePair;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -39,8 +39,8 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public CertificateMessageHandler(TlsContext tlsContext) {
-        super(tlsContext);
+    public CertificateMessageHandler(TlsContext context) {
+        super(context);
     }
 
     private CertificateType selectTypeInternally() {
@@ -127,8 +127,7 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
                 }
                 if (message.getCertificateKeyPair() != null) {
                     LOGGER.debug("Found a certificate key pair. Adjusting in context");
-                    message.getCertificateKeyPair().adjustInContext(context,
-                        context.getTalkingConnectionEndType());
+                    message.getCertificateKeyPair().adjustInContext(context, context.getTalkingConnectionEndType());
                 } else if (cert != null) {
                     if (cert.isEmpty()) {
                         LOGGER.debug("Certificate is empty - no adjustments");
@@ -136,8 +135,7 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
                         LOGGER.debug("No CertificatekeyPair found, creating new one");
                         CertificateKeyPair pair = new CertificateKeyPair(cert);
                         message.setCertificateKeyPair(pair);
-                        message.getCertificateKeyPair().adjustInContext(context,
-                            context.getTalkingConnectionEndType());
+                        message.getCertificateKeyPair().adjustInContext(context, context.getTalkingConnectionEndType());
                     }
 
                 } else {

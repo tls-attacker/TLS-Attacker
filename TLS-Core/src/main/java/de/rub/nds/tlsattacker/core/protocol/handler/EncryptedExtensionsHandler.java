@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.Handler;
 import de.rub.nds.tlsattacker.core.protocol.message.EncryptedExtensionsMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -25,8 +25,8 @@ public class EncryptedExtensionsHandler extends HandshakeMessageHandler<Encrypte
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public EncryptedExtensionsHandler(TlsContext tlsContext) {
-        super(tlsContext);
+    public EncryptedExtensionsHandler(TlsContext context) {
+        super(context);
     }
 
     @Override

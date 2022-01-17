@@ -25,7 +25,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.computations.PWDComputations
 import de.rub.nds.tlsattacker.core.protocol.parser.PWDServerKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.PWDServerKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.PWDServerKeyExchangeSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -84,19 +84,19 @@ public class PWDServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     }
 
     @Override
-    public PWDServerKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new PWDServerKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(),
-            AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite()), tlsContext);
+    public PWDServerKeyExchangeParser getParser(TlsContext context, InputStream stream) {
+        return new PWDServerKeyExchangeParser(stream, context.getChooser().getLastRecordVersion(),
+            AlgorithmResolver.getKeyExchangeAlgorithm(context.getChooser().getSelectedCipherSuite()), context);
     }
 
     @Override
-    public PWDServerKeyExchangePreparator getPreparator(TlsContext tlsContext) {
-        return new PWDServerKeyExchangePreparator(tlsContext.getChooser(), this);
+    public PWDServerKeyExchangePreparator getPreparator(TlsContext context) {
+        return new PWDServerKeyExchangePreparator(context.getChooser(), this);
     }
 
     @Override
-    public PWDServerKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
-        return new PWDServerKeyExchangeSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+    public PWDServerKeyExchangeSerializer getSerializer(TlsContext context) {
+        return new PWDServerKeyExchangeSerializer(this, context.getChooser().getSelectedProtocolVersion());
     }
 
     public ModifiableInteger getSaltLength() {

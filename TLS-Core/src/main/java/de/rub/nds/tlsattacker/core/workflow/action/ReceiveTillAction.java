@@ -11,14 +11,14 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.constants.TlsMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -52,7 +52,7 @@ public class ReceiveTillAction extends MessageAction implements ReceivingAction 
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
-        TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
+        TlsContext tlsContext = state.getContext(getConnectionAlias()).getTlsContext();
 
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
@@ -221,8 +221,8 @@ public class ReceiveTillAction extends MessageAction implements ReceivingAction 
     }
 
     @Override
-    public List<ProtocolMessageType> getGoingToReceiveProtocolMessageTypes() {
-        return new ArrayList<ProtocolMessageType>() {
+    public List<TlsMessageType> getGoingToReceiveProtocolMessageTypes() {
+        return new ArrayList<TlsMessageType>() {
             {
                 add(waitTillMessage.getProtocolMessageType());
             }

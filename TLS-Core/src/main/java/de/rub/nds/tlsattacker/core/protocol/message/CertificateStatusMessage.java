@@ -22,7 +22,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.CertificateStatusHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.CertificateStatusParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateStatusPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateStatusSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -57,18 +57,18 @@ public class CertificateStatusMessage extends HandshakeMessage {
     }
 
     @Override
-    public CertificateStatusParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new CertificateStatusParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+    public CertificateStatusParser getParser(TlsContext context, InputStream stream) {
+        return new CertificateStatusParser(stream, context.getChooser().getLastRecordVersion(), context);
     }
 
     @Override
-    public CertificateStatusPreparator getPreparator(TlsContext tlsContext) {
-        return new CertificateStatusPreparator(tlsContext.getChooser(), this);
+    public CertificateStatusPreparator getPreparator(TlsContext context) {
+        return new CertificateStatusPreparator(context.getChooser(), this);
     }
 
     @Override
-    public CertificateStatusSerializer getSerializer(TlsContext tlsContext) {
-        return new CertificateStatusSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+    public CertificateStatusSerializer getSerializer(TlsContext context) {
+        return new CertificateStatusSerializer(this, context.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

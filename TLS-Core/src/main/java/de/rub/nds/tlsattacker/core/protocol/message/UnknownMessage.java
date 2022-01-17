@@ -11,13 +11,13 @@ package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.constants.TlsMessageType;
 import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
 import de.rub.nds.tlsattacker.core.protocol.handler.UnknownMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.UnknownMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.UnknownMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.UnknownMessageSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -26,23 +26,23 @@ public class UnknownMessage extends TlsMessage {
 
     private byte[] dataConfig;
 
-    private ProtocolMessageType recordContentMessageType;
+    private TlsMessageType recordContentMessageType;
 
     public UnknownMessage() {
-        this.recordContentMessageType = ProtocolMessageType.UNKNOWN;
-        protocolMessageType = ProtocolMessageType.UNKNOWN;
+        this.recordContentMessageType = TlsMessageType.UNKNOWN;
+        protocolMessageType = TlsMessageType.UNKNOWN;
     }
 
     public UnknownMessage(Config config) {
         super();
-        this.recordContentMessageType = ProtocolMessageType.UNKNOWN;
-        protocolMessageType = ProtocolMessageType.HANDSHAKE;
+        this.recordContentMessageType = TlsMessageType.UNKNOWN;
+        protocolMessageType = TlsMessageType.HANDSHAKE;
     }
 
-    public UnknownMessage(Config config, ProtocolMessageType recordContentMessageType) {
+    public UnknownMessage(Config config, TlsMessageType recordContentMessageType) {
         super();
         this.recordContentMessageType = recordContentMessageType;
-        protocolMessageType = ProtocolMessageType.UNKNOWN;
+        protocolMessageType = TlsMessageType.UNKNOWN;
     }
 
     public byte[] getDataConfig() {
@@ -53,11 +53,11 @@ public class UnknownMessage extends TlsMessage {
         this.dataConfig = dataConfig;
     }
 
-    public ProtocolMessageType getRecordContentMessageType() {
+    public TlsMessageType getRecordContentMessageType() {
         return recordContentMessageType;
     }
 
-    public void setRecordContentMessageType(ProtocolMessageType recordContentMessageType) {
+    public void setRecordContentMessageType(TlsMessageType recordContentMessageType) {
         this.recordContentMessageType = recordContentMessageType;
     }
 
@@ -72,19 +72,19 @@ public class UnknownMessage extends TlsMessage {
     }
 
     @Override
-    public UnknownMessageParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new UnknownMessageParser(stream, tlsContext.getChooser().getLastRecordVersion(),
-            recordContentMessageType, tlsContext.getConfig());
+    public UnknownMessageParser getParser(TlsContext context, InputStream stream) {
+        return new UnknownMessageParser(stream, context.getChooser().getLastRecordVersion(), recordContentMessageType,
+            context.getConfig());
     }
 
     @Override
-    public UnknownMessagePreparator getPreparator(TlsContext tlsContext) {
-        return new UnknownMessagePreparator(tlsContext.getChooser(), this);
+    public UnknownMessagePreparator getPreparator(TlsContext context) {
+        return new UnknownMessagePreparator(context.getChooser(), this);
     }
 
     @Override
-    public UnknownMessageSerializer getSerializer(TlsContext tlsContext) {
-        return new UnknownMessageSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+    public UnknownMessageSerializer getSerializer(TlsContext context) {
+        return new UnknownMessageSerializer(this, context.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

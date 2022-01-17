@@ -19,7 +19,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.PWDClearExtensionH
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.PWDClearExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PWDClearExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PWDClearExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -68,22 +68,22 @@ public class PWDClearExtensionMessage extends ExtensionMessage<PWDClearExtension
     }
 
     @Override
-    public PWDClearExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new PWDClearExtensionParser(stream, tlsContext.getConfig());
+    public PWDClearExtensionParser getParser(TlsContext context, InputStream stream) {
+        return new PWDClearExtensionParser(stream, context.getConfig());
     }
 
     @Override
-    public PWDClearExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new PWDClearExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+    public PWDClearExtensionPreparator getPreparator(TlsContext context) {
+        return new PWDClearExtensionPreparator(context.getChooser(), this, getSerializer(context));
     }
 
     @Override
-    public PWDClearExtensionSerializer getSerializer(TlsContext tlsContext) {
+    public PWDClearExtensionSerializer getSerializer(TlsContext context) {
         return new PWDClearExtensionSerializer(this);
     }
 
     @Override
-    public PWDClearExtensionHandler getHandler(TlsContext tlsContext) {
-        return new PWDClearExtensionHandler(tlsContext);
+    public PWDClearExtensionHandler getHandler(TlsContext context) {
+        return new PWDClearExtensionHandler(context);
     }
 }

@@ -19,7 +19,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.UnknownExtensionHa
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.UnknownExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.UnknownExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.UnknownExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -86,22 +86,22 @@ public class UnknownExtensionMessage extends ExtensionMessage<UnknownExtensionMe
     }
 
     @Override
-    public UnknownExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new UnknownExtensionParser(stream, tlsContext.getConfig());
+    public UnknownExtensionParser getParser(TlsContext context, InputStream stream) {
+        return new UnknownExtensionParser(stream, context.getConfig());
     }
 
     @Override
-    public UnknownExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new UnknownExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+    public UnknownExtensionPreparator getPreparator(TlsContext context) {
+        return new UnknownExtensionPreparator(context.getChooser(), this, getSerializer(context));
     }
 
     @Override
-    public UnknownExtensionSerializer getSerializer(TlsContext tlsContext) {
+    public UnknownExtensionSerializer getSerializer(TlsContext context) {
         return new UnknownExtensionSerializer(this);
     }
 
     @Override
-    public UnknownExtensionHandler getHandler(TlsContext tlsContext) {
-        return new UnknownExtensionHandler(tlsContext);
+    public UnknownExtensionHandler getHandler(TlsContext context) {
+        return new UnknownExtensionHandler(context);
     }
 }

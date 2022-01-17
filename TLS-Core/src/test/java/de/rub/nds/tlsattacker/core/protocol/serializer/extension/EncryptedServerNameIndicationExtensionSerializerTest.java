@@ -15,8 +15,12 @@ import de.rub.nds.tlsattacker.core.constants.ChooserType;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import de.rub.nds.tlsattacker.core.layer.LayerStack;
+import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
+import de.rub.nds.tlsattacker.core.layer.constant.LayerStackType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNameIndicationExtensionMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
 import static org.junit.Assert.assertArrayEquals;
@@ -30,8 +34,10 @@ public class EncryptedServerNameIndicationExtensionSerializerTest {
 
     @Before
     public void setUp() {
-        Config config = Config.createConfig();
-        chooser = ChooserFactory.getChooser(ChooserType.DEFAULT, new TlsContext(config), config);
+        Config config = new Config();
+        Context outerContext = new Context(config);
+        LayerStack layerStack = LayerStackFactory.createLayerStack(LayerStackType.TLS, outerContext);
+        chooser = ChooserFactory.getChooser(ChooserType.DEFAULT, outerContext, config);
     }
 
     @Test

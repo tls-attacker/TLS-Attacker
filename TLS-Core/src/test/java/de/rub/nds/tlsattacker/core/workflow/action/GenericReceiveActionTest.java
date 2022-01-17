@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
 import de.rub.nds.tlsattacker.core.layer.constant.LayerStackType;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -49,10 +49,9 @@ public class GenericReceiveActionTest {
         trace.addTlsAction(action);
         state = new State(trace);
 
-        tlsContext = state.getTlsContext();
-        tlsContext.setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
+        tlsContext = state.getContext().getTlsContext();
+        tlsContext.getContext().getTcpContext().setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
-        tlsContext.setLayerStack(LayerStackFactory.createLayerStack(LayerStackType.TLS, tlsContext));
     }
 
     /**
@@ -60,7 +59,7 @@ public class GenericReceiveActionTest {
      */
     @Test
     public void testExecute() throws Exception {
-        ((FakeTransportHandler) tlsContext.getTransportHandler())
+        ((FakeTransportHandler) tlsContext.getContext().getTcpContext().getTransportHandler())
             .setFetchableByte(new byte[] { 0x15, 0x03, 0x03, 0x00, 0x02, 0x02, 50 });
         action.execute(state);
         assertTrue(action.executedAsPlanned());

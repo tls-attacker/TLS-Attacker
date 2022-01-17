@@ -12,7 +12,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -58,8 +58,8 @@ public abstract class CopyContextFieldAction extends TlsAction {
             throw new WorkflowExecutionException("Cannot execute at least one context alias is null!");
         }
 
-        TlsContext src = state.getTlsContext(srcConnectionAlias);
-        TlsContext dst = state.getTlsContext(dstConnectionAlias);
+        TlsContext src = state.getContext(srcConnectionAlias).getTlsContext();
+        TlsContext dst = state.getContext(dstConnectionAlias).getTlsContext();
 
         copyField(src, dst);
         setExecuted(true);

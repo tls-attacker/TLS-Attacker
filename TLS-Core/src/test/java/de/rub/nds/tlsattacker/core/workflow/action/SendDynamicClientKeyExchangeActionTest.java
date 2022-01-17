@@ -17,8 +17,8 @@ import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
 import de.rub.nds.tlsattacker.core.layer.constant.LayerStackType;
 import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -35,7 +35,7 @@ import org.junit.Test;
 public class SendDynamicClientKeyExchangeActionTest {
 
     private State state;
-    private TlsContext tlsContext;
+    private Context context;
     private Config config;
 
     private SendDynamicClientKeyExchangeAction action;
@@ -53,10 +53,10 @@ public class SendDynamicClientKeyExchangeActionTest {
         trace.addTlsAction(action);
         state = new State(config, trace);
 
-        tlsContext = state.getTlsContext();
-        tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
-        tlsContext.setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
-        tlsContext.setLayerStack(LayerStackFactory.createLayerStack(LayerStackType.TLS, tlsContext));
+        context = state.getContext();
+        context.getTlsContext().setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
+        context.getTcpContext().setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
+        context.setLayerStack(LayerStackFactory.createLayerStack(LayerStackType.TLS, context));
     }
 
     @Test

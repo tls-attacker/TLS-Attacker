@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,8 +24,8 @@ public class SSL2ClientHelloParser extends SSL2HandshakeMessageParser<SSL2Client
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SSL2ClientHelloParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
-        super(stream, HandshakeMessageType.SSL2_CLIENT_HELLO, version, tlsContext);
+    public SSL2ClientHelloParser(InputStream stream, ProtocolVersion version, TlsContext context) {
+        super(stream, HandshakeMessageType.SSL2_CLIENT_HELLO, version, context);
     }
 
     @Override

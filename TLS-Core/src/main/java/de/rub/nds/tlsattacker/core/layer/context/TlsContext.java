@@ -12,13 +12,11 @@ package de.rub.nds.tlsattacker.core.layer.context;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.BadRandom;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.crypto.MessageDigestCollector;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.dtls.FragmentManager;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.core.layer.LayerStack;
 import de.rub.nds.tlsattacker.core.layer.impl.RecordLayer;
 import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
@@ -31,6 +29,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.Re
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
+import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.Keylogfile;
 import de.rub.nds.tlsattacker.core.state.session.IdSession;
 import de.rub.nds.tlsattacker.core.state.session.Session;
@@ -38,7 +37,6 @@ import de.rub.nds.tlsattacker.core.state.session.TicketSession;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.socket.SocketState;
 import java.math.BigInteger;
 import java.util.*;
@@ -49,20 +47,11 @@ import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.tls.Certificate;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public class RecordContext extends LayerContext{
+public class TlsContext extends LayerContext {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /**
-     * TLS-Attacker related configurations.
-     */
-    private Config config;
-
-    private LayerStack layerStack;
-
     private List<Session> sessionList;
-
-    private HttpContext httpContext;
 
     private Keylogfile keylogfile;
 
@@ -220,8 +209,6 @@ public class RecordContext extends LayerContext{
      * Collects messages for computation of the Finished and CertificateVerify hashes
      */
     private MessageDigestCollector digest;
-
-    private TransportHandler transportHandler;
 
     private byte[] dtlsCookie;
 
@@ -613,47 +600,36 @@ public class RecordContext extends LayerContext{
 
     private Integer outboundRecordSizeLimit;
 
-    public RecordContext() {
-        this(Config.createConfig());
+    public TlsContext() {
+        this(new Context(new Config()));
+    }
+
+    public TlsContext(Config config) {
+        this(new Context(config));
     }
 
     /**
      * This constructor assumes that the config holds exactly one connection end. This is usually used when working with
      * the default connection end in single context scenarios.
      *
-     * @param config
-     *               The Config for which the TlsContext should be created
+     * @param context
+     *                The outer context that contains this layer specific context
      */
-    public RecordContext(Config config) {
-        RunningModeType mode = config.getDefaultRunningMode();
+    public TlsContext(Context context) {
+        super(context);
+        context.setTlsContext(this);
+        RunningModeType mode = getConfig().getDefaultRunningMode();
         if (null == mode) {
             throw new ConfigurationException("Cannot create connection, running mode not set");
         } else {
-            switch (mode) {
-                case CLIENT:
-                    init(config, config.getDefaultClientConnection());
-                    break;
-                case SERVER:
-                    init(config, config.getDefaultServerConnection());
-                    break;
-                default:
-                    throw new ConfigurationException(
-                            "Cannot create connection for unknown running mode " + "'" + mode + "'");
-            }
+            init();
         }
     }
 
-    public RecordContext(Config config, AliasedConnection connection) {
-        init(config, connection);
-    }
-
-    private void init(Config config, AliasedConnection connection) {
-        this.config = config;
+    private void init() {
         digest = new MessageDigestCollector();
-        this.connection = connection;
-        httpContext = new HttpContext();
         sessionList = new LinkedList<>();
-        if (config.isStealthMode()) {
+        if (getConfig().isStealthMode()) {
             random = new Random();
         } else {
             random = new Random(0);
@@ -662,24 +638,16 @@ public class RecordContext extends LayerContext{
         recordBuffer = new LinkedList<>();
         fragmentBuffer = new LinkedList<>();
         dtlsReceivedHandshakeMessageSequences = new HashSet<>();
-        globalDtlsFragmentManager = new FragmentManager(config);
+        globalDtlsFragmentManager = new FragmentManager(getConfig());
         dtlsReceivedChangeCipherSpecEpochs = new HashSet<>();
         keylogfile = new Keylogfile(this);
     }
 
     public Chooser getChooser() {
         if (chooser == null) {
-            chooser = ChooserFactory.getChooser(config.getChooserType(), this.getContext(), config);
+            chooser = ChooserFactory.getChooser(getConfig().getChooserType(), this.getContext(), getConfig());
         }
         return chooser;
-    }
-
-    public LayerStack getLayerStack() {
-        return layerStack;
-    }
-
-    public void setLayerStack(LayerStack layerStack) {
-        this.layerStack = layerStack;
     }
 
     public CertificateType getSelectedClientCertificateType() {
@@ -752,14 +720,6 @@ public class RecordContext extends LayerContext{
 
     public void setFragmentBuffer(LinkedList<DtlsHandshakeMessageFragment> fragmentBuffer) {
         this.fragmentBuffer = fragmentBuffer;
-    }
-
-    public HttpContext getHttpContext() {
-        return httpContext;
-    }
-
-    public void setHttpContext(HttpContext httpContext) {
-        this.httpContext = httpContext;
     }
 
     public Session getIdSession(byte[] sessionId) {
@@ -1146,14 +1106,14 @@ public class RecordContext extends LayerContext{
     }
 
     public void setClientSupportedSignatureAndHashAlgorithms(
-            List<SignatureAndHashAlgorithm> clientSupportedSignatureAndHashAlgorithms) {
+        List<SignatureAndHashAlgorithm> clientSupportedSignatureAndHashAlgorithms) {
         this.clientSupportedSignatureAndHashAlgorithms = clientSupportedSignatureAndHashAlgorithms;
     }
 
     public void setClientSupportedSignatureAndHashAlgorithms(
-            SignatureAndHashAlgorithm... clientSupportedSignatureAndHashAlgorithms) {
+        SignatureAndHashAlgorithm... clientSupportedSignatureAndHashAlgorithms) {
         this.clientSupportedSignatureAndHashAlgorithms =
-                new ArrayList(Arrays.asList(clientSupportedSignatureAndHashAlgorithms));
+            new ArrayList(Arrays.asList(clientSupportedSignatureAndHashAlgorithms));
     }
 
     public List<SNIEntry> getClientSNIEntryList() {
@@ -1293,14 +1253,14 @@ public class RecordContext extends LayerContext{
     }
 
     public void setServerSupportedSignatureAndHashAlgorithms(
-            List<SignatureAndHashAlgorithm> serverSupportedSignatureAndHashAlgorithms) {
+        List<SignatureAndHashAlgorithm> serverSupportedSignatureAndHashAlgorithms) {
         this.serverSupportedSignatureAndHashAlgorithms = serverSupportedSignatureAndHashAlgorithms;
     }
 
     public void setServerSupportedSignatureAndHashAlgorithms(
-            SignatureAndHashAlgorithm... serverSupportedSignatureAndHashAlgorithms) {
+        SignatureAndHashAlgorithm... serverSupportedSignatureAndHashAlgorithms) {
         this.serverSupportedSignatureAndHashAlgorithms =
-                new ArrayList(Arrays.asList(serverSupportedSignatureAndHashAlgorithms));
+            new ArrayList(Arrays.asList(serverSupportedSignatureAndHashAlgorithms));
     }
 
     public ProtocolVersion getSelectedProtocolVersion() {
@@ -1465,16 +1425,8 @@ public class RecordContext extends LayerContext{
         this.dtlsCookie = dtlsCookie;
     }
 
-    public TransportHandler getTransportHandler() {
-        return transportHandler;
-    }
-
-    public void setTransportHandler(TransportHandler transportHandler) {
-        this.transportHandler = transportHandler;
-    }
-
     public RecordLayer getRecordLayer() {
-        return (RecordLayer) layerStack.getLayer(RecordLayer.class);
+        return (RecordLayer) getLayerStack().getLayer(RecordLayer.class);
     }
 
     public PRFAlgorithm getPrfAlgorithm() {
@@ -1598,7 +1550,7 @@ public class RecordContext extends LayerContext{
     }
 
     public void setCertificateStatusRequestExtensionRequestType(
-            CertificateStatusRequestType certificateStatusRequestExtensionRequestType) {
+        CertificateStatusRequestType certificateStatusRequestExtensionRequestType) {
         this.certificateStatusRequestExtensionRequestType = certificateStatusRequestExtensionRequestType;
     }
 
@@ -1607,7 +1559,7 @@ public class RecordContext extends LayerContext{
     }
 
     public void
-    setCertificateStatusRequestExtensionResponderIDList(byte[] certificateStatusRequestExtensionResponderIDList) {
+        setCertificateStatusRequestExtensionResponderIDList(byte[] certificateStatusRequestExtensionResponderIDList) {
         this.certificateStatusRequestExtensionResponderIDList = certificateStatusRequestExtensionResponderIDList;
     }
 
@@ -1616,7 +1568,7 @@ public class RecordContext extends LayerContext{
     }
 
     public void
-    setCertificateStatusRequestExtensionRequestExtension(byte[] certificateStatusRequestExtensionRequestExtension) {
+        setCertificateStatusRequestExtensionRequestExtension(byte[] certificateStatusRequestExtensionRequestExtension) {
         this.certificateStatusRequestExtensionRequestExtension = certificateStatusRequestExtensionRequestExtension;
     }
 
@@ -1649,7 +1601,7 @@ public class RecordContext extends LayerContext{
     }
 
     public void setSecureRealTimeTransportProtocolProtectionProfiles(
-            List<SrtpProtectionProfiles> secureRealTimeTransportProtocolProtectionProfiles) {
+        List<SrtpProtectionProfiles> secureRealTimeTransportProtocolProtectionProfiles) {
         this.secureRealTimeTransportProtocolProtectionProfiles = secureRealTimeTransportProtocolProtectionProfiles;
     }
 
@@ -1778,7 +1730,7 @@ public class RecordContext extends LayerContext{
     }
 
     public Config getConfig() {
-        return config;
+        return getContext().getConfig();
     }
 
     public ProtocolVersion getHighestProtocolVersion() {
@@ -1882,24 +1834,6 @@ public class RecordContext extends LayerContext{
 
     public void setHttpsCookieValue(String httpsCookieValue) {
         this.httpsCookieValue = httpsCookieValue;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder info = new StringBuilder();
-        if (connection == null) {
-            info.append("TlsContext{ (no connection set) }");
-        } else {
-            info.append("TlsContext{'").append(connection.getAlias()).append("'");
-            if (connection.getLocalConnectionEndType() == ConnectionEndType.SERVER) {
-                info.append(", listening on port ").append(connection.getPort());
-            } else {
-                info.append(", connected to ").append(connection.getHostname()).append(":")
-                        .append(connection.getPort());
-            }
-            info.append("}");
-        }
-        return info.toString();
     }
 
     /**
@@ -2406,7 +2340,7 @@ public class RecordContext extends LayerContext{
     }
 
     public boolean isRecordSizeLimitExtensionActive() {
-        return outboundRecordSizeLimit != null || config.isAddRecordSizeLimitExtension();
+        return outboundRecordSizeLimit != null || getConfig().isAddRecordSizeLimitExtension();
     }
 
     public Boolean isRecordEncryptionActive() {
@@ -2454,7 +2388,7 @@ public class RecordContext extends LayerContext{
 
         // record_size_limit extension applies only to encrypted records
         if (!isRecordSizeLimitExtensionActive() || !isRecordEncryptionActive()) {
-            return config.getDefaultMaxRecordData();
+            return getConfig().getDefaultMaxRecordData();
         }
 
         Integer maxRecordDataSize = recordSizeLimit;
@@ -2462,7 +2396,7 @@ public class RecordContext extends LayerContext{
         // -> we need to reserve space for the content type (1 byte) and possibly additional padding
         if (chooser.getSelectedProtocolVersion().isTLS13()) {
             maxRecordDataSize -= 1;
-            maxRecordDataSize -= config.getDefaultAdditionalPadding();
+            maxRecordDataSize -= getConfig().getDefaultAdditionalPadding();
         }
         // poorly configured combination of record_size_limit extension and TLS 1.3 additional padding
         if (maxRecordDataSize < 0) {

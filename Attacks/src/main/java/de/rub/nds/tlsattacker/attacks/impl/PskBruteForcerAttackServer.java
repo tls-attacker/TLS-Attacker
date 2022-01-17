@@ -115,7 +115,7 @@ public class PskBruteForcerAttackServer extends Attacker<PskBruteForcerAttackSer
             WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getWorkflowExecutorType(), state);
         executor.executeWorkflow();
         if (WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.SERVER_HELLO, trace)) {
-            return state.getTlsContext().getSelectedCipherSuite();
+            return state.getContext().getTlsContext().getSelectedCipherSuite();
         } else {
             CONSOLE.info(
                 "Did not receive a ServerHello. The Server does not seem to support any of the tested PSK cipher suites.");

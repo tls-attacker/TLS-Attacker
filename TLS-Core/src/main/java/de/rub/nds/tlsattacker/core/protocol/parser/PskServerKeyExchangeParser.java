@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.PskServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,11 +30,11 @@ public class PskServerKeyExchangeParser extends ServerKeyExchangeParser<PskServe
      *
      * @param stream
      * @param version
-     *                   Version of the Protocol
-     * @param tlsContext
+     *                Version of the Protocol
+     * @param context
      */
-    public PskServerKeyExchangeParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
-        super(stream, HandshakeMessageType.SERVER_KEY_EXCHANGE, version, tlsContext);
+    public PskServerKeyExchangeParser(InputStream stream, ProtocolVersion version, TlsContext context) {
+        super(stream, HandshakeMessageType.SERVER_KEY_EXCHANGE, version, context);
         this.version = version;
     }
 

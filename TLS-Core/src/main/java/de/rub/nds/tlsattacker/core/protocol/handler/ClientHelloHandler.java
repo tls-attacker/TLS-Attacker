@@ -19,7 +19,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,8 +32,8 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ClientHelloHandler(TlsContext tlsContext) {
-        super(tlsContext);
+    public ClientHelloHandler(TlsContext context) {
+        super(context);
     }
 
     @Override
@@ -159,8 +159,8 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
     private void adjustEarlyTrafficSecret() throws CryptoException {
         HKDFAlgorithm hkdfAlgorithm =
             AlgorithmResolver.getHKDFAlgorithm(context.getChooser().getEarlyDataCipherSuite());
-        DigestAlgorithm digestAlgo = AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS13,
-            context.getChooser().getEarlyDataCipherSuite());
+        DigestAlgorithm digestAlgo =
+            AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS13, context.getChooser().getEarlyDataCipherSuite());
 
         byte[] earlySecret = HKDFunction.extract(hkdfAlgorithm, new byte[0], context.getChooser().getEarlyDataPsk());
         context.setEarlySecret(earlySecret);
@@ -176,8 +176,8 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
             context.setActiveClientKeySetType(Tls13KeySetType.EARLY_TRAFFIC_SECRETS);
             LOGGER.debug("Setting cipher for client to use early secrets");
 
-            KeySet clientKeySet = KeySetGenerator.generateKeySet(context, ProtocolVersion.TLS13,
-                context.getActiveClientKeySetType());
+            KeySet clientKeySet =
+                KeySetGenerator.generateKeySet(context, ProtocolVersion.TLS13, context.getActiveClientKeySetType());
 
             if (context.getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {
                 context.getRecordLayer().updateDecryptionCipher(RecordCipherFactory.getRecordCipher(context,

@@ -21,7 +21,7 @@ import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.security.NoSuchAlgorithmException;
 import javax.crypto.Mac;
@@ -32,8 +32,8 @@ public class KeyUpdateHandler extends HandshakeMessageHandler<KeyUpdateMessage> 
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public KeyUpdateHandler(TlsContext tlsContext) {
-        super(tlsContext);
+    public KeyUpdateHandler(TlsContext context) {
+        super(context);
     }
 
     @Override
@@ -51,8 +51,7 @@ public class KeyUpdateHandler extends HandshakeMessageHandler<KeyUpdateMessage> 
     }
 
     private void adjustApplicationTrafficSecrets() {
-        HKDFAlgorithm hkdfAlgortihm =
-            AlgorithmResolver.getHKDFAlgorithm(context.getChooser().getSelectedCipherSuite());
+        HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(context.getChooser().getSelectedCipherSuite());
 
         try {
             Mac mac = Mac.getInstance(hkdfAlgortihm.getMacAlgorithm().getJavaName());
@@ -138,8 +137,7 @@ public class KeyUpdateHandler extends HandshakeMessageHandler<KeyUpdateMessage> 
                 RecordCipher recordCipherClient = RecordCipherFactory.getRecordCipher(context, keySet);
                 context.getRecordLayer().updateEncryptionCipher(recordCipherClient);
 
-            } else if (context.getChooser().getTalkingConnectionEnd()
-                != context.getChooser().getConnectionEndType()) {
+            } else if (context.getChooser().getTalkingConnectionEnd() != context.getChooser().getConnectionEndType()) {
 
                 if (context.getChooser().getTalkingConnectionEnd() == ConnectionEndType.SERVER) {
 

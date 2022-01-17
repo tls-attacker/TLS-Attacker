@@ -92,7 +92,7 @@ public class TLSPoodleAttacker extends Attacker<TLSPoodleCommandConfig> {
             LOGGER.debug(ex);
             return null;
         }
-        if (state.getTlsContext().isReceivedFatalAlert()) {
+        if (state.getContext().getTlsContext().isReceivedFatalAlert()) {
             LOGGER.info(
                 "NOT Vulnerable. The modified message padding was identified, the server correctly responds with an alert message");
             return false;

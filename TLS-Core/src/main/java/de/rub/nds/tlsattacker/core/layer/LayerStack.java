@@ -66,7 +66,7 @@ public class LayerStack {
         LOGGER.debug("Sending Data");
         if (layerList.size() != layerConfigurationList.size()) {
             throw new RuntimeException(
-                "Illegal LayerConfiguration list provided. Each layer needs a configuration entry (null is fine too if no explict configuration is desired). Expected "
+                "Illegal LayerConfiguration list provided. Each layer needs a configuration entry (null is fine too if no explicit configuration is desired). Expected "
                     + layerList.size() + " but found " + layerConfigurationList.size());
         }
 

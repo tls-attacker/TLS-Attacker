@@ -60,13 +60,13 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
     @Override
     protected void prepareProtocolMessageContents() {
         if (chooser.getSelectedProtocolVersion().isDTLS()) {
-            message.setMessageSequence(chooser.getContext().getDtlsWriteHandshakeMessageSequence());
+            message.setMessageSequence(chooser.getContext().getTlsContext().getDtlsWriteHandshakeMessageSequence());
         }
         prepareHandshakeMessageContents();
 
         if (!(message instanceof DtlsHandshakeMessageFragment)) {
-            HandshakeMessageHandler<T> handler = message.getHandler(chooser.getContext());
-            HandshakeMessageSerializer<T> serializer = message.getSerializer(chooser.getContext());
+            HandshakeMessageHandler<T> handler = message.getHandler(chooser.getContext().getTlsContext());
+            HandshakeMessageSerializer<T> serializer = message.getSerializer(chooser.getContext().getTlsContext());
             prepareMessageLength(serializer.serializeProtocolMessageContent().length);
             prepareMessageType(message.getHandshakeMessageType());
         }
@@ -86,8 +86,8 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
                         ksExt.setRetryRequestMode(true);
                     }
                 }
-                extensionMessage.getPreparator(chooser.getContext()).prepare();
-                ExtensionSerializer serializer = extensionMessage.getSerializer(chooser.getContext());
+                extensionMessage.getPreparator(chooser.getContext().getTlsContext()).prepare();
+                ExtensionSerializer serializer = extensionMessage.getSerializer(chooser.getContext().getTlsContext());
                 byte[] extensionBody = serializer.serializeExtensionContent();
                 extensionMessage.setExtensionLength(extensionBody.length);
                 extensionMessage.setExtensionBytes(serializer.serialize());
@@ -107,7 +107,7 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
         if (message.getExtensions() != null) {
             for (ExtensionMessage extensionMessage : message.getExtensions()) {
                 ExtensionMessage extension = HandlerFactory.getExtension(extensionMessage.getExtensionTypeConstant());
-                Preparator preparator = extension.getPreparator(chooser.getContext());
+                Preparator preparator = extension.getPreparator(chooser.getContext().getTlsContext());
                 if (extension instanceof PreSharedKeyExtensionMessage && message instanceof ClientHelloMessage
                     && chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
                     ((PreSharedKeyExtensionPreparator) preparator).setClientHello((ClientHelloMessage) message);

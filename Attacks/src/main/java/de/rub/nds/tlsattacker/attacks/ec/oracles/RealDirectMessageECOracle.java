@@ -149,7 +149,7 @@ public class RealDirectMessageECOracle extends ECOracle {
         // get public point base X and Y coordinates
         BigInteger x = message.getComputations().getPublicKeyX().getValue();
         BigInteger y = message.getComputations().getPublicKeyY().getValue();
-        checkPoint = Point.createPoint(x, y, state.getTlsContext().getSelectedGroup());
+        checkPoint = Point.createPoint(x, y, state.getContext().getTlsContext().getSelectedGroup());
         checkPMS = message.getComputations().getPremasterSecret().getValue();
     }
 }

@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.http;
 
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.http.header.*;
-import de.rub.nds.tlsattacker.core.layer.http.header.*;
 import de.rub.nds.tlsattacker.core.protocol.Parser;
 import java.io.InputStream;
 import java.nio.charset.Charset;

@@ -19,7 +19,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.TokenBindingExtens
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.TokenBindingExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.TokenBindingExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.TokenBindingExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -83,22 +83,22 @@ public class TokenBindingExtensionMessage extends ExtensionMessage<TokenBindingE
     }
 
     @Override
-    public TokenBindingExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new TokenBindingExtensionParser(stream, tlsContext.getConfig());
+    public TokenBindingExtensionParser getParser(TlsContext context, InputStream stream) {
+        return new TokenBindingExtensionParser(stream, context.getConfig());
     }
 
     @Override
-    public TokenBindingExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new TokenBindingExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+    public TokenBindingExtensionPreparator getPreparator(TlsContext context) {
+        return new TokenBindingExtensionPreparator(context.getChooser(), this, getSerializer(context));
     }
 
     @Override
-    public TokenBindingExtensionSerializer getSerializer(TlsContext tlsContext) {
+    public TokenBindingExtensionSerializer getSerializer(TlsContext context) {
         return new TokenBindingExtensionSerializer(this);
     }
 
     @Override
-    public TokenBindingExtensionHandler getHandler(TlsContext tlsContext) {
-        return new TokenBindingExtensionHandler(tlsContext);
+    public TokenBindingExtensionHandler getHandler(TlsContext context) {
+        return new TokenBindingExtensionHandler(context);
     }
 }

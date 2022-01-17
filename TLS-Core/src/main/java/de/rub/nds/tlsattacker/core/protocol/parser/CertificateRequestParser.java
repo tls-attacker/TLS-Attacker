@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -33,12 +33,12 @@ public class CertificateRequestParser extends HandshakeMessageParser<Certificate
      * @param stream
      * @param version
      *                                 Version of the Protocol
-     * @param tlsContext
+     * @param context
      * @param talkingConnectionEndType
      */
-    public CertificateRequestParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext,
+    public CertificateRequestParser(InputStream stream, ProtocolVersion version, TlsContext context,
         ConnectionEndType talkingConnectionEndType) {
-        super(stream, HandshakeMessageType.CERTIFICATE_REQUEST, version, tlsContext);
+        super(stream, HandshakeMessageType.CERTIFICATE_REQUEST, version, context);
         this.talkingConnectionEndType = talkingConnectionEndType;
     }
 

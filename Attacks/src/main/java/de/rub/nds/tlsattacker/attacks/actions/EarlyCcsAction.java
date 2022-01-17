@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.attacks.actions;
 
 import de.rub.nds.modifiablevariable.util.Modifiable;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
-import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.constants.TlsMessageType;
 import de.rub.nds.tlsattacker.core.layer.hints.RecordLayerHint;
 import de.rub.nds.tlsattacker.core.protocol.handler.ClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientKeyExchangeMessage;
@@ -56,20 +56,21 @@ public class EarlyCcsAction extends TlsAction {
     public void execute(State state) {
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(state.getConfig());
         ClientKeyExchangeMessage message = factory.createClientKeyExchangeMessage(
-            AlgorithmResolver.getKeyExchangeAlgorithm(state.getTlsContext().getChooser().getSelectedCipherSuite()));
+            AlgorithmResolver.getKeyExchangeAlgorithm(state.getContext().getChooser().getSelectedCipherSuite()));
         if (!targetOpenssl100) {
             message.setIncludeInDigest(Modifiable.explicit(false));
         }
         message.setAdjustContext(Modifiable.explicit(false));
-        ClientKeyExchangeHandler handler = (ClientKeyExchangeHandler) message.getHandler(state.getTlsContext());
-        message.getPreparator(state.getTlsContext()).prepare();
+        ClientKeyExchangeHandler handler =
+            (ClientKeyExchangeHandler) message.getHandler(state.getContext().getTlsContext());
+        message.getPreparator(state.getContext().getTlsContext()).prepare();
         if (targetOpenssl100) {
             handler.adjustPremasterSecret(message);
             handler.adjustMasterSecret(message);
         }
         handler.adjustContextAfterSerialize(message);
         try {
-            state.getTlsContext().getRecordLayer().sendData(new RecordLayerHint(ProtocolMessageType.HANDSHAKE),
+            state.getContext().getTlsContext().getRecordLayer().sendData(new RecordLayerHint(TlsMessageType.HANDSHAKE),
                 message.getCompleteResultingMessage().getValue());
             executedAsPlanned = true;
         } catch (IOException e) {

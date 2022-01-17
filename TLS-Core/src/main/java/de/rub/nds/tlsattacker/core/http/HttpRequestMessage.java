@@ -25,11 +25,11 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.http.header.*;
 import de.rub.nds.tlsattacker.core.layer.DataContainer;
 import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
-import de.rub.nds.tlsattacker.core.layer.http.header.*;
 import de.rub.nds.tlsattacker.core.protocol.*;
 
 @XmlRootElement
-public class HttpRequestMessage extends ModifiableVariableHolder implements DataContainer<HttpRequestMessage, HttpContext> {
+public class HttpRequestMessage extends ModifiableVariableHolder
+    implements DataContainer<HttpRequestMessage, HttpContext> {
 
     @XmlElementWrapper
     @XmlElements(value = { @XmlElement(type = GenericHttpHeader.class, name = "HttpHeader"),

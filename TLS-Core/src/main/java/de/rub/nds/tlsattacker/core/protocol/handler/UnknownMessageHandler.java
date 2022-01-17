@@ -9,17 +9,17 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.constants.TlsMessageType;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 
 public class UnknownMessageHandler extends ProtocolMessageHandler<UnknownMessage> {
 
-    private final ProtocolMessageType recordContentMessageType;
+    private final TlsMessageType recordContentMessageType;
 
-    public UnknownMessageHandler(TlsContext tlsContext, ProtocolMessageType recordContentMessageType) {
-        super(tlsContext);
+    public UnknownMessageHandler(TlsContext context, TlsMessageType recordContentMessageType) {
+        super(context);
         this.recordContentMessageType = recordContentMessageType;
     }
 

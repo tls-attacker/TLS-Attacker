@@ -10,11 +10,11 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateStatusMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 
 public class CertificateStatusHandler extends HandshakeMessageHandler<CertificateStatusMessage> {
-    public CertificateStatusHandler(TlsContext tlsContext) {
-        super(tlsContext);
+    public CertificateStatusHandler(TlsContext context) {
+        super(context);
     }
 
     @Override

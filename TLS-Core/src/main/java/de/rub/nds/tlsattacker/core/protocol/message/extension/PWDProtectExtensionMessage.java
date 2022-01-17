@@ -19,7 +19,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.PWDProtectExtensio
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.PWDProtectExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PWDProtectExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PWDProtectExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -68,22 +68,22 @@ public class PWDProtectExtensionMessage extends ExtensionMessage<PWDProtectExten
     }
 
     @Override
-    public PWDProtectExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new PWDProtectExtensionParser(stream, tlsContext.getConfig());
+    public PWDProtectExtensionParser getParser(TlsContext context, InputStream stream) {
+        return new PWDProtectExtensionParser(stream, context.getConfig());
     }
 
     @Override
-    public PWDProtectExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new PWDProtectExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+    public PWDProtectExtensionPreparator getPreparator(TlsContext context) {
+        return new PWDProtectExtensionPreparator(context.getChooser(), this, getSerializer(context));
     }
 
     @Override
-    public PWDProtectExtensionSerializer getSerializer(TlsContext tlsContext) {
+    public PWDProtectExtensionSerializer getSerializer(TlsContext context) {
         return new PWDProtectExtensionSerializer(this);
     }
 
     @Override
-    public PWDProtectExtensionHandler getHandler(TlsContext tlsContext) {
-        return new PWDProtectExtensionHandler(tlsContext);
+    public PWDProtectExtensionHandler getHandler(TlsContext context) {
+        return new PWDProtectExtensionHandler(context);
     }
 }

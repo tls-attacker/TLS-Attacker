@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.Parser;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EsniKeyRecord;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -28,12 +28,12 @@ public class EsniKeyRecordParser extends Parser<EsniKeyRecord> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final TlsContext tlsContext;
+    private final TlsContext context;
     private final ProtocolVersion selectedVersion;
 
-    public EsniKeyRecordParser(InputStream stream, TlsContext tlsContext, ProtocolVersion selectedVersion) {
+    public EsniKeyRecordParser(InputStream stream, TlsContext context, ProtocolVersion selectedVersion) {
         super(stream);
-        this.tlsContext = tlsContext;
+        this.context = context;
         this.selectedVersion = selectedVersion;
     }
 
@@ -113,7 +113,7 @@ public class EsniKeyRecordParser extends Parser<EsniKeyRecord> {
 
         byte[] extensionListBytes = parseByteArrayField(extensionsLength);
         ExtensionListParser extensionListParser =
-            new ExtensionListParser(new ByteArrayInputStream(extensionListBytes), tlsContext, selectedVersion, false);
+            new ExtensionListParser(new ByteArrayInputStream(extensionListBytes), context, selectedVersion, false);
         List<ExtensionMessage> extensionList = new LinkedList<>();
         extensionListParser.parse(extensionList);
         record.setExtensions(extensionList);

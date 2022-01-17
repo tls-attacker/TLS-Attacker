@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.SupplementalDataMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.supplementaldata.SupplementalDataEntry;
 import de.rub.nds.tlsattacker.core.protocol.parser.supplementaldata.SupplementalDataEntryParser;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -34,11 +34,11 @@ public class SupplementalDataParser extends HandshakeMessageParser<SupplementalD
      *
      * @param stream
      * @param version
-     *                   The Version for which this message should be parsed
-     * @param tlsContext
+     *                The Version for which this message should be parsed
+     * @param context
      */
-    public SupplementalDataParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
-        super(stream, HandshakeMessageType.SUPPLEMENTAL_DATA, version, tlsContext);
+    public SupplementalDataParser(InputStream stream, ProtocolVersion version, TlsContext context) {
+        super(stream, HandshakeMessageType.SUPPLEMENTAL_DATA, version, context);
     }
 
     @Override

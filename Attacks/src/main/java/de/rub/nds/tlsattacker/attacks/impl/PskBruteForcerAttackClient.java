@@ -30,7 +30,7 @@ import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.record.crypto.RecordDecryptor;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
@@ -125,11 +125,12 @@ public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackCli
         CONSOLE.info("Started TLS-Server - waiting for a client to connect...");
         State state = executeClientHelloWorkflow(tlsConfig);
         if (WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.CLIENT_HELLO, state.getWorkflowTrace())) {
-            CipherSuite suite = choosePskCipherSuite(state.getTlsContext().getClientSupportedCipherSuites());
+            CipherSuite suite =
+                choosePskCipherSuite(state.getContext().getTlsContext().getClientSupportedCipherSuites());
             tlsConfig.setDefaultSelectedCipherSuite(suite);
         } else {
             try {
-                state.getTlsContext().getTransportHandler().closeConnection();
+                state.getContext().getTcpContext().getTransportHandler().closeConnection();
             } catch (IOException ex) {
                 LOGGER.warn("Could not close client connection", ex);
             }
@@ -172,7 +173,7 @@ public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackCli
         Config tlsConfig = getTlsConfig();
         CONSOLE.info("Started TLS-Server - waiting for a client to Connect...");
         State state = executeClientHelloWorkflow(tlsConfig);
-        TlsContext tlsContext = state.getTlsContext();
+        TlsContext tlsContext = state.getContext().getTlsContext();
         if (WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.CLIENT_HELLO, state.getWorkflowTrace())) {
             for (CipherSuite cipherSuite : tlsContext.getClientSupportedCipherSuites()) {
                 if (cipherSuite.isPsk()) {
@@ -232,11 +233,11 @@ public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackCli
     private boolean tryPsk(byte[] guessedPsk, Record encryptedRecord, State state)
         throws CryptoException, NoSuchAlgorithmException {
         state.getConfig().setDefaultPSKKey(guessedPsk);
-        computeMasterSecret(state.getTlsContext(), state.getWorkflowTrace());
-        byte[] controlValue = computeControlValue(state.getWorkflowTrace(), state.getTlsContext());
-        KeySet keySet = KeySetGenerator.generateKeySet(state.getTlsContext());
-        RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(state.getTlsContext(), keySet);
-        RecordDecryptor dec = new RecordDecryptor(recordCipher, state.getTlsContext());
+        computeMasterSecret(state.getContext().getTlsContext(), state.getWorkflowTrace());
+        byte[] controlValue = computeControlValue(state.getWorkflowTrace(), state.getContext().getTlsContext());
+        KeySet keySet = KeySetGenerator.generateKeySet(state.getContext().getTlsContext());
+        RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(state.getContext().getTlsContext(), keySet);
+        RecordDecryptor dec = new RecordDecryptor(recordCipher, state.getContext().getTlsContext());
         dec.decrypt(encryptedRecord);
         byte[] receivedVrfyData = Arrays.copyOfRange(encryptedRecord.getComputations().getPlainRecordBytes().getValue(),
             0, controlValue.length);

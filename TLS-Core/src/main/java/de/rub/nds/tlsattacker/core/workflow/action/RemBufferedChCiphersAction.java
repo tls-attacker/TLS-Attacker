@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -77,7 +77,7 @@ public class RemBufferedChCiphersAction extends ConnectionBoundAction {
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
-        TlsContext ctx = state.getTlsContext(connectionAlias);
+        TlsContext ctx = state.getContext(connectionAlias).getTlsContext();
         ClientHelloMessage ch = (ClientHelloMessage) ctx.getMessageBuffer().getFirst();
 
         removeCiphers(ctx, ch);

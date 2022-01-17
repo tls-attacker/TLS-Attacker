@@ -9,10 +9,10 @@
 
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.constants.TlsMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
@@ -30,24 +30,24 @@ public class FindReceivedProtocolMessageAction extends ConnectionBoundAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private ProtocolMessageType protocolMessageType;
+    private TlsMessageType protocolMessageType;
     private Boolean found = false;
 
     public FindReceivedProtocolMessageAction() {
     }
 
-    public FindReceivedProtocolMessageAction(ProtocolMessageType protocolMessageType) {
+    public FindReceivedProtocolMessageAction(TlsMessageType protocolMessageType) {
         this.protocolMessageType = protocolMessageType;
     }
 
-    public FindReceivedProtocolMessageAction(String alias, ProtocolMessageType protocolMessageType) {
+    public FindReceivedProtocolMessageAction(String alias, TlsMessageType protocolMessageType) {
         super(alias);
         this.protocolMessageType = protocolMessageType;
     }
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
-        TlsContext ctx = state.getTlsContext(getConnectionAlias());
+        TlsContext ctx = state.getContext(getConnectionAlias()).getTlsContext();
         found = WorkflowTraceUtil.didReceiveMessage(protocolMessageType, state.getWorkflowTrace());
         if (found) {
             LOGGER.info("Found " + protocolMessageType.name() + " (" + protocolMessageType.getValue() + ")");
@@ -55,11 +55,11 @@ public class FindReceivedProtocolMessageAction extends ConnectionBoundAction {
         setExecuted(Boolean.TRUE);
     }
 
-    public ProtocolMessageType getProtocolMessageType() {
+    public TlsMessageType getProtocolMessageType() {
         return protocolMessageType;
     }
 
-    public void setProtocolMessageType(ProtocolMessageType protocolMessageType) {
+    public void setProtocolMessageType(TlsMessageType protocolMessageType) {
         this.protocolMessageType = protocolMessageType;
     }
 

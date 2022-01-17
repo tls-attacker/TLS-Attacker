@@ -18,7 +18,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.layer.context.RecordContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -55,7 +55,7 @@ public class CustomDhPublicKey extends CustomPublicKey implements DHPublicKey {
     }
 
     @Override
-    public void adjustInContext(RecordContext context, ConnectionEndType ownerOfKey) {
+    public void adjustInContext(TlsContext context, ConnectionEndType ownerOfKey) {
         LOGGER.debug("Adjusting DH public key in context");
         if (null == ownerOfKey) {
             throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");

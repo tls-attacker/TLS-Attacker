@@ -19,7 +19,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.SupportedVersionsE
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.SupportedVersionsExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SupportedVersionsExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SupportedVersionsExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -65,22 +65,22 @@ public class SupportedVersionsExtensionMessage extends ExtensionMessage<Supporte
     }
 
     @Override
-    public SupportedVersionsExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new SupportedVersionsExtensionParser(stream, tlsContext.getConfig());
+    public SupportedVersionsExtensionParser getParser(TlsContext context, InputStream stream) {
+        return new SupportedVersionsExtensionParser(stream, context.getConfig());
     }
 
     @Override
-    public SupportedVersionsExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new SupportedVersionsExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+    public SupportedVersionsExtensionPreparator getPreparator(TlsContext context) {
+        return new SupportedVersionsExtensionPreparator(context.getChooser(), this, getSerializer(context));
     }
 
     @Override
-    public SupportedVersionsExtensionSerializer getSerializer(TlsContext tlsContext) {
+    public SupportedVersionsExtensionSerializer getSerializer(TlsContext context) {
         return new SupportedVersionsExtensionSerializer(this);
     }
 
     @Override
-    public SupportedVersionsExtensionHandler getHandler(TlsContext tlsContext) {
-        return new SupportedVersionsExtensionHandler(tlsContext);
+    public SupportedVersionsExtensionHandler getHandler(TlsContext context) {
+        return new SupportedVersionsExtensionHandler(context);
     }
 }

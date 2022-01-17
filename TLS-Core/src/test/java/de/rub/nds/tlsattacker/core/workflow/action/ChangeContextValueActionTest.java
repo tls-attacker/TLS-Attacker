@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.util.tests.SlowTests;
 import java.security.InvalidAlgorithmParameterException;
@@ -45,8 +45,7 @@ public class ChangeContextValueActionTest {
         trace = new WorkflowTrace();
         trace.addTlsAction(action);
         state = new State(config, trace);
-        tlsContext = state.getTlsContext();
-        tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
+        tlsContext = state.getContext().getTlsContext();
     }
 
     @After

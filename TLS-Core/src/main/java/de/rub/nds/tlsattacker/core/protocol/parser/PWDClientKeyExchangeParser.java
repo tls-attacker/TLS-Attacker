@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.PWDClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,13 +27,13 @@ public class PWDClientKeyExchangeParser extends ClientKeyExchangeParser<PWDClien
 
     private final KeyExchangeAlgorithm keyExchangeAlgorithm;
 
-    public PWDClientKeyExchangeParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
-        this(stream, version, null, tlsContext);
+    public PWDClientKeyExchangeParser(InputStream stream, ProtocolVersion version, TlsContext context) {
+        this(stream, version, null, context);
     }
 
     public PWDClientKeyExchangeParser(InputStream stream, ProtocolVersion version,
-        KeyExchangeAlgorithm keyExchangeAlgorithm, TlsContext tlsContext) {
-        super(stream, version, tlsContext);
+        KeyExchangeAlgorithm keyExchangeAlgorithm, TlsContext context) {
+        super(stream, version, context);
         this.version = version;
         this.keyExchangeAlgorithm = keyExchangeAlgorithm;
     }

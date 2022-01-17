@@ -16,8 +16,9 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
 import de.rub.nds.tlsattacker.core.layer.constant.LayerStackType;
+import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
@@ -45,35 +46,33 @@ public class ForwardDataActionTest {
 
     private State state;
     private Config config;
-    private TlsContext context;
     private final String ctx1Alias = "ctx1";
-    private TlsContext context2;
     private final String ctx2Alias = "ctx2";
     private ForwardDataAction action;
     private WorkflowTrace trace;
 
     @Before
     public void setUp() throws Exception {
-        config = Config.createConfig();
+        config = new Config();
 
         trace = new WorkflowTrace();
         trace.addConnection(new OutboundConnection(ctx1Alias));
         trace.addConnection(new InboundConnection(ctx2Alias));
 
         state = new State(config, trace);
-        context = state.getTlsContext(ctx1Alias);
-        context2 = state.getTlsContext(ctx2Alias);
+        Context context = state.getContext(ctx1Alias);
+        Context context2 = state.getContext(ctx2Alias);
 
         FakeTransportHandler th = new FakeTransportHandler(ConnectionEndType.SERVER);
         byte[] alertMsg = new byte[] { 0x15, 0x03, 0x03, 0x00, 0x02, 0x02, 0x32 };
         th.setFetchableByte(alertMsg);
-        context.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
-        context.setTransportHandler(th);
-        context2.setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
+        context.getTlsContext().setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
+        context.getTcpContext().setTransportHandler(th);
+        context2.getTcpContext().setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
 
         context.setLayerStack(LayerStackFactory.createLayerStack(LayerStackType.TLS, context));
         context2.setLayerStack(LayerStackFactory.createLayerStack(LayerStackType.TLS, context2));
-        context2.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
+        context2.getTlsContext().setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
     }
 
     @Test

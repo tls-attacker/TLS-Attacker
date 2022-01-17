@@ -10,15 +10,14 @@
 package de.rub.nds.tlsattacker.core.record.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.constants.TlsMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
-import de.rub.nds.tlsattacker.core.layer.context.RecordContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.Preparator;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.compressor.RecordCompressor;
 import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
-import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -31,13 +30,13 @@ public class RecordPreparator extends Preparator<Record> {
 
     private final Record record;
     private final Encryptor encryptor;
-    private final RecordContext context;
+    private final TlsContext context;
     private final RecordCompressor compressor;
 
-    private ProtocolMessageType type;
+    private TlsMessageType type;
 
-    public RecordPreparator(RecordContext context, Record record, Encryptor encryptor, ProtocolMessageType type,
-                            RecordCompressor compressor) {
+    public RecordPreparator(TlsContext context, Record record, Encryptor encryptor, TlsMessageType type,
+        RecordCompressor compressor) {
         super(context.getChooser(), record);
         this.record = record;
         this.encryptor = encryptor;
@@ -60,7 +59,7 @@ public class RecordPreparator extends Preparator<Record> {
     public void encrypt() {
         LOGGER.debug("Encrypting Record");
         if (chooser.getSelectedProtocolVersion().isTLS13()
-            && record.getContentMessageType() == ProtocolMessageType.CHANGE_CIPHER_SPEC
+            && record.getContentMessageType() == TlsMessageType.CHANGE_CIPHER_SPEC
             && !chooser.getConfig().isEncryptChangeCipherSpec()) {
             // The CCS message in TLS 1.3 is an exception that does not get
             // encrypted
@@ -93,7 +92,7 @@ public class RecordPreparator extends Preparator<Record> {
         LOGGER.debug("Length: " + record.getLength().getValue());
     }
 
-    protected void prepareContentMessageType(ProtocolMessageType type) {
+    protected void prepareContentMessageType(TlsMessageType type) {
         getObject().setContentMessageType(this.type);
         LOGGER.debug("ContentMessageType: " + ArrayConverter.bytesToHexString(type.getArrayValue()));
     }
