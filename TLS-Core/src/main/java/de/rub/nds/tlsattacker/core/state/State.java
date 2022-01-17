@@ -21,6 +21,7 @@ import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory
 import de.rub.nds.tlsattacker.core.workflow.filter.Filter;
 import de.rub.nds.tlsattacker.core.workflow.filter.FilterFactory;
 import de.rub.nds.tlsattacker.core.workflow.filter.FilterType;
+import de.rub.nds.tlsattacker.transport.tcp.ServerTcpTransportHandler;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -93,9 +94,21 @@ public class State {
     }
 
     public void reset() {
+        List<TlsContext> previousContexts = contextContainer.getAllContexts();
         contextContainer.clear();
         workflowTrace.reset();
         initState();
+        retainServerTcpTransportHandlers(previousContexts);
+    }
+
+    private void retainServerTcpTransportHandlers(List<TlsContext> previousContexts) {
+        previousContexts.forEach(oldContext -> {
+            if (oldContext.getTransportHandler() != null
+                && oldContext.getTransportHandler() instanceof ServerTcpTransportHandler) {
+                contextContainer.getTlsContext(oldContext.getConnection().getAlias())
+                    .setTransportHandler(oldContext.getTransportHandler());
+            }
+        });
     }
 
     /**
