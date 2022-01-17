@@ -46,7 +46,7 @@ public class SendDynamicClientKeyExchangeActionTest {
 
         // create Config to not overly rely on default values (aka. make sure
         // we're client)
-        config = Config.createConfig();
+        config = new Config();
         config.setDefaultRunningMode(RunningModeType.CLIENT);
 
         WorkflowTrace trace = new WorkflowTrace();
@@ -56,7 +56,6 @@ public class SendDynamicClientKeyExchangeActionTest {
         context = state.getContext();
         context.getTlsContext().setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
         context.getTcpContext().setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
-        context.setLayerStack(LayerStackFactory.createLayerStack(LayerStackType.TLS, context));
     }
 
     @Test

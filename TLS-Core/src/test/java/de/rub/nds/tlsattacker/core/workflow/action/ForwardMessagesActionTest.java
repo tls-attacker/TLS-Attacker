@@ -98,8 +98,6 @@ public class ForwardMessagesActionTest {
 
     private void initContexts() throws IOException {
         context2.getTcpContext().setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
-        context1.setLayerStack(LayerStackFactory.createLayerStack(LayerStackType.TLS, context1));
-        context2.setLayerStack(LayerStackFactory.createLayerStack(LayerStackType.TLS, context2));
     }
 
     @Test

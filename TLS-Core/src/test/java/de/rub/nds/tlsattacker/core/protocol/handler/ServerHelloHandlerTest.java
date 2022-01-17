@@ -36,7 +36,6 @@ public class ServerHelloHandlerTest {
     @Before
     public void setUp() {
         Context outerContext = new Context(new Config());
-        outerContext.setLayerStack(LayerStackFactory.createLayerStack(LayerStackType.TLS, outerContext));
         context = outerContext.getTlsContext();
         handler = new ServerHelloHandler(context);
     }

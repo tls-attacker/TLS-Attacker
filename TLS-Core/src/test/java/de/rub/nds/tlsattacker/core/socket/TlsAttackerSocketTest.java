@@ -46,7 +46,6 @@ public class TlsAttackerSocketTest {
         context.getTlsContext().setSelectedProtocolVersion(ProtocolVersion.TLS12);
         transportHandler = new FakeTransportHandler(ConnectionEndType.CLIENT);
         context.getTcpContext().setTransportHandler(transportHandler);
-        context.setLayerStack(LayerStackFactory.createLayerStack(LayerStackType.TLS, context));
         socket = new TlsAttackerSocket(state);
     }
 

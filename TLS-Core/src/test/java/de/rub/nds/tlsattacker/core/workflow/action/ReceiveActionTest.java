@@ -59,7 +59,6 @@ public class ReceiveActionTest {
 
         context = state.getContext();
         context.getTcpContext().setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
-        context.setLayerStack(LayerStackFactory.createLayerStack(LayerStackType.TLS, context));
         context.getTlsContext().setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
     }
 

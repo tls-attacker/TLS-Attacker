@@ -9,10 +9,12 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ECPointFormatExtensionMessage;
 import static org.junit.Assert.assertTrue;
+import de.rub.nds.tlsattacker.core.state.Context;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -23,7 +25,8 @@ public class EcPointFormatExtensionHandlerTest {
 
     @Before
     public void setUp() {
-        context = new TlsContext();
+        Context outerContext = new Context(new Config());
+        context = outerContext.getTlsContext();
         handler = new ECPointFormatExtensionHandler(context);
     }
 

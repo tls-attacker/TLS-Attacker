@@ -48,7 +48,6 @@ public class RecordDecryptorTest {
         Security.addProvider(new BouncyCastleProvider());
         Context outerContext = new Context(new Config());
         context = new TlsContext(outerContext);
-        context.getContext().setLayerStack(LayerStackFactory.createLayerStack(LayerStackType.TLS, outerContext));
         record = new Record();
         record.setContentType(TlsMessageType.HANDSHAKE.getValue());
         record.setProtocolVersion(ProtocolVersion.TLS10.getValue());

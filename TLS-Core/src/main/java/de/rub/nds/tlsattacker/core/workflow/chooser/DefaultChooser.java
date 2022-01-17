@@ -26,21 +26,14 @@ import org.bouncycastle.util.Arrays;
 
 public class DefaultChooser extends Chooser {
 
-    private final HttpContext httpContext;
-    private final TlsContext tlsContext;
-    private final TcpContext tcpContext;
-
     DefaultChooser(Context context, Config config) {
         super(context, config);
-        httpContext = context.getHttpContext();
-        tlsContext = context.getTlsContext();
-        tcpContext = context.getTcpContext();
     }
 
     @Override
     public CertificateType getSelectedClientCertificateType() {
-        if (tlsContext.getSelectedClientCertificateType() != null) {
-            return tlsContext.getSelectedClientCertificateType();
+        if (context.getTlsContext().getSelectedClientCertificateType() != null) {
+            return context.getTlsContext().getSelectedClientCertificateType();
         } else {
             return config.getDefaultSelectedClientCertificateType();
         }
@@ -48,8 +41,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public CertificateType getSelectedServerCertificateType() {
-        if (tlsContext.getSelectedServerCertificateType() != null) {
-            return tlsContext.getSelectedServerCertificateType();
+        if (context.getTlsContext().getSelectedServerCertificateType() != null) {
+            return context.getTlsContext().getSelectedServerCertificateType();
         } else {
             return config.getDefaultSelectedServerCertificateType();
         }
@@ -57,8 +50,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public List<ECPointFormat> getClientSupportedPointFormats() {
-        if (tlsContext.getClientPointFormatsList() != null) {
-            return tlsContext.getClientPointFormatsList();
+        if (context.getTlsContext().getClientPointFormatsList() != null) {
+            return context.getTlsContext().getClientPointFormatsList();
         } else {
             return config.getDefaultClientSupportedPointFormats();
         }
@@ -66,8 +59,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public SignatureAndHashAlgorithm getSelectedSigHashAlgorithm() {
-        if (tlsContext.getSelectedSignatureAndHashAlgorithm() != null) {
-            return tlsContext.getSelectedSignatureAndHashAlgorithm();
+        if (context.getTlsContext().getSelectedSignatureAndHashAlgorithm() != null) {
+            return context.getTlsContext().getSelectedSignatureAndHashAlgorithm();
         } else {
             return config.getDefaultSelectedSignatureAndHashAlgorithm();
         }
@@ -75,8 +68,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public List<NamedGroup> getClientSupportedNamedGroups() {
-        if (tlsContext.getClientNamedGroupsList() != null) {
-            return tlsContext.getClientNamedGroupsList();
+        if (context.getTlsContext().getClientNamedGroupsList() != null) {
+            return context.getTlsContext().getClientNamedGroupsList();
         } else {
             return config.getDefaultClientNamedGroups();
         }
@@ -84,8 +77,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public List<NamedGroup> getServerSupportedNamedGroups() {
-        if (tlsContext.getServerNamedGroupsList() != null) {
-            return tlsContext.getServerNamedGroupsList();
+        if (context.getTlsContext().getServerNamedGroupsList() != null) {
+            return context.getTlsContext().getServerNamedGroupsList();
         } else {
             return config.getDefaultServerNamedGroups();
         }
@@ -93,8 +86,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public List<ECPointFormat> getServerSupportedPointFormats() {
-        if (tlsContext.getServerPointFormatsList() != null) {
-            return tlsContext.getServerPointFormatsList();
+        if (context.getTlsContext().getServerPointFormatsList() != null) {
+            return context.getTlsContext().getServerPointFormatsList();
         } else {
             return config.getDefaultServerSupportedPointFormats();
         }
@@ -102,8 +95,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public List<SignatureAndHashAlgorithm> getClientSupportedSignatureAndHashAlgorithms() {
-        if (tlsContext.getClientSupportedSignatureAndHashAlgorithms() != null) {
-            return tlsContext.getClientSupportedSignatureAndHashAlgorithms();
+        if (context.getTlsContext().getClientSupportedSignatureAndHashAlgorithms() != null) {
+            return context.getTlsContext().getClientSupportedSignatureAndHashAlgorithms();
         } else {
             return config.getDefaultClientSupportedSignatureAndHashAlgorithms();
         }
@@ -111,8 +104,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public ProtocolVersion getLastRecordVersion() {
-        if (tlsContext.getLastRecordVersion() != null) {
-            return tlsContext.getLastRecordVersion();
+        if (context.getTlsContext().getLastRecordVersion() != null) {
+            return context.getTlsContext().getLastRecordVersion();
         } else {
             return config.getDefaultLastRecordProtocolVersion();
         }
@@ -120,8 +113,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public byte[] getDistinguishedNames() {
-        if (tlsContext.getDistinguishedNames() != null) {
-            return copy(tlsContext.getDistinguishedNames());
+        if (context.getTlsContext().getDistinguishedNames() != null) {
+            return copy(context.getTlsContext().getDistinguishedNames());
         } else {
             return config.getDistinguishedNames();
         }
@@ -129,8 +122,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public List<ClientCertificateType> getClientCertificateTypes() {
-        if (tlsContext.getClientCertificateTypes() != null) {
-            return tlsContext.getClientCertificateTypes();
+        if (context.getTlsContext().getClientCertificateTypes() != null) {
+            return context.getTlsContext().getClientCertificateTypes();
         } else {
             return config.getClientCertificateTypes();
         }
@@ -138,8 +131,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public MaxFragmentLength getMaxFragmentLength() {
-        if (tlsContext.getMaxFragmentLength() != null) {
-            return tlsContext.getMaxFragmentLength();
+        if (context.getTlsContext().getMaxFragmentLength() != null) {
+            return context.getTlsContext().getMaxFragmentLength();
         } else {
             return config.getDefaultMaxFragmentLength();
         }
@@ -147,8 +140,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public HeartbeatMode getHeartbeatMode() {
-        if (tlsContext.getHeartbeatMode() != null) {
-            return tlsContext.getHeartbeatMode();
+        if (context.getTlsContext().getHeartbeatMode() != null) {
+            return context.getTlsContext().getHeartbeatMode();
         } else {
             return config.getDefaultHeartbeatMode();
         }
@@ -156,13 +149,13 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public boolean isUseExtendedMasterSecret() {
-        return tlsContext.isUseExtendedMasterSecret();
+        return context.getTlsContext().isUseExtendedMasterSecret();
     }
 
     @Override
     public List<CompressionMethod> getClientSupportedCompressions() {
-        if (tlsContext.getClientSupportedCompressions() != null) {
-            return tlsContext.getClientSupportedCompressions();
+        if (context.getTlsContext().getClientSupportedCompressions() != null) {
+            return context.getTlsContext().getClientSupportedCompressions();
         } else {
             return config.getDefaultClientSupportedCompressionMethods();
         }
@@ -170,8 +163,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public List<CipherSuite> getClientSupportedCipherSuites() {
-        if (tlsContext.getClientSupportedCipherSuites() != null) {
-            return tlsContext.getClientSupportedCipherSuites();
+        if (context.getTlsContext().getClientSupportedCipherSuites() != null) {
+            return context.getTlsContext().getClientSupportedCipherSuites();
         } else {
             return config.getDefaultClientSupportedCipherSuites();
         }
@@ -179,8 +172,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public List<SignatureAndHashAlgorithm> getServerSupportedSignatureAndHashAlgorithms() {
-        if (tlsContext.getServerSupportedSignatureAndHashAlgorithms() != null) {
-            return tlsContext.getServerSupportedSignatureAndHashAlgorithms();
+        if (context.getTlsContext().getServerSupportedSignatureAndHashAlgorithms() != null) {
+            return context.getTlsContext().getServerSupportedSignatureAndHashAlgorithms();
         } else {
             return config.getDefaultServerSupportedSignatureAndHashAlgorithms();
         }
@@ -188,8 +181,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public ProtocolVersion getSelectedProtocolVersion() {
-        if (tlsContext.getSelectedProtocolVersion() != null) {
-            return tlsContext.getSelectedProtocolVersion();
+        if (context.getTlsContext().getSelectedProtocolVersion() != null) {
+            return context.getTlsContext().getSelectedProtocolVersion();
         } else {
             return config.getDefaultSelectedProtocolVersion();
         }
@@ -197,8 +190,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public ProtocolVersion getHighestClientProtocolVersion() {
-        if (tlsContext.getHighestClientProtocolVersion() != null) {
-            return tlsContext.getHighestClientProtocolVersion();
+        if (context.getTlsContext().getHighestClientProtocolVersion() != null) {
+            return context.getTlsContext().getHighestClientProtocolVersion();
         } else {
             return config.getDefaultHighestClientProtocolVersion();
         }
@@ -206,13 +199,13 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public ConnectionEndType getTalkingConnectionEnd() {
-        return tlsContext.getTalkingConnectionEndType();
+        return context.getTlsContext().getTalkingConnectionEndType();
     }
 
     @Override
     public byte[] getMasterSecret() {
-        if (tlsContext.getMasterSecret() != null) {
-            return copy(tlsContext.getMasterSecret());
+        if (context.getTlsContext().getMasterSecret() != null) {
+            return copy(context.getTlsContext().getMasterSecret());
         } else {
             return config.getDefaultMasterSecret();
         }
@@ -220,8 +213,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public CipherSuite getSelectedCipherSuite() {
-        if (tlsContext.getSelectedCipherSuite() != null) {
-            return tlsContext.getSelectedCipherSuite();
+        if (context.getTlsContext().getSelectedCipherSuite() != null) {
+            return context.getTlsContext().getSelectedCipherSuite();
         } else {
             return config.getDefaultSelectedCipherSuite();
         }
@@ -229,8 +222,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public SSL2CipherSuite getSSL2CipherSuite() {
-        if (tlsContext.getSSL2CipherSuite() != null) {
-            return tlsContext.getSSL2CipherSuite();
+        if (context.getTlsContext().getSSL2CipherSuite() != null) {
+            return context.getTlsContext().getSSL2CipherSuite();
         } else {
             return config.getDefaultSSL2CipherSuite();
         }
@@ -238,8 +231,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public byte[] getPreMasterSecret() {
-        if (tlsContext.getPreMasterSecret() != null) {
-            return copy(tlsContext.getPreMasterSecret());
+        if (context.getTlsContext().getPreMasterSecret() != null) {
+            return copy(context.getTlsContext().getPreMasterSecret());
         } else {
             return config.getDefaultPreMasterSecret();
         }
@@ -251,8 +244,8 @@ public class DefaultChooser extends Chooser {
      */
     @Override
     public byte[] getClientRandom() {
-        if (tlsContext.getClientRandom() != null) {
-            return copy(tlsContext.getClientRandom());
+        if (context.getTlsContext().getClientRandom() != null) {
+            return copy(context.getTlsContext().getClientRandom());
         } else {
             return config.getDefaultClientRandom();
         }
@@ -260,8 +253,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public byte[] getClientExtendedRandom() {
-        if (tlsContext.getClientExtendedRandom() != null) {
-            return copy(tlsContext.getClientExtendedRandom());
+        if (context.getTlsContext().getClientExtendedRandom() != null) {
+            return copy(context.getTlsContext().getClientExtendedRandom());
         } else {
             return config.getDefaultClientExtendedRandom();
         }
@@ -269,8 +262,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public byte[] getServerExtendedRandom() {
-        if (tlsContext.getServerExtendedRandom() != null) {
-            return copy(tlsContext.getServerExtendedRandom());
+        if (context.getTlsContext().getServerExtendedRandom() != null) {
+            return copy(context.getTlsContext().getServerExtendedRandom());
         } else {
             return config.getDefaultServerExtendedRandom();
         }
@@ -284,8 +277,8 @@ public class DefaultChooser extends Chooser {
      */
     @Override
     public byte[] getServerRandom() {
-        if (tlsContext.getServerRandom() != null) {
-            return copy(tlsContext.getServerRandom());
+        if (context.getTlsContext().getServerRandom() != null) {
+            return copy(context.getTlsContext().getServerRandom());
         } else {
             return config.getDefaultServerRandom();
         }
@@ -293,8 +286,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public CompressionMethod getSelectedCompressionMethod() {
-        if (tlsContext.getSelectedCompressionMethod() != null) {
-            return tlsContext.getSelectedCompressionMethod();
+        if (context.getTlsContext().getSelectedCompressionMethod() != null) {
+            return context.getTlsContext().getSelectedCompressionMethod();
         } else {
             return config.getDefaultSelectedCompressionMethod();
         }
@@ -302,8 +295,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public byte[] getClientSessionId() {
-        if (tlsContext.getClientSessionId() != null) {
-            return copy(tlsContext.getClientSessionId());
+        if (context.getTlsContext().getClientSessionId() != null) {
+            return copy(context.getTlsContext().getClientSessionId());
         } else {
             return config.getDefaultClientSessionId();
         }
@@ -311,8 +304,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public byte[] getServerSessionId() {
-        if (tlsContext.getServerSessionId() != null) {
-            return copy(tlsContext.getServerSessionId());
+        if (context.getTlsContext().getServerSessionId() != null) {
+            return copy(context.getTlsContext().getServerSessionId());
         } else {
             return config.getDefaultServerSessionId();
         }
@@ -320,8 +313,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public byte[] getDtlsCookie() {
-        if (tlsContext.getDtlsCookie() != null) {
-            return copy(tlsContext.getDtlsCookie());
+        if (context.getTlsContext().getDtlsCookie() != null) {
+            return copy(context.getTlsContext().getDtlsCookie());
         } else {
             return config.getDtlsDefaultCookie();
         }
@@ -329,13 +322,13 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public TransportHandler getTransportHandler() {
-        return tcpContext.getTransportHandler();
+        return context.getTcpContext().getTransportHandler();
     }
 
     @Override
     public PRFAlgorithm getPRFAlgorithm() {
-        if (tlsContext.getPrfAlgorithm() != null) {
-            return tlsContext.getPrfAlgorithm();
+        if (context.getTlsContext().getPrfAlgorithm() != null) {
+            return context.getTlsContext().getPrfAlgorithm();
         } else {
             return config.getDefaultPRFAlgorithm();
         }
@@ -343,8 +336,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public byte[] getLatestSessionTicket() {
-        if (tlsContext.getLatestSessionTicket() != null) {
-            return tlsContext.getLatestSessionTicket();
+        if (context.getTlsContext().getLatestSessionTicket() != null) {
+            return context.getTlsContext().getLatestSessionTicket();
         } else {
             return config.getTlsSessionTicket();
         }
@@ -352,8 +345,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public byte[] getSignedCertificateTimestamp() {
-        if (tlsContext.getSignedCertificateTimestamp() != null) {
-            return copy(tlsContext.getSignedCertificateTimestamp());
+        if (context.getTlsContext().getSignedCertificateTimestamp() != null) {
+            return copy(context.getTlsContext().getSignedCertificateTimestamp());
         } else {
             return config.getDefaultSignedCertificateTimestamp();
         }
@@ -361,8 +354,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public TokenBindingVersion getTokenBindingVersion() {
-        if (tlsContext.getTokenBindingVersion() != null) {
-            return tlsContext.getTokenBindingVersion();
+        if (context.getTlsContext().getTokenBindingVersion() != null) {
+            return context.getTlsContext().getTokenBindingVersion();
         } else {
             return config.getDefaultTokenBindingVersion();
         }
@@ -370,8 +363,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public List<TokenBindingKeyParameters> getTokenBindingKeyParameters() {
-        if (tlsContext.getTokenBindingKeyParameters() != null) {
-            return tlsContext.getTokenBindingKeyParameters();
+        if (context.getTlsContext().getTokenBindingKeyParameters() != null) {
+            return context.getTlsContext().getTokenBindingKeyParameters();
         } else {
             return config.getDefaultTokenBindingKeyParameters();
         }
@@ -379,8 +372,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public BigInteger getServerDhModulus() {
-        if (tlsContext.getServerDhModulus() != null) {
-            return tlsContext.getServerDhModulus();
+        if (context.getTlsContext().getServerDhModulus() != null) {
+            return context.getTlsContext().getServerDhModulus();
         } else {
             return config.getDefaultServerDhModulus();
         }
@@ -388,8 +381,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public BigInteger getServerDhGenerator() {
-        if (tlsContext.getServerDhGenerator() != null) {
-            return tlsContext.getServerDhGenerator();
+        if (context.getTlsContext().getServerDhGenerator() != null) {
+            return context.getTlsContext().getServerDhGenerator();
         } else {
             return config.getDefaultServerDhGenerator();
         }
@@ -397,8 +390,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public BigInteger getClientDhModulus() {
-        if (tlsContext.getClientDhModulus() != null) {
-            return tlsContext.getClientDhModulus();
+        if (context.getTlsContext().getClientDhModulus() != null) {
+            return context.getTlsContext().getClientDhModulus();
         } else {
             return config.getDefaultClientDhModulus();
         }
@@ -406,8 +399,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public BigInteger getClientDhGenerator() {
-        if (tlsContext.getClientDhGenerator() != null) {
-            return tlsContext.getClientDhGenerator();
+        if (context.getTlsContext().getClientDhGenerator() != null) {
+            return context.getTlsContext().getClientDhGenerator();
         } else {
             return config.getDefaultClientDhGenerator();
         }
@@ -415,8 +408,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public BigInteger getServerDhPrivateKey() {
-        if (tlsContext.getServerDhPrivateKey() != null) {
-            return tlsContext.getServerDhPrivateKey();
+        if (context.getTlsContext().getServerDhPrivateKey() != null) {
+            return context.getTlsContext().getServerDhPrivateKey();
         } else {
             return config.getDefaultServerDhPrivateKey();
         }
@@ -424,8 +417,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public BigInteger getSRPModulus() {
-        if (tlsContext.getSRPModulus() != null) {
-            return tlsContext.getSRPModulus();
+        if (context.getTlsContext().getSRPModulus() != null) {
+            return context.getTlsContext().getSRPModulus();
         } else {
             return config.getDefaultSRPModulus();
         }
@@ -433,8 +426,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public byte[] getPSKIdentity() {
-        if (tlsContext.getPSKIdentity() != null) {
-            return copy(tlsContext.getPSKIdentity());
+        if (context.getTlsContext().getPSKIdentity() != null) {
+            return copy(context.getTlsContext().getPSKIdentity());
         } else {
             return config.getDefaultPSKIdentity();
         }
@@ -442,8 +435,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public byte[] getPSKIdentityHint() {
-        if (tlsContext.getPSKIdentityHint() != null) {
-            return copy(tlsContext.getPSKIdentityHint());
+        if (context.getTlsContext().getPSKIdentityHint() != null) {
+            return copy(context.getTlsContext().getPSKIdentityHint());
         } else {
             return config.getDefaultPSKIdentityHint();
         }
@@ -451,8 +444,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public BigInteger getPSKModulus() {
-        if (tlsContext.getPSKModulus() != null) {
-            return tlsContext.getPSKModulus();
+        if (context.getTlsContext().getPSKModulus() != null) {
+            return context.getTlsContext().getPSKModulus();
         } else {
             return config.getDefaultPSKModulus();
         }
@@ -460,8 +453,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public BigInteger getPSKServerPrivateKey() {
-        if (tlsContext.getServerPSKPrivateKey() != null) {
-            return tlsContext.getServerPSKPrivateKey();
+        if (context.getTlsContext().getServerPSKPrivateKey() != null) {
+            return context.getTlsContext().getServerPSKPrivateKey();
         } else {
             return config.getDefaultPSKServerPrivateKey();
         }
@@ -469,8 +462,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public BigInteger getPSKServerPublicKey() {
-        if (tlsContext.getServerPSKPublicKey() != null) {
-            return tlsContext.getServerPSKPublicKey();
+        if (context.getTlsContext().getServerPSKPublicKey() != null) {
+            return context.getTlsContext().getServerPSKPublicKey();
         } else {
             return config.getDefaultPSKServerPublicKey();
         }
@@ -478,8 +471,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public BigInteger getPSKGenerator() {
-        if (tlsContext.getPSKGenerator() != null) {
-            return tlsContext.getPSKGenerator();
+        if (context.getTlsContext().getPSKGenerator() != null) {
+            return context.getTlsContext().getPSKGenerator();
         } else {
             return config.getDefaultPSKGenerator();
         }
@@ -487,8 +480,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public BigInteger getSRPGenerator() {
-        if (tlsContext.getSRPGenerator() != null) {
-            return tlsContext.getSRPGenerator();
+        if (context.getTlsContext().getSRPGenerator() != null) {
+            return context.getTlsContext().getSRPGenerator();
         } else {
             return config.getDefaultSRPGenerator();
         }
@@ -496,8 +489,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public BigInteger getSRPServerPrivateKey() {
-        if (tlsContext.getServerSRPPrivateKey() != null) {
-            return tlsContext.getServerSRPPrivateKey();
+        if (context.getTlsContext().getServerSRPPrivateKey() != null) {
+            return context.getTlsContext().getServerSRPPrivateKey();
         } else {
             return config.getDefaultSRPServerPrivateKey();
         }
@@ -505,8 +498,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public BigInteger getSRPServerPublicKey() {
-        if (tlsContext.getServerSRPPublicKey() != null) {
-            return tlsContext.getServerSRPPublicKey();
+        if (context.getTlsContext().getServerSRPPublicKey() != null) {
+            return context.getTlsContext().getServerSRPPublicKey();
         } else {
             return config.getDefaultSRPServerPublicKey();
         }
@@ -514,8 +507,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public BigInteger getSRPClientPrivateKey() {
-        if (tlsContext.getClientSRPPrivateKey() != null) {
-            return tlsContext.getClientSRPPrivateKey();
+        if (context.getTlsContext().getClientSRPPrivateKey() != null) {
+            return context.getTlsContext().getClientSRPPrivateKey();
         } else {
             return config.getDefaultSRPClientPrivateKey();
         }
@@ -523,8 +516,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public BigInteger getSRPClientPublicKey() {
-        if (tlsContext.getClientSRPPublicKey() != null) {
-            return tlsContext.getClientSRPPublicKey();
+        if (context.getTlsContext().getClientSRPPublicKey() != null) {
+            return context.getTlsContext().getClientSRPPublicKey();
         } else {
             return config.getDefaultSRPClientPublicKey();
         }
@@ -532,8 +525,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public byte[] getSRPPassword() {
-        if (tlsContext.getSRPPassword() != null) {
-            return copy(tlsContext.getSRPPassword());
+        if (context.getTlsContext().getSRPPassword() != null) {
+            return copy(context.getTlsContext().getSRPPassword());
         } else {
             return config.getDefaultSRPPassword();
         }
@@ -541,8 +534,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public byte[] getSRPIdentity() {
-        if (tlsContext.getSRPIdentity() != null) {
-            return copy(tlsContext.getSRPIdentity());
+        if (context.getTlsContext().getSRPIdentity() != null) {
+            return copy(context.getTlsContext().getSRPIdentity());
         } else {
             return config.getDefaultSRPIdentity();
         }
@@ -550,8 +543,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public byte[] getSRPServerSalt() {
-        if (tlsContext.getSRPServerSalt() != null) {
-            return copy(tlsContext.getSRPServerSalt());
+        if (context.getTlsContext().getSRPServerSalt() != null) {
+            return copy(context.getTlsContext().getSRPServerSalt());
         } else {
             return config.getDefaultSRPServerSalt();
         }
@@ -559,8 +552,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public BigInteger getClientDhPrivateKey() {
-        if (tlsContext.getClientDhPrivateKey() != null) {
-            return tlsContext.getClientDhPrivateKey();
+        if (context.getTlsContext().getClientDhPrivateKey() != null) {
+            return context.getTlsContext().getClientDhPrivateKey();
         } else {
             return config.getDefaultClientDhPrivateKey();
         }
@@ -568,8 +561,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public BigInteger getServerDhPublicKey() {
-        if (tlsContext.getServerDhPublicKey() != null) {
-            return tlsContext.getServerDhPublicKey();
+        if (context.getTlsContext().getServerDhPublicKey() != null) {
+            return context.getTlsContext().getServerDhPublicKey();
         } else {
             return config.getDefaultServerDhPublicKey();
         }
@@ -577,8 +570,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public BigInteger getClientDhPublicKey() {
-        if (tlsContext.getClientDhPublicKey() != null) {
-            return tlsContext.getClientDhPublicKey();
+        if (context.getTlsContext().getClientDhPublicKey() != null) {
+            return context.getTlsContext().getClientDhPublicKey();
         } else {
             return config.getDefaultClientDhPublicKey();
         }
@@ -586,8 +579,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public BigInteger getServerEcPrivateKey() {
-        if (tlsContext.getServerEcPrivateKey() != null) {
-            return tlsContext.getServerEcPrivateKey();
+        if (context.getTlsContext().getServerEcPrivateKey() != null) {
+            return context.getTlsContext().getServerEcPrivateKey();
         } else {
             return config.getDefaultServerEcPrivateKey();
         }
@@ -595,8 +588,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public GOSTCurve getSelectedGostCurve() {
-        if (tlsContext.getSelectedGostCurve() != null) {
-            return tlsContext.getSelectedGostCurve();
+        if (context.getTlsContext().getSelectedGostCurve() != null) {
+            return context.getTlsContext().getSelectedGostCurve();
         } else {
             return config.getDefaultSelectedGostCurve();
         }
@@ -604,8 +597,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public BigInteger getClientEcPrivateKey() {
-        if (tlsContext.getClientEcPrivateKey() != null) {
-            return tlsContext.getClientEcPrivateKey();
+        if (context.getTlsContext().getClientEcPrivateKey() != null) {
+            return context.getTlsContext().getClientEcPrivateKey();
         } else {
             return config.getDefaultClientEcPrivateKey();
         }
@@ -613,8 +606,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public NamedGroup getSelectedNamedGroup() {
-        if (tlsContext.getSelectedGroup() != null) {
-            return tlsContext.getSelectedGroup();
+        if (context.getTlsContext().getSelectedGroup() != null) {
+            return context.getTlsContext().getSelectedGroup();
         } else {
             return config.getDefaultSelectedNamedGroup();
         }
@@ -622,8 +615,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public NamedGroup getEcCertificateCurve() {
-        if (tlsContext.getEcCertificateCurve() != null) {
-            return tlsContext.getEcCertificateCurve();
+        if (context.getTlsContext().getEcCertificateCurve() != null) {
+            return context.getTlsContext().getEcCertificateCurve();
         } else {
             return config.getDefaultEcCertificateCurve();
         }
@@ -631,8 +624,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public Point getClientEcPublicKey() {
-        if (tlsContext.getClientEcPublicKey() != null) {
-            return tlsContext.getClientEcPublicKey();
+        if (context.getTlsContext().getClientEcPublicKey() != null) {
+            return context.getTlsContext().getClientEcPublicKey();
         } else {
             return config.getDefaultClientEcPublicKey();
         }
@@ -640,8 +633,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public Point getServerEcPublicKey() {
-        if (tlsContext.getServerEcPublicKey() != null) {
-            return tlsContext.getServerEcPublicKey();
+        if (context.getTlsContext().getServerEcPublicKey() != null) {
+            return context.getTlsContext().getServerEcPublicKey();
         } else {
             return config.getDefaultServerEcPublicKey();
         }
@@ -655,8 +648,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public BigInteger getServerRsaModulus() {
-        if (tlsContext.getServerRSAModulus() != null) {
-            return tlsContext.getServerRSAModulus();
+        if (context.getTlsContext().getServerRSAModulus() != null) {
+            return context.getTlsContext().getServerRSAModulus();
         } else {
             return config.getDefaultServerRSAModulus();
         }
@@ -664,8 +657,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public BigInteger getClientRsaModulus() {
-        if (tlsContext.getClientRsaModulus() != null) {
-            return tlsContext.getClientRsaModulus();
+        if (context.getTlsContext().getClientRsaModulus() != null) {
+            return context.getTlsContext().getClientRsaModulus();
         } else {
             return config.getDefaultClientRSAModulus();
         }
@@ -673,8 +666,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public BigInteger getServerRSAPublicKey() {
-        if (tlsContext.getServerRSAPublicKey() != null) {
-            return tlsContext.getServerRSAPublicKey();
+        if (context.getTlsContext().getServerRSAPublicKey() != null) {
+            return context.getTlsContext().getServerRSAPublicKey();
         } else {
             return config.getDefaultServerRSAPublicKey();
         }
@@ -682,8 +675,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public BigInteger getClientRSAPublicKey() {
-        if (tlsContext.getClientRSAPublicKey() != null) {
-            return tlsContext.getClientRSAPublicKey();
+        if (context.getTlsContext().getClientRSAPublicKey() != null) {
+            return context.getTlsContext().getClientRSAPublicKey();
         } else {
             return config.getDefaultClientRSAPublicKey();
         }
@@ -691,8 +684,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public byte[] getCertificateRequestContext() {
-        if (tlsContext.getCertificateRequestContext() != null) {
-            return copy(tlsContext.getCertificateRequestContext());
+        if (context.getTlsContext().getCertificateRequestContext() != null) {
+            return copy(context.getTlsContext().getCertificateRequestContext());
         } else {
             return config.getDefaultCertificateRequestContext();
         }
@@ -700,8 +693,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public byte[] getServerHandshakeTrafficSecret() {
-        if (tlsContext.getServerHandshakeTrafficSecret() != null) {
-            return copy(tlsContext.getServerHandshakeTrafficSecret());
+        if (context.getTlsContext().getServerHandshakeTrafficSecret() != null) {
+            return copy(context.getTlsContext().getServerHandshakeTrafficSecret());
         } else {
             return config.getDefaultServerHandshakeTrafficSecret();
         }
@@ -709,8 +702,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public byte[] getClientHandshakeTrafficSecret() {
-        if (tlsContext.getClientHandshakeTrafficSecret() != null) {
-            return copy(tlsContext.getClientHandshakeTrafficSecret());
+        if (context.getTlsContext().getClientHandshakeTrafficSecret() != null) {
+            return copy(context.getTlsContext().getClientHandshakeTrafficSecret());
         } else {
             return config.getDefaultClientHandshakeTrafficSecret();
         }
@@ -718,8 +711,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public byte[] getClientApplicationTrafficSecret() {
-        if (tlsContext.getClientApplicationTrafficSecret() != null) {
-            return copy(tlsContext.getClientApplicationTrafficSecret());
+        if (context.getTlsContext().getClientApplicationTrafficSecret() != null) {
+            return copy(context.getTlsContext().getClientApplicationTrafficSecret());
         } else {
             return config.getDefaultClientApplicationTrafficSecret();
         }
@@ -728,8 +721,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public byte[] getServerApplicationTrafficSecret() {
-        if (tlsContext.getServerApplicationTrafficSecret() != null) {
-            return copy(tlsContext.getServerApplicationTrafficSecret());
+        if (context.getTlsContext().getServerApplicationTrafficSecret() != null) {
+            return copy(context.getTlsContext().getServerApplicationTrafficSecret());
         } else {
             return config.getDefaultServerApplicationTrafficSecret();
         }
@@ -737,8 +730,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public BigInteger getClientRSAPrivateKey() {
-        if (tlsContext.getClientRSAPrivateKey() != null) {
-            return tlsContext.getClientRSAPrivateKey();
+        if (context.getTlsContext().getClientRSAPrivateKey() != null) {
+            return context.getTlsContext().getClientRSAPrivateKey();
         } else {
             return config.getDefaultClientRSAPrivateKey();
         }
@@ -746,8 +739,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public BigInteger getServerRSAPrivateKey() {
-        if (tlsContext.getServerRSAPrivateKey() != null) {
-            return tlsContext.getServerRSAPrivateKey();
+        if (context.getTlsContext().getServerRSAPrivateKey() != null) {
+            return context.getTlsContext().getServerRSAPrivateKey();
         } else {
             return config.getDefaultServerRSAPrivateKey();
         }
@@ -766,8 +759,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public ProtocolVersion getHighestProtocolVersion() {
-        if (tlsContext.getHighestProtocolVersion() != null) {
-            return tlsContext.getHighestProtocolVersion();
+        if (context.getTlsContext().getHighestProtocolVersion() != null) {
+            return context.getTlsContext().getHighestProtocolVersion();
         } else {
             return config.getHighestProtocolVersion();
         }
@@ -775,8 +768,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public boolean isClientAuthentication() {
-        if (tlsContext.isClientAuthentication() != null) {
-            return tlsContext.isClientAuthentication();
+        if (context.getTlsContext().isClientAuthentication() != null) {
+            return context.getTlsContext().isClientAuthentication();
         } else {
             return config.isClientAuthentication();
         }
@@ -784,8 +777,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public byte[] getLastHandledApplicationMessageData() {
-        if (tlsContext.getLastHandledApplicationMessageData() != null) {
-            return copy(tlsContext.getLastHandledApplicationMessageData());
+        if (context.getTlsContext().getLastHandledApplicationMessageData() != null) {
+            return copy(context.getTlsContext().getLastHandledApplicationMessageData());
         } else {
             return config.getDefaultApplicationMessageData().getBytes(StandardCharsets.ISO_8859_1);
         }
@@ -793,8 +786,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public byte[] getPsk() {
-        if (tlsContext.getPsk() != null) {
-            return copy(tlsContext.getPsk());
+        if (context.getTlsContext().getPsk() != null) {
+            return copy(context.getTlsContext().getPsk());
         } else {
             return config.getPsk();
         }
@@ -802,7 +795,7 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public String getHttpsCookieValue() {
-        String cookieVal = tlsContext.getHttpsCookieValue();
+        String cookieVal = context.getTlsContext().getHttpsCookieValue();
         if (cookieVal != null && !cookieVal.isEmpty()) {
             return cookieVal;
         } else {
@@ -812,7 +805,7 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public String getHttpsCookieName() {
-        String cookieName = tlsContext.getHttpsCookieName();
+        String cookieName = context.getTlsContext().getHttpsCookieName();
         if (cookieName != null && !cookieName.isEmpty()) {
             return cookieName;
         } else {
@@ -822,8 +815,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public List<PskSet> getPskSets() {
-        if (tlsContext.getPskSets() != null) {
-            return tlsContext.getPskSets();
+        if (context.getTlsContext().getPskSets() != null) {
+            return context.getTlsContext().getPskSets();
         } else {
             return config.getDefaultPskSets();
         }
@@ -831,8 +824,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public CipherSuite getEarlyDataCipherSuite() {
-        if (tlsContext.getEarlyDataCipherSuite() != null) {
-            return tlsContext.getEarlyDataCipherSuite();
+        if (context.getTlsContext().getEarlyDataCipherSuite() != null) {
+            return context.getTlsContext().getEarlyDataCipherSuite();
         } else {
             return config.getEarlyDataCipherSuite();
         }
@@ -840,8 +833,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public byte[] getClientEarlyTrafficSecret() {
-        if (tlsContext.getClientEarlyTrafficSecret() != null) {
-            return copy(tlsContext.getClientEarlyTrafficSecret());
+        if (context.getTlsContext().getClientEarlyTrafficSecret() != null) {
+            return copy(context.getTlsContext().getClientEarlyTrafficSecret());
         } else {
             return config.getClientEarlyTrafficSecret();
         }
@@ -849,8 +842,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public byte[] getEarlySecret() {
-        if (tlsContext.getEarlySecret() != null) {
-            return copy(tlsContext.getEarlySecret());
+        if (context.getTlsContext().getEarlySecret() != null) {
+            return copy(context.getTlsContext().getEarlySecret());
         } else {
             return config.getEarlySecret();
         }
@@ -858,8 +851,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public byte[] getEarlyDataPsk() {
-        if (tlsContext.getEarlyDataPsk() != null) {
-            return copy(tlsContext.getEarlyDataPsk());
+        if (context.getTlsContext().getEarlyDataPsk() != null) {
+            return copy(context.getTlsContext().getEarlyDataPsk());
         } else {
             return config.getEarlyDataPsk();
         }
@@ -872,8 +865,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public List<KeyShareStoreEntry> getClientKeyShares() {
-        if (tlsContext.getClientKeyShareStoreEntryList() != null) {
-            return tlsContext.getClientKeyShareStoreEntryList();
+        if (context.getTlsContext().getClientKeyShareStoreEntryList() != null) {
+            return context.getTlsContext().getClientKeyShareStoreEntryList();
         } else {
             return config.getDefaultClientKeyStoreEntries();
         }
@@ -881,8 +874,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public KeyShareStoreEntry getServerKeyShare() {
-        if (tlsContext.getServerKeyShareStoreEntry() != null) {
-            return tlsContext.getServerKeyShareStoreEntry();
+        if (context.getTlsContext().getServerKeyShareStoreEntry() != null) {
+            return context.getTlsContext().getServerKeyShareStoreEntry();
         } else {
             return config.getDefaultServerKeyShareEntry();
         }
@@ -890,8 +883,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public BigInteger getDsaClientPrivateKey() {
-        if (tlsContext.getClientDsaPrivateKey() != null) {
-            return tlsContext.getClientDsaPrivateKey();
+        if (context.getTlsContext().getClientDsaPrivateKey() != null) {
+            return context.getTlsContext().getClientDsaPrivateKey();
         } else {
             return config.getDefaultClientDsaPrivateKey();
         }
@@ -899,8 +892,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public BigInteger getDsaClientPublicKey() {
-        if (tlsContext.getClientDsaPublicKey() != null) {
-            return tlsContext.getClientDsaPublicKey();
+        if (context.getTlsContext().getClientDsaPublicKey() != null) {
+            return context.getTlsContext().getClientDsaPublicKey();
         } else {
             return config.getDefaultClientDsaPublicKey();
         }
@@ -908,8 +901,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public BigInteger getDsaClientPrimeP() {
-        if (tlsContext.getClientDsaPrimeP() != null) {
-            return tlsContext.getClientDsaPrimeP();
+        if (context.getTlsContext().getClientDsaPrimeP() != null) {
+            return context.getTlsContext().getClientDsaPrimeP();
         } else {
             return config.getDefaultClientDsaPrimeP();
         }
@@ -917,8 +910,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public BigInteger getDsaClientPrimeQ() {
-        if (tlsContext.getClientDsaPrimeQ() != null) {
-            return tlsContext.getClientDsaPrimeQ();
+        if (context.getTlsContext().getClientDsaPrimeQ() != null) {
+            return context.getTlsContext().getClientDsaPrimeQ();
         } else {
             return config.getDefaultClientDsaPrimeQ();
         }
@@ -926,8 +919,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public BigInteger getDsaClientGenerator() {
-        if (tlsContext.getClientDsaGenerator() != null) {
-            return tlsContext.getClientDsaGenerator();
+        if (context.getTlsContext().getClientDsaGenerator() != null) {
+            return context.getTlsContext().getClientDsaGenerator();
         } else {
             return config.getDefaultClientDsaGenerator();
         }
@@ -935,8 +928,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public BigInteger getDsaServerPrivateKey() {
-        if (tlsContext.getServerDsaPrivateKey() != null) {
-            return tlsContext.getServerDsaPrivateKey();
+        if (context.getTlsContext().getServerDsaPrivateKey() != null) {
+            return context.getTlsContext().getServerDsaPrivateKey();
         } else {
             return config.getDefaultServerDsaPrivateKey();
         }
@@ -944,8 +937,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public BigInteger getDsaServerPublicKey() {
-        if (tlsContext.getServerDsaPublicKey() != null) {
-            return tlsContext.getServerDsaPublicKey();
+        if (context.getTlsContext().getServerDsaPublicKey() != null) {
+            return context.getTlsContext().getServerDsaPublicKey();
         } else {
             return config.getDefaultServerDsaPublicKey();
         }
@@ -953,8 +946,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public BigInteger getDsaServerPrimeP() {
-        if (tlsContext.getServerDsaPrimeP() != null) {
-            return tlsContext.getServerDsaPrimeP();
+        if (context.getTlsContext().getServerDsaPrimeP() != null) {
+            return context.getTlsContext().getServerDsaPrimeP();
         } else {
             return config.getDefaultServerDsaPrimeP();
         }
@@ -962,8 +955,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public BigInteger getDsaServerPrimeQ() {
-        if (tlsContext.getServerDsaPrimeQ() != null) {
-            return tlsContext.getServerDsaPrimeQ();
+        if (context.getTlsContext().getServerDsaPrimeQ() != null) {
+            return context.getTlsContext().getServerDsaPrimeQ();
         } else {
             return config.getDefaultServerDsaPrimeQ();
         }
@@ -971,8 +964,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public BigInteger getDsaServerGenerator() {
-        if (tlsContext.getServerDsaGenerator() != null) {
-            return tlsContext.getServerDsaGenerator();
+        if (context.getTlsContext().getServerDsaGenerator() != null) {
+            return context.getTlsContext().getServerDsaGenerator();
         } else {
             return config.getDefaultServerDsaGenerator();
         }
@@ -980,8 +973,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public byte[] getHandshakeSecret() {
-        if (tlsContext.getHandshakeSecret() != null) {
-            return copy(tlsContext.getHandshakeSecret());
+        if (context.getTlsContext().getHandshakeSecret() != null) {
+            return copy(context.getTlsContext().getHandshakeSecret());
         } else {
             return config.getDefaultHandshakeSecret();
         }
@@ -993,8 +986,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public String getClientPWDUsername() {
-        if (tlsContext.getClientPWDUsername() != null) {
-            return tlsContext.getClientPWDUsername();
+        if (context.getTlsContext().getClientPWDUsername() != null) {
+            return context.getTlsContext().getClientPWDUsername();
         } else {
             return config.getDefaultClientPWDUsername();
         }
@@ -1002,8 +995,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public byte[] getServerPWDSalt() {
-        if (tlsContext.getServerPWDSalt() != null) {
-            return tlsContext.getServerPWDSalt();
+        if (context.getTlsContext().getServerPWDSalt() != null) {
+            return context.getTlsContext().getServerPWDSalt();
         } else {
             return config.getDefaultServerPWDSalt();
         }
@@ -1016,8 +1009,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public byte[] getEsniClientNonce() {
-        if (tlsContext.getEsniClientNonce() != null) {
-            return this.tlsContext.getEsniClientNonce();
+        if (context.getTlsContext().getEsniClientNonce() != null) {
+            return this.context.getTlsContext().getEsniClientNonce();
         } else {
             return config.getDefaultEsniClientNonce();
         }
@@ -1025,8 +1018,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public byte[] getEsniServerNonce() {
-        if (tlsContext.getEsniServerNonce() != null) {
-            return this.tlsContext.getEsniServerNonce();
+        if (context.getTlsContext().getEsniServerNonce() != null) {
+            return this.context.getTlsContext().getEsniServerNonce();
         } else {
             return config.getDefaultEsniServerNonce();
         }
@@ -1034,8 +1027,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public byte[] getEsniRecordBytes() {
-        if (tlsContext.getEsniRecordBytes() != null) {
-            return tlsContext.getEsniRecordBytes();
+        if (context.getTlsContext().getEsniRecordBytes() != null) {
+            return context.getTlsContext().getEsniRecordBytes();
         } else {
             return config.getDefaultEsniRecordBytes();
         }
@@ -1043,8 +1036,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public EsniDnsKeyRecordVersion getEsniRecordVersion() {
-        if (tlsContext.getEsniRecordVersion() != null) {
-            return tlsContext.getEsniRecordVersion();
+        if (context.getTlsContext().getEsniRecordVersion() != null) {
+            return context.getTlsContext().getEsniRecordVersion();
         } else {
             return config.getDefaultEsniRecordVersion();
         }
@@ -1052,8 +1045,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public byte[] getEsniRecordChecksum() {
-        if (tlsContext.getEsniRecordChecksum() != null) {
-            return tlsContext.getEsniRecordChecksum();
+        if (context.getTlsContext().getEsniRecordChecksum() != null) {
+            return context.getTlsContext().getEsniRecordChecksum();
         } else {
             return config.getDefaultEsniRecordChecksum();
         }
@@ -1061,8 +1054,9 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public List<KeyShareStoreEntry> getEsniServerKeyShareEntries() {
-        if (tlsContext.getEsniServerKeyShareEntries() != null && tlsContext.getEsniServerKeyShareEntries().size() > 0) {
-            return tlsContext.getEsniServerKeyShareEntries();
+        if (context.getTlsContext().getEsniServerKeyShareEntries() != null
+            && context.getTlsContext().getEsniServerKeyShareEntries().size() > 0) {
+            return context.getTlsContext().getEsniServerKeyShareEntries();
         } else {
             return config.getDefaultEsniServerKeyShareEntries();
         }
@@ -1071,8 +1065,8 @@ public class DefaultChooser extends Chooser {
     @Override
     public List<CipherSuite> getEsniServerCipherSuites() {
 
-        if (tlsContext.getEsniServerCipherSuites() != null) {
-            return tlsContext.getEsniServerCipherSuites();
+        if (context.getTlsContext().getEsniServerCipherSuites() != null) {
+            return context.getTlsContext().getEsniServerCipherSuites();
         } else {
             return config.getDefaultEsniServerCipherSuites();
         }
@@ -1081,8 +1075,8 @@ public class DefaultChooser extends Chooser {
     @Override
     public Integer getEsniPaddedLength() {
 
-        if (tlsContext.getEsniPaddedLength() != null) {
-            return tlsContext.getEsniPaddedLength();
+        if (context.getTlsContext().getEsniPaddedLength() != null) {
+            return context.getTlsContext().getEsniPaddedLength();
         } else {
             return config.getDefaultEsniPaddedLength();
         }
@@ -1090,8 +1084,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public Long getEsniNotBefore() {
-        if (tlsContext.getEsniKeysNotBefore() != null) {
-            return this.tlsContext.getEsniKeysNotBefore();
+        if (context.getTlsContext().getEsniKeysNotBefore() != null) {
+            return this.context.getTlsContext().getEsniKeysNotBefore();
         } else {
             return config.getDefaultEsniNotBefore();
         }
@@ -1099,8 +1093,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public Long getEsniNotAfter() {
-        if (tlsContext.getEsniNotAfter() != null) {
-            return tlsContext.getEsniNotAfter();
+        if (context.getTlsContext().getEsniNotAfter() != null) {
+            return context.getTlsContext().getEsniNotAfter();
         } else {
             return config.getDefaultEsniNotAfter();
         }
@@ -1108,16 +1102,16 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public List<String> getProposedAlpnProtocols() {
-        if (tlsContext.getProposedAlpnProtocols() != null) {
-            return tlsContext.getProposedAlpnProtocols();
+        if (context.getTlsContext().getProposedAlpnProtocols() != null) {
+            return context.getTlsContext().getProposedAlpnProtocols();
         } else {
             return config.getDefaultProposedAlpnProtocols();
         }
     }
 
     public Integer getMaxEarlyDataSize() {
-        if (tlsContext.getMaxEarlyDataSize() != null) {
-            return tlsContext.getMaxEarlyDataSize();
+        if (context.getTlsContext().getMaxEarlyDataSize() != null) {
+            return context.getTlsContext().getMaxEarlyDataSize();
         } else {
             return config.getDefaultMaxEarlyDataSize();
         }
@@ -1125,8 +1119,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public byte[] getLastClientHello() {
-        if (tlsContext.getLastClientHello() != null) {
-            return tlsContext.getLastClientHello();
+        if (context.getTlsContext().getLastClientHello() != null) {
+            return context.getTlsContext().getLastClientHello();
         } else {
             return config.getDefaultLastClientHello();
         }
@@ -1134,8 +1128,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public byte[] getExtensionCookie() {
-        if (tlsContext.getExtensionCookie() != null) {
-            return tlsContext.getExtensionCookie();
+        if (context.getTlsContext().getExtensionCookie() != null) {
+            return context.getTlsContext().getExtensionCookie();
         } else {
             return config.getDefaultExtensionCookie();
         }
@@ -1143,8 +1137,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public Integer getOutboundRecordSizeLimit() {
-        if (tlsContext.getOutboundRecordSizeLimit() != null) {
-            return tlsContext.getOutboundRecordSizeLimit();
+        if (context.getTlsContext().getOutboundRecordSizeLimit() != null) {
+            return context.getTlsContext().getOutboundRecordSizeLimit();
         } else {
             return config.getDefaultMaxRecordData();
         }
@@ -1161,8 +1155,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public Integer getOutboundMaxRecordDataSize() {
-        if (tlsContext != null) {
-            return tlsContext.getOutboundMaxRecordDataSize();
+        if (context.getTlsContext() != null) {
+            return context.getTlsContext().getOutboundMaxRecordDataSize();
         } else {
             return config.getDefaultMaxRecordData();
         }
@@ -1170,8 +1164,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public Integer getInboundMaxRecordDataSize() {
-        if (tlsContext != null) {
-            return tlsContext.getInboundMaxRecordDataSize();
+        if (context.getTlsContext() != null) {
+            return context.getTlsContext().getInboundMaxRecordDataSize();
         } else {
             return config.getDefaultMaxRecordData();
         }

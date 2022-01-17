@@ -14,13 +14,17 @@ import javax.xml.bind.annotation.XmlAccessorType;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
+import de.rub.nds.tlsattacker.core.constants.ChooserType;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.layer.LayerStack;
+import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
+import de.rub.nds.tlsattacker.core.layer.constant.LayerStackType;
 import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -51,7 +55,7 @@ public class Context {
     /**
      * Not bound to a layer, so it makes sense to save it here
      */
-    private ConnectionEndType talkingConnectionEndType;
+    private ConnectionEndType talkingConnectionEndType = ConnectionEndType.CLIENT;
 
     /**
      * The end point of the connection that this context represents.
@@ -59,6 +63,7 @@ public class Context {
     private AliasedConnection connection;
 
     public Context(Config config) {
+        this.chooser = ChooserFactory.getChooser(ChooserType.DEFAULT, this, config);
         this.config = config;
         RunningModeType mode = config.getDefaultRunningMode();
         if (null == mode) {
@@ -76,11 +81,14 @@ public class Context {
                         "Cannot create connection for unknown running mode " + "'" + mode + "'");
             }
         }
+        prepareWithLayers(config.getLayers());
     }
 
     public Context(Config config, AliasedConnection connection) {
+        this.chooser = ChooserFactory.getChooser(ChooserType.DEFAULT, this, config);
         this.config = config;
         this.connection = connection;
+        prepareWithLayers(config.getLayers());
     }
 
     public TcpContext getTcpContext() {
@@ -167,5 +175,9 @@ public class Context {
 
     public void setTlsContext(TlsContext tlsContext) {
         this.tlsContext = tlsContext;
+    }
+
+    public void prepareWithLayers(LayerStackType type) {
+        LayerStackFactory.createLayerStack(type, this);
     }
 }

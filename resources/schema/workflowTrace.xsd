@@ -5648,6 +5648,7 @@
       <xs:enumeration value="QUIC"/>
       <xs:enumeration value="OPEN_VPN"/>
       <xs:enumeration value="STARTTTLS"/>
+      <xs:enumeration value="HTTPS"/>
     </xs:restriction>
   </xs:simpleType>
 

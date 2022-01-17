@@ -38,7 +38,6 @@ public class FinishedHandlerTest {
     @Before
     public void setUp() {
         outerContext = new Context(new Config());
-        outerContext.setLayerStack(LayerStackFactory.createLayerStack(LayerStackType.TLS, outerContext));
         tlsContext = outerContext.getTlsContext();
         handler = new FinishedHandler(tlsContext);
     }

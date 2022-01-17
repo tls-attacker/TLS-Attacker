@@ -109,7 +109,7 @@ public class StateTest {
         State s = new State(trace);
 
         exception.expect(ConfigurationException.class);
-        exception.expectMessage("getTlsContext requires an alias if multiple contexts are defined");
+        exception.expectMessage("getContext requires an alias if multiple contexts are defined");
         TlsContext c = s.getContext().getTlsContext();
     }
 

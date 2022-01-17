@@ -69,9 +69,6 @@ public class ForwardDataActionTest {
         context.getTlsContext().setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
         context.getTcpContext().setTransportHandler(th);
         context2.getTcpContext().setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
-
-        context.setLayerStack(LayerStackFactory.createLayerStack(LayerStackType.TLS, context));
-        context2.setLayerStack(LayerStackFactory.createLayerStack(LayerStackType.TLS, context2));
         context2.getTlsContext().setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
     }
 
