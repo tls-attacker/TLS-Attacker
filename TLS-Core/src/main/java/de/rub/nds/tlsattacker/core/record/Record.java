@@ -168,7 +168,7 @@ public class Record extends ModifiableVariableHolder implements DataContainer {
         return new RecordParser(stream, version);
     }
 
-    public RecordSerializer getRecordSerializer() {
+    public RecordSerializer getSerializer() {
         return new RecordSerializer(this);
     }
 

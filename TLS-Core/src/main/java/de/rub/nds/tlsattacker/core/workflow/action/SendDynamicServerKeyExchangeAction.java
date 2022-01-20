@@ -68,7 +68,7 @@ public class SendDynamicServerKeyExchangeAction extends MessageAction implements
         }
 
         try {
-            send(tlsContext, messages, records);
+            send(tlsContext, messages, fragments, records);
             setExecuted(true);
         } catch (IOException e) {
             tlsContext.setReceivedTransportHandlerException(true);

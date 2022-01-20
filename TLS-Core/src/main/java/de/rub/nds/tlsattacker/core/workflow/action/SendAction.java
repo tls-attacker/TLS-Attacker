@@ -86,7 +86,7 @@ public class SendAction extends MessageAction implements SendingAction {
         }
 
         try {
-            send(tlsContext, messages, records);
+            send(tlsContext, messages, fragments, records);
             setExecuted(true);
         } catch (IOException e) {
             if (!getActionOptions().contains(ActionOption.MAY_FAIL)) {

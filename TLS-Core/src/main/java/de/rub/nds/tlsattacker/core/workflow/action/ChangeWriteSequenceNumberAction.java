@@ -25,7 +25,11 @@ public class ChangeWriteSequenceNumberAction extends ChangeSequenceNumberAction 
     @Override
     protected void changeSequenceNumber(TlsContext tlsContext) {
         LOGGER.info("Changed write sequence number of current cipher");
-        tlsContext.setWriteSequenceNumber(tlsContext.getWriteEpoch(), sequenceNumber);
+        if (tlsContext.getRecordLayer() != null) {
+            int epoch = tlsContext.getRecordLayer().getWriteEpoch();
+            tlsContext.getRecordLayer().getEncryptor().getRecordCipher(epoch).getState()
+                .setWriteSequenceNumber(sequenceNumber);
+        }
     }
 
 }

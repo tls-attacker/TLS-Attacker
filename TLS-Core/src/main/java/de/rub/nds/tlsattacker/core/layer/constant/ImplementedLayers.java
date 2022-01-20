@@ -11,7 +11,9 @@ package de.rub.nds.tlsattacker.core.layer.constant;
 
 public enum ImplementedLayers implements LayerType {
     TCP,
+    UDP,
     RECORD,
+    DTLS_FRAGMENT,
     MESSAGE,
     HTTP;
 

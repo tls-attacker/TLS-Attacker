@@ -33,7 +33,6 @@ import de.rub.nds.tlsattacker.core.record.crypto.RecordDecryptor;
 import de.rub.nds.tlsattacker.core.record.crypto.RecordEncryptor;
 import de.rub.nds.tlsattacker.core.record.parser.RecordParser;
 import de.rub.nds.tlsattacker.core.record.preparator.RecordPreparator;
-import de.rub.nds.tlsattacker.core.record.serializer.RecordSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -90,21 +89,18 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
 
         for (Record record : records) {
-
             ProtocolMessageType contentType = record.getContentMessageType();
             if (contentType == null) {
                 contentType = type;
             }
-
-            if (encryptor.getRecordCipher(writeEpoch).getState().getVersion().isDTLS() && record instanceof Record) {
-                ((Record) record).setEpoch(writeEpoch);
+            if (encryptor.getRecordCipher(writeEpoch).getState().getVersion().isDTLS()) {
+                record.setEpoch(writeEpoch);
             }
             RecordPreparator preparator =
                 record.getRecordPreparator(context.getChooser(), encryptor, compressor, contentType);
             preparator.prepare();
-            RecordSerializer serializer = record.getRecordSerializer();
             try {
-                byte[] recordBytes = serializer.serialize();
+                byte[] recordBytes = record.getSerializer().serialize();
                 record.setCompleteRecordBytes(recordBytes);
                 stream.write(record.getCompleteRecordBytes().getValue());
             } catch (IOException ex) {
@@ -118,7 +114,6 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
 
     @Override
     public void receiveMoreDataForHint(LayerProcessingHint desiredHint) throws IOException {
-        LOGGER.debug("Trying to retrieve more data");
         InputStream dataStream = getLowerLayer().getDataStream();
         try {
             RecordParser parser = new RecordParser(dataStream, getDecryptorCipher().getState().getVersion());
@@ -131,7 +126,13 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
             decryptor.decrypt(record);
             decompressor.decompress(record);
             addProducedContainer(record);
-            RecordLayerHint currentHint = new RecordLayerHint(record.getContentMessageType());
+            RecordLayerHint currentHint;
+            if (context.getChooser().getSelectedProtocolVersion().isDTLS()) {
+                currentHint = new RecordLayerHint(record.getContentMessageType(), record.getEpoch().getValue(),
+                    record.getSequenceNumber().getValue().intValue());
+            } else {
+                currentHint = new RecordLayerHint(record.getContentMessageType());
+            }
             if (desiredHint == null) {
                 currentInputStream = new HintedLayerInputStream(currentHint, this);
                 currentInputStream.extendStream(record.getCleanProtocolMessageBytes().getValue());
@@ -193,9 +194,8 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
             RecordPreparator preparator = record.getRecordPreparator(this.context.getChooser(), getEncryptor(),
                 getCompressor(), record.getContentMessageType());
             preparator.encrypt();
-            RecordSerializer serializer = record.getRecordSerializer();
             try {
-                byte[] recordBytes = serializer.serialize();
+                byte[] recordBytes = record.getSerializer().serialize();
                 record.setCompleteRecordBytes(recordBytes);
                 stream.write(record.getCompleteRecordBytes().getValue());
             } catch (IOException ex) {

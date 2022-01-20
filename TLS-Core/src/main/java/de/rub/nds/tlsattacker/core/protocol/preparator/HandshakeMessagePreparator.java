@@ -14,7 +14,6 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.Preparator;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessagePreparator;
-import de.rub.nds.tlsattacker.core.protocol.handler.HandshakeMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
@@ -26,7 +25,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionM
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PreSharedKeyExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EncryptedServerNameIndicationExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PreSharedKeyExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.HandshakeMessageSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -59,15 +57,9 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
 
     @Override
     protected void prepareProtocolMessageContents() {
-        if (chooser.getSelectedProtocolVersion().isDTLS()) {
-            message.setMessageSequence(chooser.getContext().getDtlsWriteHandshakeMessageSequence());
-        }
         prepareHandshakeMessageContents();
-
         if (!(message instanceof DtlsHandshakeMessageFragment)) {
-            HandshakeMessageHandler<T> handler = message.getHandler(chooser.getContext());
-            HandshakeMessageSerializer<T> serializer = message.getSerializer(chooser.getContext());
-            prepareMessageLength(serializer.serializeProtocolMessageContent().length);
+            prepareMessageLength(message.getSerializer(chooser.getContext()).serializeProtocolMessageContent().length);
             prepareMessageType(message.getHandshakeMessageType());
         }
     }

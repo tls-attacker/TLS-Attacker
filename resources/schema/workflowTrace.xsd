@@ -3168,10 +3168,7 @@
       <xs:element name="selectedGostCurve" type="gostCurve" minOccurs="0"/>
       <xs:element name="activeClientKeySetType" type="tls13KeySetType" minOccurs="0"/>
       <xs:element name="activeServerKeySetType" type="tls13KeySetType" minOccurs="0"/>
-      <xs:element name="dtlsReadHandshakeMessageSequence" type="xs:int"/>
-      <xs:element name="dtlsWriteHandshakeMessageSequence" type="xs:int"/>
       <xs:element name="dtlsReceivedHandshakeMessageSequences" type="xs:int" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
-      <xs:element name="globalDtlsFragmentManager" type="fragmentManager" minOccurs="0"/>
       <xs:element name="dtlsReceivedChangeCipherSpecEpochs" type="xs:int" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="clientSupportedProtocolVersions" type="protocolVersion" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="tokenBindingVersion" type="tokenBindingVersion" minOccurs="0"/>
@@ -3927,10 +3924,6 @@
       <xs:element name="name" type="xs:string" minOccurs="0"/>
       <xs:element name="type" type="nameType" minOccurs="0"/>
     </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="fragmentManager">
-    <xs:sequence/>
   </xs:complexType>
 
   <xs:complexType name="random">

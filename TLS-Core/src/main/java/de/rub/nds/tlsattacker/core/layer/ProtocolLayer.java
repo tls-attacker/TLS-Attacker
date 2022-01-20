@@ -7,11 +7,6 @@
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.rub.nds.tlsattacker.core.layer;
 
 import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
@@ -33,6 +28,7 @@ public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container 
     private Logger LOGGER = LogManager.getLogger();
 
     private ProtocolLayer higherLayer = null;
+
     private ProtocolLayer lowerLayer = null;
 
     private LayerConfiguration<Container> layerConfiguration;

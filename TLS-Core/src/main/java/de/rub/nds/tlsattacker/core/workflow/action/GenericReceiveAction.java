@@ -41,7 +41,7 @@ public class GenericReceiveAction extends MessageAction implements ReceivingActi
         }
         LOGGER.debug("Receiving Messages...");
         TlsContext ctx = state.getTlsContext(getConnectionAlias());
-        receive(ctx, messages, records);
+        receive(ctx, null, null, null);
 
         setExecuted(true);
         String received = getReadableString(messages);

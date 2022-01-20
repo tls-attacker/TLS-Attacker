@@ -47,6 +47,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
         for (ProtocolMessage message : configuration.getContainerList()) {
             ProtocolMessagePreparator preparator = message.getPreparator(context);
             preparator.prepare();
+            preparator.afterPrepare();
             ProtocolMessageSerializer serializer = message.getSerializer(context);
             byte[] serializedMessage = serializer.serialize();
             message.setCompleteResultingMessage(serializedMessage);
@@ -73,7 +74,6 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
 
     @Override
     public LayerProcessingResult receiveData() throws IOException {
-
         try {
             HintedInputStream dataStream = null;
             do {
@@ -115,6 +115,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
             LOGGER.debug(E);
         } catch (EndOfStreamException E) {
             LOGGER.debug(E);
+            E.printStackTrace();
         }
 
         return getLayerResult();
@@ -139,14 +140,27 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
     private void readHandshakeProtocolData() throws IOException {
         HintedInputStream handshakeStream = getLowerLayer().getDataStream();
         byte type = handshakeStream.readByte();
-        HandshakeMessageType handshakeMessageType = HandshakeMessageType.getMessageType(type);
-        int length = handshakeStream.readInt(HandshakeByteLength.MESSAGE_LENGTH_FIELD);
-        byte[] payload = handshakeStream.readChunk(length);
-        HandshakeMessage handshakeMessage = MessageFactory.generateHandshakeMessage(handshakeMessageType, context);
+        HandshakeMessage handshakeMessage =
+            MessageFactory.generateHandshakeMessage(HandshakeMessageType.getMessageType(type), context);
         handshakeMessage.setType(type);
+        int length = handshakeStream.readInt(HandshakeByteLength.MESSAGE_LENGTH_FIELD);
         handshakeMessage.setLength(length);
-        handshakeMessage.setCompleteResultingMessage(ArrayConverter.concatenate(new byte[] { type },
-            ArrayConverter.intToBytes(length, HandshakeByteLength.MESSAGE_LENGTH_FIELD), payload));
+        byte[] payload;
+        if (context.getChooser().getSelectedProtocolVersion().isDTLS()) {
+            int messageSequence = handshakeStream.readInt(HandshakeByteLength.DTLS_MESSAGE_SEQUENCE);
+            handshakeMessage.setMessageSequence(messageSequence);
+            byte[] fragmentOffset = handshakeStream.readChunk(HandshakeByteLength.DTLS_FRAGMENT_OFFSET);
+            byte[] fragmentLength = handshakeStream.readChunk(HandshakeByteLength.DTLS_FRAGMENT_LENGTH);
+            payload = handshakeStream.readChunk(length);
+            handshakeMessage.setCompleteResultingMessage(ArrayConverter.concatenate(new byte[] { type },
+                ArrayConverter.intToBytes(length, HandshakeByteLength.MESSAGE_LENGTH_FIELD),
+                ArrayConverter.intToBytes(messageSequence, HandshakeByteLength.DTLS_MESSAGE_SEQUENCE), fragmentOffset,
+                fragmentLength, payload));
+        } else {
+            payload = handshakeStream.readChunk(length);
+            handshakeMessage.setCompleteResultingMessage(ArrayConverter.concatenate(new byte[] { type },
+                ArrayConverter.intToBytes(length, HandshakeByteLength.MESSAGE_LENGTH_FIELD), payload));
+        }
         Parser parser = handshakeMessage.getParser(context, new ByteArrayInputStream(payload));
         parser.parse(handshakeMessage);
         Preparator preparator = handshakeMessage.getPreparator(context);

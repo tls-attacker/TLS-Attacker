@@ -96,7 +96,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         }
 
         LOGGER.debug("Receiving Messages...");
-        receive(tlsContext, expectedMessages, null);
+        receive(tlsContext, expectedMessages, null, null);
 
         setExecuted(true);
 

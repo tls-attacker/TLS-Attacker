@@ -78,7 +78,7 @@ public class RecordTest {
      */
     @Test
     public void testGetRecordSerializer() {
-        assertEquals(record.getRecordSerializer().getClass(), RecordSerializer.class);
+        assertEquals(record.getSerializer().getClass(), RecordSerializer.class);
     }
 
 }

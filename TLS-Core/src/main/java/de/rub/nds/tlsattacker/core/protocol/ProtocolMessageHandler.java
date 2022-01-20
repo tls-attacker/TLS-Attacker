@@ -9,7 +9,7 @@
 
 package de.rub.nds.tlsattacker.core.protocol;
 
-import de.rub.nds.tlsattacker.core.dtls.MessageFragmenter;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
@@ -49,7 +49,8 @@ public abstract class ProtocolMessageHandler<MessageT extends ProtocolMessage> i
 
         if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS()) {
             DtlsHandshakeMessageFragment fragment =
-                MessageFragmenter.wrapInSingleFragment(handshakeMessage, tlsContext);
+                tlsContext.getDtlsFragmentLayer().wrapInSingleFragment(handshakeMessage.getHandshakeMessageType(),
+                    handshakeMessage.getSerializer(tlsContext).serializeProtocolMessageContent());
             tlsContext.getDigest().append(fragment.getCompleteResultingMessage().getValue());
         } else {
             tlsContext.getDigest().append(message.getCompleteResultingMessage().getValue());

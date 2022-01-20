@@ -10,7 +10,10 @@
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
+import de.rub.nds.tlsattacker.core.layer.constant.LayerStackType;
 import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -217,5 +220,10 @@ public class ThreadedServerWorkflowExecutor extends WorkflowExecutor {
             // Preserve interrupt status
             Thread.currentThread().interrupt();
         }
+    }
+
+    @Override
+    public void initProtocolStack(TlsContext context) throws IOException {
+        context.setLayerStack(LayerStackFactory.createLayerStack(LayerStackType.TLS, context));
     }
 }

@@ -189,12 +189,14 @@ public abstract class MessageAction extends ConnectionBoundAction {
 
     public abstract MessageActionDirection getMessageDirection();
 
-    protected void send(TlsContext tlsContext, List<ProtocolMessage> protocolMessagesToSend, List<Record> recordsToSend)
-        throws IOException {
+    protected void send(TlsContext tlsContext, List<ProtocolMessage> protocolMessagesToSend,
+        List<DtlsHandshakeMessageFragment> fragmentsToSend, List<Record> recordsToSend) throws IOException {
         LayerStack layerStack = tlsContext.getLayerStack();
         List<LayerConfiguration> layerConfigurationList = new LinkedList<>();
-        LayerConfiguration messageLayerConfig = new SpecificContainerLayerConfiguration(protocolMessagesToSend);
-        layerConfigurationList.add(messageLayerConfig);
+        layerConfigurationList.add(new SpecificContainerLayerConfiguration(protocolMessagesToSend));
+        if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS()) {
+            layerConfigurationList.add(new SpecificContainerLayerConfiguration(fragmentsToSend));
+        }
         layerConfigurationList.add(new SpecificContainerLayerConfiguration(recordsToSend));
         layerConfigurationList.add(new SpecificContainerLayerConfiguration((List) null));
         LayerStackProcessingResult processingResult = layerStack.sendData(layerConfigurationList);
@@ -202,11 +204,13 @@ public abstract class MessageAction extends ConnectionBoundAction {
     }
 
     protected void receive(TlsContext tlsContext, List<ProtocolMessage> protocolMessagesToReceive,
-        List<Record> recordsToReceive) {
+        List<DtlsHandshakeMessageFragment> fragmentsToReceive, List<Record> recordsToReceive) {
         LayerStack layerStack = tlsContext.getLayerStack();
         List<LayerConfiguration> layerConfigurationList = new LinkedList<>();
-        LayerConfiguration messageLayerConfig = new SpecificContainerLayerConfiguration(protocolMessagesToReceive);
-        layerConfigurationList.add(messageLayerConfig);
+        layerConfigurationList.add(new SpecificContainerLayerConfiguration(protocolMessagesToReceive));
+        if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS()) {
+            layerConfigurationList.add(new SpecificContainerLayerConfiguration(fragmentsToReceive));
+        }
         layerConfigurationList.add(new SpecificContainerLayerConfiguration(recordsToReceive));
         layerConfigurationList.add(new SpecificContainerLayerConfiguration((List) null));
         LayerStackProcessingResult processingResult;
@@ -224,6 +228,9 @@ public abstract class MessageAction extends ConnectionBoundAction {
 
     private void setContainers(LayerStackProcessingResult processingResults) {
         messages = new ArrayList<>(processingResults.getResultForLayer(ImplementedLayers.MESSAGE).getUsedContainers());
+        // TODO add fragments?
+        // fragments = new
+        // ArrayList<>(processingResults.getResultForLayer(ImplementedLayers.DTLS_FRAGMENT).getUsedContainers());
         records = new ArrayList<>(processingResults.getResultForLayer(ImplementedLayers.RECORD).getUsedContainers());
     }
 

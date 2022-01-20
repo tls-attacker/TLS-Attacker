@@ -10,9 +10,11 @@
 package de.rub.nds.tlsattacker.core.layer;
 
 import de.rub.nds.tlsattacker.core.layer.constant.LayerStackType;
+import de.rub.nds.tlsattacker.core.layer.impl.DtlsFragmentLayer;
 import de.rub.nds.tlsattacker.core.layer.impl.MessageLayer;
 import de.rub.nds.tlsattacker.core.layer.impl.RecordLayer;
 import de.rub.nds.tlsattacker.core.layer.impl.TcpLayer;
+import de.rub.nds.tlsattacker.core.layer.impl.UdpLayer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 public class LayerStackFactory {
@@ -21,7 +23,8 @@ public class LayerStackFactory {
 
         switch (type) {
             case DTLS:
-                throw new UnsupportedOperationException("Not implemented yet");
+                return new LayerStack(context, new MessageLayer(context), new DtlsFragmentLayer(context),
+                    new RecordLayer(context), new UdpLayer(context));
             case OPEN_VPN:
                 throw new UnsupportedOperationException("Not implemented yet");
             case QUIC:
