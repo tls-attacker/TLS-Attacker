@@ -60,8 +60,6 @@ public class PreSharedKeyExtensionMessage extends ExtensionMessage<PreSharedKeyE
 
     public PreSharedKeyExtensionMessage(Config config) {
         super(ExtensionType.PRE_SHARED_KEY);
-        identities = new LinkedList<>();
-        binders = new LinkedList<>();
         if (config.getDefaultPskSets().size() > 0) {
             copyPskSets(config.getDefaultPskSets(), config.isLimitPsksToOne());
         }

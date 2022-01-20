@@ -35,7 +35,7 @@ public abstract class ExtensionSerializer<T extends ExtensionMessage> extends Se
     protected byte[] serializeBytes() {
         writeType();
         writeLength();
-        serializeExtensionContent();
+        writeContent();
 
         return getAlreadySerialized();
     }
@@ -48,6 +48,11 @@ public abstract class ExtensionSerializer<T extends ExtensionMessage> extends Se
     private void writeLength() {
         appendInt(msg.getExtensionLength().getValue(), ExtensionByteLength.EXTENSIONS_LENGTH);
         LOGGER.debug("extensionLength: " + msg.getExtensionLength().getValue());
+    }
+
+    private void writeContent() {
+        appendBytes(msg.getExtensionContent().getValue());
+        LOGGER.debug("ExtensionContent: " + ArrayConverter.bytesToHexString(msg.getExtensionContent().getValue()));
     }
 
     public abstract byte[] serializeExtensionContent();
