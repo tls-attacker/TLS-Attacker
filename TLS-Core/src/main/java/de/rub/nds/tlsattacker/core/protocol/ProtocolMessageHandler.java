@@ -9,7 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.protocol;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
@@ -48,9 +47,17 @@ public abstract class ProtocolMessageHandler<MessageT extends ProtocolMessage> i
         }
 
         if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS()) {
-            DtlsHandshakeMessageFragment fragment =
-                tlsContext.getDtlsFragmentLayer().wrapInSingleFragment(handshakeMessage.getHandshakeMessageType(),
+            DtlsHandshakeMessageFragment fragment;
+            // TODO find better solution
+            if (handshakeMessage.getMessageSequence() == null) {
+                fragment =
+                    tlsContext.getDtlsFragmentLayer().wrapInSingleFragment(handshakeMessage.getHandshakeMessageType(),
+                        null, handshakeMessage.getSerializer(tlsContext).serializeProtocolMessageContent());
+            } else {
+                fragment = tlsContext.getDtlsFragmentLayer().wrapInSingleFragment(
+                    handshakeMessage.getHandshakeMessageType(), handshakeMessage.getMessageSequence().getValue(),
                     handshakeMessage.getSerializer(tlsContext).serializeProtocolMessageContent());
+            }
             tlsContext.getDigest().append(fragment.getCompleteResultingMessage().getValue());
         } else {
             tlsContext.getDigest().append(message.getCompleteResultingMessage().getValue());

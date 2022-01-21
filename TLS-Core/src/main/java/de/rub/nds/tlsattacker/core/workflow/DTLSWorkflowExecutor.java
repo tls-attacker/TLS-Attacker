@@ -12,7 +12,6 @@ package de.rub.nds.tlsattacker.core.workflow;
 import de.rub.nds.tlsattacker.core.config.ConfigIO;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
 import de.rub.nds.tlsattacker.core.layer.SpecificContainerLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.constant.LayerStackType;
@@ -100,7 +99,7 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
                 if (config.isStopTraceAfterUnexpected()) {
                     LOGGER.debug("Skipping all Actions, action did not execute as planned.");
                     break;
-                } else if (retransmissions == 0) {
+                } else if (retransmissions == config.getMaxDtlsRetransmissions()) {
                     break;
                 } else {
                     i = retransmissionActionIndex - 1;

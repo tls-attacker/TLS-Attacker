@@ -113,9 +113,8 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
                 || dataStream.available() > 0);
         } catch (TimeoutException E) {
             LOGGER.debug(E);
-        } catch (EndOfStreamException E) {
-            LOGGER.debug(E);
-            E.printStackTrace();
+        } catch (EndOfStreamException ex) {
+            LOGGER.warn("Reached end of stream, cannot parse more messages");
         }
 
         return getLayerResult();
