@@ -14,7 +14,7 @@ import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public abstract class ProtocolMessageParser<Message extends TlsMessage> extends Parser<Message> {
+public abstract class ProtocolMessageParser<Message extends ProtocolMessage> extends Parser<Message> {
 
     private static final Logger LOGGER = LogManager.getLogger();
     protected final Config config;

@@ -12,19 +12,18 @@ package de.rub.nds.tlsattacker.core.workflow;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
-import de.rub.nds.tlsattacker.core.constants.TlsMessageType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.BouncyCastleNotLoadedException;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
-import de.rub.nds.tlsattacker.core.layer.constant.LayerStackType;
+import de.rub.nds.tlsattacker.core.layer.constant.ProtocolLayer;
 import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
-import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
@@ -160,7 +159,7 @@ public abstract class WorkflowExecutor {
     public void closeConnection() {
         for (Context context : state.getAllTlsContexts()) {
             try {
-                context.getTcpContext().getTransportHandler().closeConnection();
+                context.getTransportHandler().closeConnection();
             } catch (IOException ex) {
                 LOGGER.warn("Could not close connection for context " + context);
                 LOGGER.debug(ex);
@@ -186,7 +185,7 @@ public abstract class WorkflowExecutor {
 
     public void setFinalSocketState() {
         for (Context ctx : state.getAllTlsContexts()) {
-            TransportHandler handler = ctx.getTcpContext().getTransportHandler();
+            TransportHandler handler = ctx.getTransportHandler();
             if (handler instanceof TcpTransportHandler) {
                 SocketState socketSt =
                     ((TcpTransportHandler) handler).getSocketState(config.isReceiveFinalTcpSocketStateWithTimeout());
@@ -213,9 +212,9 @@ public abstract class WorkflowExecutor {
      * Check if a at least one TLS context received a warning alert.
      */
     public boolean isReceivedWarningAlert() {
-        List<TlsMessage> allReceivedMessages =
-            WorkflowTraceUtil.getAllReceivedMessages(state.getWorkflowTrace(), TlsMessageType.ALERT);
-        for (TlsMessage message : allReceivedMessages) {
+        List<ProtocolMessage> allReceivedMessages =
+            WorkflowTraceUtil.getAllReceivedMessages(state.getWorkflowTrace(), ProtocolMessageType.ALERT);
+        for (ProtocolMessage message : allReceivedMessages) {
             AlertMessage alert = (AlertMessage) message;
             if (alert.getLevel().getValue() == AlertLevel.WARNING.getValue()) {
                 return true;
@@ -234,7 +233,7 @@ public abstract class WorkflowExecutor {
     }
 
     private void initProtocolStack(Context context) throws IOException {
-        context.setLayerStack(LayerStackFactory.createLayerStack(LayerStackType.TLS, context));
+        context.setLayerStack(LayerStackFactory.createLayerStack(ProtocolLayer.TLS, context));
 
     }
 }

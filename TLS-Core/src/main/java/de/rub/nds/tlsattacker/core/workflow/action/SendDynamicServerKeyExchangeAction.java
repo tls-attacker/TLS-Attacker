@@ -12,10 +12,10 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.TlsMessageType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
-import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.record.Record;
@@ -87,7 +87,7 @@ public class SendDynamicServerKeyExchangeAction extends MessageAction implements
         }
         sb.append("\tMessages:");
         if (messages != null) {
-            for (TlsMessage message : messages) {
+            for (ProtocolMessage message : messages) {
                 sb.append(message.toCompactString());
                 sb.append(", ");
             }
@@ -103,7 +103,7 @@ public class SendDynamicServerKeyExchangeAction extends MessageAction implements
         StringBuilder sb = new StringBuilder(super.toCompactString());
         if ((messages != null) && (!messages.isEmpty())) {
             sb.append(" (");
-            for (TlsMessage message : messages) {
+            for (ProtocolMessage message : messages) {
                 sb.append(message.toCompactString());
                 sb.append(",");
             }
@@ -133,7 +133,7 @@ public class SendDynamicServerKeyExchangeAction extends MessageAction implements
     public void reset() {
         List<ModifiableVariableHolder> holders = new LinkedList<>();
         if (messages != null) {
-            for (TlsMessage message : messages) {
+            for (ProtocolMessage message : messages) {
                 holders.addAll(message.getAllModifiableVariableHolders());
             }
         }
@@ -176,7 +176,7 @@ public class SendDynamicServerKeyExchangeAction extends MessageAction implements
     }
 
     @Override
-    public List<TlsMessage> getSendMessages() {
+    public List<ProtocolMessage> getSendMessages() {
         return messages;
     }
 
@@ -229,10 +229,10 @@ public class SendDynamicServerKeyExchangeAction extends MessageAction implements
     }
 
     @Override
-    public List<TlsMessageType> getGoingToSendProtocolMessageTypes() {
-        return new ArrayList<TlsMessageType>() {
+    public List<ProtocolMessageType> getGoingToSendProtocolMessageTypes() {
+        return new ArrayList<ProtocolMessageType>() {
             {
-                add(TlsMessageType.HANDSHAKE);
+                add(ProtocolMessageType.HANDSHAKE);
             }
         };
     }

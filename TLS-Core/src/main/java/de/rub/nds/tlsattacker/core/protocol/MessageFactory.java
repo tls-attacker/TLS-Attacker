@@ -146,13 +146,13 @@ public class MessageFactory {
         }
     }
 
-    public static List<TlsMessage> generateProtocolMessages() {
-        List<TlsMessage> tlsMessageList = new LinkedList<>();
-        Set<Class<? extends TlsMessage>> classes = getAllNonAbstractProtocolMessageClasses();
-        for (Class<? extends TlsMessage> someClass : classes) {
-            tlsMessageList.add(createProtocolMessage(someClass));
+    public static List<ProtocolMessage> generateProtocolMessages() {
+        List<ProtocolMessage> protocolMessageList = new LinkedList<>();
+        Set<Class<? extends ProtocolMessage>> classes = getAllNonAbstractProtocolMessageClasses();
+        for (Class<? extends ProtocolMessage> someClass : classes) {
+            protocolMessageList.add(createProtocolMessage(someClass));
         }
-        return tlsMessageList;
+        return protocolMessageList;
     }
 
     public static List<ExtensionMessage> generateExtensionMessages() {
@@ -177,7 +177,7 @@ public class MessageFactory {
         }
     }
 
-    private static TlsMessage createProtocolMessage(Class<? extends TlsMessage> protocolMessageClass) {
+    private static ProtocolMessage createProtocolMessage(Class<? extends ProtocolMessage> protocolMessageClass) {
         if (Modifier.isAbstract(protocolMessageClass.getModifiers())) {
             throw new IllegalArgumentException("Provided class is abstract");
         }
@@ -201,11 +201,11 @@ public class MessageFactory {
         return filteredClassSet;
     }
 
-    private static Set<Class<? extends TlsMessage>> getAllNonAbstractProtocolMessageClasses() {
+    private static Set<Class<? extends ProtocolMessage>> getAllNonAbstractProtocolMessageClasses() {
         Reflections reflections = new Reflections("de.rub.nds.tlsattacker.core.protocol.message");
-        Set<Class<? extends TlsMessage>> classes = reflections.getSubTypesOf(TlsMessage.class);
-        Set<Class<? extends TlsMessage>> filteredClassSet = new HashSet<>();
-        for (Class<? extends TlsMessage> someClass : classes) {
+        Set<Class<? extends ProtocolMessage>> classes = reflections.getSubTypesOf(ProtocolMessage.class);
+        Set<Class<? extends ProtocolMessage>> filteredClassSet = new HashSet<>();
+        for (Class<? extends ProtocolMessage> someClass : classes) {
             if (!Modifier.isAbstract(someClass.getModifiers())) {
                 filteredClassSet.add(someClass);
             }
@@ -213,9 +213,9 @@ public class MessageFactory {
         return filteredClassSet;
     }
 
-    public static TlsMessage generateRandomProtocolMessage(Random r) {
-        List<TlsMessage> generateTlsMessages = generateProtocolMessages();
-        return generateTlsMessages.get(r.nextInt(generateTlsMessages.size()));
+    public static ProtocolMessage generateRandomProtocolMessage(Random r) {
+        List<ProtocolMessage> generateProtocolMessages = generateProtocolMessages();
+        return generateProtocolMessages.get(r.nextInt(generateProtocolMessages.size()));
     }
 
     public static ExtensionMessage generateRandomExtension(Random r) {

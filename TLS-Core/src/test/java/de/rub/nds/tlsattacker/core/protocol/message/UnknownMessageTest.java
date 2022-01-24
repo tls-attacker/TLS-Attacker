@@ -10,7 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.TlsMessageType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import org.junit.After;
 import static org.junit.Assert.assertEquals;
 import org.junit.Before;
@@ -22,7 +22,7 @@ public class UnknownMessageTest {
 
     @Before
     public void setUp() {
-        message = new UnknownMessage(Config.createConfig(), TlsMessageType.UNKNOWN);
+        message = new UnknownMessage(Config.createConfig(), ProtocolMessageType.UNKNOWN);
     }
 
     @After

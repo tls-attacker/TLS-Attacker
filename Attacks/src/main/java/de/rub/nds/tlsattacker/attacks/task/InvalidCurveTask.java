@@ -71,7 +71,7 @@ public class InvalidCurveTask extends TlsTask {
             return true;
         } finally {
             try {
-                getState().getContext().getTcpContext().getTransportHandler().closeConnection();
+                getState().getContext().getTransportHandler().closeConnection();
             } catch (IOException ex) {
                 LOGGER.debug(ex);
             }

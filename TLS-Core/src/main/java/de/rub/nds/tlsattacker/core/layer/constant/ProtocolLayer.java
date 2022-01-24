@@ -9,7 +9,7 @@
 
 package de.rub.nds.tlsattacker.core.layer.constant;
 
-public enum LayerStackType {
+public enum ProtocolLayer {
     TLS,
     DTLS,
     QUIC,

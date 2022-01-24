@@ -15,12 +15,13 @@ import de.rub.nds.tlsattacker.core.layer.LayerStack;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import de.rub.nds.tlsattacker.transport.TransportHandler;
 
 public abstract class LayerContext {
 
     Context context;
 
-    public LayerContext(Context context) {
+    protected LayerContext(Context context) {
         this.context = context;
     }
 
@@ -62,5 +63,13 @@ public abstract class LayerContext {
 
     public void setConnection(AliasedConnection connection) {
         getContext().setConnection(connection);
+    }
+
+    public TransportHandler getTransportHandler() {
+        return context.getTransportHandler();
+    }
+
+    public void setTransportHandler(TransportHandler transportHandler) {
+        context.setTransportHandler(transportHandler);
     }
 }

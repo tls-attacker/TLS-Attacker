@@ -10,7 +10,7 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
@@ -43,11 +43,11 @@ public class ApplyBufferedMessagesAction extends ConnectionBoundAction {
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
         }
-        List<TlsMessage> messages = ctx.getMessageBuffer();
+        List<ProtocolMessage> messages = ctx.getMessageBuffer();
         if (messages.isEmpty()) {
             LOGGER.debug("Empty buffer, no messages to apply");
         } else {
-            for (TlsMessage msg : messages) {
+            for (ProtocolMessage msg : messages) {
                 LOGGER.debug("Applying buffered " + msg.toCompactString() + " to context " + ctx);
                 ProtocolMessageHandler h = msg.getHandler(ctx);
                 h.adjustContext(msg);

@@ -9,7 +9,7 @@
 
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.constants.TlsMessageType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
@@ -30,17 +30,17 @@ public class FindReceivedProtocolMessageAction extends ConnectionBoundAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private TlsMessageType protocolMessageType;
+    private ProtocolMessageType protocolMessageType;
     private Boolean found = false;
 
     public FindReceivedProtocolMessageAction() {
     }
 
-    public FindReceivedProtocolMessageAction(TlsMessageType protocolMessageType) {
+    public FindReceivedProtocolMessageAction(ProtocolMessageType protocolMessageType) {
         this.protocolMessageType = protocolMessageType;
     }
 
-    public FindReceivedProtocolMessageAction(String alias, TlsMessageType protocolMessageType) {
+    public FindReceivedProtocolMessageAction(String alias, ProtocolMessageType protocolMessageType) {
         super(alias);
         this.protocolMessageType = protocolMessageType;
     }
@@ -55,11 +55,11 @@ public class FindReceivedProtocolMessageAction extends ConnectionBoundAction {
         setExecuted(Boolean.TRUE);
     }
 
-    public TlsMessageType getProtocolMessageType() {
+    public ProtocolMessageType getProtocolMessageType() {
         return protocolMessageType;
     }
 
-    public void setProtocolMessageType(TlsMessageType protocolMessageType) {
+    public void setProtocolMessageType(ProtocolMessageType protocolMessageType) {
         this.protocolMessageType = protocolMessageType;
     }
 

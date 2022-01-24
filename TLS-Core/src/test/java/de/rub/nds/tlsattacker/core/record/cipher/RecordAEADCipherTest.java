@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.constants.TlsMessageType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.record.Record;
@@ -69,7 +69,7 @@ public class RecordAEADCipherTest {
                 context.getChooser().getSelectedCipherSuite(), keySet,
                 context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         Record record = new Record();
-        record.setContentType(TlsMessageType.HANDSHAKE.getValue());
+        record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
         record.prepareComputations();
         record.setSequenceNumber(new BigInteger("0"));
         record.setCleanProtocolMessageBytes(data);
@@ -138,7 +138,7 @@ public class RecordAEADCipherTest {
                 context.getChooser().getSelectedCipherSuite(), keySet,
                 context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         Record record = new Record();
-        record.setContentType(TlsMessageType.HANDSHAKE.getValue());
+        record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
         record.prepareComputations();
         record.setSequenceNumber(new BigInteger("0"));
         record.setProtocolMessageBytes(data);
@@ -208,7 +208,7 @@ public class RecordAEADCipherTest {
                 context.getChooser().getSelectedCipherSuite(), keySet,
                 context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         Record record = new Record();
-        record.setContentType(TlsMessageType.HANDSHAKE.getValue());
+        record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
         record.prepareComputations();
         record.setSequenceNumber(new BigInteger("0"));
         record.setCleanProtocolMessageBytes(data);
@@ -277,7 +277,7 @@ public class RecordAEADCipherTest {
                 context.getChooser().getSelectedCipherSuite(), keySet,
                 context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         Record record = new Record();
-        record.setContentType(TlsMessageType.HANDSHAKE.getValue());
+        record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
         record.prepareComputations();
         record.setSequenceNumber(new BigInteger("0"));
         record.setProtocolMessageBytes(data);

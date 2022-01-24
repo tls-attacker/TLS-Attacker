@@ -13,7 +13,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bool.ModifiableBoolean;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.tlsattacker.core.constants.TlsMessageType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.layer.DataContainer;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.*;
@@ -28,7 +28,7 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlTransient;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlSeeAlso({ TlsMessage.class, CertificateMessage.class, CertificateVerifyMessage.class,
+@XmlSeeAlso({ ProtocolMessage.class, CertificateMessage.class, CertificateVerifyMessage.class,
     CertificateRequestMessage.class, ClientHelloMessage.class, HelloVerifyRequestMessage.class,
     DHClientKeyExchangeMessage.class, DHEServerKeyExchangeMessage.class, ECDHClientKeyExchangeMessage.class,
     ECDHEServerKeyExchangeMessage.class, PskClientKeyExchangeMessage.class, FinishedMessage.class,
@@ -44,14 +44,14 @@ import javax.xml.bind.annotation.XmlTransient;
     DtlsHandshakeMessageFragment.class, PWDServerKeyExchangeMessage.class, RSAServerKeyExchangeMessage.class,
     PWDClientKeyExchangeMessage.class, PskServerKeyExchangeMessage.class, CertificateStatusMessage.class,
     EmptyClientKeyExchangeMessage.class })
-public abstract class TlsMessage<Self extends TlsMessage> extends ModifiableVariableHolder
+public abstract class ProtocolMessage<Self extends ProtocolMessage> extends ModifiableVariableHolder
     implements DataContainer<Self, TlsContext> {
 
     /**
      * content type
      */
     @XmlTransient
-    protected TlsMessageType protocolMessageType;
+    protected ProtocolMessageType protocolMessageType;
 
     @XmlTransient
     protected boolean goingToBeSentDefault = true;
@@ -156,19 +156,23 @@ public abstract class TlsMessage<Self extends TlsMessage> extends ModifiableVari
      */
     public abstract String toShortString();
 
-    public boolean addToTypes(List<TlsMessageType> protocolMessageTypes) {
+    public boolean addToTypes(List<ProtocolMessageType> protocolMessageTypes) {
         return protocolMessageTypes.add(getProtocolMessageType());
     }
 
+    @Override
     public abstract ProtocolMessageHandler<Self> getHandler(TlsContext context);
 
+    @Override
     public abstract ProtocolMessageSerializer<Self> getSerializer(TlsContext context);
 
+    @Override
     public abstract ProtocolMessagePreparator<Self> getPreparator(TlsContext context);
 
+    @Override
     public abstract ProtocolMessageParser<Self> getParser(TlsContext context, InputStream stream);
 
-    public TlsMessageType getProtocolMessageType() {
+    public ProtocolMessageType getProtocolMessageType() {
         return protocolMessageType;
     }
 

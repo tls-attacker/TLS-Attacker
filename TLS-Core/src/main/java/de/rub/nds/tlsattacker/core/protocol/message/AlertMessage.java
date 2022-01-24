@@ -16,9 +16,9 @@ import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
-import de.rub.nds.tlsattacker.core.constants.TlsMessageType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.handler.AlertHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.AlertParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.AlertPreparator;
@@ -30,7 +30,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 @XmlRootElement(name = "Alert")
-public class AlertMessage extends TlsMessage<AlertMessage> {
+public class AlertMessage extends ProtocolMessage<AlertMessage> {
 
     /**
      * config array used to configure alert message
@@ -51,12 +51,12 @@ public class AlertMessage extends TlsMessage<AlertMessage> {
 
     public AlertMessage() {
         super();
-        this.protocolMessageType = TlsMessageType.ALERT;
+        this.protocolMessageType = ProtocolMessageType.ALERT;
     }
 
     public AlertMessage(Config tlsConfig) {
         super();
-        this.protocolMessageType = TlsMessageType.ALERT;
+        this.protocolMessageType = ProtocolMessageType.ALERT;
     }
 
     public ModifiableByte getLevel() {

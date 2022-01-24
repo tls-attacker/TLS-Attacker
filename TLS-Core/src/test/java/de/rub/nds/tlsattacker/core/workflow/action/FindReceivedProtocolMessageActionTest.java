@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.util.BadRandom;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.TlsMessageType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.util.BasicTlsServer;
@@ -34,7 +34,7 @@ import org.junit.*;
 import static org.junit.Assert.*;
 import org.junit.experimental.categories.Category;
 
-public class FindReceivedTlsMessageActionTest {
+public class FindReceivedProtocolMessageActionTest {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -50,7 +50,7 @@ public class FindReceivedTlsMessageActionTest {
 
     private final BadRandom random = new BadRandom(new Random(0), null);
 
-    public FindReceivedTlsMessageActionTest() {
+    public FindReceivedProtocolMessageActionTest() {
     }
 
     @Before
@@ -75,9 +75,9 @@ public class FindReceivedTlsMessageActionTest {
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
         WorkflowTrace trace = factory.createWorkflowTrace(WorkflowTraceType.HELLO, RunningModeType.CLIENT);
         FindReceivedProtocolMessageAction action_find_handshake =
-            new FindReceivedProtocolMessageAction(TlsMessageType.HANDSHAKE);
+            new FindReceivedProtocolMessageAction(ProtocolMessageType.HANDSHAKE);
         FindReceivedProtocolMessageAction action_find_app_data =
-            new FindReceivedProtocolMessageAction(TlsMessageType.APPLICATION_DATA);
+            new FindReceivedProtocolMessageAction(ProtocolMessageType.APPLICATION_DATA);
         trace.addTlsAction(action_find_handshake);
         trace.addTlsAction(action_find_app_data);
 

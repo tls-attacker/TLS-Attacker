@@ -14,7 +14,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.TlsMessageType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ServerVerifyHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.SSL2ServerVerifyParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.SSL2ServerVerifyPreparator;
@@ -33,7 +33,7 @@ public class SSL2ServerVerifyMessage extends SSL2HandshakeMessage {
 
     public SSL2ServerVerifyMessage() {
         super(HandshakeMessageType.SSL2_SERVER_VERIFY);
-        this.protocolMessageType = TlsMessageType.HANDSHAKE;
+        this.protocolMessageType = ProtocolMessageType.HANDSHAKE;
     }
 
     public SSL2ServerVerifyMessage(Config config) {

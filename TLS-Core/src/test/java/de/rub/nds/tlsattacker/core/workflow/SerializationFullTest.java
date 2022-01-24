@@ -9,11 +9,10 @@
 
 package de.rub.nds.tlsattacker.core.workflow;
 
-import de.rub.nds.modifiablevariable.string.StringExplicitValueModification;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.http.HttpRequestMessage;
-import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -71,7 +70,7 @@ public class SerializationFullTest {
         trace.addTlsAction(new DeactivateEncryptionAction());
         trace.addTlsAction(new RenegotiationAction());
         trace.addTlsAction(new GenericReceiveAction());
-        List<TlsMessage> messages = new LinkedList<>();
+        List<ProtocolMessage> messages = new LinkedList<>();
         messages.add(new AlertMessage());
         messages.add(new ApplicationMessage());
         messages.add(new CertificateMessage());
@@ -92,7 +91,7 @@ public class SerializationFullTest {
         messages.add(new SSL2ServerHelloMessage());
         messages.add(new ServerHelloDoneMessage());
         messages.add(new UnknownHandshakeMessage());
-        messages.add(new UnknownMessage(config, TlsMessageType.UNKNOWN));
+        messages.add(new UnknownMessage(config, ProtocolMessageType.UNKNOWN));
         messages.add(new ServerHelloMessage());
         HttpRequestMessage message = new HttpRequestMessage();
         // TODO: readd HTTP messages or test elsewhere

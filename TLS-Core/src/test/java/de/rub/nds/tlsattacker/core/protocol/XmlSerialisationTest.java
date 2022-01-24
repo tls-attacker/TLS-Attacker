@@ -34,8 +34,8 @@ public class XmlSerialisationTest {
 
     @Test
     public void testProtocolMessages() throws Exception {
-        List<TlsMessage> messageList = MessageFactory.generateProtocolMessages();
-        for (TlsMessage message : messageList) {
+        List<ProtocolMessage> messageList = MessageFactory.generateProtocolMessages();
+        for (ProtocolMessage message : messageList) {
             WorkflowTrace trace = new WorkflowTrace();
             trace.addTlsAction(new SendAction(message));
             trace.addTlsAction(new ReceiveAction(message));

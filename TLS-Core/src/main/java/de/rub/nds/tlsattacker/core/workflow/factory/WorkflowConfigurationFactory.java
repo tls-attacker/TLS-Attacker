@@ -13,9 +13,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.core.http.HttpRequestMessage;
-import de.rub.nds.tlsattacker.core.http.HttpResponseMessage;
-import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EarlyDataExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PreSharedKeyExtensionMessage;
@@ -164,7 +162,7 @@ public class WorkflowConfigurationFactory {
                 new ClientHelloMessage(config)));
         }
 
-        List<TlsMessage> messages = new LinkedList<>();
+        List<ProtocolMessage> messages = new LinkedList<>();
         messages.add(new ServerHelloMessage(config));
         if (config.getHighestProtocolVersion().isTLS13()) {
             if (Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)
@@ -233,7 +231,7 @@ public class WorkflowConfigurationFactory {
     private WorkflowTrace createHandshakeWorkflow(AliasedConnection connection) {
 
         WorkflowTrace workflowTrace = this.createHelloWorkflow(connection);
-        List<TlsMessage> messages = new LinkedList<>();
+        List<ProtocolMessage> messages = new LinkedList<>();
         if (config.getHighestProtocolVersion().isTLS13()) {
             if (Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)
                 || connection.getLocalConnectionEndType() == ConnectionEndType.SERVER) {
@@ -539,9 +537,9 @@ public class WorkflowConfigurationFactory {
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
         WorkflowTrace trace = factory.createTlsEntryWorkflowTrace(config.getDefaultClientConnection());
 
-        List<TlsMessage> clientHelloMessages = new LinkedList<>();
-        List<TlsMessage> serverMessages = new LinkedList<>();
-        List<TlsMessage> clientMessages = new LinkedList<>();
+        List<ProtocolMessage> clientHelloMessages = new LinkedList<>();
+        List<ProtocolMessage> serverMessages = new LinkedList<>();
+        List<ProtocolMessage> clientMessages = new LinkedList<>();
 
         ClientHelloMessage clientHello;
         ApplicationMessage earlyDataMsg;
@@ -833,7 +831,7 @@ public class WorkflowConfigurationFactory {
         return null;
     }
 
-    public void addClientKeyExchangeMessage(List<TlsMessage> messages) {
+    public void addClientKeyExchangeMessage(List<ProtocolMessage> messages) {
         CipherSuite cs = config.getDefaultSelectedCipherSuite();
         ClientKeyExchangeMessage message =
             createClientKeyExchangeMessage(AlgorithmResolver.getKeyExchangeAlgorithm(cs));
@@ -842,7 +840,7 @@ public class WorkflowConfigurationFactory {
         }
     }
 
-    public void addServerKeyExchangeMessage(List<TlsMessage> messages) {
+    public void addServerKeyExchangeMessage(List<ProtocolMessage> messages) {
         CipherSuite cs = config.getDefaultSelectedCipherSuite();
         ServerKeyExchangeMessage message =
             createServerKeyExchangeMessage(AlgorithmResolver.getKeyExchangeAlgorithm(cs));
@@ -924,7 +922,7 @@ public class WorkflowConfigurationFactory {
             trace.addTlsAction(new ReceiveAction(new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
 
         } else {
-            List<TlsMessage> messages = new LinkedList<>();
+            List<ProtocolMessage> messages = new LinkedList<>();
             messages.add(new ServerHelloMessage(config));
 
             if (config.getHighestProtocolVersion().isTLS13()) {

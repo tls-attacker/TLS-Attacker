@@ -19,13 +19,14 @@ import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.layer.LayerStack;
 import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
-import de.rub.nds.tlsattacker.core.layer.constant.LayerStackType;
+import de.rub.nds.tlsattacker.core.layer.constant.ProtocolLayer;
 import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import de.rub.nds.tlsattacker.transport.TransportHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -37,20 +38,22 @@ public class Context {
     /**
      * TODO: Replace with standard values in layer contexts
      */
-    Chooser chooser;
+    private Chooser chooser;
 
     /**
      * TODO: Replace with configs split by layer
      */
-    Config config;
+    private Config config;
 
-    TcpContext tcpContext;
+    private TransportHandler transportHandler;
 
-    HttpContext httpContext;
+    private TcpContext tcpContext;
 
-    TlsContext tlsContext;
+    private HttpContext httpContext;
 
-    LayerStack layerStack;
+    private TlsContext tlsContext;
+
+    private LayerStack layerStack;
 
     /**
      * Not bound to a layer, so it makes sense to save it here
@@ -155,6 +158,14 @@ public class Context {
         this.layerStack = layerStack;
     }
 
+    public TransportHandler getTransportHandler() {
+        return transportHandler;
+    }
+
+    public void setTransportHandler(TransportHandler transportHandler) {
+        this.transportHandler = transportHandler;
+    }
+
     @Override
     public String toString() {
         StringBuilder info = new StringBuilder();
@@ -177,7 +188,7 @@ public class Context {
         this.tlsContext = tlsContext;
     }
 
-    public void prepareWithLayers(LayerStackType type) {
+    public void prepareWithLayers(ProtocolLayer type) {
         LayerStackFactory.createLayerStack(type, this);
     }
 }

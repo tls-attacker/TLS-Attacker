@@ -16,15 +16,12 @@ import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
-import de.rub.nds.tlsattacker.core.layer.constant.LayerStackType;
-import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
@@ -204,7 +201,7 @@ public class ForwardMessagesActionTest {
         String receivedData = "Forward application message test";
         msg.setData(receivedData.getBytes());
         msg.setCompleteResultingMessage(receivedData.getBytes());
-        List<TlsMessage> receivedMsgs = new ArrayList<>();
+        List<ProtocolMessage> receivedMsgs = new ArrayList<>();
         receivedMsgs.add(msg);
         setFetchableData(new byte[] { (byte) 0x17, (byte) 0x03, (byte) 0x03, (byte) 0x00, (byte) 0x01, (byte) 0xFF });// TLS
         // 1.2
@@ -223,7 +220,7 @@ public class ForwardMessagesActionTest {
         assertTrue(action.isExecuted());
         assertTrue(action.executedAsPlanned());
 
-        TlsMessage forwardedMsgRaw = action.getSendMessages().get(0);
+        ProtocolMessage forwardedMsgRaw = action.getSendMessages().get(0);
         assertThat(forwardedMsgRaw.toCompactString(), equalTo("APPLICATION"));
 
         ApplicationMessage forwardedMsg = (ApplicationMessage) forwardedMsgRaw;

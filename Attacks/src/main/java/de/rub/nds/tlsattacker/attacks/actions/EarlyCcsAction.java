@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.attacks.actions;
 
 import de.rub.nds.modifiablevariable.util.Modifiable;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
-import de.rub.nds.tlsattacker.core.constants.TlsMessageType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.layer.hints.RecordLayerHint;
 import de.rub.nds.tlsattacker.core.protocol.handler.ClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientKeyExchangeMessage;
@@ -70,8 +70,8 @@ public class EarlyCcsAction extends TlsAction {
         }
         handler.adjustContextAfterSerialize(message);
         try {
-            state.getContext().getTlsContext().getRecordLayer().sendData(new RecordLayerHint(TlsMessageType.HANDSHAKE),
-                message.getCompleteResultingMessage().getValue());
+            state.getContext().getTlsContext().getRecordLayer().sendData(
+                new RecordLayerHint(ProtocolMessageType.HANDSHAKE), message.getCompleteResultingMessage().getValue());
             executedAsPlanned = true;
         } catch (IOException e) {
             LOGGER.debug("Could not write Data to stream", e);

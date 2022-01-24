@@ -14,7 +14,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.Modifiable;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
-import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.record.Record;
@@ -136,7 +136,7 @@ public class SendRaccoonCkeAction extends MessageAction implements SendingAction
         }
         sb.append("\tMessages:");
         if (messages != null) {
-            for (TlsMessage message : messages) {
+            for (ProtocolMessage message : messages) {
                 sb.append(message.toCompactString());
                 sb.append(", ");
             }
@@ -152,7 +152,7 @@ public class SendRaccoonCkeAction extends MessageAction implements SendingAction
         StringBuilder sb = new StringBuilder(super.toCompactString());
         if ((messages != null) && (!messages.isEmpty())) {
             sb.append(" (");
-            for (TlsMessage message : messages) {
+            for (ProtocolMessage message : messages) {
                 sb.append(message.toCompactString());
                 sb.append(",");
             }
@@ -182,7 +182,7 @@ public class SendRaccoonCkeAction extends MessageAction implements SendingAction
     public void reset() {
         List<ModifiableVariableHolder> holders = new LinkedList<>();
         if (messages != null) {
-            for (TlsMessage message : messages) {
+            for (ProtocolMessage message : messages) {
                 holders.addAll(message.getAllModifiableVariableHolders());
             }
         }
@@ -225,7 +225,7 @@ public class SendRaccoonCkeAction extends MessageAction implements SendingAction
     }
 
     @Override
-    public List<TlsMessage> getSendMessages() {
+    public List<ProtocolMessage> getSendMessages() {
         return messages;
     }
 

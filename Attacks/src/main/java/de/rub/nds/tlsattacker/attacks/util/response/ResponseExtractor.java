@@ -9,8 +9,8 @@
 
 package de.rub.nds.tlsattacker.attacks.util.response;
 
-import de.rub.nds.tlsattacker.core.constants.TlsMessageType;
-import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceivingAction;
@@ -36,7 +36,7 @@ public class ResponseExtractor {
      * @return
      */
     public static ResponseFingerprint getFingerprint(State state, ReceivingAction action) {
-        List<TlsMessage> messageList = action.getReceivedMessages();
+        List<ProtocolMessage> messageList = action.getReceivedMessages();
         List<Record> recordList = action.getReceivedRecords();
         SocketState socketState = extractSocketState(state);
         return new ResponseFingerprint(messageList, recordList, socketState);
@@ -53,10 +53,9 @@ public class ResponseExtractor {
     }
 
     private static SocketState extractSocketState(State state) {
-        if (state.getContext().getTcpContext().getTransportHandler() instanceof ClientTcpTransportHandler) {
+        if (state.getContext().getTransportHandler() instanceof ClientTcpTransportHandler) {
             SocketState socketState =
-                (((ClientTcpTransportHandler) (state.getContext().getTcpContext().getTransportHandler()))
-                    .getSocketState());
+                (((ClientTcpTransportHandler) (state.getContext().getTransportHandler())).getSocketState());
             return socketState;
         } else {
             return null;
@@ -73,11 +72,11 @@ public class ResponseExtractor {
         return classList;
     }
 
-    private static List<Class<TlsMessage>> extractMessageClasses(ReceivingAction action) {
-        List<Class<TlsMessage>> classList = new LinkedList<>();
+    private static List<Class<ProtocolMessage>> extractMessageClasses(ReceivingAction action) {
+        List<Class<ProtocolMessage>> classList = new LinkedList<>();
         if (action.getReceivedMessages() != null) {
-            for (TlsMessage message : action.getReceivedMessages()) {
-                classList.add((Class<TlsMessage>) message.getClass());
+            for (ProtocolMessage message : action.getReceivedMessages()) {
+                classList.add((Class<ProtocolMessage>) message.getClass());
             }
         }
         return classList;
@@ -88,7 +87,7 @@ public class ResponseExtractor {
             for (Record abstractRecord : action.getReceivedRecords()) {
                 if (abstractRecord instanceof Record) {
                     Record record = (Record) abstractRecord;
-                    if (record.getContentMessageType() == TlsMessageType.ALERT) {
+                    if (record.getContentMessageType() == ProtocolMessageType.ALERT) {
                         if (record.getLength().getValue() > 6) {
                             return true;
                         }

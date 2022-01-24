@@ -10,7 +10,7 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -52,7 +52,7 @@ public class GenericReceiveAction extends MessageAction implements ReceivingActi
     public String toString() {
         StringBuilder sb = new StringBuilder("Receive Action:\n");
         sb.append("\tActual:");
-        for (TlsMessage message : messages) {
+        for (ProtocolMessage message : messages) {
             sb.append(message.toCompactString());
             sb.append(", ");
         }
@@ -73,7 +73,7 @@ public class GenericReceiveAction extends MessageAction implements ReceivingActi
     }
 
     @Override
-    public List<TlsMessage> getReceivedMessages() {
+    public List<ProtocolMessage> getReceivedMessages() {
         return messages;
     }
 

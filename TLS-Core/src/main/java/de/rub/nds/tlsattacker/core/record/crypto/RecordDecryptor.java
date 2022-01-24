@@ -9,7 +9,7 @@
 
 package de.rub.nds.tlsattacker.core.record.crypto;
 
-import de.rub.nds.tlsattacker.core.constants.TlsMessageType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
@@ -54,7 +54,7 @@ public class RecordDecryptor extends Decryptor {
 
         try {
             if (!context.getChooser().getSelectedProtocolVersion().isTLS13()
-                || record.getContentMessageType() != TlsMessageType.CHANGE_CIPHER_SPEC) {
+                || record.getContentMessageType() != ProtocolMessageType.CHANGE_CIPHER_SPEC) {
                 recordCipher.decrypt(record);
                 recordCipher.getState().increaseReadSequenceNumber();
             } else {

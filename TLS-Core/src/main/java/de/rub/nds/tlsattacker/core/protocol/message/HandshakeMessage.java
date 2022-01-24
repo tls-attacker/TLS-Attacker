@@ -19,10 +19,10 @@ import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.TlsMessageType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
-import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.handler.HandshakeMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.HandshakeMessageParser;
@@ -39,7 +39,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public abstract class HandshakeMessage extends TlsMessage {
+public abstract class HandshakeMessage extends ProtocolMessage {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -84,13 +84,13 @@ public abstract class HandshakeMessage extends TlsMessage {
 
     public HandshakeMessage(HandshakeMessageType handshakeMessageType) {
         super();
-        this.protocolMessageType = TlsMessageType.HANDSHAKE;
+        this.protocolMessageType = ProtocolMessageType.HANDSHAKE;
         this.handshakeMessageType = handshakeMessageType;
     }
 
     public HandshakeMessage(Config tlsConfig, HandshakeMessageType handshakeMessageType) {
         super();
-        this.protocolMessageType = TlsMessageType.HANDSHAKE;
+        this.protocolMessageType = ProtocolMessageType.HANDSHAKE;
         this.handshakeMessageType = handshakeMessageType;
     }
 

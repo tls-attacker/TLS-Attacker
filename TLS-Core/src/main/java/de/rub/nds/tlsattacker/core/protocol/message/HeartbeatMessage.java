@@ -17,8 +17,8 @@ import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMessageType;
-import de.rub.nds.tlsattacker.core.constants.TlsMessageType;
-import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.handler.HeartbeatMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.HeartbeatMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.HeartbeatMessagePreparator;
@@ -28,7 +28,7 @@ import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "Heartbeat")
-public class HeartbeatMessage<HeartbeatMessage> extends TlsMessage {
+public class HeartbeatMessage<HeartbeatMessage> extends ProtocolMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     ModifiableByte heartbeatMessageType;
@@ -44,12 +44,12 @@ public class HeartbeatMessage<HeartbeatMessage> extends TlsMessage {
 
     public HeartbeatMessage() {
         super();
-        this.protocolMessageType = TlsMessageType.HEARTBEAT;
+        this.protocolMessageType = ProtocolMessageType.HEARTBEAT;
     }
 
     public HeartbeatMessage(Config tlsConfig) {
         super();
-        this.protocolMessageType = TlsMessageType.HEARTBEAT;
+        this.protocolMessageType = ProtocolMessageType.HEARTBEAT;
     }
 
     public ModifiableByte getHeartbeatMessageType() {

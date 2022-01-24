@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public abstract class ProtocolMessageHandler<MessageT extends TlsMessage> implements Handler<MessageT> {
+public abstract class ProtocolMessageHandler<MessageT extends ProtocolMessage> implements Handler<MessageT> {
 
     protected static final Logger LOGGER = LogManager.getLogger();
     /**
@@ -36,7 +36,7 @@ public abstract class ProtocolMessageHandler<MessageT extends TlsMessage> implem
     public void prepareAfterParse(MessageT message) {
     }
 
-    public void updateDigest(TlsMessage message) {
+    public void updateDigest(ProtocolMessage message) {
         if (!(message instanceof HandshakeMessage)) {
             return;
         }

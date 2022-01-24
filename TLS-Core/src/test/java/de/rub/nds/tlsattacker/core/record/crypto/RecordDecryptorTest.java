@@ -14,10 +14,6 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import de.rub.nds.tlsattacker.core.layer.LayerStack;
-import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
-import de.rub.nds.tlsattacker.core.layer.constant.LayerStackType;
-import de.rub.nds.tlsattacker.core.layer.impl.RecordLayer;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.*;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
@@ -49,7 +45,7 @@ public class RecordDecryptorTest {
         Context outerContext = new Context(new Config());
         context = new TlsContext(outerContext);
         record = new Record();
-        record.setContentType(TlsMessageType.HANDSHAKE.getValue());
+        record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
         record.setProtocolVersion(ProtocolVersion.TLS10.getValue());
     }
 
@@ -57,7 +53,7 @@ public class RecordDecryptorTest {
     public void testDecryptTLS12Block() throws CryptoException, NoSuchAlgorithmException {
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
-        record.setContentMessageType(TlsMessageType.HANDSHAKE);
+        record.setContentMessageType(ProtocolMessageType.HANDSHAKE);
 
         context.setMasterSecret(ArrayConverter.hexStringToByteArray(
             "131627113d23f777e8213670e029eec8756e5647680ec07941225b439b141b182a0c9933d7d15325e3ef08f5cb303ca1"));
@@ -108,7 +104,7 @@ public class RecordDecryptorTest {
             ArrayConverter.hexStringToByteArray("2488DFEE45765EEF369F30AFE356B9463624C6D617503AAB6B592B8CBDB55AB2"));
         context.setConnection(new InboundConnection());
 
-        record.setContentMessageType(TlsMessageType.HANDSHAKE);
+        record.setContentMessageType(ProtocolMessageType.HANDSHAKE);
         record.setProtocolVersion(ProtocolVersion.TLS12.getValue());
         record.setProtocolMessageBytes(ArrayConverter.hexStringToByteArray(
             "16B406CF7A489CA985883AEDA28D34E3AB1B66A1C376C1F354607CFDA1739D9B60D30776152207B1988604FBCF75E6BC370ADE1EE684CAE9B0801AAE50CC2EFA"));
@@ -140,7 +136,7 @@ public class RecordDecryptorTest {
     public void testDecryptTLS12Stream() throws CryptoException, NoSuchAlgorithmException {
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_RC4_128_SHA);
-        record.setContentMessageType(TlsMessageType.HANDSHAKE);
+        record.setContentMessageType(ProtocolMessageType.HANDSHAKE);
         context.setMasterSecret(ArrayConverter.hexStringToByteArray(
             "69a9fb0d9ee8e84ad7fd2b3f580d0ca99290d9cc9f6fe725f5baf12c732c1f3ea2ba7eec402313bb532428a5527f248b"));
         context.setClientRandom(
@@ -149,7 +145,7 @@ public class RecordDecryptorTest {
             ArrayConverter.hexStringToByteArray("f0284f8ca99f6c0e7344a339ec30707b74d3a4bc94bddc48169e132dbe5f05fd"));
         context.setConnection(new InboundConnection());
 
-        record.setContentMessageType(TlsMessageType.HANDSHAKE);
+        record.setContentMessageType(ProtocolMessageType.HANDSHAKE);
         record.setProtocolVersion(ProtocolVersion.TLS12.getValue());
         record.setProtocolMessageBytes(ArrayConverter
             .hexStringToByteArray("2142ec1d8a2b0bff9866bd07682a3c1b3e1a6cd253763586edc5849bf53d17037f2578cf"));
@@ -184,7 +180,7 @@ public class RecordDecryptorTest {
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_GCM_SHA256);
         record.setCleanProtocolMessageBytes(ArrayConverter.hexStringToByteArray("080000020000"));
-        record.setContentMessageType(TlsMessageType.HANDSHAKE);
+        record.setContentMessageType(ProtocolMessageType.HANDSHAKE);
 
         context.setMasterSecret(ArrayConverter.hexStringToByteArray(
             "1D7565701019745C4546DD1A5D680EDCD0B9E0143ADAD741F111454DF6D4F77E9CFBA09473AFF84B4AFBB6D3782CD9B5"));
@@ -225,7 +221,7 @@ public class RecordDecryptorTest {
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
 
         record.setCleanProtocolMessageBytes(ArrayConverter.hexStringToByteArray("080000020000"));
-        record.setContentMessageType(TlsMessageType.HANDSHAKE);
+        record.setContentMessageType(ProtocolMessageType.HANDSHAKE);
         context.setMasterSecret(ArrayConverter.hexStringToByteArray(
             "a079dee527fb963d65ae25bd7c919e4fac999ddbcfd46fe485f6138d6804d4688119c438132e651f2c82ab067378b162"));
         context.setClientRandom(
@@ -277,7 +273,7 @@ public class RecordDecryptorTest {
             ArrayConverter.hexStringToByteArray("c3eafafa8b06600aa0b93e75abf84785b207610fbf29bf33e732e149970c15eb"));
         context.setConnection(new InboundConnection());
 
-        record.setContentMessageType(TlsMessageType.HANDSHAKE);
+        record.setContentMessageType(ProtocolMessageType.HANDSHAKE);
         record.setProtocolVersion(ProtocolVersion.TLS10.getValue());
         record.setProtocolMessageBytes(ArrayConverter
             .hexStringToByteArray("c98ff632fb3abf9f584c81dd196ecb38ea79383741c481b932022bee2bb3473792ad38a1"));
@@ -320,7 +316,7 @@ public class RecordDecryptorTest {
             ArrayConverter.hexStringToByteArray("34E24F708AE545760E2137C746ECA02C3C706F22AA837A06BECB14CB04D0C016"));
 
         context.setConnection(new InboundConnection());
-        record.setContentMessageType(TlsMessageType.HANDSHAKE);
+        record.setContentMessageType(ProtocolMessageType.HANDSHAKE);
         record.setProtocolVersion(ProtocolVersion.TLS12.getValue());
         record.setProtocolMessageBytes(ArrayConverter.hexStringToByteArray(
             "09FF0714A189621595B6D0FB3F478E0AFD3BE7A6F40688505483433AAF6748EE634F8F837976DAFB8BAEDC2355298FC0D6B9D3CC28AD37E3FEAA4E533AF5375839C3866D"));
@@ -379,9 +375,9 @@ public class RecordDecryptorTest {
         context.setActiveClientKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
         context.setActiveServerKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
 
-        record.setContentMessageType(TlsMessageType.HANDSHAKE);
+        record.setContentMessageType(ProtocolMessageType.HANDSHAKE);
         record.setProtocolVersion(ProtocolVersion.TLS12.getValue());
-        record.setContentType(TlsMessageType.APPLICATION_DATA.getValue());
+        record.setContentType(ProtocolMessageType.APPLICATION_DATA.getValue());
         record.setLength(0x35);
         record.setProtocolMessageBytes(ArrayConverter.hexStringToByteArray(
             "2d2b71ffcdefbe88cfbc16973f2c3ef8f1e754dcd75712b4e0e2d2ce4bf58a8c55c1af006943cd3ab7c837c2d55331bee9ad9fd143"));
@@ -435,8 +431,8 @@ public class RecordDecryptorTest {
         context.setActiveClientKeySetType(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS);
         context.setActiveServerKeySetType(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS);
 
-        record.setContentMessageType(TlsMessageType.APPLICATION_DATA);
-        record.setContentType(TlsMessageType.APPLICATION_DATA.getValue());
+        record.setContentMessageType(ProtocolMessageType.APPLICATION_DATA);
+        record.setContentType(ProtocolMessageType.APPLICATION_DATA.getValue());
         record.setProtocolVersion(ProtocolVersion.TLS12.getValue());
 
         record

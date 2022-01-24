@@ -72,7 +72,7 @@ public class ResetConnectionActionTest {
         assertTrue(layer.getDecryptorCipher() instanceof RecordNullCipher);
         assertEquals(context.getTlsContext().getActiveClientKeySetType(), Tls13KeySetType.NONE);
         assertEquals(context.getTlsContext().getActiveServerKeySetType(), Tls13KeySetType.NONE);
-        assertFalse(context.getTcpContext().getTransportHandler().isClosed());
+        assertFalse(context.getTransportHandler().isClosed());
         assertTrue(action.isExecuted());
     }
 

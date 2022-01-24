@@ -14,8 +14,8 @@ import de.rub.nds.tlsattacker.attacks.constants.EarlyFinishedVulnerabilityType;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.TlsMessageType;
-import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -70,7 +70,7 @@ public class EarlyFinishedAttacker extends Attacker<EarlyFinishedCommandConfig> 
         OutboundConnection connection = tlsConfig.getDefaultClientConnection();
         WorkflowTrace workflowTrace = workflowConfigurationFactory.createHelloWorkflow(connection);
         workflowTrace.addTlsAction(new SendDynamicClientKeyExchangeAction(connection.getAlias()));
-        List<TlsMessage> messages = new LinkedList<>();
+        List<ProtocolMessage> messages = new LinkedList<>();
         messages.add(new ChangeCipherSpecMessage(tlsConfig));
         workflowTrace
             .addTlsAction(MessageActionFactory.createAction(tlsConfig, connection, ConnectionEndType.CLIENT, messages));
@@ -89,7 +89,7 @@ public class EarlyFinishedAttacker extends Attacker<EarlyFinishedCommandConfig> 
             ConsoleLogger.CONSOLE.warn("Could not complete Workflow - Vulnerability unknown");
             return EarlyFinishedVulnerabilityType.UNKNOWN;
         }
-        if (WorkflowTraceUtil.didReceiveMessage(TlsMessageType.ALERT, workflowTrace)) {
+        if (WorkflowTraceUtil.didReceiveMessage(ProtocolMessageType.ALERT, workflowTrace)) {
             ConsoleLogger.CONSOLE.info("Not vulnerable (definitely), Alert message found");
             return EarlyFinishedVulnerabilityType.NOT_VULNERABLE;
         } else if (WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.FINISHED, workflowTrace)) {

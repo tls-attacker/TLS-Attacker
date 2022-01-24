@@ -9,8 +9,7 @@
 
 package de.rub.nds.tlsattacker.core.layer;
 
-import de.rub.nds.tlsattacker.core.constants.ChooserType;
-import de.rub.nds.tlsattacker.core.layer.constant.LayerStackType;
+import de.rub.nds.tlsattacker.core.layer.constant.ProtocolLayer;
 import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
@@ -19,12 +18,10 @@ import de.rub.nds.tlsattacker.core.layer.impl.MessageLayer;
 import de.rub.nds.tlsattacker.core.layer.impl.RecordLayer;
 import de.rub.nds.tlsattacker.core.layer.impl.TcpLayer;
 import de.rub.nds.tlsattacker.core.state.Context;
-import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
 
 public class LayerStackFactory {
 
-    public static LayerStack createLayerStack(LayerStackType type, Context context) {
+    public static LayerStack createLayerStack(ProtocolLayer type, Context context) {
 
         LayerStack layerStack;
         TlsContext tlsContext;

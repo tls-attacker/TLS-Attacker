@@ -10,7 +10,7 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -65,7 +65,7 @@ public class PopAndSendMessageAction extends MessageAction implements SendingAct
     public String toString() {
         StringBuilder sb = new StringBuilder("PopAndSendAction:\n");
         sb.append("Messages:\n");
-        for (TlsMessage message : messages) {
+        for (ProtocolMessage message : messages) {
             sb.append(message.toCompactString());
             sb.append(", ");
         }
@@ -96,7 +96,7 @@ public class PopAndSendMessageAction extends MessageAction implements SendingAct
     }
 
     @Override
-    public List<TlsMessage> getSendMessages() {
+    public List<ProtocolMessage> getSendMessages() {
         return messages;
     }
 

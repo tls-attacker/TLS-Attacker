@@ -64,8 +64,8 @@ public class CertificateFetcher {
         try {
             workflowExecutor.executeWorkflow();
 
-            if (!state.getContext().getTcpContext().getTransportHandler().isClosed()) {
-                state.getContext().getTcpContext().getTransportHandler().closeConnection();
+            if (!state.getContext().getTransportHandler().isClosed()) {
+                state.getContext().getTransportHandler().closeConnection();
             }
         } catch (IOException | WorkflowExecutionException e) {
             LOGGER.warn("Could not fetch ServerCertificate");

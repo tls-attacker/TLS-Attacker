@@ -10,7 +10,7 @@
 package de.rub.nds.tlsattacker.core.record.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.TlsMessageType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.RecordByteLength;
 import de.rub.nds.tlsattacker.core.protocol.Parser;
@@ -34,9 +34,10 @@ public class RecordParser extends Parser<Record> {
     public void parse(Record record) {
         LOGGER.debug("Parsing Record");
         parseContentType(record);
-        TlsMessageType protocolMessageType = TlsMessageType.getContentType(record.getContentType().getValue());
+        ProtocolMessageType protocolMessageType =
+            ProtocolMessageType.getContentType(record.getContentType().getValue());
         if (protocolMessageType == null) {
-            protocolMessageType = TlsMessageType.UNKNOWN;
+            protocolMessageType = ProtocolMessageType.UNKNOWN;
         }
         record.setContentMessageType(protocolMessageType);
         parseVersion(record);

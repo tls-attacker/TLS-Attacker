@@ -16,7 +16,7 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.TlsMessageType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.layer.DataContainer;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
@@ -26,7 +26,7 @@ import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
 import de.rub.nds.tlsattacker.core.record.parser.RecordParser;
 import de.rub.nds.tlsattacker.core.record.preparator.RecordPreparator;
 import de.rub.nds.tlsattacker.core.record.serializer.RecordSerializer;
-import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.util.List;
@@ -55,7 +55,7 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Re
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PLAIN_PROTOCOL_MESSAGE)
     private ModifiableByteArray cleanProtocolMessageBytes;
 
-    private TlsMessageType contentMessageType;
+    private ProtocolMessageType contentMessageType;
 
     /**
      * Content type
@@ -160,7 +160,7 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Re
     }
 
     public RecordPreparator getRecordPreparator(TlsContext context, Encryptor encryptor, RecordCompressor compressor,
-        TlsMessageType type) {
+        ProtocolMessageType type) {
         return new RecordPreparator(context, this, encryptor, type, compressor);
     }
 
@@ -177,11 +177,11 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Re
         context.setLastRecordVersion(version);
     }
 
-    public TlsMessageType getContentMessageType() {
+    public ProtocolMessageType getContentMessageType() {
         return contentMessageType;
     }
 
-    public void setContentMessageType(TlsMessageType contentMessageType) {
+    public void setContentMessageType(ProtocolMessageType contentMessageType) {
         this.contentMessageType = contentMessageType;
     }
 

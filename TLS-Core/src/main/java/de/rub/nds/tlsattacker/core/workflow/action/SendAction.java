@@ -10,10 +10,10 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.TlsMessageType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
-import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.record.Record;
@@ -38,7 +38,7 @@ public class SendAction extends MessageAction implements SendingAction {
         super();
     }
 
-    public SendAction(ActionOption option, List<TlsMessage> messages) {
+    public SendAction(ActionOption option, List<ProtocolMessage> messages) {
         super(messages);
 
         if (option != null) {
@@ -46,15 +46,15 @@ public class SendAction extends MessageAction implements SendingAction {
         }
     }
 
-    public SendAction(List<TlsMessage> messages) {
+    public SendAction(List<ProtocolMessage> messages) {
         this((ActionOption) null, messages);
     }
 
-    public SendAction(ActionOption option, TlsMessage... messages) {
+    public SendAction(ActionOption option, ProtocolMessage... messages) {
         this(option, new ArrayList<>(Arrays.asList(messages)));
     }
 
-    public SendAction(TlsMessage... messages) {
+    public SendAction(ProtocolMessage... messages) {
         this(new ArrayList<>(Arrays.asList(messages)));
     }
 
@@ -62,11 +62,11 @@ public class SendAction extends MessageAction implements SendingAction {
         super(connectionAlias);
     }
 
-    public SendAction(String connectionAlias, List<TlsMessage> messages) {
+    public SendAction(String connectionAlias, List<ProtocolMessage> messages) {
         super(connectionAlias, messages);
     }
 
-    public SendAction(String connectionAlias, TlsMessage... messages) {
+    public SendAction(String connectionAlias, ProtocolMessage... messages) {
         super(connectionAlias, new ArrayList<>(Arrays.asList(messages)));
     }
 
@@ -107,7 +107,7 @@ public class SendAction extends MessageAction implements SendingAction {
         }
         sb.append("\tMessages:");
         if (messages != null) {
-            for (TlsMessage message : messages) {
+            for (ProtocolMessage message : messages) {
                 sb.append(message.toCompactString());
                 sb.append(", ");
             }
@@ -123,7 +123,7 @@ public class SendAction extends MessageAction implements SendingAction {
         StringBuilder sb = new StringBuilder(super.toCompactString());
         if ((messages != null) && (!messages.isEmpty())) {
             sb.append(" (");
-            for (TlsMessage message : messages) {
+            for (ProtocolMessage message : messages) {
                 sb.append(message.toCompactString());
                 sb.append(",");
             }
@@ -153,7 +153,7 @@ public class SendAction extends MessageAction implements SendingAction {
     public void reset() {
         List<ModifiableVariableHolder> holders = new LinkedList<>();
         if (messages != null) {
-            for (TlsMessage message : messages) {
+            for (ProtocolMessage message : messages) {
                 holders.addAll(message.getAllModifiableVariableHolders());
             }
         }
@@ -174,7 +174,7 @@ public class SendAction extends MessageAction implements SendingAction {
     }
 
     @Override
-    public List<TlsMessage> getSendMessages() {
+    public List<ProtocolMessage> getSendMessages() {
         return messages;
     }
 
@@ -227,10 +227,10 @@ public class SendAction extends MessageAction implements SendingAction {
     }
 
     @Override
-    public List<TlsMessageType> getGoingToSendProtocolMessageTypes() {
-        List<TlsMessageType> protocolMessageTypes = new ArrayList<>();
-        for (TlsMessage msg : messages) {
-            if (msg instanceof TlsMessage) {
+    public List<ProtocolMessageType> getGoingToSendProtocolMessageTypes() {
+        List<ProtocolMessageType> protocolMessageTypes = new ArrayList<>();
+        for (ProtocolMessage msg : messages) {
+            if (msg instanceof ProtocolMessage) {
                 protocolMessageTypes.add(msg.getProtocolMessageType());
             }
         }
@@ -240,7 +240,7 @@ public class SendAction extends MessageAction implements SendingAction {
     @Override
     public List<HandshakeMessageType> getGoingToSendHandshakeMessageTypes() {
         List<HandshakeMessageType> handshakeMessageTypes = new ArrayList<>();
-        for (TlsMessage msg : messages) {
+        for (ProtocolMessage msg : messages) {
             if (msg instanceof HandshakeMessage) {
                 handshakeMessageTypes.add(((HandshakeMessage) msg).getHandshakeMessageType());
             }

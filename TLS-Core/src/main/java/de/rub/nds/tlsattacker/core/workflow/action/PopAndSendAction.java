@@ -10,7 +10,7 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -54,7 +54,7 @@ public class PopAndSendAction extends MessageAction implements SendingAction {
             throw new WorkflowExecutionException("Action already executed!");
         }
 
-        LinkedList<TlsMessage> messageBuffer = tlsContext.getMessageBuffer();
+        LinkedList<ProtocolMessage> messageBuffer = tlsContext.getMessageBuffer();
         if (index != null && index >= 0) {
             if (index >= messageBuffer.size()) {
                 throw new WorkflowExecutionException("Index out of bounds, " + "trying to get element " + index
@@ -113,7 +113,7 @@ public class PopAndSendAction extends MessageAction implements SendingAction {
     }
 
     @Override
-    public List<TlsMessage> getSendMessages() {
+    public List<ProtocolMessage> getSendMessages() {
         return messages;
     }
 

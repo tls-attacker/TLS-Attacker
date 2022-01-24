@@ -81,7 +81,7 @@
 
   <xs:complexType name="config">
     <xs:all>
-      <xs:element name="layers" type="layerStackType" minOccurs="0"/>
+      <xs:element name="layers" type="protocolLayer" minOccurs="0"/>
       <xs:element name="defaultHandshakeSecret" type="xs:string" minOccurs="0"/>
       <xs:element name="throwExceptionOnParserContextViolation" type="xs:boolean" minOccurs="0"/>
       <xs:element name="preferredCertificateSignatureType" type="certificateKeyType" minOccurs="0"/>
@@ -1251,7 +1251,7 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:simpleType name="layerStackType">
+  <xs:simpleType name="protocolLayer">
     <xs:restriction base="xs:string">
       <xs:enumeration value="TLS"/>
       <xs:enumeration value="DTLS"/>

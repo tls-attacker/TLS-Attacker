@@ -11,9 +11,9 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.TlsMessageType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.record.Record;
@@ -34,18 +34,18 @@ public class ReceiveTillAction extends MessageAction implements ReceivingAction 
 
     @HoldsModifiableVariable
     @XmlElementRef
-    protected TlsMessage waitTillMessage;
+    protected ProtocolMessage waitTillMessage;
 
     public ReceiveTillAction() {
         super();
     }
 
-    public ReceiveTillAction(TlsMessage waitTillMessage) {
+    public ReceiveTillAction(ProtocolMessage waitTillMessage) {
         super();
         this.waitTillMessage = waitTillMessage;
     }
 
-    public ReceiveTillAction(String connectionAliasAlias, TlsMessage waitTillMessage) {
+    public ReceiveTillAction(String connectionAliasAlias, ProtocolMessage waitTillMessage) {
         super(connectionAliasAlias);
         this.waitTillMessage = waitTillMessage;
     }
@@ -85,7 +85,7 @@ public class ReceiveTillAction extends MessageAction implements ReceivingAction 
         }
         sb.append("\n\tActual:");
         if ((messages != null) && (!messages.isEmpty())) {
-            for (TlsMessage message : messages) {
+            for (ProtocolMessage message : messages) {
                 sb.append(message.toCompactString());
                 sb.append(", ");
             }
@@ -118,7 +118,7 @@ public class ReceiveTillAction extends MessageAction implements ReceivingAction 
             return false;
         }
 
-        for (TlsMessage message : messages) {
+        for (ProtocolMessage message : messages) {
             if (message.getClass().equals(waitTillMessage.getClass())) {
                 return true;
             }
@@ -127,11 +127,11 @@ public class ReceiveTillAction extends MessageAction implements ReceivingAction 
         return false;
     }
 
-    public TlsMessage getWaitTillMessage() {
+    public ProtocolMessage getWaitTillMessage() {
         return waitTillMessage;
     }
 
-    void setReceivedMessages(List<TlsMessage> receivedMessages) {
+    void setReceivedMessages(List<ProtocolMessage> receivedMessages) {
         this.messages = receivedMessages;
     }
 
@@ -143,7 +143,7 @@ public class ReceiveTillAction extends MessageAction implements ReceivingAction 
         this.fragments = fragments;
     }
 
-    public void setWaitTillMessage(TlsMessage waitTillMessage) {
+    public void setWaitTillMessage(ProtocolMessage waitTillMessage) {
         this.waitTillMessage = waitTillMessage;
     }
 
@@ -156,7 +156,7 @@ public class ReceiveTillAction extends MessageAction implements ReceivingAction 
     }
 
     @Override
-    public List<TlsMessage> getReceivedMessages() {
+    public List<ProtocolMessage> getReceivedMessages() {
         return messages;
     }
 
@@ -221,8 +221,8 @@ public class ReceiveTillAction extends MessageAction implements ReceivingAction 
     }
 
     @Override
-    public List<TlsMessageType> getGoingToReceiveProtocolMessageTypes() {
-        return new ArrayList<TlsMessageType>() {
+    public List<ProtocolMessageType> getGoingToReceiveProtocolMessageTypes() {
+        return new ArrayList<ProtocolMessageType>() {
             {
                 add(waitTillMessage.getProtocolMessageType());
             }

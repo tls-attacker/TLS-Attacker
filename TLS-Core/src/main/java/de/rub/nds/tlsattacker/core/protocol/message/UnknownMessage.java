@@ -11,8 +11,8 @@ package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.TlsMessageType;
-import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.handler.UnknownMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.UnknownMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.UnknownMessagePreparator;
@@ -22,27 +22,27 @@ import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "UnknownMessage")
-public class UnknownMessage extends TlsMessage {
+public class UnknownMessage extends ProtocolMessage {
 
     private byte[] dataConfig;
 
-    private TlsMessageType recordContentMessageType;
+    private ProtocolMessageType recordContentMessageType;
 
     public UnknownMessage() {
-        this.recordContentMessageType = TlsMessageType.UNKNOWN;
-        protocolMessageType = TlsMessageType.UNKNOWN;
+        this.recordContentMessageType = ProtocolMessageType.UNKNOWN;
+        protocolMessageType = ProtocolMessageType.UNKNOWN;
     }
 
     public UnknownMessage(Config config) {
         super();
-        this.recordContentMessageType = TlsMessageType.UNKNOWN;
-        protocolMessageType = TlsMessageType.HANDSHAKE;
+        this.recordContentMessageType = ProtocolMessageType.UNKNOWN;
+        protocolMessageType = ProtocolMessageType.HANDSHAKE;
     }
 
-    public UnknownMessage(Config config, TlsMessageType recordContentMessageType) {
+    public UnknownMessage(Config config, ProtocolMessageType recordContentMessageType) {
         super();
         this.recordContentMessageType = recordContentMessageType;
-        protocolMessageType = TlsMessageType.UNKNOWN;
+        protocolMessageType = ProtocolMessageType.UNKNOWN;
     }
 
     public byte[] getDataConfig() {
@@ -53,11 +53,11 @@ public class UnknownMessage extends TlsMessage {
         this.dataConfig = dataConfig;
     }
 
-    public TlsMessageType getRecordContentMessageType() {
+    public ProtocolMessageType getRecordContentMessageType() {
         return recordContentMessageType;
     }
 
-    public void setRecordContentMessageType(TlsMessageType recordContentMessageType) {
+    public void setRecordContentMessageType(ProtocolMessageType recordContentMessageType) {
         this.recordContentMessageType = recordContentMessageType;
     }
 

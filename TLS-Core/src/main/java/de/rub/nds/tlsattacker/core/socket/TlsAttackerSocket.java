@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.socket;
 
 import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
-import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -46,7 +46,7 @@ public class TlsAttackerSocket {
      *                             If something goes wrong during Transmission
      */
     public void sendRawBytes(byte[] bytes) throws IOException {
-        state.getContext().getTcpContext().getTransportHandler().sendData(bytes);
+        state.getContext().getTransportHandler().sendData(bytes);
     }
 
     /**
@@ -57,7 +57,7 @@ public class TlsAttackerSocket {
      *                             If something goes wrong during the receive
      */
     public byte[] receiveRawBytes() throws IOException {
-        return state.getContext().getTcpContext().getTransportHandler().fetchData();
+        return state.getContext().getTransportHandler().fetchData();
     }
 
     /**
@@ -95,7 +95,7 @@ public class TlsAttackerSocket {
         } while (actuallyRead > 0);
     }
 
-    public void send(TlsMessage message) {
+    public void send(ProtocolMessage message) {
         SendAction action = new SendAction(state.getContext().getConnection().getAlias(), message);
         action.execute(state);
     }
@@ -111,10 +111,10 @@ public class TlsAttackerSocket {
         ReceiveAction action =
             new ReceiveAction(state.getContext().getConnection().getAlias(), new ApplicationMessage());
         action.execute(state);
-        List<TlsMessage> receivedMessages = action.getReceivedMessages();
+        List<ProtocolMessage> receivedMessages = action.getReceivedMessages();
 
         List<ApplicationMessage> receivedAppMessages = new LinkedList<>();
-        for (TlsMessage message : receivedMessages) {
+        for (ProtocolMessage message : receivedMessages) {
             if (message instanceof ApplicationMessage) {
                 receivedAppMessages.add((ApplicationMessage) message);
             }
@@ -141,7 +141,7 @@ public class TlsAttackerSocket {
         AlertMessage closeNotify = new AlertMessage();
         closeNotify.setConfig(AlertLevel.WARNING, AlertDescription.CLOSE_NOTIFY);
         send(closeNotify);
-        state.getContext().getTcpContext().getTransportHandler().closeConnection();
+        state.getContext().getTransportHandler().closeConnection();
     }
 
 }

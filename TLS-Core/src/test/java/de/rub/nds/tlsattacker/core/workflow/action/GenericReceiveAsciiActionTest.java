@@ -49,8 +49,7 @@ public class GenericReceiveAsciiActionTest {
      */
     @Test
     public void testExecute() throws Exception {
-        ((FakeTransportHandler) tlsContext.getContext().getTcpContext().getTransportHandler())
-            .setFetchableByte(asciiToCheck);
+        ((FakeTransportHandler) tlsContext.getContext().getTransportHandler()).setFetchableByte(asciiToCheck);
 
         action.execute(state);
         assertEquals(new String(asciiToCheck, "US-ASCII"), action.getAsciiText());

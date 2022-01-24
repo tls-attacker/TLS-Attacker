@@ -14,18 +14,8 @@ import de.rub.nds.tlsattacker.transport.TransportHandler;
 
 public class TcpContext extends LayerContext {
 
-    private TransportHandler transportHandler;
-
     public TcpContext(Context context) {
         super(context);
         context.setTcpContext(this);
-    }
-
-    public TransportHandler getTransportHandler() {
-        return transportHandler;
-    }
-
-    public void setTransportHandler(TransportHandler transportHandler) {
-        this.transportHandler = transportHandler;
     }
 }

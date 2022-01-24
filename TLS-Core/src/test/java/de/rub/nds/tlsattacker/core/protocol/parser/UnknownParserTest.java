@@ -10,7 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.TlsMessageType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import java.io.ByteArrayInputStream;
@@ -28,7 +28,7 @@ public class UnknownParserTest {
     @Test
     public void testParse() {
         parser = new UnknownMessageParser(new ByteArrayInputStream(new byte[] { 0, 1, 2, 3 }), ProtocolVersion.TLS12,
-            TlsMessageType.UNKNOWN, config);
+            ProtocolMessageType.UNKNOWN, config);
         UnknownMessage message = new UnknownMessage();
         parser.parse(message);
         assertArrayEquals(new byte[] { 0, 1, 2, 3 }, message.getCompleteResultingMessage().getValue());

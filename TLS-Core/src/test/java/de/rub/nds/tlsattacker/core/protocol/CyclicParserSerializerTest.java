@@ -46,11 +46,11 @@ public class CyclicParserSerializerTest {
     @Category(IntegrationTests.class)
     public void testParserSerializerPairs() {
         Reflections reflections = new Reflections("de.rub.nds.tlsattacker.core.protocol.message");
-        Set<Class<? extends TlsMessage>> messageClasses = reflections.getSubTypesOf(TlsMessage.class);
+        Set<Class<? extends ProtocolMessage>> messageClasses = reflections.getSubTypesOf(ProtocolMessage.class);
         CONSOLE.info("ProtocolMessageParser classes:" + messageClasses.size());
-        TlsMessage message = null;
+        ProtocolMessage message = null;
         Config config = null;
-        for (Class<? extends TlsMessage> someMessageClass : messageClasses) {
+        for (Class<? extends ProtocolMessage> someMessageClass : messageClasses) {
             if (Modifier.isAbstract(someMessageClass.getModifiers())) {
                 CONSOLE.info("Skipping:" + someMessageClass.getSimpleName());
                 continue;
@@ -67,8 +67,8 @@ public class CyclicParserSerializerTest {
                 try {
                     Constructor tempConstructor = getMessageConstructor(someMessageClass);
                     if (tempConstructor != null) {
-                        message =
-                            (TlsMessage) getMessageConstructor(someMessageClass).newInstance(Config.createConfig());
+                        message = (ProtocolMessage) getMessageConstructor(someMessageClass)
+                            .newInstance(Config.createConfig());
                     } else {
                         fail("Could not find Constructor for " + testName);
                     }
@@ -88,7 +88,8 @@ public class CyclicParserSerializerTest {
                     preparator.prepare();
                     ProtocolMessageSerializer serializer = message.getSerializer(context);
                     byte[] serializedMessage = serializer.serializeProtocolMessageContent();
-                    message = (TlsMessage) getMessageConstructor(someMessageClass).newInstance(Config.createConfig());
+                    message =
+                        (ProtocolMessage) getMessageConstructor(someMessageClass).newInstance(Config.createConfig());
                     ProtocolMessageParser parser =
                         message.getParser(context, new ByteArrayInputStream(serializedMessage));
                     parser.parse(message);

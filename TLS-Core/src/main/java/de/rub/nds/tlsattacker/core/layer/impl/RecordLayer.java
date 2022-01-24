@@ -16,7 +16,7 @@ import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 
-import de.rub.nds.tlsattacker.core.constants.TlsMessageType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
@@ -77,7 +77,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record, TlsConte
 
     @Override
     public LayerProcessingResult<Record> sendData(RecordLayerHint hint, byte[] data) throws IOException {
-        TlsMessageType type = TlsMessageType.UNKNOWN;
+        ProtocolMessageType type = ProtocolMessageType.UNKNOWN;
         if (hint != null) {
             type = hint.getType();
         } else {
@@ -92,7 +92,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record, TlsConte
 
         for (Record record : records) {
 
-            TlsMessageType contentType = record.getContentMessageType();
+            ProtocolMessageType contentType = record.getContentMessageType();
             if (contentType == null) {
                 contentType = type;
             }
@@ -147,7 +147,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record, TlsConte
         } catch (ParserException e) {
             LOGGER.warn("Could not parse Record as a Record. Passing data to upper layer as unknown data", e);
             HintedInputStream tempStream =
-                new HintedLayerInputStream(new RecordLayerHint(TlsMessageType.UNKNOWN), this);
+                new HintedLayerInputStream(new RecordLayerHint(ProtocolMessageType.UNKNOWN), this);
             tempStream.extendStream(dataStream.readAllBytes());
             if (currentInputStream == null) {
                 currentInputStream = tempStream;

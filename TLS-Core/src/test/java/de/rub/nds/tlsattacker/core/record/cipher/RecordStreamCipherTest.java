@@ -105,7 +105,7 @@ public class RecordStreamCipherTest {
 
     private Record setRecord(BigInteger sequenceNumber, byte[] data, ProtocolVersion protocolVersion) {
         Record record = new Record();
-        record.setContentType(TlsMessageType.HANDSHAKE.getValue());
+        record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
         record.setSequenceNumber(sequenceNumber);
         record.setCleanProtocolMessageBytes(data);
         record.setProtocolVersion(protocolVersion.getValue());

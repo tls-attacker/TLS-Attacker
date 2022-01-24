@@ -103,7 +103,7 @@ public class RecordedWorkflowTest {
         assertTrue(state.getWorkflowTrace().executedAsPlanned());
         state = new State(c);
         state.getContext().getTcpContext().setTransportHandler(transportHandler.getRecording().getPlayBackHandler());
-        state.getContext().getTcpContext().getTransportHandler().initialize();
+        state.getContext().getTransportHandler().initialize();
         executor = new DefaultWorkflowExecutor(state);
         try {
             executor.executeWorkflow();

@@ -10,7 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.TlsMessageType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
@@ -22,7 +22,7 @@ public class UnknownMessageParser extends ProtocolMessageParser<UnknownMessage> 
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final TlsMessageType recordContentMessageType;
+    private final ProtocolMessageType recordContentMessageType;
 
     private Config config;
 
@@ -36,8 +36,8 @@ public class UnknownMessageParser extends ProtocolMessageParser<UnknownMessage> 
      * @param config
      *                                 A Config used in the current context
      */
-    public UnknownMessageParser(InputStream stream, ProtocolVersion version, TlsMessageType recordContentMessageType,
-        Config config) {
+    public UnknownMessageParser(InputStream stream, ProtocolVersion version,
+        ProtocolMessageType recordContentMessageType, Config config) {
         super(stream, config);
         this.recordContentMessageType = recordContentMessageType;
         this.config = config;
@@ -45,7 +45,7 @@ public class UnknownMessageParser extends ProtocolMessageParser<UnknownMessage> 
 
     public UnknownMessageParser(InputStream stream, ProtocolVersion version, Config config) {
         super(stream, config);
-        this.recordContentMessageType = TlsMessageType.UNKNOWN;
+        this.recordContentMessageType = ProtocolMessageType.UNKNOWN;
         this.config = config;
     }
 

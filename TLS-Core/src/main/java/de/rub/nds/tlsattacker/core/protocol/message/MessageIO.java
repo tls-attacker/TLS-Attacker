@@ -9,7 +9,8 @@
 
 package de.rub.nds.tlsattacker.core.protocol.message;
 
-import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+
 import java.io.*;
 import java.util.Set;
 import javax.xml.bind.JAXBContext;
@@ -33,16 +34,17 @@ public class MessageIO {
     private static synchronized JAXBContext getJAXBContext() throws JAXBException, IOException {
         if (context == null) {
             Reflections reflections = new Reflections("de.rub.nds.tlsattacker.core.protocol.message");
-            Set<Class<? extends TlsMessage>> classes = reflections.getSubTypesOf(TlsMessage.class);
+            Set<Class<? extends ProtocolMessage>> classes = reflections.getSubTypesOf(ProtocolMessage.class);
             reflections = new Reflections("de.rub.nds.tlsattacker.core.https");
-            classes.addAll(reflections.getSubTypesOf(TlsMessage.class));
-            Class<? extends TlsMessage>[] classesArray = classes.toArray(new Class[classes.size()]);
+            classes.addAll(reflections.getSubTypesOf(ProtocolMessage.class));
+            Class<? extends ProtocolMessage>[] classesArray = classes.toArray(new Class[classes.size()]);
             context = JAXBContext.newInstance(classesArray);
         }
         return context;
     }
 
-    public static void write(File file, TlsMessage message) throws FileNotFoundException, JAXBException, IOException {
+    public static void write(File file, ProtocolMessage message)
+        throws FileNotFoundException, JAXBException, IOException {
         if (!file.exists()) {
             file.createNewFile();
         }
@@ -50,7 +52,7 @@ public class MessageIO {
         MessageIO.write(fos, message);
     }
 
-    public static void write(OutputStream outputStream, TlsMessage message) throws JAXBException, IOException {
+    public static void write(OutputStream outputStream, ProtocolMessage message) throws JAXBException, IOException {
         context = getJAXBContext();
         Marshaller m = context.createMarshaller();
         m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
@@ -58,23 +60,24 @@ public class MessageIO {
         outputStream.close();
     }
 
-    public static TlsMessage read(InputStream inputStream) throws JAXBException, IOException, XMLStreamException {
+    public static ProtocolMessage read(InputStream inputStream) throws JAXBException, IOException, XMLStreamException {
         context = getJAXBContext();
         Unmarshaller m = context.createUnmarshaller();
         XMLInputFactory xif = XMLInputFactory.newFactory();
         xif.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
         xif.setProperty(XMLInputFactory.SUPPORT_DTD, false);
         XMLStreamReader xsr = xif.createXMLStreamReader(inputStream);
-        TlsMessage message = (TlsMessage) m.unmarshal(xsr);
+        ProtocolMessage message = (ProtocolMessage) m.unmarshal(xsr);
         inputStream.close();
         return message;
     }
 
-    public static TlsMessage copyTlsAction(TlsMessage message) throws JAXBException, IOException, XMLStreamException {
+    public static ProtocolMessage copyTlsAction(ProtocolMessage message)
+        throws JAXBException, IOException, XMLStreamException {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         MessageIO.write(stream, message);
         stream.flush();
-        TlsMessage copiedMessage = MessageIO.read(new ByteArrayInputStream(stream.toByteArray()));
+        ProtocolMessage copiedMessage = MessageIO.read(new ByteArrayInputStream(stream.toByteArray()));
         return copiedMessage;
     }
 

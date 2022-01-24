@@ -657,7 +657,7 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="tlsMessage" abstract="true">
+  <xs:complexType name="protocolMessage" abstract="true">
     <xs:complexContent>
       <xs:extension base="modifiableVariableHolder">
         <xs:sequence>
@@ -1024,7 +1024,7 @@
 
   <xs:complexType name="handshakeMessage" abstract="true">
     <xs:complexContent>
-      <xs:extension base="tlsMessage">
+      <xs:extension base="protocolMessage">
         <xs:sequence>
           <xs:element name="type" type="modifiableByte" minOccurs="0"/>
           <xs:element name="length" type="modifiableInteger" minOccurs="0"/>
@@ -2260,7 +2260,7 @@
 
   <xs:complexType name="alertMessage">
     <xs:complexContent>
-      <xs:extension base="tlsMessage">
+      <xs:extension base="protocolMessage">
         <xs:sequence>
           <xs:element name="config" type="xs:string" minOccurs="0"/>
           <xs:element name="level" type="modifiableByte" minOccurs="0"/>
@@ -2335,7 +2335,7 @@
 
   <xs:complexType name="applicationMessage">
     <xs:complexContent>
-      <xs:extension base="tlsMessage">
+      <xs:extension base="protocolMessage">
         <xs:sequence>
           <xs:element name="dataConfig" type="xs:string" minOccurs="0"/>
           <xs:element name="data" type="modifiableByteArray" minOccurs="0"/>
@@ -2346,7 +2346,7 @@
 
   <xs:complexType name="changeCipherSpecMessage">
     <xs:complexContent>
-      <xs:extension base="tlsMessage">
+      <xs:extension base="protocolMessage">
         <xs:sequence>
           <xs:element name="ccsProtocolType" type="modifiableByteArray" minOccurs="0"/>
         </xs:sequence>
@@ -2428,10 +2428,10 @@
 
   <xs:complexType name="unknownMessage">
     <xs:complexContent>
-      <xs:extension base="tlsMessage">
+      <xs:extension base="protocolMessage">
         <xs:sequence>
           <xs:element name="dataConfig" type="xs:base64Binary" minOccurs="0"/>
-          <xs:element name="recordContentMessageType" type="tlsMessageType" minOccurs="0"/>
+          <xs:element name="recordContentMessageType" type="protocolMessageType" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -2458,7 +2458,7 @@
 
   <xs:complexType name="heartbeatMessage">
     <xs:complexContent>
-      <xs:extension base="tlsMessage">
+      <xs:extension base="protocolMessage">
         <xs:sequence>
           <xs:element name="heartbeatMessageType" type="modifiableByte" minOccurs="0"/>
           <xs:element name="payloadLength" type="modifiableInteger" minOccurs="0"/>
@@ -2770,7 +2770,7 @@
           <xs:element name="cleanProtocolMessageBytes" type="modifiableByteArray" minOccurs="0"/>
           <xs:element name="completeRecordBytes" type="modifiableByteArray" minOccurs="0"/>
           <xs:element name="computations" type="recordCryptoComputations" minOccurs="0"/>
-          <xs:element name="contentMessageType" type="tlsMessageType" minOccurs="0"/>
+          <xs:element name="contentMessageType" type="protocolMessageType" minOccurs="0"/>
           <xs:element name="contentType" type="modifiableByte" minOccurs="0"/>
           <xs:element name="epoch" type="modifiableInteger" minOccurs="0"/>
           <xs:element name="length" type="modifiableInteger" minOccurs="0"/>
@@ -3036,7 +3036,7 @@
           <xs:element name="lastServerVerifyData" type="xs:base64Binary" minOccurs="0"/>
           <xs:element name="lastClientHello" type="xs:base64Binary" minOccurs="0"/>
           <xs:element name="random" type="random" minOccurs="0"/>
-          <xs:element name="messageBuffer" type="tlsMessage" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="messageBuffer" type="protocolMessage" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
           <xs:element name="recordBuffer" type="record" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
           <xs:element name="fragmentBuffer" type="dtlsHandshakeMessageFragment" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
           <xs:element name="chooser" type="chooser" minOccurs="0"/>
@@ -3071,6 +3071,7 @@
       <xs:element name="connection" type="aliasedConnection" minOccurs="0"/>
       <xs:element name="context" type="context" minOccurs="0"/>
       <xs:element name="talkingConnectionEndType" type="connectionEndType" minOccurs="0"/>
+      <xs:element name="transportHandler" type="transportHandler" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -3135,6 +3136,7 @@
     <xs:sequence>
       <xs:element name="chooser" type="chooser" minOccurs="0"/>
       <xs:element ref="config" minOccurs="0"/>
+      <xs:element name="transportHandler" type="transportHandler" minOccurs="0"/>
       <xs:element name="tcpContext" type="tcpContext" minOccurs="0"/>
       <xs:element name="httpContext" type="httpContext" minOccurs="0"/>
       <xs:element name="tlsContext" type="tlsContext" minOccurs="0"/>
@@ -3146,7 +3148,7 @@
 
   <xs:complexType name="config">
     <xs:all>
-      <xs:element name="layers" type="layerStackType" minOccurs="0"/>
+      <xs:element name="layers" type="protocolLayer" minOccurs="0"/>
       <xs:element name="defaultHandshakeSecret" type="xs:string" minOccurs="0"/>
       <xs:element name="throwExceptionOnParserContextViolation" type="xs:boolean" minOccurs="0"/>
       <xs:element name="preferredCertificateSignatureType" type="certificateKeyType" minOccurs="0"/>
@@ -3785,20 +3787,18 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="tcpContext">
-    <xs:complexContent>
-      <xs:extension base="layerContext">
-        <xs:sequence>
-          <xs:element name="transportHandler" type="transportHandler" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
   <xs:complexType name="transportHandler" abstract="true">
     <xs:sequence>
       <xs:element name="timeout" type="xs:long"/>
     </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="tcpContext">
+    <xs:complexContent>
+      <xs:extension base="layerContext">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
   </xs:complexType>
 
   <xs:complexType name="httpContext">
@@ -4107,7 +4107,7 @@
     <xs:complexContent>
       <xs:extension base="connectionBoundAction">
         <xs:sequence>
-          <xs:element name="protocolMessageType" type="tlsMessageType" minOccurs="0"/>
+          <xs:element name="protocolMessageType" type="protocolMessageType" minOccurs="0"/>
           <xs:element name="found" type="xs:boolean" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
@@ -5329,7 +5329,7 @@
     </xs:restriction>
   </xs:simpleType>
 
-  <xs:simpleType name="tlsMessageType">
+  <xs:simpleType name="protocolMessageType">
     <xs:restriction base="xs:string">
       <xs:enumeration value="UNKNOWN"/>
       <xs:enumeration value="CHANGE_CIPHER_SPEC"/>
@@ -5641,7 +5641,7 @@
     </xs:restriction>
   </xs:simpleType>
 
-  <xs:simpleType name="layerStackType">
+  <xs:simpleType name="protocolLayer">
     <xs:restriction base="xs:string">
       <xs:enumeration value="TLS"/>
       <xs:enumeration value="DTLS"/>

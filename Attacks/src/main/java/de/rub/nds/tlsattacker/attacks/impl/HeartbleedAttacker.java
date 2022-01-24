@@ -17,7 +17,7 @@ import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.attacks.config.HeartbleedCommandConfig;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.TlsMessageType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
@@ -93,7 +93,7 @@ public class HeartbleedAttacker extends Attacker<HeartbleedCommandConfig> {
             LOGGER.debug(ex);
         }
 
-        if (WorkflowTraceUtil.didReceiveMessage(TlsMessageType.HEARTBEAT, trace)) {
+        if (WorkflowTraceUtil.didReceiveMessage(ProtocolMessageType.HEARTBEAT, trace)) {
             LOGGER.info(
                 "Vulnerable. The server responds with a heartbeat message, although the client heartbeat message contains an invalid Length value");
             return true;

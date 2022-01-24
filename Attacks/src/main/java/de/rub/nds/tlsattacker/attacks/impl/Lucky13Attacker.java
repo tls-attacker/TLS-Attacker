@@ -20,7 +20,7 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -91,7 +91,7 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
         ReceiveAction action = new ReceiveAction();
 
         AlertMessage alertMessage = new AlertMessage(tlsConfig);
-        List<TlsMessage> messages = new LinkedList<>();
+        List<ProtocolMessage> messages = new LinkedList<>();
         messages.add(alertMessage);
         action.setExpectedMessages(messages);
         trace.addTlsAction(action);
@@ -106,7 +106,7 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
         }
 
         TimingProxyClientTcpTransportHandler transportHandler =
-            (TimingProxyClientTcpTransportHandler) state.getContext().getTcpContext().getTransportHandler();
+            (TimingProxyClientTcpTransportHandler) state.getContext().getTransportHandler();
         lastResult = transportHandler.getLastMeasurement();
         try {
             transportHandler.closeConnection();

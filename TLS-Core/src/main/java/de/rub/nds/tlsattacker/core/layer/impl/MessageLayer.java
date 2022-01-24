@@ -30,7 +30,7 @@ import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class MessageLayer extends ProtocolLayer<LayerProcessingHint, TlsMessage, TlsContext> {
+public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMessage, TlsContext> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -43,8 +43,8 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, TlsMessage,
 
     @Override
     public LayerProcessingResult sendConfiguration() throws IOException {
-        LayerConfiguration<TlsMessage> configuration = getLayerConfiguration();
-        for (TlsMessage message : configuration.getContainerList()) {
+        LayerConfiguration<ProtocolMessage> configuration = getLayerConfiguration();
+        for (ProtocolMessage message : configuration.getContainerList()) {
             ProtocolMessagePreparator preparator = message.getPreparator(context);
             preparator.prepare();
             ProtocolMessageSerializer serializer = message.getSerializer(context);

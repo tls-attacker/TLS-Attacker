@@ -18,7 +18,7 @@ import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.dtls.FragmentManager;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.layer.impl.RecordLayer;
-import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
@@ -511,7 +511,7 @@ public class TlsContext extends LayerContext {
 
     private Random random;
 
-    private LinkedList<TlsMessage> messageBuffer;
+    private LinkedList<ProtocolMessage> messageBuffer;
 
     private LinkedList<Record> recordBuffer;
 
@@ -698,11 +698,11 @@ public class TlsContext extends LayerContext {
         this.dtlsWriteHandshakeMessageSequence = dtlsWriteHandshakeMessageSequence;
     }
 
-    public LinkedList<TlsMessage> getMessageBuffer() {
+    public LinkedList<ProtocolMessage> getMessageBuffer() {
         return messageBuffer;
     }
 
-    public void setMessageBuffer(LinkedList<TlsMessage> messageBuffer) {
+    public void setMessageBuffer(LinkedList<ProtocolMessage> messageBuffer) {
         this.messageBuffer = messageBuffer;
     }
 

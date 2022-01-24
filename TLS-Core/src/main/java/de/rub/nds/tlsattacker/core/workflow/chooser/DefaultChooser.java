@@ -322,7 +322,7 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public TransportHandler getTransportHandler() {
-        return context.getTcpContext().getTransportHandler();
+        return context.getTransportHandler();
     }
 
     @Override

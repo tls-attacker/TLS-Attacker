@@ -51,8 +51,8 @@ public class ChangeConnectionTimeoutAction extends ConnectionBoundAction {
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
         }
-        oldValue = tlsContext.getContext().getTcpContext().getTransportHandler().getTimeout();
-        tlsContext.getContext().getTcpContext().getTransportHandler().setTimeout(newValue);
+        oldValue = tlsContext.getContext().getTransportHandler().getTimeout();
+        tlsContext.getContext().getTransportHandler().setTimeout(newValue);
         LOGGER.info("Changed Timeout from " + oldValue == null ? oldValue : null + " to " + newValue);
         setExecuted(true);
     }

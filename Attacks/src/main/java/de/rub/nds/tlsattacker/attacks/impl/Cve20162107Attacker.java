@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.attacks.config.Cve20162107CommandConfig;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.protocol.TlsMessage;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -44,7 +44,7 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final List<TlsMessage> lastMessages;
+    private final List<ProtocolMessage> lastMessages;
 
     private boolean vulnerable;
 
@@ -99,7 +99,7 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
         AlertMessage alertMessage = new AlertMessage(tlsConfig);
 
         ReceiveAction action = (ReceiveAction) (trace.getLastMessageAction());
-        List<TlsMessage> messages = new LinkedList<>();
+        List<ProtocolMessage> messages = new LinkedList<>();
         messages.add(alertMessage);
         action.setExpectedMessages(messages);
         State state = new State(tlsConfig, trace);
@@ -119,21 +119,21 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
             LOGGER.info("Did not receive ServerHello. Skipping...");
             return false;
         }
-        TlsMessage tlsMessage = WorkflowTraceUtil.getLastReceivedMessage(trace);
-        lastMessages.add(tlsMessage);
+        ProtocolMessage protocolMessage = WorkflowTraceUtil.getLastReceivedMessage(trace);
+        lastMessages.add(protocolMessage);
 
-        if (tlsMessage.getProtocolMessageType() == TlsMessageType.ALERT) {
-            AlertMessage am = ((AlertMessage) tlsMessage);
+        if (protocolMessage.getProtocolMessageType() == ProtocolMessageType.ALERT) {
+            AlertMessage am = ((AlertMessage) protocolMessage);
             LOGGER.info("  Last protocol message: Alert ({},{}) [{},{}]",
                 AlertLevel.getAlertLevel(am.getLevel().getValue()),
                 AlertDescription.getAlertDescription(am.getDescription().getValue()), am.getLevel().getValue(),
                 am.getDescription().getValue());
         } else {
-            LOGGER.info("  Last protocol message: {}", tlsMessage.getProtocolMessageType());
+            LOGGER.info("  Last protocol message: {}", protocolMessage.getProtocolMessageType());
         }
 
-        if (tlsMessage.getProtocolMessageType() == TlsMessageType.ALERT
-            && AlertDescription.getAlertDescription(((AlertMessage) tlsMessage).getDescription().getValue())
+        if (protocolMessage.getProtocolMessageType() == ProtocolMessageType.ALERT
+            && AlertDescription.getAlertDescription(((AlertMessage) protocolMessage).getDescription().getValue())
                 == AlertDescription.RECORD_OVERFLOW) {
             LOGGER.info("  Vulnerable");
             return true;
@@ -198,7 +198,7 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
         }
 
         LOGGER.debug("All the attack runs executed. The following messages arrived at the ends of the connections");
-        for (TlsMessage pm : lastMessages) {
+        for (ProtocolMessage pm : lastMessages) {
             LOGGER.debug("----- NEXT TLS CONNECTION WITH MODIFIED APPLICATION DATA RECORD -----");
             LOGGER.debug("Last protocol message in the protocol flow");
             LOGGER.debug(pm.toString());
