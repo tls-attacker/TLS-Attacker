@@ -115,7 +115,7 @@ public class State {
 
         for (AliasedConnection con : workflowTrace.getConnections()) {
             Context ctx = new Context(config, con);
-            LayerStack layerStack = LayerStackFactory.createLayerStack(config.getLayers(), ctx);
+            LayerStack layerStack = LayerStackFactory.createLayerStack(config.getDefaultLayerConfiguration(), ctx);
             addContext(ctx);
         }
     }

@@ -19,7 +19,7 @@ import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.layer.LayerStack;
 import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
-import de.rub.nds.tlsattacker.core.layer.constant.ProtocolLayer;
+import de.rub.nds.tlsattacker.core.layer.constant.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
@@ -84,14 +84,14 @@ public class Context {
                         "Cannot create connection for unknown running mode " + "'" + mode + "'");
             }
         }
-        prepareWithLayers(config.getLayers());
+        prepareWithLayers(config.getDefaultLayerConfiguration());
     }
 
     public Context(Config config, AliasedConnection connection) {
         this.chooser = ChooserFactory.getChooser(ChooserType.DEFAULT, this, config);
         this.config = config;
         this.connection = connection;
-        prepareWithLayers(config.getLayers());
+        prepareWithLayers(config.getDefaultLayerConfiguration());
     }
 
     public TcpContext getTcpContext() {
@@ -188,7 +188,7 @@ public class Context {
         this.tlsContext = tlsContext;
     }
 
-    public void prepareWithLayers(ProtocolLayer type) {
+    public void prepareWithLayers(LayerConfiguration type) {
         LayerStackFactory.createLayerStack(type, this);
     }
 }

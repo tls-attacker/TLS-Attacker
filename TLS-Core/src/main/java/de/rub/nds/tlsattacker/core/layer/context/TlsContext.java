@@ -55,8 +55,6 @@ public class TlsContext extends LayerContext {
 
     private Keylogfile keylogfile;
 
-    private SocketState finalSocketState;
-
     /**
      * Shared key established during the handshake.
      */
@@ -2297,14 +2295,6 @@ public class TlsContext extends LayerContext {
 
     public void setEcCertificateSignatureCurve(NamedGroup ecCertificateSignatureCurve) {
         this.ecCertificateSignatureCurve = ecCertificateSignatureCurve;
-    }
-
-    public SocketState getFinalSocketState() {
-        return finalSocketState;
-    }
-
-    public void setFinalSocketState(SocketState finalSocketState) {
-        this.finalSocketState = finalSocketState;
     }
 
     public byte[] getLastClientHello() {

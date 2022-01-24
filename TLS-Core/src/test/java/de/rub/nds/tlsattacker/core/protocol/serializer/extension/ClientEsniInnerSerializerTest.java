@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ChooserType;
 import de.rub.nds.tlsattacker.core.layer.LayerStack;
 import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
-import de.rub.nds.tlsattacker.core.layer.constant.ProtocolLayer;
+import de.rub.nds.tlsattacker.core.layer.constant.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientEsniInner;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ClientEsniInnerPreparator;
@@ -37,7 +37,7 @@ public class ClientEsniInnerSerializerTest {
     public void setUp() {
         Config config = new Config();
         Context outerContext = new Context(config);
-        LayerStack layerStack = LayerStackFactory.createLayerStack(ProtocolLayer.TLS, outerContext);
+        LayerStack layerStack = LayerStackFactory.createLayerStack(LayerConfiguration.TLS, outerContext);
         chooser = ChooserFactory.getChooser(ChooserType.DEFAULT, outerContext, config);
     }
 

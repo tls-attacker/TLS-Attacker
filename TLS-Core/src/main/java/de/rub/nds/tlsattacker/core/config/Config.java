@@ -21,7 +21,7 @@ import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.crypto.keys.CustomRSAPrivateKey;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.core.layer.constant.ProtocolLayer;
+import de.rub.nds.tlsattacker.core.layer.constant.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
@@ -91,7 +91,7 @@ public class Config implements Serializable {
         return c;
     }
 
-    private ProtocolLayer layers;
+    private LayerConfiguration defaultLayerConfiguration;
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultHandshakeSecret = new byte[32];
@@ -1326,7 +1326,7 @@ public class Config implements Serializable {
     private String keylogFilePath = null;
 
     public Config() {
-        layers = ProtocolLayer.TLS;
+        defaultLayerConfiguration = LayerConfiguration.TLS;
         defaultClientConnection = new OutboundConnection("client", 443, "localhost");
         defaultServerConnection = new InboundConnection("server", 443, "localhost");
         workflowTraceType = WorkflowTraceType.HANDSHAKE;
@@ -4031,11 +4031,11 @@ public class Config implements Serializable {
         this.defaultClientTicketResumptionSessionId = defaultClientTicketResumptionSessionId;
     }
 
-    public ProtocolLayer getLayers() {
-        return layers;
+    public LayerConfiguration getDefaultLayerConfiguration() {
+        return defaultLayerConfiguration;
     }
 
-    public void setLayers(ProtocolLayer layers) {
-        this.layers = layers;
+    public void setDefaultLayerConfiguration(LayerConfiguration defaultLayerConfiguration) {
+        this.defaultLayerConfiguration = defaultLayerConfiguration;
     }
 }

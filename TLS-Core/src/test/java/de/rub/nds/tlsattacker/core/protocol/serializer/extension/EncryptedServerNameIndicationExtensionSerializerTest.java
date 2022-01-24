@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.layer.LayerStack;
 import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
-import de.rub.nds.tlsattacker.core.layer.constant.ProtocolLayer;
+import de.rub.nds.tlsattacker.core.layer.constant.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
@@ -35,7 +35,7 @@ public class EncryptedServerNameIndicationExtensionSerializerTest {
     public void setUp() {
         Config config = new Config();
         Context outerContext = new Context(config);
-        LayerStack layerStack = LayerStackFactory.createLayerStack(ProtocolLayer.TLS, outerContext);
+        LayerStack layerStack = LayerStackFactory.createLayerStack(LayerConfiguration.TLS, outerContext);
         chooser = ChooserFactory.getChooser(ChooserType.DEFAULT, outerContext, config);
     }
 

@@ -11,11 +11,22 @@ package de.rub.nds.tlsattacker.core.layer.context;
 
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
+import de.rub.nds.tlsattacker.transport.socket.SocketState;
 
 public class TcpContext extends LayerContext {
+
+    private SocketState finalSocketState;
 
     public TcpContext(Context context) {
         super(context);
         context.setTcpContext(this);
+    }
+
+    public SocketState getFinalSocketState() {
+        return finalSocketState;
+    }
+
+    public void setFinalSocketState(SocketState finalSocketState) {
+        this.finalSocketState = finalSocketState;
     }
 }

@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.constants.ChooserType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.layer.LayerStack;
 import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
-import de.rub.nds.tlsattacker.core.layer.constant.ProtocolLayer;
+import de.rub.nds.tlsattacker.core.layer.constant.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
@@ -43,7 +43,7 @@ public class EncryptedServerNameIndicationExtensionParserTest {
         Security.addProvider(new BouncyCastleProvider());
         Config config = new Config();
         Context outerContext = new Context(config);
-        LayerStack layerStack = LayerStackFactory.createLayerStack(ProtocolLayer.TLS, outerContext);
+        LayerStack layerStack = LayerStackFactory.createLayerStack(LayerConfiguration.TLS, outerContext);
         context = outerContext.getTlsContext();
         chooser = ChooserFactory.getChooser(ChooserType.DEFAULT, outerContext, config);
     }
