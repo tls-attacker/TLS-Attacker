@@ -23,7 +23,7 @@ public class FragmentUtils {
         DtlsHandshakeMessageFragment fragment = new DtlsHandshakeMessageFragment();
         fragment.setFragmentOffset(fragmentOffset);
         fragment.setFragmentLength(fragmentLength);
-        fragment.setMessageSeq(messageSeq);
+        fragment.setMessageSequence(messageSeq);
         fragment.setContent(content);
         fragment.setLength(DEFAULT_MESSAGE_LENGTH);
         fragment.setType(HandshakeMessageType.UNKNOWN.getValue());

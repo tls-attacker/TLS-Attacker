@@ -60,7 +60,7 @@ public class FragmentCollector {
                     "Found a fragment which tries to rewrite history. Setting interpreted to false and resetting Stream.");
                 fragmentStream = new FragmentStream(fragment.getLength().getValue());
                 this.messageLength = fragment.getLength().getValue();
-                this.messageSeq = fragment.getMessageSeq().getValue();
+                this.messageSeq = fragment.getMessageSequence().getValue();
                 this.type = fragment.getType().getValue();
                 interpreted = false;
                 retransmission = false;
@@ -68,7 +68,7 @@ public class FragmentCollector {
             if (interpreted && config.isAddRetransmissionsToWorkflowTraceInDtls()) {
                 fragmentStream = new FragmentStream(fragment.getLength().getValue());
                 this.messageLength = fragment.getLength().getValue();
-                this.messageSeq = fragment.getMessageSeq().getValue();
+                this.messageSeq = fragment.getMessageSequence().getValue();
                 this.type = fragment.getType().getValue();
                 interpreted = false;
                 retransmission = true;
@@ -109,7 +109,7 @@ public class FragmentCollector {
      * @return          true if fragment fits the collector, false if it doesn't
      */
     public boolean isFitting(DtlsHandshakeMessageFragment fragment) {
-        if (fragment.getType().getValue() == type && fragment.getMessageSeq().getValue() == this.messageSeq
+        if (fragment.getType().getValue() == type && fragment.getMessageSequence().getValue() == this.messageSeq
             && fragment.getLength().getValue() == this.messageLength) {
             return fragmentStream.canInsertByteArray(fragment.getContent().getValue(),
                 fragment.getFragmentOffset().getValue());
@@ -142,7 +142,7 @@ public class FragmentCollector {
         DtlsHandshakeMessageFragment message = new DtlsHandshakeMessageFragment();
         message.setType(type);
         message.setLength(messageLength);
-        message.setMessageSeq(messageSeq);
+        message.setMessageSequence(messageSeq);
         message.setFragmentOffset(0);
         message.setFragmentLength(messageLength);
         message.setContent(getCombinedContent());

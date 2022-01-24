@@ -32,12 +32,17 @@ public class DtlsHandshakeMessageFragmentSerializer extends HandshakeMessageSeri
         return getAlreadySerialized();
     }
 
+    public byte[] serializeWithoutFragmentationFields() {
+        appendBytes(message.getContent().getValue());
+        return getAlreadySerialized();
+    }
+
     /**
      * Writes the sequenceNumber of the HandshakeMessage into the final byte[]
      */
     private void writeMessageSequence() {
-        appendInt(message.getMessageSeq().getValue(), HandshakeByteLength.DTLS_MESSAGE_SEQUENCE);
-        LOGGER.debug("SequenceNumber: " + message.getMessageSeq().getValue());
+        appendInt(message.getMessageSequence().getValue(), HandshakeByteLength.DTLS_MESSAGE_SEQUENCE);
+        LOGGER.debug("SequenceNumber: " + message.getMessageSequence().getValue());
     }
 
     /**

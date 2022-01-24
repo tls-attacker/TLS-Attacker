@@ -29,9 +29,6 @@ public class DtlsHandshakeMessageFragment extends HandshakeMessage {
     @ModifiableVariableProperty
     private ModifiableByteArray content;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
-    private ModifiableInteger messageSeq = null;
-
     @ModifiableVariableProperty
     private ModifiableInteger fragmentOffset = null;
 
@@ -166,24 +163,12 @@ public class DtlsHandshakeMessageFragment extends HandshakeMessage {
         this.content = ModifiableVariableFactory.safelySetValue(this.content, content);
     }
 
-    public ModifiableInteger getMessageSeq() {
-        return messageSeq;
-    }
-
     public ModifiableInteger getFragmentOffset() {
         return fragmentOffset;
     }
 
     public ModifiableInteger getFragmentLength() {
         return fragmentLength;
-    }
-
-    public void setMessageSeq(int messageSeq) {
-        this.messageSeq = ModifiableVariableFactory.safelySetValue(this.messageSeq, messageSeq);
-    }
-
-    public void setMessageSeq(ModifiableInteger messageSeq) {
-        this.messageSeq = messageSeq;
     }
 
     public void setFragmentOffset(int fragmentOffset) {

@@ -51,7 +51,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
             ProtocolMessageSerializer serializer = message.getSerializer(context);
             byte[] serializedMessage = serializer.serialize();
             message.setCompleteResultingMessage(serializedMessage);
-            message.getHandler(context).updateDigest(message);
+            message.getHandler(context).updateDigest(message, true);
             message.getHandler(context).adjustContext(message);
             getLowerLayer().sendData(new RecordLayerHint(message.getProtocolMessageType()), serializedMessage);
             message.getHandler(context).adjustContextAfterSerialize(message);
@@ -144,28 +144,18 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
         handshakeMessage.setType(type);
         int length = handshakeStream.readInt(HandshakeByteLength.MESSAGE_LENGTH_FIELD);
         handshakeMessage.setLength(length);
-        byte[] payload;
-        if (context.getChooser().getSelectedProtocolVersion().isDTLS()) {
-            int messageSequence = handshakeStream.readInt(HandshakeByteLength.DTLS_MESSAGE_SEQUENCE);
-            handshakeMessage.setMessageSequence(messageSequence);
-            byte[] fragmentOffset = handshakeStream.readChunk(HandshakeByteLength.DTLS_FRAGMENT_OFFSET);
-            byte[] fragmentLength = handshakeStream.readChunk(HandshakeByteLength.DTLS_FRAGMENT_LENGTH);
-            payload = handshakeStream.readChunk(length);
-            handshakeMessage.setCompleteResultingMessage(ArrayConverter.concatenate(new byte[] { type },
-                ArrayConverter.intToBytes(length, HandshakeByteLength.MESSAGE_LENGTH_FIELD),
-                ArrayConverter.intToBytes(messageSequence, HandshakeByteLength.DTLS_MESSAGE_SEQUENCE), fragmentOffset,
-                fragmentLength, payload));
-        } else {
-            payload = handshakeStream.readChunk(length);
-            handshakeMessage.setCompleteResultingMessage(ArrayConverter.concatenate(new byte[] { type },
-                ArrayConverter.intToBytes(length, HandshakeByteLength.MESSAGE_LENGTH_FIELD), payload));
-        }
+        byte[] payload = handshakeStream.readChunk(length);
+        handshakeMessage.setCompleteResultingMessage(ArrayConverter.concatenate(new byte[] { type },
+            ArrayConverter.intToBytes(length, HandshakeByteLength.MESSAGE_LENGTH_FIELD), payload));
         Parser parser = handshakeMessage.getParser(context, new ByteArrayInputStream(payload));
         parser.parse(handshakeMessage);
         Preparator preparator = handshakeMessage.getPreparator(context);
         preparator.prepareAfterParse(false);// TODO REMOVE THIS CLIENTMODE FLAG
         Handler handler = handshakeMessage.getHandler(context);
-        handshakeMessage.getHandler(context).updateDigest(handshakeMessage);
+        if (context.getChooser().getSelectedProtocolVersion().isDTLS()) {
+            handshakeMessage.setMessageSequence(((RecordLayerHint) handshakeStream.getHint()).getMessageSequence());
+        }
+        handshakeMessage.getHandler(context).updateDigest(handshakeMessage, false);
         handler.adjustContext(handshakeMessage);
         addProducedContainer(handshakeMessage);
     }

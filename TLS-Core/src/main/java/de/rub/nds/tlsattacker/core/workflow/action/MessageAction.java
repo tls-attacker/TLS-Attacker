@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
+import de.rub.nds.tlsattacker.core.constants.MessageActionDirection;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerStack;
 import de.rub.nds.tlsattacker.core.layer.LayerStackProcessingResult;
@@ -252,11 +253,6 @@ public abstract class MessageAction extends ConnectionBoundAction {
             setContainers(reconstructedResult);
             setLayerStackProcessingResult(reconstructedResult);
         }
-    }
-
-    public enum MessageActionDirection {
-        SENDING,
-        RECEIVING
     }
 
     public LayerStackProcessingResult getLayerStackProcessingResult() {

@@ -35,11 +35,10 @@ public abstract class ProtocolMessageHandler<MessageT extends ProtocolMessage> i
     public void prepareAfterParse(MessageT message) {
     }
 
-    public void updateDigest(ProtocolMessage message) {
+    public void updateDigest(ProtocolMessage message, boolean goingToBeSent) {
         if (!(message instanceof HandshakeMessage)) {
             return;
         }
-
         HandshakeMessage handshakeMessage = (HandshakeMessage) message;
 
         if (!handshakeMessage.getIncludeInDigest()) {
@@ -47,17 +46,8 @@ public abstract class ProtocolMessageHandler<MessageT extends ProtocolMessage> i
         }
 
         if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS()) {
-            DtlsHandshakeMessageFragment fragment;
-            // TODO find better solution
-            if (handshakeMessage.getMessageSequence() == null) {
-                fragment =
-                    tlsContext.getDtlsFragmentLayer().wrapInSingleFragment(handshakeMessage.getHandshakeMessageType(),
-                        null, handshakeMessage.getSerializer(tlsContext).serializeProtocolMessageContent());
-            } else {
-                fragment = tlsContext.getDtlsFragmentLayer().wrapInSingleFragment(
-                    handshakeMessage.getHandshakeMessageType(), handshakeMessage.getMessageSequence().getValue(),
-                    handshakeMessage.getSerializer(tlsContext).serializeProtocolMessageContent());
-            }
+            DtlsHandshakeMessageFragment fragment =
+                tlsContext.getDtlsFragmentLayer().wrapInSingleFragment(tlsContext, handshakeMessage, goingToBeSent);
             tlsContext.getDigest().append(fragment.getCompleteResultingMessage().getValue());
         } else {
             tlsContext.getDigest().append(message.getCompleteResultingMessage().getValue());

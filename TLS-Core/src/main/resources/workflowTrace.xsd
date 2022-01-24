@@ -1884,7 +1884,6 @@
       <xs:extension base="handshakeMessage">
         <xs:sequence>
           <xs:element name="content" type="modifiableByteArray" minOccurs="0"/>
-          <xs:element name="messageSeq" type="modifiableInteger" minOccurs="0"/>
           <xs:element name="fragmentOffset" type="modifiableInteger" minOccurs="0"/>
           <xs:element name="fragmentLength" type="modifiableInteger" minOccurs="0"/>
           <xs:element name="epoch" type="modifiableInteger" minOccurs="0"/>

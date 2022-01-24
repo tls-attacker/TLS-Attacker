@@ -9,7 +9,9 @@
 
 package de.rub.nds.tlsattacker.core.layer.impl;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.dtls.FragmentManager;
 import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
@@ -24,6 +26,7 @@ import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
 import de.rub.nds.tlsattacker.core.protocol.Parser;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
+import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -63,11 +66,11 @@ public class DtlsFragmentLayer extends ProtocolLayer<RecordLayerHint, DtlsHandsh
         switch (hint.getType()) {
             case HANDSHAKE:
                 List<DtlsHandshakeMessageFragment> fragments = getEnoughFragments(context, data.length);
-                // TODO use constant?
                 fragments = wrapInFragments(HandshakeMessageType.getMessageType(data[0]),
-                    Arrays.copyOfRange(data, 4, data.length), fragments);
+                    Arrays.copyOfRange(data,
+                        HandshakeByteLength.MESSAGE_TYPE + HandshakeByteLength.MESSAGE_LENGTH_FIELD, data.length),
+                    fragments);
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
-
                 for (DtlsHandshakeMessageFragment fragment : fragments) {
                     fragment.getPreparator(context).prepare();
                     try {
@@ -97,8 +100,6 @@ public class DtlsFragmentLayer extends ProtocolLayer<RecordLayerHint, DtlsHandsh
     public void receiveMoreDataForHint(LayerProcessingHint hint) throws IOException {
         try {
             HintedInputStream dataStream = null;
-            // TODO should also work without the solution
-            boolean complete = false;
             do {
                 dataStream = getLowerLayer().getDataStream();
                 if (dataStream.getHint() == null) {
@@ -106,7 +107,7 @@ public class DtlsFragmentLayer extends ProtocolLayer<RecordLayerHint, DtlsHandsh
                         "The DTLS fragment layer requires a processing hint. E.g. a record type. Parsing as an unknown fragment");
                     currentInputStream = new HintedLayerInputStream(null, this);
                     currentInputStream.extendStream(dataStream.readAllBytes());
-                    complete = true;
+                    return;
                 } else if (dataStream.getHint() instanceof RecordLayerHint) {
                     RecordLayerHint tempHint = (RecordLayerHint) dataStream.getHint();
                     switch (tempHint.getType()) {
@@ -122,16 +123,20 @@ public class DtlsFragmentLayer extends ProtocolLayer<RecordLayerHint, DtlsHandsh
                             List<DtlsHandshakeMessageFragment> uninterpretedMessageFragments =
                                 fragmentManager.getOrderedCombinedUninterpretedMessageFragments(true, false);
                             if (!uninterpretedMessageFragments.isEmpty()) {
-                                complete = true;
                                 DtlsHandshakeMessageFragment uninterpretedMessageFragment =
                                     uninterpretedMessageFragments.get(0);
                                 addProducedContainer(uninterpretedMessageFragment);
                                 currentInputStream = new HintedLayerInputStream(
-                                    new RecordLayerHint(uninterpretedMessageFragment.getProtocolMessageType()), this);
-                                currentInputStream.extendStream(
-                                    uninterpretedMessageFragment.getCompleteResultingMessage().getValue());
+                                    new RecordLayerHint(uninterpretedMessageFragment.getProtocolMessageType(),
+                                        uninterpretedMessageFragment.getMessageSequence().getValue()),
+                                    this);
+                                byte type = uninterpretedMessageFragment.getType().getValue();
+                                byte[] content = uninterpretedMessageFragment.getContent().getValue();
+                                currentInputStream.extendStream(ArrayConverter.concatenate(new byte[] { type },
+                                    ArrayConverter.intToBytes(content.length, HandshakeByteLength.MESSAGE_LENGTH_FIELD),
+                                    content));
+                                return;
                             } else {
-                                complete = false;
                                 currentInputStream = null;
                             }
                             break;
@@ -139,24 +144,21 @@ public class DtlsFragmentLayer extends ProtocolLayer<RecordLayerHint, DtlsHandsh
                         case CHANGE_CIPHER_SPEC:
                             currentInputStream = new HintedLayerInputStream(tempHint, this);
                             currentInputStream.extendStream(dataStream.readChunk(1));
-                            complete = true;
-                            break;
+                            return;
                         case ALERT:
                         case APPLICATION_DATA:
                         case HEARTBEAT:
                         case UNKNOWN:
                             currentInputStream = new HintedLayerInputStream(tempHint, this);
                             currentInputStream.extendStream(dataStream.readAllBytes());
-                            complete = true;
-                            break;
+                            return;
                         default:
                             LOGGER.error("Undefined record layer type");
-                            break;
+                            return;
                     }
                 }
-                // TODO check if conditions are correct
             } while (getLayerConfiguration().successRequiresMoreContainers(getLayerResult().getUsedContainers())
-                || dataStream.available() > 0 || complete == false);
+                || dataStream.available() > 0 || currentInputStream == null);
         } catch (TimeoutException E) {
             LOGGER.debug(E);
         } catch (EndOfStreamException ex) {
@@ -196,20 +198,20 @@ public class DtlsFragmentLayer extends ProtocolLayer<RecordLayerHint, DtlsHandsh
         return fragments;
     }
 
-    public DtlsHandshakeMessageFragment wrapInSingleFragment(HandshakeMessageType type, Integer messageSequence,
-        byte[] handshakeBytes) {
+    public DtlsHandshakeMessageFragment wrapInSingleFragment(TlsContext context, HandshakeMessage message,
+        boolean goingToBeSent) {
         DtlsHandshakeMessageFragment fragment = new DtlsHandshakeMessageFragment();
-        fragment.setHandshakeMessageTypeConfig(type);
-        fragment.setFragmentContentConfig(handshakeBytes);
-        // TODO find better solution
-        if (messageSequence == null) {
-            fragment.setMessageSequenceConfig(writeHandshakeMessageSequence);
-        } else {
+        fragment.setHandshakeMessageTypeConfig(message.getHandshakeMessageType());
+        byte[] messageContent = message.getSerializer(context).serializeProtocolMessageContent();
+        fragment.setFragmentContentConfig(messageContent);
+        if (message.getMessageSequence() == null) {
+            int messageSequence = goingToBeSent ? writeHandshakeMessageSequence : readHandshakeMessageSequence;
             fragment.setMessageSequenceConfig(messageSequence);
+        } else {
+            fragment.setMessageSequenceConfig(message.getMessageSequence().getValue());
         }
         fragment.setOffsetConfig(0);
-        fragment.setHandshakeMessageLengthConfig(handshakeBytes.length);
-
+        fragment.setHandshakeMessageLengthConfig(messageContent.length);
         fragment.getPreparator(context).prepare();
         byte[] completeMessage = fragment.getSerializer(context).serialize();
         fragment.setCompleteResultingMessage(completeMessage);

@@ -20,16 +20,27 @@ public class RecordLayerHint implements LayerProcessingHint {
 
     private final Integer sequenceNumber;
 
+    private final Integer messageSequence;
+
     public RecordLayerHint(ProtocolMessageType type) {
         this.type = type;
         this.epoch = null;
         this.sequenceNumber = null;
+        this.messageSequence = null;
     }
 
     public RecordLayerHint(ProtocolMessageType type, int epoch, int sequenceNumber) {
         this.type = type;
         this.epoch = epoch;
         this.sequenceNumber = sequenceNumber;
+        this.messageSequence = null;
+    }
+
+    public RecordLayerHint(ProtocolMessageType type, int messageSequence) {
+        this.type = type;
+        this.epoch = null;
+        this.sequenceNumber = null;
+        this.messageSequence = messageSequence;
     }
 
     @Override
@@ -45,6 +56,9 @@ public class RecordLayerHint implements LayerProcessingHint {
             if (this.sequenceNumber == otherHint.sequenceNumber) {
                 return true;
             }
+            if (this.messageSequence == otherHint.messageSequence) {
+                return true;
+            }
         }
         return false;
     }
@@ -52,9 +66,10 @@ public class RecordLayerHint implements LayerProcessingHint {
     @Override
     public int hashCode() {
         int hash = 3;
-        hash = 89 * hash + Objects.hashCode(this.type);
-        hash = 89 * hash + Objects.hashCode(this.epoch);
-        hash = 89 * hash + Objects.hashCode(this.sequenceNumber);
+        hash = 79 * hash + Objects.hashCode(this.type);
+        hash = 79 * hash + Objects.hashCode(this.epoch);
+        hash = 79 * hash + Objects.hashCode(this.sequenceNumber);
+        hash = 79 * hash + Objects.hashCode(this.messageSequence);
         return hash;
     }
 
@@ -68,5 +83,9 @@ public class RecordLayerHint implements LayerProcessingHint {
 
     public Integer getSequenceNumber() {
         return sequenceNumber;
+    }
+
+    public Integer getMessageSequence() {
+        return messageSequence;
     }
 }
