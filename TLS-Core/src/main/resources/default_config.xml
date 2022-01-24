@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <config>
-    <layers>TLS</layers>
+    <defaultLayerConfiguration>TLS</defaultLayerConfiguration>
     <defaultHandshakeSecret>00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00</defaultHandshakeSecret>
     <throwExceptionOnParserContextViolation>false</throwExceptionOnParserContextViolation>
     <preferredCertificateSignatureType>RSA</preferredCertificateSignatureType>

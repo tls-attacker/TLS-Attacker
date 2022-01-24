@@ -2882,7 +2882,6 @@
         <xs:sequence>
           <xs:element name="sessionList" type="session" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
           <xs:element name="keylogfile" type="keylogfile" minOccurs="0"/>
-          <xs:element name="finalSocketState" type="socketState" minOccurs="0"/>
           <xs:element name="handshakeSecret" type="xs:base64Binary" minOccurs="0"/>
           <xs:element name="clientHandshakeTrafficSecret" type="xs:base64Binary" minOccurs="0"/>
           <xs:element name="serverHandshakeTrafficSecret" type="xs:base64Binary" minOccurs="0"/>
@@ -3148,7 +3147,7 @@
 
   <xs:complexType name="config">
     <xs:all>
-      <xs:element name="layers" type="protocolLayer" minOccurs="0"/>
+      <xs:element name="defaultLayerConfiguration" type="layerConfiguration" minOccurs="0"/>
       <xs:element name="defaultHandshakeSecret" type="xs:string" minOccurs="0"/>
       <xs:element name="throwExceptionOnParserContextViolation" type="xs:boolean" minOccurs="0"/>
       <xs:element name="preferredCertificateSignatureType" type="certificateKeyType" minOccurs="0"/>
@@ -3796,7 +3795,9 @@
   <xs:complexType name="tcpContext">
     <xs:complexContent>
       <xs:extension base="layerContext">
-        <xs:sequence/>
+        <xs:sequence>
+          <xs:element name="finalSocketState" type="socketState" minOccurs="0"/>
+        </xs:sequence>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
@@ -5357,19 +5358,6 @@
     </xs:restriction>
   </xs:simpleType>
 
-  <xs:simpleType name="socketState">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="CLOSED"/>
-      <xs:enumeration value="PEER_WRITE_CLOSED"/>
-      <xs:enumeration value="UP"/>
-      <xs:enumeration value="DATA_AVAILABLE"/>
-      <xs:enumeration value="TIMEOUT"/>
-      <xs:enumeration value="SOCKET_EXCEPTION"/>
-      <xs:enumeration value="IO_EXCEPTION"/>
-      <xs:enumeration value="UNAVAILABLE"/>
-    </xs:restriction>
-  </xs:simpleType>
-
   <xs:simpleType name="pskKeyExchangeMode">
     <xs:restriction base="xs:string">
       <xs:enumeration value="PSK_KE"/>
@@ -5641,7 +5629,7 @@
     </xs:restriction>
   </xs:simpleType>
 
-  <xs:simpleType name="protocolLayer">
+  <xs:simpleType name="layerConfiguration">
     <xs:restriction base="xs:string">
       <xs:enumeration value="TLS"/>
       <xs:enumeration value="DTLS"/>
@@ -5864,6 +5852,19 @@
       <xs:enumeration value="ANONYMOUS"/>
       <xs:enumeration value="CERTIFICATE_BASED"/>
       <xs:enumeration value="PSK"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="socketState">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="CLOSED"/>
+      <xs:enumeration value="PEER_WRITE_CLOSED"/>
+      <xs:enumeration value="UP"/>
+      <xs:enumeration value="DATA_AVAILABLE"/>
+      <xs:enumeration value="TIMEOUT"/>
+      <xs:enumeration value="SOCKET_EXCEPTION"/>
+      <xs:enumeration value="IO_EXCEPTION"/>
+      <xs:enumeration value="UNAVAILABLE"/>
     </xs:restriction>
   </xs:simpleType>
 
