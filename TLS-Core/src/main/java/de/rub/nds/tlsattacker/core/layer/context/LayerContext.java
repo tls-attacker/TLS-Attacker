@@ -19,7 +19,7 @@ import de.rub.nds.tlsattacker.transport.TransportHandler;
 
 public abstract class LayerContext {
 
-    Context context;
+    private Context context;
 
     protected LayerContext(Context context) {
         this.context = context;
