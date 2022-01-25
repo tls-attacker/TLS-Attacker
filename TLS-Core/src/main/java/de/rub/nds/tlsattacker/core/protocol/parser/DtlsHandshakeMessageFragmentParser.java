@@ -28,12 +28,17 @@ public class DtlsHandshakeMessageFragmentParser extends HandshakeMessageParser<D
 
     @Override
     protected void parseHandshakeMessageContent(DtlsHandshakeMessageFragment msg) {
+        msg.setMessageContent(parseByteArrayField(msg.getFragmentLength().getValue()));
+    }
+
+    @Override
+    protected void parseMessageContent(DtlsHandshakeMessageFragment msg) {
         parseType(msg);
         parseLength(msg);
         parseMessageSequence(msg);
         parseFragmentOffset(msg);
         parseFragmentLength(msg);
-        msg.setMessageContent(parseByteArrayField(msg.getFragmentLength().getValue()));
+        parseHandshakeMessageContent(msg);
     }
 
     private void parseType(DtlsHandshakeMessageFragment msg) {
