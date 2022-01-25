@@ -44,18 +44,20 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
     @Override
     public LayerProcessingResult sendConfiguration() throws IOException {
         LayerConfiguration<ProtocolMessage> configuration = getLayerConfiguration();
-        for (ProtocolMessage message : configuration.getContainerList()) {
-            ProtocolMessagePreparator preparator = message.getPreparator(context);
-            preparator.prepare();
-            preparator.afterPrepare();
-            ProtocolMessageSerializer serializer = message.getSerializer(context);
-            byte[] serializedMessage = serializer.serialize();
-            message.setCompleteResultingMessage(serializedMessage);
-            message.getHandler(context).updateDigest(message, true);
-            message.getHandler(context).adjustContext(message);
-            getLowerLayer().sendData(new RecordLayerHint(message.getProtocolMessageType()), serializedMessage);
-            message.getHandler(context).adjustContextAfterSerialize(message);
-            addProducedContainer(message);
+        if (configuration != null && configuration.getContainerList() != null) {
+            for (ProtocolMessage message : configuration.getContainerList()) {
+                ProtocolMessagePreparator preparator = message.getPreparator(context);
+                preparator.prepare();
+                preparator.afterPrepare();
+                ProtocolMessageSerializer serializer = message.getSerializer(context);
+                byte[] serializedMessage = serializer.serialize();
+                message.setCompleteResultingMessage(serializedMessage);
+                message.getHandler(context).updateDigest(message, true);
+                message.getHandler(context).adjustContext(message);
+                getLowerLayer().sendData(new RecordLayerHint(message.getProtocolMessageType()), serializedMessage);
+                message.getHandler(context).adjustContextAfterSerialize(message);
+                addProducedContainer(message);
+            }
         }
         return getLayerResult();
     }

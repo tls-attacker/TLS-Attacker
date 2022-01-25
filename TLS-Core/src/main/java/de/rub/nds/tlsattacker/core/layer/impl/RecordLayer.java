@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
+import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
@@ -33,6 +34,7 @@ import de.rub.nds.tlsattacker.core.record.crypto.RecordDecryptor;
 import de.rub.nds.tlsattacker.core.record.crypto.RecordEncryptor;
 import de.rub.nds.tlsattacker.core.record.parser.RecordParser;
 import de.rub.nds.tlsattacker.core.record.preparator.RecordPreparator;
+import de.rub.nds.tlsattacker.core.record.serializer.RecordSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -69,7 +71,27 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
 
     @Override
     public LayerProcessingResult sendConfiguration() throws IOException {
-        // TODO Check if we still got stuff to send
+        LayerConfiguration<Record> configuration = getLayerConfiguration();
+        if (configuration != null && configuration.getContainerList() != null) {
+            for (Record record : configuration.getContainerList()) {
+                ProtocolMessageType contentType = record.getContentMessageType();
+                if (contentType == null) {
+                    contentType = ProtocolMessageType.UNKNOWN;
+                    LOGGER.warn("Sending record without a LayerProcessing hint. Using \"UNKNOWN\" as the type");
+                }
+                if (encryptor.getRecordCipher(writeEpoch).getState().getVersion().isDTLS()) {
+                    record.setEpoch(writeEpoch);
+                }
+                RecordPreparator preparator =
+                    record.getRecordPreparator(context.getChooser(), encryptor, compressor, contentType);
+                preparator.prepare();
+                RecordSerializer serializer = record.getRecordSerializer();
+                byte[] serializedMessage = serializer.serialize();
+                record.setCompleteRecordBytes(serializedMessage);
+                getLowerLayer().sendData(null, serializedMessage);
+                addProducedContainer(record);
+            }
+        }
         return getLayerResult();
     }
 
@@ -100,7 +122,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
                 record.getRecordPreparator(context.getChooser(), encryptor, compressor, contentType);
             preparator.prepare();
             try {
-                byte[] recordBytes = record.getSerializer().serialize();
+                byte[] recordBytes = record.getRecordSerializer().serialize();
                 record.setCompleteRecordBytes(recordBytes);
                 stream.write(record.getCompleteRecordBytes().getValue());
             } catch (IOException ex) {
@@ -133,13 +155,8 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
             } else {
                 currentHint = new RecordLayerHint(record.getContentMessageType());
             }
-            if (desiredHint == null) {
+            if (desiredHint == null || currentHint.equals(desiredHint)) {
                 currentInputStream = new HintedLayerInputStream(currentHint, this);
-                currentInputStream.extendStream(record.getCleanProtocolMessageBytes().getValue());
-            } else if (currentHint.equals(desiredHint)) {
-                if (currentInputStream == null) {
-                    currentInputStream = new HintedLayerInputStream(currentHint, this);
-                }
                 currentInputStream.extendStream(record.getCleanProtocolMessageBytes().getValue());
             } else {
                 nextInputStream = new HintedLayerInputStream(currentHint, this);
@@ -195,7 +212,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
                 getCompressor(), record.getContentMessageType());
             preparator.encrypt();
             try {
-                byte[] recordBytes = record.getSerializer().serialize();
+                byte[] recordBytes = record.getRecordSerializer().serialize();
                 record.setCompleteRecordBytes(recordBytes);
                 stream.write(record.getCompleteRecordBytes().getValue());
             } catch (IOException ex) {

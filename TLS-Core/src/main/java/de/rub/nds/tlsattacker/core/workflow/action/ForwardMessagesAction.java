@@ -140,6 +140,9 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
         LayerStack layerStack = receiveFromContext.getLayerStack();
         List<LayerConfiguration> layerConfigurationList = new LinkedList<>();
         layerConfigurationList.add(new SpecificContainerLayerConfiguration(messages));
+        if (receiveFromContext.getChooser().getSelectedProtocolVersion().isDTLS()) {
+            layerConfigurationList.add(new SpecificContainerLayerConfiguration((List) null));
+        }
         layerConfigurationList.add(new SpecificContainerLayerConfiguration((List) null));
         layerConfigurationList.add(new SpecificContainerLayerConfiguration((List) null));
         LayerStackProcessingResult processingResult;
@@ -147,6 +150,10 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
             processingResult = layerStack.receiveData(layerConfigurationList);
             receivedMessages =
                 new ArrayList<>(processingResult.getResultForLayer(ImplementedLayers.MESSAGE).getUsedContainers());
+            if (receiveFromContext.getChooser().getSelectedProtocolVersion().isDTLS()) {
+                receivedFragments = new ArrayList<>(
+                    processingResult.getResultForLayer(ImplementedLayers.DTLS_FRAGMENT).getUsedContainers());
+            }
             // index in result
             receivedRecords =
                 new ArrayList<>(processingResult.getResultForLayer(ImplementedLayers.RECORD).getUsedContainers());
@@ -182,11 +189,18 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
             LayerStack layerStack = forwardToCtx.getLayerStack();
             List<LayerConfiguration> layerConfigurationList = new LinkedList<>();
             layerConfigurationList.add(new SpecificContainerLayerConfiguration(receivedMessages));
+            if (forwardToCtx.getChooser().getSelectedProtocolVersion().isDTLS()) {
+                layerConfigurationList.add(new SpecificContainerLayerConfiguration(receivedFragments));
+            }
             layerConfigurationList.add(new SpecificContainerLayerConfiguration(receivedRecords));
             layerConfigurationList.add(new SpecificContainerLayerConfiguration((List) null));
             LayerStackProcessingResult processingResult = layerStack.sendData(layerConfigurationList);
             sendMessages =
                 new ArrayList<>(processingResult.getResultForLayer(ImplementedLayers.MESSAGE).getUsedContainers());
+            if (forwardToCtx.getChooser().getSelectedProtocolVersion().isDTLS()) {
+                sendFragments = new ArrayList<>(
+                    processingResult.getResultForLayer(ImplementedLayers.DTLS_FRAGMENT).getUsedContainers());
+            }
             sendRecords =
                 new ArrayList<>(processingResult.getResultForLayer(ImplementedLayers.RECORD).getUsedContainers());
 

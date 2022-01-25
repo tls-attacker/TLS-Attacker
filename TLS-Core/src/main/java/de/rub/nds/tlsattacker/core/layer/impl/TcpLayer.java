@@ -37,7 +37,7 @@ public class TcpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> 
     @Override
     public LayerProcessingResult sendConfiguration() throws IOException {
         LayerConfiguration<DataContainer> configuration = getLayerConfiguration();
-        if (configuration.getContainerList() != null) {
+        if (configuration != null && configuration.getContainerList() != null) {
             for (DataContainer container : configuration.getContainerList()) {
                 // TODO Send container data
             }
