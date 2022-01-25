@@ -59,5 +59,5 @@ public class DtlsHandshakeMessageFragmentParser extends HandshakeMessageParser<D
     private void parseMessageSequence(DtlsHandshakeMessageFragment msg) {
         msg.setMessageSequence(parseIntField(HandshakeByteLength.DTLS_MESSAGE_SEQUENCE));
         LOGGER.debug("MessageSequence:" + msg.getMessageSequence().getValue());
-    }    
+    }
 }

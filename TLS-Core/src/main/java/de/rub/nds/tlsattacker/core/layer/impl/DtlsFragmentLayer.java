@@ -125,7 +125,6 @@ public class DtlsFragmentLayer extends ProtocolLayer<RecordLayerHint, DtlsHandsh
                 } else if (dataStream.getHint() instanceof RecordLayerHint) {
                     RecordLayerHint tempHint = (RecordLayerHint) dataStream.getHint();
                     if (tempHint.getType() == ProtocolMessageType.HANDSHAKE) {
-                        byte[] payload = dataStream.readChunk(dataStream.available());
                         DtlsHandshakeMessageFragment fragment = new DtlsHandshakeMessageFragment();
                         fragment.setEpoch(tempHint.getEpoch());
                         DtlsHandshakeMessageFragmentParser parser = fragment.getParser(context,

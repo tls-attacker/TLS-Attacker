@@ -85,7 +85,6 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
                 RecordPreparator preparator =
                     record.getRecordPreparator(context.getChooser(), encryptor, compressor, contentType);
                 preparator.prepare();
-                preparator.afterPrepare();
                 RecordSerializer serializer = record.getRecordSerializer();
                 byte[] serializedMessage = serializer.serialize();
                 record.setCompleteRecordBytes(serializedMessage);
@@ -122,7 +121,6 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
             RecordPreparator preparator =
                 record.getRecordPreparator(context.getChooser(), encryptor, compressor, contentType);
             preparator.prepare();
-            preparator.afterPrepare();
             try {
                 byte[] recordBytes = record.getRecordSerializer().serialize();
                 record.setCompleteRecordBytes(recordBytes);
