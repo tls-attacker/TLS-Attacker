@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.layer.impl;
 
 import de.rub.nds.tlsattacker.core.layer.DataContainer;
+import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
@@ -35,7 +36,12 @@ public class UdpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> 
 
     @Override
     public LayerProcessingResult sendConfiguration() throws IOException {
-        // TODO
+        LayerConfiguration<DataContainer> configuration = getLayerConfiguration();
+        if (configuration.getContainerList() != null) {
+            for (DataContainer container : configuration.getContainerList()) {
+                // TODO Send container data
+            }
+        }
         return getLayerResult();
     }
 

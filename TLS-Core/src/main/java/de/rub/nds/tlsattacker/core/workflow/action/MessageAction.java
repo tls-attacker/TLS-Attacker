@@ -228,18 +228,28 @@ public abstract class MessageAction extends ConnectionBoundAction {
     }
 
     private void setContainers(LayerStackProcessingResult processingResults) {
-        messages = new ArrayList<>(processingResults.getResultForLayer(ImplementedLayers.MESSAGE).getUsedContainers());
-        // TODO add fragments?
-        // fragments = new
-        // ArrayList<>(processingResults.getResultForLayer(ImplementedLayers.DTLS_FRAGMENT).getUsedContainers());
-        records = new ArrayList<>(processingResults.getResultForLayer(ImplementedLayers.RECORD).getUsedContainers());
+        if (processingResults.getResultForLayer(ImplementedLayers.MESSAGE) != null) {
+            messages =
+                new ArrayList<>(processingResults.getResultForLayer(ImplementedLayers.MESSAGE).getUsedContainers());
+        }
+        if (processingResults.getResultForLayer(ImplementedLayers.DTLS_FRAGMENT) != null) {
+            fragments = new ArrayList<>(
+                processingResults.getResultForLayer(ImplementedLayers.DTLS_FRAGMENT).getUsedContainers());
+        }
+        if (processingResults.getResultForLayer(ImplementedLayers.RECORD) != null) {
+            records =
+                new ArrayList<>(processingResults.getResultForLayer(ImplementedLayers.RECORD).getUsedContainers());
+        }
     }
 
     protected void receiveTill(TlsContext tlsContext, List<ProtocolMessage> protocolMessagesToSend,
-        List<Record> recordsToSend) {
+        List<DtlsHandshakeMessageFragment> fragmentsToSend, List<Record> recordsToSend) {
         LayerStack layerStack = tlsContext.getLayerStack();
         List<LayerConfiguration> layerConfigurationList = new LinkedList<>();
         layerConfigurationList.add(new SpecificContainerLayerConfiguration(protocolMessagesToSend));
+        if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS()) {
+            layerConfigurationList.add(new SpecificContainerLayerConfiguration(fragmentsToSend));
+        }
         layerConfigurationList.add(new SpecificContainerLayerConfiguration(recordsToSend));
         layerConfigurationList.add(new SpecificContainerLayerConfiguration((List) null));
         LayerStackProcessingResult processingResult;
