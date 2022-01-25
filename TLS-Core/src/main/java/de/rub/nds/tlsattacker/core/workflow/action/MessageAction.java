@@ -14,7 +14,8 @@ import de.rub.nds.tlsattacker.core.constants.MessageActionDirection;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerStack;
 import de.rub.nds.tlsattacker.core.layer.LayerStackProcessingResult;
-import de.rub.nds.tlsattacker.core.layer.SpecificContainerLayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.SpecificReceiveLayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
@@ -194,12 +195,12 @@ public abstract class MessageAction extends ConnectionBoundAction {
         List<DtlsHandshakeMessageFragment> fragmentsToSend, List<Record> recordsToSend) throws IOException {
         LayerStack layerStack = tlsContext.getLayerStack();
         List<LayerConfiguration> layerConfigurationList = new LinkedList<>();
-        layerConfigurationList.add(new SpecificContainerLayerConfiguration(protocolMessagesToSend));
+        layerConfigurationList.add(new SpecificSendLayerConfiguration(protocolMessagesToSend));
         if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS()) {
-            layerConfigurationList.add(new SpecificContainerLayerConfiguration(fragmentsToSend));
+            layerConfigurationList.add(new SpecificSendLayerConfiguration(fragmentsToSend));
         }
-        layerConfigurationList.add(new SpecificContainerLayerConfiguration(recordsToSend));
-        layerConfigurationList.add(new SpecificContainerLayerConfiguration((List) null));
+        layerConfigurationList.add(new SpecificSendLayerConfiguration(recordsToSend));
+        layerConfigurationList.add(new SpecificSendLayerConfiguration((List) null));
         LayerStackProcessingResult processingResult = layerStack.sendData(layerConfigurationList);
         setContainers(processingResult);
     }
@@ -208,12 +209,12 @@ public abstract class MessageAction extends ConnectionBoundAction {
         List<DtlsHandshakeMessageFragment> fragmentsToReceive, List<Record> recordsToReceive) {
         LayerStack layerStack = tlsContext.getLayerStack();
         List<LayerConfiguration> layerConfigurationList = new LinkedList<>();
-        layerConfigurationList.add(new SpecificContainerLayerConfiguration(protocolMessagesToReceive));
+        layerConfigurationList.add(new SpecificReceiveLayerConfiguration(protocolMessagesToReceive));
         if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS()) {
-            layerConfigurationList.add(new SpecificContainerLayerConfiguration(fragmentsToReceive));
+            layerConfigurationList.add(new SpecificReceiveLayerConfiguration(fragmentsToReceive));
         }
-        layerConfigurationList.add(new SpecificContainerLayerConfiguration(recordsToReceive));
-        layerConfigurationList.add(new SpecificContainerLayerConfiguration((List) null));
+        layerConfigurationList.add(new SpecificReceiveLayerConfiguration(recordsToReceive));
+        layerConfigurationList.add(new SpecificReceiveLayerConfiguration((List) null));
         LayerStackProcessingResult processingResult;
         try {
             processingResult = layerStack.receiveData(layerConfigurationList);
@@ -246,12 +247,12 @@ public abstract class MessageAction extends ConnectionBoundAction {
         List<DtlsHandshakeMessageFragment> fragmentsToSend, List<Record> recordsToSend) {
         LayerStack layerStack = tlsContext.getLayerStack();
         List<LayerConfiguration> layerConfigurationList = new LinkedList<>();
-        layerConfigurationList.add(new SpecificContainerLayerConfiguration(protocolMessagesToSend));
+        layerConfigurationList.add(new SpecificReceiveLayerConfiguration(protocolMessagesToSend));
         if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS()) {
-            layerConfigurationList.add(new SpecificContainerLayerConfiguration(fragmentsToSend));
+            layerConfigurationList.add(new SpecificReceiveLayerConfiguration(fragmentsToSend));
         }
-        layerConfigurationList.add(new SpecificContainerLayerConfiguration(recordsToSend));
-        layerConfigurationList.add(new SpecificContainerLayerConfiguration((List) null));
+        layerConfigurationList.add(new SpecificReceiveLayerConfiguration(recordsToSend));
+        layerConfigurationList.add(new SpecificReceiveLayerConfiguration((List) null));
         LayerStackProcessingResult processingResult;
         try {
             processingResult = layerStack.receiveData(layerConfigurationList);

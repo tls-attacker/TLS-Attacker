@@ -27,9 +27,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class DtlsHandshakeMessageFragment extends HandshakeMessage {
 
     @ModifiableVariableProperty
-    private ModifiableByteArray content;
-
-    @ModifiableVariableProperty
     private ModifiableInteger fragmentOffset = null;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
@@ -149,18 +146,6 @@ public class DtlsHandshakeMessageFragment extends HandshakeMessage {
 
     public void setHandshakeMessageLengthConfig(int handshakeMessageLengthConfig) {
         this.handshakeMessageLengthConfig = handshakeMessageLengthConfig;
-    }
-
-    public ModifiableByteArray getContent() {
-        return content;
-    }
-
-    public void setContent(ModifiableByteArray content) {
-        this.content = content;
-    }
-
-    public void setContent(byte[] content) {
-        this.content = ModifiableVariableFactory.safelySetValue(this.content, content);
     }
 
     public ModifiableInteger getFragmentOffset() {

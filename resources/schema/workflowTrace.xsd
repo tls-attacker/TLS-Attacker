@@ -1036,6 +1036,7 @@
           <xs:element name="length" type="modifiableInteger" minOccurs="0"/>
           <xs:element name="includeInDigest" type="modifiableBoolean" minOccurs="0"/>
           <xs:element name="retransmission" type="modifiableBoolean" minOccurs="0"/>
+          <xs:element name="messageContent" type="modifiableByteArray" minOccurs="0"/>
           <xs:element name="extensions" minOccurs="0">
             <xs:complexType>
               <xs:sequence>
@@ -1156,9 +1157,9 @@
       <xs:extension base="modifiableVariableHolder">
         <xs:sequence>
           <xs:element name="extensionBytes" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="extensionContent" type="modifiableByteArray" minOccurs="0"/>
           <xs:element name="extensionLength" type="modifiableInteger" minOccurs="0"/>
           <xs:element name="extensionType" type="modifiableByteArray" minOccurs="0"/>
-          <xs:element name="payloadBytes" type="modifiableByteArray" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -1883,7 +1884,6 @@
     <xs:complexContent>
       <xs:extension base="handshakeMessage">
         <xs:sequence>
-          <xs:element name="content" type="modifiableByteArray" minOccurs="0"/>
           <xs:element name="fragmentOffset" type="modifiableInteger" minOccurs="0"/>
           <xs:element name="fragmentLength" type="modifiableInteger" minOccurs="0"/>
           <xs:element name="epoch" type="modifiableInteger" minOccurs="0"/>

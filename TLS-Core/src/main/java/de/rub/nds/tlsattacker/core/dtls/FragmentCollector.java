@@ -73,7 +73,8 @@ public class FragmentCollector {
                 interpreted = false;
                 retransmission = true;
             }
-            fragmentStream.insertByteArray(fragment.getContent().getValue(), fragment.getFragmentOffset().getValue());
+            fragmentStream.insertByteArray(fragment.getMessageContent().getValue(),
+                fragment.getFragmentOffset().getValue());
         } else {
             throw new IllegalDtlsFragmentException("Tried to insert an illegal DTLS fragment.");
         }
@@ -111,7 +112,7 @@ public class FragmentCollector {
     public boolean isFitting(DtlsHandshakeMessageFragment fragment) {
         if (fragment.getType().getValue() == type && fragment.getMessageSequence().getValue() == this.messageSeq
             && fragment.getLength().getValue() == this.messageLength) {
-            return fragmentStream.canInsertByteArray(fragment.getContent().getValue(),
+            return fragmentStream.canInsertByteArray(fragment.getMessageContent().getValue(),
                 fragment.getFragmentOffset().getValue());
         } else {
             return false;
@@ -126,7 +127,7 @@ public class FragmentCollector {
      * @return          True if the fragment would overwrite paste messages
      */
     public boolean isFragmentOverwritingContent(DtlsHandshakeMessageFragment fragment) {
-        return !fragmentStream.canInsertByteArray(fragment.getContent().getValue(),
+        return !fragmentStream.canInsertByteArray(fragment.getMessageContent().getValue(),
             fragment.getFragmentOffset().getValue());
     }
 
@@ -145,7 +146,7 @@ public class FragmentCollector {
         message.setMessageSequence(messageSeq);
         message.setFragmentOffset(0);
         message.setFragmentLength(messageLength);
-        message.setContent(getCombinedContent());
+        message.setMessageContent(getCombinedContent());
         DtlsHandshakeMessageFragmentSerializer serializer = new DtlsHandshakeMessageFragmentSerializer(message, null);
         message.setCompleteResultingMessage(serializer.serialize());
         message.setRetransmission(retransmission);

@@ -147,6 +147,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
         int length = handshakeStream.readInt(HandshakeByteLength.MESSAGE_LENGTH_FIELD);
         handshakeMessage.setLength(length);
         byte[] payload = handshakeStream.readChunk(length);
+        handshakeMessage.setMessageContent(payload);
         handshakeMessage.setCompleteResultingMessage(ArrayConverter.concatenate(new byte[] { type },
             ArrayConverter.intToBytes(length, HandshakeByteLength.MESSAGE_LENGTH_FIELD), payload));
         Parser parser = handshakeMessage.getParser(context, new ByteArrayInputStream(payload));

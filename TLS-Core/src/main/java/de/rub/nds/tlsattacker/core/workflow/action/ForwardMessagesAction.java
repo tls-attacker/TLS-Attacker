@@ -15,10 +15,10 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
-import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.LayerStack;
 import de.rub.nds.tlsattacker.core.layer.LayerStackProcessingResult;
-import de.rub.nds.tlsattacker.core.layer.SpecificContainerLayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.SpecificReceiveLayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageHandler;
@@ -139,12 +139,12 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
         LOGGER.debug("Receiving Messages...");
         LayerStack layerStack = receiveFromContext.getLayerStack();
         List<LayerConfiguration> layerConfigurationList = new LinkedList<>();
-        layerConfigurationList.add(new SpecificContainerLayerConfiguration(messages));
+        layerConfigurationList.add(new SpecificReceiveLayerConfiguration(messages));
         if (receiveFromContext.getChooser().getSelectedProtocolVersion().isDTLS()) {
-            layerConfigurationList.add(new SpecificContainerLayerConfiguration((List) null));
+            layerConfigurationList.add(new SpecificReceiveLayerConfiguration((List) null));
         }
-        layerConfigurationList.add(new SpecificContainerLayerConfiguration((List) null));
-        layerConfigurationList.add(new SpecificContainerLayerConfiguration((List) null));
+        layerConfigurationList.add(new SpecificReceiveLayerConfiguration((List) null));
+        layerConfigurationList.add(new SpecificReceiveLayerConfiguration((List) null));
         LayerStackProcessingResult processingResult;
         try {
             processingResult = layerStack.receiveData(layerConfigurationList);
@@ -188,12 +188,12 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
         try {
             LayerStack layerStack = forwardToCtx.getLayerStack();
             List<LayerConfiguration> layerConfigurationList = new LinkedList<>();
-            layerConfigurationList.add(new SpecificContainerLayerConfiguration(receivedMessages));
+            layerConfigurationList.add(new SpecificSendLayerConfiguration(receivedMessages));
             if (forwardToCtx.getChooser().getSelectedProtocolVersion().isDTLS()) {
-                layerConfigurationList.add(new SpecificContainerLayerConfiguration(receivedFragments));
+                layerConfigurationList.add(new SpecificSendLayerConfiguration(receivedFragments));
             }
-            layerConfigurationList.add(new SpecificContainerLayerConfiguration(receivedRecords));
-            layerConfigurationList.add(new SpecificContainerLayerConfiguration((List) null));
+            layerConfigurationList.add(new SpecificSendLayerConfiguration(receivedRecords));
+            layerConfigurationList.add(new SpecificSendLayerConfiguration((List) null));
             LayerStackProcessingResult processingResult = layerStack.sendData(layerConfigurationList);
             sendMessages =
                 new ArrayList<>(processingResult.getResultForLayer(ImplementedLayers.MESSAGE).getUsedContainers());

@@ -39,7 +39,7 @@ public abstract class HandshakeMessageSerializer<T extends HandshakeMessage> ext
     /**
      * Writes the Type of the HandshakeMessage into the final byte[]
      */
-    private void writeType() {
+    protected void writeType() {
         appendByte(message.getType().getValue());
         LOGGER.debug("Type: " + message.getType().getValue());
     }
@@ -47,16 +47,22 @@ public abstract class HandshakeMessageSerializer<T extends HandshakeMessage> ext
     /**
      * Writes the message length of the HandshakeMessage into the final byte[]
      */
-    private void writeLength() {
+    protected void writeLength() {
         appendInt(message.getLength().getValue(), HandshakeByteLength.MESSAGE_LENGTH_FIELD);
         LOGGER.debug("Length: " + message.getLength().getValue());
+    }
+
+    private void writeContent() {
+        appendBytes(message.getMessageContent().getValue());
+        LOGGER.debug(
+            "HandshakeMessage content: " + ArrayConverter.bytesToHexString(message.getMessageContent().getValue()));
     }
 
     @Override
     protected byte[] serializeBytes() {
         writeType();
         writeLength();
-        serializeProtocolMessageContent();
+        writeContent();
         return getAlreadySerialized();
     }
 

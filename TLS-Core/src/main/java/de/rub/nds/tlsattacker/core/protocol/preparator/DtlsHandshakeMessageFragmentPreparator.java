@@ -29,11 +29,11 @@ public class DtlsHandshakeMessageFragmentPreparator extends HandshakeMessagePrep
     @Override
     protected void prepareHandshakeMessageContents() {
         prepareHandshakeType(msg);
-        msg.setContent(msg.getFragmentContentConfig());
+        msg.setMessageContent(msg.getFragmentContentConfig());
         msg.setLength(msg.getHandshakeMessageLengthConfig());
         msg.setMessageSequence(msg.getMessageSequenceConfig());
         msg.setFragmentOffset(msg.getOffsetConfig());
-        msg.setFragmentLength(msg.getContent().getValue().length);
+        msg.setFragmentLength(msg.getMessageContent().getValue().length);
     }
 
     private void prepareHandshakeType(DtlsHandshakeMessageFragment message) {
@@ -49,8 +49,9 @@ public class DtlsHandshakeMessageFragmentPreparator extends HandshakeMessagePrep
 
     @Override
     protected void prepareMessageLength(int length) {
-        LOGGER.debug("Setting length of DtlsHandshakeMessage fragment to: " + msg.getContent().getValue().length);
-        this.msg.setLength(msg.getContent().getValue().length);
+        LOGGER
+            .debug("Setting length of DtlsHandshakeMessage fragment to: " + msg.getMessageContent().getValue().length);
+        this.msg.setLength(msg.getMessageContent().getValue().length);
     }
 
 }

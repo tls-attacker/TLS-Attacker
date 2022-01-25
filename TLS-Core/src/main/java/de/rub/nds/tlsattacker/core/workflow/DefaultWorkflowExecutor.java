@@ -89,6 +89,13 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
         if (config.isWorkflowExecutorShouldClose()) {
             closeConnection();
         }
+
+        if (state.getWorkflowTrace().executedAsPlanned()) {
+            LOGGER.info("Workflow executed as planned.");
+        } else {
+            LOGGER.info("Workflow was not executed as planned.");
+        }
+
         if (config.isResetWorkflowTracesBeforeSaving()) {
             state.getWorkflowTrace().reset();
         }

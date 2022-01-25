@@ -26,9 +26,9 @@ import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.hints.RecordLayerHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
-import de.rub.nds.tlsattacker.core.protocol.Parser;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
+import de.rub.nds.tlsattacker.core.protocol.parser.DtlsHandshakeMessageFragmentParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.DtlsHandshakeMessageFragmentPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.DtlsHandshakeMessageFragmentSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
@@ -125,9 +125,10 @@ public class DtlsFragmentLayer extends ProtocolLayer<RecordLayerHint, DtlsHandsh
                 } else if (dataStream.getHint() instanceof RecordLayerHint) {
                     RecordLayerHint tempHint = (RecordLayerHint) dataStream.getHint();
                     if (tempHint.getType() == ProtocolMessageType.HANDSHAKE) {
+                        byte[] payload = dataStream.readChunk(dataStream.available());
                         DtlsHandshakeMessageFragment fragment = new DtlsHandshakeMessageFragment();
                         fragment.setEpoch(tempHint.getEpoch());
-                        Parser parser = fragment.getParser(context,
+                        DtlsHandshakeMessageFragmentParser parser = fragment.getParser(context,
                             new ByteArrayInputStream(dataStream.readChunk(dataStream.available())));
                         parser.parse(fragment);
                         fragment.setCompleteResultingMessage(fragment.getSerializer(context).serialize());
@@ -142,7 +143,7 @@ public class DtlsFragmentLayer extends ProtocolLayer<RecordLayerHint, DtlsHandsh
                                 new RecordLayerHint(uninterpretedMessageFragment.getProtocolMessageType(),
                                     uninterpretedMessageFragment.getMessageSequence().getValue());
                             byte type = uninterpretedMessageFragment.getType().getValue();
-                            byte[] content = uninterpretedMessageFragment.getContent().getValue();
+                            byte[] content = uninterpretedMessageFragment.getMessageContent().getValue();
                             byte[] message = ArrayConverter.concatenate(new byte[] { type },
                                 ArrayConverter.intToBytes(content.length, HandshakeByteLength.MESSAGE_LENGTH_FIELD),
                                 content);
