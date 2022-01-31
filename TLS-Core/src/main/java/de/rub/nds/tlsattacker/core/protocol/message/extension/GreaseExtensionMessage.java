@@ -99,10 +99,6 @@ public class GreaseExtensionMessage extends ExtensionMessage<GreaseExtensionMess
         return type;
     }
 
-    public void setType(ExtensionType type) {
-        this.type = type;
-    }
-
     @Override
     public GreaseExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
         return null;

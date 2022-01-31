@@ -69,11 +69,6 @@ public class HttpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer>
     }
 
     @Override
-    public HintedLayerInputStream getDataStream() {
-        return new HintedLayerInputStream(null, this);
-    }
-
-    @Override
     public LayerProcessingResult receiveData() throws IOException {
         throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
         // Tools | Templates.

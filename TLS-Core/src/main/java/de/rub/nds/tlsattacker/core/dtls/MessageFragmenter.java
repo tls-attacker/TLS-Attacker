@@ -95,38 +95,6 @@ public class MessageFragmenter {
         return fragments;
     }
 
-    public static byte[] prepareMessage(ProtocolMessage message, boolean withPrepare, TlsContext context) {
-        if (withPrepare) {
-            Preparator<ProtocolMessage> preparator = message.getPreparator(context);
-            preparator.prepare();
-            preparator.afterPrepare();
-            Serializer<ProtocolMessage> serializer = message.getSerializer(context);
-            byte[] completeMessage = serializer.serialize();
-            message.setCompleteResultingMessage(completeMessage);
-        }
-        try {
-            if (message.getAdjustContext()) {
-                if (context.getConfig().getDefaultSelectedProtocolVersion().isDTLS()
-                    && (message instanceof HandshakeMessage)
-                    && !((HandshakeMessage) message).isDtlsHandshakeMessageFragment()) {
-                    context.increaseDtlsWriteHandshakeMessageSequence();
-                }
-            }
-
-            ProtocolMessageHandler handler = message.getHandler(context);
-            handler.updateDigest(message);
-            if (message.getAdjustContext()) {
-
-                message.getHandler(context).adjustContext(message);
-            }
-        } catch (AdjustmentException e) {
-            LOGGER.warn("Could not adjust TLSContext");
-            LOGGER.debug(e);
-        }
-
-        return message.getCompleteResultingMessage().getValue();
-    }
-
     private static List<DtlsHandshakeMessageFragment> generateFragments(HandshakeMessage message, byte[] handshakeBytes,
         List<DtlsHandshakeMessageFragment> fragments, TlsContext context) {
         int currentOffset = 0;
@@ -150,7 +118,6 @@ public class MessageFragmenter {
             fragment.setMessageSequenceConfig(sequence);
             fragment.setOffsetConfig(currentOffset);
             fragment.setHandshakeMessageLengthConfig(handshakeBytes.length);
-            prepareMessage(message, true, context);
             currentOffset += fragmentBytes.length;
         }
 
