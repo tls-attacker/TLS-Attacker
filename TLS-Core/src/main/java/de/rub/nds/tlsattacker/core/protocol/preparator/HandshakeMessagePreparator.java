@@ -66,7 +66,7 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
     @Override
     protected void prepareProtocolMessageContents() {
         if (chooser.getSelectedProtocolVersion().isDTLS()) {
-            message.setMessageSequence(chooser.getContext().getDtlsWriteHandshakeMessageSequence());
+            message.setMessageSequence(chooser.getContext().getTlsContext().getDtlsWriteHandshakeMessageSequence());
         }
         prepareHandshakeMessageContents();
         prepareEncapsulatingFields();
