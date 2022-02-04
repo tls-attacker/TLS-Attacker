@@ -31,7 +31,7 @@ public class KeyShareCalculator {
     public static byte[] createPublicKey(NamedGroup group, BigInteger privateKey, ECPointFormat pointFormat) {
         if (group.isCurve() || group.isGrease()) {
             EllipticCurve curve = CurveFactory.getCurve(group);
-            if (group.isStandardCurve()) {
+            if (group.isStandardCurve() || group.isGrease()) {
                 Point publicKey = curve.mult(privateKey, curve.getBasePoint());
                 return PointFormatter.formatToByteArray(group, publicKey, pointFormat);
             } else {
