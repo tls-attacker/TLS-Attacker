@@ -55,7 +55,7 @@ public class SessionTicketTLSExtensionParser extends ExtensionParser<SessionTick
         msg.setSessionTicket(ticket);
         // only parse if the extension indicates data
         if (msg.getExtensionLength().getValue() > 0) {
-            SessionTicketParser ticketParser = new SessionTicketParser(0, msg.getPayloadBytes().getValue(),
+            SessionTicketParser ticketParser = new SessionTicketParser(0, msg.getExtensionContent().getValue(),
                 msg.getSessionTicket(), configTicketKeyName, configCipherAlgorithm, configMacAlgorithm);
             ticketParser.parse(ticket);
         }

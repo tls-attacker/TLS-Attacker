@@ -24,8 +24,7 @@ import org.junit.Test;
 
 public class CertificateStatusRequestV2ExtensionSerializerTest {
 
-    private final byte[] expectedBytes =
-        ArrayConverter.hexStringToByteArray("00110013001101000E0007000501020304050003010203");
+    private final byte[] expectedBytes = ArrayConverter.hexStringToByteArray("001101000E0007000501020304050003010203");
     private final int reqListLength = 0x11;
     private final int extensionLength = 0x13;
     private final ExtensionType type = ExtensionType.STATUS_REQUEST_V2;
@@ -55,6 +54,6 @@ public class CertificateStatusRequestV2ExtensionSerializerTest {
         CertificateStatusRequestV2ExtensionSerializer serializer =
             new CertificateStatusRequestV2ExtensionSerializer(msg);
 
-        assertArrayEquals(expectedBytes, serializer.serialize());
+        assertArrayEquals(expectedBytes, serializer.serializeExtensionContent());
     }
 }

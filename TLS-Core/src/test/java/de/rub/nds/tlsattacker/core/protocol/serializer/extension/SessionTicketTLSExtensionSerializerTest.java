@@ -9,10 +9,13 @@
 
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
+import de.rub.nds.modifiablevariable.util.Modifiable;
+import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.SessionTicketTLSExtensionParserTest;
 import java.util.Collection;
+import org.cryptomator.siv.org.bouncycastle.util.Arrays;
 import static org.junit.Assert.assertArrayEquals;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,7 +31,8 @@ public class SessionTicketTLSExtensionSerializerTest {
      */
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return SessionTicketTLSExtensionParserTest.generateData();
+        return java.util.Arrays
+            .asList(new Object[][] { { ExtensionType.SESSION_TICKET, 0, new byte[0], new byte[0] } });
     }
 
     private final ExtensionType extensionType;
@@ -44,10 +48,9 @@ public class SessionTicketTLSExtensionSerializerTest {
      * @param extensionLength
      * @param sessionTicket
      * @param expectedBytes
-     * @param startParsing
      */
     public SessionTicketTLSExtensionSerializerTest(ExtensionType extensionType, int extensionLength,
-        byte[] sessionTicket, byte[] expectedBytes, int startParsing) {
+        byte[] sessionTicket, byte[] expectedBytes) {
         this.extensionType = extensionType;
         this.extensionLength = extensionLength;
         this.sessionTicket = sessionTicket;
@@ -62,11 +65,10 @@ public class SessionTicketTLSExtensionSerializerTest {
         message = new SessionTicketTLSExtensionMessage();
         message.setExtensionType(extensionType.getValue());
         message.setExtensionLength(extensionLength);
-        message.getSessionTicket().setIdentity(sessionTicket);
-
+        message.getSessionTicket().setIdentity(Modifiable.explicit(sessionTicket));
         SessionTicketTLSExtensionSerializer serializer = new SessionTicketTLSExtensionSerializer(message);
 
-        assertArrayEquals(expectedBytes, serializer.serialize());
+        assertArrayEquals(expectedBytes, serializer.serializeExtensionContent());
     }
 
 }

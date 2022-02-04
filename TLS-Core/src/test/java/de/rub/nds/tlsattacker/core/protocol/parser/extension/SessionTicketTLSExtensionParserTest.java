@@ -33,7 +33,7 @@ public class SessionTicketTLSExtensionParserTest {
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] {
-            { ExtensionType.SESSION_TICKET, 0, new byte[0], ArrayConverter.hexStringToByteArray("00230000"), 0 } });
+            { ExtensionType.SESSION_TICKET, 0, new byte[0], ArrayConverter.hexStringToByteArray("00350000"), 0 } });
     }
 
     private final ExtensionType extensionType;

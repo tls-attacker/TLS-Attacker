@@ -12,6 +12,7 @@ package de.rub.nds.tlsattacker.core.protocol.serializer;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageSerializer;
+import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -52,11 +53,25 @@ public abstract class HandshakeMessageSerializer<T extends HandshakeMessage> ext
         LOGGER.debug("Length: " + message.getLength().getValue());
     }
 
+    private void writeContent() {
+        // content is ambiguous for DTLS
+        if (message instanceof DtlsHandshakeMessageFragment) {
+            DtlsHandshakeMessageFragment dtlsFragment = (DtlsHandshakeMessageFragment) message;
+            appendBytes(dtlsFragment.getContent().getValue());
+            LOGGER.debug(
+                "DTLS fragment content: " + ArrayConverter.bytesToHexString(dtlsFragment.getContent().getValue()));
+        } else {
+            appendBytes(message.getMessageContent().getValue());
+            LOGGER.debug(
+                "HandshakeMessage content: " + ArrayConverter.bytesToHexString(message.getMessageContent().getValue()));
+        }
+    }
+
     @Override
     protected byte[] serializeBytes() {
         writeType();
         writeLength();
-        serializeProtocolMessageContent();
+        writeContent();
         return getAlreadySerialized();
     }
 

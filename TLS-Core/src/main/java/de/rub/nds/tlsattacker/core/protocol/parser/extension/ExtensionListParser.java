@@ -49,7 +49,7 @@ public class ExtensionListParser extends Parser<List<ExtensionMessage>> {
             ExtensionMessage extension = ExtensionFactory.getExtension(extensionType);
             extension.setExtensionType(typeBytes);
             extension.setExtensionLength(length);
-            extension.setPayloadBytes(extensionPayload);
+            extension.setExtensionContent(extensionPayload);
             extension.setExtensionBytes(ArrayConverter.concatenate(typeBytes,
                 ArrayConverter.intToBytes(length, ExtensionByteLength.EXTENSIONS_LENGTH), extensionPayload));
             Parser parser = extension.getParser(context, new ByteArrayInputStream(extensionPayload));

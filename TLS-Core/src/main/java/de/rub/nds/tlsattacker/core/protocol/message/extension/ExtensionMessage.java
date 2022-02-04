@@ -61,7 +61,7 @@ public abstract class ExtensionMessage<Self extends ExtensionMessage> extends Mo
     private ModifiableByteArray extensionBytes;
 
     @ModifiableVariableProperty
-    private ModifiableByteArray payloadBytes;
+    private ModifiableByteArray extensionContent;
 
     public ExtensionMessage() {
     }
@@ -106,18 +106,6 @@ public abstract class ExtensionMessage<Self extends ExtensionMessage> extends Mo
         this.extensionBytes = extensionBytes;
     }
 
-    public ModifiableByteArray getPayloadBytes() {
-        return payloadBytes;
-    }
-
-    public void setPayloadBytes(ModifiableByteArray payloadBytes) {
-        this.payloadBytes = payloadBytes;
-    }
-
-    public void setPayloadBytes(byte[] payloadBytes) {
-        this.payloadBytes = ModifiableVariableFactory.safelySetValue(this.payloadBytes, payloadBytes);
-    }
-
     public ExtensionType getExtensionTypeConstant() {
         return extensionTypeConstant;
     }
@@ -150,5 +138,17 @@ public abstract class ExtensionMessage<Self extends ExtensionMessage> extends Mo
 
     @Override
     public abstract ExtensionParser<Self> getParser(TlsContext context, InputStream stream);
+
+    public ModifiableByteArray getExtensionContent() {
+        return extensionContent;
+    }
+
+    public void setExtensionContent(ModifiableByteArray extensionContent) {
+        this.extensionContent = extensionContent;
+    }
+
+    public void setExtensionContent(byte[] content) {
+        this.extensionContent = ModifiableVariableFactory.safelySetValue(this.extensionContent, content);
+    }
 
 }
