@@ -329,12 +329,10 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     }
 
     private static boolean receivedMessageCanBeIgnored(ProtocolMessage msg, Set<ActionOption> actionOptions) {
-        if (actionOptions.contains(ActionOption.IGNORE_UNEXPECTED_WARNINGS)) {
-            if (msg instanceof AlertMessage) {
-                AlertMessage alert = (AlertMessage) msg;
-                if (alert.getLevel().getOriginalValue() == AlertLevel.WARNING.getValue()) {
-                    return true;
-                }
+        if (actionOptions.contains(ActionOption.IGNORE_UNEXPECTED_WARNINGS) && msg instanceof AlertMessage) {
+            AlertMessage alert = (AlertMessage) msg;
+            if (alert.getLevel().getOriginalValue() == AlertLevel.WARNING.getValue()) {
+                return true;
             }
         } else if (actionOptions.contains(ActionOption.IGNORE_UNEXPECTED_NEW_SESSION_TICKETS)
             && msg instanceof NewSessionTicketMessage) {
