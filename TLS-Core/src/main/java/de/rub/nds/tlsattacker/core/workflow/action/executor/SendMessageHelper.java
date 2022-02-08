@@ -21,6 +21,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.UnknownHandshakeMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -136,7 +137,12 @@ public class SendMessageHelper {
             TlsMessageHandler<TlsMessage> handler = lastMessage.getHandler(context);
             handler.adjustTlsContextAfterSerialize((TlsMessage) lastMessage);
         }
-        sendData(messageBytesCollector, context);
+        if (context.getConfig().isCreateIndividualTransportPackets()) {
+            sendRecordsinIndividualTransportPackets(records, context);
+            messageBytesCollector.flushRecordBytes();
+        } else {
+            sendData(messageBytesCollector, context);
+        }
 
         if (context.getChooser().getSelectedProtocolVersion().isDTLS()
             && context.getConfig().isUseAllProvidedDtlsFragments() && fragmentPosition < fragments.size()) {
@@ -174,7 +180,12 @@ public class SendMessageHelper {
             Collections.singletonList((DtlsHandshakeMessageFragment) fragment), context);
         collector.appendProtocolMessageBytes(messageFragments.get(0).getCompleteResultingMessage().getValue());
         recordPosition = flushBytesToRecords(collector, lastType, records, recordPosition, context);
-        sendData(collector, context);
+        if (context.getConfig().isCreateIndividualTransportPackets()) {
+            sendRecordsinIndividualTransportPackets(records, context);
+            collector.flushRecordBytes();
+        } else {
+            sendData(collector, context);
+        }
         return recordPosition;
     }
 
@@ -187,20 +198,33 @@ public class SendMessageHelper {
         emptyRecords.add(record);
         messageBytesCollector.appendRecordBytes(context.getRecordLayer().prepareRecords(
             messageBytesCollector.getProtocolMessageBytesStream(), record.getContentMessageType(), emptyRecords));
-        sendData(messageBytesCollector, context);
+        if (context.getConfig().isCreateIndividualTransportPackets()) {
+            sendRecordsinIndividualTransportPackets(emptyRecords, context);
+            messageBytesCollector.flushRecordBytes();
+        } else {
+            sendData(messageBytesCollector, context);
+        }
+    }
+
+    public void sendRecordsinIndividualTransportPackets(List<AbstractRecord> records, TlsContext context)
+        throws IOException {
+        for (AbstractRecord record : records) {
+            sendRecords(Arrays.asList(record), context);
+            try {
+                Thread.sleep(context.getConfig().getWaitTime());
+            } catch (InterruptedException ex) {
+                LOGGER.warn("Could not wait before sending the next record");
+            }
+        }
     }
 
     public void sendRecords(List<AbstractRecord> records, TlsContext context) throws IOException {
-
         context.setTalkingConnectionEndType(context.getChooser().getConnectionEndType());
-
         if (records == null) {
             LOGGER.debug("No records specified, nothing to send");
             return;
         }
-
         MessageBytesCollector messageBytesCollector = new MessageBytesCollector();
-
         for (AbstractRecord record : records) {
             messageBytesCollector.appendRecordBytes(record.getRecordSerializer().serialize());
         }

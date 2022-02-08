@@ -983,6 +983,8 @@
     <createFragmentsDynamically>true</createFragmentsDynamically>
     <createRecordsDynamically>true</createRecordsDynamically>
     <createIndividualRecords>true</createIndividualRecords>
+    <createIndividualTransportPackets>false</createIndividualTransportPackets>
+    <waitTime>0</waitTime>
     <recordLayerType>RECORD</recordLayerType>
     <resetWorkflowTracesBeforeSaving>false</resetWorkflowTracesBeforeSaving>
     <quickReceive>true</quickReceive>
