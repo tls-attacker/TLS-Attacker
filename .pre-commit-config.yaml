@@ -1,0 +1,19 @@
+# This is the configuration file for the pre-commit framework, a simple way to
+# run git hooks automatically. See https://pre-commit.com/index.html for
+# details.
+default_language_version:
+  python: python3
+repos:
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v4.1.0
+  hooks:
+  - id: check-case-conflict
+  - id: check-json
+  - id: check-merge-conflict
+  - id: check-yaml
+  - id: destroyed-symlinks
+  - id: end-of-file-fixer
+  - id: fix-byte-order-marker
+  - id: mixed-line-ending
+  - id: no-commit-to-branch
+  - id: trailing-whitespace
