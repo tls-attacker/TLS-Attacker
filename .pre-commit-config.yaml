@@ -10,6 +10,9 @@ repos:
   - id: check-case-conflict
   - id: check-json
   - id: check-merge-conflict
+  - id: check-xml
+    # These directories contains broken files, failures are expected
+    exclude: "TLS-Core/src/test/resources/workflow_trace_serialization_tests-(positive|negative)/.+\\.xml"
   - id: check-yaml
   - id: destroyed-symlinks
   - id: end-of-file-fixer
