@@ -47,7 +47,7 @@ public class WaitingActionTest {
 
     /**
      * Test of execute method, of class WaitAction.
-     * 
+     *
      * @throws java.io.IOException
      */
     @Test
@@ -59,7 +59,7 @@ public class WaitingActionTest {
 
     /**
      * Test of reset method, of class WaitAction.
-     * 
+     *
      * @throws java.io.IOException
      */
     @Test

@@ -60,7 +60,7 @@ done
 for len in 512 1024 2048 4096
 do
   #rsa parameters
-  openssl genpkey -algorithm RSA -out rsa${len}_key.pem -pkeyopt rsa_keygen_bits:${len} 
+  openssl genpkey -algorithm RSA -out rsa${len}_key.pem -pkeyopt rsa_keygen_bits:${len}
   openssl req -new -nodes -subj "/C=DE/ST=NRW/L=Bochum/O=RUB/OU=NDS/CN=localhost" -key rsa${len}_key.pem -out rsa${len}_key.csr
   #signing with CA keys
   openssl x509 -req -in rsa${len}_key.csr -CA attacker_rsa_ca.pem -CAkey attacker_rsa_ca_key.pem -CAcreateserial -out rsa${len}_rsa_cert.pem -days 1024 -extfile v3.ext

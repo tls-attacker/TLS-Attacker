@@ -14,7 +14,7 @@ import java.util.Map;
 
 /**
  * https://tools.ietf.org/html/rfc5077#section-4
- * 
+ *
  */
 public enum ClientAuthenticationType {
     ANONYMOUS((byte) 0x00),

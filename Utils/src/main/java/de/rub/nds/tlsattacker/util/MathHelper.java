@@ -87,7 +87,7 @@ public class MathHelper {
 
     /**
      * Computes Chinese Reminder Theorem: x == congs[i] mod moduli[i]
-     * 
+     *
      * @param  congs
      *                A BigInteger[] of congestions
      * @param  moduli
@@ -117,7 +117,7 @@ public class MathHelper {
 
     /**
      * Computes Chinese Reminder Theorem: x == congs[i] mod moduli[i]
-     * 
+     *
      * @param  congs
      *                A BigInteger[] of congestions
      * @param  moduli
@@ -133,7 +133,7 @@ public class MathHelper {
     /**
      * Computes BigInteger sqrt root of a number (floor value). From: http://stackoverflow
      * .com/questions/4407839/how-can-i-find-the-square-root- of-a-java-biginteger
-     * 
+     *
      * @param  x
      *                                  The x Value
      * @return                          BigInteger sqrt root of a number
@@ -162,7 +162,7 @@ public class MathHelper {
     /**
      * Computes BigInteger sqrt root of a number (ceil value). From: http://stackoverflow
      * .com/questions/4407839/how-can-i-find-the-square-root- of-a-java-biginteger
-     * 
+     *
      * @param  x
      *                                  The x Value
      * @return                          BigInteger sqrt root of a number (ceil value)

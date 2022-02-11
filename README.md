@@ -114,7 +114,7 @@ $ java -jar TLS-Client.jar -connect localhost:4433 -cipher TLS_RSA_WITH_AES_256_
 
 The Attack's module contains some attacks, you can for example test for the padding oracle vulnerabilities:
 ```bash
-$ java -jar Attacks.jar padding_oracle -connect localhost:4433 
+$ java -jar Attacks.jar padding_oracle -connect localhost:4433
 ```
 
 In case you are a more experienced developer, you can create your own TLS message flow by writing Java code. For example:
@@ -177,7 +177,7 @@ Given this XML structure is located in TLS-Attacker/apps/workflow.xml, you would
 $ java -jar TLS-Client.jar -connect [host]:[port] -workflow_input workflow.xml
 ```
 ## Modifiable Variables
-TLS-Attacker uses the concept of Modifiable Variables to allow runtime modifications to predefined Workflows. Modifiable variables allow one to set modifications to basic types after or before their values are actually set. When their actual values are determined and one tries to access the value via getters the original value will be returned in a modified form accordingly. More details on this concept can be found at https://github.com/tls-attacker/ModifiableVariable. 
+TLS-Attacker uses the concept of Modifiable Variables to allow runtime modifications to predefined Workflows. Modifiable variables allow one to set modifications to basic types after or before their values are actually set. When their actual values are determined and one tries to access the value via getters the original value will be returned in a modified form accordingly. More details on this concept can be found at https://github.com/tls-attacker/ModifiableVariable.
 
 ```java
 ModifiableInteger i = new ModifiableInteger();
@@ -185,7 +185,7 @@ i.setOriginalValue(30);
 i.setModification(new AddModification(20));
 System.out.println(i.getValue());  // 50
 ```
-In this example, we defined a new ModifiableInteger and set its value to 30. Next, we defined a new modification AddModification which simply returns a sum of two integers. We set its value to 20. If we execute the above program, the result 50 is printed. 
+In this example, we defined a new ModifiableInteger and set its value to 30. Next, we defined a new modification AddModification which simply returns a sum of two integers. We set its value to 20. If we execute the above program, the result 50 is printed.
 
 We can of course use this concept by constructing our TLS workflows. Imagine you want to test a server for a heartbleed vulnerability. For this purpose, you need to increase the payload length in the heartbeat request. With TLS-Attacker, you can do this as follows:
 

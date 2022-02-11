@@ -49,7 +49,7 @@ public class ClientKeyExchangeHandlerTest {
      * pre_master_secret + ClientHello.random + ServerHello.random)) + MD5(pre_master_secret + SHA('CCC' +
      * pre_master_secret + ClientHello.random + ServerHello.random)); ..... It is hard to read how the Constants have to
      * be implemented. We will use the ASCII values.
-     * 
+     *
      * @throws NoSuchAlgorithmException
      */
     @Test

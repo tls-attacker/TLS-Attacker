@@ -53,7 +53,7 @@ public class StaticTicketCryptoTest {
 
     /**
      * Test of random, wrong and used data.
-     * 
+     *
      * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test
@@ -89,7 +89,7 @@ public class StaticTicketCryptoTest {
     /**
      * Test of generateHMAC_SHA256 method, of class StaticTicketCrypto. Assuming that the key has the correct length.
      * Test vector from https://tools.ietf.org/html/rfc4231#section-4.2
-     * 
+     *
      * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @SuppressWarnings("SpellCheckingInspection")
@@ -107,7 +107,7 @@ public class StaticTicketCryptoTest {
     /**
      * Test of verifyHMAC_SHA256 method, of class StaticTicketCrypto. Assuming that the key has the correct length. Test
      * vector from https://tools.ietf.org/html/rfc4231#section-4.2
-     * 
+     *
      * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @SuppressWarnings("SpellCheckingInspection")
@@ -125,7 +125,7 @@ public class StaticTicketCryptoTest {
 
     /**
      * Test of random, wrong and used data.
-     * 
+     *
      * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test

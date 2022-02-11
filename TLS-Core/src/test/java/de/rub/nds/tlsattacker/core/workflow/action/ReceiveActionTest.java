@@ -69,7 +69,7 @@ public class ReceiveActionTest {
 
     /**
      * Test of execute method, of class ReceiveAction.
-     * 
+     *
      * @throws java.lang.Exception
      */
     @Test

@@ -16,7 +16,7 @@
 		<AppenderRef ref="Direct"/>
 	</Logger>
 	<Logger name="com.openpojo.log.LoggerFactory" level="Off">
-		<AppenderRef ref="Direct"/>	
+		<AppenderRef ref="Direct"/>
 	</Logger>
         <Root level="DEBUG">
             <AppenderRef ref="DEBUG"/>

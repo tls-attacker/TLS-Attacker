@@ -15,7 +15,7 @@
         <Logger name="DirectLogger" level="ALL" additivity="false">
             <AppenderRef ref="Direct"/>
         </Logger>
-		
+
         <Logger name="de.rub.nds.tlsattacker.core.protocol.handler" level="WARN"/>
         <Logger name="de.rub.nds.tlsattacker.core.protocol.message" level="WARN"/>
         <Logger name="de.rub.nds.tlsattacker.core.protocol.parser" level="WARN"/>

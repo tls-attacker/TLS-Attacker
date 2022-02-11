@@ -19,7 +19,7 @@ public class FreePortFinder {
     /**
      * This method tries to find a FreePort. Note that there is a small timeframe in which the port could be allocated
      * by another Thread/Service
-     * 
+     *
      * @return
      */
     public static int getPossiblyFreePort() {

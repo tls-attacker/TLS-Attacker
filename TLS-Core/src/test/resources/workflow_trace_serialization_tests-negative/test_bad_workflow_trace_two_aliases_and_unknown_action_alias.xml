@@ -14,9 +14,9 @@
     <InboundConnection>
         <alias>alias2</alias>
         <port>443</port>
-    </InboundConnection>        
+    </InboundConnection>
     <Receive>
-        <connectionAlias>UnknownAlias</connectionAlias>        
+        <connectionAlias>UnknownAlias</connectionAlias>
         <messages>
             <ClientHello>
                 <extensions>

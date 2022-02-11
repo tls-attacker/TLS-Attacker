@@ -13,4 +13,3 @@ url = 'https://testssl.sh/mapping-rfc.txt'
 for line in urllib2.urlopen(url):
     cipher = line.split()
     print cipher[1]+'(0'+cipher[0]+'),'
-    

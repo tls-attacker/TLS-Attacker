@@ -35,7 +35,7 @@ public class ActionTestUtils {
      * <p>
      * Same as this.marshalingEmptyActionYieldsMinimalOutput(Class<T>, Logger), but sets the logger automatically.
      * <p>
-     * 
+     *
      * @param <T>
      * @param actionClass
      *                    the Class to test
@@ -60,7 +60,7 @@ public class ActionTestUtils {
      * <p>
      * Calling this method is expensive, since it goes through the whole normalize/filter/serialize procedure. <b>Should
      * be invoked by tests in Category(SlowTests.class) only</b>
-     * 
+     *
      * @param <T>
      * @param actionClass
      *                    the Class to test
@@ -110,7 +110,7 @@ public class ActionTestUtils {
      * Same as this.marshalingAndUnmarshalingEmptyObjectYieldsEqualObject(Class<T>, Logger), but sets the logger
      * automatically.
      * <p>
-     * 
+     *
      * @param <T>
      * @param actionClass
      *                    the Class to test
@@ -128,11 +128,11 @@ public class ActionTestUtils {
      * values set.
      * <p>
      * Calling this method is expensive. <b>Should be invoked by tests in
-     * 
+     *
      * @param                     <T>
      * @Category(SlowTests.class)             only</b>
      *                                        <p>
-     * 
+     *
      * @param                     actionClass
      *                                        the Class to test
      * @param                     logger
@@ -164,7 +164,7 @@ public class ActionTestUtils {
      * Same as this.marshalingAndUnmarshalingFilledObjectYieldsEqualObject(Class<T>, Logger), but sets the logger
      * automatically.
      * <p>
-     * 
+     *
      * @param <T>
      * @param action
      *               an instance of the TlsAction class under test, filled with custom values
@@ -182,7 +182,7 @@ public class ActionTestUtils {
      * <p>
      * Calling this method is expensive. <b>Should be invoked by tests in Category(SlowTests.class) only</b>
      * <p>
-     * 
+     *
      * @param <T>
      * @param action
      *               an instance of the TlsAction class under test, filled with custom values

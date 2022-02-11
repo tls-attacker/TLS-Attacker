@@ -50,7 +50,7 @@ public class TwistedCurvePoint {
 
     /**
      * Provides a Twisted Curve point with small order.
-     * 
+     *
      * @param  group
      * @return       TwistedCurvePoint
      */
@@ -161,7 +161,7 @@ public class TwistedCurvePoint {
     /**
      * Provides a Twisted Curve point with an order that is greater than the order of the point returned by
      * smallOrder(group).
-     * 
+     *
      * @param  group
      * @return       TwistedCurvePoint
      */
@@ -260,7 +260,7 @@ public class TwistedCurvePoint {
     /**
      * Provides a Twisted Curve point with an order that is far greater than the order of the point returned by
      * smallOrder(group) and alternativeOrder(group).
-     * 
+     *
      * @param  group
      * @return       TwistedCurvePoint
      */

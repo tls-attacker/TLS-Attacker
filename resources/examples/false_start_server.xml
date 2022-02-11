@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<!-- 
-Simple false start trace, try this with Firefox 4 or so, 
+<!--
+Simple false start trace, try this with Firefox 4 or so,
 which allows it to be used with TLS_RSA_WITH_AES_128_CBC_SHA :)
 https://ftp.mozilla.org/pub/firefox/releases/4.0/
 
 With firefox about:config:
     security.ssl.enable_false_start true
     security.ssl.false_start.require-forward-secrecy false
-    security.ssl.false_start.require-npn false 
+    security.ssl.false_start.require-npn false
 
 With TLS-Server:
     java -jar apps/TLS-Server.jar -port 5555 \
@@ -45,5 +45,5 @@ With TLS-Server:
         <messages>
             <Application/>
         </messages>
-    </Send>       
+    </Send>
 </workflowTrace>

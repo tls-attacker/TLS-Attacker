@@ -40,7 +40,7 @@ public abstract class CopyContextFieldAction extends TlsAction {
 
     /**
      * Invoked on action execution to perform the actual copy operation.
-     * 
+     *
      * @param srcContext
      *                   source context
      * @param dstContext

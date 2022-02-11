@@ -40,7 +40,7 @@ public class TokenCalculatorTest {
 
     /**
      * Test of calculateEKM method, of class TokenCalculator.
-     * 
+     *
      * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test
@@ -59,7 +59,7 @@ public class TokenCalculatorTest {
 
     /**
      * Test of calculateEKM method, of class TokenCalculator.
-     * 
+     *
      * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test

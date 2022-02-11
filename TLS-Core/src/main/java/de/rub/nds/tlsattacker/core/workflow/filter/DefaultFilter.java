@@ -26,7 +26,7 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * Internal default filter that strips unnecessary default values.
- * 
+ *
  * This filter works on a normalized workflow trace only. It is the default filter that is normally used before workflow
  * trace serialization.
  */
@@ -40,7 +40,7 @@ public class DefaultFilter extends Filter {
 
     /**
      * Apply filter to trace.
-     * 
+     *
      * @param trace
      *              The workflow trace that should be filtered.
      */
@@ -94,12 +94,12 @@ public class DefaultFilter extends Filter {
      * Restore workflow trace values that were explicitly set by the user.
      * <p>
      * Currently restores only workflow trace connections set by the user.
-     * 
+     *
      * @param trace
      *                  the trace to which the postFilter should be applied
      * @param reference
      *                  the reference trace holding the original user defined values
-     * 
+     *
      */
     @Override
     public void postFilter(WorkflowTrace trace, WorkflowTrace reference) {

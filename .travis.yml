@@ -41,4 +41,3 @@ notifications:
     if: branch = master
     recipients:
       - juraj.somorovsky@hackmanit.de
-

@@ -124,7 +124,7 @@ public class ConfigIO {
 
     /**
      * Reads the XML from the given inputStream with the provided unmarshaller into a new Config
-     * 
+     *
      * @param  stream
      *                      The stream that provides the XML structure
      * @param  unmarshaller

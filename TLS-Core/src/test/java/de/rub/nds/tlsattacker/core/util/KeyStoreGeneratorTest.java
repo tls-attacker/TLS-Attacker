@@ -23,7 +23,7 @@ public class KeyStoreGeneratorTest {
 
     /**
      * Test of createRSAKeyPair method, of class KeyStoreGenerator.
-     * 
+     *
      * @throws java.lang.Exception
      */
     @Test
@@ -35,7 +35,7 @@ public class KeyStoreGeneratorTest {
 
     /**
      * Test of createECKeyPair method, of class KeyStoreGenerator.
-     * 
+     *
      * @throws java.lang.Exception
      */
     @Test
@@ -47,7 +47,7 @@ public class KeyStoreGeneratorTest {
 
     /**
      * Test of createKeyStore method, of class KeyStoreGenerator.
-     * 
+     *
      * @throws java.lang.Exception
      */
     @Test

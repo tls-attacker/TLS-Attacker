@@ -50,7 +50,7 @@ public class TlsAttackerSocketTest {
 
     /**
      * Test of sendRawBytes method, of class TlsAttackerSocket.
-     * 
+     *
      * @throws java.lang.Exception
      */
     @Test
@@ -61,7 +61,7 @@ public class TlsAttackerSocketTest {
 
     /**
      * Test of receiveRawBytes method, of class TlsAttackerSocket.
-     * 
+     *
      * @throws java.lang.Exception
      */
     @Test
@@ -96,7 +96,7 @@ public class TlsAttackerSocketTest {
 
     /**
      * Test of receiveBytes method, of class TlsAttackerSocket.
-     * 
+     *
      * @throws java.lang.Exception
      */
     @Test
@@ -108,7 +108,7 @@ public class TlsAttackerSocketTest {
 
     /**
      * Test of receiveString method, of class TlsAttackerSocket.
-     * 
+     *
      * @throws java.lang.Exception
      */
     @Test

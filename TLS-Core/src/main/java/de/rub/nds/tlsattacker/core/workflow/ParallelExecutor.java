@@ -125,7 +125,7 @@ public class ParallelExecutor {
      * exceeds the timeout, the function assiged to {@link ParallelExecutor#timeoutAction } is executed. The
      * {@link ParallelExecutor#timeoutAction } function can, for example, try to restart the client/server, so that the
      * remaining {@link TlsTask}s can be finished.
-     * 
+     *
      * @param timeout
      *                The timeout in milliseconds
      *

@@ -14,7 +14,7 @@
     <InboundConnection>
         <alias>alias2</alias>
         <port>443</port>
-    </InboundConnection>        
+    </InboundConnection>
     <Receive>
         <messages>
             <ClientHello>

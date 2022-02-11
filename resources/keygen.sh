@@ -11,7 +11,7 @@ done
 
 for len in 512 1024 2048 4096
 do
-  openssl genpkey -algorithm RSA -out rsa${len}key.pem -pkeyopt rsa_keygen_bits:${len} 
+  openssl genpkey -algorithm RSA -out rsa${len}key.pem -pkeyopt rsa_keygen_bits:${len}
   openssl req -key rsa${len}key.pem -new -x509 -days 365 -out rsa${len}cert.pem -subj "/C=DE/ST=NRW/L=Bochum/O=<script>alert('TLS-Attacker')<\/script>/CN=tls-attacker.de"
   cat rsa${len}key.pem rsa${len}cert.pem > rsa${len}.pem
 done
