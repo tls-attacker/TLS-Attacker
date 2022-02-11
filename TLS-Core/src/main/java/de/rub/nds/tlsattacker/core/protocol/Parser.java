@@ -162,7 +162,7 @@ public abstract class Parser<T> {
         if (pointer < array.length) {
             return array[pointer];
         } else {
-            throw new ParserException("Cannot peek, would peek over the end ot the array");
+            throw new ParserException("Cannot peek, would peek over the end of the array");
         }
     }
 

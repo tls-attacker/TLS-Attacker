@@ -124,7 +124,7 @@ public class WorkflowTraceSerializer {
                 new StreamResult(tempStream));
 
             String xml_text = new String(tempStream.toByteArray());
-            // and we modify all line separators to the system dependant line separator
+            // and we modify all line separators to the system dependent line separator
             xml_text = xml_text.replaceAll("\r?\n", System.lineSeparator());
             outputStream.write(xml_text.getBytes());
         } catch (TransformerException E) {

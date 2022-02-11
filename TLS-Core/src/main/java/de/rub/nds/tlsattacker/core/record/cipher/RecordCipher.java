@@ -102,7 +102,7 @@ public abstract class RecordCipher {
                 } else {
                     // It may happen that the record does not have a length prepared - in that case we will need to add
                     // the length of the data content
-                    // This is mostly interessting for fuzzing
+                    // This is mostly interesting for fuzzing
                     stream.write(ArrayConverter.intToBytes(record.getCleanProtocolMessageBytes().getValue().length,
                         RecordByteLength.RECORD_LENGTH));
                 }

@@ -162,7 +162,7 @@ public class SpecialDrownAttacker extends BaseDrownAttacker {
      * Checks whether the server is affected by the "leaky export" oracle bug (CVE-2016-0704) based on data from
      * genLeakyExportCheckData(). The bug allows to distinguish between an invalid ENCRYPTED-KEY-DATA ciphertext and a
      * valid ciphertext decrypting to a message of the wrong length. This method performs brute-force computations and
-     * may take some time to run. It does not connect ot any remote hosts and can run completely offline.
+     * may take some time to run. It does not connect to any remote hosts and can run completely offline.
      *
      * @param  dataFilePath
      *                      Name of the data dump file from genLeakyExportCheckData().

@@ -394,7 +394,7 @@ public class WorkflowConfigurationFactory {
             new ApplicationMessage(config));
 
         // Client CKE, CCS, Fin
-        // TODO weired
+        // TODO weird
         TlsAction lastClientAction;
         if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
             lastClientAction = (TlsAction) workflowTrace.getLastSendingAction();

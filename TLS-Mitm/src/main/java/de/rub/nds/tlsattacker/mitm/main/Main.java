@@ -29,11 +29,11 @@ public class Main {
     public static void main(String... args) {
         try {
             (new TlsMitm(args)).run();
-        } catch (ParameterException pe) {
+        } catch (@SuppressWarnings("unused") ParameterException e) {
             System.exit(EX_USAGE);
-        } catch (WorkflowExecutionException wee) {
+        } catch (@SuppressWarnings("unused") WorkflowExecutionException e) {
             System.exit(EX_SOFTWARE);
-        } catch (ConfigurationException ce) {
+        } catch (@SuppressWarnings("unused") ConfigurationException e) {
             System.exit(EX_CONFIG);
         } catch (Exception e) {
             LOGGER.info("Encountered an unknown exception. See debug for more info.");

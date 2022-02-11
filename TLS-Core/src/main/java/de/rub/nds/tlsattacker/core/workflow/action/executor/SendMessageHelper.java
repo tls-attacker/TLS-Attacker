@@ -43,7 +43,7 @@ public class SendMessageHelper {
         List<DtlsHandshakeMessageFragment> fragmentMessages = new LinkedList<>();
         context.setTalkingConnectionEndType(context.getChooser().getConnectionEndType());
         if (records == null) {
-            LOGGER.trace("No Records Specified, creating emtpy list");
+            LOGGER.trace("No Records Specified, creating empty list");
             records = new LinkedList<>();
         }
 

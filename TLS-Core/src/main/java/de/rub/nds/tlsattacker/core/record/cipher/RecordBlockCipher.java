@@ -230,7 +230,7 @@ public final class RecordBlockCipher extends RecordCipher {
 
     public byte[] getEncryptionIV() {
         if (useExplicitIv) {
-            LOGGER.debug("Using explict IV");
+            LOGGER.debug("Using explicit IV");
             CipherAlgorithm cipherAlgorithm = AlgorithmResolver.getCipher(cipherSuite);
             byte[] iv = new byte[cipherAlgorithm.getNonceBytesFromHandshake()];
             context.getRandom().nextBytes(iv);

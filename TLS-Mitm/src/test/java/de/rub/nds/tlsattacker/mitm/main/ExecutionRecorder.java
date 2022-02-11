@@ -65,7 +65,7 @@ public class ExecutionRecorder {
             System.setOut(output);
             System.setErr(output);
             executor.submit(mitm).get(timeout, TimeUnit.MILLISECONDS);
-        } catch (TimeoutException te) {
+        } catch (@SuppressWarnings("unused") TimeoutException e) {
             // ok
         } catch (InterruptedException | ExecutionException e) {
             fail("Problem spawning TLS-Mitm instance: " + e);

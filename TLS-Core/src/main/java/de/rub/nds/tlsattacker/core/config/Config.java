@@ -914,7 +914,7 @@ public class Config implements Serializable {
 
     /**
      * If there is not enough space in the defined records, new records are dynamically added if not set, protocol
-     * message bytes that wont fit are discarded
+     * message bytes that won't fit are discarded
      */
     private Boolean createRecordsDynamically = true;
     /**

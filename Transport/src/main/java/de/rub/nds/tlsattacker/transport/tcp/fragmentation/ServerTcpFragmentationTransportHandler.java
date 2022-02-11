@@ -41,7 +41,7 @@ public class ServerTcpFragmentationTransportHandler extends ServerTcpTransportHa
     @Override
     public void sendData(byte[] data) throws IOException {
         if (!isInitialized()) {
-            throw new IOException("Transporthandler is not initalized!");
+            throw new IOException("Transporthandler is not initialized!");
         }
         int pointer = 0;
         int chunk_size = (int) Math.ceil((double) data.length / packetChunks);

@@ -134,7 +134,7 @@ public class EmptyClientKeyExchangePreparatorTest {
 
         preparator.prepareHandshakeMessageContents();
 
-        // PMS SHOULD not be calculatable without client key information
+        // PMS SHOULD not be calculable without client key information
         Assert.assertNull(message.getComputations().getPremasterSecret());
 
         // check client and server random are correctly set and concatenated

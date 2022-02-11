@@ -75,7 +75,7 @@ public class ClientHelloParser extends HelloMessageParser<ClientHelloMessage> {
     }
 
     /**
-     * Reads the next bytes as the CypherSuiteLength and writes them in the message
+     * Reads the next bytes as the CipherSuiteLength and writes them in the message
      *
      * @param msg
      *            Message to write in
@@ -86,7 +86,7 @@ public class ClientHelloParser extends HelloMessageParser<ClientHelloMessage> {
     }
 
     /**
-     * Reads the next bytes as the CypherSuites and writes them in the message
+     * Reads the next bytes as the CipherSuites and writes them in the message
      *
      * @param msg
      *            Message to write in

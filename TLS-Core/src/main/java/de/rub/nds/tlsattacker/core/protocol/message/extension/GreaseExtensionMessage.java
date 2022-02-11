@@ -44,7 +44,7 @@ public class GreaseExtensionMessage extends ExtensionMessage {
     public GreaseExtensionMessage(ExtensionType type, byte[] data) {
         super(type);
         if (!type.name().startsWith("GREASE_")) {
-            LOGGER.warn("GreaseExtension message inizialized with non Grease extension type");
+            LOGGER.warn("GreaseExtension message initialized with non Grease extension type");
         }
         this.data = data;
         this.type = type;
@@ -53,7 +53,7 @@ public class GreaseExtensionMessage extends ExtensionMessage {
     public GreaseExtensionMessage(ExtensionType type, int length) {
         super(type);
         if (!type.name().startsWith("GREASE_")) {
-            LOGGER.warn("GreaseExtension message inizialized with non Grease extension type");
+            LOGGER.warn("GreaseExtension message initialized with non Grease extension type");
         }
 
         Random random = new Random(0);

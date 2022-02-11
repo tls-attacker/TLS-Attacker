@@ -122,7 +122,7 @@ public class ParallelExecutor {
 
     /**
      * Creates a new thread monitoring the executorService. If the time since the last {@link TlsTask} was finished
-     * exceeds the timeout, the function assiged to {@link ParallelExecutor#timeoutAction } is executed. The
+     * exceeds the timeout, the function assigned to {@link ParallelExecutor#timeoutAction } is executed. The
      * {@link ParallelExecutor#timeoutAction } function can, for example, try to restart the client/server, so that the
      * remaining {@link TlsTask}s can be finished.
      *

@@ -393,7 +393,7 @@ public class ReceiveMessageHelper {
     }
 
     /**
-     * Takes a list of AbstractRecords and tries to sort them by their epoch/sqn. The sorting ist epoch > sqn. Smaller
+     * Takes a list of AbstractRecords and tries to sort them by their epoch/sqn. The sorting is epoch > sqn. Smaller
      * epochs are sorted before bigger epochs smaller sqns are sorted before higher sqns
      *
      * @param  abstractRecordList

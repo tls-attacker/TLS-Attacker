@@ -59,12 +59,12 @@ public class TlsMitm implements Runnable {
         try {
             Config config = cmdConfig.createConfig();
             executeMitmWorkflow(config);
-        } catch (WorkflowExecutionException wee) {
-            LOGGER.error("The TLS protocol flow was not executed completely. " + wee.getLocalizedMessage()
+        } catch (WorkflowExecutionException exception) {
+            LOGGER.error("The TLS protocol flow was not executed completely. " + exception.getLocalizedMessage()
                 + " - See debug messages for more details.");
-            LOGGER.error(wee.getLocalizedMessage());
-            LOGGER.debug(wee);
-            throw wee;
+            LOGGER.error(exception.getLocalizedMessage());
+            LOGGER.debug(exception);
+            throw exception;
         } catch (ConfigurationException ce) {
             LOGGER.error("Encountered a ConfigurationException aborting. " + ce.getLocalizedMessage()
                 + " - See debug messages for more details.");

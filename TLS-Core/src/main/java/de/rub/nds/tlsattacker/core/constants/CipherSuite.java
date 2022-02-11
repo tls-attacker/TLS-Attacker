@@ -473,7 +473,7 @@ public enum CipherSuite {
         List<CipherSuite> cipherSuites = new LinkedList<>();
         int pointer = 0;
         if (values.length % 2 != 0) {
-            throw new UnknownCipherSuiteException("Last CipherSuit are unknown!");
+            throw new UnknownCipherSuiteException("Last CipherSuite is unknown!");
         }
         while (pointer < values.length) {
             byte[] suite = new byte[2];

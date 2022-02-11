@@ -68,7 +68,7 @@ public class TimingProxyClientTcpTransportHandler extends ClientTcpTransportHand
     @Override
     public void closeConnection() throws IOException {
         if (socket == null) {
-            throw new IOException("Transporthandler is not initalized!");
+            throw new IOException("Transporthandler is not initialized!");
         }
         socket.close();
 
