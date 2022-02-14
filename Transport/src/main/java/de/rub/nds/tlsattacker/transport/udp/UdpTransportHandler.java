@@ -63,10 +63,20 @@ public abstract class UdpTransportHandler extends TransportHandler {
     }
 
     public int getSrcPort() {
+        if (socket == null) {
+            // mimic socket.getLocalPort() behavior as if socket was closed
+            return -1;
+        }
+
         return socket.getLocalPort();
     }
 
     public int getDstPort() {
+        if (socket == null) {
+            // mimic socket.getPort() behavior as if socket was not connected
+            return -1;
+        }
+
         return socket.getPort();
     }
 }

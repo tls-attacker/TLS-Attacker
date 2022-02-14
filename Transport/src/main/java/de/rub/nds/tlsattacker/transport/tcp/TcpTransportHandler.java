@@ -96,11 +96,23 @@ public abstract class TcpTransportHandler extends TransportHandler {
         return getSocketState(false);
     }
 
-    public abstract Integer getSrcPort();
+    public Integer getSrcPort() {
+        if (socket == null) {
+            return srcPort;
+        }
+
+        return socket.getLocalPort();
+    }
 
     public abstract void setSrcPort(int port);
 
-    public abstract Integer getDstPort();
+    public Integer getDstPort() {
+        if (socket == null) {
+            return dstPort;
+        }
+
+        return socket.getPort();
+    }
 
     public abstract void setDstPort(int port);
 }
