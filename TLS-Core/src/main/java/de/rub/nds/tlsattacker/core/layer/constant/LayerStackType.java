@@ -9,6 +9,9 @@
 
 package de.rub.nds.tlsattacker.core.layer.constant;
 
+/**
+ * Pre-defined
+ */
 public enum LayerStackType {
     TLS,
     DTLS,
