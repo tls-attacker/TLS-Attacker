@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.layer.constant;
 
 public enum ImplementedLayers implements LayerType {
     TCP,
+    // Record + Message layer are both part of TLS
     RECORD,
     MESSAGE,
     HTTP;

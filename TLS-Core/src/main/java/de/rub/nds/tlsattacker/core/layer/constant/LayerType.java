@@ -9,6 +9,7 @@
 
 package de.rub.nds.tlsattacker.core.layer.constant;
 
+// TODO: only ImplementedLayer implements this and enum has those methods built-in. Do we need this interface?
 public interface LayerType {
     public String getName();
 
