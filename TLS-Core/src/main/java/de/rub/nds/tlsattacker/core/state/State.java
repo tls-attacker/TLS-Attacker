@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
 import org.apache.logging.log4j.LogManager;
@@ -369,7 +370,15 @@ public class State {
 
     public void killAllSpawnedSubprocesses() {
         for (Process process : spawnedSubprocesses) {
-            process.destroy();
+            try {
+                // this is necessary when process output is being logged to a file,
+                // because destroying the process immediately can result in an empty log file
+                process.waitFor(500, TimeUnit.MILLISECONDS);
+            } catch (InterruptedException E) {
+                // nothing to do here
+            } finally {
+                process.destroy();
+            }
         }
 
         spawnedSubprocesses.clear();
