@@ -494,6 +494,7 @@
       <xs:element name="firstTimeout" type="xs:int" minOccurs="0"/>
       <xs:element name="connectionTimeout" type="xs:int" minOccurs="0"/>
       <xs:element name="transportHandlerType" type="transportHandlerType" minOccurs="0"/>
+      <xs:element name="sourcePort" type="xs:int" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -4791,6 +4792,7 @@
       <xs:extension base="connectionBoundAction">
         <xs:sequence>
           <xs:element name="asPlanned" type="xs:boolean" minOccurs="0"/>
+          <xs:element name="resetContext" type="xs:boolean" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -4933,6 +4935,7 @@
       <xs:enumeration value="STREAM"/>
       <xs:enumeration value="TCP_TIMING"/>
       <xs:enumeration value="UDP_TIMING"/>
+      <xs:enumeration value="UDP_PROXY"/>
       <xs:enumeration value="TCP_PROXY_TIMING"/>
       <xs:enumeration value="TCP_NO_DELAY"/>
       <xs:enumeration value="TCP_FRAGMENTATION"/>
