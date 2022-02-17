@@ -35,10 +35,16 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
 import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.x509.Certificate;
 
 public class CertificateInformationExtractor {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final Certificate certificate;
     private List<Asn1Encodable> x509ExtensionSequences;
@@ -161,7 +167,12 @@ public class CertificateInformationExtractor {
         x509ExtensionSequences = ((Asn1Sequence) x509Extensions.getChildren().get(0)).getChildren();
     }
 
-    private void extractAuthorityInfoAccessEntities() {
+    /**
+     *
+     * @throws CertificateException
+     *                              If the AuthorityInfoAccessEntities are not present in the certificate.
+     */
+    private void extractAuthorityInfoAccessEntities() throws CertificateException {
         // Now that we found the extensions, search for the
         // 'authorityInfoAccess' extension
         Asn1Sequence authorityInfoAccess = null;
@@ -180,7 +191,7 @@ public class CertificateInformationExtractor {
         }
 
         if (authorityInfoAccess == null) {
-            throw new RuntimeException("No 'Authority Info Access' entry found in certificate.");
+            throw new CertificateException("No 'Authority Info Access' entry found in certificate.");
         }
         /*
          * get(0) is the Object Identifier we checked, get(1) the Octet String with the content the Octet String has a
@@ -302,7 +313,12 @@ public class CertificateInformationExtractor {
             extractX509Extensions();
         }
         if (authorityInfoAccessEntities == null) {
-            extractAuthorityInfoAccessEntities();
+            try {
+                extractAuthorityInfoAccessEntities();
+            } catch (CertificateException e) {
+                LOGGER.debug(e.getMessage());
+                return null;
+            }
         }
 
         List<Asn1Encodable> ocspInformation = null;
@@ -321,7 +337,8 @@ public class CertificateInformationExtractor {
         }
 
         if (ocspInformation == null) {
-            throw new RuntimeException("No OCSP entry found in certificate.");
+            LOGGER.debug("No OCSP entry found in certificate.");
+            return null;
         }
 
         // If we found the OCSP information, let's extract it and we're
@@ -334,7 +351,12 @@ public class CertificateInformationExtractor {
             extractX509Extensions();
         }
         if (authorityInfoAccessEntities == null) {
-            extractAuthorityInfoAccessEntities();
+            try {
+                extractAuthorityInfoAccessEntities();
+            } catch (CertificateException e) {
+                LOGGER.debug(e.getMessage());
+                return null;
+            }
         }
 
         List<Asn1Encodable> certificateIssuerInformation = null;
@@ -353,7 +375,8 @@ public class CertificateInformationExtractor {
         }
 
         if (certificateIssuerInformation == null) {
-            throw new RuntimeException("No Certificate Issuer entry found in certificate.");
+            LOGGER.debug("No Certificate Issuer entry found in certificate.");
+            return null;
         }
 
         // If we found the OCSP information, let's extract it and we're
@@ -379,7 +402,8 @@ public class CertificateInformationExtractor {
                 issuerCertificateUrl = new URL(issuerCertificateUrlString);
 
             } else {
-                throw new RuntimeException("Didn't get any issuer certificate URL from certificate.");
+                LOGGER.debug("Didn't get any issuer certificate URL from certificate.");
+                return null;
             }
 
             // Download certificate from URL
@@ -392,7 +416,9 @@ public class CertificateInformationExtractor {
             if (status == 200) {
                 response = ByteStreams.toByteArray(httpCon.getInputStream());
             } else {
-                throw new RuntimeException("Response not successful: Received status code " + status);
+                LOGGER.debug("Response not successful: Received status code " + status);
+                httpCon.disconnect();
+                return null;
             }
 
             httpCon.disconnect();
