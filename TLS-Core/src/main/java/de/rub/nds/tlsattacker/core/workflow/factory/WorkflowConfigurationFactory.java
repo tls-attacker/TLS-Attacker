@@ -366,25 +366,42 @@ public class WorkflowConfigurationFactory {
         return workflowTrace;
     }
 
+    /**
+     * Creates a short hello workflow for the default connection end defined in config.
+     *
+     * @return A ShortHelloWorkflow
+     */
     private WorkflowTrace createShortHelloWorkflow() {
-        AliasedConnection connection = getConnection();
-        WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
-        WorkflowTrace trace = factory.createTlsEntryWorkflowTrace(config.getDefaultClientConnection());
+        return createHelloWorkflow(getConnection());
+    }
 
-        trace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.CLIENT,
+    /**
+     * Creates a short hello workflow for the given connection end.
+     *
+     * @param  connection
+     * @return
+     */
+    public WorkflowTrace createShortHelloWorkflow(AliasedConnection connection) {
+        WorkflowTrace workflowTrace = createTlsEntryWorkflowTrace(connection);
+        if (config.isAddEncryptedServerNameIndicationExtension()
+            && connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
+            workflowTrace.addTlsAction(new EsniKeyDnsRequestAction());
+        }
+
+        workflowTrace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.CLIENT,
             new ClientHelloMessage(config)));
 
         if (config.getHighestProtocolVersion().isDTLS() && config.isDtlsCookieExchange()) {
-            trace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.SERVER,
+            workflowTrace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.SERVER,
                 new HelloVerifyRequestMessage(config)));
-            trace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.CLIENT,
+            workflowTrace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.CLIENT,
                 new ClientHelloMessage(config)));
         }
 
-        trace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.SERVER,
+        workflowTrace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.SERVER,
             new ServerHelloMessage(config)));
 
-        return trace;
+        return workflowTrace;
     }
 
     /**
