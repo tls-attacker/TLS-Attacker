@@ -232,4 +232,57 @@ public enum ProtocolVersion {
         }
         return -1;
     }
+
+    public String toHumanReadable() {
+        switch (this) {
+            case DTLS10:
+                return "DTLS 1.0";
+            case DTLS12:
+                return "DTLS 1.2";
+            case SSL2:
+                return "SSL 2.0";
+            case SSL3:
+                return "SSL 3.0";
+            case TLS10:
+                return "TLS 1.0";
+            case TLS11:
+                return "TLS 1.1";
+            case TLS12:
+                return "TLS 1.2";
+            case TLS13:
+                return "TLS 1.3";
+            case TLS13_DRAFT14:
+                return "TLS 1.3 Draft-14";
+            case TLS13_DRAFT15:
+                return "TLS 1.3 Draft-15";
+            case TLS13_DRAFT16:
+                return "TLS 1.3 Draft-16";
+            case TLS13_DRAFT17:
+                return "TLS 1.3 Draft-17";
+            case TLS13_DRAFT18:
+                return "TLS 1.3 Draft-18";
+            case TLS13_DRAFT19:
+                return "TLS 1.3 Draft-19";
+            case TLS13_DRAFT20:
+                return "TLS 1.3 Draft-20";
+            case TLS13_DRAFT21:
+                return "TLS 1.3 Draft-21";
+            case TLS13_DRAFT22:
+                return "TLS 1.3 Draft-22";
+            case TLS13_DRAFT23:
+                return "TLS 1.3 Draft-23";
+            case TLS13_DRAFT24:
+                return "TLS 1.3 Draft-24";
+            case TLS13_DRAFT25:
+                return "TLS 1.3 Draft-25";
+            case TLS13_DRAFT26:
+                return "TLS 1.3 Draft-26";
+            case TLS13_DRAFT27:
+                return "TLS 1.3 Draft-27";
+            case TLS13_DRAFT28:
+                return "TLS 1.3 Draft-28";
+            default:
+                return this.name();
+        }
+    }
 }
