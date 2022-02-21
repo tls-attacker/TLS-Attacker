@@ -32,8 +32,8 @@ public class ChangeCipherSpecParser extends ProtocolMessageParser<ChangeCipherSp
      * @param config
      *                A Config used in the current context
      */
-    public ChangeCipherSpecParser(InputStream stream, ProtocolVersion version, Config config) {
-        super(stream, config);
+    public ChangeCipherSpecParser(InputStream stream) {
+        super(stream);
     }
 
     @Override

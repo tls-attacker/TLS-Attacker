@@ -25,16 +25,13 @@ public abstract class ServerKeyExchangeParser<T extends ServerKeyExchangeMessage
      * Constructor for the Parser class
      *
      * @param stream
-     * @param expectedType
-     *                     The Handshake message type that is expected
      * @param version
-     *                     Version of the Protocol
+     *                   Version of the Protocol
      * @param tlsContext
-     *                     A Config used in the current context
+     *                   A Config used in the current context
      */
-    public ServerKeyExchangeParser(InputStream stream, HandshakeMessageType expectedType, ProtocolVersion version,
-        TlsContext tlsContext) {
-        super(stream, expectedType, version, tlsContext);
+    public ServerKeyExchangeParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
+        super(stream, version, tlsContext);
     }
 
 }

@@ -70,8 +70,8 @@ public class CertificateMessageParserTest {
      */
     @Test
     public void testParse() {
-        CertificateMessageParser parser = new CertificateMessageParser(new ByteArrayInputStream(message),
-            new TlsContext(config), version, ConnectionEndType.SERVER);
+        CertificateMessageParser parser =
+            new CertificateMessageParser(new ByteArrayInputStream(message), new TlsContext(config), version);
         CertificateMessage certMessage = new CertificateMessage();
         parser.parse(certMessage);
         assertTrue(certMessage.getCertificatesListLength().getValue() == certificatesLength);

@@ -76,16 +76,14 @@ public class TokenbindingMessagePreparatorTest {
         preparator.prepare();
         TokenBindingMessageSerializer serializer = new TokenBindingMessageSerializer(message, ProtocolVersion.TLS12);
         byte[] serialize = serializer.serialize();
-        TokenBindingMessageParser selfParser =
-            new TokenBindingMessageParser(new ByteArrayInputStream(serialize), ProtocolVersion.TLS12, config);
+        TokenBindingMessageParser selfParser = new TokenBindingMessageParser(new ByteArrayInputStream(serialize));
         TokenBindingMessage selfParsed = new TokenBindingMessage();
         selfParser.parse(selfParsed);
         assertNotNull(selfParsed);
         String base64 =
             "AIkAAgBBQM9eQES_uxoyRn0DDoYLcWqvm6Oo3p0lI1s3fRjdIj6dw8wLDf0RWkxuyNAmgAQkUWxm8_JfwS8MziBYVuJ5ECcAQHF_HGcPiSv_X60y5Ql-AxoqaWzwqXvpStEBgY_IX8kT_qAHsb5h38ZuQoWOaZVgqlF1sa70B4GVXxmi2JkdJYcAAA";
         byte[] decode = Base64.getUrlDecoder().decode(base64);
-        TokenBindingMessageParser parser =
-            new TokenBindingMessageParser(new ByteArrayInputStream(decode), ProtocolVersion.TLS12, config);
+        TokenBindingMessageParser parser = new TokenBindingMessageParser(new ByteArrayInputStream(decode));
         TokenBindingMessage message = new TokenBindingMessage();
         parser.parse(message);
         byte[] xBytes = new byte[32];

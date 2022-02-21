@@ -32,8 +32,6 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final ConnectionEndType talkingConnectionEndType;
-
     private TlsContext tlsContext;
 
     /**
@@ -47,10 +45,8 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
      *                                 A Config used in the current context
      * @param talkingConnectionEndType
      */
-    public CertificateMessageParser(InputStream stream, TlsContext tlsContext, ProtocolVersion version,
-        ConnectionEndType talkingConnectionEndType) {
-        super(stream, HandshakeMessageType.CERTIFICATE, version, tlsContext);
-        this.talkingConnectionEndType = talkingConnectionEndType;
+    public CertificateMessageParser(InputStream stream, TlsContext tlsContext, ProtocolVersion version) {
+        super(stream, version, tlsContext);
         this.tlsContext = tlsContext;
     }
 

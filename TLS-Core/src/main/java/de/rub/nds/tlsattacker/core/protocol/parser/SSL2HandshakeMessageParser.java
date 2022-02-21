@@ -24,9 +24,8 @@ public abstract class SSL2HandshakeMessageParser<T extends SSL2HandshakeMessage>
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SSL2HandshakeMessageParser(InputStream stream, HandshakeMessageType type, ProtocolVersion version,
-        TlsContext tlsContext) {
-        super(stream, type, version, tlsContext);
+    public SSL2HandshakeMessageParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
+        super(stream, version, tlsContext);
     }
 
     /**

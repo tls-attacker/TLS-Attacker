@@ -29,7 +29,7 @@ public class NewSessionTicketParser extends HandshakeMessageParser<NewSessionTic
 
     public NewSessionTicketParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext,
         ConnectionEndType talkingConnectionEndType) {
-        super(stream, HandshakeMessageType.NEW_SESSION_TICKET, version, tlsContext);
+        super(stream, version, tlsContext);
         this.talkingConnectionEndType = talkingConnectionEndType;
     }
 

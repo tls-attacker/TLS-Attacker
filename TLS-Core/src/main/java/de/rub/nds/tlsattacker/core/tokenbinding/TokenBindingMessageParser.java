@@ -22,8 +22,8 @@ public class TokenBindingMessageParser extends ProtocolMessageParser<TokenBindin
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public TokenBindingMessageParser(InputStream stream, ProtocolVersion version, Config config) {
-        super(stream, config);
+    public TokenBindingMessageParser(InputStream stream) {
+        super(stream);
     }
 
     @Override

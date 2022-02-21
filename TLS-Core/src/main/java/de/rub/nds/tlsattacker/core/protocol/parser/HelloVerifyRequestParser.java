@@ -25,7 +25,7 @@ public class HelloVerifyRequestParser extends HandshakeMessageParser<HelloVerify
     private static final Logger LOGGER = LogManager.getLogger();
 
     public HelloVerifyRequestParser(InputStream inputStream, ProtocolVersion version, TlsContext tlsContext) {
-        super(inputStream, HandshakeMessageType.HELLO_VERIFY_REQUEST, version, tlsContext);
+        super(inputStream, version, tlsContext);
     }
 
     @Override

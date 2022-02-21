@@ -34,7 +34,7 @@ public class PskServerKeyExchangeParser extends ServerKeyExchangeParser<PskServe
      * @param tlsContext
      */
     public PskServerKeyExchangeParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
-        super(stream, HandshakeMessageType.SERVER_KEY_EXCHANGE, version, tlsContext);
+        super(stream, version, tlsContext);
         this.version = version;
     }
 

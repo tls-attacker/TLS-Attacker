@@ -9,7 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
@@ -31,7 +30,7 @@ public class ServerHelloDoneParser extends HandshakeMessageParser<ServerHelloDon
      *                   A Config used in the current context
      */
     public ServerHelloDoneParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
-        super(stream, HandshakeMessageType.SERVER_HELLO_DONE, version, tlsContext);
+        super(stream, version, tlsContext);
     }
 
     @Override

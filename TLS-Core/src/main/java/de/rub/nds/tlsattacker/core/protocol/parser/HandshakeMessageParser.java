@@ -39,7 +39,6 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
     /**
      * The expected value for the Type field of the Message
      */
-    private final HandshakeMessageType expectedType;
 
     private ProtocolVersion version;
     private TlsContext tlsContext;
@@ -48,16 +47,12 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
      * Constructor for the Parser class
      *
      * @param stream
-     * @param expectedType
-     *                     The expected type of the parsed HandshakeMessage
      * @param version
-     *                     The Version with which this message should be parsed
+     *                   The Version with which this message should be parsed
      * @param tlsContext
      */
-    public HandshakeMessageParser(InputStream stream, HandshakeMessageType expectedType, ProtocolVersion version,
-        TlsContext tlsContext) {
-        super(stream, tlsContext.getConfig());
-        this.expectedType = expectedType;
+    public HandshakeMessageParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
+        super(stream);
         this.version = version;
         this.tlsContext = tlsContext;
     }

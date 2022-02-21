@@ -31,8 +31,8 @@ public class ApplicationMessageParser extends ProtocolMessageParser<ApplicationM
      * @param config
      *                A Config used in the current context
      */
-    public ApplicationMessageParser(InputStream stream, ProtocolVersion version, Config config) {
-        super(stream, config);
+    public ApplicationMessageParser(InputStream stream) {
+        super(stream);
     }
 
     @Override

@@ -31,7 +31,7 @@ public class UnknownHandshakeParser extends HandshakeMessageParser<UnknownHandsh
      * @param tlsContext
      */
     public UnknownHandshakeParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
-        super(stream, HandshakeMessageType.UNKNOWN, version, tlsContext);
+        super(stream, version, tlsContext);
     }
 
     @Override

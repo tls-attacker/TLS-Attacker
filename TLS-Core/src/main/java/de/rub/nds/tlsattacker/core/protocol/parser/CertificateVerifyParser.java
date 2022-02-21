@@ -33,7 +33,7 @@ public class CertificateVerifyParser extends HandshakeMessageParser<CertificateV
      *                   A Config used in the current context
      */
     public CertificateVerifyParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
-        super(stream, HandshakeMessageType.CERTIFICATE_VERIFY, version, tlsContext);
+        super(stream, version, tlsContext);
     }
 
     @Override

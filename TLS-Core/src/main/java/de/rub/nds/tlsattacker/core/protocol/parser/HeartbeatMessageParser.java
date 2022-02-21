@@ -31,8 +31,8 @@ public class HeartbeatMessageParser extends ProtocolMessageParser<HeartbeatMessa
      *                Version of the Protocol
      * @param config
      */
-    public HeartbeatMessageParser(InputStream stream, ProtocolVersion version, Config config) {
-        super(stream, config);
+    public HeartbeatMessageParser(InputStream stream) {
+        super(stream);
     }
 
     @Override

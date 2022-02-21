@@ -46,7 +46,7 @@ public class AlertParserTest {
      */
     @Test
     public void testParse() {
-        AlertParser parser = new AlertParser(new ByteArrayInputStream(message), ProtocolVersion.TLS12, config);
+        AlertParser parser = new AlertParser(new ByteArrayInputStream(message));
         AlertMessage alert = new AlertMessage();
         parser.parse(alert);
         assertArrayEquals(message, alert.getCompleteResultingMessage().getValue());

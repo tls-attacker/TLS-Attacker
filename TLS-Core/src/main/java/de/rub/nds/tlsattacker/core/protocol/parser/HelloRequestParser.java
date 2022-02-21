@@ -30,7 +30,7 @@ public class HelloRequestParser extends HandshakeMessageParser<HelloRequestMessa
      *                    Version of the Protocol
      */
     public HelloRequestParser(InputStream inputStream, ProtocolVersion version, TlsContext tlsContext) {
-        super(inputStream, HandshakeMessageType.HELLO_REQUEST, version, tlsContext);
+        super(inputStream, version, tlsContext);
     }
 
     /**

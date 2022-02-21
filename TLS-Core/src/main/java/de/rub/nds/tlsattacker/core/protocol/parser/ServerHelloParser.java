@@ -39,7 +39,7 @@ public class ServerHelloParser extends HelloMessageParser<ServerHelloMessage> {
      */
     public ServerHelloParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext,
         ConnectionEndType talkingConnectionEndType) {
-        super(stream, HandshakeMessageType.SERVER_HELLO, version, tlsContext);
+        super(stream, version, tlsContext);
         this.talkingConnectionEndType = talkingConnectionEndType;
     }
 

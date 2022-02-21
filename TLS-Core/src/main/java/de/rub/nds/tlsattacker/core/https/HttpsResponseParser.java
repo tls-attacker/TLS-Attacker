@@ -23,8 +23,8 @@ public class HttpsResponseParser extends ProtocolMessageParser<HttpsResponseMess
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public HttpsResponseParser(InputStream stream, ProtocolVersion version, Config config) {
-        super(stream, config);
+    public HttpsResponseParser(InputStream stream) {
+        super(stream);
     }
 
     @Override

@@ -32,8 +32,8 @@ public class AlertParser extends ProtocolMessageParser<AlertMessage> {
      * @param config
      *                A Config used in the current context
      */
-    public AlertParser(InputStream stream, ProtocolVersion version, Config config) {
-        super(stream, config);
+    public AlertParser(InputStream stream) {
+        super(stream);
     }
 
     @Override

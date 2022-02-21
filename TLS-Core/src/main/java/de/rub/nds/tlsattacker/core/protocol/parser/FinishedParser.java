@@ -31,7 +31,7 @@ public class FinishedParser extends HandshakeMessageParser<FinishedMessage> {
      *                   Version of the Protocol
      */
     public FinishedParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
-        super(stream, HandshakeMessageType.FINISHED, version, tlsContext);
+        super(stream, version, tlsContext);
     }
 
     @Override

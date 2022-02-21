@@ -30,8 +30,8 @@ public class HttpsRequestHandlerTest {
         context = new TlsContext();
 
         String rawMessage = "GET /index.html HTTP/1.1\r\nUser-Agent: Test\r\nHost: www.rub.de\r\n\r\n";
-        HttpsRequestParser parser = new HttpsRequestParser(
-            new ByteArrayInputStream(rawMessage.getBytes(Charset.forName("UTF-8"))), ProtocolVersion.TLS12, config);
+        HttpsRequestParser parser =
+            new HttpsRequestParser(new ByteArrayInputStream(rawMessage.getBytes(Charset.forName("UTF-8"))));
         message = new HttpsRequestMessage();
         parser.parse(message);
 

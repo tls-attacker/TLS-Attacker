@@ -31,6 +31,6 @@ public abstract class ClientKeyExchangeParser<T extends ClientKeyExchangeMessage
      *                   A Config used in the current context
      */
     public ClientKeyExchangeParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
-        super(stream, HandshakeMessageType.CLIENT_KEY_EXCHANGE, version, tlsContext);
+        super(stream, version, tlsContext);
     }
 }

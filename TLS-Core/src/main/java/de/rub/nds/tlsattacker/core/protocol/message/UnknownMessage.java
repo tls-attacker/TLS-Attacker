@@ -73,8 +73,7 @@ public class UnknownMessage extends ProtocolMessage {
 
     @Override
     public UnknownMessageParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new UnknownMessageParser(stream, tlsContext.getChooser().getLastRecordVersion(),
-            recordContentMessageType, tlsContext.getConfig());
+        return new UnknownMessageParser(stream);
     }
 
     @Override

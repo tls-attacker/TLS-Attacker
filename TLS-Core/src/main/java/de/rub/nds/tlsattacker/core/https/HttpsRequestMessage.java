@@ -129,8 +129,7 @@ public class HttpsRequestMessage extends ProtocolMessage {
 
     @Override
     public HttpsRequestParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new HttpsRequestParser(stream, tlsContext.getChooser().getSelectedProtocolVersion(),
-            tlsContext.getConfig());
+        return new HttpsRequestParser(stream);
     }
 
     @Override

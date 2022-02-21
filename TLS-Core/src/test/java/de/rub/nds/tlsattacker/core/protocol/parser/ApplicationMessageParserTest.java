@@ -41,8 +41,7 @@ public class ApplicationMessageParserTest {
      */
     @Test
     public void testParse() {
-        ApplicationMessageParser parser =
-            new ApplicationMessageParser(new ByteArrayInputStream(message), ProtocolVersion.TLS12, config);
+        ApplicationMessageParser parser = new ApplicationMessageParser(new ByteArrayInputStream(message));
         ApplicationMessage applicationMessage = new ApplicationMessage();
         parser.parse(applicationMessage);
         assertArrayEquals(applicationMessage.getCompleteResultingMessage().getValue(), message);

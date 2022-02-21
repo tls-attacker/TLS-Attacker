@@ -46,7 +46,7 @@ public class ClientHelloParser extends HelloMessageParser<ClientHelloMessage> {
      */
     public ClientHelloParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext,
         ConnectionEndType talkingConnectionEndType) {
-        super(stream, HandshakeMessageType.CLIENT_HELLO, version, tlsContext);
+        super(stream, version, tlsContext);
         this.talkingConnectionEndType = talkingConnectionEndType;
     }
 

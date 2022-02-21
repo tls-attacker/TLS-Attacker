@@ -22,31 +22,13 @@ public class UnknownMessageParser extends ProtocolMessageParser<UnknownMessage> 
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final ProtocolMessageType recordContentMessageType;
-
-    private Config config;
-
     /**
      * Constructor for the Parser class
      *
      * @param stream
-     * @param version
-     *                                 Version of the Protocol
-     * @param recordContentMessageType
-     * @param config
-     *                                 A Config used in the current context
      */
-    public UnknownMessageParser(InputStream stream, ProtocolVersion version,
-        ProtocolMessageType recordContentMessageType, Config config) {
-        super(stream, config);
-        this.recordContentMessageType = recordContentMessageType;
-        this.config = config;
-    }
-
-    public UnknownMessageParser(InputStream stream, ProtocolVersion version, Config config) {
-        super(stream, config);
-        this.recordContentMessageType = ProtocolMessageType.UNKNOWN;
-        this.config = config;
+    public UnknownMessageParser(InputStream stream) {
+        super(stream);
     }
 
     /**

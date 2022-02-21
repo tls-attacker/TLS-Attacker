@@ -63,8 +63,7 @@ public class HeartbeatMessageParserTest {
      */
     @Test
     public void testParse() {
-        HeartbeatMessageParser parser =
-            new HeartbeatMessageParser(new ByteArrayInputStream(message), ProtocolVersion.TLS12, config);
+        HeartbeatMessageParser parser = new HeartbeatMessageParser(new ByteArrayInputStream(message));
         HeartbeatMessage msg = new HeartbeatMessage();
         parser.parse(msg);
         assertTrue(heartBeatType == msg.getHeartbeatMessageType().getValue());

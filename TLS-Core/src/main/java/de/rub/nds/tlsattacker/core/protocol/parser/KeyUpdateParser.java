@@ -23,7 +23,7 @@ public class KeyUpdateParser extends HandshakeMessageParser<KeyUpdateMessage> {
     private static final Logger LOGGER = LogManager.getLogger();
 
     public KeyUpdateParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
-        super(stream, HandshakeMessageType.KEY_UPDATE, version, tlsContext);
+        super(stream, version, tlsContext);
     }
 
     @Override

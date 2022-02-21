@@ -185,7 +185,7 @@ public class AlertMessage extends ProtocolMessage<AlertMessage> {
 
     @Override
     public AlertParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new AlertParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext.getConfig());
+        return new AlertParser(stream);
     }
 
     @Override
