@@ -10,9 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ChangeCipherSpecByteLength;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
 import java.io.InputStream;
@@ -27,10 +25,6 @@ public class ChangeCipherSpecParser extends ProtocolMessageParser<ChangeCipherSp
      * Constructor for the Parser class
      *
      * @param stream
-     * @param version
-     *                Version of the Protocol
-     * @param config
-     *                A Config used in the current context
      */
     public ChangeCipherSpecParser(InputStream stream) {
         super(stream);

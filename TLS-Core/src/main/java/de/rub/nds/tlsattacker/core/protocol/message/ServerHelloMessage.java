@@ -286,8 +286,7 @@ public class ServerHelloMessage extends HelloMessage {
 
     @Override
     public ServerHelloParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new ServerHelloParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext,
-            tlsContext.getTalkingConnectionEndType());
+        return new ServerHelloParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
     }
 
     public Boolean isAutoSetHelloRetryModeInKeyShare() {

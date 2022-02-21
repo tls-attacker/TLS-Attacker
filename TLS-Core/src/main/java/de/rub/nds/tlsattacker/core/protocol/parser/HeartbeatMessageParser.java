@@ -27,9 +27,6 @@ public class HeartbeatMessageParser extends ProtocolMessageParser<HeartbeatMessa
      * Constructor for the Parser class
      *
      * @param stream
-     * @param version
-     *                Version of the Protocol
-     * @param config
      */
     public HeartbeatMessageParser(InputStream stream) {
         super(stream);

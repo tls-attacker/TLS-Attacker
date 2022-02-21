@@ -21,19 +21,8 @@ public class PWDServerKeyExchangeParser extends ServerKeyExchangeParser<PWDServe
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final ProtocolVersion version;
-
-    private final KeyExchangeAlgorithm keyExchangeAlgorithm;
-
     public PWDServerKeyExchangeParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
-        this(stream, version, null, tlsContext);
-    }
-
-    public PWDServerKeyExchangeParser(InputStream stream, ProtocolVersion version,
-        KeyExchangeAlgorithm keyExchangeAlgorithm, TlsContext tlsContext) {
         super(stream, version, tlsContext);
-        this.version = version;
-        this.keyExchangeAlgorithm = keyExchangeAlgorithm;
     }
 
     @Override

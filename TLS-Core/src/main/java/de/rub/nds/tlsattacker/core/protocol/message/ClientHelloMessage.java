@@ -351,8 +351,7 @@ public class ClientHelloMessage extends HelloMessage {
 
     @Override
     public ClientHelloParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new ClientHelloParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext,
-            tlsContext.getTalkingConnectionEndType());
+        return new ClientHelloParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
     }
 
     @Override

@@ -34,8 +34,6 @@ public abstract class HelloMessageParser<T extends HelloMessage> extends Handsha
      * Constructor for the Parser class
      *
      * @param stream
-     * @param type
-     *                   Expected Type value for the Message
      * @param version
      *                   Version of the Protocol
      * @param tlsContext

@@ -85,8 +85,7 @@ public class PWDServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     @Override
     public PWDServerKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new PWDServerKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(),
-            AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite()), tlsContext);
+        return new PWDServerKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
     }
 
     @Override

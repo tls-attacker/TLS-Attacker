@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
@@ -37,10 +36,9 @@ public class ServerHelloParser extends HelloMessageParser<ServerHelloMessage> {
      * @param tlsContext
      *                   A Config used in the current context
      */
-    public ServerHelloParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext,
-        ConnectionEndType talkingConnectionEndType) {
+    public ServerHelloParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
         super(stream, version, tlsContext);
-        this.talkingConnectionEndType = talkingConnectionEndType;
+        this.talkingConnectionEndType = tlsContext.getTalkingConnectionEndType();
     }
 
     /**

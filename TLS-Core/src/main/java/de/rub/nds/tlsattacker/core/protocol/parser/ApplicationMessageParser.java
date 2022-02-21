@@ -26,10 +26,6 @@ public class ApplicationMessageParser extends ProtocolMessageParser<ApplicationM
      * Constructor for the Parser class
      *
      * @param stream
-     * @param version
-     *                Version of the Protocol
-     * @param config
-     *                A Config used in the current context
      */
     public ApplicationMessageParser(InputStream stream) {
         super(stream);

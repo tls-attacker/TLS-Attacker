@@ -23,18 +23,16 @@ public class PskDheServerKeyExchangeParser extends DHEServerKeyExchangeParser<Ps
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final ProtocolVersion version;
-
     /**
      * Constructor for the Parser class
      *
      * @param stream
      * @param version
      *                Version of the Protocol
+     * @param tlsContext
      */
     public PskDheServerKeyExchangeParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
         super(stream, version, KeyExchangeAlgorithm.DHE_PSK, tlsContext);
-        this.version = version;
     }
 
     @Override

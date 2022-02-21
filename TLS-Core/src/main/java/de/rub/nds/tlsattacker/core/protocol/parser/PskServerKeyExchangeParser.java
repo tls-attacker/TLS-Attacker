@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.PskServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
@@ -23,8 +22,6 @@ public class PskServerKeyExchangeParser extends ServerKeyExchangeParser<PskServe
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final ProtocolVersion version;
-
     /**
      * Constructor for the Parser class
      *
@@ -35,7 +32,6 @@ public class PskServerKeyExchangeParser extends ServerKeyExchangeParser<PskServe
      */
     public PskServerKeyExchangeParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
         super(stream, version, tlsContext);
-        this.version = version;
     }
 
     @Override

@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
@@ -23,8 +22,8 @@ public class SSL2ServerHelloParser extends SSL2HandshakeMessageParser<SSL2Server
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SSL2ServerHelloParser(InputStream stream, ProtocolVersion selectedProtocolVersion, TlsContext tlsContext) {
-        super(stream, selectedProtocolVersion, tlsContext);
+    public SSL2ServerHelloParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
+        super(stream, version, tlsContext);
     }
 
     @Override

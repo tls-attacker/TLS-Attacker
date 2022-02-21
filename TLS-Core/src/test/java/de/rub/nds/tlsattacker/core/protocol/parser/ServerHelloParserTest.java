@@ -90,8 +90,9 @@ public class ServerHelloParserTest {
      */
     @Test
     public void verify() {
-        ServerHelloParser parser = new ServerHelloParser(new ByteArrayInputStream(message), version,
-            new TlsContext(config), ConnectionEndType.SERVER);
+        TlsContext tlsContext = new TlsContext(config);
+        tlsContext.setTalkingConnectionEndType(ConnectionEndType.SERVER);
+        ServerHelloParser parser = new ServerHelloParser(new ByteArrayInputStream(message), version, tlsContext);
         ServerHelloMessage helloMessage = new ServerHelloMessage();
         parser.parse(helloMessage);
         assertArrayEquals(helloMessage.getProtocolVersion().getValue(), protocolVersion);

@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
@@ -93,7 +92,7 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
         LOGGER.debug("ExtensionBytes:" + ArrayConverter.bytesToHexString(extensionBytes, false));
 
         ByteArrayInputStream innerStream = new ByteArrayInputStream(extensionBytes);
-        ExtensionListParser parser = new ExtensionListParser(innerStream, tlsContext, version, helloRetryRequestHint);
+        ExtensionListParser parser = new ExtensionListParser(innerStream, tlsContext, helloRetryRequestHint);
         List<ExtensionMessage> extensionMessages = new LinkedList<>();
         parser.parse(extensionMessages);
         message.setExtensions(extensionMessages);

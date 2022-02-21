@@ -23,8 +23,6 @@ public class PskEcDheServerKeyExchangeParser extends ECDHEServerKeyExchangeParse
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final ProtocolVersion version;
-
     /**
      * Constructor for the Parser class
      *
@@ -35,7 +33,6 @@ public class PskEcDheServerKeyExchangeParser extends ECDHEServerKeyExchangeParse
      */
     public PskEcDheServerKeyExchangeParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
         super(stream, version, tlsContext);
-        this.version = version;
     }
 
     @Override

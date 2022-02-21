@@ -11,12 +11,9 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.*;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class ExtensionFactory {
 
-    private static final Logger LOGGER = LogManager.getLogger();
 
     public static ExtensionMessage getExtension(ExtensionType type) {
         switch (type) {

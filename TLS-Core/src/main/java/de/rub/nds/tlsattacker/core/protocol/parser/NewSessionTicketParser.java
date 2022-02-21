@@ -12,7 +12,6 @@ package de.rub.nds.tlsattacker.core.protocol.parser;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
@@ -27,10 +26,9 @@ public class NewSessionTicketParser extends HandshakeMessageParser<NewSessionTic
 
     private final ConnectionEndType talkingConnectionEndType;
 
-    public NewSessionTicketParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext,
-        ConnectionEndType talkingConnectionEndType) {
+    public NewSessionTicketParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
         super(stream, version, tlsContext);
-        this.talkingConnectionEndType = talkingConnectionEndType;
+        this.talkingConnectionEndType = tlsContext.getTalkingConnectionEndType();
     }
 
     @Override

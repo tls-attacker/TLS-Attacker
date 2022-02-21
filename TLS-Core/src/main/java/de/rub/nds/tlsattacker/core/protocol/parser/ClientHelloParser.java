@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
@@ -31,23 +30,12 @@ public class ClientHelloParser extends HelloMessageParser<ClientHelloMessage> {
      *
      * @param stream
      * @param version
-     *                Version of the Protocol
-     * @param config
-     *                A Config used in the current context
-     */
-    /**
-     * Constructor for the Parser class
-     *
-     * @param stream
-     * @param version
      *                                 Version of the Protocol
      * @param tlsContext
-     * @param talkingConnectionEndType
      */
-    public ClientHelloParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext,
-        ConnectionEndType talkingConnectionEndType) {
+    public ClientHelloParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
         super(stream, version, tlsContext);
-        this.talkingConnectionEndType = talkingConnectionEndType;
+        this.talkingConnectionEndType = tlsContext.getTalkingConnectionEndType();
     }
 
     @Override

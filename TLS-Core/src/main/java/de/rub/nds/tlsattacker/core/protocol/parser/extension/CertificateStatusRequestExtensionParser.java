@@ -24,7 +24,6 @@ import org.apache.logging.log4j.Logger;
 public class CertificateStatusRequestExtensionParser extends ExtensionParser<CertificateStatusRequestExtensionMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    private int startOfContentPointer;
     private ProtocolVersion selectedVersion;
 
     public CertificateStatusRequestExtensionParser(InputStream stream, ProtocolVersion selectedVersion) {
