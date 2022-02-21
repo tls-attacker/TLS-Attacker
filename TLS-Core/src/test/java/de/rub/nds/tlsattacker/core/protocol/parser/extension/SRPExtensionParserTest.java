@@ -45,7 +45,7 @@ public class SRPExtensionParserTest {
 
     @Before
     public void setUp() {
-        parser = new SRPExtensionParser(new ByteArrayInputStream(extensionBytes), Config.createConfig());
+        parser = new SRPExtensionParser(new ByteArrayInputStream(extensionBytes));
 
     }
 

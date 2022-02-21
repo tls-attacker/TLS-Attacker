@@ -100,7 +100,7 @@ public class ServerNameIndicationExtensionMessage extends ExtensionMessage<Serve
 
     @Override
     public ServerNameIndicationExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new ServerNameIndicationExtensionParser(stream, tlsContext.getConfig());
+        return new ServerNameIndicationExtensionParser(stream);
     }
 
     @Override

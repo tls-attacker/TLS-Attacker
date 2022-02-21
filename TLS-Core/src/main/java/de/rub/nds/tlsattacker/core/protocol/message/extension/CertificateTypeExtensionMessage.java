@@ -84,7 +84,7 @@ public class CertificateTypeExtensionMessage extends ExtensionMessage<Certificat
 
     @Override
     public CertificateTypeExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new CertificateTypeExtensionParser(stream, tlsContext.getConfig());
+        return new CertificateTypeExtensionParser(stream);
     }
 
     @Override

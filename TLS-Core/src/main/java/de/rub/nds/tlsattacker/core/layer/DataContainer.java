@@ -17,9 +17,10 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
 
 /**
- * All protocol messages are abstracted with the DataContainer interface. For TLS-Attacker to work with
- * data it only needs to know how to parse, prepare, serialize and handle the message. All messages must
- * therefore provide this functionality.
+ * All protocol messages are abstracted with the DataContainer interface. For TLS-Attacker to work with data it only
+ * needs to know how to parse, prepare, serialize and handle the message. All messages must therefore provide this
+ * functionality.
+ * 
  * @param <T>
  */
 public interface DataContainer<T extends DataContainer> {

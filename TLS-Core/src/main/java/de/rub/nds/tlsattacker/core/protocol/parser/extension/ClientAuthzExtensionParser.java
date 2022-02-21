@@ -16,8 +16,8 @@ import java.io.InputStream;
 
 public class ClientAuthzExtensionParser extends ExtensionParser<ClientAuthzExtensionMessage> {
 
-    public ClientAuthzExtensionParser(InputStream stream, Config config) {
-        super(stream, config);
+    public ClientAuthzExtensionParser(InputStream stream) {
+        super(stream);
     }
 
     @Override

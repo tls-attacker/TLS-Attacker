@@ -84,7 +84,7 @@ public class AlpnExtensionMessage extends ExtensionMessage<AlpnExtensionMessage>
 
     @Override
     public AlpnExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new AlpnExtensionParser(stream, tlsContext.getConfig());
+        return new AlpnExtensionParser(stream);
     }
 
     @Override

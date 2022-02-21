@@ -84,7 +84,7 @@ public class TokenBindingExtensionMessage extends ExtensionMessage<TokenBindingE
 
     @Override
     public TokenBindingExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new TokenBindingExtensionParser(stream, tlsContext.getConfig());
+        return new TokenBindingExtensionParser(stream);
     }
 
     @Override

@@ -21,8 +21,8 @@ public class SignedCertificateTimestampExtensionParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SignedCertificateTimestampExtensionParser(InputStream stream, Config config) {
-        super(stream, config);
+    public SignedCertificateTimestampExtensionParser(InputStream stream) {
+        super(stream);
     }
 
     /**

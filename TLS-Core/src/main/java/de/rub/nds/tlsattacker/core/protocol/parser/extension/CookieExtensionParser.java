@@ -21,8 +21,8 @@ public class CookieExtensionParser extends ExtensionParser<CookieExtensionMessag
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public CookieExtensionParser(InputStream stream, Config config) {
-        super(stream, config);
+    public CookieExtensionParser(InputStream stream) {
+        super(stream);
     }
 
     @Override

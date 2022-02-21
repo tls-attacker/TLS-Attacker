@@ -16,8 +16,8 @@ import java.io.InputStream;
 
 public class EncryptThenMacExtensionParser extends ExtensionParser<EncryptThenMacExtensionMessage> {
 
-    public EncryptThenMacExtensionParser(InputStream stream, Config config) {
-        super(stream, config);
+    public EncryptThenMacExtensionParser(InputStream stream) {
+        super(stream);
     }
 
     @Override

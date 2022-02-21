@@ -21,8 +21,8 @@ public class EllipticCurvesExtensionParser extends ExtensionParser<EllipticCurve
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public EllipticCurvesExtensionParser(InputStream stream, Config config) {
-        super(stream, config);
+    public EllipticCurvesExtensionParser(InputStream stream) {
+        super(stream);
     }
 
     @Override

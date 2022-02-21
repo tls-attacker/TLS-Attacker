@@ -52,7 +52,7 @@ public class SrtpExtensionParserTest {
 
     @Before
     public void setUp() {
-        parser = new SrtpExtensionParser(new ByteArrayInputStream(expectedBytes), Config.createConfig());
+        parser = new SrtpExtensionParser(new ByteArrayInputStream(expectedBytes));
     }
 
     @Test

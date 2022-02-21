@@ -47,7 +47,7 @@ public class PaddingExtensionParserTest {
 
     @Before
     public void setUp() {
-        parser = new PaddingExtensionParser(new ByteArrayInputStream(expectedBytes), Config.createConfig());
+        parser = new PaddingExtensionParser(new ByteArrayInputStream(expectedBytes));
     }
 
     @Test

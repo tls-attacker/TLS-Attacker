@@ -69,7 +69,7 @@ public class CookieExtensionMessage extends ExtensionMessage<CookieExtensionMess
 
     @Override
     public CookieExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new CookieExtensionParser(stream, tlsContext.getConfig());
+        return new CookieExtensionParser(stream);
     }
 
     @Override

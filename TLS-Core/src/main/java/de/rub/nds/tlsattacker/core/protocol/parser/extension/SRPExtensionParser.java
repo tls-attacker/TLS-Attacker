@@ -20,8 +20,8 @@ public class SRPExtensionParser extends ExtensionParser<SRPExtensionMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SRPExtensionParser(InputStream stream, Config config) {
-        super(stream, config);
+    public SRPExtensionParser(InputStream stream) {
+        super(stream);
     }
 
     @Override

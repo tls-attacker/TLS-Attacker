@@ -21,8 +21,8 @@ public class RecordSizeLimitExtensionParser extends ExtensionParser<RecordSizeLi
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public RecordSizeLimitExtensionParser(InputStream stream, Config config) {
-        super(stream, config);
+    public RecordSizeLimitExtensionParser(InputStream stream) {
+        super(stream);
     }
 
     @Override

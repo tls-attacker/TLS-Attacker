@@ -49,7 +49,7 @@ public class TokenBindingExtensionParserTest {
 
     @Before
     public void setUp() {
-        parser = new TokenBindingExtensionParser(new ByteArrayInputStream(extensionBytes), Config.createConfig());
+        parser = new TokenBindingExtensionParser(new ByteArrayInputStream(extensionBytes));
     }
 
     @Test

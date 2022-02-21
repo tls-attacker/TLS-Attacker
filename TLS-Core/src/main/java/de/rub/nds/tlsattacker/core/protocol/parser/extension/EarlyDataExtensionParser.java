@@ -23,8 +23,8 @@ public class EarlyDataExtensionParser extends ExtensionParser<EarlyDataExtension
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public EarlyDataExtensionParser(InputStream stream, Config config) {
-        super(stream, config);
+    public EarlyDataExtensionParser(InputStream stream) {
+        super(stream);
     }
 
     @Override

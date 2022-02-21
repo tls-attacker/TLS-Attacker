@@ -23,8 +23,8 @@ public class RenegotiationInfoExtensionParser extends ExtensionParser<Renegotiat
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public RenegotiationInfoExtensionParser(InputStream stream, Config config) {
-        super(stream, config);
+    public RenegotiationInfoExtensionParser(InputStream stream) {
+        super(stream);
     }
 
     @Override

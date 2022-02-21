@@ -21,8 +21,8 @@ import java.util.List;
 public class CertificateStatusRequestV2ExtensionParser
     extends ExtensionParser<CertificateStatusRequestV2ExtensionMessage> {
 
-    public CertificateStatusRequestV2ExtensionParser(InputStream inputStream, Config config) {
-        super(inputStream, config);
+    public CertificateStatusRequestV2ExtensionParser(InputStream inputStream) {
+        super(inputStream);
     }
 
     @Override

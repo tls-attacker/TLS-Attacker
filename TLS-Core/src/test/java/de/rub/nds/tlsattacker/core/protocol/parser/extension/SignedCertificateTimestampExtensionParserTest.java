@@ -56,8 +56,7 @@ public class SignedCertificateTimestampExtensionParserTest {
 
     @Test
     public void testParseExtensionMessageContent() {
-        parser = new SignedCertificateTimestampExtensionParser(new ByteArrayInputStream(expectedBytes),
-            Config.createConfig());
+        parser = new SignedCertificateTimestampExtensionParser(new ByteArrayInputStream(expectedBytes));
         message = new SignedCertificateTimestampExtensionMessage();
         parser.parse(message);
         assertArrayEquals(timestamp, message.getSignedTimestamp().getValue());

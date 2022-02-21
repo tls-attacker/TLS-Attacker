@@ -31,8 +31,8 @@ public class PreSharedKeyExtensionParser extends ExtensionParser<PreSharedKeyExt
     private static final Logger LOGGER = LogManager.getLogger();
     private ConnectionEndType talkingConnectionEndType;
 
-    public PreSharedKeyExtensionParser(InputStream stream, Config config, ConnectionEndType talkingConnectionEndType) {
-        super(stream, config);
+    public PreSharedKeyExtensionParser(InputStream stream, ConnectionEndType talkingConnectionEndType) {
+        super(stream);
         this.talkingConnectionEndType = talkingConnectionEndType;
     }
 

@@ -22,8 +22,8 @@ public class PasswordSaltExtensionParser extends ExtensionParser<PasswordSaltExt
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public PasswordSaltExtensionParser(InputStream stream, Config config) {
-        super(stream, config);
+    public PasswordSaltExtensionParser(InputStream stream) {
+        super(stream);
     }
 
     @Override

@@ -71,7 +71,7 @@ public class SRPExtensionMessage extends ExtensionMessage<SRPExtensionMessage> {
 
     @Override
     public SRPExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new SRPExtensionParser(stream, tlsContext.getConfig());
+        return new SRPExtensionParser(stream);
     }
 
     @Override

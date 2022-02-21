@@ -69,7 +69,7 @@ public class EllipticCurvesExtensionMessage extends ExtensionMessage<EllipticCur
 
     @Override
     public EllipticCurvesExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new EllipticCurvesExtensionParser(stream, tlsContext.getConfig());
+        return new EllipticCurvesExtensionParser(stream);
     }
 
     @Override

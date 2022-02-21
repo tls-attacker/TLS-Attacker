@@ -21,8 +21,8 @@ public class SrtpExtensionParser extends ExtensionParser<SrtpExtensionMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SrtpExtensionParser(InputStream stream, Config config) {
-        super(stream, config);
+    public SrtpExtensionParser(InputStream stream) {
+        super(stream);
     }
 
     @Override

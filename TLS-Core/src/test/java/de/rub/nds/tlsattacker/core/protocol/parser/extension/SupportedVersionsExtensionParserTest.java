@@ -46,7 +46,7 @@ public class SupportedVersionsExtensionParserTest {
     @Test
     public void testParseExtensionMessageContent() {
         SupportedVersionsExtensionParser parser =
-            new SupportedVersionsExtensionParser(new ByteArrayInputStream(extension), Config.createConfig());
+            new SupportedVersionsExtensionParser(new ByteArrayInputStream(extension));
         SupportedVersionsExtensionMessage msg = new SupportedVersionsExtensionMessage();
         parser.parse(msg);
         assertArrayEquals(msg.getSupportedVersions().getValue(), versionList);

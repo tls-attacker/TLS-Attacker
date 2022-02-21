@@ -23,7 +23,7 @@ public class EncryptThenMacExtensionParserTest {
 
     @Before
     public void setUp() {
-        parser = new EncryptThenMacExtensionParser(new ByteArrayInputStream(expectedBytes), Config.createConfig());
+        parser = new EncryptThenMacExtensionParser(new ByteArrayInputStream(expectedBytes));
     }
 
     @Test

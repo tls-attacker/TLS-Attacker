@@ -25,8 +25,8 @@ public class PSKKeyExchangeModesExtensionParser extends ExtensionParser<PSKKeyEx
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public PSKKeyExchangeModesExtensionParser(InputStream stream, Config config) {
-        super(stream, config);
+    public PSKKeyExchangeModesExtensionParser(InputStream stream) {
+        super(stream);
     }
 
     @Override

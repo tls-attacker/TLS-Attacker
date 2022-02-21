@@ -21,8 +21,8 @@ public class ECPointFormatExtensionParser extends ExtensionParser<ECPointFormatE
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ECPointFormatExtensionParser(InputStream stream, Config config) {
-        super(stream, config);
+    public ECPointFormatExtensionParser(InputStream stream) {
+        super(stream);
     }
 
     @Override

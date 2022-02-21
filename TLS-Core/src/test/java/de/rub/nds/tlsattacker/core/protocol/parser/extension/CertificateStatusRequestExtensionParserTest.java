@@ -59,8 +59,8 @@ public class CertificateStatusRequestExtensionParserTest {
 
     @Before
     public void setUp() {
-        parser = new CertificateStatusRequestExtensionParser(new ByteArrayInputStream(expectedBytes),
-            Config.createConfig(), ProtocolVersion.TLS12);
+        parser =
+            new CertificateStatusRequestExtensionParser(new ByteArrayInputStream(expectedBytes), ProtocolVersion.TLS12);
     }
 
     @Test

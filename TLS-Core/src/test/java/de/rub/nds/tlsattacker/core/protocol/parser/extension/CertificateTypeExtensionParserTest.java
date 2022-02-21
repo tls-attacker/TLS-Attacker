@@ -52,7 +52,7 @@ public class CertificateTypeExtensionParserTest {
 
     @Before
     public void setUp() {
-        parser = new CertificateTypeExtensionParser(new ByteArrayInputStream(expectedBytes), Config.createConfig());
+        parser = new CertificateTypeExtensionParser(new ByteArrayInputStream(expectedBytes));
     }
 
     @Test

@@ -69,7 +69,7 @@ public class ECPointFormatExtensionMessage extends ExtensionMessage<ECPointForma
 
     @Override
     public ECPointFormatExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new ECPointFormatExtensionParser(stream, tlsContext.getConfig());
+        return new ECPointFormatExtensionParser(stream);
     }
 
     @Override

@@ -49,8 +49,7 @@ public class UnknownExtensionParserTest {
      */
     @Test
     public void testParse() {
-        UnknownExtensionParser parser =
-            new UnknownExtensionParser(new ByteArrayInputStream(message), Config.createConfig());
+        UnknownExtensionParser parser = new UnknownExtensionParser(new ByteArrayInputStream(message));
         UnknownExtensionMessage unknownMessage = new UnknownExtensionMessage();
         parser.parseExtensionMessageContent(unknownMessage);
         assertArrayEquals(message, unknownMessage.getExtensionData().getValue());

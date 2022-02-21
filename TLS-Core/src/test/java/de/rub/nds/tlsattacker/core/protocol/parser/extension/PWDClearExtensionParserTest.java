@@ -40,8 +40,7 @@ public class PWDClearExtensionParserTest {
 
     @Test
     public void testParseExtensionMessageContent() {
-        PWDClearExtensionParser parser =
-            new PWDClearExtensionParser(new ByteArrayInputStream(expectedBytes), Config.createConfig());
+        PWDClearExtensionParser parser = new PWDClearExtensionParser(new ByteArrayInputStream(expectedBytes));
         PWDClearExtensionMessage msg = new PWDClearExtensionMessage();
         parser.parse(msg);
         assertEquals(usernameLength, (long) msg.getUsernameLength().getValue());

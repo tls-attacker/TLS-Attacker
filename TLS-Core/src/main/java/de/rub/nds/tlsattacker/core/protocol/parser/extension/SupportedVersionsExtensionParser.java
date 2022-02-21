@@ -22,8 +22,8 @@ public class SupportedVersionsExtensionParser extends ExtensionParser<SupportedV
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SupportedVersionsExtensionParser(InputStream stream, Config config) {
-        super(stream, config);
+    public SupportedVersionsExtensionParser(InputStream stream) {
+        super(stream);
     }
 
     @Override

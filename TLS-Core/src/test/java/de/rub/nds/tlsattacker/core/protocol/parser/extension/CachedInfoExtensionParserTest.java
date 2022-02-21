@@ -59,8 +59,7 @@ public class CachedInfoExtensionParserTest {
     public void testParse() {
         TlsContext context = new TlsContext();
 
-        CachedInfoExtensionParser parser =
-            new CachedInfoExtensionParser(new ByteArrayInputStream(extensionBytes), Config.createConfig());
+        CachedInfoExtensionParser parser = new CachedInfoExtensionParser(new ByteArrayInputStream(extensionBytes));
         CachedInfoExtensionMessage msg = new CachedInfoExtensionMessage();
         parser.parse(msg);
 

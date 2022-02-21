@@ -80,7 +80,7 @@ public class TrustedCaIndicationExtensionMessage extends ExtensionMessage<Truste
 
     @Override
     public TrustedCaIndicationExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new TrustedCaIndicationExtensionParser(stream, tlsContext.getConfig());
+        return new TrustedCaIndicationExtensionParser(stream);
     }
 
     @Override

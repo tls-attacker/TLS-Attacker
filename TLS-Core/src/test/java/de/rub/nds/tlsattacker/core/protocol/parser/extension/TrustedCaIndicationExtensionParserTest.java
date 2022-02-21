@@ -61,7 +61,7 @@ public class TrustedCaIndicationExtensionParserTest {
     @Test
     public void testParse() {
         TrustedCaIndicationExtensionParser parser =
-            new TrustedCaIndicationExtensionParser(new ByteArrayInputStream(extensionBytes), Config.createConfig());
+            new TrustedCaIndicationExtensionParser(new ByteArrayInputStream(extensionBytes));
         TrustedCaIndicationExtensionMessage msg = new TrustedCaIndicationExtensionMessage();
         parser.parse(msg);
         assertEquals(trustedAuthoritiesLength, (long) msg.getTrustedAuthoritiesLength().getValue());

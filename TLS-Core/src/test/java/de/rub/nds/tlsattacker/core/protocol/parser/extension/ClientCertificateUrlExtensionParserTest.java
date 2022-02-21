@@ -23,8 +23,7 @@ public class ClientCertificateUrlExtensionParserTest {
 
     @Before
     public void setUp() {
-        parser =
-            new ClientCertificateUrlExtensionParser(new ByteArrayInputStream(expectedBytes), Config.createConfig());
+        parser = new ClientCertificateUrlExtensionParser(new ByteArrayInputStream(expectedBytes));
     }
 
     @Test

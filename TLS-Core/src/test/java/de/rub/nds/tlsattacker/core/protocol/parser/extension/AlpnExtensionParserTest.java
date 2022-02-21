@@ -44,7 +44,7 @@ public class AlpnExtensionParserTest {
 
     @Before
     public void setUp() {
-        parser = new AlpnExtensionParser(new ByteArrayInputStream(expectedBytes), Config.createConfig());
+        parser = new AlpnExtensionParser(new ByteArrayInputStream(expectedBytes));
     }
 
     @Test

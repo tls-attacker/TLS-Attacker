@@ -66,7 +66,7 @@ public class SupportedVersionsExtensionMessage extends ExtensionMessage<Supporte
 
     @Override
     public SupportedVersionsExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new SupportedVersionsExtensionParser(stream, tlsContext.getConfig());
+        return new SupportedVersionsExtensionParser(stream);
     }
 
     @Override

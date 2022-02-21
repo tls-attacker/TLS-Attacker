@@ -69,7 +69,7 @@ public class PWDProtectExtensionMessage extends ExtensionMessage<PWDProtectExten
 
     @Override
     public PWDProtectExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new PWDProtectExtensionParser(stream, tlsContext.getConfig());
+        return new PWDProtectExtensionParser(stream);
     }
 
     @Override

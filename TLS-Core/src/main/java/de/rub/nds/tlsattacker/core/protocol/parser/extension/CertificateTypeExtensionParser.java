@@ -16,8 +16,8 @@ import java.io.InputStream;
 
 public class CertificateTypeExtensionParser extends ExtensionParser<CertificateTypeExtensionMessage> {
 
-    public CertificateTypeExtensionParser(InputStream stream, Config config) {
-        super(stream, config);
+    public CertificateTypeExtensionParser(InputStream stream) {
+        super(stream);
     }
 
     @Override

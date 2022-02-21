@@ -25,8 +25,8 @@ public class ExtendedRandomExtensionParser extends ExtensionParser<ExtendedRando
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ExtendedRandomExtensionParser(InputStream stream, Config config) {
-        super(stream, config);
+    public ExtendedRandomExtensionParser(InputStream stream) {
+        super(stream);
     }
 
     @Override

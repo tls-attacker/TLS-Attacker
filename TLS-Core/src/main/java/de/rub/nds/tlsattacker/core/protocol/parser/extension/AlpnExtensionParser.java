@@ -20,8 +20,8 @@ import java.util.List;
 
 public class AlpnExtensionParser extends ExtensionParser<AlpnExtensionMessage> {
 
-    public AlpnExtensionParser(InputStream stream, Config config) {
-        super(stream, config);
+    public AlpnExtensionParser(InputStream stream) {
+        super(stream);
     }
 
     @Override

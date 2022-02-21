@@ -45,7 +45,7 @@ public class RenegotiationInfoExtensionParserTest {
 
     @Before
     public void setUp() {
-        parser = new RenegotiationInfoExtensionParser(new ByteArrayInputStream(expectedBytes), Config.createConfig());
+        parser = new RenegotiationInfoExtensionParser(new ByteArrayInputStream(expectedBytes));
     }
 
     @Test

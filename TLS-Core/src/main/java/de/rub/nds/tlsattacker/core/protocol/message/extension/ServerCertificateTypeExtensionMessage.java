@@ -84,7 +84,7 @@ public class ServerCertificateTypeExtensionMessage extends ExtensionMessage<Serv
 
     @Override
     public ServerCertificateTypeExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new ServerCertificateTypeExtensionParser(stream, tlsContext.getConfig());
+        return new ServerCertificateTypeExtensionParser(stream);
     }
 
     @Override

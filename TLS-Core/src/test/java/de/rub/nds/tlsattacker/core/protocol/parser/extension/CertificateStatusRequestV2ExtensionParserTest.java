@@ -74,7 +74,7 @@ public class CertificateStatusRequestV2ExtensionParserTest {
         list.get(1).setResponderIdList(respList);
         list.get(1).setResponderIdListBytes(responderIdListBytes);
         CertificateStatusRequestV2ExtensionParser parser =
-            new CertificateStatusRequestV2ExtensionParser(new ByteArrayInputStream(parseBytes), Config.createConfig());
+            new CertificateStatusRequestV2ExtensionParser(new ByteArrayInputStream(parseBytes));
         CertificateStatusRequestV2ExtensionMessage msg = new CertificateStatusRequestV2ExtensionMessage();
         parser.parse(msg);
 

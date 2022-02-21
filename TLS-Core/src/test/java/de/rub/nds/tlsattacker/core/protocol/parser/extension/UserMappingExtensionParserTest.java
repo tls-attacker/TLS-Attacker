@@ -27,7 +27,7 @@ public class UserMappingExtensionParserTest {
 
     @Before
     public void setUp() {
-        parser = new UserMappingExtensionParser(new ByteArrayInputStream(extensionBytes), Config.createConfig());
+        parser = new UserMappingExtensionParser(new ByteArrayInputStream(extensionBytes));
     }
 
     @Test

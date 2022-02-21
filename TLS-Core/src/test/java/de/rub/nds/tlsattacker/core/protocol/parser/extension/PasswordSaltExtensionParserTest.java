@@ -43,8 +43,7 @@ public class PasswordSaltExtensionParserTest {
 
     @Test
     public void testParseExtensionMessageContent() {
-        PasswordSaltExtensionParser parser =
-            new PasswordSaltExtensionParser(new ByteArrayInputStream(expectedBytes), Config.createConfig());
+        PasswordSaltExtensionParser parser = new PasswordSaltExtensionParser(new ByteArrayInputStream(expectedBytes));
         PasswordSaltExtensionMessage msg = new PasswordSaltExtensionMessage();
         parser.parse(msg);
         assertEquals(saltLength, (long) msg.getSaltLength().getValue());

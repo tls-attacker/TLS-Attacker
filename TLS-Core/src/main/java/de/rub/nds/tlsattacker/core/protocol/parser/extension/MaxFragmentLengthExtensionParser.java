@@ -22,8 +22,8 @@ public class MaxFragmentLengthExtensionParser extends ExtensionParser<MaxFragmen
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public MaxFragmentLengthExtensionParser(InputStream stream, Config config) {
-        super(stream, config);
+    public MaxFragmentLengthExtensionParser(InputStream stream) {
+        super(stream);
     }
 
     @Override

@@ -20,8 +20,8 @@ public class UserMappingExtensionParser extends ExtensionParser<UserMappingExten
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public UserMappingExtensionParser(InputStream stream, Config config) {
-        super(stream, config);
+    public UserMappingExtensionParser(InputStream stream) {
+        super(stream);
     }
 
     @Override

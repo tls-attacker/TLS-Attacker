@@ -21,8 +21,8 @@ public class PWDProtectExtensionParser extends ExtensionParser<PWDProtectExtensi
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public PWDProtectExtensionParser(InputStream stream, Config config) {
-        super(stream, config);
+    public PWDProtectExtensionParser(InputStream stream) {
+        super(stream);
     }
 
     @Override

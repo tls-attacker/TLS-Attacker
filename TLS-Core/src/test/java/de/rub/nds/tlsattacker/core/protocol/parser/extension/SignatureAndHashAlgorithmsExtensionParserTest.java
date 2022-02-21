@@ -47,7 +47,7 @@ public class SignatureAndHashAlgorithmsExtensionParserTest {
     @Test
     public void testParseExtensionMessageContent() {
         SignatureAndHashAlgorithmsExtensionParser parser =
-            new SignatureAndHashAlgorithmsExtensionParser(new ByteArrayInputStream(extension), Config.createConfig());
+            new SignatureAndHashAlgorithmsExtensionParser(new ByteArrayInputStream(extension));
         SignatureAndHashAlgorithmsExtensionMessage msg = new SignatureAndHashAlgorithmsExtensionMessage();
         parser.parse(msg);
         assertArrayEquals(msg.getSignatureAndHashAlgorithms().getValue(), algoList);

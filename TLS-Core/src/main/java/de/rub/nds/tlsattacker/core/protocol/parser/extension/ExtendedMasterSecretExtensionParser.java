@@ -19,8 +19,8 @@ public class ExtendedMasterSecretExtensionParser extends ExtensionParser<Extende
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ExtendedMasterSecretExtensionParser(InputStream stream, Config config) {
-        super(stream, config);
+    public ExtendedMasterSecretExtensionParser(InputStream stream) {
+        super(stream);
     }
 
     /**

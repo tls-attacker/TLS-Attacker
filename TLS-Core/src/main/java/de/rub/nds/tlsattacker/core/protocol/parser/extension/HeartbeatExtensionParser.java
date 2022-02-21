@@ -21,8 +21,8 @@ public class HeartbeatExtensionParser extends ExtensionParser<HeartbeatExtension
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public HeartbeatExtensionParser(InputStream stream, Config config) {
-        super(stream, config);
+    public HeartbeatExtensionParser(InputStream stream) {
+        super(stream);
     }
 
     @Override

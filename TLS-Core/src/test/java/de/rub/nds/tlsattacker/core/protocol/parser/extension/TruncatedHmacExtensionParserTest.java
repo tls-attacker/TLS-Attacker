@@ -23,7 +23,7 @@ public class TruncatedHmacExtensionParserTest {
 
     @Before
     public void setUp() {
-        parser = new TruncatedHmacExtensionParser(new ByteArrayInputStream(expectedBytes), Config.createConfig());
+        parser = new TruncatedHmacExtensionParser(new ByteArrayInputStream(expectedBytes));
     }
 
     @Test

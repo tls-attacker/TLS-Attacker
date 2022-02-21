@@ -21,8 +21,8 @@ import java.util.List;
 
 public class TrustedCaIndicationExtensionParser extends ExtensionParser<TrustedCaIndicationExtensionMessage> {
 
-    public TrustedCaIndicationExtensionParser(InputStream stream, Config config) {
-        super(stream, config);
+    public TrustedCaIndicationExtensionParser(InputStream stream) {
+        super(stream);
     }
 
     @Override

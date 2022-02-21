@@ -27,8 +27,8 @@ public class ServerNameIndicationExtensionParser extends ExtensionParser<ServerN
 
     private List<ServerNamePair> pairList;
 
-    public ServerNameIndicationExtensionParser(InputStream stream, Config config) {
-        super(stream, config);
+    public ServerNameIndicationExtensionParser(InputStream stream) {
+        super(stream);
     }
 
     @Override

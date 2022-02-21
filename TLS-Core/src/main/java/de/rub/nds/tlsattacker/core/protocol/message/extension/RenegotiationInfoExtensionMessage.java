@@ -70,7 +70,7 @@ public class RenegotiationInfoExtensionMessage extends ExtensionMessage<Renegoti
 
     @Override
     public RenegotiationInfoExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new RenegotiationInfoExtensionParser(stream, tlsContext.getConfig());
+        return new RenegotiationInfoExtensionParser(stream);
     }
 
     @Override

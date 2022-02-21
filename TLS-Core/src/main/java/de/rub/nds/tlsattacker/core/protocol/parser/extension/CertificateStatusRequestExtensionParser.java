@@ -27,8 +27,8 @@ public class CertificateStatusRequestExtensionParser extends ExtensionParser<Cer
     private int startOfContentPointer;
     private ProtocolVersion selectedVersion;
 
-    public CertificateStatusRequestExtensionParser(InputStream stream, Config config, ProtocolVersion selectedVersion) {
-        super(stream, config);
+    public CertificateStatusRequestExtensionParser(InputStream stream, ProtocolVersion selectedVersion) {
+        super(stream);
         this.selectedVersion = selectedVersion;
     }
 

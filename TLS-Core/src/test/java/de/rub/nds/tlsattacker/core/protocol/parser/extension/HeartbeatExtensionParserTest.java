@@ -45,8 +45,7 @@ public class HeartbeatExtensionParserTest {
      */
     @Test
     public void testParseExtensionMessageContent() {
-        HeartbeatExtensionParser parser =
-            new HeartbeatExtensionParser(new ByteArrayInputStream(extension), Config.createConfig());
+        HeartbeatExtensionParser parser = new HeartbeatExtensionParser(new ByteArrayInputStream(extension));
         HeartbeatExtensionMessage msg = new HeartbeatExtensionMessage();
         parser.parse(msg);
         assertArrayEquals(heartbeatMode, msg.getHeartbeatMode().getValue());

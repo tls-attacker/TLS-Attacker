@@ -198,8 +198,7 @@ public class EncryptedServerNameIndicationExtensionMessage
 
     @Override
     public EncryptedServerNameIndicationExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new EncryptedServerNameIndicationExtensionParser(stream, tlsContext.getConfig(),
-            tlsContext.getTalkingConnectionEndType());
+        return new EncryptedServerNameIndicationExtensionParser(stream, tlsContext.getTalkingConnectionEndType());
     }
 
     @Override

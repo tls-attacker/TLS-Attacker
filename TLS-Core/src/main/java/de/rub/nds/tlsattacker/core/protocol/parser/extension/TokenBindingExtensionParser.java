@@ -20,8 +20,8 @@ public class TokenBindingExtensionParser extends ExtensionParser<TokenBindingExt
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public TokenBindingExtensionParser(InputStream stream, Config config) {
-        super(stream, config);
+    public TokenBindingExtensionParser(InputStream stream) {
+        super(stream);
     }
 
     @Override

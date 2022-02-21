@@ -15,8 +15,8 @@ import java.io.InputStream;
 
 public class ClientCertificateUrlExtensionParser extends ExtensionParser<ClientCertificateUrlExtensionMessage> {
 
-    public ClientCertificateUrlExtensionParser(InputStream stream, Config config) {
-        super(stream, config);
+    public ClientCertificateUrlExtensionParser(InputStream stream) {
+        super(stream);
     }
 
     @Override

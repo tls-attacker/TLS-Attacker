@@ -50,7 +50,7 @@ public class ExtendedRandomExtensionParserTest {
 
     @Before
     public void setUp() {
-        parser = new ExtendedRandomExtensionParser(new ByteArrayInputStream(expectedBytes), Config.createConfig());
+        parser = new ExtendedRandomExtensionParser(new ByteArrayInputStream(expectedBytes));
     }
 
     @Test

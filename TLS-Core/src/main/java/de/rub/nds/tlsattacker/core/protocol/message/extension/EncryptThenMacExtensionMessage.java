@@ -35,7 +35,7 @@ public class EncryptThenMacExtensionMessage extends ExtensionMessage<EncryptThen
 
     @Override
     public EncryptThenMacExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new EncryptThenMacExtensionParser(stream, tlsContext.getConfig());
+        return new EncryptThenMacExtensionParser(stream);
     }
 
     @Override

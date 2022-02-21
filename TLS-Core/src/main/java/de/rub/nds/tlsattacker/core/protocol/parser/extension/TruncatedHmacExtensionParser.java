@@ -15,8 +15,8 @@ import java.io.InputStream;
 
 public class TruncatedHmacExtensionParser extends ExtensionParser<TruncatedHmacExtensionMessage> {
 
-    public TruncatedHmacExtensionParser(InputStream stream, Config config) {
-        super(stream, config);
+    public TruncatedHmacExtensionParser(InputStream stream) {
+        super(stream);
     }
 
     @Override

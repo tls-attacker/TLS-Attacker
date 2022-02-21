@@ -22,8 +22,8 @@ public class SignatureAndHashAlgorithmsExtensionParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SignatureAndHashAlgorithmsExtensionParser(InputStream stream, Config config) {
-        super(stream, config);
+    public SignatureAndHashAlgorithmsExtensionParser(InputStream stream) {
+        super(stream);
     }
 
     @Override

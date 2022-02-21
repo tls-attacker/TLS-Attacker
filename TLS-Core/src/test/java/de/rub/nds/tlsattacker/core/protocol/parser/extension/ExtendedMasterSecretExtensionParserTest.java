@@ -37,8 +37,7 @@ public class ExtendedMasterSecretExtensionParserTest {
 
     @Before
     public void setUp() {
-        parser =
-            new ExtendedMasterSecretExtensionParser(new ByteArrayInputStream(expectedBytes), Config.createConfig());
+        parser = new ExtendedMasterSecretExtensionParser(new ByteArrayInputStream(expectedBytes));
     }
 
     @Test

@@ -151,7 +151,7 @@ public class CertificateStatusRequestExtensionMessage
     @Override
     public CertificateStatusRequestExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
         // TODO make sure this is the correct version
-        return new CertificateStatusRequestExtensionParser(stream, tlsContext.getConfig(),
+        return new CertificateStatusRequestExtensionParser(stream,
             tlsContext.getChooser().getSelectedProtocolVersion());
     }
 

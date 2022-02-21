@@ -26,9 +26,8 @@ public class EncryptedServerNameIndicationExtensionParser
     private static final Logger LOGGER = LogManager.getLogger();
     private final ConnectionEndType talkingConnectionEnd;
 
-    public EncryptedServerNameIndicationExtensionParser(InputStream stream, Config config,
-        ConnectionEndType talkingConnectionEnd) {
-        super(stream, config);
+    public EncryptedServerNameIndicationExtensionParser(InputStream stream, ConnectionEndType talkingConnectionEnd) {
+        super(stream);
         this.talkingConnectionEnd = talkingConnectionEnd;
     }
 

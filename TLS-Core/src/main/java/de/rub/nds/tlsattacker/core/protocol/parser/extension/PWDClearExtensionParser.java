@@ -19,8 +19,8 @@ import org.apache.logging.log4j.Logger;
 public class PWDClearExtensionParser extends ExtensionParser<PWDClearExtensionMessage> {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public PWDClearExtensionParser(InputStream stream, Config config) {
-        super(stream, config);
+    public PWDClearExtensionParser(InputStream stream) {
+        super(stream);
     }
 
     @Override

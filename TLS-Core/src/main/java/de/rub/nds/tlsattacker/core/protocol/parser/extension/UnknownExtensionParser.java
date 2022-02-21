@@ -20,8 +20,8 @@ public class UnknownExtensionParser extends ExtensionParser<UnknownExtensionMess
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public UnknownExtensionParser(InputStream inputStream, Config config) {
-        super(inputStream, config);
+    public UnknownExtensionParser(InputStream inputStream) {
+        super(inputStream);
     }
 
     protected void parseExtensionData(UnknownExtensionMessage message) {

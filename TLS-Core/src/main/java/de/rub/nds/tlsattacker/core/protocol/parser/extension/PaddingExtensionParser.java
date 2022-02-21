@@ -20,8 +20,8 @@ public class PaddingExtensionParser extends ExtensionParser<PaddingExtensionMess
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public PaddingExtensionParser(InputStream stream, Config config) {
-        super(stream, config);
+    public PaddingExtensionParser(InputStream stream) {
+        super(stream);
     }
 
     @Override

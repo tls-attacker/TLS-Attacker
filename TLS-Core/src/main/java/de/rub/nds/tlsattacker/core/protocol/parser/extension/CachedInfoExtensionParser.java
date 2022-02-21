@@ -23,8 +23,8 @@ public class CachedInfoExtensionParser extends ExtensionParser<CachedInfoExtensi
 
     private List<CachedObject> cachedObjectList;
 
-    public CachedInfoExtensionParser(InputStream stream, Config config) {
-        super(stream, config);
+    public CachedInfoExtensionParser(InputStream stream) {
+        super(stream);
     }
 
     @Override
