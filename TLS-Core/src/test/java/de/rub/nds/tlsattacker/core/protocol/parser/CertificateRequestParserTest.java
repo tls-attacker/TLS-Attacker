@@ -72,7 +72,8 @@ public class CertificateRequestParserTest {
     public void testParse() {
         TlsContext tlsContext = new TlsContext(config);
         tlsContext.setTalkingConnectionEndType(ConnectionEndType.SERVER);
-        CertificateRequestParser parser = new CertificateRequestParser(new ByteArrayInputStream(message), version, tlsContext);
+        CertificateRequestParser parser =
+            new CertificateRequestParser(new ByteArrayInputStream(message), version, tlsContext);
         CertificateRequestMessage msg = new CertificateRequestMessage();
         parser.parse(msg);
         assertTrue(msg.getClientCertificateTypesCount().getValue() == certTypesCount);

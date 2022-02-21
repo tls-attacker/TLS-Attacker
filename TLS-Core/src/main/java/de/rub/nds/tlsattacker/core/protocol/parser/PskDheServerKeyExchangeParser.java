@@ -28,7 +28,7 @@ public class PskDheServerKeyExchangeParser extends DHEServerKeyExchangeParser<Ps
      *
      * @param stream
      * @param version
-     *                Version of the Protocol
+     *                   Version of the Protocol
      * @param tlsContext
      */
     public PskDheServerKeyExchangeParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {

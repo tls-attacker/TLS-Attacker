@@ -14,7 +14,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.*;
 
 public class ExtensionFactory {
 
-
     public static ExtensionMessage getExtension(ExtensionType type) {
         switch (type) {
             case CLIENT_CERTIFICATE_URL:

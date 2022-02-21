@@ -32,7 +32,7 @@ public class CertificateRequestParser extends HandshakeMessageParser<Certificate
      *
      * @param stream
      * @param version
-     *                                 Version of the Protocol
+     *                   Version of the Protocol
      * @param tlsContext
      */
     public CertificateRequestParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {

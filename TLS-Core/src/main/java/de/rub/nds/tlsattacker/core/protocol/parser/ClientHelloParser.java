@@ -30,7 +30,7 @@ public class ClientHelloParser extends HelloMessageParser<ClientHelloMessage> {
      *
      * @param stream
      * @param version
-     *                                 Version of the Protocol
+     *                   Version of the Protocol
      * @param tlsContext
      */
     public ClientHelloParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {

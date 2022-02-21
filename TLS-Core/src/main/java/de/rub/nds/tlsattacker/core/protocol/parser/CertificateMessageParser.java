@@ -40,7 +40,7 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
      * @param stream
      * @param tlsContext
      * @param version
-     *                                 Version of the Protocol
+     *                   Version of the Protocol
      */
     public CertificateMessageParser(InputStream stream, TlsContext tlsContext, ProtocolVersion version) {
         super(stream, version, tlsContext);
@@ -124,8 +124,8 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
 
         List<CertificateEntry> entryList = new LinkedList<>();
         for (CertificatePair pair : msg.getCertificatesList()) {
-            ExtensionListParser parser = new ExtensionListParser(
-                new ByteArrayInputStream(pair.getExtensions().getValue()), tlsContext,false);
+            ExtensionListParser parser =
+                new ExtensionListParser(new ByteArrayInputStream(pair.getExtensions().getValue()), tlsContext, false);
             List<ExtensionMessage> extensionMessages = new LinkedList<>();
             parser.parse(extensionMessages);
             entryList.add(new CertificateEntry(pair.getCertificate().getValue(), extensionMessages));
