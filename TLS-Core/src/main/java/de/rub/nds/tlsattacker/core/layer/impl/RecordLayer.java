@@ -174,6 +174,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
             }
         } catch (EndOfStreamException ex) {
             LOGGER.warn("Reached end of stream, cannot parse more records");
+            LOGGER.debug(ex);
         }
     }
 

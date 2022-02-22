@@ -113,10 +113,11 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
                 }
             } while (getLayerConfiguration().successRequiresMoreContainers(getLayerResult().getUsedContainers())
                 || dataStream.available() > 0);
-        } catch (TimeoutException E) {
-            LOGGER.debug(E);
+        } catch (TimeoutException ex) {
+            LOGGER.debug(ex);
         } catch (EndOfStreamException ex) {
             LOGGER.warn("Reached end of stream, cannot parse more messages");
+            LOGGER.debug(ex);
         }
 
         return getLayerResult();

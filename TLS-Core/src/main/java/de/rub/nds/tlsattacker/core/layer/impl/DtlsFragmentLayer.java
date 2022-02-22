@@ -163,10 +163,11 @@ public class DtlsFragmentLayer extends ProtocolLayer<RecordLayerHint, DtlsHandsh
                 }
             } while (getLayerConfiguration().successRequiresMoreContainers(getLayerResult().getUsedContainers())
                 || dataStream.available() > 0 || currentInputStream == null);
-        } catch (TimeoutException E) {
-            LOGGER.debug(E);
+        } catch (TimeoutException ex) {
+            LOGGER.debug(ex);
         } catch (EndOfStreamException ex) {
             LOGGER.warn("Reached end of stream, cannot parse more dtls fragments");
+            LOGGER.debug(ex);
         }
     }
 
