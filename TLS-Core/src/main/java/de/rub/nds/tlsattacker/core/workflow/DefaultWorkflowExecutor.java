@@ -12,10 +12,7 @@ package de.rub.nds.tlsattacker.core.workflow;
 import de.rub.nds.tlsattacker.core.config.ConfigIO;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
-import de.rub.nds.tlsattacker.core.layer.constant.LayerStackType;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import java.io.File;
@@ -111,10 +108,5 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
         } catch (Exception ex) {
             LOGGER.trace("Error during AfterExecutionCallback", ex);
         }
-    }
-
-    @Override
-    public void initProtocolStack(TlsContext context) throws IOException {
-        context.setLayerStack(LayerStackFactory.createLayerStack(config.getLayerStackType(), context));
     }
 }

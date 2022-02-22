@@ -12,11 +12,8 @@ package de.rub.nds.tlsattacker.core.workflow;
 import de.rub.nds.tlsattacker.core.config.ConfigIO;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
 import de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration;
-import de.rub.nds.tlsattacker.core.layer.constant.LayerStackType;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceivingAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendingAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
@@ -139,11 +136,6 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
         }
     }
 
-    @Override
-    public void initProtocolStack(TlsContext context) throws IOException {
-        context.setLayerStack(LayerStackFactory.createLayerStack(config.getLayerStackType(), context));
-    }
-
     private void executeRetransmission(SendingAction action) throws IOException {
         LOGGER.info("Executing retransmission of last sent flight");
         state.getTlsContext().getRecordLayer().reencrypt(action.getSendRecords());
@@ -151,5 +143,4 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
             .setLayerConfiguration(new SpecificSendLayerConfiguration(action.getSendRecords()));
         state.getTlsContext().getRecordLayer().sendConfiguration();
     }
-
 }
