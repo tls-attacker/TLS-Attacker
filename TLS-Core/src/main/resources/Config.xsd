@@ -384,6 +384,7 @@
       <xs:element name="defaultPaddingExtensionBytes" type="xs:string" minOccurs="0"/>
       <xs:element name="dtlsDefaultCookieLength" type="xs:int" minOccurs="0"/>
       <xs:element name="dtlsMaximumFragmentLength" type="xs:int" minOccurs="0"/>
+      <xs:element name="layerStackType" type="layerStackType" minOccurs="0"/>
       <xs:element name="workflowExecutorType" type="workflowExecutorType" minOccurs="0"/>
       <xs:element name="flushOnMessageTypeChange" type="xs:boolean" minOccurs="0"/>
       <xs:element name="createFragmentsDynamically" type="xs:boolean" minOccurs="0"/>
@@ -2046,6 +2047,16 @@
       <xs:enumeration value="GOST_SIGN512"/>
       <xs:enumeration value="GOSTR34102012_256"/>
       <xs:enumeration value="GOSTR34102012_512"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="layerStackType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="TLS"/>
+      <xs:enumeration value="DTLS"/>
+      <xs:enumeration value="QUIC"/>
+      <xs:enumeration value="OPEN_VPN"/>
+      <xs:enumeration value="STARTTTLS"/>
     </xs:restriction>
   </xs:simpleType>
 

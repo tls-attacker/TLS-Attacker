@@ -141,7 +141,7 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
 
     @Override
     public void initProtocolStack(TlsContext context) throws IOException {
-        context.setLayerStack(LayerStackFactory.createLayerStack(LayerStackType.DTLS, context));
+        context.setLayerStack(LayerStackFactory.createLayerStack(config.getLayerStackType(), context));
     }
 
     private void executeRetransmission(SendingAction action) throws IOException {

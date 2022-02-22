@@ -115,6 +115,6 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
 
     @Override
     public void initProtocolStack(TlsContext context) throws IOException {
-        context.setLayerStack(LayerStackFactory.createLayerStack(LayerStackType.TLS, context));
+        context.setLayerStack(LayerStackFactory.createLayerStack(config.getLayerStackType(), context));
     }
 }
