@@ -13,7 +13,6 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,20 +24,14 @@ public class ServerHelloParser extends HelloMessageParser<ServerHelloMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final ConnectionEndType talkingConnectionEndType;
-
     /**
      * Constructor for the ServerHelloMessageParser
      *
      * @param stream
-     * @param version
-     *                   The Version for which this message should be parsed
      * @param tlsContext
-     *                   A Config used in the current context
      */
-    public ServerHelloParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
-        super(stream, version, tlsContext);
-        this.talkingConnectionEndType = tlsContext.getTalkingConnectionEndType();
+    public ServerHelloParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
     }
 
     /**
@@ -79,7 +72,7 @@ public class ServerHelloParser extends HelloMessageParser<ServerHelloMessage> {
         if (hasExtensionLengthField(msg)) {
             LOGGER.trace("Parsing ExtensionLength field");
             parseExtensionLength(msg);
-            parseExtensionBytes(msg, getVersion(), talkingConnectionEndType, msg.isTls13HelloRetryRequest());
+            parseExtensionBytes(msg, msg.isTls13HelloRetryRequest());
         }
     }
 }

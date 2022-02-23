@@ -56,6 +56,16 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
         this.tlsContext = tlsContext;
     }
 
+    /**
+     * Constructor for the Parser class
+     *
+     * @param stream
+     * @param tlsContext
+     */
+    public HandshakeMessageParser(InputStream stream, TlsContext tlsContext) {
+        this(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+    }
+
     @Override
     protected void parseMessageContent(T message) {
         // TODO Cleanup function mess
@@ -80,13 +90,10 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
      * message
      *
      * @param message
-     *                                 Message to write in
-     * @param version
-     * @param talkingConnectionEndType
+     *                              Message to write in
      * @param helloRetryRequestHint
      */
-    protected void parseExtensionBytes(T message, ProtocolVersion version, ConnectionEndType talkingConnectionEndType,
-        boolean helloRetryRequestHint) {
+    protected void parseExtensionBytes(T message, boolean helloRetryRequestHint) {
         byte[] extensionBytes = parseByteArrayField(message.getExtensionsLength().getValue());
         message.setExtensionBytes(extensionBytes);
         LOGGER.debug("ExtensionBytes:" + ArrayConverter.bytesToHexString(extensionBytes, false));

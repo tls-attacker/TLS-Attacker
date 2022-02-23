@@ -92,7 +92,7 @@ public class PskEcDhClientKeyExchangeMessage extends ECDHClientKeyExchangeMessag
 
     @Override
     public PskEcDhClientKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new PskEcDhClientKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+        return new PskEcDhClientKeyExchangeParser(stream, tlsContext);
     }
 
     @Override

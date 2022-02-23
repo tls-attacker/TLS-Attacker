@@ -66,7 +66,7 @@ public class RSAServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     @Override
     public RSAServerKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new RSAServerKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+        return new RSAServerKeyExchangeParser(stream, tlsContext);
     }
 
     @Override

@@ -89,7 +89,7 @@ public class HelloVerifyRequestMessage extends HandshakeMessage {
 
     @Override
     public HelloVerifyRequestParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new HelloVerifyRequestParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+        return new HelloVerifyRequestParser(stream, tlsContext);
     }
 
     @Override

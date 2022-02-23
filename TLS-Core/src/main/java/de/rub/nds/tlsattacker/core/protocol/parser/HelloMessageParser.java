@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
@@ -34,13 +33,10 @@ public abstract class HelloMessageParser<T extends HelloMessage> extends Handsha
      * Constructor for the Parser class
      *
      * @param stream
-     * @param version
-     *                   Version of the Protocol
      * @param tlsContext
-     *                   A Config used in the current context
      */
-    public HelloMessageParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
-        super(stream, version, tlsContext);
+    public HelloMessageParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
     }
 
     protected boolean hasSessionID(HelloMessage message) {

@@ -39,7 +39,7 @@ public class UnknownHandshakeSerializerTest {
     public void testserializeProtocolMessageContent() {
         UnknownHandshakeMessage msg = new UnknownHandshakeMessage();
         msg.setData(message);
-        UnknownHandshakeSerializer serializer = new UnknownHandshakeSerializer(msg, ProtocolVersion.TLS12);
+        UnknownHandshakeSerializer serializer = new UnknownHandshakeSerializer(msg);
         assertArrayEquals(message, serializer.serializeProtocolMessageContent());
     }
 

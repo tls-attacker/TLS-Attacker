@@ -29,7 +29,7 @@ public class UnknownHandshakeSerializer extends HandshakeMessageSerializer<Unkno
      * @param version
      *                Version of the Protocol
      */
-    public UnknownHandshakeSerializer(UnknownHandshakeMessage message, ProtocolVersion version) {
+    public UnknownHandshakeSerializer(UnknownHandshakeMessage message) {
         super(message);
         this.msg = message;
     }

@@ -96,7 +96,7 @@ public class PskDheServerKeyExchangeMessage extends DHEServerKeyExchangeMessage 
 
     @Override
     public PskDheServerKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new PskDheServerKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+        return new PskDheServerKeyExchangeParser(stream, tlsContext);
     }
 
     @Override

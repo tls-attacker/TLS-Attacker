@@ -74,7 +74,7 @@ public class FinishedMessage extends HandshakeMessage {
 
     @Override
     public FinishedParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new FinishedParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+        return new FinishedParser(stream, tlsContext);
     }
 
     @Override

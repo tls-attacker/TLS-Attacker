@@ -95,7 +95,7 @@ public class PskRsaClientKeyExchangeMessage extends RSAClientKeyExchangeMessage 
 
     @Override
     public PskRsaClientKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new PskRsaClientKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+        return new PskRsaClientKeyExchangeParser(stream, tlsContext);
     }
 
     @Override

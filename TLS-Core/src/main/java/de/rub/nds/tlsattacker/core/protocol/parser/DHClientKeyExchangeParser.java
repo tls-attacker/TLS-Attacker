@@ -27,13 +27,10 @@ public class DHClientKeyExchangeParser<T extends DHClientKeyExchangeMessage> ext
      * Constructor for the Parser class
      *
      * @param stream
-     * @param version
-     *                   Version of the Protocol
      * @param tlsContext
-     *                   A Config used in the current context
      */
-    public DHClientKeyExchangeParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
-        super(stream, version, tlsContext);
+    public DHClientKeyExchangeParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
     }
 
     @Override

@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
@@ -18,11 +19,12 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+
+import static org.junit.Assert.*;
 
 @SuppressWarnings("SpellCheckingInspection")
 @RunWith(Parameterized.class)
@@ -104,9 +106,14 @@ public class DHEServerKeyExchangeParserTest {
     @Test
     public void testParse() {// TODO Write tests for others versions and make
         // protocol version a parameter
-        DHEServerKeyExchangeParser<DHEServerKeyExchangeMessage> parser = new DHEServerKeyExchangeParser(
-            new ByteArrayInputStream(message), version, KeyExchangeAlgorithm.DHE_RSA, new TlsContext(config));
+        TlsContext tlsContext = new TlsContext(config);
+        tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_RSA_WITH_AES_128_CBC_SHA);
+        tlsContext.setLastRecordVersion(version);
+        DHEServerKeyExchangeParser<DHEServerKeyExchangeMessage> parser =
+            new DHEServerKeyExchangeParser(new ByteArrayInputStream(message), tlsContext);
         DHEServerKeyExchangeMessage msg = new DHEServerKeyExchangeMessage();
+        assertEquals(KeyExchangeAlgorithm.DHE_RSA, parser.getKeyExchangeAlgorithm());
+        assertEquals(version, parser.getVersion());
         parser.parse(msg);
         assertTrue(pLength == msg.getModulusLength().getValue());
         assertArrayEquals(p, msg.getModulus().getValue());

@@ -57,7 +57,7 @@ public class SSL2ServerVerifyMessage extends SSL2HandshakeMessage {
 
     @Override
     public SSL2ServerVerifyParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new SSL2ServerVerifyParser(stream, tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext);
+        return new SSL2ServerVerifyParser(stream, tlsContext);
     }
 
     @Override

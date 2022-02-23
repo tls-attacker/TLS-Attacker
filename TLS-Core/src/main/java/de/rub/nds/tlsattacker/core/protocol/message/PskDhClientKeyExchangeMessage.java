@@ -91,7 +91,7 @@ public class PskDhClientKeyExchangeMessage extends DHClientKeyExchangeMessage {
 
     @Override
     public PskDhClientKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new PskDhClientKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+        return new PskDhClientKeyExchangeParser(stream, tlsContext);
     }
 
     @Override

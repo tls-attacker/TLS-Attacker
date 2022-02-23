@@ -53,8 +53,8 @@ public class CertificateRequestTls13ParserTest {
     public void testParse() {
         TlsContext tlsContext = new TlsContext(new Config());
         tlsContext.setTalkingConnectionEndType(ConnectionEndType.SERVER);
-        CertificateRequestParser parser =
-            new CertificateRequestParser(new ByteArrayInputStream(message), version, tlsContext);
+        tlsContext.setLastRecordVersion(version);
+        CertificateRequestParser parser = new CertificateRequestParser(new ByteArrayInputStream(message), tlsContext);
         CertificateRequestMessage msg = new CertificateRequestMessage();
         parser.parse(msg);
         assertTrue(msg.getCertificateRequestContextLength().getValue() == certificateRequestContextLength);

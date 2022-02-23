@@ -195,7 +195,7 @@ public class AlertMessage extends ProtocolMessage<AlertMessage> {
 
     @Override
     public AlertSerializer getSerializer(TlsContext tlsContext) {
-        return new AlertSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new AlertSerializer(this);
     }
 
 }

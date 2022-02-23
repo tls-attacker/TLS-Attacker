@@ -114,7 +114,7 @@ public class ApplicationMessage extends ProtocolMessage<ApplicationMessage> {
 
     @Override
     public ApplicationMessageSerializer getSerializer(TlsContext tlsContext) {
-        return new ApplicationMessageSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new ApplicationMessageSerializer(this);
     }
 
     @Override

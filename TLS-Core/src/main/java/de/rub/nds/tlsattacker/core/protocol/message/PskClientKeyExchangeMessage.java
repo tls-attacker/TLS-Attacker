@@ -103,7 +103,7 @@ public class PskClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     @Override
     public PskClientKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new PskClientKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+        return new PskClientKeyExchangeParser(stream, tlsContext);
     }
 
     @Override

@@ -21,27 +21,15 @@ public class ECDHEServerKeyExchangeParser<T extends ECDHEServerKeyExchangeMessag
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final ProtocolVersion version;
-
-    private final KeyExchangeAlgorithm keyExchangeAlgorithm;
-
     /**
      * Constructor for the Parser class
      *
      * @param stream
-     * @param version
-     *                   Version of the Protocol
      * @param tlsContext
      */
-    public ECDHEServerKeyExchangeParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
-        this(stream, version, null, tlsContext);
-    }
 
-    public ECDHEServerKeyExchangeParser(InputStream stream, ProtocolVersion version,
-        KeyExchangeAlgorithm keyExchangeAlgorithm, TlsContext tlsContext) {
-        super(stream, version, tlsContext);
-        this.version = version;
-        this.keyExchangeAlgorithm = keyExchangeAlgorithm;
+    public ECDHEServerKeyExchangeParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
     }
 
     @Override
@@ -51,7 +39,7 @@ public class ECDHEServerKeyExchangeParser<T extends ECDHEServerKeyExchangeMessag
         parseNamedGroup(msg);
         parseSerializedPublicKeyLength(msg);
         parseSerializedPublicKey(msg);
-        if (this.keyExchangeAlgorithm == null || !this.keyExchangeAlgorithm.isAnon()) {
+        if (getKeyExchangeAlgorithm() == null || !getKeyExchangeAlgorithm().isAnon()) {
             if (isTLS12() || isDTLS12()) {
                 parseSignatureAndHashAlgorithm(msg);
             }
@@ -109,24 +97,6 @@ public class ECDHEServerKeyExchangeParser<T extends ECDHEServerKeyExchangeMessag
     private void parseSerializedPublicKey(ECDHEServerKeyExchangeMessage msg) {
         msg.setPublicKey(parseByteArrayField(msg.getPublicKeyLength().getValue()));
         LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
-    }
-
-    /**
-     * Checks if the version is TLS12
-     *
-     * @return True if the used version is TLS12
-     */
-    private boolean isTLS12() {
-        return version == ProtocolVersion.TLS12;
-    }
-
-    /**
-     * Checks if the version is DTLS12
-     *
-     * @return True if the used version is DTLS12
-     */
-    private boolean isDTLS12() {
-        return version == ProtocolVersion.DTLS12;
     }
 
     /**

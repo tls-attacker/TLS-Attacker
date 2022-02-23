@@ -9,10 +9,8 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.EncryptedExtensionsMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.InputStream;
 import java.util.ArrayList;
 import org.apache.logging.log4j.LogManager;
@@ -22,11 +20,8 @@ public class EncryptedExtensionsParser extends HandshakeMessageParser<EncryptedE
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private ConnectionEndType talkingConnectionEndType;
-
-    public EncryptedExtensionsParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
-        super(stream, version, tlsContext);
-        this.talkingConnectionEndType = tlsContext.getTalkingConnectionEndType();
+    public EncryptedExtensionsParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
     }
 
     @Override
@@ -35,7 +30,7 @@ public class EncryptedExtensionsParser extends HandshakeMessageParser<EncryptedE
         if (hasExtensionLengthField(msg)) {
             parseExtensionLength(msg);
             if (hasExtensions(msg)) {
-                parseExtensionBytes(msg, getVersion(), talkingConnectionEndType, false);
+                parseExtensionBytes(msg, false);
             } else {
                 msg.setExtensions(new ArrayList<>());
             }

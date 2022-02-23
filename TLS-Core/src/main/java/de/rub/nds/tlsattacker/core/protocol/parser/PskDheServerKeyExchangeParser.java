@@ -18,6 +18,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.checkerframework.checker.units.qual.K;
 
 public class PskDheServerKeyExchangeParser extends DHEServerKeyExchangeParser<PskDheServerKeyExchangeMessage> {
 
@@ -27,12 +28,11 @@ public class PskDheServerKeyExchangeParser extends DHEServerKeyExchangeParser<Ps
      * Constructor for the Parser class
      *
      * @param stream
-     * @param version
-     *                   Version of the Protocol
      * @param tlsContext
      */
-    public PskDheServerKeyExchangeParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
-        super(stream, version, KeyExchangeAlgorithm.DHE_PSK, tlsContext);
+    public PskDheServerKeyExchangeParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
+        setKeyExchangeAlgorithm(KeyExchangeAlgorithm.DHE_PSK);
     }
 
     @Override

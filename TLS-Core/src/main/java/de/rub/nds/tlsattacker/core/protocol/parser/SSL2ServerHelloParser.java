@@ -22,8 +22,8 @@ public class SSL2ServerHelloParser extends SSL2HandshakeMessageParser<SSL2Server
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SSL2ServerHelloParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
-        super(stream, version, tlsContext);
+    public SSL2ServerHelloParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
     }
 
     @Override

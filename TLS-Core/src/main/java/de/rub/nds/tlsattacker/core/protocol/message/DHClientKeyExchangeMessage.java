@@ -55,7 +55,7 @@ public class DHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     @Override
     public DHClientKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new DHClientKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+        return new DHClientKeyExchangeParser(stream, tlsContext);
     }
 
     @Override

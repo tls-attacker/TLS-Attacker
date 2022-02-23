@@ -143,7 +143,7 @@ public class SrpClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     @Override
     public SrpClientKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new SrpClientKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+        return new SrpClientKeyExchangeParser(stream, tlsContext);
     }
 
     @Override

@@ -71,7 +71,7 @@ public class PWDClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     @Override
     public PWDClientKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new PWDClientKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+        return new PWDClientKeyExchangeParser(stream, tlsContext);
     }
 
     @Override

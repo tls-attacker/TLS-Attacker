@@ -9,7 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateStatusMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.certificatestatus.CertificateStatusObject;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
@@ -22,8 +21,8 @@ public class CertificateStatusParser extends HandshakeMessageParser<CertificateS
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public CertificateStatusParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
-        super(stream, version, tlsContext);
+    public CertificateStatusParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
     }
 
     @Override

@@ -204,7 +204,7 @@ public class SrpServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     @Override
     public SrpServerKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new SrpServerKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+        return new SrpServerKeyExchangeParser(stream, tlsContext);
     }
 
     @Override

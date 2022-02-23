@@ -62,7 +62,7 @@ public class EncryptedExtensionsMessage extends HandshakeMessage {
 
     @Override
     public EncryptedExtensionsParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new EncryptedExtensionsParser(stream, tlsContext.getLastRecordVersion(), tlsContext);
+        return new EncryptedExtensionsParser(stream, tlsContext);
     }
 
     @Override

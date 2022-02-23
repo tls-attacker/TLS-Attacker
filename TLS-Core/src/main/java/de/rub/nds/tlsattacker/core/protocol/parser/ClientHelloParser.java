@@ -14,7 +14,6 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,19 +22,14 @@ public class ClientHelloParser extends HelloMessageParser<ClientHelloMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private ConnectionEndType talkingConnectionEndType;
-
     /**
      * Constructor for the Parser class
      *
      * @param stream
-     * @param version
-     *                   Version of the Protocol
      * @param tlsContext
      */
-    public ClientHelloParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
-        super(stream, version, tlsContext);
-        this.talkingConnectionEndType = tlsContext.getTalkingConnectionEndType();
+    public ClientHelloParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
     }
 
     @Override
@@ -59,7 +53,7 @@ public class ClientHelloParser extends HelloMessageParser<ClientHelloMessage> {
         if (hasExtensionLengthField(msg)) {
             parseExtensionLength(msg);
             if (hasExtensions(msg)) {
-                parseExtensionBytes(msg, getVersion(), talkingConnectionEndType, false);
+                parseExtensionBytes(msg, false);
 
             }
         }

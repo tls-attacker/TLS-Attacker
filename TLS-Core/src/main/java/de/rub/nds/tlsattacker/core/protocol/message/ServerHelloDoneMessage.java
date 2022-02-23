@@ -37,7 +37,7 @@ public class ServerHelloDoneMessage extends HandshakeMessage {
 
     @Override
     public ServerHelloDoneParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new ServerHelloDoneParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+        return new ServerHelloDoneParser(stream, tlsContext);
     }
 
     @Override

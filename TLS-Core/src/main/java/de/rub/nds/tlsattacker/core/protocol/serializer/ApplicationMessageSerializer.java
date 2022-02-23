@@ -25,10 +25,8 @@ public class ApplicationMessageSerializer extends ProtocolMessageSerializer<Appl
      *
      * @param message
      *                Message that should be serialized
-     * @param version
-     *                Version of the Protocol
      */
-    public ApplicationMessageSerializer(ApplicationMessage message, ProtocolVersion version) {
+    public ApplicationMessageSerializer(ApplicationMessage message) {
         super(message);
     }
 

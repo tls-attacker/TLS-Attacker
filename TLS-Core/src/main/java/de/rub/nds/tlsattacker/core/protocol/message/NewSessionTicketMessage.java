@@ -117,7 +117,7 @@ public class NewSessionTicketMessage extends HandshakeMessage {
 
     @Override
     public NewSessionTicketParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new NewSessionTicketParser(stream, tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext);
+        return new NewSessionTicketParser(stream, tlsContext);
     }
 
     @Override

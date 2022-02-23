@@ -86,7 +86,7 @@ public class GOSTClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     @Override
     public GOSTClientKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new GOSTClientKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+        return new GOSTClientKeyExchangeParser(stream, tlsContext);
     }
 
     @Override

@@ -55,7 +55,7 @@ public class ECDHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     @Override
     public ECDHClientKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new ECDHClientKeyExchangeParser<>(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+        return new ECDHClientKeyExchangeParser<>(stream, tlsContext);
     }
 
     @Override

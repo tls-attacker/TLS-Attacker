@@ -45,7 +45,7 @@ public class AlertSerializerTest {
         message.setLevel(level);
         message.setDescription(description);
         message.setCompleteResultingMessage(expectedPart);
-        AlertSerializer serializer = new AlertSerializer(message, ProtocolVersion.TLS12);
+        AlertSerializer serializer = new AlertSerializer(message);
         assertArrayEquals(expectedPart, serializer.serialize());
     }
 

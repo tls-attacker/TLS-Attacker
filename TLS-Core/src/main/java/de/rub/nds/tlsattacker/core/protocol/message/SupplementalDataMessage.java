@@ -95,7 +95,7 @@ public class SupplementalDataMessage extends HandshakeMessage {
 
     @Override
     public SupplementalDataParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new SupplementalDataParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+        return new SupplementalDataParser(stream, tlsContext);
     }
 
     @Override

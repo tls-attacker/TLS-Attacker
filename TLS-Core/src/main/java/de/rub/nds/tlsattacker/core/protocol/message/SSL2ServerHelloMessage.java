@@ -79,7 +79,7 @@ public class SSL2ServerHelloMessage extends SSL2HandshakeMessage {
 
     @Override
     public SSL2ServerHelloParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new SSL2ServerHelloParser(stream, tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext);
+        return new SSL2ServerHelloParser(stream, tlsContext);
     }
 
     @Override

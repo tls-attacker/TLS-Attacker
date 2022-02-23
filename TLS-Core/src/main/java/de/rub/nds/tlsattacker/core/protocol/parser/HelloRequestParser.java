@@ -9,7 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloRequestMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
@@ -25,11 +24,9 @@ public class HelloRequestParser extends HandshakeMessageParser<HelloRequestMessa
      *
      * @param inputStream
      * @param tlsContext
-     * @param version
-     *                    Version of the Protocol
      */
-    public HelloRequestParser(InputStream inputStream, ProtocolVersion version, TlsContext tlsContext) {
-        super(inputStream, version, tlsContext);
+    public HelloRequestParser(InputStream inputStream, TlsContext tlsContext) {
+        super(inputStream, tlsContext);
     }
 
     /**

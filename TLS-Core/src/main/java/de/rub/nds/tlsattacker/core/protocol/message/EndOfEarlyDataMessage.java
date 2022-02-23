@@ -40,7 +40,7 @@ public class EndOfEarlyDataMessage extends HandshakeMessage {
 
     @Override
     public EndOfEarlyDataParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new EndOfEarlyDataParser(stream, tlsContext.getLastRecordVersion(), tlsContext);
+        return new EndOfEarlyDataParser(stream, tlsContext);
     }
 
     @Override

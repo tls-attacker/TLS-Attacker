@@ -92,8 +92,7 @@ public class DtlsHandshakeMessageFragment extends HandshakeMessage {
 
     @Override
     public DtlsHandshakeMessageFragmentParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new DtlsHandshakeMessageFragmentParser(stream, tlsContext.getChooser().getLastRecordVersion(),
-            tlsContext);
+        return new DtlsHandshakeMessageFragmentParser(stream, tlsContext);
     }
 
     @Override

@@ -58,7 +58,7 @@ public class CertificateStatusMessage extends HandshakeMessage {
 
     @Override
     public CertificateStatusParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new CertificateStatusParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+        return new CertificateStatusParser(stream, tlsContext);
     }
 
     @Override

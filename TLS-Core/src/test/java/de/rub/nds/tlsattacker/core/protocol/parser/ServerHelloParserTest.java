@@ -92,7 +92,8 @@ public class ServerHelloParserTest {
     public void verify() {
         TlsContext tlsContext = new TlsContext(config);
         tlsContext.setTalkingConnectionEndType(ConnectionEndType.SERVER);
-        ServerHelloParser parser = new ServerHelloParser(new ByteArrayInputStream(message), version, tlsContext);
+        tlsContext.setSelectedProtocolVersion(version);
+        ServerHelloParser parser = new ServerHelloParser(new ByteArrayInputStream(message), tlsContext);
         ServerHelloMessage helloMessage = new ServerHelloMessage();
         parser.parse(helloMessage);
         assertArrayEquals(helloMessage.getProtocolVersion().getValue(), protocolVersion);

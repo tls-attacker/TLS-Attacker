@@ -125,7 +125,7 @@ public class CertificateVerifyMessage extends HandshakeMessage {
 
     @Override
     public CertificateVerifyParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new CertificateVerifyParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+        return new CertificateVerifyParser(stream, tlsContext);
     }
 
     @Override

@@ -26,13 +26,10 @@ public class RSAClientKeyExchangeParser<T extends RSAClientKeyExchangeMessage> e
      * Constructor for the Parser class
      *
      * @param stream
-     * @param version
-     *                   Version of the Protocol
      * @param tlsContext
-     *                   A Config used in the current context
      */
-    public RSAClientKeyExchangeParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
-        super(stream, version, tlsContext);
+    public RSAClientKeyExchangeParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
     }
 
     @Override

@@ -125,8 +125,7 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     @Override
     public ECDHEServerKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new ECDHEServerKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(),
-            AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite()), tlsContext);
+        return new ECDHEServerKeyExchangeParser(stream, tlsContext);
     }
 
     @Override

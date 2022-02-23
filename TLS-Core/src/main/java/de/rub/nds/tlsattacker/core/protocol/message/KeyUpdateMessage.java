@@ -54,7 +54,7 @@ public class KeyUpdateMessage extends HandshakeMessage {
 
     @Override
     public KeyUpdateParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new KeyUpdateParser(stream, tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext);
+        return new KeyUpdateParser(stream, tlsContext);
     }
 
     @Override

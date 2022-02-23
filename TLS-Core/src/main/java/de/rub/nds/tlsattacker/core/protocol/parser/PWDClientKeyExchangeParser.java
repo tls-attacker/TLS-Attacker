@@ -23,8 +23,8 @@ public class PWDClientKeyExchangeParser extends ClientKeyExchangeParser<PWDClien
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public PWDClientKeyExchangeParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
-        super(stream, version, tlsContext);
+    public PWDClientKeyExchangeParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
     }
 
     @Override

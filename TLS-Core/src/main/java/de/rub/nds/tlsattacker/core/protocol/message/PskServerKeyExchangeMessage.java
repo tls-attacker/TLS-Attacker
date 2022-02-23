@@ -102,7 +102,7 @@ public class PskServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     @Override
     public PskServerKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new PskServerKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+        return new PskServerKeyExchangeParser(stream, tlsContext);
     }
 
     @Override

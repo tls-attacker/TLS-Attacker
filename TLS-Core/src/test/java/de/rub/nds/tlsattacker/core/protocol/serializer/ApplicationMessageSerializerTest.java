@@ -40,7 +40,7 @@ public class ApplicationMessageSerializerTest {
         ApplicationMessage message = new ApplicationMessage();
         message.setData(this.message);
         message.setCompleteResultingMessage(this.message);
-        ApplicationMessageSerializer serializer = new ApplicationMessageSerializer(message, ProtocolVersion.TLS12);
+        ApplicationMessageSerializer serializer = new ApplicationMessageSerializer(message);
         assertArrayEquals(this.message, serializer.serialize());
     }
 

@@ -55,7 +55,7 @@ public class EmptyClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     @Override
     public EmptyClientKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new EmptyClientKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+        return new EmptyClientKeyExchangeParser(stream, tlsContext);
     }
 
     @Override

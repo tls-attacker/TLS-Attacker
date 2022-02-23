@@ -66,7 +66,7 @@ public class UnknownHandshakeMessage extends HandshakeMessage {
 
     @Override
     public UnknownHandshakeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new UnknownHandshakeParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+        return new UnknownHandshakeParser(stream, tlsContext);
     }
 
     @Override
@@ -76,7 +76,7 @@ public class UnknownHandshakeMessage extends HandshakeMessage {
 
     @Override
     public UnknownHandshakeSerializer getSerializer(TlsContext tlsContext) {
-        return new UnknownHandshakeSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new UnknownHandshakeSerializer(this);
     }
 
     @Override

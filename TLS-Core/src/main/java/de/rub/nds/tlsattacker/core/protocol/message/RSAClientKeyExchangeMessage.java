@@ -57,7 +57,7 @@ public class RSAClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     @Override
     public RSAClientKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new RSAClientKeyExchangeParser<>(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+        return new RSAClientKeyExchangeParser<>(stream, tlsContext);
     }
 
     @Override

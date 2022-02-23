@@ -11,8 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificateEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificatePair;
@@ -20,7 +18,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.cert.CertificatePairParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionListParser;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.LinkedList;
@@ -39,11 +36,9 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
      *
      * @param stream
      * @param tlsContext
-     * @param version
-     *                   Version of the Protocol
      */
-    public CertificateMessageParser(InputStream stream, TlsContext tlsContext, ProtocolVersion version) {
-        super(stream, version, tlsContext);
+    public CertificateMessageParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext);
         this.tlsContext = tlsContext;
     }
 

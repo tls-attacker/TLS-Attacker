@@ -26,13 +26,10 @@ public class PskDhClientKeyExchangeParser extends DHClientKeyExchangeParser<PskD
      * Constructor for the Parser class
      *
      * @param stream
-     * @param version
-     *                   Version of the Protocol
      * @param tlsContext
-     *                   A Config used in the current context
      */
-    public PskDhClientKeyExchangeParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
-        super(stream, version, tlsContext);
+    public PskDhClientKeyExchangeParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
     }
 
     @Override

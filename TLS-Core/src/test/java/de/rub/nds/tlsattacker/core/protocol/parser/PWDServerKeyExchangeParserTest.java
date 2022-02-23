@@ -52,8 +52,11 @@ public class PWDServerKeyExchangeParserTest {
 
         byte[] scalar = ArrayConverter.hexStringToByteArray(("2f 70 48 96 69 9f c4 24 d3 ce c3 37 17 64 4f 5a\n"
             + "             df 7f 68 48 34 24 ee 51 49 2b b9 66 13 fc 49 21").replaceAll("\\s+", ""));
-        PWDServerKeyExchangeParser parser = new PWDServerKeyExchangeParser(new ByteArrayInputStream(message),
-            ProtocolVersion.TLS12, new TlsContext(config));
+
+        TlsContext tlsContext = new TlsContext(config);
+        tlsContext.setSelectedProtocolVersion(ProtocolVersion.TLS12);
+        PWDServerKeyExchangeParser parser =
+            new PWDServerKeyExchangeParser(new ByteArrayInputStream(message), tlsContext);
         PWDServerKeyExchangeMessage msg = new PWDServerKeyExchangeMessage();
         parser.parse(msg);
         assertEquals(32, (long) msg.getSaltLength().getValue());

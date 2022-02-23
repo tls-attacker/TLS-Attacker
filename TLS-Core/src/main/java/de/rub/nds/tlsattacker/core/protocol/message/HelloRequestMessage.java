@@ -39,7 +39,7 @@ public class HelloRequestMessage extends HandshakeMessage {
 
     @Override
     public HelloRequestParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new HelloRequestParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+        return new HelloRequestParser(stream, tlsContext);
     }
 
     @Override

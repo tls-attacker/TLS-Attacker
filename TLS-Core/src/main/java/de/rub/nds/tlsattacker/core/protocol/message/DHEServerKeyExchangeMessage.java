@@ -163,8 +163,7 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     @Override
     public DHEServerKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new DHEServerKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(),
-            AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite()), tlsContext);
+        return new DHEServerKeyExchangeParser(stream, tlsContext);
     }
 
     @Override
