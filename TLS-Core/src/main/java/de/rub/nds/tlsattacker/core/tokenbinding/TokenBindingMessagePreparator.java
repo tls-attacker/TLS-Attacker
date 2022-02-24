@@ -83,8 +83,7 @@ public class TokenBindingMessagePreparator extends ProtocolMessagePreparator<Tok
             message.setPublicExponentLength(message.getPublicExponent().getValue().length);
             message.setSignature(new byte[0]);
         }
-        TokenBindingMessageSerializer serializer =
-            new TokenBindingMessageSerializer(message);
+        TokenBindingMessageSerializer serializer = new TokenBindingMessageSerializer(message);
         message.setKeyLength(serializer.serializeKey().length);
         message.setExtensionBytes(new byte[0]);
         message.setExtensionLength(message.getExtensionBytes().getValue().length);
