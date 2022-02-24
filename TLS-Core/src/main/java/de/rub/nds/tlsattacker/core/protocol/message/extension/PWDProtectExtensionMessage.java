@@ -13,7 +13,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.PWDProtectExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.PWDProtectExtensionParser;
@@ -36,10 +35,6 @@ public class PWDProtectExtensionMessage extends ExtensionMessage<PWDProtectExten
     private ModifiableByteArray username;
 
     public PWDProtectExtensionMessage() {
-        super(ExtensionType.PWD_PROTECT);
-    }
-
-    public PWDProtectExtensionMessage(Config config) {
         super(ExtensionType.PWD_PROTECT);
     }
 

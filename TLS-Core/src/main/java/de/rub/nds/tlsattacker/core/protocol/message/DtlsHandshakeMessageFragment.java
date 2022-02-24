@@ -66,14 +66,14 @@ public class DtlsHandshakeMessageFragment extends HandshakeMessage {
     }
 
     public DtlsHandshakeMessageFragment(Config tlsConfig) {
-        super(tlsConfig, HandshakeMessageType.UNKNOWN);
+        super(HandshakeMessageType.UNKNOWN);
         isIncludeInDigestDefault = false;
         adjustContextDefault = false;
         this.maxFragmentLengthConfig = tlsConfig.getDtlsMaximumFragmentLength();
     }
 
     public DtlsHandshakeMessageFragment(Config tlsConfig, int maxFragmentLengthConfig) {
-        super(tlsConfig, HandshakeMessageType.UNKNOWN);
+        super(HandshakeMessageType.UNKNOWN);
         isIncludeInDigestDefault = false;
         adjustContextDefault = false;
         this.maxFragmentLengthConfig = maxFragmentLengthConfig;

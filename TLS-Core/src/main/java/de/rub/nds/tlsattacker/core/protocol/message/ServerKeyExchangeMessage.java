@@ -13,7 +13,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.KeyExchangeComputations;
 
@@ -48,10 +47,6 @@ public abstract class ServerKeyExchangeMessage extends HandshakeMessage {
 
     public ServerKeyExchangeMessage() {
         super(HandshakeMessageType.SERVER_KEY_EXCHANGE);
-    }
-
-    public ServerKeyExchangeMessage(Config tlsConfig, HandshakeMessageType handshakeMessageType) {
-        super(tlsConfig, handshakeMessageType);
     }
 
     public abstract KeyExchangeComputations getComputations();

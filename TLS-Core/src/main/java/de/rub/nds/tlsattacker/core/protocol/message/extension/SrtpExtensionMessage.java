@@ -13,7 +13,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.SrtpExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.SrtpExtensionParser;
@@ -39,10 +38,6 @@ public class SrtpExtensionMessage extends ExtensionMessage<SrtpExtensionMessage>
     private ModifiableInteger srtpMkiLength; // 1 Byte
 
     public SrtpExtensionMessage() {
-        super(ExtensionType.USE_SRTP);
-    }
-
-    public SrtpExtensionMessage(Config config) {
         super(ExtensionType.USE_SRTP);
     }
 

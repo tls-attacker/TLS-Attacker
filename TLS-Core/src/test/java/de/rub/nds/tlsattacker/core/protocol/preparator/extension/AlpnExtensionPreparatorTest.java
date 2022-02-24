@@ -33,7 +33,7 @@ public class AlpnExtensionPreparatorTest {
     @Before
     public void setUp() {
         context = new TlsContext();
-        msg = new AlpnExtensionMessage(Config.createConfig());
+        msg = new AlpnExtensionMessage();
         preparator = new AlpnExtensionPreparator(context.getChooser(), msg, new AlpnExtensionSerializer(msg));
         protocolsWithLength =
             ArrayConverter.concatenate(new byte[] { proposedAlpnProtocolLength }, announcedProtocols.getBytes());

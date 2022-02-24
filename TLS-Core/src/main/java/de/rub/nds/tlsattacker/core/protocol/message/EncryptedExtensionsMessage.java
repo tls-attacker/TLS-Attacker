@@ -29,7 +29,7 @@ public class EncryptedExtensionsMessage extends HandshakeMessage {
     }
 
     public EncryptedExtensionsMessage(Config config) {
-        super(config, HandshakeMessageType.ENCRYPTED_EXTENSIONS);
+        super(HandshakeMessageType.ENCRYPTED_EXTENSIONS);
         if (config.isAddRecordSizeLimitExtension()) {
             addExtension(new RecordSizeLimitExtensionMessage());
         }

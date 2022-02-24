@@ -14,7 +14,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.EncryptedServerNameIndicationExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
@@ -66,13 +65,6 @@ public class EncryptedServerNameIndicationExtensionMessage
     private ModifiableByteArray serverNonce;
 
     public EncryptedServerNameIndicationExtensionMessage() {
-        super(ExtensionType.ENCRYPTED_SERVER_NAME_INDICATION);
-        this.keyShareEntry = new KeyShareEntry();
-        this.clientEsniInner = new ClientEsniInner();
-        this.encryptedSniComputation = new EncryptedSniComputation();
-    }
-
-    public EncryptedServerNameIndicationExtensionMessage(Config config) {
         super(ExtensionType.ENCRYPTED_SERVER_NAME_INDICATION);
         this.keyShareEntry = new KeyShareEntry();
         this.clientEsniInner = new ClientEsniInner();

@@ -9,7 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtendedMasterSecretExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtendedMasterSecretExtensionParser;
@@ -30,10 +29,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class ExtendedMasterSecretExtensionMessage extends ExtensionMessage<ExtendedMasterSecretExtensionMessage> {
 
     public ExtendedMasterSecretExtensionMessage() {
-        super(ExtensionType.EXTENDED_MASTER_SECRET);
-    }
-
-    public ExtendedMasterSecretExtensionMessage(Config config) {
         super(ExtensionType.EXTENDED_MASTER_SECRET);
     }
 

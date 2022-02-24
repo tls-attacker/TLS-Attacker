@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
@@ -50,7 +49,7 @@ public class ClientHelloParser extends HelloMessageParser<ClientHelloMessage> {
         parseCipherSuites(msg);
         parseCompressionLength(msg);
         parseCompressions(msg);
-        if (hasExtensionLengthField(msg)) {
+        if (hasExtensionLengthField()) {
             parseExtensionLength(msg);
             if (hasExtensions(msg)) {
                 parseExtensionBytes(msg, false);

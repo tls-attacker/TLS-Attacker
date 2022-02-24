@@ -37,7 +37,7 @@ public class BleichenbacherWorkflowGenerator {
         byte[] encryptedPMS) {
         WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig)
             .createWorkflowTrace(WorkflowTraceType.DYNAMIC_HELLO, RunningModeType.CLIENT);
-        RSAClientKeyExchangeMessage cke = new RSAClientKeyExchangeMessage(tlsConfig);
+        RSAClientKeyExchangeMessage cke = new RSAClientKeyExchangeMessage();
         ModifiableByteArray epms = new ModifiableByteArray();
         epms.setModification(ByteArrayModificationFactory.explicitValue(encryptedPMS));
         cke.setPublicKey(epms);
@@ -47,14 +47,13 @@ public class BleichenbacherWorkflowGenerator {
                     trace.addTlsAction(new SendAction(cke));
                     break;
                 case CKE_CCS:
-                    trace.addTlsAction(new SendAction(cke, new ChangeCipherSpecMessage(tlsConfig)));
+                    trace.addTlsAction(new SendAction(cke, new ChangeCipherSpecMessage()));
                     break;
                 case CKE_CCS_FIN:
-                    trace.addTlsAction(
-                        new SendAction(cke, new ChangeCipherSpecMessage(tlsConfig), new FinishedMessage(tlsConfig)));
+                    trace.addTlsAction(new SendAction(cke, new ChangeCipherSpecMessage(), new FinishedMessage()));
                     break;
                 case CKE_FIN:
-                    trace.addTlsAction(new SendAction(cke, new FinishedMessage(tlsConfig)));
+                    trace.addTlsAction(new SendAction(cke, new FinishedMessage()));
                     break;
                 default:
                     break;

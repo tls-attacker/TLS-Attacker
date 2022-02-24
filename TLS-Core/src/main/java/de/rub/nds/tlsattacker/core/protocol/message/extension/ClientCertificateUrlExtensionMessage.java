@@ -9,7 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ClientCertificateUrlExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ClientCertificateUrlExtensionParser;
@@ -23,10 +22,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class ClientCertificateUrlExtensionMessage extends ExtensionMessage<ClientCertificateUrlExtensionMessage> {
 
     public ClientCertificateUrlExtensionMessage() {
-        super(ExtensionType.CLIENT_CERTIFICATE_URL);
-    }
-
-    public ClientCertificateUrlExtensionMessage(Config config) {
         super(ExtensionType.CLIENT_CERTIFICATE_URL);
     }
 

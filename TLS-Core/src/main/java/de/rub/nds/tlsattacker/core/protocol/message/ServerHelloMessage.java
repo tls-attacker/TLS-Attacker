@@ -54,7 +54,7 @@ public class ServerHelloMessage extends HelloMessage {
     private Boolean autoSetHelloRetryModeInKeyShare = true;
 
     public ServerHelloMessage(Config tlsConfig) {
-        super(tlsConfig, HandshakeMessageType.SERVER_HELLO);
+        super(HandshakeMessageType.SERVER_HELLO);
         if (!tlsConfig.getHighestProtocolVersion().isSSL()
             || (tlsConfig.getHighestProtocolVersion().isSSL() && tlsConfig.isAddExtensionsInSSL())) {
             if (tlsConfig.isAddHeartbeatExtension()) {
@@ -105,7 +105,7 @@ public class ServerHelloMessage extends HelloMessage {
                 addExtension(new CertificateStatusRequestExtensionMessage());
             }
             if (tlsConfig.isAddAlpnExtension()) {
-                addExtension(new AlpnExtensionMessage(tlsConfig));
+                addExtension(new AlpnExtensionMessage());
             }
             if (tlsConfig.isAddSRPExtension()) {
                 addExtension(new SRPExtensionMessage());

@@ -16,7 +16,6 @@ import de.rub.nds.modifiablevariable.bool.ModifiableBoolean;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
@@ -84,12 +83,6 @@ public abstract class HandshakeMessage extends ProtocolMessage {
     private ModifiableInteger messageSequence;
 
     public HandshakeMessage(HandshakeMessageType handshakeMessageType) {
-        super();
-        this.protocolMessageType = ProtocolMessageType.HANDSHAKE;
-        this.handshakeMessageType = handshakeMessageType;
-    }
-
-    public HandshakeMessage(Config tlsConfig, HandshakeMessageType handshakeMessageType) {
         super();
         this.protocolMessageType = ProtocolMessageType.HANDSHAKE;
         this.handshakeMessageType = handshakeMessageType;

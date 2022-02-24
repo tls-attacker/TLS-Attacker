@@ -16,7 +16,6 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.certificate.CertificateKeyPair;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.CertificateMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificateEntry;
@@ -74,10 +73,6 @@ public class CertificateMessage extends HandshakeMessage {
 
     public CertificateMessage() {
         super(HandshakeMessageType.CERTIFICATE);
-    }
-
-    public CertificateMessage(Config tlsConfig) {
-        super(tlsConfig, HandshakeMessageType.CERTIFICATE);
     }
 
     public ModifiableInteger getCertificatesListLength() {

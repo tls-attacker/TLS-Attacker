@@ -22,7 +22,7 @@ public class UnknownMessageTest {
 
     @Before
     public void setUp() {
-        message = new UnknownMessage(Config.createConfig(), ProtocolMessageType.UNKNOWN);
+        message = new UnknownMessage(ProtocolMessageType.UNKNOWN);
     }
 
     @After

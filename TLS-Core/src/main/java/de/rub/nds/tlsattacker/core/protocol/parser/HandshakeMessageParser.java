@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionListParser;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.LinkedList;
@@ -108,11 +108,9 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
     /**
      * Checks if the message has an ExtensionLength field, by checking if there are more bytes in the inputstream
      *
-     * @param  message
-     *                 Message to check
-     * @return         True if the message has an Extension field
+     * @return True if the message has an Extension field
      */
-    protected boolean hasExtensionLengthField(T message) {
+    protected boolean hasExtensionLengthField() {
         return getBytesLeft() > 0;
     }
 

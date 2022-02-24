@@ -13,7 +13,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ClientAuthzExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ClientAuthzExtensionParser;
@@ -35,10 +34,6 @@ public class ClientAuthzExtensionMessage extends ExtensionMessage<ClientAuthzExt
     ModifiableByteArray authzFormatList;
 
     public ClientAuthzExtensionMessage() {
-        super(ExtensionType.CLIENT_AUTHZ);
-    }
-
-    public ClientAuthzExtensionMessage(Config config) {
         super(ExtensionType.CLIENT_AUTHZ);
     }
 

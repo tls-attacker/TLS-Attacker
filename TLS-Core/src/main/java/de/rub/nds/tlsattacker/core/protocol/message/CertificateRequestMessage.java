@@ -70,7 +70,7 @@ public class CertificateRequestMessage extends HandshakeMessage {
     }
 
     public CertificateRequestMessage(Config tlsConfig) {
-        super(tlsConfig, HandshakeMessageType.CERTIFICATE_REQUEST);
+        super(HandshakeMessageType.CERTIFICATE_REQUEST);
         if (tlsConfig.getHighestProtocolVersion().isTLS13()) {
             this.setExtensions(new LinkedList<ExtensionMessage>());
             this.addExtension(new SignatureAndHashAlgorithmsExtensionMessage());

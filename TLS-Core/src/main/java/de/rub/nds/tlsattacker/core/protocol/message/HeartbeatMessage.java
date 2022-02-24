@@ -15,7 +15,6 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
@@ -43,11 +42,6 @@ public class HeartbeatMessage<HeartbeatMessage> extends ProtocolMessage {
     ModifiableByteArray padding;
 
     public HeartbeatMessage() {
-        super();
-        this.protocolMessageType = ProtocolMessageType.HEARTBEAT;
-    }
-
-    public HeartbeatMessage(Config tlsConfig) {
         super();
         this.protocolMessageType = ProtocolMessageType.HEARTBEAT;
     }

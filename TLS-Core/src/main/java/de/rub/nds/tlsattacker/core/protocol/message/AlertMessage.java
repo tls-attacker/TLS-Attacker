@@ -13,7 +13,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
@@ -49,11 +48,6 @@ public class AlertMessage extends ProtocolMessage<AlertMessage> {
     ModifiableByte description;
 
     public AlertMessage() {
-        super();
-        this.protocolMessageType = ProtocolMessageType.ALERT;
-    }
-
-    public AlertMessage(Config tlsConfig) {
         super();
         this.protocolMessageType = ProtocolMessageType.ALERT;
     }

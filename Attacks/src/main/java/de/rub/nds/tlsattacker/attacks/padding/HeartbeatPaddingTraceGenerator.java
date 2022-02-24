@@ -45,7 +45,7 @@ public class HeartbeatPaddingTraceGenerator extends PaddingTraceGenerator {
     public WorkflowTrace getPaddingOracleWorkflowTrace(Config config, PaddingVector vector) {
         WorkflowTrace trace = new WorkflowConfigurationFactory(config).createWorkflowTrace(WorkflowTraceType.HANDSHAKE,
             RunningModeType.CLIENT);
-        ApplicationMessage applicationMessage = new ApplicationMessage(config);
+        ApplicationMessage applicationMessage = new ApplicationMessage();
         HeartbeatMessage heartbeat = new HeartbeatMessage();
         SendAction sendAction = new SendAction(applicationMessage, heartbeat);
         sendAction.setRecords(new LinkedList<Record>());

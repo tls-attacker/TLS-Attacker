@@ -16,7 +16,6 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.certificate.ocsp.OCSPResponse;
 import de.rub.nds.tlsattacker.core.certificate.ocsp.OCSPResponseParser;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.CertificateStatusHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.CertificateStatusParser;
@@ -45,10 +44,6 @@ public class CertificateStatusMessage extends HandshakeMessage {
 
     public CertificateStatusMessage() {
         super(HandshakeMessageType.CERTIFICATE_STATUS);
-    }
-
-    public CertificateStatusMessage(Config tlsConfig) {
-        super(tlsConfig, HandshakeMessageType.CERTIFICATE_STATUS);
     }
 
     @Override

@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.ECDHClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.ECDHClientComputations;
@@ -30,10 +29,6 @@ public class ECDHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     public ECDHClientKeyExchangeMessage() {
         super();
-    }
-
-    public ECDHClientKeyExchangeMessage(Config tlsConfig) {
-        super(tlsConfig);
     }
 
     @Override

@@ -13,7 +13,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.EllipticCurvesExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.EllipticCurvesExtensionParser;
@@ -36,10 +35,6 @@ public class EllipticCurvesExtensionMessage extends ExtensionMessage<EllipticCur
     private ModifiableByteArray supportedGroups;
 
     public EllipticCurvesExtensionMessage() {
-        super(ExtensionType.ELLIPTIC_CURVES);
-    }
-
-    public EllipticCurvesExtensionMessage(Config config) {
         super(ExtensionType.ELLIPTIC_CURVES);
     }
 

@@ -15,7 +15,6 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -61,10 +60,6 @@ public class SSL2ServerHelloMessage extends SSL2HandshakeMessage {
     public SSL2ServerHelloMessage() {
         super(HandshakeMessageType.SSL2_SERVER_HELLO);
         this.protocolMessageType = ProtocolMessageType.HANDSHAKE;
-    }
-
-    public SSL2ServerHelloMessage(Config config) {
-        this();
     }
 
     @Override

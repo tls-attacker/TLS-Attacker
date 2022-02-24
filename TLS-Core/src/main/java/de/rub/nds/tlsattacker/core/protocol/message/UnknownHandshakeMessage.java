@@ -13,7 +13,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.UnknownHandshakeHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.UnknownHandshakeParser;
@@ -32,10 +31,6 @@ public class UnknownHandshakeMessage extends HandshakeMessage {
     private ModifiableByteArray data;
 
     public UnknownHandshakeMessage() {
-        super(HandshakeMessageType.UNKNOWN);
-    }
-
-    public UnknownHandshakeMessage(Config config) {
         super(HandshakeMessageType.UNKNOWN);
     }
 

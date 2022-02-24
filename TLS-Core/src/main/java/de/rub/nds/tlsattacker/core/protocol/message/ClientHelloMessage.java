@@ -67,7 +67,7 @@ public class ClientHelloMessage extends HelloMessage {
     }
 
     public ClientHelloMessage(Config tlsConfig) {
-        super(tlsConfig, HandshakeMessageType.CLIENT_HELLO);
+        super(HandshakeMessageType.CLIENT_HELLO);
         if (!tlsConfig.getHighestProtocolVersion().isSSL()
             || (tlsConfig.getHighestProtocolVersion().isSSL() && tlsConfig.isAddExtensionsInSSL())) {
             if (tlsConfig.isAddHeartbeatExtension()) {
@@ -103,7 +103,6 @@ public class ClientHelloMessage extends HelloMessage {
             if (tlsConfig.isAddEncryptedServerNameIndicationExtension()) {
                 EncryptedServerNameIndicationExtensionMessage extensionMessage =
                     new EncryptedServerNameIndicationExtensionMessage();
-                String hostname = tlsConfig.getDefaultClientConnection().getHostname();
                 byte[] serverName;
                 if (tlsConfig.getDefaultClientConnection().getHostname() != null) {
                     serverName =
@@ -153,7 +152,7 @@ public class ClientHelloMessage extends HelloMessage {
                 addExtension(new CertificateStatusRequestExtensionMessage());
             }
             if (tlsConfig.isAddAlpnExtension()) {
-                addExtension(new AlpnExtensionMessage(tlsConfig));
+                addExtension(new AlpnExtensionMessage());
             }
             if (tlsConfig.isAddSRPExtension()) {
                 addExtension(new SRPExtensionMessage());

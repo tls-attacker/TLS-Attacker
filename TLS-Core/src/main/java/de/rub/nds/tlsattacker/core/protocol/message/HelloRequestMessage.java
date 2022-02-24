@@ -9,7 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.protocol.message;
 
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.HelloRequestHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.HelloRequestParser;
@@ -21,11 +20,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "HelloRequest")
 public class HelloRequestMessage extends HandshakeMessage {
-
-    public HelloRequestMessage(Config tlsConfig) {
-        super(tlsConfig, HandshakeMessageType.HELLO_REQUEST);
-        isIncludeInDigestDefault = false;
-    }
 
     public HelloRequestMessage() {
         super(HandshakeMessageType.HELLO_REQUEST);

@@ -13,7 +13,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.CookieExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.CookieExtensionParser;
@@ -36,10 +35,6 @@ public class CookieExtensionMessage extends ExtensionMessage<CookieExtensionMess
     private ModifiableByteArray cookie;
 
     public CookieExtensionMessage() {
-        super(ExtensionType.COOKIE);
-    }
-
-    public CookieExtensionMessage(Config config) {
         super(ExtensionType.COOKIE);
     }
 

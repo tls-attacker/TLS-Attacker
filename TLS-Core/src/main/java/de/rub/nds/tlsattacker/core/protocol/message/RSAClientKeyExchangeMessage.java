@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.RSAClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.RSAClientComputations;
@@ -29,10 +28,6 @@ public class RSAClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     @HoldsModifiableVariable
     @XmlElement
     protected RSAClientComputations computations;
-
-    public RSAClientKeyExchangeMessage(Config tlsConfig) {
-        super(tlsConfig);
-    }
 
     public RSAClientKeyExchangeMessage() {
         super();

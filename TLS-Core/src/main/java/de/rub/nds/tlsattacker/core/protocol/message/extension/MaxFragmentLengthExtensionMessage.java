@@ -12,7 +12,6 @@ package de.rub.nds.tlsattacker.core.protocol.message.extension;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.MaxFragmentLengthExtensionHandler;
@@ -38,10 +37,6 @@ public class MaxFragmentLengthExtensionMessage extends ExtensionMessage<MaxFragm
     private ModifiableByteArray maxFragmentLength;
 
     public MaxFragmentLengthExtensionMessage() {
-        super(ExtensionType.MAX_FRAGMENT_LENGTH);
-    }
-
-    public MaxFragmentLengthExtensionMessage(Config config) {
         super(ExtensionType.MAX_FRAGMENT_LENGTH);
     }
 

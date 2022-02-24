@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.EmptyClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.EmptyClientComputations;
@@ -30,10 +29,6 @@ public class EmptyClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     public EmptyClientKeyExchangeMessage() {
         super();
-    }
-
-    public EmptyClientKeyExchangeMessage(Config tlsConfig) {
-        super(tlsConfig);
     }
 
     @Override

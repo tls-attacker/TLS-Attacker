@@ -13,7 +13,6 @@ import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
@@ -44,10 +43,6 @@ public class GOSTClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     public GOSTClientKeyExchangeMessage() {
         super();
-    }
-
-    public GOSTClientKeyExchangeMessage(Config tlsConfig) {
-        super(tlsConfig);
     }
 
     public void setKeyTransportBlob(ModifiableByteArray keyTransportBlob) {

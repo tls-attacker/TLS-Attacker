@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.KeyUpdateRequest;
 import de.rub.nds.tlsattacker.core.protocol.handler.KeyUpdateHandler;
@@ -33,17 +32,6 @@ public class KeyUpdateMessage extends HandshakeMessage {
 
     public KeyUpdateMessage() {
         super(HandshakeMessageType.KEY_UPDATE);
-        this.setIncludeInDigest(false);
-    }
-
-    public KeyUpdateMessage(Config tlsConfig) {
-        super(tlsConfig, HandshakeMessageType.KEY_UPDATE);
-        this.setIncludeInDigest(false);
-    }
-
-    public KeyUpdateMessage(Config tlsConfig, KeyUpdateRequest requestUpdate) {
-        super(tlsConfig, HandshakeMessageType.KEY_UPDATE);
-        setRequestMode(requestUpdate);
         this.setIncludeInDigest(false);
     }
 

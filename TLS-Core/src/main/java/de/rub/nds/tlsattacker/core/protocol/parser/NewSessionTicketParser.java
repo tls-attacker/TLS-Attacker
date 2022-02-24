@@ -36,7 +36,7 @@ public class NewSessionTicketParser extends HandshakeMessageParser<NewSessionTic
             parseNonce(msg);
             parseIdentityLength(msg);
             parseIdentity(msg);
-            if (hasExtensionLengthField(msg)) {
+            if (hasExtensionLengthField()) {
                 parseExtensionLength(msg);
                 if (hasExtensions(msg)) {
                     parseExtensionBytes(msg, false);
