@@ -59,9 +59,8 @@ public class EncryptedServerNameIndicationExtensionPreparator
     private EsniPreparatorMode esniPreparatorMode;
 
     public EncryptedServerNameIndicationExtensionPreparator(Chooser chooser,
-        EncryptedServerNameIndicationExtensionMessage message,
-        ExtensionSerializer<EncryptedServerNameIndicationExtensionMessage> serializer) {
-        super(chooser, message, serializer);
+        EncryptedServerNameIndicationExtensionMessage message) {
+        super(chooser, message);
         this.msg = message;
 
         if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {

@@ -18,9 +18,8 @@ public class CertificateTypeExtensionPreparator extends ExtensionPreparator<Cert
 
     private final CertificateTypeExtensionMessage msg;
 
-    public CertificateTypeExtensionPreparator(Chooser chooser, CertificateTypeExtensionMessage message,
-        ExtensionSerializer<CertificateTypeExtensionMessage> serializer) {
-        super(chooser, message, serializer);
+    public CertificateTypeExtensionPreparator(Chooser chooser, CertificateTypeExtensionMessage message) {
+        super(chooser, message);
         msg = message;
     }
 

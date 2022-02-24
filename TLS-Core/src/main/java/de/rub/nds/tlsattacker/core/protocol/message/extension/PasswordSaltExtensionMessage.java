@@ -69,7 +69,7 @@ public class PasswordSaltExtensionMessage extends ExtensionMessage<PasswordSaltE
 
     @Override
     public PasswordSaltExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new PasswordSaltExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new PasswordSaltExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

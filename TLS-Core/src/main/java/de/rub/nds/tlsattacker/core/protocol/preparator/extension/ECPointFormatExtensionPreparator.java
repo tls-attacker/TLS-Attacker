@@ -26,9 +26,8 @@ public class ECPointFormatExtensionPreparator extends ExtensionPreparator<ECPoin
 
     private final ECPointFormatExtensionMessage msg;
 
-    public ECPointFormatExtensionPreparator(Chooser chooser, ECPointFormatExtensionMessage message,
-        ECPointFormatExtensionSerializer serializer) {
-        super(chooser, message, serializer);
+    public ECPointFormatExtensionPreparator(Chooser chooser, ECPointFormatExtensionMessage message) {
+        super(chooser, message);
         this.msg = message;
     }
 

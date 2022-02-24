@@ -101,7 +101,7 @@ public class PSKKeyExchangeModesExtensionMessage extends ExtensionMessage<PSKKey
 
     @Override
     public ExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new PSKKeyExchangeModesExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new PSKKeyExchangeModesExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

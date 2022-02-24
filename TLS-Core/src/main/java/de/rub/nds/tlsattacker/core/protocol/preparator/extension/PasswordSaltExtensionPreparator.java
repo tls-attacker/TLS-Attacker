@@ -22,9 +22,8 @@ public class PasswordSaltExtensionPreparator extends ExtensionPreparator<Passwor
 
     private final PasswordSaltExtensionMessage msg;
 
-    public PasswordSaltExtensionPreparator(Chooser chooser, PasswordSaltExtensionMessage message,
-        PasswordSaltExtensionSerializer serializer) {
-        super(chooser, message, serializer);
+    public PasswordSaltExtensionPreparator(Chooser chooser, PasswordSaltExtensionMessage message) {
+        super(chooser, message);
         this.msg = message;
     }
 

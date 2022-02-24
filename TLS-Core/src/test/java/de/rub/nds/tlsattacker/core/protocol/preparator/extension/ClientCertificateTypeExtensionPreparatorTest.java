@@ -34,8 +34,7 @@ public class ClientCertificateTypeExtensionPreparatorTest {
     public void setUp() {
         context = new TlsContext();
         msg = new ClientCertificateTypeExtensionMessage();
-        preparator = new ClientCertificateTypeExtensionPreparator(context.getChooser(), msg,
-            new ClientCertificateTypeExtensionSerializer(msg));
+        preparator = new ClientCertificateTypeExtensionPreparator(context.getChooser(), msg);
     }
 
     @Test

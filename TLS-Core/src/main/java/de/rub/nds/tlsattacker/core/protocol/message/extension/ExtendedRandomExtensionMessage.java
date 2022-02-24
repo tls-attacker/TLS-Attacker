@@ -70,7 +70,7 @@ public class ExtendedRandomExtensionMessage extends ExtensionMessage<ExtendedRan
 
     @Override
     public ExtendedRandomExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new ExtendedRandomExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new ExtendedRandomExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

@@ -29,7 +29,7 @@ public class SRPExtensionPreparatorTest {
     public void setUp() {
         context = new TlsContext();
         message = new SRPExtensionMessage();
-        preparator = new SRPExtensionPreparator(context.getChooser(), message, new SRPExtensionSerializer(message));
+        preparator = new SRPExtensionPreparator(context.getChooser(), message);
     }
 
     @Test

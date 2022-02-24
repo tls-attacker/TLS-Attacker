@@ -84,7 +84,7 @@ public class ClientCertificateTypeExtensionMessage extends ExtensionMessage<Clie
 
     @Override
     public ClientCertificateTypeExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new ClientCertificateTypeExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new ClientCertificateTypeExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

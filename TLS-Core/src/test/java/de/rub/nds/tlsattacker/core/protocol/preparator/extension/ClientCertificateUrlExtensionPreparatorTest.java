@@ -29,8 +29,7 @@ public class ClientCertificateUrlExtensionPreparatorTest {
     public void setUp() {
         context = new TlsContext();
         message = new ClientCertificateUrlExtensionMessage();
-        preparator = new ClientCertificateUrlExtensionPreparator(context.getChooser(), message,
-            new ClientCertificateUrlExtensionSerializer(message));
+        preparator = new ClientCertificateUrlExtensionPreparator(context.getChooser(), message);
     }
 
     @Test

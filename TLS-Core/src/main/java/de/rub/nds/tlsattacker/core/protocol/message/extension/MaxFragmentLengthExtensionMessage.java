@@ -59,7 +59,7 @@ public class MaxFragmentLengthExtensionMessage extends ExtensionMessage<MaxFragm
 
     @Override
     public MaxFragmentLengthExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new MaxFragmentLengthExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new MaxFragmentLengthExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

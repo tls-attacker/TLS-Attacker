@@ -18,9 +18,8 @@ public class ClientAuthzExtensionPreparator extends ExtensionPreparator<ClientAu
 
     private final ClientAuthzExtensionMessage msg;
 
-    public ClientAuthzExtensionPreparator(Chooser chooser, ClientAuthzExtensionMessage message,
-        ExtensionSerializer<ClientAuthzExtensionMessage> serializer) {
-        super(chooser, message, serializer);
+    public ClientAuthzExtensionPreparator(Chooser chooser, ClientAuthzExtensionMessage message) {
+        super(chooser, message);
         msg = message;
     }
 

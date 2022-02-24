@@ -70,7 +70,7 @@ public class RenegotiationInfoExtensionMessage extends ExtensionMessage<Renegoti
 
     @Override
     public RenegotiationInfoExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new RenegotiationInfoExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new RenegotiationInfoExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

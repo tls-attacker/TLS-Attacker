@@ -103,7 +103,7 @@ public class GreaseExtensionMessage extends ExtensionMessage<GreaseExtensionMess
 
     @Override
     public GreaseExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new GreaseExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new GreaseExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

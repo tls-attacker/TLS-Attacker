@@ -17,9 +17,8 @@ public class UnknownExtensionPreparator extends ExtensionPreparator<UnknownExten
 
     private final UnknownExtensionMessage msg;
 
-    public UnknownExtensionPreparator(Chooser chooser, UnknownExtensionMessage msg,
-        UnknownExtensionSerializer serializer) {
-        super(chooser, msg, serializer);
+    public UnknownExtensionPreparator(Chooser chooser, UnknownExtensionMessage msg) {
+        super(chooser, msg);
         this.msg = msg;
     }
 

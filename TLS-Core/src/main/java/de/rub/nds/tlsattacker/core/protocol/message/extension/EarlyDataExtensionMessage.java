@@ -73,7 +73,7 @@ public class EarlyDataExtensionMessage extends ExtensionMessage<EarlyDataExtensi
 
     @Override
     public EarlyDataExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new EarlyDataExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new EarlyDataExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

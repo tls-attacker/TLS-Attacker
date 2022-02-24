@@ -34,8 +34,7 @@ public class CachedInfoExtensionPreparatorTest {
     public void setUp() {
         context = new TlsContext();
         msg = new CachedInfoExtensionMessage();
-        preparator =
-            new CachedInfoExtensionPreparator(context.getChooser(), msg, new CachedInfoExtensionSerializer(msg));
+        preparator = new CachedInfoExtensionPreparator(context.getChooser(), msg);
     }
 
     @Test

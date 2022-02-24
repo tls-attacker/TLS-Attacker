@@ -39,7 +39,7 @@ public class ExtendedMasterSecretExtensionMessage extends ExtensionMessage<Exten
 
     @Override
     public ExtendedMasterSecretExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new ExtendedMasterSecretExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new ExtendedMasterSecretExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

@@ -31,8 +31,7 @@ public class RenegotiationInfoExtensionPreparatorTest {
     public void setUp() {
         context = new TlsContext();
         message = new RenegotiationInfoExtensionMessage();
-        preparator = new RenegotiationInfoExtensionPreparator(context.getChooser(), message,
-            new RenegotiationInfoExtensionSerializer(message));
+        preparator = new RenegotiationInfoExtensionPreparator(context.getChooser(), message);
 
     }
 

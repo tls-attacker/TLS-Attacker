@@ -69,7 +69,7 @@ public class ECPointFormatExtensionMessage extends ExtensionMessage<ECPointForma
 
     @Override
     public ECPointFormatExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new ECPointFormatExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new ECPointFormatExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

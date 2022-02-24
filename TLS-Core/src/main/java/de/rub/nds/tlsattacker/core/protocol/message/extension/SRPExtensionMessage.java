@@ -71,7 +71,7 @@ public class SRPExtensionMessage extends ExtensionMessage<SRPExtensionMessage> {
 
     @Override
     public SRPExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new SRPExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new SRPExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

@@ -46,9 +46,8 @@ public class PreSharedKeyExtensionPreparator extends ExtensionPreparator<PreShar
     private final PreSharedKeyExtensionMessage msg;
     private ClientHelloMessage clientHello;
 
-    public PreSharedKeyExtensionPreparator(Chooser chooser, PreSharedKeyExtensionMessage message,
-        ExtensionSerializer<PreSharedKeyExtensionMessage> serializer) {
-        super(chooser, message, serializer);
+    public PreSharedKeyExtensionPreparator(Chooser chooser, PreSharedKeyExtensionMessage message) {
+        super(chooser, message);
         msg = message;
     }
 

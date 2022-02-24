@@ -27,9 +27,8 @@ public class SupportedVersionsExtensionPreparator extends ExtensionPreparator<Su
 
     private final SupportedVersionsExtensionMessage msg;
 
-    public SupportedVersionsExtensionPreparator(Chooser chooser, SupportedVersionsExtensionMessage message,
-        SupportedVersionsExtensionSerializer serializer) {
-        super(chooser, message, serializer);
+    public SupportedVersionsExtensionPreparator(Chooser chooser, SupportedVersionsExtensionMessage message) {
+        super(chooser, message);
         this.msg = message;
     }
 

@@ -64,7 +64,7 @@ public class HeartbeatExtensionMessage extends ExtensionMessage<HeartbeatExtensi
 
     @Override
     public HeartbeatExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new HeartbeatExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new HeartbeatExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

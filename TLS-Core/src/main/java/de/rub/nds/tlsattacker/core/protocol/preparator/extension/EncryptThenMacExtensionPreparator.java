@@ -15,9 +15,8 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 public class EncryptThenMacExtensionPreparator extends ExtensionPreparator<EncryptThenMacExtensionMessage> {
 
-    public EncryptThenMacExtensionPreparator(Chooser chooser, EncryptThenMacExtensionMessage message,
-        ExtensionSerializer<EncryptThenMacExtensionMessage> serializer) {
-        super(chooser, message, serializer);
+    public EncryptThenMacExtensionPreparator(Chooser chooser, EncryptThenMacExtensionMessage message) {
+        super(chooser, message);
     }
 
     @Override

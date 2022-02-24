@@ -50,7 +50,7 @@ public class UserMappingExtensionMessage extends ExtensionMessage<UserMappingExt
 
     @Override
     public UserMappingExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new UserMappingExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new UserMappingExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

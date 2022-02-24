@@ -80,7 +80,7 @@ public class TrustedCaIndicationExtensionMessage extends ExtensionMessage<Truste
 
     @Override
     public TrustedCaIndicationExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new TrustedCaIndicationExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new TrustedCaIndicationExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

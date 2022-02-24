@@ -83,8 +83,7 @@ public class CertificateStatusRequestV2ExtensionMessage
 
     @Override
     public CertificateStatusRequestV2ExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new CertificateStatusRequestV2ExtensionPreparator(tlsContext.getChooser(), this,
-            getSerializer(tlsContext));
+        return new CertificateStatusRequestV2ExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

@@ -22,9 +22,8 @@ public class PaddingExtensionPreparator extends ExtensionPreparator<PaddingExten
 
     private final PaddingExtensionMessage message;
 
-    public PaddingExtensionPreparator(Chooser chooser, PaddingExtensionMessage message,
-        PaddingExtensionSerializer serializer) {
-        super(chooser, message, serializer);
+    public PaddingExtensionPreparator(Chooser chooser, PaddingExtensionMessage message) {
+        super(chooser, message);
         this.message = message;
     }
 

@@ -98,7 +98,7 @@ public class SrtpExtensionMessage extends ExtensionMessage<SrtpExtensionMessage>
 
     @Override
     public SrtpExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new SrtpExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new SrtpExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

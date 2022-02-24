@@ -69,7 +69,7 @@ public class ServerAuthzExtensionMessage extends ExtensionMessage<ServerAuthzExt
 
     @Override
     public ServerAuthzExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new ServerAuthzExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new ServerAuthzExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

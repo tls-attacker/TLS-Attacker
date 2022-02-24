@@ -69,7 +69,7 @@ public class CookieExtensionMessage extends ExtensionMessage<CookieExtensionMess
 
     @Override
     public CookieExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new CookieExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new CookieExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

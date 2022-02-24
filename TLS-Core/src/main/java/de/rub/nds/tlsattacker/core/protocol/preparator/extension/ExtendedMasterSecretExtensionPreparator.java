@@ -19,9 +19,8 @@ public class ExtendedMasterSecretExtensionPreparator extends ExtensionPreparator
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ExtendedMasterSecretExtensionPreparator(Chooser chooser, ExtendedMasterSecretExtensionMessage message,
-        ExtendedMasterSecretExtensionSerializer serializer) {
-        super(chooser, message, serializer);
+    public ExtendedMasterSecretExtensionPreparator(Chooser chooser, ExtendedMasterSecretExtensionMessage message) {
+        super(chooser, message);
     }
 
     /**

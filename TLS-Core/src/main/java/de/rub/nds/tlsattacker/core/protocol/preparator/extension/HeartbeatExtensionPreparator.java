@@ -22,9 +22,8 @@ public class HeartbeatExtensionPreparator extends ExtensionPreparator<HeartbeatE
 
     private final HeartbeatExtensionMessage msg;
 
-    public HeartbeatExtensionPreparator(Chooser chooser, HeartbeatExtensionMessage message,
-        HeartbeatExtensionSerializer serializer) {
-        super(chooser, message, serializer);
+    public HeartbeatExtensionPreparator(Chooser chooser, HeartbeatExtensionMessage message) {
+        super(chooser, message);
         this.msg = message;
     }
 

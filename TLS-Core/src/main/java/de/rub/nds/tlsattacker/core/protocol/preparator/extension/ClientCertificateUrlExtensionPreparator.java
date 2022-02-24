@@ -15,9 +15,8 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 public class ClientCertificateUrlExtensionPreparator extends ExtensionPreparator<ClientCertificateUrlExtensionMessage> {
 
-    public ClientCertificateUrlExtensionPreparator(Chooser chooser, ClientCertificateUrlExtensionMessage message,
-        ExtensionSerializer<ClientCertificateUrlExtensionMessage> serializer) {
-        super(chooser, message, serializer);
+    public ClientCertificateUrlExtensionPreparator(Chooser chooser, ClientCertificateUrlExtensionMessage message) {
+        super(chooser, message);
     }
 
     @Override

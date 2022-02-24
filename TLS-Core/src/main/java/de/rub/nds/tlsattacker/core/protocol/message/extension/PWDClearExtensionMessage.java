@@ -69,7 +69,7 @@ public class PWDClearExtensionMessage extends ExtensionMessage<PWDClearExtension
 
     @Override
     public PWDClearExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new PWDClearExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new PWDClearExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

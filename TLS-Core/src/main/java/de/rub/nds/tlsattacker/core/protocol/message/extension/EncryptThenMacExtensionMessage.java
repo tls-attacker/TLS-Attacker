@@ -35,7 +35,7 @@ public class EncryptThenMacExtensionMessage extends ExtensionMessage<EncryptThen
 
     @Override
     public EncryptThenMacExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new EncryptThenMacExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new EncryptThenMacExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

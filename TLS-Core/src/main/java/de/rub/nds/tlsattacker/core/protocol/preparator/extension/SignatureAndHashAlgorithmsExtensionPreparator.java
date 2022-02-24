@@ -30,8 +30,8 @@ public class SignatureAndHashAlgorithmsExtensionPreparator
     private final SignatureAndHashAlgorithmsExtensionMessage msg;
 
     public SignatureAndHashAlgorithmsExtensionPreparator(Chooser chooser,
-        SignatureAndHashAlgorithmsExtensionMessage message, SignatureAndHashAlgorithmsExtensionSerializer serializer) {
-        super(chooser, message, serializer);
+        SignatureAndHashAlgorithmsExtensionMessage message) {
+        super(chooser, message);
         this.msg = message;
     }
 

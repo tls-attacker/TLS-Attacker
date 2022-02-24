@@ -56,7 +56,7 @@ public class PaddingExtensionMessage extends ExtensionMessage<PaddingExtensionMe
 
     @Override
     public PaddingExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new PaddingExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new PaddingExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

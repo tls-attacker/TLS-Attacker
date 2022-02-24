@@ -19,9 +19,8 @@ public class TokenBindingExtensionPreparator extends ExtensionPreparator<TokenBi
 
     private final TokenBindingExtensionMessage message;
 
-    public TokenBindingExtensionPreparator(Chooser chooser, TokenBindingExtensionMessage message,
-        TokenBindingExtensionSerializer serializer) {
-        super(chooser, message, serializer);
+    public TokenBindingExtensionPreparator(Chooser chooser, TokenBindingExtensionMessage message) {
+        super(chooser, message);
         this.message = message;
     }
 

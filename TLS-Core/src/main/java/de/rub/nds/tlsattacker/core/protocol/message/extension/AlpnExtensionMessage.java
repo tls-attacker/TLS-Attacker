@@ -84,7 +84,7 @@ public class AlpnExtensionMessage extends ExtensionMessage<AlpnExtensionMessage>
 
     @Override
     public AlpnExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new AlpnExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new AlpnExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

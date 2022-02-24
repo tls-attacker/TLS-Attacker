@@ -30,9 +30,8 @@ public class AlpnExtensionPreparator extends ExtensionPreparator<AlpnExtensionMe
 
     private final AlpnExtensionMessage msg;
 
-    public AlpnExtensionPreparator(Chooser chooser, AlpnExtensionMessage message,
-        ExtensionSerializer<AlpnExtensionMessage> serializer) {
-        super(chooser, message, serializer);
+    public AlpnExtensionPreparator(Chooser chooser, AlpnExtensionMessage message) {
+        super(chooser, message);
         msg = message;
     }
 

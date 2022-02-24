@@ -30,8 +30,7 @@ public class PasswordSaltExtensionPreparatorTest {
     public void setUp() {
         context = new TlsContext();
         message = new PasswordSaltExtensionMessage();
-        preparator = new PasswordSaltExtensionPreparator(context.getChooser(), message,
-            new PasswordSaltExtensionSerializer(message));
+        preparator = new PasswordSaltExtensionPreparator(context.getChooser(), message);
     }
 
     @Test

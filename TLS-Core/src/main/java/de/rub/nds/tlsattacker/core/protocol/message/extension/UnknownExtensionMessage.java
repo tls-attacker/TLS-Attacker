@@ -87,7 +87,7 @@ public class UnknownExtensionMessage extends ExtensionMessage<UnknownExtensionMe
 
     @Override
     public UnknownExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new UnknownExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new UnknownExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

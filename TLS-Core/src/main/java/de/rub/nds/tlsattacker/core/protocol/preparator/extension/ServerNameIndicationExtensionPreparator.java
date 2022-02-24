@@ -29,9 +29,8 @@ public class ServerNameIndicationExtensionPreparator extends ExtensionPreparator
     private final ServerNameIndicationExtensionMessage msg;
     private ByteArrayOutputStream stream;
 
-    public ServerNameIndicationExtensionPreparator(Chooser chooser, ServerNameIndicationExtensionMessage message,
-        ServerNameIndicationExtensionSerializer serializer) {
-        super(chooser, message, serializer);
+    public ServerNameIndicationExtensionPreparator(Chooser chooser, ServerNameIndicationExtensionMessage message) {
+        super(chooser, message);
         this.msg = message;
     }
 

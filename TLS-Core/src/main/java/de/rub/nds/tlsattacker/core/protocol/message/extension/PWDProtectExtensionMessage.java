@@ -69,7 +69,7 @@ public class PWDProtectExtensionMessage extends ExtensionMessage<PWDProtectExten
 
     @Override
     public PWDProtectExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new PWDProtectExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new PWDProtectExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

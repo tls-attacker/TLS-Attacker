@@ -18,9 +18,8 @@ public class ServerAuthzExtensionPreparator extends ExtensionPreparator<ServerAu
 
     private final ServerAuthzExtensionMessage msg;
 
-    public ServerAuthzExtensionPreparator(Chooser chooser, ServerAuthzExtensionMessage message,
-        ExtensionSerializer<ServerAuthzExtensionMessage> serializer) {
-        super(chooser, message, serializer);
+    public ServerAuthzExtensionPreparator(Chooser chooser, ServerAuthzExtensionMessage message) {
+        super(chooser, message);
         msg = message;
     }
 

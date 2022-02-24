@@ -23,9 +23,8 @@ public class CachedInfoExtensionPreparator extends ExtensionPreparator<CachedInf
 
     private final CachedInfoExtensionMessage msg;
 
-    public CachedInfoExtensionPreparator(Chooser chooser, CachedInfoExtensionMessage message,
-        ExtensionSerializer<CachedInfoExtensionMessage> serializer) {
-        super(chooser, message, serializer);
+    public CachedInfoExtensionPreparator(Chooser chooser, CachedInfoExtensionMessage message) {
+        super(chooser, message);
         msg = message;
     }
 

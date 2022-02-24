@@ -21,9 +21,8 @@ public class PWDClearExtensionPreparator extends ExtensionPreparator<PWDClearExt
 
     private final PWDClearExtensionMessage msg;
 
-    public PWDClearExtensionPreparator(Chooser chooser, PWDClearExtensionMessage message,
-        PWDClearExtensionSerializer serializer) {
-        super(chooser, message, serializer);
+    public PWDClearExtensionPreparator(Chooser chooser, PWDClearExtensionMessage message) {
+        super(chooser, message);
         this.msg = message;
     }
 

@@ -32,7 +32,7 @@ public class ClientCertificateUrlExtensionMessage extends ExtensionMessage<Clien
 
     @Override
     public ClientCertificateUrlExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new ClientCertificateUrlExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new ClientCertificateUrlExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

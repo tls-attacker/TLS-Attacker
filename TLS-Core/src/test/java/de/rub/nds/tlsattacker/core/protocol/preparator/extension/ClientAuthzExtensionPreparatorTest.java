@@ -36,8 +36,7 @@ public class ClientAuthzExtensionPreparatorTest {
         context.getConfig().setClientAuthzExtensionDataFormat(authzFormatList);
 
         msg = new ClientAuthzExtensionMessage();
-        preparator =
-            new ClientAuthzExtensionPreparator(context.getChooser(), msg, new ClientAuthzExtensionSerializer(msg));
+        preparator = new ClientAuthzExtensionPreparator(context.getChooser(), msg);
 
         preparator.prepare();
 

@@ -21,9 +21,8 @@ public class UserMappingExtensionPreparator extends ExtensionPreparator<UserMapp
 
     private final UserMappingExtensionMessage msg;
 
-    public UserMappingExtensionPreparator(Chooser chooser, UserMappingExtensionMessage message,
-        UserMappingExtensionSerializer serializer) {
-        super(chooser, message, serializer);
+    public UserMappingExtensionPreparator(Chooser chooser, UserMappingExtensionMessage message) {
+        super(chooser, message);
         msg = message;
     }
 

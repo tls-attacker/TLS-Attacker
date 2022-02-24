@@ -84,7 +84,7 @@ public class TokenBindingExtensionMessage extends ExtensionMessage<TokenBindingE
 
     @Override
     public TokenBindingExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new TokenBindingExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new TokenBindingExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

@@ -52,7 +52,7 @@ public class SessionTicketTLSExtensionMessage extends ExtensionMessage<SessionTi
 
     @Override
     public SessionTicketTLSExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new SessionTicketTLSExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new SessionTicketTLSExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

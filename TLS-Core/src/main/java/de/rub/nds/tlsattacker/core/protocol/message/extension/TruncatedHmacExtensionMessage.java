@@ -35,7 +35,7 @@ public class TruncatedHmacExtensionMessage extends ExtensionMessage<TruncatedHma
 
     @Override
     public TruncatedHmacExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new TruncatedHmacExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new TruncatedHmacExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

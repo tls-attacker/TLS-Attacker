@@ -71,7 +71,7 @@ public class EncryptedServerNameIndicationExtensionSerializerTest {
         msg.setEncryptedSni(Modifiable.explicit(encryptedSni));
 
         EncryptedServerNameIndicationExtensionPreparator preparator =
-            new EncryptedServerNameIndicationExtensionPreparator(chooser, msg, esniMassageSerializer);
+            new EncryptedServerNameIndicationExtensionPreparator(chooser, msg);
         preparator.prepare();
         byte[] resultBytes = esniMassageSerializer.serialize();
         byte[] expectedBytes = ArrayConverter.hexStringToByteArray(

@@ -22,9 +22,8 @@ public class SRPExtensionPreparator extends ExtensionPreparator<SRPExtensionMess
 
     private final SRPExtensionMessage message;
 
-    public SRPExtensionPreparator(Chooser chooser, SRPExtensionMessage message,
-        ExtensionSerializer<SRPExtensionMessage> serializer) {
-        super(chooser, message, serializer);
+    public SRPExtensionPreparator(Chooser chooser, SRPExtensionMessage message) {
+        super(chooser, message);
         this.message = message;
     }
 

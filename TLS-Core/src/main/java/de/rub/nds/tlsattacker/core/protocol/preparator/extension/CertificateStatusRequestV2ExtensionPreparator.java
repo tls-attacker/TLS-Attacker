@@ -21,9 +21,8 @@ public class CertificateStatusRequestV2ExtensionPreparator
     private final CertificateStatusRequestV2ExtensionMessage msg;
 
     public CertificateStatusRequestV2ExtensionPreparator(Chooser chooser,
-        CertificateStatusRequestV2ExtensionMessage message,
-        ExtensionSerializer<CertificateStatusRequestV2ExtensionMessage> serializer) {
-        super(chooser, message, serializer);
+        CertificateStatusRequestV2ExtensionMessage message) {
+        super(chooser, message);
         msg = message;
     }
 

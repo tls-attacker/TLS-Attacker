@@ -69,7 +69,7 @@ public class ClientAuthzExtensionMessage extends ExtensionMessage<ClientAuthzExt
 
     @Override
     public ClientAuthzExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new ClientAuthzExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new ClientAuthzExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

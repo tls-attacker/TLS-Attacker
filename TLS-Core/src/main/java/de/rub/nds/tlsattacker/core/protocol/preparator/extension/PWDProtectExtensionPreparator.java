@@ -36,9 +36,8 @@ public class PWDProtectExtensionPreparator extends ExtensionPreparator<PWDProtec
 
     private final PWDProtectExtensionMessage msg;
 
-    public PWDProtectExtensionPreparator(Chooser chooser, PWDProtectExtensionMessage message,
-        PWDProtectExtensionSerializer serializer) {
-        super(chooser, message, serializer);
+    public PWDProtectExtensionPreparator(Chooser chooser, PWDProtectExtensionMessage message) {
+        super(chooser, message);
         this.msg = message;
     }
 

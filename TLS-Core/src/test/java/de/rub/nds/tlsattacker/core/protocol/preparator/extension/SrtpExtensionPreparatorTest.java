@@ -38,7 +38,7 @@ public class SrtpExtensionPreparatorTest {
     public void setUp() {
         context = new TlsContext();
         msg = new SrtpExtensionMessage();
-        preparator = new SrtpExtensionPreparator(context.getChooser(), msg, new SrtpExtensionSerializer(msg));
+        preparator = new SrtpExtensionPreparator(context.getChooser(), msg);
     }
 
     @Test

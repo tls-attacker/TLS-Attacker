@@ -19,9 +19,8 @@ public class ServerCertificateTypeExtensionPreparator
 
     private final ServerCertificateTypeExtensionMessage msg;
 
-    public ServerCertificateTypeExtensionPreparator(Chooser chooser, ServerCertificateTypeExtensionMessage message,
-        ExtensionSerializer<ServerCertificateTypeExtensionMessage> serializer) {
-        super(chooser, message, serializer);
+    public ServerCertificateTypeExtensionPreparator(Chooser chooser, ServerCertificateTypeExtensionMessage message) {
+        super(chooser, message);
         msg = message;
     }
 

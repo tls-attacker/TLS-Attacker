@@ -72,8 +72,7 @@ public class SignatureAndHashAlgorithmsExtensionMessage
 
     @Override
     public SignatureAndHashAlgorithmsExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new SignatureAndHashAlgorithmsExtensionPreparator(tlsContext.getChooser(), this,
-            getSerializer(tlsContext));
+        return new SignatureAndHashAlgorithmsExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

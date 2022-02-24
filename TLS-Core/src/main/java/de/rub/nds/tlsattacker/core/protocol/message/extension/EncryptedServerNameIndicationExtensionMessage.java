@@ -195,8 +195,7 @@ public class EncryptedServerNameIndicationExtensionMessage
 
     @Override
     public EncryptedServerNameIndicationExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new EncryptedServerNameIndicationExtensionPreparator(tlsContext.getChooser(), this,
-            getSerializer(tlsContext));
+        return new EncryptedServerNameIndicationExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

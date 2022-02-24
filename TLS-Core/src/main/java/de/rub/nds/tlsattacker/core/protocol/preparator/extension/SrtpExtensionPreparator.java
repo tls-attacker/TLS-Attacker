@@ -25,9 +25,8 @@ public class SrtpExtensionPreparator extends ExtensionPreparator<SrtpExtensionMe
 
     private final SrtpExtensionMessage msg;
 
-    public SrtpExtensionPreparator(Chooser chooser, SrtpExtensionMessage message,
-        ExtensionSerializer<SrtpExtensionMessage> serializer) {
-        super(chooser, message, serializer);
+    public SrtpExtensionPreparator(Chooser chooser, SrtpExtensionMessage message) {
+        super(chooser, message);
         msg = message;
     }
 

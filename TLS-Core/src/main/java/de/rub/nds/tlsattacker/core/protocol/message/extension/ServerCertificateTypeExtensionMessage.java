@@ -84,7 +84,7 @@ public class ServerCertificateTypeExtensionMessage extends ExtensionMessage<Serv
 
     @Override
     public ServerCertificateTypeExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new ServerCertificateTypeExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new ServerCertificateTypeExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

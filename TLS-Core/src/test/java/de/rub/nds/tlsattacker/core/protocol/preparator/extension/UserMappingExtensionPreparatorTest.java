@@ -31,8 +31,7 @@ public class UserMappingExtensionPreparatorTest {
     public void setUp() {
         context = new TlsContext();
         msg = new UserMappingExtensionMessage();
-        preparator =
-            new UserMappingExtensionPreparator(context.getChooser(), msg, new UserMappingExtensionSerializer(msg));
+        preparator = new UserMappingExtensionPreparator(context.getChooser(), msg);
     }
 
     @Test

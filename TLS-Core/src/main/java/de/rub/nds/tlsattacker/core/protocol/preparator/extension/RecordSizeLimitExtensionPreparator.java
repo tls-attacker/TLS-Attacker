@@ -23,9 +23,8 @@ public class RecordSizeLimitExtensionPreparator extends ExtensionPreparator<Reco
 
     private final RecordSizeLimitExtensionMessage message;
 
-    public RecordSizeLimitExtensionPreparator(Chooser chooser, RecordSizeLimitExtensionMessage message,
-        RecordSizeLimitExtensionSerializer serializer) {
-        super(chooser, message, serializer);
+    public RecordSizeLimitExtensionPreparator(Chooser chooser, RecordSizeLimitExtensionMessage message) {
+        super(chooser, message);
         this.message = message;
     }
 

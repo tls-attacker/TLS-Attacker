@@ -66,7 +66,7 @@ public class SupportedVersionsExtensionMessage extends ExtensionMessage<Supporte
 
     @Override
     public SupportedVersionsExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new SupportedVersionsExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new SupportedVersionsExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

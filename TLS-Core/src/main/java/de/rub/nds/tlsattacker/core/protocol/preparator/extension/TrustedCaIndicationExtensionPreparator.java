@@ -23,9 +23,8 @@ public class TrustedCaIndicationExtensionPreparator extends ExtensionPreparator<
     private static final Logger LOGGER = LogManager.getLogger();
     private final TrustedCaIndicationExtensionMessage msg;
 
-    public TrustedCaIndicationExtensionPreparator(Chooser chooser, TrustedCaIndicationExtensionMessage message,
-        TrustedCaIndicationExtensionSerializer serializer) {
-        super(chooser, message, serializer);
+    public TrustedCaIndicationExtensionPreparator(Chooser chooser, TrustedCaIndicationExtensionMessage message) {
+        super(chooser, message);
         msg = message;
     }
 

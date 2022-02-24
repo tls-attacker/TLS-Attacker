@@ -29,9 +29,8 @@ public class EllipticCurvesExtensionPreparator extends ExtensionPreparator<Ellip
 
     private final EllipticCurvesExtensionMessage msg;
 
-    public EllipticCurvesExtensionPreparator(Chooser chooser, EllipticCurvesExtensionMessage message,
-        EllipticCurvesExtensionSerializer serializer) {
-        super(chooser, message, serializer);
+    public EllipticCurvesExtensionPreparator(Chooser chooser, EllipticCurvesExtensionMessage message) {
+        super(chooser, message);
         msg = message;
     }
 

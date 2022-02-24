@@ -211,7 +211,7 @@ public class PreSharedKeyExtensionMessage extends ExtensionMessage<PreSharedKeyE
 
     @Override
     public ExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new PreSharedKeyExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new PreSharedKeyExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

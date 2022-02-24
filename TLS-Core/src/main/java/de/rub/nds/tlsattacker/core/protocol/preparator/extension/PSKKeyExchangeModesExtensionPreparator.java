@@ -24,9 +24,8 @@ public class PSKKeyExchangeModesExtensionPreparator extends ExtensionPreparator<
 
     private final PSKKeyExchangeModesExtensionMessage msg;
 
-    public PSKKeyExchangeModesExtensionPreparator(Chooser chooser, PSKKeyExchangeModesExtensionMessage message,
-        ExtensionSerializer<PSKKeyExchangeModesExtensionMessage> serializer) {
-        super(chooser, message, serializer);
+    public PSKKeyExchangeModesExtensionPreparator(Chooser chooser, PSKKeyExchangeModesExtensionMessage message) {
+        super(chooser, message);
         this.msg = message;
     }
 

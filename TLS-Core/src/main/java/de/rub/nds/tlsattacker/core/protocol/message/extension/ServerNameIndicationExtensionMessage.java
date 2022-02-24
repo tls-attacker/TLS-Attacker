@@ -99,7 +99,7 @@ public class ServerNameIndicationExtensionMessage extends ExtensionMessage<Serve
 
     @Override
     public ServerNameIndicationExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new ServerNameIndicationExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new ServerNameIndicationExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

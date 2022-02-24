@@ -21,9 +21,8 @@ public class MaxFragmentLengthExtensionPreparator extends ExtensionPreparator<Ma
 
     private final MaxFragmentLengthExtensionMessage message;
 
-    public MaxFragmentLengthExtensionPreparator(Chooser chooser, MaxFragmentLengthExtensionMessage message,
-        MaxFragmentLengthExtensionSerializer serializer) {
-        super(chooser, message, serializer);
+    public MaxFragmentLengthExtensionPreparator(Chooser chooser, MaxFragmentLengthExtensionMessage message) {
+        super(chooser, message);
         this.message = message;
     }
 

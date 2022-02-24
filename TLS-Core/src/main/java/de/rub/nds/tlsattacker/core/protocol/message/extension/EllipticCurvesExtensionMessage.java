@@ -69,7 +69,7 @@ public class EllipticCurvesExtensionMessage extends ExtensionMessage<EllipticCur
 
     @Override
     public EllipticCurvesExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new EllipticCurvesExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new EllipticCurvesExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

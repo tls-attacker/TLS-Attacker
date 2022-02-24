@@ -53,7 +53,7 @@ public class RecordSizeLimitExtensionMessage extends ExtensionMessage<RecordSize
 
     @Override
     public RecordSizeLimitExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new RecordSizeLimitExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new RecordSizeLimitExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

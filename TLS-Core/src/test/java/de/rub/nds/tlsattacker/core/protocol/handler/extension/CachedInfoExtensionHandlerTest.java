@@ -39,8 +39,7 @@ public class CachedInfoExtensionHandlerTest {
     public void testadjustContext() {
         CachedInfoExtensionMessage msg = new CachedInfoExtensionMessage();
         msg.setCachedInfo(cachedObjects);
-        CachedInfoExtensionPreparator preparator =
-            new CachedInfoExtensionPreparator(context.getChooser(), msg, new CachedInfoExtensionSerializer(msg));
+        CachedInfoExtensionPreparator preparator = new CachedInfoExtensionPreparator(context.getChooser(), msg);
         preparator.prepare();
 
         handler.adjustContext(msg);

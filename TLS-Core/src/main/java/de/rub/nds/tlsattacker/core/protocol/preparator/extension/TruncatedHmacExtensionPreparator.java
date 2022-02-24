@@ -15,9 +15,8 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 public class TruncatedHmacExtensionPreparator extends ExtensionPreparator<TruncatedHmacExtensionMessage> {
 
-    public TruncatedHmacExtensionPreparator(Chooser chooser, TruncatedHmacExtensionMessage message,
-        TruncatedHmacExtensionSerializer serializer) {
-        super(chooser, message, serializer);
+    public TruncatedHmacExtensionPreparator(Chooser chooser, TruncatedHmacExtensionMessage message) {
+        super(chooser, message);
     }
 
     @Override

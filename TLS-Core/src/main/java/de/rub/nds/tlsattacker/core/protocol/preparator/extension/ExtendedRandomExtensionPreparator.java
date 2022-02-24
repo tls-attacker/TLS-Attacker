@@ -29,9 +29,8 @@ public class ExtendedRandomExtensionPreparator extends ExtensionPreparator<Exten
 
     private final ExtendedRandomExtensionMessage message;
 
-    public ExtendedRandomExtensionPreparator(Chooser chooser, ExtendedRandomExtensionMessage message,
-        ExtendedRandomExtensionSerializer serializer) {
-        super(chooser, message, serializer);
+    public ExtendedRandomExtensionPreparator(Chooser chooser, ExtendedRandomExtensionMessage message) {
+        super(chooser, message);
         this.message = message;
     }
 

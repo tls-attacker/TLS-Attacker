@@ -29,8 +29,7 @@ public class EncryptThenMacExtensionPreparatorTest {
     public void setUp() {
         context = new TlsContext();
         message = new EncryptThenMacExtensionMessage();
-        preparator = new EncryptThenMacExtensionPreparator(context.getChooser(), message,
-            new EncryptThenMacExtensionSerializer(message));
+        preparator = new EncryptThenMacExtensionPreparator(context.getChooser(), message);
     }
 
     @Test

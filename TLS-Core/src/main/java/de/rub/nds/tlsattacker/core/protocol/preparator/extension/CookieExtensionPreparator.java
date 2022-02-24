@@ -25,9 +25,8 @@ public class CookieExtensionPreparator extends ExtensionPreparator<CookieExtensi
 
     private final CookieExtensionMessage msg;
 
-    public CookieExtensionPreparator(Chooser chooser, CookieExtensionMessage message,
-        ExtensionSerializer<CookieExtensionMessage> serializer) {
-        super(chooser, message, serializer);
+    public CookieExtensionPreparator(Chooser chooser, CookieExtensionMessage message) {
+        super(chooser, message);
         this.msg = message;
     }
 

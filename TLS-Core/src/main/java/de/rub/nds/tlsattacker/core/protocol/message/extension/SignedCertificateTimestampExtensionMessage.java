@@ -68,8 +68,7 @@ public class SignedCertificateTimestampExtensionMessage
 
     @Override
     public SignedCertificateTimestampExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new SignedCertificateTimestampExtensionPreparator(tlsContext.getChooser(), this,
-            getSerializer(tlsContext));
+        return new SignedCertificateTimestampExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

@@ -91,7 +91,7 @@ public class CachedInfoExtensionMessage extends ExtensionMessage<CachedInfoExten
 
     @Override
     public CachedInfoExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new CachedInfoExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new CachedInfoExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

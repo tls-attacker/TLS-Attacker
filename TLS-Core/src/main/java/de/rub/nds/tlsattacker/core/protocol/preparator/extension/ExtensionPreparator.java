@@ -35,6 +35,12 @@ public abstract class ExtensionPreparator<T extends ExtensionMessage> extends Pr
         this.serializer = serializer;
     }
 
+    public ExtensionPreparator(Chooser chooser, T message) {
+        super(chooser, message);
+        this.msg = message;
+        this.serializer = message.getSerializer(chooser.getContext());
+    }
+
     @Override
     public final void prepare() {
         prepareExtensionType(msg);

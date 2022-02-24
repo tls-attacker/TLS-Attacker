@@ -23,8 +23,8 @@ public class SignedCertificateTimestampExtensionPreparator
     private final SignedCertificateTimestampExtensionMessage message;
 
     public SignedCertificateTimestampExtensionPreparator(Chooser chooser,
-        SignedCertificateTimestampExtensionMessage message, SignedCertificateTimestampExtensionSerializer serializer) {
-        super(chooser, message, serializer);
+        SignedCertificateTimestampExtensionMessage message) {
+        super(chooser, message);
         this.message = message;
     }
 
