@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
@@ -33,7 +32,6 @@ public class AlertParserTest {
     private final byte[] message;
     private final byte level;
     private final byte description;
-    private final Config config = Config.createConfig();
 
     public AlertParserTest(byte[] message, byte level, byte description) {
         this.message = message;

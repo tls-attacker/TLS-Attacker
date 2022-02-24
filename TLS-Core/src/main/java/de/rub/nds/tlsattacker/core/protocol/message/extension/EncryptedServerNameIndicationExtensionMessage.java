@@ -30,8 +30,6 @@ import org.apache.logging.log4j.Logger;
 public class EncryptedServerNameIndicationExtensionMessage
     extends ExtensionMessage<EncryptedServerNameIndicationExtensionMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger();
-
     private EsniMessageType esniMessageTypeConfig;
 
     @ModifiableVariableProperty

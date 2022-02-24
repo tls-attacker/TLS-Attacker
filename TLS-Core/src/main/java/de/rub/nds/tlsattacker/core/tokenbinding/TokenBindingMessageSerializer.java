@@ -9,7 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.tokenbinding;
 
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageSerializer;
 
 public class TokenBindingMessageSerializer extends ProtocolMessageSerializer<TokenBindingMessage> {

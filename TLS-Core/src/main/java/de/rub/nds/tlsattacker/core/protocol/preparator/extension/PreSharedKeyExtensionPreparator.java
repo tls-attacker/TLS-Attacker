@@ -20,7 +20,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PSKBinder;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PSKIdentity;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ClientHelloSerializer;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PSKBinderSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PSKIdentitySerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;

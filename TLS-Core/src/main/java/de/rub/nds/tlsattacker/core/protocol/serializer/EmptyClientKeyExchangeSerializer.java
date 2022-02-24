@@ -9,7 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.EmptyClientKeyExchangeMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,8 +18,6 @@ public class EmptyClientKeyExchangeSerializer<T extends EmptyClientKeyExchangeMe
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    protected final T msg;
-
     /**
      * Constructor for the EmptyClientKeyExchangeSerializer
      *
@@ -29,7 +26,6 @@ public class EmptyClientKeyExchangeSerializer<T extends EmptyClientKeyExchangeMe
      */
     public EmptyClientKeyExchangeSerializer(T message) {
         super(message);
-        this.msg = message;
     }
 
     @Override

@@ -9,8 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.https;
 
-import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.https.header.*;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageParser;
