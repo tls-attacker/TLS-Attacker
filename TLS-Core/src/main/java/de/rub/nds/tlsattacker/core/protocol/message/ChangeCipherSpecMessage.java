@@ -86,6 +86,6 @@ public class ChangeCipherSpecMessage extends ProtocolMessage<ChangeCipherSpecMes
 
     @Override
     public ChangeCipherSpecSerializer getSerializer(TlsContext tlsContext) {
-        return new ChangeCipherSpecSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new ChangeCipherSpecSerializer(this);
     }
 }

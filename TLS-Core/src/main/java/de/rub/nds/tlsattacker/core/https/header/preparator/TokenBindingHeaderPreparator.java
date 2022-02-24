@@ -31,7 +31,7 @@ public class TokenBindingHeaderPreparator extends Preparator<TokenBindingHeader>
         TokenBindingMessagePreparator preparator = new TokenBindingMessagePreparator(chooser, header.getMessage());
         preparator.prepare();
         TokenBindingMessageSerializer serializer =
-            new TokenBindingMessageSerializer(header.getMessage(), chooser.getSelectedProtocolVersion());
+            new TokenBindingMessageSerializer(header.getMessage());
         String encodedTokenBinding = Base64.getUrlEncoder().withoutPadding().encodeToString(serializer.serialize());
         header.setHeaderValue(encodedTokenBinding);
     }

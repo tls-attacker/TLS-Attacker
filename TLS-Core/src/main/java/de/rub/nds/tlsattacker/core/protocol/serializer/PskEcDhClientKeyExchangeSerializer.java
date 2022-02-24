@@ -28,11 +28,9 @@ public class PskEcDhClientKeyExchangeSerializer
      *
      * @param message
      *                Message that should be serialized
-     * @param version
-     *                Version of the Protocol
      */
-    public PskEcDhClientKeyExchangeSerializer(PskEcDhClientKeyExchangeMessage message, ProtocolVersion version) {
-        super(message, version);
+    public PskEcDhClientKeyExchangeSerializer(PskEcDhClientKeyExchangeMessage message) {
+        super(message);
         this.msg = message;
     }
 

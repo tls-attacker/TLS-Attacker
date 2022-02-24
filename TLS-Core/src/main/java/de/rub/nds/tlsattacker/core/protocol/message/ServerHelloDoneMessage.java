@@ -42,7 +42,7 @@ public class ServerHelloDoneMessage extends HandshakeMessage {
 
     @Override
     public ServerHelloDoneSerializer getSerializer(TlsContext tlsContext) {
-        return new ServerHelloDoneSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new ServerHelloDoneSerializer(this);
     }
 
     @Override

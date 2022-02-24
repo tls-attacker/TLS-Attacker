@@ -26,11 +26,9 @@ public class EmptyClientKeyExchangeSerializer<T extends EmptyClientKeyExchangeMe
      *
      * @param message
      *                Message that should be serialized
-     * @param version
-     *                Version of the Protocol
      */
-    public EmptyClientKeyExchangeSerializer(T message, ProtocolVersion version) {
-        super(message, version);
+    public EmptyClientKeyExchangeSerializer(T message) {
+        super(message);
         this.msg = message;
     }
 

@@ -52,7 +52,7 @@ public class KeyUpdateMessage extends HandshakeMessage {
 
     @Override
     public KeyUpdateSerializer getSerializer(TlsContext tlsContext) {
-        return new KeyUpdateSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new KeyUpdateSerializer(this);
     }
 
     public final void setRequestMode(KeyUpdateRequest requestMode) {

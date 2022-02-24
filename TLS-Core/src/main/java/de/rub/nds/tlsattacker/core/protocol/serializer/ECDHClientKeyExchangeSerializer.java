@@ -28,11 +28,9 @@ public class ECDHClientKeyExchangeSerializer<T extends ECDHClientKeyExchangeMess
      *
      * @param message
      *                Message that should be serialized
-     * @param version
-     *                Version of the Protocol
      */
-    public ECDHClientKeyExchangeSerializer(T message, ProtocolVersion version) {
-        super(message, version);
+    public ECDHClientKeyExchangeSerializer(T message) {
+        super(message);
         this.msg = message;
     }
 

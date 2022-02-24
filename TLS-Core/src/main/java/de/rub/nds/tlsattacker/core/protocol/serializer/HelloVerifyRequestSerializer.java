@@ -26,10 +26,8 @@ public class HelloVerifyRequestSerializer extends HandshakeMessageSerializer<Hel
      *
      * @param message
      *                Message that should be serialized
-     * @param version
-     *                Version of the Protocol
      */
-    public HelloVerifyRequestSerializer(HelloVerifyRequestMessage message, ProtocolVersion version) {
+    public HelloVerifyRequestSerializer(HelloVerifyRequestMessage message) {
         super(message);
         this.msg = message;
     }

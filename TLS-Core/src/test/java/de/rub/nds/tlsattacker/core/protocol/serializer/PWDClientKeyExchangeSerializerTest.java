@@ -41,7 +41,7 @@ public class PWDClientKeyExchangeSerializerTest {
         msg.setElementLength(65);
         msg.setScalar(scalar);
         msg.setScalarLength(32);
-        PWDClientKeyExchangeSerializer serializer = new PWDClientKeyExchangeSerializer(msg, ProtocolVersion.TLS12);
+        PWDClientKeyExchangeSerializer serializer = new PWDClientKeyExchangeSerializer(msg);
         assertArrayEquals(message, serializer.serializeProtocolMessageContent());
     }
 }

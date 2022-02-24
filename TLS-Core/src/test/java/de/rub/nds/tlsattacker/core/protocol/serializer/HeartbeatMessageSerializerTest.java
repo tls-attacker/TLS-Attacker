@@ -53,7 +53,7 @@ public class HeartbeatMessageSerializerTest {
         msg.setPayloadLength(payloadLength);
         msg.setPayload(payload);
         msg.setPadding(padding);
-        HeartbeatMessageSerializer serializer = new HeartbeatMessageSerializer(msg, ProtocolVersion.TLS12);
+        HeartbeatMessageSerializer serializer = new HeartbeatMessageSerializer(msg);
         assertArrayEquals(expectedPart, serializer.serialize());
     }
 

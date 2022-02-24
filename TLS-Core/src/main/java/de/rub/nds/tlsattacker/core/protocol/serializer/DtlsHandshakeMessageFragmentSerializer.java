@@ -19,7 +19,7 @@ public class DtlsHandshakeMessageFragmentSerializer extends HandshakeMessageSeri
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public DtlsHandshakeMessageFragmentSerializer(DtlsHandshakeMessageFragment message, ProtocolVersion version) {
+    public DtlsHandshakeMessageFragmentSerializer(DtlsHandshakeMessageFragment message) {
         super(message);
     }
 

@@ -49,7 +49,7 @@ public class TokenBindingMessageParserTest {
         assertTrue(message.getPointLength().getValue() == 0x40);
         assertTrue(message.getKeyParameter().getValue() == 0x02);
         // TODO
-        TokenBindingMessageSerializer serializer = new TokenBindingMessageSerializer(message, version);
+        TokenBindingMessageSerializer serializer = new TokenBindingMessageSerializer(message);
         byte[] serialized = serializer.serialize();
         Assert.assertArrayEquals(toParse, serialized);
     }

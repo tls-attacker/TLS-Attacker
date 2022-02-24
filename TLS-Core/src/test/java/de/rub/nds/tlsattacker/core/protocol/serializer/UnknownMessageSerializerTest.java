@@ -25,7 +25,7 @@ public class UnknownMessageSerializerTest {
     @Before
     public void setUp() {
         msg = new UnknownMessage(ProtocolMessageType.UNKNOWN);
-        serializer = new UnknownMessageSerializer(msg, ProtocolVersion.TLS12);
+        serializer = new UnknownMessageSerializer(msg);
     }
 
     /**

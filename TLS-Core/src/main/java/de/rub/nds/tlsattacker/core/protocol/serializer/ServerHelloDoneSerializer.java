@@ -25,10 +25,8 @@ public class ServerHelloDoneSerializer extends HandshakeMessageSerializer<Server
      *
      * @param message
      *                Message that should be serialized
-     * @param version
-     *                Version of the Protocol
      */
-    public ServerHelloDoneSerializer(ServerHelloDoneMessage message, ProtocolVersion version) {
+    public ServerHelloDoneSerializer(ServerHelloDoneMessage message) {
         super(message);
         this.msg = message;
     }

@@ -153,6 +153,6 @@ public class HeartbeatMessage<HeartbeatMessage> extends ProtocolMessage {
 
     @Override
     public HeartbeatMessageSerializer getSerializer(TlsContext tlsContext) {
-        return new HeartbeatMessageSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new HeartbeatMessageSerializer(this);
     }
 }

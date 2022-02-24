@@ -93,7 +93,7 @@ public class HelloVerifyRequestMessage extends HandshakeMessage {
 
     @Override
     public HelloVerifyRequestSerializer getSerializer(TlsContext tlsContext) {
-        return new HelloVerifyRequestSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new HelloVerifyRequestSerializer(this);
     }
 
     @Override

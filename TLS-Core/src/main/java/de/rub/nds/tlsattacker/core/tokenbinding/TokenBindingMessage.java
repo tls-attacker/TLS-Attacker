@@ -260,7 +260,7 @@ public class TokenBindingMessage<TokenBindingMessage> extends ProtocolMessage {
 
     @Override
     public TokenBindingMessageSerializer getSerializer(TlsContext tlsContext) {
-        return new TokenBindingMessageSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new TokenBindingMessageSerializer(this);
     }
 
     @Override

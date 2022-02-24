@@ -96,7 +96,7 @@ public class PskDhClientKeyExchangeMessage extends DHClientKeyExchangeMessage {
 
     @Override
     public PskDhClientKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
-        return new PskDhClientKeyExchangeSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new PskDhClientKeyExchangeSerializer(this);
     }
 
     @Override

@@ -74,7 +74,7 @@ public class TokenbindingMessagePreparatorTest {
     @Test
     public void testPrepareProtocolMessageContents() throws Exception {
         preparator.prepare();
-        TokenBindingMessageSerializer serializer = new TokenBindingMessageSerializer(message, ProtocolVersion.TLS12);
+        TokenBindingMessageSerializer serializer = new TokenBindingMessageSerializer(message);
         byte[] serialize = serializer.serialize();
         TokenBindingMessageParser selfParser = new TokenBindingMessageParser(new ByteArrayInputStream(serialize));
         TokenBindingMessage selfParsed = new TokenBindingMessage();

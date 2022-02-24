@@ -38,7 +38,7 @@ public class HelloRequestSerializerTest {
     @Test
     public void testserializeProtocolMessageContent() {
         HelloRequestMessage msg = new HelloRequestMessage();
-        HelloRequestSerializer serializer = new HelloRequestSerializer(msg, ProtocolVersion.TLS12);
+        HelloRequestSerializer serializer = new HelloRequestSerializer(msg);
         assertArrayEquals(message, serializer.serializeProtocolMessageContent());
     }
 

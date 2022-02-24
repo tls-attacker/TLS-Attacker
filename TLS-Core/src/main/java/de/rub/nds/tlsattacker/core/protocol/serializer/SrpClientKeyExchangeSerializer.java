@@ -27,11 +27,9 @@ public class SrpClientKeyExchangeSerializer extends ClientKeyExchangeSerializer<
      *
      * @param message
      *                Message that should be serialized
-     * @param version
-     *                Version of the Protocol
      */
-    public SrpClientKeyExchangeSerializer(SrpClientKeyExchangeMessage message, ProtocolVersion version) {
-        super(message, version);
+    public SrpClientKeyExchangeSerializer(SrpClientKeyExchangeMessage message) {
+        super(message);
         this.msg = message;
     }
 

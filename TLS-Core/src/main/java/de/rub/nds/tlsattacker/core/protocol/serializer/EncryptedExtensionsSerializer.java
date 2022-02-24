@@ -20,7 +20,7 @@ public class EncryptedExtensionsSerializer extends HandshakeMessageSerializer<En
 
     private final EncryptedExtensionsMessage msg;
 
-    public EncryptedExtensionsSerializer(EncryptedExtensionsMessage message, ProtocolVersion version) {
+    public EncryptedExtensionsSerializer(EncryptedExtensionsMessage message) {
         super(message);
         this.msg = message;
     }

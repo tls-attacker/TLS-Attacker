@@ -23,10 +23,8 @@ public class HelloRequestSerializer extends HandshakeMessageSerializer<HelloRequ
      *
      * @param message
      *                Message that should be serialized
-     * @param version
-     *                Version of the Protocol
      */
-    public HelloRequestSerializer(HelloRequestMessage message, ProtocolVersion version) {
+    public HelloRequestSerializer(HelloRequestMessage message) {
         super(message);
     }
 

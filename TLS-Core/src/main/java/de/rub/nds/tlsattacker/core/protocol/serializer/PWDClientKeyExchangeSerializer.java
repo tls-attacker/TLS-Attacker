@@ -26,11 +26,9 @@ public class PWDClientKeyExchangeSerializer extends ClientKeyExchangeSerializer<
      *
      * @param message
      *                Message that should be serialized
-     * @param version
-     *                Version of the Protocol
      */
-    public PWDClientKeyExchangeSerializer(PWDClientKeyExchangeMessage message, ProtocolVersion version) {
-        super(message, version);
+    public PWDClientKeyExchangeSerializer(PWDClientKeyExchangeMessage message) {
+        super(message);
         this.msg = message;
     }
 

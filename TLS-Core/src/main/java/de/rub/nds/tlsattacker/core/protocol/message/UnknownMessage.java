@@ -77,7 +77,7 @@ public class UnknownMessage extends ProtocolMessage {
 
     @Override
     public UnknownMessageSerializer getSerializer(TlsContext tlsContext) {
-        return new UnknownMessageSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new UnknownMessageSerializer(this);
     }
 
     @Override

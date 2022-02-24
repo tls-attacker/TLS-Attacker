@@ -36,10 +36,8 @@ public abstract class HelloMessageSerializer<T extends HelloMessage> extends Han
      *
      * @param message
      *                Message that should be serialized
-     * @param version
-     *                Version of the protocol
      */
-    public HelloMessageSerializer(T message, ProtocolVersion version) {
+    public HelloMessageSerializer(T message) {
         super(message);
         this.msg = message;
     }

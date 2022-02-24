@@ -97,7 +97,7 @@ public class GOSTClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     @Override
     public GOSTClientKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
-        return new GOSTClientKeyExchangeSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new GOSTClientKeyExchangeSerializer(this);
     }
 
     @Override

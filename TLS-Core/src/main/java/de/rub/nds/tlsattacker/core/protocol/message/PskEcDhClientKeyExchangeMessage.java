@@ -97,7 +97,7 @@ public class PskEcDhClientKeyExchangeMessage extends ECDHClientKeyExchangeMessag
 
     @Override
     public PskEcDhClientKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
-        return new PskEcDhClientKeyExchangeSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new PskEcDhClientKeyExchangeSerializer(this);
     }
 
     @Override

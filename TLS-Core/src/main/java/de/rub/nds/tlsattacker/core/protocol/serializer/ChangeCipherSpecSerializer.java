@@ -27,10 +27,8 @@ public class ChangeCipherSpecSerializer extends ProtocolMessageSerializer<Change
      *
      * @param message
      *                Message that should be serialized
-     * @param version
-     *                Version of the Protocol
      */
-    public ChangeCipherSpecSerializer(ChangeCipherSpecMessage message, ProtocolVersion version) {
+    public ChangeCipherSpecSerializer(ChangeCipherSpecMessage message) {
         super(message);
         this.msg = message;
     }

@@ -101,7 +101,7 @@ public class SupplementalDataMessage extends HandshakeMessage {
 
     @Override
     public SupplementalDataSerializer getSerializer(TlsContext tlsContext) {
-        return new SupplementalDataSerializer(this, tlsContext.getSelectedProtocolVersion());
+        return new SupplementalDataSerializer(this);
     }
 
     @Override

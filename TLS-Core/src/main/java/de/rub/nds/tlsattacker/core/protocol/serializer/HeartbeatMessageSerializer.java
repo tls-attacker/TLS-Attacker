@@ -26,10 +26,8 @@ public class HeartbeatMessageSerializer extends ProtocolMessageSerializer<Heartb
      *
      * @param message
      *                Message that should be serialized
-     * @param version
-     *                Version of the Protocol
      */
-    public HeartbeatMessageSerializer(HeartbeatMessage message, ProtocolVersion version) {
+    public HeartbeatMessageSerializer(HeartbeatMessage message) {
         super(message);
     }
 

@@ -47,7 +47,7 @@ public class HelloVerifyRequestSerializerTest {
         msg.setProtocolVersion(protocolVersion);
         msg.setCookieLength(cookieLength);
         msg.setCookie(cookie);
-        HelloVerifyRequestSerializer serializer = new HelloVerifyRequestSerializer(msg, ProtocolVersion.DTLS10);
+        HelloVerifyRequestSerializer serializer = new HelloVerifyRequestSerializer(msg);
         assertArrayEquals(message, serializer.serializeProtocolMessageContent());
     }
 

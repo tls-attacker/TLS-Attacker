@@ -24,11 +24,9 @@ public class KeyUpdateSerializer extends HandshakeMessageSerializer<KeyUpdateMes
      *
      * @param message
      *                Message that should be serialized
-     * @param version
-     *                Version of the Protocol
      */
 
-    public KeyUpdateSerializer(KeyUpdateMessage message, ProtocolVersion version) {
+    public KeyUpdateSerializer(KeyUpdateMessage message) {
         super(message);
         this.msg = message;
     }

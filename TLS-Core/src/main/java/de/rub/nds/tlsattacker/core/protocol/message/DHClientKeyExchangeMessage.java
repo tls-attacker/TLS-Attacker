@@ -60,7 +60,7 @@ public class DHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     @Override
     public DHClientKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
-        return new DHClientKeyExchangeSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new DHClientKeyExchangeSerializer(this);
     }
 
     @Override

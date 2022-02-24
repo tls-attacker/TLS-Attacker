@@ -79,6 +79,6 @@ public class FinishedMessage extends HandshakeMessage {
 
     @Override
     public FinishedSerializer getSerializer(TlsContext tlsContext) {
-        return new FinishedSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new FinishedSerializer(this);
     }
 }

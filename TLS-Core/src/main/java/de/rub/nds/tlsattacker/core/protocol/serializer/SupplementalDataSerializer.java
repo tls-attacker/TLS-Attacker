@@ -16,22 +16,15 @@ import de.rub.nds.tlsattacker.core.protocol.message.SupplementalDataMessage;
  * TODO
  */
 public class SupplementalDataSerializer extends HandshakeMessageSerializer<SupplementalDataMessage> {
-    /**
-     * The message that should be serialized
-     */
-    private final SupplementalDataMessage msg;
 
     /**
      * Constructor for the SupplementalDataMessageSerializer
      *
      * @param message
      *                Message that should be serialized
-     * @param version
-     *                The Version for which this message should be serialized
      */
-    public SupplementalDataSerializer(SupplementalDataMessage message, ProtocolVersion version) {
+    public SupplementalDataSerializer(SupplementalDataMessage message) {
         super(message);
-        this.msg = message;
     }
 
     @Override

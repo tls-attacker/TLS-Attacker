@@ -63,7 +63,7 @@ public class CertificateStatusMessage extends HandshakeMessage {
 
     @Override
     public CertificateStatusSerializer getSerializer(TlsContext tlsContext) {
-        return new CertificateStatusSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new CertificateStatusSerializer(this);
     }
 
     @Override

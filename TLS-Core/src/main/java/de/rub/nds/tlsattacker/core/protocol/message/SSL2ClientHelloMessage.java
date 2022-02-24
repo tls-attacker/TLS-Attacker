@@ -200,6 +200,6 @@ public class SSL2ClientHelloMessage extends SSL2HandshakeMessage {
 
     @Override
     public SSL2ClientHelloSerializer getSerializer(TlsContext tlsContext) {
-        return new SSL2ClientHelloSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new SSL2ClientHelloSerializer(this);
     }
 }

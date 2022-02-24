@@ -75,7 +75,7 @@ public class PWDClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     @Override
     public PWDClientKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
-        return new PWDClientKeyExchangeSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new PWDClientKeyExchangeSerializer(this);
     }
 
     public ModifiableInteger getElementLength() {

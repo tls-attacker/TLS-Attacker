@@ -22,7 +22,7 @@ public class CertificateStatusSerializer extends HandshakeMessageSerializer<Cert
 
     private final CertificateStatusMessage msg;
 
-    public CertificateStatusSerializer(CertificateStatusMessage message, ProtocolVersion version) {
+    public CertificateStatusSerializer(CertificateStatusMessage message) {
         super(message);
         this.msg = message;
     }

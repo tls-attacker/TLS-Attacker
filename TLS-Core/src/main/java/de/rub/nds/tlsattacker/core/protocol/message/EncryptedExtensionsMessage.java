@@ -72,7 +72,7 @@ public class EncryptedExtensionsMessage extends HandshakeMessage {
 
     @Override
     public EncryptedExtensionsSerializer getSerializer(TlsContext tlsContext) {
-        return new EncryptedExtensionsSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new EncryptedExtensionsSerializer(this);
     }
 
 }

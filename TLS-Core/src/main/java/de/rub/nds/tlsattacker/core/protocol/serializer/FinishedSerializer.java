@@ -26,10 +26,8 @@ public class FinishedSerializer extends HandshakeMessageSerializer<FinishedMessa
      *
      * @param message
      *                Message that should be serialized
-     * @param version
-     *                Version of the Protocol
      */
-    public FinishedSerializer(FinishedMessage message, ProtocolVersion version) {
+    public FinishedSerializer(FinishedMessage message) {
         super(message);
         this.msg = message;
     }

@@ -49,7 +49,7 @@ public class HttpsResponseSerializerTest {
         HttpsResponseParser parser = new HttpsResponseParser(new ByteArrayInputStream(msg));
         HttpsResponseMessage parsedMsg = new HttpsResponseMessage();
         parser.parse(parsedMsg);
-        HttpsResponseSerializer serializer = new HttpsResponseSerializer(parsedMsg, version);
+        HttpsResponseSerializer serializer = new HttpsResponseSerializer(parsedMsg);
 
         assertArrayEquals(expPart, serializer.serialize());
     }

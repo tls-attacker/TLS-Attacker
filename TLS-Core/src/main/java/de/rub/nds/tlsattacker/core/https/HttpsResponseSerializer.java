@@ -23,7 +23,7 @@ public class HttpsResponseSerializer extends ProtocolMessageSerializer<HttpsResp
 
     private final HttpsResponseMessage message;
 
-    public HttpsResponseSerializer(HttpsResponseMessage message, ProtocolVersion version) {
+    public HttpsResponseSerializer(HttpsResponseMessage message) {
         super(message);
         this.message = message;
     }

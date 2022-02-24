@@ -32,11 +32,9 @@ public class ServerHelloSerializer extends HelloMessageSerializer<ServerHelloMes
      *
      * @param message
      *                Message that should be serialized
-     * @param version
-     *                Version of the Protocol
      */
-    public ServerHelloSerializer(ServerHelloMessage message, ProtocolVersion version) {
-        super(message, version);
+    public ServerHelloSerializer(ServerHelloMessage message) {
+        super(message);
         this.msg = message;
     }
 

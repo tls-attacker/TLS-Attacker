@@ -25,10 +25,8 @@ public class UnknownMessageSerializer extends ProtocolMessageSerializer<UnknownM
      *
      * @param message
      *                Message that should be serialized
-     * @param version
-     *                Version of the Protocol
      */
-    public UnknownMessageSerializer(UnknownMessage message, ProtocolVersion version) {
+    public UnknownMessageSerializer(UnknownMessage message) {
         super(message);
     }
 

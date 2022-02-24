@@ -27,11 +27,9 @@ public class PskDhClientKeyExchangeSerializer extends DHClientKeyExchangeSeriali
      *
      * @param message
      *                Message that should be serialized
-     * @param version
-     *                Version of the Protocol
      */
-    public PskDhClientKeyExchangeSerializer(PskDhClientKeyExchangeMessage message, ProtocolVersion version) {
-        super(message, version);
+    public PskDhClientKeyExchangeSerializer(PskDhClientKeyExchangeMessage message) {
+        super(message);
         this.msg = message;
     }
 

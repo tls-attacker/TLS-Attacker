@@ -47,7 +47,7 @@ public class CertificateStatusSerializerTest {
         message.setCertificateStatusType(certificateStatusType);
         message.setOcspResponseLength(ocspResponseLength);
         message.setOcspResponseBytes(ocspResponseBytes);
-        CertificateStatusSerializer serializer = new CertificateStatusSerializer(message, version);
+        CertificateStatusSerializer serializer = new CertificateStatusSerializer(message);
         assertArrayEquals(this.message, serializer.serializeProtocolMessageContent());
     }
 }

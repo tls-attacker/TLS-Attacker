@@ -139,7 +139,7 @@ public class HttpsRequestMessage extends ProtocolMessage {
 
     @Override
     public HttpsRequestSerializer getSerializer(TlsContext tlsContext) {
-        return new HttpsRequestSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new HttpsRequestSerializer(this);
     }
 
     @Override

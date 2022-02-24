@@ -16,7 +16,7 @@ public class TokenBindingMessageSerializer extends ProtocolMessageSerializer<Tok
 
     private final TokenBindingMessage message;
 
-    public TokenBindingMessageSerializer(TokenBindingMessage message, ProtocolVersion version) {
+    public TokenBindingMessageSerializer(TokenBindingMessage message) {
         super(message);
         this.message = message;
     }

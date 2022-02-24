@@ -45,7 +45,7 @@ public class EndOfEarlyDataMessage extends HandshakeMessage {
 
     @Override
     public EndOfEarlyDataSerializer getSerializer(TlsContext tlsContext) {
-        return new EndOfEarlyDataSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new EndOfEarlyDataSerializer(this);
     }
 
     @Override

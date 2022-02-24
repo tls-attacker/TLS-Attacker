@@ -108,7 +108,7 @@ public class PskClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     @Override
     public PskClientKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
-        return new PskClientKeyExchangeSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new PskClientKeyExchangeSerializer(this);
     }
 
     @Override

@@ -34,4 +34,11 @@ public abstract class ServerKeyExchangeSerializer<T extends ServerKeyExchangeMes
         this.version = version;
     }
 
+    protected boolean isTLS12() {
+        return version == ProtocolVersion.TLS12;
+    }
+
+    protected boolean isDTLS12() {
+        return version == ProtocolVersion.DTLS12;
+    }
 }

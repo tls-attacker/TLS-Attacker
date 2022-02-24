@@ -20,7 +20,7 @@ public class SSL2ClientHelloSerializer extends HandshakeMessageSerializer<SSL2Cl
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SSL2ClientHelloSerializer(SSL2ClientHelloMessage message, ProtocolVersion version) {
+    public SSL2ClientHelloSerializer(SSL2ClientHelloMessage message) {
         super(message);
     }
 

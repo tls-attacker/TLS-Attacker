@@ -281,7 +281,7 @@ public class ServerHelloMessage extends HelloMessage {
 
     @Override
     public ServerHelloSerializer getSerializer(TlsContext tlsContext) {
-        return new ServerHelloSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new ServerHelloSerializer(this);
     }
 
     @Override

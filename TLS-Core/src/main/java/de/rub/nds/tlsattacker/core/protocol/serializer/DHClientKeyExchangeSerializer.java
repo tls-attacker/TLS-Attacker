@@ -28,11 +28,9 @@ public class DHClientKeyExchangeSerializer<T extends DHClientKeyExchangeMessage>
      *
      * @param message
      *                Message that should be serialized
-     * @param version
-     *                Version of the Protocol
      */
-    public DHClientKeyExchangeSerializer(T message, ProtocolVersion version) {
-        super(message, version);
+    public DHClientKeyExchangeSerializer(T message) {
+        super(message);
         this.msg = message;
     }
 

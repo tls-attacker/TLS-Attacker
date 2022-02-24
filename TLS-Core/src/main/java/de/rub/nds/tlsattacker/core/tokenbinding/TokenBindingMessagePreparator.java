@@ -84,12 +84,12 @@ public class TokenBindingMessagePreparator extends ProtocolMessagePreparator<Tok
             message.setSignature(new byte[0]);
         }
         TokenBindingMessageSerializer serializer =
-            new TokenBindingMessageSerializer(message, chooser.getSelectedProtocolVersion());
+            new TokenBindingMessageSerializer(message);
         message.setKeyLength(serializer.serializeKey().length);
         message.setExtensionBytes(new byte[0]);
         message.setExtensionLength(message.getExtensionBytes().getValue().length);
         message.setSignatureLength(message.getSignature().getValue().length);
-        serializer = new TokenBindingMessageSerializer(message, ProtocolVersion.TLS12);
+        serializer = new TokenBindingMessageSerializer(message);
         message.setTokenbindingsLength(serializer.serializeBinding().length);
     }
 

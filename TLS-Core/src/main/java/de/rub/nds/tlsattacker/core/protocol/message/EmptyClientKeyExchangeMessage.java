@@ -60,7 +60,7 @@ public class EmptyClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     @Override
     public EmptyClientKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
-        return new EmptyClientKeyExchangeSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new EmptyClientKeyExchangeSerializer(this);
     }
 
     @Override

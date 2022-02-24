@@ -84,7 +84,7 @@ public class SSL2ServerHelloMessage extends SSL2HandshakeMessage {
 
     @Override
     public SSL2ServerHelloSerializer getSerializer(TlsContext tlsContext) {
-        return new SSL2ServerHelloSerializer(this, tlsContext);
+        return new SSL2ServerHelloSerializer(this);
     }
 
     public ModifiableByte getSessionIdHit() {

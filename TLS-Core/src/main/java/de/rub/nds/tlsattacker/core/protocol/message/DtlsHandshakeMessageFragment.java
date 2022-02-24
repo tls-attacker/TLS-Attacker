@@ -102,7 +102,7 @@ public class DtlsHandshakeMessageFragment extends HandshakeMessage {
 
     @Override
     public DtlsHandshakeMessageFragmentSerializer getSerializer(TlsContext tlsContext) {
-        return new DtlsHandshakeMessageFragmentSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new DtlsHandshakeMessageFragmentSerializer(this);
     }
 
     public HandshakeMessageType getHandshakeMessageTypeConfig() {

@@ -148,7 +148,7 @@ public class SrpClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     @Override
     public SrpClientKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
-        return new SrpClientKeyExchangeSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new SrpClientKeyExchangeSerializer(this);
     }
 
     @Override
