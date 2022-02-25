@@ -9,7 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.HelloVerifyRequestParserTest;
 import java.util.Collection;
@@ -47,7 +46,7 @@ public class HelloVerifyRequestSerializerTest {
         msg.setProtocolVersion(protocolVersion);
         msg.setCookieLength(cookieLength);
         msg.setCookie(cookie);
-        HelloVerifyRequestSerializer serializer = new HelloVerifyRequestSerializer(msg, ProtocolVersion.DTLS10);
+        HelloVerifyRequestSerializer serializer = new HelloVerifyRequestSerializer(msg);
         assertArrayEquals(message, serializer.serializeProtocolMessageContent());
     }
 

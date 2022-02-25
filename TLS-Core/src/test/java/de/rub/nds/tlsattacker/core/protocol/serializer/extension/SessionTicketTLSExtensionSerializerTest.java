@@ -10,12 +10,11 @@
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.modifiablevariable.util.Modifiable;
-import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.SessionTicketTLSExtensionParserTest;
+
 import java.util.Collection;
-import org.cryptomator.siv.org.bouncycastle.util.Arrays;
+
 import static org.junit.Assert.assertArrayEquals;
 import org.junit.Test;
 import org.junit.runner.RunWith;

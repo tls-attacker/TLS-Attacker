@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientAuthzExtensionMessage;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
@@ -44,7 +43,7 @@ public class ClientAuthzExtensionParserTest {
 
     @Test
     public void testParseExtensionMessageContent() {
-        parser = new ClientAuthzExtensionParser(new ByteArrayInputStream(expectedBytes), Config.createConfig());
+        parser = new ClientAuthzExtensionParser(new ByteArrayInputStream(expectedBytes));
         msg = new ClientAuthzExtensionMessage();
         parser.parse(msg);
         assertEquals(authzFormatListLength, (long) msg.getAuthzFormatListLength().getValue());

@@ -21,8 +21,6 @@ public class ServerNamePairParser extends Parser<ServerNamePair> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private ServerNamePair pair;
-
     public ServerNamePairParser(InputStream stream) {
         super(stream);
     }

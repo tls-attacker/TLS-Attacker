@@ -48,7 +48,7 @@ public class ClassicCloseNotifyTraceGenerator extends PaddingTraceGenerator {
         RunningModeType runningMode = config.getDefaultRunningMode();
         WorkflowTrace trace =
             new WorkflowConfigurationFactory(config).createWorkflowTrace(WorkflowTraceType.HANDSHAKE, runningMode);
-        ApplicationMessage applicationMessage = new ApplicationMessage(config);
+        ApplicationMessage applicationMessage = new ApplicationMessage();
         AlertMessage alert = new AlertMessage();
         alert.setConfig(AlertLevel.FATAL, AlertDescription.CLOSE_NOTIFY);
         SendAction sendAction = new SendAction(applicationMessage, alert);

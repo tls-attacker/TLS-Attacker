@@ -12,7 +12,6 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedRandomExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtendedRandomExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -35,8 +34,7 @@ public class ExtendedRandomExtensionPreparatorTest {
     public void setUp() {
         context = new TlsContext();
         message = new ExtendedRandomExtensionMessage();
-        preparator = new ExtendedRandomExtensionPreparator(context.getChooser(), message,
-            new ExtendedRandomExtensionSerializer(message));
+        preparator = new ExtendedRandomExtensionPreparator(context.getChooser(), message);
     }
 
     @Test

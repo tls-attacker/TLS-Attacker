@@ -45,10 +45,6 @@ public class SupplementalDataMessage extends HandshakeMessage {
         this.entries = new LinkedList<>(entries);
     }
 
-    public SupplementalDataMessage(Config config) {
-        this();
-    }
-
     public SupplementalDataMessage() {
         super(HandshakeMessageType.SUPPLEMENTAL_DATA);
         this.entries = new LinkedList<>();
@@ -95,7 +91,7 @@ public class SupplementalDataMessage extends HandshakeMessage {
 
     @Override
     public SupplementalDataParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new SupplementalDataParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+        return new SupplementalDataParser(stream, tlsContext);
     }
 
     @Override
@@ -105,7 +101,7 @@ public class SupplementalDataMessage extends HandshakeMessage {
 
     @Override
     public SupplementalDataSerializer getSerializer(TlsContext tlsContext) {
-        return new SupplementalDataSerializer(this, tlsContext.getSelectedProtocolVersion());
+        return new SupplementalDataSerializer(this);
     }
 
     @Override

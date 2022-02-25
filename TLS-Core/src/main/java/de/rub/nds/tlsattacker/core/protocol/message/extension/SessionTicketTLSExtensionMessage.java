@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.SessionTicketTLSExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.SessionTicketTLSExtensionParser;
@@ -38,11 +37,6 @@ public class SessionTicketTLSExtensionMessage extends ExtensionMessage<SessionTi
         sessionTicket = new SessionTicket();
     }
 
-    public SessionTicketTLSExtensionMessage(Config config) {
-        super(ExtensionType.SESSION_TICKET);
-        sessionTicket = new SessionTicket();
-    }
-
     public SessionTicket getSessionTicket() {
         return sessionTicket;
     }
@@ -58,7 +52,7 @@ public class SessionTicketTLSExtensionMessage extends ExtensionMessage<SessionTi
 
     @Override
     public SessionTicketTLSExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new SessionTicketTLSExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new SessionTicketTLSExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

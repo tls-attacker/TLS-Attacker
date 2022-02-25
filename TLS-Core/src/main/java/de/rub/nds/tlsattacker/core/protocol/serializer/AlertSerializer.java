@@ -9,7 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageSerializer;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import org.apache.logging.log4j.LogManager;
@@ -24,10 +23,8 @@ public class AlertSerializer extends ProtocolMessageSerializer<AlertMessage> {
      *
      * @param message
      *                Message that should be serialized
-     * @param version
-     *                Version of the Protocol
      */
-    public AlertSerializer(AlertMessage message, ProtocolVersion version) {
+    public AlertSerializer(AlertMessage message) {
         super(message);
     }
 

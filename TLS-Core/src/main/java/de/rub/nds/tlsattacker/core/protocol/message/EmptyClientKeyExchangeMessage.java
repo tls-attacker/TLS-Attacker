@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.EmptyClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.EmptyClientComputations;
@@ -32,10 +31,6 @@ public class EmptyClientKeyExchangeMessage extends ClientKeyExchangeMessage {
         super();
     }
 
-    public EmptyClientKeyExchangeMessage(Config tlsConfig) {
-        super(tlsConfig);
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -55,7 +50,7 @@ public class EmptyClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     @Override
     public EmptyClientKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new EmptyClientKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+        return new EmptyClientKeyExchangeParser(stream, tlsContext);
     }
 
     @Override
@@ -65,7 +60,7 @@ public class EmptyClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     @Override
     public EmptyClientKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
-        return new EmptyClientKeyExchangeSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new EmptyClientKeyExchangeSerializer(this);
     }
 
     @Override

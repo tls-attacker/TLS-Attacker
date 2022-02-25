@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PWDProtectExtensionMessage;
 import java.io.InputStream;
@@ -21,8 +20,8 @@ public class PWDProtectExtensionParser extends ExtensionParser<PWDProtectExtensi
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public PWDProtectExtensionParser(InputStream stream, Config config) {
-        super(stream, config);
+    public PWDProtectExtensionParser(InputStream stream) {
+        super(stream);
     }
 
     @Override

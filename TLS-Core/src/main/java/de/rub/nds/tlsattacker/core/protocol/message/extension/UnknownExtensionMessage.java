@@ -13,7 +13,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.UnknownExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.UnknownExtensionParser;
@@ -35,10 +34,6 @@ public class UnknownExtensionMessage extends ExtensionMessage<UnknownExtensionMe
     private ModifiableByteArray extensionData;
 
     public UnknownExtensionMessage() {
-        super(ExtensionType.UNKNOWN);
-    }
-
-    public UnknownExtensionMessage(Config config) {
         super(ExtensionType.UNKNOWN);
     }
 
@@ -87,12 +82,12 @@ public class UnknownExtensionMessage extends ExtensionMessage<UnknownExtensionMe
 
     @Override
     public UnknownExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new UnknownExtensionParser(stream, tlsContext.getConfig());
+        return new UnknownExtensionParser(stream);
     }
 
     @Override
     public UnknownExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new UnknownExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new UnknownExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

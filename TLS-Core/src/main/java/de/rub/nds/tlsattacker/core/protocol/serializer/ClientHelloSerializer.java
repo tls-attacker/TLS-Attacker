@@ -33,7 +33,7 @@ public class ClientHelloSerializer extends HelloMessageSerializer<ClientHelloMes
      *                Version of the Protocol
      */
     public ClientHelloSerializer(ClientHelloMessage message, ProtocolVersion version) {
-        super(message, version);
+        super(message);
         this.msg = message;
         this.version = version;
     }

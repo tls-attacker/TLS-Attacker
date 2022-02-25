@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
@@ -34,8 +33,8 @@ public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMe
 
     private ConnectionEndType talkingConnectionEndType;
 
-    public KeyShareExtensionParser(InputStream stream, Config config, TlsContext context) {
-        super(stream, config);
+    public KeyShareExtensionParser(InputStream stream, TlsContext context) {
+        super(stream);
         talkingConnectionEndType = context.getTalkingConnectionEndType();
     }
 

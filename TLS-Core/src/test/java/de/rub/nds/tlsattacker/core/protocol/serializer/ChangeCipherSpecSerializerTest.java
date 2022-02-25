@@ -45,7 +45,7 @@ public class ChangeCipherSpecSerializerTest {
         ChangeCipherSpecMessage msg = new ChangeCipherSpecMessage();
         msg.setCcsProtocolType(new byte[] { ccsType });
         msg.setCompleteResultingMessage(expectedPart);
-        ChangeCipherSpecSerializer serializer = new ChangeCipherSpecSerializer(msg, version);
+        ChangeCipherSpecSerializer serializer = new ChangeCipherSpecSerializer(msg);
         assertArrayEquals(expectedPart, serializer.serializeProtocolMessageContent());
     }
 

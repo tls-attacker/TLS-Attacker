@@ -11,8 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.Bits;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2HandshakeMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
@@ -24,9 +22,8 @@ public abstract class SSL2HandshakeMessageParser<T extends SSL2HandshakeMessage>
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SSL2HandshakeMessageParser(InputStream stream, HandshakeMessageType type, ProtocolVersion version,
-        TlsContext tlsContext) {
-        super(stream, type, version, tlsContext);
+    public SSL2HandshakeMessageParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext);
     }
 
     /**

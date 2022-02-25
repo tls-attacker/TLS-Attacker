@@ -9,7 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SRPExtensionMessage;
 import java.io.InputStream;
@@ -20,8 +19,8 @@ public class SRPExtensionParser extends ExtensionParser<SRPExtensionMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SRPExtensionParser(InputStream stream, Config config) {
-        super(stream, config);
+    public SRPExtensionParser(InputStream stream) {
+        super(stream);
     }
 
     @Override

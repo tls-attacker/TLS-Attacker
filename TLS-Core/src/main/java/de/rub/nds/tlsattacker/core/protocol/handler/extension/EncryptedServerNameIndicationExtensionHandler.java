@@ -17,8 +17,6 @@ import org.apache.logging.log4j.Logger;
 public class EncryptedServerNameIndicationExtensionHandler
     extends ExtensionHandler<EncryptedServerNameIndicationExtensionMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger();
-
     public EncryptedServerNameIndicationExtensionHandler(TlsContext context) {
         super(context);
     }

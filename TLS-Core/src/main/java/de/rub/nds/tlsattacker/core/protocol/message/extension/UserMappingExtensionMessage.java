@@ -45,12 +45,12 @@ public class UserMappingExtensionMessage extends ExtensionMessage<UserMappingExt
 
     @Override
     public UserMappingExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new UserMappingExtensionParser(stream, tlsContext.getConfig());
+        return new UserMappingExtensionParser(stream);
     }
 
     @Override
     public UserMappingExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new UserMappingExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new UserMappingExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

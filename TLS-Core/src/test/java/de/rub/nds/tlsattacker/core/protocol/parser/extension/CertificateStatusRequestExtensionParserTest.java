@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestExtensionMessage;
 import java.io.ByteArrayInputStream;
@@ -59,8 +58,8 @@ public class CertificateStatusRequestExtensionParserTest {
 
     @Before
     public void setUp() {
-        parser = new CertificateStatusRequestExtensionParser(new ByteArrayInputStream(expectedBytes),
-            Config.createConfig(), ProtocolVersion.TLS12);
+        parser =
+            new CertificateStatusRequestExtensionParser(new ByteArrayInputStream(expectedBytes), ProtocolVersion.TLS12);
     }
 
     @Test

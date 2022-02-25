@@ -20,7 +20,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PSKBinder;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PSKIdentity;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ClientHelloSerializer;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PSKBinderSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PSKIdentitySerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
@@ -46,9 +45,8 @@ public class PreSharedKeyExtensionPreparator extends ExtensionPreparator<PreShar
     private final PreSharedKeyExtensionMessage msg;
     private ClientHelloMessage clientHello;
 
-    public PreSharedKeyExtensionPreparator(Chooser chooser, PreSharedKeyExtensionMessage message,
-        ExtensionSerializer<PreSharedKeyExtensionMessage> serializer) {
-        super(chooser, message, serializer);
+    public PreSharedKeyExtensionPreparator(Chooser chooser, PreSharedKeyExtensionMessage message) {
+        super(chooser, message);
         msg = message;
     }
 

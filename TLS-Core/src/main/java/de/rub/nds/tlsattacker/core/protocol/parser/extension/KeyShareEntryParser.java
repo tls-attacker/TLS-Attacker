@@ -23,8 +23,6 @@ public class KeyShareEntryParser extends Parser<KeyShareEntry> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private KeyShareEntry entry;
-
     public KeyShareEntryParser(InputStream stream) {
         super(stream);
     }

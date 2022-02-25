@@ -14,7 +14,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.HelloVerifyRequestHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.HelloVerifyRequestParser;
@@ -38,11 +37,6 @@ public class HelloVerifyRequestMessage extends HandshakeMessage {
 
     public HelloVerifyRequestMessage() {
         super(HandshakeMessageType.HELLO_VERIFY_REQUEST);
-        isIncludeInDigestDefault = false;
-    }
-
-    public HelloVerifyRequestMessage(Config tlsConfig) {
-        super(tlsConfig, HandshakeMessageType.HELLO_VERIFY_REQUEST);
         isIncludeInDigestDefault = false;
     }
 
@@ -89,7 +83,7 @@ public class HelloVerifyRequestMessage extends HandshakeMessage {
 
     @Override
     public HelloVerifyRequestParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new HelloVerifyRequestParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+        return new HelloVerifyRequestParser(stream, tlsContext);
     }
 
     @Override
@@ -99,7 +93,7 @@ public class HelloVerifyRequestMessage extends HandshakeMessage {
 
     @Override
     public HelloVerifyRequestSerializer getSerializer(TlsContext tlsContext) {
-        return new HelloVerifyRequestSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new HelloVerifyRequestSerializer(this);
     }
 
     @Override

@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
 import java.io.InputStream;
@@ -22,8 +21,8 @@ public class SignatureAndHashAlgorithmsExtensionParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SignatureAndHashAlgorithmsExtensionParser(InputStream stream, Config config) {
-        super(stream, config);
+    public SignatureAndHashAlgorithmsExtensionParser(InputStream stream) {
+        super(stream);
     }
 
     @Override

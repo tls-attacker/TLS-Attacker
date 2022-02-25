@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateUrlExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ClientCertificateUrlExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -29,8 +28,7 @@ public class ClientCertificateUrlExtensionPreparatorTest {
     public void setUp() {
         context = new TlsContext();
         message = new ClientCertificateUrlExtensionMessage();
-        preparator = new ClientCertificateUrlExtensionPreparator(context.getChooser(), message,
-            new ClientCertificateUrlExtensionSerializer(message));
+        preparator = new ClientCertificateUrlExtensionPreparator(context.getChooser(), message);
     }
 
     @Test

@@ -47,7 +47,7 @@ public class ECDHClientKeyExchangeSerializerTest {
         ECDHClientKeyExchangeMessage msg = new ECDHClientKeyExchangeMessage();
         msg.setPublicKey(serializedKey);
         msg.setPublicKeyLength(serializedKeyLength);
-        ECDHClientKeyExchangeSerializer serializer = new ECDHClientKeyExchangeSerializer(msg, version);
+        ECDHClientKeyExchangeSerializer serializer = new ECDHClientKeyExchangeSerializer(msg);
         assertArrayEquals(this.message, serializer.serializeProtocolMessageContent());
     }
 

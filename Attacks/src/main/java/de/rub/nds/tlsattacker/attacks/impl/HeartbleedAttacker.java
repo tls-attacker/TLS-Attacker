@@ -70,7 +70,7 @@ public class HeartbleedAttacker extends Attacker<HeartbleedCommandConfig> {
         trace.addTlsAction(new SendDynamicClientKeyExchangeAction());
         trace.addTlsAction(new SendAction(new ChangeCipherSpecMessage(), new FinishedMessage()));
         trace.addTlsAction(new ReceiveAction(new ChangeCipherSpecMessage(), new FinishedMessage()));
-        HeartbeatMessage message = new HeartbeatMessage(tlsConfig);
+        HeartbeatMessage message = new HeartbeatMessage();
         trace.addTlsAction(new SendAction(message));
         trace.addTlsAction(new ReceiveAction(new HeartbeatMessage()));
         State state = new State(tlsConfig, trace);

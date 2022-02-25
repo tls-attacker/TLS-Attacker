@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CachedInfoExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.CachedInfoExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.Arrays;
 import java.util.List;
@@ -34,8 +33,7 @@ public class CachedInfoExtensionPreparatorTest {
     public void setUp() {
         context = new TlsContext();
         msg = new CachedInfoExtensionMessage();
-        preparator =
-            new CachedInfoExtensionPreparator(context.getChooser(), msg, new CachedInfoExtensionSerializer(msg));
+        preparator = new CachedInfoExtensionPreparator(context.getChooser(), msg);
     }
 
     @Test

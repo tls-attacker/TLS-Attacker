@@ -14,7 +14,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.SrpClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.SRPClientComputations;
@@ -70,10 +69,6 @@ public class SrpClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     public SrpClientKeyExchangeMessage() {
         super();
-    }
-
-    public SrpClientKeyExchangeMessage(Config tlsConfig) {
-        super(tlsConfig);
     }
 
     @Override
@@ -143,7 +138,7 @@ public class SrpClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     @Override
     public SrpClientKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new SrpClientKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+        return new SrpClientKeyExchangeParser(stream, tlsContext);
     }
 
     @Override
@@ -153,7 +148,7 @@ public class SrpClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     @Override
     public SrpClientKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
-        return new SrpClientKeyExchangeSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new SrpClientKeyExchangeSerializer(this);
     }
 
     @Override

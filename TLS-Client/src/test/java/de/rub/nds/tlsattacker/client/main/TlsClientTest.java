@@ -203,12 +203,12 @@ public class TlsClientTest {
         trace.addTlsAction(
             MessageActionFactory.createAction(config, con, ConnectionEndType.CLIENT, new ClientHelloMessage(config)));
         trace.addTlsAction(MessageActionFactory.createAction(config, con, ConnectionEndType.SERVER,
-            new ServerHelloMessage(config), new CertificateMessage(config), new ServerHelloDoneMessage(config)));
+            new ServerHelloMessage(config), new CertificateMessage(), new ServerHelloDoneMessage()));
 
         trace.addTlsAction(MessageActionFactory.createAction(config, con, ConnectionEndType.CLIENT,
-            new RSAClientKeyExchangeMessage(config), new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
+            new RSAClientKeyExchangeMessage(), new ChangeCipherSpecMessage(), new FinishedMessage()));
         trace.addTlsAction(MessageActionFactory.createAction(config, con, ConnectionEndType.SERVER,
-            new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
+            new ChangeCipherSpecMessage(), new FinishedMessage()));
 
         State state = new State(config, trace);
         WorkflowExecutor workflowExecutor =

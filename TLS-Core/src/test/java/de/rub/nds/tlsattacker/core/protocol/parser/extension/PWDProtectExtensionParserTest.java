@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PWDProtectExtensionMessage;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
@@ -49,8 +48,7 @@ public class PWDProtectExtensionParserTest {
 
     @Test
     public void testParseExtensionMessageContent() {
-        PWDProtectExtensionParser parser =
-            new PWDProtectExtensionParser(new ByteArrayInputStream(expectedBytes), Config.createConfig());
+        PWDProtectExtensionParser parser = new PWDProtectExtensionParser(new ByteArrayInputStream(expectedBytes));
         PWDProtectExtensionMessage msg = new PWDProtectExtensionMessage();
         parser.parse(msg);
         assertEquals(usernameLength, (long) msg.getUsernameLength().getValue());

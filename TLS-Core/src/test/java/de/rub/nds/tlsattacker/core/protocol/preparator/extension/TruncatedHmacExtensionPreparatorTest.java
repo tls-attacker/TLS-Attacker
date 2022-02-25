@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TruncatedHmacExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.TruncatedHmacExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -30,8 +29,7 @@ public class TruncatedHmacExtensionPreparatorTest {
     public void setUp() {
         context = new TlsContext();
         message = new TruncatedHmacExtensionMessage();
-        preparator = new TruncatedHmacExtensionPreparator(context.getChooser(), message,
-            new TruncatedHmacExtensionSerializer(message));
+        preparator = new TruncatedHmacExtensionPreparator(context.getChooser(), message);
     }
 
     @Test

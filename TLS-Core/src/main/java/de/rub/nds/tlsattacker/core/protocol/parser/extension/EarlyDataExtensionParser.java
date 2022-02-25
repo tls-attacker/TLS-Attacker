@@ -9,7 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EarlyDataExtensionMessage;
 import java.io.InputStream;
@@ -23,8 +22,8 @@ public class EarlyDataExtensionParser extends ExtensionParser<EarlyDataExtension
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public EarlyDataExtensionParser(InputStream stream, Config config) {
-        super(stream, config);
+    public EarlyDataExtensionParser(InputStream stream) {
+        super(stream);
     }
 
     @Override

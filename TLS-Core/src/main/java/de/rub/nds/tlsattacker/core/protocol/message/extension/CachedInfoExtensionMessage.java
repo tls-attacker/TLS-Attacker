@@ -86,12 +86,12 @@ public class CachedInfoExtensionMessage extends ExtensionMessage<CachedInfoExten
 
     @Override
     public CachedInfoExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new CachedInfoExtensionParser(stream, tlsContext.getConfig());
+        return new CachedInfoExtensionParser(stream);
     }
 
     @Override
     public CachedInfoExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new CachedInfoExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new CachedInfoExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

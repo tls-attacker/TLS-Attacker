@@ -53,10 +53,10 @@ public class CertificateFetcher {
         WorkflowTrace trace = factory.createTlsEntryWorkflowTrace(config.getDefaultClientConnection());
         trace.addTlsAction(new SendAction(new ClientHelloMessage(config)));
         if (config.getHighestProtocolVersion().isDTLS()) {
-            trace.addTlsAction(new ReceiveAction(new HelloVerifyRequestMessage(config)));
+            trace.addTlsAction(new ReceiveAction(new HelloVerifyRequestMessage()));
             trace.addTlsAction(new SendAction(new ClientHelloMessage(config)));
         }
-        trace.addTlsAction(new ReceiveTillAction(new CertificateMessage(config)));
+        trace.addTlsAction(new ReceiveTillAction(new CertificateMessage()));
         State state = new State(config, trace);
 
         WorkflowExecutor workflowExecutor =

@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TrustedCaIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.TrustedAuthorityPreparator;
@@ -61,7 +60,7 @@ public class TrustedCaIndicationExtensionParserTest {
     @Test
     public void testParse() {
         TrustedCaIndicationExtensionParser parser =
-            new TrustedCaIndicationExtensionParser(new ByteArrayInputStream(extensionBytes), Config.createConfig());
+            new TrustedCaIndicationExtensionParser(new ByteArrayInputStream(extensionBytes));
         TrustedCaIndicationExtensionMessage msg = new TrustedCaIndicationExtensionMessage();
         parser.parse(msg);
         assertEquals(trustedAuthoritiesLength, (long) msg.getTrustedAuthoritiesLength().getValue());

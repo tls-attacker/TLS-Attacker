@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SupportedVersionsExtensionMessage;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
@@ -46,7 +45,7 @@ public class SupportedVersionsExtensionParserTest {
     @Test
     public void testParseExtensionMessageContent() {
         SupportedVersionsExtensionParser parser =
-            new SupportedVersionsExtensionParser(new ByteArrayInputStream(extension), Config.createConfig());
+            new SupportedVersionsExtensionParser(new ByteArrayInputStream(extension));
         SupportedVersionsExtensionMessage msg = new SupportedVersionsExtensionMessage();
         parser.parse(msg);
         assertArrayEquals(msg.getSupportedVersions().getValue(), versionList);

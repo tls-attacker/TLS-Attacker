@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CachedInfoExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.CachedObjectPreparator;
@@ -40,7 +39,6 @@ public class CachedInfoExtensionParserTest {
                 ArrayConverter.hexStringToByteArray("000d01060102030405060203070809") } });
     }
 
-    private final ConnectionEndType connectionEndType;
     private final int cachedInfoLength;
     private final byte[] cachedInfoBytes;
     private final List<CachedObject> cachedObjectList;
@@ -48,7 +46,6 @@ public class CachedInfoExtensionParserTest {
 
     public CachedInfoExtensionParserTest(ConnectionEndType connectionEndType, int cachedInfoLength,
         byte[] cachedInfoBytes, List<CachedObject> cachedObjectList, byte[] extensionBytes) {
-        this.connectionEndType = connectionEndType;
         this.cachedInfoLength = cachedInfoLength;
         this.cachedInfoBytes = cachedInfoBytes;
         this.cachedObjectList = cachedObjectList;
@@ -59,8 +56,7 @@ public class CachedInfoExtensionParserTest {
     public void testParse() {
         TlsContext context = new TlsContext();
 
-        CachedInfoExtensionParser parser =
-            new CachedInfoExtensionParser(new ByteArrayInputStream(extensionBytes), Config.createConfig());
+        CachedInfoExtensionParser parser = new CachedInfoExtensionParser(new ByteArrayInputStream(extensionBytes));
         CachedInfoExtensionMessage msg = new CachedInfoExtensionMessage();
         parser.parse(msg);
 

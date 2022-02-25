@@ -9,7 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RenegotiationInfoExtensionMessage;
 import org.apache.logging.log4j.LogManager;
@@ -23,8 +22,8 @@ public class RenegotiationInfoExtensionParser extends ExtensionParser<Renegotiat
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public RenegotiationInfoExtensionParser(InputStream stream, Config config) {
-        super(stream, config);
+    public RenegotiationInfoExtensionParser(InputStream stream) {
+        super(stream);
     }
 
     @Override

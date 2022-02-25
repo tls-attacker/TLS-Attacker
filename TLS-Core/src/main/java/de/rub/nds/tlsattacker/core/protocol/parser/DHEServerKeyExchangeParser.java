@@ -11,9 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.apache.logging.log4j.LogManager;
@@ -26,26 +23,14 @@ public class DHEServerKeyExchangeParser<T extends DHEServerKeyExchangeMessage> e
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final ProtocolVersion version;
-
-    private final KeyExchangeAlgorithm keyExchangeAlgorithm;
-
     /**
      * Constructor for the Parser class
      *
      * @param stream
-     * @param version
-     *                             Version of the Protocol
-     * @param keyExchangeAlgorithm
-     *                             The selected key exchange algorithm (affects which fields are present).
      * @param tlsContext
      */
-    public DHEServerKeyExchangeParser(InputStream stream, ProtocolVersion version,
-        KeyExchangeAlgorithm keyExchangeAlgorithm, TlsContext tlsContext) {
-        super(stream, HandshakeMessageType.SERVER_KEY_EXCHANGE, version, tlsContext);
-        this.version = version;
-        this.keyExchangeAlgorithm = keyExchangeAlgorithm;
-
+    public DHEServerKeyExchangeParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
     }
 
     @Override
@@ -59,7 +44,7 @@ public class DHEServerKeyExchangeParser<T extends DHEServerKeyExchangeMessage> e
         parseSerializedPublicKey(msg);
         // TODO: this.keyExchangeAlgorithm can currently be null, only for test
         // code that needs to be reworked.
-        if (this.keyExchangeAlgorithm == null || !this.keyExchangeAlgorithm.isAnon()) {
+        if (getKeyExchangeAlgorithm() == null || !getKeyExchangeAlgorithm().isAnon()) {
             if (isTLS12() || isDTLS12()) {
                 parseSignatureAndHashAlgorithm(msg);
             }
@@ -141,24 +126,6 @@ public class DHEServerKeyExchangeParser<T extends DHEServerKeyExchangeMessage> e
     private void parseSerializedPublicKey(DHEServerKeyExchangeMessage msg) {
         msg.setPublicKey(parseByteArrayField(msg.getPublicKeyLength().getValue()));
         LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
-    }
-
-    /**
-     * Checks if the version is TLS12
-     *
-     * @return True if the used version is TLS12
-     */
-    private boolean isTLS12() {
-        return version == ProtocolVersion.TLS12;
-    }
-
-    /**
-     * Checks if the version is DTLS12
-     *
-     * @return True if the used version is DTLS12
-     */
-    private boolean isDTLS12() {
-        return version == ProtocolVersion.DTLS12;
     }
 
     /**

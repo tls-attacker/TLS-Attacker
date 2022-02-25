@@ -80,8 +80,9 @@ public class SSL2ServerHelloParserTest {
      */
     @Test
     public void parseTest() {
-        SSL2ServerHelloParser parser =
-            new SSL2ServerHelloParser(new ByteArrayInputStream(message), version, new TlsContext(config));
+        TlsContext tlsContext = new TlsContext(config);
+        tlsContext.setSelectedProtocolVersion(version);
+        SSL2ServerHelloParser parser = new SSL2ServerHelloParser(new ByteArrayInputStream(message), tlsContext);
         SSL2ServerHelloMessage msg = new SSL2ServerHelloMessage();
         parser.parse(msg);
         assertTrue(msg.getMessageLength().getValue() == messageLength);

@@ -13,7 +13,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.SignatureAndHashAlgorithmsExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.SignatureAndHashAlgorithmsExtensionParser;
@@ -37,10 +36,6 @@ public class SignatureAndHashAlgorithmsExtensionMessage
     private ModifiableByteArray signatureAndHashAlgorithms;
 
     public SignatureAndHashAlgorithmsExtensionMessage() {
-        super(ExtensionType.SIGNATURE_AND_HASH_ALGORITHMS);
-    }
-
-    public SignatureAndHashAlgorithmsExtensionMessage(Config config) {
         super(ExtensionType.SIGNATURE_AND_HASH_ALGORITHMS);
     }
 
@@ -72,13 +67,12 @@ public class SignatureAndHashAlgorithmsExtensionMessage
 
     @Override
     public SignatureAndHashAlgorithmsExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new SignatureAndHashAlgorithmsExtensionParser(stream, tlsContext.getConfig());
+        return new SignatureAndHashAlgorithmsExtensionParser(stream);
     }
 
     @Override
     public SignatureAndHashAlgorithmsExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new SignatureAndHashAlgorithmsExtensionPreparator(tlsContext.getChooser(), this,
-            getSerializer(tlsContext));
+        return new SignatureAndHashAlgorithmsExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

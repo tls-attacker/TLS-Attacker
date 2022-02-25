@@ -9,7 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.HeartbeatMessageParserTest;
 import java.util.Collection;
@@ -53,7 +52,7 @@ public class HeartbeatMessageSerializerTest {
         msg.setPayloadLength(payloadLength);
         msg.setPayload(payload);
         msg.setPadding(padding);
-        HeartbeatMessageSerializer serializer = new HeartbeatMessageSerializer(msg, ProtocolVersion.TLS12);
+        HeartbeatMessageSerializer serializer = new HeartbeatMessageSerializer(msg);
         assertArrayEquals(expectedPart, serializer.serialize());
     }
 

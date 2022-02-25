@@ -54,8 +54,9 @@ public class CertificateStatusMessageParserTest {
 
     @Test
     public void testParse() {
-        CertificateStatusParser parser =
-            new CertificateStatusParser(new ByteArrayInputStream(message), version, new TlsContext(new Config()));
+        TlsContext tlsContext = new TlsContext(new Config());
+        tlsContext.setSelectedProtocolVersion(version);
+        CertificateStatusParser parser = new CertificateStatusParser(new ByteArrayInputStream(message), tlsContext);
         CertificateStatusMessage msg = new CertificateStatusMessage();
         parser.parse(msg);
         assertEquals((int) msg.getCertificateStatusType().getValue(), certificateStatusType);
