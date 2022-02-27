@@ -170,7 +170,7 @@ public enum ProtocolVersion {
     }
 
     /**
-     * Return the highest protocol version.
+     * Return the highest protocol version. TODO: This will not work for a mixed list of DTLS and TLS.
      *
      * @param  list
      *              The List of protocolVersions to search in
@@ -179,12 +179,21 @@ public enum ProtocolVersion {
     public static ProtocolVersion getHighestProtocolVersion(List<ProtocolVersion> list) {
         ProtocolVersion highestProtocolVersion = null;
         for (ProtocolVersion pv : list) {
-            if (pv.isGrease())
+            if (pv == null || pv.isGrease() || pv == highestProtocolVersion) {
                 continue;
+            }
+
             if (highestProtocolVersion == null) {
                 highestProtocolVersion = pv;
+                continue;
             }
-            if (pv != null && ArrayConverter.bytesToInt(pv.getValue())
+
+            if (pv.isDTLS() && highestProtocolVersion.isDTLS()) {
+                highestProtocolVersion = ProtocolVersion.DTLS12;
+                continue;
+            }
+
+            if (ArrayConverter.bytesToInt(pv.getValue())
                 > ArrayConverter.bytesToInt(highestProtocolVersion.getValue())) {
                 highestProtocolVersion = pv;
             }
@@ -217,6 +226,14 @@ public enum ProtocolVersion {
             || this == ProtocolVersion.DTLS12;
     }
 
+    /**
+     * Compares this protocol version to another for sorting with ProtocolVersionComparator. TODO: This will not work
+     * when comparing DTLS and TLS versions.
+     *
+     * @param  o1
+     *            Other protocol version
+     * @return    -1, 0 or 1 if this protocol version is lower, equal or higher than o1
+     */
     public int compare(ProtocolVersion o1) {
         if (o1 == this || (o1.isGrease() && this.isGrease())) {
             return 0;
@@ -227,9 +244,14 @@ public enum ProtocolVersion {
         if (o1.isGrease())
             return 1;
 
+        if (this.isDTLS() && o1.isDTLS()) {
+            return ((this == DTLS10) ? -1 : 1);
+        }
+
         if (ArrayConverter.bytesToInt(this.getValue()) > ArrayConverter.bytesToInt(o1.getValue())) {
             return 1;
         }
+
         return -1;
     }
 
