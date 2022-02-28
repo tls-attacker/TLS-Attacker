@@ -166,8 +166,7 @@ public class DtlsFragmentLayer extends ProtocolLayer<RecordLayerHint, DtlsHandsh
         } catch (TimeoutException ex) {
             LOGGER.debug(ex);
         } catch (EndOfStreamException ex) {
-            LOGGER.warn("Reached end of stream, cannot parse more dtls fragments");
-            LOGGER.debug(ex);
+            LOGGER.warn("Reached end of stream, cannot parse more dtls fragments: " + ex);
         }
     }
 
