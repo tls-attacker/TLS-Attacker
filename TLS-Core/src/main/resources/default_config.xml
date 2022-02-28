@@ -978,7 +978,7 @@
     <defaultPaddingExtensionBytes>00 00 00 00 00 00</defaultPaddingExtensionBytes>
     <dtlsDefaultCookieLength>20</dtlsDefaultCookieLength>
     <dtlsMaximumFragmentLength>1400</dtlsMaximumFragmentLength>
-    <layerStackType>TLS</layerStackType>
+    <defaultLayerStackType>TLS</defaultLayerStackType>
     <workflowExecutorType>DEFAULT</workflowExecutorType>
     <flushOnMessageTypeChange>true</flushOnMessageTypeChange>
     <createFragmentsDynamically>true</createFragmentsDynamically>

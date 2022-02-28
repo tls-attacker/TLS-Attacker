@@ -852,7 +852,7 @@ public class Config implements Serializable {
      */
     private Integer dtlsMaximumFragmentLength = 1400;
 
-    private LayerStackType layerStackType = LayerStackType.TLS;
+    private LayerStackType defaultLayerStackType = LayerStackType.TLS;
 
     private WorkflowExecutorType workflowExecutorType = WorkflowExecutorType.DEFAULT;
 
@@ -4030,11 +4030,11 @@ public class Config implements Serializable {
         this.defaultClientTicketResumptionSessionId = defaultClientTicketResumptionSessionId;
     }
 
-    public LayerStackType getLayerStackType() {
-        return layerStackType;
+    public LayerStackType getDefaultLayerStackType() {
+        return defaultLayerStackType;
     }
 
-    public void setLayerStackType(LayerStackType layerStackType) {
-        this.layerStackType = layerStackType;
+    public void setDefaultLayerStackType(LayerStackType layerStackType) {
+        this.defaultLayerStackType = defaultLayerStackType;
     }
 }

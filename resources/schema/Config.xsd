@@ -384,7 +384,7 @@
       <xs:element name="defaultPaddingExtensionBytes" type="xs:string" minOccurs="0"/>
       <xs:element name="dtlsDefaultCookieLength" type="xs:int" minOccurs="0"/>
       <xs:element name="dtlsMaximumFragmentLength" type="xs:int" minOccurs="0"/>
-      <xs:element name="layerStackType" type="layerStackType" minOccurs="0"/>
+      <xs:element name="defaultLayerStackType" type="layerStackType" minOccurs="0"/>
       <xs:element name="workflowExecutorType" type="workflowExecutorType" minOccurs="0"/>
       <xs:element name="flushOnMessageTypeChange" type="xs:boolean" minOccurs="0"/>
       <xs:element name="createFragmentsDynamically" type="xs:boolean" minOccurs="0"/>

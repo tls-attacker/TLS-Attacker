@@ -49,7 +49,7 @@ public class ProtocolVersionDelegate extends Delegate {
         TransportHandlerType th = TransportHandlerType.TCP;
         if (config.getHighestProtocolVersion().isDTLS()) {
             th = TransportHandlerType.UDP;
-            config.setLayerStackType(LayerStackType.DTLS);
+            config.setDefaultLayerStackType(LayerStackType.DTLS);
             config.setWorkflowExecutorType(WorkflowExecutorType.DTLS);
             config.setFinishWithCloseNotify(true);
             config.setIgnoreRetransmittedCssInDtls(true);
