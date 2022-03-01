@@ -189,6 +189,9 @@ public class Context {
     }
 
     public void prepareWithLayers(LayerConfiguration type) {
+        tlsContext = new TlsContext(this);
+        httpContext = new HttpContext(this);
+        tcpContext = new TcpContext(this);
         LayerStackFactory.createLayerStack(type, this);
     }
 }

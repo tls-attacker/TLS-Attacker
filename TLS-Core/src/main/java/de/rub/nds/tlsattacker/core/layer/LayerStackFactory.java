@@ -24,9 +24,9 @@ public class LayerStackFactory {
     public static LayerStack createLayerStack(LayerConfiguration type, Context context) {
 
         LayerStack layerStack;
-        TlsContext tlsContext;
-        TcpContext tcpContext;
-        HttpContext httpContext;
+        TlsContext tlsContext = context.getTlsContext();
+        TcpContext tcpContext = context.getTcpContext();
+        HttpContext httpContext = context.getHttpContext();
 
         switch (type) {
             case DTLS:
@@ -38,16 +38,11 @@ public class LayerStackFactory {
                 /*
                  * initialize layer contexts
                  */
-                tlsContext = new TlsContext(context);
-                tcpContext = new TcpContext(context);
                 layerStack = new LayerStack(context, new MessageLayer(tlsContext), new RecordLayer(tlsContext),
                     new TcpLayer(tcpContext));
                 context.setLayerStack(layerStack);
                 return layerStack;
             case HTTPS:
-                tlsContext = new TlsContext(context);
-                tcpContext = new TcpContext(context);
-                httpContext = new HttpContext(context);
                 layerStack = new LayerStack(context, new HttpLayer(httpContext), new MessageLayer(tlsContext),
                     new RecordLayer(tlsContext), new TcpLayer(tcpContext));
                 context.setLayerStack(layerStack);
