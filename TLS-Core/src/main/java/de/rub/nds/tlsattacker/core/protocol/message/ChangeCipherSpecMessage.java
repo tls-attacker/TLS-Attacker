@@ -76,22 +76,22 @@ public class ChangeCipherSpecMessage extends ProtocolMessage<ChangeCipherSpecMes
     }
 
     @Override
-    public ChangeCipherSpecHandler getHandler(TlsContext context) {
-        return new ChangeCipherSpecHandler(context);
+    public ChangeCipherSpecHandler getHandler(TlsContext tlsContext) {
+        return new ChangeCipherSpecHandler(tlsContext);
     }
 
     @Override
-    public ChangeCipherSpecParser getParser(TlsContext context, InputStream stream) {
-        return new ChangeCipherSpecParser(stream, context.getChooser().getLastRecordVersion(), context.getConfig());
+    public ChangeCipherSpecParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new ChangeCipherSpecParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext.getConfig());
     }
 
     @Override
-    public ChangeCipherSpecPreparator getPreparator(TlsContext context) {
-        return new ChangeCipherSpecPreparator(context.getChooser(), this);
+    public ChangeCipherSpecPreparator getPreparator(TlsContext tlsContext) {
+        return new ChangeCipherSpecPreparator(tlsContext.getChooser(), this);
     }
 
     @Override
-    public ChangeCipherSpecSerializer getSerializer(TlsContext context) {
-        return new ChangeCipherSpecSerializer(this, context.getChooser().getSelectedProtocolVersion());
+    public ChangeCipherSpecSerializer getSerializer(TlsContext tlsContext) {
+        return new ChangeCipherSpecSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 }

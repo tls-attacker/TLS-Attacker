@@ -14,8 +14,8 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 
 public class UnknownHandshakeHandler extends HandshakeMessageHandler<UnknownHandshakeMessage> {
 
-    public UnknownHandshakeHandler(TlsContext context) {
-        super(context);
+    public UnknownHandshakeHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override

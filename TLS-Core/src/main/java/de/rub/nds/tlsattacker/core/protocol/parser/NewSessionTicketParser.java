@@ -27,9 +27,9 @@ public class NewSessionTicketParser extends HandshakeMessageParser<NewSessionTic
 
     private final ConnectionEndType talkingConnectionEndType;
 
-    public NewSessionTicketParser(InputStream stream, ProtocolVersion version, TlsContext context,
+    public NewSessionTicketParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext,
         ConnectionEndType talkingConnectionEndType) {
-        super(stream, HandshakeMessageType.NEW_SESSION_TICKET, version, context);
+        super(stream, HandshakeMessageType.NEW_SESSION_TICKET, version, tlsContext);
         this.talkingConnectionEndType = talkingConnectionEndType;
     }
 

@@ -38,23 +38,23 @@ public class ExtendedMasterSecretExtensionMessage extends ExtensionMessage<Exten
     }
 
     @Override
-    public ExtendedMasterSecretExtensionParser getParser(TlsContext context, InputStream stream) {
-        return new ExtendedMasterSecretExtensionParser(stream, context.getConfig());
+    public ExtendedMasterSecretExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new ExtendedMasterSecretExtensionParser(stream, tlsContext.getConfig());
     }
 
     @Override
-    public ExtendedMasterSecretExtensionPreparator getPreparator(TlsContext context) {
-        return new ExtendedMasterSecretExtensionPreparator(context.getChooser(), this, getSerializer(context));
+    public ExtendedMasterSecretExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new ExtendedMasterSecretExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
     }
 
     @Override
-    public ExtendedMasterSecretExtensionSerializer getSerializer(TlsContext context) {
+    public ExtendedMasterSecretExtensionSerializer getSerializer(TlsContext tlsContext) {
         return new ExtendedMasterSecretExtensionSerializer(this);
     }
 
     @Override
-    public ExtendedMasterSecretExtensionHandler getHandler(TlsContext context) {
-        return new ExtendedMasterSecretExtensionHandler(context);
+    public ExtendedMasterSecretExtensionHandler getHandler(TlsContext tlsContext) {
+        return new ExtendedMasterSecretExtensionHandler(tlsContext);
     }
 
 }

@@ -27,8 +27,8 @@ public class SupportedVersionsExtensionHandler extends ExtensionHandler<Supporte
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SupportedVersionsExtensionHandler(TlsContext context) {
-        super(context);
+    public SupportedVersionsExtensionHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override
@@ -38,16 +38,16 @@ public class SupportedVersionsExtensionHandler extends ExtensionHandler<Supporte
             throw new AdjustmentException("Could not create reasonable ProtocolVersions from VersionBytes");
         }
         List<ProtocolVersion> versionList = ProtocolVersion.getProtocolVersions(versionBytes);
-        if (context.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
-            context.setClientSupportedProtocolVersions(versionList);
-            context.setHighestClientProtocolVersion(ProtocolVersion.getHighestProtocolVersion(versionList));
+        if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
+            tlsContext.setClientSupportedProtocolVersions(versionList);
+            tlsContext.setHighestClientProtocolVersion(ProtocolVersion.getHighestProtocolVersion(versionList));
         } else {
-            if (context.getConfig().isEnforceSettings()) {
-                context.setSelectedProtocolVersion(context.getChooser().getHighestProtocolVersion());
+            if (tlsContext.getConfig().isEnforceSettings()) {
+                tlsContext.setSelectedProtocolVersion(tlsContext.getChooser().getHighestProtocolVersion());
                 return;
             }
             if (versionList.size() == 1) {
-                context.setSelectedProtocolVersion(versionList.get(0));
+                tlsContext.setSelectedProtocolVersion(versionList.get(0));
             } else {
                 LOGGER.warn("Received a SupportedProtocolVersionExtension with unknown contents");
             }

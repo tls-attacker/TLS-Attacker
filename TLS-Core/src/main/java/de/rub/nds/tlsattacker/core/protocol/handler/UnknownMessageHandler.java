@@ -18,8 +18,8 @@ public class UnknownMessageHandler extends ProtocolMessageHandler<UnknownMessage
 
     private final ProtocolMessageType recordContentMessageType;
 
-    public UnknownMessageHandler(TlsContext context, ProtocolMessageType recordContentMessageType) {
-        super(context);
+    public UnknownMessageHandler(TlsContext tlsContext, ProtocolMessageType recordContentMessageType) {
+        super(tlsContext);
         this.recordContentMessageType = recordContentMessageType;
     }
 

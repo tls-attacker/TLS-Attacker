@@ -21,8 +21,8 @@ public class MaxFragmentLengthExtensionHandler extends ExtensionHandler<MaxFragm
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public MaxFragmentLengthExtensionHandler(TlsContext context) {
-        super(context);
+    public MaxFragmentLengthExtensionHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override
@@ -36,7 +36,7 @@ public class MaxFragmentLengthExtensionHandler extends ExtensionHandler<MaxFragm
             LOGGER.warn("Unknown MaxFragmentLength:" + ArrayConverter.bytesToHexString(maxFragmentLengthBytes));
         } else {
             LOGGER.debug("Setting MaxFragmentLength: " + length.getValue());
-            context.setMaxFragmentLength(length);
+            tlsContext.setMaxFragmentLength(length);
         }
     }
 

@@ -50,23 +50,23 @@ public class CustomDsaPublicKey extends CustomPublicKey implements DSAPublicKey 
     }
 
     @Override
-    public void adjustInContext(TlsContext context, ConnectionEndType ownerOfKey) {
+    public void adjustInContext(TlsContext tlsContext, ConnectionEndType ownerOfKey) {
         LOGGER.debug("Adjusting DSA public key in context");
         if (null == ownerOfKey) {
             throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
         } else {
             switch (ownerOfKey) {
                 case CLIENT:
-                    context.setClientDsaGenerator(dsaG);
-                    context.setClientDsaPrimeP(dsaP);
-                    context.setClientDsaPrimeQ(dsaQ);
-                    context.setClientDsaPublicKey(publicKey);
+                    tlsContext.setClientDsaGenerator(dsaG);
+                    tlsContext.setClientDsaPrimeP(dsaP);
+                    tlsContext.setClientDsaPrimeQ(dsaQ);
+                    tlsContext.setClientDsaPublicKey(publicKey);
                     break;
                 case SERVER:
-                    context.setServerDsaGenerator(dsaG);
-                    context.setServerDsaPrimeP(dsaP);
-                    context.setServerDsaPrimeQ(dsaQ);
-                    context.setServerDsaPublicKey(publicKey);
+                    tlsContext.setServerDsaGenerator(dsaG);
+                    tlsContext.setServerDsaPrimeP(dsaP);
+                    tlsContext.setServerDsaPrimeQ(dsaQ);
+                    tlsContext.setServerDsaPublicKey(publicKey);
                     break;
                 default:
                     throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");

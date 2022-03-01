@@ -14,8 +14,8 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 
 public class DtlsHandshakeMessageFragmentHandler extends HandshakeMessageHandler<DtlsHandshakeMessageFragment> {
 
-    public DtlsHandshakeMessageFragmentHandler(TlsContext context) {
-        super(context);
+    public DtlsHandshakeMessageFragmentHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override

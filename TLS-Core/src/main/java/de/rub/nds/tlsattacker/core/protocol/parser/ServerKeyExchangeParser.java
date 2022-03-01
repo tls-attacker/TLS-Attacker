@@ -29,12 +29,12 @@ public abstract class ServerKeyExchangeParser<T extends ServerKeyExchangeMessage
      *                     The Handshake message type that is expected
      * @param version
      *                     Version of the Protocol
-     * @param context
-     *                     A Config used in the current context
+     * @param tlsContext
+     *                     A Config used in the current tlsContext
      */
     public ServerKeyExchangeParser(InputStream stream, HandshakeMessageType expectedType, ProtocolVersion version,
-        TlsContext context) {
-        super(stream, expectedType, version, context);
+        TlsContext tlsContext) {
+        super(stream, expectedType, version, tlsContext);
     }
 
 }

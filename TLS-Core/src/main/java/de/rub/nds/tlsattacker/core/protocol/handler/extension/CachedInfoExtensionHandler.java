@@ -14,13 +14,13 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.CachedInfoExtensio
 
 public class CachedInfoExtensionHandler extends ExtensionHandler<CachedInfoExtensionMessage> {
 
-    public CachedInfoExtensionHandler(TlsContext context) {
-        super(context);
+    public CachedInfoExtensionHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override
     public void adjustTLSExtensionContext(CachedInfoExtensionMessage message) {
-        context.setCachedInfoExtensionObjects(message.getCachedInfo());
+        tlsContext.setCachedInfoExtensionObjects(message.getCachedInfo());
     }
 
 }

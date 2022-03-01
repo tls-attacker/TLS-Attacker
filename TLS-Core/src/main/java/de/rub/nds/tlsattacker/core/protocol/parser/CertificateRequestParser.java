@@ -33,12 +33,12 @@ public class CertificateRequestParser extends HandshakeMessageParser<Certificate
      * @param stream
      * @param version
      *                                 Version of the Protocol
-     * @param context
+     * @param tlsContext
      * @param talkingConnectionEndType
      */
-    public CertificateRequestParser(InputStream stream, ProtocolVersion version, TlsContext context,
+    public CertificateRequestParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext,
         ConnectionEndType talkingConnectionEndType) {
-        super(stream, HandshakeMessageType.CERTIFICATE_REQUEST, version, context);
+        super(stream, HandshakeMessageType.CERTIFICATE_REQUEST, version, tlsContext);
         this.talkingConnectionEndType = talkingConnectionEndType;
     }
 

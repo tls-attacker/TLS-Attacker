@@ -69,23 +69,23 @@ public class RenegotiationInfoExtensionMessage extends ExtensionMessage<Renegoti
     }
 
     @Override
-    public RenegotiationInfoExtensionParser getParser(TlsContext context, InputStream stream) {
-        return new RenegotiationInfoExtensionParser(stream, context.getConfig());
+    public RenegotiationInfoExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new RenegotiationInfoExtensionParser(stream, tlsContext.getConfig());
     }
 
     @Override
-    public RenegotiationInfoExtensionPreparator getPreparator(TlsContext context) {
-        return new RenegotiationInfoExtensionPreparator(context.getChooser(), this, getSerializer(context));
+    public RenegotiationInfoExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new RenegotiationInfoExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
     }
 
     @Override
-    public RenegotiationInfoExtensionSerializer getSerializer(TlsContext context) {
+    public RenegotiationInfoExtensionSerializer getSerializer(TlsContext tlsContext) {
         return new RenegotiationInfoExtensionSerializer(this);
     }
 
     @Override
-    public RenegotiationInfoExtensionHandler getHandler(TlsContext context) {
-        return new RenegotiationInfoExtensionHandler(context);
+    public RenegotiationInfoExtensionHandler getHandler(TlsContext tlsContext) {
+        return new RenegotiationInfoExtensionHandler(tlsContext);
     }
 
 }

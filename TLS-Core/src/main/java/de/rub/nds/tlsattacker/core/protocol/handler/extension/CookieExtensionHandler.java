@@ -14,13 +14,13 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.CookieExtensionMes
 
 public class CookieExtensionHandler extends ExtensionHandler<CookieExtensionMessage> {
 
-    public CookieExtensionHandler(TlsContext context) {
-        super(context);
+    public CookieExtensionHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override
     public void adjustTLSExtensionContext(CookieExtensionMessage message) {
-        context.setExtensionCookie(message.getCookie().getValue());
+        tlsContext.setExtensionCookie(message.getCookie().getValue());
     }
 
 }

@@ -30,17 +30,17 @@ public class RecordPreparator extends Preparator<Record> {
 
     private final Record record;
     private final Encryptor encryptor;
-    private final TlsContext context;
+    private final TlsContext tlsContext;
     private final RecordCompressor compressor;
 
     private ProtocolMessageType type;
 
-    public RecordPreparator(TlsContext context, Record record, Encryptor encryptor, ProtocolMessageType type,
-        RecordCompressor compressor) {
-        super(context.getChooser(), record);
+    public RecordPreparator(TlsContext tlsContext, Record record, Encryptor encryptor, ProtocolMessageType type,
+                            RecordCompressor compressor) {
+        super(tlsContext.getChooser(), record);
         this.record = record;
         this.encryptor = encryptor;
-        this.context = context;
+        this.tlsContext = tlsContext;
         this.compressor = compressor;
         this.type = type;
 
@@ -79,7 +79,7 @@ public class RecordPreparator extends Preparator<Record> {
 
     private void prepareProtocolVersion(Record record) {
         if (chooser.getSelectedProtocolVersion().isTLS13()
-            || context.getActiveKeySetTypeWrite() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
+            || tlsContext.getActiveKeySetTypeWrite() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
             record.setProtocolVersion(ProtocolVersion.TLS12.getValue());
         } else {
             record.setProtocolVersion(chooser.getSelectedProtocolVersion().getValue());

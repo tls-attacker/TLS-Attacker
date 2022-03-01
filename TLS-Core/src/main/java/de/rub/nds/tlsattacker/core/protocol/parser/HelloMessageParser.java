@@ -38,12 +38,12 @@ public abstract class HelloMessageParser<T extends HelloMessage> extends Handsha
      *                Expected Type value for the Message
      * @param version
      *                Version of the Protocol
-     * @param context
-     *                A Config used in the current context
+     * @param tlsContext
+     *                A Config used in the current tlsContext
      */
     public HelloMessageParser(InputStream stream, HandshakeMessageType type, ProtocolVersion version,
-        TlsContext context) {
-        super(stream, type, version, context);
+        TlsContext tlsContext) {
+        super(stream, type, version, tlsContext);
     }
 
     protected boolean hasSessionID(HelloMessage message) {

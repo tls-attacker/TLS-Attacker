@@ -25,13 +25,13 @@ public class PWDServerKeyExchangeParser extends ServerKeyExchangeParser<PWDServe
 
     private final KeyExchangeAlgorithm keyExchangeAlgorithm;
 
-    public PWDServerKeyExchangeParser(InputStream stream, ProtocolVersion version, TlsContext context) {
-        this(stream, version, null, context);
+    public PWDServerKeyExchangeParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
+        this(stream, version, null, tlsContext);
     }
 
     public PWDServerKeyExchangeParser(InputStream stream, ProtocolVersion version,
-        KeyExchangeAlgorithm keyExchangeAlgorithm, TlsContext context) {
-        super(stream, HandshakeMessageType.SERVER_KEY_EXCHANGE, version, context);
+        KeyExchangeAlgorithm keyExchangeAlgorithm, TlsContext tlsContext) {
+        super(stream, HandshakeMessageType.SERVER_KEY_EXCHANGE, version, tlsContext);
         this.version = version;
         this.keyExchangeAlgorithm = keyExchangeAlgorithm;
     }

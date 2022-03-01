@@ -20,16 +20,16 @@ public class AlertHandler extends ProtocolMessageHandler<AlertMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public AlertHandler(TlsContext context) {
-        super(context);
+    public AlertHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override
     public void adjustContext(AlertMessage message) {
-        if (context.getTalkingConnectionEndType() == context.getChooser().getMyConnectionPeer()
+        if (tlsContext.getTalkingConnectionEndType() == tlsContext.getChooser().getMyConnectionPeer()
             && AlertLevel.FATAL.getValue() == message.getLevel().getValue()) {
             LOGGER.debug("Setting received Fatal Alert in Context");
-            context.setReceivedFatalAlert(true);
+            tlsContext.setReceivedFatalAlert(true);
         }
     }
 }

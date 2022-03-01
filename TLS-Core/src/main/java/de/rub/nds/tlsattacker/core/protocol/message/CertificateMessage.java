@@ -195,24 +195,24 @@ public class CertificateMessage extends HandshakeMessage {
     }
 
     @Override
-    public CertificateMessageParser getParser(TlsContext context, InputStream stream) {
-        return new CertificateMessageParser(stream, context, context.getChooser().getSelectedProtocolVersion(),
-            context.getTalkingConnectionEndType());
+    public CertificateMessageParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new CertificateMessageParser(stream, tlsContext, tlsContext.getChooser().getSelectedProtocolVersion(),
+            tlsContext.getTalkingConnectionEndType());
     }
 
     @Override
-    public CertificateMessagePreparator getPreparator(TlsContext context) {
-        return new CertificateMessagePreparator(context.getChooser(), this);
+    public CertificateMessagePreparator getPreparator(TlsContext tlsContext) {
+        return new CertificateMessagePreparator(tlsContext.getChooser(), this);
     }
 
     @Override
-    public CertificateMessageSerializer getSerializer(TlsContext context) {
-        return new CertificateMessageSerializer(this, context.getChooser().getSelectedProtocolVersion());
+    public CertificateMessageSerializer getSerializer(TlsContext tlsContext) {
+        return new CertificateMessageSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override
-    public CertificateMessageHandler getHandler(TlsContext context) {
-        return new CertificateMessageHandler(context);
+    public CertificateMessageHandler getHandler(TlsContext tlsContext) {
+        return new CertificateMessageHandler(tlsContext);
     }
 
     public List<CertificatePair> getCertificateListConfig() {

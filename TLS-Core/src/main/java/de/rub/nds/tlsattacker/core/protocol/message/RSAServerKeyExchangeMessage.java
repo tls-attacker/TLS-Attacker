@@ -60,23 +60,23 @@ public class RSAServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     }
 
     @Override
-    public RSAServerKeyExchangeHandler getHandler(TlsContext context) {
-        return new RSAServerKeyExchangeHandler(context);
+    public RSAServerKeyExchangeHandler getHandler(TlsContext tlsContext) {
+        return new RSAServerKeyExchangeHandler(tlsContext);
     }
 
     @Override
-    public RSAServerKeyExchangeParser getParser(TlsContext context, InputStream stream) {
-        return new RSAServerKeyExchangeParser(stream, context.getChooser().getLastRecordVersion(), context);
+    public RSAServerKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new RSAServerKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
     }
 
     @Override
-    public RSAServerKeyExchangePreparator getPreparator(TlsContext context) {
-        return new RSAServerKeyExchangePreparator(context.getChooser(), this);
+    public RSAServerKeyExchangePreparator getPreparator(TlsContext tlsContext) {
+        return new RSAServerKeyExchangePreparator(tlsContext.getChooser(), this);
     }
 
     @Override
-    public RSAServerKeyExchangeSerializer getSerializer(TlsContext context) {
-        return new RSAServerKeyExchangeSerializer(this, context.getChooser().getSelectedProtocolVersion());
+    public RSAServerKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
+        return new RSAServerKeyExchangeSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

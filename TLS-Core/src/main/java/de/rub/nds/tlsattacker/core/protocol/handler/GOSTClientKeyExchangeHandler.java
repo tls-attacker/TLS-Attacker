@@ -14,8 +14,8 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 
 public class GOSTClientKeyExchangeHandler extends ClientKeyExchangeHandler<GOSTClientKeyExchangeMessage> {
 
-    public GOSTClientKeyExchangeHandler(TlsContext context) {
-        super(context);
+    public GOSTClientKeyExchangeHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override

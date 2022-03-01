@@ -197,24 +197,24 @@ public class EncryptedServerNameIndicationExtensionMessage
     }
 
     @Override
-    public EncryptedServerNameIndicationExtensionParser getParser(TlsContext context, InputStream stream) {
-        return new EncryptedServerNameIndicationExtensionParser(stream, context.getConfig(),
-            context.getTalkingConnectionEndType());
+    public EncryptedServerNameIndicationExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new EncryptedServerNameIndicationExtensionParser(stream, tlsContext.getConfig(),
+            tlsContext.getTalkingConnectionEndType());
     }
 
     @Override
-    public EncryptedServerNameIndicationExtensionPreparator getPreparator(TlsContext context) {
-        return new EncryptedServerNameIndicationExtensionPreparator(context.getChooser(), this, getSerializer(context));
+    public EncryptedServerNameIndicationExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new EncryptedServerNameIndicationExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
     }
 
     @Override
-    public EncryptedServerNameIndicationExtensionSerializer getSerializer(TlsContext context) {
+    public EncryptedServerNameIndicationExtensionSerializer getSerializer(TlsContext tlsContext) {
         return new EncryptedServerNameIndicationExtensionSerializer(this);
     }
 
     @Override
-    public EncryptedServerNameIndicationExtensionHandler getHandler(TlsContext context) {
-        return new EncryptedServerNameIndicationExtensionHandler(context);
+    public EncryptedServerNameIndicationExtensionHandler getHandler(TlsContext tlsContext) {
+        return new EncryptedServerNameIndicationExtensionHandler(tlsContext);
     }
 
     public enum EsniMessageType {

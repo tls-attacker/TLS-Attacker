@@ -21,7 +21,7 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class CustomPublicKey implements Serializable {
 
-    public abstract void adjustInContext(TlsContext context, ConnectionEndType ownerOfKey);
+    public abstract void adjustInContext(TlsContext tlsContext, ConnectionEndType ownerOfKey);
 
     public abstract void adjustInConfig(Config config, ConnectionEndType ownerOfKey);
 

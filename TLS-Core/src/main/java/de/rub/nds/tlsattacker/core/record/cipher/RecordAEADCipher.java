@@ -45,8 +45,8 @@ public class RecordAEADCipher extends RecordCipher {
      */
     private final int aeadExplicitLength;
 
-    public RecordAEADCipher(TlsContext context, CipherState state) {
-        super(context, state);
+    public RecordAEADCipher(TlsContext tlsContext, CipherState state) {
+        super(tlsContext, state);
         encryptCipher = CipherWrapper.getEncryptionCipher(getState().getCipherSuite(), getLocalConnectionEndType(),
             getState().getKeySet());
         decryptCipher = CipherWrapper.getDecryptionCipher(getState().getCipherSuite(), getLocalConnectionEndType(),

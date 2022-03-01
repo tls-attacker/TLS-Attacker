@@ -73,18 +73,18 @@ public class SSL2ServerHelloMessage extends SSL2HandshakeMessage {
     }
 
     @Override
-    public SSL2ServerHelloHandler getHandler(TlsContext context) {
-        return new SSL2ServerHelloHandler(context);
+    public SSL2ServerHelloHandler getHandler(TlsContext tlsContext) {
+        return new SSL2ServerHelloHandler(tlsContext);
     }
 
     @Override
-    public SSL2ServerHelloParser getParser(TlsContext context, InputStream stream) {
-        return new SSL2ServerHelloParser(stream, context.getChooser().getSelectedProtocolVersion(), context);
+    public SSL2ServerHelloParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new SSL2ServerHelloParser(stream, tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext);
     }
 
     @Override
-    public SSL2ServerHelloPreparator getPreparator(TlsContext context) {
-        return new SSL2ServerHelloPreparator(context.getChooser(), this);
+    public SSL2ServerHelloPreparator getPreparator(TlsContext tlsContext) {
+        return new SSL2ServerHelloPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

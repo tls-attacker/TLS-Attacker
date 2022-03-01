@@ -14,17 +14,17 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 
 public class SSL2ClientMasterKeyHandler extends HandshakeMessageHandler<SSL2ClientMasterKeyMessage> {
 
-    public SSL2ClientMasterKeyHandler(TlsContext context) {
-        super(context);
+    public SSL2ClientMasterKeyHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override
     public void adjustContext(SSL2ClientMasterKeyMessage message) {
         byte[] premasterSecret = message.getComputations().getPremasterSecret().getValue();
-        context.setPreMasterSecret(premasterSecret);
-        context.setClearKey(message.getClearKeyData().getValue());
-        if (context.getChooser().getSSL2CipherSuite().getBlockSize() != 0) {
-            context.setSSL2Iv(message.getKeyArgData().getValue());
+        tlsContext.setPreMasterSecret(premasterSecret);
+        tlsContext.setClearKey(message.getClearKeyData().getValue());
+        if (tlsContext.getChooser().getSSL2CipherSuite().getBlockSize() != 0) {
+            tlsContext.setSSL2Iv(message.getKeyArgData().getValue());
         }
     }
 

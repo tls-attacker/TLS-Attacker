@@ -68,22 +68,22 @@ public class PasswordSaltExtensionMessage extends ExtensionMessage<PasswordSaltE
     }
 
     @Override
-    public PasswordSaltExtensionParser getParser(TlsContext context, InputStream stream) {
-        return new PasswordSaltExtensionParser(stream, context.getConfig());
+    public PasswordSaltExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new PasswordSaltExtensionParser(stream, tlsContext.getConfig());
     }
 
     @Override
-    public PasswordSaltExtensionPreparator getPreparator(TlsContext context) {
-        return new PasswordSaltExtensionPreparator(context.getChooser(), this, getSerializer(context));
+    public PasswordSaltExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new PasswordSaltExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
     }
 
     @Override
-    public PasswordSaltExtensionSerializer getSerializer(TlsContext context) {
+    public PasswordSaltExtensionSerializer getSerializer(TlsContext tlsContext) {
         return new PasswordSaltExtensionSerializer(this);
     }
 
     @Override
-    public PasswordSaltExtensionHandler getHandler(TlsContext context) {
-        return new PasswordSaltExtensionHandler(context);
+    public PasswordSaltExtensionHandler getHandler(TlsContext tlsContext) {
+        return new PasswordSaltExtensionHandler(tlsContext);
     }
 }

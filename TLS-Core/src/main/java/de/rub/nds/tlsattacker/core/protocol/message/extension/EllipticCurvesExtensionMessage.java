@@ -68,23 +68,23 @@ public class EllipticCurvesExtensionMessage extends ExtensionMessage<EllipticCur
     }
 
     @Override
-    public EllipticCurvesExtensionParser getParser(TlsContext context, InputStream stream) {
-        return new EllipticCurvesExtensionParser(stream, context.getConfig());
+    public EllipticCurvesExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new EllipticCurvesExtensionParser(stream, tlsContext.getConfig());
     }
 
     @Override
-    public EllipticCurvesExtensionPreparator getPreparator(TlsContext context) {
-        return new EllipticCurvesExtensionPreparator(context.getChooser(), this, getSerializer(context));
+    public EllipticCurvesExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new EllipticCurvesExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
     }
 
     @Override
-    public EllipticCurvesExtensionSerializer getSerializer(TlsContext context) {
+    public EllipticCurvesExtensionSerializer getSerializer(TlsContext tlsContext) {
         return new EllipticCurvesExtensionSerializer(this);
     }
 
     @Override
-    public EllipticCurvesExtensionHandler getHandler(TlsContext context) {
-        return new EllipticCurvesExtensionHandler(context);
+    public EllipticCurvesExtensionHandler getHandler(TlsContext tlsContext) {
+        return new EllipticCurvesExtensionHandler(tlsContext);
     }
 
 }

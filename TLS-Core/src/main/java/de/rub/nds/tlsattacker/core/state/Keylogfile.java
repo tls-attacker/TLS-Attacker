@@ -23,11 +23,11 @@ public class Keylogfile {
     private static final Logger LOGGER = LogManager.getLogger();
     private String path;
     private boolean writeKeylog;
-    private TlsContext context;
+    private TlsContext tlsContext;
 
-    public Keylogfile(TlsContext context) {
-        this.context = context;
-        path = context.getConfig().getKeylogFilePath();
+    public Keylogfile(TlsContext tlsContext) {
+        this.tlsContext = tlsContext;
+        path = tlsContext.getConfig().getKeylogFilePath();
         Path outputPath;
         if (path == null) {
             outputPath = Paths.get(System.getProperty("user.dir"), "keyfile.log");
@@ -41,7 +41,7 @@ public class Keylogfile {
         outputPath = outputPath.toAbsolutePath();
         this.path = outputPath.toString();
 
-        this.writeKeylog = context.getConfig().isWriteKeylogFile();
+        this.writeKeylog = tlsContext.getConfig().isWriteKeylogFile();
     }
 
     public void writeKey(String identifier, byte[] key) {
@@ -58,7 +58,7 @@ public class Keylogfile {
                 }
 
                 FileWriter fw = new FileWriter(this.path, true);
-                fw.write(identifier + " " + DatatypeConverter.printHexBinary(context.getClientRandom()) + " "
+                fw.write(identifier + " " + DatatypeConverter.printHexBinary(tlsContext.getClientRandom()) + " "
                     + DatatypeConverter.printHexBinary(key) + "\n");
                 fw.close();
             } catch (Exception e) {

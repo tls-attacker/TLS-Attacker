@@ -65,24 +65,24 @@ public class PWDClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     }
 
     @Override
-    public PWDClientKeyExchangeHandler getHandler(TlsContext context) {
-        return new PWDClientKeyExchangeHandler(context);
+    public PWDClientKeyExchangeHandler getHandler(TlsContext tlsContext) {
+        return new PWDClientKeyExchangeHandler(tlsContext);
     }
 
     @Override
-    public PWDClientKeyExchangeParser getParser(TlsContext context, InputStream stream) {
-        return new PWDClientKeyExchangeParser(stream, context.getChooser().getLastRecordVersion(),
-            AlgorithmResolver.getKeyExchangeAlgorithm(context.getChooser().getSelectedCipherSuite()), context);
+    public PWDClientKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new PWDClientKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(),
+            AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite()), tlsContext);
     }
 
     @Override
-    public PWDClientKeyExchangePreparator getPreparator(TlsContext context) {
-        return new PWDClientKeyExchangePreparator(context.getChooser(), this);
+    public PWDClientKeyExchangePreparator getPreparator(TlsContext tlsContext) {
+        return new PWDClientKeyExchangePreparator(tlsContext.getChooser(), this);
     }
 
     @Override
-    public PWDClientKeyExchangeSerializer getSerializer(TlsContext context) {
-        return new PWDClientKeyExchangeSerializer(this, context.getChooser().getSelectedProtocolVersion());
+    public PWDClientKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
+        return new PWDClientKeyExchangeSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     public ModifiableInteger getElementLength() {

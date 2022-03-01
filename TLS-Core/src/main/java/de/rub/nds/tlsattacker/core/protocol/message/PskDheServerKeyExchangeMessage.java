@@ -90,23 +90,23 @@ public class PskDheServerKeyExchangeMessage extends DHEServerKeyExchangeMessage 
     }
 
     @Override
-    public DHEServerKeyExchangeHandler<PskDheServerKeyExchangeMessage> getHandler(TlsContext context) {
-        return new PskDheServerKeyExchangeHandler(context);
+    public DHEServerKeyExchangeHandler<PskDheServerKeyExchangeMessage> getHandler(TlsContext tlsContext) {
+        return new PskDheServerKeyExchangeHandler(tlsContext);
     }
 
     @Override
-    public PskDheServerKeyExchangeParser getParser(TlsContext context, InputStream stream) {
-        return new PskDheServerKeyExchangeParser(stream, context.getChooser().getLastRecordVersion(), context);
+    public PskDheServerKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new PskDheServerKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
     }
 
     @Override
-    public PskDheServerKeyExchangePreparator getPreparator(TlsContext context) {
-        return new PskDheServerKeyExchangePreparator(context.getChooser(), this);
+    public PskDheServerKeyExchangePreparator getPreparator(TlsContext tlsContext) {
+        return new PskDheServerKeyExchangePreparator(tlsContext.getChooser(), this);
     }
 
     @Override
-    public PskDheServerKeyExchangeSerializer getSerializer(TlsContext context) {
-        return new PskDheServerKeyExchangeSerializer(this, context.getChooser().getSelectedProtocolVersion());
+    public PskDheServerKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
+        return new PskDheServerKeyExchangeSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

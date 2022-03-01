@@ -23,8 +23,8 @@ public class AlpnExtensionHandler extends ExtensionHandler<AlpnExtensionMessage>
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public AlpnExtensionHandler(TlsContext context) {
-        super(context);
+    public AlpnExtensionHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override
@@ -34,9 +34,9 @@ public class AlpnExtensionHandler extends ExtensionHandler<AlpnExtensionMessage>
         for (AlpnEntry entry : alpnEntryList) {
             alpnStringList.add(entry.getAlpnEntry().getValue());
         }
-        if (context.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
+        if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
 
-            context.setProposedAlpnProtocols(alpnStringList);
+            tlsContext.setProposedAlpnProtocols(alpnStringList);
             LOGGER.debug("Adjustet the TLS context proposed ALPN protocols:");
             if (LOGGER.isEnabled(Level.DEBUG)) {
                 for (String stringEntry : alpnStringList) {
@@ -50,7 +50,7 @@ public class AlpnExtensionHandler extends ExtensionHandler<AlpnExtensionMessage>
             if (alpnStringList.isEmpty()) {
                 LOGGER.warn("Server did not select an ALPN protocol.");
             } else {
-                context.setSelectedAlpnProtocol(alpnStringList.get(0));
+                tlsContext.setSelectedAlpnProtocol(alpnStringList.get(0));
             }
         }
     }

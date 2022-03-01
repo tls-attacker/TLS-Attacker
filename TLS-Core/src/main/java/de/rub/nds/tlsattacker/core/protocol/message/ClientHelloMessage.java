@@ -345,23 +345,23 @@ public class ClientHelloMessage extends HelloMessage {
     }
 
     @Override
-    public ClientHelloHandler getHandler(TlsContext context) {
-        return new ClientHelloHandler(context);
+    public ClientHelloHandler getHandler(TlsContext tlsContext) {
+        return new ClientHelloHandler(tlsContext);
     }
 
     @Override
-    public ClientHelloParser getParser(TlsContext context, InputStream stream) {
-        return new ClientHelloParser(stream, context.getChooser().getLastRecordVersion(), context,
-            context.getTalkingConnectionEndType());
+    public ClientHelloParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new ClientHelloParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext,
+            tlsContext.getTalkingConnectionEndType());
     }
 
     @Override
-    public ClientHelloPreparator getPreparator(TlsContext context) {
-        return new ClientHelloPreparator(context.getChooser(), this);
+    public ClientHelloPreparator getPreparator(TlsContext tlsContext) {
+        return new ClientHelloPreparator(tlsContext.getChooser(), this);
     }
 
     @Override
-    public ClientHelloSerializer getSerializer(TlsContext context) {
-        return new ClientHelloSerializer(this, context.getChooser().getSelectedProtocolVersion());
+    public ClientHelloSerializer getSerializer(TlsContext tlsContext) {
+        return new ClientHelloSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 }

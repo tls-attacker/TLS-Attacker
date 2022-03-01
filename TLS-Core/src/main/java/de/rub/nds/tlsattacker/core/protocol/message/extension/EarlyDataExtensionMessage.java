@@ -72,23 +72,23 @@ public class EarlyDataExtensionMessage extends ExtensionMessage<EarlyDataExtensi
     }
 
     @Override
-    public EarlyDataExtensionParser getParser(TlsContext context, InputStream stream) {
-        return new EarlyDataExtensionParser(stream, context.getConfig());
+    public EarlyDataExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new EarlyDataExtensionParser(stream, tlsContext.getConfig());
     }
 
     @Override
-    public EarlyDataExtensionPreparator getPreparator(TlsContext context) {
-        return new EarlyDataExtensionPreparator(context.getChooser(), this, getSerializer(context));
+    public EarlyDataExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new EarlyDataExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
     }
 
     @Override
-    public EarlyDataExtensionSerializer getSerializer(TlsContext context) {
+    public EarlyDataExtensionSerializer getSerializer(TlsContext tlsContext) {
         return new EarlyDataExtensionSerializer(this);
     }
 
     @Override
-    public EarlyDataExtensionHandler getHandler(TlsContext context) {
-        return new EarlyDataExtensionHandler(context);
+    public EarlyDataExtensionHandler getHandler(TlsContext tlsContext) {
+        return new EarlyDataExtensionHandler(tlsContext);
     }
 
 }

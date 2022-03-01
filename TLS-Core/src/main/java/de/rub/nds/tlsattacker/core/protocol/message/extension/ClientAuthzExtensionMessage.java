@@ -68,23 +68,23 @@ public class ClientAuthzExtensionMessage extends ExtensionMessage<ClientAuthzExt
     }
 
     @Override
-    public ClientAuthzExtensionParser getParser(TlsContext context, InputStream stream) {
-        return new ClientAuthzExtensionParser(stream, context.getConfig());
+    public ClientAuthzExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new ClientAuthzExtensionParser(stream, tlsContext.getConfig());
     }
 
     @Override
-    public ClientAuthzExtensionPreparator getPreparator(TlsContext context) {
-        return new ClientAuthzExtensionPreparator(context.getChooser(), this, getSerializer(context));
+    public ClientAuthzExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new ClientAuthzExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
     }
 
     @Override
-    public ClientAuthzExtensionSerializer getSerializer(TlsContext context) {
+    public ClientAuthzExtensionSerializer getSerializer(TlsContext tlsContext) {
         return new ClientAuthzExtensionSerializer(this);
     }
 
     @Override
-    public ClientAuthzExtensionHandler getHandler(TlsContext context) {
-        return new ClientAuthzExtensionHandler(context);
+    public ClientAuthzExtensionHandler getHandler(TlsContext tlsContext) {
+        return new ClientAuthzExtensionHandler(tlsContext);
     }
 
 }

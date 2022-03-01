@@ -86,23 +86,23 @@ public class DtlsHandshakeMessageFragment extends HandshakeMessage {
     }
 
     @Override
-    public DtlsHandshakeMessageFragmentHandler getHandler(TlsContext context) {
-        return new DtlsHandshakeMessageFragmentHandler(context);
+    public DtlsHandshakeMessageFragmentHandler getHandler(TlsContext tlsContext) {
+        return new DtlsHandshakeMessageFragmentHandler(tlsContext);
     }
 
     @Override
-    public DtlsHandshakeMessageFragmentParser getParser(TlsContext context, InputStream stream) {
-        return new DtlsHandshakeMessageFragmentParser(stream, context.getChooser().getLastRecordVersion(), context);
+    public DtlsHandshakeMessageFragmentParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new DtlsHandshakeMessageFragmentParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
     }
 
     @Override
-    public DtlsHandshakeMessageFragmentPreparator getPreparator(TlsContext context) {
-        return new DtlsHandshakeMessageFragmentPreparator(context.getChooser(), this);
+    public DtlsHandshakeMessageFragmentPreparator getPreparator(TlsContext tlsContext) {
+        return new DtlsHandshakeMessageFragmentPreparator(tlsContext.getChooser(), this);
     }
 
     @Override
-    public DtlsHandshakeMessageFragmentSerializer getSerializer(TlsContext context) {
-        return new DtlsHandshakeMessageFragmentSerializer(this, context.getChooser().getSelectedProtocolVersion());
+    public DtlsHandshakeMessageFragmentSerializer getSerializer(TlsContext tlsContext) {
+        return new DtlsHandshakeMessageFragmentSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     public HandshakeMessageType getHandshakeMessageTypeConfig() {

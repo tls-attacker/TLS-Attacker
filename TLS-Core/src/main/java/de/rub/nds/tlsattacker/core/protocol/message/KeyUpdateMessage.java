@@ -48,23 +48,23 @@ public class KeyUpdateMessage extends HandshakeMessage {
     }
 
     @Override
-    public KeyUpdateHandler getHandler(TlsContext context) {
-        return new KeyUpdateHandler(context);
+    public KeyUpdateHandler getHandler(TlsContext tlsContext) {
+        return new KeyUpdateHandler(tlsContext);
     }
 
     @Override
-    public KeyUpdateParser getParser(TlsContext context, InputStream stream) {
-        return new KeyUpdateParser(stream, context.getChooser().getSelectedProtocolVersion(), context);
+    public KeyUpdateParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new KeyUpdateParser(stream, tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext);
     }
 
     @Override
-    public KeyUpdatePreparator getPreparator(TlsContext context) {
-        return new KeyUpdatePreparator(context.getChooser(), this);
+    public KeyUpdatePreparator getPreparator(TlsContext tlsContext) {
+        return new KeyUpdatePreparator(tlsContext.getChooser(), this);
     }
 
     @Override
-    public KeyUpdateSerializer getSerializer(TlsContext context) {
-        return new KeyUpdateSerializer(this, context.getChooser().getSelectedProtocolVersion());
+    public KeyUpdateSerializer getSerializer(TlsContext tlsContext) {
+        return new KeyUpdateSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     public final void setRequestMode(KeyUpdateRequest requestMode) {

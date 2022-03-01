@@ -111,24 +111,24 @@ public class NewSessionTicketMessage extends HandshakeMessage {
     }
 
     @Override
-    public NewSessionTicketHandler getHandler(TlsContext context) {
-        return new NewSessionTicketHandler(context);
+    public NewSessionTicketHandler getHandler(TlsContext tlsContext) {
+        return new NewSessionTicketHandler(tlsContext);
     }
 
     @Override
-    public NewSessionTicketParser getParser(TlsContext context, InputStream stream) {
-        return new NewSessionTicketParser(stream, context.getChooser().getSelectedProtocolVersion(), context,
-            context.getTalkingConnectionEndType());
+    public NewSessionTicketParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new NewSessionTicketParser(stream, tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext,
+            tlsContext.getTalkingConnectionEndType());
     }
 
     @Override
-    public NewSessionTicketPreparator getPreparator(TlsContext context) {
-        return new NewSessionTicketPreparator(context.getChooser(), this);
+    public NewSessionTicketPreparator getPreparator(TlsContext tlsContext) {
+        return new NewSessionTicketPreparator(tlsContext.getChooser(), this);
     }
 
     @Override
-    public NewSessionTicketSerializer getSerializer(TlsContext context) {
-        return new NewSessionTicketSerializer(this, context.getChooser().getSelectedProtocolVersion());
+    public NewSessionTicketSerializer getSerializer(TlsContext tlsContext) {
+        return new NewSessionTicketSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

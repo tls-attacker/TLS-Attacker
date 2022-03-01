@@ -68,22 +68,22 @@ public class ServerAuthzExtensionMessage extends ExtensionMessage<ServerAuthzExt
     }
 
     @Override
-    public ServerAuthzExtensionParser getParser(TlsContext context, InputStream stream) {
-        return new ServerAuthzExtensionParser(stream, context.getConfig());
+    public ServerAuthzExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new ServerAuthzExtensionParser(stream, tlsContext.getConfig());
     }
 
     @Override
-    public ServerAuthzExtensionPreparator getPreparator(TlsContext context) {
-        return new ServerAuthzExtensionPreparator(context.getChooser(), this, getSerializer(context));
+    public ServerAuthzExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new ServerAuthzExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
     }
 
     @Override
-    public ServerAuthzExtensionSerializer getSerializer(TlsContext context) {
+    public ServerAuthzExtensionSerializer getSerializer(TlsContext tlsContext) {
         return new ServerAuthzExtensionSerializer(this);
     }
 
     @Override
-    public ServerAuthzExtensionHandler getHandler(TlsContext context) {
-        return new ServerAuthzExtensionHandler(context);
+    public ServerAuthzExtensionHandler getHandler(TlsContext tlsContext) {
+        return new ServerAuthzExtensionHandler(tlsContext);
     }
 }

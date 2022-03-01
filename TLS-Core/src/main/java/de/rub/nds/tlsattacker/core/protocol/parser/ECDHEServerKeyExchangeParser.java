@@ -31,15 +31,15 @@ public class ECDHEServerKeyExchangeParser<T extends ECDHEServerKeyExchangeMessag
      * @param stream
      * @param version
      *                Version of the Protocol
-     * @param context
+     * @param tlsContext
      */
-    public ECDHEServerKeyExchangeParser(InputStream stream, ProtocolVersion version, TlsContext context) {
-        this(stream, version, null, context);
+    public ECDHEServerKeyExchangeParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
+        this(stream, version, null, tlsContext);
     }
 
     public ECDHEServerKeyExchangeParser(InputStream stream, ProtocolVersion version,
-        KeyExchangeAlgorithm keyExchangeAlgorithm, TlsContext context) {
-        super(stream, HandshakeMessageType.SERVER_KEY_EXCHANGE, version, context);
+        KeyExchangeAlgorithm keyExchangeAlgorithm, TlsContext tlsContext) {
+        super(stream, HandshakeMessageType.SERVER_KEY_EXCHANGE, version, tlsContext);
         this.version = version;
         this.keyExchangeAlgorithm = keyExchangeAlgorithm;
     }

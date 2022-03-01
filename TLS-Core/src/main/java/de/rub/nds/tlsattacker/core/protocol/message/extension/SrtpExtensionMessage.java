@@ -97,23 +97,23 @@ public class SrtpExtensionMessage extends ExtensionMessage<SrtpExtensionMessage>
     }
 
     @Override
-    public SrtpExtensionParser getParser(TlsContext context, InputStream stream) {
-        return new SrtpExtensionParser(stream, context.getConfig());
+    public SrtpExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new SrtpExtensionParser(stream, tlsContext.getConfig());
     }
 
     @Override
-    public SrtpExtensionPreparator getPreparator(TlsContext context) {
-        return new SrtpExtensionPreparator(context.getChooser(), this, getSerializer(context));
+    public SrtpExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new SrtpExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
     }
 
     @Override
-    public SrtpExtensionSerializer getSerializer(TlsContext context) {
+    public SrtpExtensionSerializer getSerializer(TlsContext tlsContext) {
         return new SrtpExtensionSerializer(this);
     }
 
     @Override
-    public SrtpExtensionHandler getHandler(TlsContext context) {
-        return new SrtpExtensionHandler(context);
+    public SrtpExtensionHandler getHandler(TlsContext tlsContext) {
+        return new SrtpExtensionHandler(tlsContext);
     }
 
 }

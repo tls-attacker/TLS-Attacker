@@ -79,24 +79,24 @@ public class PWDServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     }
 
     @Override
-    public PWDServerKeyExchangeHandler getHandler(TlsContext context) {
-        return new PWDServerKeyExchangeHandler(context);
+    public PWDServerKeyExchangeHandler getHandler(TlsContext tlsContext) {
+        return new PWDServerKeyExchangeHandler(tlsContext);
     }
 
     @Override
-    public PWDServerKeyExchangeParser getParser(TlsContext context, InputStream stream) {
-        return new PWDServerKeyExchangeParser(stream, context.getChooser().getLastRecordVersion(),
-            AlgorithmResolver.getKeyExchangeAlgorithm(context.getChooser().getSelectedCipherSuite()), context);
+    public PWDServerKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new PWDServerKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(),
+            AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite()), tlsContext);
     }
 
     @Override
-    public PWDServerKeyExchangePreparator getPreparator(TlsContext context) {
-        return new PWDServerKeyExchangePreparator(context.getChooser(), this);
+    public PWDServerKeyExchangePreparator getPreparator(TlsContext tlsContext) {
+        return new PWDServerKeyExchangePreparator(tlsContext.getChooser(), this);
     }
 
     @Override
-    public PWDServerKeyExchangeSerializer getSerializer(TlsContext context) {
-        return new PWDServerKeyExchangeSerializer(this, context.getChooser().getSelectedProtocolVersion());
+    public PWDServerKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
+        return new PWDServerKeyExchangeSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     public ModifiableInteger getSaltLength() {

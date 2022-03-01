@@ -14,8 +14,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptThenMacExte
 
 public class EncryptThenMacExtensionHandler extends ExtensionHandler<EncryptThenMacExtensionMessage> {
 
-    public EncryptThenMacExtensionHandler(TlsContext context) {
-        super(context);
+    public EncryptThenMacExtensionHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override

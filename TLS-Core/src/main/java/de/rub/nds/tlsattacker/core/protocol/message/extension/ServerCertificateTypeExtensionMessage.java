@@ -83,22 +83,22 @@ public class ServerCertificateTypeExtensionMessage extends ExtensionMessage<Serv
     }
 
     @Override
-    public ServerCertificateTypeExtensionParser getParser(TlsContext context, InputStream stream) {
-        return new ServerCertificateTypeExtensionParser(stream, context.getConfig());
+    public ServerCertificateTypeExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new ServerCertificateTypeExtensionParser(stream, tlsContext.getConfig());
     }
 
     @Override
-    public ServerCertificateTypeExtensionPreparator getPreparator(TlsContext context) {
-        return new ServerCertificateTypeExtensionPreparator(context.getChooser(), this, getSerializer(context));
+    public ServerCertificateTypeExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new ServerCertificateTypeExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
     }
 
     @Override
-    public ServerCertificateTypeExtensionSerializer getSerializer(TlsContext context) {
+    public ServerCertificateTypeExtensionSerializer getSerializer(TlsContext tlsContext) {
         return new ServerCertificateTypeExtensionSerializer(this);
     }
 
     @Override
-    public ServerCertificateTypeExtensionHandler getHandler(TlsContext context) {
-        return new ServerCertificateTypeExtensionHandler(context);
+    public ServerCertificateTypeExtensionHandler getHandler(TlsContext tlsContext) {
+        return new ServerCertificateTypeExtensionHandler(tlsContext);
     }
 }

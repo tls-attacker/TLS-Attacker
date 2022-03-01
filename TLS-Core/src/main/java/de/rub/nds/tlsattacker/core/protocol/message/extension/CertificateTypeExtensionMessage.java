@@ -83,23 +83,23 @@ public class CertificateTypeExtensionMessage extends ExtensionMessage<Certificat
     }
 
     @Override
-    public CertificateTypeExtensionParser getParser(TlsContext context, InputStream stream) {
-        return new CertificateTypeExtensionParser(stream, context.getConfig());
+    public CertificateTypeExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new CertificateTypeExtensionParser(stream, tlsContext.getConfig());
     }
 
     @Override
-    public CertificateTypeExtensionPreparator getPreparator(TlsContext context) {
-        return new CertificateTypeExtensionPreparator(context.getChooser(), this, getSerializer(context));
+    public CertificateTypeExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new CertificateTypeExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
     }
 
     @Override
-    public CertificateTypeExtensionSerializer getSerializer(TlsContext context) {
+    public CertificateTypeExtensionSerializer getSerializer(TlsContext tlsContext) {
         return new CertificateTypeExtensionSerializer(this);
     }
 
     @Override
-    public CertificateTypeExtensionHandler getHandler(TlsContext context) {
-        return new CertificateTypeExtensionHandler(context);
+    public CertificateTypeExtensionHandler getHandler(TlsContext tlsContext) {
+        return new CertificateTypeExtensionHandler(tlsContext);
     }
 
 }

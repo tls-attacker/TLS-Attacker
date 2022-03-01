@@ -83,22 +83,22 @@ public class TokenBindingExtensionMessage extends ExtensionMessage<TokenBindingE
     }
 
     @Override
-    public TokenBindingExtensionParser getParser(TlsContext context, InputStream stream) {
-        return new TokenBindingExtensionParser(stream, context.getConfig());
+    public TokenBindingExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new TokenBindingExtensionParser(stream, tlsContext.getConfig());
     }
 
     @Override
-    public TokenBindingExtensionPreparator getPreparator(TlsContext context) {
-        return new TokenBindingExtensionPreparator(context.getChooser(), this, getSerializer(context));
+    public TokenBindingExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new TokenBindingExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
     }
 
     @Override
-    public TokenBindingExtensionSerializer getSerializer(TlsContext context) {
+    public TokenBindingExtensionSerializer getSerializer(TlsContext tlsContext) {
         return new TokenBindingExtensionSerializer(this);
     }
 
     @Override
-    public TokenBindingExtensionHandler getHandler(TlsContext context) {
-        return new TokenBindingExtensionHandler(context);
+    public TokenBindingExtensionHandler getHandler(TlsContext tlsContext) {
+        return new TokenBindingExtensionHandler(tlsContext);
     }
 }

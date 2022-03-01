@@ -75,23 +75,23 @@ public class CustomDSAPrivateKey extends CustomPrivateKey implements DSAPrivateK
     }
 
     @Override
-    public void adjustInContext(TlsContext context, ConnectionEndType ownerOfKey) {
+    public void adjustInContext(TlsContext tlsContext, ConnectionEndType ownerOfKey) {
         LOGGER.debug("Adjusting DSA private key in context");
         if (null == ownerOfKey) {
             throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
         } else {
             switch (ownerOfKey) {
                 case CLIENT:
-                    context.setClientDsaPrivateKey(privateKey);
-                    context.setClientDsaGenerator(generator);
-                    context.setClientDsaPrimeP(primeP);
-                    context.setClientDsaPrimeQ(primeQ);
+                    tlsContext.setClientDsaPrivateKey(privateKey);
+                    tlsContext.setClientDsaGenerator(generator);
+                    tlsContext.setClientDsaPrimeP(primeP);
+                    tlsContext.setClientDsaPrimeQ(primeQ);
                     break;
                 case SERVER:
-                    context.setServerDsaPrivateKey(privateKey);
-                    context.setServerDsaGenerator(generator);
-                    context.setServerDsaPrimeP(primeP);
-                    context.setServerDsaPrimeQ(primeQ);
+                    tlsContext.setServerDsaPrivateKey(privateKey);
+                    tlsContext.setServerDsaGenerator(generator);
+                    tlsContext.setServerDsaPrimeP(primeP);
+                    tlsContext.setServerDsaPrimeQ(primeQ);
                     break;
                 default:
                     throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");

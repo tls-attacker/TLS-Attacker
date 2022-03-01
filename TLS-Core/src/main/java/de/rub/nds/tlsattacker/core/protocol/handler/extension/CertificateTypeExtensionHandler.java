@@ -15,13 +15,13 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateTypeExt
 
 public class CertificateTypeExtensionHandler extends ExtensionHandler<CertificateTypeExtensionMessage> {
 
-    public CertificateTypeExtensionHandler(TlsContext context) {
-        super(context);
+    public CertificateTypeExtensionHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override
     public void adjustTLSExtensionContext(CertificateTypeExtensionMessage message) {
-        context.setCertificateTypeDesiredTypes(
+        tlsContext.setCertificateTypeDesiredTypes(
             CertificateType.getCertificateTypesAsList(message.getCertificateTypes().getValue()));
     }
 

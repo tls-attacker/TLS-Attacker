@@ -106,22 +106,22 @@ public class GreaseExtensionMessage extends ExtensionMessage<GreaseExtensionMess
     }
 
     @Override
-    public GreaseExtensionParser getParser(TlsContext context, InputStream stream) {
+    public GreaseExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
         return null;
     }
 
     @Override
-    public GreaseExtensionPreparator getPreparator(TlsContext context) {
-        return new GreaseExtensionPreparator(context.getChooser(), this, getSerializer(context));
+    public GreaseExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new GreaseExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
     }
 
     @Override
-    public GreaseExtensionSerializer getSerializer(TlsContext context) {
+    public GreaseExtensionSerializer getSerializer(TlsContext tlsContext) {
         return new GreaseExtensionSerializer(this);
     }
 
     @Override
-    public GreaseExtensionHandler getHandler(TlsContext context) {
-        return new GreaseExtensionHandler(context);
+    public GreaseExtensionHandler getHandler(TlsContext tlsContext) {
+        return new GreaseExtensionHandler(tlsContext);
     }
 }

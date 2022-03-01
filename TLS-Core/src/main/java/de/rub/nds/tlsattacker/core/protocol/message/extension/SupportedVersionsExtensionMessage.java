@@ -65,22 +65,22 @@ public class SupportedVersionsExtensionMessage extends ExtensionMessage<Supporte
     }
 
     @Override
-    public SupportedVersionsExtensionParser getParser(TlsContext context, InputStream stream) {
-        return new SupportedVersionsExtensionParser(stream, context.getConfig());
+    public SupportedVersionsExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new SupportedVersionsExtensionParser(stream, tlsContext.getConfig());
     }
 
     @Override
-    public SupportedVersionsExtensionPreparator getPreparator(TlsContext context) {
-        return new SupportedVersionsExtensionPreparator(context.getChooser(), this, getSerializer(context));
+    public SupportedVersionsExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new SupportedVersionsExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
     }
 
     @Override
-    public SupportedVersionsExtensionSerializer getSerializer(TlsContext context) {
+    public SupportedVersionsExtensionSerializer getSerializer(TlsContext tlsContext) {
         return new SupportedVersionsExtensionSerializer(this);
     }
 
     @Override
-    public SupportedVersionsExtensionHandler getHandler(TlsContext context) {
-        return new SupportedVersionsExtensionHandler(context);
+    public SupportedVersionsExtensionHandler getHandler(TlsContext tlsContext) {
+        return new SupportedVersionsExtensionHandler(tlsContext);
     }
 }

@@ -31,10 +31,10 @@ public class PskEcDheServerKeyExchangeParser extends ECDHEServerKeyExchangeParse
      * @param stream
      * @param version
      *                Version of the Protocol
-     * @param context
+     * @param tlsContext
      */
-    public PskEcDheServerKeyExchangeParser(InputStream stream, ProtocolVersion version, TlsContext context) {
-        super(stream, version, context);
+    public PskEcDheServerKeyExchangeParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
+        super(stream, version, tlsContext);
         this.version = version;
     }
 

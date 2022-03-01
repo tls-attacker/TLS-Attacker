@@ -89,23 +89,23 @@ public class SupplementalDataMessage extends HandshakeMessage {
     }
 
     @Override
-    public SupplementalDataHandler getHandler(TlsContext context) {
-        return new SupplementalDataHandler(context);
+    public SupplementalDataHandler getHandler(TlsContext tlsContext) {
+        return new SupplementalDataHandler(tlsContext);
     }
 
     @Override
-    public SupplementalDataParser getParser(TlsContext context, InputStream stream) {
-        return new SupplementalDataParser(stream, context.getChooser().getLastRecordVersion(), context);
+    public SupplementalDataParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new SupplementalDataParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
     }
 
     @Override
-    public SupplementalDataPreparator getPreparator(TlsContext context) {
-        return new SupplementalDataPreparator(context.getChooser(), this);
+    public SupplementalDataPreparator getPreparator(TlsContext tlsContext) {
+        return new SupplementalDataPreparator(tlsContext.getChooser(), this);
     }
 
     @Override
-    public SupplementalDataSerializer getSerializer(TlsContext context) {
-        return new SupplementalDataSerializer(this, context.getSelectedProtocolVersion());
+    public SupplementalDataSerializer getSerializer(TlsContext tlsContext) {
+        return new SupplementalDataSerializer(this, tlsContext.getSelectedProtocolVersion());
     }
 
     @Override

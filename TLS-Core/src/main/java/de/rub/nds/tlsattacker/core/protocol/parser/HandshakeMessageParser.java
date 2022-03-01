@@ -42,7 +42,7 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
     private final HandshakeMessageType expectedType;
 
     private ProtocolVersion version;
-    private TlsContext context;
+    private TlsContext tlsContext;
 
     /**
      * Constructor for the Parser class
@@ -52,14 +52,14 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
      *                     The expected type of the parsed HandshakeMessage
      * @param version
      *                     The Version with which this message should be parsed
-     * @param context
+     * @param tlsContext
      */
     public HandshakeMessageParser(InputStream stream, HandshakeMessageType expectedType, ProtocolVersion version,
-        TlsContext context) {
-        super(stream, context.getConfig());
+        TlsContext tlsContext) {
+        super(stream, tlsContext.getConfig());
         this.expectedType = expectedType;
         this.version = version;
-        this.context = context;
+        this.tlsContext = tlsContext;
     }
 
     @Override
@@ -98,7 +98,7 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
         LOGGER.debug("ExtensionBytes:" + ArrayConverter.bytesToHexString(extensionBytes, false));
 
         ByteArrayInputStream innerStream = new ByteArrayInputStream(extensionBytes);
-        ExtensionListParser parser = new ExtensionListParser(innerStream, context, version, helloRetryRequestHint);
+        ExtensionListParser parser = new ExtensionListParser(innerStream, tlsContext, version, helloRetryRequestHint);
         List<ExtensionMessage> extensionMessages = new LinkedList<>();
         parser.parse(extensionMessages);
         message.setExtensions(extensionMessages);

@@ -22,15 +22,15 @@ public class ECDHEServerKeyExchangeHandler<T extends ECDHEServerKeyExchangeMessa
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ECDHEServerKeyExchangeHandler(TlsContext context) {
-        super(context);
+    public ECDHEServerKeyExchangeHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override
     public void adjustContext(T message) {
         adjustECParameter(message);
         if (message.getComputations() != null) {
-            context.setServerEcPrivateKey(message.getComputations().getPrivateKey().getValue());
+            tlsContext.setServerEcPrivateKey(message.getComputations().getPrivateKey().getValue());
         }
     }
 
@@ -38,11 +38,11 @@ public class ECDHEServerKeyExchangeHandler<T extends ECDHEServerKeyExchangeMessa
         NamedGroup group = NamedGroup.getNamedGroup(message.getNamedGroup().getValue());
         if (group != null) {
             LOGGER.debug("Adjusting selected named group: " + group.name());
-            context.setSelectedGroup(group);
+            tlsContext.setSelectedGroup(group);
 
             LOGGER.debug("Adjusting EC Point");
             Point publicKeyPoint = PointFormatter.formatFromByteArray(group, message.getPublicKey().getValue());
-            context.setServerEcPublicKey(publicKeyPoint);
+            tlsContext.setServerEcPublicKey(publicKeyPoint);
         } else {
             LOGGER.warn("Could not adjust server public key, named group is unknown.");
         }

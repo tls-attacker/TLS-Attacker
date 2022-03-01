@@ -49,23 +49,23 @@ public class EmptyClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     }
 
     @Override
-    public EmptyClientKeyExchangeHandler getHandler(TlsContext context) {
-        return new EmptyClientKeyExchangeHandler(context);
+    public EmptyClientKeyExchangeHandler getHandler(TlsContext tlsContext) {
+        return new EmptyClientKeyExchangeHandler(tlsContext);
     }
 
     @Override
-    public EmptyClientKeyExchangeParser getParser(TlsContext context, InputStream stream) {
-        return new EmptyClientKeyExchangeParser(stream, context.getChooser().getLastRecordVersion(), context);
+    public EmptyClientKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new EmptyClientKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
     }
 
     @Override
-    public EmptyClientKeyExchangePreparator getPreparator(TlsContext context) {
-        return new EmptyClientKeyExchangePreparator(context.getChooser(), this);
+    public EmptyClientKeyExchangePreparator getPreparator(TlsContext tlsContext) {
+        return new EmptyClientKeyExchangePreparator(tlsContext.getChooser(), this);
     }
 
     @Override
-    public EmptyClientKeyExchangeSerializer getSerializer(TlsContext context) {
-        return new EmptyClientKeyExchangeSerializer(this, context.getChooser().getSelectedProtocolVersion());
+    public EmptyClientKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
+        return new EmptyClientKeyExchangeSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

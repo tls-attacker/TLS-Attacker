@@ -159,9 +159,9 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Re
         this.sequenceNumber = ModifiableVariableFactory.safelySetValue(this.sequenceNumber, sequenceNumber);
     }
 
-    public RecordPreparator getRecordPreparator(TlsContext context, Encryptor encryptor, RecordCompressor compressor,
+    public RecordPreparator getRecordPreparator(TlsContext tlsContext, Encryptor encryptor, RecordCompressor compressor,
         ProtocolMessageType type) {
-        return new RecordPreparator(context, this, encryptor, type, compressor);
+        return new RecordPreparator(tlsContext, this, encryptor, type, compressor);
     }
 
     public RecordParser getRecordParser(InputStream stream, ProtocolVersion version) {
@@ -172,9 +172,9 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Re
         return new RecordSerializer(this);
     }
 
-    public void adjustContext(TlsContext context) {
+    public void adjustContext(TlsContext tlsContext) {
         ProtocolVersion version = ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue());
-        context.setLastRecordVersion(version);
+        tlsContext.setLastRecordVersion(version);
     }
 
     public ProtocolMessageType getContentMessageType() {
@@ -313,22 +313,22 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Re
 
     // TODO Fix this mess for records
     @Override
-    public Parser getParser(TlsContext context, InputStream stream) {
-        return new RecordParser(stream, context.getLastRecordVersion());
+    public Parser getParser(TlsContext tlsContext, InputStream stream) {
+        return new RecordParser(stream, tlsContext.getLastRecordVersion());
     }
 
     @Override
-    public Preparator getPreparator(TlsContext context) {
-        return new RecordPreparator(context, this, null, contentMessageType, null);
+    public Preparator getPreparator(TlsContext tlsContext) {
+        return new RecordPreparator(tlsContext, this, null, contentMessageType, null);
     }
 
     @Override
-    public Serializer getSerializer(TlsContext context) {
+    public Serializer getSerializer(TlsContext tlsContext) {
         return new RecordSerializer(this);
     }
 
     @Override
-    public Handler getHandler(TlsContext context) {
+    public Handler getHandler(TlsContext tlsContext) {
         throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
         // Tools | Templates.
     }

@@ -14,13 +14,13 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.PasswordSaltExtens
 
 public class PasswordSaltExtensionHandler extends ExtensionHandler<PasswordSaltExtensionMessage> {
 
-    public PasswordSaltExtensionHandler(TlsContext context) {
-        super(context);
+    public PasswordSaltExtensionHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override
     public void adjustTLSExtensionContext(PasswordSaltExtensionMessage message) {
-        context.setServerPWDSalt(message.getSalt().getValue());
+        tlsContext.setServerPWDSalt(message.getSalt().getValue());
     }
 
 }

@@ -157,24 +157,24 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     }
 
     @Override
-    public DHEServerKeyExchangeHandler<? extends DHEServerKeyExchangeMessage> getHandler(TlsContext context) {
-        return new DHEServerKeyExchangeHandler<>(context);
+    public DHEServerKeyExchangeHandler<? extends DHEServerKeyExchangeMessage> getHandler(TlsContext tlsContext) {
+        return new DHEServerKeyExchangeHandler<>(tlsContext);
     }
 
     @Override
-    public DHEServerKeyExchangeParser getParser(TlsContext context, InputStream stream) {
-        return new DHEServerKeyExchangeParser(stream, context.getChooser().getLastRecordVersion(),
-            AlgorithmResolver.getKeyExchangeAlgorithm(context.getChooser().getSelectedCipherSuite()), context);
+    public DHEServerKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new DHEServerKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(),
+            AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite()), tlsContext);
     }
 
     @Override
-    public DHEServerKeyExchangePreparator getPreparator(TlsContext context) {
-        return new DHEServerKeyExchangePreparator(context.getChooser(), this);
+    public DHEServerKeyExchangePreparator getPreparator(TlsContext tlsContext) {
+        return new DHEServerKeyExchangePreparator(tlsContext.getChooser(), this);
     }
 
     @Override
-    public DHEServerKeyExchangeSerializer getSerializer(TlsContext context) {
-        return new DHEServerKeyExchangeSerializer(this, context.getChooser().getSelectedProtocolVersion());
+    public DHEServerKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
+        return new DHEServerKeyExchangeSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

@@ -251,16 +251,16 @@ public class SpecialDrownAttacker extends BaseDrownAttacker {
         Config tlsConfig = getTlsConfig();
         SSL2CipherSuite cipherSuite = tlsConfig.getDefaultSSL2CipherSuite();
         State state = new State(tlsConfig);
-        TlsContext context = state.getContext().getTlsContext();
+        TlsContext tlsContext = state.getContext().getTlsContext();
 
         byte[] encrypted = new byte[40];
-        context.getRandom().nextBytes(encrypted);
+        tlsContext.getRandom().nextBytes(encrypted);
         byte[] iv = new byte[cipherSuite.getBlockSize()];
         byte[] challenge = new byte[16];
-        context.getRandom().nextBytes(challenge);
-        byte[] sessionId = context.getChooser().getServerSessionId();
+        tlsContext.getRandom().nextBytes(challenge);
+        byte[] sessionId = tlsContext.getChooser().getServerSessionId();
         byte[] baseMasterKey = new byte[cipherSuite.getClearKeyByteNumber() + cipherSuite.getSecretKeyByteNumber()];
-        context.getRandom().nextBytes(baseMasterKey);
+        tlsContext.getRandom().nextBytes(baseMasterKey);
 
         int threadNumber = Runtime.getRuntime().availableProcessors();
         CONSOLE.info("Using " + threadNumber + " threads");

@@ -21,8 +21,8 @@ public class SrpServerKeyExchangeHandler extends ServerKeyExchangeHandler<SrpSer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SrpServerKeyExchangeHandler(TlsContext context) {
-        super(context);
+    public SrpServerKeyExchangeHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override
@@ -37,27 +37,27 @@ public class SrpServerKeyExchangeHandler extends ServerKeyExchangeHandler<SrpSer
     }
 
     private void adjustSRPGenerator(SrpServerKeyExchangeMessage message) {
-        context.setSRPGenerator(new BigInteger(1, message.getGenerator().getValue()));
-        LOGGER.debug("SRP Generator: " + context.getSRPGenerator());
+        tlsContext.setSRPGenerator(new BigInteger(1, message.getGenerator().getValue()));
+        LOGGER.debug("SRP Generator: " + tlsContext.getSRPGenerator());
     }
 
     private void adjustSRPModulus(SrpServerKeyExchangeMessage message) {
-        context.setSRPModulus(new BigInteger(1, message.getModulus().getValue()));
-        LOGGER.debug("SRP Modulus: " + context.getSRPModulus());
+        tlsContext.setSRPModulus(new BigInteger(1, message.getModulus().getValue()));
+        LOGGER.debug("SRP Modulus: " + tlsContext.getSRPModulus());
     }
 
     private void adjustServerPublicKey(SrpServerKeyExchangeMessage message) {
-        context.setServerSRPPublicKey(new BigInteger(1, message.getPublicKey().getValue()));
-        LOGGER.debug("Server PublicKey: " + context.getServerSRPPublicKey());
+        tlsContext.setServerSRPPublicKey(new BigInteger(1, message.getPublicKey().getValue()));
+        LOGGER.debug("Server PublicKey: " + tlsContext.getServerSRPPublicKey());
     }
 
     private void adjustServerPrivateKey(SrpServerKeyExchangeMessage message) {
-        context.setServerSRPPrivateKey(message.getComputations().getPrivateKey().getValue());
-        LOGGER.debug("Server PrivateKey: " + context.getServerSRPPrivateKey());
+        tlsContext.setServerSRPPrivateKey(message.getComputations().getPrivateKey().getValue());
+        LOGGER.debug("Server PrivateKey: " + tlsContext.getServerSRPPrivateKey());
     }
 
     private void adjustSalt(SrpServerKeyExchangeMessage message) {
-        context.setSRPServerSalt(message.getSalt().getValue());
-        LOGGER.debug("SRP Salt: " + ArrayConverter.bytesToHexString(context.getSRPServerSalt()));
+        tlsContext.setSRPServerSalt(message.getSalt().getValue());
+        LOGGER.debug("SRP Salt: " + ArrayConverter.bytesToHexString(tlsContext.getSRPServerSalt()));
     }
 }

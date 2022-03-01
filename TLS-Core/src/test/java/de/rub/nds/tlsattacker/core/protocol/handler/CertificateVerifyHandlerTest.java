@@ -18,12 +18,12 @@ import org.junit.Test;
 public class CertificateVerifyHandlerTest {
 
     private CertificateVerifyHandler handler;
-    private TlsContext context;
+    private TlsContext tlsContext;
 
     @Before
     public void setUp() {
-        context = new TlsContext();
-        handler = new CertificateVerifyHandler(context);
+        tlsContext = new TlsContext();
+        handler = new CertificateVerifyHandler(tlsContext);
     }
 
     @After

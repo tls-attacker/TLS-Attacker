@@ -24,8 +24,8 @@ public class RSAServerKeyExchangeParser<T extends RSAServerKeyExchangeMessage> e
 
     private final ProtocolVersion version;
 
-    public RSAServerKeyExchangeParser(InputStream stream, ProtocolVersion version, TlsContext context) {
-        super(stream, HandshakeMessageType.SERVER_KEY_EXCHANGE, version, context);
+    public RSAServerKeyExchangeParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
+        super(stream, HandshakeMessageType.SERVER_KEY_EXCHANGE, version, tlsContext);
         this.version = version;
     }
 

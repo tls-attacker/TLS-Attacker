@@ -270,24 +270,24 @@ public class ServerHelloMessage extends HelloMessage {
     }
 
     @Override
-    public ServerHelloHandler getHandler(TlsContext context) {
-        return new ServerHelloHandler(context);
+    public ServerHelloHandler getHandler(TlsContext tlsContext) {
+        return new ServerHelloHandler(tlsContext);
     }
 
     @Override
-    public ServerHelloPreparator getPreparator(TlsContext context) {
-        return new ServerHelloPreparator(context.getChooser(), this);
+    public ServerHelloPreparator getPreparator(TlsContext tlsContext) {
+        return new ServerHelloPreparator(tlsContext.getChooser(), this);
     }
 
     @Override
-    public ServerHelloSerializer getSerializer(TlsContext context) {
-        return new ServerHelloSerializer(this, context.getChooser().getSelectedProtocolVersion());
+    public ServerHelloSerializer getSerializer(TlsContext tlsContext) {
+        return new ServerHelloSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override
-    public ServerHelloParser getParser(TlsContext context, InputStream stream) {
-        return new ServerHelloParser(stream, context.getChooser().getLastRecordVersion(), context,
-            context.getTalkingConnectionEndType());
+    public ServerHelloParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new ServerHelloParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext,
+            tlsContext.getTalkingConnectionEndType());
     }
 
     public Boolean isAutoSetHelloRetryModeInKeyShare() {

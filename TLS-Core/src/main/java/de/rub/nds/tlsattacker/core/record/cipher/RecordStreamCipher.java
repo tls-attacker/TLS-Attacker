@@ -39,8 +39,8 @@ public class RecordStreamCipher extends RecordCipher {
      */
     private WrappedMac writeMac;
 
-    public RecordStreamCipher(TlsContext context, CipherState state) {
-        super(context, state);
+    public RecordStreamCipher(TlsContext tlsContext, CipherState state) {
+        super(tlsContext, state);
         initCipherAndMac();
     }
 

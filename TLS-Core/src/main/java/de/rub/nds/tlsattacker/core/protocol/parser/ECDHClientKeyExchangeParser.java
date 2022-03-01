@@ -29,10 +29,10 @@ public class ECDHClientKeyExchangeParser<T extends ECDHClientKeyExchangeMessage>
      * @param stream
      * @param version
      *                Version of the Protocol
-     * @param context
+     * @param tlsContext
      */
-    public ECDHClientKeyExchangeParser(InputStream stream, ProtocolVersion version, TlsContext context) {
-        super(stream, version, context);
+    public ECDHClientKeyExchangeParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
+        super(stream, version, tlsContext);
     }
 
     @Override

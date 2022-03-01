@@ -96,23 +96,23 @@ public class PskServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     }
 
     @Override
-    public PskServerKeyExchangeHandler getHandler(TlsContext context) {
-        return new PskServerKeyExchangeHandler(context);
+    public PskServerKeyExchangeHandler getHandler(TlsContext tlsContext) {
+        return new PskServerKeyExchangeHandler(tlsContext);
     }
 
     @Override
-    public PskServerKeyExchangeParser getParser(TlsContext context, InputStream stream) {
-        return new PskServerKeyExchangeParser(stream, context.getChooser().getLastRecordVersion(), context);
+    public PskServerKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new PskServerKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
     }
 
     @Override
-    public PskServerKeyExchangePreparator getPreparator(TlsContext context) {
-        return new PskServerKeyExchangePreparator(context.getChooser(), this);
+    public PskServerKeyExchangePreparator getPreparator(TlsContext tlsContext) {
+        return new PskServerKeyExchangePreparator(tlsContext.getChooser(), this);
     }
 
     @Override
-    public PskServerKeyExchangeSerializer getSerializer(TlsContext context) {
-        return new PskServerKeyExchangeSerializer(this, context.getChooser().getSelectedProtocolVersion());
+    public PskServerKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
+        return new PskServerKeyExchangeSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

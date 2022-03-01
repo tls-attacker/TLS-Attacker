@@ -25,10 +25,10 @@ public abstract class ExtensionHandler<MessageT extends ExtensionMessage> implem
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    protected final TlsContext context;
+    protected final TlsContext tlsContext;
 
-    public ExtensionHandler(TlsContext context) {
-        this.context = context;
+    public ExtensionHandler(TlsContext tlsContext) {
+        this.tlsContext = tlsContext;
     }
 
     /**
@@ -53,12 +53,12 @@ public abstract class ExtensionHandler<MessageT extends ExtensionMessage> implem
      */
     private void markExtensionInContext(MessageT message) {
         ExtensionType extType = message.getExtensionTypeConstant();
-        ConnectionEndType talkingConEndType = context.getTalkingConnectionEndType();
+        ConnectionEndType talkingConEndType = tlsContext.getTalkingConnectionEndType();
         if (talkingConEndType == ConnectionEndType.CLIENT) {
-            context.addProposedExtension(extType);
+            tlsContext.addProposedExtension(extType);
             LOGGER.debug("Marked extension '" + extType.name() + "' as proposed");
         } else if (talkingConEndType == ConnectionEndType.SERVER) {
-            context.addNegotiatedExtension(extType);
+            tlsContext.addNegotiatedExtension(extType);
             LOGGER.debug("Marked extension '" + extType.name() + "' as negotiated");
         }
     }

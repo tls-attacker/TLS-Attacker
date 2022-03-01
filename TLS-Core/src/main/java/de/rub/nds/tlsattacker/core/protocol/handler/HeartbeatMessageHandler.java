@@ -18,8 +18,8 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
  */
 public class HeartbeatMessageHandler extends ProtocolMessageHandler<HeartbeatMessage> {
 
-    public HeartbeatMessageHandler(TlsContext context) {
-        super(context);
+    public HeartbeatMessageHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override

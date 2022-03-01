@@ -26,8 +26,8 @@ public class SignatureAndHashAlgorithmsExtensionHandler
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SignatureAndHashAlgorithmsExtensionHandler(TlsContext context) {
-        super(context);
+    public SignatureAndHashAlgorithmsExtensionHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override
@@ -48,7 +48,7 @@ public class SignatureAndHashAlgorithmsExtensionHandler
                 algoList.add(algo);
             }
         }
-        context.setClientSupportedSignatureAndHashAlgorithms(algoList);
+        tlsContext.setClientSupportedSignatureAndHashAlgorithms(algoList);
     }
 
 }

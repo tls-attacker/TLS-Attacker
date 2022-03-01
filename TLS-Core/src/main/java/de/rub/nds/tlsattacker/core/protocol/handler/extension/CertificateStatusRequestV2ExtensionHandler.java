@@ -15,13 +15,13 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusR
 public class CertificateStatusRequestV2ExtensionHandler
     extends ExtensionHandler<CertificateStatusRequestV2ExtensionMessage> {
 
-    public CertificateStatusRequestV2ExtensionHandler(TlsContext context) {
-        super(context);
+    public CertificateStatusRequestV2ExtensionHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override
     public void adjustTLSExtensionContext(CertificateStatusRequestV2ExtensionMessage message) {
-        context.setStatusRequestV2RequestList(message.getStatusRequestList());
+        tlsContext.setStatusRequestV2RequestList(message.getStatusRequestList());
     }
 
 }

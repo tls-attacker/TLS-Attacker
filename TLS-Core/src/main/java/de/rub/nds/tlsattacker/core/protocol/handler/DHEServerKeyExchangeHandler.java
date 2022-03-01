@@ -23,8 +23,8 @@ public class DHEServerKeyExchangeHandler<T extends DHEServerKeyExchangeMessage> 
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public DHEServerKeyExchangeHandler(TlsContext context) {
-        super(context);
+    public DHEServerKeyExchangeHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override
@@ -39,33 +39,33 @@ public class DHEServerKeyExchangeHandler<T extends DHEServerKeyExchangeMessage> 
     }
 
     private void adjustDhGenerator(T message) {
-        context.setServerDhGenerator(new BigInteger(1, message.getGenerator().getValue()));
-        LOGGER.debug("Dh Generator: " + context.getServerDhGenerator());
+        tlsContext.setServerDhGenerator(new BigInteger(1, message.getGenerator().getValue()));
+        LOGGER.debug("Dh Generator: " + tlsContext.getServerDhGenerator());
     }
 
     private void adjustDhModulus(T message) {
-        context.setServerDhModulus(new BigInteger(1, message.getModulus().getValue()));
-        LOGGER.debug("Dh Modulus: " + context.getServerDhModulus());
+        tlsContext.setServerDhModulus(new BigInteger(1, message.getModulus().getValue()));
+        LOGGER.debug("Dh Modulus: " + tlsContext.getServerDhModulus());
     }
 
     private void adjustServerPublicKey(T message) {
-        context.setServerDhPublicKey(new BigInteger(1, message.getPublicKey().getValue()));
-        LOGGER.debug("Server PublicKey: " + context.getServerDhPublicKey());
+        tlsContext.setServerDhPublicKey(new BigInteger(1, message.getPublicKey().getValue()));
+        LOGGER.debug("Server PublicKey: " + tlsContext.getServerDhPublicKey());
     }
 
     private void adjustServerPrivateKey(T message) {
-        context.setServerDhPrivateKey(message.getComputations().getPrivateKey().getValue());
-        LOGGER.debug("Server PrivateKey: " + context.getServerDhPrivateKey());
+        tlsContext.setServerDhPrivateKey(message.getComputations().getPrivateKey().getValue());
+        LOGGER.debug("Server PrivateKey: " + tlsContext.getServerDhPrivateKey());
     }
 
     private void recognizeNamedGroup() {
-        BigInteger serverDhGenerator = context.getServerDhGenerator();
-        BigInteger serverDhModulus = context.getServerDhModulus();
+        BigInteger serverDhGenerator = tlsContext.getServerDhGenerator();
+        BigInteger serverDhModulus = tlsContext.getServerDhModulus();
         for (NamedGroup group : NamedGroup.getImplemented()) {
             if (group.isDhGroup()) {
                 FFDHEGroup ffdheGroup = GroupFactory.getGroup(group);
                 if (serverDhGenerator.equals(ffdheGroup.getG()) && serverDhModulus.equals(ffdheGroup.getP())) {
-                    context.setSelectedGroup(group);
+                    tlsContext.setSelectedGroup(group);
                     LOGGER.debug("Set recognized NamedGroup {} of Server Key Exchange message as selected in context",
                         group);
                     break;

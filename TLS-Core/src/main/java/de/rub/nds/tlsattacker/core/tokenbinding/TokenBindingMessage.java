@@ -244,8 +244,8 @@ public class TokenBindingMessage<TokenBindingMessage> extends ProtocolMessage {
     }
 
     @Override
-    public TokenBindingMessageHandler getHandler(TlsContext context) {
-        return new TokenBindingMessageHandler(context);
+    public TokenBindingMessageHandler getHandler(TlsContext tlsContext) {
+        return new TokenBindingMessageHandler(tlsContext);
     }
 
     @Override

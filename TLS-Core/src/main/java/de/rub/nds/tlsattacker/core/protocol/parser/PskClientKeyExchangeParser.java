@@ -28,11 +28,11 @@ public class PskClientKeyExchangeParser extends ClientKeyExchangeParser<PskClien
      * @param stream
      * @param version
      *                Version of the Protocol
-     * @param context
-     *                A Config used in the current context
+     * @param tlsContext
+     *                A Config used in the current tlsContext
      */
-    public PskClientKeyExchangeParser(InputStream stream, ProtocolVersion version, TlsContext context) {
-        super(stream, version, context);
+    public PskClientKeyExchangeParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
+        super(stream, version, tlsContext);
     }
 
     @Override

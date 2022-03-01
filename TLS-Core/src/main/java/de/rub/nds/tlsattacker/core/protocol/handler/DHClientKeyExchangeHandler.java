@@ -23,8 +23,8 @@ public class DHClientKeyExchangeHandler<T extends DHClientKeyExchangeMessage> ex
 
     private Logger LOGGER = LogManager.getLogger();
 
-    public DHClientKeyExchangeHandler(TlsContext context) {
-        super(context);
+    public DHClientKeyExchangeHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override
@@ -39,7 +39,7 @@ public class DHClientKeyExchangeHandler<T extends DHClientKeyExchangeMessage> ex
         if (message.getPublicKey().getValue().length == 0) {
             LOGGER.debug("Empty DH Key");
         } else {
-            context.setClientDhPublicKey(new BigInteger(message.getPublicKey().getValue()));
+            tlsContext.setClientDhPublicKey(new BigInteger(message.getPublicKey().getValue()));
         }
     }
 }

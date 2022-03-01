@@ -20,8 +20,8 @@ public class GOSTClientKeyExchangeParser extends ClientKeyExchangeParser<GOSTCli
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public GOSTClientKeyExchangeParser(InputStream stream, ProtocolVersion version, TlsContext context) {
-        super(stream, version, context);
+    public GOSTClientKeyExchangeParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
+        super(stream, version, tlsContext);
     }
 
     @Override

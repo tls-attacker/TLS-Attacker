@@ -19,8 +19,8 @@ import java.util.LinkedList;
  */
 public class PSKKeyExchangeModesExtensionHandler extends ExtensionHandler<PSKKeyExchangeModesExtensionMessage> {
 
-    public PSKKeyExchangeModesExtensionHandler(TlsContext context) {
-        super(context);
+    public PSKKeyExchangeModesExtensionHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override
@@ -31,10 +31,10 @@ public class PSKKeyExchangeModesExtensionHandler extends ExtensionHandler<PSKKey
     }
 
     private void adjustKeyExchangeModes(PSKKeyExchangeModesExtensionMessage message) {
-        context.setClientPskKeyExchangeModes(new LinkedList<PskKeyExchangeMode>());
+        tlsContext.setClientPskKeyExchangeModes(new LinkedList<PskKeyExchangeMode>());
         for (byte exchangeModeByte : message.getKeyExchangeModesListBytes().getValue()) {
             PskKeyExchangeMode mode = PskKeyExchangeMode.getExchangeMode(exchangeModeByte);
-            context.getClientPskKeyExchangeModes().add(mode);
+            tlsContext.getClientPskKeyExchangeModes().add(mode);
         }
     }
 

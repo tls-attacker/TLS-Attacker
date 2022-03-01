@@ -205,22 +205,22 @@ public class PreSharedKeyExtensionMessage extends ExtensionMessage<PreSharedKeyE
     }
 
     @Override
-    public ExtensionParser getParser(TlsContext context, InputStream stream) {
-        return new PreSharedKeyExtensionParser(stream, context.getConfig(), context.getTalkingConnectionEndType());
+    public ExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new PreSharedKeyExtensionParser(stream, tlsContext.getConfig(), tlsContext.getTalkingConnectionEndType());
     }
 
     @Override
-    public ExtensionPreparator getPreparator(TlsContext context) {
-        return new PreSharedKeyExtensionPreparator(context.getChooser(), this, getSerializer(context));
+    public ExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new PreSharedKeyExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
     }
 
     @Override
-    public ExtensionSerializer getSerializer(TlsContext context) {
-        return new PreSharedKeyExtensionSerializer(this, context.getChooser().getConnectionEndType());
+    public ExtensionSerializer getSerializer(TlsContext tlsContext) {
+        return new PreSharedKeyExtensionSerializer(this, tlsContext.getChooser().getConnectionEndType());
     }
 
     @Override
-    public PreSharedKeyExtensionHandler getHandler(TlsContext context) {
-        return new PreSharedKeyExtensionHandler(context);
+    public PreSharedKeyExtensionHandler getHandler(TlsContext tlsContext) {
+        return new PreSharedKeyExtensionHandler(tlsContext);
     }
 }

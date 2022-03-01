@@ -60,23 +60,23 @@ public class UnknownHandshakeMessage extends HandshakeMessage {
     }
 
     @Override
-    public UnknownHandshakeHandler getHandler(TlsContext context) {
-        return new UnknownHandshakeHandler(context);
+    public UnknownHandshakeHandler getHandler(TlsContext tlsContext) {
+        return new UnknownHandshakeHandler(tlsContext);
     }
 
     @Override
-    public UnknownHandshakeParser getParser(TlsContext context, InputStream stream) {
-        return new UnknownHandshakeParser(stream, context.getChooser().getLastRecordVersion(), context);
+    public UnknownHandshakeParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new UnknownHandshakeParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
     }
 
     @Override
-    public UnknownHandshakePreparator getPreparator(TlsContext context) {
-        return new UnknownHandshakePreparator(context.getChooser(), this);
+    public UnknownHandshakePreparator getPreparator(TlsContext tlsContext) {
+        return new UnknownHandshakePreparator(tlsContext.getChooser(), this);
     }
 
     @Override
-    public UnknownHandshakeSerializer getSerializer(TlsContext context) {
-        return new UnknownHandshakeSerializer(this, context.getChooser().getSelectedProtocolVersion());
+    public UnknownHandshakeSerializer getSerializer(TlsContext tlsContext) {
+        return new UnknownHandshakeSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

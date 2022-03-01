@@ -68,22 +68,22 @@ public class ECPointFormatExtensionMessage extends ExtensionMessage<ECPointForma
     }
 
     @Override
-    public ECPointFormatExtensionParser getParser(TlsContext context, InputStream stream) {
-        return new ECPointFormatExtensionParser(stream, context.getConfig());
+    public ECPointFormatExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new ECPointFormatExtensionParser(stream, tlsContext.getConfig());
     }
 
     @Override
-    public ECPointFormatExtensionPreparator getPreparator(TlsContext context) {
-        return new ECPointFormatExtensionPreparator(context.getChooser(), this, getSerializer(context));
+    public ECPointFormatExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new ECPointFormatExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
     }
 
     @Override
-    public ECPointFormatExtensionSerializer getSerializer(TlsContext context) {
+    public ECPointFormatExtensionSerializer getSerializer(TlsContext tlsContext) {
         return new ECPointFormatExtensionSerializer(this);
     }
 
     @Override
-    public ECPointFormatExtensionHandler getHandler(TlsContext context) {
-        return new ECPointFormatExtensionHandler(context);
+    public ECPointFormatExtensionHandler getHandler(TlsContext tlsContext) {
+        return new ECPointFormatExtensionHandler(tlsContext);
     }
 }

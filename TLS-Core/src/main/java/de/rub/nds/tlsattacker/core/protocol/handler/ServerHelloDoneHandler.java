@@ -14,8 +14,8 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 
 public class ServerHelloDoneHandler extends HandshakeMessageHandler<ServerHelloDoneMessage> {
 
-    public ServerHelloDoneHandler(TlsContext context) {
-        super(context);
+    public ServerHelloDoneHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override

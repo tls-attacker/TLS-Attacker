@@ -42,8 +42,8 @@ public final class RecordBlockCipher extends RecordCipher {
      */
     private WrappedMac writeMac;
 
-    public RecordBlockCipher(TlsContext context, CipherState state) {
-        super(context, state);
+    public RecordBlockCipher(TlsContext tlsContext, CipherState state) {
+        super(tlsContext, state);
         try {
             encryptCipher = CipherWrapper.getEncryptionCipher(getState().getCipherSuite(), getLocalConnectionEndType(),
                 getState().getKeySet());

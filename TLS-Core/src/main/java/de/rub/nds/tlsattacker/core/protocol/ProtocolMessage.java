@@ -161,16 +161,16 @@ public abstract class ProtocolMessage<Self extends ProtocolMessage> extends Modi
     }
 
     @Override
-    public abstract ProtocolMessageHandler<Self> getHandler(TlsContext context);
+    public abstract ProtocolMessageHandler<Self> getHandler(TlsContext tlsContext);
 
     @Override
-    public abstract ProtocolMessageSerializer<Self> getSerializer(TlsContext context);
+    public abstract ProtocolMessageSerializer<Self> getSerializer(TlsContext tlsContext);
 
     @Override
-    public abstract ProtocolMessagePreparator<Self> getPreparator(TlsContext context);
+    public abstract ProtocolMessagePreparator<Self> getPreparator(TlsContext tlsContext);
 
     @Override
-    public abstract ProtocolMessageParser<Self> getParser(TlsContext context, InputStream stream);
+    public abstract ProtocolMessageParser<Self> getParser(TlsContext tlsContext, InputStream stream);
 
     public ProtocolMessageType getProtocolMessageType() {
         return protocolMessageType;

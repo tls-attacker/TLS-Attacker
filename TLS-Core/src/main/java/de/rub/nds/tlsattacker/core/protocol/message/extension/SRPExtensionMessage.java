@@ -70,23 +70,23 @@ public class SRPExtensionMessage extends ExtensionMessage<SRPExtensionMessage> {
     }
 
     @Override
-    public SRPExtensionParser getParser(TlsContext context, InputStream stream) {
-        return new SRPExtensionParser(stream, context.getConfig());
+    public SRPExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new SRPExtensionParser(stream, tlsContext.getConfig());
     }
 
     @Override
-    public SRPExtensionPreparator getPreparator(TlsContext context) {
-        return new SRPExtensionPreparator(context.getChooser(), this, getSerializer(context));
+    public SRPExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new SRPExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
     }
 
     @Override
-    public SRPExtensionSerializer getSerializer(TlsContext context) {
+    public SRPExtensionSerializer getSerializer(TlsContext tlsContext) {
         return new SRPExtensionSerializer(this);
     }
 
     @Override
-    public SRPExtensionHandler getHandler(TlsContext context) {
-        return new SRPExtensionHandler(context);
+    public SRPExtensionHandler getHandler(TlsContext tlsContext) {
+        return new SRPExtensionHandler(tlsContext);
     }
 
 }

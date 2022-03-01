@@ -22,8 +22,8 @@ import org.apache.logging.log4j.Logger;
 public class KeyUpdateParser extends HandshakeMessageParser<KeyUpdateMessage> {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public KeyUpdateParser(InputStream stream, ProtocolVersion version, TlsContext context) {
-        super(stream, HandshakeMessageType.KEY_UPDATE, version, context);
+    public KeyUpdateParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
+        super(stream, HandshakeMessageType.KEY_UPDATE, version, tlsContext);
     }
 
     @Override

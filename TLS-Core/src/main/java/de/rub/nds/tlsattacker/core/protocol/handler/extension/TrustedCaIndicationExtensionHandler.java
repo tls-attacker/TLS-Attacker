@@ -14,13 +14,13 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 
 public class TrustedCaIndicationExtensionHandler extends ExtensionHandler<TrustedCaIndicationExtensionMessage> {
 
-    public TrustedCaIndicationExtensionHandler(TlsContext context) {
-        super(context);
+    public TrustedCaIndicationExtensionHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override
     public void adjustTLSExtensionContext(TrustedCaIndicationExtensionMessage message) {
-        context.setTrustedCaIndicationExtensionCas(message.getTrustedAuthorities());
+        tlsContext.setTrustedCaIndicationExtensionCas(message.getTrustedAuthorities());
     }
 
 }

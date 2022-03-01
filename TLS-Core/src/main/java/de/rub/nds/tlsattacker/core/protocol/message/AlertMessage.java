@@ -180,23 +180,23 @@ public class AlertMessage extends ProtocolMessage<AlertMessage> {
     }
 
     @Override
-    public AlertHandler getHandler(TlsContext context) {
-        return new AlertHandler(context);
+    public AlertHandler getHandler(TlsContext tlsContext) {
+        return new AlertHandler(tlsContext);
     }
 
     @Override
-    public AlertParser getParser(TlsContext context, InputStream stream) {
-        return new AlertParser(stream, context.getChooser().getLastRecordVersion(), context.getConfig());
+    public AlertParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new AlertParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext.getConfig());
     }
 
     @Override
-    public AlertPreparator getPreparator(TlsContext context) {
-        return new AlertPreparator(context.getChooser(), this);
+    public AlertPreparator getPreparator(TlsContext tlsContext) {
+        return new AlertPreparator(tlsContext.getChooser(), this);
     }
 
     @Override
-    public AlertSerializer getSerializer(TlsContext context) {
-        return new AlertSerializer(this, context.getChooser().getSelectedProtocolVersion());
+    public AlertSerializer getSerializer(TlsContext tlsContext) {
+        return new AlertSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
 }

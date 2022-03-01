@@ -19,8 +19,8 @@ public class HelloVerifyRequestHandler extends HandshakeMessageHandler<HelloVeri
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public HelloVerifyRequestHandler(TlsContext context) {
-        super(context);
+    public HelloVerifyRequestHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override
@@ -30,9 +30,9 @@ public class HelloVerifyRequestHandler extends HandshakeMessageHandler<HelloVeri
 
     private void adjustDTLSCookie(HelloVerifyRequestMessage message) {
         byte[] dtlsCookie = message.getCookie().getValue();
-        context.setDtlsCookie(dtlsCookie);
+        tlsContext.setDtlsCookie(dtlsCookie);
         LOGGER.debug("Set DTLS Cookie in Context to " + ArrayConverter.bytesToHexString(dtlsCookie, false));
-        context.getDigest().reset();
+        tlsContext.getDigest().reset();
         LOGGER.debug("Resetting MessageDigest");
     }
 }

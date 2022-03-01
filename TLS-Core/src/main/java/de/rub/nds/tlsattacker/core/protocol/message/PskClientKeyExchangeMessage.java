@@ -97,23 +97,23 @@ public class PskClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     }
 
     @Override
-    public PskClientKeyExchangeHandler getHandler(TlsContext context) {
-        return new PskClientKeyExchangeHandler(context);
+    public PskClientKeyExchangeHandler getHandler(TlsContext tlsContext) {
+        return new PskClientKeyExchangeHandler(tlsContext);
     }
 
     @Override
-    public PskClientKeyExchangeParser getParser(TlsContext context, InputStream stream) {
-        return new PskClientKeyExchangeParser(stream, context.getChooser().getLastRecordVersion(), context);
+    public PskClientKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new PskClientKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
     }
 
     @Override
-    public PskClientKeyExchangePreparator getPreparator(TlsContext context) {
-        return new PskClientKeyExchangePreparator(context.getChooser(), this);
+    public PskClientKeyExchangePreparator getPreparator(TlsContext tlsContext) {
+        return new PskClientKeyExchangePreparator(tlsContext.getChooser(), this);
     }
 
     @Override
-    public PskClientKeyExchangeSerializer getSerializer(TlsContext context) {
-        return new PskClientKeyExchangeSerializer(this, context.getChooser().getSelectedProtocolVersion());
+    public PskClientKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
+        return new PskClientKeyExchangeSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

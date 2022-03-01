@@ -83,23 +83,23 @@ public class HelloVerifyRequestMessage extends HandshakeMessage {
     }
 
     @Override
-    public HelloVerifyRequestHandler getHandler(TlsContext context) {
-        return new HelloVerifyRequestHandler(context);
+    public HelloVerifyRequestHandler getHandler(TlsContext tlsContext) {
+        return new HelloVerifyRequestHandler(tlsContext);
     }
 
     @Override
-    public HelloVerifyRequestParser getParser(TlsContext context, InputStream stream) {
-        return new HelloVerifyRequestParser(stream, context.getChooser().getLastRecordVersion(), context);
+    public HelloVerifyRequestParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new HelloVerifyRequestParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
     }
 
     @Override
-    public HelloVerifyRequestPreparator getPreparator(TlsContext context) {
-        return new HelloVerifyRequestPreparator(context.getChooser(), this);
+    public HelloVerifyRequestPreparator getPreparator(TlsContext tlsContext) {
+        return new HelloVerifyRequestPreparator(tlsContext.getChooser(), this);
     }
 
     @Override
-    public HelloVerifyRequestSerializer getSerializer(TlsContext context) {
-        return new HelloVerifyRequestSerializer(this, context.getChooser().getSelectedProtocolVersion());
+    public HelloVerifyRequestSerializer getSerializer(TlsContext tlsContext) {
+        return new HelloVerifyRequestSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

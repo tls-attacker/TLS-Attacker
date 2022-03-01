@@ -14,8 +14,8 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 
 public class TruncatedHmacExtensionHandler extends ExtensionHandler<TruncatedHmacExtensionMessage> {
 
-    public TruncatedHmacExtensionHandler(TlsContext context) {
-        super(context);
+    public TruncatedHmacExtensionHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override

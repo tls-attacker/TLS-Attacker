@@ -79,22 +79,22 @@ public class TrustedCaIndicationExtensionMessage extends ExtensionMessage<Truste
     }
 
     @Override
-    public TrustedCaIndicationExtensionParser getParser(TlsContext context, InputStream stream) {
-        return new TrustedCaIndicationExtensionParser(stream, context.getConfig());
+    public TrustedCaIndicationExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new TrustedCaIndicationExtensionParser(stream, tlsContext.getConfig());
     }
 
     @Override
-    public TrustedCaIndicationExtensionPreparator getPreparator(TlsContext context) {
-        return new TrustedCaIndicationExtensionPreparator(context.getChooser(), this, getSerializer(context));
+    public TrustedCaIndicationExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new TrustedCaIndicationExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
     }
 
     @Override
-    public TrustedCaIndicationExtensionSerializer getSerializer(TlsContext context) {
+    public TrustedCaIndicationExtensionSerializer getSerializer(TlsContext tlsContext) {
         return new TrustedCaIndicationExtensionSerializer(this);
     }
 
     @Override
-    public TrustedCaIndicationExtensionHandler getHandler(TlsContext context) {
-        return new TrustedCaIndicationExtensionHandler(context);
+    public TrustedCaIndicationExtensionHandler getHandler(TlsContext tlsContext) {
+        return new TrustedCaIndicationExtensionHandler(tlsContext);
     }
 }

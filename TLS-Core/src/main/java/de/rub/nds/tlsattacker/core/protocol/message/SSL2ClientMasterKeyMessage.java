@@ -74,23 +74,23 @@ public class SSL2ClientMasterKeyMessage extends SSL2HandshakeMessage {
     }
 
     @Override
-    public SSL2ClientMasterKeyHandler getHandler(TlsContext context) {
-        return new SSL2ClientMasterKeyHandler(context);
+    public SSL2ClientMasterKeyHandler getHandler(TlsContext tlsContext) {
+        return new SSL2ClientMasterKeyHandler(tlsContext);
     }
 
     @Override
-    public HandshakeMessageParser<SSL2ClientMasterKeyMessage> getParser(TlsContext context, InputStream stream) {
+    public HandshakeMessageParser<SSL2ClientMasterKeyMessage> getParser(TlsContext tlsContext, InputStream stream) {
         // We currently don't receive ClientMasterKey messages, only send them.
         throw new UnsupportedOperationException("Not implemented");
     }
 
     @Override
-    public SSL2ClientMasterKeyPreparator getPreparator(TlsContext context) {
-        return new SSL2ClientMasterKeyPreparator(context.getChooser(), this);
+    public SSL2ClientMasterKeyPreparator getPreparator(TlsContext tlsContext) {
+        return new SSL2ClientMasterKeyPreparator(tlsContext.getChooser(), this);
     }
 
     @Override
-    public SSL2ClientMasterKeySerializer getSerializer(TlsContext context) {
+    public SSL2ClientMasterKeySerializer getSerializer(TlsContext tlsContext) {
         return new SSL2ClientMasterKeySerializer(this);
     }
 

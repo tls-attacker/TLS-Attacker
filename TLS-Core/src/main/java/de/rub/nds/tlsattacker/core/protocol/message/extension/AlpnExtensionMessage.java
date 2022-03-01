@@ -83,23 +83,23 @@ public class AlpnExtensionMessage extends ExtensionMessage<AlpnExtensionMessage>
     }
 
     @Override
-    public AlpnExtensionParser getParser(TlsContext context, InputStream stream) {
-        return new AlpnExtensionParser(stream, context.getConfig());
+    public AlpnExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new AlpnExtensionParser(stream, tlsContext.getConfig());
     }
 
     @Override
-    public AlpnExtensionPreparator getPreparator(TlsContext context) {
-        return new AlpnExtensionPreparator(context.getChooser(), this, getSerializer(context));
+    public AlpnExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new AlpnExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
     }
 
     @Override
-    public AlpnExtensionSerializer getSerializer(TlsContext context) {
+    public AlpnExtensionSerializer getSerializer(TlsContext tlsContext) {
         return new AlpnExtensionSerializer(this);
     }
 
     @Override
-    public AlpnExtensionHandler getHandler(TlsContext context) {
-        return new AlpnExtensionHandler(context);
+    public AlpnExtensionHandler getHandler(TlsContext tlsContext) {
+        return new AlpnExtensionHandler(tlsContext);
     }
 
 }

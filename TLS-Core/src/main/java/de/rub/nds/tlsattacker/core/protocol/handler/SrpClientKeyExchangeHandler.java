@@ -18,8 +18,8 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
  */
 public class SrpClientKeyExchangeHandler extends ClientKeyExchangeHandler<SrpClientKeyExchangeMessage> {
 
-    public SrpClientKeyExchangeHandler(TlsContext context) {
-        super(context);
+    public SrpClientKeyExchangeHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override

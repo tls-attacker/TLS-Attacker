@@ -119,22 +119,22 @@ public class CertificateVerifyMessage extends HandshakeMessage {
     }
 
     @Override
-    public CertificateVerifyHandler getHandler(TlsContext context) {
-        return new CertificateVerifyHandler(context);
+    public CertificateVerifyHandler getHandler(TlsContext tlsContext) {
+        return new CertificateVerifyHandler(tlsContext);
     }
 
     @Override
-    public CertificateVerifyParser getParser(TlsContext context, InputStream stream) {
-        return new CertificateVerifyParser(stream, context.getChooser().getLastRecordVersion(), context);
+    public CertificateVerifyParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new CertificateVerifyParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
     }
 
     @Override
-    public CertificateVerifyPreparator getPreparator(TlsContext context) {
-        return new CertificateVerifyPreparator(context.getChooser(), this);
+    public CertificateVerifyPreparator getPreparator(TlsContext tlsContext) {
+        return new CertificateVerifyPreparator(tlsContext.getChooser(), this);
     }
 
     @Override
-    public CertificateVerifySerializer getSerializer(TlsContext context) {
-        return new CertificateVerifySerializer(this, context.getChooser().getSelectedProtocolVersion());
+    public CertificateVerifySerializer getSerializer(TlsContext tlsContext) {
+        return new CertificateVerifySerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 }

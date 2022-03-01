@@ -26,12 +26,12 @@ public class FinishedParser extends HandshakeMessageParser<FinishedMessage> {
      * Constructor for the Parser class
      *
      * @param stream
-     * @param context
+     * @param tlsContext
      * @param version
      *                Version of the Protocol
      */
-    public FinishedParser(InputStream stream, ProtocolVersion version, TlsContext context) {
-        super(stream, HandshakeMessageType.FINISHED, version, context);
+    public FinishedParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
+        super(stream, HandshakeMessageType.FINISHED, version, tlsContext);
     }
 
     @Override

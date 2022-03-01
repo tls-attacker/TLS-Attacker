@@ -63,22 +63,22 @@ public class HeartbeatExtensionMessage extends ExtensionMessage<HeartbeatExtensi
     }
 
     @Override
-    public HeartbeatExtensionParser getParser(TlsContext context, InputStream stream) {
-        return new HeartbeatExtensionParser(stream, context.getConfig());
+    public HeartbeatExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new HeartbeatExtensionParser(stream, tlsContext.getConfig());
     }
 
     @Override
-    public HeartbeatExtensionPreparator getPreparator(TlsContext context) {
-        return new HeartbeatExtensionPreparator(context.getChooser(), this, getSerializer(context));
+    public HeartbeatExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new HeartbeatExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
     }
 
     @Override
-    public HeartbeatExtensionSerializer getSerializer(TlsContext context) {
+    public HeartbeatExtensionSerializer getSerializer(TlsContext tlsContext) {
         return new HeartbeatExtensionSerializer(this);
     }
 
     @Override
-    public HeartbeatExtensionHandler getHandler(TlsContext context) {
-        return new HeartbeatExtensionHandler(context);
+    public HeartbeatExtensionHandler getHandler(TlsContext tlsContext) {
+        return new HeartbeatExtensionHandler(tlsContext);
     }
 }

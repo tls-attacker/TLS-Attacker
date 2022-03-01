@@ -14,8 +14,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.GreaseExtensionMes
 
 public class GreaseExtensionHandler extends ExtensionHandler<GreaseExtensionMessage> {
 
-    public GreaseExtensionHandler(TlsContext context) {
-        super(context);
+    public GreaseExtensionHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override

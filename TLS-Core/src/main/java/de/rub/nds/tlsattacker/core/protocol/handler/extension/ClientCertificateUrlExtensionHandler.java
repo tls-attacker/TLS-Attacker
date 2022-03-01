@@ -14,8 +14,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateU
 
 public class ClientCertificateUrlExtensionHandler extends ExtensionHandler<ClientCertificateUrlExtensionMessage> {
 
-    public ClientCertificateUrlExtensionHandler(TlsContext context) {
-        super(context);
+    public ClientCertificateUrlExtensionHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override

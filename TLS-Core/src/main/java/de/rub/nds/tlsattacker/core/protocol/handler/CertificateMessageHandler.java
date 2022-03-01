@@ -39,15 +39,15 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public CertificateMessageHandler(TlsContext context) {
-        super(context);
+    public CertificateMessageHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     private CertificateType selectTypeInternally() {
-        if (context.getTalkingConnectionEndType() == ConnectionEndType.SERVER) {
-            return context.getChooser().getSelectedServerCertificateType();
+        if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.SERVER) {
+            return tlsContext.getChooser().getSelectedServerCertificateType();
         } else {
-            return context.getChooser().getSelectedClientCertificateType();
+            return tlsContext.getChooser().getSelectedClientCertificateType();
         }
     }
 
@@ -77,12 +77,12 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
                         DERBitString publicKey = (DERBitString) dlSeq.getObjectAt(1);
                         byte[] pointBytes = publicKey.getBytes();
                         Point publicKeyPoint = PointFormatter.formatFromByteArray(group, pointBytes);
-                        if (context.getTalkingConnectionEndType() == ConnectionEndType.SERVER) {
+                        if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.SERVER) {
                             // TODO: this needs to be a new field in the context
-                            context.setServerEcPublicKey(publicKeyPoint);
+                            tlsContext.setServerEcPublicKey(publicKeyPoint);
                         } else {
                             // TODO: this needs to be a new field in the context
-                            context.setClientEcPublicKey(publicKeyPoint);
+                            tlsContext.setClientEcPublicKey(publicKeyPoint);
                         }
                     } else {
                         throw new UnsupportedOperationException(
@@ -98,7 +98,7 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
             case X509:
                 LOGGER.debug("Adjusting context for x509 certificate message");
                 Certificate cert;
-                if (context.getChooser().getSelectedProtocolVersion().isTLS13()) {
+                if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
                     int certificatesLength = 0;
                     try {
@@ -118,16 +118,16 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
                     cert = parseCertificate(message.getCertificatesListLength().getValue(),
                         message.getCertificatesListBytes().getValue());
                 }
-                if (context.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
+                if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
                     LOGGER.debug("Setting ClientCertificate in Context");
-                    context.setClientCertificate(cert);
+                    tlsContext.setClientCertificate(cert);
                 } else {
                     LOGGER.debug("Setting ServerCertificate in Context");
-                    context.setServerCertificate(cert);
+                    tlsContext.setServerCertificate(cert);
                 }
                 if (message.getCertificateKeyPair() != null) {
                     LOGGER.debug("Found a certificate key pair. Adjusting in context");
-                    message.getCertificateKeyPair().adjustInContext(context, context.getTalkingConnectionEndType());
+                    message.getCertificateKeyPair().adjustInContext(tlsContext, tlsContext.getTalkingConnectionEndType());
                 } else if (cert != null) {
                     if (cert.isEmpty()) {
                         LOGGER.debug("Certificate is empty - no adjustments");
@@ -135,14 +135,14 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
                         LOGGER.debug("No CertificatekeyPair found, creating new one");
                         CertificateKeyPair pair = new CertificateKeyPair(cert);
                         message.setCertificateKeyPair(pair);
-                        message.getCertificateKeyPair().adjustInContext(context, context.getTalkingConnectionEndType());
+                        message.getCertificateKeyPair().adjustInContext(tlsContext, tlsContext.getTalkingConnectionEndType());
                     }
 
                 } else {
                     LOGGER.debug("Certificate not parsable - no adjustments");
                 }
 
-                if (context.getChooser().getSelectedProtocolVersion().isTLS13()) {
+                if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
                     adjustCertExtensions(message);
                 }
                 break;
@@ -172,7 +172,7 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
             for (CertificateEntry entry : message.getCertificatesListAsEntry()) {
                 if (entry.getExtensions() != null) {
                     for (ExtensionMessage extension : entry.getExtensions()) {
-                        Handler handler = extension.getHandler(context);
+                        Handler handler = extension.getHandler(tlsContext);
                         handler.adjustContext(extension);
                     }
                 }

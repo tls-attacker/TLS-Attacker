@@ -20,21 +20,21 @@ public class ServerCertificateTypeExtensionHandler extends ExtensionHandler<Serv
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ServerCertificateTypeExtensionHandler(TlsContext context) {
-        super(context);
+    public ServerCertificateTypeExtensionHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override
     public void adjustTLSExtensionContext(ServerCertificateTypeExtensionMessage message) {
-        if (context.getTalkingConnectionEndType() == ConnectionEndType.SERVER) {
+        if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.SERVER) {
             if (message.getCertificateTypes().getValue().length != 1) {
                 LOGGER.warn("Invalid ServerCertificateType extension. Not adjusting context");
             } else {
-                context.setSelectedServerCertificateType(
+                tlsContext.setSelectedServerCertificateType(
                     CertificateType.getCertificateType(message.getCertificateTypes().getValue()[0]));
             }
         } else {
-            context.setServerCertificateTypeDesiredTypes(
+            tlsContext.setServerCertificateTypeDesiredTypes(
                 CertificateType.getCertificateTypesAsList(message.getCertificateTypes().getValue()));
         }
     }

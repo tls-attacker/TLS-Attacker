@@ -128,16 +128,16 @@ public abstract class ExtensionMessage<Self extends ExtensionMessage> extends Mo
     }
 
     @Override
-    public abstract ExtensionHandler<Self> getHandler(TlsContext context);
+    public abstract ExtensionHandler<Self> getHandler(TlsContext tlsContext);
 
     @Override
-    public abstract ExtensionSerializer<Self> getSerializer(TlsContext context);
+    public abstract ExtensionSerializer<Self> getSerializer(TlsContext tlsContext);
 
     @Override
-    public abstract ExtensionPreparator<Self> getPreparator(TlsContext context);
+    public abstract ExtensionPreparator<Self> getPreparator(TlsContext tlsContext);
 
     @Override
-    public abstract ExtensionParser<Self> getParser(TlsContext context, InputStream stream);
+    public abstract ExtensionParser<Self> getParser(TlsContext tlsContext, InputStream stream);
 
     public ModifiableByteArray getExtensionContent() {
         return extensionContent;

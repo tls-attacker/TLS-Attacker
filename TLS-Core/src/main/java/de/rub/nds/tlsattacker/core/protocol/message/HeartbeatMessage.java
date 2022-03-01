@@ -143,22 +143,22 @@ public class HeartbeatMessage<HeartbeatMessage> extends ProtocolMessage {
     }
 
     @Override
-    public HeartbeatMessageHandler getHandler(TlsContext context) {
-        return new HeartbeatMessageHandler(context);
+    public HeartbeatMessageHandler getHandler(TlsContext tlsContext) {
+        return new HeartbeatMessageHandler(tlsContext);
     }
 
     @Override
-    public HeartbeatMessageParser getParser(TlsContext context, InputStream stream) {
-        return new HeartbeatMessageParser(stream, context.getChooser().getLastRecordVersion(), context.getConfig());
+    public HeartbeatMessageParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new HeartbeatMessageParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext.getConfig());
     }
 
     @Override
-    public HeartbeatMessagePreparator getPreparator(TlsContext context) {
-        return new HeartbeatMessagePreparator(context.getChooser(), this);
+    public HeartbeatMessagePreparator getPreparator(TlsContext tlsContext) {
+        return new HeartbeatMessagePreparator(tlsContext.getChooser(), this);
     }
 
     @Override
-    public HeartbeatMessageSerializer getSerializer(TlsContext context) {
-        return new HeartbeatMessageSerializer(this, context.getChooser().getSelectedProtocolVersion());
+    public HeartbeatMessageSerializer getSerializer(TlsContext tlsContext) {
+        return new HeartbeatMessageSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 }

@@ -17,8 +17,8 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
  */
 public class EmptyClientKeyExchangeHandler extends ClientKeyExchangeHandler<EmptyClientKeyExchangeMessage> {
 
-    public EmptyClientKeyExchangeHandler(TlsContext context) {
-        super(context);
+    public EmptyClientKeyExchangeHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override

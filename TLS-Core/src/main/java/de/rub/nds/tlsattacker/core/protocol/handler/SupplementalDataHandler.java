@@ -14,8 +14,8 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 
 public class SupplementalDataHandler extends HandshakeMessageHandler<SupplementalDataMessage> {
 
-    public SupplementalDataHandler(TlsContext context) {
-        super(context);
+    public SupplementalDataHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override

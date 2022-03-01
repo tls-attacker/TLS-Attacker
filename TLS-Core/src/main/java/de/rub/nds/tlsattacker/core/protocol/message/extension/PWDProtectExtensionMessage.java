@@ -68,22 +68,22 @@ public class PWDProtectExtensionMessage extends ExtensionMessage<PWDProtectExten
     }
 
     @Override
-    public PWDProtectExtensionParser getParser(TlsContext context, InputStream stream) {
-        return new PWDProtectExtensionParser(stream, context.getConfig());
+    public PWDProtectExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new PWDProtectExtensionParser(stream, tlsContext.getConfig());
     }
 
     @Override
-    public PWDProtectExtensionPreparator getPreparator(TlsContext context) {
-        return new PWDProtectExtensionPreparator(context.getChooser(), this, getSerializer(context));
+    public PWDProtectExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new PWDProtectExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
     }
 
     @Override
-    public PWDProtectExtensionSerializer getSerializer(TlsContext context) {
+    public PWDProtectExtensionSerializer getSerializer(TlsContext tlsContext) {
         return new PWDProtectExtensionSerializer(this);
     }
 
     @Override
-    public PWDProtectExtensionHandler getHandler(TlsContext context) {
-        return new PWDProtectExtensionHandler(context);
+    public PWDProtectExtensionHandler getHandler(TlsContext tlsContext) {
+        return new PWDProtectExtensionHandler(tlsContext);
     }
 }

@@ -137,23 +137,23 @@ public class SrpClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     }
 
     @Override
-    public SrpClientKeyExchangeHandler getHandler(TlsContext context) {
-        return new SrpClientKeyExchangeHandler(context);
+    public SrpClientKeyExchangeHandler getHandler(TlsContext tlsContext) {
+        return new SrpClientKeyExchangeHandler(tlsContext);
     }
 
     @Override
-    public SrpClientKeyExchangeParser getParser(TlsContext context, InputStream stream) {
-        return new SrpClientKeyExchangeParser(stream, context.getChooser().getLastRecordVersion(), context);
+    public SrpClientKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new SrpClientKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
     }
 
     @Override
-    public SrpClientKeyExchangePreparator getPreparator(TlsContext context) {
-        return new SrpClientKeyExchangePreparator(context.getChooser(), this);
+    public SrpClientKeyExchangePreparator getPreparator(TlsContext tlsContext) {
+        return new SrpClientKeyExchangePreparator(tlsContext.getChooser(), this);
     }
 
     @Override
-    public SrpClientKeyExchangeSerializer getSerializer(TlsContext context) {
-        return new SrpClientKeyExchangeSerializer(this, context.getChooser().getSelectedProtocolVersion());
+    public SrpClientKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
+        return new SrpClientKeyExchangeSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

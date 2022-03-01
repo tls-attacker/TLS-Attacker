@@ -17,20 +17,20 @@ import java.math.BigInteger;
 
 public class PWDServerKeyExchangeHandler extends ServerKeyExchangeHandler<PWDServerKeyExchangeMessage> {
 
-    public PWDServerKeyExchangeHandler(TlsContext context) {
-        super(context);
+    public PWDServerKeyExchangeHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override
     public void adjustContext(PWDServerKeyExchangeMessage message) {
-        context.setSelectedGroup(NamedGroup.getNamedGroup(message.getNamedGroup().getValue()));
-        context.setServerPWDSalt(message.getSalt().getValue());
-        context.setServerPWDElement(PointFormatter.formatFromByteArray(context.getChooser().getSelectedNamedGroup(),
+        tlsContext.setSelectedGroup(NamedGroup.getNamedGroup(message.getNamedGroup().getValue()));
+        tlsContext.setServerPWDSalt(message.getSalt().getValue());
+        tlsContext.setServerPWDElement(PointFormatter.formatFromByteArray(tlsContext.getChooser().getSelectedNamedGroup(),
             message.getElement().getValue()));
-        context.setServerPWDScalar(new BigInteger(1, message.getScalar().getValue()));
+        tlsContext.setServerPWDScalar(new BigInteger(1, message.getScalar().getValue()));
         if (message.getComputations() != null) {
-            context.setPWDPE(message.getComputations().getPasswordElement());
-            context.setServerPWDPrivate(message.getComputations().getPrivateKeyScalar());
+            tlsContext.setPWDPE(message.getComputations().getPasswordElement());
+            tlsContext.setServerPWDPrivate(message.getComputations().getPrivateKeyScalar());
         }
     }
 }

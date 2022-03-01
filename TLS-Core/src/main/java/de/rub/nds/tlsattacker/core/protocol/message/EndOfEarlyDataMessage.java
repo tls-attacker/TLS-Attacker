@@ -34,23 +34,23 @@ public class EndOfEarlyDataMessage extends HandshakeMessage {
     }
 
     @Override
-    public EndOfEarlyDataHandler getHandler(TlsContext context) {
-        return new EndOfEarlyDataHandler(context);
+    public EndOfEarlyDataHandler getHandler(TlsContext tlsContext) {
+        return new EndOfEarlyDataHandler(tlsContext);
     }
 
     @Override
-    public EndOfEarlyDataParser getParser(TlsContext context, InputStream stream) {
-        return new EndOfEarlyDataParser(stream, context.getLastRecordVersion(), context);
+    public EndOfEarlyDataParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new EndOfEarlyDataParser(stream, tlsContext.getLastRecordVersion(), tlsContext);
     }
 
     @Override
-    public EndOfEarlyDataPreparator getPreparator(TlsContext context) {
-        return new EndOfEarlyDataPreparator(context.getChooser(), this);
+    public EndOfEarlyDataPreparator getPreparator(TlsContext tlsContext) {
+        return new EndOfEarlyDataPreparator(tlsContext.getChooser(), this);
     }
 
     @Override
-    public EndOfEarlyDataSerializer getSerializer(TlsContext context) {
-        return new EndOfEarlyDataSerializer(this, context.getChooser().getSelectedProtocolVersion());
+    public EndOfEarlyDataSerializer getSerializer(TlsContext tlsContext) {
+        return new EndOfEarlyDataSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

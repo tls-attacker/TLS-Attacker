@@ -56,23 +56,23 @@ public class EncryptedExtensionsMessage extends HandshakeMessage {
     }
 
     @Override
-    public EncryptedExtensionsHandler getHandler(TlsContext context) {
-        return new EncryptedExtensionsHandler(context);
+    public EncryptedExtensionsHandler getHandler(TlsContext tlsContext) {
+        return new EncryptedExtensionsHandler(tlsContext);
     }
 
     @Override
-    public EncryptedExtensionsParser getParser(TlsContext context, InputStream stream) {
-        return new EncryptedExtensionsParser(stream, context.getLastRecordVersion(), context);
+    public EncryptedExtensionsParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new EncryptedExtensionsParser(stream, tlsContext.getLastRecordVersion(), tlsContext);
     }
 
     @Override
-    public EncryptedExtensionsPreparator getPreparator(TlsContext context) {
-        return new EncryptedExtensionsPreparator(context.getChooser(), this);
+    public EncryptedExtensionsPreparator getPreparator(TlsContext tlsContext) {
+        return new EncryptedExtensionsPreparator(tlsContext.getChooser(), this);
     }
 
     @Override
-    public EncryptedExtensionsSerializer getSerializer(TlsContext context) {
-        return new EncryptedExtensionsSerializer(this, context.getChooser().getSelectedProtocolVersion());
+    public EncryptedExtensionsSerializer getSerializer(TlsContext tlsContext) {
+        return new EncryptedExtensionsSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
 }

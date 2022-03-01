@@ -25,8 +25,8 @@ public class SSL2ServerHelloHandler extends HandshakeMessageHandler<SSL2ServerHe
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SSL2ServerHelloHandler(TlsContext context) {
-        super(context);
+    public SSL2ServerHelloHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     private Certificate parseCertificate(int lengthBytes, byte[] bytesToParse) {
@@ -53,20 +53,20 @@ public class SSL2ServerHelloHandler extends HandshakeMessageHandler<SSL2ServerHe
     public void adjustContext(SSL2ServerHelloMessage message) {
         byte[] serverRandom = message.getSessionId().getValue();
         if (serverRandom != null) {
-            context.setServerRandom(serverRandom);
+            tlsContext.setServerRandom(serverRandom);
         }
         Certificate cert =
             parseCertificate(message.getCertificateLength().getValue(), message.getCertificate().getValue());
         LOGGER.debug("Setting ServerCertificate in Context");
-        context.setServerCertificate(cert);
+        tlsContext.setServerCertificate(cert);
 
         if (cert == null || !CertificateUtils.hasRSAParameters(cert)) {
             LOGGER.error("Cannot parse Certificate from SSL2ServerHello");
         } else {
             LOGGER.debug("Adjusting RSA PublicKey");
             try {
-                context.setServerRSAPublicKey(CertificateUtils.extractRSAPublicKey(cert));
-                context.setServerRSAModulus(CertificateUtils.extractRSAModulus(cert));
+                tlsContext.setServerRSAPublicKey(CertificateUtils.extractRSAPublicKey(cert));
+                tlsContext.setServerRSAModulus(CertificateUtils.extractRSAModulus(cert));
             } catch (IOException e) {
                 throw new AdjustmentException("Could not adjust PublicKey Information from Certificate", e);
             }

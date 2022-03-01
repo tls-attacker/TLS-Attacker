@@ -34,22 +34,22 @@ public class TruncatedHmacExtensionMessage extends ExtensionMessage<TruncatedHma
     }
 
     @Override
-    public TruncatedHmacExtensionParser getParser(TlsContext context, InputStream stream) {
-        return new TruncatedHmacExtensionParser(stream, context.getConfig());
+    public TruncatedHmacExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new TruncatedHmacExtensionParser(stream, tlsContext.getConfig());
     }
 
     @Override
-    public TruncatedHmacExtensionPreparator getPreparator(TlsContext context) {
-        return new TruncatedHmacExtensionPreparator(context.getChooser(), this, getSerializer(context));
+    public TruncatedHmacExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new TruncatedHmacExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
     }
 
     @Override
-    public TruncatedHmacExtensionSerializer getSerializer(TlsContext context) {
+    public TruncatedHmacExtensionSerializer getSerializer(TlsContext tlsContext) {
         return new TruncatedHmacExtensionSerializer(this);
     }
 
     @Override
-    public TruncatedHmacExtensionHandler getHandler(TlsContext context) {
-        return new TruncatedHmacExtensionHandler(context);
+    public TruncatedHmacExtensionHandler getHandler(TlsContext tlsContext) {
+        return new TruncatedHmacExtensionHandler(tlsContext);
     }
 }

@@ -23,11 +23,11 @@ public class SignedCertificateTimestampExtensionHandler
     /**
      * Constructor
      *
-     * @param context
+     * @param tlsContext
      *                A Chooser
      */
-    public SignedCertificateTimestampExtensionHandler(TlsContext context) {
-        super(context);
+    public SignedCertificateTimestampExtensionHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     /**
@@ -42,7 +42,7 @@ public class SignedCertificateTimestampExtensionHandler
             LOGGER.warn("The SingedCertificateTimestamp length shouldn't exceed 2 bytes as defined in RFC 6962. "
                 + "Length was " + message.getExtensionLength().getValue());
         }
-        context.setSignedCertificateTimestamp(message.getSignedTimestamp().getValue());
+        tlsContext.setSignedCertificateTimestamp(message.getSignedTimestamp().getValue());
         LOGGER.debug("The context SignedCertificateTimestamp was set to "
             + ArrayConverter.bytesToHexString(message.getSignedTimestamp()));
     }

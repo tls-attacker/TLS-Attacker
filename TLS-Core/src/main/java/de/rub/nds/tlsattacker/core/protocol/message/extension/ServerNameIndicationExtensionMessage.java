@@ -99,22 +99,22 @@ public class ServerNameIndicationExtensionMessage extends ExtensionMessage<Serve
     }
 
     @Override
-    public ServerNameIndicationExtensionParser getParser(TlsContext context, InputStream stream) {
-        return new ServerNameIndicationExtensionParser(stream, context.getConfig());
+    public ServerNameIndicationExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new ServerNameIndicationExtensionParser(stream, tlsContext.getConfig());
     }
 
     @Override
-    public ServerNameIndicationExtensionPreparator getPreparator(TlsContext context) {
-        return new ServerNameIndicationExtensionPreparator(context.getChooser(), this, getSerializer(context));
+    public ServerNameIndicationExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new ServerNameIndicationExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
     }
 
     @Override
-    public ServerNameIndicationExtensionSerializer getSerializer(TlsContext context) {
+    public ServerNameIndicationExtensionSerializer getSerializer(TlsContext tlsContext) {
         return new ServerNameIndicationExtensionSerializer(this);
     }
 
     @Override
-    public ServerNameIndicationExtensionHandler getHandler(TlsContext context) {
-        return new ServerNameIndicationExtensionHandler(context);
+    public ServerNameIndicationExtensionHandler getHandler(TlsContext tlsContext) {
+        return new ServerNameIndicationExtensionHandler(tlsContext);
     }
 }

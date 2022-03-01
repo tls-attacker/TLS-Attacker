@@ -20,15 +20,15 @@ public class ApplicationMessageHandler extends ProtocolMessageHandler<Applicatio
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ApplicationMessageHandler(TlsContext context) {
-        super(context);
+    public ApplicationMessageHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override
     public void adjustContext(ApplicationMessage message) {
-        context.setLastHandledApplicationMessageData(message.getData().getValue());
-        String readableAppData = ArrayConverter.bytesToHexString(context.getLastHandledApplicationMessageData());
-        if (context.getTalkingConnectionEndType() == context.getChooser().getMyConnectionPeer()) {
+        tlsContext.setLastHandledApplicationMessageData(message.getData().getValue());
+        String readableAppData = ArrayConverter.bytesToHexString(tlsContext.getLastHandledApplicationMessageData());
+        if (tlsContext.getTalkingConnectionEndType() == tlsContext.getChooser().getMyConnectionPeer()) {
             LOGGER.debug("Received Data:" + readableAppData);
         } else {
             LOGGER.debug("Send Data:" + readableAppData);

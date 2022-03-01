@@ -19,17 +19,17 @@ public class EncryptedServerNameIndicationExtensionHandler
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public EncryptedServerNameIndicationExtensionHandler(TlsContext context) {
-        super(context);
+    public EncryptedServerNameIndicationExtensionHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override
     public void adjustTLSExtensionContext(EncryptedServerNameIndicationExtensionMessage message) {
         if (message.getClientEsniInner().getClientNonce() != null) {
-            context.setEsniClientNonce(message.getClientEsniInner().getClientNonce().getValue());
+            tlsContext.setEsniClientNonce(message.getClientEsniInner().getClientNonce().getValue());
         }
         if (message.getServerNonce() != null) {
-            context.setEsniServerNonce(message.getServerNonce().getValue());
+            tlsContext.setEsniServerNonce(message.getServerNonce().getValue());
         }
 
     }

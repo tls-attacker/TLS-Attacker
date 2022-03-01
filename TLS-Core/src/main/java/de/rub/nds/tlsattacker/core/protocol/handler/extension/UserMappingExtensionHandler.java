@@ -19,16 +19,16 @@ public class UserMappingExtensionHandler extends ExtensionHandler<UserMappingExt
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public UserMappingExtensionHandler(TlsContext context) {
-        super(context);
+    public UserMappingExtensionHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override
     public void adjustTLSExtensionContext(UserMappingExtensionMessage message) {
-        context.setUserMappingExtensionHintType(
+        tlsContext.setUserMappingExtensionHintType(
             UserMappingExtensionHintType.getExtensionType(message.getUserMappingType().getValue()));
         LOGGER.debug("Adjusted the TLS context user mapping extension hint type to "
-            + context.getUserMappingExtensionHintType().getValue());
+            + tlsContext.getUserMappingExtensionHintType().getValue());
     }
 
 }

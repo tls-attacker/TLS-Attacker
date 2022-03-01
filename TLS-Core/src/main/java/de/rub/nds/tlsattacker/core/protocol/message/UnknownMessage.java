@@ -67,24 +67,24 @@ public class UnknownMessage extends ProtocolMessage {
     }
 
     @Override
-    public UnknownMessageHandler getHandler(TlsContext context) {
-        return new UnknownMessageHandler(context, recordContentMessageType);
+    public UnknownMessageHandler getHandler(TlsContext tlsContext) {
+        return new UnknownMessageHandler(tlsContext, recordContentMessageType);
     }
 
     @Override
-    public UnknownMessageParser getParser(TlsContext context, InputStream stream) {
-        return new UnknownMessageParser(stream, context.getChooser().getLastRecordVersion(), recordContentMessageType,
-            context.getConfig());
+    public UnknownMessageParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new UnknownMessageParser(stream, tlsContext.getChooser().getLastRecordVersion(), recordContentMessageType,
+            tlsContext.getConfig());
     }
 
     @Override
-    public UnknownMessagePreparator getPreparator(TlsContext context) {
-        return new UnknownMessagePreparator(context.getChooser(), this);
+    public UnknownMessagePreparator getPreparator(TlsContext tlsContext) {
+        return new UnknownMessagePreparator(tlsContext.getChooser(), this);
     }
 
     @Override
-    public UnknownMessageSerializer getSerializer(TlsContext context) {
-        return new UnknownMessageSerializer(this, context.getChooser().getSelectedProtocolVersion());
+    public UnknownMessageSerializer getSerializer(TlsContext tlsContext) {
+        return new UnknownMessageSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

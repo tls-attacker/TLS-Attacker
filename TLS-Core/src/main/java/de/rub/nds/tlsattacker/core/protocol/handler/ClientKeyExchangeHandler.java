@@ -37,14 +37,14 @@ public abstract class ClientKeyExchangeHandler<MessageT extends ClientKeyExchang
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ClientKeyExchangeHandler(TlsContext context) {
-        super(context);
+    public ClientKeyExchangeHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     public void adjustPremasterSecret(ClientKeyExchangeMessage message) {
         if (message.getComputations().getPremasterSecret() != null) {
             byte[] premasterSecret = message.getComputations().getPremasterSecret().getValue();
-            context.setPreMasterSecret(premasterSecret);
+            tlsContext.setPreMasterSecret(premasterSecret);
             LOGGER.debug("Set PremasterSecret in Context to " + ArrayConverter.bytesToHexString(premasterSecret));
         } else {
             LOGGER.debug("Did not set in Context PremasterSecret");
@@ -52,7 +52,7 @@ public abstract class ClientKeyExchangeHandler<MessageT extends ClientKeyExchang
     }
 
     protected byte[] calculateMasterSecret(ClientKeyExchangeMessage message) throws CryptoException {
-        Chooser chooser = context.getChooser();
+        Chooser chooser = tlsContext.getChooser();
         if (chooser.getSelectedProtocolVersion() == ProtocolVersion.SSL3) {
             LOGGER.debug("Calculate SSL MasterSecret with Client and Server Nonces, which are: "
                 + ArrayConverter.bytesToHexString(message.getComputations().getClientServerRandom().getValue()));
@@ -64,7 +64,7 @@ public abstract class ClientKeyExchangeHandler<MessageT extends ClientKeyExchang
             if (chooser.isUseExtendedMasterSecret()) {
                 LOGGER.debug("Calculating ExtendedMasterSecret");
                 byte[] sessionHash =
-                    context.getDigest().digest(chooser.getSelectedProtocolVersion(), chooser.getSelectedCipherSuite());
+                    tlsContext.getDigest().digest(chooser.getSelectedProtocolVersion(), chooser.getSelectedCipherSuite());
                 LOGGER.debug("Premastersecret: " + ArrayConverter.bytesToHexString(chooser.getPreMasterSecret()));
 
                 LOGGER.debug("SessionHash: " + ArrayConverter.bytesToHexString(sessionHash));
@@ -88,23 +88,23 @@ public abstract class ClientKeyExchangeHandler<MessageT extends ClientKeyExchang
         } catch (CryptoException ex) {
             throw new UnsupportedOperationException("Could not calculate masterSecret", ex);
         }
-        context.setMasterSecret(masterSecret);
+        tlsContext.setMasterSecret(masterSecret);
         LOGGER.debug("Set MasterSecret in Context to " + ArrayConverter.bytesToHexString(masterSecret));
     }
 
     protected void spawnNewSession() {
-        if (context.getChooser().getServerSessionId().length != 0) {
+        if (tlsContext.getChooser().getServerSessionId().length != 0) {
             IdSession session =
-                new IdSession(context.getChooser().getServerSessionId(), context.getChooser().getMasterSecret());
-            context.addNewSession(session);
+                new IdSession(tlsContext.getChooser().getServerSessionId(), tlsContext.getChooser().getMasterSecret());
+            tlsContext.addNewSession(session);
             LOGGER.debug("Spawning new resumable Session");
         }
     }
 
-    private KeySet getKeySet(TlsContext context) {
+    private KeySet getKeySet(TlsContext tlsContext) {
         try {
             LOGGER.debug("Generating new KeySet");
-            return KeySetGenerator.generateKeySet(context);
+            return KeySetGenerator.generateKeySet(tlsContext);
         } catch (NoSuchAlgorithmException | CryptoException ex) {
             throw new UnsupportedOperationException("The specified Algorithm is not supported", ex);
         }

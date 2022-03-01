@@ -86,22 +86,22 @@ public class UnknownExtensionMessage extends ExtensionMessage<UnknownExtensionMe
     }
 
     @Override
-    public UnknownExtensionParser getParser(TlsContext context, InputStream stream) {
-        return new UnknownExtensionParser(stream, context.getConfig());
+    public UnknownExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new UnknownExtensionParser(stream, tlsContext.getConfig());
     }
 
     @Override
-    public UnknownExtensionPreparator getPreparator(TlsContext context) {
-        return new UnknownExtensionPreparator(context.getChooser(), this, getSerializer(context));
+    public UnknownExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new UnknownExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
     }
 
     @Override
-    public UnknownExtensionSerializer getSerializer(TlsContext context) {
+    public UnknownExtensionSerializer getSerializer(TlsContext tlsContext) {
         return new UnknownExtensionSerializer(this);
     }
 
     @Override
-    public UnknownExtensionHandler getHandler(TlsContext context) {
-        return new UnknownExtensionHandler(context);
+    public UnknownExtensionHandler getHandler(TlsContext tlsContext) {
+        return new UnknownExtensionHandler(tlsContext);
     }
 }

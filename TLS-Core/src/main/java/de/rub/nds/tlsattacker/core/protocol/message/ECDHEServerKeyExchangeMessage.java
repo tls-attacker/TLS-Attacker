@@ -119,24 +119,24 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     }
 
     @Override
-    public ECDHEServerKeyExchangeHandler getHandler(TlsContext context) {
-        return new ECDHEServerKeyExchangeHandler<>(context);
+    public ECDHEServerKeyExchangeHandler getHandler(TlsContext tlsContext) {
+        return new ECDHEServerKeyExchangeHandler<>(tlsContext);
     }
 
     @Override
-    public ECDHEServerKeyExchangeParser getParser(TlsContext context, InputStream stream) {
-        return new ECDHEServerKeyExchangeParser(stream, context.getChooser().getLastRecordVersion(),
-            AlgorithmResolver.getKeyExchangeAlgorithm(context.getChooser().getSelectedCipherSuite()), context);
+    public ECDHEServerKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new ECDHEServerKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(),
+            AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite()), tlsContext);
     }
 
     @Override
-    public ECDHEServerKeyExchangePreparator getPreparator(TlsContext context) {
-        return new ECDHEServerKeyExchangePreparator(context.getChooser(), this);
+    public ECDHEServerKeyExchangePreparator getPreparator(TlsContext tlsContext) {
+        return new ECDHEServerKeyExchangePreparator(tlsContext.getChooser(), this);
     }
 
     @Override
-    public ECDHEServerKeyExchangeSerializer getSerializer(TlsContext context) {
-        return new ECDHEServerKeyExchangeSerializer(this, context.getChooser().getSelectedProtocolVersion());
+    public ECDHEServerKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
+        return new ECDHEServerKeyExchangeSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

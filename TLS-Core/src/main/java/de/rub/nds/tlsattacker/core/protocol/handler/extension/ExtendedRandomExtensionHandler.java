@@ -24,20 +24,20 @@ public class ExtendedRandomExtensionHandler extends ExtensionHandler<ExtendedRan
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ExtendedRandomExtensionHandler(TlsContext context) {
-        super(context);
+    public ExtendedRandomExtensionHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override
     public void adjustTLSExtensionContext(ExtendedRandomExtensionMessage message) {
-        if (context.getTalkingConnectionEndType().equals(ConnectionEndType.SERVER)) {
-            context.setServerExtendedRandom(message.getExtendedRandom().getValue());
+        if (tlsContext.getTalkingConnectionEndType().equals(ConnectionEndType.SERVER)) {
+            tlsContext.setServerExtendedRandom(message.getExtendedRandom().getValue());
             LOGGER.debug("The context server extended Random was set to "
                 + ArrayConverter.bytesToHexString(message.getExtendedRandom()));
 
         }
-        if (context.getTalkingConnectionEndType().equals(ConnectionEndType.CLIENT)) {
-            context.setClientExtendedRandom(message.getExtendedRandom().getValue());
+        if (tlsContext.getTalkingConnectionEndType().equals(ConnectionEndType.CLIENT)) {
+            tlsContext.setClientExtendedRandom(message.getExtendedRandom().getValue());
             LOGGER.debug("The context client extended Random was set to "
                 + ArrayConverter.bytesToHexString(message.getExtendedRandom()));
 
@@ -46,16 +46,16 @@ public class ExtendedRandomExtensionHandler extends ExtensionHandler<ExtendedRan
         // If both extended Randoms are received (i.e. client and server agreed
         // on using extended Random)
         // then extend the client and server random for premaster computations.
-        if (!(context.getClientExtendedRandom() == null) && !(context.getServerExtendedRandom() == null)) {
+        if (!(tlsContext.getClientExtendedRandom() == null) && !(tlsContext.getServerExtendedRandom() == null)) {
             LOGGER.debug("Extended Random was agreed on. Concatenating extended Randoms to normal Randoms.");
             byte[] clientConcatRandom =
-                ArrayConverter.concatenate(context.getClientRandom(), context.getClientExtendedRandom());
+                ArrayConverter.concatenate(tlsContext.getClientRandom(), tlsContext.getClientExtendedRandom());
             byte[] serverConcatRandom =
-                ArrayConverter.concatenate(context.getServerRandom(), context.getServerExtendedRandom());
-            context.setClientRandom(clientConcatRandom);
-            LOGGER.debug("ClientRandom: " + ArrayConverter.bytesToHexString(context.getClientRandom()));
-            context.setServerRandom(serverConcatRandom);
-            LOGGER.debug("ServerRandom: " + ArrayConverter.bytesToHexString(context.getServerRandom()));
+                ArrayConverter.concatenate(tlsContext.getServerRandom(), tlsContext.getServerExtendedRandom());
+            tlsContext.setClientRandom(clientConcatRandom);
+            LOGGER.debug("ClientRandom: " + ArrayConverter.bytesToHexString(tlsContext.getClientRandom()));
+            tlsContext.setServerRandom(serverConcatRandom);
+            LOGGER.debug("ServerRandom: " + ArrayConverter.bytesToHexString(tlsContext.getServerRandom()));
         }
 
     }

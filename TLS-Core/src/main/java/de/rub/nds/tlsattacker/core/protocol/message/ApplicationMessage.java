@@ -98,23 +98,23 @@ public class ApplicationMessage extends ProtocolMessage<ApplicationMessage> {
     }
 
     @Override
-    public ApplicationMessageHandler getHandler(TlsContext context) {
-        return new ApplicationMessageHandler(context);
+    public ApplicationMessageHandler getHandler(TlsContext tlsContext) {
+        return new ApplicationMessageHandler(tlsContext);
     }
 
     @Override
-    public ApplicationMessageParser getParser(TlsContext context, InputStream stream) {
-        return new ApplicationMessageParser(stream, context.getChooser().getLastRecordVersion(), context.getConfig());
+    public ApplicationMessageParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new ApplicationMessageParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext.getConfig());
     }
 
     @Override
-    public ApplicationMessagePreparator getPreparator(TlsContext context) {
-        return new ApplicationMessagePreparator(context.getChooser(), this);
+    public ApplicationMessagePreparator getPreparator(TlsContext tlsContext) {
+        return new ApplicationMessagePreparator(tlsContext.getChooser(), this);
     }
 
     @Override
-    public ApplicationMessageSerializer getSerializer(TlsContext context) {
-        return new ApplicationMessageSerializer(this, context.getChooser().getSelectedProtocolVersion());
+    public ApplicationMessageSerializer getSerializer(TlsContext tlsContext) {
+        return new ApplicationMessageSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

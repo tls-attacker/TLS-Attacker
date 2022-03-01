@@ -14,15 +14,15 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 
 public class PskEcDheServerKeyExchangeHandler extends ECDHEServerKeyExchangeHandler<PskEcDheServerKeyExchangeMessage> {
 
-    public PskEcDheServerKeyExchangeHandler(TlsContext context) {
-        super(context);
+    public PskEcDheServerKeyExchangeHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override
     public void adjustContext(PskEcDheServerKeyExchangeMessage message) {
         super.adjustECParameter(message);
         if (message.getComputations() != null) {
-            context.setServerEcPrivateKey(message.getComputations().getPrivateKey().getValue());
+            tlsContext.setServerEcPrivateKey(message.getComputations().getPrivateKey().getValue());
         }
     }
 }

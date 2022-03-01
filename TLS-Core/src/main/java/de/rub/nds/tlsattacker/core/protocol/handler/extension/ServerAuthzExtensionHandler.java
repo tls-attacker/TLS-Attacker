@@ -15,13 +15,13 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 
 public class ServerAuthzExtensionHandler extends ExtensionHandler<ServerAuthzExtensionMessage> {
 
-    public ServerAuthzExtensionHandler(TlsContext context) {
-        super(context);
+    public ServerAuthzExtensionHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override
     public void adjustTLSExtensionContext(ServerAuthzExtensionMessage message) {
-        context.setServerAuthzDataFormatList(AuthzDataFormat.byteArrayToList(message.getAuthzFormatList().getValue()));
+        tlsContext.setServerAuthzDataFormatList(AuthzDataFormat.byteArrayToList(message.getAuthzFormatList().getValue()));
     }
 
 }

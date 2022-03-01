@@ -23,7 +23,7 @@ public abstract class ServerKeyExchangeHandler<MessageT extends ServerKeyExchang
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ServerKeyExchangeHandler(TlsContext context) {
-        super(context);
+    public ServerKeyExchangeHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 }

@@ -38,11 +38,11 @@ public class DHEServerKeyExchangeParser<T extends DHEServerKeyExchangeMessage> e
      *                             Version of the Protocol
      * @param keyExchangeAlgorithm
      *                             The selected key exchange algorithm (affects which fields are present).
-     * @param context
+     * @param tlsContext
      */
     public DHEServerKeyExchangeParser(InputStream stream, ProtocolVersion version,
-        KeyExchangeAlgorithm keyExchangeAlgorithm, TlsContext context) {
-        super(stream, HandshakeMessageType.SERVER_KEY_EXCHANGE, version, context);
+        KeyExchangeAlgorithm keyExchangeAlgorithm, TlsContext tlsContext) {
+        super(stream, HandshakeMessageType.SERVER_KEY_EXCHANGE, version, tlsContext);
         this.version = version;
         this.keyExchangeAlgorithm = keyExchangeAlgorithm;
 

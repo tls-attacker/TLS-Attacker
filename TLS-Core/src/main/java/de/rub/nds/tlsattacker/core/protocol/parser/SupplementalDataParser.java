@@ -35,10 +35,10 @@ public class SupplementalDataParser extends HandshakeMessageParser<SupplementalD
      * @param stream
      * @param version
      *                The Version for which this message should be parsed
-     * @param context
+     * @param tlsContext
      */
-    public SupplementalDataParser(InputStream stream, ProtocolVersion version, TlsContext context) {
-        super(stream, HandshakeMessageType.SUPPLEMENTAL_DATA, version, context);
+    public SupplementalDataParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
+        super(stream, HandshakeMessageType.SUPPLEMENTAL_DATA, version, tlsContext);
     }
 
     @Override

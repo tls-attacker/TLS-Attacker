@@ -33,7 +33,7 @@ public abstract class HandshakeMessageHandler<HandshakeMessageT extends Handshak
     protected void adjustExtensions(HandshakeMessageT message) {
         if (message.getExtensions() != null) {
             for (ExtensionMessage extension : message.getExtensions()) {
-                Handler handler = extension.getHandler(context);
+                Handler handler = extension.getHandler(tlsContext);
                 handler.adjustContext(extension);
             }
         }
@@ -47,12 +47,12 @@ public abstract class HandshakeMessageHandler<HandshakeMessageT extends Handshak
             for (ExtensionMessage extensionMessage : message.getExtensions()) {
                 HandshakeMessageType handshakeMessageType = message.getHandshakeMessageType();
 
-                Handler extensionHandler = extensionMessage.getHandler(context);
+                Handler extensionHandler = extensionMessage.getHandler(tlsContext);
 
                 if (extensionMessage instanceof EncryptedServerNameIndicationExtensionMessage) {
                     EncryptedServerNameIndicationExtensionPreparator preparator =
                         (EncryptedServerNameIndicationExtensionPreparator) ((EncryptedServerNameIndicationExtensionMessage) extensionMessage)
-                            .getPreparator(context);
+                            .getPreparator(tlsContext);
                     if (message instanceof ClientHelloMessage) {
                         preparator.setClientHelloMessage((ClientHelloMessage) message);
                     }

@@ -20,12 +20,12 @@ public class RecordDecompressor extends Decompressor<Record> {
     private CompressionAlgorithm algorithm;
     private ProtocolVersion version;
 
-    public RecordDecompressor(TlsContext context) {
-        version = context.getChooser().getSelectedProtocolVersion();
+    public RecordDecompressor(TlsContext tlsContext) {
+        version = tlsContext.getChooser().getSelectedProtocolVersion();
         if (version.isTLS13()) {
             setMethod(CompressionMethod.NULL);
         } else {
-            setMethod(context.getChooser().getSelectedCompressionMethod());
+            setMethod(tlsContext.getChooser().getSelectedCompressionMethod());
         }
     }
 

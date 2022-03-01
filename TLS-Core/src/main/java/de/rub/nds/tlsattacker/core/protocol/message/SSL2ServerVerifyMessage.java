@@ -51,22 +51,22 @@ public class SSL2ServerVerifyMessage extends SSL2HandshakeMessage {
     }
 
     @Override
-    public SSL2ServerVerifyHandler getHandler(TlsContext context) {
-        return new SSL2ServerVerifyHandler(context);
+    public SSL2ServerVerifyHandler getHandler(TlsContext tlsContext) {
+        return new SSL2ServerVerifyHandler(tlsContext);
     }
 
     @Override
-    public SSL2ServerVerifyParser getParser(TlsContext context, InputStream stream) {
-        return new SSL2ServerVerifyParser(stream, context.getChooser().getSelectedProtocolVersion(), context);
+    public SSL2ServerVerifyParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new SSL2ServerVerifyParser(stream, tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext);
     }
 
     @Override
-    public SSL2ServerVerifyPreparator getPreparator(TlsContext context) {
-        return new SSL2ServerVerifyPreparator(context.getChooser(), this);
+    public SSL2ServerVerifyPreparator getPreparator(TlsContext tlsContext) {
+        return new SSL2ServerVerifyPreparator(tlsContext.getChooser(), this);
     }
 
     @Override
-    public HandshakeMessageSerializer<SSL2ServerVerifyMessage> getSerializer(TlsContext context) {
+    public HandshakeMessageSerializer<SSL2ServerVerifyMessage> getSerializer(TlsContext tlsContext) {
         // We currently don't send ServerVerify messages, only receive them.
         return null;
     }

@@ -14,13 +14,13 @@ import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
 
 public class SSL2ClientHelloHandler extends HandshakeMessageHandler<SSL2ClientHelloMessage> {
 
-    public SSL2ClientHelloHandler(TlsContext context) {
-        super(context);
+    public SSL2ClientHelloHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override
     public void adjustContext(SSL2ClientHelloMessage message) {
-        context.setClientRandom(message.getChallenge().getValue());
+        tlsContext.setClientRandom(message.getChallenge().getValue());
     }
 
 }

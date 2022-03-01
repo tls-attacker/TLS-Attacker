@@ -44,23 +44,23 @@ public class UserMappingExtensionMessage extends ExtensionMessage<UserMappingExt
     }
 
     @Override
-    public UserMappingExtensionParser getParser(TlsContext context, InputStream stream) {
-        return new UserMappingExtensionParser(stream, context.getConfig());
+    public UserMappingExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new UserMappingExtensionParser(stream, tlsContext.getConfig());
     }
 
     @Override
-    public UserMappingExtensionPreparator getPreparator(TlsContext context) {
-        return new UserMappingExtensionPreparator(context.getChooser(), this, getSerializer(context));
+    public UserMappingExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new UserMappingExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
     }
 
     @Override
-    public UserMappingExtensionSerializer getSerializer(TlsContext context) {
+    public UserMappingExtensionSerializer getSerializer(TlsContext tlsContext) {
         return new UserMappingExtensionSerializer(this);
     }
 
     @Override
-    public UserMappingExtensionHandler getHandler(TlsContext context) {
-        return new UserMappingExtensionHandler(context);
+    public UserMappingExtensionHandler getHandler(TlsContext tlsContext) {
+        return new UserMappingExtensionHandler(tlsContext);
     }
 
 }

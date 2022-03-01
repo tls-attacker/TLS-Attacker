@@ -49,23 +49,23 @@ public class DHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     }
 
     @Override
-    public DHClientKeyExchangeHandler<? extends DHClientKeyExchangeMessage> getHandler(TlsContext context) {
-        return new DHClientKeyExchangeHandler<>(context);
+    public DHClientKeyExchangeHandler<? extends DHClientKeyExchangeMessage> getHandler(TlsContext tlsContext) {
+        return new DHClientKeyExchangeHandler<>(tlsContext);
     }
 
     @Override
-    public DHClientKeyExchangeParser getParser(TlsContext context, InputStream stream) {
-        return new DHClientKeyExchangeParser(stream, context.getChooser().getLastRecordVersion(), context);
+    public DHClientKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new DHClientKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
     }
 
     @Override
-    public DHClientKeyExchangePreparator getPreparator(TlsContext context) {
-        return new DHClientKeyExchangePreparator(context.getChooser(), this);
+    public DHClientKeyExchangePreparator getPreparator(TlsContext tlsContext) {
+        return new DHClientKeyExchangePreparator(tlsContext.getChooser(), this);
     }
 
     @Override
-    public DHClientKeyExchangeSerializer getSerializer(TlsContext context) {
-        return new DHClientKeyExchangeSerializer(this, context.getChooser().getSelectedProtocolVersion());
+    public DHClientKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
+        return new DHClientKeyExchangeSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

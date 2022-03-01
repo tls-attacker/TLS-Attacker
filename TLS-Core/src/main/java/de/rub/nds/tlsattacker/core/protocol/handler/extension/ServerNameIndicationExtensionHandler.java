@@ -23,8 +23,8 @@ public class ServerNameIndicationExtensionHandler extends ExtensionHandler<Serve
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ServerNameIndicationExtensionHandler(TlsContext context) {
-        super(context);
+    public ServerNameIndicationExtensionHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override
@@ -38,6 +38,6 @@ public class ServerNameIndicationExtensionHandler extends ExtensionHandler<Serve
                 LOGGER.warn("Unknown SNI Type:" + pair.getServerNameType().getValue());
             }
         }
-        context.setClientSNIEntryList(sniEntryList);
+        tlsContext.setClientSNIEntryList(sniEntryList);
     }
 }

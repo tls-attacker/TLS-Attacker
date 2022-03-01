@@ -26,21 +26,21 @@ public class RecordDecryptor extends Decryptor {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final TlsContext context;
+    private final TlsContext tlsContext;
 
     private RecordNullCipher nullCipher;
 
-    public RecordDecryptor(RecordCipher recordCipher, TlsContext context) {
+    public RecordDecryptor(RecordCipher recordCipher, TlsContext tlsContext) {
         super(recordCipher);
-        this.context = context;
-        nullCipher = RecordCipherFactory.getNullCipher(context);
+        this.tlsContext = tlsContext;
+        nullCipher = RecordCipherFactory.getNullCipher(tlsContext);
     }
 
     @Override
     public void decrypt(Record record) {
         LOGGER.debug("Decrypting Record");
         RecordCipher recordCipher;
-        if (context.getChooser().getSelectedProtocolVersion().isDTLS() && record.getEpoch() != null
+        if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS() && record.getEpoch() != null
             && record.getEpoch().getValue() != null) {
             recordCipher = getRecordCipher(record.getEpoch().getValue());
         } else {
@@ -53,13 +53,13 @@ public class RecordDecryptor extends Decryptor {
         }
 
         try {
-            if (!context.getChooser().getSelectedProtocolVersion().isTLS13()
+            if (!tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()
                 || record.getContentMessageType() != ProtocolMessageType.CHANGE_CIPHER_SPEC) {
                 recordCipher.decrypt(record);
                 recordCipher.getState().increaseReadSequenceNumber();
             } else {
                 LOGGER.debug("Skipping decryption for legacy CCS");
-                new RecordNullCipher(context, recordCipher.getState()).decrypt(record);
+                new RecordNullCipher(tlsContext, recordCipher.getState()).decrypt(record);
             }
         } catch (CryptoException | ParserException ex) {
             LOGGER.warn("Could not decrypt Record. Using NullCipher instead", ex);

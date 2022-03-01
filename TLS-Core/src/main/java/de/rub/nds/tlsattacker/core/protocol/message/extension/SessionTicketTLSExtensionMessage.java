@@ -52,23 +52,23 @@ public class SessionTicketTLSExtensionMessage extends ExtensionMessage<SessionTi
     }
 
     @Override
-    public SessionTicketTLSExtensionParser getParser(TlsContext context, InputStream stream) {
-        return new SessionTicketTLSExtensionParser(stream, context.getConfig());
+    public SessionTicketTLSExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new SessionTicketTLSExtensionParser(stream, tlsContext.getConfig());
     }
 
     @Override
-    public SessionTicketTLSExtensionPreparator getPreparator(TlsContext context) {
-        return new SessionTicketTLSExtensionPreparator(context.getChooser(), this, getSerializer(context));
+    public SessionTicketTLSExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new SessionTicketTLSExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
     }
 
     @Override
-    public SessionTicketTLSExtensionSerializer getSerializer(TlsContext context) {
+    public SessionTicketTLSExtensionSerializer getSerializer(TlsContext tlsContext) {
         return new SessionTicketTLSExtensionSerializer(this);
     }
 
     @Override
-    public SessionTicketTLSExtensionHandler getHandler(TlsContext context) {
-        return new SessionTicketTLSExtensionHandler(context);
+    public SessionTicketTLSExtensionHandler getHandler(TlsContext tlsContext) {
+        return new SessionTicketTLSExtensionHandler(tlsContext);
 
     }
 }

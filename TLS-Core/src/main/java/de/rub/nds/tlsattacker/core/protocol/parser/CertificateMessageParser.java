@@ -34,24 +34,24 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
 
     private final ConnectionEndType talkingConnectionEndType;
 
-    private TlsContext context;
+    private TlsContext tlsContext;
 
     /**
      * Constructor for the Parser class
      *
      * @param stream
-     * @param context
+     * @param tlsContext
      * @param version
      *                                 Version of the Protocol
      * @param config
      *                                 A Config used in the current context
      * @param talkingConnectionEndType
      */
-    public CertificateMessageParser(InputStream stream, TlsContext context, ProtocolVersion version,
-        ConnectionEndType talkingConnectionEndType) {
-        super(stream, HandshakeMessageType.CERTIFICATE, version, context);
+    public CertificateMessageParser(InputStream stream, TlsContext tlsContext, ProtocolVersion version,
+                                    ConnectionEndType talkingConnectionEndType) {
+        super(stream, HandshakeMessageType.CERTIFICATE, version, tlsContext);
         this.talkingConnectionEndType = talkingConnectionEndType;
-        this.context = context;
+        this.tlsContext = tlsContext;
     }
 
     @Override
@@ -132,7 +132,7 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
         List<CertificateEntry> entryList = new LinkedList<>();
         for (CertificatePair pair : msg.getCertificatesList()) {
             ExtensionListParser parser = new ExtensionListParser(
-                new ByteArrayInputStream(pair.getExtensions().getValue()), context, getVersion(), false);
+                new ByteArrayInputStream(pair.getExtensions().getValue()), tlsContext, getVersion(), false);
             List<ExtensionMessage> extensionMessages = new LinkedList<>();
             parser.parse(extensionMessages);
             entryList.add(new CertificateEntry(pair.getCertificate().getValue(), extensionMessages));

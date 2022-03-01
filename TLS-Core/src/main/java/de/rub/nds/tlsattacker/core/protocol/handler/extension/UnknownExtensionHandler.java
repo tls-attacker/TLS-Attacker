@@ -14,8 +14,8 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 
 public class UnknownExtensionHandler extends ExtensionHandler<UnknownExtensionMessage> {
 
-    public UnknownExtensionHandler(TlsContext context) {
-        super(context);
+    public UnknownExtensionHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override

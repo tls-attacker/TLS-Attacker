@@ -55,22 +55,22 @@ public class PaddingExtensionMessage extends ExtensionMessage<PaddingExtensionMe
     }
 
     @Override
-    public PaddingExtensionParser getParser(TlsContext context, InputStream stream) {
-        return new PaddingExtensionParser(stream, context.getConfig());
+    public PaddingExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new PaddingExtensionParser(stream, tlsContext.getConfig());
     }
 
     @Override
-    public PaddingExtensionPreparator getPreparator(TlsContext context) {
-        return new PaddingExtensionPreparator(context.getChooser(), this, getSerializer(context));
+    public PaddingExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new PaddingExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
     }
 
     @Override
-    public PaddingExtensionSerializer getSerializer(TlsContext context) {
+    public PaddingExtensionSerializer getSerializer(TlsContext tlsContext) {
         return new PaddingExtensionSerializer(this);
     }
 
     @Override
-    public PaddingExtensionHandler getHandler(TlsContext context) {
-        return new PaddingExtensionHandler(context);
+    public PaddingExtensionHandler getHandler(TlsContext tlsContext) {
+        return new PaddingExtensionHandler(tlsContext);
     }
 }

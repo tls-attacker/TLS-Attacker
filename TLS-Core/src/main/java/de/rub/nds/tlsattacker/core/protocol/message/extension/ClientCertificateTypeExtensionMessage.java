@@ -83,22 +83,22 @@ public class ClientCertificateTypeExtensionMessage extends ExtensionMessage<Clie
     }
 
     @Override
-    public ClientCertificateTypeExtensionParser getParser(TlsContext context, InputStream stream) {
-        return new ClientCertificateTypeExtensionParser(stream, context.getConfig());
+    public ClientCertificateTypeExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new ClientCertificateTypeExtensionParser(stream, tlsContext.getConfig());
     }
 
     @Override
-    public ClientCertificateTypeExtensionPreparator getPreparator(TlsContext context) {
-        return new ClientCertificateTypeExtensionPreparator(context.getChooser(), this, getSerializer(context));
+    public ClientCertificateTypeExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new ClientCertificateTypeExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
     }
 
     @Override
-    public ClientCertificateTypeExtensionSerializer getSerializer(TlsContext context) {
+    public ClientCertificateTypeExtensionSerializer getSerializer(TlsContext tlsContext) {
         return new ClientCertificateTypeExtensionSerializer(this);
     }
 
     @Override
-    public ClientCertificateTypeExtensionHandler getHandler(TlsContext context) {
-        return new ClientCertificateTypeExtensionHandler(context);
+    public ClientCertificateTypeExtensionHandler getHandler(TlsContext tlsContext) {
+        return new ClientCertificateTypeExtensionHandler(tlsContext);
     }
 }

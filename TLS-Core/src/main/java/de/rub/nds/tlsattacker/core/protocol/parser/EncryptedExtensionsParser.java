@@ -25,9 +25,9 @@ public class EncryptedExtensionsParser extends HandshakeMessageParser<EncryptedE
 
     private ConnectionEndType talkingConnectionEndType;
 
-    public EncryptedExtensionsParser(InputStream stream, ProtocolVersion version, TlsContext context) {
-        super(stream, HandshakeMessageType.ENCRYPTED_EXTENSIONS, version, context);
-        this.talkingConnectionEndType = context.getTalkingConnectionEndType();
+    public EncryptedExtensionsParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
+        super(stream, HandshakeMessageType.ENCRYPTED_EXTENSIONS, version, tlsContext);
+        this.talkingConnectionEndType = tlsContext.getTalkingConnectionEndType();
     }
 
     @Override

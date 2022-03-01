@@ -20,17 +20,17 @@ public class SrtpExtensionHandler extends ExtensionHandler<SrtpExtensionMessage>
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SrtpExtensionHandler(TlsContext context) {
-        super(context);
+    public SrtpExtensionHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override
     public void adjustTLSExtensionContext(SrtpExtensionMessage message) {
-        context.setSecureRealTimeTransportProtocolProtectionProfiles(
+        tlsContext.setSecureRealTimeTransportProtocolProtectionProfiles(
             SrtpProtectionProfiles.getProfilesAsArrayList(message.getSrtpProtectionProfiles().getValue()));
         LOGGER.debug("Adjusted the TLS context secure realtime transport protocol protection profiles to "
             + ArrayConverter.bytesToHexString(message.getSrtpProtectionProfiles()));
-        context.setSecureRealTimeProtocolMasterKeyIdentifier(message.getSrtpMki().getValue());
+        tlsContext.setSecureRealTimeProtocolMasterKeyIdentifier(message.getSrtpMki().getValue());
         LOGGER.debug("Adjusted the TLS context secure realtime transport protocol master key identifier to "
             + ArrayConverter.bytesToHexString(message.getSrtpMki()));
     }

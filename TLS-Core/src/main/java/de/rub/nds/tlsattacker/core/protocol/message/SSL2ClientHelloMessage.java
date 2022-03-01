@@ -189,22 +189,22 @@ public class SSL2ClientHelloMessage extends SSL2HandshakeMessage {
     }
 
     @Override
-    public SSL2ClientHelloHandler getHandler(TlsContext context) {
-        return new SSL2ClientHelloHandler(context);
+    public SSL2ClientHelloHandler getHandler(TlsContext tlsContext) {
+        return new SSL2ClientHelloHandler(tlsContext);
     }
 
     @Override
-    public SSL2ClientHelloParser getParser(TlsContext context, InputStream stream) {
-        return new SSL2ClientHelloParser(stream, context.getChooser().getSelectedProtocolVersion(), context);
+    public SSL2ClientHelloParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new SSL2ClientHelloParser(stream, tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext);
     }
 
     @Override
-    public SSL2ClientHelloPreparator getPreparator(TlsContext context) {
-        return new SSL2ClientHelloPreparator(context.getChooser(), this);
+    public SSL2ClientHelloPreparator getPreparator(TlsContext tlsContext) {
+        return new SSL2ClientHelloPreparator(tlsContext.getChooser(), this);
     }
 
     @Override
-    public SSL2ClientHelloSerializer getSerializer(TlsContext context) {
-        return new SSL2ClientHelloSerializer(this, context.getChooser().getSelectedProtocolVersion());
+    public SSL2ClientHelloSerializer getSerializer(TlsContext tlsContext) {
+        return new SSL2ClientHelloSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 }

@@ -31,23 +31,23 @@ public class ServerHelloDoneMessage extends HandshakeMessage {
     }
 
     @Override
-    public ServerHelloDoneHandler getHandler(TlsContext context) {
-        return new ServerHelloDoneHandler(context);
+    public ServerHelloDoneHandler getHandler(TlsContext tlsContext) {
+        return new ServerHelloDoneHandler(tlsContext);
     }
 
     @Override
-    public ServerHelloDoneParser getParser(TlsContext context, InputStream stream) {
-        return new ServerHelloDoneParser(stream, context.getChooser().getLastRecordVersion(), context);
+    public ServerHelloDoneParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new ServerHelloDoneParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
     }
 
     @Override
-    public ServerHelloDonePreparator getPreparator(TlsContext context) {
-        return new ServerHelloDonePreparator(context.getChooser(), this);
+    public ServerHelloDonePreparator getPreparator(TlsContext tlsContext) {
+        return new ServerHelloDonePreparator(tlsContext.getChooser(), this);
     }
 
     @Override
-    public ServerHelloDoneSerializer getSerializer(TlsContext context) {
-        return new ServerHelloDoneSerializer(this, context.getChooser().getSelectedProtocolVersion());
+    public ServerHelloDoneSerializer getSerializer(TlsContext tlsContext) {
+        return new ServerHelloDoneSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

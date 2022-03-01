@@ -71,22 +71,22 @@ public class SignatureAndHashAlgorithmsExtensionMessage
     }
 
     @Override
-    public SignatureAndHashAlgorithmsExtensionParser getParser(TlsContext context, InputStream stream) {
-        return new SignatureAndHashAlgorithmsExtensionParser(stream, context.getConfig());
+    public SignatureAndHashAlgorithmsExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new SignatureAndHashAlgorithmsExtensionParser(stream, tlsContext.getConfig());
     }
 
     @Override
-    public SignatureAndHashAlgorithmsExtensionPreparator getPreparator(TlsContext context) {
-        return new SignatureAndHashAlgorithmsExtensionPreparator(context.getChooser(), this, getSerializer(context));
+    public SignatureAndHashAlgorithmsExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new SignatureAndHashAlgorithmsExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
     }
 
     @Override
-    public SignatureAndHashAlgorithmsExtensionSerializer getSerializer(TlsContext context) {
+    public SignatureAndHashAlgorithmsExtensionSerializer getSerializer(TlsContext tlsContext) {
         return new SignatureAndHashAlgorithmsExtensionSerializer(this);
     }
 
     @Override
-    public SignatureAndHashAlgorithmsExtensionHandler getHandler(TlsContext context) {
-        return new SignatureAndHashAlgorithmsExtensionHandler(context);
+    public SignatureAndHashAlgorithmsExtensionHandler getHandler(TlsContext tlsContext) {
+        return new SignatureAndHashAlgorithmsExtensionHandler(tlsContext);
     }
 }

@@ -67,22 +67,22 @@ public class SignedCertificateTimestampExtensionMessage
     }
 
     @Override
-    public SignedCertificateTimestampExtensionParser getParser(TlsContext context, InputStream stream) {
-        return new SignedCertificateTimestampExtensionParser(stream, context.getConfig());
+    public SignedCertificateTimestampExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new SignedCertificateTimestampExtensionParser(stream, tlsContext.getConfig());
     }
 
     @Override
-    public SignedCertificateTimestampExtensionPreparator getPreparator(TlsContext context) {
-        return new SignedCertificateTimestampExtensionPreparator(context.getChooser(), this, getSerializer(context));
+    public SignedCertificateTimestampExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new SignedCertificateTimestampExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
     }
 
     @Override
-    public SignedCertificateTimestampExtensionSerializer getSerializer(TlsContext context) {
+    public SignedCertificateTimestampExtensionSerializer getSerializer(TlsContext tlsContext) {
         return new SignedCertificateTimestampExtensionSerializer(this);
     }
 
     @Override
-    public SignedCertificateTimestampExtensionHandler getHandler(TlsContext context) {
-        return new SignedCertificateTimestampExtensionHandler(context);
+    public SignedCertificateTimestampExtensionHandler getHandler(TlsContext tlsContext) {
+        return new SignedCertificateTimestampExtensionHandler(tlsContext);
     }
 }

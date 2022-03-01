@@ -15,16 +15,16 @@ import java.math.BigInteger;
 
 public class RSAServerKeyExchangeHandler extends ServerKeyExchangeHandler<RSAServerKeyExchangeMessage> {
 
-    public RSAServerKeyExchangeHandler(TlsContext context) {
-        super(context);
+    public RSAServerKeyExchangeHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override
     public void adjustContext(RSAServerKeyExchangeMessage message) {
-        context.setServerRSAModulus(new BigInteger(1, message.getModulus().getValue()));
-        context.setServerRSAPublicKey(new BigInteger(1, message.getPublicKey().getValue()));
+        tlsContext.setServerRSAModulus(new BigInteger(1, message.getModulus().getValue()));
+        tlsContext.setServerRSAPublicKey(new BigInteger(1, message.getPublicKey().getValue()));
         if (message.getComputations() != null && message.getComputations().getPrivateKey() != null) {
-            context.setServerRSAPrivateKey(message.getComputations().getPrivateKey().getValue());
+            tlsContext.setServerRSAPrivateKey(message.getComputations().getPrivateKey().getValue());
         }
     }
 

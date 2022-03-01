@@ -68,23 +68,23 @@ public class CookieExtensionMessage extends ExtensionMessage<CookieExtensionMess
     }
 
     @Override
-    public CookieExtensionParser getParser(TlsContext context, InputStream stream) {
-        return new CookieExtensionParser(stream, context.getConfig());
+    public CookieExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new CookieExtensionParser(stream, tlsContext.getConfig());
     }
 
     @Override
-    public CookieExtensionPreparator getPreparator(TlsContext context) {
-        return new CookieExtensionPreparator(context.getChooser(), this, getSerializer(context));
+    public CookieExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new CookieExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
     }
 
     @Override
-    public CookieExtensionSerializer getSerializer(TlsContext context) {
+    public CookieExtensionSerializer getSerializer(TlsContext tlsContext) {
         return new CookieExtensionSerializer(this);
     }
 
     @Override
-    public CookieExtensionHandler getHandler(TlsContext context) {
-        return new CookieExtensionHandler(context);
+    public CookieExtensionHandler getHandler(TlsContext tlsContext) {
+        return new CookieExtensionHandler(tlsContext);
     }
 
 }

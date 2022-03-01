@@ -95,22 +95,22 @@ public class PSKKeyExchangeModesExtensionMessage extends ExtensionMessage<PSKKey
     }
 
     @Override
-    public ExtensionParser getParser(TlsContext context, InputStream stream) {
-        return new PSKKeyExchangeModesExtensionParser(stream, context.getConfig());
+    public ExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new PSKKeyExchangeModesExtensionParser(stream, tlsContext.getConfig());
     }
 
     @Override
-    public ExtensionPreparator getPreparator(TlsContext context) {
-        return new PSKKeyExchangeModesExtensionPreparator(context.getChooser(), this, getSerializer(context));
+    public ExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new PSKKeyExchangeModesExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
     }
 
     @Override
-    public ExtensionSerializer getSerializer(TlsContext context) {
+    public ExtensionSerializer getSerializer(TlsContext tlsContext) {
         return new PSKKeyExchangeModesExtensionSerializer(this);
     }
 
     @Override
-    public PSKKeyExchangeModesExtensionHandler getHandler(TlsContext context) {
-        return new PSKKeyExchangeModesExtensionHandler(context);
+    public PSKKeyExchangeModesExtensionHandler getHandler(TlsContext tlsContext) {
+        return new PSKKeyExchangeModesExtensionHandler(tlsContext);
     }
 }

@@ -31,23 +31,23 @@ public class ClientCertificateUrlExtensionMessage extends ExtensionMessage<Clien
     }
 
     @Override
-    public ClientCertificateUrlExtensionParser getParser(TlsContext context, InputStream stream) {
-        return new ClientCertificateUrlExtensionParser(stream, context.getConfig());
+    public ClientCertificateUrlExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new ClientCertificateUrlExtensionParser(stream, tlsContext.getConfig());
     }
 
     @Override
-    public ClientCertificateUrlExtensionPreparator getPreparator(TlsContext context) {
-        return new ClientCertificateUrlExtensionPreparator(context.getChooser(), this, getSerializer(context));
+    public ClientCertificateUrlExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new ClientCertificateUrlExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
     }
 
     @Override
-    public ClientCertificateUrlExtensionSerializer getSerializer(TlsContext context) {
+    public ClientCertificateUrlExtensionSerializer getSerializer(TlsContext tlsContext) {
         return new ClientCertificateUrlExtensionSerializer(this);
     }
 
     @Override
-    public ClientCertificateUrlExtensionHandler getHandler(TlsContext context) {
-        return new ClientCertificateUrlExtensionHandler(context);
+    public ClientCertificateUrlExtensionHandler getHandler(TlsContext tlsContext) {
+        return new ClientCertificateUrlExtensionHandler(tlsContext);
     }
 
 }

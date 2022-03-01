@@ -25,8 +25,8 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
  */
 public class CertificateVerifyHandler extends HandshakeMessageHandler<CertificateVerifyMessage> {
 
-    public CertificateVerifyHandler(TlsContext context) {
-        super(context);
+    public CertificateVerifyHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override

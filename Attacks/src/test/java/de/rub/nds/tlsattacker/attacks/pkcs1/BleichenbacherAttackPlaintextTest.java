@@ -32,14 +32,14 @@ public class BleichenbacherAttackPlaintextTest {
 
     private static final int PREMASTER_SECRET_LENGTH = 48;
 
-    private TlsContext context;
+    private TlsContext tlsContext;
 
     /**
      *
      */
     @Before
     public void setUp() {
-        context = new TlsContext();
+        tlsContext = new TlsContext();
     }
 
     /**
@@ -50,8 +50,8 @@ public class BleichenbacherAttackPlaintextTest {
     public void testBleichenbacherAttack() throws Exception {
         Security.addProvider(new BouncyCastleProvider());
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-        context.getBadSecureRandom().setSeed(0);
-        keyPairGenerator.initialize(2048, context.getBadSecureRandom());
+        tlsContext.getBadSecureRandom().setSeed(0);
+        keyPairGenerator.initialize(2048, tlsContext.getBadSecureRandom());
         KeyPair keyPair = keyPairGenerator.genKeyPair();
 
         SecureRandom sr = new SecureRandom();

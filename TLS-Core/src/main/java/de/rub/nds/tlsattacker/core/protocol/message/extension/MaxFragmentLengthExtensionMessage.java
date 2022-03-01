@@ -58,22 +58,22 @@ public class MaxFragmentLengthExtensionMessage extends ExtensionMessage<MaxFragm
     }
 
     @Override
-    public MaxFragmentLengthExtensionParser getParser(TlsContext context, InputStream stream) {
-        return new MaxFragmentLengthExtensionParser(stream, context.getConfig());
+    public MaxFragmentLengthExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new MaxFragmentLengthExtensionParser(stream, tlsContext.getConfig());
     }
 
     @Override
-    public MaxFragmentLengthExtensionPreparator getPreparator(TlsContext context) {
-        return new MaxFragmentLengthExtensionPreparator(context.getChooser(), this, getSerializer(context));
+    public MaxFragmentLengthExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new MaxFragmentLengthExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
     }
 
     @Override
-    public MaxFragmentLengthExtensionSerializer getSerializer(TlsContext context) {
+    public MaxFragmentLengthExtensionSerializer getSerializer(TlsContext tlsContext) {
         return new MaxFragmentLengthExtensionSerializer(this);
     }
 
     @Override
-    public MaxFragmentLengthExtensionHandler getHandler(TlsContext context) {
-        return new MaxFragmentLengthExtensionHandler(context);
+    public MaxFragmentLengthExtensionHandler getHandler(TlsContext tlsContext) {
+        return new MaxFragmentLengthExtensionHandler(tlsContext);
     }
 }

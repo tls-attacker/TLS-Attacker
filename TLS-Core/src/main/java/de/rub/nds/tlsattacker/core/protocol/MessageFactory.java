@@ -28,7 +28,7 @@ public class MessageFactory {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public static HandshakeMessage generateHandshakeMessage(HandshakeMessageType type, TlsContext context) {
+    public static HandshakeMessage generateHandshakeMessage(HandshakeMessageType type, TlsContext tlsContext) {
         switch (type) {
             case CERTIFICATE:
                 return new CertificateMessage();
@@ -41,7 +41,7 @@ public class MessageFactory {
             case CLIENT_HELLO:
                 return new ClientHelloMessage();
             case CLIENT_KEY_EXCHANGE:
-                return getClientKeyExchangeMessage(context);
+                return getClientKeyExchangeMessage(tlsContext);
             case ENCRYPTED_EXTENSIONS:
                 return new EncryptedExtensionsMessage();
             case END_OF_EARLY_DATA:
@@ -65,7 +65,7 @@ public class MessageFactory {
             case SERVER_HELLO_DONE:
                 return new ServerHelloDoneMessage();
             case SERVER_KEY_EXCHANGE:
-                return getServerKeyExchangeMessage(context);
+                return getServerKeyExchangeMessage(tlsContext);
             case UNKNOWN:
                 return new UnknownHandshakeMessage();
             default:
@@ -74,8 +74,8 @@ public class MessageFactory {
 
     }
 
-    private static ServerKeyExchangeMessage getServerKeyExchangeMessage(TlsContext context) {
-        CipherSuite cs = context.getChooser().getSelectedCipherSuite();
+    private static ServerKeyExchangeMessage getServerKeyExchangeMessage(TlsContext tlsContext) {
+        CipherSuite cs = tlsContext.getChooser().getSelectedCipherSuite();
         KeyExchangeAlgorithm algorithm = AlgorithmResolver.getKeyExchangeAlgorithm(cs);
         switch (algorithm) {
             case ECDHE_ECDSA:
@@ -107,8 +107,8 @@ public class MessageFactory {
         }
     }
 
-    private static ClientKeyExchangeMessage getClientKeyExchangeMessage(TlsContext context) {
-        CipherSuite cs = context.getChooser().getSelectedCipherSuite();
+    private static ClientKeyExchangeMessage getClientKeyExchangeMessage(TlsContext tlsContext) {
+        CipherSuite cs = tlsContext.getChooser().getSelectedCipherSuite();
         KeyExchangeAlgorithm algorithm = AlgorithmResolver.getKeyExchangeAlgorithm(cs);
         switch (algorithm) {
             case RSA:

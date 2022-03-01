@@ -21,8 +21,8 @@ public class ECDHClientKeyExchangeHandler<T extends ECDHClientKeyExchangeMessage
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ECDHClientKeyExchangeHandler(TlsContext context) {
-        super(context);
+    public ECDHClientKeyExchangeHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override
@@ -35,9 +35,9 @@ public class ECDHClientKeyExchangeHandler<T extends ECDHClientKeyExchangeMessage
 
     private void adjustClientPublicKey(T message) {
         byte[] serializedPoint = message.getPublicKey().getValue();
-        NamedGroup usedGroup = context.getChooser().getSelectedNamedGroup();
+        NamedGroup usedGroup = tlsContext.getChooser().getSelectedNamedGroup();
         LOGGER.debug("Adjusting EC Point");
         Point publicKey = PointFormatter.formatFromByteArray(usedGroup, serializedPoint);
-        context.setClientEcPublicKey(publicKey);
+        tlsContext.setClientEcPublicKey(publicKey);
     }
 }

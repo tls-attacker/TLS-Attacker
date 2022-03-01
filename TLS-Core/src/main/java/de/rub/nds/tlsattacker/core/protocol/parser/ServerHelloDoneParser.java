@@ -27,11 +27,11 @@ public class ServerHelloDoneParser extends HandshakeMessageParser<ServerHelloDon
      * @param stream
      * @param version
      *                Version of the Protocol
-     * @param context
-     *                A Config used in the current context
+     * @param tlsContext
+     *                A Config used in the current tlsContext
      */
-    public ServerHelloDoneParser(InputStream stream, ProtocolVersion version, TlsContext context) {
-        super(stream, HandshakeMessageType.SERVER_HELLO_DONE, version, context);
+    public ServerHelloDoneParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
+        super(stream, HandshakeMessageType.SERVER_HELLO_DONE, version, tlsContext);
     }
 
     @Override

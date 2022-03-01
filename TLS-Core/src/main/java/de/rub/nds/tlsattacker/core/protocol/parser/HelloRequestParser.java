@@ -25,12 +25,12 @@ public class HelloRequestParser extends HandshakeMessageParser<HelloRequestMessa
      * Constructor for the Parser class
      *
      * @param inputStream
-     * @param context
+     * @param tlsContext
      * @param version
      *                    Version of the Protocol
      */
-    public HelloRequestParser(InputStream inputStream, ProtocolVersion version, TlsContext context) {
-        super(inputStream, HandshakeMessageType.HELLO_REQUEST, version, context);
+    public HelloRequestParser(InputStream inputStream, ProtocolVersion version, TlsContext tlsContext) {
+        super(inputStream, HandshakeMessageType.HELLO_REQUEST, version, tlsContext);
     }
 
     /**

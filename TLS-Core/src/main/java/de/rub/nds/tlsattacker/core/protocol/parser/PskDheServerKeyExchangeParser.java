@@ -32,8 +32,8 @@ public class PskDheServerKeyExchangeParser extends DHEServerKeyExchangeParser<Ps
      * @param version
      *                Version of the Protocol
      */
-    public PskDheServerKeyExchangeParser(InputStream stream, ProtocolVersion version, TlsContext context) {
-        super(stream, version, KeyExchangeAlgorithm.DHE_PSK, context);
+    public PskDheServerKeyExchangeParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
+        super(stream, version, KeyExchangeAlgorithm.DHE_PSK, tlsContext);
         this.version = version;
     }
 

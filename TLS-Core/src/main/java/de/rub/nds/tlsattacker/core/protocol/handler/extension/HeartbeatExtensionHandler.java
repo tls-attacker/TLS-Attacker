@@ -21,8 +21,8 @@ public class HeartbeatExtensionHandler extends ExtensionHandler<HeartbeatExtensi
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public HeartbeatExtensionHandler(TlsContext context) {
-        super(context);
+    public HeartbeatExtensionHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override
@@ -35,7 +35,7 @@ public class HeartbeatExtensionHandler extends ExtensionHandler<HeartbeatExtensi
         if (mode == null) {
             LOGGER.warn("Unknown HeartbeatMode: " + ArrayConverter.bytesToHexString(heartbeatMode));
         } else {
-            context.setHeartbeatMode(mode);
+            tlsContext.setHeartbeatMode(mode);
         }
     }
 

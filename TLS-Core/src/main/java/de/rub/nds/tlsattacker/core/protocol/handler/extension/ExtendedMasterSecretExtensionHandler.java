@@ -15,15 +15,15 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecr
 
 public class ExtendedMasterSecretExtensionHandler extends ExtensionHandler<ExtendedMasterSecretExtensionMessage> {
 
-    public ExtendedMasterSecretExtensionHandler(TlsContext context) {
-        super(context);
+    public ExtendedMasterSecretExtensionHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override
     public void adjustTLSExtensionContext(ExtendedMasterSecretExtensionMessage message) {
-        if (context.isExtensionProposed(ExtensionType.EXTENDED_MASTER_SECRET)
-            && context.isExtensionNegotiated(ExtensionType.EXTENDED_MASTER_SECRET)) {
-            context.setUseExtendedMasterSecret(true);
+        if (tlsContext.isExtensionProposed(ExtensionType.EXTENDED_MASTER_SECRET)
+            && tlsContext.isExtensionNegotiated(ExtensionType.EXTENDED_MASTER_SECRET)) {
+            tlsContext.setUseExtendedMasterSecret(true);
         }
     }
 

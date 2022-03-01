@@ -22,8 +22,8 @@ public class DtlsHandshakeMessageFragmentParser extends HandshakeMessageParser<D
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public DtlsHandshakeMessageFragmentParser(InputStream stream, ProtocolVersion version, TlsContext context) {
-        super(stream, HandshakeMessageType.UNKNOWN, version, context);
+    public DtlsHandshakeMessageFragmentParser(InputStream stream, ProtocolVersion version, TlsContext TlsContext) {
+        super(stream, HandshakeMessageType.UNKNOWN, version, TlsContext);
     }
 
     @Override

@@ -29,14 +29,14 @@ public class MessageFragmenter {
      * Takes a message and splits it into prepared fragments.
      *
      * @param  message
-     * @param  context
+     * @param  tlsContext
      * @return
      */
     public static List<DtlsHandshakeMessageFragment> fragmentMessage(HandshakeMessage message, int maxFragmentLength,
-        TlsContext context) {
-        byte[] bytes = getSerializedBytes(message, context);
+        TlsContext tlsContext) {
+        byte[] bytes = getSerializedBytes(message, tlsContext);
         List<DtlsHandshakeMessageFragment> dtlsFragments =
-            generateFragments(message, bytes, maxFragmentLength, context);
+            generateFragments(message, bytes, maxFragmentLength, tlsContext);
         return dtlsFragments;
     }
 
@@ -44,14 +44,14 @@ public class MessageFragmenter {
      * Takes a message and splits it into prepared fragments.
      */
     public static List<DtlsHandshakeMessageFragment> fragmentMessage(HandshakeMessage message,
-        List<DtlsHandshakeMessageFragment> fragments, TlsContext context) {
-        byte[] bytes = getSerializedBytes(message, context);
-        List<DtlsHandshakeMessageFragment> dtlsFragments = generateFragments(message, bytes, fragments, context);
+        List<DtlsHandshakeMessageFragment> fragments, TlsContext tlsContext) {
+        byte[] bytes = getSerializedBytes(message, tlsContext);
+        List<DtlsHandshakeMessageFragment> dtlsFragments = generateFragments(message, bytes, fragments, tlsContext);
         return dtlsFragments;
     }
 
-    private static byte[] getSerializedBytes(HandshakeMessage message, TlsContext context) {
-        HandshakeMessageSerializer serializer = message.getSerializer(context);
+    private static byte[] getSerializedBytes(HandshakeMessage message, TlsContext tlsContext) {
+        HandshakeMessageSerializer serializer = message.getSerializer(tlsContext);
         byte[] bytes;
         bytes = serializer.serializeProtocolMessageContent();
         return bytes;
@@ -61,17 +61,17 @@ public class MessageFragmenter {
      * Generates a single fragment carrying the contents of the message as payload.
      *
      * @param  message
-     * @param  context
+     * @param  tlsContext
      * @return
      */
-    public static DtlsHandshakeMessageFragment wrapInSingleFragment(HandshakeMessage message, TlsContext context) {
-        byte[] bytes = getSerializedBytes(message, context);
-        List<DtlsHandshakeMessageFragment> fragments = generateFragments(message, bytes, bytes.length, context);
+    public static DtlsHandshakeMessageFragment wrapInSingleFragment(HandshakeMessage message, TlsContext tlsContext) {
+        byte[] bytes = getSerializedBytes(message, tlsContext);
+        List<DtlsHandshakeMessageFragment> fragments = generateFragments(message, bytes, bytes.length, tlsContext);
         return fragments.get(0);
     }
 
     private static List<DtlsHandshakeMessageFragment> generateFragments(HandshakeMessage message, byte[] handshakeBytes,
-        int maxFragmentLength, TlsContext context) {
+        int maxFragmentLength, TlsContext tlsContext) {
         List<DtlsHandshakeMessageFragment> fragments = new LinkedList<>();
         int currentOffset = 0;
         do {
@@ -81,13 +81,13 @@ public class MessageFragmenter {
             if (message.getMessageSequence() != null) {
                 sequence = message.getMessageSequence().getValue();
             } else {
-                // it is possible that not all messages are created under a DTLS context such that they do not have a
+                // it is possible that not all messages are created under a DTLS tlsContext such that they do not have a
                 // message sequence
                 sequence = 0;
             }
             DtlsHandshakeMessageFragment fragment = new DtlsHandshakeMessageFragment(message.getHandshakeMessageType(),
                 fragmentBytes, sequence, currentOffset, handshakeBytes.length);
-            fragment.getPreparator(context).prepare();
+            fragment.getPreparator(tlsContext).prepare();
             fragments.add(fragment);
             currentOffset += maxFragmentLength;
         } while (currentOffset < handshakeBytes.length);
@@ -95,29 +95,29 @@ public class MessageFragmenter {
         return fragments;
     }
 
-    public static byte[] prepareMessage(ProtocolMessage message, boolean withPrepare, TlsContext context) {
+    public static byte[] prepareMessage(ProtocolMessage message, boolean withPrepare, TlsContext tlsContext) {
         if (withPrepare) {
-            Preparator<ProtocolMessage> preparator = message.getPreparator(context);
+            Preparator<ProtocolMessage> preparator = message.getPreparator(tlsContext);
             preparator.prepare();
             preparator.afterPrepare();
-            Serializer<ProtocolMessage> serializer = message.getSerializer(context);
+            Serializer<ProtocolMessage> serializer = message.getSerializer(tlsContext);
             byte[] completeMessage = serializer.serialize();
             message.setCompleteResultingMessage(completeMessage);
         }
         try {
             if (message.getAdjustContext()) {
-                if (context.getConfig().getDefaultSelectedProtocolVersion().isDTLS()
+                if (tlsContext.getConfig().getDefaultSelectedProtocolVersion().isDTLS()
                     && (message instanceof HandshakeMessage)
                     && !((HandshakeMessage) message).isDtlsHandshakeMessageFragment()) {
-                    context.increaseDtlsWriteHandshakeMessageSequence();
+                    tlsContext.increaseDtlsWriteHandshakeMessageSequence();
                 }
             }
 
-            ProtocolMessageHandler handler = message.getHandler(context);
+            ProtocolMessageHandler handler = message.getHandler(tlsContext);
             handler.updateDigest(message);
             if (message.getAdjustContext()) {
 
-                message.getHandler(context).adjustContext(message);
+                message.getHandler(tlsContext).adjustContext(message);
             }
         } catch (AdjustmentException e) {
             LOGGER.warn("Could not adjust TLSContext");
@@ -128,12 +128,12 @@ public class MessageFragmenter {
     }
 
     private static List<DtlsHandshakeMessageFragment> generateFragments(HandshakeMessage message, byte[] handshakeBytes,
-        List<DtlsHandshakeMessageFragment> fragments, TlsContext context) {
+        List<DtlsHandshakeMessageFragment> fragments, TlsContext tlsContext) {
         int currentOffset = 0;
         for (DtlsHandshakeMessageFragment fragment : fragments) {
             Integer maxFragmentLength = fragment.getMaxFragmentLengthConfig();
             if (maxFragmentLength == null) {
-                maxFragmentLength = context.getConfig().getDtlsMaximumFragmentLength();
+                maxFragmentLength = tlsContext.getConfig().getDtlsMaximumFragmentLength();
             }
             byte[] fragmentBytes = Arrays.copyOfRange(handshakeBytes, currentOffset,
                 Math.min(currentOffset + maxFragmentLength, handshakeBytes.length));
@@ -143,14 +143,14 @@ public class MessageFragmenter {
             if (message.getMessageSequence() != null) {
                 sequence = message.getMessageSequence().getValue();
             } else {
-                // it is possible that not all messages are created under a DTLS context such that they do not have a
+                // it is possible that not all messages are created under a DTLS tlsContext such that they do not have a
                 // message sequence
                 sequence = 0;
             }
             fragment.setMessageSequenceConfig(sequence);
             fragment.setOffsetConfig(currentOffset);
             fragment.setHandshakeMessageLengthConfig(handshakeBytes.length);
-            prepareMessage(message, true, context);
+            prepareMessage(message, true, tlsContext);
             currentOffset += fragmentBytes.length;
         }
 

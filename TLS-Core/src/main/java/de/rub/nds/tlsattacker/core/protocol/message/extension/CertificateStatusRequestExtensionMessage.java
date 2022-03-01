@@ -149,24 +149,24 @@ public class CertificateStatusRequestExtensionMessage
     }
 
     @Override
-    public CertificateStatusRequestExtensionParser getParser(TlsContext context, InputStream stream) {
+    public CertificateStatusRequestExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
         // TODO make sure this is the correct version
-        return new CertificateStatusRequestExtensionParser(stream, context.getConfig(),
-            context.getChooser().getSelectedProtocolVersion());
+        return new CertificateStatusRequestExtensionParser(stream, tlsContext.getConfig(),
+            tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override
-    public CertificateStatusRequestExtensionPreparator getPreparator(TlsContext context) {
-        return new CertificateStatusRequestExtensionPreparator(context.getChooser(), this, getSerializer(context));
+    public CertificateStatusRequestExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new CertificateStatusRequestExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
     }
 
     @Override
-    public CertificateStatusRequestExtensionSerializer getSerializer(TlsContext context) {
+    public CertificateStatusRequestExtensionSerializer getSerializer(TlsContext tlsContext) {
         return new CertificateStatusRequestExtensionSerializer(this);
     }
 
     @Override
-    public CertificateStatusRequestExtensionHandler getHandler(TlsContext context) {
-        return new CertificateStatusRequestExtensionHandler(context);
+    public CertificateStatusRequestExtensionHandler getHandler(TlsContext tlsContext) {
+        return new CertificateStatusRequestExtensionHandler(tlsContext);
     }
 }

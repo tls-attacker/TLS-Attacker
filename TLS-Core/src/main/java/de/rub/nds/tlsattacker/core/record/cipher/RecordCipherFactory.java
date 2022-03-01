@@ -22,41 +22,41 @@ public class RecordCipherFactory {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public static RecordCipher getRecordCipher(TlsContext context, KeySet keySet, CipherSuite cipherSuite) {
+    public static RecordCipher getRecordCipher(TlsContext tlsContext, KeySet keySet, CipherSuite cipherSuite) {
         try {
-            if (context.getChooser().getSelectedCipherSuite() == null || !cipherSuite.isImplemented()) {
+            if (tlsContext.getChooser().getSelectedCipherSuite() == null || !cipherSuite.isImplemented()) {
                 LOGGER.warn("Cipher " + cipherSuite.name() + " not implemented. Using Null Cipher instead");
-                return getNullCipher(context);
+                return getNullCipher(tlsContext);
             } else {
                 CipherType type = AlgorithmResolver.getCipherType(cipherSuite);
-                CipherState state = new CipherState(context.getChooser().getSelectedProtocolVersion(),
-                    context.getChooser().getSelectedCipherSuite(), keySet,
-                    context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC));
+                CipherState state = new CipherState(tlsContext.getChooser().getSelectedProtocolVersion(),
+                    tlsContext.getChooser().getSelectedCipherSuite(), keySet,
+                    tlsContext.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC));
                 switch (type) {
                     case AEAD:
-                        return new RecordAEADCipher(context, state);
+                        return new RecordAEADCipher(tlsContext, state);
                     case BLOCK:
-                        return new RecordBlockCipher(context, state);
+                        return new RecordBlockCipher(tlsContext, state);
                     case STREAM:
-                        return new RecordStreamCipher(context, state);
+                        return new RecordStreamCipher(tlsContext, state);
                     default:
                         LOGGER.warn("UnknownCipherType:" + type.name());
-                        return new RecordNullCipher(context, state);
+                        return new RecordNullCipher(tlsContext, state);
                 }
             }
         } catch (Exception e) {
             LOGGER.debug("Could not create RecordCipher from the current Context! Creating null Cipher", e);
-            return getNullCipher(context);
+            return getNullCipher(tlsContext);
         }
     }
 
-    public static RecordCipher getRecordCipher(TlsContext context, KeySet keySet) {
-        return getRecordCipher(context, keySet, context.getChooser().getSelectedCipherSuite());
+    public static RecordCipher getRecordCipher(TlsContext tlsContext, KeySet keySet) {
+        return getRecordCipher(tlsContext, keySet, tlsContext.getChooser().getSelectedCipherSuite());
     }
 
-    public static RecordNullCipher getNullCipher(TlsContext context) {
-        return new RecordNullCipher(context, new CipherState(context.getChooser().getSelectedProtocolVersion(),
-            context.getChooser().getSelectedCipherSuite(), null, null));
+    public static RecordNullCipher getNullCipher(TlsContext tlsContext) {
+        return new RecordNullCipher(tlsContext, new CipherState(tlsContext.getChooser().getSelectedProtocolVersion(),
+            tlsContext.getChooser().getSelectedCipherSuite(), null, null));
     }
 
     private RecordCipherFactory() {

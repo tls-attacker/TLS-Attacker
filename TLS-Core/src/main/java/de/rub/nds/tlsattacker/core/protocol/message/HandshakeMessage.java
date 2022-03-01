@@ -283,16 +283,16 @@ public abstract class HandshakeMessage extends ProtocolMessage {
     }
 
     @Override
-    public abstract HandshakeMessageParser getParser(TlsContext context, InputStream stream);
+    public abstract HandshakeMessageParser getParser(TlsContext tlsContext, InputStream stream);
 
     @Override
-    public abstract HandshakeMessagePreparator getPreparator(TlsContext context);
+    public abstract HandshakeMessagePreparator getPreparator(TlsContext tlsContext);
 
     @Override
-    public abstract HandshakeMessageSerializer getSerializer(TlsContext context);
+    public abstract HandshakeMessageSerializer getSerializer(TlsContext tlsContext);
 
     @Override
-    public abstract HandshakeMessageHandler getHandler(TlsContext context);
+    public abstract HandshakeMessageHandler getHandler(TlsContext tlsContext);
 
     public ModifiableByteArray getMessageContent() {
         return messageContent;

@@ -40,14 +40,14 @@ public abstract class RecordCipher {
     /**
      * TLS context
      */
-    private TlsContext context;
+    private TlsContext tlsContext;
     /**
      * cipher state
      */
     private CipherState state;
 
-    public RecordCipher(TlsContext context, CipherState state) {
-        this.context = context;
+    public RecordCipher(TlsContext tlsContext, CipherState state) {
+        this.tlsContext = tlsContext;
         this.state = state;
     }
 
@@ -129,23 +129,23 @@ public abstract class RecordCipher {
     }
 
     public ConnectionEndType getLocalConnectionEndType() {
-        return context.getContext().getConnection().getLocalConnectionEndType();
+        return tlsContext.getContext().getConnection().getLocalConnectionEndType();
     }
 
     public ConnectionEndType getConnectionEndType() {
-        return context.getChooser().getConnectionEndType();
+        return tlsContext.getChooser().getConnectionEndType();
     }
 
     public Integer getDefaultAdditionalPadding() {
-        return context.getConfig().getDefaultAdditionalPadding();
+        return tlsContext.getConfig().getDefaultAdditionalPadding();
     }
 
     public ConnectionEndType getTalkingConnectionEndType() {
-        return context.getTalkingConnectionEndType();
+        return tlsContext.getTalkingConnectionEndType();
     }
 
     public Random getRandom() {
-        return context.getRandom();
+        return tlsContext.getRandom();
     }
 
 }

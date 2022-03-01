@@ -38,10 +38,10 @@ public class ECPointFormatExtensionHandler extends ExtensionHandler<ECPointForma
                 LOGGER.warn("Unknown ECPointFormat:" + b);
             }
         }
-        if (context.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
-            context.setClientPointFormatsList(formatList);
+        if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
+            tlsContext.setClientPointFormatsList(formatList);
         } else {
-            context.setServerPointFormatsList(formatList);
+            tlsContext.setServerPointFormatsList(formatList);
         }
     }
 

@@ -52,23 +52,23 @@ public class CertificateStatusMessage extends HandshakeMessage {
     }
 
     @Override
-    public CertificateStatusHandler getHandler(TlsContext context) {
-        return new CertificateStatusHandler(context);
+    public CertificateStatusHandler getHandler(TlsContext tlsContext) {
+        return new CertificateStatusHandler(tlsContext);
     }
 
     @Override
-    public CertificateStatusParser getParser(TlsContext context, InputStream stream) {
-        return new CertificateStatusParser(stream, context.getChooser().getLastRecordVersion(), context);
+    public CertificateStatusParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new CertificateStatusParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
     }
 
     @Override
-    public CertificateStatusPreparator getPreparator(TlsContext context) {
-        return new CertificateStatusPreparator(context.getChooser(), this);
+    public CertificateStatusPreparator getPreparator(TlsContext tlsContext) {
+        return new CertificateStatusPreparator(tlsContext.getChooser(), this);
     }
 
     @Override
-    public CertificateStatusSerializer getSerializer(TlsContext context) {
-        return new CertificateStatusSerializer(this, context.getChooser().getSelectedProtocolVersion());
+    public CertificateStatusSerializer getSerializer(TlsContext tlsContext) {
+        return new CertificateStatusSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

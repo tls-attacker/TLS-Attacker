@@ -34,12 +34,12 @@ public class ServerHelloParser extends HelloMessageParser<ServerHelloMessage> {
      * @param stream
      * @param version
      *                The Version for which this message should be parsed
-     * @param context
-     *                A Config used in the current context
+     * @param tlsContext
+     *                A Config used in the current tlsContext
      */
-    public ServerHelloParser(InputStream stream, ProtocolVersion version, TlsContext context,
+    public ServerHelloParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext,
         ConnectionEndType talkingConnectionEndType) {
-        super(stream, HandshakeMessageType.SERVER_HELLO, version, context);
+        super(stream, HandshakeMessageType.SERVER_HELLO, version, tlsContext);
         this.talkingConnectionEndType = talkingConnectionEndType;
     }
 

@@ -69,22 +69,22 @@ public class ExtendedRandomExtensionMessage extends ExtensionMessage<ExtendedRan
     }
 
     @Override
-    public ExtendedRandomExtensionParser getParser(TlsContext context, InputStream stream) {
-        return new ExtendedRandomExtensionParser(stream, context.getConfig());
+    public ExtendedRandomExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new ExtendedRandomExtensionParser(stream, tlsContext.getConfig());
     }
 
     @Override
-    public ExtendedRandomExtensionPreparator getPreparator(TlsContext context) {
-        return new ExtendedRandomExtensionPreparator(context.getChooser(), this, getSerializer(context));
+    public ExtendedRandomExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new ExtendedRandomExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
     }
 
     @Override
-    public ExtendedRandomExtensionSerializer getSerializer(TlsContext context) {
+    public ExtendedRandomExtensionSerializer getSerializer(TlsContext tlsContext) {
         return new ExtendedRandomExtensionSerializer(this);
     }
 
     @Override
-    public ExtendedRandomExtensionHandler getHandler(TlsContext context) {
-        return new ExtendedRandomExtensionHandler(context);
+    public ExtendedRandomExtensionHandler getHandler(TlsContext tlsContext) {
+        return new ExtendedRandomExtensionHandler(tlsContext);
     }
 }

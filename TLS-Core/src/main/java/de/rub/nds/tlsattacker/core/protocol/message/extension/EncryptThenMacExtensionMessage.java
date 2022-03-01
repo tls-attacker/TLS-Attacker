@@ -34,22 +34,22 @@ public class EncryptThenMacExtensionMessage extends ExtensionMessage<EncryptThen
     }
 
     @Override
-    public EncryptThenMacExtensionParser getParser(TlsContext context, InputStream stream) {
-        return new EncryptThenMacExtensionParser(stream, context.getConfig());
+    public EncryptThenMacExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new EncryptThenMacExtensionParser(stream, tlsContext.getConfig());
     }
 
     @Override
-    public EncryptThenMacExtensionPreparator getPreparator(TlsContext context) {
-        return new EncryptThenMacExtensionPreparator(context.getChooser(), this, getSerializer(context));
+    public EncryptThenMacExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new EncryptThenMacExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
     }
 
     @Override
-    public EncryptThenMacExtensionSerializer getSerializer(TlsContext context) {
+    public EncryptThenMacExtensionSerializer getSerializer(TlsContext tlsContext) {
         return new EncryptThenMacExtensionSerializer(this);
     }
 
     @Override
-    public EncryptThenMacExtensionHandler getHandler(TlsContext context) {
-        return new EncryptThenMacExtensionHandler(context);
+    public EncryptThenMacExtensionHandler getHandler(TlsContext tlsContext) {
+        return new EncryptThenMacExtensionHandler(tlsContext);
     }
 }

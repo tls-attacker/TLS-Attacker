@@ -68,22 +68,22 @@ public class PWDClearExtensionMessage extends ExtensionMessage<PWDClearExtension
     }
 
     @Override
-    public PWDClearExtensionParser getParser(TlsContext context, InputStream stream) {
-        return new PWDClearExtensionParser(stream, context.getConfig());
+    public PWDClearExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new PWDClearExtensionParser(stream, tlsContext.getConfig());
     }
 
     @Override
-    public PWDClearExtensionPreparator getPreparator(TlsContext context) {
-        return new PWDClearExtensionPreparator(context.getChooser(), this, getSerializer(context));
+    public PWDClearExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new PWDClearExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
     }
 
     @Override
-    public PWDClearExtensionSerializer getSerializer(TlsContext context) {
+    public PWDClearExtensionSerializer getSerializer(TlsContext tlsContext) {
         return new PWDClearExtensionSerializer(this);
     }
 
     @Override
-    public PWDClearExtensionHandler getHandler(TlsContext context) {
-        return new PWDClearExtensionHandler(context);
+    public PWDClearExtensionHandler getHandler(TlsContext tlsContext) {
+        return new PWDClearExtensionHandler(tlsContext);
     }
 }

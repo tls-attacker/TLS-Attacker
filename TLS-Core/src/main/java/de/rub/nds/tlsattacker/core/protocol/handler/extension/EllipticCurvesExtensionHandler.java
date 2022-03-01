@@ -33,8 +33,8 @@ public class EllipticCurvesExtensionHandler extends ExtensionHandler<EllipticCur
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public EllipticCurvesExtensionHandler(TlsContext context) {
-        super(context);
+    public EllipticCurvesExtensionHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override
@@ -53,10 +53,10 @@ public class EllipticCurvesExtensionHandler extends ExtensionHandler<EllipticCur
                 groupList.add(namedGroup);
             }
         }
-        if (context.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
-            context.setClientNamedGroupsList(groupList);
+        if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
+            tlsContext.setClientNamedGroupsList(groupList);
         } else {
-            context.setServerNamedGroupsList(groupList);
+            tlsContext.setServerNamedGroupsList(groupList);
         }
     }
 

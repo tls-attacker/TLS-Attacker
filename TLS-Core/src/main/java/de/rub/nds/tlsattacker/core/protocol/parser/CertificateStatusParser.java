@@ -23,8 +23,8 @@ public class CertificateStatusParser extends HandshakeMessageParser<CertificateS
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public CertificateStatusParser(InputStream stream, ProtocolVersion version, TlsContext context) {
-        super(stream, HandshakeMessageType.CERTIFICATE_STATUS, version, context);
+    public CertificateStatusParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
+        super(stream, HandshakeMessageType.CERTIFICATE_STATUS, version, tlsContext);
     }
 
     @Override

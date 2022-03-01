@@ -24,8 +24,8 @@ public class SSL2ClientHelloParser extends SSL2HandshakeMessageParser<SSL2Client
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SSL2ClientHelloParser(InputStream stream, ProtocolVersion version, TlsContext context) {
-        super(stream, HandshakeMessageType.SSL2_CLIENT_HELLO, version, context);
+    public SSL2ClientHelloParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
+        super(stream, HandshakeMessageType.SSL2_CLIENT_HELLO, version, tlsContext);
     }
 
     @Override

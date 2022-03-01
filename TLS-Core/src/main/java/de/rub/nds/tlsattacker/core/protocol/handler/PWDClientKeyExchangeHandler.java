@@ -14,15 +14,15 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 
 public class PWDClientKeyExchangeHandler extends ClientKeyExchangeHandler<PWDClientKeyExchangeMessage> {
 
-    public PWDClientKeyExchangeHandler(TlsContext context) {
-        super(context);
+    public PWDClientKeyExchangeHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override
     public void adjustContext(PWDClientKeyExchangeMessage message) {
         if (message.getComputations() != null) {
-            context.setPWDPE(message.getComputations().getPasswordElement());
-            context.setClientPWDPrivate(message.getComputations().getPrivateKeyScalar());
+            tlsContext.setPWDPE(message.getComputations().getPasswordElement());
+            tlsContext.setClientPWDPrivate(message.getComputations().getPrivateKeyScalar());
         }
 
         adjustPremasterSecret(message);

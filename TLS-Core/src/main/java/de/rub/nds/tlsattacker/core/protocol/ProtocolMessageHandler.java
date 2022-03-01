@@ -22,10 +22,10 @@ public abstract class ProtocolMessageHandler<MessageT extends ProtocolMessage> i
     /**
      * context
      */
-    protected final TlsContext context;
+    protected final TlsContext tlsContext;
 
-    public ProtocolMessageHandler(TlsContext context) {
-        this.context = context;
+    public ProtocolMessageHandler(TlsContext tlsContext) {
+        this.tlsContext = tlsContext;
     }
 
     /**
@@ -47,11 +47,11 @@ public abstract class ProtocolMessageHandler<MessageT extends ProtocolMessage> i
             return;
         }
 
-        if (context.getChooser().getSelectedProtocolVersion().isDTLS()) {
-            DtlsHandshakeMessageFragment fragment = MessageFragmenter.wrapInSingleFragment(handshakeMessage, context);
-            context.getDigest().append(fragment.getCompleteResultingMessage().getValue());
+        if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS()) {
+            DtlsHandshakeMessageFragment fragment = MessageFragmenter.wrapInSingleFragment(handshakeMessage, tlsContext);
+            tlsContext.getDigest().append(fragment.getCompleteResultingMessage().getValue());
         } else {
-            context.getDigest().append(message.getCompleteResultingMessage().getValue());
+            tlsContext.getDigest().append(message.getCompleteResultingMessage().getValue());
         }
         LOGGER.debug("Included in digest: " + message.toCompactString());
     }

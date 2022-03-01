@@ -119,22 +119,22 @@ public class KeyShareExtensionMessage extends ExtensionMessage {
     }
 
     @Override
-    public KeyShareExtensionParser getParser(TlsContext context, InputStream stream) {
-        return new KeyShareExtensionParser(stream, context.getConfig(), context);
+    public KeyShareExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new KeyShareExtensionParser(stream, tlsContext.getConfig(), tlsContext);
     }
 
     @Override
-    public KeyShareExtensionPreparator getPreparator(TlsContext context) {
-        return new KeyShareExtensionPreparator(context.getChooser(), this, getSerializer(context));
+    public KeyShareExtensionPreparator getPreparator(TlsContext tlsContext) {
+        return new KeyShareExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
     }
 
     @Override
-    public KeyShareExtensionSerializer getSerializer(TlsContext context) {
-        return new KeyShareExtensionSerializer(this, context.getChooser().getConnectionEndType());
+    public KeyShareExtensionSerializer getSerializer(TlsContext tlsContext) {
+        return new KeyShareExtensionSerializer(this, tlsContext.getChooser().getConnectionEndType());
     }
 
     @Override
-    public KeyShareExtensionHandler getHandler(TlsContext context) {
-        return new KeyShareExtensionHandler(context);
+    public KeyShareExtensionHandler getHandler(TlsContext tlsContext) {
+        return new KeyShareExtensionHandler(tlsContext);
     }
 }

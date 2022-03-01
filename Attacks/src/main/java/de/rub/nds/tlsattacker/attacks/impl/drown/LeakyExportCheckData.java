@@ -30,16 +30,16 @@ public class LeakyExportCheckData implements Serializable {
     private byte[] encrypted;
     private int paddingLength;
 
-    LeakyExportCheckData(TlsContext context, SSL2ClientMasterKeyMessage clientMessage,
+    LeakyExportCheckData(TlsContext tlsContext, SSL2ClientMasterKeyMessage clientMessage,
         SSL2ServerVerifyMessage serverMessage) {
-        clearKey = context.getClearKey();
+        clearKey = tlsContext.getClearKey();
         // The Premaster Secret is equivalent to SECRET-KEY-DATA
-        secretKeyPlain = context.getPreMasterSecret();
+        secretKeyPlain = tlsContext.getPreMasterSecret();
         secretKeyEnc = clientMessage.getEncryptedKeyData().getValue();
-        clientRandom = context.getClientRandom();
-        serverRandom = context.getServerRandom();
-        iv = context.getSSL2Iv();
-        cipherSuite = context.getChooser().getSSL2CipherSuite();
+        clientRandom = tlsContext.getClientRandom();
+        serverRandom = tlsContext.getServerRandom();
+        iv = tlsContext.getSSL2Iv();
+        cipherSuite = tlsContext.getChooser().getSSL2CipherSuite();
         encrypted = serverMessage.getEncryptedPart().getValue();
         paddingLength = serverMessage.getPaddingLength().getValue();
     }

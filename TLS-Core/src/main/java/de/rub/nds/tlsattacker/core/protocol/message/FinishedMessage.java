@@ -68,22 +68,22 @@ public class FinishedMessage extends HandshakeMessage {
     }
 
     @Override
-    public FinishedHandler getHandler(TlsContext context) {
-        return new FinishedHandler(context);
+    public FinishedHandler getHandler(TlsContext tlsContext) {
+        return new FinishedHandler(tlsContext);
     }
 
     @Override
-    public FinishedParser getParser(TlsContext context, InputStream stream) {
-        return new FinishedParser(stream, context.getChooser().getLastRecordVersion(), context);
+    public FinishedParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new FinishedParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
     }
 
     @Override
-    public FinishedPreparator getPreparator(TlsContext context) {
-        return new FinishedPreparator(context.getChooser(), this);
+    public FinishedPreparator getPreparator(TlsContext tlsContext) {
+        return new FinishedPreparator(tlsContext.getChooser(), this);
     }
 
     @Override
-    public FinishedSerializer getSerializer(TlsContext context) {
-        return new FinishedSerializer(this, context.getChooser().getSelectedProtocolVersion());
+    public FinishedSerializer getSerializer(TlsContext tlsContext) {
+        return new FinishedSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 }
