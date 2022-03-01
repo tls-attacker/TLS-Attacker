@@ -13,7 +13,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ECPointFormatExtensionHandler;
@@ -36,10 +35,6 @@ public class ECPointFormatExtensionMessage extends ExtensionMessage<ECPointForma
     private ModifiableByteArray pointFormats;
 
     public ECPointFormatExtensionMessage() {
-        super(ExtensionType.EC_POINT_FORMATS);
-    }
-
-    public ECPointFormatExtensionMessage(Config config) {
         super(ExtensionType.EC_POINT_FORMATS);
     }
 
@@ -69,12 +64,12 @@ public class ECPointFormatExtensionMessage extends ExtensionMessage<ECPointForma
 
     @Override
     public ECPointFormatExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new ECPointFormatExtensionParser(stream, tlsContext.getConfig());
+        return new ECPointFormatExtensionParser(stream);
     }
 
     @Override
     public ECPointFormatExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new ECPointFormatExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new ECPointFormatExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

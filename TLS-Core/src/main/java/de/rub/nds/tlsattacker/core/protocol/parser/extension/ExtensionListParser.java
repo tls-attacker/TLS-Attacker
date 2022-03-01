@@ -12,7 +12,6 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.Parser;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
@@ -26,15 +25,12 @@ public class ExtensionListParser extends Parser<List<ExtensionMessage>> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final TlsContext context;
-    private final ProtocolVersion selectedVersion;
+    private final TlsContext tlsContext;
     private final boolean helloRetryRequestHint;
 
-    public ExtensionListParser(InputStream stream, TlsContext context, ProtocolVersion selectedVersion,
-        boolean helloRetryRequestHint) {
+    public ExtensionListParser(InputStream stream, TlsContext tlsContext, boolean helloRetryRequestHint) {
         super(stream);
-        this.context = context;
-        this.selectedVersion = selectedVersion;
+        this.tlsContext = tlsContext;
         this.helloRetryRequestHint = helloRetryRequestHint;
     }
 
@@ -52,7 +48,7 @@ public class ExtensionListParser extends Parser<List<ExtensionMessage>> {
             extension.setExtensionContent(extensionPayload);
             extension.setExtensionBytes(ArrayConverter.concatenate(typeBytes,
                 ArrayConverter.intToBytes(length, ExtensionByteLength.EXTENSIONS_LENGTH), extensionPayload));
-            Parser parser = extension.getParser(context, new ByteArrayInputStream(extensionPayload));
+            Parser parser = extension.getParser(tlsContext, new ByteArrayInputStream(extensionPayload));
             if (parser instanceof KeyShareExtensionParser) {
                 ((KeyShareExtensionParser) parser).setHelloRetryRequestHint(helloRetryRequestHint);
             }

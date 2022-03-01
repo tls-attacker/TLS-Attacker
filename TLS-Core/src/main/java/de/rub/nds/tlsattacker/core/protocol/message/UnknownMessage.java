@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.handler.UnknownMessageHandler;
@@ -29,17 +28,12 @@ public class UnknownMessage extends ProtocolMessage {
     private ProtocolMessageType recordContentMessageType;
 
     public UnknownMessage() {
+        super();
         this.recordContentMessageType = ProtocolMessageType.UNKNOWN;
         protocolMessageType = ProtocolMessageType.UNKNOWN;
     }
 
-    public UnknownMessage(Config config) {
-        super();
-        this.recordContentMessageType = ProtocolMessageType.UNKNOWN;
-        protocolMessageType = ProtocolMessageType.HANDSHAKE;
-    }
-
-    public UnknownMessage(Config config, ProtocolMessageType recordContentMessageType) {
+    public UnknownMessage(ProtocolMessageType recordContentMessageType) {
         super();
         this.recordContentMessageType = recordContentMessageType;
         protocolMessageType = ProtocolMessageType.UNKNOWN;
@@ -68,13 +62,12 @@ public class UnknownMessage extends ProtocolMessage {
 
     @Override
     public UnknownMessageHandler getHandler(TlsContext tlsContext) {
-        return new UnknownMessageHandler(tlsContext, recordContentMessageType);
+        return new UnknownMessageHandler(tlsContext);
     }
 
     @Override
     public UnknownMessageParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new UnknownMessageParser(stream, tlsContext.getChooser().getLastRecordVersion(),
-            recordContentMessageType, tlsContext.getConfig());
+        return new UnknownMessageParser(stream);
     }
 
     @Override
@@ -84,7 +77,7 @@ public class UnknownMessage extends ProtocolMessage {
 
     @Override
     public UnknownMessageSerializer getSerializer(TlsContext tlsContext) {
-        return new UnknownMessageSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new UnknownMessageSerializer(this);
     }
 
     @Override

@@ -113,8 +113,10 @@ public class ClientHelloParserTest {
      */
     @Test
     public void testParse() {
-        ClientHelloParser parser = new ClientHelloParser(new ByteArrayInputStream(message), version,
-            new TlsContext(new Context(config)), ConnectionEndType.CLIENT);
+        TlsContext tlsContext = new TlsContext(config);
+        tlsContext.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
+        tlsContext.setSelectedProtocolVersion(version);
+        ClientHelloParser parser = new ClientHelloParser(new ByteArrayInputStream(message), tlsContext);
         ClientHelloMessage msg = new ClientHelloMessage();
         parser.parse(msg);
         assertArrayEquals(cipherSuites, msg.getCipherSuites().getValue());

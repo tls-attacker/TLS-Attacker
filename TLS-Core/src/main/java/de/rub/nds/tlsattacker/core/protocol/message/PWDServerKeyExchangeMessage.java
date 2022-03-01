@@ -15,10 +15,7 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.protocol.handler.PWDServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.PWDComputations;
@@ -62,10 +59,6 @@ public class PWDServerKeyExchangeMessage extends ServerKeyExchangeMessage {
         super();
     }
 
-    public PWDServerKeyExchangeMessage(Config tlsConfig) {
-        super(tlsConfig, HandshakeMessageType.SERVER_KEY_EXCHANGE);
-    }
-
     @Override
     public PWDComputations getComputations() {
         return computations;
@@ -85,8 +78,7 @@ public class PWDServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     @Override
     public PWDServerKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new PWDServerKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(),
-            AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite()), tlsContext);
+        return new PWDServerKeyExchangeParser(stream, tlsContext);
     }
 
     @Override

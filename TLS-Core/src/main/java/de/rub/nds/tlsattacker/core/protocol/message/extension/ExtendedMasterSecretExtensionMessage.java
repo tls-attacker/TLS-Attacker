@@ -9,7 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtendedMasterSecretExtensionHandler;
@@ -33,18 +32,14 @@ public class ExtendedMasterSecretExtensionMessage extends ExtensionMessage<Exten
         super(ExtensionType.EXTENDED_MASTER_SECRET);
     }
 
-    public ExtendedMasterSecretExtensionMessage(Config config) {
-        super(ExtensionType.EXTENDED_MASTER_SECRET);
-    }
-
     @Override
     public ExtendedMasterSecretExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new ExtendedMasterSecretExtensionParser(stream, tlsContext.getConfig());
+        return new ExtendedMasterSecretExtensionParser(stream);
     }
 
     @Override
     public ExtendedMasterSecretExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new ExtendedMasterSecretExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new ExtendedMasterSecretExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

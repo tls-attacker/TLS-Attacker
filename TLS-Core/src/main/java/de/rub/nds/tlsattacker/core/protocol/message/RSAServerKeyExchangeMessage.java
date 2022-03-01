@@ -15,8 +15,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.RSAServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.RSAServerComputations;
@@ -43,10 +41,6 @@ public class RSAServerKeyExchangeMessage extends ServerKeyExchangeMessage {
         super();
     }
 
-    public RSAServerKeyExchangeMessage(Config tlsConfig) {
-        super(tlsConfig, HandshakeMessageType.SERVER_KEY_EXCHANGE);
-    }
-
     @Override
     public RSAServerComputations getComputations() {
         return computations;
@@ -66,7 +60,7 @@ public class RSAServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     @Override
     public RSAServerKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new RSAServerKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+        return new RSAServerKeyExchangeParser(stream, tlsContext);
     }
 
     @Override

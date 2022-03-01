@@ -9,7 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.EncryptThenMacExtensionHandler;
@@ -29,18 +28,14 @@ public class EncryptThenMacExtensionMessage extends ExtensionMessage<EncryptThen
         super(ExtensionType.ENCRYPT_THEN_MAC);
     }
 
-    public EncryptThenMacExtensionMessage(Config configF) {
-        super(ExtensionType.ENCRYPT_THEN_MAC);
-    }
-
     @Override
     public EncryptThenMacExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new EncryptThenMacExtensionParser(stream, tlsContext.getConfig());
+        return new EncryptThenMacExtensionParser(stream);
     }
 
     @Override
     public EncryptThenMacExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new EncryptThenMacExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new EncryptThenMacExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

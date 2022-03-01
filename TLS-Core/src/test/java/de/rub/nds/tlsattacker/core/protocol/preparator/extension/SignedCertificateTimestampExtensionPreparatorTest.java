@@ -37,8 +37,7 @@ public class SignedCertificateTimestampExtensionPreparatorTest {
     public void setUp() {
         context = new TlsContext();
         message = new SignedCertificateTimestampExtensionMessage();
-        preparator = new SignedCertificateTimestampExtensionPreparator(context.getChooser(), message,
-            new SignedCertificateTimestampExtensionSerializer(message));
+        preparator = new SignedCertificateTimestampExtensionPreparator(context.getChooser(), message);
     }
 
     @Test

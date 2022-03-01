@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import static de.rub.nds.modifiablevariable.util.ArrayConverter.bytesToHexString;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedRandomExtensionMessage;
 import java.io.InputStream;
@@ -25,8 +24,8 @@ public class ExtendedRandomExtensionParser extends ExtensionParser<ExtendedRando
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ExtendedRandomExtensionParser(InputStream stream, Config config) {
-        super(stream, config);
+    public ExtendedRandomExtensionParser(InputStream stream) {
+        super(stream);
     }
 
     @Override

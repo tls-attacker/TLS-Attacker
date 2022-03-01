@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.certificatestatus.CertificateStatusObject;
@@ -24,17 +23,15 @@ import org.apache.logging.log4j.Logger;
 public class CertificateStatusRequestExtensionParser extends ExtensionParser<CertificateStatusRequestExtensionMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    private int startOfContentPointer;
     private ProtocolVersion selectedVersion;
 
-    public CertificateStatusRequestExtensionParser(InputStream stream, Config config, ProtocolVersion selectedVersion) {
-        super(stream, config);
+    public CertificateStatusRequestExtensionParser(InputStream stream, ProtocolVersion selectedVersion) {
+        super(stream);
         this.selectedVersion = selectedVersion;
     }
 
     @Override
     public void parseExtensionMessageContent(CertificateStatusRequestExtensionMessage msg) {
-
         if (!selectedVersion.isTLS13()) {
             msg.setCertificateStatusRequestType(
                 parseIntField(ExtensionByteLength.CERTIFICATE_STATUS_REQUEST_STATUS_TYPE));

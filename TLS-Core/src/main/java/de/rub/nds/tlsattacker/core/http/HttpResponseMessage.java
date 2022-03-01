@@ -118,15 +118,14 @@ public class HttpResponseMessage extends ModifiableVariableHolder
     }
 
     public HttpResponseParser getParser(HttpContext context, InputStream stream) {
-        return new HttpResponseParser(stream, context.getConfig());
+        return new HttpResponseParser(stream);
     }
 
     public HttpResponsePreparator getPreparator(HttpContext context) {
-        return new HttpResponsePreparator(context, this);
+        return new HttpResponsePreparator(this);
     }
 
     public HttpResponseSerializer getSerializer(HttpContext context) {
         return new HttpResponseSerializer(this);
     }
-
 }

@@ -91,7 +91,7 @@ public class SerializationFullTest {
         messages.add(new SSL2ServerHelloMessage());
         messages.add(new ServerHelloDoneMessage());
         messages.add(new UnknownHandshakeMessage());
-        messages.add(new UnknownMessage(config, ProtocolMessageType.UNKNOWN));
+        messages.add(new UnknownMessage(ProtocolMessageType.UNKNOWN));
         messages.add(new ServerHelloMessage());
         HttpRequestMessage message = new HttpRequestMessage();
         // TODO: readd HTTP messages or test elsewhere

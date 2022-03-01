@@ -14,10 +14,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.ECDHEServerKeyExchangeHandler;
@@ -43,10 +40,6 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     public ECDHEServerKeyExchangeMessage() {
         super();
-    }
-
-    public ECDHEServerKeyExchangeMessage(Config tlsConfig) {
-        super(tlsConfig, HandshakeMessageType.SERVER_KEY_EXCHANGE);
     }
 
     public ModifiableByte getGroupType() {
@@ -125,8 +118,7 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     @Override
     public ECDHEServerKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new ECDHEServerKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(),
-            AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite()), tlsContext);
+        return new ECDHEServerKeyExchangeParser(stream, tlsContext);
     }
 
     @Override

@@ -19,8 +19,8 @@ public class EncryptedServerNameIndicationExtensionHandler
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public EncryptedServerNameIndicationExtensionHandler(TlsContext tlsContext) {
-        super(tlsContext);
+    public EncryptedServerNameIndicationExtensionHandler(TlsContext context) {
+        super(context);
     }
 
     @Override

@@ -76,8 +76,10 @@ public class NewSessionTicketParserTest {
 
     @Test
     public void testParse() {
-        NewSessionTicketParser parser = new NewSessionTicketParser(new ByteArrayInputStream(message), version,
-            new TlsContext(config), ConnectionEndType.SERVER);
+        TlsContext tlsContext = new TlsContext(config);
+        tlsContext.setTalkingConnectionEndType(ConnectionEndType.SERVER);
+        tlsContext.setLastRecordVersion(version);
+        NewSessionTicketParser parser = new NewSessionTicketParser(new ByteArrayInputStream(message), tlsContext);
         NewSessionTicketMessage msg = new NewSessionTicketMessage();
         parser.parse(msg);
         assertArrayEquals(identity, msg.getTicket().getIdentity().getValue());

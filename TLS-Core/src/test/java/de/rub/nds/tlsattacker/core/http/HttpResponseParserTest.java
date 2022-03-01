@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.http;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.Charset;
@@ -37,7 +36,7 @@ public class HttpResponseParserTest {
     @Test(expected = EndOfStreamException.class)
     public void testParseMessageContentFailed() {
         HttpResponseParser parser = new HttpResponseParser(
-            new ByteArrayInputStream(ArrayConverter.hexStringToByteArray("AAAAAAAAAAAAAAAAAAAAAAAA")), config);
+            new ByteArrayInputStream(ArrayConverter.hexStringToByteArray("AAAAAAAAAAAAAAAAAAAAAAAA")));
         HttpResponseMessage message = new HttpResponseMessage();
         parser.parse(message);
     }
@@ -51,7 +50,7 @@ public class HttpResponseParserTest {
             + "Last-Modified: Wed, 22 Jul 2009 19:15:56 GMT\r\nContent-Length: 88\r\nContent-Type: text/html\r\nConnection: Closed\r\n\r\ntest";
 
         HttpResponseParser parser =
-            new HttpResponseParser(new ByteArrayInputStream(message.getBytes(Charset.forName("UTF-8"))), config);
+            new HttpResponseParser(new ByteArrayInputStream(message.getBytes(Charset.forName("UTF-8"))));
         HttpResponseMessage parsedMessage = new HttpResponseMessage();
         parser.parse(parsedMessage);
 

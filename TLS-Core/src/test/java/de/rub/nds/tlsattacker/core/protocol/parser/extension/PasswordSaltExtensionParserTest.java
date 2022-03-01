@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PasswordSaltExtensionMessage;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
@@ -43,8 +42,7 @@ public class PasswordSaltExtensionParserTest {
 
     @Test
     public void testParseExtensionMessageContent() {
-        PasswordSaltExtensionParser parser =
-            new PasswordSaltExtensionParser(new ByteArrayInputStream(expectedBytes), Config.createConfig());
+        PasswordSaltExtensionParser parser = new PasswordSaltExtensionParser(new ByteArrayInputStream(expectedBytes));
         PasswordSaltExtensionMessage msg = new PasswordSaltExtensionMessage();
         parser.parse(msg);
         assertEquals(saltLength, (long) msg.getSaltLength().getValue());

@@ -12,7 +12,6 @@ package de.rub.nds.tlsattacker.core.protocol.message.extension;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.SignedCertificateTimestampExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.SignedCertificateTimestampExtensionParser;
@@ -36,10 +35,6 @@ public class SignedCertificateTimestampExtensionMessage
      * Constructor
      */
     public SignedCertificateTimestampExtensionMessage() {
-        super(ExtensionType.SIGNED_CERTIFICATE_TIMESTAMP);
-    }
-
-    public SignedCertificateTimestampExtensionMessage(Config config) {
         super(ExtensionType.SIGNED_CERTIFICATE_TIMESTAMP);
     }
 
@@ -68,13 +63,12 @@ public class SignedCertificateTimestampExtensionMessage
 
     @Override
     public SignedCertificateTimestampExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new SignedCertificateTimestampExtensionParser(stream, tlsContext.getConfig());
+        return new SignedCertificateTimestampExtensionParser(stream);
     }
 
     @Override
     public SignedCertificateTimestampExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new SignedCertificateTimestampExtensionPreparator(tlsContext.getChooser(), this,
-            getSerializer(tlsContext));
+        return new SignedCertificateTimestampExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

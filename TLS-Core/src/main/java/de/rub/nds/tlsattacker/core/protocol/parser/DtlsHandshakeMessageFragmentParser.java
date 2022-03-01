@@ -10,8 +10,6 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
@@ -22,8 +20,8 @@ public class DtlsHandshakeMessageFragmentParser extends HandshakeMessageParser<D
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public DtlsHandshakeMessageFragmentParser(InputStream stream, ProtocolVersion version, TlsContext TlsContext) {
-        super(stream, HandshakeMessageType.UNKNOWN, version, TlsContext);
+    public DtlsHandshakeMessageFragmentParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
     }
 
     @Override

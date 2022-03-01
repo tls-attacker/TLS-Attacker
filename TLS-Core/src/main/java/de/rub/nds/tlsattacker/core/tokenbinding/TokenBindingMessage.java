@@ -250,8 +250,7 @@ public class TokenBindingMessage<TokenBindingMessage> extends ProtocolMessage {
 
     @Override
     public TokenBindingMessageParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new TokenBindingMessageParser(stream, tlsContext.getChooser().getSelectedProtocolVersion(),
-            tlsContext.getConfig());
+        return new TokenBindingMessageParser(stream);
     }
 
     @Override
@@ -261,7 +260,7 @@ public class TokenBindingMessage<TokenBindingMessage> extends ProtocolMessage {
 
     @Override
     public TokenBindingMessageSerializer getSerializer(TlsContext tlsContext) {
-        return new TokenBindingMessageSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new TokenBindingMessageSerializer(this);
     }
 
     @Override

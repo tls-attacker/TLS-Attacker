@@ -30,8 +30,7 @@ public class TruncatedHmacExtensionPreparatorTest {
     public void setUp() {
         context = new TlsContext();
         message = new TruncatedHmacExtensionMessage();
-        preparator = new TruncatedHmacExtensionPreparator(context.getChooser(), message,
-            new TruncatedHmacExtensionSerializer(message));
+        preparator = new TruncatedHmacExtensionPreparator(context.getChooser(), message);
     }
 
     @Test

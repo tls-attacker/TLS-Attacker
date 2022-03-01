@@ -13,7 +13,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtendedRandomExtensionHandler;
@@ -37,10 +36,6 @@ public class ExtendedRandomExtensionMessage extends ExtensionMessage<ExtendedRan
     private ModifiableInteger extendedRandomLength;
 
     public ExtendedRandomExtensionMessage() {
-        super(ExtensionType.EXTENDED_RANDOM);
-    }
-
-    public ExtendedRandomExtensionMessage(Config config) {
         super(ExtensionType.EXTENDED_RANDOM);
     }
 
@@ -70,12 +65,12 @@ public class ExtendedRandomExtensionMessage extends ExtensionMessage<ExtendedRan
 
     @Override
     public ExtendedRandomExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new ExtendedRandomExtensionParser(stream, tlsContext.getConfig());
+        return new ExtendedRandomExtensionParser(stream);
     }
 
     @Override
     public ExtendedRandomExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new ExtendedRandomExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new ExtendedRandomExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

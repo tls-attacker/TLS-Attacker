@@ -46,8 +46,10 @@ public class PskEcDhClientKeyExchangeParserTest {
 
     @Test
     public void testParse() {
+        TlsContext tlsContext = new TlsContext(config);
+        tlsContext.setSelectedProtocolVersion(version);
         PskEcDhClientKeyExchangeParser parser =
-            new PskEcDhClientKeyExchangeParser(new ByteArrayInputStream(message), version, new TlsContext(config));
+            new PskEcDhClientKeyExchangeParser(new ByteArrayInputStream(message), tlsContext);
         PskEcDhClientKeyExchangeMessage msg = new PskEcDhClientKeyExchangeMessage();
         parser.parse(msg);
     }

@@ -30,8 +30,7 @@ public class RecordSizeLimitExtensionPreparatorTest {
         config = Config.createConfig();
         context = new TlsContext(config);
         message = new RecordSizeLimitExtensionMessage();
-        preparator = new RecordSizeLimitExtensionPreparator(context.getChooser(), message,
-            new RecordSizeLimitExtensionSerializer(message));
+        preparator = new RecordSizeLimitExtensionPreparator(context.getChooser(), message);
     }
 
     /**

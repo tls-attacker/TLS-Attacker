@@ -9,7 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
@@ -44,7 +43,7 @@ public class ReceiveActionTest {
     @Before
     public void setUp() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
         InvalidAlgorithmParameterException {
-        AlertMessage alert = new AlertMessage(Config.createConfig());
+        AlertMessage alert = new AlertMessage();
         alert.setConfig(AlertLevel.FATAL, AlertDescription.DECRYPT_ERROR);
         alert.setDescription(AlertDescription.DECODE_ERROR.getValue());
         alert.setLevel(AlertLevel.FATAL.getValue());

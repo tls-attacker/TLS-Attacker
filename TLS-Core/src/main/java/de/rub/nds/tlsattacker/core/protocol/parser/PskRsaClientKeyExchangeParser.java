@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.PskRsaClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
@@ -26,12 +25,10 @@ public class PskRsaClientKeyExchangeParser extends RSAClientKeyExchangeParser<Ps
      * Constructor for the Parser class
      *
      * @param stream
-     * @param version
-     *                   Version of the Protocol
      * @param tlsContext
      */
-    public PskRsaClientKeyExchangeParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
-        super(stream, version, tlsContext);
+    public PskRsaClientKeyExchangeParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
     }
 
     @Override

@@ -14,7 +14,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.handler.DHEServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.PskDheServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.PskDheServerKeyExchangeParser;
@@ -34,10 +33,6 @@ public class PskDheServerKeyExchangeMessage extends DHEServerKeyExchangeMessage 
 
     public PskDheServerKeyExchangeMessage() {
         super();
-    }
-
-    public PskDheServerKeyExchangeMessage(Config tlsConfig) {
-        super(tlsConfig);
     }
 
     public ModifiableByteArray getIdentityHint() {
@@ -96,7 +91,7 @@ public class PskDheServerKeyExchangeMessage extends DHEServerKeyExchangeMessage 
 
     @Override
     public PskDheServerKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new PskDheServerKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+        return new PskDheServerKeyExchangeParser(stream, tlsContext);
     }
 
     @Override

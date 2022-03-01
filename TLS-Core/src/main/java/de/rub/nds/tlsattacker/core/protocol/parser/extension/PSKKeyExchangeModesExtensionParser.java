@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PSKKeyExchangeModesExtensionMessage;
 import org.apache.logging.log4j.LogManager;
@@ -25,8 +24,8 @@ public class PSKKeyExchangeModesExtensionParser extends ExtensionParser<PSKKeyEx
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public PSKKeyExchangeModesExtensionParser(InputStream stream, Config config) {
-        super(stream, config);
+    public PSKKeyExchangeModesExtensionParser(InputStream stream) {
+        super(stream);
     }
 
     @Override

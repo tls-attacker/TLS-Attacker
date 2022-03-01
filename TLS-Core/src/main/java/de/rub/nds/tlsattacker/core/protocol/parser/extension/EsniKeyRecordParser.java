@@ -29,12 +29,10 @@ public class EsniKeyRecordParser extends Parser<EsniKeyRecord> {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private final TlsContext tlsContext;
-    private final ProtocolVersion selectedVersion;
 
-    public EsniKeyRecordParser(InputStream stream, TlsContext tlsContext, ProtocolVersion selectedVersion) {
+    public EsniKeyRecordParser(InputStream stream, TlsContext tlsContext) {
         super(stream);
         this.tlsContext = tlsContext;
-        this.selectedVersion = selectedVersion;
     }
 
     @Override
@@ -113,7 +111,7 @@ public class EsniKeyRecordParser extends Parser<EsniKeyRecord> {
 
         byte[] extensionListBytes = parseByteArrayField(extensionsLength);
         ExtensionListParser extensionListParser =
-            new ExtensionListParser(new ByteArrayInputStream(extensionListBytes), tlsContext, selectedVersion, false);
+            new ExtensionListParser(new ByteArrayInputStream(extensionListBytes), tlsContext, false);
         List<ExtensionMessage> extensionList = new LinkedList<>();
         extensionListParser.parse(extensionList);
         record.setExtensions(extensionList);

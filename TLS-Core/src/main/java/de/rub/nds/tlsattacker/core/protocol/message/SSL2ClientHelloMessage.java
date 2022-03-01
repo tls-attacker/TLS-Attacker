@@ -14,7 +14,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ClientHelloHandler;
@@ -51,10 +50,6 @@ public class SSL2ClientHelloMessage extends SSL2HandshakeMessage {
 
     public SSL2ClientHelloMessage() {
         super(HandshakeMessageType.SSL2_CLIENT_HELLO);
-    }
-
-    public SSL2ClientHelloMessage(Config config) {
-        this();
     }
 
     @Override
@@ -195,7 +190,7 @@ public class SSL2ClientHelloMessage extends SSL2HandshakeMessage {
 
     @Override
     public SSL2ClientHelloParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new SSL2ClientHelloParser(stream, tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext);
+        return new SSL2ClientHelloParser(stream, tlsContext);
     }
 
     @Override
@@ -205,6 +200,6 @@ public class SSL2ClientHelloMessage extends SSL2HandshakeMessage {
 
     @Override
     public SSL2ClientHelloSerializer getSerializer(TlsContext tlsContext) {
-        return new SSL2ClientHelloSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new SSL2ClientHelloSerializer(this);
     }
 }

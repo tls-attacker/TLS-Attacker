@@ -9,15 +9,14 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientAuthzExtensionMessage;
 import java.io.InputStream;
 
 public class ClientAuthzExtensionParser extends ExtensionParser<ClientAuthzExtensionMessage> {
 
-    public ClientAuthzExtensionParser(InputStream stream, Config config) {
-        super(stream, config);
+    public ClientAuthzExtensionParser(InputStream stream) {
+        super(stream);
     }
 
     @Override

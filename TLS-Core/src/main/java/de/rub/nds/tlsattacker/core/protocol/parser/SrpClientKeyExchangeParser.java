@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.SrpClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import org.apache.logging.log4j.LogManager;
@@ -27,13 +26,11 @@ public class SrpClientKeyExchangeParser extends ClientKeyExchangeParser<SrpClien
      * Constructor for the Parser class
      *
      * @param stream
-     * @param version
-     *                   Version of the Protocol
      * @param tlsContext
      *
      */
-    public SrpClientKeyExchangeParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
-        super(stream, version, tlsContext);
+    public SrpClientKeyExchangeParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
     }
 
     @Override

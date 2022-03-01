@@ -35,8 +35,7 @@ public class ExtendedRandomExtensionPreparatorTest {
     public void setUp() {
         context = new TlsContext();
         message = new ExtendedRandomExtensionMessage();
-        preparator = new ExtendedRandomExtensionPreparator(context.getChooser(), message,
-            new ExtendedRandomExtensionSerializer(message));
+        preparator = new ExtendedRandomExtensionPreparator(context.getChooser(), message);
     }
 
     @Test

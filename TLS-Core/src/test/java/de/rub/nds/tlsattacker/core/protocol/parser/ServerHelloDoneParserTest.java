@@ -44,8 +44,9 @@ public class ServerHelloDoneParserTest {
      */
     @Test
     public void testParse() {
-        ServerHelloDoneParser parser =
-            new ServerHelloDoneParser(new ByteArrayInputStream(message), version, new TlsContext(config));
+        TlsContext tlsContext = new TlsContext(config);
+        tlsContext.setSelectedProtocolVersion(version);
+        ServerHelloDoneParser parser = new ServerHelloDoneParser(new ByteArrayInputStream(message), tlsContext);
         ServerHelloDoneMessage msg = new ServerHelloDoneMessage();
         parser.parse(msg);
 

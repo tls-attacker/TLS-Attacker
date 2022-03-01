@@ -29,8 +29,7 @@ public class PWDProtectExtensionPreparatorTest {
     public void setUp() {
         context = new TlsContext();
         message = new PWDProtectExtensionMessage();
-        preparator = new PWDProtectExtensionPreparator(context.getChooser(), message,
-            new PWDProtectExtensionSerializer(message));
+        preparator = new PWDProtectExtensionPreparator(context.getChooser(), message);
     }
 
     @Test

@@ -54,7 +54,7 @@ public class ServerNameIndicationExtensionPreparatorTest {
         message.setServerNameList(pairList);
 
         ServerNameIndicationExtensionPreparator serverPrep =
-            new ServerNameIndicationExtensionPreparator(chooser, message, serializer);
+            new ServerNameIndicationExtensionPreparator(chooser, message);
 
         serverPrep.prepareExtensionContent();
 
@@ -75,7 +75,7 @@ public class ServerNameIndicationExtensionPreparatorTest {
         message.setServerNameList(pairList);
 
         ServerNameIndicationExtensionPreparator serverPrep =
-            new ServerNameIndicationExtensionPreparator(chooser, message, serializer);
+            new ServerNameIndicationExtensionPreparator(chooser, message);
 
         serverPrep.prepareExtensionContent();
 

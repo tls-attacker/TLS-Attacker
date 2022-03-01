@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.AlpnExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.AlpnExtensionSerializer;
@@ -33,8 +32,8 @@ public class AlpnExtensionPreparatorTest {
     @Before
     public void setUp() {
         context = new TlsContext();
-        msg = new AlpnExtensionMessage(Config.createConfig());
-        preparator = new AlpnExtensionPreparator(context.getChooser(), msg, new AlpnExtensionSerializer(msg));
+        msg = new AlpnExtensionMessage();
+        preparator = new AlpnExtensionPreparator(context.getChooser(), msg);
         protocolsWithLength =
             ArrayConverter.concatenate(new byte[] { proposedAlpnProtocolLength }, announcedProtocols.getBytes());
     }

@@ -9,7 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerCertificateTypeExtensionMessage;
 
@@ -17,8 +16,8 @@ import java.io.InputStream;
 
 public class ServerCertificateTypeExtensionParser extends ExtensionParser<ServerCertificateTypeExtensionMessage> {
 
-    public ServerCertificateTypeExtensionParser(InputStream stream, Config config) {
-        super(stream, config);
+    public ServerCertificateTypeExtensionParser(InputStream stream) {
+        super(stream);
     }
 
     @Override

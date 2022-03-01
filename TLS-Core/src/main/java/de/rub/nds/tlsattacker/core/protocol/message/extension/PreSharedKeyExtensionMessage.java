@@ -206,13 +206,12 @@ public class PreSharedKeyExtensionMessage extends ExtensionMessage<PreSharedKeyE
 
     @Override
     public ExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new PreSharedKeyExtensionParser(stream, tlsContext.getConfig(),
-            tlsContext.getTalkingConnectionEndType());
+        return new PreSharedKeyExtensionParser(stream, tlsContext.getTalkingConnectionEndType());
     }
 
     @Override
     public ExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new PreSharedKeyExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new PreSharedKeyExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

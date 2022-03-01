@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.KeyUpdateRequest;
 import de.rub.nds.tlsattacker.core.protocol.handler.KeyUpdateHandler;
@@ -36,17 +35,6 @@ public class KeyUpdateMessage extends HandshakeMessage {
         this.setIncludeInDigest(false);
     }
 
-    public KeyUpdateMessage(Config tlsConfig) {
-        super(tlsConfig, HandshakeMessageType.KEY_UPDATE);
-        this.setIncludeInDigest(false);
-    }
-
-    public KeyUpdateMessage(Config tlsConfig, KeyUpdateRequest requestUpdate) {
-        super(tlsConfig, HandshakeMessageType.KEY_UPDATE);
-        setRequestMode(requestUpdate);
-        this.setIncludeInDigest(false);
-    }
-
     @Override
     public KeyUpdateHandler getHandler(TlsContext tlsContext) {
         return new KeyUpdateHandler(tlsContext);
@@ -54,7 +42,7 @@ public class KeyUpdateMessage extends HandshakeMessage {
 
     @Override
     public KeyUpdateParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new KeyUpdateParser(stream, tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext);
+        return new KeyUpdateParser(stream, tlsContext);
     }
 
     @Override
@@ -64,7 +52,7 @@ public class KeyUpdateMessage extends HandshakeMessage {
 
     @Override
     public KeyUpdateSerializer getSerializer(TlsContext tlsContext) {
-        return new KeyUpdateSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new KeyUpdateSerializer(this);
     }
 
     public final void setRequestMode(KeyUpdateRequest requestMode) {

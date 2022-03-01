@@ -15,7 +15,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.handler.PskRsaClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.RSAClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.PskRsaClientKeyExchangeParser;
@@ -36,10 +35,6 @@ public class PskRsaClientKeyExchangeMessage extends RSAClientKeyExchangeMessage 
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger identityLength;
-
-    public PskRsaClientKeyExchangeMessage(Config tlsConfig) {
-        super(tlsConfig);
-    }
 
     public PskRsaClientKeyExchangeMessage() {
         super();
@@ -95,7 +90,7 @@ public class PskRsaClientKeyExchangeMessage extends RSAClientKeyExchangeMessage 
 
     @Override
     public PskRsaClientKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new PskRsaClientKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+        return new PskRsaClientKeyExchangeParser(stream, tlsContext);
     }
 
     @Override

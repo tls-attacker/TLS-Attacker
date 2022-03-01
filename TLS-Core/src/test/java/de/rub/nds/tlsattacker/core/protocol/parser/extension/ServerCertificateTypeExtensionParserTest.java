@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerCertificateTypeExtensionMessage;
 import java.io.ByteArrayInputStream;
@@ -52,8 +51,7 @@ public class ServerCertificateTypeExtensionParserTest {
 
     @Before
     public void setUp() {
-        parser =
-            new ServerCertificateTypeExtensionParser(new ByteArrayInputStream(expectedBytes), Config.createConfig());
+        parser = new ServerCertificateTypeExtensionParser(new ByteArrayInputStream(expectedBytes));
     }
 
     @Test

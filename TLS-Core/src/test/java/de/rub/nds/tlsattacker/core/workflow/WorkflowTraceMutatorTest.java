@@ -153,11 +153,9 @@ public class WorkflowTraceMutatorTest {
     @Test
     public void testMoreComplexExample() throws WorkflowTraceMutationException {
         trace.addTlsActions(new SendAction(new ClientHelloMessage(config)),
-            new ReceiveAction(new ServerHelloMessage(config), new CertificateMessage(config),
-                new ServerHelloDoneMessage(config)),
-            new SendAction(new ECDHClientKeyExchangeMessage(config), new ChangeCipherSpecMessage(config),
-                new FinishedMessage(config)),
-            new ReceiveAction(new FinishedMessage(config)));
+            new ReceiveAction(new ServerHelloMessage(config), new CertificateMessage(), new ServerHelloDoneMessage()),
+            new SendAction(new ECDHClientKeyExchangeMessage(), new ChangeCipherSpecMessage(), new FinishedMessage()),
+            new ReceiveAction(new FinishedMessage()));
 
         HandshakeMessage chm = new SrpClientKeyExchangeMessage();
 
@@ -227,11 +225,9 @@ public class WorkflowTraceMutatorTest {
     @Test
     public void testTruncatingWorkflow() {
         trace.addTlsActions(new SendAction(new ClientHelloMessage(config)),
-            new ReceiveAction(new ServerHelloMessage(config), new CertificateMessage(config),
-                new ServerHelloDoneMessage(config)),
-            new SendAction(new ECDHClientKeyExchangeMessage(config), new ChangeCipherSpecMessage(config),
-                new FinishedMessage(config)),
-            new ReceiveAction(new FinishedMessage(config)));
+            new ReceiveAction(new ServerHelloMessage(config), new CertificateMessage(), new ServerHelloDoneMessage()),
+            new SendAction(new ECDHClientKeyExchangeMessage(), new ChangeCipherSpecMessage(), new FinishedMessage()),
+            new ReceiveAction(new FinishedMessage()));
 
         // Delete after first finished message
         WorkflowTraceMutator.truncateReceivingAt(trace, HandshakeMessageType.FINISHED, false);
@@ -253,8 +249,8 @@ public class WorkflowTraceMutatorTest {
     public void testTruncatingWorkflowWithDynamicActions() {
         trace.addTlsActions(new SendAction(new ClientHelloMessage(config)),
             new ReceiveTillAction(new ServerHelloDoneMessage()), new SendDynamicClientKeyExchangeAction(),
-            new SendAction(new ChangeCipherSpecMessage(config), new FinishedMessage(config)),
-            new ReceiveAction(new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
+            new SendAction(new ChangeCipherSpecMessage(), new FinishedMessage()),
+            new ReceiveAction(new ChangeCipherSpecMessage(), new FinishedMessage()));
 
         // Delete after first ClientKeyExchange message
         WorkflowTraceMutator.truncateAfter(trace, HandshakeMessageType.CLIENT_KEY_EXCHANGE, false);

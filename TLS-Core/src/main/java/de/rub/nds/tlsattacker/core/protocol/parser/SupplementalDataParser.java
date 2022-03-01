@@ -11,8 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.SupplementalDataMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.supplementaldata.SupplementalDataEntry;
 import de.rub.nds.tlsattacker.core.protocol.parser.supplementaldata.SupplementalDataEntryParser;
@@ -33,12 +31,10 @@ public class SupplementalDataParser extends HandshakeMessageParser<SupplementalD
      * Constructor for the Parser class
      *
      * @param stream
-     * @param version
-     *                   The Version for which this message should be parsed
      * @param tlsContext
      */
-    public SupplementalDataParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
-        super(stream, HandshakeMessageType.SUPPLEMENTAL_DATA, version, tlsContext);
+    public SupplementalDataParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
     }
 
     @Override

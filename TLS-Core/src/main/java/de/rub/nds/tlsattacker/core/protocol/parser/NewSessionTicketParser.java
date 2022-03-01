@@ -12,8 +12,6 @@ package de.rub.nds.tlsattacker.core.protocol.parser;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -25,12 +23,8 @@ public class NewSessionTicketParser extends HandshakeMessageParser<NewSessionTic
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final ConnectionEndType talkingConnectionEndType;
-
-    public NewSessionTicketParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext,
-        ConnectionEndType talkingConnectionEndType) {
-        super(stream, HandshakeMessageType.NEW_SESSION_TICKET, version, tlsContext);
-        this.talkingConnectionEndType = talkingConnectionEndType;
+    public NewSessionTicketParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
     }
 
     @Override
@@ -43,10 +37,10 @@ public class NewSessionTicketParser extends HandshakeMessageParser<NewSessionTic
             parseNonce(msg);
             parseIdentityLength(msg);
             parseIdentity(msg);
-            if (hasExtensionLengthField(msg)) {
+            if (hasExtensionLengthField()) {
                 parseExtensionLength(msg);
                 if (hasExtensions(msg)) {
-                    parseExtensionBytes(msg, getVersion(), talkingConnectionEndType, false);
+                    parseExtensionBytes(msg, false);
                 }
             }
         } else {

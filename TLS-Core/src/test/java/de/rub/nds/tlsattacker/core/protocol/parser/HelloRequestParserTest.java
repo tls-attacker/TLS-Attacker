@@ -42,8 +42,9 @@ public class HelloRequestParserTest {
      */
     @Test
     public void testParse() {
-        HelloRequestParser parser =
-            new HelloRequestParser(new ByteArrayInputStream(message), ProtocolVersion.TLS12, new TlsContext(config));
+        TlsContext tlsContext = new TlsContext(config);
+        tlsContext.setSelectedProtocolVersion(ProtocolVersion.TLS12);
+        HelloRequestParser parser = new HelloRequestParser(new ByteArrayInputStream(message), tlsContext);
         HelloRequestMessage msg = new HelloRequestMessage();
         parser.parse(msg);
     }

@@ -44,8 +44,9 @@ public class UnknownHandshakeParserTest {
      */
     @Test
     public void testParse() {
-        UnknownHandshakeParser parser = new UnknownHandshakeParser(new ByteArrayInputStream(message),
-            ProtocolVersion.TLS12, new TlsContext(config));
+        TlsContext tlsContext = new TlsContext(config);
+        tlsContext.setSelectedProtocolVersion(ProtocolVersion.TLS12);
+        UnknownHandshakeParser parser = new UnknownHandshakeParser(new ByteArrayInputStream(message), tlsContext);
         UnknownHandshakeMessage msg = new UnknownHandshakeMessage();
         parser.parse(msg);
         assertArrayEquals(message, msg.getData().getValue());

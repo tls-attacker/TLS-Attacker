@@ -59,8 +59,8 @@ public class CachedInfoExtensionSerializerTest {
         msg.setCachedInfo(cachedObjectList);
         msg.setCachedInfoLength(cachedInfoLength);
 
-        CachedInfoExtensionPreparator preparator = new CachedInfoExtensionPreparator(new TlsContext().getChooser(), msg,
-            new CachedInfoExtensionSerializer(msg));
+        CachedInfoExtensionPreparator preparator =
+            new CachedInfoExtensionPreparator(new TlsContext().getChooser(), msg);
         preparator.prepare();
 
         assertArrayEquals(extensionBytes, serializer.serializeExtensionContent());

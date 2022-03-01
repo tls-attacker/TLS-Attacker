@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PreSharedKeyExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PSKBinder;
@@ -31,8 +30,8 @@ public class PreSharedKeyExtensionParser extends ExtensionParser<PreSharedKeyExt
     private static final Logger LOGGER = LogManager.getLogger();
     private ConnectionEndType talkingConnectionEndType;
 
-    public PreSharedKeyExtensionParser(InputStream stream, Config config, ConnectionEndType talkingConnectionEndType) {
-        super(stream, config);
+    public PreSharedKeyExtensionParser(InputStream stream, ConnectionEndType talkingConnectionEndType) {
+        super(stream);
         this.talkingConnectionEndType = talkingConnectionEndType;
     }
 

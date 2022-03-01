@@ -13,7 +13,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.FinishedHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.FinishedParser;
@@ -28,10 +27,6 @@ public class FinishedMessage extends HandshakeMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.HMAC)
     private ModifiableByteArray verifyData;
-
-    public FinishedMessage(Config tlsConfig) {
-        super(tlsConfig, HandshakeMessageType.FINISHED);
-    }
 
     public FinishedMessage() {
         super(HandshakeMessageType.FINISHED);
@@ -74,7 +69,7 @@ public class FinishedMessage extends HandshakeMessage {
 
     @Override
     public FinishedParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new FinishedParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+        return new FinishedParser(stream, tlsContext);
     }
 
     @Override
@@ -84,6 +79,6 @@ public class FinishedMessage extends HandshakeMessage {
 
     @Override
     public FinishedSerializer getSerializer(TlsContext tlsContext) {
-        return new FinishedSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new FinishedSerializer(this);
     }
 }

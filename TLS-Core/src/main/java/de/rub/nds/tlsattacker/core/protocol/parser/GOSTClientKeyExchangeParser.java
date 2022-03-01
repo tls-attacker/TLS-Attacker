@@ -9,7 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.GOSTClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
@@ -20,8 +19,8 @@ public class GOSTClientKeyExchangeParser extends ClientKeyExchangeParser<GOSTCli
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public GOSTClientKeyExchangeParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
-        super(stream, version, tlsContext);
+    public GOSTClientKeyExchangeParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
     }
 
     @Override

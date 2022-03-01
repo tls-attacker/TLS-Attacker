@@ -10,7 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import static de.rub.nds.modifiablevariable.util.ArrayConverter.hexStringToByteArray;
-import de.rub.nds.tlsattacker.core.config.Config;
+
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestV2ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.RequestItemV2;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.ResponderId;
@@ -74,7 +74,7 @@ public class CertificateStatusRequestV2ExtensionParserTest {
         list.get(1).setResponderIdList(respList);
         list.get(1).setResponderIdListBytes(responderIdListBytes);
         CertificateStatusRequestV2ExtensionParser parser =
-            new CertificateStatusRequestV2ExtensionParser(new ByteArrayInputStream(parseBytes), Config.createConfig());
+            new CertificateStatusRequestV2ExtensionParser(new ByteArrayInputStream(parseBytes));
         CertificateStatusRequestV2ExtensionMessage msg = new CertificateStatusRequestV2ExtensionMessage();
         parser.parse(msg);
 

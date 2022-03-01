@@ -53,8 +53,9 @@ public class HelloVerifyRequestParserTest {
      */
     @Test
     public void testParse() {
-        HelloVerifyRequestParser parser = new HelloVerifyRequestParser(new ByteArrayInputStream(message),
-            ProtocolVersion.DTLS10, new TlsContext(config));
+        TlsContext tlsContext = new TlsContext(config);
+        tlsContext.setSelectedProtocolVersion(ProtocolVersion.DTLS10);
+        HelloVerifyRequestParser parser = new HelloVerifyRequestParser(new ByteArrayInputStream(message), tlsContext);
         HelloVerifyRequestMessage msg = new HelloVerifyRequestMessage();
         parser.parse(msg);
         assertArrayEquals(protocolVersion, msg.getProtocolVersion().getValue());

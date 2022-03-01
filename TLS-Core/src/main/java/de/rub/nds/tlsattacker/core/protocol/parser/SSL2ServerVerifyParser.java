@@ -10,8 +10,6 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerVerifyMessage;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
@@ -22,8 +20,8 @@ public class SSL2ServerVerifyParser extends SSL2HandshakeMessageParser<SSL2Serve
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SSL2ServerVerifyParser(InputStream stream, ProtocolVersion selectedProtocolVersion, TlsContext tlsContext) {
-        super(stream, HandshakeMessageType.SSL2_SERVER_VERIFY, selectedProtocolVersion, tlsContext);
+    public SSL2ServerVerifyParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
     }
 
     @Override

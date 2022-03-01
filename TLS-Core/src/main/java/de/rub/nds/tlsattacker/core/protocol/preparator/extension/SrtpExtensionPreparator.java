@@ -12,7 +12,6 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfiles;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SrtpExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,9 +24,8 @@ public class SrtpExtensionPreparator extends ExtensionPreparator<SrtpExtensionMe
 
     private final SrtpExtensionMessage msg;
 
-    public SrtpExtensionPreparator(Chooser chooser, SrtpExtensionMessage message,
-        ExtensionSerializer<SrtpExtensionMessage> serializer) {
-        super(chooser, message, serializer);
+    public SrtpExtensionPreparator(Chooser chooser, SrtpExtensionMessage message) {
+        super(chooser, message);
         msg = message;
     }
 

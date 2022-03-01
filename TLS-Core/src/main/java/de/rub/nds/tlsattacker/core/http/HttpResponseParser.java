@@ -23,16 +23,16 @@ public class HttpResponseParser extends Parser<HttpResponseMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public HttpResponseParser(InputStream stream, Config config) {
+    public HttpResponseParser(InputStream stream) {
         super(stream);
     }
 
     @Override
-    public void parse(HttpResponseMessage message) {
+    protected void parseMessageContent(HttpsResponseMessage message) {
         String request = parseStringTill((byte) 0x0A);
         String[] split = request.replaceAll("\r", " ").split(" ");
         if (split.length < 2) {
-            throw new ParserException("Could not parse as HttpResponseMessage");
+            throw new ParserException("Could not parse as HttpsResponseMessage");
         }
         message.setResponseProtocol(split[0]);
         message.setResponseStatusCode(request.replaceFirst(split[0] + " ", "").trim());

@@ -53,8 +53,7 @@ public class KeyShareExtensionParserTest {
         Config config = Config.createConfig();
         TlsContext context = new TlsContext(config);
         context.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
-        KeyShareExtensionParser parser =
-            new KeyShareExtensionParser(new ByteArrayInputStream(extension), Config.createConfig(), context);
+        KeyShareExtensionParser parser = new KeyShareExtensionParser(new ByteArrayInputStream(extension), context);
         KeyShareExtensionMessage msg = new KeyShareExtensionMessage();
         parser.parse(msg);
         assertArrayEquals(msg.getKeyShareListBytes().getValue(), ksListBytes);

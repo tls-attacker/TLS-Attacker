@@ -44,8 +44,8 @@ public class CertificateStatusRequestV2ExtensionPreparatorTest {
         CertificateStatusRequestV2ExtensionMessage msg = new CertificateStatusRequestV2ExtensionMessage();
         context.getConfig().setStatusRequestV2RequestList(list);
 
-        CertificateStatusRequestV2ExtensionPreparator preparator = new CertificateStatusRequestV2ExtensionPreparator(
-            context.getChooser(), msg, new CertificateStatusRequestV2ExtensionSerializer(msg));
+        CertificateStatusRequestV2ExtensionPreparator preparator =
+            new CertificateStatusRequestV2ExtensionPreparator(context.getChooser(), msg);
         preparator.prepare();
 
         CertificateStatusRequestV2ExtensionParserTest.assertRequestItemV2List(list, msg.getStatusRequestList());

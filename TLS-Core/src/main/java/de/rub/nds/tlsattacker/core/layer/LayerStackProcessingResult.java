@@ -12,6 +12,9 @@ package de.rub.nds.tlsattacker.core.layer;
 import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
 import java.util.List;
 
+/**
+ * Wrapper class for {@link LayerProcessingResult}. Makes results of multiple layers avilable for a {@link LayerStack}.
+ */
 public class LayerStackProcessingResult {
 
     private final List<LayerProcessingResult> layerProcessingResultList;

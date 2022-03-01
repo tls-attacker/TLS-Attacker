@@ -13,7 +13,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.PWDClearExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.PWDClearExtensionParser;
@@ -36,10 +35,6 @@ public class PWDClearExtensionMessage extends ExtensionMessage<PWDClearExtension
     private ModifiableString username;
 
     public PWDClearExtensionMessage() {
-        super(ExtensionType.PWD_CLEAR);
-    }
-
-    public PWDClearExtensionMessage(Config config) {
         super(ExtensionType.PWD_CLEAR);
     }
 
@@ -69,12 +64,12 @@ public class PWDClearExtensionMessage extends ExtensionMessage<PWDClearExtension
 
     @Override
     public PWDClearExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new PWDClearExtensionParser(stream, tlsContext.getConfig());
+        return new PWDClearExtensionParser(stream);
     }
 
     @Override
     public PWDClearExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new PWDClearExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new PWDClearExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
@@ -26,21 +25,15 @@ public class ServerHelloParser extends HelloMessageParser<ServerHelloMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final ConnectionEndType talkingConnectionEndType;
-
     /**
      * Constructor for the ServerHelloMessageParser
      *
      * @param stream
-     * @param version
-     *                   The Version for which this message should be parsed
      * @param tlsContext
-     *                   A Config used in the current tlsContext
+     *                   A Config used in the current context
      */
-    public ServerHelloParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext,
-        ConnectionEndType talkingConnectionEndType) {
-        super(stream, HandshakeMessageType.SERVER_HELLO, version, tlsContext);
-        this.talkingConnectionEndType = talkingConnectionEndType;
+    public ServerHelloParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
     }
 
     /**
@@ -78,10 +71,10 @@ public class ServerHelloParser extends HelloMessageParser<ServerHelloMessage> {
         parseSelectedCompressionMethod(msg);
 
         LOGGER.trace("Checking for ExtensionLength Field");
-        if (hasExtensionLengthField(msg)) {
+        if (hasExtensionLengthField()) {
             LOGGER.trace("Parsing ExtensionLength field");
             parseExtensionLength(msg);
-            parseExtensionBytes(msg, getVersion(), talkingConnectionEndType, msg.isTls13HelloRetryRequest());
+            parseExtensionBytes(msg, msg.isTls13HelloRetryRequest());
         }
     }
 }

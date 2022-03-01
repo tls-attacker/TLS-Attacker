@@ -66,14 +66,14 @@ public class DtlsHandshakeMessageFragment extends HandshakeMessage {
     }
 
     public DtlsHandshakeMessageFragment(Config tlsConfig) {
-        super(tlsConfig, HandshakeMessageType.UNKNOWN);
+        super(HandshakeMessageType.UNKNOWN);
         isIncludeInDigestDefault = false;
         adjustContextDefault = false;
         this.maxFragmentLengthConfig = tlsConfig.getDtlsMaximumFragmentLength();
     }
 
     public DtlsHandshakeMessageFragment(Config tlsConfig, int maxFragmentLengthConfig) {
-        super(tlsConfig, HandshakeMessageType.UNKNOWN);
+        super(HandshakeMessageType.UNKNOWN);
         isIncludeInDigestDefault = false;
         adjustContextDefault = false;
         this.maxFragmentLengthConfig = maxFragmentLengthConfig;
@@ -92,8 +92,7 @@ public class DtlsHandshakeMessageFragment extends HandshakeMessage {
 
     @Override
     public DtlsHandshakeMessageFragmentParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new DtlsHandshakeMessageFragmentParser(stream, tlsContext.getChooser().getLastRecordVersion(),
-            tlsContext);
+        return new DtlsHandshakeMessageFragmentParser(stream, tlsContext);
     }
 
     @Override
@@ -103,7 +102,7 @@ public class DtlsHandshakeMessageFragment extends HandshakeMessage {
 
     @Override
     public DtlsHandshakeMessageFragmentSerializer getSerializer(TlsContext tlsContext) {
-        return new DtlsHandshakeMessageFragmentSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new DtlsHandshakeMessageFragmentSerializer(this);
     }
 
     public HandshakeMessageType getHandshakeMessageTypeConfig() {

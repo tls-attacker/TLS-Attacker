@@ -33,8 +33,7 @@ public class TrustedCaIndicationExtensionPreparatorTest {
     public void testPreparator() {
         context = new TlsContext();
         msg = new TrustedCaIndicationExtensionMessage();
-        preparator = new TrustedCaIndicationExtensionPreparator(context.getChooser(), msg,
-            new TrustedCaIndicationExtensionSerializer(msg));
+        preparator = new TrustedCaIndicationExtensionPreparator(context.getChooser(), msg);
 
         context.getConfig().setTrustedCaIndicationExtensionAuthorities(trustedAuthorities);
 

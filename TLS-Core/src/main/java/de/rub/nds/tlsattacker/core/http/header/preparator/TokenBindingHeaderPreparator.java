@@ -31,8 +31,7 @@ public class TokenBindingHeaderPreparator extends Preparator<TokenBindingHeader>
         header.setHeaderName("Sec-Token-Binding");
         TokenBindingMessagePreparator preparator = new TokenBindingMessagePreparator(chooser, header.getMessage());
         preparator.prepare();
-        TokenBindingMessageSerializer serializer =
-            new TokenBindingMessageSerializer(header.getMessage(), chooser.getSelectedProtocolVersion());
+        TokenBindingMessageSerializer serializer = new TokenBindingMessageSerializer(header.getMessage());
         String encodedTokenBinding = Base64.getUrlEncoder().withoutPadding().encodeToString(serializer.serialize());
         header.setHeaderValue(encodedTokenBinding);
     }

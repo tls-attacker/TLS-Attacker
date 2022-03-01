@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.GreaseExtensionMessage;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
@@ -42,8 +41,7 @@ public class GreaseExtensionParserTest {
      */
     @Test
     public void testParseExtensionMessageContent() {
-        GreaseExtensionParser parser =
-            new GreaseExtensionParser(new ByteArrayInputStream(extension), Config.createConfig());
+        GreaseExtensionParser parser = new GreaseExtensionParser(new ByteArrayInputStream(extension));
         GreaseExtensionMessage msg = new GreaseExtensionMessage();
         parser.parse(msg);
         assertArrayEquals(randomData, msg.getRandomData().getValue());

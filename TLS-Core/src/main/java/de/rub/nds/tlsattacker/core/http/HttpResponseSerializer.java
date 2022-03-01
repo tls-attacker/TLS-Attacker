@@ -9,6 +9,9 @@
 
 package de.rub.nds.tlsattacker.core.http;
 
+import de.rub.nds.tlsattacker.core.http.header.HttpHeader;
+import de.rub.nds.tlsattacker.core.http.header.serializer.HttpsHeaderSerializer;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageSerializer;
 import java.nio.charset.StandardCharsets;
 
 import de.rub.nds.tlsattacker.core.http.header.HttpHeader;
@@ -24,7 +27,7 @@ public class HttpResponseSerializer extends Serializer<HttpResponseMessage> {
     private final HttpResponseMessage message;
 
     public HttpResponseSerializer(HttpResponseMessage message) {
-        super();
+        super(message);
         this.message = message;
     }
 

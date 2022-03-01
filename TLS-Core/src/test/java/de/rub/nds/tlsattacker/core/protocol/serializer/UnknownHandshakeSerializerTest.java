@@ -9,7 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownHandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.UnknownHandshakeParserTest;
 import java.util.Collection;
@@ -39,7 +38,7 @@ public class UnknownHandshakeSerializerTest {
     public void testserializeProtocolMessageContent() {
         UnknownHandshakeMessage msg = new UnknownHandshakeMessage();
         msg.setData(message);
-        UnknownHandshakeSerializer serializer = new UnknownHandshakeSerializer(msg, ProtocolVersion.TLS12);
+        UnknownHandshakeSerializer serializer = new UnknownHandshakeSerializer(msg);
         assertArrayEquals(message, serializer.serializeProtocolMessageContent());
     }
 

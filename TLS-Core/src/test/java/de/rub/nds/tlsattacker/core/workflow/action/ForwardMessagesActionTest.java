@@ -66,7 +66,7 @@ public class ForwardMessagesActionTest {
     @Before
     public void setUp() throws Exception {
         config = Config.createConfig();
-        alert = new AlertMessage(config);
+        alert = new AlertMessage();
         alert.setConfig(AlertLevel.FATAL, AlertDescription.DECRYPT_ERROR);
         alert.setDescription(AlertDescription.DECODE_ERROR.getValue());
         alert.setLevel(AlertLevel.FATAL.getValue());
@@ -197,7 +197,7 @@ public class ForwardMessagesActionTest {
 
     @Test
     public void forwardingApplicationMessageAdoptsData() throws Exception {
-        ApplicationMessage msg = new ApplicationMessage(state.getConfig());
+        ApplicationMessage msg = new ApplicationMessage();
         String receivedData = "Forward application message test";
         msg.setData(receivedData.getBytes());
         msg.setCompleteResultingMessage(receivedData.getBytes());

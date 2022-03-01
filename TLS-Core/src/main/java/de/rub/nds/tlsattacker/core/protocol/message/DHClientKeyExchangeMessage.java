@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.DHClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.DHClientComputations;
@@ -32,10 +31,6 @@ public class DHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
         super();
     }
 
-    public DHClientKeyExchangeMessage(Config tlsConfig) {
-        super(tlsConfig);
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -55,7 +50,7 @@ public class DHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     @Override
     public DHClientKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new DHClientKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+        return new DHClientKeyExchangeParser(stream, tlsContext);
     }
 
     @Override
@@ -65,7 +60,7 @@ public class DHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     @Override
     public DHClientKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
-        return new DHClientKeyExchangeSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new DHClientKeyExchangeSerializer(this);
     }
 
     @Override

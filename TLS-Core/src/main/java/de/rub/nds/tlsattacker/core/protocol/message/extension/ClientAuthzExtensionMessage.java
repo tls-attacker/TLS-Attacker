@@ -13,7 +13,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ClientAuthzExtensionHandler;
@@ -35,10 +34,6 @@ public class ClientAuthzExtensionMessage extends ExtensionMessage<ClientAuthzExt
     ModifiableByteArray authzFormatList;
 
     public ClientAuthzExtensionMessage() {
-        super(ExtensionType.CLIENT_AUTHZ);
-    }
-
-    public ClientAuthzExtensionMessage(Config config) {
         super(ExtensionType.CLIENT_AUTHZ);
     }
 
@@ -69,12 +64,12 @@ public class ClientAuthzExtensionMessage extends ExtensionMessage<ClientAuthzExt
 
     @Override
     public ClientAuthzExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new ClientAuthzExtensionParser(stream, tlsContext.getConfig());
+        return new ClientAuthzExtensionParser(stream);
     }
 
     @Override
     public ClientAuthzExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new ClientAuthzExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new ClientAuthzExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

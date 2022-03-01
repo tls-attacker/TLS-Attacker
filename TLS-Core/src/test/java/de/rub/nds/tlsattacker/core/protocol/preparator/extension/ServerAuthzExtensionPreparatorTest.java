@@ -36,8 +36,7 @@ public class ServerAuthzExtensionPreparatorTest {
         context.getConfig().setServerAuthzExtensionDataFormat(authzFormatList);
 
         msg = new ServerAuthzExtensionMessage();
-        preparator =
-            new ServerAuthzExtensionPreparator(context.getChooser(), msg, new ServerAuthzExtensionSerializer(msg));
+        preparator = new ServerAuthzExtensionPreparator(context.getChooser(), msg);
 
         preparator.prepare();
 

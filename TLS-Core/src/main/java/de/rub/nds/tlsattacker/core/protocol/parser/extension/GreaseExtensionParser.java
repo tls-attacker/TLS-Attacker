@@ -9,14 +9,13 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.GreaseExtensionMessage;
 import java.io.InputStream;
 
 public class GreaseExtensionParser extends ExtensionParser<GreaseExtensionMessage> {
 
-    public GreaseExtensionParser(InputStream stream, Config config) {
-        super(stream, config);
+    public GreaseExtensionParser(InputStream stream) {
+        super(stream);
     }
 
     @Override

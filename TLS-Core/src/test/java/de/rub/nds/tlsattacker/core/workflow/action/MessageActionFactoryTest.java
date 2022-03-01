@@ -47,17 +47,17 @@ public class MessageActionFactoryTest {
      */
     @Test
     public void testCreateActionOne() {
-        MessageAction action = MessageActionFactory.createAction(config, clientConnection, ConnectionEndType.CLIENT,
-            new AlertMessage(config));
+        MessageAction action =
+            MessageActionFactory.createAction(config, clientConnection, ConnectionEndType.CLIENT, new AlertMessage());
         assertEquals(action.getClass(), SendAction.class);
-        action = MessageActionFactory.createAction(config, clientConnection, ConnectionEndType.SERVER,
-            new AlertMessage(config));
+        action =
+            MessageActionFactory.createAction(config, clientConnection, ConnectionEndType.SERVER, new AlertMessage());
         assertEquals(action.getClass(), ReceiveAction.class);
-        action = MessageActionFactory.createAction(config, serverConnection, ConnectionEndType.CLIENT,
-            new AlertMessage(config));
+        action =
+            MessageActionFactory.createAction(config, serverConnection, ConnectionEndType.CLIENT, new AlertMessage());
         assertEquals(action.getClass(), ReceiveAction.class);
-        action = MessageActionFactory.createAction(config, serverConnection, ConnectionEndType.SERVER,
-            new AlertMessage(config));
+        action =
+            MessageActionFactory.createAction(config, serverConnection, ConnectionEndType.SERVER, new AlertMessage());
         assertEquals(action.getClass(), SendAction.class);
         assertTrue(action.messages.size() == 1);
     }
@@ -69,7 +69,7 @@ public class MessageActionFactoryTest {
     public void testCreateActionMultiple() {
         List<ProtocolMessage> messages = new LinkedList<>();
         messages.add(new ChangeCipherSpecMessage());
-        messages.add(new AlertMessage(config));
+        messages.add(new AlertMessage());
         MessageAction action =
             MessageActionFactory.createAction(config, clientConnection, ConnectionEndType.CLIENT, messages);
         assertEquals(action.getClass(), SendAction.class);

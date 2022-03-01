@@ -67,7 +67,9 @@ public class FinishedMessageParserTest {
      */
     @Test
     public void testParse() {
-        FinishedParser parser = new FinishedParser(new ByteArrayInputStream(message), version, new TlsContext(config));
+        TlsContext tlsContext = new TlsContext(config);
+        tlsContext.setSelectedProtocolVersion(version);
+        FinishedParser parser = new FinishedParser(new ByteArrayInputStream(message), tlsContext);
         FinishedMessage msg = new FinishedMessage();
         parser.parse(msg);
         assertArrayEquals(verifyData, msg.getVerifyData().getValue());

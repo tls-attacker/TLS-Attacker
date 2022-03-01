@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,7 +18,7 @@ public class DtlsHandshakeMessageFragmentSerializer extends HandshakeMessageSeri
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public DtlsHandshakeMessageFragmentSerializer(DtlsHandshakeMessageFragment message, ProtocolVersion version) {
+    public DtlsHandshakeMessageFragmentSerializer(DtlsHandshakeMessageFragment message) {
         super(message);
     }
 

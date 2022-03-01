@@ -9,8 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
@@ -25,12 +23,10 @@ public abstract class ClientKeyExchangeParser<T extends ClientKeyExchangeMessage
      * Constructor for the Parser class
      *
      * @param stream
-     * @param version
-     *                   Version of the Protocol
      * @param tlsContext
      *                   A Config used in the current tlsContext
      */
-    public ClientKeyExchangeParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
-        super(stream, HandshakeMessageType.CLIENT_KEY_EXCHANGE, version, tlsContext);
+    public ClientKeyExchangeParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
     }
 }

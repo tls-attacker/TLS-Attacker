@@ -9,7 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.MaxFragmentLengthExtensionMessage;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
@@ -42,7 +41,7 @@ public class MaxFragmentLengthExtensionParserTest {
     @Test
     public void testParseExtensionMessageContent() {
         MaxFragmentLengthExtensionParser parser =
-            new MaxFragmentLengthExtensionParser(new ByteArrayInputStream(extension), Config.createConfig());
+            new MaxFragmentLengthExtensionParser(new ByteArrayInputStream(extension));
         MaxFragmentLengthExtensionMessage msg = new MaxFragmentLengthExtensionMessage();
         parser.parse(msg);
         assertTrue(maxFragmentLength == msg.getMaxFragmentLength().getValue());

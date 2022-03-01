@@ -16,7 +16,6 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.certificate.ocsp.OCSPResponse;
 import de.rub.nds.tlsattacker.core.certificate.ocsp.OCSPResponseParser;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.CertificateStatusHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.CertificateStatusParser;
@@ -47,10 +46,6 @@ public class CertificateStatusMessage extends HandshakeMessage {
         super(HandshakeMessageType.CERTIFICATE_STATUS);
     }
 
-    public CertificateStatusMessage(Config tlsConfig) {
-        super(tlsConfig, HandshakeMessageType.CERTIFICATE_STATUS);
-    }
-
     @Override
     public CertificateStatusHandler getHandler(TlsContext tlsContext) {
         return new CertificateStatusHandler(tlsContext);
@@ -58,7 +53,7 @@ public class CertificateStatusMessage extends HandshakeMessage {
 
     @Override
     public CertificateStatusParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new CertificateStatusParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+        return new CertificateStatusParser(stream, tlsContext);
     }
 
     @Override
@@ -68,7 +63,7 @@ public class CertificateStatusMessage extends HandshakeMessage {
 
     @Override
     public CertificateStatusSerializer getSerializer(TlsContext tlsContext) {
-        return new CertificateStatusSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new CertificateStatusSerializer(this);
     }
 
     @Override

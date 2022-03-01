@@ -14,8 +14,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.PWDClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.PWDComputations;
@@ -48,10 +46,6 @@ public class PWDClientKeyExchangeMessage extends ClientKeyExchangeMessage {
         super();
     }
 
-    public PWDClientKeyExchangeMessage(Config tlsConfig) {
-        super(tlsConfig);
-    }
-
     @Override
     public PWDComputations getComputations() {
         return computations;
@@ -71,8 +65,7 @@ public class PWDClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     @Override
     public PWDClientKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new PWDClientKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(),
-            AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite()), tlsContext);
+        return new PWDClientKeyExchangeParser(stream, tlsContext);
     }
 
     @Override
@@ -82,7 +75,7 @@ public class PWDClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     @Override
     public PWDClientKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
-        return new PWDClientKeyExchangeSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new PWDClientKeyExchangeSerializer(this);
     }
 
     public ModifiableInteger getElementLength() {

@@ -90,7 +90,7 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
 
         ReceiveAction action = new ReceiveAction();
 
-        AlertMessage alertMessage = new AlertMessage(tlsConfig);
+        AlertMessage alertMessage = new AlertMessage();
         List<ProtocolMessage> messages = new LinkedList<>();
         messages.add(alertMessage);
         action.setExpectedMessages(messages);

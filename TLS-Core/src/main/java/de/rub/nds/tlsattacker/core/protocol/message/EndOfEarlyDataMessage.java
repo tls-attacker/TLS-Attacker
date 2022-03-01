@@ -9,7 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.protocol.message;
 
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.EndOfEarlyDataHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.EndOfEarlyDataParser;
@@ -29,10 +28,6 @@ public class EndOfEarlyDataMessage extends HandshakeMessage {
         super(HandshakeMessageType.END_OF_EARLY_DATA);
     }
 
-    public EndOfEarlyDataMessage(Config config) {
-        super(config, HandshakeMessageType.END_OF_EARLY_DATA);
-    }
-
     @Override
     public EndOfEarlyDataHandler getHandler(TlsContext tlsContext) {
         return new EndOfEarlyDataHandler(tlsContext);
@@ -40,7 +35,7 @@ public class EndOfEarlyDataMessage extends HandshakeMessage {
 
     @Override
     public EndOfEarlyDataParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new EndOfEarlyDataParser(stream, tlsContext.getLastRecordVersion(), tlsContext);
+        return new EndOfEarlyDataParser(stream, tlsContext);
     }
 
     @Override
@@ -50,7 +45,7 @@ public class EndOfEarlyDataMessage extends HandshakeMessage {
 
     @Override
     public EndOfEarlyDataSerializer getSerializer(TlsContext tlsContext) {
-        return new EndOfEarlyDataSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new EndOfEarlyDataSerializer(this);
     }
 
     @Override

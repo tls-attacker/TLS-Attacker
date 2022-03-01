@@ -25,7 +25,7 @@ public class UnknownPreparatorTest {
     @Before
     public void setUp() {
         this.context = new TlsContext();
-        this.message = new UnknownMessage(context.getConfig(), ProtocolMessageType.UNKNOWN);
+        this.message = new UnknownMessage(ProtocolMessageType.UNKNOWN);
         this.preparator = new UnknownMessagePreparator(context.getChooser(), message);
     }
 

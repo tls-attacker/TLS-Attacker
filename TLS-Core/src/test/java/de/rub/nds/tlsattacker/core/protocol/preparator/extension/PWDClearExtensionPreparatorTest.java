@@ -28,8 +28,7 @@ public class PWDClearExtensionPreparatorTest {
     public void setUp() {
         context = new TlsContext();
         message = new PWDClearExtensionMessage();
-        preparator =
-            new PWDClearExtensionPreparator(context.getChooser(), message, new PWDClearExtensionSerializer(message));
+        preparator = new PWDClearExtensionPreparator(context.getChooser(), message);
     }
 
     @Test

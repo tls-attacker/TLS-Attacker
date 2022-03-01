@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.ECDHClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.ECDHClientComputations;
@@ -32,10 +31,6 @@ public class ECDHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
         super();
     }
 
-    public ECDHClientKeyExchangeMessage(Config tlsConfig) {
-        super(tlsConfig);
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -55,7 +50,7 @@ public class ECDHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     @Override
     public ECDHClientKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new ECDHClientKeyExchangeParser<>(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+        return new ECDHClientKeyExchangeParser<>(stream, tlsContext);
     }
 
     @Override
@@ -65,7 +60,7 @@ public class ECDHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     @Override
     public ECDHClientKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
-        return new ECDHClientKeyExchangeSerializer<>(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new ECDHClientKeyExchangeSerializer<>(this);
     }
 
     @Override

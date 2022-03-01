@@ -17,7 +17,14 @@ import de.rub.nds.tlsattacker.core.protocol.Parser;
 import de.rub.nds.tlsattacker.core.protocol.Preparator;
 import de.rub.nds.tlsattacker.core.protocol.Serializer;
 
+/**
+ * All protocol messages are abstracted with the DataContainer interface. For TLS-Attacker to work with data it only
+ * needs to know how to parse, prepare, serialize and handle the message. All messages must therefore provide this
+ * functionality.
+ *
+ */
 public interface DataContainer<Container extends DataContainer, Context extends LayerContext> {
+
 
     public Parser<Container> getParser(Context context, InputStream stream);
 
