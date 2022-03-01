@@ -908,9 +908,9 @@
     <addSignedCertificateTimestampExtension>false</addSignedCertificateTimestampExtension>
     <addRenegotiationInfoExtension>true</addRenegotiationInfoExtension>
     <addTokenBindingExtension>false</addTokenBindingExtension>
-    <addHttpsCookie>false</addHttpsCookie>
-    <defaultHttpsCookieName>tls-attacker</defaultHttpsCookieName>
-    <defaultHttpsCookieValue>42130912812</defaultHttpsCookieValue>
+    <addHttpCookie>false</addHttpCookie>
+    <defaultHttpCookieName>tls-attacker</defaultHttpCookieName>
+    <defaultHttpCookieValue>42130912812</defaultHttpCookieValue>
     <addCertificateStatusRequestExtension>false</addCertificateStatusRequestExtension>
     <addAlpnExtension>false</addAlpnExtension>
     <addSRPExtension>false</addSRPExtension>
@@ -1131,8 +1131,8 @@
     <chooserType>DEFAULT</chooserType>
     <useAllProvidedDtlsFragments>false</useAllProvidedDtlsFragments>
     <useAllProvidedRecords>false</useAllProvidedRecords>
-    <httpsParsingEnabled>false</httpsParsingEnabled>
-    <defaultHttpsRequestPath>/</defaultHttpsRequestPath>
+    <httpParsingEnabled>false</httpParsingEnabled>
+    <defaultHttpRequestPath>/</defaultHttpRequestPath>
     <starttlsType>NONE</starttlsType>
     <overrideSessionIdForTickets>true</overrideSessionIdForTickets>
     <sessionTicketLifetimeHint>7200</sessionTicketLifetimeHint>

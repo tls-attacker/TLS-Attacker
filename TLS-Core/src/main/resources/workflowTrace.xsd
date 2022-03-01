@@ -3044,8 +3044,8 @@
           <xs:element name="negotiatedExtensionSet" type="extensionType" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
           <xs:element name="secureRenegotiation" type="xs:boolean"/>
           <xs:element name="useExtendedMasterSecret" type="xs:boolean"/>
-          <xs:element name="httpsCookieName" type="xs:string" minOccurs="0"/>
-          <xs:element name="httpsCookieValue" type="xs:string" minOccurs="0"/>
+          <xs:element name="httpCookieName" type="xs:string" minOccurs="0"/>
+          <xs:element name="httpCookieValue" type="xs:string" minOccurs="0"/>
           <xs:element name="receivedTransportHandlerException" type="xs:boolean"/>
           <xs:element name="reversePrepareAfterParse" type="xs:boolean"/>
           <xs:element name="esniClientNonce" type="xs:base64Binary" minOccurs="0"/>
@@ -3362,9 +3362,9 @@
       <xs:element name="addSignedCertificateTimestampExtension" type="xs:boolean" minOccurs="0"/>
       <xs:element name="addRenegotiationInfoExtension" type="xs:boolean" minOccurs="0"/>
       <xs:element name="addTokenBindingExtension" type="xs:boolean" minOccurs="0"/>
-      <xs:element name="addHttpsCookie" type="xs:boolean" minOccurs="0"/>
-      <xs:element name="defaultHttpsCookieName" type="xs:string" minOccurs="0"/>
-      <xs:element name="defaultHttpsCookieValue" type="xs:string" minOccurs="0"/>
+      <xs:element name="addHttpCookie" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="defaultHttpCookieName" type="xs:string" minOccurs="0"/>
+      <xs:element name="defaultHttpCookieValue" type="xs:string" minOccurs="0"/>
       <xs:element name="addCertificateStatusRequestExtension" type="xs:boolean" minOccurs="0"/>
       <xs:element name="addAlpnExtension" type="xs:boolean" minOccurs="0"/>
       <xs:element name="addSRPExtension" type="xs:boolean" minOccurs="0"/>
@@ -3573,8 +3573,8 @@
       <xs:element name="chooserType" type="chooserType" minOccurs="0"/>
       <xs:element name="useAllProvidedDtlsFragments" type="xs:boolean" minOccurs="0"/>
       <xs:element name="useAllProvidedRecords" type="xs:boolean" minOccurs="0"/>
-      <xs:element name="httpsParsingEnabled" type="xs:boolean" minOccurs="0"/>
-      <xs:element name="defaultHttpsRequestPath" type="xs:string" minOccurs="0"/>
+      <xs:element name="httpParsingEnabled" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="defaultHttpRequestPath" type="xs:string" minOccurs="0"/>
       <xs:element name="starttlsType" type="starttlsType" minOccurs="0"/>
       <xs:element name="overrideSessionIdForTickets" type="xs:boolean" minOccurs="0"/>
       <xs:element name="sessionTicketLifetimeHint" type="xs:long" minOccurs="0"/>
