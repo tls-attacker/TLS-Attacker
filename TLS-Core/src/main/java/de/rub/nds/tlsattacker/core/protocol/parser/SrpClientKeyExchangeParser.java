@@ -28,7 +28,7 @@ public class SrpClientKeyExchangeParser extends ClientKeyExchangeParser<SrpClien
      *
      * @param stream
      * @param version
-     *                Version of the Protocol
+     *                   Version of the Protocol
      * @param tlsContext
      *
      */

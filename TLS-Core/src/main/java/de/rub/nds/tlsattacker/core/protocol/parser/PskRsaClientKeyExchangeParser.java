@@ -27,7 +27,7 @@ public class PskRsaClientKeyExchangeParser extends RSAClientKeyExchangeParser<Ps
      *
      * @param stream
      * @param version
-     *                Version of the Protocol
+     *                   Version of the Protocol
      * @param tlsContext
      */
     public PskRsaClientKeyExchangeParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {

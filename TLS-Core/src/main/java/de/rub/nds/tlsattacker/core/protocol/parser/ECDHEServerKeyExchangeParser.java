@@ -30,7 +30,7 @@ public class ECDHEServerKeyExchangeParser<T extends ECDHEServerKeyExchangeMessag
      *
      * @param stream
      * @param version
-     *                Version of the Protocol
+     *                   Version of the Protocol
      * @param tlsContext
      */
     public ECDHEServerKeyExchangeParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {

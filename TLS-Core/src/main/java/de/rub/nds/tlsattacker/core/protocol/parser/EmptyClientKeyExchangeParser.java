@@ -25,7 +25,7 @@ public class EmptyClientKeyExchangeParser<T extends EmptyClientKeyExchangeMessag
      *
      * @param stream
      * @param version
-     *                Version of the Protocol
+     *                   Version of the Protocol
      * @param tlsContext
      */
     public EmptyClientKeyExchangeParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {

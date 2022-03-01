@@ -40,15 +40,16 @@ public class PreSharedKeyExtensionHandler extends ExtensionHandler<PreSharedKeyE
                 adjustPsk(message);
             } else {
                 if (tlsContext.getChooser().getPskSets().size() > 0) {
-                    tlsContext.setEarlyDataPSKIdentity(tlsContext.getChooser().getPskSets().get(0).getPreSharedKeyIdentity());
+                    tlsContext
+                        .setEarlyDataPSKIdentity(tlsContext.getChooser().getPskSets().get(0).getPreSharedKeyIdentity());
                     tlsContext.setEarlyDataCipherSuite(tlsContext.getChooser().getPskSets().get(0).getCipherSuite());
                 } else {
                     LOGGER.warn("Could not adjust EarlyData Identity and Cipher suite");
                 }
             }
         }
-        if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.SERVER && message.getIdentities() != null
-            && message.getIdentities().size() > 0) {
+        if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.SERVER
+            && message.getIdentities() != null && message.getIdentities().size() > 0) {
             selectPsk(message);
             if (tlsContext.isExtensionNegotiated(ExtensionType.EARLY_DATA)) {
                 selectEarlyDataPsk(message);

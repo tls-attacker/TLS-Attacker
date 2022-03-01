@@ -35,11 +35,11 @@ public abstract class HelloMessageParser<T extends HelloMessage> extends Handsha
      *
      * @param stream
      * @param type
-     *                Expected Type value for the Message
+     *                   Expected Type value for the Message
      * @param version
-     *                Version of the Protocol
+     *                   Version of the Protocol
      * @param tlsContext
-     *                A Config used in the current tlsContext
+     *                   A Config used in the current tlsContext
      */
     public HelloMessageParser(InputStream stream, HandshakeMessageType type, ProtocolVersion version,
         TlsContext tlsContext) {

@@ -21,7 +21,8 @@ public class ClientAuthzExtensionHandler extends ExtensionHandler<ClientAuthzExt
 
     @Override
     public void adjustTLSExtensionContext(ClientAuthzExtensionMessage message) {
-        tlsContext.setClientAuthzDataFormatList(AuthzDataFormat.byteArrayToList(message.getAuthzFormatList().getValue()));
+        tlsContext
+            .setClientAuthzDataFormatList(AuthzDataFormat.byteArrayToList(message.getAuthzFormatList().getValue()));
     }
 
 }

@@ -36,7 +36,7 @@ public class RecordPreparator extends Preparator<Record> {
     private ProtocolMessageType type;
 
     public RecordPreparator(TlsContext tlsContext, Record record, Encryptor encryptor, ProtocolMessageType type,
-                            RecordCompressor compressor) {
+        RecordCompressor compressor) {
         super(tlsContext.getChooser(), record);
         this.record = record;
         this.encryptor = encryptor;

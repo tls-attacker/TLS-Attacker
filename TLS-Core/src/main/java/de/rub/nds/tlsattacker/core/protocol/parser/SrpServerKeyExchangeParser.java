@@ -31,7 +31,7 @@ public class SrpServerKeyExchangeParser extends ServerKeyExchangeParser<SrpServe
      *
      * @param stream
      * @param version
-     *                Version of the Protocol
+     *                   Version of the Protocol
      * @param tlsContext
      *
      */

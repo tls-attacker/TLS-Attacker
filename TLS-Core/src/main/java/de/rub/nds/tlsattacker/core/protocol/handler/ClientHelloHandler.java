@@ -159,8 +159,8 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
     private void adjustEarlyTrafficSecret() throws CryptoException {
         HKDFAlgorithm hkdfAlgorithm =
             AlgorithmResolver.getHKDFAlgorithm(tlsContext.getChooser().getEarlyDataCipherSuite());
-        DigestAlgorithm digestAlgo =
-            AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS13, tlsContext.getChooser().getEarlyDataCipherSuite());
+        DigestAlgorithm digestAlgo = AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS13,
+            tlsContext.getChooser().getEarlyDataCipherSuite());
 
         byte[] earlySecret = HKDFunction.extract(hkdfAlgorithm, new byte[0], tlsContext.getChooser().getEarlyDataPsk());
         tlsContext.setEarlySecret(earlySecret);
@@ -176,8 +176,8 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
             tlsContext.setActiveClientKeySetType(Tls13KeySetType.EARLY_TRAFFIC_SECRETS);
             LOGGER.debug("Setting cipher for client to use early secrets");
 
-            KeySet clientKeySet =
-                KeySetGenerator.generateKeySet(tlsContext, ProtocolVersion.TLS13, tlsContext.getActiveClientKeySetType());
+            KeySet clientKeySet = KeySetGenerator.generateKeySet(tlsContext, ProtocolVersion.TLS13,
+                tlsContext.getActiveClientKeySetType());
 
             if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {
                 tlsContext.getRecordLayer().updateDecryptionCipher(RecordCipherFactory.getRecordCipher(tlsContext,

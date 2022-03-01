@@ -63,8 +63,8 @@ public abstract class ClientKeyExchangeHandler<MessageT extends ClientKeyExchang
                 chooser.getSelectedCipherSuite());
             if (chooser.isUseExtendedMasterSecret()) {
                 LOGGER.debug("Calculating ExtendedMasterSecret");
-                byte[] sessionHash =
-                    tlsContext.getDigest().digest(chooser.getSelectedProtocolVersion(), chooser.getSelectedCipherSuite());
+                byte[] sessionHash = tlsContext.getDigest().digest(chooser.getSelectedProtocolVersion(),
+                    chooser.getSelectedCipherSuite());
                 LOGGER.debug("Premastersecret: " + ArrayConverter.bytesToHexString(chooser.getPreMasterSecret()));
 
                 LOGGER.debug("SessionHash: " + ArrayConverter.bytesToHexString(sessionHash));

@@ -28,7 +28,7 @@ public class ECDHClientKeyExchangeParser<T extends ECDHClientKeyExchangeMessage>
      *
      * @param stream
      * @param version
-     *                Version of the Protocol
+     *                   Version of the Protocol
      * @param tlsContext
      */
     public ECDHClientKeyExchangeParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {

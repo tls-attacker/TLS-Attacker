@@ -125,9 +125,9 @@ public class CertificateRequestHandler extends HandshakeMessageHandler<Certifica
             tlsContext.getChooser().getServerSupportedSignatureAndHashAlgorithms())) {
             LOGGER.warn("Client and Server have no signature and hash algorithm in common");
         } else {
-            Sets.SetView<SignatureAndHashAlgorithm> intersection =
-                Sets.intersection(Sets.newHashSet(tlsContext.getChooser().getClientSupportedSignatureAndHashAlgorithms()),
-                    Sets.newHashSet(tlsContext.getChooser().getServerSupportedSignatureAndHashAlgorithms()));
+            Sets.SetView<SignatureAndHashAlgorithm> intersection = Sets.intersection(
+                Sets.newHashSet(tlsContext.getChooser().getClientSupportedSignatureAndHashAlgorithms()),
+                Sets.newHashSet(tlsContext.getChooser().getServerSupportedSignatureAndHashAlgorithms()));
             SignatureAndHashAlgorithm algo = (SignatureAndHashAlgorithm) intersection.toArray()[0];
             tlsContext.setSelectedSignatureAndHashAlgorithm(algo);
             LOGGER.debug("Adjusting selected signature and hash algorithm to: " + algo.name());

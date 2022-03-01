@@ -67,8 +67,9 @@ public class PWDProtectExtensionHandler extends ExtensionHandler<PWDProtectExten
         // y = y^((p+1)/4) mod p = sqrt(y)
         BigInteger clientPublicKeyY = clientPublicKeyYSquared.modPow(prime.add(BigInteger.ONE).shiftRight(2), prime);
         ECPoint clientPublicKey = curve.createPoint(clientPublicKeyX, clientPublicKeyY);
-        BigInteger sharedSecret = clientPublicKey.multiply(tlsContext.getConfig().getDefaultServerPWDProtectPrivateKey())
-            .normalize().getXCoord().toBigInteger();
+        BigInteger sharedSecret =
+            clientPublicKey.multiply(tlsContext.getConfig().getDefaultServerPWDProtectPrivateKey()).normalize()
+                .getXCoord().toBigInteger();
         try {
             byte[] key = HKDFunction.expand(hkdfAlgorithm,
                 HKDFunction.extract(hkdfAlgorithm, null, ArrayConverter.bigIntegerToByteArray(sharedSecret)),

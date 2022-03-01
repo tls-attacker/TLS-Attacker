@@ -28,7 +28,7 @@ public class FinishedParser extends HandshakeMessageParser<FinishedMessage> {
      * @param stream
      * @param tlsContext
      * @param version
-     *                Version of the Protocol
+     *                   Version of the Protocol
      */
     public FinishedParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
         super(stream, HandshakeMessageType.FINISHED, version, tlsContext);

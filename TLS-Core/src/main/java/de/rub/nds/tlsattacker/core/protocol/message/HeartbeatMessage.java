@@ -149,7 +149,8 @@ public class HeartbeatMessage<HeartbeatMessage> extends ProtocolMessage {
 
     @Override
     public HeartbeatMessageParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new HeartbeatMessageParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext.getConfig());
+        return new HeartbeatMessageParser(stream, tlsContext.getChooser().getLastRecordVersion(),
+            tlsContext.getConfig());
     }
 
     @Override

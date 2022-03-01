@@ -127,7 +127,8 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
                 }
                 if (message.getCertificateKeyPair() != null) {
                     LOGGER.debug("Found a certificate key pair. Adjusting in context");
-                    message.getCertificateKeyPair().adjustInContext(tlsContext, tlsContext.getTalkingConnectionEndType());
+                    message.getCertificateKeyPair().adjustInContext(tlsContext,
+                        tlsContext.getTalkingConnectionEndType());
                 } else if (cert != null) {
                     if (cert.isEmpty()) {
                         LOGGER.debug("Certificate is empty - no adjustments");
@@ -135,7 +136,8 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
                         LOGGER.debug("No CertificatekeyPair found, creating new one");
                         CertificateKeyPair pair = new CertificateKeyPair(cert);
                         message.setCertificateKeyPair(pair);
-                        message.getCertificateKeyPair().adjustInContext(tlsContext, tlsContext.getTalkingConnectionEndType());
+                        message.getCertificateKeyPair().adjustInContext(tlsContext,
+                            tlsContext.getTalkingConnectionEndType());
                     }
 
                 } else {

@@ -52,8 +52,8 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
 
     private RecordCipher getRecordCipher() {
         try {
-            KeySet keySet = KeySetGenerator.generateKeySet(tlsContext, tlsContext.getChooser().getSelectedProtocolVersion(),
-                Tls13KeySetType.NONE);
+            KeySet keySet = KeySetGenerator.generateKeySet(tlsContext,
+                tlsContext.getChooser().getSelectedProtocolVersion(), Tls13KeySetType.NONE);
             return RecordCipherFactory.getRecordCipher(tlsContext, keySet);
         } catch (NoSuchAlgorithmException | CryptoException ex) {
             throw new UnsupportedOperationException("The specified Algorithm is not supported", ex);

@@ -65,7 +65,8 @@ public class HandlerFactory {
         }
     }
 
-    private static HandshakeMessageHandler<? extends HandshakeMessage> getServerKeyExchangeHandler(TlsContext tlsContext) {
+    private static HandshakeMessageHandler<? extends HandshakeMessage>
+        getServerKeyExchangeHandler(TlsContext tlsContext) {
         // TODO: There should be a server KeyExchangeHandler
         CipherSuite cs = tlsContext.getChooser().getSelectedCipherSuite();
         KeyExchangeAlgorithm algorithm = AlgorithmResolver.getKeyExchangeAlgorithm(cs);

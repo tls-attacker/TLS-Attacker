@@ -30,7 +30,7 @@ public class PskServerKeyExchangeParser extends ServerKeyExchangeParser<PskServe
      *
      * @param stream
      * @param version
-     *                Version of the Protocol
+     *                   Version of the Protocol
      * @param tlsContext
      */
     public PskServerKeyExchangeParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {

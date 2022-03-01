@@ -33,9 +33,9 @@ public class ServerHelloParser extends HelloMessageParser<ServerHelloMessage> {
      *
      * @param stream
      * @param version
-     *                The Version for which this message should be parsed
+     *                   The Version for which this message should be parsed
      * @param tlsContext
-     *                A Config used in the current tlsContext
+     *                   A Config used in the current tlsContext
      */
     public ServerHelloParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext,
         ConnectionEndType talkingConnectionEndType) {

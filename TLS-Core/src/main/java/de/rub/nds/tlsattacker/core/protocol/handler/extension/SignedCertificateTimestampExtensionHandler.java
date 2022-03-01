@@ -24,7 +24,7 @@ public class SignedCertificateTimestampExtensionHandler
      * Constructor
      *
      * @param tlsContext
-     *                A Chooser
+     *                   A Chooser
      */
     public SignedCertificateTimestampExtensionHandler(TlsContext tlsContext) {
         super(tlsContext);

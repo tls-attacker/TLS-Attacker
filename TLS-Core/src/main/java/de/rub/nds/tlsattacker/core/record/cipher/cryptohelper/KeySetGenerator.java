@@ -28,8 +28,8 @@ public class KeySetGenerator {
 
     private static final int AEAD_IV_LENGTH = 12;
 
-    public static KeySet generateKeySet(TlsContext tlsContext, ProtocolVersion protocolVersion, Tls13KeySetType keySetType)
-        throws NoSuchAlgorithmException, CryptoException {
+    public static KeySet generateKeySet(TlsContext tlsContext, ProtocolVersion protocolVersion,
+        Tls13KeySetType keySetType) throws NoSuchAlgorithmException, CryptoException {
         if (protocolVersion.isTLS13()) {
             return getTls13KeySet(tlsContext, keySetType);
         } else {
@@ -96,8 +96,8 @@ public class KeySetGenerator {
         ProtocolVersion protocolVersion = tlsContext.getChooser().getSelectedProtocolVersion();
         CipherSuite cipherSuite = tlsContext.getChooser().getSelectedCipherSuite();
         byte[] masterSecret = tlsContext.getChooser().getMasterSecret();
-        byte[] seed =
-            ArrayConverter.concatenate(tlsContext.getChooser().getServerRandom(), tlsContext.getChooser().getClientRandom());
+        byte[] seed = ArrayConverter.concatenate(tlsContext.getChooser().getServerRandom(),
+            tlsContext.getChooser().getClientRandom());
 
         byte[] keyBlock;
         if (protocolVersion.isSSL()) {

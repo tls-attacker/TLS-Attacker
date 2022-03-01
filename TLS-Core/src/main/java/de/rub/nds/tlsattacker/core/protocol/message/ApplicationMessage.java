@@ -104,7 +104,8 @@ public class ApplicationMessage extends ProtocolMessage<ApplicationMessage> {
 
     @Override
     public ApplicationMessageParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new ApplicationMessageParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext.getConfig());
+        return new ApplicationMessageParser(stream, tlsContext.getChooser().getLastRecordVersion(),
+            tlsContext.getConfig());
     }
 
     @Override

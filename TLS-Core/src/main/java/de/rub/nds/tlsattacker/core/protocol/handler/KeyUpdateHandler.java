@@ -51,7 +51,8 @@ public class KeyUpdateHandler extends HandshakeMessageHandler<KeyUpdateMessage> 
     }
 
     private void adjustApplicationTrafficSecrets() {
-        HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(tlsContext.getChooser().getSelectedCipherSuite());
+        HKDFAlgorithm hkdfAlgortihm =
+            AlgorithmResolver.getHKDFAlgorithm(tlsContext.getChooser().getSelectedCipherSuite());
 
         try {
             Mac mac = Mac.getInstance(hkdfAlgortihm.getMacAlgorithm().getJavaName());
@@ -86,8 +87,8 @@ public class KeyUpdateHandler extends HandshakeMessageHandler<KeyUpdateMessage> 
     private KeySet getKeySet(TlsContext tlsContext, Tls13KeySetType keySetType) {
         try {
             LOGGER.debug("Generating new KeySet");
-            KeySet keySet =
-                KeySetGenerator.generateKeySet(tlsContext, tlsContext.getChooser().getSelectedProtocolVersion(), keySetType);
+            KeySet keySet = KeySetGenerator.generateKeySet(tlsContext,
+                tlsContext.getChooser().getSelectedProtocolVersion(), keySetType);
 
             return keySet;
         } catch (NoSuchAlgorithmException | CryptoException ex) {
@@ -137,7 +138,8 @@ public class KeyUpdateHandler extends HandshakeMessageHandler<KeyUpdateMessage> 
                 RecordCipher recordCipherClient = RecordCipherFactory.getRecordCipher(tlsContext, keySet);
                 tlsContext.getRecordLayer().updateEncryptionCipher(recordCipherClient);
 
-            } else if (tlsContext.getChooser().getTalkingConnectionEnd() != tlsContext.getChooser().getConnectionEndType()) {
+            } else if (tlsContext.getChooser().getTalkingConnectionEnd()
+                != tlsContext.getChooser().getConnectionEndType()) {
 
                 if (tlsContext.getChooser().getTalkingConnectionEnd() == ConnectionEndType.SERVER) {
 
