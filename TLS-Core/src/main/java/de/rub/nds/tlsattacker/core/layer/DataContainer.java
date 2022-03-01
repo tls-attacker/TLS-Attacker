@@ -17,15 +17,15 @@ import de.rub.nds.tlsattacker.core.protocol.Parser;
 import de.rub.nds.tlsattacker.core.protocol.Preparator;
 import de.rub.nds.tlsattacker.core.protocol.Serializer;
 
-public interface DataContainer<T extends DataContainer, U extends LayerContext> {
+public interface DataContainer<Container extends DataContainer, Context extends LayerContext> {
 
-    public Parser<T> getParser(U context, InputStream stream);
+    public Parser<Container> getParser(Context context, InputStream stream);
 
-    public Preparator<T> getPreparator(U context);
+    public Preparator<Container> getPreparator(Context context);
 
-    public Serializer<T> getSerializer(U context);
+    public Serializer<Container> getSerializer(Context context);
 
-    public Handler<T> getHandler(U context);
+    public Handler<Container> getHandler(Context context);
 
     public default boolean isRequired() {
         return true;
