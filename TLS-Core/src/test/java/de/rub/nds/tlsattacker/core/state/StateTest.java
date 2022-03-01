@@ -129,17 +129,16 @@ public class StateTest {
     @Test
     public void dynamicallyChangingValidTlsContextSucceeds() {
         State state = new State();
-        TlsContext origCtx = state.getContext().getTlsContext();
+        TlsContext origCtx = state.getTlsContext();
         TlsContext newCtx = new TlsContext();
         newCtx.setConnection(origCtx.getConnection());
         origCtx.setSelectedCipherSuite(CipherSuite.TLS_FALLBACK_SCSV);
         newCtx.setSelectedCipherSuite(CipherSuite.TLS_AES_128_CCM_SHA256);
 
-        assertThat(state.getContext().getTlsContext().getSelectedCipherSuite(), equalTo(CipherSuite.TLS_FALLBACK_SCSV));
+        assertThat(state.getTlsContext().getSelectedCipherSuite(), equalTo(CipherSuite.TLS_FALLBACK_SCSV));
         state.replaceTlsContext(newCtx.getContext());
         assertNotSame(state.getContext(), origCtx);
-        assertThat(state.getContext().getTlsContext().getSelectedCipherSuite(),
-            equalTo(CipherSuite.TLS_AES_128_CCM_SHA256));
+        assertThat(state.getTlsContext().getSelectedCipherSuite(), equalTo(CipherSuite.TLS_AES_128_CCM_SHA256));
     }
 
     @Test
@@ -167,7 +166,7 @@ public class StateTest {
     @Test
     public void replacingTlsContextWithBadAliasFails() {
         State state = new State();
-        TlsContext origCtx = state.getContext().getTlsContext();
+        TlsContext origCtx = state.getTlsContext();
         TlsContext newCtx = new TlsContext();
         newCtx.setConnection(new InboundConnection("NewAlias"));
 
@@ -179,7 +178,7 @@ public class StateTest {
     @Test
     public void replacingTlsContextWithBadConnectionFails() {
         State state = new State();
-        TlsContext origCtx = state.getContext().getTlsContext();
+        TlsContext origCtx = state.getTlsContext();
         TlsContext newCtx = new TlsContext();
         newCtx.setConnection(new InboundConnection(origCtx.getConnection().getAlias(), 87311));
 

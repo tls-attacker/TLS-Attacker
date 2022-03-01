@@ -32,8 +32,8 @@ public class GenericReceiveAsciiAction extends AsciiAction {
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
-        TlsContext tlsContext = state.getContext().getTlsContext();
-        TcpContext tcpContext = state.getContext().getTcpContext();
+        TlsContext tlsContext = state.getTlsContext();
+        TcpContext tcpContext = state.getTcpContext();
 
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");

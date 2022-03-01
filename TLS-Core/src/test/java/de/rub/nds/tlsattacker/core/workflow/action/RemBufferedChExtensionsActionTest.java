@@ -84,7 +84,7 @@ public class RemBufferedChExtensionsActionTest {
         trace = new WorkflowTrace();
         trace.addTlsAction(action);
         state = new State(config, trace);
-        ctx = state.getContext().getTlsContext();
+        ctx = state.getTlsContext();
         ch = new ClientHelloMessage(config);
         preparator = new ClientHelloPreparator(ctx.getChooser(), ch);
         preparator.prepare();

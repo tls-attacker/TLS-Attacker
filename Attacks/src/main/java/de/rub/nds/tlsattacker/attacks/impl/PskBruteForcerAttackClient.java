@@ -126,7 +126,7 @@ public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackCli
         State state = executeClientHelloWorkflow(tlsConfig);
         if (WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.CLIENT_HELLO, state.getWorkflowTrace())) {
             CipherSuite suite =
-                choosePskCipherSuite(state.getContext().getTlsContext().getClientSupportedCipherSuites());
+                choosePskCipherSuite(state.getTlsContext().getClientSupportedCipherSuites());
             tlsConfig.setDefaultSelectedCipherSuite(suite);
         } else {
             try {
@@ -173,7 +173,7 @@ public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackCli
         Config tlsConfig = getTlsConfig();
         CONSOLE.info("Started TLS-Server - waiting for a client to Connect...");
         State state = executeClientHelloWorkflow(tlsConfig);
-        TlsContext tlsContext = state.getContext().getTlsContext();
+        TlsContext tlsContext = state.getTlsContext();
         if (WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.CLIENT_HELLO, state.getWorkflowTrace())) {
             for (CipherSuite cipherSuite : tlsContext.getClientSupportedCipherSuites()) {
                 if (cipherSuite.isPsk()) {
@@ -233,11 +233,11 @@ public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackCli
     private boolean tryPsk(byte[] guessedPsk, Record encryptedRecord, State state)
         throws CryptoException, NoSuchAlgorithmException {
         state.getConfig().setDefaultPSKKey(guessedPsk);
-        computeMasterSecret(state.getContext().getTlsContext(), state.getWorkflowTrace());
-        byte[] controlValue = computeControlValue(state.getWorkflowTrace(), state.getContext().getTlsContext());
-        KeySet keySet = KeySetGenerator.generateKeySet(state.getContext().getTlsContext());
-        RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(state.getContext().getTlsContext(), keySet);
-        RecordDecryptor dec = new RecordDecryptor(recordCipher, state.getContext().getTlsContext());
+        computeMasterSecret(state.getTlsContext(), state.getWorkflowTrace());
+        byte[] controlValue = computeControlValue(state.getWorkflowTrace(), state.getTlsContext());
+        KeySet keySet = KeySetGenerator.generateKeySet(state.getTlsContext());
+        RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(state.getTlsContext(), keySet);
+        RecordDecryptor dec = new RecordDecryptor(recordCipher, state.getTlsContext());
         dec.decrypt(encryptedRecord);
         byte[] receivedVrfyData = Arrays.copyOfRange(encryptedRecord.getComputations().getPlainRecordBytes().getValue(),
             0, controlValue.length);

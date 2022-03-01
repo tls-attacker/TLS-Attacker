@@ -89,7 +89,7 @@ public class GeneralDrownAttacker extends BaseDrownAttacker {
         // been announced (CVE-2015-3197)
         SSL2ServerVerifyMessage message = (SSL2ServerVerifyMessage) WorkflowTraceUtil
             .getFirstReceivedMessage(HandshakeMessageType.SSL2_SERVER_VERIFY, trace);
-        if (message != null && ServerVerifyChecker.check(message, state.getContext().getTlsContext(), false)) {
+        if (message != null && ServerVerifyChecker.check(message, state.getTlsContext(), false)) {
             LOGGER.debug("Declaring host as vulnerable based on export cipher suite selection (CVE-2015-3197).");
             return DrownVulnerabilityType.GENERAL;
         }

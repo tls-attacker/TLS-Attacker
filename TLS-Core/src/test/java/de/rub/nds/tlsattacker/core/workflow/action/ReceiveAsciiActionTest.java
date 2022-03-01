@@ -35,7 +35,7 @@ public class ReceiveAsciiActionTest {
         trace.addTlsAction(action);
         state = new State(trace);
 
-        tcpContext = state.getContext().getTcpContext();
+        tcpContext = state.getTcpContext();
         tcpContext.setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
     }
 

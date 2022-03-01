@@ -106,7 +106,7 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
         }
 
         if (config.isFinishWithCloseNotify()) {
-            TlsContext tlsContext = state.getContext().getTlsContext();
+            TlsContext tlsContext = state.getTlsContext();
             int currentEpoch = tlsContext.getRecordLayer().getWriteEpoch();
             for (int epoch = currentEpoch; epoch >= 0; epoch--) {
                 tlsContext.getRecordLayer().setWriteEpoch(epoch);

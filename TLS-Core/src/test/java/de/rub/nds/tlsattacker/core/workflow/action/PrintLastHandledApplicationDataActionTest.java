@@ -44,7 +44,7 @@ public class PrintLastHandledApplicationDataActionTest {
         trace.addTlsAction(action);
         state = new State(trace);
 
-        ctx = state.getContext().getTlsContext();
+        ctx = state.getTlsContext();
         ctx.setLastHandledApplicationMessageData(expectedAppDataEncodedString.getBytes());
     }
 

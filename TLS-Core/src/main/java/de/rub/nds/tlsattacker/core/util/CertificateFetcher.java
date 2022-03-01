@@ -71,7 +71,7 @@ public class CertificateFetcher {
             LOGGER.warn("Could not fetch ServerCertificate");
             LOGGER.debug(e);
         }
-        return state.getContext().getTlsContext().getServerCertificate();
+        return state.getTlsContext().getServerCertificate();
     }
 
     private CertificateFetcher() {

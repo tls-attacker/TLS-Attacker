@@ -46,7 +46,7 @@ public class GenericReceiveActionTest {
         trace.addTlsAction(action);
         state = new State(trace);
 
-        tlsContext = state.getContext().getTlsContext();
+        tlsContext = state.getTlsContext();
         tlsContext.getContext().getTcpContext().setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
     }

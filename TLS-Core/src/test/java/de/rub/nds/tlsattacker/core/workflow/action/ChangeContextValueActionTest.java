@@ -45,7 +45,7 @@ public class ChangeContextValueActionTest {
         trace = new WorkflowTrace();
         trace.addTlsAction(action);
         state = new State(config, trace);
-        tlsContext = state.getContext().getTlsContext();
+        tlsContext = state.getTlsContext();
     }
 
     @After

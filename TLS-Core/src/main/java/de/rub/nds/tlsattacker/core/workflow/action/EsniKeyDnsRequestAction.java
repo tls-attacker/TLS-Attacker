@@ -36,7 +36,7 @@ public class EsniKeyDnsRequestAction extends TlsAction {
     @Override
     public void execute(State state) throws WorkflowExecutionException {
         TlsContext tlsContext;
-        tlsContext = state.getContext().getTlsContext();
+        tlsContext = state.getTlsContext();
         Config tlsConfig = state.getConfig();
 
         if (isExecuted()) {

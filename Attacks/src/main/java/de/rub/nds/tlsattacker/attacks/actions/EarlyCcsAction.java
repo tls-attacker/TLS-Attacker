@@ -62,15 +62,15 @@ public class EarlyCcsAction extends TlsAction {
         }
         message.setAdjustContext(Modifiable.explicit(false));
         ClientKeyExchangeHandler handler =
-            (ClientKeyExchangeHandler) message.getHandler(state.getContext().getTlsContext());
-        message.getPreparator(state.getContext().getTlsContext()).prepare();
+            (ClientKeyExchangeHandler) message.getHandler(state.getTlsContext());
+        message.getPreparator(state.getTlsContext()).prepare();
         if (targetOpenssl100) {
             handler.adjustPremasterSecret(message);
             handler.adjustMasterSecret(message);
         }
         handler.adjustContextAfterSerialize(message);
         try {
-            state.getContext().getTlsContext().getRecordLayer().sendData(
+            state.getTlsContext().getRecordLayer().sendData(
                 new RecordLayerHint(ProtocolMessageType.HANDSHAKE), message.getCompleteResultingMessage().getValue());
             executedAsPlanned = true;
         } catch (IOException e) {

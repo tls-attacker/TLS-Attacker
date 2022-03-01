@@ -97,7 +97,7 @@ class ExtraClearAttack {
             .getFirstReceivedMessage(HandshakeMessageType.SSL2_SERVER_VERIFY, trace);
 
         if (serverVerifyMessage != null
-            && ServerVerifyChecker.check(serverVerifyMessage, state.getContext().getTlsContext(), true)) {
+            && ServerVerifyChecker.check(serverVerifyMessage, state.getTlsContext(), true)) {
             return DrownVulnerabilityType.SPECIAL;
         }
 
@@ -148,11 +148,11 @@ class ExtraClearAttack {
         workflowExecutor.executeWorkflow();
 
         // Information from the server certificate should be in the context now
-        serverPublicKey = state.getContext().getTlsContext().getServerRSAPublicKey();
+        serverPublicKey = state.getTlsContext().getServerRSAPublicKey();
         if (serverPublicKey == null) {
             throw new AttackFailedException("Could not get server public key");
         }
-        serverModulus = state.getContext().getTlsContext().getServerRSAModulus();
+        serverModulus = state.getTlsContext().getServerRSAModulus();
         if (serverModulus == null) {
             throw new AttackFailedException("Could not get server modulus");
         }

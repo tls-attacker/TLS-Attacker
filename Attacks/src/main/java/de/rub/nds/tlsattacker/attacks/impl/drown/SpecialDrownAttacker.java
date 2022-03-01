@@ -133,7 +133,7 @@ public class SpecialDrownAttacker extends BaseDrownAttacker {
             .getFirstReceivedMessage(HandshakeMessageType.SSL2_SERVER_VERIFY, trace);
         CONSOLE.info("Completed server connection");
         LeakyExportCheckData checkData =
-            new LeakyExportCheckData(state.getContext().getTlsContext(), clientMasterKeyMessage, serverVerifyMessage);
+            new LeakyExportCheckData(state.getTlsContext(), clientMasterKeyMessage, serverVerifyMessage);
 
         try {
             FileOutputStream fileStream = new FileOutputStream(dataFilePath);
@@ -251,7 +251,7 @@ public class SpecialDrownAttacker extends BaseDrownAttacker {
         Config tlsConfig = getTlsConfig();
         SSL2CipherSuite cipherSuite = tlsConfig.getDefaultSSL2CipherSuite();
         State state = new State(tlsConfig);
-        TlsContext tlsContext = state.getContext().getTlsContext();
+        TlsContext tlsContext = state.getTlsContext();
 
         byte[] encrypted = new byte[40];
         tlsContext.getRandom().nextBytes(encrypted);
