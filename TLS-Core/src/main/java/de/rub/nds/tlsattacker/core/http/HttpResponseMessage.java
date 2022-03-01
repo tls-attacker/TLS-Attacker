@@ -122,7 +122,7 @@ public class HttpResponseMessage extends ModifiableVariableHolder
     }
 
     public HttpResponsePreparator getPreparator(HttpContext context) {
-        return new HttpResponsePreparator(this);
+        return new HttpResponsePreparator(context.getContext().getHttpContext(), this);
     }
 
     public HttpResponseSerializer getSerializer(HttpContext context) {

@@ -11,7 +11,9 @@ package de.rub.nds.tlsattacker.core.protocol;
 
 import java.io.InputStream;
 
-public abstract class ProtocolMessageParser<Message extends ProtocolMessage> extends Parser<Message> {
+import de.rub.nds.tlsattacker.core.layer.DataContainer;
+
+public abstract class ProtocolMessageParser<Message extends DataContainer> extends Parser<Message> {
 
     public ProtocolMessageParser(InputStream stream) {
         super(stream);

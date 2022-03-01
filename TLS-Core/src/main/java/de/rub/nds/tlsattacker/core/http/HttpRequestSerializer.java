@@ -24,7 +24,7 @@ public class HttpRequestSerializer extends Serializer<HttpRequestMessage> {
     private final HttpRequestMessage message;
 
     public HttpRequestSerializer(HttpRequestMessage message) {
-        super(message);
+        super();
         this.message = message;
     }
 

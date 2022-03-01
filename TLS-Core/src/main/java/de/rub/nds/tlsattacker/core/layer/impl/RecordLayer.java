@@ -45,7 +45,7 @@ import de.rub.nds.tlsattacker.core.record.serializer.RecordSerializer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record, TlsContext> {
+public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

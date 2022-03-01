@@ -25,7 +25,6 @@ import de.rub.nds.tlsattacker.core.protocol.Serializer;
  */
 public interface DataContainer<Container extends DataContainer, Context extends LayerContext> {
 
-
     public Parser<Container> getParser(Context context, InputStream stream);
 
     public Preparator<Container> getPreparator(Context context);

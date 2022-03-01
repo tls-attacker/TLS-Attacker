@@ -17,6 +17,7 @@ package de.rub.nds.tlsattacker.core.layer;
 import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
 import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
 import de.rub.nds.tlsattacker.core.layer.context.LayerContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.tlsattacker.core.protocol.Handler;
@@ -25,6 +26,8 @@ import de.rub.nds.tlsattacker.core.protocol.Preparator;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+
+import de.rub.nds.tlsattacker.core.state.Context;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -179,7 +182,7 @@ public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container 
      * @throws IOException
      *                     Should a lower layer not be able to return a data stream.
      */
-    protected void readDataContainer(Container container, Context context) throws IOException {
+    protected void readDataContainer(Container container, TlsContext context) throws IOException {
         Parser parser = container.getParser(context, getLowerLayer().getDataStream());
         parser.parse(container);
         Preparator preparator = container.getPreparator(context);

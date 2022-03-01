@@ -9,17 +9,16 @@
 
 package de.rub.nds.tlsattacker.core.http;
 
-import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
-import de.rub.nds.tlsattacker.core.http.header.*;
-import de.rub.nds.tlsattacker.core.protocol.Parser;
-
 import java.io.InputStream;
 import java.nio.charset.Charset;
+
+import de.rub.nds.tlsattacker.core.exceptions.ParserException;
+import de.rub.nds.tlsattacker.core.http.header.*;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageParser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class HttpResponseParser extends Parser<HttpResponseMessage> {
+public class HttpResponseParser extends ProtocolMessageParser<HttpResponseMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -28,7 +27,7 @@ public class HttpResponseParser extends Parser<HttpResponseMessage> {
     }
 
     @Override
-    protected void parseMessageContent(HttpsResponseMessage message) {
+    protected void parseMessageContent(HttpResponseMessage message) {
         String request = parseStringTill((byte) 0x0A);
         String[] split = request.replaceAll("\r", " ").split(" ");
         if (split.length < 2) {

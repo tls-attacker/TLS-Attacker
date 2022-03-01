@@ -9,8 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.http;
 
-import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.Charset;
 

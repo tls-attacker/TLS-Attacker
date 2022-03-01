@@ -23,7 +23,7 @@ import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class TcpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer, TcpContext> {// TODO change types
+public class TcpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> {
 
     private static Logger LOGGER = LogManager.getLogger();
 

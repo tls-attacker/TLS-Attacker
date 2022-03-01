@@ -9,37 +9,43 @@
 
 package de.rub.nds.tlsattacker.core.https;
 
-import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.Charset;
-import static org.junit.Assert.assertEquals;
+
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.http.HttpRequestHandler;
+import de.rub.nds.tlsattacker.core.http.HttpRequestMessage;
+import de.rub.nds.tlsattacker.core.http.HttpRequestParser;
+import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import org.junit.Before;
 import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
 public class HttpsRequestHandlerTest {
 
-    private TlsContext context;
-    private HttpsRequestMessage message;
-    private HttpsRequestHandler handler;
+    private HttpContext context;
+    private HttpRequestMessage message;
+    private HttpRequestHandler handler;
     private final Config config = Config.createConfig();
 
     @Before
     public void setUp() {
-        context = new TlsContext();
+        context = new HttpContext(new Context(new Config()));
 
         String rawMessage = "GET /index.html HTTP/1.1\r\nUser-Agent: Test\r\nHost: www.rub.de\r\n\r\n";
-        HttpsRequestParser parser =
-            new HttpsRequestParser(new ByteArrayInputStream(rawMessage.getBytes(Charset.forName("UTF-8"))));
-        message = new HttpsRequestMessage();
+        HttpRequestParser parser =
+            new HttpRequestParser(new ByteArrayInputStream(rawMessage.getBytes(Charset.forName("UTF-8"))));
+        message = new HttpRequestMessage();
         parser.parse(message);
 
-        handler = new HttpsRequestHandler(context);
+        handler = new HttpRequestHandler(context);
     }
 
     @Test
     public void testadjustContext() {
         handler.adjustContext(message);
-        assertEquals(context.getHttpContext().getLastRequestPath(), message.getRequestPath().getValue());
+        assertEquals(context.getLastRequestPath(), message.getRequestPath().getValue());
     }
 }
