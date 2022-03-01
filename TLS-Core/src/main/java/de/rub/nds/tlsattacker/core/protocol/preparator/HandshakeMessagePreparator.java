@@ -75,7 +75,7 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
         byte[] content = serializer.serializeProtocolMessageContent();
         prepareMessageContent(content);
         if (!(message instanceof DtlsHandshakeMessageFragment)) {
-            prepareMessageLength(serializer.serializeProtocolMessageContent().length);
+            prepareMessageLength(content.length);
             prepareMessageType(message.getHandshakeMessageType());
         }
     }
