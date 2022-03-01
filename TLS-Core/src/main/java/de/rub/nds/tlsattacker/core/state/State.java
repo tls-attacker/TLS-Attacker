@@ -361,12 +361,21 @@ public class State {
         this.executionException = executionException;
     }
 
+    /**
+     * Records a process that was spawned during this state execution.
+     *
+     * @param process
+     *                The process to record
+     */
     public void addSpawnedSubprocess(Process process) {
         if (process != null) {
             spawnedSubprocesses.add(process);
         }
     }
 
+    /**
+     * Kills all recorded processes that have been spawned during this state execution.
+     */
     public void killAllSpawnedSubprocesses() {
         for (Process process : spawnedSubprocesses) {
             process.destroy();
