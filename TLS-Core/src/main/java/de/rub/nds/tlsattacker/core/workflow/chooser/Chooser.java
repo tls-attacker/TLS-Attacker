@@ -220,9 +220,9 @@ public abstract class Chooser {
 
     public abstract CertificateType getSelectedServerCertificateType();
 
-    public abstract String getHttpsCookieName();
+    public abstract String getHttpCookieName();
 
-    public abstract String getHttpsCookieValue();
+    public abstract String getHttpCookieValue();
 
     public abstract byte[] getPsk();
 

@@ -12,7 +12,6 @@ package de.rub.nds.tlsattacker.core.workflow.chooser;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
-import de.rub.nds.tlsattacker.core.layer.context.*;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
 import de.rub.nds.tlsattacker.core.state.Context;
@@ -794,22 +793,22 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public String getHttpsCookieValue() {
-        String cookieVal = context.getTlsContext().getHttpsCookieValue();
+    public String getHttpCookieValue() {
+        String cookieVal = context.getTlsContext().getHttpCookieValue();
         if (cookieVal != null && !cookieVal.isEmpty()) {
             return cookieVal;
         } else {
-            return config.getDefaultHttpsCookieValue();
+            return config.getDefaultHttpCookieValue();
         }
     }
 
     @Override
-    public String getHttpsCookieName() {
-        String cookieName = context.getTlsContext().getHttpsCookieName();
+    public String getHttpCookieName() {
+        String cookieName = context.getTlsContext().getHttpCookieName();
         if (cookieName != null && !cookieName.isEmpty()) {
             return cookieName;
         } else {
-            return config.getDefaultHttpsCookieName();
+            return config.getDefaultHttpCookieName();
         }
     }
 

@@ -26,7 +26,7 @@ public class CookieHeaderPreparator extends Preparator<CookieHeader> {
     @Override
     public void prepare() {
         header.setHeaderName("Cookie");
-        String headerValue = StringUtils.join(chooser.getHttpsCookieName(), '=', chooser.getHttpsCookieValue());
+        String headerValue = StringUtils.join(chooser.getHttpCookieName(), '=', chooser.getHttpCookieValue());
         header.setHeaderValue(headerValue);
     }
 

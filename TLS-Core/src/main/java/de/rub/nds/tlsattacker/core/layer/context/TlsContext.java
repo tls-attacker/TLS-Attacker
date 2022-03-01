@@ -37,7 +37,7 @@ import de.rub.nds.tlsattacker.core.state.session.TicketSession;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import de.rub.nds.tlsattacker.transport.socket.SocketState;
+
 import java.math.BigInteger;
 import java.util.*;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -543,14 +543,14 @@ public class TlsContext extends LayerContext {
     private boolean useExtendedMasterSecret;
 
     /**
-     * Add a cookie with this name to HTTPS header if config.isAddHttpsCookie is set.
+     * Add a cookie with this name to HTTP header if config.isAddHttpCookie is set.
      */
-    private String httpsCookieName = null;
+    private String httpCookieName = null;
 
     /**
-     * Add a cookie with this value to HTTPS header if config.isAddHttpsCookie is set.
+     * Add a cookie with this value to HTTP header if config.isAddHttpCookie is set.
      */
-    private String httpsCookieValue = null;
+    private String httpCookieValue = null;
 
     private boolean receivedTransportHandlerException = false;
 
@@ -1818,20 +1818,20 @@ public class TlsContext extends LayerContext {
         this.useExtendedMasterSecret = useExtendedMasterSecret;
     }
 
-    public String getHttpsCookieName() {
-        return httpsCookieName;
+    public String getHttpCookieName() {
+        return httpCookieName;
     }
 
-    public void setHttpsCookieName(String httpsCookieName) {
-        this.httpsCookieName = httpsCookieName;
+    public void setHttpCookieName(String httpCookieName) {
+        this.httpCookieName = httpCookieName;
     }
 
-    public String getHttpsCookieValue() {
-        return httpsCookieValue;
+    public String getHttpCookieValue() {
+        return httpCookieValue;
     }
 
-    public void setHttpsCookieValue(String httpsCookieValue) {
-        this.httpsCookieValue = httpsCookieValue;
+    public void setHttpCookieValue(String httpCookieValue) {
+        this.httpCookieValue = httpCookieValue;
     }
 
     /**

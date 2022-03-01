@@ -66,7 +66,7 @@ public class HttpRequestMessage extends ModifiableVariableHolder
         if (config.isAddTokenBindingExtension()) {
             header.add(new TokenBindingHeader());
         }
-        if (config.isAddHttpsCookie()) {
+        if (config.isAddHttpCookie()) {
             header.add(new CookieHeader());
         }
         header.add(new GenericHttpHeader("Upgrade-Insecure-Requests", "1"));
