@@ -89,7 +89,6 @@ public class LayerStack {
             ProtocolLayer layer = layerList.get(i);
             layer.clear();
             layer.setLayerConfiguration(layerConfigurationList.get(i));
-            i++;
         }
         context.setTalkingConnectionEndType(context.getConnection().getLocalConnectionEndType());
         // Send data
