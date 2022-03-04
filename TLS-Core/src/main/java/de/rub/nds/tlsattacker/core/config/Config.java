@@ -4034,7 +4034,7 @@ public class Config implements Serializable {
         return defaultLayerStackType;
     }
 
-    public void setDefaultLayerStackType(LayerStackType layerStackType) {
+    public void setDefaultLayerStackType(LayerStackType defaultLayerStackType) {
         this.defaultLayerStackType = defaultLayerStackType;
     }
 }
