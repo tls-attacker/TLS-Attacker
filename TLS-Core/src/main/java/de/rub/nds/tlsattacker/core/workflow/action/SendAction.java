@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.MessageActionDirection;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
@@ -187,11 +186,6 @@ public class SendAction extends MessageAction implements SendingAction {
     @Override
     public List<DtlsHandshakeMessageFragment> getSendFragments() {
         return fragments;
-    }
-
-    @Override
-    public MessageActionDirection getMessageDirection() {
-        return MessageActionDirection.SENDING;
     }
 
     @Override

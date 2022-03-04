@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
-import de.rub.nds.tlsattacker.core.constants.MessageActionDirection;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerStack;
 import de.rub.nds.tlsattacker.core.layer.LayerStackProcessingResult;
@@ -189,7 +188,13 @@ public abstract class MessageAction extends ConnectionBoundAction {
         }
     }
 
-    public abstract MessageActionDirection getMessageDirection();
+    public boolean isSendingAction() {
+        return this instanceof SendingAction;
+    }
+
+    public boolean isReceivingAction() {
+        return this instanceof ReceivingAction;
+    }
 
     protected void send(TlsContext tlsContext, List<ProtocolMessage> protocolMessagesToSend,
         List<DtlsHandshakeMessageFragment> fragmentsToSend, List<Record> recordsToSend) throws IOException {

@@ -9,7 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.constants.MessageActionDirection;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
@@ -157,11 +156,6 @@ public class SendRecordsFromLastFlightAction extends MessageAction implements Se
     @Override
     public List<DtlsHandshakeMessageFragment> getSendFragments() {
         throw new UnsupportedOperationException("Not supported.");
-    }
-
-    @Override
-    public MessageActionDirection getMessageDirection() {
-        return MessageActionDirection.SENDING;
     }
 
 }
