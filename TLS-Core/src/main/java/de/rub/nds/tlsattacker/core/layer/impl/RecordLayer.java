@@ -82,6 +82,9 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
                 if (encryptor.getRecordCipher(writeEpoch).getState().getVersion().isDTLS()) {
                     record.setEpoch(writeEpoch);
                 }
+                if (record.getCleanProtocolMessageBytes() == null) {
+                    record.setCleanProtocolMessageBytes(new byte[0]);
+                }
                 RecordPreparator preparator =
                     record.getRecordPreparator(context.getChooser(), encryptor, compressor, contentType);
                 preparator.prepare();
