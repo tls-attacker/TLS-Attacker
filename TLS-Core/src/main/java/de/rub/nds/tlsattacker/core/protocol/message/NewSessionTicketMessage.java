@@ -41,13 +41,8 @@ public class NewSessionTicketMessage extends HandshakeMessage {
         ticket = new SessionTicket();
     }
 
-    public NewSessionTicketMessage(Config tlsConfig) {
-        super(tlsConfig, HandshakeMessageType.NEW_SESSION_TICKET);
-        ticket = new SessionTicket();
-    }
-
     public NewSessionTicketMessage(Config tlsConfig, boolean includeInDigest) {
-        super(tlsConfig, HandshakeMessageType.NEW_SESSION_TICKET);
+        super(HandshakeMessageType.NEW_SESSION_TICKET);
         isIncludeInDigestDefault = includeInDigest;
         ticket = new SessionTicket();
         if (tlsConfig.isAddEarlyDataExtension()) {
@@ -117,8 +112,7 @@ public class NewSessionTicketMessage extends HandshakeMessage {
 
     @Override
     public NewSessionTicketParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new NewSessionTicketParser(stream, tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext,
-            tlsContext.getTalkingConnectionEndType());
+        return new NewSessionTicketParser(stream, tlsContext);
     }
 
     @Override

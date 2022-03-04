@@ -9,7 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TruncatedHmacExtensionMessage;
 import java.io.ByteArrayInputStream;
 import org.junit.Before;
@@ -23,7 +22,7 @@ public class TruncatedHmacExtensionParserTest {
 
     @Before
     public void setUp() {
-        parser = new TruncatedHmacExtensionParser(new ByteArrayInputStream(expectedBytes), Config.createConfig());
+        parser = new TruncatedHmacExtensionParser(new ByteArrayInputStream(expectedBytes));
     }
 
     @Test

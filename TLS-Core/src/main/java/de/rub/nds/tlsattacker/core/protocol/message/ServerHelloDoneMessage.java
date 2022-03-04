@@ -9,7 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.protocol.message;
 
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.ServerHelloDoneHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.ServerHelloDoneParser;
@@ -22,10 +21,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "ServerHelloDone")
 public class ServerHelloDoneMessage extends HandshakeMessage {
 
-    public ServerHelloDoneMessage(Config tlsConfig) {
-        super(tlsConfig, HandshakeMessageType.SERVER_HELLO_DONE);
-    }
-
     public ServerHelloDoneMessage() {
         super(HandshakeMessageType.SERVER_HELLO_DONE);
     }
@@ -37,7 +32,7 @@ public class ServerHelloDoneMessage extends HandshakeMessage {
 
     @Override
     public ServerHelloDoneParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new ServerHelloDoneParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+        return new ServerHelloDoneParser(stream, tlsContext);
     }
 
     @Override
@@ -47,7 +42,7 @@ public class ServerHelloDoneMessage extends HandshakeMessage {
 
     @Override
     public ServerHelloDoneSerializer getSerializer(TlsContext tlsContext) {
-        return new ServerHelloDoneSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new ServerHelloDoneSerializer(this);
     }
 
     @Override

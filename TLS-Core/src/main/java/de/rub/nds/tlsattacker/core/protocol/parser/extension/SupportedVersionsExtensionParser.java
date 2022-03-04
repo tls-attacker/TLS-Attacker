@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SupportedVersionsExtensionMessage;
@@ -22,8 +21,8 @@ public class SupportedVersionsExtensionParser extends ExtensionParser<SupportedV
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SupportedVersionsExtensionParser(InputStream stream, Config config) {
-        super(stream, config);
+    public SupportedVersionsExtensionParser(InputStream stream) {
+        super(stream);
     }
 
     @Override

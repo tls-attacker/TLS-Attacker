@@ -12,7 +12,6 @@ package de.rub.nds.tlsattacker.core.protocol.serializer;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,7 +19,7 @@ public class SSL2ServerHelloSerializer extends HandshakeMessageSerializer<SSL2Se
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SSL2ServerHelloSerializer(SSL2ServerHelloMessage message, TlsContext tlsContext) {
+    public SSL2ServerHelloSerializer(SSL2ServerHelloMessage message) {
         super(message);
     }
 

@@ -54,8 +54,10 @@ public class PskDhClientKeyExchangeParserTest {
      */
     @Test
     public void testParse() {
+        TlsContext tlsContext = new TlsContext(config);
+        tlsContext.setSelectedProtocolVersion(version);
         PskDhClientKeyExchangeParser parser =
-            new PskDhClientKeyExchangeParser(new ByteArrayInputStream(message), version, new TlsContext(config));
+            new PskDhClientKeyExchangeParser(new ByteArrayInputStream(message), tlsContext);
         PskDhClientKeyExchangeMessage msg = new PskDhClientKeyExchangeMessage();
         parser.parse(msg);
         assertTrue(serializedPskIdentityLength == msg.getIdentityLength().getValue());

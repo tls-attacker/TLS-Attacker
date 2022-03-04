@@ -96,7 +96,7 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
 
         // Remove last two server messages (CCS and Finished). Instead of them,
         // an alert will be sent.
-        AlertMessage alertMessage = new AlertMessage(tlsConfig);
+        AlertMessage alertMessage = new AlertMessage();
 
         ReceiveAction action = (ReceiveAction) (trace.getLastMessageAction());
         List<ProtocolMessage> messages = new LinkedList<>();

@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.PskEcDhClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
@@ -25,13 +24,11 @@ public class PskEcDhClientKeyExchangeParser extends ECDHClientKeyExchangeParser<
     /**
      * Constructor for the Parser class
      *
-     * @param version
-     *                   Version of the Protocol
+     * @param stream
      * @param tlsContext
-     *                   A Config used in the current context
      */
-    public PskEcDhClientKeyExchangeParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
-        super(stream, version, tlsContext);
+    public PskEcDhClientKeyExchangeParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
     }
 
     @Override

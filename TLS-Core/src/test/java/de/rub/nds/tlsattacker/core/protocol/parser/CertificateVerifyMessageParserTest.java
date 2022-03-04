@@ -55,8 +55,9 @@ public class CertificateVerifyMessageParserTest {
      */
     @Test
     public void testParse() {
-        CertificateVerifyParser parser = new CertificateVerifyParser(new ByteArrayInputStream(message),
-            ProtocolVersion.TLS12, new TlsContext(config));
+        TlsContext tlsContext = new TlsContext(config);
+        tlsContext.setLastRecordVersion(ProtocolVersion.TLS12);
+        CertificateVerifyParser parser = new CertificateVerifyParser(new ByteArrayInputStream(message), tlsContext);
         CertificateVerifyMessage certVerifyMessage = new CertificateVerifyMessage();
         parser.parse(certVerifyMessage);
         assertArrayEquals(sigHashAlgo, certVerifyMessage.getSignatureHashAlgorithm().getValue());

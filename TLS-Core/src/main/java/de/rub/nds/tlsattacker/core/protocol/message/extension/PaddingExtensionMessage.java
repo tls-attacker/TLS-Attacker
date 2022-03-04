@@ -12,7 +12,6 @@ package de.rub.nds.tlsattacker.core.protocol.message.extension;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.PaddingExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.PaddingExtensionParser;
@@ -38,10 +37,6 @@ public class PaddingExtensionMessage extends ExtensionMessage<PaddingExtensionMe
         super(ExtensionType.PADDING);
     }
 
-    public PaddingExtensionMessage(Config config) {
-        super(ExtensionType.PADDING);
-    }
-
     public ModifiableByteArray getPaddingBytes() {
         return paddingBytes;
     }
@@ -56,12 +51,12 @@ public class PaddingExtensionMessage extends ExtensionMessage<PaddingExtensionMe
 
     @Override
     public PaddingExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new PaddingExtensionParser(stream, tlsContext.getConfig());
+        return new PaddingExtensionParser(stream);
     }
 
     @Override
     public PaddingExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new PaddingExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new PaddingExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

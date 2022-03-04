@@ -53,8 +53,10 @@ public class PskDheServerKeyExchangeParserTest {
      */
     @Test
     public void testParse() {
+        TlsContext tlsContext = new TlsContext(config);
+        tlsContext.setSelectedProtocolVersion(version);
         PskDheServerKeyExchangeParser parser =
-            new PskDheServerKeyExchangeParser(new ByteArrayInputStream(message), version, new TlsContext(config));
+            new PskDheServerKeyExchangeParser(new ByteArrayInputStream(message), tlsContext);
         PskDheServerKeyExchangeMessage msg = new PskDheServerKeyExchangeMessage();
         parser.parse(msg);
         assertTrue(PskIdentityHintLength == msg.getIdentityHintLength().getValue());

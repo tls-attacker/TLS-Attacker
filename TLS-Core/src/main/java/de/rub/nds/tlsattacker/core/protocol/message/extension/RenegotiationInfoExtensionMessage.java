@@ -13,7 +13,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.RenegotiationInfoExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.RenegotiationInfoExtensionParser;
@@ -36,10 +35,6 @@ public class RenegotiationInfoExtensionMessage extends ExtensionMessage<Renegoti
     private ModifiableInteger renegotiationInfoLength;
 
     public RenegotiationInfoExtensionMessage() {
-        super(ExtensionType.RENEGOTIATION_INFO);
-    }
-
-    public RenegotiationInfoExtensionMessage(Config config) {
         super(ExtensionType.RENEGOTIATION_INFO);
     }
 
@@ -70,12 +65,12 @@ public class RenegotiationInfoExtensionMessage extends ExtensionMessage<Renegoti
 
     @Override
     public RenegotiationInfoExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new RenegotiationInfoExtensionParser(stream, tlsContext.getConfig());
+        return new RenegotiationInfoExtensionParser(stream);
     }
 
     @Override
     public RenegotiationInfoExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new RenegotiationInfoExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new RenegotiationInfoExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

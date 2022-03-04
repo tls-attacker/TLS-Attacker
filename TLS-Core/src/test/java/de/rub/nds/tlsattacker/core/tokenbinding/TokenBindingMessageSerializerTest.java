@@ -41,7 +41,7 @@ public class TokenBindingMessageSerializerTest {
         message.setPointLength(0);
         version = ProtocolVersion.TLS12;
 
-        serializer = new TokenBindingMessageSerializer(message, version);
+        serializer = new TokenBindingMessageSerializer(message);
     }
 
     /**

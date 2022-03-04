@@ -14,7 +14,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bool.ModifiableBoolean;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.CertificateTypeExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.CertificateTypeExtensionParser;
@@ -38,10 +37,6 @@ public class CertificateTypeExtensionMessage extends ExtensionMessage<Certificat
     private ModifiableBoolean isClientMessage;
 
     public CertificateTypeExtensionMessage() {
-        super(ExtensionType.CERT_TYPE);
-    }
-
-    public CertificateTypeExtensionMessage(Config config) {
         super(ExtensionType.CERT_TYPE);
     }
 
@@ -84,12 +79,12 @@ public class CertificateTypeExtensionMessage extends ExtensionMessage<Certificat
 
     @Override
     public CertificateTypeExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new CertificateTypeExtensionParser(stream, tlsContext.getConfig());
+        return new CertificateTypeExtensionParser(stream);
     }
 
     @Override
     public CertificateTypeExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new CertificateTypeExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new CertificateTypeExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

@@ -104,11 +104,11 @@ public class EarlyCCSAttacker extends Attacker<EarlyCCSCommandConfig> {
 
         List<ProtocolMessage> messageList = new LinkedList<>();
         messageList.add(new ServerHelloMessage(tlsConfig));
-        messageList.add(new CertificateMessage(tlsConfig));
-        messageList.add(new ServerHelloDoneMessage(tlsConfig));
+        messageList.add(new CertificateMessage());
+        messageList.add(new ServerHelloDoneMessage());
         workflowTrace.addTlsAction(new ReceiveAction(messageList));
 
-        ChangeCipherSpecMessage changeCipherSpecMessage = new ChangeCipherSpecMessage(tlsConfig);
+        ChangeCipherSpecMessage changeCipherSpecMessage = new ChangeCipherSpecMessage();
         workflowTrace.addTlsAction(new SendAction(changeCipherSpecMessage));
 
         byte[] emptyMasterSecret = new byte[0];
@@ -120,11 +120,11 @@ public class EarlyCCSAttacker extends Attacker<EarlyCCSCommandConfig> {
         if (targetVersion != TargetVersion.OPENSSL_1_0_0) {
             workflowTrace.addTlsAction(new ChangeMasterSecretAction(emptyMasterSecret));
         }
-        workflowTrace.addTlsAction(new SendAction(new FinishedMessage(tlsConfig)));
+        workflowTrace.addTlsAction(new SendAction(new FinishedMessage()));
 
         messageList = new LinkedList<>();
-        messageList.add(new ChangeCipherSpecMessage(tlsConfig));
-        messageList.add(new FinishedMessage(tlsConfig));
+        messageList.add(new ChangeCipherSpecMessage());
+        messageList.add(new FinishedMessage());
         workflowTrace.addTlsAction(new ReceiveAction(messageList));
 
         State state = new State(tlsConfig, workflowTrace);

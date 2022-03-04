@@ -13,7 +13,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 
 public abstract class HelloMessage extends HandshakeMessage {
@@ -46,11 +45,6 @@ public abstract class HelloMessage extends HandshakeMessage {
 
     public HelloMessage(HandshakeMessageType handshakeMessageType) {
         super(handshakeMessageType);
-    }
-
-    public HelloMessage(Config tlsConfig, HandshakeMessageType handshakeMessageType) {
-        super(tlsConfig, handshakeMessageType);
-
     }
 
     public ModifiableByteArray getRandom() {

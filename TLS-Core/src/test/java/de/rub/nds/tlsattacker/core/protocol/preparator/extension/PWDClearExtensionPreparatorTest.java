@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PWDClearExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PWDClearExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -28,8 +27,7 @@ public class PWDClearExtensionPreparatorTest {
     public void setUp() {
         context = new TlsContext();
         message = new PWDClearExtensionMessage();
-        preparator =
-            new PWDClearExtensionPreparator(context.getChooser(), message, new PWDClearExtensionSerializer(message));
+        preparator = new PWDClearExtensionPreparator(context.getChooser(), message);
     }
 
     @Test

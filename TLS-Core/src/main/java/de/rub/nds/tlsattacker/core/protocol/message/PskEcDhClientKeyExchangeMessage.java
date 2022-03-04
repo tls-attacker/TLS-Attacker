@@ -14,7 +14,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.handler.ECDHClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.PskEcDhClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.PskEcDhClientKeyExchangeParser;
@@ -33,10 +32,6 @@ public class PskEcDhClientKeyExchangeMessage extends ECDHClientKeyExchangeMessag
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger identityLength;
-
-    public PskEcDhClientKeyExchangeMessage(Config tlsConfig) {
-        super(tlsConfig);
-    }
 
     public PskEcDhClientKeyExchangeMessage() {
         super();
@@ -92,7 +87,7 @@ public class PskEcDhClientKeyExchangeMessage extends ECDHClientKeyExchangeMessag
 
     @Override
     public PskEcDhClientKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new PskEcDhClientKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+        return new PskEcDhClientKeyExchangeParser(stream, tlsContext);
     }
 
     @Override
@@ -102,7 +97,7 @@ public class PskEcDhClientKeyExchangeMessage extends ECDHClientKeyExchangeMessag
 
     @Override
     public PskEcDhClientKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
-        return new PskEcDhClientKeyExchangeSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new PskEcDhClientKeyExchangeSerializer(this);
     }
 
     @Override

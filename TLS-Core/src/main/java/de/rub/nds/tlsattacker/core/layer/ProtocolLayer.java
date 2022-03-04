@@ -23,6 +23,15 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * Abstracts a message layer (TCP, UDP, IMAP, etc.). Each layer knows of the layer below and above itself. It can send
+ * messages using the layer below and forward received messages to the layer above.
+ * 
+ * @param <Hint>
+ *                    Some layers need a hint which message they should send or receive.
+ * @param <Container>
+ *                    The kind of messages/Containers this layer is able to send and receive.
+ */
 public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container extends DataContainer> {
 
     private Logger LOGGER = LogManager.getLogger();
@@ -109,8 +118,9 @@ public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container 
     /**
      * A receive call which tries to read till either a timeout occurs or the configuration is fullfilled
      *
-     * @return
+     * @return             LayerProcessingResult Contains information about the execution of the receive action.
      * @throws IOException
+     *                     Some layers might produce IOExceptions when sending or receiving data over sockets etc.
      */
     public abstract LayerProcessingResult receiveData() throws IOException;
 
@@ -120,15 +130,18 @@ public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container 
      * when this method is called.
      *
      * @param  hint
+     *                     This hint from the calling layer specifies which data its wants to read.
      * @throws IOException
+     *                     Some layers might produce IOExceptions when sending or receiving data over sockets etc.
      */
     public abstract void receiveMoreDataForHint(LayerProcessingHint hint) throws IOException;
 
     /**
      * Returns a datastream from which currently should be read
      *
-     * @return
+     * @return             The next data stream with data available.
      * @throws IOException
+     *                     Some layers might produce IOExceptions when sending or receiving data over sockets etc.
      */
     public HintedInputStream getDataStream() throws IOException {
         if (currentInputStream == null) {
@@ -152,6 +165,16 @@ public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container 
         }
     }
 
+    /**
+     * Parses and handles content from a container.
+     * 
+     * @param  container
+     *                     The container to handle.
+     * @param  context
+     *                     The context of the connection. Keeps parsed and handled values.
+     * @throws IOException
+     *                     Should a lower layer not be able to return a data stream.
+     */
     protected void readDataContainer(Container container, TlsContext context) throws IOException {
         Parser parser = container.getParser(context, getLowerLayer().getDataStream());
         parser.parse(container);

@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EllipticCurvesExtensionMessage;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
@@ -47,8 +46,7 @@ public class EllipticCurvesExtensionParserTest {
      */
     @Test
     public void testParseExtensionMessageContent() {
-        EllipticCurvesExtensionParser parser =
-            new EllipticCurvesExtensionParser(new ByteArrayInputStream(extension), Config.createConfig());
+        EllipticCurvesExtensionParser parser = new EllipticCurvesExtensionParser(new ByteArrayInputStream(extension));
         EllipticCurvesExtensionMessage msg = new EllipticCurvesExtensionMessage();
         parser.parse(msg);
         assertArrayEquals(msg.getSupportedGroups().getValue(), curves);

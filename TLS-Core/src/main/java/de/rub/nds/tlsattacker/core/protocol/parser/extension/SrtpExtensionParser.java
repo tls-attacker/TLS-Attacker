@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SrtpExtensionMessage;
 import java.io.InputStream;
@@ -21,8 +20,8 @@ public class SrtpExtensionParser extends ExtensionParser<SrtpExtensionMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SrtpExtensionParser(InputStream stream, Config config) {
-        super(stream, config);
+    public SrtpExtensionParser(InputStream stream) {
+        super(stream);
     }
 
     @Override

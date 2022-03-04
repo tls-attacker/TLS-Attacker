@@ -9,10 +9,12 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+
 import java.io.InputStream;
 
 /**
@@ -21,20 +23,43 @@ import java.io.InputStream;
  */
 public abstract class ServerKeyExchangeParser<T extends ServerKeyExchangeMessage> extends HandshakeMessageParser<T> {
 
+    private KeyExchangeAlgorithm keyExchangeAlgorithm;
+
     /**
      * Constructor for the Parser class
      *
      * @param stream
-     * @param expectedType
-     *                     The Handshake message type that is expected
-     * @param version
-     *                     Version of the Protocol
      * @param tlsContext
-     *                     A Config used in the current context
      */
-    public ServerKeyExchangeParser(InputStream stream, HandshakeMessageType expectedType, ProtocolVersion version,
-        TlsContext tlsContext) {
-        super(stream, expectedType, version, tlsContext);
+    public ServerKeyExchangeParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
+        this.keyExchangeAlgorithm =
+            AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite());
     }
 
+    protected KeyExchangeAlgorithm getKeyExchangeAlgorithm() {
+        return this.keyExchangeAlgorithm;
+    }
+
+    protected void setKeyExchangeAlgorithm(KeyExchangeAlgorithm keyExchangeAlgorithm) {
+        this.keyExchangeAlgorithm = keyExchangeAlgorithm;
+    }
+
+    /**
+     * Checks if the version is TLS12
+     *
+     * @return True if the used version is TLS12
+     */
+    protected boolean isTLS12() {
+        return getVersion() == ProtocolVersion.TLS12;
+    }
+
+    /**
+     * Checks if the version is DTLS12
+     *
+     * @return True if the used version is DTLS12
+     */
+    protected boolean isDTLS12() {
+        return getVersion() == ProtocolVersion.DTLS12;
+    }
 }

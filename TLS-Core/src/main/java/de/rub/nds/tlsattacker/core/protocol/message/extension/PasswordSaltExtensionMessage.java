@@ -13,7 +13,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.PasswordSaltExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.PasswordSaltExtensionParser;
@@ -36,10 +35,6 @@ public class PasswordSaltExtensionMessage extends ExtensionMessage<PasswordSaltE
     private ModifiableByteArray salt;
 
     public PasswordSaltExtensionMessage() {
-        super(ExtensionType.PASSWORD_SALT);
-    }
-
-    public PasswordSaltExtensionMessage(Config config) {
         super(ExtensionType.PASSWORD_SALT);
     }
 
@@ -69,12 +64,12 @@ public class PasswordSaltExtensionMessage extends ExtensionMessage<PasswordSaltE
 
     @Override
     public PasswordSaltExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new PasswordSaltExtensionParser(stream, tlsContext.getConfig());
+        return new PasswordSaltExtensionParser(stream);
     }
 
     @Override
     public PasswordSaltExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new PasswordSaltExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new PasswordSaltExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RecordSizeLimitExtensionMessage;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
@@ -42,8 +41,7 @@ public class RecordSizeLimitExtensionParserTest {
      */
     @Test
     public void testParseExtensionMessageContent() {
-        RecordSizeLimitExtensionParser parser =
-            new RecordSizeLimitExtensionParser(new ByteArrayInputStream(extension), Config.createConfig());
+        RecordSizeLimitExtensionParser parser = new RecordSizeLimitExtensionParser(new ByteArrayInputStream(extension));
         RecordSizeLimitExtensionMessage message = new RecordSizeLimitExtensionMessage();
         parser.parse(message);
         assertArrayEquals(recordSizeLimit, message.getRecordSizeLimit().getValue());

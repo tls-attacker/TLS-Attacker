@@ -40,7 +40,7 @@ public class TokenBindingMessageParserTest {
      */
     @Test
     public void testParseMessageContent() {
-        parser = new TokenBindingMessageParser(new ByteArrayInputStream(toParse), version, config);
+        parser = new TokenBindingMessageParser(new ByteArrayInputStream(toParse));
         TokenBindingMessage message = new TokenBindingMessage();
         parser.parse(message);
         Assert.assertArrayEquals(new byte[0], message.getExtensionBytes().getValue());
@@ -49,7 +49,7 @@ public class TokenBindingMessageParserTest {
         assertTrue(message.getPointLength().getValue() == 0x40);
         assertTrue(message.getKeyParameter().getValue() == 0x02);
         // TODO
-        TokenBindingMessageSerializer serializer = new TokenBindingMessageSerializer(message, version);
+        TokenBindingMessageSerializer serializer = new TokenBindingMessageSerializer(message);
         byte[] serialized = serializer.serialize();
         Assert.assertArrayEquals(toParse, serialized);
     }

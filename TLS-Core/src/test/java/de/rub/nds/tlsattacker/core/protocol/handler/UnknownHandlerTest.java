@@ -23,7 +23,7 @@ public class UnknownHandlerTest {
     @Before
     public void setUp() {
         context = new TlsContext();
-        handler = new UnknownMessageHandler(context, ProtocolMessageType.UNKNOWN);
+        handler = new UnknownMessageHandler(context);
     }
 
     /**
@@ -31,7 +31,7 @@ public class UnknownHandlerTest {
      */
     @Test
     public void testadjustContext() {
-        UnknownMessage message = new UnknownMessage(context.getConfig(), ProtocolMessageType.UNKNOWN);
+        UnknownMessage message = new UnknownMessage(ProtocolMessageType.UNKNOWN);
         handler.adjustContext(message);
     }
 

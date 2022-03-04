@@ -12,7 +12,6 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.UserMappingExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.UserMappingExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -31,8 +30,7 @@ public class UserMappingExtensionPreparatorTest {
     public void setUp() {
         context = new TlsContext();
         msg = new UserMappingExtensionMessage();
-        preparator =
-            new UserMappingExtensionPreparator(context.getChooser(), msg, new UserMappingExtensionSerializer(msg));
+        preparator = new UserMappingExtensionPreparator(context.getChooser(), msg);
     }
 
     @Test

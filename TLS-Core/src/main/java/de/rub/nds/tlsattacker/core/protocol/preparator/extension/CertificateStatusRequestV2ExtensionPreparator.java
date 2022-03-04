@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestV2ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.RequestItemV2;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.RequestItemV2Serializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
@@ -21,9 +20,8 @@ public class CertificateStatusRequestV2ExtensionPreparator
     private final CertificateStatusRequestV2ExtensionMessage msg;
 
     public CertificateStatusRequestV2ExtensionPreparator(Chooser chooser,
-        CertificateStatusRequestV2ExtensionMessage message,
-        ExtensionSerializer<CertificateStatusRequestV2ExtensionMessage> serializer) {
-        super(chooser, message, serializer);
+        CertificateStatusRequestV2ExtensionMessage message) {
+        super(chooser, message);
         msg = message;
     }
 

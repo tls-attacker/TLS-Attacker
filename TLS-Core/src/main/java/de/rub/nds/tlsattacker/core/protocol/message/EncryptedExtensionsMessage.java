@@ -29,7 +29,7 @@ public class EncryptedExtensionsMessage extends HandshakeMessage {
     }
 
     public EncryptedExtensionsMessage(Config config) {
-        super(config, HandshakeMessageType.ENCRYPTED_EXTENSIONS);
+        super(HandshakeMessageType.ENCRYPTED_EXTENSIONS);
         if (config.isAddRecordSizeLimitExtension()) {
             addExtension(new RecordSizeLimitExtensionMessage());
         }
@@ -62,7 +62,7 @@ public class EncryptedExtensionsMessage extends HandshakeMessage {
 
     @Override
     public EncryptedExtensionsParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new EncryptedExtensionsParser(stream, tlsContext.getLastRecordVersion(), tlsContext);
+        return new EncryptedExtensionsParser(stream, tlsContext);
     }
 
     @Override
@@ -72,7 +72,7 @@ public class EncryptedExtensionsMessage extends HandshakeMessage {
 
     @Override
     public EncryptedExtensionsSerializer getSerializer(TlsContext tlsContext) {
-        return new EncryptedExtensionsSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new EncryptedExtensionsSerializer(this);
     }
 
 }

@@ -101,7 +101,7 @@ public class SendRaccoonCkeAction extends MessageAction implements SendingAction
 
     private DHClientKeyExchangeMessage generateRaccoonDhClientKeyExchangeMessage(State state, boolean withNullByte) {
 
-        DHClientKeyExchangeMessage cke = new DHClientKeyExchangeMessage(state.getConfig());
+        DHClientKeyExchangeMessage cke = new DHClientKeyExchangeMessage();
         Chooser chooser = state.getTlsContext().getChooser();
         byte[] clientPublicKey = getClientPublicKey(chooser.getServerDhGenerator(), chooser.getServerDhModulus(),
             chooser.getServerDhPublicKey(), initialSecret, withNullByte);

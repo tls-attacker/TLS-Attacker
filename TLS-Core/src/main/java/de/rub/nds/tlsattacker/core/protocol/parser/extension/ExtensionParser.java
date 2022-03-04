@@ -9,7 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.Parser;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import java.io.InputStream;
@@ -22,11 +21,8 @@ public abstract class ExtensionParser<Extension extends ExtensionMessage> extend
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final Config config;
-
-    public ExtensionParser(InputStream stream, Config config) {
+    public ExtensionParser(InputStream stream) {
         super(stream);
-        this.config = config;
     }
 
     @Override

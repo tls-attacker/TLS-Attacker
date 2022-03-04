@@ -13,7 +13,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.handler.ChangeCipherSpecHandler;
@@ -29,11 +28,6 @@ public class ChangeCipherSpecMessage extends ProtocolMessage<ChangeCipherSpecMes
 
     @ModifiableVariableProperty
     private ModifiableByteArray ccsProtocolType;
-
-    public ChangeCipherSpecMessage(Config tlsConfig) {
-        super();
-        this.protocolMessageType = ProtocolMessageType.CHANGE_CIPHER_SPEC;
-    }
 
     public ChangeCipherSpecMessage() {
         super();
@@ -82,8 +76,7 @@ public class ChangeCipherSpecMessage extends ProtocolMessage<ChangeCipherSpecMes
 
     @Override
     public ChangeCipherSpecParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new ChangeCipherSpecParser(stream, tlsContext.getChooser().getLastRecordVersion(),
-            tlsContext.getConfig());
+        return new ChangeCipherSpecParser(stream);
     }
 
     @Override
@@ -93,6 +86,6 @@ public class ChangeCipherSpecMessage extends ProtocolMessage<ChangeCipherSpecMes
 
     @Override
     public ChangeCipherSpecSerializer getSerializer(TlsContext tlsContext) {
-        return new ChangeCipherSpecSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new ChangeCipherSpecSerializer(this);
     }
 }

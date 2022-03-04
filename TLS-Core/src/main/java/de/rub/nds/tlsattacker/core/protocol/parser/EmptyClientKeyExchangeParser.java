@@ -9,7 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.EmptyClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
@@ -24,12 +23,10 @@ public class EmptyClientKeyExchangeParser<T extends EmptyClientKeyExchangeMessag
      * Constructor for the Parser class
      *
      * @param stream
-     * @param version
-     *                   Version of the Protocol
      * @param tlsContext
      */
-    public EmptyClientKeyExchangeParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext) {
-        super(stream, version, tlsContext);
+    public EmptyClientKeyExchangeParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
     }
 
     @Override

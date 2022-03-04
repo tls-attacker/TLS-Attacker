@@ -12,7 +12,6 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 import de.rub.nds.tlsattacker.core.constants.AuthzDataFormat;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerAuthzExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ServerAuthzExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.Arrays;
 import java.util.List;
@@ -36,8 +35,7 @@ public class ServerAuthzExtensionPreparatorTest {
         context.getConfig().setServerAuthzExtensionDataFormat(authzFormatList);
 
         msg = new ServerAuthzExtensionMessage();
-        preparator =
-            new ServerAuthzExtensionPreparator(context.getChooser(), msg, new ServerAuthzExtensionSerializer(msg));
+        preparator = new ServerAuthzExtensionPreparator(context.getChooser(), msg);
 
         preparator.prepare();
 

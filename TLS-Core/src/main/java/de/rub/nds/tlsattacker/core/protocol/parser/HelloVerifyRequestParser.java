@@ -11,8 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.apache.logging.log4j.LogManager;
@@ -24,8 +22,8 @@ public class HelloVerifyRequestParser extends HandshakeMessageParser<HelloVerify
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public HelloVerifyRequestParser(InputStream inputStream, ProtocolVersion version, TlsContext tlsContext) {
-        super(inputStream, HandshakeMessageType.HELLO_VERIFY_REQUEST, version, tlsContext);
+    public HelloVerifyRequestParser(InputStream inputStream, TlsContext tlsContext) {
+        super(inputStream, tlsContext);
     }
 
     @Override

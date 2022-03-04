@@ -17,6 +17,10 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * Aggregates multiple layers into a protocol stack. Offers functionality for sending and receiving messages through the
+ * message stack. Can be created manually or using {@link LayerStackFactory}.
+ */
 public class LayerStack {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -62,6 +66,16 @@ public class LayerStack {
         return layerList.get(layerList.size() - 1);
     }
 
+    /**
+     * Sends data over the protocol stack based on the layer configurations provided in layerConfigurationList.
+     * 
+     * @param  layerConfigurationList
+     *                                Contains {@link DataContainer} to be sent through the protocol stack.
+     * @return                        LayerStackProcessingResult Contains information about the "send" execution. Does
+     *                                not contain any messages the peer sends back.
+     * @throws IOException
+     *                                If any layer fails to send its data.
+     */
     public LayerStackProcessingResult sendData(List<LayerConfiguration> layerConfigurationList) throws IOException {
         LOGGER.debug("Sending Data");
         if (layerList.size() != layerConfigurationList.size()) {
@@ -91,6 +105,17 @@ public class LayerStack {
         return new LayerStackProcessingResult(resultList);
     }
 
+    /**
+     * Receives messages pre-defined in the layerConfigurationList through the message stack. Timeouts if not all
+     * specified messages are received.
+     * 
+     * @param  layerConfigurationList
+     *                                Contains specific {@link DataContainer} to be received from the peer.
+     * @return                        LayerStackProcessingResult Contains information about the "send" execution. Does
+     *                                not contain any messages the peer sends back.
+     * @throws IOException
+     *                                If any layer fails to receive the specified data.
+     */
     public LayerStackProcessingResult receiveData(List<LayerConfiguration> layerConfigurationList) throws IOException {
         LOGGER.debug("Receiving Data");
         if (layerList.size() != layerConfigurationList.size()) {
@@ -116,6 +141,12 @@ public class LayerStack {
         return gatherResults();
     }
 
+    /**
+     * Manually gathers information about each layer's execution. E.g., whether the layer executed successfully and the
+     * peer's answers.
+     * 
+     * @return LayerStackProcessingResult Contains the execution results of each layer.
+     */
     public LayerStackProcessingResult gatherResults() {
         // Gather results
         List<LayerProcessingResult> resultList = new LinkedList<>();

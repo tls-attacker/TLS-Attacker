@@ -259,8 +259,8 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
             // TLS 1.3
             individualConfig.setDefaultPreMasterSecret(explicitPMS);
         } else {
-            trace.addTlsAction(new SendAction(new ECDHClientKeyExchangeMessage(individualConfig),
-                new ChangeCipherSpecMessage(individualConfig), new FinishedMessage(individualConfig)));
+            trace.addTlsAction(new SendAction(new ECDHClientKeyExchangeMessage(), new ChangeCipherSpecMessage(),
+                new FinishedMessage()));
             trace.addTlsAction(new GenericReceiveAction());
 
             ECDHClientKeyExchangeMessage message = (ECDHClientKeyExchangeMessage) WorkflowTraceUtil

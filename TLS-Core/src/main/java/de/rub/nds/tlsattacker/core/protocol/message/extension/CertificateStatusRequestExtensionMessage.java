@@ -13,7 +13,6 @@ import static de.rub.nds.modifiablevariable.ModifiableVariableFactory.safelySetV
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.CertificateStatusRequestExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.CertificateStatusRequestExtensionParser;
@@ -55,10 +54,6 @@ public class CertificateStatusRequestExtensionMessage
     private ModifiableByteArray ocspResponseBytes;
 
     public CertificateStatusRequestExtensionMessage() {
-        super(ExtensionType.STATUS_REQUEST);
-    }
-
-    public CertificateStatusRequestExtensionMessage(Config config) {
         super(ExtensionType.STATUS_REQUEST);
     }
 
@@ -151,14 +146,13 @@ public class CertificateStatusRequestExtensionMessage
     @Override
     public CertificateStatusRequestExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
         // TODO make sure this is the correct version
-        return new CertificateStatusRequestExtensionParser(stream, tlsContext.getConfig(),
+        return new CertificateStatusRequestExtensionParser(stream,
             tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override
     public CertificateStatusRequestExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new CertificateStatusRequestExtensionPreparator(tlsContext.getChooser(), this,
-            getSerializer(tlsContext));
+        return new CertificateStatusRequestExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

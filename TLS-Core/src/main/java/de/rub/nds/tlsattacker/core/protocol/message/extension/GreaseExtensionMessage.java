@@ -12,7 +12,6 @@ package de.rub.nds.tlsattacker.core.protocol.message.extension;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.GreaseExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.GreaseExtensionParser;
@@ -37,12 +36,6 @@ public class GreaseExtensionMessage extends ExtensionMessage<GreaseExtensionMess
     private ExtensionType type;
 
     public GreaseExtensionMessage() {
-        super(ExtensionType.GREASE_00);
-        this.type = ExtensionType.GREASE_00;
-        data = new byte[0];
-    }
-
-    public GreaseExtensionMessage(Config config) {
         super(ExtensionType.GREASE_00);
         this.type = ExtensionType.GREASE_00;
         data = new byte[0];
@@ -110,7 +103,7 @@ public class GreaseExtensionMessage extends ExtensionMessage<GreaseExtensionMess
 
     @Override
     public GreaseExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new GreaseExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new GreaseExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

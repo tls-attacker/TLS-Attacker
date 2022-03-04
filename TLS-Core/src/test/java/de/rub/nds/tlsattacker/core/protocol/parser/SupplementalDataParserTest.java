@@ -52,8 +52,9 @@ public class SupplementalDataParserTest {
 
     @Test
     public void testParse() {
-        SupplementalDataParser parser =
-            new SupplementalDataParser(new ByteArrayInputStream(message), version, new TlsContext(config));
+        TlsContext tlsContext = new TlsContext(config);
+        tlsContext.setSelectedProtocolVersion(version);
+        SupplementalDataParser parser = new SupplementalDataParser(new ByteArrayInputStream(message), tlsContext);
         SupplementalDataMessage suppDataMessage = new SupplementalDataMessage();
         parser.parse(suppDataMessage);
         assertTrue(suppDataMessage.getSupplementalDataLength().getValue() == supplementalDataLength);

@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SRPExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SRPExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -29,7 +28,7 @@ public class SRPExtensionPreparatorTest {
     public void setUp() {
         context = new TlsContext();
         message = new SRPExtensionMessage();
-        preparator = new SRPExtensionPreparator(context.getChooser(), message, new SRPExtensionSerializer(message));
+        preparator = new SRPExtensionPreparator(context.getChooser(), message);
     }
 
     @Test

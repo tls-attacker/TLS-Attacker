@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.https;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.Charset;
@@ -36,8 +35,7 @@ public class HttpsRequestParserTest {
     @Test(expected = EndOfStreamException.class)
     public void testParseMessageContentFailed() {
         HttpsRequestParser parser = new HttpsRequestParser(
-            new ByteArrayInputStream(ArrayConverter.hexStringToByteArray("AAAAAAAAAAAAAAAAAAAAAAAA")),
-            ProtocolVersion.TLS12, config);
+            new ByteArrayInputStream(ArrayConverter.hexStringToByteArray("AAAAAAAAAAAAAAAAAAAAAAAA")));
         HttpsRequestMessage message = new HttpsRequestMessage();
         parser.parse(message);
     }
@@ -49,8 +47,8 @@ public class HttpsRequestParserTest {
     public void testParseMessageContentSuccess() {
         String stringMessage = "GET /index.html HTTP/1.1\r\nUser-Agent: Test\r\nHost: www.rub.de\r\n\r\n";
 
-        HttpsRequestParser parser = new HttpsRequestParser(
-            new ByteArrayInputStream(stringMessage.getBytes(Charset.forName("UTF-8"))), ProtocolVersion.TLS12, config);
+        HttpsRequestParser parser =
+            new HttpsRequestParser(new ByteArrayInputStream(stringMessage.getBytes(Charset.forName("UTF-8"))));
         HttpsRequestMessage message = new HttpsRequestMessage();
         parser.parse(message);
 

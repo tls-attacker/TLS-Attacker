@@ -74,7 +74,7 @@ public class EncryptedServerNameIndicationExtensionPreparatorTest {
         EncryptedServerNameIndicationExtensionSerializer serializer =
             new EncryptedServerNameIndicationExtensionSerializer(msg);
         EncryptedServerNameIndicationExtensionPreparator preparator =
-            new EncryptedServerNameIndicationExtensionPreparator(chooser, msg, serializer);
+            new EncryptedServerNameIndicationExtensionPreparator(chooser, msg);
 
         ServerNamePair pair = new ServerNamePair(nameTypeConfig, hostnameConfig.getBytes(StandardCharsets.UTF_8));
         msg.getClientEsniInner().getServerNameList().add(pair);

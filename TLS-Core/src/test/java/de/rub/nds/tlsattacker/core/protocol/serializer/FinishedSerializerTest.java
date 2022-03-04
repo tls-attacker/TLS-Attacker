@@ -45,7 +45,7 @@ public class FinishedSerializerTest {
         FinishedMessage msg = new FinishedMessage();
         msg.setVerifyData(verifyData);
         msg.setCompleteResultingMessage(expectedPart);
-        FinishedSerializer serializer = new FinishedSerializer(msg, version);
+        FinishedSerializer serializer = new FinishedSerializer(msg);
         assertArrayEquals(expectedPart, serializer.serializeProtocolMessageContent());
     }
 

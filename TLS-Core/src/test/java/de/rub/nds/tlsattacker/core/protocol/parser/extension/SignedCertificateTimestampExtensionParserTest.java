@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignedCertificateTimestampExtensionMessage;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
@@ -56,8 +55,7 @@ public class SignedCertificateTimestampExtensionParserTest {
 
     @Test
     public void testParseExtensionMessageContent() {
-        parser = new SignedCertificateTimestampExtensionParser(new ByteArrayInputStream(expectedBytes),
-            Config.createConfig());
+        parser = new SignedCertificateTimestampExtensionParser(new ByteArrayInputStream(expectedBytes));
         message = new SignedCertificateTimestampExtensionMessage();
         parser.parse(message);
         assertArrayEquals(timestamp, message.getSignedTimestamp().getValue());

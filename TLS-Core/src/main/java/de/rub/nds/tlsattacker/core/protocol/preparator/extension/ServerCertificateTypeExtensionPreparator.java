@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerCertificateTypeExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 public class ServerCertificateTypeExtensionPreparator
@@ -19,9 +18,8 @@ public class ServerCertificateTypeExtensionPreparator
 
     private final ServerCertificateTypeExtensionMessage msg;
 
-    public ServerCertificateTypeExtensionPreparator(Chooser chooser, ServerCertificateTypeExtensionMessage message,
-        ExtensionSerializer<ServerCertificateTypeExtensionMessage> serializer) {
-        super(chooser, message, serializer);
+    public ServerCertificateTypeExtensionPreparator(Chooser chooser, ServerCertificateTypeExtensionMessage message) {
+        super(chooser, message);
         msg = message;
     }
 

@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PSKKeyExchangeModesExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,9 +23,8 @@ public class PSKKeyExchangeModesExtensionPreparator extends ExtensionPreparator<
 
     private final PSKKeyExchangeModesExtensionMessage msg;
 
-    public PSKKeyExchangeModesExtensionPreparator(Chooser chooser, PSKKeyExchangeModesExtensionMessage message,
-        ExtensionSerializer<PSKKeyExchangeModesExtensionMessage> serializer) {
-        super(chooser, message, serializer);
+    public PSKKeyExchangeModesExtensionPreparator(Chooser chooser, PSKKeyExchangeModesExtensionMessage message) {
+        super(chooser, message);
         this.msg = message;
     }
 

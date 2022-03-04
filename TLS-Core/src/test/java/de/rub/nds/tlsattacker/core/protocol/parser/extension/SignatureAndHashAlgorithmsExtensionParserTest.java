@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
@@ -47,7 +46,7 @@ public class SignatureAndHashAlgorithmsExtensionParserTest {
     @Test
     public void testParseExtensionMessageContent() {
         SignatureAndHashAlgorithmsExtensionParser parser =
-            new SignatureAndHashAlgorithmsExtensionParser(new ByteArrayInputStream(extension), Config.createConfig());
+            new SignatureAndHashAlgorithmsExtensionParser(new ByteArrayInputStream(extension));
         SignatureAndHashAlgorithmsExtensionMessage msg = new SignatureAndHashAlgorithmsExtensionMessage();
         parser.parse(msg);
         assertArrayEquals(msg.getSignatureAndHashAlgorithms().getValue(), algoList);

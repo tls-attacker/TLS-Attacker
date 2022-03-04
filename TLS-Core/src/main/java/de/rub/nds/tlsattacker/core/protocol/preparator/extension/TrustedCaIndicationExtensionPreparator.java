@@ -13,7 +13,6 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.TrustedCaIndicationIdentifierType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TrustedCaIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.TrustedCaIndicationExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,9 +22,8 @@ public class TrustedCaIndicationExtensionPreparator extends ExtensionPreparator<
     private static final Logger LOGGER = LogManager.getLogger();
     private final TrustedCaIndicationExtensionMessage msg;
 
-    public TrustedCaIndicationExtensionPreparator(Chooser chooser, TrustedCaIndicationExtensionMessage message,
-        TrustedCaIndicationExtensionSerializer serializer) {
-        super(chooser, message, serializer);
+    public TrustedCaIndicationExtensionPreparator(Chooser chooser, TrustedCaIndicationExtensionMessage message) {
+        super(chooser, message);
         msg = message;
     }
 

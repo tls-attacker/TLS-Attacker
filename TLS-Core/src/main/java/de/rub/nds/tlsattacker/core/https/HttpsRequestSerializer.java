@@ -9,7 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.https;
 
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.https.header.HttpHeader;
 import de.rub.nds.tlsattacker.core.https.header.serializer.HttpsHeaderSerializer;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageSerializer;
@@ -23,7 +22,7 @@ public class HttpsRequestSerializer extends ProtocolMessageSerializer<HttpsReque
 
     private final HttpsRequestMessage message;
 
-    public HttpsRequestSerializer(HttpsRequestMessage message, ProtocolVersion version) {
+    public HttpsRequestSerializer(HttpsRequestMessage message) {
         super(message);
         this.message = message;
     }

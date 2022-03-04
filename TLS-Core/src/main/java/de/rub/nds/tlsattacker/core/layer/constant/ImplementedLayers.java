@@ -12,9 +12,10 @@ package de.rub.nds.tlsattacker.core.layer.constant;
 public enum ImplementedLayers implements LayerType {
     TCP,
     UDP,
+    // Record + Message layer are both part of TLS
     RECORD,
-    DTLS_FRAGMENT,
     MESSAGE,
+    DTLS_FRAGMENT,
     HTTP;
 
     @Override

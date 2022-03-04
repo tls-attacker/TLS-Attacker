@@ -13,7 +13,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
@@ -49,11 +48,6 @@ public class AlertMessage extends ProtocolMessage<AlertMessage> {
     ModifiableByte description;
 
     public AlertMessage() {
-        super();
-        this.protocolMessageType = ProtocolMessageType.ALERT;
-    }
-
-    public AlertMessage(Config tlsConfig) {
         super();
         this.protocolMessageType = ProtocolMessageType.ALERT;
     }
@@ -185,7 +179,7 @@ public class AlertMessage extends ProtocolMessage<AlertMessage> {
 
     @Override
     public AlertParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new AlertParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext.getConfig());
+        return new AlertParser(stream);
     }
 
     @Override
@@ -195,7 +189,7 @@ public class AlertMessage extends ProtocolMessage<AlertMessage> {
 
     @Override
     public AlertSerializer getSerializer(TlsContext tlsContext) {
-        return new AlertSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new AlertSerializer(this);
     }
 
 }

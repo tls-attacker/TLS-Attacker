@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatByteLength;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageSerializer;
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
 import org.apache.logging.log4j.LogManager;
@@ -26,10 +25,8 @@ public class HeartbeatMessageSerializer extends ProtocolMessageSerializer<Heartb
      *
      * @param message
      *                Message that should be serialized
-     * @param version
-     *                Version of the Protocol
      */
-    public HeartbeatMessageSerializer(HeartbeatMessage message, ProtocolVersion version) {
+    public HeartbeatMessageSerializer(HeartbeatMessage message) {
         super(message);
     }
 

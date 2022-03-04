@@ -54,7 +54,7 @@ public class ServerHelloMessage extends HelloMessage {
     private Boolean autoSetHelloRetryModeInKeyShare = true;
 
     public ServerHelloMessage(Config tlsConfig) {
-        super(tlsConfig, HandshakeMessageType.SERVER_HELLO);
+        super(HandshakeMessageType.SERVER_HELLO);
         if (!tlsConfig.getHighestProtocolVersion().isSSL()
             || (tlsConfig.getHighestProtocolVersion().isSSL() && tlsConfig.isAddExtensionsInSSL())) {
             if (tlsConfig.isAddHeartbeatExtension()) {
@@ -105,7 +105,7 @@ public class ServerHelloMessage extends HelloMessage {
                 addExtension(new CertificateStatusRequestExtensionMessage());
             }
             if (tlsConfig.isAddAlpnExtension()) {
-                addExtension(new AlpnExtensionMessage(tlsConfig));
+                addExtension(new AlpnExtensionMessage());
             }
             if (tlsConfig.isAddSRPExtension()) {
                 addExtension(new SRPExtensionMessage());
@@ -281,13 +281,12 @@ public class ServerHelloMessage extends HelloMessage {
 
     @Override
     public ServerHelloSerializer getSerializer(TlsContext tlsContext) {
-        return new ServerHelloSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new ServerHelloSerializer(this);
     }
 
     @Override
     public ServerHelloParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new ServerHelloParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext,
-            tlsContext.getTalkingConnectionEndType());
+        return new ServerHelloParser(stream, tlsContext);
     }
 
     public Boolean isAutoSetHelloRetryModeInKeyShare() {
