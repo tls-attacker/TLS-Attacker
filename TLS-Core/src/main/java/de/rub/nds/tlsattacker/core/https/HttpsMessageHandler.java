@@ -9,7 +9,7 @@
 
 package de.rub.nds.tlsattacker.core.https;
 
-import de.rub.nds.tlsattacker.core.protocol.Handler;
+import de.rub.nds.tlsattacker.core.layer.data.Handler;
 
 public abstract class HttpsMessageHandler<MessageT extends HttpsMessage> implements Handler<MessageT> {
 }

@@ -7,7 +7,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
-package de.rub.nds.tlsattacker.core.protocol;
+package de.rub.nds.tlsattacker.core.layer.data;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
@@ -60,7 +60,7 @@ public abstract class Parser<T> {
      *                Number of bytes to be parsed
      * @return        A subByteArray of according size from the Array
      */
-    protected byte[] parseByteArrayField(int length) {
+    public byte[] parseByteArrayField(int length) {
         if (length == 0) {
             return new byte[0];
         }
@@ -94,7 +94,7 @@ public abstract class Parser<T> {
      *                Number of bytes to be parsed
      * @return        An integer representation of the subByteArray
      */
-    protected int parseIntField(int length) {
+    public int parseIntField(int length) {
         if (length == 0) {
             throw new ParserException("Cannot parse int of size 0");
         }
@@ -109,7 +109,7 @@ public abstract class Parser<T> {
      *                Number of bytes to be parsed
      * @return        A BigInteger representation of the subByteArray
      */
-    protected BigInteger parseBigIntField(int length) {
+    public BigInteger parseBigIntField(int length) {
         if (length == 0) {
             throw new ParserException("Cannot parse BigInt of size 0");
         }
@@ -124,7 +124,7 @@ public abstract class Parser<T> {
      *                Number of bytes to be parsed
      * @return        An integer representation of the subByteArray
      */
-    protected byte parseByteField(int length) {
+    public byte parseByteField(int length) {
         if (length == 0) {
             throw new ParserException("Cannot parse byte of size 0");
         }
@@ -134,7 +134,7 @@ public abstract class Parser<T> {
         return (byte) ArrayConverter.bytesToInt(parseByteArrayField(length));
     }
 
-    protected String parseStringTill(byte endSequence) {
+    public String parseStringTill(byte endSequence) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         while (true) {
             byte b = parseByteField(1);
@@ -153,7 +153,7 @@ public abstract class Parser<T> {
      *               Number of bytes to check for
      * @return       True if there are at least count bytes left to read
      */
-    protected boolean enoughBytesLeft(int count) {
+    public boolean enoughBytesLeft(int count) {
         return getBytesLeft() >= count;
     }
 

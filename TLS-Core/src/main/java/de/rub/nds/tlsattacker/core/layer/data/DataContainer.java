@@ -7,12 +7,8 @@
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
-package de.rub.nds.tlsattacker.core.layer;
+package de.rub.nds.tlsattacker.core.layer.data;
 
-import de.rub.nds.tlsattacker.core.protocol.Handler;
-import de.rub.nds.tlsattacker.core.protocol.Parser;
-import de.rub.nds.tlsattacker.core.protocol.Preparator;
-import de.rub.nds.tlsattacker.core.protocol.Serializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
 

@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.https;
 
 import java.io.InputStream;
 
-import de.rub.nds.tlsattacker.core.protocol.Parser;
+import de.rub.nds.tlsattacker.core.layer.data.Parser;
 
 public abstract class HttpsMessageParser<Message extends HttpsMessage> extends Parser<Message> {
 

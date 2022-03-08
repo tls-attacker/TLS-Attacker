@@ -9,7 +9,7 @@
 
 package de.rub.nds.tlsattacker.core.https;
 
-import de.rub.nds.tlsattacker.core.protocol.Serializer;
+import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 
 public abstract class HttpsMessageSerializer<T extends HttpsMessage> extends Serializer<T> {
 

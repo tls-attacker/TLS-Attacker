@@ -14,6 +14,7 @@ import java.io.ByteArrayInputStream;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
 import static org.junit.Assert.*;
+import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import org.junit.Before;
 import org.junit.Test;
 

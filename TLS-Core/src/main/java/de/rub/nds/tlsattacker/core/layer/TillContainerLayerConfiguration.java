@@ -12,6 +12,8 @@ package de.rub.nds.tlsattacker.core.layer;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
+
 // TODO: This is unused, remove?
 public class TillContainerLayerConfiguration<Container extends DataContainer> extends LayerConfiguration<Container> {
 

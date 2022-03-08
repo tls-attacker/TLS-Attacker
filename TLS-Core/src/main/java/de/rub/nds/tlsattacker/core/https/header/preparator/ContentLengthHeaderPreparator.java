@@ -10,7 +10,7 @@
 package de.rub.nds.tlsattacker.core.https.header.preparator;
 
 import de.rub.nds.tlsattacker.core.https.header.ContentLengthHeader;
-import de.rub.nds.tlsattacker.core.protocol.Preparator;
+import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 public class ContentLengthHeaderPreparator extends Preparator<ContentLengthHeader> {

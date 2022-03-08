@@ -7,7 +7,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
-package de.rub.nds.tlsattacker.core.protocol;
+package de.rub.nds.tlsattacker.core.layer.data;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import java.io.ByteArrayOutputStream;
@@ -55,7 +55,7 @@ public abstract class Serializer<T> {
      * @param length
      *               The number of bytes which should be reserved for this Integer
      */
-    protected final void appendInt(int i, int length) {
+    public final void appendInt(int i, int length) {
         byte[] bytes = ArrayConverter.intToBytes(i, length);
         int reconvertedInt = ArrayConverter.bytesToInt(bytes);
         if (reconvertedInt != i) {
@@ -74,7 +74,7 @@ public abstract class Serializer<T> {
      * @param length
      *               The number of bytes which should be reserved for this BigInteger
      */
-    protected final void appendBigInteger(BigInteger i, int length) {
+    public final void appendBigInteger(BigInteger i, int length) {
         byte[] bytes;
         // special case for which bigIntegerToByteArray
         // wrongly returns an empty array
@@ -92,7 +92,7 @@ public abstract class Serializer<T> {
      * @param b
      *          Byte which should be added
      */
-    protected final void appendByte(byte b) {
+    public final void appendByte(byte b) {
         outputStream.write(b);
     }
 
@@ -102,7 +102,7 @@ public abstract class Serializer<T> {
      * @param bytes
      *              bytes that should be added
      */
-    protected final void appendBytes(byte[] bytes) {
+    public final void appendBytes(byte[] bytes) {
         try {
             outputStream.write(bytes);
         } catch (IOException ex) {
@@ -111,7 +111,7 @@ public abstract class Serializer<T> {
         }
     }
 
-    protected final byte[] getAlreadySerialized() {
+    public final byte[] getAlreadySerialized() {
         return outputStream.toByteArray();
     }
 

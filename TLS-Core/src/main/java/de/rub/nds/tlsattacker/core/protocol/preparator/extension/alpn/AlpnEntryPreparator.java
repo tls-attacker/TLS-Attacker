@@ -9,7 +9,7 @@
 
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension.alpn;
 
-import de.rub.nds.tlsattacker.core.protocol.Preparator;
+import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.alpn.AlpnEntry;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;

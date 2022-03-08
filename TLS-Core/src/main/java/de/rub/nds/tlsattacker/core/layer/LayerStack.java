@@ -9,6 +9,7 @@
 
 package de.rub.nds.tlsattacker.core.layer;
 
+import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.IOException;
 import java.util.Arrays;
