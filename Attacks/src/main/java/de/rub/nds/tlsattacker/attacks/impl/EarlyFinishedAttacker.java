@@ -73,12 +73,12 @@ public class EarlyFinishedAttacker extends Attacker<EarlyFinishedCommandConfig> 
         List<ProtocolMessage> messages = new LinkedList<>();
         messages.add(new ChangeCipherSpecMessage());
         workflowTrace
-            .addTlsAction(MessageActionFactory.createAction(tlsConfig, connection, ConnectionEndType.CLIENT, messages));
+            .addTlsAction(MessageActionFactory.createTLSAction(tlsConfig, connection, ConnectionEndType.CLIENT, messages));
         messages = new LinkedList<>();
         messages.add(new ChangeCipherSpecMessage());
         messages.add(new FinishedMessage());
         workflowTrace
-            .addTlsAction(MessageActionFactory.createAction(tlsConfig, connection, ConnectionEndType.SERVER, messages));
+            .addTlsAction(MessageActionFactory.createTLSAction(tlsConfig, connection, ConnectionEndType.SERVER, messages));
 
         State state = new State(tlsConfig, workflowTrace);
         WorkflowExecutor workflowExecutor =

@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.https.header.HttpHeader;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessagePreparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-public class HttpsRequestPreparator extends ProtocolMessagePreparator<HttpsRequestMessage> {
+public class HttpsRequestPreparator extends HttpsMessagePreparator<HttpsRequestMessage> {
 
     private final HttpsRequestMessage message;
 
@@ -23,7 +23,7 @@ public class HttpsRequestPreparator extends ProtocolMessagePreparator<HttpsReque
     }
 
     @Override
-    protected void prepareProtocolMessageContents() {
+    protected void prepareHttpsMessageContents() {
         message.setRequestPath("/");
         message.setRequestProtocol("HTTP/1.1");
         message.setRequestType("GET");

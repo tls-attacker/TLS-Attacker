@@ -26,7 +26,7 @@ import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class HttpsRequestMessage extends ProtocolMessage {
+public class HttpsRequestMessage extends HttpsMessage<HttpsRequestMessage> {
 
     @XmlElementWrapper
     @XmlElements(value = { @XmlElement(type = GenericHttpsHeader.class, name = "HttpsHeader"),
@@ -48,13 +48,11 @@ public class HttpsRequestMessage extends ProtocolMessage {
 
     public HttpsRequestMessage() {
         super();
-        protocolMessageType = ProtocolMessageType.APPLICATION_DATA;
         header = new LinkedList<>();
     }
 
     public HttpsRequestMessage(Config config) {
         super();
-        protocolMessageType = ProtocolMessageType.APPLICATION_DATA;
         header = new LinkedList<>();
         header.add(new HostHeader());
         header.add(new GenericHttpsHeader("Connection", "keep-alive"));

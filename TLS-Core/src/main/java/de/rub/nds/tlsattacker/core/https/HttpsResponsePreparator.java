@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.ProtocolMessagePreparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
-public class HttpsResponsePreparator extends ProtocolMessagePreparator<HttpsResponseMessage> {
+public class HttpsResponsePreparator extends HttpsMessagePreparator<HttpsResponseMessage> {
 
     private final HttpsResponseMessage message;
 
@@ -25,7 +25,7 @@ public class HttpsResponsePreparator extends ProtocolMessagePreparator<HttpsResp
     }
 
     @Override
-    protected void prepareProtocolMessageContents() {
+    protected void prepareHttpsMessageContents() {
         message.setResponseProtocol("HTTP/1.1");
         message.setResponseStatusCode("200 OK");
         message.setResponseContent(chooser.getConfig().getDefaultApplicationMessageData());

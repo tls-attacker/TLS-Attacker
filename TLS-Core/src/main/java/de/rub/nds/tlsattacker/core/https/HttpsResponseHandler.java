@@ -11,11 +11,14 @@ package de.rub.nds.tlsattacker.core.https;
 
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.state.http.HttpContext;
 
-public class HttpsResponseHandler extends ProtocolMessageHandler<HttpsResponseMessage> {
+public class HttpsResponseHandler extends HttpsMessageHandler<HttpsResponseMessage> {
+
+    TlsContext tlsContext;
 
     public HttpsResponseHandler(TlsContext tlsContext) {
-        super(tlsContext);
+        this.tlsContext = tlsContext;
     }
 
     @Override

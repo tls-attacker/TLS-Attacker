@@ -12,13 +12,15 @@ package de.rub.nds.tlsattacker.core.https;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-public class HttpsRequestHandler extends ProtocolMessageHandler<HttpsRequestMessage> {
+public class HttpsRequestHandler extends HttpsMessageHandler<HttpsRequestMessage> {
+
+    // TODO: REMOVE IN CONTEXT SPLITTING
+    TlsContext tlsContext;
 
     public HttpsRequestHandler(TlsContext tlsContext) {
-        super(tlsContext);
+        this.tlsContext = tlsContext;
     }
 
-    @Override
     public void adjustContext(HttpsRequestMessage message) {
         tlsContext.getHttpContext().setLastRequestPath(message.getRequestPath().getValue());
     }

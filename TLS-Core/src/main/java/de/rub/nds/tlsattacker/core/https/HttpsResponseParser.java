@@ -17,7 +17,7 @@ import java.nio.charset.Charset;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class HttpsResponseParser extends ProtocolMessageParser<HttpsResponseMessage> {
+public class HttpsResponseParser extends HttpsMessageParser<HttpsResponseMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

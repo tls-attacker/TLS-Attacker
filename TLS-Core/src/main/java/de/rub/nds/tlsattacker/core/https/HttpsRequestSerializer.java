@@ -16,7 +16,7 @@ import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class HttpsRequestSerializer extends ProtocolMessageSerializer<HttpsRequestMessage> {
+public class HttpsRequestSerializer extends HttpsMessageSerializer<HttpsRequestMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -28,7 +28,7 @@ public class HttpsRequestSerializer extends ProtocolMessageSerializer<HttpsReque
     }
 
     @Override
-    public byte[] serializeProtocolMessageContent() {
+    public byte[] serializeHttpsMessageContent() {
         StringBuilder builder = new StringBuilder();
         builder.append(message.getRequestType().getValue()).append(" ").append(message.getRequestPath().getValue())
             .append(" ").append(message.getRequestProtocol().getValue()).append("\r\n");
@@ -44,7 +44,7 @@ public class HttpsRequestSerializer extends ProtocolMessageSerializer<HttpsReque
 
     @Override
     protected byte[] serializeBytes() {
-        return serializeProtocolMessageContent();
+        return serializeHttpsMessageContent();
     }
 
 }

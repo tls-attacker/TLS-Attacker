@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.https.HttpsRequestMessage;
 import de.rub.nds.tlsattacker.core.https.HttpsResponseMessage;
 import de.rub.nds.tlsattacker.core.layer.DataContainer;
+import de.rub.nds.tlsattacker.core.layer.Message;
 import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
@@ -45,14 +46,7 @@ import javax.xml.bind.annotation.XmlTransient;
     EndOfEarlyDataMessage.class, DtlsHandshakeMessageFragment.class, PWDServerKeyExchangeMessage.class,
     RSAServerKeyExchangeMessage.class, PWDClientKeyExchangeMessage.class, PskServerKeyExchangeMessage.class,
     CertificateStatusMessage.class, EmptyClientKeyExchangeMessage.class })
-public abstract class ProtocolMessage<Self extends ProtocolMessage> extends ModifiableVariableHolder
-    implements DataContainer<Self> {
-
-    /**
-     * content type
-     */
-    @XmlTransient
-    protected ProtocolMessageType protocolMessageType;
+public abstract class ProtocolMessage<Self extends ProtocolMessage> extends Message<Self> {
 
     @XmlTransient
     protected boolean goingToBeSentDefault = true;
@@ -157,10 +151,6 @@ public abstract class ProtocolMessage<Self extends ProtocolMessage> extends Modi
      */
     public abstract String toShortString();
 
-    public boolean addToTypes(List<ProtocolMessageType> protocolMessageTypes) {
-        return protocolMessageTypes.add(getProtocolMessageType());
-    }
-
     @Override
     public abstract ProtocolMessageHandler<Self> getHandler(TlsContext context);
 
@@ -172,10 +162,6 @@ public abstract class ProtocolMessage<Self extends ProtocolMessage> extends Modi
 
     @Override
     public abstract ProtocolMessageParser<Self> getParser(TlsContext context, InputStream stream);
-
-    public ProtocolMessageType getProtocolMessageType() {
-        return protocolMessageType;
-    }
 
     public boolean isHandshakeMessage() {
         return this instanceof HandshakeMessage;

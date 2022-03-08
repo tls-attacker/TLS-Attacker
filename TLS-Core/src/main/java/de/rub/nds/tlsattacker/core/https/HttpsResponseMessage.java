@@ -26,7 +26,7 @@ import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class HttpsResponseMessage extends ProtocolMessage {
+public class HttpsResponseMessage extends HttpsMessage<HttpsResponseMessage> {
 
     private ModifiableString responseProtocol;
 
@@ -45,12 +45,10 @@ public class HttpsResponseMessage extends ProtocolMessage {
     private List<HttpHeader> header;
 
     public HttpsResponseMessage() {
-        protocolMessageType = ProtocolMessageType.APPLICATION_DATA;
         header = new LinkedList<>();
     }
 
     public HttpsResponseMessage(Config config) {
-        protocolMessageType = ProtocolMessageType.APPLICATION_DATA;
         header = new LinkedList<>();
         header.add(new GenericHttpsHeader("Content-Type", "text/html; charset=UTF-8"));
         header.add(new LocationHeader());
