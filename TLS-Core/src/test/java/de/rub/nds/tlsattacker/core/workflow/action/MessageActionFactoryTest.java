@@ -47,17 +47,17 @@ public class MessageActionFactoryTest {
      */
     @Test
     public void testCreateActionOne() {
-        MessageAction action =
-            MessageActionFactory.createAction(config, clientConnection, ConnectionEndType.CLIENT, new AlertMessage());
+        MessageAction action = MessageActionFactory.createTLSAction(config, clientConnection, ConnectionEndType.CLIENT,
+            new AlertMessage());
         assertEquals(action.getClass(), SendAction.class);
-        action =
-            MessageActionFactory.createAction(config, clientConnection, ConnectionEndType.SERVER, new AlertMessage());
+        action = MessageActionFactory.createTLSAction(config, clientConnection, ConnectionEndType.SERVER,
+            new AlertMessage());
         assertEquals(action.getClass(), ReceiveAction.class);
-        action =
-            MessageActionFactory.createAction(config, serverConnection, ConnectionEndType.CLIENT, new AlertMessage());
+        action = MessageActionFactory.createTLSAction(config, serverConnection, ConnectionEndType.CLIENT,
+            new AlertMessage());
         assertEquals(action.getClass(), ReceiveAction.class);
-        action =
-            MessageActionFactory.createAction(config, serverConnection, ConnectionEndType.SERVER, new AlertMessage());
+        action = MessageActionFactory.createTLSAction(config, serverConnection, ConnectionEndType.SERVER,
+            new AlertMessage());
         assertEquals(action.getClass(), SendAction.class);
         assertTrue(action.messages.size() == 1);
     }
@@ -71,13 +71,13 @@ public class MessageActionFactoryTest {
         messages.add(new ChangeCipherSpecMessage());
         messages.add(new AlertMessage());
         MessageAction action =
-            MessageActionFactory.createAction(config, clientConnection, ConnectionEndType.CLIENT, messages);
+            MessageActionFactory.createTLSAction(config, clientConnection, ConnectionEndType.CLIENT, messages);
         assertEquals(action.getClass(), SendAction.class);
-        action = MessageActionFactory.createAction(config, clientConnection, ConnectionEndType.SERVER, messages);
+        action = MessageActionFactory.createTLSAction(config, clientConnection, ConnectionEndType.SERVER, messages);
         assertEquals(action.getClass(), ReceiveAction.class);
-        action = MessageActionFactory.createAction(config, serverConnection, ConnectionEndType.CLIENT, messages);
+        action = MessageActionFactory.createTLSAction(config, serverConnection, ConnectionEndType.CLIENT, messages);
         assertEquals(action.getClass(), ReceiveAction.class);
-        action = MessageActionFactory.createAction(config, serverConnection, ConnectionEndType.SERVER, messages);
+        action = MessageActionFactory.createTLSAction(config, serverConnection, ConnectionEndType.SERVER, messages);
         assertEquals(action.getClass(), SendAction.class);
         assertTrue(action.messages.size() == 2);
     }

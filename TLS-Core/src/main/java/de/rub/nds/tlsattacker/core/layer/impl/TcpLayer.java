@@ -9,7 +9,7 @@
 
 package de.rub.nds.tlsattacker.core.layer.impl;
 
-import de.rub.nds.tlsattacker.core.layer.DataContainer;
+import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;

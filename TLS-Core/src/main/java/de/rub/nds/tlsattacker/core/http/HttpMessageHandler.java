@@ -7,13 +7,9 @@
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
-package de.rub.nds.tlsattacker.core.protocol;
+package de.rub.nds.tlsattacker.core.http;
 
-/**
- * @param <T>
- *            The Object that should be Handled
- */
-public interface Handler<T> {
+import de.rub.nds.tlsattacker.core.layer.data.Handler;
 
-    void adjustContext(T object);
+public abstract class HttpMessageHandler<MessageT extends HttpMessage> implements Handler<MessageT> {
 }

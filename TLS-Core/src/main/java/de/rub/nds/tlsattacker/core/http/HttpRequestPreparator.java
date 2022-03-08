@@ -11,9 +11,8 @@ package de.rub.nds.tlsattacker.core.http;
 
 import de.rub.nds.tlsattacker.core.http.header.HttpHeader;
 import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
-import de.rub.nds.tlsattacker.core.protocol.Preparator;
 
-public class HttpRequestPreparator extends Preparator<HttpRequestMessage> {
+public class HttpRequestPreparator extends HttpMessagePreparator<HttpRequestMessage> {
 
     private final HttpRequestMessage message;
 
@@ -26,7 +25,7 @@ public class HttpRequestPreparator extends Preparator<HttpRequestMessage> {
     }
 
     @Override
-    public void prepare() {
+    public void prepareHttpMessageContents() {
         message.setRequestPath("/");
         message.setRequestProtocol("HTTP/1.1");
         message.setRequestType("GET");

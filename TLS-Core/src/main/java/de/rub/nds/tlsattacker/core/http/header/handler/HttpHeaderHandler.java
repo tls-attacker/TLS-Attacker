@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.http.header.handler;
 
 import de.rub.nds.tlsattacker.core.http.header.HttpHeader;
 import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
-import de.rub.nds.tlsattacker.core.protocol.Handler;
+import de.rub.nds.tlsattacker.core.layer.data.Handler;
 
 public abstract class HttpHeaderHandler implements Handler<HttpHeader> {
 

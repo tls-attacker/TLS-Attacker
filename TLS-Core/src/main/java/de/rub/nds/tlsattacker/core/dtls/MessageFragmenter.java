@@ -11,11 +11,13 @@ package de.rub.nds.tlsattacker.core.dtls;
 
 import static de.rub.nds.tlsattacker.core.dtls.FragmentCollector.LOGGER;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.data.Preparator;
+import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.protocol.*;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.HandshakeMessageSerializer;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.util.LinkedList;
 import java.util.List;
 import org.bouncycastle.util.Arrays;
@@ -50,8 +52,8 @@ public class MessageFragmenter {
         return dtlsFragments;
     }
 
-    private static byte[] getSerializedBytes(HandshakeMessage message, TlsContext tlsContext) {
-        HandshakeMessageSerializer serializer = message.getSerializer(tlsContext);
+    private static byte[] getSerializedBytes(HandshakeMessage message, TlsContext context) {
+        HandshakeMessageSerializer serializer = message.getSerializer(context);
         byte[] bytes;
         bytes = serializer.serializeProtocolMessageContent();
         return bytes;

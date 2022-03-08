@@ -11,13 +11,13 @@ package de.rub.nds.tlsattacker.core.http;
 
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.http.header.*;
-import de.rub.nds.tlsattacker.core.protocol.Parser;
+import de.rub.nds.tlsattacker.core.http.HttpMessageParser;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class HttpRequestParser extends Parser<HttpRequestMessage> {
+public class HttpRequestParser extends HttpMessageParser<HttpRequestMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -26,7 +26,7 @@ public class HttpRequestParser extends Parser<HttpRequestMessage> {
     }
 
     @Override
-    public void parse(HttpRequestMessage message) {
+    public void parseMessageContent(HttpRequestMessage message) {
         String request = parseStringTill((byte) 0x0A).trim();
         String[] split = request.replaceAll("\r", " ").split(" ");
         if (split.length != 3) {

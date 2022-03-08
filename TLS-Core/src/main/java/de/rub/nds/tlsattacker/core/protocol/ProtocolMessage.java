@@ -14,7 +14,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bool.ModifiableBoolean;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.layer.DataContainer;
+import de.rub.nds.tlsattacker.core.layer.Message;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.*;
 
@@ -37,15 +37,13 @@ import javax.xml.bind.annotation.XmlTransient;
     ApplicationMessage.class, ChangeCipherSpecMessage.class, SSL2ClientHelloMessage.class,
     SSL2ClientMasterKeyMessage.class, SSL2HandshakeMessage.class, SSL2ServerHelloMessage.class,
     SSL2ServerVerifyMessage.class, UnknownMessage.class, UnknownHandshakeMessage.class, HelloRequestMessage.class,
-    HeartbeatMessage.class, SupplementalDataMessage.class, EncryptedExtensionsMessage.class,
-    PskClientKeyExchangeMessage.class, PskDhClientKeyExchangeMessage.class, PskDheServerKeyExchangeMessage.class,
-    PskEcDhClientKeyExchangeMessage.class, PskEcDheServerKeyExchangeMessage.class, PskRsaClientKeyExchangeMessage.class,
-    SrpClientKeyExchangeMessage.class, SrpServerKeyExchangeMessage.class, EndOfEarlyDataMessage.class,
-    DtlsHandshakeMessageFragment.class, PWDServerKeyExchangeMessage.class, RSAServerKeyExchangeMessage.class,
-    PWDClientKeyExchangeMessage.class, PskServerKeyExchangeMessage.class, CertificateStatusMessage.class,
-    EmptyClientKeyExchangeMessage.class })
-public abstract class ProtocolMessage<Self extends ProtocolMessage> extends ModifiableVariableHolder
-    implements DataContainer<Self, TlsContext> {
+    HeartbeatMessage.class, SupplementalDataMessage.class, EncryptedExtensionsMessage.class, PskClientKeyExchangeMessage.class, PskDhClientKeyExchangeMessage.class,
+    PskDheServerKeyExchangeMessage.class, PskEcDhClientKeyExchangeMessage.class, PskEcDheServerKeyExchangeMessage.class,
+    PskRsaClientKeyExchangeMessage.class, SrpClientKeyExchangeMessage.class, SrpServerKeyExchangeMessage.class,
+    EndOfEarlyDataMessage.class, DtlsHandshakeMessageFragment.class, PWDServerKeyExchangeMessage.class,
+    RSAServerKeyExchangeMessage.class, PWDClientKeyExchangeMessage.class, PskServerKeyExchangeMessage.class,
+    CertificateStatusMessage.class, EmptyClientKeyExchangeMessage.class })
+public abstract class ProtocolMessage<Self extends ProtocolMessage> extends Message<Self, TlsContext> {
 
     /**
      * content type
@@ -156,10 +154,6 @@ public abstract class ProtocolMessage<Self extends ProtocolMessage> extends Modi
      */
     public abstract String toShortString();
 
-    public boolean addToTypes(List<ProtocolMessageType> protocolMessageTypes) {
-        return protocolMessageTypes.add(getProtocolMessageType());
-    }
-
     @Override
     public abstract ProtocolMessageHandler<Self> getHandler(TlsContext tlsContext);
 
@@ -171,10 +165,6 @@ public abstract class ProtocolMessage<Self extends ProtocolMessage> extends Modi
 
     @Override
     public abstract ProtocolMessageParser<Self> getParser(TlsContext tlsContext, InputStream stream);
-
-    public ProtocolMessageType getProtocolMessageType() {
-        return protocolMessageType;
-    }
 
     public boolean isHandshakeMessage() {
         return this instanceof HandshakeMessage;

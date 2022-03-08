@@ -10,9 +10,8 @@
 package de.rub.nds.tlsattacker.core.http;
 
 import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
-import de.rub.nds.tlsattacker.core.protocol.Handler;
 
-public class HttpRequestHandler implements Handler<HttpRequestMessage> {
+public class HttpRequestHandler extends HttpMessageHandler<HttpRequestMessage> {
 
     private final HttpContext httpContext;
 

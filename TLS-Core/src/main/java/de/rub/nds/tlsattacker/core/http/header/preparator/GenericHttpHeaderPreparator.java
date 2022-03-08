@@ -10,7 +10,7 @@
 package de.rub.nds.tlsattacker.core.http.header.preparator;
 
 import de.rub.nds.tlsattacker.core.http.header.GenericHttpHeader;
-import de.rub.nds.tlsattacker.core.protocol.Preparator;
+import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 public class GenericHttpHeaderPreparator extends Preparator<GenericHttpHeader> {

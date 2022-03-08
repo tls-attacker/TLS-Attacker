@@ -28,7 +28,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @XmlRootElement
-public class ReceiveTillAction extends MessageAction implements ReceivingAction {
+public class ReceiveTillAction extends MessageAction<ProtocolMessage> implements ReceivingAction<ProtocolMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

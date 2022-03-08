@@ -13,10 +13,9 @@ import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.http.header.*;
-import de.rub.nds.tlsattacker.core.layer.DataContainer;
 import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
-import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,8 +25,7 @@ import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class HttpResponseMessage extends ModifiableVariableHolder
-    implements DataContainer<HttpResponseMessage, HttpContext> {
+public class HttpResponseMessage extends HttpMessage<HttpResponseMessage> {
 
     private ModifiableString responseProtocol;
 
@@ -46,10 +44,12 @@ public class HttpResponseMessage extends ModifiableVariableHolder
     private List<HttpHeader> header;
 
     public HttpResponseMessage() {
+        protocolMessageType = ProtocolMessageType.HTTP;
         header = new LinkedList<>();
     }
 
     public HttpResponseMessage(Config config) {
+        protocolMessageType = ProtocolMessageType.HTTP;
         header = new LinkedList<>();
         header.add(new GenericHttpHeader("Content-Type", "text/html; charset=UTF-8"));
         header.add(new LocationHeader());

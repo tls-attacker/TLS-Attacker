@@ -7,12 +7,13 @@
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
-package de.rub.nds.tlsattacker.core.layer;
+package de.rub.nds.tlsattacker.core.layer.data;
 
-import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
+/**
+ * @param <T>
+ *            The Object that should be Handled
+ */
+public interface Handler<T> {
 
-public abstract class DataContainerFilter {
-
-    public abstract boolean filterApplies(DataContainer container);
-
+    void adjustContext(T object);
 }

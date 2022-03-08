@@ -12,6 +12,8 @@ package de.rub.nds.tlsattacker.core.layer;
 import java.util.Arrays;
 import java.util.List;
 
+import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
+
 public class SpecificReceiveLayerConfiguration<Container extends DataContainer> extends LayerConfiguration<Container> {
 
     private List<DataContainerFilter> containerFilterList;

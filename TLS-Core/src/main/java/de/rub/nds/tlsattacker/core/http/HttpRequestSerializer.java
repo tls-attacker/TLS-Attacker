@@ -13,23 +13,22 @@ import java.nio.charset.StandardCharsets;
 
 import de.rub.nds.tlsattacker.core.http.header.HttpHeader;
 import de.rub.nds.tlsattacker.core.http.header.serializer.HttpHeaderSerializer;
-import de.rub.nds.tlsattacker.core.protocol.Serializer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class HttpRequestSerializer extends Serializer<HttpRequestMessage> {
+public class HttpRequestSerializer extends HttpMessageSerializer<HttpRequestMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     private final HttpRequestMessage message;
 
     public HttpRequestSerializer(HttpRequestMessage message) {
-        super();
+        super(message);
         this.message = message;
     }
 
     @Override
-    protected byte[] serializeBytes() {
+    public byte[] serializeHttpMessageContent() {
         StringBuilder builder = new StringBuilder();
         builder.append(message.getRequestType().getValue()).append(" ").append(message.getRequestPath().getValue())
             .append(" ").append(message.getRequestProtocol().getValue()).append("\r\n");

@@ -7,15 +7,15 @@
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
-package de.rub.nds.tlsattacker.core.protocol;
+package de.rub.nds.tlsattacker.core.http;
 
 import java.io.InputStream;
 
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
 
-public abstract class ProtocolMessageParser<Message extends ProtocolMessage> extends Parser<Message> {
+public abstract class HttpMessageParser<Message extends HttpMessage> extends Parser<Message> {
 
-    public ProtocolMessageParser(InputStream stream) {
+    public HttpMessageParser(InputStream stream) {
         super(stream);
     }
 

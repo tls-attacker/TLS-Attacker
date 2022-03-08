@@ -12,11 +12,10 @@ package de.rub.nds.tlsattacker.core.http;
 import de.rub.nds.tlsattacker.core.http.header.HttpHeader;
 import de.rub.nds.tlsattacker.core.http.header.ContentLengthHeader;
 import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
-import de.rub.nds.tlsattacker.core.protocol.Preparator;
 
 import java.nio.charset.StandardCharsets;
 
-public class HttpResponsePreparator extends Preparator<HttpResponseMessage> {
+public class HttpResponsePreparator extends HttpMessagePreparator<HttpResponseMessage> {
 
     private final HttpResponseMessage message;
 
@@ -29,7 +28,7 @@ public class HttpResponsePreparator extends Preparator<HttpResponseMessage> {
     }
 
     @Override
-    public void prepare() {
+    protected void prepareHttpMessageContents() {
         message.setResponseProtocol("HTTP/1.1");
         message.setResponseStatusCode("200 OK");
         message.setResponseContent(chooser.getConfig().getDefaultApplicationMessageData());

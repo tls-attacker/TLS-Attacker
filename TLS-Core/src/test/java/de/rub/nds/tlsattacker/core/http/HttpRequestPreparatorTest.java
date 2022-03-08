@@ -39,7 +39,7 @@ public class HttpRequestPreparatorTest {
 
     @Test
     public void testPrepareProtocolMessageContents() {
-        preparator.prepare();
+        preparator.prepareHttpMessageContents();
 
         assertEquals("/", message.getRequestPath().getOriginalValue());
         assertEquals("HTTP/1.1", message.getRequestProtocol().getOriginalValue());

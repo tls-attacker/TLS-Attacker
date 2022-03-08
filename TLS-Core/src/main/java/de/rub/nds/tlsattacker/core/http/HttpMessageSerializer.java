@@ -7,17 +7,21 @@
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
-package de.rub.nds.tlsattacker.core.protocol;
+package de.rub.nds.tlsattacker.core.http;
 
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 
-public abstract class ProtocolMessageSerializer<T extends ProtocolMessage> extends Serializer<T> {
+public abstract class HttpMessageSerializer<T extends HttpMessage> extends Serializer<T> {
 
     protected final T message;
 
-    public ProtocolMessageSerializer(T message) {
+    public HttpMessageSerializer(T message) {
         this.message = message;
     }
 
-    public abstract byte[] serializeProtocolMessageContent();
+    @Override
+    public final byte[] serializeBytes() {return serializeHttpMessageContent();}
+
+    public abstract byte[] serializeHttpMessageContent();
+
 }

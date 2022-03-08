@@ -9,7 +9,7 @@
 
 package de.rub.nds.tlsattacker.core.layer.impl.DataContainerFilters;
 
-import de.rub.nds.tlsattacker.core.layer.DataContainer;
+import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.layer.DataContainerFilter;
 
 public class GenericDataContainerFilter extends DataContainerFilter {

@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.socket;
 
 import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
+import de.rub.nds.tlsattacker.core.layer.Message;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
@@ -111,10 +112,10 @@ public class TlsAttackerSocket {
         ReceiveAction action =
             new ReceiveAction(state.getContext().getConnection().getAlias(), new ApplicationMessage());
         action.execute(state);
-        List<ProtocolMessage> receivedMessages = action.getReceivedMessages();
+        List<Message> receivedMessages = action.getReceivedMessages();
 
         List<ApplicationMessage> receivedAppMessages = new LinkedList<>();
-        for (ProtocolMessage message : receivedMessages) {
+        for (Message message : receivedMessages) {
             if (message instanceof ApplicationMessage) {
                 receivedAppMessages.add((ApplicationMessage) message);
             }

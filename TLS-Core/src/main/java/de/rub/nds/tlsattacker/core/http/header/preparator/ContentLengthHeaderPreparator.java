@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.http.header.preparator;
 
 import de.rub.nds.tlsattacker.core.http.header.ContentLengthHeader;
 import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
-import de.rub.nds.tlsattacker.core.protocol.Preparator;
+import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 
 public class ContentLengthHeaderPreparator extends Preparator<ContentLengthHeader> {
 

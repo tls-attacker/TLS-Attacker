@@ -200,14 +200,14 @@ public class TlsClientTest {
 
         AliasedConnection con = config.getDefaultClientConnection();
         WorkflowTrace trace = new WorkflowTrace();
-        trace.addTlsAction(
-            MessageActionFactory.createAction(config, con, ConnectionEndType.CLIENT, new ClientHelloMessage(config)));
-        trace.addTlsAction(MessageActionFactory.createAction(config, con, ConnectionEndType.SERVER,
+        trace.addTlsAction(MessageActionFactory.createTLSAction(config, con, ConnectionEndType.CLIENT,
+            new ClientHelloMessage(config)));
+        trace.addTlsAction(MessageActionFactory.createTLSAction(config, con, ConnectionEndType.SERVER,
             new ServerHelloMessage(config), new CertificateMessage(), new ServerHelloDoneMessage()));
 
-        trace.addTlsAction(MessageActionFactory.createAction(config, con, ConnectionEndType.CLIENT,
+        trace.addTlsAction(MessageActionFactory.createTLSAction(config, con, ConnectionEndType.CLIENT,
             new RSAClientKeyExchangeMessage(), new ChangeCipherSpecMessage(), new FinishedMessage()));
-        trace.addTlsAction(MessageActionFactory.createAction(config, con, ConnectionEndType.SERVER,
+        trace.addTlsAction(MessageActionFactory.createTLSAction(config, con, ConnectionEndType.SERVER,
             new ChangeCipherSpecMessage(), new FinishedMessage()));
 
         State state = new State(config, trace);

@@ -7,28 +7,25 @@
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
-package de.rub.nds.tlsattacker.core.protocol;
+package de.rub.nds.tlsattacker.core.http;
 
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-/**
- * @param <T>
- *            The ProtocolMessage that should be prepared
- */
-public abstract class ProtocolMessagePreparator<T extends ProtocolMessage> extends Preparator<T> {
+public abstract class HttpMessagePreparator<T extends HttpMessage> extends Preparator<T> {
 
     protected final T message;
 
-    public ProtocolMessagePreparator(Chooser chooser, T message) {
+    public HttpMessagePreparator(Chooser chooser, T message) {
         super(chooser, message);
         this.message = message;
     }
 
     @Override
     public final void prepare() {
-        prepareProtocolMessageContents();
+        prepareHttpMessageContents();
     }
 
-    protected abstract void prepareProtocolMessageContents();
+    protected abstract void prepareHttpMessageContents();
+
 }

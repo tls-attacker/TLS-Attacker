@@ -12,6 +12,7 @@ package de.rub.nds.tlsattacker.core.workflow;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.http.HttpRequestMessage;
+import de.rub.nds.tlsattacker.core.layer.Message;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.core.record.Record;
@@ -70,7 +71,7 @@ public class SerializationFullTest {
         trace.addTlsAction(new DeactivateEncryptionAction());
         trace.addTlsAction(new RenegotiationAction());
         trace.addTlsAction(new GenericReceiveAction());
-        List<ProtocolMessage> messages = new LinkedList<>();
+        List<Message> messages = new LinkedList<>();
         messages.add(new AlertMessage());
         messages.add(new ApplicationMessage());
         messages.add(new CertificateMessage());

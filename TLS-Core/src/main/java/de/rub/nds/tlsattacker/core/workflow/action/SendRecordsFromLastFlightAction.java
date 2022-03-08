@@ -25,7 +25,8 @@ import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class SendRecordsFromLastFlightAction extends MessageAction implements SendingAction {
+public class SendRecordsFromLastFlightAction extends MessageAction<ProtocolMessage>
+    implements SendingAction<ProtocolMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

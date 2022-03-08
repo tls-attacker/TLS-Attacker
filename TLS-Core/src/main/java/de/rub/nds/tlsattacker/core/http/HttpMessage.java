@@ -9,13 +9,9 @@
 
 package de.rub.nds.tlsattacker.core.http;
 
+import de.rub.nds.tlsattacker.core.layer.Message;
+import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 
-public class HttpResponseHandler extends HttpMessageHandler<HttpResponseMessage> {
-
-    public HttpResponseHandler() {
-
-    }
-
-    public void adjustContext(HttpResponseMessage message) {
-    }
+public abstract class HttpMessage<Self extends HttpMessage> extends Message<Self, HttpContext> {
 }
