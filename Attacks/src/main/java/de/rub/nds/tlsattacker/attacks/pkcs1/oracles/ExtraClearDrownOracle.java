@@ -76,8 +76,8 @@ public class ExtraClearDrownOracle extends Pkcs1Oracle {
             LOGGER.info("Number of queries so far: {}", numberOfQueries);
         }
 
-        if (conResult.serverVerifyMessage != null && ServerVerifyChecker.check(conResult.serverVerifyMessage,
-            conResult.state.getTlsContext(), true)) {
+        if (conResult.serverVerifyMessage != null
+            && ServerVerifyChecker.check(conResult.serverVerifyMessage, conResult.state.getTlsContext(), true)) {
             return true;
         }
 
@@ -124,8 +124,7 @@ public class ExtraClearDrownOracle extends Pkcs1Oracle {
             // context
             conResult.state.getTlsContext().setPreMasterSecret(keyCandidate);
 
-            if (ServerVerifyChecker.check(conResult.serverVerifyMessage, conResult.state.getTlsContext(),
-                true)) {
+            if (ServerVerifyChecker.check(conResult.serverVerifyMessage, conResult.state.getTlsContext(), true)) {
                 return (byte) b;
             }
         }

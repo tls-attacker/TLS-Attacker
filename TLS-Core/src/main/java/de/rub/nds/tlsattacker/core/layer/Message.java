@@ -25,7 +25,8 @@ import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlSeeAlso({ Message.class, ProtocolMessage.class, HttpMessage.class })
-public abstract class Message<Self extends Message, Context extends LayerContext> extends ModifiableVariableHolder implements DataContainer<Self, Context> {
+public abstract class Message<Self extends Message, Context extends LayerContext> extends ModifiableVariableHolder
+    implements DataContainer<Self, Context> {
 
     /**
      * content type

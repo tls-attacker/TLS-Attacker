@@ -125,8 +125,7 @@ public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackCli
         CONSOLE.info("Started TLS-Server - waiting for a client to connect...");
         State state = executeClientHelloWorkflow(tlsConfig);
         if (WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.CLIENT_HELLO, state.getWorkflowTrace())) {
-            CipherSuite suite =
-                choosePskCipherSuite(state.getTlsContext().getClientSupportedCipherSuites());
+            CipherSuite suite = choosePskCipherSuite(state.getTlsContext().getClientSupportedCipherSuites());
             tlsConfig.setDefaultSelectedCipherSuite(suite);
         } else {
             try {

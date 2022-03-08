@@ -9,7 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.http;
 
-
 public class HttpResponseHandler extends HttpMessageHandler<HttpResponseMessage> {
 
     public HttpResponseHandler() {

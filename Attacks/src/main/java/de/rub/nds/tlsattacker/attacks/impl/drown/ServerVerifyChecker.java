@@ -40,8 +40,8 @@ public class ServerVerifyChecker {
     private static final Logger LOGGER = LogManager.getLogger();
 
     /**
-     * Checks if the given message decrypts to the Client Random value from the given TLS tlsContext under the cipher suite
-     * from the TLS tlsContext.
+     * Checks if the given message decrypts to the Client Random value from the given TLS tlsContext under the cipher
+     * suite from the TLS tlsContext.
      *
      * @return True for successful decryption to the expected value
      */

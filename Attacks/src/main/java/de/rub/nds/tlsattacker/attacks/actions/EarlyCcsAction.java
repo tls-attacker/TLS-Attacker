@@ -61,8 +61,7 @@ public class EarlyCcsAction extends TlsAction {
             message.setIncludeInDigest(Modifiable.explicit(false));
         }
         message.setAdjustContext(Modifiable.explicit(false));
-        ClientKeyExchangeHandler handler =
-            (ClientKeyExchangeHandler) message.getHandler(state.getTlsContext());
+        ClientKeyExchangeHandler handler = (ClientKeyExchangeHandler) message.getHandler(state.getTlsContext());
         message.getPreparator(state.getTlsContext()).prepare();
         if (targetOpenssl100) {
             handler.adjustPremasterSecret(message);
@@ -70,8 +69,8 @@ public class EarlyCcsAction extends TlsAction {
         }
         handler.adjustContextAfterSerialize(message);
         try {
-            state.getTlsContext().getRecordLayer().sendData(
-                new RecordLayerHint(ProtocolMessageType.HANDSHAKE), message.getCompleteResultingMessage().getValue());
+            state.getTlsContext().getRecordLayer().sendData(new RecordLayerHint(ProtocolMessageType.HANDSHAKE),
+                message.getCompleteResultingMessage().getValue());
             executedAsPlanned = true;
         } catch (IOException e) {
             LOGGER.debug("Could not write Data to stream", e);

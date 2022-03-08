@@ -13,6 +13,8 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.core.http.HttpRequestMessage;
+import de.rub.nds.tlsattacker.core.http.HttpResponseMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EarlyDataExtensionMessage;
@@ -445,28 +447,27 @@ public class WorkflowConfigurationFactory {
     }
 
     private WorkflowTrace createHttpsWorkflow() {
-        // TODO: how to send HTTP messages now that they are now longer TLS Message
-        throw new UnsupportedOperationException("Cannot send HTTP messages yet");
-        /*
-         * AliasedConnection connection = getConnection(); WorkflowTrace trace = createHandshakeWorkflow(connection);
-         * MessageAction action = MessageActionFactory.createAction(config, connection, ConnectionEndType.CLIENT, new
-         * HttpRequestMessage(config)); trace.addTlsAction(action); action = MessageActionFactory.createAction(config,
-         * connection, ConnectionEndType.SERVER, new HttpResponseMessage(config));
-         * 
-         * trace.addTlsAction(action); return trace;
-         */
+        AliasedConnection connection = getConnection();
+        WorkflowTrace trace = createHandshakeWorkflow(connection);
+        MessageAction action = MessageActionFactory.createAction(config, connection, ConnectionEndType.CLIENT,
+            new HttpRequestMessage(config));
+        trace.addTlsAction(action);
+        action = MessageActionFactory.createAction(config, connection, ConnectionEndType.SERVER,
+            new HttpResponseMessage(config));
+        trace.addTlsAction(action);
+        return trace;
     }
 
     private WorkflowTrace createHttpsDynamicWorkflow() {
-        // TODO: how to send HTTP messages now that they are now longer TLS Message
-        throw new UnsupportedOperationException("Cannot send HTTP messages yet");
-        /*
-         * AliasedConnection connection = getConnection(); WorkflowTrace trace = createDynamicHandshakeWorkflow();
-         * MessageAction action = MessageActionFactory.createAction(config, connection, ConnectionEndType.CLIENT, new
-         * HttpRequestMessage(config)); trace.addTlsAction(action); action = MessageActionFactory.createAction(config,
-         * connection, ConnectionEndType.SERVER, new HttpResponseMessage(config)); trace.addTlsAction(action); return
-         * trace;
-         */
+        AliasedConnection connection = getConnection();
+        WorkflowTrace trace = createDynamicHandshakeWorkflow();
+        MessageAction action = MessageActionFactory.createAction(config, connection, ConnectionEndType.CLIENT,
+            new HttpRequestMessage(config));
+        trace.addTlsAction(action);
+        action = MessageActionFactory.createAction(config, connection, ConnectionEndType.SERVER,
+            new HttpResponseMessage(config));
+        trace.addTlsAction(action);
+        return trace;
     }
 
     private WorkflowTrace createSimpleMitmProxyWorkflow() {

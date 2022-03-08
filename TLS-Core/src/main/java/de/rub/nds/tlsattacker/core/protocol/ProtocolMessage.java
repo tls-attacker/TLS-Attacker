@@ -37,19 +37,14 @@ import javax.xml.bind.annotation.XmlTransient;
     ApplicationMessage.class, ChangeCipherSpecMessage.class, SSL2ClientHelloMessage.class,
     SSL2ClientMasterKeyMessage.class, SSL2HandshakeMessage.class, SSL2ServerHelloMessage.class,
     SSL2ServerVerifyMessage.class, UnknownMessage.class, UnknownHandshakeMessage.class, HelloRequestMessage.class,
-    HeartbeatMessage.class, SupplementalDataMessage.class, EncryptedExtensionsMessage.class, PskClientKeyExchangeMessage.class, PskDhClientKeyExchangeMessage.class,
-    PskDheServerKeyExchangeMessage.class, PskEcDhClientKeyExchangeMessage.class, PskEcDheServerKeyExchangeMessage.class,
-    PskRsaClientKeyExchangeMessage.class, SrpClientKeyExchangeMessage.class, SrpServerKeyExchangeMessage.class,
-    EndOfEarlyDataMessage.class, DtlsHandshakeMessageFragment.class, PWDServerKeyExchangeMessage.class,
-    RSAServerKeyExchangeMessage.class, PWDClientKeyExchangeMessage.class, PskServerKeyExchangeMessage.class,
-    CertificateStatusMessage.class, EmptyClientKeyExchangeMessage.class })
+    HeartbeatMessage.class, SupplementalDataMessage.class, EncryptedExtensionsMessage.class,
+    PskClientKeyExchangeMessage.class, PskDhClientKeyExchangeMessage.class, PskDheServerKeyExchangeMessage.class,
+    PskEcDhClientKeyExchangeMessage.class, PskEcDheServerKeyExchangeMessage.class, PskRsaClientKeyExchangeMessage.class,
+    SrpClientKeyExchangeMessage.class, SrpServerKeyExchangeMessage.class, EndOfEarlyDataMessage.class,
+    DtlsHandshakeMessageFragment.class, PWDServerKeyExchangeMessage.class, RSAServerKeyExchangeMessage.class,
+    PWDClientKeyExchangeMessage.class, PskServerKeyExchangeMessage.class, CertificateStatusMessage.class,
+    EmptyClientKeyExchangeMessage.class })
 public abstract class ProtocolMessage<Self extends ProtocolMessage> extends Message<Self, TlsContext> {
-
-    /**
-     * content type
-     */
-    @XmlTransient
-    protected ProtocolMessageType protocolMessageType;
 
     @XmlTransient
     protected boolean goingToBeSentDefault = true;
@@ -143,16 +138,6 @@ public abstract class ProtocolMessage<Self extends ProtocolMessage> extends Mess
     public void setAdjustContext(Boolean adjustContext) {
         this.adjustContext = ModifiableVariableFactory.safelySetValue(this.adjustContext, adjustContext);
     }
-
-    /**
-     * Returns a compact version of the protocol message still containing some additional information.
-     */
-    public abstract String toCompactString();
-
-    /**
-     * Returns the shortest possible string for the protocol message, mostly abbreviations.
-     */
-    public abstract String toShortString();
 
     @Override
     public abstract ProtocolMessageHandler<Self> getHandler(TlsContext tlsContext);
