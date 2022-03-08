@@ -200,8 +200,8 @@ public class TlsClientTest {
 
         AliasedConnection con = config.getDefaultClientConnection();
         WorkflowTrace trace = new WorkflowTrace();
-        trace.addTlsAction(
-            MessageActionFactory.createTLSAction(config, con, ConnectionEndType.CLIENT, new ClientHelloMessage(config)));
+        trace.addTlsAction(MessageActionFactory.createTLSAction(config, con, ConnectionEndType.CLIENT,
+            new ClientHelloMessage(config)));
         trace.addTlsAction(MessageActionFactory.createTLSAction(config, con, ConnectionEndType.SERVER,
             new ServerHelloMessage(config), new CertificateMessage(), new ServerHelloDoneMessage()));
 

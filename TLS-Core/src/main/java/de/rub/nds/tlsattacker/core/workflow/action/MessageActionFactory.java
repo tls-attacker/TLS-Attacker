@@ -19,30 +19,29 @@ import java.util.*;
 
 public class MessageActionFactory {
 
-
     /**
      * Java cannot automatically parse ProtocolMessage lists to Message lists when calling createAction, so we have
      * these two wrapper methods.
      */
     public static MessageAction createTLSAction(Config tlsConfig, AliasedConnection connection,
-                                                ConnectionEndType sendingConnectionEndType, ProtocolMessage... protocolMessages) {
+        ConnectionEndType sendingConnectionEndType, ProtocolMessage... protocolMessages) {
         return createAction(tlsConfig, connection, sendingConnectionEndType,
-                new ArrayList<>(Arrays.asList(protocolMessages)));
+            new ArrayList<>(Arrays.asList(protocolMessages)));
     }
 
     public static MessageAction createTLSAction(Config tlsConfig, AliasedConnection connection,
-                                                ConnectionEndType sendingConnectionEnd, List<ProtocolMessage> protocolMessages) {
+        ConnectionEndType sendingConnectionEnd, List<ProtocolMessage> protocolMessages) {
         return createAction(tlsConfig, connection, sendingConnectionEnd, new LinkedList<>(protocolMessages));
     }
 
     public static MessageAction createAction(Config tlsConfig, AliasedConnection connection,
-                                                ConnectionEndType sendingConnectionEndType, Message... protocolMessages) {
+        ConnectionEndType sendingConnectionEndType, Message... protocolMessages) {
         return createAction(tlsConfig, connection, sendingConnectionEndType,
             new ArrayList<>(Arrays.asList(protocolMessages)));
     }
 
     public static MessageAction createAction(Config tlsConfig, AliasedConnection connection,
-                                                ConnectionEndType sendingConnectionEnd, List<Message> protocolMessages) {
+        ConnectionEndType sendingConnectionEnd, List<Message> protocolMessages) {
         MessageAction action;
         if (connection.getLocalConnectionEndType() == sendingConnectionEnd) {
             action = new SendAction(protocolMessages);

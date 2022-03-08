@@ -30,7 +30,8 @@ import org.apache.logging.log4j.Logger;
  * todo print configured records
  */
 @XmlRootElement
-public class SendAction<MessageType extends Message> extends MessageAction<MessageType> implements SendingAction<MessageType> {
+public class SendAction<MessageType extends Message> extends MessageAction<MessageType>
+    implements SendingAction<MessageType> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

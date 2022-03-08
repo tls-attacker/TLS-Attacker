@@ -32,7 +32,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @XmlRootElement
-public class ReceiveAction<MessageType extends Message> extends MessageAction<MessageType> implements ReceivingAction<MessageType> {
+public class ReceiveAction<MessageType extends Message> extends MessageAction<MessageType>
+    implements ReceivingAction<MessageType> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -317,7 +318,7 @@ public class ReceiveAction<MessageType extends Message> extends MessageAction<Me
         List<ProtocolMessageType> protocolMessageTypes = new ArrayList<>();
         for (MessageType msg : expectedMessages) {
             if (msg instanceof ProtocolMessage)
-            protocolMessageTypes.add(((ProtocolMessage) msg).getProtocolMessageType());
+                protocolMessageTypes.add(((ProtocolMessage) msg).getProtocolMessageType());
         }
         return protocolMessageTypes;
     }

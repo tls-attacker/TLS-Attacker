@@ -663,9 +663,21 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="protocolMessage" abstract="true">
+  <xs:complexType name="message" abstract="true">
     <xs:complexContent>
       <xs:extension base="modifiableVariableHolder">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="modifiableVariableHolder" abstract="true">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="protocolMessage" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="message">
         <xs:sequence>
           <xs:element name="completeResultingMessage" type="modifiableByteArray" minOccurs="0"/>
           <xs:element name="required" type="modifiableBoolean" minOccurs="0"/>
@@ -674,10 +686,6 @@
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="modifiableVariableHolder" abstract="true">
-    <xs:sequence/>
   </xs:complexType>
 
   <xs:complexType name="modifiableByteArray">
@@ -2506,7 +2514,7 @@
 
   <xs:complexType name="httpsRequestMessage">
     <xs:complexContent>
-      <xs:extension base="protocolMessage">
+      <xs:extension base="httpsMessage">
         <xs:sequence>
           <xs:element name="header" minOccurs="0">
             <xs:complexType>
@@ -2528,6 +2536,14 @@
           <xs:element name="requestPath" type="modifiableString" minOccurs="0"/>
           <xs:element name="requestProtocol" type="modifiableString" minOccurs="0"/>
         </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="httpsMessage" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="message">
+        <xs:sequence/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
@@ -2632,7 +2648,7 @@
 
   <xs:complexType name="httpsResponseMessage">
     <xs:complexContent>
-      <xs:extension base="protocolMessage">
+      <xs:extension base="httpsMessage">
         <xs:sequence>
           <xs:element name="responseProtocol" type="modifiableString" minOccurs="0"/>
           <xs:element name="responseStatusCode" type="modifiableString" minOccurs="0"/>
@@ -4281,8 +4297,6 @@
                   <xs:element ref="Heartbeat"/>
                   <xs:element ref="SupplementalData"/>
                   <xs:element ref="EncryptedExtensions"/>
-                  <xs:element ref="httpsRequestMessage"/>
-                  <xs:element ref="httpsResponseMessage"/>
                   <xs:element ref="PskDhClientKeyExchange"/>
                   <xs:element ref="PskDheServerKeyExchange"/>
                   <xs:element ref="PskEcDhClientKeyExchange"/>
@@ -4350,8 +4364,6 @@
                   <xs:element ref="Heartbeat"/>
                   <xs:element ref="SupplementalData"/>
                   <xs:element ref="EncryptedExtensions"/>
-                  <xs:element ref="httpsRequestMessage"/>
-                  <xs:element ref="httpsResponseMessage"/>
                   <xs:element ref="PskDhClientKeyExchange"/>
                   <xs:element ref="PskDheServerKeyExchange"/>
                   <xs:element ref="PskEcDhClientKeyExchange"/>
@@ -4419,8 +4431,6 @@
                   <xs:element ref="Heartbeat"/>
                   <xs:element ref="SupplementalData"/>
                   <xs:element ref="EncryptedExtensions"/>
-                  <xs:element ref="httpsRequestMessage"/>
-                  <xs:element ref="httpsResponseMessage"/>
                   <xs:element ref="PskDhClientKeyExchange"/>
                   <xs:element ref="PskDheServerKeyExchange"/>
                   <xs:element ref="PskEcDhClientKeyExchange"/>
@@ -4512,8 +4522,6 @@
           <xs:element ref="Heartbeat"/>
           <xs:element ref="SupplementalData"/>
           <xs:element ref="EncryptedExtensions"/>
-          <xs:element ref="httpsRequestMessage"/>
-          <xs:element ref="httpsResponseMessage"/>
           <xs:element ref="PskDhClientKeyExchange"/>
           <xs:element ref="PskDheServerKeyExchange"/>
           <xs:element ref="PskEcDhClientKeyExchange"/>
@@ -5473,6 +5481,8 @@
       <xs:enumeration value="HANDSHAKE"/>
       <xs:enumeration value="APPLICATION_DATA"/>
       <xs:enumeration value="HEARTBEAT"/>
+      <xs:enumeration value="HTTP"/>
+      <xs:enumeration value="SSL"/>
     </xs:restriction>
   </xs:simpleType>
 
