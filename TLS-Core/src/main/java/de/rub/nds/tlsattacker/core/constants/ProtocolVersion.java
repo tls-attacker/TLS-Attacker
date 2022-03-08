@@ -42,6 +42,7 @@ public enum ProtocolVersion {
     TLS13_DRAFT26(new byte[] { (byte) 0x7F, (byte) 0x1A }),
     TLS13_DRAFT27(new byte[] { (byte) 0x7F, (byte) 0x1B }),
     TLS13_DRAFT28(new byte[] { (byte) 0x7F, (byte) 0x1C }),
+    DTLS_LEGACY(new byte[] { (byte) 0x01, (byte) 0x00 }),
     DTLS10(new byte[] { (byte) 0xFE, (byte) 0xFF }),
     DTLS12(new byte[] { (byte) 0xFE, (byte) 0xFD }),
 
@@ -87,7 +88,7 @@ public enum ProtocolVersion {
     }
 
     public boolean isDTLS() {
-        return this == DTLS10 || this == DTLS12;
+        return this == DTLS10 || this == DTLS12 || this == DTLS_LEGACY;
     }
 
     public static ProtocolVersion getProtocolVersion(byte[] value) {
