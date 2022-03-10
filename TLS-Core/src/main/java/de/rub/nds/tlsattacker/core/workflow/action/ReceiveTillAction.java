@@ -59,7 +59,7 @@ public class ReceiveTillAction extends MessageAction implements ReceivingAction 
         }
 
         LOGGER.debug("Receiving Messages...");
-        receiveTill(tlsContext, messages, records);
+        receiveTill(tlsContext, waitTillMessage);
         setExecuted(true);
 
         String expected = getReadableString(waitTillMessage);

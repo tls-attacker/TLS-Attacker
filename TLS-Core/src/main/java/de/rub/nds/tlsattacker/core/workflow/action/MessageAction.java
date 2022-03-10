@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerStack;
 import de.rub.nds.tlsattacker.core.layer.LayerStackProcessingResult;
+import de.rub.nds.tlsattacker.core.layer.ReceiveTillContainerLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.SpecificReceiveLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
@@ -228,13 +229,12 @@ public abstract class MessageAction extends ConnectionBoundAction {
         records = new ArrayList<>(processingResults.getResultForLayer(ImplementedLayers.RECORD).getUsedContainers());
     }
 
-    protected void receiveTill(TlsContext tlsContext, List<ProtocolMessage> protocolMessagesToSend,
-        List<Record> recordsToSend) {
+    protected void receiveTill(TlsContext tlsContext, ProtocolMessage protocolMessageToReceive) {
         LayerStack layerStack = tlsContext.getLayerStack();
         List<LayerConfiguration> layerConfigurationList = new LinkedList<>();
-        layerConfigurationList.add(new SpecificReceiveLayerConfiguration(protocolMessagesToSend));
-        layerConfigurationList.add(new SpecificReceiveLayerConfiguration(recordsToSend));
-        layerConfigurationList.add(new SpecificReceiveLayerConfiguration((List) null));
+        layerConfigurationList.add(new ReceiveTillContainerLayerConfiguration(protocolMessageToReceive));
+        layerConfigurationList.add(null);
+        layerConfigurationList.add(null);
         LayerStackProcessingResult processingResult;
         try {
             processingResult = layerStack.receiveData(layerConfigurationList);
