@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ReceiveTillLayerConfiguration<Container extends DataContainer>
-    extends LayerConfiguration<Container> {
+    extends ReceiveLayerConfiguration<Container> {
 
     public ReceiveTillLayerConfiguration(Container expectedContainer) {
         super(Arrays.asList(expectedContainer));
@@ -33,6 +33,11 @@ public class ReceiveTillLayerConfiguration<Container extends DataContainer>
     @Override
     public boolean failedEarly(List<Container> list) {
         return false;
+    }
+
+    @Override
+    public boolean isProcessTrailingContainers() {
+        return true;
     }
 
 }

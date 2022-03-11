@@ -13,9 +13,10 @@ import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerStack;
 import de.rub.nds.tlsattacker.core.layer.LayerStackProcessingResult;
-import de.rub.nds.tlsattacker.core.layer.ReceiveTillContainerLayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.ReceiveTillLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.SpecificReceiveLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.TightReceiveLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
@@ -210,7 +211,29 @@ public abstract class MessageAction extends ConnectionBoundAction {
         LayerConfiguration messageLayerConfig = new SpecificReceiveLayerConfiguration(protocolMessagesToReceive);
         layerConfigurationList.add(messageLayerConfig);
         layerConfigurationList.add(new SpecificReceiveLayerConfiguration(recordsToReceive));
-        layerConfigurationList.add(new SpecificReceiveLayerConfiguration((List) null));
+        layerConfigurationList.add(null);
+        getReceiveResult(layerStack, layerConfigurationList);
+    }
+
+    protected void receiveTill(TlsContext tlsContext, ProtocolMessage protocolMessageToReceive) {
+        LayerStack layerStack = tlsContext.getLayerStack();
+        List<LayerConfiguration> layerConfigurationList = new LinkedList<>();
+        layerConfigurationList.add(new ReceiveTillLayerConfiguration(protocolMessageToReceive));
+        layerConfigurationList.add(null);
+        layerConfigurationList.add(null);
+        getReceiveResult(layerStack, layerConfigurationList);
+    }
+
+    protected void tightReceive(TlsContext tlsContext, List<ProtocolMessage> protocolMessagesToReceive) {
+        LayerStack layerStack = tlsContext.getLayerStack();
+        List<LayerConfiguration> layerConfigurationList = new LinkedList<>();
+        layerConfigurationList.add(new TightReceiveLayerConfiguration(protocolMessagesToReceive));
+        layerConfigurationList.add(null);
+        layerConfigurationList.add(null);
+        getReceiveResult(layerStack, layerConfigurationList);
+    }
+
+    private void getReceiveResult(LayerStack layerStack, List<LayerConfiguration> layerConfigurationList) {
         LayerStackProcessingResult processingResult;
         try {
             processingResult = layerStack.receiveData(layerConfigurationList);
@@ -227,25 +250,6 @@ public abstract class MessageAction extends ConnectionBoundAction {
     private void setContainers(LayerStackProcessingResult processingResults) {
         messages = new ArrayList<>(processingResults.getResultForLayer(ImplementedLayers.MESSAGE).getUsedContainers());
         records = new ArrayList<>(processingResults.getResultForLayer(ImplementedLayers.RECORD).getUsedContainers());
-    }
-
-    protected void receiveTill(TlsContext tlsContext, ProtocolMessage protocolMessageToReceive) {
-        LayerStack layerStack = tlsContext.getLayerStack();
-        List<LayerConfiguration> layerConfigurationList = new LinkedList<>();
-        layerConfigurationList.add(new ReceiveTillContainerLayerConfiguration(protocolMessageToReceive));
-        layerConfigurationList.add(null);
-        layerConfigurationList.add(null);
-        LayerStackProcessingResult processingResult;
-        try {
-            processingResult = layerStack.receiveData(layerConfigurationList);
-            setContainers(processingResult);
-            setLayerStackProcessingResult(processingResult);
-        } catch (IOException ex) {
-            LOGGER.warn("Received an IOException", ex);
-            LayerStackProcessingResult reconstructedResult = layerStack.gatherResults();
-            setContainers(reconstructedResult);
-            setLayerStackProcessingResult(reconstructedResult);
-        }
     }
 
     public enum MessageActionDirection {
