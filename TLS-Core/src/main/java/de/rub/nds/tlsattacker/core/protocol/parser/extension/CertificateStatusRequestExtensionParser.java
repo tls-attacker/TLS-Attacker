@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.certificatestatus.CertificateStatusObject;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.CertificateStatusGenericParser;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
@@ -25,8 +26,9 @@ public class CertificateStatusRequestExtensionParser extends ExtensionParser<Cer
     private static final Logger LOGGER = LogManager.getLogger();
     private ProtocolVersion selectedVersion;
 
-    public CertificateStatusRequestExtensionParser(InputStream stream, ProtocolVersion selectedVersion) {
-        super(stream);
+    public CertificateStatusRequestExtensionParser(InputStream stream, ProtocolVersion selectedVersion,
+        TlsContext tlsContext) {
+        super(stream, tlsContext);
         this.selectedVersion = selectedVersion;
     }
 

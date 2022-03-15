@@ -11,13 +11,14 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerCertificateTypeExtensionMessage;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 import java.io.InputStream;
 
 public class ServerCertificateTypeExtensionParser extends ExtensionParser<ServerCertificateTypeExtensionMessage> {
 
-    public ServerCertificateTypeExtensionParser(InputStream stream) {
-        super(stream);
+    public ServerCertificateTypeExtensionParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
     }
 
     @Override

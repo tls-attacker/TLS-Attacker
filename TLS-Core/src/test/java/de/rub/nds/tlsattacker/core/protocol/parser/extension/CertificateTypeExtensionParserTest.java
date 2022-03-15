@@ -10,8 +10,10 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateTypeExtensionMessage;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
@@ -24,6 +26,8 @@ import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
 public class CertificateTypeExtensionParserTest {
+
+    private final Config config = Config.createConfig();
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
@@ -51,7 +55,8 @@ public class CertificateTypeExtensionParserTest {
 
     @Before
     public void setUp() {
-        parser = new CertificateTypeExtensionParser(new ByteArrayInputStream(expectedBytes));
+        TlsContext tlsContext = new TlsContext(config);
+        parser = new CertificateTypeExtensionParser(new ByteArrayInputStream(expectedBytes), tlsContext);
     }
 
     @Test

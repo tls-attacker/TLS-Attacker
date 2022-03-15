@@ -12,6 +12,7 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestV2ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.RequestItemV2;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.LinkedList;
@@ -20,8 +21,8 @@ import java.util.List;
 public class CertificateStatusRequestV2ExtensionParser
     extends ExtensionParser<CertificateStatusRequestV2ExtensionMessage> {
 
-    public CertificateStatusRequestV2ExtensionParser(InputStream inputStream) {
-        super(inputStream);
+    public CertificateStatusRequestV2ExtensionParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
     }
 
     @Override

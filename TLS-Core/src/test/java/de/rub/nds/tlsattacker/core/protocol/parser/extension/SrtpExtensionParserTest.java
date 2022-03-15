@@ -10,7 +10,9 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SrtpExtensionMessage;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
@@ -39,6 +41,7 @@ public class SrtpExtensionParserTest {
     private final int srtpMkiLength;
     private final byte[] srtpMki;
     private SrtpExtensionParser parser;
+    private final Config config = Config.createConfig();
 
     public SrtpExtensionParserTest(byte[] expectedBytes, int srtpProtectionProfilesLength,
         byte[] srtpProtectionProfiles, int srtpMkiLength, byte[] srtpMki) {
@@ -51,7 +54,8 @@ public class SrtpExtensionParserTest {
 
     @Before
     public void setUp() {
-        parser = new SrtpExtensionParser(new ByteArrayInputStream(expectedBytes));
+        TlsContext tlsContext = new TlsContext(config);
+        parser = new SrtpExtensionParser(new ByteArrayInputStream(expectedBytes), tlsContext);
     }
 
     @Test

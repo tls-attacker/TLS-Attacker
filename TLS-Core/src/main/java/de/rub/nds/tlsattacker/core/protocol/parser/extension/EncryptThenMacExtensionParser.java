@@ -10,13 +10,14 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptThenMacExtensionMessage;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 import java.io.InputStream;
 
 public class EncryptThenMacExtensionParser extends ExtensionParser<EncryptThenMacExtensionMessage> {
 
-    public EncryptThenMacExtensionParser(InputStream stream) {
-        super(stream);
+    public EncryptThenMacExtensionParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
     }
 
     @Override
