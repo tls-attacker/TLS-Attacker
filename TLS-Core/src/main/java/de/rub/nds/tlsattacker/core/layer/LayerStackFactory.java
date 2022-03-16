@@ -26,11 +26,13 @@ public class LayerStackFactory {
                 throw new UnsupportedOperationException("Not implemented yet");
             case QUIC:
                 throw new UnsupportedOperationException("Not implemented yet");
-            case STARTTTLS:
+            case STARTTLS:
                 throw new UnsupportedOperationException("Not implemented yet");
             case TLS:
                 return new LayerStack(context, new MessageLayer(context), new RecordLayer(context),
                     new TcpLayer(context));
+            case SSL2:
+                throw new UnsupportedOperationException("Not implemented yet");
             default:
                 throw new RuntimeException("Unknown LayerStackType: " + type.name());
         }

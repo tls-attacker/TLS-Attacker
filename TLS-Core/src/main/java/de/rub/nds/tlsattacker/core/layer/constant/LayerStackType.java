@@ -14,5 +14,6 @@ public enum LayerStackType {
     DTLS,
     QUIC,
     OPEN_VPN,
-    STARTTTLS,
+    STARTTLS,
+    SSL2
 }
