@@ -30,7 +30,7 @@ import org.apache.logging.log4j.Logger;
 
 public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container extends DataContainer> {
 
-    private Logger LOGGER = LogManager.getLogger();
+    static final private Logger LOGGER = LogManager.getLogger();
 
     private ProtocolLayer higherLayer = null;
     private ProtocolLayer lowerLayer = null;

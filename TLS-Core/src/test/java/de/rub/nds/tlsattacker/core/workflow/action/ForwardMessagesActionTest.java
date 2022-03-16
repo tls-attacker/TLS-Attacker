@@ -207,15 +207,8 @@ public class ForwardMessagesActionTest {
         msg.setCompleteResultingMessage(receivedData.getBytes());
         List<ProtocolMessage> receivedMsgs = new ArrayList<>();
         receivedMsgs.add(msg);
-        setFetchableData(new byte[] { (byte) 0x17, (byte) 0x03, (byte) 0x03, (byte) 0x00, (byte) 0x01, (byte) 0xFF });// TLS
-        // 1.2
-        // AppData
-        // Record
-        // with
-        // 1
-        // byte
-        // of
-        // FF
+        // TLS 1.2 application data record with one byte 0xFF
+        setFetchableData(new byte[] { (byte) 0x17, (byte) 0x03, (byte) 0x03, (byte) 0x00, (byte) 0x01, (byte) 0xFF });
         initContexts();
         action = new ForwardMessagesAction(ctx1Alias, ctx2Alias, receivedMsgs);
         action.setMessages(new ApplicationMessage());

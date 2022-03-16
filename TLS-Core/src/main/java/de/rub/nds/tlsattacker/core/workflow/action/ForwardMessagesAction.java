@@ -152,7 +152,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
                 new ArrayList<>(processingResult.getResultForLayer(ImplementedLayers.RECORD).getUsedContainers());
             // index in result
         } catch (IOException ex) {
-            LOGGER.warn("Received an IOException");
+            LOGGER.warn("Received an IOException", ex);
         }
         String expected = getReadableString(receivedMessages);
         LOGGER.debug("Receive Expected (" + receiveFromAlias + "): " + expected);
