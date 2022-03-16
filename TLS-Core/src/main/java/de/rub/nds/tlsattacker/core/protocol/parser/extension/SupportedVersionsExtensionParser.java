@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SupportedVersionsExtensionMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,13 +30,9 @@ public class SupportedVersionsExtensionParser extends ExtensionParser<SupportedV
     @Override
     public void parseExtensionMessageContent(SupportedVersionsExtensionMessage msg) {
         LOGGER.debug("Parsing SupportedVersionsExtensionMessage");
-
-        // TODO Don't guess
-        if (getBytesLeft() == HandshakeByteLength.VERSION) {
-            // This looks like a ServerProtocolVersionExtension
+        if (getTlsContext().getTalkingConnectionEndType() == ConnectionEndType.SERVER) {
             msg.setSupportedVersions(parseByteArrayField(HandshakeByteLength.VERSION));
         } else {
-            // This looks like a ClientProtocolVersionExtension
             parseSupportedVersionLength(msg);
             parseSupportedVersion(msg);
         }

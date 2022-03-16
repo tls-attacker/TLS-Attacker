@@ -46,4 +46,8 @@ public abstract class ExtensionParser<Extension extends ExtensionMessage> extend
     protected boolean hasExtensionData(ExtensionMessage message) {
         return getBytesLeft() > 0;
     }
+
+    public TlsContext getTlsContext() {
+        return tlsContext;
+    }
 }

@@ -22,16 +22,18 @@ import java.io.InputStream;
 public class KeyShareEntryParser extends Parser<KeyShareEntry> {
 
     private static final Logger LOGGER = LogManager.getLogger();
+    private final boolean helloRetryRequestForm;
 
-    public KeyShareEntryParser(InputStream stream) {
+    public KeyShareEntryParser(InputStream stream, boolean helloRetryRequestForm) {
         super(stream);
+        this.helloRetryRequestForm = helloRetryRequestForm;
     }
 
     @Override
     public void parse(KeyShareEntry entry) {
         LOGGER.debug("Parsing KeyShareEntry");
         parseKeyShareGroup(entry);
-        if (getBytesLeft() > 0) {
+        if (!helloRetryRequestForm) {
             parseKeyShareLength(entry);
             parseKeyShare(entry);
         }

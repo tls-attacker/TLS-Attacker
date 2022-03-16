@@ -12,6 +12,7 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EarlyDataExtensionMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,7 +31,7 @@ public class EarlyDataExtensionParser extends ExtensionParser<EarlyDataExtension
     @Override
     public void parseExtensionMessageContent(EarlyDataExtensionMessage msg) {
         LOGGER.debug("Parsing EarlyDataExtensionMessage");
-        if (msg.getExtensionLength().getValue() > 0) {
+        if (getTlsContext().getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
             parseMaxEarlyDataSize(msg);
         }
     }

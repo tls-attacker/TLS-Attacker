@@ -62,7 +62,7 @@ public class EncryptedServerNameIndicationExtensionParser
     }
 
     private void parseKeyShareEntry(EncryptedServerNameIndicationExtensionMessage msg) {
-        KeyShareEntryParser parser = new KeyShareEntryParser(getStream());
+        KeyShareEntryParser parser = new KeyShareEntryParser(getStream(), false);
         KeyShareEntry keyShareEntry = new KeyShareEntry();
         parser.parse(keyShareEntry);
         msg.setKeyShareEntry(keyShareEntry);
