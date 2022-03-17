@@ -49,7 +49,7 @@ public class ClientHelloParser extends HelloMessageParser<ClientHelloMessage> {
         if (getVersion().isDTLS()) {
             msg.setCookieLength(parseByteField(1));
             msg.setCookie(parseByteArrayField(msg.getCookieLength().getValue()));
-            if (msg.getCookieLength().getValue() == 0) {
+            if (config.isDtlsCookieExchange() && msg.getCookieLength().getValue() == 0) {
                 msg.setIncludeInDigest(false);
             }
         }
