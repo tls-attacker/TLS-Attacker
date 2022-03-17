@@ -17,13 +17,14 @@ import org.apache.logging.log4j.Logger;
 import java.io.InputStream;
 
 import static de.rub.nds.modifiablevariable.util.ArrayConverter.bytesToHexString;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 public class RenegotiationInfoExtensionParser extends ExtensionParser<RenegotiationInfoExtensionMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public RenegotiationInfoExtensionParser(InputStream stream) {
-        super(stream);
+    public RenegotiationInfoExtensionParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
     }
 
     @Override

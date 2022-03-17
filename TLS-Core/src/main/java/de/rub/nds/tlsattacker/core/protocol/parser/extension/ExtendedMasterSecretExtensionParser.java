@@ -10,12 +10,13 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
 
 public class ExtendedMasterSecretExtensionParser extends ExtensionParser<ExtendedMasterSecretExtensionMessage> {
 
-    public ExtendedMasterSecretExtensionParser(InputStream stream) {
-        super(stream);
+    public ExtendedMasterSecretExtensionParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
     }
 
     /**

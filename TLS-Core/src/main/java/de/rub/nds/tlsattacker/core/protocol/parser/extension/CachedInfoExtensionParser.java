@@ -12,6 +12,7 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CachedInfoExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -22,8 +23,8 @@ public class CachedInfoExtensionParser extends ExtensionParser<CachedInfoExtensi
 
     private List<CachedObject> cachedObjectList;
 
-    public CachedInfoExtensionParser(InputStream stream) {
-        super(stream);
+    public CachedInfoExtensionParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
     }
 
     @Override

@@ -45,7 +45,7 @@ public class UserMappingExtensionMessage extends ExtensionMessage<UserMappingExt
 
     @Override
     public UserMappingExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new UserMappingExtensionParser(stream);
+        return new UserMappingExtensionParser(stream, tlsContext);
     }
 
     @Override

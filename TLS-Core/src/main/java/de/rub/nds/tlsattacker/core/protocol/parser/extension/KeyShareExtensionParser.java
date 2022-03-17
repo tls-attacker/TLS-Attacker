@@ -33,9 +33,9 @@ public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMe
 
     private ConnectionEndType talkingConnectionEndType;
 
-    public KeyShareExtensionParser(InputStream stream, TlsContext context) {
-        super(stream);
-        talkingConnectionEndType = context.getTalkingConnectionEndType();
+    public KeyShareExtensionParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
+        talkingConnectionEndType = tlsContext.getTalkingConnectionEndType();
     }
 
     @Override

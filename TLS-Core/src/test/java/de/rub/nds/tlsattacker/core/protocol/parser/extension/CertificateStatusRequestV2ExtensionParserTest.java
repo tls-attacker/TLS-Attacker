@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import static de.rub.nds.modifiablevariable.util.ArrayConverter.hexStringToByteArray;
+import de.rub.nds.tlsattacker.core.config.Config;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestV2ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.RequestItemV2;
@@ -23,6 +24,8 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class CertificateStatusRequestV2ExtensionParserTest {
+    private final Config config = Config.createConfig();
+
     public static void assertRequestItemV2List(List<RequestItemV2> listExpected, List<RequestItemV2> listActual) {
         RequestItemV2 itemExpected;
         RequestItemV2 itemActual;
@@ -69,12 +72,13 @@ public class CertificateStatusRequestV2ExtensionParserTest {
 
     @Test
     public void testParser() {
+        TlsContext tlsContext = new TlsContext(config);
         list.get(0).setResponderIdList(respList);
         list.get(0).setResponderIdListBytes(responderIdListBytes);
         list.get(1).setResponderIdList(respList);
         list.get(1).setResponderIdListBytes(responderIdListBytes);
         CertificateStatusRequestV2ExtensionParser parser =
-            new CertificateStatusRequestV2ExtensionParser(new ByteArrayInputStream(parseBytes));
+            new CertificateStatusRequestV2ExtensionParser(new ByteArrayInputStream(parseBytes), tlsContext);
         CertificateStatusRequestV2ExtensionMessage msg = new CertificateStatusRequestV2ExtensionMessage();
         parser.parse(msg);
 

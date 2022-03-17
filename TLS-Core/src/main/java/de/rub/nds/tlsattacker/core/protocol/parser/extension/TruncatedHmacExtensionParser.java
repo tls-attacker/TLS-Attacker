@@ -10,12 +10,13 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TruncatedHmacExtensionMessage;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
 
 public class TruncatedHmacExtensionParser extends ExtensionParser<TruncatedHmacExtensionMessage> {
 
-    public TruncatedHmacExtensionParser(InputStream stream) {
-        super(stream);
+    public TruncatedHmacExtensionParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
     }
 
     @Override

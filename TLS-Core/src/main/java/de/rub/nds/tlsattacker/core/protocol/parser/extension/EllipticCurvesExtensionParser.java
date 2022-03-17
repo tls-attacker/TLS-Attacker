@@ -12,6 +12,7 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EllipticCurvesExtensionMessage;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,8 +21,8 @@ public class EllipticCurvesExtensionParser extends ExtensionParser<EllipticCurve
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public EllipticCurvesExtensionParser(InputStream stream) {
-        super(stream);
+    public EllipticCurvesExtensionParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
     }
 
     @Override
