@@ -27,6 +27,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -216,4 +217,55 @@ public class CertificateMessage extends HandshakeMessage {
     public void setCertificateListConfig(List<CertificatePair> certificateListConfig) {
         this.certificateListConfig = certificateListConfig;
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 97 * hash + Objects.hashCode(this.requestContextLength);
+        hash = 97 * hash + Objects.hashCode(this.requestContext);
+        hash = 97 * hash + Objects.hashCode(this.certificatesListLength);
+        hash = 97 * hash + Objects.hashCode(this.certificatesListBytes);
+        hash = 97 * hash + Objects.hashCode(this.certificatesList);
+        hash = 97 * hash + Objects.hashCode(this.certificateListConfig);
+        hash = 97 * hash + Objects.hashCode(this.certificatesListAsEntry);
+        hash = 97 * hash + Objects.hashCode(this.certificateKeyPair);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final CertificateMessage other = (CertificateMessage) obj;
+        if (!Objects.equals(this.requestContextLength, other.requestContextLength)) {
+            return false;
+        }
+        if (!Objects.equals(this.requestContext, other.requestContext)) {
+            return false;
+        }
+        if (!Objects.equals(this.certificatesListLength, other.certificatesListLength)) {
+            return false;
+        }
+        if (!Objects.equals(this.certificatesListBytes, other.certificatesListBytes)) {
+            return false;
+        }
+        if (!Objects.equals(this.certificatesList, other.certificatesList)) {
+            return false;
+        }
+        if (!Objects.equals(this.certificateListConfig, other.certificateListConfig)) {
+            return false;
+        }
+        if (!Objects.equals(this.certificatesListAsEntry, other.certificatesListAsEntry)) {
+            return false;
+        }
+        return Objects.equals(this.certificateKeyPair, other.certificateKeyPair);
+    }
+
 }

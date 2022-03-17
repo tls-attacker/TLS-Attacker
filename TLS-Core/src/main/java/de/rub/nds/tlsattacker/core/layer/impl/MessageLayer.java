@@ -112,7 +112,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
                     }
                 }
             } while (layerConfig.successRequiresMoreContainers(getLayerResult().getUsedContainers())
-                || (dataStream.available() > 0 && layerConfig.isProcessTrailingContainers()));
+                || layerConfig.isProcessTrailingContainers());
         } catch (TimeoutException E) {
             LOGGER.debug(E);
         } catch (EndOfStreamException E) {

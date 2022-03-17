@@ -15,6 +15,7 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.KeyExchangeComputations;
+import java.util.Objects;
 
 public abstract class ClientKeyExchangeMessage extends HandshakeMessage {
 
@@ -65,4 +66,29 @@ public abstract class ClientKeyExchangeMessage extends HandshakeMessage {
     public String toShortString() {
         return "CKE";
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ClientKeyExchangeMessage other = (ClientKeyExchangeMessage) obj;
+        if (!Objects.equals(this.publicKeyLength, other.publicKeyLength)) {
+            return false;
+        }
+        return Objects.equals(this.publicKey, other.publicKey);
+    }
+
 }

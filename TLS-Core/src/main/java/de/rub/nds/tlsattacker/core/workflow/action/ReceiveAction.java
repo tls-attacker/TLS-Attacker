@@ -82,10 +82,6 @@ public class ReceiveAction extends CommonReceiveAction implements ReceivingActio
         this(connectionAliasAlias, new ArrayList<>(Arrays.asList(messages)));
     }
 
-    protected void specificReceive(TlsContext tlsContext) {
-        receive(tlsContext, expectedMessages, null);
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("Receive Action:\n");
