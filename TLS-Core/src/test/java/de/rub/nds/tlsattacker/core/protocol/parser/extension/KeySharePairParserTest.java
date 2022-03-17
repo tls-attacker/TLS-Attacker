@@ -25,23 +25,28 @@ public class KeySharePairParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { {
-            ArrayConverter
+        return Arrays.asList(new Object[][] {
+            { ArrayConverter
                 .hexStringToByteArray("001D00202a981db6cdd02a06c1763102c9e741365ac4e6f72b3176a6bd6a3523d3ec0f4c"),
-            ArrayConverter.hexStringToByteArray("2a981db6cdd02a06c1763102c9e741365ac4e6f72b3176a6bd6a3523d3ec0f4c"), 32,
-            ArrayConverter.hexStringToByteArray("001D") } });
+                ArrayConverter.hexStringToByteArray("2a981db6cdd02a06c1763102c9e741365ac4e6f72b3176a6bd6a3523d3ec0f4c"),
+                32, ArrayConverter.hexStringToByteArray("001D"), false },
+            { ArrayConverter.hexStringToByteArray("001D"), null, 0, ArrayConverter.hexStringToByteArray("001D"),
+                true } });
     }
 
-    private byte[] keySharePairBytes;
-    private byte[] keyShare;
-    private int keyShareLength;
-    private byte[] keyShareType;
+    private final byte[] keySharePairBytes;
+    private final byte[] keyShare;
+    private final int keyShareLength;
+    private final byte[] keyShareType;
+    private final boolean helloRetryRequestForm;
 
-    public KeySharePairParserTest(byte[] keySharePairBytes, byte[] keyShare, int keyShareLength, byte[] keyShareType) {
+    public KeySharePairParserTest(byte[] keySharePairBytes, byte[] keyShare, int keyShareLength, byte[] keyShareType,
+        boolean helloRetryRequestForm) {
         this.keySharePairBytes = keySharePairBytes;
         this.keyShare = keyShare;
         this.keyShareLength = keyShareLength;
         this.keyShareType = keyShareType;
+        this.helloRetryRequestForm = helloRetryRequestForm;
     }
 
     /**
@@ -49,11 +54,14 @@ public class KeySharePairParserTest {
      */
     @Test
     public void testParse() {
-        KeyShareEntryParser parser = new KeyShareEntryParser(new ByteArrayInputStream(keySharePairBytes));
+        KeyShareEntryParser parser =
+            new KeyShareEntryParser(new ByteArrayInputStream(keySharePairBytes), helloRetryRequestForm);
         KeyShareEntry entry = new KeyShareEntry();
         parser.parse(entry);
-        assertArrayEquals(keyShare, entry.getPublicKey().getValue());
-        assertTrue(keyShareLength == entry.getPublicKeyLength().getValue());
+        if (!helloRetryRequestForm) {
+            assertArrayEquals(keyShare, entry.getPublicKey().getValue());
+            assertTrue(keyShareLength == entry.getPublicKeyLength().getValue());
+        }
         assertArrayEquals(keyShareType, entry.getGroup().getValue());
     }
 

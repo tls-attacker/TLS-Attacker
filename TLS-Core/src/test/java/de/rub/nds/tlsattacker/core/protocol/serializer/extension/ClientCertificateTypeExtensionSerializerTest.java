@@ -12,6 +12,7 @@ package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateTypeExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ClientCertificateTypeExtensionParserTest;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.Collection;
 import java.util.List;
 import static org.junit.Assert.assertArrayEquals;
@@ -31,16 +32,16 @@ public class ClientCertificateTypeExtensionSerializerTest {
     private final byte[] expectedBytes;
     private final Integer certificateTypesLength;
     private final List<CertificateType> certificateTypes;
-    private final boolean isClientState;
+    private final ConnectionEndType connectionEndType;
     private ClientCertificateTypeExtensionSerializer serializer;
     private ClientCertificateTypeExtensionMessage msg;
 
     public ClientCertificateTypeExtensionSerializerTest(byte[] expectedBytes, Integer certificateTypesLength,
-        List<CertificateType> certificateTypes, boolean isClientState) {
+        List<CertificateType> certificateTypes, ConnectionEndType connectionEndType) {
         this.expectedBytes = expectedBytes;
         this.certificateTypesLength = certificateTypesLength;
         this.certificateTypes = certificateTypes;
-        this.isClientState = isClientState;
+        this.connectionEndType = connectionEndType;
     }
 
     @Before
@@ -57,8 +58,7 @@ public class ClientCertificateTypeExtensionSerializerTest {
         } else {
             msg.setCertificateTypesLength(null);
         }
-        msg.setIsClientMessage(isClientState);
-
+        msg.setIsClientMessage(connectionEndType == ConnectionEndType.CLIENT);
         assertArrayEquals(expectedBytes, serializer.serializeExtensionContent());
     }
 }

@@ -18,7 +18,6 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.state.parser.SessionTicketParser;;
 
 import java.io.InputStream;
-import java.io.InputStream;
 
 public class SessionTicketTLSExtensionParser extends ExtensionParser<SessionTicketTLSExtensionMessage> {
 

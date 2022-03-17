@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerCertificateTypeExtensionMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
@@ -30,31 +31,34 @@ public class ServerCertificateTypeExtensionParserTest {
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] {
-            { ArrayConverter.hexStringToByteArray("00"), null, Arrays.asList(CertificateType.X509), false },
-            { ArrayConverter.hexStringToByteArray("0100"), 1, Arrays.asList(CertificateType.X509), true },
+            { ArrayConverter.hexStringToByteArray("00"), null, Arrays.asList(CertificateType.X509),
+                ConnectionEndType.SERVER },
+            { ArrayConverter.hexStringToByteArray("0100"), 1, Arrays.asList(CertificateType.X509),
+                ConnectionEndType.CLIENT },
             { ArrayConverter.hexStringToByteArray("020100"), 2,
-                Arrays.asList(CertificateType.OPEN_PGP, CertificateType.X509), true } });
+                Arrays.asList(CertificateType.OPEN_PGP, CertificateType.X509), ConnectionEndType.CLIENT } });
     }
 
     private final byte[] expectedBytes;
     private final Integer certificateTypesLength;
     private final List<CertificateType> certificateTypes;
-    private final boolean isClientState;
+    private final ConnectionEndType talkingConnectionEndType;
     private ServerCertificateTypeExtensionParser parser;
     private ServerCertificateTypeExtensionMessage msg;
     private final Config config = Config.createConfig();
 
     public ServerCertificateTypeExtensionParserTest(byte[] expectedBytes, Integer certificateTypesLength,
-        List<CertificateType> certificateTypes, boolean isClientState) {
+        List<CertificateType> certificateTypes, ConnectionEndType talkingConnectionEndType) {
         this.expectedBytes = expectedBytes;
         this.certificateTypesLength = certificateTypesLength;
         this.certificateTypes = certificateTypes;
-        this.isClientState = isClientState;
+        this.talkingConnectionEndType = talkingConnectionEndType;
     }
 
     @Before
     public void setUp() {
         TlsContext tlsContext = new TlsContext(config);
+        tlsContext.setTalkingConnectionEndType(talkingConnectionEndType);
         parser = new ServerCertificateTypeExtensionParser(new ByteArrayInputStream(expectedBytes), tlsContext);
     }
 
@@ -63,7 +67,7 @@ public class ServerCertificateTypeExtensionParserTest {
         msg = new ServerCertificateTypeExtensionMessage();
         parser.parse(msg);
 
-        if (certificateTypesLength != null) {
+        if (talkingConnectionEndType == ConnectionEndType.CLIENT) {
             assertEquals(certificateTypesLength, msg.getCertificateTypesLength().getValue());
         } else {
             assertNull(msg.getCertificateTypesLength());

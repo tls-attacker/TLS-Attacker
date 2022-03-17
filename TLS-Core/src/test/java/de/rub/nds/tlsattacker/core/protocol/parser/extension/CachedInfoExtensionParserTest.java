@@ -45,18 +45,21 @@ public class CachedInfoExtensionParserTest {
     private final List<CachedObject> cachedObjectList;
     private final byte[] extensionBytes;
     private final Config config = Config.createConfig();
+    private final ConnectionEndType talkingConnectionEndType;
 
-    public CachedInfoExtensionParserTest(ConnectionEndType connectionEndType, int cachedInfoLength,
+    public CachedInfoExtensionParserTest(ConnectionEndType talkingConnectionEndType, int cachedInfoLength,
         byte[] cachedInfoBytes, List<CachedObject> cachedObjectList, byte[] extensionBytes) {
         this.cachedInfoLength = cachedInfoLength;
         this.cachedInfoBytes = cachedInfoBytes;
         this.cachedObjectList = cachedObjectList;
         this.extensionBytes = extensionBytes;
+        this.talkingConnectionEndType = talkingConnectionEndType;
     }
 
     @Test
     public void testParse() {
         TlsContext tlsContext = new TlsContext(config);
+        tlsContext.setTalkingConnectionEndType(talkingConnectionEndType);
 
         CachedInfoExtensionParser parser =
             new CachedInfoExtensionParser(new ByteArrayInputStream(extensionBytes), tlsContext);

@@ -29,7 +29,7 @@ import org.apache.logging.log4j.Logger;
 public class PreSharedKeyExtensionParser extends ExtensionParser<PreSharedKeyExtensionMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    private ConnectionEndType talkingConnectionEndType;
+    private final ConnectionEndType talkingConnectionEndType;
 
     public PreSharedKeyExtensionParser(InputStream stream, TlsContext tlsContext) {
         super(stream, tlsContext);

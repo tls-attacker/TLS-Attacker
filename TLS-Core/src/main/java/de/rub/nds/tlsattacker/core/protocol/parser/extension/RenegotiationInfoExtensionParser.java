@@ -30,10 +30,6 @@ public class RenegotiationInfoExtensionParser extends ExtensionParser<Renegotiat
     @Override
     public void parseExtensionMessageContent(RenegotiationInfoExtensionMessage msg) {
         msg.setRenegotiationInfoLength(parseIntField(ExtensionByteLength.RENEGOTIATION_INFO));
-        if (msg.getRenegotiationInfoLength().getValue() > 255) {
-            LOGGER.warn("The renegotiation info length shouldn't exceed 1 byte as defined in RFC 5246. " + "Length was "
-                + msg.getExtensionLength().getValue());
-        }
         msg.setRenegotiationInfo(parseByteArrayField(msg.getRenegotiationInfoLength().getValue()));
         LOGGER.debug(
             "The RenegotiationInfoExtensionParser parsed the value " + bytesToHexString(msg.getRenegotiationInfo()));

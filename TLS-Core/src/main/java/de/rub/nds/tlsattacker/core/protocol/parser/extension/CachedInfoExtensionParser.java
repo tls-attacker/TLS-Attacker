@@ -29,17 +29,12 @@ public class CachedInfoExtensionParser extends ExtensionParser<CachedInfoExtensi
 
     @Override
     public void parseExtensionMessageContent(CachedInfoExtensionMessage msg) {
+        cachedObjectList = new LinkedList<>();
         msg.setCachedInfoLength(parseIntField(ExtensionByteLength.CACHED_INFO_LENGTH));
         byte[] cachedInfoBytes = parseByteArrayField(msg.getCachedInfoLength().getValue());
         msg.setCachedInfoBytes(cachedInfoBytes);
         ByteArrayInputStream innerStream = new ByteArrayInputStream(cachedInfoBytes);
-        // TODO The parser should know and not guess which connectionEnd it is
-        ConnectionEndType connectionEndType = ConnectionEndType.CLIENT;
-        cachedObjectList = new LinkedList<>();
-
-        if (msg.getCachedInfoLength().getValue() <= 2) {
-            connectionEndType = ConnectionEndType.SERVER;
-        }
+        ConnectionEndType connectionEndType = getTlsContext().getTalkingConnectionEndType();
 
         while (innerStream.available() > 0) {
             CachedObjectParser parser = new CachedObjectParser(innerStream, connectionEndType);
