@@ -20,6 +20,8 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.UnknownHandshakePreparato
 import de.rub.nds.tlsattacker.core.protocol.serializer.UnknownHandshakeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Objects;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "UnknownHandshakeMessage")
@@ -90,6 +92,32 @@ public class UnknownHandshakeMessage extends HandshakeMessage {
     @Override
     public String toShortString() {
         return "HS(?)";
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 17 * hash + Arrays.hashCode(this.dataConfig);
+        hash = 17 * hash + Objects.hashCode(this.data);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final UnknownHandshakeMessage other = (UnknownHandshakeMessage) obj;
+        if (!Arrays.equals(this.dataConfig, other.dataConfig)) {
+            return false;
+        }
+        return Objects.equals(this.data, other.data);
     }
 
 }

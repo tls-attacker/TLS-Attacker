@@ -24,6 +24,7 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateStatusSerializ
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -131,4 +132,35 @@ public class CertificateStatusMessage extends HandshakeMessage {
     public void setOcspResponseBytes(ModifiableByteArray ocspResponseBytes) {
         this.ocspResponseBytes = ocspResponseBytes;
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 23 * hash + Objects.hashCode(this.certificateStatusType);
+        hash = 23 * hash + Objects.hashCode(this.ocspResponseLength);
+        hash = 23 * hash + Objects.hashCode(this.ocspResponseBytes);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final CertificateStatusMessage other = (CertificateStatusMessage) obj;
+        if (!Objects.equals(this.certificateStatusType, other.certificateStatusType)) {
+            return false;
+        }
+        if (!Objects.equals(this.ocspResponseLength, other.ocspResponseLength)) {
+            return false;
+        }
+        return Objects.equals(this.ocspResponseBytes, other.ocspResponseBytes);
+    }
+
 }

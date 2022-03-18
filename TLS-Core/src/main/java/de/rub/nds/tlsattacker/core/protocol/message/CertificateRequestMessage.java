@@ -28,6 +28,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -255,6 +256,56 @@ public class CertificateRequestMessage extends HandshakeMessage {
     @Override
     public CertificateRequestSerializer getSerializer(TlsContext tlsContext) {
         return new CertificateRequestSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 61 * hash + Objects.hashCode(this.clientCertificateTypesCount);
+        hash = 61 * hash + Objects.hashCode(this.clientCertificateTypes);
+        hash = 61 * hash + Objects.hashCode(this.signatureHashAlgorithmsLength);
+        hash = 61 * hash + Objects.hashCode(this.signatureHashAlgorithms);
+        hash = 61 * hash + Objects.hashCode(this.distinguishedNamesLength);
+        hash = 61 * hash + Objects.hashCode(this.distinguishedNames);
+        hash = 61 * hash + Objects.hashCode(this.certificateRequestContextLength);
+        hash = 61 * hash + Objects.hashCode(this.certificateRequestContext);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final CertificateRequestMessage other = (CertificateRequestMessage) obj;
+        if (!Objects.equals(this.clientCertificateTypesCount, other.clientCertificateTypesCount)) {
+            return false;
+        }
+        if (!Objects.equals(this.clientCertificateTypes, other.clientCertificateTypes)) {
+            return false;
+        }
+        if (!Objects.equals(this.signatureHashAlgorithmsLength, other.signatureHashAlgorithmsLength)) {
+            return false;
+        }
+        if (!Objects.equals(this.signatureHashAlgorithms, other.signatureHashAlgorithms)) {
+            return false;
+        }
+        if (!Objects.equals(this.distinguishedNamesLength, other.distinguishedNamesLength)) {
+            return false;
+        }
+        if (!Objects.equals(this.distinguishedNames, other.distinguishedNames)) {
+            return false;
+        }
+        if (!Objects.equals(this.certificateRequestContextLength, other.certificateRequestContextLength)) {
+            return false;
+        }
+        return Objects.equals(this.certificateRequestContext, other.certificateRequestContext);
     }
 
 }

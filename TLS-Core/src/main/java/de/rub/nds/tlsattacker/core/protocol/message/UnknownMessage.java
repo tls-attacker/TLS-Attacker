@@ -18,6 +18,8 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.UnknownMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.UnknownMessageSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Objects;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "UnknownMessage")
@@ -97,4 +99,31 @@ public class UnknownMessage extends ProtocolMessage {
     public String toShortString() {
         return "?";
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 79 * hash + Arrays.hashCode(this.dataConfig);
+        hash = 79 * hash + Objects.hashCode(this.recordContentMessageType);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final UnknownMessage other = (UnknownMessage) obj;
+        if (!Arrays.equals(this.dataConfig, other.dataConfig)) {
+            return false;
+        }
+        return this.recordContentMessageType == other.recordContentMessageType;
+    }
+
 }
