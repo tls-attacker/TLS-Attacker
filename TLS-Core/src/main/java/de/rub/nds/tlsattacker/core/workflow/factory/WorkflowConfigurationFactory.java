@@ -382,26 +382,22 @@ public class WorkflowConfigurationFactory {
      * @return
      */
     public WorkflowTrace createShortHelloWorkflow(AliasedConnection connection) {
-        WorkflowTrace workflowTrace = createTlsEntryWorkflowTrace(connection);
-        if (config.isAddEncryptedServerNameIndicationExtension()
-            && connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
-            workflowTrace.addTlsAction(new EsniKeyDnsRequestAction());
-        }
+        WorkflowTrace trace = createTlsEntryWorkflowTrace(connection);
 
-        workflowTrace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.CLIENT,
+        trace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.CLIENT,
             new ClientHelloMessage(config)));
 
         if (config.getHighestProtocolVersion().isDTLS() && config.isDtlsCookieExchange()) {
-            workflowTrace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.SERVER,
+            trace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.SERVER,
                 new HelloVerifyRequestMessage(config)));
-            workflowTrace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.CLIENT,
+            trace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.CLIENT,
                 new ClientHelloMessage(config)));
         }
 
-        workflowTrace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.SERVER,
+        trace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.SERVER,
             new ServerHelloMessage(config)));
 
-        return workflowTrace;
+        return trace;
     }
 
     /**
