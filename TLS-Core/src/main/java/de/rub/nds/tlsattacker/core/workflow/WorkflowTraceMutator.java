@@ -69,11 +69,11 @@ public class WorkflowTraceMutator {
         @Nullable ProtocolMessage replaceMessage) {
         List<SendingAction> sendingActions = WorkflowTraceUtil.getSendingActionsForMessage(type, trace);
         List<SendingAction> deleteActions = new ArrayList<>();
-        for (SendingAction i : sendingActions) {
-            List<ProtocolMessage> messages = i.getSendMessages();
+        for (SendingAction action : sendingActions) {
+            List<ProtocolMessage> messages = action.getSendMessages();
             replaceMessagesInList(messages, type, replaceMessage);
             if (messages.size() == 0) {
-                deleteActions.add(i);
+                deleteActions.add(action);
             }
         }
 
@@ -84,11 +84,11 @@ public class WorkflowTraceMutator {
         @Nullable HandshakeMessage replaceMessage) {
         List<SendingAction> sendingActions = WorkflowTraceUtil.getSendingActionsForMessage(type, trace);
         List<SendingAction> deleteActions = new ArrayList<>();
-        for (SendingAction i : sendingActions) {
-            List<ProtocolMessage> messages = i.getSendMessages();
+        for (SendingAction action : sendingActions) {
+            List<ProtocolMessage> messages = action.getSendMessages();
             replaceMessagesInList(messages, type, replaceMessage);
             if (messages.size() == 0) {
-                deleteActions.add(i);
+                deleteActions.add(action);
             }
         }
 
@@ -107,21 +107,21 @@ public class WorkflowTraceMutator {
         @Nullable ProtocolMessage replaceMessage) throws WorkflowTraceMutationException {
         List<ReceivingAction> receivingActions = WorkflowTraceUtil.getReceivingActionsForMessage(type, trace);
         List<ReceivingAction> deleteActions = new ArrayList<>();
-        for (ReceivingAction i : receivingActions) {
-            if (i instanceof ReceiveAction) {
-                List<ProtocolMessage> messages = ((ReceiveAction) i).getExpectedMessages();
+        for (ReceivingAction action : receivingActions) {
+            if (action instanceof ReceiveAction) {
+                List<ProtocolMessage> messages = ((ReceiveAction) action).getExpectedMessages();
                 replaceMessagesInList(messages, type, replaceMessage);
                 if (messages.isEmpty()) {
-                    deleteActions.add(i);
+                    deleteActions.add(action);
                 }
-            } else if (i instanceof ReceiveTillAction) {
-                ProtocolMessage message = ((ReceiveTillAction) i).getWaitTillMessage();
+            } else if (action instanceof ReceiveTillAction) {
+                ProtocolMessage message = ((ReceiveTillAction) action).getWaitTillMessage();
                 if (message.getProtocolMessageType() == type) {
                     if (replaceMessage == null) {
                         throw new WorkflowTraceMutationException(
                             "ReceiveTillAction cannot be deleted, because this will probably break your workflow.");
                     }
-                    ((ReceiveTillAction) i).setWaitTillMessage(replaceMessage);
+                    ((ReceiveTillAction) action).setWaitTillMessage(replaceMessage);
                 }
             } else {
                 throw new WorkflowTraceMutationException("Unsupported ReceivingAction, could not mutate workflow.");
@@ -135,21 +135,21 @@ public class WorkflowTraceMutator {
         @Nullable ProtocolMessage replaceMessage) throws WorkflowTraceMutationException {
         List<ReceivingAction> receivingActions = WorkflowTraceUtil.getReceivingActionsForMessage(type, trace);
         List<ReceivingAction> deleteActions = new ArrayList<>();
-        for (ReceivingAction i : receivingActions) {
-            if (i instanceof ReceiveAction) {
-                List<ProtocolMessage> messages = ((ReceiveAction) i).getExpectedMessages();
+        for (ReceivingAction action : receivingActions) {
+            if (action instanceof ReceiveAction) {
+                List<ProtocolMessage> messages = ((ReceiveAction) action).getExpectedMessages();
                 replaceMessagesInList(messages, type, replaceMessage);
                 if (messages.isEmpty()) {
-                    deleteActions.add(i);
+                    deleteActions.add(action);
                 }
-            } else if (i instanceof ReceiveTillAction) {
-                ProtocolMessage message = ((ReceiveTillAction) i).getWaitTillMessage();
+            } else if (action instanceof ReceiveTillAction) {
+                ProtocolMessage message = ((ReceiveTillAction) action).getWaitTillMessage();
                 if (message.isHandshakeMessage() && ((HandshakeMessage) message).getHandshakeMessageType() == type) {
                     if (replaceMessage == null) {
                         throw new WorkflowTraceMutationException(
                             "ReceiveTillAction cannot be deleted, because this will probably break your workflow.");
                     }
-                    ((ReceiveTillAction) i).setWaitTillMessage(replaceMessage);
+                    ((ReceiveTillAction) action).setWaitTillMessage(replaceMessage);
                 }
             } else {
                 throw new WorkflowTraceMutationException("Unsupported ReceivingAction, could not mutate workflow.");
