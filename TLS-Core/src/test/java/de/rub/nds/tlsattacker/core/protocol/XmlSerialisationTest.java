@@ -69,8 +69,6 @@ public class XmlSerialisationTest {
             trace.addTlsAction(new ReceiveAction(message));
             File f = folder.newFile();
             WorkflowTraceSerializer.write(f, trace);
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            WorkflowTraceSerializer.write(stream, trace);
             WorkflowTrace newWorkflowTrace = WorkflowTraceSerializer.secureRead(new FileInputStream(f));
             assertTrue(newWorkflowTrace.getTlsActions().size() == 2);
 
