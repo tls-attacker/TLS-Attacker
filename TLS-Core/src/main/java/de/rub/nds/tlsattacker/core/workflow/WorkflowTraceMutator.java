@@ -28,15 +28,15 @@ public class WorkflowTraceMutator {
     private static void replaceMessagesInList(@Nonnull List<ProtocolMessage> messageList,
         @Nonnull ProtocolMessageType type, @Nullable ProtocolMessage replaceMessage) {
         if (replaceMessage != null) {
-            messageList.replaceAll(e -> {
-                if (e.getProtocolMessageType() == type) {
+            messageList.replaceAll(message -> {
+                if (message.getProtocolMessageType() == type) {
                     return replaceMessage;
                 }
-                return e;
+                return message;
             });
         } else {
-            messageList.removeIf(m -> {
-                if (m.getProtocolMessageType() == type) {
+            messageList.removeIf(message -> {
+                if (message.getProtocolMessageType() == type) {
                     return true;
                 }
                 return false;
@@ -47,15 +47,17 @@ public class WorkflowTraceMutator {
     private static void replaceMessagesInList(@Nonnull List<ProtocolMessage> messageList,
         @Nonnull HandshakeMessageType type, @Nullable ProtocolMessage replaceMessage) {
         if (replaceMessage != null) {
-            messageList.replaceAll(e -> {
-                if (e instanceof HandshakeMessage && ((HandshakeMessage) e).getHandshakeMessageType() == type) {
+            messageList.replaceAll(message -> {
+                if (message instanceof HandshakeMessage
+                    && ((HandshakeMessage) message).getHandshakeMessageType() == type) {
                     return replaceMessage;
                 }
-                return e;
+                return message;
             });
         } else {
-            messageList.removeIf(m -> {
-                if (m instanceof HandshakeMessage && ((HandshakeMessage) m).getHandshakeMessageType() == type) {
+            messageList.removeIf(message -> {
+                if (message instanceof HandshakeMessage
+                    && ((HandshakeMessage) message).getHandshakeMessageType() == type) {
                     return true;
                 }
                 return false;
