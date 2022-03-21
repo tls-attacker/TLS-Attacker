@@ -36,10 +36,19 @@ public class ResetRecordCipherListsAction extends ConnectionBoundAction {
     @Override
     public void execute(State state) throws WorkflowExecutionException {
         TlsContext context = state.getTlsContext(getConnectionAlias());
+
+        if (isExecuted()) {
+            throw new WorkflowExecutionException("Action already executed!");
+        }
+
         RecordLayer recordLayer = context.getRecordLayer();
-        // TODO test if record layer is non null
-        ((RecordLayer) recordLayer).getEncryptor().removeCiphers(toRemoveEncryptor);
-        ((RecordLayer) recordLayer).getDecryptor().removeCiphers(toRemoveDecryptor);
+        if (recordLayer != null) {
+            recordLayer.getEncryptor().removeCiphers(toRemoveEncryptor);
+            recordLayer.getDecryptor().removeCiphers(toRemoveDecryptor);
+        }
+        else {
+            LOGGER.warn("The current context does not have a Record Layer");
+        }
         setExecuted(true);
     }
 
