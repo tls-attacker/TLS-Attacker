@@ -250,7 +250,7 @@ public enum ProtocolVersion {
     private static int compareSslOrTls(ProtocolVersion pv1, ProtocolVersion pv2) {
         if (pv1.isDTLS() || pv2.isDTLS() || pv1.isGrease() || pv2.isGrease()) {
             throw new IllegalArgumentException(
-                "Can not compare " + pv1.name() + " and " + pv2.name() + " as SSL/TLS versions");
+                "Can not compare " + pv1.toHumanReadable() + " and " + pv2.toHumanReadable() + " as SSL/TLS versions");
         }
 
         if (pv1 == pv2) {
