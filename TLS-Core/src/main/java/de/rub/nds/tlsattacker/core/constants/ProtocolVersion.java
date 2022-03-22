@@ -170,7 +170,7 @@ public enum ProtocolVersion {
     }
 
     /**
-     * Return the highest protocol version. TODO: This will not work for a mixed list of DTLS and TLS.
+     * Returns the highest protocol version of a given list.
      *
      * @param  list
      *              The List of protocolVersions to search in
@@ -179,22 +179,13 @@ public enum ProtocolVersion {
     public static ProtocolVersion getHighestProtocolVersion(List<ProtocolVersion> list) {
         ProtocolVersion highestProtocolVersion = null;
         for (ProtocolVersion pv : list) {
-            if (pv == null || pv.isGrease() || pv == highestProtocolVersion) {
-                continue;
-            }
-
             if (highestProtocolVersion == null) {
                 highestProtocolVersion = pv;
                 continue;
             }
 
-            if (pv.isDTLS() && highestProtocolVersion.isDTLS()) {
-                highestProtocolVersion = ProtocolVersion.DTLS12;
-                continue;
-            }
-
-            if (ArrayConverter.bytesToInt(pv.getValue())
-                > ArrayConverter.bytesToInt(highestProtocolVersion.getValue())) {
+            // -1 means highestProtocolVersion is lower than pv
+            if (highestProtocolVersion.compare(pv) == -1) {
                 highestProtocolVersion = pv;
             }
         }
@@ -227,28 +218,70 @@ public enum ProtocolVersion {
     }
 
     /**
-     * Compares this protocol version to another for sorting with ProtocolVersionComparator. TODO: This will not work
-     * when comparing DTLS and TLS versions.
+     * Compares this protocol version to another.
      *
-     * @param  o1
-     *            Other protocol version
-     * @return    -1, 0 or 1 if this protocol version is lower, equal or higher than o1
+     * @param  otherProtocolVersion
+     * @return                      -1, 0 or 1 if this protocol version is lower, equal or higher than the other
      */
-    public int compare(ProtocolVersion o1) {
-        if (o1 == this || (o1.isGrease() && this.isGrease())) {
+    public int compare(ProtocolVersion otherProtocolVersion) {
+        if (otherProtocolVersion == this || (otherProtocolVersion.isGrease() && this.isGrease())) {
             return 0;
         }
 
         if (this.isGrease())
             return -1;
-        if (o1.isGrease())
+        if (otherProtocolVersion.isGrease())
             return 1;
 
-        if (this.isDTLS() && o1.isDTLS()) {
-            return ((this == DTLS10) ? -1 : 1);
+        if (this.isDTLS()) {
+            return compareDtls(this, otherProtocolVersion);
         }
 
-        if (ArrayConverter.bytesToInt(this.getValue()) > ArrayConverter.bytesToInt(o1.getValue())) {
+        return compareSslOrTls(this, otherProtocolVersion);
+    }
+
+    /**
+     * Compares two SSL or TLS protocol versions.
+     *
+     * @param  p1
+     * @param  p2
+     * @return    -1, 0 or 1 if p1 is lower, equal or higher than p2
+     */
+    private static int compareSslOrTls(ProtocolVersion pv1, ProtocolVersion pv2) {
+        if (pv1.isDTLS() || pv2.isDTLS() || pv1.isGrease() || pv2.isGrease()) {
+            throw new IllegalArgumentException(
+                "Can not compare " + pv1.name() + " and " + pv2.name() + " as SSL/TLS versions");
+        }
+
+        if (pv1 == pv2) {
+            return 0;
+        }
+
+        if (ArrayConverter.bytesToInt(pv1.getValue()) > ArrayConverter.bytesToInt(pv2.getValue())) {
+            return 1;
+        }
+
+        return -1;
+    }
+
+    /**
+     * Compares two DTLS protocol versions.
+     *
+     * @param  p1
+     * @param  p2
+     * @return    -1, 0 or 1 if p1 is lower, equal or higher than p2
+     */
+    private static int compareDtls(ProtocolVersion pv1, ProtocolVersion pv2) {
+        if (!pv1.isDTLS() || !pv2.isDTLS()) {
+            throw new IllegalArgumentException(
+                "Can not compare " + pv1.toHumanReadable() + " and " + pv2.toHumanReadable() + " as DTLS versions");
+        }
+
+        if (pv1 == pv2) {
+            return 0;
+        }
+
+        if (pv1.getMinor() < pv2.getMinor()) {
             return 1;
         }
 
