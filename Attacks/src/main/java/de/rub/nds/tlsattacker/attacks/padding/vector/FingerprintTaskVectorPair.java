@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.attacks.padding.vector;
 
 import de.rub.nds.tlsattacker.attacks.general.Vector;
+import de.rub.nds.tlsattacker.attacks.padding.VectorResponse;
 import de.rub.nds.tlsattacker.attacks.task.FingerPrintTask;
 
 public class FingerprintTaskVectorPair<T extends Vector> {
@@ -34,6 +35,10 @@ public class FingerprintTaskVectorPair<T extends Vector> {
     @Override
     public String toString() {
         return "FingerprintTaskVectorPair{" + "fingerPrintTask=" + fingerPrintTask + ", vector=" + vector + '}';
+    }
+
+    public VectorResponse toVectorResponse() {
+        return new VectorResponse(vector, fingerPrintTask.getFingerprint());
     }
 
 }
