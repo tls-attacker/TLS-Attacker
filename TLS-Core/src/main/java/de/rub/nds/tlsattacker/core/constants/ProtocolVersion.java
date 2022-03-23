@@ -170,7 +170,7 @@ public enum ProtocolVersion {
     }
 
     /**
-     * Return the highest protocol version.
+     * Returns the highest protocol version of a given list.
      *
      * @param  list
      *              The List of protocolVersions to search in
@@ -179,13 +179,13 @@ public enum ProtocolVersion {
     public static ProtocolVersion getHighestProtocolVersion(List<ProtocolVersion> list) {
         ProtocolVersion highestProtocolVersion = null;
         for (ProtocolVersion pv : list) {
-            if (pv.isGrease())
-                continue;
             if (highestProtocolVersion == null) {
                 highestProtocolVersion = pv;
+                continue;
             }
-            if (pv != null && ArrayConverter.bytesToInt(pv.getValue())
-                > ArrayConverter.bytesToInt(highestProtocolVersion.getValue())) {
+
+            // -1 means highestProtocolVersion is lower than pv
+            if (highestProtocolVersion.compare(pv) == -1) {
                 highestProtocolVersion = pv;
             }
         }
@@ -217,19 +217,81 @@ public enum ProtocolVersion {
             || this == ProtocolVersion.DTLS12;
     }
 
-    public int compare(ProtocolVersion o1) {
-        if (o1 == this || (o1.isGrease() && this.isGrease())) {
+    /**
+     * Compares this protocol version to another.
+     *
+     * @param  otherProtocolVersion
+     *                              The protocol version to compare this to
+     * @return                      -1, 0 or 1 if this protocol version is lower, equal or higher than the other
+     */
+    public int compare(ProtocolVersion otherProtocolVersion) {
+        if (otherProtocolVersion == this || (otherProtocolVersion.isGrease() && this.isGrease())) {
             return 0;
         }
 
         if (this.isGrease())
             return -1;
-        if (o1.isGrease())
+        if (otherProtocolVersion.isGrease())
             return 1;
 
-        if (ArrayConverter.bytesToInt(this.getValue()) > ArrayConverter.bytesToInt(o1.getValue())) {
+        if (this.isDTLS()) {
+            return compareDtls(this, otherProtocolVersion);
+        }
+
+        return compareSslOrTls(this, otherProtocolVersion);
+    }
+
+    /**
+     * Compares two SSL or TLS protocol versions.
+     *
+     * @param  protocolVersion1
+     *                          First protocol version to use in comparison
+     * @param  protocolVersion2
+     *                          Second protocol version to use in comparison
+     * @return                  -1, 0 or 1 if protocolVersion1 is lower, equal or higher than protocolVersion2
+     */
+    private static int compareSslOrTls(ProtocolVersion protocolVersion1, ProtocolVersion protocolVersion2) {
+        if (protocolVersion1.isDTLS() || protocolVersion2.isDTLS() || protocolVersion1.isGrease()
+            || protocolVersion2.isGrease()) {
+            throw new IllegalArgumentException("Can not compare " + protocolVersion1.toHumanReadable() + " and "
+                + protocolVersion2.toHumanReadable() + " as SSL/TLS versions");
+        }
+
+        if (protocolVersion1 == protocolVersion2) {
+            return 0;
+        }
+
+        if (ArrayConverter.bytesToInt(protocolVersion1.getValue())
+            > ArrayConverter.bytesToInt(protocolVersion2.getValue())) {
             return 1;
         }
+
+        return -1;
+    }
+
+    /**
+     * Compares two DTLS protocol versions.
+     *
+     * @param  protocolVersion1
+     *                          First protocol version to use in comparison
+     * @param  protocolVersion2
+     *                          Second protocol version to use in comparison
+     * @return                  -1, 0 or 1 if protocolVersion1 is lower, equal or higher than protocolVersion2
+     */
+    private static int compareDtls(ProtocolVersion protocolVersion1, ProtocolVersion protocolVersion2) {
+        if (!protocolVersion1.isDTLS() || !protocolVersion2.isDTLS()) {
+            throw new IllegalArgumentException("Can not compare " + protocolVersion1.toHumanReadable() + " and "
+                + protocolVersion2.toHumanReadable() + " as DTLS versions");
+        }
+
+        if (protocolVersion1 == protocolVersion2) {
+            return 0;
+        }
+
+        if (protocolVersion1.getMinor() < protocolVersion2.getMinor()) {
+            return 1;
+        }
+
         return -1;
     }
 

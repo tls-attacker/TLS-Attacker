@@ -24,29 +24,28 @@ public class ServerTcpTransportHandler extends TcpTransportHandler {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private ServerSocket serverSocket;
-    private int port;
     private SocketManagement socketManagement = SocketManagement.DEFAULT;
 
     public ServerTcpTransportHandler(Connection con) {
         super(con);
-        this.port = con.getPort();
+        this.srcPort = con.getPort();
     }
 
     public ServerTcpTransportHandler(long firstTimeout, long timeout, int port) {
         super(firstTimeout, timeout, ConnectionEndType.SERVER);
-        this.port = port;
+        this.srcPort = port;
     }
 
     public ServerTcpTransportHandler(long firstTimeout, long timeout, ServerSocket serverSocket) throws IOException {
         super(firstTimeout, timeout, ConnectionEndType.SERVER);
-        this.port = serverSocket.getLocalPort();
+        this.srcPort = serverSocket.getLocalPort();
         this.serverSocket = serverSocket;
         socketManagement = SocketManagement.EXTERNAL_SERVER_SOCKET;
     }
 
     public ServerTcpTransportHandler(Connection con, Socket socket) throws IOException {
         super(con);
-        this.port = socket.getLocalPort();
+        this.srcPort = socket.getLocalPort();
         this.socket = socket;
         socket.setSoTimeout(1);
         socketManagement = SocketManagement.EXTERNAL_SOCKET;
@@ -89,7 +88,7 @@ public class ServerTcpTransportHandler extends TcpTransportHandler {
     public void preInitialize() throws IOException {
         if (socketManagement != SocketManagement.EXTERNAL_SOCKET) {
             if (serverSocket == null || serverSocket.isClosed()) {
-                serverSocket = new ServerSocket(port);
+                serverSocket = new ServerSocket(srcPort);
             }
             srcPort = serverSocket.getLocalPort();
         }
@@ -133,7 +132,7 @@ public class ServerTcpTransportHandler extends TcpTransportHandler {
         if (isInitialized()) {
             return socket.getLocalPort();
         } else {
-            return port;
+            return srcPort;
         }
     }
 
@@ -142,7 +141,7 @@ public class ServerTcpTransportHandler extends TcpTransportHandler {
         if (isInitialized()) {
             throw new RuntimeException("Cannot change server port of uninitialized TransportHandler");
         } else {
-            this.port = port;
+            this.srcPort = port;
         }
     }
 
