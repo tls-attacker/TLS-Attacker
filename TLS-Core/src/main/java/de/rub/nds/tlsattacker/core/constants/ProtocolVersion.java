@@ -221,6 +221,7 @@ public enum ProtocolVersion {
      * Compares this protocol version to another.
      *
      * @param  otherProtocolVersion
+     *                              The protocol version to compare this to
      * @return                      -1, 0 or 1 if this protocol version is lower, equal or higher than the other
      */
     public int compare(ProtocolVersion otherProtocolVersion) {
@@ -244,7 +245,9 @@ public enum ProtocolVersion {
      * Compares two SSL or TLS protocol versions.
      *
      * @param  protocolVersion1
+     *                          First protocol version to use in comparison
      * @param  protocolVersion2
+     *                          Second protocol version to use in comparison
      * @return                  -1, 0 or 1 if protocolVersion1 is lower, equal or higher than protocolVersion2
      */
     private static int compareSslOrTls(ProtocolVersion protocolVersion1, ProtocolVersion protocolVersion2) {
@@ -270,7 +273,9 @@ public enum ProtocolVersion {
      * Compares two DTLS protocol versions.
      *
      * @param  protocolVersion1
+     *                          First protocol version to use in comparison
      * @param  protocolVersion2
+     *                          Second protocol version to use in comparison
      * @return                  -1, 0 or 1 if protocolVersion1 is lower, equal or higher than protocolVersion2
      */
     private static int compareDtls(ProtocolVersion protocolVersion1, ProtocolVersion protocolVersion2) {
