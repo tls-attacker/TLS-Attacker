@@ -11,6 +11,8 @@ package de.rub.nds.tlsattacker.core.layer;
 
 import java.util.List;
 
+import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
+
 public class TightReceiveLayerConfiguration<Container extends DataContainer>
     extends SpecificReceiveLayerConfiguration<Container> {
 

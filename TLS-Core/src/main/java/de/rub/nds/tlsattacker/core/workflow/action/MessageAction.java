@@ -208,7 +208,7 @@ public abstract class MessageAction<MessageType extends Message> extends Connect
         getReceiveResult(layerStack, layerConfigurationList);
     }
 
-    protected void receiveTill(TlsContext tlsContext, ProtocolMessage protocolMessageToReceive) {
+    protected void receiveTill(TlsContext tlsContext, MessageType protocolMessageToReceive) {
         LayerStack layerStack = tlsContext.getLayerStack();
         List<LayerConfiguration> layerConfigurationList = new LinkedList<>();
         layerConfigurationList.add(new ReceiveTillLayerConfiguration(protocolMessageToReceive));
@@ -217,7 +217,7 @@ public abstract class MessageAction<MessageType extends Message> extends Connect
         getReceiveResult(layerStack, layerConfigurationList);
     }
 
-    protected void tightReceive(TlsContext tlsContext, List<ProtocolMessage> protocolMessagesToReceive) {
+    protected void tightReceive(TlsContext tlsContext, List<MessageType> protocolMessagesToReceive) {
         LayerStack layerStack = tlsContext.getLayerStack();
         List<LayerConfiguration> layerConfigurationList = new LinkedList<>();
         layerConfigurationList.add(new TightReceiveLayerConfiguration(protocolMessagesToReceive));

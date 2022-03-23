@@ -10,18 +10,19 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.layer.Message;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.List;
 
-public abstract class CommonReceiveAction extends MessageAction {
+public abstract class CommonReceiveAction<MessageType extends Message> extends MessageAction<MessageType> {
 
-    public CommonReceiveAction(List<ProtocolMessage> messages) {
+    public CommonReceiveAction(List<MessageType> messages) {
         super(messages);
     }
 
-    public CommonReceiveAction(ProtocolMessage... messages) {
+    public CommonReceiveAction(MessageType... messages) {
         super(messages);
     }
 
@@ -29,11 +30,11 @@ public abstract class CommonReceiveAction extends MessageAction {
         super(connectionAlias);
     }
 
-    public CommonReceiveAction(String connectionAlias, List<ProtocolMessage> messages) {
+    public CommonReceiveAction(String connectionAlias, List<MessageType> messages) {
         super(connectionAlias, messages);
     }
 
-    public CommonReceiveAction(String connectionAlias, ProtocolMessage... messages) {
+    public CommonReceiveAction(String connectionAlias, MessageType... messages) {
         super(connectionAlias, messages);
     }
 
@@ -62,5 +63,5 @@ public abstract class CommonReceiveAction extends MessageAction {
 
     protected abstract void distinctReceive(TlsContext tlsContext);
 
-    public abstract List<ProtocolMessage> getExpectedMessages();
+    public abstract List<MessageType> getExpectedMessages();
 }

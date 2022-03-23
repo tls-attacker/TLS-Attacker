@@ -13,6 +13,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
+
 public class ReceiveTillLayerConfiguration<Container extends DataContainer>
     extends ReceiveLayerConfiguration<Container> {
 
