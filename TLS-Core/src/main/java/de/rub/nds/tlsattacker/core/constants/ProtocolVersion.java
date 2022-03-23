@@ -243,21 +243,23 @@ public enum ProtocolVersion {
     /**
      * Compares two SSL or TLS protocol versions.
      *
-     * @param  p1
-     * @param  p2
-     * @return    -1, 0 or 1 if p1 is lower, equal or higher than p2
+     * @param  protocolVersion1
+     * @param  protocolVersion2
+     * @return                  -1, 0 or 1 if protocolVersion1 is lower, equal or higher than protocolVersion2
      */
-    private static int compareSslOrTls(ProtocolVersion pv1, ProtocolVersion pv2) {
-        if (pv1.isDTLS() || pv2.isDTLS() || pv1.isGrease() || pv2.isGrease()) {
-            throw new IllegalArgumentException(
-                "Can not compare " + pv1.toHumanReadable() + " and " + pv2.toHumanReadable() + " as SSL/TLS versions");
+    private static int compareSslOrTls(ProtocolVersion protocolVersion1, ProtocolVersion protocolVersion2) {
+        if (protocolVersion1.isDTLS() || protocolVersion2.isDTLS() || protocolVersion1.isGrease()
+            || protocolVersion2.isGrease()) {
+            throw new IllegalArgumentException("Can not compare " + protocolVersion1.toHumanReadable() + " and "
+                + protocolVersion2.toHumanReadable() + " as SSL/TLS versions");
         }
 
-        if (pv1 == pv2) {
+        if (protocolVersion1 == protocolVersion2) {
             return 0;
         }
 
-        if (ArrayConverter.bytesToInt(pv1.getValue()) > ArrayConverter.bytesToInt(pv2.getValue())) {
+        if (ArrayConverter.bytesToInt(protocolVersion1.getValue())
+            > ArrayConverter.bytesToInt(protocolVersion2.getValue())) {
             return 1;
         }
 
@@ -267,21 +269,21 @@ public enum ProtocolVersion {
     /**
      * Compares two DTLS protocol versions.
      *
-     * @param  p1
-     * @param  p2
-     * @return    -1, 0 or 1 if p1 is lower, equal or higher than p2
+     * @param  protocolVersion1
+     * @param  protocolVersion2
+     * @return                  -1, 0 or 1 if protocolVersion1 is lower, equal or higher than protocolVersion2
      */
-    private static int compareDtls(ProtocolVersion pv1, ProtocolVersion pv2) {
-        if (!pv1.isDTLS() || !pv2.isDTLS()) {
-            throw new IllegalArgumentException(
-                "Can not compare " + pv1.toHumanReadable() + " and " + pv2.toHumanReadable() + " as DTLS versions");
+    private static int compareDtls(ProtocolVersion protocolVersion1, ProtocolVersion protocolVersion2) {
+        if (!protocolVersion1.isDTLS() || !protocolVersion2.isDTLS()) {
+            throw new IllegalArgumentException("Can not compare " + protocolVersion1.toHumanReadable() + " and "
+                + protocolVersion2.toHumanReadable() + " as DTLS versions");
         }
 
-        if (pv1 == pv2) {
+        if (protocolVersion1 == protocolVersion2) {
             return 0;
         }
 
-        if (pv1.getMinor() < pv2.getMinor()) {
+        if (protocolVersion1.getMinor() < protocolVersion2.getMinor()) {
             return 1;
         }
 
