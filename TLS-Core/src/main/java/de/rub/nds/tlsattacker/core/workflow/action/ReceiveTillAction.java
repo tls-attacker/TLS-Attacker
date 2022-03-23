@@ -20,6 +20,7 @@ import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import javax.xml.bind.annotation.XmlElementRef;
@@ -28,7 +29,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @XmlRootElement
-public class ReceiveTillAction extends MessageAction<ProtocolMessage> implements ReceivingAction<ProtocolMessage> {
+public class ReceiveTillAction extends CommonReceiveAction<ProtocolMessage> implements ReceivingAction<ProtocolMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -48,28 +49,6 @@ public class ReceiveTillAction extends MessageAction<ProtocolMessage> implements
     public ReceiveTillAction(String connectionAliasAlias, ProtocolMessage waitTillMessage) {
         super(connectionAliasAlias);
         this.waitTillMessage = waitTillMessage;
-    }
-
-    @Override
-    public void execute(State state) throws WorkflowExecutionException {
-        TlsContext tlsContext = state.getContext(getConnectionAlias()).getTlsContext();
-
-        if (isExecuted()) {
-            throw new WorkflowExecutionException("Action already executed!");
-        }
-
-        LOGGER.debug("Receiving Messages...");
-        receiveTill(tlsContext, messages, records);
-        setExecuted(true);
-
-        String expected = getReadableString(waitTillMessage);
-        LOGGER.debug("Receive message we waited for:" + expected);
-        String received = getReadableString(messages);
-        if (hasDefaultAlias()) {
-            LOGGER.info("Received Messages: " + received);
-        } else {
-            LOGGER.info("Received Messages (" + getConnectionAlias() + "): " + received);
-        }
     }
 
     @Override
@@ -239,5 +218,15 @@ public class ReceiveTillAction extends MessageAction<ProtocolMessage> implements
                 add(((HandshakeMessage) waitTillMessage).getHandshakeMessageType());
             }
         };
+    }
+
+    @Override
+    protected void distinctReceive(TlsContext tlsContext) {
+        receiveTill(tlsContext, waitTillMessage);
+    }
+
+    @Override
+    public List<ProtocolMessage> getExpectedMessages() {
+        return Arrays.asList(waitTillMessage);
     }
 }

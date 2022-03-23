@@ -20,6 +20,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.FinishedPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.FinishedSerializer;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
+import java.util.Objects;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "Finished")
@@ -81,4 +82,27 @@ public class FinishedMessage extends HandshakeMessage {
     public FinishedSerializer getSerializer(TlsContext tlsContext) {
         return new FinishedSerializer(this);
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 67 * hash + Objects.hashCode(this.verifyData);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final FinishedMessage other = (FinishedMessage) obj;
+        return Objects.equals(this.verifyData, other.verifyData);
+    }
+
 }

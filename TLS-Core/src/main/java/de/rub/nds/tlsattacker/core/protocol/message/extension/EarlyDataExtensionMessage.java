@@ -68,7 +68,7 @@ public class EarlyDataExtensionMessage extends ExtensionMessage<EarlyDataExtensi
 
     @Override
     public EarlyDataExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new EarlyDataExtensionParser(stream);
+        return new EarlyDataExtensionParser(stream, tlsContext);
     }
 
     @Override

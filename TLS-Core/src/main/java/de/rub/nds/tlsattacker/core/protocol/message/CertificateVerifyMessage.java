@@ -21,6 +21,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateVerifyPreparat
 import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateVerifySerializer;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
+import java.util.Objects;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "CertificateVerify")
@@ -132,4 +133,35 @@ public class CertificateVerifyMessage extends HandshakeMessage {
     public CertificateVerifySerializer getSerializer(TlsContext tlsContext) {
         return new CertificateVerifySerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 29 * hash + Objects.hashCode(this.signatureHashAlgorithm);
+        hash = 29 * hash + Objects.hashCode(this.signatureLength);
+        hash = 29 * hash + Objects.hashCode(this.signature);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final CertificateVerifyMessage other = (CertificateVerifyMessage) obj;
+        if (!Objects.equals(this.signatureHashAlgorithm, other.signatureHashAlgorithm)) {
+            return false;
+        }
+        if (!Objects.equals(this.signatureLength, other.signatureLength)) {
+            return false;
+        }
+        return Objects.equals(this.signature, other.signature);
+    }
+
 }

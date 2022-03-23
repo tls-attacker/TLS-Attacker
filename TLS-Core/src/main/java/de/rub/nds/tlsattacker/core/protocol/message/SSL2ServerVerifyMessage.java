@@ -20,6 +20,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.SSL2ServerVerifyPreparato
 import de.rub.nds.tlsattacker.core.protocol.serializer.HandshakeMessageSerializer;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
+import java.util.Objects;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @SuppressWarnings("serial")
@@ -76,6 +77,28 @@ public class SSL2ServerVerifyMessage extends SSL2HandshakeMessage {
 
     public void setEncryptedPart(byte[] encryptedPart) {
         this.encryptedPart = ModifiableVariableFactory.safelySetValue(this.encryptedPart, encryptedPart);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 79 * hash + Objects.hashCode(this.encryptedPart);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final SSL2ServerVerifyMessage other = (SSL2ServerVerifyMessage) obj;
+        return Objects.equals(this.encryptedPart, other.encryptedPart);
     }
 
 }

@@ -79,7 +79,7 @@ public class AlpnExtensionMessage extends ExtensionMessage<AlpnExtensionMessage>
 
     @Override
     public AlpnExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new AlpnExtensionParser(stream);
+        return new AlpnExtensionParser(stream, tlsContext);
     }
 
     @Override

@@ -64,7 +64,7 @@ public class PWDClearExtensionMessage extends ExtensionMessage<PWDClearExtension
 
     @Override
     public PWDClearExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new PWDClearExtensionParser(stream);
+        return new PWDClearExtensionParser(stream, tlsContext);
     }
 
     @Override

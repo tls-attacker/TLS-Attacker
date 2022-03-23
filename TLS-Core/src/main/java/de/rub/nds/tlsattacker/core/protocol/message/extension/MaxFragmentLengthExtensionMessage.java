@@ -54,7 +54,7 @@ public class MaxFragmentLengthExtensionMessage extends ExtensionMessage<MaxFragm
 
     @Override
     public MaxFragmentLengthExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new MaxFragmentLengthExtensionParser(stream);
+        return new MaxFragmentLengthExtensionParser(stream, tlsContext);
     }
 
     @Override

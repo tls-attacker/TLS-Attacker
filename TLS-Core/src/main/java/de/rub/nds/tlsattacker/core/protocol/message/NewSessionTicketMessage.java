@@ -25,6 +25,7 @@ import de.rub.nds.tlsattacker.core.state.SessionTicket;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Objects;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "NewSessionTicket")
@@ -129,4 +130,31 @@ public class NewSessionTicketMessage extends HandshakeMessage {
     public String toShortString() {
         return "ST";
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 53 * hash + Objects.hashCode(this.ticketLifetimeHint);
+        hash = 53 * hash + Objects.hashCode(this.ticket);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final NewSessionTicketMessage other = (NewSessionTicketMessage) obj;
+        if (!Objects.equals(this.ticketLifetimeHint, other.ticketLifetimeHint)) {
+            return false;
+        }
+        return Objects.equals(this.ticket, other.ticket);
+    }
+
 }

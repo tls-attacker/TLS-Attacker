@@ -79,7 +79,7 @@ public class ClientCertificateTypeExtensionMessage extends ExtensionMessage<Clie
 
     @Override
     public ClientCertificateTypeExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new ClientCertificateTypeExtensionParser(stream);
+        return new ClientCertificateTypeExtensionParser(stream, tlsContext);
     }
 
     @Override

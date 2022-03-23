@@ -47,7 +47,7 @@ public class SessionTicketTLSExtensionMessage extends ExtensionMessage<SessionTi
 
     @Override
     public SessionTicketTLSExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new SessionTicketTLSExtensionParser(stream, tlsContext.getConfig());
+        return new SessionTicketTLSExtensionParser(stream, tlsContext.getConfig(), tlsContext);
     }
 
     @Override

@@ -19,6 +19,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.EncryptedExtensionsPrepar
 import de.rub.nds.tlsattacker.core.protocol.serializer.EncryptedExtensionsSerializer;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
+import java.util.Objects;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "EncryptedExtensions")
@@ -75,4 +76,27 @@ public class EncryptedExtensionsMessage extends HandshakeMessage {
         return new EncryptedExtensionsSerializer(this);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final EncryptedExtensionsMessage other = (EncryptedExtensionsMessage) obj;
+        if (!Objects.equals(this.getExtensions(), other.getExtensions())) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        return hash;
+    }
 }

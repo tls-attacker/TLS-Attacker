@@ -30,7 +30,7 @@ public class EncryptThenMacExtensionMessage extends ExtensionMessage<EncryptThen
 
     @Override
     public EncryptThenMacExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new EncryptThenMacExtensionParser(stream);
+        return new EncryptThenMacExtensionParser(stream, tlsContext);
     }
 
     @Override

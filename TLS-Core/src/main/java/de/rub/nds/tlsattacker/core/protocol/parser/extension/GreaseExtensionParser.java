@@ -10,12 +10,13 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.GreaseExtensionMessage;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
 
 public class GreaseExtensionParser extends ExtensionParser<GreaseExtensionMessage> {
 
-    public GreaseExtensionParser(InputStream stream) {
-        super(stream);
+    public GreaseExtensionParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
     }
 
     @Override

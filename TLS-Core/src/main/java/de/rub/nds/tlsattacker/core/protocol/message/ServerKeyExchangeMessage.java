@@ -15,6 +15,7 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.KeyExchangeComputations;
+import java.util.Objects;
 
 public abstract class ServerKeyExchangeMessage extends HandshakeMessage {
 
@@ -118,4 +119,43 @@ public abstract class ServerKeyExchangeMessage extends HandshakeMessage {
     public String toShortString() {
         return "SKE";
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 83 * hash + Objects.hashCode(this.signatureAndHashAlgorithm);
+        hash = 83 * hash + Objects.hashCode(this.signatureLength);
+        hash = 83 * hash + Objects.hashCode(this.signature);
+        hash = 83 * hash + Objects.hashCode(this.publicKeyLength);
+        hash = 83 * hash + Objects.hashCode(this.publicKey);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ServerKeyExchangeMessage other = (ServerKeyExchangeMessage) obj;
+        if (!Objects.equals(this.signatureAndHashAlgorithm, other.signatureAndHashAlgorithm)) {
+            return false;
+        }
+        if (!Objects.equals(this.signatureLength, other.signatureLength)) {
+            return false;
+        }
+        if (!Objects.equals(this.signature, other.signature)) {
+            return false;
+        }
+        if (!Objects.equals(this.publicKeyLength, other.publicKeyLength)) {
+            return false;
+        }
+        return Objects.equals(this.publicKey, other.publicKey);
+    }
+
 }

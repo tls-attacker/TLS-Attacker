@@ -34,7 +34,7 @@ public class ExtendedMasterSecretExtensionMessage extends ExtensionMessage<Exten
 
     @Override
     public ExtendedMasterSecretExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new ExtendedMasterSecretExtensionParser(stream);
+        return new ExtendedMasterSecretExtensionParser(stream, tlsContext);
     }
 
     @Override

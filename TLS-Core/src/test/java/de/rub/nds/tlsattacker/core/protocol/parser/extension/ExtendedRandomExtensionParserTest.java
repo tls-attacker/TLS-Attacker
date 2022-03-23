@@ -10,7 +10,9 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedRandomExtensionMessage;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
@@ -33,6 +35,7 @@ public class ExtendedRandomExtensionParserTest {
     private final byte[] expectedBytes;
     private ExtendedRandomExtensionParser parser;
     private ExtendedRandomExtensionMessage message;
+    private final Config config = Config.createConfig();
 
     /**
      * Constructor for parameterized setup.
@@ -49,7 +52,8 @@ public class ExtendedRandomExtensionParserTest {
 
     @Before
     public void setUp() {
-        parser = new ExtendedRandomExtensionParser(new ByteArrayInputStream(expectedBytes));
+        TlsContext tlsContext = new TlsContext(config);
+        parser = new ExtendedRandomExtensionParser(new ByteArrayInputStream(expectedBytes), tlsContext);
     }
 
     @Test

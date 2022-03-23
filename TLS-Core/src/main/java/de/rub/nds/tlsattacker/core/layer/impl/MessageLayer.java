@@ -75,7 +75,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
 
     @Override
     public LayerProcessingResult receiveData() throws IOException {
-
+        ReceiveLayerConfiguration layerConfig = (ReceiveLayerConfiguration) getLayerConfiguration();
         try {
             HintedInputStream dataStream = null;
             do {
@@ -111,8 +111,8 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
                             break;
                     }
                 }
-            } while (getLayerConfiguration().successRequiresMoreContainers(getLayerResult().getUsedContainers())
-                || dataStream.available() > 0);
+            } while (layerConfig.successRequiresMoreContainers(getLayerResult().getUsedContainers())
+                || layerConfig.isProcessTrailingContainers());
         } catch (TimeoutException E) {
             LOGGER.debug(E);
         } catch (EndOfStreamException E) {

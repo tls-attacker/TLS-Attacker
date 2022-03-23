@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
 import de.rub.nds.tlsattacker.core.state.SessionTicket;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.state.parser.SessionTicketParser;;
 
 import java.io.InputStream;
@@ -30,8 +31,8 @@ public class SessionTicketTLSExtensionParser extends ExtensionParser<SessionTick
      * @param stream
      * @param config
      */
-    public SessionTicketTLSExtensionParser(InputStream stream, Config config) {
-        super(stream);
+    public SessionTicketTLSExtensionParser(InputStream stream, Config config, TlsContext tlsContext) {
+        super(stream, tlsContext);
         configTicketKeyName = config.getSessionTicketKeyName();
         configCipherAlgorithm = config.getSessionTicketCipherAlgorithm();
         configMacAlgorithm = config.getSessionTicketMacAlgorithm();

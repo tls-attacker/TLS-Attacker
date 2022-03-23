@@ -19,6 +19,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.KeyUpdatePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.KeyUpdateSerializer;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
+import java.util.Objects;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -70,6 +71,28 @@ public class KeyUpdateMessage extends HandshakeMessage {
     @Override
     public String toShortString() {
         return "KU";
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 59 * hash + Objects.hashCode(this.requestMode);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final KeyUpdateMessage other = (KeyUpdateMessage) obj;
+        return Objects.equals(this.requestMode, other.requestMode);
     }
 
 }

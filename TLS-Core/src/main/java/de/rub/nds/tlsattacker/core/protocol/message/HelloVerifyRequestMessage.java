@@ -21,6 +21,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.HelloVerifyRequestPrepara
 import de.rub.nds.tlsattacker.core.protocol.serializer.HelloVerifyRequestSerializer;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
+import java.util.Objects;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "HelloVerifyRequest")
@@ -124,6 +125,36 @@ public class HelloVerifyRequestMessage extends HandshakeMessage {
     @Override
     public String toShortString() {
         return "HVR";
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 31 * hash + Objects.hashCode(this.protocolVersion);
+        hash = 31 * hash + Objects.hashCode(this.cookieLength);
+        hash = 31 * hash + Objects.hashCode(this.cookie);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final HelloVerifyRequestMessage other = (HelloVerifyRequestMessage) obj;
+        if (!Objects.equals(this.protocolVersion, other.protocolVersion)) {
+            return false;
+        }
+        if (!Objects.equals(this.cookieLength, other.cookieLength)) {
+            return false;
+        }
+        return Objects.equals(this.cookie, other.cookie);
     }
 
 }

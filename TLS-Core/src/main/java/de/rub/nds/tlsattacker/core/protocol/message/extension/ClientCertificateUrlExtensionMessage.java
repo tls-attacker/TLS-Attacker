@@ -27,7 +27,7 @@ public class ClientCertificateUrlExtensionMessage extends ExtensionMessage<Clien
 
     @Override
     public ClientCertificateUrlExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new ClientCertificateUrlExtensionParser(stream);
+        return new ClientCertificateUrlExtensionParser(stream, tlsContext);
     }
 
     @Override

@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
@@ -43,6 +44,7 @@ public class SessionTicketTLSExtensionParserTest {
     private final int startParsing;
     private SessionTicketTLSExtensionParser parser;
     private SessionTicketTLSExtensionMessage message;
+    private final Config config = Config.createConfig();
 
     /**
      * Constructor for parameterized setup.
@@ -67,7 +69,9 @@ public class SessionTicketTLSExtensionParserTest {
      */
     @Before
     public void setUp() {
-        parser = new SessionTicketTLSExtensionParser(new ByteArrayInputStream(expectedBytes), Config.createConfig());
+        TlsContext tlsContext = new TlsContext(config);
+        parser = new SessionTicketTLSExtensionParser(new ByteArrayInputStream(expectedBytes), Config.createConfig(),
+            tlsContext);
         message = new SessionTicketTLSExtensionMessage();
         message.setExtensionLength(0);
     }

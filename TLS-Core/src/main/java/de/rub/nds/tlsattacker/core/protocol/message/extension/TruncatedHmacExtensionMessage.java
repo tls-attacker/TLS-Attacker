@@ -30,7 +30,7 @@ public class TruncatedHmacExtensionMessage extends ExtensionMessage<TruncatedHma
 
     @Override
     public TruncatedHmacExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new TruncatedHmacExtensionParser(stream);
+        return new TruncatedHmacExtensionParser(stream, tlsContext);
     }
 
     @Override

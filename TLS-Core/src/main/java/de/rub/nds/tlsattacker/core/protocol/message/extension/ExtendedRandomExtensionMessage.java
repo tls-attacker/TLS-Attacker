@@ -65,7 +65,7 @@ public class ExtendedRandomExtensionMessage extends ExtensionMessage<ExtendedRan
 
     @Override
     public ExtendedRandomExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new ExtendedRandomExtensionParser(stream);
+        return new ExtendedRandomExtensionParser(stream, tlsContext);
     }
 
     @Override

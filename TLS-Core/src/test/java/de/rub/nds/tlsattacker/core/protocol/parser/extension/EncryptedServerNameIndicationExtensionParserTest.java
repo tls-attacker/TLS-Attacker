@@ -36,7 +36,7 @@ import org.junit.Test;
 public class EncryptedServerNameIndicationExtensionParserTest {
 
     private Chooser chooser;
-    private TlsContext context;
+    private TlsContext tlsContext;
 
     @Before
     public void setUp() {
@@ -44,8 +44,8 @@ public class EncryptedServerNameIndicationExtensionParserTest {
         Config config = new Config();
         Context outerContext = new Context(config);
         LayerStack layerStack = LayerStackFactory.createLayerStack(LayerConfiguration.TLS, outerContext);
-        context = outerContext.getTlsContext();
-        chooser = ChooserFactory.getChooser(ChooserType.DEFAULT, outerContext, config);
+        tlsContext = outerContext.getTlsContext();
+        chooser = ChooserFactory.getChooser(ChooserType.DEFAULT, tlsContext, config);
     }
 
     @Test
@@ -73,18 +73,18 @@ public class EncryptedServerNameIndicationExtensionParserTest {
         clientKeyShares.add(new KeyShareStoreEntry(clientKeyShareGroup1, clientKeySharePublicKey1));
         clientKeyShares.add(new KeyShareStoreEntry(clientKeyShareGroup2, clientKeySharePublicKey2));
 
-        context.setClientRandom(clientRandom);
+        tlsContext.setClientRandom(clientRandom);
 
-        context.setClientKeyShareStoreEntryList(clientKeyShares);
+        tlsContext.setClientKeyShareStoreEntryList(clientKeyShares);
         KeyShareEntry serverKeyShareEntry = new KeyShareEntry();
         serverKeyShareEntry.setGroup(namedGroup);
         serverKeyShareEntry.setPrivateKey(new BigInteger(serverPrivateKey));
         List<KeyShareEntry> serverKeyShareEntries = new LinkedList();
         serverKeyShareEntries.add(serverKeyShareEntry);
-        context.getConfig().setEsniServerKeyPairs(serverKeyShareEntries);
+        tlsContext.getConfig().setEsniServerKeyPairs(serverKeyShareEntries);
 
-        EncryptedServerNameIndicationExtensionParser parser = new EncryptedServerNameIndicationExtensionParser(
-            new ByteArrayInputStream(msgBytes), ConnectionEndType.CLIENT);
+        EncryptedServerNameIndicationExtensionParser parser =
+            new EncryptedServerNameIndicationExtensionParser(new ByteArrayInputStream(msgBytes), tlsContext);
         EncryptedServerNameIndicationExtensionMessage msg = new EncryptedServerNameIndicationExtensionMessage();
         parser.parse(msg);
     }

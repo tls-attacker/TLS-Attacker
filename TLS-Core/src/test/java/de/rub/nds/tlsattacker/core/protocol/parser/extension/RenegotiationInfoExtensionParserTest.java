@@ -10,7 +10,9 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RenegotiationInfoExtensionMessage;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
@@ -34,6 +36,7 @@ public class RenegotiationInfoExtensionParserTest {
     private final byte[] expectedBytes;
     private RenegotiationInfoExtensionParser parser;
     private RenegotiationInfoExtensionMessage message;
+    private final Config config = Config.createConfig();
 
     public RenegotiationInfoExtensionParserTest(int extensionPayloadLength, byte[] extensionPayload,
         byte[] expectedBytes) {
@@ -44,7 +47,8 @@ public class RenegotiationInfoExtensionParserTest {
 
     @Before
     public void setUp() {
-        parser = new RenegotiationInfoExtensionParser(new ByteArrayInputStream(expectedBytes));
+        TlsContext tlsContext = new TlsContext(config);
+        parser = new RenegotiationInfoExtensionParser(new ByteArrayInputStream(expectedBytes), tlsContext);
     }
 
     @Test

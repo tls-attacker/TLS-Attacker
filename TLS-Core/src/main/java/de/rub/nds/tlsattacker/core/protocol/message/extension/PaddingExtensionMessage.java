@@ -51,7 +51,7 @@ public class PaddingExtensionMessage extends ExtensionMessage<PaddingExtensionMe
 
     @Override
     public PaddingExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new PaddingExtensionParser(stream);
+        return new PaddingExtensionParser(stream, tlsContext);
     }
 
     @Override

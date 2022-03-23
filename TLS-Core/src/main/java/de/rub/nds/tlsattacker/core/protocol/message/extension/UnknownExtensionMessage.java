@@ -82,7 +82,7 @@ public class UnknownExtensionMessage extends ExtensionMessage<UnknownExtensionMe
 
     @Override
     public UnknownExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new UnknownExtensionParser(stream);
+        return new UnknownExtensionParser(stream, tlsContext);
     }
 
     @Override

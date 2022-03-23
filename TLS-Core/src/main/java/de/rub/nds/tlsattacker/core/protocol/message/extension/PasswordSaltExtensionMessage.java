@@ -64,7 +64,7 @@ public class PasswordSaltExtensionMessage extends ExtensionMessage<PasswordSaltE
 
     @Override
     public PasswordSaltExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new PasswordSaltExtensionParser(stream);
+        return new PasswordSaltExtensionParser(stream, tlsContext);
     }
 
     @Override

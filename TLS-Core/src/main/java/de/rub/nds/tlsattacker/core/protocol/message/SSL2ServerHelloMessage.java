@@ -24,6 +24,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.SSL2ServerHelloPreparator
 import de.rub.nds.tlsattacker.core.protocol.serializer.SSL2ServerHelloSerializer;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
+import java.util.Objects;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @SuppressWarnings("serial")
@@ -242,4 +243,59 @@ public class SSL2ServerHelloMessage extends SSL2HandshakeMessage {
     public String toShortString() {
         return "SSL2_SH";
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 89 * hash + Objects.hashCode(this.sessionIdHit);
+        hash = 89 * hash + Objects.hashCode(this.certificateType);
+        hash = 89 * hash + Objects.hashCode(this.protocolVersion);
+        hash = 89 * hash + Objects.hashCode(this.certificateLength);
+        hash = 89 * hash + Objects.hashCode(this.cipherSuitesLength);
+        hash = 89 * hash + Objects.hashCode(this.sessionIdLength);
+        hash = 89 * hash + Objects.hashCode(this.certificate);
+        hash = 89 * hash + Objects.hashCode(this.cipherSuites);
+        hash = 89 * hash + Objects.hashCode(this.sessionId);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final SSL2ServerHelloMessage other = (SSL2ServerHelloMessage) obj;
+        if (!Objects.equals(this.sessionIdHit, other.sessionIdHit)) {
+            return false;
+        }
+        if (!Objects.equals(this.certificateType, other.certificateType)) {
+            return false;
+        }
+        if (!Objects.equals(this.protocolVersion, other.protocolVersion)) {
+            return false;
+        }
+        if (!Objects.equals(this.certificateLength, other.certificateLength)) {
+            return false;
+        }
+        if (!Objects.equals(this.cipherSuitesLength, other.cipherSuitesLength)) {
+            return false;
+        }
+        if (!Objects.equals(this.sessionIdLength, other.sessionIdLength)) {
+            return false;
+        }
+        if (!Objects.equals(this.certificate, other.certificate)) {
+            return false;
+        }
+        if (!Objects.equals(this.cipherSuites, other.cipherSuites)) {
+            return false;
+        }
+        return Objects.equals(this.sessionId, other.sessionId);
+    }
+
 }

@@ -21,6 +21,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.ChangeCipherSpecPreparato
 import de.rub.nds.tlsattacker.core.protocol.serializer.ChangeCipherSpecSerializer;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
+import java.util.Objects;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "ChangeCipherSpec")
@@ -88,4 +89,27 @@ public class ChangeCipherSpecMessage extends ProtocolMessage<ChangeCipherSpecMes
     public ChangeCipherSpecSerializer getSerializer(TlsContext tlsContext) {
         return new ChangeCipherSpecSerializer(this);
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 71 * hash + Objects.hashCode(this.ccsProtocolType);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ChangeCipherSpecMessage other = (ChangeCipherSpecMessage) obj;
+        return Objects.equals(this.ccsProtocolType, other.ccsProtocolType);
+    }
+
 }

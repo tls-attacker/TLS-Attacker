@@ -9,7 +9,9 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateUrlExtensionMessage;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.ByteArrayInputStream;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,10 +21,12 @@ public class ClientCertificateUrlExtensionParserTest {
     private final byte[] expectedBytes = new byte[0];
     private ClientCertificateUrlExtensionParser parser;
     private ClientCertificateUrlExtensionMessage message;
+    private final Config config = Config.createConfig();
 
     @Before
     public void setUp() {
-        parser = new ClientCertificateUrlExtensionParser(new ByteArrayInputStream(expectedBytes));
+        TlsContext tlsContext = new TlsContext(config);
+        parser = new ClientCertificateUrlExtensionParser(new ByteArrayInputStream(expectedBytes), tlsContext);
     }
 
     @Test

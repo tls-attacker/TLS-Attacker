@@ -31,10 +31,10 @@ public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMe
 
     private boolean helloRetryRequestHint = false;
 
-    private ConnectionEndType talkingConnectionEndType;
+    private final ConnectionEndType talkingConnectionEndType;
 
     public KeyShareExtensionParser(InputStream stream, TlsContext tlsContext) {
-        super(stream);
+        super(stream, tlsContext);
         talkingConnectionEndType = tlsContext.getTalkingConnectionEndType();
     }
 
@@ -68,7 +68,7 @@ public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMe
     }
 
     private KeyShareEntry parseKeyShareEntry(ByteArrayInputStream innerStream) {
-        KeyShareEntryParser parser = new KeyShareEntryParser(innerStream);
+        KeyShareEntryParser parser = new KeyShareEntryParser(innerStream, helloRetryRequestHint);
         KeyShareEntry entry = new KeyShareEntry();
         parser.parse(entry);
         return entry;

@@ -64,7 +64,7 @@ public class ClientAuthzExtensionMessage extends ExtensionMessage<ClientAuthzExt
 
     @Override
     public ClientAuthzExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new ClientAuthzExtensionParser(stream);
+        return new ClientAuthzExtensionParser(stream, tlsContext);
     }
 
     @Override

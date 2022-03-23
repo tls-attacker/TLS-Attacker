@@ -24,10 +24,11 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.HeartbeatMessagePreparato
 import de.rub.nds.tlsattacker.core.protocol.serializer.HeartbeatMessageSerializer;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
+import java.util.Objects;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "Heartbeat")
-public class HeartbeatMessage<HeartbeatMessage> extends ProtocolMessage {
+public class HeartbeatMessage extends ProtocolMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     ModifiableByte heartbeatMessageType;
@@ -155,4 +156,39 @@ public class HeartbeatMessage<HeartbeatMessage> extends ProtocolMessage {
     public HeartbeatMessageSerializer getSerializer(TlsContext tlsContext) {
         return new HeartbeatMessageSerializer(this);
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 59 * hash + Objects.hashCode(this.heartbeatMessageType);
+        hash = 59 * hash + Objects.hashCode(this.payloadLength);
+        hash = 59 * hash + Objects.hashCode(this.payload);
+        hash = 59 * hash + Objects.hashCode(this.padding);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final HeartbeatMessage other = (HeartbeatMessage) obj;
+        if (!Objects.equals(this.heartbeatMessageType, other.heartbeatMessageType)) {
+            return false;
+        }
+        if (!Objects.equals(this.payloadLength, other.payloadLength)) {
+            return false;
+        }
+        if (!Objects.equals(this.payload, other.payload)) {
+            return false;
+        }
+        return Objects.equals(this.padding, other.padding);
+    }
+
 }

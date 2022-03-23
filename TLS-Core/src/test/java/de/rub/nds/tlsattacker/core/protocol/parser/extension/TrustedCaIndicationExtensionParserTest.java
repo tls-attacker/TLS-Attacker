@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TrustedCaIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.TrustedAuthorityPreparator;
@@ -41,6 +42,7 @@ public class TrustedCaIndicationExtensionParserTest {
     private final byte[] extensionBytes;
     private final List<TrustedAuthority> trustedAuthoritiesList;
     private final int trustedAuthoritiesLength;
+    private final Config config = Config.createConfig();
 
     public TrustedCaIndicationExtensionParserTest(byte[] extensionBytes, List<TrustedAuthority> trustedAuthoritiesList,
         int trustedAuthoritiesLength) {
@@ -59,8 +61,9 @@ public class TrustedCaIndicationExtensionParserTest {
 
     @Test
     public void testParse() {
+        TlsContext tlsContext = new TlsContext(config);
         TrustedCaIndicationExtensionParser parser =
-            new TrustedCaIndicationExtensionParser(new ByteArrayInputStream(extensionBytes));
+            new TrustedCaIndicationExtensionParser(new ByteArrayInputStream(extensionBytes), tlsContext);
         TrustedCaIndicationExtensionMessage msg = new TrustedCaIndicationExtensionMessage();
         parser.parse(msg);
         assertEquals(trustedAuthoritiesLength, (long) msg.getTrustedAuthoritiesLength().getValue());

@@ -59,7 +59,7 @@ public class HeartbeatExtensionMessage extends ExtensionMessage<HeartbeatExtensi
 
     @Override
     public HeartbeatExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new HeartbeatExtensionParser(stream);
+        return new HeartbeatExtensionParser(stream, tlsContext);
     }
 
     @Override

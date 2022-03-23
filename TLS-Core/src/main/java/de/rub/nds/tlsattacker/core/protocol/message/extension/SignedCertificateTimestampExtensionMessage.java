@@ -63,7 +63,7 @@ public class SignedCertificateTimestampExtensionMessage
 
     @Override
     public SignedCertificateTimestampExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new SignedCertificateTimestampExtensionParser(stream);
+        return new SignedCertificateTimestampExtensionParser(stream, tlsContext);
     }
 
     @Override

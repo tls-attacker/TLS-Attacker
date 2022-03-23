@@ -385,6 +385,8 @@
 
   <xs:element name="stringExplicitValueModification" type="stringExplicitValueModification"/>
 
+  <xs:element name="tightReceiveAction" type="tightReceiveAction"/>
+
   <xs:element name="userMappingExtensionMessage" type="userMappingExtensionMessage"/>
 
   <xs:element name="waitAction" type="waitAction"/>
@@ -441,6 +443,7 @@
         <xs:element name="ForwardData" type="forwardDataAction"/>
         <xs:element name="GenericReceive" type="genericReceiveAction"/>
         <xs:element name="ReceiveTill" type="receiveTillAction"/>
+        <xs:element name="TightReceive" type="tightReceiveAction"/>
         <xs:element name="MultiReceive" type="multiReceiveAction"/>
         <xs:element name="PopAndSend" type="popAndSendAction"/>
         <xs:element name="PopAndSendMessage" type="popAndSendMessageAction"/>
@@ -4365,7 +4368,7 @@
 
   <xs:complexType name="receiveTillAction">
     <xs:complexContent>
-      <xs:extension base="messageAction">
+      <xs:extension base="commonReceiveAction">
         <xs:choice>
           <xs:element ref="Certificate"/>
           <xs:element ref="DtlsHandshakeMessageFragment"/>
@@ -4417,19 +4420,25 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="multiReceiveAction">
+  <xs:complexType name="commonReceiveAction" abstract="true">
     <xs:complexContent>
-      <xs:extension base="genericReceiveAction">
-        <xs:sequence>
-          <xs:element name="expectedActionCandidates" type="receiveAction" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
-        </xs:sequence>
+      <xs:extension base="messageAction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="tightReceiveAction">
+    <xs:complexContent>
+      <xs:extension base="receiveAction">
+        <xs:sequence/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
 
   <xs:complexType name="receiveAction">
     <xs:complexContent>
-      <xs:extension base="messageAction">
+      <xs:extension base="commonReceiveAction">
         <xs:sequence>
           <xs:element name="expectedMessages" minOccurs="0">
             <xs:complexType>
@@ -4484,6 +4493,16 @@
               </xs:sequence>
             </xs:complexType>
           </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="multiReceiveAction">
+    <xs:complexContent>
+      <xs:extension base="genericReceiveAction">
+        <xs:sequence>
+          <xs:element name="expectedActionCandidates" type="receiveAction" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>

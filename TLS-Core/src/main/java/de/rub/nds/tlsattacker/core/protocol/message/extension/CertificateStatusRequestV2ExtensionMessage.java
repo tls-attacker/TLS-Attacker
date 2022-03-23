@@ -78,7 +78,7 @@ public class CertificateStatusRequestV2ExtensionMessage
 
     @Override
     public CertificateStatusRequestV2ExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new CertificateStatusRequestV2ExtensionParser(stream);
+        return new CertificateStatusRequestV2ExtensionParser(stream, tlsContext);
     }
 
     @Override
