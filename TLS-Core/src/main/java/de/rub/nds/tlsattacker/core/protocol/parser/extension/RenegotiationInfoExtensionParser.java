@@ -17,22 +17,19 @@ import org.apache.logging.log4j.Logger;
 import java.io.InputStream;
 
 import static de.rub.nds.modifiablevariable.util.ArrayConverter.bytesToHexString;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 public class RenegotiationInfoExtensionParser extends ExtensionParser<RenegotiationInfoExtensionMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public RenegotiationInfoExtensionParser(InputStream stream) {
-        super(stream);
+    public RenegotiationInfoExtensionParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
     }
 
     @Override
     public void parseExtensionMessageContent(RenegotiationInfoExtensionMessage msg) {
         msg.setRenegotiationInfoLength(parseIntField(ExtensionByteLength.RENEGOTIATION_INFO));
-        if (msg.getRenegotiationInfoLength().getValue() > 255) {
-            LOGGER.warn("The renegotiation info length shouldn't exceed 1 byte as defined in RFC 5246. " + "Length was "
-                + msg.getExtensionLength().getValue());
-        }
         msg.setRenegotiationInfo(parseByteArrayField(msg.getRenegotiationInfoLength().getValue()));
         LOGGER.debug(
             "The RenegotiationInfoExtensionParser parsed the value " + bytesToHexString(msg.getRenegotiationInfo()));

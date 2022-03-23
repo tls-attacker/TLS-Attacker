@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CachedInfoExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.CachedObjectPreparator;
@@ -43,20 +44,25 @@ public class CachedInfoExtensionParserTest {
     private final byte[] cachedInfoBytes;
     private final List<CachedObject> cachedObjectList;
     private final byte[] extensionBytes;
+    private final Config config = Config.createConfig();
+    private final ConnectionEndType talkingConnectionEndType;
 
-    public CachedInfoExtensionParserTest(ConnectionEndType connectionEndType, int cachedInfoLength,
+    public CachedInfoExtensionParserTest(ConnectionEndType talkingConnectionEndType, int cachedInfoLength,
         byte[] cachedInfoBytes, List<CachedObject> cachedObjectList, byte[] extensionBytes) {
         this.cachedInfoLength = cachedInfoLength;
         this.cachedInfoBytes = cachedInfoBytes;
         this.cachedObjectList = cachedObjectList;
         this.extensionBytes = extensionBytes;
+        this.talkingConnectionEndType = talkingConnectionEndType;
     }
 
     @Test
     public void testParse() {
-        TlsContext context = new TlsContext();
+        TlsContext tlsContext = new TlsContext(config);
+        tlsContext.setTalkingConnectionEndType(talkingConnectionEndType);
 
-        CachedInfoExtensionParser parser = new CachedInfoExtensionParser(new ByteArrayInputStream(extensionBytes));
+        CachedInfoExtensionParser parser =
+            new CachedInfoExtensionParser(new ByteArrayInputStream(extensionBytes), tlsContext);
         CachedInfoExtensionMessage msg = new CachedInfoExtensionMessage();
         parser.parse(msg);
 

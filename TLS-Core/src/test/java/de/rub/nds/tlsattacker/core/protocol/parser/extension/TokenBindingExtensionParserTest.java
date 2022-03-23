@@ -9,9 +9,11 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TokenBindingExtensionMessage;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
@@ -37,6 +39,7 @@ public class TokenBindingExtensionParserTest {
     private final byte[] keyParameter;
     private TokenBindingExtensionParser parser;
     private TokenBindingExtensionMessage message;
+    private final Config config = Config.createConfig();
 
     public TokenBindingExtensionParserTest(byte[] extensionBytes, TokenBindingVersion tokenbindingVersion,
         int parameterLength, byte[] keyParameter) {
@@ -48,7 +51,8 @@ public class TokenBindingExtensionParserTest {
 
     @Before
     public void setUp() {
-        parser = new TokenBindingExtensionParser(new ByteArrayInputStream(extensionBytes));
+        TlsContext tlsContext = new TlsContext(config);
+        parser = new TokenBindingExtensionParser(new ByteArrayInputStream(extensionBytes), tlsContext);
     }
 
     @Test

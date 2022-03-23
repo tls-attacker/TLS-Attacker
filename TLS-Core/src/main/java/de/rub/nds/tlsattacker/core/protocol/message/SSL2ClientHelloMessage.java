@@ -22,6 +22,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.SSL2ClientHelloPreparator
 import de.rub.nds.tlsattacker.core.protocol.serializer.SSL2ClientHelloSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
+import java.util.Objects;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @SuppressWarnings("serial")
@@ -202,4 +203,51 @@ public class SSL2ClientHelloMessage extends SSL2HandshakeMessage {
     public SSL2ClientHelloSerializer getSerializer(TlsContext tlsContext) {
         return new SSL2ClientHelloSerializer(this);
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 89 * hash + Objects.hashCode(this.protocolVersion);
+        hash = 89 * hash + Objects.hashCode(this.cipherSuiteLength);
+        hash = 89 * hash + Objects.hashCode(this.sessionIdLength);
+        hash = 89 * hash + Objects.hashCode(this.challengeLength);
+        hash = 89 * hash + Objects.hashCode(this.cipherSuites);
+        hash = 89 * hash + Objects.hashCode(this.sessionId);
+        hash = 89 * hash + Objects.hashCode(this.challenge);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final SSL2ClientHelloMessage other = (SSL2ClientHelloMessage) obj;
+        if (!Objects.equals(this.protocolVersion, other.protocolVersion)) {
+            return false;
+        }
+        if (!Objects.equals(this.cipherSuiteLength, other.cipherSuiteLength)) {
+            return false;
+        }
+        if (!Objects.equals(this.sessionIdLength, other.sessionIdLength)) {
+            return false;
+        }
+        if (!Objects.equals(this.challengeLength, other.challengeLength)) {
+            return false;
+        }
+        if (!Objects.equals(this.cipherSuites, other.cipherSuites)) {
+            return false;
+        }
+        if (!Objects.equals(this.sessionId, other.sessionId)) {
+            return false;
+        }
+        return Objects.equals(this.challenge, other.challenge);
+    }
+
 }

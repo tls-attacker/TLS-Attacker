@@ -14,13 +14,12 @@ import java.util.List;
 
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 
-public class SpecificReceiveLayerConfiguration<Container extends DataContainer> extends LayerConfiguration<Container> {
+public class SpecificReceiveLayerConfiguration<Container extends DataContainer>
+    extends ReceiveLayerConfiguration<Container> {
 
     private List<DataContainerFilter> containerFilterList;
 
     private boolean allowTrailingContainers = false;
-
-    private boolean processTrailingContainers = true;
 
     public SpecificReceiveLayerConfiguration(List<Container> containerList) {
         super(containerList);
@@ -118,12 +117,8 @@ public class SpecificReceiveLayerConfiguration<Container extends DataContainer> 
         this.containerFilterList = containerFilterList;
     }
 
+    @Override
     public boolean isProcessTrailingContainers() {
-        return processTrailingContainers;
+        return true;
     }
-
-    public void setProcessTrailingContainers(boolean processTrailingContainers) {
-        this.processTrailingContainers = processTrailingContainers;
-    }
-
 }

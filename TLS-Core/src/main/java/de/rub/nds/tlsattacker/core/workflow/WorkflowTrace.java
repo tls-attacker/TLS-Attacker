@@ -119,6 +119,7 @@ public class WorkflowTrace implements Serializable {
         @XmlElement(type = ForwardDataAction.class, name = "ForwardData"),
         @XmlElement(type = GenericReceiveAction.class, name = "GenericReceive"),
         @XmlElement(type = ReceiveTillAction.class, name = "ReceiveTill"),
+        @XmlElement(type = TightReceiveAction.class, name = "TightReceive"),
         @XmlElement(type = MultiReceiveAction.class, name = "MultiReceive"),
         @XmlElement(type = PopAndSendAction.class, name = "PopAndSend"),
         @XmlElement(type = PopAndSendMessageAction.class, name = "PopAndSendMessage"),

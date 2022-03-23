@@ -64,7 +64,7 @@ public class ServerAuthzExtensionMessage extends ExtensionMessage<ServerAuthzExt
 
     @Override
     public ServerAuthzExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new ServerAuthzExtensionParser(stream);
+        return new ServerAuthzExtensionParser(stream, tlsContext);
     }
 
     @Override

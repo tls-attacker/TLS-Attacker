@@ -204,7 +204,29 @@ public abstract class MessageAction<MessageType extends Message> extends Connect
         LayerConfiguration messageLayerConfig = new SpecificReceiveLayerConfiguration(protocolMessagesToReceive);
         layerConfigurationList.add(messageLayerConfig);
         layerConfigurationList.add(new SpecificReceiveLayerConfiguration(recordsToReceive));
-        layerConfigurationList.add(new SpecificReceiveLayerConfiguration((List) null));
+        layerConfigurationList.add(null);
+        getReceiveResult(layerStack, layerConfigurationList);
+    }
+
+    protected void receiveTill(TlsContext tlsContext, ProtocolMessage protocolMessageToReceive) {
+        LayerStack layerStack = tlsContext.getLayerStack();
+        List<LayerConfiguration> layerConfigurationList = new LinkedList<>();
+        layerConfigurationList.add(new ReceiveTillLayerConfiguration(protocolMessageToReceive));
+        layerConfigurationList.add(null);
+        layerConfigurationList.add(null);
+        getReceiveResult(layerStack, layerConfigurationList);
+    }
+
+    protected void tightReceive(TlsContext tlsContext, List<ProtocolMessage> protocolMessagesToReceive) {
+        LayerStack layerStack = tlsContext.getLayerStack();
+        List<LayerConfiguration> layerConfigurationList = new LinkedList<>();
+        layerConfigurationList.add(new TightReceiveLayerConfiguration(protocolMessagesToReceive));
+        layerConfigurationList.add(null);
+        layerConfigurationList.add(null);
+        getReceiveResult(layerStack, layerConfigurationList);
+    }
+
+    private void getReceiveResult(LayerStack layerStack, List<LayerConfiguration> layerConfigurationList) {
         LayerStackProcessingResult processingResult;
         try {
             processingResult = layerStack.receiveData(layerConfigurationList);
@@ -221,26 +243,6 @@ public abstract class MessageAction<MessageType extends Message> extends Connect
     private void setContainers(LayerStackProcessingResult processingResults) {
         messages = new ArrayList<>(processingResults.getResultForLayer(ImplementedLayers.MESSAGE).getUsedContainers());
         records = new ArrayList<>(processingResults.getResultForLayer(ImplementedLayers.RECORD).getUsedContainers());
-    }
-
-    protected void receiveTill(TlsContext tlsContext, List<MessageType> protocolMessagesToSend,
-        List<Record> recordsToSend) {
-        LayerStack layerStack = tlsContext.getLayerStack();
-        List<LayerConfiguration> layerConfigurationList = new LinkedList<>();
-        layerConfigurationList.add(new SpecificReceiveLayerConfiguration(protocolMessagesToSend));
-        layerConfigurationList.add(new SpecificReceiveLayerConfiguration(recordsToSend));
-        layerConfigurationList.add(new SpecificReceiveLayerConfiguration((List) null));
-        LayerStackProcessingResult processingResult;
-        try {
-            processingResult = layerStack.receiveData(layerConfigurationList);
-            setContainers(processingResult);
-            setLayerStackProcessingResult(processingResult);
-        } catch (IOException ex) {
-            LOGGER.warn("Received an IOException", ex);
-            LayerStackProcessingResult reconstructedResult = layerStack.gatherResults();
-            setContainers(reconstructedResult);
-            setLayerStackProcessingResult(reconstructedResult);
-        }
     }
 
     public enum MessageActionDirection {

@@ -25,6 +25,7 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.SSL2ClientMasterKeySerial
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Objects;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -213,6 +214,56 @@ public class SSL2ClientMasterKeyMessage extends SSL2HandshakeMessage {
             allModifiableVariableHolders.add(computations);
         }
         return allModifiableVariableHolders;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 29 * hash + Objects.hashCode(this.cipherKind);
+        hash = 29 * hash + Objects.hashCode(this.clearKeyLength);
+        hash = 29 * hash + Objects.hashCode(this.encryptedKeyLength);
+        hash = 29 * hash + Objects.hashCode(this.keyArgLength);
+        hash = 29 * hash + Objects.hashCode(this.clearKeyData);
+        hash = 29 * hash + Objects.hashCode(this.encryptedKeyData);
+        hash = 29 * hash + Objects.hashCode(this.keyArgData);
+        hash = 29 * hash + Objects.hashCode(this.computations);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final SSL2ClientMasterKeyMessage other = (SSL2ClientMasterKeyMessage) obj;
+        if (!Objects.equals(this.cipherKind, other.cipherKind)) {
+            return false;
+        }
+        if (!Objects.equals(this.clearKeyLength, other.clearKeyLength)) {
+            return false;
+        }
+        if (!Objects.equals(this.encryptedKeyLength, other.encryptedKeyLength)) {
+            return false;
+        }
+        if (!Objects.equals(this.keyArgLength, other.keyArgLength)) {
+            return false;
+        }
+        if (!Objects.equals(this.clearKeyData, other.clearKeyData)) {
+            return false;
+        }
+        if (!Objects.equals(this.encryptedKeyData, other.encryptedKeyData)) {
+            return false;
+        }
+        if (!Objects.equals(this.keyArgData, other.keyArgData)) {
+            return false;
+        }
+        return Objects.equals(this.computations, other.computations);
     }
 
 }
