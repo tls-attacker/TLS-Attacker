@@ -203,12 +203,24 @@ public class State {
         return contextContainer.getContext(alias);
     }
 
+    public TlsContext getTlsContext(String alias) {
+        return getContext(alias).getTlsContext();
+    }
+
     public TlsContext getTlsContext() {
         return getContext().getTlsContext();
     }
 
+    public HttpContext getHttpContext(String alias) {
+        return getContext(alias).getHttpContext();
+    }
+
     public HttpContext getHttpContext() {
         return getContext().getHttpContext();
+    }
+
+    public TcpContext getTcpContext(String alias) {
+        return getContext(alias).getTcpContext();
     }
 
     public TcpContext getTcpContext() {
