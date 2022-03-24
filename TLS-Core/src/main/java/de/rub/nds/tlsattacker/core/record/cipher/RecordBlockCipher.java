@@ -318,14 +318,25 @@ public final class RecordBlockCipher extends RecordCipher {
 
             parser = new DecryptionParser(0, plainData);
 
-            byte[] cleanProtocolBytes = parser
-                .parseByteArrayField(plainData.length - readMac.getMacLength() - (plainData[plainData.length - 1] + 1));
+            int paddingLength = ArrayConverter.bytesToInt(new byte[] { plainData[plainData.length - 1] }) + 1;
+            int cleanBytesLength = plainData.length - readMac.getMacLength() - paddingLength;
+
+            byte[] cleanProtocolBytes;
+            byte[] padding;
+            byte[] hmac;
+            if (cleanBytesLength < 0) {
+                LOGGER.warn("Plain Data cannot fit Mac and Padding (due to length; invalid lengths detected)");
+                padding = new byte[0];
+                hmac = new byte[0];
+                cleanProtocolBytes = parser.parseByteArrayField(plainData.length);
+            } else {
+                cleanProtocolBytes = parser.parseByteArrayField(cleanBytesLength);
+                hmac = parser.parseByteArrayField(readMac.getMacLength());
+                padding = parser.parseByteArrayField(paddingLength);
+            }
+
             record.setCleanProtocolMessageBytes(cleanProtocolBytes);
-
-            byte[] hmac = parser.parseByteArrayField(readMac.getMacLength());
-            record.getComputations().setMac(hmac);
-
-            byte[] padding = parser.parseByteArrayField(plainData[plainData.length - 1] + 1);
+            computations.setMac(hmac);
             computations.setPadding(padding);
 
             computations.setAuthenticatedNonMetaData(cleanProtocolBytes);
