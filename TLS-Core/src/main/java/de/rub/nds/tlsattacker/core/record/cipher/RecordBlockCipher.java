@@ -20,6 +20,7 @@ import de.rub.nds.tlsattacker.core.record.RecordCryptoComputations;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
@@ -249,89 +250,93 @@ public final class RecordBlockCipher extends RecordCipher {
         computations.setCipherKey(getState().getKeySet().getReadKey(getConnectionEndType()));
 
         byte[] plaintext = record.getProtocolMessageBytes().getValue();
-        DecryptionParser parser = new DecryptionParser(plaintext);
+        ByteArrayInputStream dataStream = new ByteArrayInputStream(plaintext);
 
-        byte[] iv;
-        if (useExplicitIv) {
-            LOGGER.debug("Using explicit IV");
-            iv = parser.parseByteArrayField(getState().getCipherAlg().getNonceBytesFromHandshake());
-        } else {
-            LOGGER.debug("Using implicit IV");
-            iv = decryptCipher.getIv();
-        }
-        LOGGER.debug("Using IV:" + ArrayConverter.bytesToHexString(iv));
-        record.getComputations().setCbcInitialisationVector(iv);
-
-        if (getState().isEncryptThenMac()) {
-            int macLength = readMac.getMacLength();
-            int toParseCiphertextLength = parser.getBytesLeft() - macLength;
-            if (toParseCiphertextLength < 0) {
-                throw new CryptoException("Record too small");
-            }
-            byte[] ciphertext = parser.parseByteArrayField(toParseCiphertextLength);
-            computations.setCiphertext(ciphertext);
-
-            byte[] hmac = parser.parseByteArrayField(macLength);
-            computations.setMac(hmac);
-
-            byte[] plainData = decryptCipher.decrypt(iv, ciphertext);
-            computations.setPlainRecordBytes(plainData);
-            plainData = computations.getPlainRecordBytes().getValue();
-
-            LOGGER.debug("Decrypted plaintext: " + ArrayConverter.bytesToHexString(plainData));
-            parser = new DecryptionParser(plainData);
-            byte[] cleanProtocolBytes =
-                parser.parseByteArrayField(plainData.length - (plainData[plainData.length - 1] + 1));
-            record.setCleanProtocolMessageBytes(cleanProtocolBytes);
+        try {
+            byte[] iv;
             if (useExplicitIv) {
-                computations.setAuthenticatedNonMetaData(
-                    ArrayConverter.concatenate(record.getComputations().getCbcInitialisationVector().getValue(),
-                        record.getComputations().getCiphertext().getValue()));
+                LOGGER.debug("Using explicit IV");
+                iv = dataStream.readNBytes(getState().getCipherAlg().getNonceBytesFromHandshake()); // len check here
             } else {
-                computations.setAuthenticatedNonMetaData(record.getComputations().getCiphertext().getValue());
+                LOGGER.debug("Using implicit IV");
+                iv = decryptCipher.getIv();
             }
-            computations.setAuthenticatedMetaData(collectAdditionalAuthenticatedData(record, getState().getVersion()));
+            LOGGER.debug("Using IV:" + ArrayConverter.bytesToHexString(iv));
+            record.getComputations().setCbcInitialisationVector(iv);
 
-            byte[] padding = parser.parseByteArrayField(plainData[plainData.length - 1] + 1);
-            computations.setPadding(padding);
-            computations.setPaddingValid(isPaddingValid(padding));
+            if (getState().isEncryptThenMac()) {
+                int macLength = readMac.getMacLength();
+                int toParseCiphertextLength = dataStream.available() - macLength; // no len check necessary
+                if (toParseCiphertextLength < 0) {
+                    throw new CryptoException("Record too small");
+                }
+                byte[] ciphertext = dataStream.readNBytes(toParseCiphertextLength); // no len check necessary
+                computations.setCiphertext(ciphertext);
 
-            byte[] calculatedHMAC =
-                calculateMac(ArrayConverter.concatenate(computations.getAuthenticatedMetaData().getValue(),
-                    computations.getAuthenticatedNonMetaData().getValue()), getLocalConnectionEndType().getPeer());
-            computations.setMacValid(Arrays.equals(calculatedHMAC, computations.getMac().getValue()));
-        } else {
-            byte[] ciphertext = parser.parseByteArrayField(parser.getBytesLeft());
-            computations.setCiphertext(ciphertext);
-            ciphertext = computations.getCiphertext().getValue();
+                byte[] hmac = dataStream.readNBytes(macLength); // no len check necessary
+                computations.setMac(hmac);
 
-            byte[] plainData = decryptCipher.decrypt(iv, ciphertext);
+                byte[] plainData = decryptCipher.decrypt(iv, ciphertext);
+                computations.setPlainRecordBytes(plainData);
+                plainData = computations.getPlainRecordBytes().getValue();
 
-            computations.setPlainRecordBytes(plainData);
-            plainData = computations.getPlainRecordBytes().getValue();
+                LOGGER.debug("Decrypted plaintext: " + ArrayConverter.bytesToHexString(plainData));
+                dataStream = new ByteArrayInputStream(plainData);
+                byte[] cleanProtocolBytes =
+                        dataStream.readNBytes(plainData.length - (plainData[plainData.length - 1] + 1)); // len check for index plainData[plainData.length - 1]
+                record.setCleanProtocolMessageBytes(cleanProtocolBytes);
+                if (useExplicitIv) {
+                    computations.setAuthenticatedNonMetaData(
+                            ArrayConverter.concatenate(record.getComputations().getCbcInitialisationVector().getValue(),
+                                    record.getComputations().getCiphertext().getValue()));
+                } else {
+                    computations.setAuthenticatedNonMetaData(record.getComputations().getCiphertext().getValue());
+                }
+                computations.setAuthenticatedMetaData(collectAdditionalAuthenticatedData(record, getState().getVersion()));
 
-            parser = new DecryptionParser(plainData);
+                byte[] padding = dataStream.readNBytes(plainData[plainData.length - 1] + 1); // len check for index plainData[plainData.length - 1]
+                computations.setPadding(padding);
+                computations.setPaddingValid(isPaddingValid(padding));
 
-            byte[] cleanProtocolBytes = parser
-                .parseByteArrayField(plainData.length - readMac.getMacLength() - (plainData[plainData.length - 1] + 1));
-            record.setCleanProtocolMessageBytes(cleanProtocolBytes);
+                byte[] calculatedHMAC =
+                        calculateMac(ArrayConverter.concatenate(computations.getAuthenticatedMetaData().getValue(),
+                                computations.getAuthenticatedNonMetaData().getValue()), getLocalConnectionEndType().getPeer());
+                computations.setMacValid(Arrays.equals(calculatedHMAC, computations.getMac().getValue()));
+            } else {
+                byte[] ciphertext = dataStream.readNBytes(dataStream.available()); // no len check necessary
+                computations.setCiphertext(ciphertext);
+                ciphertext = computations.getCiphertext().getValue();
 
-            byte[] hmac = parser.parseByteArrayField(readMac.getMacLength());
-            record.getComputations().setMac(hmac);
+                byte[] plainData = decryptCipher.decrypt(iv, ciphertext);
 
-            byte[] padding = parser.parseByteArrayField(plainData[plainData.length - 1] + 1);
-            computations.setPadding(padding);
+                computations.setPlainRecordBytes(plainData);
+                plainData = computations.getPlainRecordBytes().getValue();
 
-            computations.setAuthenticatedNonMetaData(cleanProtocolBytes);
-            computations.setAuthenticatedMetaData(collectAdditionalAuthenticatedData(record, getState().getVersion()));
+                dataStream = new ByteArrayInputStream(plainData);
 
-            computations.setPaddingValid(isPaddingValid(padding));
-            byte[] calculatedHMAC =
-                calculateMac(ArrayConverter.concatenate(computations.getAuthenticatedMetaData().getValue(),
-                    computations.getAuthenticatedNonMetaData().getValue()), getLocalConnectionEndType().getPeer());
-            computations.setMacValid(Arrays.equals(calculatedHMAC, computations.getMac().getValue()));
+                // len check for index plainData[plainData.length - 1]
+                byte[] cleanProtocolBytes = dataStream.readNBytes(plainData.length - readMac.getMacLength() - (plainData[plainData.length - 1] + 1));
+                record.setCleanProtocolMessageBytes(cleanProtocolBytes);
+
+                byte[] hmac = dataStream.readNBytes(readMac.getMacLength());
+                record.getComputations().setMac(hmac);
+
+                byte[] padding = dataStream.readNBytes(plainData[plainData.length - 1] + 1); // len check for index plainData[plainData.length - 1]
+                computations.setPadding(padding);
+
+                computations.setAuthenticatedNonMetaData(cleanProtocolBytes);
+                computations.setAuthenticatedMetaData(collectAdditionalAuthenticatedData(record, getState().getVersion()));
+
+                computations.setPaddingValid(isPaddingValid(padding));
+                byte[] calculatedHMAC =
+                        calculateMac(ArrayConverter.concatenate(computations.getAuthenticatedMetaData().getValue(),
+                                computations.getAuthenticatedNonMetaData().getValue()), getLocalConnectionEndType().getPeer());
+                computations.setMacValid(Arrays.equals(calculatedHMAC, computations.getMac().getValue()));
+            }
         }
-
+        catch(IOException E) {
+            throw new RuntimeException("IOException while reading ByteArrayStream");
+        }
     }
 
     private boolean isPaddingValid(byte[] padding) {
@@ -350,31 +355,5 @@ public final class RecordBlockCipher extends RecordCipher {
         }
         LOGGER.debug("Padding is valid");
         return true;
-    }
-
-    /**
-     * Dirty hack to get a better inputstream - should we changed in newer java versions
-     */
-    class DecryptionParser extends Parser<Object> {
-
-        public DecryptionParser(byte[] array) {
-            super(new ByteArrayInputStream(array));
-        }
-
-        @Override
-        public void parse(Object t) {
-            throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods,
-            // choose Tools | Templates.
-        }
-
-        @Override
-        public byte[] parseByteArrayField(int length) {
-            return super.parseByteArrayField(length);
-        }
-
-        @Override
-        public int getBytesLeft() {
-            return super.getBytesLeft();
-        }
     }
 }
