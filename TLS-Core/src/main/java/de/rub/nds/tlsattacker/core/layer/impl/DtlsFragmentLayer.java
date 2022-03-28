@@ -78,30 +78,29 @@ public class DtlsFragmentLayer extends ProtocolLayer<RecordLayerHint, DtlsHandsh
     @Override
     public LayerProcessingResult<DtlsHandshakeMessageFragment> sendData(RecordLayerHint hint, byte[] data)
         throws IOException {
-        switch (hint.getType()) {
-            case HANDSHAKE:
-                List<DtlsHandshakeMessageFragment> fragments = getEnoughFragments(context, data.length);
-                fragments = wrapInFragments(HandshakeMessageType.getMessageType(data[0]),
-                    Arrays.copyOfRange(data,
-                        HandshakeByteLength.MESSAGE_TYPE + HandshakeByteLength.MESSAGE_LENGTH_FIELD, data.length),
-                    fragments);
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                for (DtlsHandshakeMessageFragment fragment : fragments) {
-                    fragment.getPreparator(context).prepare();
-                    try {
-                        byte[] completeMessage = fragment.getSerializer(context).serialize();
-                        fragment.setCompleteResultingMessage(completeMessage);
-                        stream.write(fragment.getCompleteResultingMessage().getValue());
-                    } catch (IOException ex) {
-                        throw new PreparationException("Could not write Record bytes to ByteArrayStream", ex);
-                    }
-                    addProducedContainer(fragment);
+        if (hint.getType() == ProtocolMessageType.HANDSHAKE) {
+            List<DtlsHandshakeMessageFragment> fragments = getEnoughFragments(context, data.length);
+            fragments = wrapInFragments(
+                HandshakeMessageType.getMessageType(data[0]), Arrays.copyOfRange(data,
+                    HandshakeByteLength.MESSAGE_TYPE + HandshakeByteLength.MESSAGE_LENGTH_FIELD, data.length),
+                fragments);
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            for (DtlsHandshakeMessageFragment fragment : fragments) {
+                fragment.getPreparator(context).prepare();
+                try {
+                    byte[] completeMessage = fragment.getSerializer(context).serialize();
+                    fragment.setCompleteResultingMessage(completeMessage);
+                    stream.write(fragment.getCompleteResultingMessage().getValue());
+                } catch (IOException ex) {
+                    throw new PreparationException("Could not write Record bytes to ByteArrayStream", ex);
                 }
-                getLowerLayer().sendData(hint, stream.toByteArray());
-                return new LayerProcessingResult<>(fragments, getLayerType(), true);
-            default:
-                getLowerLayer().sendData(hint, data);
-                return new LayerProcessingResult<>(new LinkedList<>(), getLayerType(), true);
+                addProducedContainer(fragment);
+            }
+            getLowerLayer().sendData(hint, stream.toByteArray());
+            return new LayerProcessingResult<>(fragments, getLayerType(), true);
+        } else {
+            getLowerLayer().sendData(hint, data);
+            return new LayerProcessingResult<>(new LinkedList<>(), getLayerType(), true);
         }
     }
 
@@ -166,7 +165,7 @@ public class DtlsFragmentLayer extends ProtocolLayer<RecordLayerHint, DtlsHandsh
         } catch (TimeoutException ex) {
             LOGGER.debug(ex);
         } catch (EndOfStreamException ex) {
-            LOGGER.warn("Reached end of stream, cannot parse more dtls fragments: " + ex);
+            LOGGER.warn("Reached end of stream, cannot parse more dtls fragments", ex);
         }
     }
 

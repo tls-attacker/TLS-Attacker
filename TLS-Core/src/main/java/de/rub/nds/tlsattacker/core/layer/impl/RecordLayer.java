@@ -178,7 +178,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
                 nextInputStream = tempStream;
             }
         } catch (EndOfStreamException ex) {
-            LOGGER.warn("Reached end of stream, cannot parse more records: " + ex);
+            LOGGER.warn("Reached end of stream, cannot parse more records", ex);
         }
     }
 
