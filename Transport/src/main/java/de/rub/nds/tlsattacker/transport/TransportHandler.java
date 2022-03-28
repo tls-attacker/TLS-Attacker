@@ -144,6 +144,7 @@ public abstract class TransportHandler {
 
     public abstract void setTimeout(long timeout);
 
+    // TODO: Change UDP to packet based processing instead of having in/out streams
     public InputStream getInputStream() {
         return inStream;
     }
