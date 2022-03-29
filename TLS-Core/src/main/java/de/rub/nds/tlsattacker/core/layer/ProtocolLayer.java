@@ -166,6 +166,22 @@ public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container 
     }
 
     /**
+     * Evaluates if more data can be retrieved for parsing immediately, i.e without receiving on the lowest layer.
+     * 
+     * @return             true if more data is available in any receive buffer
+     * @throws IOException
+     */
+    public boolean moreDataReceived() throws IOException {
+        if ((currentInputStream != null && currentInputStream.available() > 0)
+            || nextInputStream != null && nextInputStream.available() > 0) {
+            return true;
+        } else if (getLowerLayer() != null) {
+            return getLowerLayer().moreDataReceived();
+        }
+        return false;
+    }
+
+    /**
      * Parses and handles content from a container.
      * 
      * @param  container

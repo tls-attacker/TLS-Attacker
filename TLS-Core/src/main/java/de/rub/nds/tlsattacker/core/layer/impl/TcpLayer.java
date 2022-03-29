@@ -60,7 +60,8 @@ public class TcpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> 
 
     @Override
     public HintedInputStream getDataStream() {
-        return new HintedInputStreamAdapterStream(null, getTransportHandler().getInputStream());
+        currentInputStream = new HintedInputStreamAdapterStream(null, getTransportHandler().getInputStream());
+        return currentInputStream;
     }
 
     @Override
