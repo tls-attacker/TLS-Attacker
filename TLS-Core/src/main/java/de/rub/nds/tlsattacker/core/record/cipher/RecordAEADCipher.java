@@ -192,7 +192,7 @@ public class RecordAEADCipher extends RecordCipher {
         record.getComputations().setCipherKey(getState().getKeySet().getReadKey(getConnectionEndType()));
 
         byte[] protocolBytes = record.getProtocolMessageBytes().getValue();
-        DecryptionParser parser = new DecryptionParser(protocolBytes);
+        PlaintextParser parser = new PlaintextParser(protocolBytes);
 
         byte[] explicitNonce = parser.parseByteArrayField(aeadExplicitLength);
         record.getComputations().setExplicitNonce(explicitNonce);
@@ -263,7 +263,7 @@ public class RecordAEADCipher extends RecordCipher {
                     record.setCleanProtocolMessageBytes(plainRecordBytes);
                     return;
                 }
-                parser = new DecryptionParser(plainRecordBytes);
+                parser = new PlaintextParser(plainRecordBytes);
                 byte[] cleanBytes = parser.parseByteArrayField(plainRecordBytes.length - numberOfPaddingBytes - 1);
                 byte[] contentType = parser.parseByteArrayField(1);
                 byte[] padding = parser.parseByteArrayField(numberOfPaddingBytes);
@@ -313,11 +313,11 @@ public class RecordAEADCipher extends RecordCipher {
     }
 
     /**
-     * Dirty hack to get a better inputstream - should we changed in newer java versions
+     * Dirty hack to get a better inputstream - should be changed in newer java versions
      */
-    class DecryptionParser extends Parser<Object> {
+    class PlaintextParser extends Parser<Object> {
 
-        public DecryptionParser(byte[] array) {
+        public PlaintextParser(byte[] array) {
             super(new ByteArrayInputStream(array));
         }
 

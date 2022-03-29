@@ -249,7 +249,7 @@ public final class RecordBlockCipher extends RecordCipher {
         computations.setCipherKey(getState().getKeySet().getReadKey(getConnectionEndType()));
 
         byte[] plaintext = record.getProtocolMessageBytes().getValue();
-        DecryptionParser parser = new DecryptionParser(plaintext);
+        PlaintextParser parser = new PlaintextParser(plaintext);
 
         byte[] iv;
         if (useExplicitIv) {
@@ -279,7 +279,7 @@ public final class RecordBlockCipher extends RecordCipher {
             plainData = computations.getPlainRecordBytes().getValue();
 
             LOGGER.debug("Decrypted plaintext: " + ArrayConverter.bytesToHexString(plainData));
-            parser = new DecryptionParser(plainData);
+            parser = new PlaintextParser(plainData);
             byte[] cleanProtocolBytes =
                 parser.parseByteArrayField(plainData.length - (plainData[plainData.length - 1] + 1));
             record.setCleanProtocolMessageBytes(cleanProtocolBytes);
@@ -310,7 +310,7 @@ public final class RecordBlockCipher extends RecordCipher {
             computations.setPlainRecordBytes(plainData);
             plainData = computations.getPlainRecordBytes().getValue();
 
-            parser = new DecryptionParser(plainData);
+            parser = new PlaintextParser(plainData);
 
             byte[] cleanProtocolBytes = parser
                 .parseByteArrayField(plainData.length - readMac.getMacLength() - (plainData[plainData.length - 1] + 1));
@@ -353,11 +353,11 @@ public final class RecordBlockCipher extends RecordCipher {
     }
 
     /**
-     * Dirty hack to get a better inputstream - should we changed in newer java versions
+     * Dirty hack to get a better inputstream - should be changed in newer java versions
      */
-    class DecryptionParser extends Parser<Object> {
+    class PlaintextParser extends Parser<Object> {
 
-        public DecryptionParser(byte[] array) {
+        public PlaintextParser(byte[] array) {
             super(new ByteArrayInputStream(array));
         }
 

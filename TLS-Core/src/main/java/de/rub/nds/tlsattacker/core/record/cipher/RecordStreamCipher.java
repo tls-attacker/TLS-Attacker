@@ -123,7 +123,7 @@ public class RecordStreamCipher extends RecordCipher {
         byte[] plainData = decryptCipher.decrypt(cipherText);
         computations.setPlainRecordBytes(plainData);
         plainData = computations.getPlainRecordBytes().getValue();
-        DecryptionParser parser = new DecryptionParser(plainData);
+        PlaintextParser parser = new PlaintextParser(plainData);
         byte[] cleanBytes = parser.parseByteArrayField(plainData.length - readMac.getMacLength());
         record.setCleanProtocolMessageBytes(cleanBytes);
         record.getComputations().setAuthenticatedNonMetaData(cleanBytes);
@@ -138,11 +138,11 @@ public class RecordStreamCipher extends RecordCipher {
     }
 
     /**
-     * Dirty hack to get a better inputstream - should we changed in newer java versions
+     * Dirty hack to get a better inputstream - should be changed in newer java versions
      */
-    class DecryptionParser extends Parser<Object> {
+    class PlaintextParser extends Parser<Object> {
 
-        public DecryptionParser(byte[] array) {
+        public PlaintextParser(byte[] array) {
             super(new ByteArrayInputStream(array));
         }
 
