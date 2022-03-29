@@ -21,7 +21,6 @@ import de.rub.nds.tlsattacker.core.record.RecordCryptoComputations;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
@@ -124,24 +123,43 @@ public class RecordStreamCipher extends RecordCipher {
         byte[] plainData = decryptCipher.decrypt(cipherText);
         computations.setPlainRecordBytes(plainData);
         plainData = computations.getPlainRecordBytes().getValue();
-        ByteArrayInputStream dataStream = new ByteArrayInputStream(plainData);
-        byte[] cleanBytes;
-        byte[] hmac;
-        try {
-            cleanBytes = dataStream.readNBytes(plainData.length - readMac.getMacLength());
-            hmac = dataStream.readNBytes(readMac.getMacLength());
-        }
-        catch(IOException E) {
-            throw new RuntimeException("IOException while reading ByteArrayStream");
-        }
+        DecryptionParser parser = new DecryptionParser(plainData);
+        byte[] cleanBytes = parser.parseByteArrayField(plainData.length - readMac.getMacLength());
         record.setCleanProtocolMessageBytes(cleanBytes);
         record.getComputations().setAuthenticatedNonMetaData(cleanBytes);
         record.getComputations()
             .setAuthenticatedMetaData(collectAdditionalAuthenticatedData(record, getState().getVersion()));
+        byte[] hmac = parser.parseByteArrayField(readMac.getMacLength());
         record.getComputations().setMac(hmac);
         byte[] calculatedHmac =
             calculateMac(ArrayConverter.concatenate(record.getComputations().getAuthenticatedMetaData().getValue(),
                 record.getComputations().getAuthenticatedNonMetaData().getValue()), getTalkingConnectionEndType());
         record.getComputations().setMacValid(Arrays.equals(hmac, calculatedHmac));
+    }
+
+    /**
+     * Dirty hack to get a better inputstream - should we changed in newer java versions
+     */
+    class DecryptionParser extends Parser<Object> {
+
+        public DecryptionParser(byte[] array) {
+            super(new ByteArrayInputStream(array));
+        }
+
+        @Override
+        public byte[] parseByteArrayField(int length) {
+            return super.parseByteArrayField(length);
+        }
+
+        @Override
+        public int getBytesLeft() {
+            return super.getBytesLeft();
+        }
+
+        @Override
+        public void parse(Object t) {
+            throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods,
+            // choose Tools | Templates.
+        }
     }
 }
