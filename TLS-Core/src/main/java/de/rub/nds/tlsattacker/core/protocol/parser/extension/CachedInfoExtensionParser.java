@@ -12,6 +12,7 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CachedInfoExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -22,23 +23,18 @@ public class CachedInfoExtensionParser extends ExtensionParser<CachedInfoExtensi
 
     private List<CachedObject> cachedObjectList;
 
-    public CachedInfoExtensionParser(InputStream stream) {
-        super(stream);
+    public CachedInfoExtensionParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
     }
 
     @Override
     public void parseExtensionMessageContent(CachedInfoExtensionMessage msg) {
+        cachedObjectList = new LinkedList<>();
         msg.setCachedInfoLength(parseIntField(ExtensionByteLength.CACHED_INFO_LENGTH));
         byte[] cachedInfoBytes = parseByteArrayField(msg.getCachedInfoLength().getValue());
         msg.setCachedInfoBytes(cachedInfoBytes);
         ByteArrayInputStream innerStream = new ByteArrayInputStream(cachedInfoBytes);
-        // TODO The parser should know and not guess which connectionEnd it is
-        ConnectionEndType connectionEndType = ConnectionEndType.CLIENT;
-        cachedObjectList = new LinkedList<>();
-
-        if (msg.getCachedInfoLength().getValue() <= 2) {
-            connectionEndType = ConnectionEndType.SERVER;
-        }
+        ConnectionEndType connectionEndType = getTlsContext().getTalkingConnectionEndType();
 
         while (innerStream.available() > 0) {
             CachedObjectParser parser = new CachedObjectParser(innerStream, connectionEndType);

@@ -93,7 +93,7 @@ public class SrtpExtensionMessage extends ExtensionMessage<SrtpExtensionMessage>
 
     @Override
     public SrtpExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new SrtpExtensionParser(stream);
+        return new SrtpExtensionParser(stream, tlsContext);
     }
 
     @Override

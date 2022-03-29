@@ -13,8 +13,10 @@ import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerStack;
 import de.rub.nds.tlsattacker.core.layer.LayerStackProcessingResult;
+import de.rub.nds.tlsattacker.core.layer.ReceiveTillLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.SpecificReceiveLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.TightReceiveLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
@@ -219,7 +221,35 @@ public abstract class MessageAction extends ConnectionBoundAction {
             layerConfigurationList.add(new SpecificReceiveLayerConfiguration(fragmentsToReceive));
         }
         layerConfigurationList.add(new SpecificReceiveLayerConfiguration(recordsToReceive));
-        layerConfigurationList.add(new SpecificReceiveLayerConfiguration((List) null));
+        layerConfigurationList.add(null);
+        getReceiveResult(layerStack, layerConfigurationList);
+    }
+
+    protected void receiveTill(TlsContext tlsContext, ProtocolMessage protocolMessageToReceive) {
+        LayerStack layerStack = tlsContext.getLayerStack();
+        List<LayerConfiguration> layerConfigurationList = new LinkedList<>();
+        layerConfigurationList.add(new ReceiveTillLayerConfiguration(protocolMessageToReceive));
+        if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS()) {
+            layerConfigurationList.add(new SpecificReceiveLayerConfiguration(new LinkedList<>()));
+        }
+        layerConfigurationList.add(null);
+        layerConfigurationList.add(null);
+        getReceiveResult(layerStack, layerConfigurationList);
+    }
+
+    protected void tightReceive(TlsContext tlsContext, List<ProtocolMessage> protocolMessagesToReceive) {
+        LayerStack layerStack = tlsContext.getLayerStack();
+        List<LayerConfiguration> layerConfigurationList = new LinkedList<>();
+        layerConfigurationList.add(new TightReceiveLayerConfiguration(protocolMessagesToReceive));
+        if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS()) {
+            layerConfigurationList.add(new SpecificReceiveLayerConfiguration(new LinkedList<>()));
+        }
+        layerConfigurationList.add(null);
+        layerConfigurationList.add(null);
+        getReceiveResult(layerStack, layerConfigurationList);
+    }
+
+    private void getReceiveResult(LayerStack layerStack, List<LayerConfiguration> layerConfigurationList) {
         LayerStackProcessingResult processingResult;
         try {
             processingResult = layerStack.receiveData(layerConfigurationList);
@@ -245,29 +275,6 @@ public abstract class MessageAction extends ConnectionBoundAction {
         if (processingResults.getResultForLayer(ImplementedLayers.RECORD) != null) {
             records =
                 new ArrayList<>(processingResults.getResultForLayer(ImplementedLayers.RECORD).getUsedContainers());
-        }
-    }
-
-    protected void receiveTill(TlsContext tlsContext, List<ProtocolMessage> protocolMessagesToSend,
-        List<DtlsHandshakeMessageFragment> fragmentsToSend, List<Record> recordsToSend) {
-        LayerStack layerStack = tlsContext.getLayerStack();
-        List<LayerConfiguration> layerConfigurationList = new LinkedList<>();
-        layerConfigurationList.add(new SpecificReceiveLayerConfiguration(protocolMessagesToSend));
-        if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS()) {
-            layerConfigurationList.add(new SpecificReceiveLayerConfiguration(fragmentsToSend));
-        }
-        layerConfigurationList.add(new SpecificReceiveLayerConfiguration(recordsToSend));
-        layerConfigurationList.add(new SpecificReceiveLayerConfiguration((List) null));
-        LayerStackProcessingResult processingResult;
-        try {
-            processingResult = layerStack.receiveData(layerConfigurationList);
-            setContainers(processingResult);
-            setLayerStackProcessingResult(processingResult);
-        } catch (IOException ex) {
-            LOGGER.warn("Received an IOException", ex);
-            LayerStackProcessingResult reconstructedResult = layerStack.gatherResults();
-            setContainers(reconstructedResult);
-            setLayerStackProcessingResult(reconstructedResult);
         }
     }
 

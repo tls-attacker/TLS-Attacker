@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
-import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
@@ -21,6 +20,8 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.DtlsHandshakeMessageFragm
 import de.rub.nds.tlsattacker.core.protocol.serializer.DtlsHandshakeMessageFragmentSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Objects;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "DtlsHandshakeMessageFragment")
@@ -191,6 +192,60 @@ public class DtlsHandshakeMessageFragment extends HandshakeMessage {
     @Override
     public String toShortString() {
         return "DTLS_FRAG";
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 67 * hash + Objects.hashCode(this.fragmentOffset);
+        hash = 67 * hash + Objects.hashCode(this.fragmentLength);
+        hash = 67 * hash + Objects.hashCode(this.epoch);
+        hash = 67 * hash + Arrays.hashCode(this.fragmentContentConfig);
+        hash = 67 * hash + this.messageSequenceConfig;
+        hash = 67 * hash + this.offsetConfig;
+        hash = 67 * hash + this.handshakeMessageLengthConfig;
+        hash = 67 * hash + Objects.hashCode(this.handshakeMessageTypeConfig);
+        hash = 67 * hash + this.maxFragmentLengthConfig;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final DtlsHandshakeMessageFragment other = (DtlsHandshakeMessageFragment) obj;
+        if (this.messageSequenceConfig != other.messageSequenceConfig) {
+            return false;
+        }
+        if (this.offsetConfig != other.offsetConfig) {
+            return false;
+        }
+        if (this.handshakeMessageLengthConfig != other.handshakeMessageLengthConfig) {
+            return false;
+        }
+        if (this.maxFragmentLengthConfig != other.maxFragmentLengthConfig) {
+            return false;
+        }
+        if (!Objects.equals(this.fragmentOffset, other.fragmentOffset)) {
+            return false;
+        }
+        if (!Objects.equals(this.fragmentLength, other.fragmentLength)) {
+            return false;
+        }
+        if (!Objects.equals(this.epoch, other.epoch)) {
+            return false;
+        }
+        if (!Arrays.equals(this.fragmentContentConfig, other.fragmentContentConfig)) {
+            return false;
+        }
+        return this.handshakeMessageTypeConfig == other.handshakeMessageTypeConfig;
     }
 
 }

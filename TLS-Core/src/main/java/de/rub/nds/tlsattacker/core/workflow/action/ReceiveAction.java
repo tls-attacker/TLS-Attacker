@@ -10,17 +10,12 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
-import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.https.HttpsRequestMessage;
-import de.rub.nds.tlsattacker.core.https.HttpsResponseMessage;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.core.record.Record;
-import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import java.util.*;
@@ -31,7 +26,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @XmlRootElement
-public class ReceiveAction extends MessageAction implements ReceivingAction {
+public class ReceiveAction extends CommonReceiveAction implements ReceivingAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -88,29 +83,6 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     }
 
     @Override
-    public void execute(State state) throws WorkflowExecutionException {
-        TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
-
-        if (isExecuted()) {
-            throw new WorkflowExecutionException("Action already executed!");
-        }
-
-        LOGGER.debug("Receiving Messages...");
-        receive(tlsContext, expectedMessages, null, null);
-
-        setExecuted(true);
-
-        String expected = getReadableString(expectedMessages);
-        LOGGER.debug("Receive Expected:" + expected);
-        String received = getReadableString(messages);
-        if (hasDefaultAlias()) {
-            LOGGER.info("Received Messages: " + received);
-        } else {
-            LOGGER.info("Received Messages (" + getConnectionAlias() + "): " + received);
-        }
-    }
-
-    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("Receive Action:\n");
 
@@ -160,6 +132,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         return getLayerStackProcessingResult().getResultForLayer(ImplementedLayers.MESSAGE).isExecutedAsPlanned();
     }
 
+    @Override
     public List<ProtocolMessage> getExpectedMessages() {
         return expectedMessages;
     }
@@ -281,31 +254,6 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         }
     }
 
-    private static boolean receivedMessageCanBeIgnored(ProtocolMessage msg, Set<ActionOption> actionOptions) {
-        if (actionOptions.contains(ActionOption.IGNORE_UNEXPECTED_WARNINGS)) {
-            if (msg instanceof AlertMessage) {
-                AlertMessage alert = (AlertMessage) msg;
-                if (alert.getLevel().getOriginalValue() == AlertLevel.WARNING.getValue()) {
-                    return true;
-                }
-            }
-        } else if (actionOptions.contains(ActionOption.IGNORE_UNEXPECTED_NEW_SESSION_TICKETS)
-            && msg instanceof NewSessionTicketMessage) {
-            return true;
-        } else if (actionOptions.contains(ActionOption.IGNORE_UNEXPECTED_KEY_UPDATE_MESSAGES)
-            && msg instanceof KeyUpdateMessage) {
-            return true;
-        } else if (actionOptions.contains(ActionOption.IGNORE_UNEXPECTED_APP_DATA)
-            && msg instanceof ApplicationMessage) {
-            return true;
-        } else if (actionOptions.contains(ActionOption.IGNORE_UNEXPECTED_HTTPS_MESSAGES)
-            && (msg instanceof HttpsResponseMessage || msg instanceof HttpsRequestMessage)) {
-            return true;
-        }
-
-        return false;
-    }
-
     @Override
     public List<ProtocolMessageType> getGoingToReceiveProtocolMessageTypes() {
         List<ProtocolMessageType> protocolMessageTypes = new ArrayList<>();
@@ -324,5 +272,10 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
             }
         }
         return handshakeMessageTypes;
+    }
+
+    @Override
+    protected void distinctReceive(TlsContext tlsContext) {
+        receive(tlsContext, expectedMessages, fragments, records);
     }
 }

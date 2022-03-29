@@ -67,7 +67,7 @@ public class SignatureAndHashAlgorithmsExtensionMessage
 
     @Override
     public SignatureAndHashAlgorithmsExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new SignatureAndHashAlgorithmsExtensionParser(stream);
+        return new SignatureAndHashAlgorithmsExtensionParser(stream, tlsContext);
     }
 
     @Override

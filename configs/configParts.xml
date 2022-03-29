@@ -1,0 +1,18 @@
+<defaultClientSupportedCipherSuites>
+<defaultClientSupportedCipherSuite>TLS_PSK_WITH_AES_128_CCM_8</defaultClientSupportedCipherSuite>
+<defaultClientSupportedCipherSuite>TLS_ECDHE_ECDSA_WITH_AES_128_CCM_8</defaultClientSupportedCipherSuite>
+<defaultClientSupportedCipherSuite>TLS_RSA_WITH_AES_128_CBC_SHA</defaultClientSupportedCipherSuite>
+</defaultClientSupportedCipherSuites>
+
+<defaultClientSessionId>b8 e0 75 c0 2b 5a 0b 18 38 c9 db 5a 6f b2 a0 0b fd db 0e 4a 9a 41 6c 7d f9 e3 f2 bf 66 9b eb 2b</defaultClientSessionId>
+
+<clientAuthentication>false</clientAuthentication>
+<addClientCertificateTypeExtension>false</addClientCertificateTypeExtension>
+<addServerCertificateTypeExtension>false</addServerCertificateTypeExtension>
+<addSignatureAndHashAlgorithmsExtension>true</addSignatureAndHashAlgorithmsExtension>
+<addRenegotiationInfoExtension>true</addRenegotiationInfoExtension>
+<addExtendedMasterSecretExtension>false</addExtendedMasterSecretExtension>
+<addEllipticCurveExtension>true</addEllipticCurveExtension>
+<addECPointFormatExtension>true</addECPointFormatExtension>
+
+<defaultPSKKey>61 62 63 64</defaultPSKKey>

@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.Parser;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,9 +21,11 @@ import org.apache.logging.log4j.Logger;
 public abstract class ExtensionParser<Extension extends ExtensionMessage> extends Parser<Extension> {
 
     private static final Logger LOGGER = LogManager.getLogger();
+    private final TlsContext tlsContext;
 
-    public ExtensionParser(InputStream stream) {
+    public ExtensionParser(InputStream stream, TlsContext tlsContext) {
         super(stream);
+        this.tlsContext = tlsContext;
     }
 
     @Override
@@ -42,5 +45,9 @@ public abstract class ExtensionParser<Extension extends ExtensionMessage> extend
      */
     protected boolean hasExtensionData(ExtensionMessage message) {
         return getBytesLeft() > 0;
+    }
+
+    public TlsContext getTlsContext() {
+        return tlsContext;
     }
 }

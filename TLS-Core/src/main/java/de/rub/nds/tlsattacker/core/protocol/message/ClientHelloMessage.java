@@ -27,6 +27,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.Date;
+import java.util.Objects;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -362,4 +363,47 @@ public class ClientHelloMessage extends HelloMessage {
     public ClientHelloSerializer getSerializer(TlsContext tlsContext) {
         return new ClientHelloSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 97 * hash + Objects.hashCode(this.compressionLength);
+        hash = 97 * hash + Objects.hashCode(this.cipherSuiteLength);
+        hash = 97 * hash + Objects.hashCode(this.cipherSuites);
+        hash = 97 * hash + Objects.hashCode(this.compressions);
+        hash = 97 * hash + Objects.hashCode(this.cookie);
+        hash = 97 * hash + Objects.hashCode(this.cookieLength);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ClientHelloMessage other = (ClientHelloMessage) obj;
+        if (!Objects.equals(this.compressionLength, other.compressionLength)) {
+            return false;
+        }
+        if (!Objects.equals(this.cipherSuiteLength, other.cipherSuiteLength)) {
+            return false;
+        }
+        if (!Objects.equals(this.cipherSuites, other.cipherSuites)) {
+            return false;
+        }
+        if (!Objects.equals(this.compressions, other.compressions)) {
+            return false;
+        }
+        if (!Objects.equals(this.cookie, other.cookie)) {
+            return false;
+        }
+        return Objects.equals(this.cookieLength, other.cookieLength);
+    }
+
 }

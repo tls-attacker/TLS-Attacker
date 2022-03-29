@@ -21,6 +21,7 @@ import de.rub.nds.tlsattacker.core.exceptions.TimeoutException;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
+import de.rub.nds.tlsattacker.core.layer.ReceiveLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.hints.RecordLayerHint;
@@ -112,6 +113,7 @@ public class DtlsFragmentLayer extends ProtocolLayer<RecordLayerHint, DtlsHandsh
 
     @Override
     public void receiveMoreDataForHint(LayerProcessingHint desiredHint) throws IOException {
+        ReceiveLayerConfiguration layerConfig = (ReceiveLayerConfiguration) getLayerConfiguration();
         try {
             HintedInputStream dataStream = null;
             do {
@@ -160,8 +162,9 @@ public class DtlsFragmentLayer extends ProtocolLayer<RecordLayerHint, DtlsHandsh
                         currentInputStream.extendStream(dataStream.readChunk(dataStream.available()));
                     }
                 }
-            } while (getLayerConfiguration().successRequiresMoreContainers(getLayerResult().getUsedContainers())
-                || dataStream.available() > 0 || currentInputStream == null);
+            } while (layerConfig.successRequiresMoreContainers(getLayerResult().getUsedContainers())
+                || layerConfig.isProcessTrailingContainers());
+            // || dataStream.available() > 0 || currentInputStream == null);
         } catch (TimeoutException ex) {
             LOGGER.debug(ex);
         } catch (EndOfStreamException ex) {

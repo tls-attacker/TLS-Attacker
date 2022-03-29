@@ -9,11 +9,16 @@
 
 package de.rub.nds.tlsattacker.core.layer;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-// TODO: This is unused, remove?
-public class TillContainerLayerConfiguration<Container extends DataContainer> extends LayerConfiguration<Container> {
+public class ReceiveTillLayerConfiguration<Container extends DataContainer>
+    extends ReceiveLayerConfiguration<Container> {
+
+    public ReceiveTillLayerConfiguration(Container expectedContainer) {
+        super(Arrays.asList(expectedContainer));
+    }
 
     @Override
     public boolean executedAsPlanned(List<Container> list) {
@@ -28,6 +33,11 @@ public class TillContainerLayerConfiguration<Container extends DataContainer> ex
     @Override
     public boolean failedEarly(List<Container> list) {
         return false;
+    }
+
+    @Override
+    public boolean isProcessTrailingContainers() {
+        return true;
     }
 
 }

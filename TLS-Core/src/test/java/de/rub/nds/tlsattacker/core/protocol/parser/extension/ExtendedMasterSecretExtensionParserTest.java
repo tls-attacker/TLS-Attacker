@@ -9,7 +9,9 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
@@ -29,6 +31,7 @@ public class ExtendedMasterSecretExtensionParserTest {
     private final byte[] expectedBytes;
     private ExtendedMasterSecretExtensionParser parser;
     private ExtendedMasterSecretExtensionMessage message;
+    private final Config config = Config.createConfig();
 
     public ExtendedMasterSecretExtensionParserTest(byte[] expectedBytes) {
         this.expectedBytes = expectedBytes;
@@ -36,7 +39,8 @@ public class ExtendedMasterSecretExtensionParserTest {
 
     @Before
     public void setUp() {
-        parser = new ExtendedMasterSecretExtensionParser(new ByteArrayInputStream(expectedBytes));
+        TlsContext tlsContext = new TlsContext(config);
+        parser = new ExtendedMasterSecretExtensionParser(new ByteArrayInputStream(expectedBytes), tlsContext);
     }
 
     @Test

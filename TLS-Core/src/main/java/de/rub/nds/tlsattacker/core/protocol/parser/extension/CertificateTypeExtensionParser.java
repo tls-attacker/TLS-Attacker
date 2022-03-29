@@ -11,17 +11,19 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateTypeExtensionMessage;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.InputStream;
 
 public class CertificateTypeExtensionParser extends ExtensionParser<CertificateTypeExtensionMessage> {
 
-    public CertificateTypeExtensionParser(InputStream stream) {
-        super(stream);
+    public CertificateTypeExtensionParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
     }
 
     @Override
     public void parseExtensionMessageContent(CertificateTypeExtensionMessage msg) {
-        if (getBytesLeft() != 1) {
+        if (getTlsContext().getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
             msg.setCertificateTypesLength(parseIntField(ExtensionByteLength.CERTIFICATE_TYPE_TYPE_LENGTH));
             msg.setCertificateTypes(parseByteArrayField(msg.getCertificateTypesLength().getValue()));
         } else {
