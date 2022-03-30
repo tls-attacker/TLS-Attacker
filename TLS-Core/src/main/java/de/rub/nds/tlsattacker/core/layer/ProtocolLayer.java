@@ -171,14 +171,23 @@ public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container 
      * @return             true if more data is available in any receive buffer
      * @throws IOException
      */
-    public boolean moreDataReceived() throws IOException {
+    public boolean isDataBuffered() throws IOException {
         if ((currentInputStream != null && currentInputStream.available() > 0)
             || nextInputStream != null && nextInputStream.available() > 0) {
             return true;
         } else if (getLowerLayer() != null) {
-            return getLowerLayer().moreDataReceived();
+            return getLowerLayer().isDataBuffered();
         }
         return false;
+    }
+
+    public boolean shouldContinueProcessing() throws IOException {
+        if (layerConfiguration != null) {
+            return layerConfiguration.successRequiresMoreContainers(getLayerResult().getUsedContainers())
+                || (isDataBuffered() && ((ReceiveLayerConfiguration) layerConfiguration).isProcessTrailingContainers());
+        } else {
+            return isDataBuffered();
+        }
     }
 
     /**

@@ -17,7 +17,6 @@ import de.rub.nds.tlsattacker.core.exceptions.TimeoutException;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
-import de.rub.nds.tlsattacker.core.layer.ReceiveLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.hints.RecordLayerHint;
@@ -77,7 +76,6 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
 
     @Override
     public LayerProcessingResult receiveData() throws IOException {
-        ReceiveLayerConfiguration layerConfig = (ReceiveLayerConfiguration) getLayerConfiguration();
         try {
             HintedInputStream dataStream = null;
             do {
@@ -113,8 +111,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
                             break;
                     }
                 }
-            } while (layerConfig.successRequiresMoreContainers(getLayerResult().getUsedContainers())
-                || (moreDataReceived() && layerConfig.isProcessTrailingContainers()));
+            } while (shouldContinueProcessing());
         } catch (TimeoutException ex) {
             LOGGER.debug(ex);
         } catch (EndOfStreamException ex) {

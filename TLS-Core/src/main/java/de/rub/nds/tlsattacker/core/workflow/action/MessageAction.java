@@ -230,7 +230,7 @@ public abstract class MessageAction extends ConnectionBoundAction {
         List<LayerConfiguration> layerConfigurationList = new LinkedList<>();
         layerConfigurationList.add(new ReceiveTillLayerConfiguration(protocolMessageToReceive));
         if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS()) {
-            layerConfigurationList.add(new SpecificReceiveLayerConfiguration(new LinkedList<>()));
+            layerConfigurationList.add(null);
         }
         layerConfigurationList.add(null);
         layerConfigurationList.add(null);
@@ -242,7 +242,7 @@ public abstract class MessageAction extends ConnectionBoundAction {
         List<LayerConfiguration> layerConfigurationList = new LinkedList<>();
         layerConfigurationList.add(new TightReceiveLayerConfiguration(protocolMessagesToReceive));
         if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS()) {
-            layerConfigurationList.add(new SpecificReceiveLayerConfiguration(new LinkedList<>()));
+            layerConfigurationList.add(null);
         }
         layerConfigurationList.add(null);
         layerConfigurationList.add(null);
