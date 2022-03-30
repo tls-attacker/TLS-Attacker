@@ -33,7 +33,7 @@ public abstract class HintedInputStream extends InputStream {
     }
 
     public int readInt(int size) throws IOException {
-        if(size < 0 || size > 4) {
+        if (size < 0 || size > 4) {
             throw new ParserException("Cannot read Integer of size " + size);
         }
         byte[] readChunk = readChunk(size);
