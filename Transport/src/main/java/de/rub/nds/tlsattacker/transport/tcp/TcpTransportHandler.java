@@ -17,8 +17,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
@@ -106,20 +104,4 @@ public abstract class TcpTransportHandler extends TransportHandler {
     public abstract Integer getDstPort();
 
     public abstract void setDstPort(int port);
-
-    public InputStream getInputStream() {
-        try {
-            return socket.getInputStream();
-        } catch (IOException ex) {
-            throw new RuntimeException(ex);
-        }
-    }
-
-    public OutputStream getOutputStream() {
-        try {
-            return socket.getOutputStream();
-        } catch (IOException ex) {
-            throw new RuntimeException(ex);
-        }
-    }
 }

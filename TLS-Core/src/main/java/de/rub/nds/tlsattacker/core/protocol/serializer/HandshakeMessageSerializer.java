@@ -12,7 +12,6 @@ package de.rub.nds.tlsattacker.core.protocol.serializer;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageSerializer;
-import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,7 +39,7 @@ public abstract class HandshakeMessageSerializer<T extends HandshakeMessage> ext
     /**
      * Writes the Type of the HandshakeMessage into the final byte[]
      */
-    private void writeType() {
+    protected void writeType() {
         appendByte(message.getType().getValue());
         LOGGER.debug("Type: " + message.getType().getValue());
     }
@@ -48,23 +47,15 @@ public abstract class HandshakeMessageSerializer<T extends HandshakeMessage> ext
     /**
      * Writes the message length of the HandshakeMessage into the final byte[]
      */
-    private void writeLength() {
+    protected void writeLength() {
         appendInt(message.getLength().getValue(), HandshakeByteLength.MESSAGE_LENGTH_FIELD);
         LOGGER.debug("Length: " + message.getLength().getValue());
     }
 
     private void writeContent() {
-        // content is ambiguous for DTLS
-        if (message instanceof DtlsHandshakeMessageFragment) {
-            DtlsHandshakeMessageFragment dtlsFragment = (DtlsHandshakeMessageFragment) message;
-            appendBytes(dtlsFragment.getContent().getValue());
-            LOGGER.debug(
-                "DTLS fragment content: " + ArrayConverter.bytesToHexString(dtlsFragment.getContent().getValue()));
-        } else {
-            appendBytes(message.getMessageContent().getValue());
-            LOGGER.debug(
-                "HandshakeMessage content: " + ArrayConverter.bytesToHexString(message.getMessageContent().getValue()));
-        }
+        appendBytes(message.getMessageContent().getValue());
+        LOGGER.debug(
+            "HandshakeMessage content: " + ArrayConverter.bytesToHexString(message.getMessageContent().getValue()));
     }
 
     @Override

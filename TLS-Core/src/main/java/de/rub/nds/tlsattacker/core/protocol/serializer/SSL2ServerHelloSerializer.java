@@ -61,7 +61,7 @@ public class SSL2ServerHelloSerializer extends HandshakeMessageSerializer<SSL2Se
     /**
      * Writes the Type of the SSL2ServerHello into the final byte[]
      */
-    private void writeType() {
+    protected void writeType() {
         appendByte(message.getType().getValue());
         LOGGER.debug("Type: " + message.getType().getValue());
     }

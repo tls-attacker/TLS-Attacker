@@ -80,7 +80,8 @@ public abstract class HandshakeMessage extends ProtocolMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger extensionsLength;
 
-    private ModifiableInteger messageSequence;
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
+    private ModifiableInteger messageSequence = null;
 
     public HandshakeMessage(HandshakeMessageType handshakeMessageType) {
         super();

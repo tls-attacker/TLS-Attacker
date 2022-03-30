@@ -12,6 +12,7 @@ package de.rub.nds.tlsattacker.core.workflow;
 import de.rub.nds.tlsattacker.core.config.ConfigIO;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceivingAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendingAction;
@@ -137,8 +138,9 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
 
     private void executeRetransmission(SendingAction action) throws IOException {
         LOGGER.info("Executing retransmission of last sent flight");
-        // state.getTlsContext().getRecordLayer().reencrypt(action.getSendRecords());
-        // sendMessageHelper.sendRecords(action.getSendRecords(), state.getTlsContext());
+        state.getTlsContext().getRecordLayer().reencrypt(action.getSendRecords());
+        state.getTlsContext().getRecordLayer()
+            .setLayerConfiguration(new SpecificSendLayerConfiguration(action.getSendRecords()));
+        state.getTlsContext().getRecordLayer().sendConfiguration();
     }
-
 }

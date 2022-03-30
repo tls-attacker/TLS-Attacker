@@ -313,17 +313,17 @@ public class Record extends ModifiableVariableHolder implements DataContainer {
 
     // TODO Fix this mess for records
     @Override
-    public Parser getParser(TlsContext context, InputStream stream) {
+    public RecordParser getParser(TlsContext context, InputStream stream) {
         return new RecordParser(stream, context.getLastRecordVersion());
     }
 
     @Override
-    public Preparator getPreparator(TlsContext context) {
+    public RecordPreparator getPreparator(TlsContext context) {
         return new RecordPreparator(context.getChooser(), this, null, contentMessageType, null);
     }
 
     @Override
-    public Serializer getSerializer(TlsContext context) {
+    public RecordSerializer getSerializer(TlsContext context) {
         return new RecordSerializer(this);
     }
 

@@ -72,7 +72,7 @@ public class SendRecordsFromLastFlightAction extends MessageAction implements Se
 
         try {
             tlsContext.getRecordLayer().reencrypt(records);
-            send(tlsContext, new ArrayList<>(), records);
+            send(tlsContext, new ArrayList<>(), new ArrayList<>(), records);
             setExecuted(true);
         } catch (IOException e) {
             tlsContext.setReceivedTransportHandlerException(true);
@@ -156,11 +156,6 @@ public class SendRecordsFromLastFlightAction extends MessageAction implements Se
     @Override
     public List<DtlsHandshakeMessageFragment> getSendFragments() {
         throw new UnsupportedOperationException("Not supported.");
-    }
-
-    @Override
-    public MessageActionDirection getMessageDirection() {
-        return MessageActionDirection.SENDING;
     }
 
 }

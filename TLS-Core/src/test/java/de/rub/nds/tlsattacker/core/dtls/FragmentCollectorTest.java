@@ -105,7 +105,7 @@ public class FragmentCollectorTest {
     public void testIsFittingFalse() {
         collector.addFragment(fragment(0, 0, 7, 0));
         DtlsHandshakeMessageFragment badSeq = fragment(0, 6, 3, 0);
-        badSeq.setMessageSeq(1000);
+        badSeq.setMessageSequence(1000);
         assertFalse(collector.isFitting(badSeq));
         DtlsHandshakeMessageFragment badLength = fragment(0, 6, 3, 0);
         badLength.setLength(1000);

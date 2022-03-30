@@ -57,7 +57,7 @@ public class SSL2ClientHelloSerializer extends HandshakeMessageSerializer<SSL2Cl
     /**
      * Writes the Type of the SSL2ClientHello into the final byte[]
      */
-    private void writeType() {
+    protected void writeType() {
         appendByte(message.getType().getValue());
         LOGGER.debug("Type: " + message.getType().getValue());
     }

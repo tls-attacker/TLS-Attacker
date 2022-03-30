@@ -77,7 +77,7 @@ public class SendMessagesFromLastFlightAction extends MessageAction implements S
         }
 
         try {
-            send(tlsContext, messages, records);
+            send(tlsContext, messages, fragments, records);
             setExecuted(true);
         } catch (IOException e) {
             tlsContext.setReceivedTransportHandlerException(true);
@@ -161,11 +161,6 @@ public class SendMessagesFromLastFlightAction extends MessageAction implements S
     @Override
     public List<DtlsHandshakeMessageFragment> getSendFragments() {
         return fragments;
-    }
-
-    @Override
-    public MessageAction.MessageActionDirection getMessageDirection() {
-        return MessageAction.MessageActionDirection.SENDING;
     }
 
 }

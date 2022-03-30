@@ -255,11 +255,6 @@ public class ReceiveAction extends CommonReceiveAction implements ReceivingActio
     }
 
     @Override
-    public MessageActionDirection getMessageDirection() {
-        return MessageActionDirection.RECEIVING;
-    }
-
-    @Override
     public List<ProtocolMessageType> getGoingToReceiveProtocolMessageTypes() {
         List<ProtocolMessageType> protocolMessageTypes = new ArrayList<>();
         for (ProtocolMessage msg : expectedMessages) {
@@ -281,6 +276,6 @@ public class ReceiveAction extends CommonReceiveAction implements ReceivingActio
 
     @Override
     protected void distinctReceive(TlsContext tlsContext) {
-        receive(tlsContext, expectedMessages, records);
+        receive(tlsContext, expectedMessages, fragments, records);
     }
 }

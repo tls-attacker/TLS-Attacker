@@ -15,6 +15,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PushbackInputStream;
 import java.net.SocketException;
@@ -142,4 +143,13 @@ public abstract class TransportHandler {
     }
 
     public abstract void setTimeout(long timeout);
+
+    // TODO: Change UDP to packet based processing instead of having in/out streams
+    public InputStream getInputStream() {
+        return inStream;
+    }
+
+    public OutputStream getOutputStream() {
+        return outStream;
+    }
 }

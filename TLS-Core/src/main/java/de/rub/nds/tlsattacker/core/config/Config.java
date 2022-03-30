@@ -21,6 +21,7 @@ import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.crypto.keys.CustomRSAPrivateKey;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.core.layer.constant.LayerStackType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
@@ -850,6 +851,8 @@ public class Config implements Serializable {
      * and DTLS headers).
      */
     private Integer dtlsMaximumFragmentLength = 1400;
+
+    private LayerStackType defaultLayerStackType = LayerStackType.TLS;
 
     private WorkflowExecutorType workflowExecutorType = WorkflowExecutorType.DEFAULT;
 
@@ -4027,4 +4030,11 @@ public class Config implements Serializable {
         this.defaultClientTicketResumptionSessionId = defaultClientTicketResumptionSessionId;
     }
 
+    public LayerStackType getDefaultLayerStackType() {
+        return defaultLayerStackType;
+    }
+
+    public void setDefaultLayerStackType(LayerStackType defaultLayerStackType) {
+        this.defaultLayerStackType = defaultLayerStackType;
+    }
 }
