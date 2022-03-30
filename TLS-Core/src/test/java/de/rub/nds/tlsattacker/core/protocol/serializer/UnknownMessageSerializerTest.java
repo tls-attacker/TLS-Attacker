@@ -29,10 +29,10 @@ public class UnknownMessageSerializerTest {
     }
 
     /**
-     * Test of serializeProtocolMessageContent method, of class UnknownSerializer.
+     * Test of serializeBytes method, of class UnknownSerializer.
      */
     @Test
-    public void testSerializeProtocolMessageContent() {
+    public void testSerializeBytes() {
         msg.setCompleteResultingMessage(new byte[] { 1, 2, 3 });
         assertArrayEquals(new byte[] { 1, 2, 3 }, serializer.serialize());
     }

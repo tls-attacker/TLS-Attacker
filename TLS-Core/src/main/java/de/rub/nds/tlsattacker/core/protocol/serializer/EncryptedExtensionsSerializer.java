@@ -26,7 +26,7 @@ public class EncryptedExtensionsSerializer extends HandshakeMessageSerializer<En
     }
 
     @Override
-    public byte[] serializeProtocolMessageContent() {
+    public byte[] serializeHandshakeMessageContent() {
         LOGGER.debug("Serializing EncryptedExtensionsMessage");
         if (hasExtensionLengthField()) {
             writeExtensionLength();

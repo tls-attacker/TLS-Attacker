@@ -26,11 +26,11 @@ public class SSL2ServerHelloSerializer extends HandshakeMessageSerializer<SSL2Se
 
     @Override
     protected byte[] serializeBytes() {
-        return serializeProtocolMessageContent();
+        return serializeHandshakeMessageContent();
     }
 
     @Override
-    public byte[] serializeProtocolMessageContent() {
+    public byte[] serializeHandshakeMessageContent() {
         LOGGER.debug("Serialize SSL2ServerHello");
         writeMessageLength();
         writeType();

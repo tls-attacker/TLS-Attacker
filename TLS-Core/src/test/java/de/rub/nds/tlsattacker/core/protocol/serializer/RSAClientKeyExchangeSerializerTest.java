@@ -40,16 +40,16 @@ public class RSAClientKeyExchangeSerializerTest {
     }
 
     /**
-     * Test of serializeProtocolMessageContent method, of class RSAClientKeyExchangeSerializer.
+     * Test of serializeHandshakeMessageContent method, of class RSAClientKeyExchangeSerializer.
      */
     @Test
-    public void testserializeProtocolMessageContent() {
+    public void testSerializeHandshakeMessageContent() {
         RSAClientKeyExchangeMessage msg = new RSAClientKeyExchangeMessage();
         msg.setCompleteResultingMessage(expectedPart);
         msg.setPublicKey(serializedKey);
         msg.setPublicKeyLength(serializedKeyLength);
         RSAClientKeyExchangeSerializer serializer = new RSAClientKeyExchangeSerializer(msg, version);
-        assertArrayEquals(expectedPart, serializer.serializeProtocolMessageContent());
+        assertArrayEquals(expectedPart, serializer.serializeHandshakeMessageContent());
     }
 
 }

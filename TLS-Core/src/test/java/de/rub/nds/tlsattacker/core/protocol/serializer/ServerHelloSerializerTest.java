@@ -73,7 +73,7 @@ public class ServerHelloSerializerTest {
     @Test
     public void serialize() {
         ServerHelloSerializer serializer = new ServerHelloSerializer(helloMessage, ProtocolVersion.TLS12);
-        byte[] serialised = serializer.serializeProtocolMessageContent();
+        byte[] serialised = serializer.serializeHandshakeMessageContent();
         assertArrayEquals(serialised, message);
     }
 

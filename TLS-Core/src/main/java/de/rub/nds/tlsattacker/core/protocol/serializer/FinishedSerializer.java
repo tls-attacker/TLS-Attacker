@@ -35,7 +35,7 @@ public class FinishedSerializer extends HandshakeMessageSerializer<FinishedMessa
     }
 
     @Override
-    public byte[] serializeProtocolMessageContent() {
+    public byte[] serializeHandshakeMessageContent() {
         LOGGER.debug("Serializing FinishedMessage");
         writeVerifyData(msg);
         return getAlreadySerialized();

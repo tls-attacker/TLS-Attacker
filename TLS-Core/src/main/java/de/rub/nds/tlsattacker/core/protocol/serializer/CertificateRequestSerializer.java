@@ -39,7 +39,7 @@ public class CertificateRequestSerializer extends HandshakeMessageSerializer<Cer
     }
 
     @Override
-    public byte[] serializeProtocolMessageContent() {
+    public byte[] serializeHandshakeMessageContent() {
         LOGGER.debug("Serializing CertificateRequestMessage");
         if (version.isTLS13()) {
             writeCertificateRequestContextLength(msg);

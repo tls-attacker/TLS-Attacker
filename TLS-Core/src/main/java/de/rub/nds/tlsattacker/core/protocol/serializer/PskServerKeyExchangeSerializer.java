@@ -36,7 +36,7 @@ public class PskServerKeyExchangeSerializer extends ServerKeyExchangeSerializer<
     }
 
     @Override
-    public byte[] serializeProtocolMessageContent() {
+    public byte[] serializeHandshakeMessageContent() {
         LOGGER.debug("Serializing PSKServerKeyExchangeMessage");
         writePSKIdentityHintLength(msg);
         writePSKIdentityHint(msg);

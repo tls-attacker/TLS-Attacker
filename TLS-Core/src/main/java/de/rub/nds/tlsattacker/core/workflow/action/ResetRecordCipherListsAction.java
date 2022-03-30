@@ -45,8 +45,7 @@ public class ResetRecordCipherListsAction extends ConnectionBoundAction {
         if (recordLayer != null) {
             recordLayer.getEncryptor().removeCiphers(toRemoveEncryptor);
             recordLayer.getDecryptor().removeCiphers(toRemoveDecryptor);
-        }
-        else {
+        } else {
             LOGGER.warn("The current context does not have a Record Layer");
         }
         setExecuted(true);

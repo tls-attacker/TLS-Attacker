@@ -40,7 +40,7 @@ public class NewSessionTicketSerializer extends HandshakeMessageSerializer<NewSe
     }
 
     @Override
-    public byte[] serializeProtocolMessageContent() {
+    public byte[] serializeHandshakeMessageContent() {
         LOGGER.debug("Serializing NewSessionTicketMessage");
         writeLifetimeHint(msg);
         if (version.isTLS13()) {

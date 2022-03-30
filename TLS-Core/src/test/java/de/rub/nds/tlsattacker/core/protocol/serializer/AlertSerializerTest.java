@@ -37,10 +37,10 @@ public class AlertSerializerTest {
     }
 
     /**
-     * Test of serializeProtocolMessageContent method, of class AlertSerializer.
+     * Test of serializeBytes method, of class AlertSerializer.
      */
     @Test
-    public void testSerializeProtocolMessageContent() {
+    public void testSerializeBytes() {
         AlertMessage message = new AlertMessage();
         message.setLevel(level);
         message.setDescription(description);

@@ -50,10 +50,10 @@ public class ECDHEServerKeyExchangeSerializerTest {
     }
 
     /**
-     * Test of serializeProtocolMessageContent method, of class ECDHEServerKeyExchangeSerializer.
+     * Test of serializeHandshakeMessageContent method, of class ECDHEServerKeyExchangeSerializer.
      */
     @Test
-    public void testserializeProtocolMessageContent() {
+    public void testSerializeHandshakeMessageContent() {
         ECDHEServerKeyExchangeMessage msg = new ECDHEServerKeyExchangeMessage();
         msg.setCompleteResultingMessage(expectedPart);
         msg.setCurveType(curveType);
@@ -68,7 +68,7 @@ public class ECDHEServerKeyExchangeSerializerTest {
         msg.setSignatureLength(sigLength);
         msg.setSignature(signature);
         ECDHEServerKeyExchangeSerializer serializer = new ECDHEServerKeyExchangeSerializer(msg, version);
-        assertArrayEquals(expectedPart, serializer.serializeProtocolMessageContent());
+        assertArrayEquals(expectedPart, serializer.serializeHandshakeMessageContent());
     }
 
 }

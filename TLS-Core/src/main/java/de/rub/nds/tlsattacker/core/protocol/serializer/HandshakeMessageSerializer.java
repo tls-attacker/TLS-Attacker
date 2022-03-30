@@ -75,6 +75,8 @@ public abstract class HandshakeMessageSerializer<T extends HandshakeMessage> ext
         return getAlreadySerialized();
     }
 
+    public abstract byte[] serializeHandshakeMessageContent();
+
     /**
      * Checks if the message has an ExtensionsLength field
      *

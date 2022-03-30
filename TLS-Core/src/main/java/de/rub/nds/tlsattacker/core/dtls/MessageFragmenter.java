@@ -53,7 +53,7 @@ public class MessageFragmenter {
     private static byte[] getSerializedBytes(HandshakeMessage message, TlsContext context) {
         HandshakeMessageSerializer serializer = message.getSerializer(context);
         byte[] bytes;
-        bytes = serializer.serializeProtocolMessageContent();
+        bytes = serializer.serializeHandshakeMessageContent();
         return bytes;
     }
 

@@ -43,10 +43,10 @@ public class HeartbeatMessageSerializerTest {
     }
 
     /**
-     * Test of serializeProtocolMessageContent method, of class HeartbeatMessageSerializer.
+     * Test of serializeBytes method, of class HeartbeatMessageSerializer.
      */
     @Test
-    public void testSerializeProtocolMessageContent() {
+    public void testSerializeBytes() {
         HeartbeatMessage msg = new HeartbeatMessage();
         msg.setCompleteResultingMessage(expectedPart);
         msg.setHeartbeatMessageType(heartBeatType);

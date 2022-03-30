@@ -29,7 +29,7 @@ public class HttpsRequestSerializer extends ProtocolMessageSerializer<HttpsReque
     }
 
     @Override
-    public byte[] serializeProtocolMessageContent() {
+    protected byte[] serializeBytes() {
         StringBuilder builder = new StringBuilder();
         builder.append(message.getRequestType().getValue()).append(" ").append(message.getRequestPath().getValue())
             .append(" ").append(message.getRequestProtocol().getValue()).append("\r\n");
@@ -42,10 +42,4 @@ public class HttpsRequestSerializer extends ProtocolMessageSerializer<HttpsReque
         appendBytes(builder.toString().getBytes(StandardCharsets.ISO_8859_1));
         return getAlreadySerialized();
     }
-
-    @Override
-    protected byte[] serializeBytes() {
-        return serializeProtocolMessageContent();
-    }
-
 }

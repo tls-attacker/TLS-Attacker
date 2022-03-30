@@ -37,7 +37,7 @@ public class DHClientKeyExchangeSerializer<T extends DHClientKeyExchangeMessage>
     }
 
     @Override
-    public byte[] serializeProtocolMessageContent() {
+    public byte[] serializeHandshakeMessageContent() {
         LOGGER.debug("Serializing DHClientKeyExchangeMessage");
         return serializeDhParams();
     }

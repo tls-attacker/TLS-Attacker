@@ -34,7 +34,7 @@ public class ServerHelloDoneSerializer extends HandshakeMessageSerializer<Server
     }
 
     @Override
-    public byte[] serializeProtocolMessageContent() {
+    public byte[] serializeHandshakeMessageContent() {
         LOGGER.debug("Serializing ServerHelloDoneMessage");
         return getAlreadySerialized();
     }

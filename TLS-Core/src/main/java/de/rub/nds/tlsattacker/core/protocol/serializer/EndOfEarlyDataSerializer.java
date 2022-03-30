@@ -22,7 +22,7 @@ public class EndOfEarlyDataSerializer extends HandshakeMessageSerializer<EndOfEa
     }
 
     @Override
-    public byte[] serializeProtocolMessageContent() {
+    public byte[] serializeHandshakeMessageContent() {
         return getAlreadySerialized(); // empty message
     }
 

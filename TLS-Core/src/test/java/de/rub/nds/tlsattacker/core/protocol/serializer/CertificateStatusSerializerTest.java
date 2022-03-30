@@ -42,12 +42,12 @@ public class CertificateStatusSerializerTest {
     }
 
     @Test
-    public void testserializeProtocolMessageContent() {
+    public void testSerializeHandshakeMessageContent() {
         CertificateStatusMessage message = new CertificateStatusMessage();
         message.setCertificateStatusType(certificateStatusType);
         message.setOcspResponseLength(ocspResponseLength);
         message.setOcspResponseBytes(ocspResponseBytes);
         CertificateStatusSerializer serializer = new CertificateStatusSerializer(message, version);
-        assertArrayEquals(this.message, serializer.serializeProtocolMessageContent());
+        assertArrayEquals(this.message, serializer.serializeHandshakeMessageContent());
     }
 }

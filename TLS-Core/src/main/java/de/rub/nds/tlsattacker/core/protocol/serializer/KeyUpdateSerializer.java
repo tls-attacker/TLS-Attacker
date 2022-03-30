@@ -34,7 +34,7 @@ public class KeyUpdateSerializer extends HandshakeMessageSerializer<KeyUpdateMes
     }
 
     @Override
-    public byte[] serializeProtocolMessageContent() {
+    public byte[] serializeHandshakeMessageContent() {
         LOGGER.debug("Serializing KeyUpdateMessage");
         writeKeyUpdateData(msg);
         return getAlreadySerialized();

@@ -75,7 +75,7 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
 
     public void prepareEncapsulatingFields() {
         HandshakeMessageSerializer<T> serializer = message.getSerializer(chooser.getContext());
-        byte[] content = serializer.serializeProtocolMessageContent();
+        byte[] content = serializer.serializeHandshakeMessageContent();
         prepareMessageContent(content);
         if (!(message instanceof DtlsHandshakeMessageFragment)) {
             prepareMessageLength(message.getMessageContent().getValue().length);

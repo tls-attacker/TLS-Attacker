@@ -36,7 +36,7 @@ public class ChangeCipherSpecSerializer extends ProtocolMessageSerializer<Change
     }
 
     @Override
-    public byte[] serializeProtocolMessageContent() {
+    protected byte[] serializeBytes() {
         LOGGER.debug("Serializing ChangeCipherSepcMessage");
         writeCcsProtocolType(msg);
         return getAlreadySerialized();
@@ -49,10 +49,4 @@ public class ChangeCipherSpecSerializer extends ProtocolMessageSerializer<Change
         appendBytes(msg.getCcsProtocolType().getValue());
         LOGGER.debug("CcsProtocolType: " + ArrayConverter.bytesToHexString(msg.getCcsProtocolType().getValue()));
     }
-
-    @Override
-    protected byte[] serializeBytes() {
-        return serializeProtocolMessageContent();
-    }
-
 }

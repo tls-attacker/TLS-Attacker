@@ -16,6 +16,4 @@ public abstract class ProtocolMessageSerializer<T extends ProtocolMessage> exten
     public ProtocolMessageSerializer(T message) {
         this.message = message;
     }
-
-    public abstract byte[] serializeProtocolMessageContent();
 }

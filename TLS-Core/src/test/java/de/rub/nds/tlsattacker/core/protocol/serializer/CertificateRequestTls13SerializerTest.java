@@ -42,17 +42,17 @@ public class CertificateRequestTls13SerializerTest {
     }
 
     /**
-     * Test of serializeProtocolMessageContent method, of class CertificateRequestSerializer.
+     * Test of serializeHandshakeMessageContent method, of class CertificateRequestSerializer.
      */
     @Test
-    public void testserializeProtocolMessageContent() {
+    public void testSerializeHandshakeMessageContent() {
         CertificateRequestMessage msg = new CertificateRequestMessage();
         msg.setCertificateRequestContext(certificateRequestContext);
         msg.setCertificateRequestContextLength(certificateRequestContextLength);
         msg.setExtensionBytes(extensionBytes);
         msg.setExtensionsLength(msg.getExtensionBytes().getValue().length);
         CertificateRequestSerializer serializer = new CertificateRequestSerializer(msg, version);
-        assertArrayEquals(this.message, serializer.serializeProtocolMessageContent());
+        assertArrayEquals(this.message, serializer.serializeHandshakeMessageContent());
     }
 
 }

@@ -38,15 +38,15 @@ public class ChangeCipherSpecSerializerTest {
     }
 
     /**
-     * Test of serializeProtocolMessageContent method, of class ChangeCipherSpecSerializer.
+     * Test of serializeBytes method, of class ChangeCipherSpecSerializer.
      */
     @Test
-    public void testSerializeProtocolMessageContent() {
+    public void testSerializeBytes() {
         ChangeCipherSpecMessage msg = new ChangeCipherSpecMessage();
         msg.setCcsProtocolType(new byte[] { ccsType });
         msg.setCompleteResultingMessage(expectedPart);
         ChangeCipherSpecSerializer serializer = new ChangeCipherSpecSerializer(msg, version);
-        assertArrayEquals(expectedPart, serializer.serializeProtocolMessageContent());
+        assertArrayEquals(expectedPart, serializer.serialize());
     }
 
 }

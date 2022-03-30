@@ -64,10 +64,10 @@ public class ClientHelloSerializerTest {
     }
 
     /**
-     * Test of serializeProtocolMessageContent method, of class ClientHelloSerializer.
+     * Test of serializeHandshakeMessageContent method, of class ClientHelloSerializer.
      */
     @Test
-    public void testserializeProtocolMessageContent() {
+    public void testSerializeHandshakeMessageContent() {
         ClientHelloMessage clientMessage = new ClientHelloMessage();
         clientMessage.setCipherSuiteLength(cipherSuitesLength);
         clientMessage.setCipherSuites(cipherSuites);
@@ -90,6 +90,7 @@ public class ClientHelloSerializerTest {
         clientMessage.setRandom(random);
         clientMessage.setProtocolVersion(protocolVersion);
         ClientHelloSerializer serializer = new ClientHelloSerializer(clientMessage, version);
-        assertArrayEquals(expectedPart, serializer.serializeProtocolMessageContent());
+        assertArrayEquals(expectedPart, serializer.serializeHandshakeMessageContent());
     }
+
 }

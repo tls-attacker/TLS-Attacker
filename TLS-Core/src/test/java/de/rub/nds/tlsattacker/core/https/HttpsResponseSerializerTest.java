@@ -42,10 +42,10 @@ public class HttpsResponseSerializerTest {
     }
 
     /**
-     * Test of serializeProtocolMessageContent method, of class HttpsResponseSerializer.
+     * Test of serializeBytes method, of class HttpsResponseSerializer.
      */
     @Test
-    public void testSerializeProtocolMessageContent() {
+    public void testSerializeBytes() {
         HttpsResponseParser parser = new HttpsResponseParser(new ByteArrayInputStream(msg), version, config);
         HttpsResponseMessage parsedMsg = new HttpsResponseMessage();
         parser.parse(parsedMsg);
