@@ -352,9 +352,6 @@ public final class RecordBlockCipher extends RecordCipher {
         return true;
     }
 
-    /**
-     * Dirty hack to get a better inputstream - should be changed in newer java versions
-     */
     class PlaintextParser extends Parser<Object> {
 
         public PlaintextParser(byte[] array) {

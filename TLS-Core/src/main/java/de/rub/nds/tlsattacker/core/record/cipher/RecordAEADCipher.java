@@ -312,9 +312,6 @@ public class RecordAEADCipher extends RecordCipher {
         return temp;
     }
 
-    /**
-     * Dirty hack to get a better inputstream - should be changed in newer java versions
-     */
     class PlaintextParser extends Parser<Object> {
 
         public PlaintextParser(byte[] array) {

@@ -137,9 +137,6 @@ public class RecordStreamCipher extends RecordCipher {
         record.getComputations().setMacValid(Arrays.equals(hmac, calculatedHmac));
     }
 
-    /**
-     * Dirty hack to get a better inputstream - should be changed in newer java versions
-     */
     class PlaintextParser extends Parser<Object> {
 
         public PlaintextParser(byte[] array) {
