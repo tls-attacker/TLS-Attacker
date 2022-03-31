@@ -42,7 +42,7 @@ public class SupplementalDataParser extends HandshakeMessageParser<SupplementalD
     }
 
     @Override
-    protected void parseHandshakeMessageContent(SupplementalDataMessage msg) {
+    public void parse(SupplementalDataMessage msg) {
         LOGGER.debug("Parsing SupplementalDataMessage");
         parseSupplementalDataLength(msg);
         parseSupplementalDataBytes(msg);

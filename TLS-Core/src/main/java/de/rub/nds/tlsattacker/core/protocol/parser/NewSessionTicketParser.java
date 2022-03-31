@@ -34,7 +34,7 @@ public class NewSessionTicketParser extends HandshakeMessageParser<NewSessionTic
     }
 
     @Override
-    protected void parseHandshakeMessageContent(NewSessionTicketMessage msg) {
+    public void parse(NewSessionTicketMessage msg) {
         LOGGER.debug("Parsing NewSessionTicket");
         if (getVersion().isTLS13()) {
             parseLifetime(msg);

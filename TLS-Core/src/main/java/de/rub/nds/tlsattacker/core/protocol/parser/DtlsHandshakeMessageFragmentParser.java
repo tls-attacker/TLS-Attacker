@@ -27,7 +27,7 @@ public class DtlsHandshakeMessageFragmentParser extends HandshakeMessageParser<D
     }
 
     @Override
-    protected void parseHandshakeMessageContent(DtlsHandshakeMessageFragment msg) {
+    public void parse(DtlsHandshakeMessageFragment msg) {
         parseMessageSequence(msg);
         parseFragmentOffset(msg);
         parseFragmentLength(msg);

@@ -33,7 +33,7 @@ public class EmptyClientKeyExchangeParser<T extends EmptyClientKeyExchangeMessag
     }
 
     @Override
-    protected void parseHandshakeMessageContent(T msg) {
+    public void parse(T msg) {
         LOGGER.debug("Parsing EmptyClientKeyExchangeMessage");
     }
 }

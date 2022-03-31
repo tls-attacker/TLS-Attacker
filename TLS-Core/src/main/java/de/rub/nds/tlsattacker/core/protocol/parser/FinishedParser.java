@@ -35,7 +35,7 @@ public class FinishedParser extends HandshakeMessageParser<FinishedMessage> {
     }
 
     @Override
-    protected void parseHandshakeMessageContent(FinishedMessage msg) {
+    public void parse(FinishedMessage msg) {
         LOGGER.debug("Parsing FinishedMessage");
         parseVerifyData(msg);
     }

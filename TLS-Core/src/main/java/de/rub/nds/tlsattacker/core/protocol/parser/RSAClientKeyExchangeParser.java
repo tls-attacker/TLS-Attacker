@@ -36,7 +36,7 @@ public class RSAClientKeyExchangeParser<T extends RSAClientKeyExchangeMessage> e
     }
 
     @Override
-    protected void parseHandshakeMessageContent(T msg) {
+    public void parse(T msg) {
         LOGGER.debug("Parsing RSAClientKeyExchangeMessage");
         parseSerializedPublicKeyLength(msg);
         parseSerializedPublicKey(msg);

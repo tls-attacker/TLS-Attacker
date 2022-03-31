@@ -27,7 +27,7 @@ public class KeyUpdateParser extends HandshakeMessageParser<KeyUpdateMessage> {
     }
 
     @Override
-    protected void parseHandshakeMessageContent(KeyUpdateMessage msg) {
+    public void parse(KeyUpdateMessage msg) {
         LOGGER.debug("Parsing KeyUpdateMessage");
         parseUpdateRequest(msg);
     }

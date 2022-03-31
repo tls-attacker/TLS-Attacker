@@ -36,7 +36,7 @@ public class PskDhClientKeyExchangeParser extends DHClientKeyExchangeParser<PskD
     }
 
     @Override
-    protected void parseHandshakeMessageContent(PskDhClientKeyExchangeMessage msg) {
+    public void parse(PskDhClientKeyExchangeMessage msg) {
         LOGGER.debug("Parsing PSKDHClientKeyExchangeMessage");
         parsePskIdentityLength(msg);
         parsePskIdentity(msg);

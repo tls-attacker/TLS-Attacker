@@ -45,7 +45,7 @@ public class ECDHEServerKeyExchangeParser<T extends ECDHEServerKeyExchangeMessag
     }
 
     @Override
-    protected void parseHandshakeMessageContent(ECDHEServerKeyExchangeMessage msg) {
+    public void parse(ECDHEServerKeyExchangeMessage msg) {
         LOGGER.debug("Parsing ECDHEServerKeyExchangeMessage");
         parseCurveType(msg);
         parseNamedGroup(msg);

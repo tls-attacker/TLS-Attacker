@@ -36,7 +36,7 @@ public class HeartbeatMessageParser extends ProtocolMessageParser<HeartbeatMessa
     }
 
     @Override
-    protected void parseMessageContent(HeartbeatMessage message) {
+    public void parse(HeartbeatMessage message) {
         LOGGER.debug("Parsing HeartbeatMessage");
         parseHeartbeatMessageType(message);
         parsePayloadLength(message);

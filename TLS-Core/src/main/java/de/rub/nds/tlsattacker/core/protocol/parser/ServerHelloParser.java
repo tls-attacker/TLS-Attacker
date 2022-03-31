@@ -64,7 +64,7 @@ public class ServerHelloParser extends HelloMessageParser<ServerHelloMessage> {
     }
 
     @Override
-    protected void parseHandshakeMessageContent(ServerHelloMessage msg) {
+    public void parse(ServerHelloMessage msg) {
         LOGGER.debug("Parsing ServerHelloMessage");
         parseProtocolVersion(msg);
         ProtocolVersion version = ProtocolVersion.getProtocolVersion(msg.getProtocolVersion().getValue());

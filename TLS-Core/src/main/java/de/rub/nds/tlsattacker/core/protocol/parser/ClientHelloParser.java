@@ -51,7 +51,7 @@ public class ClientHelloParser extends HelloMessageParser<ClientHelloMessage> {
     }
 
     @Override
-    protected void parseHandshakeMessageContent(ClientHelloMessage msg) {
+    public void parse(ClientHelloMessage msg) {
         LOGGER.debug("Parsing ClientHelloMessage");
         parseProtocolVersion(msg);
         parseRandom(msg);

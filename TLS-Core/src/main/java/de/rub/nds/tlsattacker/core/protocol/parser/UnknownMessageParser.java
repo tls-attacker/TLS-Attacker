@@ -59,7 +59,7 @@ public class UnknownMessageParser extends ProtocolMessageParser<UnknownMessage> 
     }
 
     @Override
-    protected void parseMessageContent(UnknownMessage message) {
+    public void parse(UnknownMessage message) {
         LOGGER.debug("Parsing UnknownMessage");
         parseCompleteMessage(message);
     }

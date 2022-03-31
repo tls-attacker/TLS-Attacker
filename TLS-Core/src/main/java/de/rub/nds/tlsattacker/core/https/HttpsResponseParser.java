@@ -28,7 +28,7 @@ public class HttpsResponseParser extends ProtocolMessageParser<HttpsResponseMess
     }
 
     @Override
-    protected void parseMessageContent(HttpsResponseMessage message) {
+    public void parse(HttpsResponseMessage message) {
         String request = parseStringTill((byte) 0x0A);
         String[] split = request.replaceAll("\r", " ").split(" ");
         if (split.length < 2) {

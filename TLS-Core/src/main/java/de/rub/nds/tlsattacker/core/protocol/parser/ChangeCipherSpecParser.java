@@ -37,7 +37,7 @@ public class ChangeCipherSpecParser extends ProtocolMessageParser<ChangeCipherSp
     }
 
     @Override
-    protected void parseMessageContent(ChangeCipherSpecMessage message) {
+    public void parse(ChangeCipherSpecMessage message) {
         LOGGER.debug("Parsing ChangeCipherSpecMessage");
         parseCcsProtocolType(message);
         message.setCompleteResultingMessage(getAlreadyParsed());

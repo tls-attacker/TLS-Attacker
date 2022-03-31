@@ -36,7 +36,7 @@ public class PskClientKeyExchangeParser extends ClientKeyExchangeParser<PskClien
     }
 
     @Override
-    protected void parseHandshakeMessageContent(PskClientKeyExchangeMessage msg) {
+    public void parse(PskClientKeyExchangeMessage msg) {
         LOGGER.debug("Parsing PSKClientKeyExchangeMessage");
         parsePskIdentityLength(msg);
         parsePskIdentity(msg);

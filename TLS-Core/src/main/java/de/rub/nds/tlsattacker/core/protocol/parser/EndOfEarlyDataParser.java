@@ -26,7 +26,7 @@ public class EndOfEarlyDataParser extends HandshakeMessageParser<EndOfEarlyDataM
     }
 
     @Override
-    protected void parseHandshakeMessageContent(EndOfEarlyDataMessage msg) {
+    public void parse(EndOfEarlyDataMessage msg) {
         LOGGER.debug("Parsing EndOfEarlyDataMessage");
         // EndOfEarlyData is always empty
     }

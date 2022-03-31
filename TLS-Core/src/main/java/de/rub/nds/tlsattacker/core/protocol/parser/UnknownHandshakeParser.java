@@ -35,7 +35,7 @@ public class UnknownHandshakeParser extends HandshakeMessageParser<UnknownHandsh
     }
 
     @Override
-    protected void parseHandshakeMessageContent(UnknownHandshakeMessage msg) {
+    public void parse(UnknownHandshakeMessage msg) {
         LOGGER.debug("Parsing UnknownHandshakeMessage");
         parseData(msg);
         LOGGER.warn(

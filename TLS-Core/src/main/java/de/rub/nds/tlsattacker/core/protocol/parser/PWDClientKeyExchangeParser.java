@@ -39,7 +39,7 @@ public class PWDClientKeyExchangeParser extends ClientKeyExchangeParser<PWDClien
     }
 
     @Override
-    protected void parseHandshakeMessageContent(PWDClientKeyExchangeMessage msg) {
+    public void parse(PWDClientKeyExchangeMessage msg) {
         LOGGER.debug("Parsing PWDClientKeyExchangeMessage");
         parseElementLength(msg);
         parseElement(msg);

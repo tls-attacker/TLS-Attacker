@@ -31,7 +31,7 @@ public class EncryptedExtensionsParser extends HandshakeMessageParser<EncryptedE
     }
 
     @Override
-    protected void parseHandshakeMessageContent(EncryptedExtensionsMessage msg) {
+    public void parse(EncryptedExtensionsMessage msg) {
         LOGGER.debug("Parsing EncryptedExtensionsMessage");
         if (hasExtensionLengthField(msg)) {
             parseExtensionLength(msg);

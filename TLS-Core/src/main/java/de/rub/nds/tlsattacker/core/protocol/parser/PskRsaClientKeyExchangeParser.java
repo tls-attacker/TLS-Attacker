@@ -35,7 +35,7 @@ public class PskRsaClientKeyExchangeParser extends RSAClientKeyExchangeParser<Ps
     }
 
     @Override
-    protected void parseHandshakeMessageContent(PskRsaClientKeyExchangeMessage msg) {
+    public void parse(PskRsaClientKeyExchangeMessage msg) {
         LOGGER.debug("Parsing PSKRSAClientKeyExchangeMessage");
         parsePskIdentityLength(msg);
         parsePskIdentity(msg);

@@ -27,13 +27,8 @@ public class SSL2ServerVerifyParser extends SSL2HandshakeMessageParser<SSL2Serve
     }
 
     @Override
-    protected void parseMessageContent(SSL2ServerVerifyMessage message) {
+    public void parse(SSL2ServerVerifyMessage msg) {
         LOGGER.debug("Parsing SSL2ServerVerify");
-        parseHandshakeMessageContent(message);
-    }
-
-    @Override
-    protected void parseHandshakeMessageContent(SSL2ServerVerifyMessage msg) {
         parseMessageLength(msg);
         parseEncryptedPart(msg);
     }
