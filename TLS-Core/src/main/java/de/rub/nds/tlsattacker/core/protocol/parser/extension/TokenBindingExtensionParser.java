@@ -25,7 +25,7 @@ public class TokenBindingExtensionParser extends ExtensionParser<TokenBindingExt
     }
 
     @Override
-    public void parseExtensionMessageContent(TokenBindingExtensionMessage msg) {
+    public void parse(TokenBindingExtensionMessage msg) {
         msg.setTokenbindingVersion(parseByteArrayField(ExtensionByteLength.TOKENBINDING_VERSION));
         LOGGER
             .debug("The token binding extension parser parsed the version: " + msg.getTokenbindingVersion().toString());

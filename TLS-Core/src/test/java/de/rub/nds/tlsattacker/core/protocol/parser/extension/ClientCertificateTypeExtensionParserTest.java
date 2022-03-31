@@ -57,7 +57,7 @@ public class ClientCertificateTypeExtensionParserTest {
     }
 
     @Test
-    public void testParseExtensionMessageContent() {
+    public void testParse() {
         msg = new ClientCertificateTypeExtensionMessage();
         parser.parse(msg);
 

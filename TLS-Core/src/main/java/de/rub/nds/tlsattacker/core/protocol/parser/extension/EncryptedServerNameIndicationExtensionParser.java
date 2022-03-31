@@ -33,7 +33,7 @@ public class EncryptedServerNameIndicationExtensionParser
     }
 
     @Override
-    public void parseExtensionMessageContent(EncryptedServerNameIndicationExtensionMessage msg) {
+    public void parse(EncryptedServerNameIndicationExtensionMessage msg) {
         if (getBytesLeft() == 0) {
             LOGGER.debug("Received empty ESNI Extension");
             return;

@@ -41,10 +41,10 @@ public class SupportedVersionsExtensionParserTest {
     }
 
     /**
-     * Test of parseExtensionMessageContent method, of class SupportedVersionsExtensionParser.
+     * Test of parse method, of class SupportedVersionsExtensionParser.
      */
     @Test
-    public void testParseExtensionMessageContent() {
+    public void testParse() {
         SupportedVersionsExtensionParser parser =
             new SupportedVersionsExtensionParser(new ByteArrayInputStream(extension), Config.createConfig());
         SupportedVersionsExtensionMessage msg = new SupportedVersionsExtensionMessage();

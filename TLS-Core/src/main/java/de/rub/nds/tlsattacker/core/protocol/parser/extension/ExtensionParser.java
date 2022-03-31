@@ -29,14 +29,6 @@ public abstract class ExtensionParser<Extension extends ExtensionMessage> extend
         this.config = config;
     }
 
-    @Override
-    public final void parse(Extension extension) {
-        LOGGER.debug("Parsing ExtensionMessage");
-        parseExtensionMessageContent(extension);
-    }
-
-    public abstract void parseExtensionMessageContent(Extension extension);
-
     /**
      * Checks if the Extension has ExtensionData specified
      *

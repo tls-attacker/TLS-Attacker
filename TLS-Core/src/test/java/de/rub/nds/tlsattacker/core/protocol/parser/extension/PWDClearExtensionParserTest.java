@@ -39,7 +39,7 @@ public class PWDClearExtensionParserTest {
     }
 
     @Test
-    public void testParseExtensionMessageContent() {
+    public void testParse() {
         PWDClearExtensionParser parser =
             new PWDClearExtensionParser(new ByteArrayInputStream(expectedBytes), Config.createConfig());
         PWDClearExtensionMessage msg = new PWDClearExtensionMessage();

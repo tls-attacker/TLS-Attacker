@@ -30,7 +30,7 @@ public class PSKKeyExchangeModesExtensionParser extends ExtensionParser<PSKKeyEx
     }
 
     @Override
-    public void parseExtensionMessageContent(PSKKeyExchangeModesExtensionMessage msg) {
+    public void parse(PSKKeyExchangeModesExtensionMessage msg) {
         LOGGER.debug("Parsing PSKKeyExchangeModesExtensionMessage");
         parseExchangeModesListLength(msg);
         parseExchangeModesBytes(msg);

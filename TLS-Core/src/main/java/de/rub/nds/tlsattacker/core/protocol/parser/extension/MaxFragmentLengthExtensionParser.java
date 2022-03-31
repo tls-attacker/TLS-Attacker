@@ -27,7 +27,7 @@ public class MaxFragmentLengthExtensionParser extends ExtensionParser<MaxFragmen
     }
 
     @Override
-    public void parseExtensionMessageContent(MaxFragmentLengthExtensionMessage msg) {
+    public void parse(MaxFragmentLengthExtensionMessage msg) {
         LOGGER.debug("Parsing MaxFragmentLengthExtensionMessage");
         parseMaxFragmentLength(msg);
     }

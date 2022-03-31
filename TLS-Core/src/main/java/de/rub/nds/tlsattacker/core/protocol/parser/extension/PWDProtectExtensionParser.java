@@ -26,7 +26,7 @@ public class PWDProtectExtensionParser extends ExtensionParser<PWDProtectExtensi
     }
 
     @Override
-    public void parseExtensionMessageContent(PWDProtectExtensionMessage msg) {
+    public void parse(PWDProtectExtensionMessage msg) {
         LOGGER.debug("Parsing PWDProtectExtensionMessage");
         parseUsernameLength(msg);
         parseUsername(msg);

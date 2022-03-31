@@ -25,7 +25,7 @@ public class SRPExtensionParser extends ExtensionParser<SRPExtensionMessage> {
     }
 
     @Override
-    public void parseExtensionMessageContent(SRPExtensionMessage msg) {
+    public void parse(SRPExtensionMessage msg) {
         msg.setSrpIdentifierLength(parseIntField(ExtensionByteLength.SRP_IDENTIFIER_LENGTH));
         if (msg.getSrpIdentifierLength().getValue() > 32) {
             LOGGER.warn("The SRP Identifier should not exceed 32 bytes.");

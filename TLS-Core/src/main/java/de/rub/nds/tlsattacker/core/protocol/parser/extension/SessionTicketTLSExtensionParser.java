@@ -50,7 +50,7 @@ public class SessionTicketTLSExtensionParser extends ExtensionParser<SessionTick
      *            Message, which will hold the parsed extension
      */
     @Override
-    public void parseExtensionMessageContent(SessionTicketTLSExtensionMessage msg) {
+    public void parse(SessionTicketTLSExtensionMessage msg) {
         SessionTicket ticket = new SessionTicket();
         msg.setSessionTicket(ticket);
         // only parse if the extension indicates data

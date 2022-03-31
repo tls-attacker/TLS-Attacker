@@ -53,7 +53,7 @@ public class ECPointFormatExtensionParserTest {
      * Test of parseExtensionMessageContent method, of class ECPointFormatExtensionParser.
      */
     @Test
-    public void testParseExtensionMessageContent() {
+    public void testParse() {
         ECPointFormatExtensionParser parser =
             new ECPointFormatExtensionParser(new ByteArrayInputStream(extension), Config.createConfig());
         ECPointFormatExtensionMessage msg = new ECPointFormatExtensionMessage();

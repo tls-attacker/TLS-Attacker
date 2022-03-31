@@ -27,7 +27,7 @@ public class PasswordSaltExtensionParser extends ExtensionParser<PasswordSaltExt
     }
 
     @Override
-    public void parseExtensionMessageContent(PasswordSaltExtensionMessage msg) {
+    public void parse(PasswordSaltExtensionMessage msg) {
         LOGGER.debug("Parsing PasswordSaltExtensionMessage");
         parseSaltLength(msg);
         parseSalt(msg);

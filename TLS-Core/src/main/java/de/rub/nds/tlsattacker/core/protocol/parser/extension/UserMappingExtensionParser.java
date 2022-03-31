@@ -25,7 +25,7 @@ public class UserMappingExtensionParser extends ExtensionParser<UserMappingExten
     }
 
     @Override
-    public void parseExtensionMessageContent(UserMappingExtensionMessage msg) {
+    public void parse(UserMappingExtensionMessage msg) {
         msg.setUserMappingType(parseByteField(ExtensionByteLength.USER_MAPPING_MAPPINGTYPE));
         LOGGER.debug("Parsed the user mapping extension with mapping hint type " + msg.getUserMappingType().getValue());
     }

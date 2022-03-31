@@ -27,7 +27,7 @@ public class SignatureAndHashAlgorithmsExtensionParser
     }
 
     @Override
-    public void parseExtensionMessageContent(SignatureAndHashAlgorithmsExtensionMessage msg) {
+    public void parse(SignatureAndHashAlgorithmsExtensionMessage msg) {
         parseSignatureAndHashAlgorithmsLength(msg);
         parseSignatureAndHashAlgorithms(msg);
     }

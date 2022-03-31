@@ -42,10 +42,10 @@ public class SignatureAndHashAlgorithmsExtensionParserTest {
     }
 
     /**
-     * Test of parseExtensionMessageContent method, of class SignatureAndHashAlgorithmsExtensionParser.
+     * Test of parse method, of class SignatureAndHashAlgorithmsExtensionParser.
      */
     @Test
-    public void testParseExtensionMessageContent() {
+    public void testParse() {
         SignatureAndHashAlgorithmsExtensionParser parser =
             new SignatureAndHashAlgorithmsExtensionParser(new ByteArrayInputStream(extension), Config.createConfig());
         SignatureAndHashAlgorithmsExtensionMessage msg = new SignatureAndHashAlgorithmsExtensionMessage();

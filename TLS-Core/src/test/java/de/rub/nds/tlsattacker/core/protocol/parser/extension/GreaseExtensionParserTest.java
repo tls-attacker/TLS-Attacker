@@ -41,7 +41,7 @@ public class GreaseExtensionParserTest {
      * Test of parseExtensionMessageContent method, of class HeartbeatExtensionParser.
      */
     @Test
-    public void testParseExtensionMessageContent() {
+    public void testParse() {
         GreaseExtensionParser parser =
             new GreaseExtensionParser(new ByteArrayInputStream(extension), Config.createConfig());
         GreaseExtensionMessage msg = new GreaseExtensionMessage();

@@ -50,7 +50,7 @@ public class SRPExtensionParserTest {
     }
 
     @Test
-    public void testParseExtensionMessageContent() {
+    public void testParse() {
         message = new SRPExtensionMessage();
         parser.parse(message);
 

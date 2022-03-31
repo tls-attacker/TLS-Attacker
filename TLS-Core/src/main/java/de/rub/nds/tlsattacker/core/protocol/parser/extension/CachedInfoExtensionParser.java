@@ -28,7 +28,7 @@ public class CachedInfoExtensionParser extends ExtensionParser<CachedInfoExtensi
     }
 
     @Override
-    public void parseExtensionMessageContent(CachedInfoExtensionMessage msg) {
+    public void parse(CachedInfoExtensionMessage msg) {
         msg.setCachedInfoLength(parseIntField(ExtensionByteLength.CACHED_INFO_LENGTH));
         byte[] cachedInfoBytes = parseByteArrayField(msg.getCachedInfoLength().getValue());
         msg.setCachedInfoBytes(cachedInfoBytes);

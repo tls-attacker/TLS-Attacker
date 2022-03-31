@@ -27,7 +27,7 @@ public class TruncatedHmacExtensionParserTest {
     }
 
     @Test
-    public void testParseExtensionMessageContent() {
+    public void testParse() {
         message = new TruncatedHmacExtensionMessage();
         parser.parse(message);
     }

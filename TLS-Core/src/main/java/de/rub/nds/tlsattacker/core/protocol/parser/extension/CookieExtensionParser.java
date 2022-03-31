@@ -26,7 +26,7 @@ public class CookieExtensionParser extends ExtensionParser<CookieExtensionMessag
     }
 
     @Override
-    public void parseExtensionMessageContent(CookieExtensionMessage msg) {
+    public void parse(CookieExtensionMessage msg) {
         LOGGER.debug("Parsing CookieExtensionMessage");
         parseCookieLength(msg);
         parseCookie(msg);

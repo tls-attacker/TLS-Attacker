@@ -43,7 +43,7 @@ public class ClientAuthzExtensionParserTest {
     }
 
     @Test
-    public void testParseExtensionMessageContent() {
+    public void testParse() {
         parser = new ClientAuthzExtensionParser(new ByteArrayInputStream(expectedBytes), Config.createConfig());
         msg = new ClientAuthzExtensionMessage();
         parser.parse(msg);

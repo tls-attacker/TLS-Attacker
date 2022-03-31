@@ -41,7 +41,7 @@ public class RecordSizeLimitExtensionParserTest {
      * Test of parseExtensionMessageContent method of class RecordSizeLimitExtensionParser.
      */
     @Test
-    public void testParseExtensionMessageContent() {
+    public void testParse() {
         RecordSizeLimitExtensionParser parser =
             new RecordSizeLimitExtensionParser(new ByteArrayInputStream(extension), Config.createConfig());
         RecordSizeLimitExtensionMessage message = new RecordSizeLimitExtensionMessage();

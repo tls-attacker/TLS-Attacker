@@ -37,7 +37,7 @@ public class PreSharedKeyExtensionParser extends ExtensionParser<PreSharedKeyExt
     }
 
     @Override
-    public void parseExtensionMessageContent(PreSharedKeyExtensionMessage msg) {
+    public void parse(PreSharedKeyExtensionMessage msg) {
         LOGGER.debug("Parsing PreSharedKeyExtensionMessage");
         // Client -> Server
         if (talkingConnectionEndType == ConnectionEndType.CLIENT) {

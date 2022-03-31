@@ -50,7 +50,7 @@ public class PSKBinderParserTest {
     }
 
     @Test
-    public void testParseExtensionMessageContent() {
+    public void testParse() {
         pskBinder = new PSKBinder();
         parser.parse(pskBinder);
 

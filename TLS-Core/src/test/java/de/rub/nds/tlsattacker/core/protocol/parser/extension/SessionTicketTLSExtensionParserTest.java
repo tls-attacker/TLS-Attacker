@@ -73,10 +73,10 @@ public class SessionTicketTLSExtensionParserTest {
     }
 
     /**
-     * Tests the parseExtensionMessageContent method of the SessionTicketTLSExtensionParser.
+     * Tests the parse method of the SessionTicketTLSExtensionParser.
      */
     @Test
-    public void testParseExtensionMessageContent() {
+    public void testParse() {
         parser.parse(message);
         assertNull(message.getSessionTicket().getIdentity());
     }

@@ -27,7 +27,7 @@ public class SupportedVersionsExtensionParser extends ExtensionParser<SupportedV
     }
 
     @Override
-    public void parseExtensionMessageContent(SupportedVersionsExtensionMessage msg) {
+    public void parse(SupportedVersionsExtensionMessage msg) {
         LOGGER.debug("Parsing SupportedVersionsExtensionMessage");
         // TODO Don't guess
         if (getBytesLeft() == HandshakeByteLength.VERSION) {

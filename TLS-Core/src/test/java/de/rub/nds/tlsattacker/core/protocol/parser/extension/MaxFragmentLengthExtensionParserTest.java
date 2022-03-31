@@ -40,7 +40,7 @@ public class MaxFragmentLengthExtensionParserTest {
      * Test of parseExtensionMessageContent method, of class MaxFragmentLengthExtensionParser.
      */
     @Test
-    public void testParseExtensionMessageContent() {
+    public void testParse() {
         MaxFragmentLengthExtensionParser parser =
             new MaxFragmentLengthExtensionParser(new ByteArrayInputStream(extension), Config.createConfig());
         MaxFragmentLengthExtensionMessage msg = new MaxFragmentLengthExtensionMessage();

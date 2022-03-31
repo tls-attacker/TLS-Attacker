@@ -54,7 +54,7 @@ public class ServerNameIndicationExtensionParserTest {
      * Test of parseExtensionMessageContent method, of class ServerNameIndicationExtensionParser.
      */
     @Test
-    public void testParseExtensionMessageContent() {
+    public void testParse() {
         ServerNameIndicationExtensionParser parser =
             new ServerNameIndicationExtensionParser(new ByteArrayInputStream(extension), Config.createConfig());
         ServerNameIndicationExtensionMessage msg = new ServerNameIndicationExtensionMessage();

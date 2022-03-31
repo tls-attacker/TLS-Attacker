@@ -44,7 +44,7 @@ public class HeartbeatExtensionParserTest {
      * Test of parseExtensionMessageContent method, of class HeartbeatExtensionParser.
      */
     @Test
-    public void testParseExtensionMessageContent() {
+    public void testParse() {
         HeartbeatExtensionParser parser =
             new HeartbeatExtensionParser(new ByteArrayInputStream(extension), Config.createConfig());
         HeartbeatExtensionMessage msg = new HeartbeatExtensionMessage();

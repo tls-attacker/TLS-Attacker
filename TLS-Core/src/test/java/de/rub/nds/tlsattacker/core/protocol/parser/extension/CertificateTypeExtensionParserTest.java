@@ -56,7 +56,7 @@ public class CertificateTypeExtensionParserTest {
     }
 
     @Test
-    public void testParseExtensionMessageContent() {
+    public void testParse() {
         msg = new CertificateTypeExtensionMessage();
         parser.parse(msg);
         if (certificateTypesLength != null) {

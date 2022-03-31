@@ -28,7 +28,7 @@ public class EarlyDataExtensionParser extends ExtensionParser<EarlyDataExtension
     }
 
     @Override
-    public void parseExtensionMessageContent(EarlyDataExtensionMessage msg) {
+    public void parse(EarlyDataExtensionMessage msg) {
         LOGGER.debug("Parsing EarlyDataExtensionMessage");
         if (msg.getExtensionLength().getValue() > 0) {
             parseMaxEarlyDataSize(msg);

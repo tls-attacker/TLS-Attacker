@@ -26,7 +26,7 @@ public class RecordSizeLimitExtensionParser extends ExtensionParser<RecordSizeLi
     }
 
     @Override
-    public void parseExtensionMessageContent(RecordSizeLimitExtensionMessage message) {
+    public void parse(RecordSizeLimitExtensionMessage message) {
         LOGGER.debug("Parsing RecordSizeLimitExtensionMessage");
         parseRecordSizeLimit(message);
     }

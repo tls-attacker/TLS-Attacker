@@ -20,7 +20,7 @@ public class GreaseExtensionParser extends ExtensionParser<GreaseExtensionMessag
     }
 
     @Override
-    public void parseExtensionMessageContent(GreaseExtensionMessage msg) {
+    public void parse(GreaseExtensionMessage msg) {
         msg.setRandomData(parseByteArrayField(getBytesLeft()));
         msg.setData(msg.getRandomData().getValue());
     }

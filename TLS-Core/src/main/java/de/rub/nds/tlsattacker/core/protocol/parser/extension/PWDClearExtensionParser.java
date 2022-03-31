@@ -24,7 +24,7 @@ public class PWDClearExtensionParser extends ExtensionParser<PWDClearExtensionMe
     }
 
     @Override
-    public void parseExtensionMessageContent(PWDClearExtensionMessage msg) {
+    public void parse(PWDClearExtensionMessage msg) {
         LOGGER.debug("Parsing PWDClearExtensionMessage");
         parseUsernameLength(msg);
         parseUsername(msg);

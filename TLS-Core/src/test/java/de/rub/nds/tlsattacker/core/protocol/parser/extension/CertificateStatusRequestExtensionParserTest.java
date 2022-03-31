@@ -64,7 +64,7 @@ public class CertificateStatusRequestExtensionParserTest {
     }
 
     @Test
-    public void testParseExtensionMessageContent() {
+    public void testParse() {
         message = new CertificateStatusRequestExtensionMessage();
         parser.parse(message);
 

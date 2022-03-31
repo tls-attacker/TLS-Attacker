@@ -46,7 +46,7 @@ public class EllipticCurvesExtensionParserTest {
      * Test of parseExtensionMessageContent method, of class EllipticCurvesExtensionParser.
      */
     @Test
-    public void testParseExtensionMessageContent() {
+    public void testParse() {
         EllipticCurvesExtensionParser parser =
             new EllipticCurvesExtensionParser(new ByteArrayInputStream(extension), Config.createConfig());
         EllipticCurvesExtensionMessage msg = new EllipticCurvesExtensionMessage();
