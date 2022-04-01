@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.attacks.impl;
 
 import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 
-import de.rub.nds.tlsattacker.attacks.actions.EarlyCcsAction;
+import de.rub.nds.tlsattacker.core.workflow.action.EarlyCcsAction;
 import de.rub.nds.tlsattacker.attacks.config.EarlyCCSCommandConfig;
 import de.rub.nds.tlsattacker.attacks.constants.EarlyCcsVulnerabilityType;
 import de.rub.nds.tlsattacker.core.config.Config;
