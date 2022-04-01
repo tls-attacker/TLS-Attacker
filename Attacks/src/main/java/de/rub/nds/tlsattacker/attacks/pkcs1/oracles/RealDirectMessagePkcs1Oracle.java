@@ -12,7 +12,7 @@ package de.rub.nds.tlsattacker.attacks.pkcs1.oracles;
 import de.rub.nds.tlsattacker.attacks.pkcs1.BleichenbacherWorkflowGenerator;
 import de.rub.nds.tlsattacker.attacks.pkcs1.BleichenbacherWorkflowType;
 import de.rub.nds.tlsattacker.attacks.util.response.EqualityError;
-import de.rub.nds.tlsattacker.attacks.util.response.FingerPrintChecker;
+import de.rub.nds.tlsattacker.attacks.util.response.FingerprintChecker;
 import de.rub.nds.tlsattacker.attacks.util.response.ResponseExtractor;
 import de.rub.nds.tlsattacker.attacks.util.response.ResponseFingerprint;
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -86,10 +86,10 @@ public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
             clearConnections(state);
             if (fingerprint != null) {
                 if (validResponseContent != null) {
-                    conform = FingerPrintChecker.checkEquality(fingerprint, validResponseContent) == EqualityError.NONE;
+                    conform = FingerprintChecker.checkEquality(fingerprint, validResponseContent) == EqualityError.NONE;
                 } else if (invalidResponseContent != null) {
                     conform =
-                        FingerPrintChecker.checkEquality(fingerprint, invalidResponseContent) != EqualityError.NONE;
+                        FingerprintChecker.checkEquality(fingerprint, invalidResponseContent) != EqualityError.NONE;
                 }
             }
 

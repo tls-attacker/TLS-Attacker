@@ -212,7 +212,7 @@ public class ResponseFingerprint {
     }
 
     /**
-     * Returns whether two ResponseFingerprints are equal using the {@link FingerPrintChecker}.
+     * Returns whether two ResponseFingerprints are equal using the {@link FingerprintChecker}.
      * 
      * @param  obj
      *             ResponseFingerprint to compare this one to
@@ -223,7 +223,7 @@ public class ResponseFingerprint {
         if (!(obj instanceof ResponseFingerprint)) {
             return false;
         }
-        EqualityError equalityError = FingerPrintChecker.checkEquality(this, (ResponseFingerprint) obj);
+        EqualityError equalityError = FingerprintChecker.checkEquality(this, (ResponseFingerprint) obj);
         return equalityError == EqualityError.NONE || equalityError == EqualityError.RECORD_CONTENT;
     }
 
