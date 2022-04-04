@@ -12,8 +12,8 @@ package de.rub.nds.tlsattacker.attacks.impl;
 import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 
 import de.rub.nds.tlsattacker.attacks.config.PaddingOracleCommandConfig;
-import de.rub.nds.tlsattacker.attacks.exception.AttackFailedException;
-import de.rub.nds.tlsattacker.attacks.exception.OracleUnstableException;
+import de.rub.nds.tlsattacker.core.exceptions.AttackFailedException;
+import de.rub.nds.tlsattacker.core.exceptions.OracleUnstableException;
 import de.rub.nds.tlsattacker.attacks.padding.PaddingTraceGenerator;
 import de.rub.nds.tlsattacker.attacks.padding.PaddingTraceGeneratorFactory;
 import de.rub.nds.tlsattacker.attacks.padding.PaddingVectorGenerator;

@@ -13,8 +13,8 @@ import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.attacks.config.BleichenbacherCommandConfig;
-import de.rub.nds.tlsattacker.attacks.exception.AttackFailedException;
-import de.rub.nds.tlsattacker.attacks.exception.OracleUnstableException;
+import de.rub.nds.tlsattacker.core.exceptions.AttackFailedException;
+import de.rub.nds.tlsattacker.core.exceptions.OracleUnstableException;
 import de.rub.nds.tlsattacker.attacks.padding.VectorResponse;
 import de.rub.nds.tlsattacker.attacks.padding.vector.FingerprintTaskVectorPair;
 import de.rub.nds.tlsattacker.attacks.pkcs1.Bleichenbacher;

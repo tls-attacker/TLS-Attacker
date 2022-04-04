@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.attacks.pkcs1.oracles;
 
 import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.tlsattacker.attacks.exception.AttackFailedException;
+import de.rub.nds.tlsattacker.core.exceptions.AttackFailedException;
 import de.rub.nds.tlsattacker.attacks.impl.drown.ServerVerifyChecker;
 import de.rub.nds.tlsattacker.attacks.pkcs1.OracleException;
 import de.rub.nds.tlsattacker.core.config.Config;

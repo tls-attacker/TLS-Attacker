@@ -16,7 +16,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.Modifiable;
 import de.rub.nds.tlsattacker.attacks.config.SpecialDrownCommandConfig;
 import de.rub.nds.tlsattacker.attacks.constants.DrownVulnerabilityType;
-import de.rub.nds.tlsattacker.attacks.exception.AttackFailedException;
+import de.rub.nds.tlsattacker.core.exceptions.AttackFailedException;
 import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.ExtraClearDrownOracle;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.Bits;

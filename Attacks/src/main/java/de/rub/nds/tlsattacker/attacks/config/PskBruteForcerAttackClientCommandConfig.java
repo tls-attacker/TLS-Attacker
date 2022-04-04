@@ -13,7 +13,7 @@ import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.tlsattacker.attacks.bruteforce.GuessProviderType;
 import de.rub.nds.tlsattacker.attacks.config.delegate.AttackDelegate;
-import de.rub.nds.tlsattacker.attacks.exception.WordlistNotFoundException;
+import de.rub.nds.tlsattacker.core.exceptions.WordlistNotFoundException;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.CipherSuiteDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
