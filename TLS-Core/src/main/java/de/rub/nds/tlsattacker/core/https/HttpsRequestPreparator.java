@@ -24,7 +24,7 @@ public class HttpsRequestPreparator extends TlsMessagePreparator<HttpsRequestMes
 
     @Override
     protected void prepareProtocolMessageContents() {
-        message.setRequestPath("/");
+        message.setRequestPath("/robots.txt");
         message.setRequestProtocol("HTTP/1.1");
         message.setRequestType("GET");
         for (HttpsHeader header : message.getHeader()) {

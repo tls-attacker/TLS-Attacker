@@ -42,7 +42,7 @@ public class HttpsRequestPreparatorTest {
     public void testPrepareProtocolMessageContents() {
         preparator.prepareProtocolMessageContents();
 
-        assertEquals("/", message.getRequestPath().getOriginalValue());
+        assertEquals("/robots.txt", message.getRequestPath().getOriginalValue());
         assertEquals("HTTP/1.1", message.getRequestProtocol().getOriginalValue());
         assertEquals("GET", message.getRequestType().getOriginalValue());
         assertEquals(2, message.getHeader().size());
