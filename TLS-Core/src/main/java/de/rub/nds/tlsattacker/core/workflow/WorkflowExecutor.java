@@ -25,6 +25,7 @@ import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
+import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
@@ -90,8 +91,8 @@ public abstract class WorkflowExecutor {
 
     public abstract void executeWorkflow() throws WorkflowExecutionException;
 
-    public void initProtocolStack(TlsContext context) throws IOException {
-        context.setLayerStack(LayerStackFactory.createLayerStack(config.getDefaultLayerStackType(), context));
+    public void initProtocolStack(Context context) throws IOException {
+        context.setLayerStack(LayerStackFactory.createLayerStack(config.getDefaultLayerConfiguration(), context));
     }
 
     /**
