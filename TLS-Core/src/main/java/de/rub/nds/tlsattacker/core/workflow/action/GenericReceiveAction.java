@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.layer.Message;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.record.Record;
@@ -23,7 +22,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @XmlRootElement
-public class GenericReceiveAction extends MessageAction<ProtocolMessage> implements ReceivingAction<ProtocolMessage> {
+public class GenericReceiveAction extends MessageAction implements ReceivingAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

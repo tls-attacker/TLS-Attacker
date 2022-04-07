@@ -12,10 +12,6 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.http.HttpRequestMessage;
-import de.rub.nds.tlsattacker.core.http.HttpResponseMessage;
-import de.rub.nds.tlsattacker.core.layer.Message;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.*;
@@ -31,47 +27,46 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @XmlRootElement
-public class ReceiveAction<MessageType extends Message> extends CommonReceiveAction<MessageType>
-    implements ReceivingAction<MessageType> {
+public class ReceiveAction extends CommonReceiveAction implements ReceivingAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     @HoldsModifiableVariable
     @XmlElementWrapper
     @XmlElementRef
-    protected List<MessageType> expectedMessages = new ArrayList<>();
+    protected List<ProtocolMessage> expectedMessages = new ArrayList<>();
 
     public ReceiveAction() {
         super();
     }
 
-    public ReceiveAction(List<MessageType> expectedMessages) {
+    public ReceiveAction(List<ProtocolMessage> expectedMessages) {
         super();
         this.expectedMessages = expectedMessages;
     }
 
-    public ReceiveAction(MessageType... expectedMessages) {
+    public ReceiveAction(ProtocolMessage... expectedMessages) {
         super();
         this.expectedMessages = new ArrayList(Arrays.asList(expectedMessages));
     }
 
-    public ReceiveAction(Set<ActionOption> myActionOptions, List<MessageType> messages) {
+    public ReceiveAction(Set<ActionOption> myActionOptions, List<ProtocolMessage> messages) {
         this(messages);
         setActionOptions(myActionOptions);
     }
 
-    public ReceiveAction(Set<ActionOption> actionOptions, MessageType... messages) {
+    public ReceiveAction(Set<ActionOption> actionOptions, ProtocolMessage... messages) {
         this(actionOptions, new ArrayList(Arrays.asList(messages)));
     }
 
-    public ReceiveAction(ActionOption actionOption, List<MessageType> messages) {
+    public ReceiveAction(ActionOption actionOption, List<ProtocolMessage> messages) {
         this(messages);
         HashSet myActionOptions = new HashSet();
         myActionOptions.add(actionOption);
         setActionOptions(myActionOptions);
     }
 
-    public ReceiveAction(ActionOption actionOption, MessageType... messages) {
+    public ReceiveAction(ActionOption actionOption, ProtocolMessage... messages) {
         this(actionOption, new ArrayList<>(Arrays.asList(messages)));
     }
 
@@ -79,12 +74,12 @@ public class ReceiveAction<MessageType extends Message> extends CommonReceiveAct
         super(connectionAlias);
     }
 
-    public ReceiveAction(String connectionAliasAlias, List<MessageType> messages) {
+    public ReceiveAction(String connectionAliasAlias, List<ProtocolMessage> messages) {
         super(connectionAliasAlias);
         this.expectedMessages = messages;
     }
 
-    public ReceiveAction(String connectionAliasAlias, MessageType... messages) {
+    public ReceiveAction(String connectionAliasAlias, ProtocolMessage... messages) {
         this(connectionAliasAlias, new ArrayList<>(Arrays.asList(messages)));
     }
 
@@ -94,7 +89,7 @@ public class ReceiveAction<MessageType extends Message> extends CommonReceiveAct
 
         sb.append("\tExpected:");
         if ((expectedMessages != null)) {
-            for (MessageType message : expectedMessages) {
+            for (ProtocolMessage message : expectedMessages) {
                 sb.append(message.toCompactString());
                 sb.append(", ");
             }
@@ -103,7 +98,7 @@ public class ReceiveAction<MessageType extends Message> extends CommonReceiveAct
         }
         sb.append("\n\tActual:");
         if ((messages != null) && (!messages.isEmpty())) {
-            for (MessageType message : messages) {
+            for (ProtocolMessage message : messages) {
                 sb.append(message.toCompactString());
                 sb.append(", ");
             }
@@ -119,7 +114,7 @@ public class ReceiveAction<MessageType extends Message> extends CommonReceiveAct
         StringBuilder sb = new StringBuilder(super.toCompactString());
         if ((expectedMessages != null) && (!expectedMessages.isEmpty())) {
             sb.append(" (");
-            for (MessageType message : expectedMessages) {
+            for (ProtocolMessage message : expectedMessages) {
                 sb.append(message.toCompactString());
                 sb.append(",");
             }
@@ -139,11 +134,11 @@ public class ReceiveAction<MessageType extends Message> extends CommonReceiveAct
     }
 
     @Override
-    public List<MessageType> getExpectedMessages() {
+    public List<ProtocolMessage> getExpectedMessages() {
         return expectedMessages;
     }
 
-    void setReceivedMessages(List<MessageType> receivedMessages) {
+    void setReceivedMessages(List<ProtocolMessage> receivedMessages) {
         this.messages = receivedMessages;
     }
 
@@ -155,11 +150,11 @@ public class ReceiveAction<MessageType extends Message> extends CommonReceiveAct
         this.fragments = fragments;
     }
 
-    public void setExpectedMessages(List<MessageType> expectedMessages) {
+    public void setExpectedMessages(List<ProtocolMessage> expectedMessages) {
         this.expectedMessages = expectedMessages;
     }
 
-    public void setExpectedMessages(MessageType... expectedMessages) {
+    public void setExpectedMessages(ProtocolMessage... expectedMessages) {
         this.expectedMessages = new ArrayList(Arrays.asList(expectedMessages));
     }
 
@@ -172,7 +167,7 @@ public class ReceiveAction<MessageType extends Message> extends CommonReceiveAct
     }
 
     @Override
-    public List<MessageType> getReceivedMessages() {
+    public List<ProtocolMessage> getReceivedMessages() {
         return messages;
     }
 
@@ -268,9 +263,8 @@ public class ReceiveAction<MessageType extends Message> extends CommonReceiveAct
     @Override
     public List<ProtocolMessageType> getGoingToReceiveProtocolMessageTypes() {
         List<ProtocolMessageType> protocolMessageTypes = new ArrayList<>();
-        for (MessageType msg : expectedMessages) {
-            if (msg instanceof ProtocolMessage)
-                protocolMessageTypes.add(((ProtocolMessage) msg).getProtocolMessageType());
+        for (ProtocolMessage msg : expectedMessages) {
+            protocolMessageTypes.add(msg.getProtocolMessageType());
         }
         return protocolMessageTypes;
     }
@@ -278,7 +272,7 @@ public class ReceiveAction<MessageType extends Message> extends CommonReceiveAct
     @Override
     public List<HandshakeMessageType> getGoingToReceiveHandshakeMessageTypes() {
         List<HandshakeMessageType> handshakeMessageTypes = new ArrayList<>();
-        for (MessageType msg : expectedMessages) {
+        for (ProtocolMessage msg : expectedMessages) {
             if (msg instanceof HandshakeMessage) {
                 handshakeMessageTypes.add(((HandshakeMessage) msg).getHandshakeMessageType());
             }

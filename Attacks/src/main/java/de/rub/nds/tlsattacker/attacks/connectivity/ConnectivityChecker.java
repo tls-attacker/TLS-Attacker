@@ -112,7 +112,7 @@ public class ConnectivityChecker {
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
         WorkflowTrace trace = factory.createTlsEntryWorkflowTrace(config.getDefaultClientConnection());
         trace.addTlsAction(new SendAction(new ClientHelloMessage(config)));
-        ReceiveAction<ProtocolMessage> reveiceAction = new ReceiveAction(new HelloVerifyRequestMessage());
+        ReceiveAction reveiceAction = new ReceiveAction(new HelloVerifyRequestMessage());
         trace.addTlsAction(reveiceAction);
         State state = new State(config, trace);
         WorkflowExecutor executor =

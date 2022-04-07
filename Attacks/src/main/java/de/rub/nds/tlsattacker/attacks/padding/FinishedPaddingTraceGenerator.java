@@ -50,7 +50,7 @@ public class FinishedPaddingTraceGenerator extends PaddingTraceGenerator {
             // remove receive Server CCS, FIN
             trace.removeTlsAction(trace.getTlsActions().size() - 1);
         }
-        SendAction<ProtocolMessage> sendAction = (SendAction) trace.getLastSendingAction();
+        SendAction sendAction = (SendAction) trace.getLastSendingAction();
         LinkedList<Record> recordList = new LinkedList<>();
         for (ProtocolMessage msg : sendAction.getMessages()) {
             if (msg instanceof FinishedMessage) {

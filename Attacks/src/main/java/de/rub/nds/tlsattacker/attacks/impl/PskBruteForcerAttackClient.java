@@ -252,7 +252,7 @@ public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackCli
 
     private byte[] computeControlValue(WorkflowTrace trace, TlsContext tlsContext) throws CryptoException {
         tlsContext.getDigest().reset();
-        for (MessageAction<ProtocolMessage> messageAction : trace.getMessageActions()) {
+        for (MessageAction messageAction : trace.getMessageActions()) {
             for (ProtocolMessage message : messageAction.getMessages()) {
                 if (message instanceof ChangeCipherSpecMessage) {
                     break;

@@ -9,6 +9,7 @@
 
 package de.rub.nds.tlsattacker.core.workflow;
 
+import de.rub.nds.modifiablevariable.string.StringExplicitValueModification;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.http.HttpRequestMessage;
@@ -71,7 +72,7 @@ public class SerializationFullTest {
         trace.addTlsAction(new DeactivateEncryptionAction());
         trace.addTlsAction(new RenegotiationAction());
         trace.addTlsAction(new GenericReceiveAction());
-        List<Message> messages = new LinkedList<>();
+        List<ProtocolMessage> messages = new LinkedList<>();
         messages.add(new AlertMessage());
         messages.add(new ApplicationMessage());
         messages.add(new CertificateMessage());
@@ -94,11 +95,11 @@ public class SerializationFullTest {
         messages.add(new UnknownHandshakeMessage());
         messages.add(new UnknownMessage(ProtocolMessageType.UNKNOWN));
         messages.add(new ServerHelloMessage());
-        HttpRequestMessage message = new HttpRequestMessage();
-        // TODO: readd HTTP messages or test elsewhere
+        // TODO: readd this test when https works again
         /*
-         * message.setRequestPath("someString"); message.getRequestPath().setModification(new
-         * StringExplicitValueModification("replacedString")); messages.add(message);
+         * HttpsRequestMessage message = new HttpsRequestMessage(); message.setRequestPath("someString");
+         * message.getRequestPath().setModification(new StringExplicitValueModification("replacedString"));
+         * messages.add(message);
          */
         SendAction action = new SendAction(messages);
         List<Record> records = new LinkedList<>();
