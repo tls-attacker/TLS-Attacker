@@ -1375,11 +1375,11 @@ public class TlsContext extends LayerContext {
     }
 
     public DtlsFragmentLayer getDtlsFragmentLayer() {
-        return (DtlsFragmentLayer) layerStack.getLayer(DtlsFragmentLayer.class);
+        return (DtlsFragmentLayer) getContext().getLayerStack().getLayer(DtlsFragmentLayer.class);
     }
 
     public RecordLayer getRecordLayer() {
-        return (RecordLayer) layerStack.getLayer(RecordLayer.class);
+        return (RecordLayer) getContext().getLayerStack().getLayer(RecordLayer.class);
     }
 
     public PRFAlgorithm getPrfAlgorithm() {

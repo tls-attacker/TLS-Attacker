@@ -9,7 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.layer;
 
-import de.rub.nds.tlsattacker.core.layer.constant.LayerStackType;
 import de.rub.nds.tlsattacker.core.layer.impl.DtlsFragmentLayer;
 import de.rub.nds.tlsattacker.core.layer.constant.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
@@ -37,8 +36,8 @@ public class LayerStackFactory {
 
         switch (type) {
             case DTLS:
-                return new LayerStack(context, new MessageLayer(context), new DtlsFragmentLayer(context),
-                        new RecordLayer(context), new UdpLayer(context));
+                return new LayerStack(context, new MessageLayer(tlsContext), new DtlsFragmentLayer(tlsContext),
+                    new RecordLayer(tlsContext), new UdpLayer(tlsContext));
             case OPEN_VPN:
             case QUIC:
             case STARTTTLS:

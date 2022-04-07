@@ -87,7 +87,7 @@ public class ClientHelloPreparatorTest {
         context.getConfig().setHighestProtocolVersion(ProtocolVersion.DTLS10);
         context.getConfig().setDefaultClientSessionId(new byte[] { 0, 1, 2, 3 });
         context.setDtlsCookie(new byte[] { 7, 6, 5 });
-        context.setLayerStack(new LayerStack(context, new DtlsFragmentLayer(context)));
+        context.getContext().setLayerStack(new LayerStack(context.getContext(), new DtlsFragmentLayer(context)));
         preparator.prepare();
         assertArrayEquals(ArrayConverter.hexStringToByteArray("009AC02B"), message.getCipherSuites().getValue());
         assertTrue(4 == message.getCipherSuiteLength().getValue());
