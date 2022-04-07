@@ -1132,7 +1132,8 @@
     <useAllProvidedDtlsFragments>false</useAllProvidedDtlsFragments>
     <useAllProvidedRecords>false</useAllProvidedRecords>
     <httpsParsingEnabled>false</httpsParsingEnabled>
-    <defaultHttpsRequestPath>/</defaultHttpsRequestPath>
+    <defaultHttpsLocationPath>/</defaultHttpsLocationPath>
+    <defaultHttpsRequestPath>/robots.txt</defaultHttpsRequestPath>
     <starttlsType>NONE</starttlsType>
     <overrideSessionIdForTickets>true</overrideSessionIdForTickets>
     <sessionTicketLifetimeHint>7200</sessionTicketLifetimeHint>

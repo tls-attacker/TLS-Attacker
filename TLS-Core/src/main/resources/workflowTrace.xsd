@@ -3680,6 +3680,7 @@
       <xs:element name="useAllProvidedDtlsFragments" type="xs:boolean" minOccurs="0"/>
       <xs:element name="useAllProvidedRecords" type="xs:boolean" minOccurs="0"/>
       <xs:element name="httpsParsingEnabled" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="defaultHttpsLocationPath" type="xs:string" minOccurs="0"/>
       <xs:element name="defaultHttpsRequestPath" type="xs:string" minOccurs="0"/>
       <xs:element name="starttlsType" type="starttlsType" minOccurs="0"/>
       <xs:element name="overrideSessionIdForTickets" type="xs:boolean" minOccurs="0"/>

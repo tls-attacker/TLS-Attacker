@@ -1203,7 +1203,13 @@ public class Config implements Serializable {
      * or httpsParsing is disabled
      */
     @XmlJavaTypeAdapter(IllegalStringAdapter.class)
-    private String defaultHttpsRequestPath = "/";
+    private String defaultHttpsLocationPath = "/";
+
+    /**
+     * requestPath to use in https requests
+     */
+    @XmlJavaTypeAdapter(IllegalStringAdapter.class)
+    private String defaultHttpsRequestPath = "/robots.txt";
 
     private StarttlsType starttlsType = StarttlsType.NONE;
 
@@ -1651,6 +1657,14 @@ public class Config implements Serializable {
 
     public void setHttpsParsingEnabled(Boolean httpsParsingEnabled) {
         this.httpsParsingEnabled = httpsParsingEnabled;
+    }
+
+    public String getDefaultHttpsLocationPath() {
+        return defaultHttpsLocationPath;
+    }
+
+    public void setDefaultHttpsLocationPath(String defaultHttpsLocationPath) {
+        this.defaultHttpsLocationPath = defaultHttpsLocationPath;
     }
 
     public String getDefaultHttpsRequestPath() {
