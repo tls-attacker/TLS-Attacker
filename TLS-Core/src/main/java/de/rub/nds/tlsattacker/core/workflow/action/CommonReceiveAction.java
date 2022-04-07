@@ -16,17 +16,17 @@ import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.util.List;
 
-public abstract class CommonReceiveAction<MessageType extends Message> extends MessageAction<MessageType> {
+public abstract class CommonReceiveAction extends MessageAction {
 
     public CommonReceiveAction() {
         super();
     }
 
-    public CommonReceiveAction(List<MessageType> messages) {
+    public CommonReceiveAction(List<ProtocolMessage> messages) {
         super(messages);
     }
 
-    public CommonReceiveAction(MessageType... messages) {
+    public CommonReceiveAction(ProtocolMessage... messages) {
         super(messages);
     }
 
@@ -34,11 +34,11 @@ public abstract class CommonReceiveAction<MessageType extends Message> extends M
         super(connectionAlias);
     }
 
-    public CommonReceiveAction(String connectionAlias, List<MessageType> messages) {
+    public CommonReceiveAction(String connectionAlias, List<ProtocolMessage> messages) {
         super(connectionAlias, messages);
     }
 
-    public CommonReceiveAction(String connectionAlias, MessageType... messages) {
+    public CommonReceiveAction(String connectionAlias, ProtocolMessage... messages) {
         super(connectionAlias, messages);
     }
 
@@ -67,5 +67,5 @@ public abstract class CommonReceiveAction<MessageType extends Message> extends M
 
     protected abstract void distinctReceive(TlsContext tlsContext);
 
-    public abstract List<MessageType> getExpectedMessages();
+    public abstract List<ProtocolMessage> getExpectedMessages();
 }
