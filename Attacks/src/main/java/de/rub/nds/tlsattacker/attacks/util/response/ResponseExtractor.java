@@ -62,7 +62,7 @@ public class ResponseExtractor {
         }
     }
 
-    private static List<Class<Record>> extractRecordClasses(ReceivingAction<ProtocolMessage> action) {
+    private static List<Class<Record>> extractRecordClasses(ReceivingAction action) {
         List<Class<Record>> classList = new LinkedList<>();
         if (action.getReceivedRecords() != null) {
             for (Record record : action.getReceivedRecords()) {
@@ -72,7 +72,7 @@ public class ResponseExtractor {
         return classList;
     }
 
-    private static List<Class<ProtocolMessage>> extractMessageClasses(ReceivingAction<ProtocolMessage> action) {
+    private static List<Class<ProtocolMessage>> extractMessageClasses(ReceivingAction action) {
         List<Class<ProtocolMessage>> classList = new LinkedList<>();
         if (action.getReceivedMessages() != null) {
             for (ProtocolMessage message : action.getReceivedMessages()) {
@@ -82,7 +82,7 @@ public class ResponseExtractor {
         return classList;
     }
 
-    private static boolean didReceiveEncryptedAlert(ReceivingAction<ProtocolMessage> action) {
+    private static boolean didReceiveEncryptedAlert(ReceivingAction action) {
         if (action.getReceivedRecords() != null) {
             for (Record abstractRecord : action.getReceivedRecords()) {
                 if (abstractRecord instanceof Record) {

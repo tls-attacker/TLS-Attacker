@@ -34,8 +34,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @XmlRootElement
-public class SendDynamicClientKeyExchangeAction extends MessageAction<ProtocolMessage>
-    implements SendingAction<ProtocolMessage> {
+public class SendDynamicClientKeyExchangeAction extends MessageAction implements SendingAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

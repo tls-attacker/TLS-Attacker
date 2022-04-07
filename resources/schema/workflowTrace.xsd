@@ -626,8 +626,6 @@
                   <xs:element ref="Heartbeat"/>
                   <xs:element ref="SupplementalData"/>
                   <xs:element ref="EncryptedExtensions"/>
-                  <xs:element ref="httpsRequestMessage"/>
-                  <xs:element ref="httpsResponseMessage"/>
                   <xs:element ref="PskDhClientKeyExchange"/>
                   <xs:element ref="PskDheServerKeyExchange"/>
                   <xs:element ref="PskEcDhClientKeyExchange"/>
@@ -666,18 +664,6 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="message" abstract="true">
-    <xs:complexContent>
-      <xs:extension base="modifiableVariableHolder">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="modifiableVariableHolder" abstract="true">
-    <xs:sequence/>
-  </xs:complexType>
-
   <xs:complexType name="protocolMessage" abstract="true">
     <xs:complexContent>
       <xs:extension base="message">
@@ -689,6 +675,18 @@
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="message" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="modifiableVariableHolder">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="modifiableVariableHolder" abstract="true">
+    <xs:sequence/>
   </xs:complexType>
 
   <xs:complexType name="modifiableByteArray">
@@ -1015,6 +1013,14 @@
       <xs:element name="assertEquals" type="xs:anyType" minOccurs="0"/>
       <xs:element name="originalValue" type="xs:boolean" minOccurs="0"/>
     </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="httpsMessage" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="message">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
   </xs:complexType>
 
   <xs:complexType name="certificateMessage">
@@ -2539,14 +2545,6 @@
           <xs:element name="requestPath" type="modifiableString" minOccurs="0"/>
           <xs:element name="requestProtocol" type="modifiableString" minOccurs="0"/>
         </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="httpsMessage" abstract="true">
-    <xs:complexContent>
-      <xs:extension base="message">
-        <xs:sequence/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
@@ -4599,8 +4597,6 @@
                   <xs:element ref="Heartbeat"/>
                   <xs:element ref="SupplementalData"/>
                   <xs:element ref="EncryptedExtensions"/>
-                  <xs:element ref="httpsRequestMessage"/>
-                  <xs:element ref="httpsResponseMessage"/>
                   <xs:element ref="PskDhClientKeyExchange"/>
                   <xs:element ref="PskDheServerKeyExchange"/>
                   <xs:element ref="PskEcDhClientKeyExchange"/>
@@ -5500,8 +5496,6 @@
       <xs:enumeration value="HANDSHAKE"/>
       <xs:enumeration value="APPLICATION_DATA"/>
       <xs:enumeration value="HEARTBEAT"/>
-      <xs:enumeration value="HTTP"/>
-      <xs:enumeration value="SSL"/>
     </xs:restriction>
   </xs:simpleType>
 

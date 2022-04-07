@@ -447,27 +447,26 @@ public class WorkflowConfigurationFactory {
     }
 
     private WorkflowTrace createHttpsWorkflow() {
-        AliasedConnection connection = getConnection();
-        WorkflowTrace trace = createHandshakeWorkflow(connection);
-        MessageAction action = MessageActionFactory.createAction(config, connection, ConnectionEndType.CLIENT,
-            new HttpsRequestMessage(config));
-        trace.addTlsAction(action);
-        action = MessageActionFactory.createAction(config, connection, ConnectionEndType.SERVER,
-            new HttpsResponseMessage(config));
-        trace.addTlsAction(action);
-        return trace;
+        throw new UnsupportedOperationException("Currently, sending Http(s) messages is not supported");
+
+        /*
+         * AliasedConnection connection = getConnection(); WorkflowTrace trace = createHandshakeWorkflow(connection);
+         * MessageAction action = MessageActionFactory.createAction(config, connection, ConnectionEndType.CLIENT, new
+         * HttpsRequestMessage(config)); trace.addTlsAction(action); action = MessageActionFactory.createAction(config,
+         * connection, ConnectionEndType.SERVER, new HttpsResponseMessage(config)); trace.addTlsAction(action); return
+         * trace;
+         */
     }
 
     private WorkflowTrace createHttpsDynamicWorkflow() {
-        AliasedConnection connection = getConnection();
-        WorkflowTrace trace = createDynamicHandshakeWorkflow();
-        MessageAction action = MessageActionFactory.createAction(config, connection, ConnectionEndType.CLIENT,
-            new HttpsRequestMessage(config));
-        trace.addTlsAction(action);
-        action = MessageActionFactory.createAction(config, connection, ConnectionEndType.SERVER,
-            new HttpsResponseMessage(config));
-        trace.addTlsAction(action);
-        return trace;
+        throw new UnsupportedOperationException("Currently, sending Http(s) messages is not supported");
+        /*
+         * AliasedConnection connection = getConnection(); WorkflowTrace trace = createDynamicHandshakeWorkflow();
+         * MessageAction action = MessageActionFactory.createAction(config, connection, ConnectionEndType.CLIENT, new
+         * HttpsRequestMessage(config)); trace.addTlsAction(action); action = MessageActionFactory.createAction(config,
+         * connection, ConnectionEndType.SERVER, new HttpsResponseMessage(config)); trace.addTlsAction(action); return
+         * trace;
+         */
     }
 
     private WorkflowTrace createSimpleMitmProxyWorkflow() {

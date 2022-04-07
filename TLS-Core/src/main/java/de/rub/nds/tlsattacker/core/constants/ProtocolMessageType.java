@@ -18,10 +18,7 @@ public enum ProtocolMessageType {
     ALERT((byte) 21),
     HANDSHAKE((byte) 22),
     APPLICATION_DATA((byte) 23),
-    HEARTBEAT((byte) 24),
-    // Grease values for Actions
-    HTTP((byte) 0),
-    SSL((byte) 1);
+    HEARTBEAT((byte) 24);
 
     private byte value;
 

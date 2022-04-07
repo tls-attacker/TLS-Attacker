@@ -24,7 +24,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @XmlRootElement
-public class PopAndSendAction extends MessageAction<ProtocolMessage> implements SendingAction<ProtocolMessage> {
+public class PopAndSendAction extends MessageAction implements SendingAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

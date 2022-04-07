@@ -332,6 +332,10 @@ public class WorkflowConfigurationFactoryTest {
         for (CipherSuite suite : CipherSuite.getImplemented()) {
             for (ProtocolVersion version : ProtocolVersion.values()) {
                 for (WorkflowTraceType type : WorkflowTraceType.values()) {
+                    // TODO: reimplement when adding https
+                    if (type == WorkflowTraceType.HTTPS || type == WorkflowTraceType.DYNAMIC_HTTPS) {
+                        continue;
+                    }
                     try {
 
                         config.setDefaultSelectedCipherSuite(suite);

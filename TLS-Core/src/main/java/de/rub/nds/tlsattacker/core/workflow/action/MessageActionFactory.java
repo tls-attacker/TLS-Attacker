@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
-import de.rub.nds.tlsattacker.core.layer.Message;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -25,23 +24,12 @@ public class MessageActionFactory {
      */
     public static MessageAction createTLSAction(Config tlsConfig, AliasedConnection connection,
         ConnectionEndType sendingConnectionEndType, ProtocolMessage... protocolMessages) {
-        return createAction(tlsConfig, connection, sendingConnectionEndType,
+        return createTLSAction(tlsConfig, connection, sendingConnectionEndType,
             new ArrayList<>(Arrays.asList(protocolMessages)));
     }
 
     public static MessageAction createTLSAction(Config tlsConfig, AliasedConnection connection,
         ConnectionEndType sendingConnectionEnd, List<ProtocolMessage> protocolMessages) {
-        return createAction(tlsConfig, connection, sendingConnectionEnd, new LinkedList<>(protocolMessages));
-    }
-
-    public static MessageAction createAction(Config tlsConfig, AliasedConnection connection,
-        ConnectionEndType sendingConnectionEndType, Message... protocolMessages) {
-        return createAction(tlsConfig, connection, sendingConnectionEndType,
-            new ArrayList<>(Arrays.asList(protocolMessages)));
-    }
-
-    public static MessageAction createAction(Config tlsConfig, AliasedConnection connection,
-        ConnectionEndType sendingConnectionEnd, List<Message> protocolMessages) {
         MessageAction action;
         if (connection.getLocalConnectionEndType() == sendingConnectionEnd) {
             action = new SendAction(protocolMessages);
