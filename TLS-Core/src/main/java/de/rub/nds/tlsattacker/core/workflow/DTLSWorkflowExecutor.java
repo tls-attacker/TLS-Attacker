@@ -106,13 +106,12 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
         }
 
         if (config.isFinishWithCloseNotify()) {
-            TlsContext tlsContext = state.getTlsContext();
-            int currentEpoch = tlsContext.getRecordLayer().getWriteEpoch();
+            int currentEpoch = state.getTlsContext().getRecordLayer().getWriteEpoch();
             for (int epoch = currentEpoch; epoch >= 0; epoch--) {
-                tlsContext.getRecordLayer().setWriteEpoch(epoch);
+                state.getTlsContext().getRecordLayer().setWriteEpoch(epoch);
                 sendCloseNotify();
             }
-            tlsContext.getRecordLayer().setWriteEpoch(currentEpoch);
+            state.getTlsContext().getRecordLayer().setWriteEpoch(currentEpoch);
         }
 
         setFinalSocketState();
@@ -139,8 +138,9 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
 
     private void executeRetransmission(SendingAction action) throws IOException {
         LOGGER.info("Executing retransmission of last sent flight");
-        // state.getTlsContext().getRecordLayer().reencrypt(action.getSendRecords());
-        // sendMessageHelper.sendRecords(action.getSendRecords(), state.getTlsContext());
+        state.getTlsContext().getRecordLayer().reencrypt(action.getSendRecords());
+        state.getTlsContext().getRecordLayer()
+            .setLayerConfiguration(new SpecificSendLayerConfiguration(action.getSendRecords()));
+        state.getTlsContext().getRecordLayer().sendConfiguration();
     }
-
 }

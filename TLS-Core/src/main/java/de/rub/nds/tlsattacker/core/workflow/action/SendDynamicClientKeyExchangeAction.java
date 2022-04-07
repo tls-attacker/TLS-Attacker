@@ -67,7 +67,7 @@ public class SendDynamicClientKeyExchangeAction extends MessageAction implements
             }
 
             try {
-                send(tlsContext, messages, records);
+                send(tlsContext, messages, fragments, records);
                 setExecuted(true);
             } catch (IOException e) {
                 tlsContext.setReceivedTransportHandlerException(true);
@@ -145,29 +145,7 @@ public class SendDynamicClientKeyExchangeAction extends MessageAction implements
             }
         }
         for (ModifiableVariableHolder holder : holders) {
-            List<Field> fields = holder.getAllModifiableVariableFields();
-            for (Field f : fields) {
-                f.setAccessible(true);
-
-                ModifiableVariable mv = null;
-                try {
-                    mv = (ModifiableVariable) f.get(holder);
-                } catch (IllegalArgumentException | IllegalAccessException ex) {
-                    LOGGER.warn("Could not retrieve ModifiableVariables");
-                    LOGGER.debug(ex);
-                }
-                if (mv != null) {
-                    if (mv.getModification() != null || mv.isCreateRandomModification()) {
-                        mv.setOriginalValue(null);
-                    } else {
-                        try {
-                            f.set(holder, null);
-                        } catch (IllegalArgumentException | IllegalAccessException ex) {
-                            LOGGER.warn("Could not strip ModifiableVariable without Modification");
-                        }
-                    }
-                }
-            }
+            holder.reset();
         }
         setExecuted(null);
     }
@@ -185,11 +163,6 @@ public class SendDynamicClientKeyExchangeAction extends MessageAction implements
     @Override
     public List<DtlsHandshakeMessageFragment> getSendFragments() {
         return fragments;
-    }
-
-    @Override
-    public MessageActionDirection getMessageDirection() {
-        return MessageActionDirection.SENDING;
     }
 
     @Override

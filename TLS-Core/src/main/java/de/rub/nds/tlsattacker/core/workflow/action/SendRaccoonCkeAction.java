@@ -90,7 +90,7 @@ public class SendRaccoonCkeAction extends MessageAction implements SendingAction
         }
 
         try {
-            send(tlsContext, messages, records);
+            send(tlsContext, messages, fragments, records);
             setExecuted(true);
         } catch (IOException e) {
             tlsContext.setReceivedTransportHandlerException(true);
@@ -272,8 +272,4 @@ public class SendRaccoonCkeAction extends MessageAction implements SendingAction
         return hash;
     }
 
-    @Override
-    public MessageActionDirection getMessageDirection() {
-        return MessageActionDirection.SENDING;
-    }
 }

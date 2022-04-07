@@ -9,6 +9,7 @@
 
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import org.apache.logging.log4j.LogManager;
@@ -24,19 +25,33 @@ public class DtlsHandshakeMessageFragmentSerializer extends HandshakeMessageSeri
 
     @Override
     public byte[] serializeProtocolMessageContent() {
+        writeContent();
+        return getAlreadySerialized();
+    }
+
+    @Override
+    protected byte[] serializeBytes() {
+        writeType();
+        writeLength();
         writeMessageSequence();
         writeFragmentOffset();
         writeFragmentLength();
-        appendBytes(message.getContent().getValue());
+        writeContent();
         return getAlreadySerialized();
+    }
+
+    private void writeContent() {
+        appendBytes(message.getMessageContent().getValue());
+        LOGGER
+            .debug("DTLS fragment content: " + ArrayConverter.bytesToHexString(message.getMessageContent().getValue()));
     }
 
     /**
      * Writes the sequenceNumber of the HandshakeMessage into the final byte[]
      */
     private void writeMessageSequence() {
-        appendInt(message.getMessageSeq().getValue(), HandshakeByteLength.DTLS_MESSAGE_SEQUENCE);
-        LOGGER.debug("SequenceNumber: " + message.getMessageSeq().getValue());
+        appendInt(message.getMessageSequence().getValue(), HandshakeByteLength.DTLS_MESSAGE_SEQUENCE);
+        LOGGER.debug("SequenceNumber: " + message.getMessageSequence().getValue());
     }
 
     /**

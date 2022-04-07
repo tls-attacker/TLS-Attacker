@@ -9,6 +9,10 @@
 
 package de.rub.nds.tlsattacker.core.workflow;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.function.Function;
+
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
@@ -18,12 +22,9 @@ import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
-import de.rub.nds.tlsattacker.core.layer.constant.LayerConfiguration;
-import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
-import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
@@ -33,9 +34,6 @@ import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;
 import de.rub.nds.tlsattacker.transport.socket.SocketState;
 import de.rub.nds.tlsattacker.transport.tcp.ClientTcpTransportHandler;
 import de.rub.nds.tlsattacker.transport.tcp.TcpTransportHandler;
-import java.io.IOException;
-import java.util.List;
-import java.util.function.Function;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -91,6 +89,10 @@ public abstract class WorkflowExecutor {
     }
 
     public abstract void executeWorkflow() throws WorkflowExecutionException;
+
+    public void initProtocolStack(TlsContext context) throws IOException {
+        context.setLayerStack(LayerStackFactory.createLayerStack(config.getDefaultLayerStackType(), context));
+    }
 
     /**
      * Initialize the context's transport handler.Start listening or connect to a server, depending on our connection
@@ -229,10 +231,5 @@ public abstract class WorkflowExecutor {
             }
         }
         return false;
-    }
-
-    private void initProtocolStack(Context context) throws IOException {
-        context.setLayerStack(LayerStackFactory.createLayerStack(config.getDefaultLayerConfiguration(), context));
-
     }
 }

@@ -25,7 +25,9 @@ public class ChangeReadEpochAction extends ChangeEpochAction {
     @Override
     protected void changeEpoch(TlsContext tlsContext) {
         LOGGER.info("Changed read epoch");
-        tlsContext.setReadEpoch(epoch);
+        if (tlsContext.getRecordLayer() != null) {
+            tlsContext.getRecordLayer().setReadEpoch(epoch);
+        }
     }
 
 }

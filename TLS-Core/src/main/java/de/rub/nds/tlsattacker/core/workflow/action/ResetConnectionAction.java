@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
-import de.rub.nds.tlsattacker.core.dtls.FragmentManager;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
@@ -48,12 +47,14 @@ public class ResetConnectionAction extends ConnectionBoundAction {
             LOGGER.debug("Could not close client connection", ex);
         }
         LOGGER.info("Resetting Cipher");
-        tlsContext.getRecordLayer().resetDecryptor();
-        tlsContext.getRecordLayer().resetEncryptor();
-        tlsContext.getRecordLayer().updateDecryptionCipher(RecordCipherFactory.getNullCipher(tlsContext));
-        tlsContext.getRecordLayer().updateEncryptionCipher(RecordCipherFactory.getNullCipher(tlsContext));
-        tlsContext.getRecordLayer().setWriteEpoch(0);
-        tlsContext.getRecordLayer().setReadEpoch(0);
+        if (tlsContext.getRecordLayer() != null) {
+            tlsContext.getRecordLayer().resetDecryptor();
+            tlsContext.getRecordLayer().resetEncryptor();
+            tlsContext.getRecordLayer().updateDecryptionCipher(RecordCipherFactory.getNullCipher(tlsContext));
+            tlsContext.getRecordLayer().updateEncryptionCipher(RecordCipherFactory.getNullCipher(tlsContext));
+            tlsContext.getRecordLayer().setWriteEpoch(0);
+            tlsContext.getRecordLayer().setReadEpoch(0);
+        }
         LOGGER.info("Resetting SecureRenegotiation");
         tlsContext.setLastClientVerifyData(null);
         tlsContext.setLastServerVerifyData(null);
@@ -67,12 +68,13 @@ public class ResetConnectionAction extends ConnectionBoundAction {
         tlsContext.setLastClientHello(null);
         LOGGER.info("Resetting DTLS numbers and cookie");
         tlsContext.setDtlsCookie(null);
-        tlsContext.setDtlsReadHandshakeMessageSequence(0);
-        tlsContext.setDtlsWriteHandshakeMessageSequence(0);
+        if (tlsContext.getDtlsFragmentLayer() != null) {
+            tlsContext.getDtlsFragmentLayer().setReadHandshakeMessageSequence(0);
+            tlsContext.getDtlsFragmentLayer().setWriteHandshakeMessageSequence(0);
+            tlsContext.getDtlsFragmentLayer().resetFragmentManager(state.getConfig());
+        }
         tlsContext.getDtlsReceivedChangeCipherSpecEpochs().clear();
-        tlsContext.setDtlsFragmentManager(new FragmentManager(state.getConfig()));
         tlsContext.getDtlsReceivedHandshakeMessageSequences().clear();
-
         LOGGER.info("Reopening Connection");
         try {
             tcpContext.getTransportHandler().initialize();

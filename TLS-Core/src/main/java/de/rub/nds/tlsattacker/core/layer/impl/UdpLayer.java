@@ -9,28 +9,28 @@
 
 package de.rub.nds.tlsattacker.core.layer.impl;
 
-import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
+import de.rub.nds.tlsattacker.core.layer.DataContainer;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
-import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStreamAdapterStream;
-import de.rub.nds.tlsattacker.transport.tcp.TcpTransportHandler;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.transport.udp.UdpTransportHandler;
 import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class TcpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> {
+public class UdpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> {// TODO change types
 
     private static Logger LOGGER = LogManager.getLogger();
 
-    private final TcpContext context;
+    private final TlsContext context;
 
-    public TcpLayer(TcpContext context) {
-        super(ImplementedLayers.TCP);
+    public UdpLayer(TlsContext context) {
+        super(ImplementedLayers.UDP);
         this.context = context;
     }
 
@@ -47,7 +47,7 @@ public class TcpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> 
 
     @Override
     public LayerProcessingResult sendData(LayerProcessingHint hint, byte[] data) throws IOException {
-        TcpTransportHandler handler = getTransportHandler();
+        UdpTransportHandler handler = getTransportHandler();
         handler.sendData(data);
         return new LayerProcessingResult(null, getLayerType(), true);// Not implemented
     }
@@ -60,8 +60,7 @@ public class TcpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> 
 
     @Override
     public HintedInputStream getDataStream() {
-        currentInputStream = new HintedInputStreamAdapterStream(null, getTransportHandler().getInputStream());
-        return currentInputStream;
+        return new HintedInputStreamAdapterStream(null, getTransportHandler().getInputStream());
     }
 
     @Override
@@ -69,13 +68,13 @@ public class TcpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> 
         return new LayerProcessingResult(null, getLayerType(), true);
     }
 
-    private TcpTransportHandler getTransportHandler() {
+    private UdpTransportHandler getTransportHandler() {
         if (context.getTransportHandler() == null) {
             throw new RuntimeException("TransportHandler is not set in context!");
         }
-        if (!(context.getTransportHandler() instanceof TcpTransportHandler)) {
-            throw new RuntimeException("Trying to set TCP layer with non TCP TransportHandler");
+        if (!(context.getTransportHandler() instanceof UdpTransportHandler)) {
+            throw new RuntimeException("Trying to set UDP layer with non UDP TransportHandler");
         }
-        return (TcpTransportHandler) context.getTransportHandler();
+        return (UdpTransportHandler) context.getTransportHandler();
     }
 }

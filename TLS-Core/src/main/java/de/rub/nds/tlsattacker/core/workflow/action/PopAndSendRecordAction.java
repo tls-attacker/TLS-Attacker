@@ -106,8 +106,4 @@ public class PopAndSendRecordAction extends MessageAction implements SendingActi
         return fragments;
     }
 
-    @Override
-    public MessageActionDirection getMessageDirection() {
-        return MessageActionDirection.SENDING;
-    }
 }

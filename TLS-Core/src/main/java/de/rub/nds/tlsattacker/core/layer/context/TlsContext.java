@@ -15,8 +15,9 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.crypto.MessageDigestCollector;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
-import de.rub.nds.tlsattacker.core.dtls.FragmentManager;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.core.layer.LayerStack;
+import de.rub.nds.tlsattacker.core.layer.impl.DtlsFragmentLayer;
 import de.rub.nds.tlsattacker.core.layer.impl.RecordLayer;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
@@ -42,6 +43,8 @@ import java.math.BigInteger;
 import java.util.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+
+import de.rub.nds.tlsattacker.transport.TransportHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.tls.Certificate;
@@ -431,16 +434,7 @@ public class TlsContext extends LayerContext {
      */
     private Tls13KeySetType activeServerKeySetType = Tls13KeySetType.NONE;
 
-    private int dtlsReadHandshakeMessageSequence = 0;
-
-    private int dtlsWriteHandshakeMessageSequence = 0;
-
     private Set<Integer> dtlsReceivedHandshakeMessageSequences;
-
-    /**
-     * a fragment manager assembles DTLS fragments into corresponding messages.
-     */
-    private FragmentManager globalDtlsFragmentManager;
 
     private Set<Integer> dtlsReceivedChangeCipherSpecEpochs;
 
@@ -626,7 +620,6 @@ public class TlsContext extends LayerContext {
         recordBuffer = new LinkedList<>();
         fragmentBuffer = new LinkedList<>();
         dtlsReceivedHandshakeMessageSequences = new HashSet<>();
-        globalDtlsFragmentManager = new FragmentManager(getConfig());
         dtlsReceivedChangeCipherSpecEpochs = new HashSet<>();
         keylogfile = new Keylogfile(this);
     }
@@ -660,30 +653,6 @@ public class TlsContext extends LayerContext {
 
     public void setReversePrepareAfterParse(boolean reversePrepareAfterParse) {
         this.reversePrepareAfterParse = reversePrepareAfterParse;
-    }
-
-    public int getDtlsReadHandshakeMessageSequence() {
-        return dtlsReadHandshakeMessageSequence;
-    }
-
-    public void setDtlsReadHandshakeMessageSequence(int dtlsReadHandshakeMessageSequence) {
-        this.dtlsReadHandshakeMessageSequence = dtlsReadHandshakeMessageSequence;
-    }
-
-    public void increaseDtlsReadHandshakeMessageSequence() {
-        this.dtlsReadHandshakeMessageSequence++;
-    }
-
-    public void increaseDtlsWriteHandshakeMessageSequence() {
-        this.dtlsWriteHandshakeMessageSequence++;
-    }
-
-    public int getDtlsWriteHandshakeMessageSequence() {
-        return dtlsWriteHandshakeMessageSequence;
-    }
-
-    public void setDtlsWriteHandshakeMessageSequence(int dtlsWriteHandshakeMessageSequence) {
-        this.dtlsWriteHandshakeMessageSequence = dtlsWriteHandshakeMessageSequence;
     }
 
     public LinkedList<ProtocolMessage> getMessageBuffer() {
@@ -1208,14 +1177,6 @@ public class TlsContext extends LayerContext {
         return dtlsReceivedHandshakeMessageSequences;
     }
 
-    public FragmentManager getDtlsFragmentManager() {
-        return globalDtlsFragmentManager;
-    }
-
-    public FragmentManager setDtlsFragmentManager(FragmentManager globalDtlsFragmentManager) {
-        return this.globalDtlsFragmentManager = globalDtlsFragmentManager;
-    }
-
     public boolean addDtlsReceivedChangeCipherSpecEpochs(int epoch) {
         return dtlsReceivedChangeCipherSpecEpochs.add(epoch);
     }
@@ -1413,8 +1374,12 @@ public class TlsContext extends LayerContext {
         this.dtlsCookie = dtlsCookie;
     }
 
+    public DtlsFragmentLayer getDtlsFragmentLayer() {
+        return (DtlsFragmentLayer) layerStack.getLayer(DtlsFragmentLayer.class);
+    }
+
     public RecordLayer getRecordLayer() {
-        return (RecordLayer) getLayerStack().getLayer(RecordLayer.class);
+        return (RecordLayer) layerStack.getLayer(RecordLayer.class);
     }
 
     public PRFAlgorithm getPrfAlgorithm() {
@@ -2370,37 +2335,4 @@ public class TlsContext extends LayerContext {
 
         return maxRecordDataSize;
     }
-
-    public int getWriteEpoch() {
-        return getRecordLayer().getWriteEpoch();
-    }
-
-    public int getReadEpoch() {
-        return getRecordLayer().getReadEpoch();
-    }
-
-    public void setWriteEpoch(int epoch) {
-        getRecordLayer().setWriteEpoch(epoch);
-    }
-
-    public void setReadEpoch(int epoch) {
-        getRecordLayer().setReadEpoch(epoch);
-    }
-
-    public void getWriteSequenceNumber(int epoch) {
-        getRecordLayer().getEncryptor().getRecordCipher(epoch).getState().getWriteSequenceNumber();
-    }
-
-    public void getReadSequenceNumber(int epoch) {
-        getRecordLayer().getDecryptor().getRecordCipher(epoch).getState().getReadSequenceNumber();
-    }
-
-    public void setWriteSequenceNumber(int epoch, long sqn) {
-        getRecordLayer().getEncryptor().getRecordCipher(epoch).getState().setWriteSequenceNumber(sqn);
-    }
-
-    public void setReadSequenceNumber(int epoch, long sqn) {
-        getRecordLayer().getDecryptor().getRecordCipher(epoch).getState().setReadSequenceNumber(sqn);
-    }
-
 }

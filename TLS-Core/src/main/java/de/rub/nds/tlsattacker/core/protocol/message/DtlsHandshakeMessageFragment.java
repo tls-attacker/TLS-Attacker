@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
-import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
@@ -27,12 +26,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "DtlsHandshakeMessageFragment")
 public class DtlsHandshakeMessageFragment extends HandshakeMessage {
-
-    @ModifiableVariableProperty
-    private ModifiableByteArray content;
-
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
-    private ModifiableInteger messageSeq = null;
 
     @ModifiableVariableProperty
     private ModifiableInteger fragmentOffset = null;
@@ -155,36 +148,12 @@ public class DtlsHandshakeMessageFragment extends HandshakeMessage {
         this.handshakeMessageLengthConfig = handshakeMessageLengthConfig;
     }
 
-    public ModifiableByteArray getContent() {
-        return content;
-    }
-
-    public void setContent(ModifiableByteArray content) {
-        this.content = content;
-    }
-
-    public void setContent(byte[] content) {
-        this.content = ModifiableVariableFactory.safelySetValue(this.content, content);
-    }
-
-    public ModifiableInteger getMessageSeq() {
-        return messageSeq;
-    }
-
     public ModifiableInteger getFragmentOffset() {
         return fragmentOffset;
     }
 
     public ModifiableInteger getFragmentLength() {
         return fragmentLength;
-    }
-
-    public void setMessageSeq(int messageSeq) {
-        this.messageSeq = ModifiableVariableFactory.safelySetValue(this.messageSeq, messageSeq);
-    }
-
-    public void setMessageSeq(ModifiableInteger messageSeq) {
-        this.messageSeq = messageSeq;
     }
 
     public void setFragmentOffset(int fragmentOffset) {
@@ -227,18 +196,16 @@ public class DtlsHandshakeMessageFragment extends HandshakeMessage {
 
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 11 * hash + Objects.hashCode(this.content);
-        hash = 11 * hash + Objects.hashCode(this.messageSeq);
-        hash = 11 * hash + Objects.hashCode(this.fragmentOffset);
-        hash = 11 * hash + Objects.hashCode(this.fragmentLength);
-        hash = 11 * hash + Objects.hashCode(this.epoch);
-        hash = 11 * hash + Arrays.hashCode(this.fragmentContentConfig);
-        hash = 11 * hash + this.messageSequenceConfig;
-        hash = 11 * hash + this.offsetConfig;
-        hash = 11 * hash + this.handshakeMessageLengthConfig;
-        hash = 11 * hash + Objects.hashCode(this.handshakeMessageTypeConfig);
-        hash = 11 * hash + this.maxFragmentLengthConfig;
+        int hash = 7;
+        hash = 67 * hash + Objects.hashCode(this.fragmentOffset);
+        hash = 67 * hash + Objects.hashCode(this.fragmentLength);
+        hash = 67 * hash + Objects.hashCode(this.epoch);
+        hash = 67 * hash + Arrays.hashCode(this.fragmentContentConfig);
+        hash = 67 * hash + this.messageSequenceConfig;
+        hash = 67 * hash + this.offsetConfig;
+        hash = 67 * hash + this.handshakeMessageLengthConfig;
+        hash = 67 * hash + Objects.hashCode(this.handshakeMessageTypeConfig);
+        hash = 67 * hash + this.maxFragmentLengthConfig;
         return hash;
     }
 
@@ -264,12 +231,6 @@ public class DtlsHandshakeMessageFragment extends HandshakeMessage {
             return false;
         }
         if (this.maxFragmentLengthConfig != other.maxFragmentLengthConfig) {
-            return false;
-        }
-        if (!Objects.equals(this.content, other.content)) {
-            return false;
-        }
-        if (!Objects.equals(this.messageSeq, other.messageSeq)) {
             return false;
         }
         if (!Objects.equals(this.fragmentOffset, other.fragmentOffset)) {

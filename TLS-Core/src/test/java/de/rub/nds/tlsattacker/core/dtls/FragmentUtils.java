@@ -23,8 +23,8 @@ public class FragmentUtils {
         DtlsHandshakeMessageFragment fragment = new DtlsHandshakeMessageFragment();
         fragment.setFragmentOffset(fragmentOffset);
         fragment.setFragmentLength(fragmentLength);
-        fragment.setMessageSeq(messageSeq);
-        fragment.setContent(content);
+        fragment.setMessageSequence(messageSeq);
+        fragment.setMessageContent(content);
         fragment.setLength(DEFAULT_MESSAGE_LENGTH);
         fragment.setType(HandshakeMessageType.UNKNOWN.getValue());
         fragment.setEpoch(epoch);
@@ -47,6 +47,6 @@ public class FragmentUtils {
         assertNotNull(fragment);
         assertEquals(expectedOffset, fragment.getFragmentOffset().getValue().intValue());
         assertEquals(expectedLength, fragment.getFragmentLength().getValue().intValue());
-        assertArrayEquals(expectedContent, fragment.getContent().getValue());
+        assertArrayEquals(expectedContent, fragment.getMessageContent().getValue());
     }
 }

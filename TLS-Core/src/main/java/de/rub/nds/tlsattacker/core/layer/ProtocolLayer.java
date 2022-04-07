@@ -7,11 +7,6 @@
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.rub.nds.tlsattacker.core.layer;
 
 import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
@@ -45,6 +40,7 @@ public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container 
     private Logger LOGGER = LogManager.getLogger();
 
     private ProtocolLayer higherLayer = null;
+
     private ProtocolLayer lowerLayer = null;
 
     private LayerConfiguration<Container> layerConfiguration;
@@ -169,6 +165,31 @@ public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container 
                 this.receiveMoreDataForHint(null);
                 return currentInputStream;
             }
+        }
+    }
+
+    /**
+     * Evaluates if more data can be retrieved for parsing immediately, i.e without receiving on the lowest layer.
+     * 
+     * @return             true if more data is available in any receive buffer
+     * @throws IOException
+     */
+    public boolean isDataBuffered() throws IOException {
+        if ((currentInputStream != null && currentInputStream.available() > 0)
+            || nextInputStream != null && nextInputStream.available() > 0) {
+            return true;
+        } else if (getLowerLayer() != null) {
+            return getLowerLayer().isDataBuffered();
+        }
+        return false;
+    }
+
+    public boolean shouldContinueProcessing() throws IOException {
+        if (layerConfiguration != null) {
+            return layerConfiguration.successRequiresMoreContainers(getLayerResult().getUsedContainers())
+                || (isDataBuffered() && ((ReceiveLayerConfiguration) layerConfiguration).isProcessTrailingContainers());
+        } else {
+            return isDataBuffered();
         }
     }
 

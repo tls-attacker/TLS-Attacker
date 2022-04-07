@@ -26,10 +26,27 @@ public class DtlsHandshakeMessageFragmentParser extends HandshakeMessageParser<D
 
     @Override
     protected void parseHandshakeMessageContent(DtlsHandshakeMessageFragment msg) {
+        msg.setMessageContent(parseByteArrayField(msg.getFragmentLength().getValue()));
+    }
+
+    @Override
+    protected void parseMessageContent(DtlsHandshakeMessageFragment msg) {
+        parseType(msg);
+        parseLength(msg);
         parseMessageSequence(msg);
         parseFragmentOffset(msg);
         parseFragmentLength(msg);
-        msg.setContent(parseByteArrayField(msg.getFragmentLength().getValue()));
+        parseHandshakeMessageContent(msg);
+    }
+
+    private void parseType(DtlsHandshakeMessageFragment msg) {
+        msg.setType(parseByteField(HandshakeByteLength.MESSAGE_TYPE));
+        LOGGER.debug("Type:" + msg.getType().getValue());
+    }
+
+    private void parseLength(DtlsHandshakeMessageFragment msg) {
+        msg.setLength(parseIntField(HandshakeByteLength.MESSAGE_LENGTH_FIELD));
+        LOGGER.debug("Length:" + msg.getLength().getValue());
     }
 
     private void parseFragmentOffset(DtlsHandshakeMessageFragment msg) {
@@ -43,7 +60,7 @@ public class DtlsHandshakeMessageFragmentParser extends HandshakeMessageParser<D
     }
 
     private void parseMessageSequence(DtlsHandshakeMessageFragment msg) {
-        msg.setMessageSeq(parseIntField(HandshakeByteLength.DTLS_MESSAGE_SEQUENCE));
-        LOGGER.debug("MessageSequence:" + msg.getMessageSeq().getValue());
+        msg.setMessageSequence(parseIntField(HandshakeByteLength.DTLS_MESSAGE_SEQUENCE));
+        LOGGER.debug("MessageSequence:" + msg.getMessageSequence().getValue());
     }
 }

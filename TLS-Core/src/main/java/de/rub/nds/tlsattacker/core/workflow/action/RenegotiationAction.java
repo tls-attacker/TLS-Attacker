@@ -9,7 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.dtls.FragmentManager;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
@@ -42,10 +41,12 @@ public class RenegotiationAction extends ConnectionBoundAction {
         tlsContext.getDigest().reset();
         LOGGER.info("Resetting DTLS numbers and cookie");
         tlsContext.setDtlsCookie(null);
-        tlsContext.setDtlsReadHandshakeMessageSequence(0);
-        tlsContext.setDtlsWriteHandshakeMessageSequence(0);
+        if (tlsContext.getDtlsFragmentLayer() != null) {
+            tlsContext.getDtlsFragmentLayer().setReadHandshakeMessageSequence(0);
+            tlsContext.getDtlsFragmentLayer().setWriteHandshakeMessageSequence(0);
+            tlsContext.getDtlsFragmentLayer().resetFragmentManager(state.getConfig());
+        }
         tlsContext.getDtlsReceivedChangeCipherSpecEpochs().clear();
-        tlsContext.setDtlsFragmentManager(new FragmentManager(state.getConfig()));
         tlsContext.getDtlsReceivedHandshakeMessageSequences().clear();
         if (resetLastVerifyData) {
             LOGGER.info("Resetting SecureRenegotiation");

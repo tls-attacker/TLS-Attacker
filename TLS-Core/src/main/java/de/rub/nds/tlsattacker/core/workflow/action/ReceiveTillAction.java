@@ -193,11 +193,6 @@ public class ReceiveTillAction extends CommonReceiveAction implements ReceivingA
     }
 
     @Override
-    public MessageActionDirection getMessageDirection() {
-        return MessageActionDirection.RECEIVING;
-    }
-
-    @Override
     public List<ProtocolMessageType> getGoingToReceiveProtocolMessageTypes() {
         return new ArrayList<ProtocolMessageType>() {
             {
