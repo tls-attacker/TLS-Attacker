@@ -20,6 +20,7 @@ import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
 import de.rub.nds.tlsattacker.core.layer.constant.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.state.Context;
@@ -97,14 +98,13 @@ public abstract class WorkflowExecutor {
      *
      * @param context
      */
-    public void initTransportHandler(TcpContext context) {
+    public void initTransportHandler(Context context) {
 
         if (context.getTransportHandler() == null) {
-            if (context.getContext().getConnection() == null) {
+            if (context.getConnection() == null) {
                 throw new ConfigurationException("Connection end not set");
             }
-            context.setTransportHandler(
-                TransportHandlerFactory.createTransportHandler(context.getContext().getConnection()));
+            context.setTransportHandler(TransportHandlerFactory.createTransportHandler(context.getConnection()));
             if (context.getTransportHandler() instanceof ClientTcpTransportHandler) {
                 ((ClientTcpTransportHandler) context.getTransportHandler())
                     .setRetryFailedSocketInitialization(config.isRetryFailedClientTcpSocketInitialization());
@@ -119,8 +119,7 @@ public abstract class WorkflowExecutor {
             getAfterTransportInitCallback().apply(state);
         } catch (Exception ex) {
             throw new TransportHandlerConnectException(
-                "Unable to initialize the transport handler with: " + context.getContext().getConnection().toString(),
-                ex);
+                "Unable to initialize the transport handler with: " + context.getConnection().toString(), ex);
         }
     }
 
@@ -157,7 +156,7 @@ public abstract class WorkflowExecutor {
     }
 
     public void closeConnection() {
-        for (Context context : state.getAllTlsContexts()) {
+        for (Context context : state.getAllContexts()) {
             try {
                 context.getTransportHandler().closeConnection();
             } catch (IOException ex) {
@@ -168,8 +167,8 @@ public abstract class WorkflowExecutor {
     }
 
     public void initAllLayer() throws IOException {
-        for (Context ctx : state.getAllTlsContexts()) {
-            initTransportHandler(ctx.getTcpContext());
+        for (Context ctx : state.getAllContexts()) {
+            initTransportHandler(ctx);
             initProtocolStack(ctx);
         }
     }
@@ -184,7 +183,7 @@ public abstract class WorkflowExecutor {
     }
 
     public void setFinalSocketState() {
-        for (Context ctx : state.getAllTlsContexts()) {
+        for (Context ctx : state.getAllContexts()) {
             TransportHandler handler = ctx.getTransportHandler();
             if (handler instanceof TcpTransportHandler) {
                 SocketState socketSt =
@@ -200,7 +199,7 @@ public abstract class WorkflowExecutor {
      * Check if a at least one TLS context received a fatal alert.
      */
     public boolean isReceivedFatalAlert() {
-        for (Context ctx : state.getAllTlsContexts()) {
+        for (Context ctx : state.getAllContexts()) {
             if (ctx.getTlsContext().isReceivedFatalAlert()) {
                 return true;
             }
@@ -224,7 +223,7 @@ public abstract class WorkflowExecutor {
     }
 
     public boolean isIoException() {
-        for (Context context : state.getAllTlsContexts()) {
+        for (Context context : state.getAllContexts()) {
             if (context.getTlsContext().isReceivedTransportHandlerException()) {
                 return true;
             }
@@ -233,7 +232,7 @@ public abstract class WorkflowExecutor {
     }
 
     private void initProtocolStack(Context context) throws IOException {
-        context.setLayerStack(LayerStackFactory.createLayerStack(LayerConfiguration.TLS, context));
+        context.setLayerStack(LayerStackFactory.createLayerStack(config.getDefaultLayerConfiguration(), context));
 
     }
 }

@@ -24,7 +24,7 @@ public abstract class ClientKeyExchangeParser<T extends ClientKeyExchangeMessage
      *
      * @param stream
      * @param tlsContext
-     *                   A Config used in the current tlsContext
+     *                   The current tlsContext
      */
     public ClientKeyExchangeParser(InputStream stream, TlsContext tlsContext) {
         super(stream, tlsContext);

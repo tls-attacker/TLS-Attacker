@@ -30,7 +30,7 @@ public class ServerHelloParser extends HelloMessageParser<ServerHelloMessage> {
      *
      * @param stream
      * @param tlsContext
-     *                   A Config used in the current context
+     *                   The current context
      */
     public ServerHelloParser(InputStream stream, TlsContext tlsContext) {
         super(stream, tlsContext);

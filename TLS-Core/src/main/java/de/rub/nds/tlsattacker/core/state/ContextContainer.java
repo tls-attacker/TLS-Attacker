@@ -19,7 +19,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Manage TLS contexts.
+ * Manages contexts.
  *
  */
 public class ContextContainer {
@@ -69,7 +69,7 @@ public class ContextContainer {
      * @param  alias
      * @return                        the context with the given connection end alias
      * @throws ConfigurationException
-     *                                if there is no TLS context with the given alias
+     *                                if there is no Context with the given alias
      *
      */
     public Context getContext(String alias) {
@@ -84,7 +84,7 @@ public class ContextContainer {
         AliasedConnection con = context.getConnection();
         String alias = con.getAlias();
         if (alias == null) {
-            throw new ContextHandlingException("Connection end alias not set (null). Can't add the TLS context.");
+            throw new ContextHandlingException("Connection end alias not set (null). Can't add the Context.");
         }
         if (containsAlias(alias)) {
             throw new ConfigurationException("Connection end alias already in use: " + alias);
@@ -94,10 +94,10 @@ public class ContextContainer {
         knownAliases.add(alias);
 
         if (con.getLocalConnectionEndType() == ConnectionEndType.SERVER) {
-            LOGGER.debug("Adding context " + alias + " to inboundTlsContexts");
+            LOGGER.debug("Adding context " + alias + " to inboundContexts");
             inboundContexts.add(context);
         } else {
-            LOGGER.debug("Adding context " + alias + " to outboundTlsContexts");
+            LOGGER.debug("Adding context " + alias + " to outboundContexts");
             outboundContexts.add(context);
         }
     }
@@ -106,7 +106,7 @@ public class ContextContainer {
         return new ArrayList<>(contexts.values());
     }
 
-    public List<Context> getInboundTlsContexts() {
+    public List<Context> getInboundContexts() {
         return inboundContexts;
     }
 
@@ -137,7 +137,7 @@ public class ContextContainer {
         outboundContexts.clear();
     }
 
-    public void removeTlsContext(String alias) {
+    public void removeContext(String alias) {
         if (containsAlias(alias)) {
             Context removeMe = contexts.get(alias);
             inboundContexts.remove(removeMe);
@@ -150,27 +150,27 @@ public class ContextContainer {
     }
 
     /**
-     * Replace existing TlsContext with new TlsContext.
+     * Replace existing Context with new Context.
      * <p>
      * </p>
-     * The TlsContext can only be replaced if the connection of both the new and the old TlsContext equal.
+     * The Context can only be replaced if the connection of both the new and the old Context equal.
      *
-     * @param  newTlsContext
-     *                                the new TlsContext, not null
+     * @param  newContext
+     *                                the new Context, not null
      * @throws ConfigurationException
-     *                                if the connections of new and old TlsContext differ
+     *                                if the connections of new and old Context differ
      */
-    public void replaceTlsContext(Context newTlsContext) {
-        String alias = newTlsContext.getConnection().getAlias();
+    public void replaceContext(Context newContext) {
+        String alias = newContext.getConnection().getAlias();
         if (!containsAlias(alias)) {
-            throw new ConfigurationException("No TlsContext to replace for alias " + alias);
+            throw new ConfigurationException("No Context to replace for alias " + alias);
         }
         Context replaceMe = contexts.get(alias);
-        if (!replaceMe.getConnection().equals(newTlsContext.getConnection())) {
+        if (!replaceMe.getConnection().equals(newContext.getConnection())) {
             throw new ContextHandlingException(
-                "Cannot replace TlsContext because the new TlsContext" + " defines another connection.");
+                "Cannot replace Context because the new Context" + " defines another connection.");
         }
-        removeTlsContext(alias);
-        addContext(newTlsContext);
+        removeContext(alias);
+        addContext(newContext);
     }
 }

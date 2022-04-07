@@ -27,7 +27,7 @@ public class CertificateVerifyParser extends HandshakeMessageParser<CertificateV
      *
      * @param stream
      * @param tlsContext
-     *                   A Config used in the current tlsContext
+     *                   The current tlsContext
      */
     public CertificateVerifyParser(InputStream stream, TlsContext tlsContext) {
         super(stream, tlsContext);

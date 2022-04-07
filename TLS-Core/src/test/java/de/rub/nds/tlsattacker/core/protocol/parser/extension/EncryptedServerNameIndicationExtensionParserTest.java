@@ -43,7 +43,6 @@ public class EncryptedServerNameIndicationExtensionParserTest {
         Security.addProvider(new BouncyCastleProvider());
         Config config = new Config();
         Context outerContext = new Context(config);
-        LayerStack layerStack = LayerStackFactory.createLayerStack(LayerConfiguration.TLS, outerContext);
         tlsContext = outerContext.getTlsContext();
         chooser = ChooserFactory.getChooser(ChooserType.DEFAULT, outerContext, config);
     }

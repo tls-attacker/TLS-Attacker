@@ -136,7 +136,7 @@ public class StateTest {
         newCtx.setSelectedCipherSuite(CipherSuite.TLS_AES_128_CCM_SHA256);
 
         assertThat(state.getTlsContext().getSelectedCipherSuite(), equalTo(CipherSuite.TLS_FALLBACK_SCSV));
-        state.replaceTlsContext(newCtx.getContext());
+        state.replaceContext(newCtx.getContext());
         assertNotSame(state.getContext(), origCtx);
         assertThat(state.getTlsContext().getSelectedCipherSuite(), equalTo(CipherSuite.TLS_AES_128_CCM_SHA256));
     }
@@ -157,7 +157,7 @@ public class StateTest {
 
         assertThat(state.getContext(conAlias1).getTlsContext().getSelectedCipherSuite(),
             equalTo(CipherSuite.TLS_FALLBACK_SCSV));
-        state.replaceTlsContext(newCtx.getContext());
+        state.replaceContext(newCtx.getContext());
         assertNotSame(state.getContext(conAlias1), origCtx1);
         assertThat(state.getContext(conAlias1).getTlsContext().getSelectedCipherSuite(),
             equalTo(CipherSuite.TLS_AES_128_CCM_SHA256));
@@ -171,8 +171,8 @@ public class StateTest {
         newCtx.setConnection(new InboundConnection("NewAlias"));
 
         exception.expect(ConfigurationException.class);
-        exception.expectMessage("No TlsContext to replace for alias");
-        state.replaceTlsContext(newCtx.getContext());
+        exception.expectMessage("No Context to replace for alias");
+        state.replaceContext(newCtx.getContext());
     }
 
     @Test
@@ -183,8 +183,7 @@ public class StateTest {
         newCtx.setConnection(new InboundConnection(origCtx.getConnection().getAlias(), 87311));
 
         exception.expect(ContextHandlingException.class);
-        exception
-            .expectMessage("Cannot replace TlsContext because the new TlsContext defines " + "another connection.");
-        state.replaceTlsContext(newCtx.getContext());
+        exception.expectMessage("Cannot replace Context because the new Context defines " + "another connection.");
+        state.replaceContext(newCtx.getContext());
     }
 }

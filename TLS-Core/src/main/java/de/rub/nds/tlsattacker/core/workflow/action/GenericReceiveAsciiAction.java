@@ -32,7 +32,6 @@ public class GenericReceiveAsciiAction extends AsciiAction {
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
-        TlsContext tlsContext = state.getTlsContext();
         TcpContext tcpContext = state.getTcpContext();
 
         if (isExecuted()) {

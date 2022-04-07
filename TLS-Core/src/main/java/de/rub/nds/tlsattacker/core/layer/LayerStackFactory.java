@@ -49,7 +49,6 @@ public class LayerStackFactory {
             case HTTPS:
                 layerStack = new LayerStack(context, new HttpLayer(httpContext), new MessageLayer(tlsContext),
                     new RecordLayer(tlsContext), new TcpLayer(tcpContext));
-                context.setLayerStack(layerStack);
                 return layerStack;
 
             default:

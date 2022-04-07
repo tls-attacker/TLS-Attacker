@@ -55,9 +55,6 @@ public class Context {
 
     private LayerStack layerStack;
 
-    /**
-     * Not bound to a layer, so it makes sense to save it here
-     */
     private ConnectionEndType talkingConnectionEndType = ConnectionEndType.CLIENT;
 
     /**
@@ -192,6 +189,7 @@ public class Context {
         tlsContext = new TlsContext(this);
         httpContext = new HttpContext(this);
         tcpContext = new TcpContext(this);
-        LayerStackFactory.createLayerStack(type, this);
+        layerStack = LayerStackFactory.createLayerStack(type, this);
+        this.setLayerStack(layerStack);
     }
 }

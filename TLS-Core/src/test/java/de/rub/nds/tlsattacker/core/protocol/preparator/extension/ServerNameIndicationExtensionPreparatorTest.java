@@ -37,7 +37,6 @@ public class ServerNameIndicationExtensionPreparatorTest {
     public void setUp() {
         Config config = new Config();
         Context outerContext = new Context(config);
-        LayerStack layerStack = LayerStackFactory.createLayerStack(LayerConfiguration.TLS, outerContext);
         chooser = ChooserFactory.getChooser(ChooserType.DEFAULT, outerContext, config);
         message = new ServerNameIndicationExtensionMessage();
     }
