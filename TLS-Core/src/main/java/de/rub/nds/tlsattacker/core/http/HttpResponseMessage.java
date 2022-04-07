@@ -44,12 +44,10 @@ public class HttpResponseMessage extends HttpMessage<HttpResponseMessage> {
     private List<HttpHeader> header;
 
     public HttpResponseMessage() {
-        protocolMessageType = ProtocolMessageType.HTTP;
         header = new LinkedList<>();
     }
 
     public HttpResponseMessage(Config config) {
-        protocolMessageType = ProtocolMessageType.HTTP;
         header = new LinkedList<>();
         header.add(new GenericHttpHeader("Content-Type", "text/html; charset=UTF-8"));
         header.add(new LocationHeader());
