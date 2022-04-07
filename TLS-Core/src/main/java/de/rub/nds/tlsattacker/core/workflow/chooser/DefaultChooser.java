@@ -794,7 +794,7 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public String getHttpCookieValue() {
-        String cookieVal = context.getTlsContext().getHttpCookieValue();
+        String cookieVal = context.getHttpContext().getHttpCookieValue();
         if (cookieVal != null && !cookieVal.isEmpty()) {
             return cookieVal;
         } else {
@@ -804,7 +804,7 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public String getHttpCookieName() {
-        String cookieName = context.getTlsContext().getHttpCookieName();
+        String cookieName = context.getHttpContext().getHttpCookieName();
         if (cookieName != null && !cookieName.isEmpty()) {
             return cookieName;
         } else {

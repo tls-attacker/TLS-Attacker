@@ -71,6 +71,16 @@ public abstract class ProtocolMessage<Self extends ProtocolMessage> extends Mess
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.BEHAVIOR_SWITCH)
     private ModifiableBoolean adjustContext;
 
+    /**
+     * content type
+     */
+    @XmlTransient
+    protected ProtocolMessageType protocolMessageType;
+
+    public boolean addToTypes(List<ProtocolMessageType> protocolMessageTypes) {
+        return protocolMessageTypes.add(getProtocolMessageType());
+    }
+
     @Override
     public boolean isRequired() {
         if (required == null || required.getValue() == null) {
@@ -157,5 +167,9 @@ public abstract class ProtocolMessage<Self extends ProtocolMessage> extends Mess
 
     public boolean isDtlsHandshakeMessageFragment() {
         return this instanceof DtlsHandshakeMessageFragment;
+    }
+
+    public ProtocolMessageType getProtocolMessageType() {
+        return protocolMessageType;
     }
 }

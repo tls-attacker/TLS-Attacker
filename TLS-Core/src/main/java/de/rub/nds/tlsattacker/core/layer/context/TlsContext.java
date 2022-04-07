@@ -542,16 +542,6 @@ public class TlsContext extends LayerContext {
      */
     private boolean useExtendedMasterSecret;
 
-    /**
-     * Add a cookie with this name to HTTP header if config.isAddHttpCookie is set.
-     */
-    private String httpCookieName = null;
-
-    /**
-     * Add a cookie with this value to HTTP header if config.isAddHttpCookie is set.
-     */
-    private String httpCookieValue = null;
-
     private boolean receivedTransportHandlerException = false;
 
     /**
@@ -1816,22 +1806,6 @@ public class TlsContext extends LayerContext {
 
     public void setUseExtendedMasterSecret(boolean useExtendedMasterSecret) {
         this.useExtendedMasterSecret = useExtendedMasterSecret;
-    }
-
-    public String getHttpCookieName() {
-        return httpCookieName;
-    }
-
-    public void setHttpCookieName(String httpCookieName) {
-        this.httpCookieName = httpCookieName;
-    }
-
-    public String getHttpCookieValue() {
-        return httpCookieValue;
-    }
-
-    public void setHttpCookieValue(String httpCookieValue) {
-        this.httpCookieValue = httpCookieValue;
     }
 
     /**

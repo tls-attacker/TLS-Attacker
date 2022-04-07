@@ -14,21 +14,21 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
 public class HttpContext extends LayerContext {
 
-    private String cookie;
-
     private String lastRequestPath;
+
+    /**
+     * Add a cookie with this name to HTTP header if config.isAddHttpCookie is set.
+     */
+    private String httpCookieName = null;
+
+    /**
+     * Add a cookie with this value to HTTP header if config.isAddHttpCookie is set.
+     */
+    private String httpCookieValue = null;
 
     public HttpContext(Context context) {
         super(context);
         context.setHttpContext(this);
-    }
-
-    public String getCookie() {
-        return cookie;
-    }
-
-    public void setCookie(String cookie) {
-        this.cookie = cookie;
     }
 
     public String getLastRequestPath() {
@@ -37,6 +37,22 @@ public class HttpContext extends LayerContext {
 
     public void setLastRequestPath(String lastRequestPath) {
         this.lastRequestPath = lastRequestPath;
+    }
+
+    public String getHttpCookieName() {
+        return httpCookieName;
+    }
+
+    public void setHttpCookieName(String httpCookieName) {
+        this.httpCookieName = httpCookieName;
+    }
+
+    public String getHttpCookieValue() {
+        return httpCookieValue;
+    }
+
+    public void setHttpCookieValue(String httpCookieValue) {
+        this.httpCookieValue = httpCookieValue;
     }
 
 }

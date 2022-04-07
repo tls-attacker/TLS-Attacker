@@ -28,21 +28,7 @@ import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 public abstract class Message<Self extends Message, Context extends LayerContext> extends ModifiableVariableHolder
     implements DataContainer<Self, Context> {
 
-    /**
-     * content type
-     */
-    @XmlTransient
-    protected ProtocolMessageType protocolMessageType;
-
-    public boolean addToTypes(List<ProtocolMessageType> protocolMessageTypes) {
-        return protocolMessageTypes.add(getProtocolMessageType());
-    }
-
     public abstract String toCompactString();
 
     public abstract String toShortString();
-
-    public ProtocolMessageType getProtocolMessageType() {
-        return protocolMessageType;
-    }
 }

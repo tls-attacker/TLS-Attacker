@@ -3063,8 +3063,6 @@
           <xs:element name="negotiatedExtensionSet" type="extensionType" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
           <xs:element name="secureRenegotiation" type="xs:boolean"/>
           <xs:element name="useExtendedMasterSecret" type="xs:boolean"/>
-          <xs:element name="httpCookieName" type="xs:string" minOccurs="0"/>
-          <xs:element name="httpCookieValue" type="xs:string" minOccurs="0"/>
           <xs:element name="receivedTransportHandlerException" type="xs:boolean"/>
           <xs:element name="reversePrepareAfterParse" type="xs:boolean"/>
           <xs:element name="esniClientNonce" type="xs:base64Binary" minOccurs="0"/>
@@ -3826,7 +3824,8 @@
     <xs:complexContent>
       <xs:extension base="layerContext">
         <xs:sequence>
-          <xs:element name="cookie" type="xs:string" minOccurs="0"/>
+          <xs:element name="httpCookieName" type="xs:string" minOccurs="0"/>
+          <xs:element name="httpCookieValue" type="xs:string" minOccurs="0"/>
           <xs:element name="lastRequestPath" type="xs:string" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>

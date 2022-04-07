@@ -60,7 +60,7 @@ public abstract class Parser<T> {
      *                Number of bytes to be parsed
      * @return        A subByteArray of according size from the Array
      */
-    public byte[] parseByteArrayField(int length) {
+    protected byte[] parseByteArrayField(int length) {
         if (length == 0) {
             return new byte[0];
         }
@@ -94,7 +94,7 @@ public abstract class Parser<T> {
      *                Number of bytes to be parsed
      * @return        An integer representation of the subByteArray
      */
-    public int parseIntField(int length) {
+    protected int parseIntField(int length) {
         if (length == 0) {
             throw new ParserException("Cannot parse int of size 0");
         }
@@ -109,7 +109,7 @@ public abstract class Parser<T> {
      *                Number of bytes to be parsed
      * @return        A BigInteger representation of the subByteArray
      */
-    public BigInteger parseBigIntField(int length) {
+    protected BigInteger parseBigIntField(int length) {
         if (length == 0) {
             throw new ParserException("Cannot parse BigInt of size 0");
         }
@@ -124,7 +124,7 @@ public abstract class Parser<T> {
      *                Number of bytes to be parsed
      * @return        An integer representation of the subByteArray
      */
-    public byte parseByteField(int length) {
+    protected byte parseByteField(int length) {
         if (length == 0) {
             throw new ParserException("Cannot parse byte of size 0");
         }
@@ -134,7 +134,7 @@ public abstract class Parser<T> {
         return (byte) ArrayConverter.bytesToInt(parseByteArrayField(length));
     }
 
-    public String parseStringTill(byte endSequence) {
+    protected String parseStringTill(byte endSequence) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         while (true) {
             byte b = parseByteField(1);
@@ -153,7 +153,7 @@ public abstract class Parser<T> {
      *               Number of bytes to check for
      * @return       True if there are at least count bytes left to read
      */
-    public boolean enoughBytesLeft(int count) {
+    protected boolean enoughBytesLeft(int count) {
         return getBytesLeft() >= count;
     }
 
