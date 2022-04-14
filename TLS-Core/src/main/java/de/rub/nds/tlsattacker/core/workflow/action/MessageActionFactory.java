@@ -40,17 +40,6 @@ public class MessageActionFactory {
         return action;
     }
 
-    public static AsciiAction createAsciiAction(AliasedConnection connection, ConnectionEndType sendingConnectionEnd,
-        String message, String encoding) {
-        AsciiAction action;
-        if (connection.getLocalConnectionEndType() == sendingConnectionEnd) {
-            action = new SendAsciiAction(message, encoding);
-        } else {
-            action = new GenericReceiveAsciiAction(encoding);
-        }
-        return action;
-    }
-
     private static Set<ActionOption> getFactoryReceiveActionOptions(Config tlsConfig) {
         Set<ActionOption> globalOptions = new HashSet<>();
         if (tlsConfig.getMessageFactoryActionOptions().contains(ActionOption.CHECK_ONLY_EXPECTED)) {

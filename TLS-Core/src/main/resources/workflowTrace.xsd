@@ -181,8 +181,6 @@
 
   <xs:element name="applyBufferedMessagesAction" type="applyBufferedMessagesAction"/>
 
-  <xs:element name="asciiAction" type="asciiAction"/>
-
   <xs:element name="bigIntegerAddModification" type="bigIntegerAddModification"/>
 
   <xs:element name="bigIntegerExplicitValueModification" type="bigIntegerExplicitValueModification"/>
@@ -297,8 +295,6 @@
 
   <xs:element name="genericReceiveAction" type="genericReceiveAction"/>
 
-  <xs:element name="genericReceiveAsciiAction" type="genericReceiveAsciiAction"/>
-
   <xs:element name="integerAddModification" type="integerAddModification"/>
 
   <xs:element name="integerExplicitValueModification" type="integerExplicitValueModification"/>
@@ -359,8 +355,6 @@
 
   <xs:element name="receiveAction" type="receiveAction"/>
 
-  <xs:element name="receiveAsciiAction" type="receiveAsciiAction"/>
-
   <xs:element name="receiveTillAction" type="receiveTillAction"/>
 
   <xs:element name="remBufferedChCiphersAction" type="remBufferedChCiphersAction"/>
@@ -372,8 +366,6 @@
   <xs:element name="resetConnectionAction" type="resetConnectionAction"/>
 
   <xs:element name="sendAction" type="sendAction"/>
-
-  <xs:element name="sendAsciiAction" type="sendAsciiAction"/>
 
   <xs:element name="sendDynamicClientKeyExchangeAction" type="sendDynamicClientKeyExchangeAction"/>
 
@@ -469,10 +461,7 @@
         <xs:element name="SendRecordsFromLastFlight" type="sendRecordsFromLastFlightAction"/>
         <xs:element name="SetEncryptChangeCipherSpecConfig" type="setEncryptChangeCipherSpecConfigAction"/>
         <xs:element name="Wait" type="waitAction"/>
-        <xs:element name="SendAscii" type="sendAsciiAction"/>
         <xs:element name="FlushSessionCache" type="flushSessionCacheAction"/>
-        <xs:element name="GenericReceiveAscii" type="genericReceiveAsciiAction"/>
-        <xs:element name="ReceiveAscii" type="receiveAsciiAction"/>
       </xs:choice>
       <xs:element name="name" type="xs:string" minOccurs="0"/>
       <xs:element name="description" type="xs:string" minOccurs="0"/>
@@ -4712,47 +4701,10 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="sendAsciiAction">
-    <xs:complexContent>
-      <xs:extension base="asciiAction">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="asciiAction" abstract="true">
-    <xs:complexContent>
-      <xs:extension base="tlsAction">
-        <xs:sequence>
-          <xs:element name="asciiText" type="xs:string" minOccurs="0"/>
-          <xs:element name="encoding" type="xs:string" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
   <xs:complexType name="flushSessionCacheAction">
     <xs:complexContent>
       <xs:extension base="tlsAction">
         <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="genericReceiveAsciiAction">
-    <xs:complexContent>
-      <xs:extension base="asciiAction">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="receiveAsciiAction">
-    <xs:complexContent>
-      <xs:extension base="asciiAction">
-        <xs:sequence>
-          <xs:element name="receivedAsciiString" type="xs:string" minOccurs="0"/>
-        </xs:sequence>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
