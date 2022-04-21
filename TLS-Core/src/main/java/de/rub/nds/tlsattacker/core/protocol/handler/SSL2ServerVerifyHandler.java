@@ -10,12 +10,12 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerVerifyMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 
 public class SSL2ServerVerifyHandler extends HandshakeMessageHandler<SSL2ServerVerifyMessage> {
 
-    public SSL2ServerVerifyHandler(TlsContext context) {
-        super(context);
+    public SSL2ServerVerifyHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override

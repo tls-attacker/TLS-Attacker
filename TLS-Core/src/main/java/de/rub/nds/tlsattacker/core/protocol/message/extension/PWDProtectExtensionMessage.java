@@ -18,7 +18,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.PWDProtectExtensio
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.PWDProtectExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PWDProtectExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PWDProtectExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 

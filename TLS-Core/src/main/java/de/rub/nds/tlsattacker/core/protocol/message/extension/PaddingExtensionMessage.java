@@ -13,11 +13,11 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.PaddingExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.PaddingExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PaddingExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PaddingExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 

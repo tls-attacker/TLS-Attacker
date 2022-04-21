@@ -9,8 +9,11 @@
 
 package de.rub.nds.tlsattacker.core.workflow.action;
 
+import java.util.ArrayList;
+
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,8 +34,8 @@ public class BufferedGenericReceiveAction extends GenericReceiveAction {
     @Override
     public void execute(State state) {
         super.execute(state);
-        TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
-        tlsContext.getMessageBuffer().addAll(messages);
+        TlsContext tlsContext = state.getContext(getConnectionAlias()).getTlsContext();
+        tlsContext.getMessageBuffer().addAll(new ArrayList<ProtocolMessage>(messages));
         tlsContext.getRecordBuffer().addAll(records);
         LOGGER.debug("New message buffer size: " + messages.size());
         LOGGER.debug("New record buffer size: " + records.size());

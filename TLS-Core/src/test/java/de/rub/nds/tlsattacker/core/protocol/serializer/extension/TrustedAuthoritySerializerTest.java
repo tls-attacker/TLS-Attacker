@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.constants.TrustedCaIndicationIdentifierType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.TrustedAuthorityParserTest;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.TrustedAuthorityPreparator;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.util.Collection;
 import static org.junit.Assert.assertArrayEquals;
 import org.junit.Test;

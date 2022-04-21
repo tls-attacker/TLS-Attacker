@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -37,7 +37,7 @@ public class GenericReceiveAsciiActionTest {
         state = new State(trace);
 
         tlsContext = state.getTlsContext();
-        tlsContext.setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
+        tlsContext.getContext().getTcpContext().setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
         asciiToCheck = new byte[] { 0x15, 0x03, 0x02, 0x01, 0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x20, 0x57, 0x6f, 0x72, 0x6c,
             0x64, 0x21 };
     }
@@ -49,7 +49,7 @@ public class GenericReceiveAsciiActionTest {
      */
     @Test
     public void testExecute() throws Exception {
-        ((FakeTransportHandler) tlsContext.getTransportHandler()).setFetchableByte(asciiToCheck);
+        ((FakeTransportHandler) tlsContext.getContext().getTransportHandler()).setFetchableByte(asciiToCheck);
 
         action.execute(state);
         assertEquals(new String(asciiToCheck, "US-ASCII"), action.getAsciiText());

@@ -12,10 +12,13 @@ package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ChooserType;
+import de.rub.nds.tlsattacker.core.layer.LayerStack;
+import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
+import de.rub.nds.tlsattacker.core.layer.constant.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientEsniInner;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ClientEsniInnerPreparator;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
 import java.nio.charset.StandardCharsets;
@@ -32,8 +35,9 @@ public class ClientEsniInnerSerializerTest {
 
     @Before
     public void setUp() {
-        Config config = Config.createConfig();
-        chooser = ChooserFactory.getChooser(ChooserType.DEFAULT, new TlsContext(config), config);
+        Config config = new Config();
+        Context outerContext = new Context(config);
+        chooser = ChooserFactory.getChooser(ChooserType.DEFAULT, outerContext, config);
     }
 
     @Test

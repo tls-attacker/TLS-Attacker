@@ -18,7 +18,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.SrtpExtensionHandl
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.SrtpExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SrtpExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SrtpExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 

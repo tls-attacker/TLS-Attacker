@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.CachedInfoExtensio
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.CachedInfoExtensionParserTest;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.CachedInfoExtensionPreparator;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.Collection;
 import java.util.List;

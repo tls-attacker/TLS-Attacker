@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.RecordSizeLimit;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RecordSizeLimitExtensionMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,8 +22,8 @@ public class RecordSizeLimitExtensionHandler extends ExtensionHandler<RecordSize
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public RecordSizeLimitExtensionHandler(TlsContext context) {
-        super(context);
+    public RecordSizeLimitExtensionHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override
@@ -37,9 +37,9 @@ public class RecordSizeLimitExtensionHandler extends ExtensionHandler<RecordSize
             LOGGER.warn("RecordSizeLimit is smaller than allowed (" + recordSizeLimit + "), resuming anyway");
         }
 
-        if (context.getTalkingConnectionEndType() == context.getChooser().getMyConnectionPeer()) {
+        if (tlsContext.getTalkingConnectionEndType() == tlsContext.getChooser().getMyConnectionPeer()) {
             LOGGER.debug("Setting OutboundRecordSizeLimit: " + recordSizeLimit);
-            context.setOutboundRecordSizeLimit(recordSizeLimit);
+            tlsContext.setOutboundRecordSizeLimit(recordSizeLimit);
         }
     }
 

@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.UnknownMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.UnknownMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.UnknownMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.UnknownMessageSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Objects;
@@ -63,8 +63,8 @@ public class UnknownMessage extends ProtocolMessage {
     }
 
     @Override
-    public UnknownMessageHandler getHandler(TlsContext context) {
-        return new UnknownMessageHandler(context);
+    public UnknownMessageHandler getHandler(TlsContext tlsContext) {
+        return new UnknownMessageHandler(tlsContext);
     }
 
     @Override

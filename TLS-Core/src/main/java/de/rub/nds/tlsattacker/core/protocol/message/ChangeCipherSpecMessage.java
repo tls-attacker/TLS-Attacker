@@ -19,7 +19,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.ChangeCipherSpecHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.ChangeCipherSpecParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ChangeCipherSpecPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ChangeCipherSpecSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import java.util.Objects;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -71,8 +71,8 @@ public class ChangeCipherSpecMessage extends ProtocolMessage<ChangeCipherSpecMes
     }
 
     @Override
-    public ChangeCipherSpecHandler getHandler(TlsContext context) {
-        return new ChangeCipherSpecHandler(context);
+    public ChangeCipherSpecHandler getHandler(TlsContext tlsContext) {
+        return new ChangeCipherSpecHandler(tlsContext);
     }
 
     @Override

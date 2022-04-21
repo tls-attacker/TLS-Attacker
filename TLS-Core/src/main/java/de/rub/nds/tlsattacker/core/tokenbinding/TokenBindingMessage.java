@@ -16,7 +16,7 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 
 public class TokenBindingMessage<TokenBindingMessage> extends ProtocolMessage {
@@ -244,8 +244,8 @@ public class TokenBindingMessage<TokenBindingMessage> extends ProtocolMessage {
     }
 
     @Override
-    public TokenBindingMessageHandler getHandler(TlsContext context) {
-        return new TokenBindingMessageHandler(context);
+    public TokenBindingMessageHandler getHandler(TlsContext tlsContext) {
+        return new TokenBindingMessageHandler(tlsContext);
     }
 
     @Override

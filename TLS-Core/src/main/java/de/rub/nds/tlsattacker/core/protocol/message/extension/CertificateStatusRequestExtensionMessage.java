@@ -14,11 +14,11 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.CertificateStatusRequestExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.CertificateStatusRequestExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.CertificateStatusRequestExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.CertificateStatusRequestExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -161,7 +161,7 @@ public class CertificateStatusRequestExtensionMessage
     }
 
     @Override
-    public CertificateStatusRequestExtensionHandler getHandler(TlsContext context) {
-        return new CertificateStatusRequestExtensionHandler(context);
+    public CertificateStatusRequestExtensionHandler getHandler(TlsContext tlsContext) {
+        return new CertificateStatusRequestExtensionHandler(tlsContext);
     }
 }

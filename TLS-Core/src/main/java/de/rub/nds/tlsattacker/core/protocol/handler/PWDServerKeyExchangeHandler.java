@@ -12,7 +12,7 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.protocol.message.PWDServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.math.BigInteger;
 
 public class PWDServerKeyExchangeHandler extends ServerKeyExchangeHandler<PWDServerKeyExchangeMessage> {

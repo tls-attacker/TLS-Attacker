@@ -12,7 +12,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.math.BigInteger;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;

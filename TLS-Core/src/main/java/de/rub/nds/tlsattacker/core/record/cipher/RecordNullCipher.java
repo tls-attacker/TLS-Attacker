@@ -10,8 +10,8 @@
 package de.rub.nds.tlsattacker.core.record.cipher;
 
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.record.Record;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -19,8 +19,8 @@ public class RecordNullCipher extends RecordCipher {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public RecordNullCipher(TlsContext context, CipherState state) {
-        super(context, state);
+    public RecordNullCipher(TlsContext tlsContext, CipherState state) {
+        super(tlsContext, state);
     }
 
     @Override

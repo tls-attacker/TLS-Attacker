@@ -20,7 +20,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ClientHelloHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.SSL2ClientHelloParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.SSL2ClientHelloPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.SSL2ClientHelloSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import java.util.Objects;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -185,8 +185,8 @@ public class SSL2ClientHelloMessage extends SSL2HandshakeMessage {
     }
 
     @Override
-    public SSL2ClientHelloHandler getHandler(TlsContext context) {
-        return new SSL2ClientHelloHandler(context);
+    public SSL2ClientHelloHandler getHandler(TlsContext tlsContext) {
+        return new SSL2ClientHelloHandler(tlsContext);
     }
 
     @Override

@@ -14,12 +14,10 @@ import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
-import de.rub.nds.tlsattacker.core.layer.constant.LayerStackType;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -46,9 +44,8 @@ public class GenericReceiveActionTest {
         state = new State(trace);
 
         tlsContext = state.getTlsContext();
-        tlsContext.setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
+        tlsContext.getContext().getTcpContext().setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
-        tlsContext.setLayerStack(LayerStackFactory.createLayerStack(LayerStackType.TLS, tlsContext));
     }
 
     /**
@@ -62,7 +59,7 @@ public class GenericReceiveActionTest {
         alert.setLevel(AlertLevel.FATAL.getValue());
         prepareTrace();
 
-        ((FakeTransportHandler) tlsContext.getTransportHandler())
+        ((FakeTransportHandler) tlsContext.getContext().getTransportHandler())
             .setFetchableByte(new byte[] { 0x15, 0x03, 0x03, 0x00, 0x02, 0x02, 50 });
         action.execute(state);
         assertTrue(action.executedAsPlanned());

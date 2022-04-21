@@ -18,7 +18,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.TokenBindingExtens
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.TokenBindingExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.TokenBindingExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.TokenBindingExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 

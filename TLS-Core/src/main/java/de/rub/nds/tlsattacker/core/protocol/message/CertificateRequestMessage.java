@@ -24,7 +24,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAl
 import de.rub.nds.tlsattacker.core.protocol.parser.CertificateRequestParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateRequestPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateRequestSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
@@ -239,8 +239,8 @@ public class CertificateRequestMessage extends HandshakeMessage {
     }
 
     @Override
-    public CertificateRequestHandler getHandler(TlsContext context) {
-        return new CertificateRequestHandler(context);
+    public CertificateRequestHandler getHandler(TlsContext tlsContext) {
+        return new CertificateRequestHandler(tlsContext);
     }
 
     @Override

@@ -22,7 +22,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.NewSessionTicketParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.NewSessionTicketPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.NewSessionTicketSerializer;
 import de.rub.nds.tlsattacker.core.state.SessionTicket;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Objects;
@@ -107,8 +107,8 @@ public class NewSessionTicketMessage extends HandshakeMessage {
     }
 
     @Override
-    public NewSessionTicketHandler getHandler(TlsContext context) {
-        return new NewSessionTicketHandler(context);
+    public NewSessionTicketHandler getHandler(TlsContext tlsContext) {
+        return new NewSessionTicketHandler(tlsContext);
     }
 
     @Override

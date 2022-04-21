@@ -13,7 +13,7 @@ import static de.rub.nds.modifiablevariable.util.ArrayConverter.hexStringToByteA
 import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.RequestItemV2;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.ResponderId;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ResponderIdPreparator;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.List;

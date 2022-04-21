@@ -20,7 +20,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.alpn.AlpnEntry;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.AlpnExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.AlpnExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.AlpnExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -93,8 +93,8 @@ public class AlpnExtensionMessage extends ExtensionMessage<AlpnExtensionMessage>
     }
 
     @Override
-    public AlpnExtensionHandler getHandler(TlsContext context) {
-        return new AlpnExtensionHandler(context);
+    public AlpnExtensionHandler getHandler(TlsContext tlsContext) {
+        return new AlpnExtensionHandler(tlsContext);
     }
 
 }

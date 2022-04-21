@@ -21,7 +21,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.computations.PSKPremasterCom
 import de.rub.nds.tlsattacker.core.protocol.parser.PskServerKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.PskServerKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.PskServerKeyExchangeSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -90,8 +90,8 @@ public class PskServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     }
 
     @Override
-    public PskServerKeyExchangeHandler getHandler(TlsContext context) {
-        return new PskServerKeyExchangeHandler(context);
+    public PskServerKeyExchangeHandler getHandler(TlsContext tlsContext) {
+        return new PskServerKeyExchangeHandler(tlsContext);
     }
 
     @Override

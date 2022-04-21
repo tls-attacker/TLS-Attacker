@@ -20,7 +20,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.computations.PWDComputations
 import de.rub.nds.tlsattacker.core.protocol.parser.PWDClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.PWDClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.PWDClientKeyExchangeSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -59,8 +59,8 @@ public class PWDClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     }
 
     @Override
-    public PWDClientKeyExchangeHandler getHandler(TlsContext context) {
-        return new PWDClientKeyExchangeHandler(context);
+    public PWDClientKeyExchangeHandler getHandler(TlsContext tlsContext) {
+        return new PWDClientKeyExchangeHandler(tlsContext);
     }
 
     @Override

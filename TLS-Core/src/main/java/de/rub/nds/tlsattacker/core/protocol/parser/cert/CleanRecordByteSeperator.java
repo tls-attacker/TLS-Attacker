@@ -9,7 +9,7 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser.cert;
 
-import de.rub.nds.tlsattacker.core.protocol.Parser;
+import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.record.Record;
 import java.io.InputStream;
 import java.util.List;

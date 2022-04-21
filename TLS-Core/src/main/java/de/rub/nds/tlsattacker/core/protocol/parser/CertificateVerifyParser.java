@@ -13,7 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,6 +27,7 @@ public class CertificateVerifyParser extends HandshakeMessageParser<CertificateV
      *
      * @param stream
      * @param tlsContext
+     *                   The current tlsContext
      */
     public CertificateVerifyParser(InputStream stream, TlsContext tlsContext) {
         super(stream, tlsContext);

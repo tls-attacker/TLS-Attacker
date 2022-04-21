@@ -24,7 +24,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.GOST01ClientKeyExchangePr
 import de.rub.nds.tlsattacker.core.protocol.preparator.GOST12ClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.preparator.GOSTClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.GOSTClientKeyExchangeSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
@@ -75,8 +75,8 @@ public class GOSTClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     }
 
     @Override
-    public GOSTClientKeyExchangeHandler getHandler(TlsContext context) {
-        return new GOSTClientKeyExchangeHandler(context);
+    public GOSTClientKeyExchangeHandler getHandler(TlsContext tlsContext) {
+        return new GOSTClientKeyExchangeHandler(tlsContext);
     }
 
     @Override

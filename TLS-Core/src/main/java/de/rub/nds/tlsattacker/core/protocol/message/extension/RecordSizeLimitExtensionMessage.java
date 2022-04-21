@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.RecordSizeLimitExt
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.RecordSizeLimitExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.RecordSizeLimitExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.RecordSizeLimitExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -57,7 +57,7 @@ public class RecordSizeLimitExtensionMessage extends ExtensionMessage<RecordSize
     }
 
     @Override
-    public RecordSizeLimitExtensionSerializer getSerializer(TlsContext tlsContetx) {
+    public RecordSizeLimitExtensionSerializer getSerializer(TlsContext tlsContext) {
         return new RecordSizeLimitExtensionSerializer(this);
     }
 

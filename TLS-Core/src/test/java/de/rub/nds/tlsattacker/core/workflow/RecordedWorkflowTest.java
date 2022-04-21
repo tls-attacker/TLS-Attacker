@@ -94,7 +94,7 @@ public class RecordedWorkflowTest {
         transportHandler = new ClientRecordingTcpTransportHandler(1000, 1000, "localhost", 4555);
         transportHandler.initialize();
         State state = new State(c, trace);
-        state.getTlsContext().setTransportHandler(transportHandler);
+        state.getTcpContext().setTransportHandler(transportHandler);
         WorkflowExecutor executor = new DefaultWorkflowExecutor(state);
         try {
             executor.executeWorkflow();
@@ -102,8 +102,8 @@ public class RecordedWorkflowTest {
         }
         assertTrue(state.getWorkflowTrace().executedAsPlanned());
         state = new State(c);
-        state.getTlsContext().setTransportHandler(transportHandler.getRecording().getPlayBackHandler());
-        state.getTlsContext().getTransportHandler().initialize();
+        state.getTcpContext().setTransportHandler(transportHandler.getRecording().getPlayBackHandler());
+        state.getContext().getTransportHandler().initialize();
         executor = new DefaultWorkflowExecutor(state);
         try {
             executor.executeWorkflow();

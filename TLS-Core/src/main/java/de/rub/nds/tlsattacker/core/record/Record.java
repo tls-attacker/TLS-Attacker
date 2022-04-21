@@ -18,21 +18,21 @@ import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.layer.DataContainer;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.data.*;
 import de.rub.nds.tlsattacker.core.protocol.*;
 import de.rub.nds.tlsattacker.core.record.compressor.RecordCompressor;
 import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
 import de.rub.nds.tlsattacker.core.record.parser.RecordParser;
 import de.rub.nds.tlsattacker.core.record.preparator.RecordPreparator;
 import de.rub.nds.tlsattacker.core.record.serializer.RecordSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Objects;
 
-public class Record extends ModifiableVariableHolder implements DataContainer {
+public class Record extends ModifiableVariableHolder implements DataContainer<Record, TlsContext> {
 
     /**
      * maximum length configuration for this record
@@ -159,9 +159,9 @@ public class Record extends ModifiableVariableHolder implements DataContainer {
         this.sequenceNumber = ModifiableVariableFactory.safelySetValue(this.sequenceNumber, sequenceNumber);
     }
 
-    public RecordPreparator getRecordPreparator(Chooser chooser, Encryptor encryptor, RecordCompressor compressor,
+    public RecordPreparator getRecordPreparator(TlsContext tlsContext, Encryptor encryptor, RecordCompressor compressor,
         ProtocolMessageType type) {
-        return new RecordPreparator(chooser, this, encryptor, type, compressor);
+        return new RecordPreparator(tlsContext, this, encryptor, type, compressor);
     }
 
     public RecordParser getRecordParser(InputStream stream, ProtocolVersion version) {
@@ -172,9 +172,9 @@ public class Record extends ModifiableVariableHolder implements DataContainer {
         return new RecordSerializer(this);
     }
 
-    public void adjustContext(TlsContext context) {
+    public void adjustContext(TlsContext tlsContext) {
         ProtocolVersion version = ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue());
-        context.setLastRecordVersion(version);
+        tlsContext.setLastRecordVersion(version);
     }
 
     public ProtocolMessageType getContentMessageType() {
@@ -313,13 +313,13 @@ public class Record extends ModifiableVariableHolder implements DataContainer {
 
     // TODO Fix this mess for records
     @Override
-    public RecordParser getParser(TlsContext context, InputStream stream) {
-        return new RecordParser(stream, context.getLastRecordVersion());
+    public RecordParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new RecordParser(stream, tlsContext.getLastRecordVersion());
     }
 
     @Override
-    public RecordPreparator getPreparator(TlsContext context) {
-        return new RecordPreparator(context.getChooser(), this, null, contentMessageType, null);
+    public RecordPreparator getPreparator(TlsContext tlsContext) {
+        return new RecordPreparator(tlsContext, this, null, contentMessageType, null);
     }
 
     @Override
@@ -328,7 +328,7 @@ public class Record extends ModifiableVariableHolder implements DataContainer {
     }
 
     @Override
-    public Handler getHandler(TlsContext context) {
+    public Handler getHandler(TlsContext tlsContext) {
         throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
         // Tools | Templates.
     }

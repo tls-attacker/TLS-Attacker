@@ -12,6 +12,8 @@ package de.rub.nds.tlsattacker.core.layer;
 import java.util.Arrays;
 import java.util.List;
 
+import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
+
 /**
  * Contains a list of {@link DataContainer} with additional information about how to send and receive them and whether
  * they were sent/received correctly. See {@link SpecificContainerLayerConfiguration} and

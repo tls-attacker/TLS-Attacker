@@ -10,8 +10,8 @@
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateUrlExtensionMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;

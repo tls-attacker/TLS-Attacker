@@ -19,7 +19,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.ApplicationMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.ApplicationMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ApplicationMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ApplicationMessageSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import java.util.Arrays;
 import javax.xml.bind.annotation.XmlRootElement;

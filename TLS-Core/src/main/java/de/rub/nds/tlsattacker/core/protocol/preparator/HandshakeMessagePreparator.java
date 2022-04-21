@@ -12,7 +12,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
-import de.rub.nds.tlsattacker.core.protocol.Preparator;
+import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
@@ -67,11 +67,11 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
     }
 
     public void prepareEncapsulatingFields() {
-        HandshakeMessageSerializer<T> serializer = message.getSerializer(chooser.getContext());
+        HandshakeMessageSerializer<T> serializer = message.getSerializer(chooser.getContext().getTlsContext());
         byte[] content = serializer.serializeProtocolMessageContent();
         prepareMessageContent(content);
         if (!(message instanceof DtlsHandshakeMessageFragment)) {
-            prepareMessageLength(message.getMessageContent().getValue().length);
+            prepareMessageLength(content.length);
             prepareMessageType(message.getHandshakeMessageType());
         }
     }
@@ -90,7 +90,7 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
                         ksExt.setRetryRequestMode(true);
                     }
                 }
-                extensionMessage.getPreparator(chooser.getContext()).prepare();
+                extensionMessage.getPreparator(chooser.getContext().getTlsContext()).prepare();
                 try {
                     stream.write(extensionMessage.getExtensionBytes().getValue());
                 } catch (IOException ex) {
@@ -106,7 +106,7 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         if (message.getExtensions() != null) {
             for (ExtensionMessage extensionMessage : message.getExtensions()) {
-                Preparator preparator = extensionMessage.getPreparator(chooser.getContext());
+                Preparator preparator = extensionMessage.getPreparator(chooser.getContext().getTlsContext());
                 if (extensionMessage instanceof PreSharedKeyExtensionMessage && message instanceof ClientHelloMessage
                     && chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
                     ((PreSharedKeyExtensionPreparator) preparator).setClientHello((ClientHelloMessage) message);

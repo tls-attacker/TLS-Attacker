@@ -18,7 +18,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.UnknownExtensionHa
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.UnknownExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.UnknownExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.UnknownExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;

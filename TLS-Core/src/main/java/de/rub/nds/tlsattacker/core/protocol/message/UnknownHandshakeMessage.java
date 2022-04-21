@@ -18,7 +18,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.UnknownHandshakeHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.UnknownHandshakeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.UnknownHandshakePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.UnknownHandshakeSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Objects;
@@ -57,8 +57,8 @@ public class UnknownHandshakeMessage extends HandshakeMessage {
     }
 
     @Override
-    public UnknownHandshakeHandler getHandler(TlsContext context) {
-        return new UnknownHandshakeHandler(context);
+    public UnknownHandshakeHandler getHandler(TlsContext tlsContext) {
+        return new UnknownHandshakeHandler(tlsContext);
     }
 
     @Override

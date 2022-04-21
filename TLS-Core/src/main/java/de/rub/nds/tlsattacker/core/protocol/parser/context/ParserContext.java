@@ -9,7 +9,7 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser.context;
 
-import de.rub.nds.tlsattacker.core.protocol.Parser;
+import de.rub.nds.tlsattacker.core.layer.data.Parser;
 
 public interface ParserContext {
 

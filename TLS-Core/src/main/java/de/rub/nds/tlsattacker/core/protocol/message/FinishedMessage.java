@@ -18,7 +18,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.FinishedHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.FinishedParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.FinishedPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.FinishedSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import java.util.Objects;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -64,8 +64,8 @@ public class FinishedMessage extends HandshakeMessage {
     }
 
     @Override
-    public FinishedHandler getHandler(TlsContext context) {
-        return new FinishedHandler(context);
+    public FinishedHandler getHandler(TlsContext tlsContext) {
+        return new FinishedHandler(tlsContext);
     }
 
     @Override

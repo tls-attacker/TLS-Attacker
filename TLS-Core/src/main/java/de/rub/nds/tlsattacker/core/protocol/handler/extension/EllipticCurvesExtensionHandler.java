@@ -12,8 +12,8 @@ package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EllipticCurvesExtensionMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -33,8 +33,8 @@ public class EllipticCurvesExtensionHandler extends ExtensionHandler<EllipticCur
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public EllipticCurvesExtensionHandler(TlsContext context) {
-        super(context);
+    public EllipticCurvesExtensionHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override
@@ -53,10 +53,10 @@ public class EllipticCurvesExtensionHandler extends ExtensionHandler<EllipticCur
                 groupList.add(namedGroup);
             }
         }
-        if (context.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
-            context.setClientNamedGroupsList(groupList);
+        if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
+            tlsContext.setClientNamedGroupsList(groupList);
         } else {
-            context.setServerNamedGroupsList(groupList);
+            tlsContext.setServerNamedGroupsList(groupList);
         }
     }
 

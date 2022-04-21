@@ -11,22 +11,25 @@ package de.rub.nds.tlsattacker.core.layer;
 
 import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
 import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
+import de.rub.nds.tlsattacker.core.layer.data.Handler;
+import de.rub.nds.tlsattacker.core.layer.data.Parser;
+import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
-import de.rub.nds.tlsattacker.core.protocol.Handler;
-import de.rub.nds.tlsattacker.core.protocol.Parser;
-import de.rub.nds.tlsattacker.core.protocol.Preparator;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+
+import de.rub.nds.tlsattacker.core.state.Context;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
  * Abstracts a message layer (TCP, UDP, IMAP, etc.). Each layer knows of the layer below and above itself. It can send
  * messages using the layer below and forward received messages to the layer above.
- * 
+ *
  * @param <Hint>
  *                    Some layers need a hint which message they should send or receive.
  * @param <Container>
@@ -192,7 +195,7 @@ public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container 
 
     /**
      * Parses and handles content from a container.
-     * 
+     *
      * @param  container
      *                     The container to handle.
      * @param  context

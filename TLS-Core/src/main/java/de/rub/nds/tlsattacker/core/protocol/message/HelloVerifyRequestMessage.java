@@ -19,7 +19,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.HelloVerifyRequestHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.HelloVerifyRequestParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.HelloVerifyRequestPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.HelloVerifyRequestSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import java.util.Objects;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -78,8 +78,8 @@ public class HelloVerifyRequestMessage extends HandshakeMessage {
     }
 
     @Override
-    public HelloVerifyRequestHandler getHandler(TlsContext context) {
-        return new HelloVerifyRequestHandler(context);
+    public HelloVerifyRequestHandler getHandler(TlsContext tlsContext) {
+        return new HelloVerifyRequestHandler(tlsContext);
     }
 
     @Override

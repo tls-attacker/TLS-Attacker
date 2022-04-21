@@ -9,6 +9,8 @@
 
 package de.rub.nds.tlsattacker.core.layer;
 
+import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
+
 public abstract class DataContainerFilter {
 
     public abstract boolean filterApplies(DataContainer container);

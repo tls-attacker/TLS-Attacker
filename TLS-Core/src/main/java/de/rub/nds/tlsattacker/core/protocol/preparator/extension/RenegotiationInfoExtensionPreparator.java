@@ -29,14 +29,15 @@ public class RenegotiationInfoExtensionPreparator extends ExtensionPreparator<Re
 
     @Override
     public void prepareExtensionContent() {
-        if (chooser.getContext().getLastClientVerifyData() != null
-            && chooser.getContext().getLastServerVerifyData() != null) {
+        if (chooser.getContext().getTlsContext().getLastClientVerifyData() != null
+            && chooser.getContext().getTlsContext().getLastServerVerifyData() != null) {
             // We are renegotiating
             if (chooser.getContext().getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
-                message.setRenegotiationInfo(chooser.getContext().getLastClientVerifyData());
+                message.setRenegotiationInfo(chooser.getContext().getTlsContext().getLastClientVerifyData());
             } else {
-                message.setRenegotiationInfo(ArrayConverter.concatenate(chooser.getContext().getLastClientVerifyData(),
-                    chooser.getContext().getLastServerVerifyData()));
+                message.setRenegotiationInfo(
+                    ArrayConverter.concatenate(chooser.getContext().getTlsContext().getLastClientVerifyData(),
+                        chooser.getContext().getTlsContext().getLastServerVerifyData()));
             }
         } else {
             // First time we send this message

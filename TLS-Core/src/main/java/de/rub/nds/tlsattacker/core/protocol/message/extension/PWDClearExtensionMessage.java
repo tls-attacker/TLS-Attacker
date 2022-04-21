@@ -18,7 +18,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.PWDClearExtensionH
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.PWDClearExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PWDClearExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PWDClearExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 

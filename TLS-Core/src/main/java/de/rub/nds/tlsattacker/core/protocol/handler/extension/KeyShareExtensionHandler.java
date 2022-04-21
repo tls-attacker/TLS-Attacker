@@ -11,10 +11,10 @@ package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,8 +29,8 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public KeyShareExtensionHandler(TlsContext context) {
-        super(context);
+    public KeyShareExtensionHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override
@@ -39,10 +39,10 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
             adjustRetryRequestKeyShare(message);
         } else {
             List<KeyShareStoreEntry> ksEntryList = createKeyShareStoreEntries(message);
-            if (context.getTalkingConnectionEndType() == ConnectionEndType.SERVER) {
+            if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.SERVER) {
                 adjustServerKeyShareStore(ksEntryList);
             } else {
-                context.setClientKeyShareStoreEntryList(ksEntryList);
+                tlsContext.setClientKeyShareStoreEntryList(ksEntryList);
             }
         }
     }
@@ -57,7 +57,7 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
                 } else {
                     LOGGER.warn("Empty KeyShare - Setting only selected KeyShareType: to "
                         + ArrayConverter.bytesToHexString(pair.getGroup()));
-                    context.setSelectedGroup(type);
+                    tlsContext.setSelectedGroup(type);
                 }
             } else {
                 LOGGER.warn("Unknown KS Type:" + ArrayConverter.bytesToHexString(pair.getPublicKey().getValue()));
@@ -69,11 +69,11 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
     private void adjustServerKeyShareStore(List<KeyShareStoreEntry> ksEntryList) {
         // The server has only one key
         if (!ksEntryList.isEmpty()) {
-            context.setServerKeyShareStoreEntry(
+            tlsContext.setServerKeyShareStoreEntry(
                 new KeyShareStoreEntry(ksEntryList.get(0).getGroup(), ksEntryList.get(0).getPublicKey()));
-            NamedGroup selectedGroup = context.getServerKeyShareStoreEntry().getGroup();
+            NamedGroup selectedGroup = tlsContext.getServerKeyShareStoreEntry().getGroup();
             LOGGER.debug("Setting selected NamedGroup in context to " + selectedGroup);
-            context.setSelectedGroup(selectedGroup);
+            tlsContext.setSelectedGroup(selectedGroup);
         }
     }
 
@@ -81,7 +81,7 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
         if (!message.getKeyShareList().isEmpty()) {
             NamedGroup selectedGroup = message.getKeyShareList().get(0).getGroupConfig();
             LOGGER.debug("Setting selected NamedGroup from HelloRetryRequest in context to " + selectedGroup);
-            context.setSelectedGroup(selectedGroup);
+            tlsContext.setSelectedGroup(selectedGroup);
         }
     }
 }

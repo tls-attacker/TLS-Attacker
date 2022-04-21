@@ -51,7 +51,7 @@ public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessag
     protected byte[] generatePremasterSecret() {
         msg.getComputations().setPremasterSecretProtocolVersion(chooser.getHighestClientProtocolVersion().getValue());
         byte[] premasterSecret = new byte[HandshakeByteLength.PREMASTER_SECRET - HandshakeByteLength.VERSION];
-        chooser.getContext().getRandom().nextBytes(premasterSecret);
+        chooser.getContext().getTlsContext().getRandom().nextBytes(premasterSecret);
         return ArrayConverter.concatenate(msg.getComputations().getPremasterSecretProtocolVersion().getValue(),
             premasterSecret);
     }
@@ -130,7 +130,7 @@ public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessag
             // padding;
             if (randomByteLength > 0) {
                 padding = new byte[randomByteLength];
-                chooser.getContext().getRandom().nextBytes(padding);
+                chooser.getContext().getTlsContext().getRandom().nextBytes(padding);
                 ArrayConverter.makeArrayNonZero(padding);
             } else {
                 padding = new byte[0];

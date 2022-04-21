@@ -63,7 +63,7 @@ public class CcaTask extends TlsTask {
             return true;
         } finally {
             try {
-                state.getTlsContext().getTransportHandler().closeConnection();
+                state.getContext().getTransportHandler().closeConnection();
             } catch (IOException ex) {
                 LOGGER.debug(ex);
             }

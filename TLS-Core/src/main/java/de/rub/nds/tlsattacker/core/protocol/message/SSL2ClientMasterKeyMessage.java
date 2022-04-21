@@ -16,13 +16,15 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ClientMasterKeyHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.RSAClientComputations;
 import de.rub.nds.tlsattacker.core.protocol.parser.HandshakeMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.SSL2ClientMasterKeyPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.SSL2ClientMasterKeySerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.state.Context;
+
 import java.io.InputStream;
 import java.util.List;
 import java.util.Objects;
@@ -68,8 +70,8 @@ public class SSL2ClientMasterKeyMessage extends SSL2HandshakeMessage {
     }
 
     @Override
-    public SSL2ClientMasterKeyHandler getHandler(TlsContext context) {
-        return new SSL2ClientMasterKeyHandler(context);
+    public SSL2ClientMasterKeyHandler getHandler(TlsContext tlsContext) {
+        return new SSL2ClientMasterKeyHandler(tlsContext);
     }
 
     @Override

@@ -14,6 +14,11 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.core.layer.LayerStack;
+import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
+import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
+import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceNormalizer;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
@@ -34,18 +39,18 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * The central object passed around during program execution. The state initializes and holds the workflow trace, the
- * default configuration and the corresponding TLS contexts.
+ * default configuration and the corresponding Contexts.
  *
  * <p>
  * The concept behind this class is as follows: the state is initialized with the user configured values, that is, via
- * default configuration and a given workflow trace (type). On initialization, the state will create the necessary TLS
- * contexts for workflow execution. These contexts should be considered as dynamic objects, representing TLS
+ * default configuration and a given workflow trace (type). On initialization, the state will create the necessary
+ * Contexts for workflow execution. These Contexts should be considered as dynamic objects, representing TLS
  * connections, calculations and other data exchanged during the TLS actual workflow execution.
  * </p>
  *
  * <p>
- * Therefore, there is no public interface for setting TLS contexts manually. They are always automatically created
- * based on the connections defined in the workflow trace.
+ * Therefore, there is no public interface for setting Contexts manually. They are always automatically created based on
+ * the connections defined in the workflow trace.
  * </p>
  *
  * <p>
@@ -71,11 +76,11 @@ public class State {
     private Throwable executionException;
 
     public State() {
-        this(Config.createConfig());
+        this(new Config());
     }
 
     public State(WorkflowTrace trace) {
-        this(Config.createConfig(), trace);
+        this(new Config(), trace);
     }
 
     public State(Config config) {
@@ -99,7 +104,7 @@ public class State {
     }
 
     /**
-     * Normalize trace and initialize TLS contexts.
+     * Normalize trace and initialize contexts.
      */
     public final void initState() {
         // Keep a snapshot to restore user defined trace values after filtering.
@@ -112,8 +117,10 @@ public class State {
         workflowTrace.setDirty(false);
 
         for (AliasedConnection con : workflowTrace.getConnections()) {
-            TlsContext ctx = new TlsContext(config, con);
-            addTlsContext(ctx);
+            Context ctx = new Context(config, con);
+            LayerStack layerStack = LayerStackFactory.createLayerStack(config.getDefaultLayerConfiguration(), ctx);
+            ctx.setLayerStack(layerStack);
+            addContext(ctx);
         }
     }
 
@@ -156,14 +163,14 @@ public class State {
     }
 
     /**
-     * Replace existing TlsContext with new TlsContext. This can only be done if existingTlsContext.connection equals
-     * newTlsContext.connection.
+     * Replace existing Context with new Context. This can only be done if existingContext.connection equals
+     * newContext.connection.
      *
-     * @param newTlsContext
-     *                      The new TlsContext to replace the old with
+     * @param newContext
+     *                   The new Context to replace the old with
      */
-    public void replaceTlsContext(TlsContext newTlsContext) {
-        contextContainer.replaceTlsContext(newTlsContext);
+    public void replaceContext(Context newContext) {
+        contextContainer.replaceContext(newContext);
     }
 
     /**
@@ -176,12 +183,12 @@ public class State {
      *
      * @return the only context known to the state
      */
-    public TlsContext getTlsContext() {
-        return contextContainer.getTlsContext();
+    public Context getContext() {
+        return contextContainer.getContext();
     }
 
     /**
-     * Get TLS context with given alias. Aliases are the ones assigned to the corresponding connection ends.
+     * Get Context with given alias. Aliases are the ones assigned to the corresponding connection ends.
      *
      * Note: Be careful when changing the context. I.e. if you change it's connection, the state can get out of sync.
      *
@@ -189,24 +196,48 @@ public class State {
      *
      *
      * @param  alias
-     *               The Alias for which the TLSContext should be returned
+     *               The Alias for which the Context should be returned
      *
      * @return       the context with the given connection end alias
      */
-    public TlsContext getTlsContext(String alias) {
-        return contextContainer.getTlsContext(alias);
+    public Context getContext(String alias) {
+        return contextContainer.getContext(alias);
     }
 
-    public List<TlsContext> getAllTlsContexts() {
+    public TlsContext getTlsContext(String alias) {
+        return getContext(alias).getTlsContext();
+    }
+
+    public TlsContext getTlsContext() {
+        return getContext().getTlsContext();
+    }
+
+    public HttpContext getHttpContext(String alias) {
+        return getContext(alias).getHttpContext();
+    }
+
+    public HttpContext getHttpContext() {
+        return getContext().getHttpContext();
+    }
+
+    public TcpContext getTcpContext(String alias) {
+        return getContext(alias).getTcpContext();
+    }
+
+    public TcpContext getTcpContext() {
+        return getContext().getTcpContext();
+    }
+
+    public List<Context> getAllContexts() {
         return contextContainer.getAllContexts();
     }
 
-    public List<TlsContext> getInboundTlsContexts() {
-        return contextContainer.getInboundTlsContexts();
+    public List<Context> getInboundContexts() {
+        return contextContainer.getInboundContexts();
     }
 
-    public List<TlsContext> getOutboundTlsContexts() {
-        return contextContainer.getOutboundTlsContexts();
+    public List<Context> getOutboundContexts() {
+        return contextContainer.getOutboundContexts();
     }
 
     public RunningModeType getRunningMode() {
@@ -217,8 +248,8 @@ public class State {
         this.runningMode = runningMode;
     }
 
-    private void addTlsContext(TlsContext context) {
-        contextContainer.addTlsContext(context);
+    private void addContext(Context context) {
+        contextContainer.addContext(context);
     }
 
     /**

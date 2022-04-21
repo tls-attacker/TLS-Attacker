@@ -21,7 +21,7 @@ import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.crypto.keys.CustomRSAPrivateKey;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.core.layer.constant.LayerStackType;
+import de.rub.nds.tlsattacker.core.layer.constant.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
@@ -90,6 +90,8 @@ public class Config implements Serializable {
         }
         return c;
     }
+
+    private LayerConfiguration defaultLayerConfiguration;
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultHandshakeSecret = new byte[32];
@@ -567,21 +569,21 @@ public class Config implements Serializable {
     private Boolean addTokenBindingExtension = false;
 
     /**
-     * Whether HTTPS request should contain a cookie header field or not.
+     * Whether HTTP request should contain a cookie header field or not.
      */
-    private Boolean addHttpsCookie = false;
+    private Boolean addHttpCookie = false;
 
     /**
-     * Default cookie value to use if addHttpsCookie is true.
+     * Default cookie value to use if addHttpCookie is true.
      */
     @XmlJavaTypeAdapter(IllegalStringAdapter.class)
-    private String defaultHttpsCookieName = "tls-attacker";
+    private String defaultHttpCookieName = "tls-attacker";
 
     /**
-     * Default cookie value to use if addHttpsCookie is true.
+     * Default cookie value to use if addHttpCookie is true.
      */
     @XmlJavaTypeAdapter(IllegalStringAdapter.class)
-    private String defaultHttpsCookieValue = "42130912812";
+    private String defaultHttpCookieValue = "42130912812";
 
     /**
      * If we generate ClientHello with CertificateStatusRequest extension
@@ -851,8 +853,6 @@ public class Config implements Serializable {
      * and DTLS headers).
      */
     private Integer dtlsMaximumFragmentLength = 1400;
-
-    private LayerStackType defaultLayerStackType = LayerStackType.TLS;
 
     private WorkflowExecutorType workflowExecutorType = WorkflowExecutorType.DEFAULT;
 
@@ -1132,14 +1132,14 @@ public class Config implements Serializable {
 
     private Boolean useAllProvidedRecords = false;
 
-    private Boolean httpsParsingEnabled = false;
+    private Boolean httpParsingEnabled = false;
 
     /**
-     * requestPath to use in LocationHeader if none is saved during the connection, e.g. no received HttpsRequestMessage
-     * or httpsParsing is disabled
+     * requestPath to use in LocationHeader if none is saved during the connection, e.g. no received HttpRequestMessage
+     * or httpParsing is disabled
      */
     @XmlJavaTypeAdapter(IllegalStringAdapter.class)
-    private String defaultHttpsRequestPath = "/";
+    private String defaultHttpRequestPath = "/";
 
     private StarttlsType starttlsType = StarttlsType.NONE;
 
@@ -1326,6 +1326,7 @@ public class Config implements Serializable {
     private String keylogFilePath = null;
 
     public Config() {
+        defaultLayerConfiguration = LayerConfiguration.TLS;
         defaultClientConnection = new OutboundConnection("client", 443, "localhost");
         defaultServerConnection = new InboundConnection("server", 443, "localhost");
         workflowTraceType = WorkflowTraceType.HANDSHAKE;
@@ -1581,20 +1582,20 @@ public class Config implements Serializable {
         this.clientAuthenticationType = clientAuthenticationType;
     }
 
-    public Boolean isHttpsParsingEnabled() {
-        return httpsParsingEnabled;
+    public Boolean isHttpParsingEnabled() {
+        return httpParsingEnabled;
     }
 
-    public void setHttpsParsingEnabled(Boolean httpsParsingEnabled) {
-        this.httpsParsingEnabled = httpsParsingEnabled;
+    public void setHttpParsingEnabled(Boolean httpParsingEnabled) {
+        this.httpParsingEnabled = httpParsingEnabled;
     }
 
-    public String getDefaultHttpsRequestPath() {
-        return defaultHttpsRequestPath;
+    public String getDefaultHttpRequestPath() {
+        return defaultHttpRequestPath;
     }
 
-    public void setDefaultHttpsRequestPath(String defaultHttpsRequestPath) {
-        this.defaultHttpsRequestPath = defaultHttpsRequestPath;
+    public void setDefaultHttpRequestPath(String defaultHttpRequestPath) {
+        this.defaultHttpRequestPath = defaultHttpRequestPath;
     }
 
     public Boolean isUseFreshRandom() {
@@ -2829,28 +2830,28 @@ public class Config implements Serializable {
         this.addTokenBindingExtension = addTokenBindingExtension;
     }
 
-    public Boolean isAddHttpsCookie() {
-        return addHttpsCookie;
+    public Boolean isAddHttpCookie() {
+        return addHttpCookie;
     }
 
-    public void setAddHttpsCookie(Boolean addHttpsCookie) {
-        this.addHttpsCookie = addHttpsCookie;
+    public void setAddHttpCookie(Boolean addHttpCookie) {
+        this.addHttpCookie = addHttpCookie;
     }
 
-    public String getDefaultHttpsCookieName() {
-        return defaultHttpsCookieName;
+    public String getDefaultHttpCookieName() {
+        return defaultHttpCookieName;
     }
 
-    public void setDefaultHttpsCookieName(String defaultHttpsCookieName) {
-        this.defaultHttpsCookieName = defaultHttpsCookieName;
+    public void setDefaultHttpCookieName(String defaultHttpCookieName) {
+        this.defaultHttpCookieName = defaultHttpCookieName;
     }
 
-    public String getDefaultHttpsCookieValue() {
-        return defaultHttpsCookieValue;
+    public String getDefaultHttpCookieValue() {
+        return defaultHttpCookieValue;
     }
 
-    public void setDefaultHttpsCookieValue(String defaultHttpsCookieValue) {
-        this.defaultHttpsCookieValue = defaultHttpsCookieValue;
+    public void setDefaultHttpCookieValue(String defaultHttpCookieValue) {
+        this.defaultHttpCookieValue = defaultHttpCookieValue;
     }
 
     public CertificateStatusRequestType getCertificateStatusRequestExtensionRequestType() {
@@ -4030,11 +4031,11 @@ public class Config implements Serializable {
         this.defaultClientTicketResumptionSessionId = defaultClientTicketResumptionSessionId;
     }
 
-    public LayerStackType getDefaultLayerStackType() {
-        return defaultLayerStackType;
+    public LayerConfiguration getDefaultLayerConfiguration() {
+        return defaultLayerConfiguration;
     }
 
-    public void setDefaultLayerStackType(LayerStackType defaultLayerStackType) {
-        this.defaultLayerStackType = defaultLayerStackType;
+    public void setDefaultLayerConfiguration(LayerConfiguration defaultLayerConfiguration) {
+        this.defaultLayerConfiguration = defaultLayerConfiguration;
     }
 }

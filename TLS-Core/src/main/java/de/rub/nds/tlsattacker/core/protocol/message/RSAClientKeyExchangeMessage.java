@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.computations.RSAClientComput
 import de.rub.nds.tlsattacker.core.protocol.parser.RSAClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.RSAClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.RSAClientKeyExchangeSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
@@ -46,8 +46,8 @@ public class RSAClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     }
 
     @Override
-    public RSAClientKeyExchangeHandler getHandler(TlsContext context) {
-        return new RSAClientKeyExchangeHandler<>(context);
+    public RSAClientKeyExchangeHandler getHandler(TlsContext tlsContext) {
+        return new RSAClientKeyExchangeHandler<>(tlsContext);
     }
 
     @Override

@@ -25,7 +25,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair
 import de.rub.nds.tlsattacker.core.protocol.parser.ServerHelloParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ServerHelloPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ServerHelloSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.Arrays;
@@ -271,8 +271,8 @@ public class ServerHelloMessage extends HelloMessage {
     }
 
     @Override
-    public ServerHelloHandler getHandler(TlsContext context) {
-        return new ServerHelloHandler(context);
+    public ServerHelloHandler getHandler(TlsContext tlsContext) {
+        return new ServerHelloHandler(tlsContext);
     }
 
     @Override

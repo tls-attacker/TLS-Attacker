@@ -22,7 +22,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.HeartbeatMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.HeartbeatMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.HeartbeatMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.HeartbeatMessageSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import java.util.Objects;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -138,8 +138,8 @@ public class HeartbeatMessage extends ProtocolMessage {
     }
 
     @Override
-    public HeartbeatMessageHandler getHandler(TlsContext context) {
-        return new HeartbeatMessageHandler(context);
+    public HeartbeatMessageHandler getHandler(TlsContext tlsContext) {
+        return new HeartbeatMessageHandler(tlsContext);
     }
 
     @Override

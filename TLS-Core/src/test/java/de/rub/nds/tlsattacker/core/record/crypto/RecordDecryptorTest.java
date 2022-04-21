@@ -10,17 +10,18 @@
 package de.rub.nds.tlsattacker.core.record.crypto;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import de.rub.nds.tlsattacker.core.layer.LayerStack;
-import de.rub.nds.tlsattacker.core.layer.impl.RecordLayer;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.*;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.security.NoSuchAlgorithmException;
 import java.security.Security;
+
+import de.rub.nds.tlsattacker.core.state.Context;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.test.TestRandomData;
 import static org.junit.Assert.assertArrayEquals;
@@ -41,8 +42,8 @@ public class RecordDecryptorTest {
     @Before
     public void setUp() {
         Security.addProvider(new BouncyCastleProvider());
-        context = new TlsContext();
-        context.setLayerStack(new LayerStack(context, new RecordLayer(context)));
+        Context outerContext = new Context(new Config());
+        context = new TlsContext(outerContext);
         record = new Record();
         record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
         record.setProtocolVersion(ProtocolVersion.TLS10.getValue());

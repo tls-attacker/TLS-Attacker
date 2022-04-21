@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.core.layer.LayerStack;
 import de.rub.nds.tlsattacker.core.layer.impl.DtlsFragmentLayer;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.state.session.TicketSession;
 import de.rub.nds.tlsattacker.util.FixedTimeProvider;
 import de.rub.nds.tlsattacker.util.TimeHelper;
@@ -87,7 +87,7 @@ public class ClientHelloPreparatorTest {
         context.getConfig().setHighestProtocolVersion(ProtocolVersion.DTLS10);
         context.getConfig().setDefaultClientSessionId(new byte[] { 0, 1, 2, 3 });
         context.setDtlsCookie(new byte[] { 7, 6, 5 });
-        context.setLayerStack(new LayerStack(context, new DtlsFragmentLayer(context)));
+        context.getContext().setLayerStack(new LayerStack(context.getContext(), new DtlsFragmentLayer(context)));
         preparator.prepare();
         assertArrayEquals(ArrayConverter.hexStringToByteArray("009AC02B"), message.getCipherSuites().getValue());
         assertTrue(4 == message.getCipherSuiteLength().getValue());

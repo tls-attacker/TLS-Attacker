@@ -21,7 +21,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.CertificateStatusHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.CertificateStatusParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateStatusPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateStatusSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
@@ -48,8 +48,8 @@ public class CertificateStatusMessage extends HandshakeMessage {
     }
 
     @Override
-    public CertificateStatusHandler getHandler(TlsContext context) {
-        return new CertificateStatusHandler(context);
+    public CertificateStatusHandler getHandler(TlsContext tlsContext) {
+        return new CertificateStatusHandler(tlsContext);
     }
 
     @Override

@@ -10,18 +10,12 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
-import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
-import de.rub.nds.tlsattacker.core.layer.LayerStack;
-import de.rub.nds.tlsattacker.core.layer.LayerStackProcessingResult;
-import de.rub.nds.tlsattacker.core.layer.ReceiveTillLayerConfiguration;
-import de.rub.nds.tlsattacker.core.layer.SpecificReceiveLayerConfiguration;
-import de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration;
-import de.rub.nds.tlsattacker.core.layer.TightReceiveLayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.*;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.record.Record;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;

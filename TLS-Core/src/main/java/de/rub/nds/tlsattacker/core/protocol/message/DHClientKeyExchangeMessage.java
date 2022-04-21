@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.computations.DHClientComputa
 import de.rub.nds.tlsattacker.core.protocol.parser.DHClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.DHClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.DHClientKeyExchangeSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -44,8 +44,8 @@ public class DHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     }
 
     @Override
-    public DHClientKeyExchangeHandler<? extends DHClientKeyExchangeMessage> getHandler(TlsContext context) {
-        return new DHClientKeyExchangeHandler<>(context);
+    public DHClientKeyExchangeHandler<? extends DHClientKeyExchangeMessage> getHandler(TlsContext tlsContext) {
+        return new DHClientKeyExchangeHandler<>(tlsContext);
     }
 
     @Override

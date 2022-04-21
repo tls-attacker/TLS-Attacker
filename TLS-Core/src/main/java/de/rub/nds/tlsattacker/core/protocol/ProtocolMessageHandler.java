@@ -9,9 +9,10 @@
 
 package de.rub.nds.tlsattacker.core.protocol;
 
+import de.rub.nds.tlsattacker.core.layer.data.Handler;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -19,7 +20,7 @@ public abstract class ProtocolMessageHandler<MessageT extends ProtocolMessage> i
 
     protected static final Logger LOGGER = LogManager.getLogger();
     /**
-     * tls context
+     * context
      */
     protected final TlsContext tlsContext;
 

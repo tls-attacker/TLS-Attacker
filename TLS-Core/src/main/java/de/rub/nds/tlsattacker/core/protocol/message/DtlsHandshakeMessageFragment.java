@@ -18,7 +18,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.DtlsHandshakeMessageFragment
 import de.rub.nds.tlsattacker.core.protocol.parser.DtlsHandshakeMessageFragmentParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.DtlsHandshakeMessageFragmentPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.DtlsHandshakeMessageFragmentSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Objects;
@@ -81,8 +81,8 @@ public class DtlsHandshakeMessageFragment extends HandshakeMessage {
     }
 
     @Override
-    public DtlsHandshakeMessageFragmentHandler getHandler(TlsContext context) {
-        return new DtlsHandshakeMessageFragmentHandler(context);
+    public DtlsHandshakeMessageFragmentHandler getHandler(TlsContext tlsContext) {
+        return new DtlsHandshakeMessageFragmentHandler(tlsContext);
     }
 
     @Override

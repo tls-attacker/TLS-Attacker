@@ -78,7 +78,7 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
         }
         if (isResumptionWithSessionTicket && chooser.getConfig().isOverrideSessionIdForTickets()) {
             msg.setSessionId(chooser.getConfig().getDefaultClientTicketResumptionSessionId());
-        } else if (chooser.getContext().getServerSessionId() == null) {
+        } else if (chooser.getContext().getTlsContext().getServerSessionId() == null) {
             msg.setSessionId(chooser.getClientSessionId());
         } else {
             msg.setSessionId(chooser.getServerSessionId());
@@ -150,7 +150,7 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
     }
 
     private boolean hasClientRandom() {
-        return chooser.getContext().getClientRandom() != null;
+        return chooser.getContext().getTlsContext().getClientRandom() != null;
     }
 
     private void prepareCookie(ClientHelloMessage msg) {

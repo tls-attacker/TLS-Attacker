@@ -21,7 +21,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.computations.DHEServerComput
 import de.rub.nds.tlsattacker.core.protocol.parser.DHEServerKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.DHEServerKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.DHEServerKeyExchangeSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -150,8 +150,8 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     }
 
     @Override
-    public DHEServerKeyExchangeHandler<? extends DHEServerKeyExchangeMessage> getHandler(TlsContext context) {
-        return new DHEServerKeyExchangeHandler<>(context);
+    public DHEServerKeyExchangeHandler<? extends DHEServerKeyExchangeMessage> getHandler(TlsContext tlsContext) {
+        return new DHEServerKeyExchangeHandler<>(tlsContext);
     }
 
     @Override

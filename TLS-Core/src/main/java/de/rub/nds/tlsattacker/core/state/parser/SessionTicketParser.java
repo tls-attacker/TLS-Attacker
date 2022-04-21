@@ -13,7 +13,7 @@ import static de.rub.nds.modifiablevariable.util.ArrayConverter.bytesToHexString
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
-import de.rub.nds.tlsattacker.core.protocol.Parser;
+import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.state.SessionTicket;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;

@@ -10,12 +10,17 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.layer.Message;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.util.List;
 
 public abstract class CommonReceiveAction extends MessageAction {
+
+    public CommonReceiveAction() {
+        super();
+    }
 
     public CommonReceiveAction(List<ProtocolMessage> messages) {
         super(messages);

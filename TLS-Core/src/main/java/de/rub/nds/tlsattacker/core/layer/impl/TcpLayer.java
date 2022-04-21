@@ -9,27 +9,27 @@
 
 package de.rub.nds.tlsattacker.core.layer.impl;
 
-import de.rub.nds.tlsattacker.core.layer.DataContainer;
+import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
+import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStreamAdapterStream;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.tcp.TcpTransportHandler;
 import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class TcpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> {// TODO change types
+public class TcpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> {
 
     private static Logger LOGGER = LogManager.getLogger();
 
-    private final TlsContext context;
+    private final TcpContext context;
 
-    public TcpLayer(TlsContext context) {
+    public TcpLayer(TcpContext context) {
         super(ImplementedLayers.TCP);
         this.context = context;
     }

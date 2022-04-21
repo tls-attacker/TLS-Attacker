@@ -23,7 +23,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair
 import de.rub.nds.tlsattacker.core.protocol.parser.ClientHelloParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ClientHelloPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ClientHelloSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.Date;
@@ -345,8 +345,8 @@ public class ClientHelloMessage extends HelloMessage {
     }
 
     @Override
-    public ClientHelloHandler getHandler(TlsContext context) {
-        return new ClientHelloHandler(context);
+    public ClientHelloHandler getHandler(TlsContext tlsContext) {
+        return new ClientHelloHandler(tlsContext);
     }
 
     @Override

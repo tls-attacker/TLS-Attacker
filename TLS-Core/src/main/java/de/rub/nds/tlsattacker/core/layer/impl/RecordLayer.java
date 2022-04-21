@@ -9,6 +9,13 @@
 
 package de.rub.nds.tlsattacker.core.layer.impl;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.LinkedList;
+import java.util.List;
+
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
@@ -18,6 +25,7 @@ import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.hints.RecordLayerHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
@@ -35,13 +43,6 @@ import de.rub.nds.tlsattacker.core.record.crypto.RecordEncryptor;
 import de.rub.nds.tlsattacker.core.record.parser.RecordParser;
 import de.rub.nds.tlsattacker.core.record.preparator.RecordPreparator;
 import de.rub.nds.tlsattacker.core.record.serializer.RecordSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.LinkedList;
-import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -85,8 +86,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
                 if (record.getCleanProtocolMessageBytes() == null) {
                     record.setCleanProtocolMessageBytes(new byte[0]);
                 }
-                RecordPreparator preparator =
-                    record.getRecordPreparator(context.getChooser(), encryptor, compressor, contentType);
+                RecordPreparator preparator = record.getRecordPreparator(context, encryptor, compressor, contentType);
                 preparator.prepare();
                 preparator.afterPrepare();
                 RecordSerializer serializer = record.getRecordSerializer();
@@ -122,8 +122,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
             if (encryptor.getRecordCipher(writeEpoch).getState().getVersion().isDTLS()) {
                 record.setEpoch(writeEpoch);
             }
-            RecordPreparator preparator =
-                record.getRecordPreparator(context.getChooser(), encryptor, compressor, contentType);
+            RecordPreparator preparator = record.getRecordPreparator(context, encryptor, compressor, contentType);
             preparator.prepare();
             preparator.afterPrepare();
             try {
@@ -213,8 +212,8 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
     public byte[] reencrypt(List<Record> records) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         for (Record record : records) {
-            RecordPreparator preparator = record.getRecordPreparator(this.context.getChooser(), getEncryptor(),
-                getCompressor(), record.getContentMessageType());
+            RecordPreparator preparator = record.getRecordPreparator(this.context, getEncryptor(), getCompressor(),
+                record.getContentMessageType());
             preparator.encrypt();
             try {
                 byte[] recordBytes = record.getRecordSerializer().serialize();

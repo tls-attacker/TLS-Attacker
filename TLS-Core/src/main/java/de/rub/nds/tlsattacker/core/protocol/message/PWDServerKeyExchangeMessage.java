@@ -22,7 +22,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.computations.PWDComputations
 import de.rub.nds.tlsattacker.core.protocol.parser.PWDServerKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.PWDServerKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.PWDServerKeyExchangeSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -72,8 +72,8 @@ public class PWDServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     }
 
     @Override
-    public PWDServerKeyExchangeHandler getHandler(TlsContext context) {
-        return new PWDServerKeyExchangeHandler(context);
+    public PWDServerKeyExchangeHandler getHandler(TlsContext tlsContext) {
+        return new PWDServerKeyExchangeHandler(tlsContext);
     }
 
     @Override

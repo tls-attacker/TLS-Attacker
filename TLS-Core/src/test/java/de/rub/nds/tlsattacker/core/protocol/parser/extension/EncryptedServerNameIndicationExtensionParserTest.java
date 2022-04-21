@@ -13,10 +13,14 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ChooserType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import de.rub.nds.tlsattacker.core.layer.LayerStack;
+import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
+import de.rub.nds.tlsattacker.core.layer.constant.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -37,9 +41,10 @@ public class EncryptedServerNameIndicationExtensionParserTest {
     @Before
     public void setUp() {
         Security.addProvider(new BouncyCastleProvider());
-        Config config = Config.createConfig();
-        tlsContext = new TlsContext(config);
-        chooser = ChooserFactory.getChooser(ChooserType.DEFAULT, tlsContext, config);
+        Config config = new Config();
+        Context outerContext = new Context(config);
+        tlsContext = outerContext.getTlsContext();
+        chooser = ChooserFactory.getChooser(ChooserType.DEFAULT, outerContext, config);
     }
 
     @Test

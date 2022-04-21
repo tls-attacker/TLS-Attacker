@@ -81,6 +81,7 @@
 
   <xs:complexType name="config">
     <xs:all>
+      <xs:element name="defaultLayerConfiguration" type="layerConfiguration" minOccurs="0"/>
       <xs:element name="defaultHandshakeSecret" type="xs:string" minOccurs="0"/>
       <xs:element name="throwExceptionOnParserContextViolation" type="xs:boolean" minOccurs="0"/>
       <xs:element name="preferredCertificateSignatureType" type="certificateKeyType" minOccurs="0"/>
@@ -294,9 +295,9 @@
       <xs:element name="addSignedCertificateTimestampExtension" type="xs:boolean" minOccurs="0"/>
       <xs:element name="addRenegotiationInfoExtension" type="xs:boolean" minOccurs="0"/>
       <xs:element name="addTokenBindingExtension" type="xs:boolean" minOccurs="0"/>
-      <xs:element name="addHttpsCookie" type="xs:boolean" minOccurs="0"/>
-      <xs:element name="defaultHttpsCookieName" type="xs:string" minOccurs="0"/>
-      <xs:element name="defaultHttpsCookieValue" type="xs:string" minOccurs="0"/>
+      <xs:element name="addHttpCookie" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="defaultHttpCookieName" type="xs:string" minOccurs="0"/>
+      <xs:element name="defaultHttpCookieValue" type="xs:string" minOccurs="0"/>
       <xs:element name="addCertificateStatusRequestExtension" type="xs:boolean" minOccurs="0"/>
       <xs:element name="addAlpnExtension" type="xs:boolean" minOccurs="0"/>
       <xs:element name="addSRPExtension" type="xs:boolean" minOccurs="0"/>
@@ -384,7 +385,6 @@
       <xs:element name="defaultPaddingExtensionBytes" type="xs:string" minOccurs="0"/>
       <xs:element name="dtlsDefaultCookieLength" type="xs:int" minOccurs="0"/>
       <xs:element name="dtlsMaximumFragmentLength" type="xs:int" minOccurs="0"/>
-      <xs:element name="defaultLayerStackType" type="layerStackType" minOccurs="0"/>
       <xs:element name="workflowExecutorType" type="workflowExecutorType" minOccurs="0"/>
       <xs:element name="flushOnMessageTypeChange" type="xs:boolean" minOccurs="0"/>
       <xs:element name="createFragmentsDynamically" type="xs:boolean" minOccurs="0"/>
@@ -506,8 +506,8 @@
       <xs:element name="chooserType" type="chooserType" minOccurs="0"/>
       <xs:element name="useAllProvidedDtlsFragments" type="xs:boolean" minOccurs="0"/>
       <xs:element name="useAllProvidedRecords" type="xs:boolean" minOccurs="0"/>
-      <xs:element name="httpsParsingEnabled" type="xs:boolean" minOccurs="0"/>
-      <xs:element name="defaultHttpsRequestPath" type="xs:string" minOccurs="0"/>
+      <xs:element name="httpParsingEnabled" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="defaultHttpRequestPath" type="xs:string" minOccurs="0"/>
       <xs:element name="starttlsType" type="starttlsType" minOccurs="0"/>
       <xs:element name="overrideSessionIdForTickets" type="xs:boolean" minOccurs="0"/>
       <xs:element name="sessionTicketLifetimeHint" type="xs:long" minOccurs="0"/>
@@ -1250,6 +1250,17 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
+
+  <xs:simpleType name="layerConfiguration">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="TLS"/>
+      <xs:enumeration value="DTLS"/>
+      <xs:enumeration value="QUIC"/>
+      <xs:enumeration value="OPEN_VPN"/>
+      <xs:enumeration value="STARTTTLS"/>
+      <xs:enumeration value="HTTPS"/>
+    </xs:restriction>
+  </xs:simpleType>
 
   <xs:simpleType name="certificateKeyType">
     <xs:restriction base="xs:string">
@@ -2047,16 +2058,6 @@
       <xs:enumeration value="GOST_SIGN512"/>
       <xs:enumeration value="GOSTR34102012_256"/>
       <xs:enumeration value="GOSTR34102012_512"/>
-    </xs:restriction>
-  </xs:simpleType>
-
-  <xs:simpleType name="layerStackType">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="TLS"/>
-      <xs:enumeration value="DTLS"/>
-      <xs:enumeration value="QUIC"/>
-      <xs:enumeration value="OPEN_VPN"/>
-      <xs:enumeration value="STARTTTLS"/>
     </xs:restriction>
   </xs:simpleType>
 

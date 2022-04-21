@@ -21,7 +21,7 @@ import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.security.NoSuchAlgorithmException;
 import javax.crypto.Mac;
@@ -84,11 +84,11 @@ public class KeyUpdateHandler extends HandshakeMessageHandler<KeyUpdateMessage> 
         }
     }
 
-    private KeySet getKeySet(TlsContext context, Tls13KeySetType keySetType) {
+    private KeySet getKeySet(TlsContext tlsContext, Tls13KeySetType keySetType) {
         try {
             LOGGER.debug("Generating new KeySet");
-            KeySet keySet =
-                KeySetGenerator.generateKeySet(context, context.getChooser().getSelectedProtocolVersion(), keySetType);
+            KeySet keySet = KeySetGenerator.generateKeySet(tlsContext,
+                tlsContext.getChooser().getSelectedProtocolVersion(), keySetType);
 
             return keySet;
         } catch (NoSuchAlgorithmException | CryptoException ex) {

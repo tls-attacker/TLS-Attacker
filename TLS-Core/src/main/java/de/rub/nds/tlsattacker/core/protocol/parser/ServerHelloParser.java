@@ -12,7 +12,8 @@ package de.rub.nds.tlsattacker.core.protocol.parser;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,6 +30,7 @@ public class ServerHelloParser extends HelloMessageParser<ServerHelloMessage> {
      *
      * @param stream
      * @param tlsContext
+     *                   The current context
      */
     public ServerHelloParser(InputStream stream, TlsContext tlsContext) {
         super(stream, tlsContext);

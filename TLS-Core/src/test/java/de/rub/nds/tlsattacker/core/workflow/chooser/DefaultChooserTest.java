@@ -13,7 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.state.session.Session;
 import de.rub.nds.tlsattacker.core.state.session.TicketSession;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -458,7 +458,7 @@ public class DefaultChooserTest {
     @Test
     public void testGetTransportHandler() {
         TransportHandler transportHandler = new ClientTcpTransportHandler(0, 0, "abc", 0);
-        context.setTransportHandler(transportHandler);
+        context.getContext().getTcpContext().setTransportHandler(transportHandler);
         assertEquals(transportHandler, chooser.getTransportHandler());
     }
 

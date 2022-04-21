@@ -26,7 +26,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.IOException;
 import java.util.*;
 import javax.xml.bind.annotation.*;
@@ -126,8 +126,8 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
 
         assertAliasesSetProperly();
 
-        TlsContext receiveFromCtx = state.getTlsContext(receiveFromAlias);
-        TlsContext forwardToCtx = state.getTlsContext(forwardToAlias);
+        TlsContext receiveFromCtx = state.getContext(receiveFromAlias).getTlsContext();
+        TlsContext forwardToCtx = state.getContext(forwardToAlias).getTlsContext();
 
         receiveMessages(receiveFromCtx);
         applyMessages(forwardToCtx);
@@ -172,8 +172,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
     /**
      * Apply the contents of the messages to the given TLS context.
      *
-     * @param protocolMessages
-     * @param tlsContext
+     * @param ctx
      */
     private void applyMessages(TlsContext ctx) {
         for (ProtocolMessage msg : receivedMessages) {

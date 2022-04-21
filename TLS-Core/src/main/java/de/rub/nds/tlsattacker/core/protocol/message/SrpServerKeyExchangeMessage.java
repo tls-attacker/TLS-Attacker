@@ -21,7 +21,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.computations.SRPServerComput
 import de.rub.nds.tlsattacker.core.protocol.parser.SrpServerKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.SrpServerKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.SrpServerKeyExchangeSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -192,8 +192,8 @@ public class SrpServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     }
 
     @Override
-    public SrpServerKeyExchangeHandler getHandler(TlsContext context) {
-        return new SrpServerKeyExchangeHandler(context);
+    public SrpServerKeyExchangeHandler getHandler(TlsContext tlsContext) {
+        return new SrpServerKeyExchangeHandler(tlsContext);
     }
 
     @Override

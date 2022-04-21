@@ -50,7 +50,7 @@ public class PWDComputations extends KeyExchangeComputations {
         BigInteger prime = curve.getModulus();
 
         byte[] base;
-        byte[] salt = chooser.getContext().getServerPWDSalt();
+        byte[] salt = chooser.getContext().getTlsContext().getServerPWDSalt();
         if (salt == null && chooser.getSelectedProtocolVersion() != ProtocolVersion.TLS13) {
             salt = chooser.getConfig().getDefaultServerPWDSalt();
         }
@@ -93,7 +93,7 @@ public class PWDComputations extends KeyExchangeComputations {
                 createdPoint = tempPoint;
                 savedSeed = seed.clone();
                 found = true;
-                chooser.getContext().getBadSecureRandom().nextBytes(base);
+                chooser.getContext().getTlsContext().getBadSecureRandom().nextBytes(base);
             }
             if (counter > 1000) {
                 savedSeed = seed.clone();

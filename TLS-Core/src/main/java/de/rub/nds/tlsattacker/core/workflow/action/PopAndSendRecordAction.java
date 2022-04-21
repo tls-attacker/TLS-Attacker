@@ -10,12 +10,13 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.serializer.RecordSerializer;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
@@ -40,7 +41,8 @@ public class PopAndSendRecordAction extends MessageAction implements SendingActi
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
-        TlsContext tlsContext = state.getTlsContext(connectionAlias);
+        TlsContext tlsContext = state.getContext(connectionAlias).getTlsContext();
+        TcpContext tcpContext = state.getContext(connectionAlias).getTcpContext();
 
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
@@ -55,7 +57,7 @@ public class PopAndSendRecordAction extends MessageAction implements SendingActi
         }
         RecordSerializer s = record.getRecordSerializer();
         try {
-            tlsContext.getTransportHandler().sendData(s.serialize());
+            tcpContext.getTransportHandler().sendData(s.serialize());
             asPlanned = true;
         } catch (IOException ex) {
             LOGGER.debug(ex);

@@ -22,7 +22,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.supplementaldata.Supplementa
 import de.rub.nds.tlsattacker.core.protocol.parser.SupplementalDataParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.SupplementalDataPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.SupplementalDataSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
@@ -86,8 +86,8 @@ public class SupplementalDataMessage extends HandshakeMessage {
     }
 
     @Override
-    public SupplementalDataHandler getHandler(TlsContext context) {
-        return new SupplementalDataHandler(context);
+    public SupplementalDataHandler getHandler(TlsContext tlsContext) {
+        return new SupplementalDataHandler(tlsContext);
     }
 
     @Override

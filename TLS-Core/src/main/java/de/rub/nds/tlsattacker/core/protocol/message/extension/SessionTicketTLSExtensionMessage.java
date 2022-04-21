@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.SessionTicketTLSExt
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SessionTicketTLSExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SessionTicketTLSExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.SessionTicket;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 

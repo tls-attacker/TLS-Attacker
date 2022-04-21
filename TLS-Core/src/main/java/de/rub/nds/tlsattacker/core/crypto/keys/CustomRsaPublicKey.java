@@ -9,14 +9,16 @@
 
 package de.rub.nds.tlsattacker.core.crypto.keys;
 
-import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.math.BigInteger;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Objects;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -40,19 +42,19 @@ public class CustomRsaPublicKey extends CustomPublicKey implements RSAPublicKey 
     }
 
     @Override
-    public void adjustInContext(TlsContext context, ConnectionEndType ownerOfKey) {
-        LOGGER.debug("Adjusting RSA public key in context");
+    public void adjustInContext(TlsContext tlsContext, ConnectionEndType ownerOfKey) {
+        LOGGER.debug("Adjusting RSA public key in tlsContext");
         if (null == ownerOfKey) {
             throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
         } else {
             switch (ownerOfKey) {
                 case CLIENT:
-                    context.setClientRSAPublicKey(publicExponent);
-                    context.setClientRsaModulus(modulus);
+                    tlsContext.setClientRSAPublicKey(publicExponent);
+                    tlsContext.setClientRsaModulus(modulus);
                     break;
                 case SERVER:
-                    context.setServerRSAPublicKey(publicExponent);
-                    context.setServerRSAModulus(modulus);
+                    tlsContext.setServerRSAPublicKey(publicExponent);
+                    tlsContext.setServerRSAModulus(modulus);
                     break;
                 default:
                     throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");

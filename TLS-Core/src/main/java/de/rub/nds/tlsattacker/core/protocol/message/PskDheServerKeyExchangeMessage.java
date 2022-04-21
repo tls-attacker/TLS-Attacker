@@ -19,7 +19,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.PskDheServerKeyExchangeHandl
 import de.rub.nds.tlsattacker.core.protocol.parser.PskDheServerKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.PskDheServerKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.PskDheServerKeyExchangeSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -85,8 +85,8 @@ public class PskDheServerKeyExchangeMessage extends DHEServerKeyExchangeMessage 
     }
 
     @Override
-    public DHEServerKeyExchangeHandler<PskDheServerKeyExchangeMessage> getHandler(TlsContext context) {
-        return new PskDheServerKeyExchangeHandler(context);
+    public DHEServerKeyExchangeHandler<PskDheServerKeyExchangeMessage> getHandler(TlsContext tlsContext) {
+        return new PskDheServerKeyExchangeHandler(tlsContext);
     }
 
     @Override

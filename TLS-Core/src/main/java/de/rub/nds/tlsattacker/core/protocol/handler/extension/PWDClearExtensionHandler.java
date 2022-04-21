@@ -9,18 +9,18 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PWDClearExtensionMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 public class PWDClearExtensionHandler extends ExtensionHandler<PWDClearExtensionMessage> {
 
-    public PWDClearExtensionHandler(TlsContext context) {
-        super(context);
+    public PWDClearExtensionHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override
     public void adjustTLSExtensionContext(PWDClearExtensionMessage message) {
-        context.setClientPWDUsername(message.getUsername().getValue());
+        tlsContext.setClientPWDUsername(message.getUsername().getValue());
     }
 
 }

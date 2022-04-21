@@ -23,7 +23,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificatePair;
 import de.rub.nds.tlsattacker.core.protocol.parser.CertificateMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateMessageSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
@@ -206,8 +206,8 @@ public class CertificateMessage extends HandshakeMessage {
     }
 
     @Override
-    public CertificateMessageHandler getHandler(TlsContext context) {
-        return new CertificateMessageHandler(context);
+    public CertificateMessageHandler getHandler(TlsContext tlsContext) {
+        return new CertificateMessageHandler(tlsContext);
     }
 
     public List<CertificatePair> getCertificateListConfig() {

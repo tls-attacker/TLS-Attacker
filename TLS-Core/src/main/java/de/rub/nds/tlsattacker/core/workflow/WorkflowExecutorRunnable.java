@@ -10,8 +10,9 @@
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
+import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.transport.tcp.ServerTcpTransportHandler;
 import java.io.IOException;
 import java.net.Socket;
@@ -68,7 +69,7 @@ public class WorkflowExecutorRunnable implements Runnable {
         State state = new State(globalState.getConfig(), localTrace);
 
         initConnectionForState(state);
-        TlsContext serverCtx = state.getInboundTlsContexts().get(0);
+        TlsContext serverCtx = state.getInboundContexts().get(0).getTlsContext();
 
         LOGGER.info("Exectuting workflow for " + socket + " (" + serverCtx + ")");
         WorkflowExecutor workflowExecutor = new DefaultWorkflowExecutor(state);
@@ -78,7 +79,8 @@ public class WorkflowExecutorRunnable implements Runnable {
 
     protected void initConnectionForState(State state) {
         // Do this post state init only if you know what you are doing.
-        TlsContext serverCtx = state.getInboundTlsContexts().get(0);
+        TlsContext serverTlsCtx = state.getInboundContexts().get(0).getTlsContext();
+        Context serverCtx = state.getInboundContexts().get(0);
         AliasedConnection serverCon = serverCtx.getConnection();
         // getting the hostname is slow, so we just set the ip
         serverCon.setHostname(socket.getInetAddress().getHostAddress());
@@ -92,7 +94,7 @@ public class WorkflowExecutorRunnable implements Runnable {
             LOGGER.error("Aborting workflow trace execution on {}", socket);
             return;
         }
-        serverCtx.setTransportHandler(th);
+        serverCtx.getTcpContext().setTransportHandler(th);
     }
 
 }

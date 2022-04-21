@@ -9,11 +9,12 @@
 
 package de.rub.nds.tlsattacker.core.layer;
 
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+
+import de.rub.nds.tlsattacker.core.state.Context;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -32,10 +33,9 @@ public class LayerStack {
      * perfectly fine to leave the layer stack and plug another component in which does the rest of the processing
      */
     private final List<ProtocolLayer> layerList;
-    // TODO This should be a context, not a TLS context
-    private final TlsContext context;
+    private final Context context;
 
-    public LayerStack(TlsContext context, ProtocolLayer... layers) {
+    public LayerStack(Context context, ProtocolLayer... layers) {
         this.context = context;
         layerList = Arrays.asList(layers);
         for (int i = 0; i < layers.length; i++) {
@@ -80,7 +80,7 @@ public class LayerStack {
         LOGGER.debug("Sending Data");
         if (layerList.size() != layerConfigurationList.size()) {
             throw new RuntimeException(
-                "Illegal LayerConfiguration list provided. Each layer needs a configuration entry (null is fine too if no explict configuration is desired). Expected "
+                "Illegal LayerConfiguration list provided. Each layer needs a configuration entry (null is fine too if no explicit configuration is desired). Expected "
                     + layerList.size() + " but found " + layerConfigurationList.size());
         }
 
@@ -119,7 +119,7 @@ public class LayerStack {
         LOGGER.debug("Receiving Data");
         if (layerList.size() != layerConfigurationList.size()) {
             throw new RuntimeException(
-                "Illegal LayerConfiguration list provided. Each layer needs a configuration entry (null is fine too if no explict configuration is desired). Expected "
+                "Illegal LayerConfiguration list provided. Each layer needs a configuration entry (null is fine too if no explicit configuration is desired). Expected "
                     + layerList.size() + " but found " + layerConfigurationList.size());
         }
         // Prepare layer configuration and clear previous executions

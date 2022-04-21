@@ -22,7 +22,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.computations.ECDHEServerComp
 import de.rub.nds.tlsattacker.core.protocol.parser.ECDHEServerKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ECDHEServerKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ECDHEServerKeyExchangeSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -112,8 +112,8 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     }
 
     @Override
-    public ECDHEServerKeyExchangeHandler getHandler(TlsContext context) {
-        return new ECDHEServerKeyExchangeHandler<>(context);
+    public ECDHEServerKeyExchangeHandler getHandler(TlsContext tlsContext) {
+        return new ECDHEServerKeyExchangeHandler<>(tlsContext);
     }
 
     @Override

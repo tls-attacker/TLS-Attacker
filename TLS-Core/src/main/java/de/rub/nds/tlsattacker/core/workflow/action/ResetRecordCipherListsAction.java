@@ -12,7 +12,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.layer.impl.RecordLayer;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 
 /**
  * This action removes the most recent ciphers from the encryptor and decryptor. The most-recent cipher used to encrypt
@@ -35,7 +35,7 @@ public class ResetRecordCipherListsAction extends ConnectionBoundAction {
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
-        TlsContext context = state.getTlsContext(getConnectionAlias());
+        TlsContext context = state.getContext(getConnectionAlias()).getTlsContext();
         RecordLayer recordLayer = context.getRecordLayer();
         // TODO test if record layer is non null
         ((RecordLayer) recordLayer).getEncryptor().removeCiphers(toRemoveEncryptor);

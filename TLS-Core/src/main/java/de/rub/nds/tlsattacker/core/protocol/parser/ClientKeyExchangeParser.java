@@ -10,7 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.tlsattacker.core.protocol.message.ClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 
 /**
@@ -24,6 +24,7 @@ public abstract class ClientKeyExchangeParser<T extends ClientKeyExchangeMessage
      *
      * @param stream
      * @param tlsContext
+     *                   The current tlsContext
      */
     public ClientKeyExchangeParser(InputStream stream, TlsContext tlsContext) {
         super(stream, tlsContext);

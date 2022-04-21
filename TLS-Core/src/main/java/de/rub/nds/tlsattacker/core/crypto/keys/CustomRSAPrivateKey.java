@@ -9,14 +9,16 @@
 
 package de.rub.nds.tlsattacker.core.crypto.keys;
 
-import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.math.BigInteger;
 import java.security.interfaces.RSAPrivateKey;
 import java.util.Objects;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -64,19 +66,19 @@ public class CustomRSAPrivateKey extends CustomPrivateKey implements RSAPrivateK
     }
 
     @Override
-    public void adjustInContext(TlsContext context, ConnectionEndType ownerOfKey) {
+    public void adjustInContext(TlsContext tlsContext, ConnectionEndType ownerOfKey) {
         LOGGER.debug("Adjusting RSA private key in context");
         if (null == ownerOfKey) {
             throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
         } else {
             switch (ownerOfKey) {
                 case CLIENT:
-                    context.setClientRSAPrivateKey(privateExponent);
-                    context.setClientRsaModulus(modulus);
+                    tlsContext.setClientRSAPrivateKey(privateExponent);
+                    tlsContext.setClientRsaModulus(modulus);
                     break;
                 case SERVER:
-                    context.setServerRSAPrivateKey(privateExponent);
-                    context.setServerRSAModulus(modulus);
+                    tlsContext.setServerRSAPrivateKey(privateExponent);
+                    tlsContext.setServerRSAModulus(modulus);
                     break;
                 default:
                     throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");

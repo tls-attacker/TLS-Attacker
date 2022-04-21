@@ -18,7 +18,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ServerVerifyHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.SSL2ServerVerifyParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.SSL2ServerVerifyPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.HandshakeMessageSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import java.util.Objects;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -47,8 +47,8 @@ public class SSL2ServerVerifyMessage extends SSL2HandshakeMessage {
     }
 
     @Override
-    public SSL2ServerVerifyHandler getHandler(TlsContext context) {
-        return new SSL2ServerVerifyHandler(context);
+    public SSL2ServerVerifyHandler getHandler(TlsContext tlsContext) {
+        return new SSL2ServerVerifyHandler(tlsContext);
     }
 
     @Override

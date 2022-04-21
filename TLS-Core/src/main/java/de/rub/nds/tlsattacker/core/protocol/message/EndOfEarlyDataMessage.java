@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.EndOfEarlyDataHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.EndOfEarlyDataParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.EndOfEarlyDataPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.EndOfEarlyDataSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -29,8 +29,8 @@ public class EndOfEarlyDataMessage extends HandshakeMessage {
     }
 
     @Override
-    public EndOfEarlyDataHandler getHandler(TlsContext context) {
-        return new EndOfEarlyDataHandler(context);
+    public EndOfEarlyDataHandler getHandler(TlsContext tlsContext) {
+        return new EndOfEarlyDataHandler(tlsContext);
     }
 
     @Override

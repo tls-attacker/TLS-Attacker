@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.HelloRequestHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.HelloRequestParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.HelloRequestPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.HelloRequestSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -27,8 +27,8 @@ public class HelloRequestMessage extends HandshakeMessage {
     }
 
     @Override
-    public HelloRequestHandler getHandler(TlsContext context) {
-        return new HelloRequestHandler(context);
+    public HelloRequestHandler getHandler(TlsContext tlsContext) {
+        return new HelloRequestHandler(tlsContext);
     }
 
     @Override

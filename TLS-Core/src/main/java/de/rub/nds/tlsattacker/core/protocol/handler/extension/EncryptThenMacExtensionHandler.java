@@ -9,13 +9,13 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptThenMacExtensionMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 public class EncryptThenMacExtensionHandler extends ExtensionHandler<EncryptThenMacExtensionMessage> {
 
-    public EncryptThenMacExtensionHandler(TlsContext context) {
-        super(context);
+    public EncryptThenMacExtensionHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override

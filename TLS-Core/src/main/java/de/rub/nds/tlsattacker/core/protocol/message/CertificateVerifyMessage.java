@@ -19,7 +19,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.CertificateVerifyHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.CertificateVerifyParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateVerifyPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateVerifySerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import java.util.Objects;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -115,8 +115,8 @@ public class CertificateVerifyMessage extends HandshakeMessage {
     }
 
     @Override
-    public CertificateVerifyHandler getHandler(TlsContext context) {
-        return new CertificateVerifyHandler(context);
+    public CertificateVerifyHandler getHandler(TlsContext tlsContext) {
+        return new CertificateVerifyHandler(tlsContext);
     }
 
     @Override

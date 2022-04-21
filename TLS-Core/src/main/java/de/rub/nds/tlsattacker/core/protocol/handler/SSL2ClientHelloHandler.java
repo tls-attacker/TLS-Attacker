@@ -9,13 +9,13 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 public class SSL2ClientHelloHandler extends HandshakeMessageHandler<SSL2ClientHelloMessage> {
 
-    public SSL2ClientHelloHandler(TlsContext context) {
-        super(context);
+    public SSL2ClientHelloHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override

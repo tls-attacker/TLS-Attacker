@@ -19,7 +19,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.PskDhClientKeyExchangeHandle
 import de.rub.nds.tlsattacker.core.protocol.parser.PskDhClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.PskDhClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.PskDhClientKeyExchangeSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -80,8 +80,8 @@ public class PskDhClientKeyExchangeMessage extends DHClientKeyExchangeMessage {
     }
 
     @Override
-    public DHClientKeyExchangeHandler<PskDhClientKeyExchangeMessage> getHandler(TlsContext context) {
-        return new PskDhClientKeyExchangeHandler(context);
+    public DHClientKeyExchangeHandler<PskDhClientKeyExchangeMessage> getHandler(TlsContext tlsContext) {
+        return new PskDhClientKeyExchangeHandler(tlsContext);
     }
 
     @Override

@@ -12,8 +12,8 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.layer.LayerStack;
+import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.IOException;
 import java.util.LinkedHashSet;
 import java.util.Objects;
@@ -61,8 +61,8 @@ public class ForwardDataAction extends TlsAction {
 
         assertAliasesSetProperly();
 
-        TlsContext receiveFromCtx = state.getTlsContext(receiveFromAlias);
-        TlsContext forwardToCtx = state.getTlsContext(forwardToAlias);
+        Context receiveFromCtx = state.getContext(receiveFromAlias);
+        Context forwardToCtx = state.getContext(forwardToAlias);
 
         byte[] data = receiveData(receiveFromCtx);
         sendData(forwardToCtx, data);
@@ -70,7 +70,7 @@ public class ForwardDataAction extends TlsAction {
         executedAsPlanned = true;
     }
 
-    private byte[] receiveData(TlsContext receiveFromContext) {
+    private byte[] receiveData(Context receiveFromContext) {
         LOGGER.debug("Receiving Messages...");
         LayerStack layerStack = receiveFromContext.getLayerStack();
         try {
@@ -83,7 +83,7 @@ public class ForwardDataAction extends TlsAction {
         }
     }
 
-    private void sendData(TlsContext forwardToContext, byte[] data) {
+    private void sendData(Context forwardToContext, byte[] data) {
         LayerStack layerStack = forwardToContext.getLayerStack();
         try {
             layerStack.getLowestLayer().sendData(null, data);

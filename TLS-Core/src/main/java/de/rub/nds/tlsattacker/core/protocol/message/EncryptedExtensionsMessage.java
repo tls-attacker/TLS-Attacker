@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.RecordSizeLimitExt
 import de.rub.nds.tlsattacker.core.protocol.parser.EncryptedExtensionsParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.EncryptedExtensionsPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.EncryptedExtensionsSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import java.util.Objects;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -57,8 +57,8 @@ public class EncryptedExtensionsMessage extends HandshakeMessage {
     }
 
     @Override
-    public EncryptedExtensionsHandler getHandler(TlsContext context) {
-        return new EncryptedExtensionsHandler(context);
+    public EncryptedExtensionsHandler getHandler(TlsContext tlsContext) {
+        return new EncryptedExtensionsHandler(tlsContext);
     }
 
     @Override

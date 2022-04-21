@@ -13,7 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PWDProtectExtensionMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
@@ -28,7 +28,7 @@ public class PWDProtectExtensionHandlerTest {
     public void setUp() {
         context = new TlsContext();
         handler = new PWDProtectExtensionHandler(context);
-        context.setConnection(new InboundConnection());
+        context.getContext().setConnection(new InboundConnection());
     }
 
     @Test
