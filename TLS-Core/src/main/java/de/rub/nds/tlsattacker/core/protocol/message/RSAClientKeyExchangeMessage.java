@@ -10,14 +10,13 @@
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.RSAClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.RSAClientComputations;
 import de.rub.nds.tlsattacker.core.protocol.parser.RSAClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.RSAClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.RSAClientKeyExchangeSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
@@ -29,10 +28,6 @@ public class RSAClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     @HoldsModifiableVariable
     @XmlElement
     protected RSAClientComputations computations;
-
-    public RSAClientKeyExchangeMessage(Config tlsConfig) {
-        super(tlsConfig);
-    }
 
     public RSAClientKeyExchangeMessage() {
         super();
@@ -51,13 +46,13 @@ public class RSAClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     }
 
     @Override
-    public RSAClientKeyExchangeHandler getHandler(TlsContext context) {
-        return new RSAClientKeyExchangeHandler<>(context);
+    public RSAClientKeyExchangeHandler getHandler(TlsContext tlsContext) {
+        return new RSAClientKeyExchangeHandler<>(tlsContext);
     }
 
     @Override
     public RSAClientKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new RSAClientKeyExchangeParser<>(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+        return new RSAClientKeyExchangeParser<>(stream, tlsContext);
     }
 
     @Override

@@ -77,11 +77,11 @@ public class EmptyClientKeyExchangePreparator<T extends EmptyClientKeyExchangeMe
         msg.prepareComputations();
         prepareClientServerRandom(msg);
 
-        if (chooser.getContext().getClientCertificate() != null
-            && !chooser.getContext().getClientCertificate().isEmpty()) {
+        if (chooser.getContext().getTlsContext().getClientCertificate() != null
+            && !chooser.getContext().getTlsContext().getClientCertificate().isEmpty()) {
 
-            String algorithm = chooser.getContext().getClientCertificate().getCertificateAt(0).getSubjectPublicKeyInfo()
-                .getAlgorithm().getAlgorithm().toString();
+            String algorithm = chooser.getContext().getTlsContext().getClientCertificate().getCertificateAt(0)
+                .getSubjectPublicKeyInfo().getAlgorithm().getAlgorithm().toString();
             if (PublicKeyType.fromOid(algorithm) == PublicKeyType.DH) {
                 BigInteger modulus = chooser.getClientDhModulus();
                 BigInteger publicKey = chooser.getServerDhPublicKey();

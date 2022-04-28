@@ -10,8 +10,8 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -23,7 +23,7 @@ import org.junit.Test;
 public class ReceiveAsciiActionTest {
 
     private State state;
-    private TlsContext tlsContext;
+    private TcpContext tcpContext;
 
     private ReceiveAsciiAction action;
 
@@ -35,8 +35,8 @@ public class ReceiveAsciiActionTest {
         trace.addTlsAction(action);
         state = new State(trace);
 
-        tlsContext = state.getTlsContext();
-        tlsContext.setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
+        tcpContext = state.getTcpContext();
+        tcpContext.setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
     }
 
     /**
@@ -46,7 +46,7 @@ public class ReceiveAsciiActionTest {
      */
     @Test
     public void testExecute() throws Exception {
-        ((FakeTransportHandler) tlsContext.getTransportHandler())
+        ((FakeTransportHandler) tcpContext.getTransportHandler())
             .setFetchableByte(new byte[] { 0x15, 0x03, 0x02, 0x01 });
 
         action.execute(state);

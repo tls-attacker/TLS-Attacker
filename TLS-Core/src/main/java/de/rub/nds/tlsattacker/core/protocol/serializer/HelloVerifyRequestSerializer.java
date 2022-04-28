@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,10 +25,8 @@ public class HelloVerifyRequestSerializer extends HandshakeMessageSerializer<Hel
      *
      * @param message
      *                Message that should be serialized
-     * @param version
-     *                Version of the Protocol
      */
-    public HelloVerifyRequestSerializer(HelloVerifyRequestMessage message, ProtocolVersion version) {
+    public HelloVerifyRequestSerializer(HelloVerifyRequestMessage message) {
         super(message);
         this.msg = message;
     }

@@ -9,25 +9,27 @@
 
 package de.rub.nds.tlsattacker.core.certificate;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
-import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.*;
-import de.rub.nds.tlsattacker.core.crypto.keys.*;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.core.util.CertificateUtils;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.*;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.CertificateException;
 import java.util.Arrays;
 import java.util.Objects;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.*;
+import de.rub.nds.tlsattacker.core.crypto.keys.*;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.util.CertificateUtils;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
@@ -361,34 +363,34 @@ public class CertificateKeyPair implements Serializable {
         }
     }
 
-    public void adjustInContext(TlsContext context, ConnectionEndType connectionEnd) {
-        if (context.getSelectedProtocolVersion() != ProtocolVersion.TLS13) {
-            publicKey.adjustInContext(context, connectionEnd);
+    public void adjustInContext(TlsContext tlsContext, ConnectionEndType connectionEnd) {
+        if (tlsContext.getSelectedProtocolVersion() != ProtocolVersion.TLS13) {
+            publicKey.adjustInContext(tlsContext, connectionEnd);
         }
         if (privateKey != null) {
-            privateKey.adjustInContext(context, connectionEnd);
+            privateKey.adjustInContext(tlsContext, connectionEnd);
         }
-        if (!context.getChooser().getSelectedCipherSuite().isTLS13()
-            && AlgorithmResolver.getCertificateKeyType(context.getChooser().getSelectedCipherSuite())
+        if (!tlsContext.getChooser().getSelectedCipherSuite().isTLS13()
+            && AlgorithmResolver.getCertificateKeyType(tlsContext.getChooser().getSelectedCipherSuite())
                 == CertificateKeyType.ECDH) {
-            context.setSelectedGroup(publicKeyGroup);
+            tlsContext.setSelectedGroup(publicKeyGroup);
         } else {
-            context.setEcCertificateCurve(publicKeyGroup);
+            tlsContext.setEcCertificateCurve(publicKeyGroup);
         }
-        context.setEcCertificateSignatureCurve(signatureGroup);
-        if (context.getConfig().getAutoAdjustSignatureAndHashAlgorithm()) {
+        tlsContext.setEcCertificateSignatureCurve(signatureGroup);
+        if (tlsContext.getConfig().getAutoAdjustSignatureAndHashAlgorithm()) {
             SignatureAndHashAlgorithm sigHashAlgo =
-                SignatureAndHashAlgorithm.forCertificateKeyPair(this, context.getChooser());
+                SignatureAndHashAlgorithm.forCertificateKeyPair(this, tlsContext.getChooser());
 
             if (sigHashAlgo == SignatureAndHashAlgorithm.GOSTR34102012_512_GOSTR34112012_512
                 || sigHashAlgo == SignatureAndHashAlgorithm.GOSTR34102012_256_GOSTR34112012_256
                 || sigHashAlgo == SignatureAndHashAlgorithm.GOSTR34102001_GOSTR3411) {
-                context.setSelectedGostCurve(gostCurve);
+                tlsContext.setSelectedGostCurve(gostCurve);
                 LOGGER.debug("Adjusting selected GOST curve:" + gostCurve);
             }
 
             LOGGER.debug("Setting selected SignatureAndHash algorithm to:" + sigHashAlgo);
-            context.setSelectedSignatureAndHashAlgorithm(sigHashAlgo);
+            tlsContext.setSelectedSignatureAndHashAlgorithm(sigHashAlgo);
         }
     }
 

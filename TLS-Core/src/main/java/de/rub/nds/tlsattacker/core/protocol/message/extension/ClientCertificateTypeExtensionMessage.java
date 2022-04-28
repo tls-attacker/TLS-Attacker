@@ -14,13 +14,12 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bool.ModifiableBoolean;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ClientCertificateTypeExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ClientCertificateTypeExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ClientCertificateTypeExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ClientCertificateTypeExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -38,10 +37,6 @@ public class ClientCertificateTypeExtensionMessage extends ExtensionMessage<Clie
     private ModifiableBoolean isClientMessage;
 
     public ClientCertificateTypeExtensionMessage() {
-        super(ExtensionType.CLIENT_CERTIFICATE_TYPE);
-    }
-
-    public ClientCertificateTypeExtensionMessage(Config config) {
         super(ExtensionType.CLIENT_CERTIFICATE_TYPE);
     }
 
@@ -84,12 +79,12 @@ public class ClientCertificateTypeExtensionMessage extends ExtensionMessage<Clie
 
     @Override
     public ClientCertificateTypeExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new ClientCertificateTypeExtensionParser(stream, tlsContext.getConfig());
+        return new ClientCertificateTypeExtensionParser(stream, tlsContext);
     }
 
     @Override
     public ClientCertificateTypeExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new ClientCertificateTypeExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new ClientCertificateTypeExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override
@@ -98,7 +93,7 @@ public class ClientCertificateTypeExtensionMessage extends ExtensionMessage<Clie
     }
 
     @Override
-    public ClientCertificateTypeExtensionHandler getHandler(TlsContext context) {
-        return new ClientCertificateTypeExtensionHandler(context);
+    public ClientCertificateTypeExtensionHandler getHandler(TlsContext tlsContext) {
+        return new ClientCertificateTypeExtensionHandler(tlsContext);
     }
 }

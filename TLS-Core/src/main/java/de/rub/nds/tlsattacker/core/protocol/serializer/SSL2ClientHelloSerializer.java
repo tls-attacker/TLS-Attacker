@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
 import org.apache.logging.log4j.LogManager;
@@ -20,7 +19,7 @@ public class SSL2ClientHelloSerializer extends HandshakeMessageSerializer<SSL2Cl
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SSL2ClientHelloSerializer(SSL2ClientHelloMessage message, ProtocolVersion version) {
+    public SSL2ClientHelloSerializer(SSL2ClientHelloMessage message) {
         super(message);
     }
 
@@ -58,7 +57,7 @@ public class SSL2ClientHelloSerializer extends HandshakeMessageSerializer<SSL2Cl
     /**
      * Writes the Type of the SSL2ClientHello into the final byte[]
      */
-    private void writeType() {
+    protected void writeType() {
         appendByte(message.getType().getValue());
         LOGGER.debug("Type: " + message.getType().getValue());
     }

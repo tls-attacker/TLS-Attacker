@@ -10,6 +10,8 @@
 package de.rub.nds.tlsattacker.core.layer;
 
 import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
+import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
+
 import java.util.List;
 
 public class LayerProcessingResult<T extends DataContainer> {

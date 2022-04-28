@@ -30,7 +30,7 @@ import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.record.crypto.RecordDecryptor;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
@@ -129,7 +129,7 @@ public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackCli
             tlsConfig.setDefaultSelectedCipherSuite(suite);
         } else {
             try {
-                state.getTlsContext().getTransportHandler().closeConnection();
+                state.getContext().getTransportHandler().closeConnection();
             } catch (IOException ex) {
                 LOGGER.warn("Could not close client connection", ex);
             }

@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ECDHClientKeyExchangePreparator;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.math.BigInteger;
 import java.security.Security;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -60,7 +60,7 @@ public class ECDHClientKeyExchangeHandlerTest {
                 new BigInteger("4390496211885670837594012513791855863576256216444143941964"), NamedGroup.SECP192R1));
         context.getConfig().setDefaultClientEcPrivateKey(new BigInteger("3"));
         context.getConfig().setDefaultServerEcPrivateKey(new BigInteger("3"));
-        ECDHClientKeyExchangeMessage message = new ECDHClientKeyExchangeMessage(context.getConfig());
+        ECDHClientKeyExchangeMessage message = new ECDHClientKeyExchangeMessage();
         ECDHClientKeyExchangePreparator prep = new ECDHClientKeyExchangePreparator(context.getChooser(), message);
         prep.prepare();
         handler.adjustContext(message);

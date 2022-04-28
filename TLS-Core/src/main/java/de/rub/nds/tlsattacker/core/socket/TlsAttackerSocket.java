@@ -46,7 +46,7 @@ public class TlsAttackerSocket {
      *                             If something goes wrong during Transmission
      */
     public void sendRawBytes(byte[] bytes) throws IOException {
-        state.getTlsContext().getTransportHandler().sendData(bytes);
+        state.getContext().getTransportHandler().sendData(bytes);
     }
 
     /**
@@ -57,7 +57,7 @@ public class TlsAttackerSocket {
      *                             If something goes wrong during the receive
      */
     public byte[] receiveRawBytes() throws IOException {
-        return state.getTlsContext().getTransportHandler().fetchData();
+        return state.getContext().getTransportHandler().fetchData();
     }
 
     /**
@@ -96,7 +96,7 @@ public class TlsAttackerSocket {
     }
 
     public void send(ProtocolMessage message) {
-        SendAction action = new SendAction(state.getTlsContext().getConnection().getAlias(), message);
+        SendAction action = new SendAction(state.getContext().getConnection().getAlias(), message);
         action.execute(state);
     }
 
@@ -109,7 +109,7 @@ public class TlsAttackerSocket {
      */
     public byte[] receiveBytes() throws IOException {
         ReceiveAction action =
-            new ReceiveAction(state.getTlsContext().getConnection().getAlias(), new ApplicationMessage());
+            new ReceiveAction(state.getContext().getConnection().getAlias(), new ApplicationMessage());
         action.execute(state);
         List<ProtocolMessage> receivedMessages = action.getReceivedMessages();
 
@@ -141,7 +141,7 @@ public class TlsAttackerSocket {
         AlertMessage closeNotify = new AlertMessage();
         closeNotify.setConfig(AlertLevel.WARNING, AlertDescription.CLOSE_NOTIFY);
         send(closeNotify);
-        state.getTlsContext().getTransportHandler().closeConnection();
+        state.getContext().getTransportHandler().closeConnection();
     }
 
 }

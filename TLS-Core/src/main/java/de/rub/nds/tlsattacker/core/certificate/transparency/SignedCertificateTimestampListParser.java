@@ -9,7 +9,7 @@
 
 package de.rub.nds.tlsattacker.core.certificate.transparency;
 
-import de.rub.nds.tlsattacker.core.protocol.Parser;
+import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import org.bouncycastle.crypto.tls.Certificate;

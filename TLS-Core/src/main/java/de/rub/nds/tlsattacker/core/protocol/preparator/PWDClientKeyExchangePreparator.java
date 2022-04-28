@@ -65,8 +65,8 @@ public class PWDClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         if (!clientMode) {
             msg.prepareComputations();
             EllipticCurve curve = CurveFactory.getCurve(chooser.getSelectedNamedGroup());
-            byte[] premasterSecret = generatePremasterSecret(chooser.getContext().getPWDPE(),
-                chooser.getContext().getServerPWDPrivate(), curve);
+            byte[] premasterSecret = generatePremasterSecret(chooser.getContext().getTlsContext().getPWDPE(),
+                chooser.getContext().getTlsContext().getServerPWDPrivate(), curve);
             preparePremasterSecret(msg, premasterSecret);
             prepareClientServerRandom(msg);
         }
@@ -162,8 +162,8 @@ public class PWDClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         Point peerElement;
         BigInteger peerScalar;
         if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
-            peerElement = chooser.getContext().getServerPWDElement();
-            peerScalar = chooser.getContext().getServerPWDScalar();
+            peerElement = chooser.getContext().getTlsContext().getServerPWDElement();
+            peerScalar = chooser.getContext().getTlsContext().getServerPWDScalar();
         } else {
             // TODO: wrong group
             peerElement =

@@ -10,8 +10,8 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.UnknownExtensionMessage;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,8 +20,8 @@ public class UnknownExtensionParser extends ExtensionParser<UnknownExtensionMess
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public UnknownExtensionParser(InputStream inputStream, Config config) {
-        super(inputStream, config);
+    public UnknownExtensionParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
     }
 
     protected void parseExtensionData(UnknownExtensionMessage message) {

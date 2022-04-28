@@ -9,13 +9,12 @@
 
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.TruncatedHmacExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.TruncatedHmacExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.TruncatedHmacExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.TruncatedHmacExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -29,18 +28,14 @@ public class TruncatedHmacExtensionMessage extends ExtensionMessage<TruncatedHma
         super(ExtensionType.TRUNCATED_HMAC);
     }
 
-    public TruncatedHmacExtensionMessage(Config config) {
-        super(ExtensionType.TRUNCATED_HMAC);
-    }
-
     @Override
     public TruncatedHmacExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new TruncatedHmacExtensionParser(stream, tlsContext.getConfig());
+        return new TruncatedHmacExtensionParser(stream, tlsContext);
     }
 
     @Override
     public TruncatedHmacExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new TruncatedHmacExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new TruncatedHmacExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

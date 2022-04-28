@@ -12,7 +12,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
@@ -49,8 +49,8 @@ public class CopyBuffersActionTest {
         trace.addConnection(new OutboundConnection("dst"));
         trace.addTlsAction(a);
         State state = new State(trace);
-        TlsContext src = state.getTlsContext("src");
-        TlsContext dst = state.getTlsContext("dst");
+        TlsContext src = state.getContext("src").getTlsContext();
+        TlsContext dst = state.getContext("dst").getTlsContext();
         assertNotSame(src.getMessageBuffer(), dst.getMessageBuffer());
         assertNotSame(src.getRecordBuffer(), dst.getRecordBuffer());
 

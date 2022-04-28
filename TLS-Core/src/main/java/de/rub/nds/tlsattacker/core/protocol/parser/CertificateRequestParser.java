@@ -11,10 +11,9 @@ package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -25,21 +24,14 @@ public class CertificateRequestParser extends HandshakeMessageParser<Certificate
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final ConnectionEndType talkingConnectionEndType;
-
     /**
      * Constructor for the Parser class
      *
      * @param stream
-     * @param version
-     *                                 Version of the Protocol
      * @param tlsContext
-     * @param talkingConnectionEndType
      */
-    public CertificateRequestParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext,
-        ConnectionEndType talkingConnectionEndType) {
-        super(stream, HandshakeMessageType.CERTIFICATE_REQUEST, version, tlsContext);
-        this.talkingConnectionEndType = talkingConnectionEndType;
+    public CertificateRequestParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
     }
 
     @Override
@@ -49,7 +41,7 @@ public class CertificateRequestParser extends HandshakeMessageParser<Certificate
             parseCertificateRequestContextLength(msg);
             parseCertificateRequestContext(msg);
             parseExtensionLength(msg);
-            parseExtensionBytes(msg, getVersion(), talkingConnectionEndType, false);
+            parseExtensionBytes(msg, false);
         } else {
             parseClientCertificateTypesCount(msg);
             parseClientCertificateTypes(msg);

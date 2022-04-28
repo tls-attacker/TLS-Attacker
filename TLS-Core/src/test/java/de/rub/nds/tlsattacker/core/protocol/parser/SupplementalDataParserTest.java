@@ -13,7 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.SupplementalDataMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
@@ -52,8 +52,9 @@ public class SupplementalDataParserTest {
 
     @Test
     public void testParse() {
-        SupplementalDataParser parser =
-            new SupplementalDataParser(new ByteArrayInputStream(message), version, new TlsContext(config));
+        TlsContext tlsContext = new TlsContext(config);
+        tlsContext.setSelectedProtocolVersion(version);
+        SupplementalDataParser parser = new SupplementalDataParser(new ByteArrayInputStream(message), tlsContext);
         SupplementalDataMessage suppDataMessage = new SupplementalDataMessage();
         parser.parse(suppDataMessage);
         assertTrue(suppDataMessage.getSupplementalDataLength().getValue() == supplementalDataLength);

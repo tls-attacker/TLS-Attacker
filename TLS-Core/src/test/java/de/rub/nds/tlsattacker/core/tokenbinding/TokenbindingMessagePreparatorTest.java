@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.crypto.ECCUtilsBCWrapper;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -74,18 +74,16 @@ public class TokenbindingMessagePreparatorTest {
     @Test
     public void testPrepareProtocolMessageContents() throws Exception {
         preparator.prepare();
-        TokenBindingMessageSerializer serializer = new TokenBindingMessageSerializer(message, ProtocolVersion.TLS12);
+        TokenBindingMessageSerializer serializer = new TokenBindingMessageSerializer(message);
         byte[] serialize = serializer.serialize();
-        TokenBindingMessageParser selfParser =
-            new TokenBindingMessageParser(new ByteArrayInputStream(serialize), ProtocolVersion.TLS12, config);
+        TokenBindingMessageParser selfParser = new TokenBindingMessageParser(new ByteArrayInputStream(serialize));
         TokenBindingMessage selfParsed = new TokenBindingMessage();
         selfParser.parse(selfParsed);
         assertNotNull(selfParsed);
         String base64 =
             "AIkAAgBBQM9eQES_uxoyRn0DDoYLcWqvm6Oo3p0lI1s3fRjdIj6dw8wLDf0RWkxuyNAmgAQkUWxm8_JfwS8MziBYVuJ5ECcAQHF_HGcPiSv_X60y5Ql-AxoqaWzwqXvpStEBgY_IX8kT_qAHsb5h38ZuQoWOaZVgqlF1sa70B4GVXxmi2JkdJYcAAA";
         byte[] decode = Base64.getUrlDecoder().decode(base64);
-        TokenBindingMessageParser parser =
-            new TokenBindingMessageParser(new ByteArrayInputStream(decode), ProtocolVersion.TLS12, config);
+        TokenBindingMessageParser parser = new TokenBindingMessageParser(new ByteArrayInputStream(decode));
         TokenBindingMessage message = new TokenBindingMessage();
         parser.parse(message);
         byte[] xBytes = new byte[32];

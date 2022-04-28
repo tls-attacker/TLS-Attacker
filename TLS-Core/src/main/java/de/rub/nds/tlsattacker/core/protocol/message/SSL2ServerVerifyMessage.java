@@ -12,15 +12,15 @@ package de.rub.nds.tlsattacker.core.protocol.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ServerVerifyHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.SSL2ServerVerifyParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.SSL2ServerVerifyPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.HandshakeMessageSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
+import java.util.Objects;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @SuppressWarnings("serial")
@@ -36,10 +36,6 @@ public class SSL2ServerVerifyMessage extends SSL2HandshakeMessage {
         this.protocolMessageType = ProtocolMessageType.HANDSHAKE;
     }
 
-    public SSL2ServerVerifyMessage(Config config) {
-        this();
-    }
-
     @Override
     public String toCompactString() {
         return "SSL2 ServerVerify Message";
@@ -51,13 +47,13 @@ public class SSL2ServerVerifyMessage extends SSL2HandshakeMessage {
     }
 
     @Override
-    public SSL2ServerVerifyHandler getHandler(TlsContext context) {
-        return new SSL2ServerVerifyHandler(context);
+    public SSL2ServerVerifyHandler getHandler(TlsContext tlsContext) {
+        return new SSL2ServerVerifyHandler(tlsContext);
     }
 
     @Override
     public SSL2ServerVerifyParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new SSL2ServerVerifyParser(stream, tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext);
+        return new SSL2ServerVerifyParser(stream, tlsContext);
     }
 
     @Override
@@ -81,6 +77,28 @@ public class SSL2ServerVerifyMessage extends SSL2HandshakeMessage {
 
     public void setEncryptedPart(byte[] encryptedPart) {
         this.encryptedPart = ModifiableVariableFactory.safelySetValue(this.encryptedPart, encryptedPart);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 79 * hash + Objects.hashCode(this.encryptedPart);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final SSL2ServerVerifyMessage other = (SSL2ServerVerifyMessage) obj;
+        return Objects.equals(this.encryptedPart, other.encryptedPart);
     }
 
 }

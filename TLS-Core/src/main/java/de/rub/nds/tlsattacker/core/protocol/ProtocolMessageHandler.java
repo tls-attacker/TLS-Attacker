@@ -9,10 +9,10 @@
 
 package de.rub.nds.tlsattacker.core.protocol;
 
-import de.rub.nds.tlsattacker.core.dtls.MessageFragmenter;
+import de.rub.nds.tlsattacker.core.layer.data.Handler;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,7 +20,7 @@ public abstract class ProtocolMessageHandler<MessageT extends ProtocolMessage> i
 
     protected static final Logger LOGGER = LogManager.getLogger();
     /**
-     * tls context
+     * context
      */
     protected final TlsContext tlsContext;
 
@@ -36,11 +36,10 @@ public abstract class ProtocolMessageHandler<MessageT extends ProtocolMessage> i
     public void prepareAfterParse(MessageT message) {
     }
 
-    public void updateDigest(ProtocolMessage message) {
+    public void updateDigest(ProtocolMessage message, boolean goingToBeSent) {
         if (!(message instanceof HandshakeMessage)) {
             return;
         }
-
         HandshakeMessage handshakeMessage = (HandshakeMessage) message;
 
         if (!handshakeMessage.getIncludeInDigest()) {
@@ -49,7 +48,7 @@ public abstract class ProtocolMessageHandler<MessageT extends ProtocolMessage> i
 
         if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS()) {
             DtlsHandshakeMessageFragment fragment =
-                MessageFragmenter.wrapInSingleFragment(handshakeMessage, tlsContext);
+                tlsContext.getDtlsFragmentLayer().wrapInSingleFragment(tlsContext, handshakeMessage, goingToBeSent);
             tlsContext.getDigest().append(fragment.getCompleteResultingMessage().getValue());
         } else {
             tlsContext.getDigest().append(message.getCompleteResultingMessage().getValue());

@@ -16,7 +16,7 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 
 public class TokenBindingMessage<TokenBindingMessage> extends ProtocolMessage {
@@ -244,14 +244,13 @@ public class TokenBindingMessage<TokenBindingMessage> extends ProtocolMessage {
     }
 
     @Override
-    public TokenBindingMessageHandler getHandler(TlsContext context) {
-        return new TokenBindingMessageHandler(context);
+    public TokenBindingMessageHandler getHandler(TlsContext tlsContext) {
+        return new TokenBindingMessageHandler(tlsContext);
     }
 
     @Override
     public TokenBindingMessageParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new TokenBindingMessageParser(stream, tlsContext.getChooser().getSelectedProtocolVersion(),
-            tlsContext.getConfig());
+        return new TokenBindingMessageParser(stream);
     }
 
     @Override
@@ -261,7 +260,7 @@ public class TokenBindingMessage<TokenBindingMessage> extends ProtocolMessage {
 
     @Override
     public TokenBindingMessageSerializer getSerializer(TlsContext tlsContext) {
-        return new TokenBindingMessageSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new TokenBindingMessageSerializer(this);
     }
 
     @Override

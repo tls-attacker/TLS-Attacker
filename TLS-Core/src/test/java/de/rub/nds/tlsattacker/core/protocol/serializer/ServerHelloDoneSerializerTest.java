@@ -40,7 +40,7 @@ public class ServerHelloDoneSerializerTest {
     @Test
     public void testSerializeHandshakeMessageContent() {
         ServerHelloDoneMessage msg = new ServerHelloDoneMessage();
-        ServerHelloDoneSerializer serializer = new ServerHelloDoneSerializer(msg, version);
+        ServerHelloDoneSerializer serializer = new ServerHelloDoneSerializer(msg);
         assertArrayEquals(message, serializer.serializeHandshakeMessageContent());
     }
 

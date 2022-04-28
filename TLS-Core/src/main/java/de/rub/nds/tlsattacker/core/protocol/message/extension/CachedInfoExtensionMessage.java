@@ -16,12 +16,12 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.CachedInfoExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.CachedInfoExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.CachedInfoExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.CachedInfoExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
@@ -86,12 +86,12 @@ public class CachedInfoExtensionMessage extends ExtensionMessage<CachedInfoExten
 
     @Override
     public CachedInfoExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new CachedInfoExtensionParser(stream, tlsContext.getConfig());
+        return new CachedInfoExtensionParser(stream, tlsContext);
     }
 
     @Override
     public CachedInfoExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new CachedInfoExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new CachedInfoExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

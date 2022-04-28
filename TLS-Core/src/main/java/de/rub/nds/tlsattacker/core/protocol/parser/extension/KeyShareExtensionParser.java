@@ -10,12 +10,11 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -32,11 +31,11 @@ public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMe
 
     private boolean helloRetryRequestHint = false;
 
-    private ConnectionEndType talkingConnectionEndType;
+    private final ConnectionEndType talkingConnectionEndType;
 
-    public KeyShareExtensionParser(InputStream stream, Config config, TlsContext context) {
-        super(stream, config);
-        talkingConnectionEndType = context.getTalkingConnectionEndType();
+    public KeyShareExtensionParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
+        talkingConnectionEndType = tlsContext.getTalkingConnectionEndType();
     }
 
     @Override
@@ -69,7 +68,7 @@ public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMe
     }
 
     private KeyShareEntry parseKeyShareEntry(ByteArrayInputStream innerStream) {
-        KeyShareEntryParser parser = new KeyShareEntryParser(innerStream);
+        KeyShareEntryParser parser = new KeyShareEntryParser(innerStream, helloRetryRequestHint);
         KeyShareEntry entry = new KeyShareEntry();
         parser.parse(entry);
         return entry;

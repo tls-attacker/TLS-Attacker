@@ -18,13 +18,17 @@ import java.util.*;
 
 public class MessageActionFactory {
 
-    public static MessageAction createAction(Config tlsConfig, AliasedConnection connection,
+    /**
+     * Java cannot automatically parse ProtocolMessage lists to Message lists when calling createAction, so we have
+     * these two wrapper methods.
+     */
+    public static MessageAction createTLSAction(Config tlsConfig, AliasedConnection connection,
         ConnectionEndType sendingConnectionEndType, ProtocolMessage... protocolMessages) {
-        return createAction(tlsConfig, connection, sendingConnectionEndType,
+        return createTLSAction(tlsConfig, connection, sendingConnectionEndType,
             new ArrayList<>(Arrays.asList(protocolMessages)));
     }
 
-    public static MessageAction createAction(Config tlsConfig, AliasedConnection connection,
+    public static MessageAction createTLSAction(Config tlsConfig, AliasedConnection connection,
         ConnectionEndType sendingConnectionEnd, List<ProtocolMessage> protocolMessages) {
         MessageAction action;
         if (connection.getLocalConnectionEndType() == sendingConnectionEnd) {
@@ -33,17 +37,6 @@ public class MessageActionFactory {
             action = new ReceiveAction(getFactoryReceiveActionOptions(tlsConfig), protocolMessages);
         }
         action.setConnectionAlias(connection.getAlias());
-        return action;
-    }
-
-    public static AsciiAction createAsciiAction(AliasedConnection connection, ConnectionEndType sendingConnectionEnd,
-        String message, String encoding) {
-        AsciiAction action;
-        if (connection.getLocalConnectionEndType() == sendingConnectionEnd) {
-            action = new SendAsciiAction(message, encoding);
-        } else {
-            action = new GenericReceiveAsciiAction(encoding);
-        }
         return action;
     }
 

@@ -9,18 +9,18 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PasswordSaltExtensionMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 public class PasswordSaltExtensionHandler extends ExtensionHandler<PasswordSaltExtensionMessage> {
 
-    public PasswordSaltExtensionHandler(TlsContext context) {
-        super(context);
+    public PasswordSaltExtensionHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override
     public void adjustTLSExtensionContext(PasswordSaltExtensionMessage message) {
-        context.setServerPWDSalt(message.getSalt().getValue());
+        tlsContext.setServerPWDSalt(message.getSalt().getValue());
     }
 
 }

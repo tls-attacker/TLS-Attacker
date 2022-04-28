@@ -9,35 +9,30 @@
 
 package de.rub.nds.tlsattacker.core.protocol.message;
 
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.ServerHelloDoneHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.ServerHelloDoneParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ServerHelloDonePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ServerHelloDoneSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "ServerHelloDone")
 public class ServerHelloDoneMessage extends HandshakeMessage {
 
-    public ServerHelloDoneMessage(Config tlsConfig) {
-        super(tlsConfig, HandshakeMessageType.SERVER_HELLO_DONE);
-    }
-
     public ServerHelloDoneMessage() {
         super(HandshakeMessageType.SERVER_HELLO_DONE);
     }
 
     @Override
-    public ServerHelloDoneHandler getHandler(TlsContext context) {
-        return new ServerHelloDoneHandler(context);
+    public ServerHelloDoneHandler getHandler(TlsContext tlsContext) {
+        return new ServerHelloDoneHandler(tlsContext);
     }
 
     @Override
     public ServerHelloDoneParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new ServerHelloDoneParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+        return new ServerHelloDoneParser(stream, tlsContext);
     }
 
     @Override
@@ -47,7 +42,7 @@ public class ServerHelloDoneMessage extends HandshakeMessage {
 
     @Override
     public ServerHelloDoneSerializer getSerializer(TlsContext tlsContext) {
-        return new ServerHelloDoneSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new ServerHelloDoneSerializer(this);
     }
 
     @Override
@@ -60,5 +55,25 @@ public class ServerHelloDoneMessage extends HandshakeMessage {
     @Override
     public String toShortString() {
         return "SHD";
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        return hash;
     }
 }

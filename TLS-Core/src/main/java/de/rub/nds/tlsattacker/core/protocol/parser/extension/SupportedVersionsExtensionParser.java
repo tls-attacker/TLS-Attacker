@@ -10,10 +10,11 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SupportedVersionsExtensionMessage;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,19 +23,16 @@ public class SupportedVersionsExtensionParser extends ExtensionParser<SupportedV
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SupportedVersionsExtensionParser(InputStream stream, Config config) {
-        super(stream, config);
+    public SupportedVersionsExtensionParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
     }
 
     @Override
     public void parse(SupportedVersionsExtensionMessage msg) {
         LOGGER.debug("Parsing SupportedVersionsExtensionMessage");
-        // TODO Don't guess
-        if (getBytesLeft() == HandshakeByteLength.VERSION) {
-            // This looks like a ServerProtocolVersionExtension
+        if (getTlsContext().getTalkingConnectionEndType() == ConnectionEndType.SERVER) {
             msg.setSupportedVersions(parseByteArrayField(HandshakeByteLength.VERSION));
         } else {
-            // This looks like a ClientProtocolVersionExtension
             parseSupportedVersionLength(msg);
             parseSupportedVersion(msg);
         }

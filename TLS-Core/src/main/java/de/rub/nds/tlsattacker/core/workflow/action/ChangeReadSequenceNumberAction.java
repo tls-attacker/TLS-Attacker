@@ -9,7 +9,7 @@
 
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
@@ -25,7 +25,11 @@ public class ChangeReadSequenceNumberAction extends ChangeSequenceNumberAction {
     @Override
     protected void changeSequenceNumber(TlsContext tlsContext) {
         LOGGER.info("Changed read sequence number of current cipher");
-        tlsContext.setReadSequenceNumber(tlsContext.getReadEpoch(), sequenceNumber);
+        if (tlsContext.getRecordLayer() != null) {
+            int epoch = tlsContext.getRecordLayer().getReadEpoch();
+            tlsContext.getRecordLayer().getEncryptor().getRecordCipher(epoch).getState()
+                .setReadSequenceNumber(sequenceNumber);
+        }
     }
 
 }

@@ -10,7 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.protocol.Preparator;
+import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
@@ -33,6 +33,12 @@ public abstract class ExtensionPreparator<T extends ExtensionMessage> extends Pr
         super(chooser, message);
         this.msg = message;
         this.serializer = serializer;
+    }
+
+    public ExtensionPreparator(Chooser chooser, T message) {
+        super(chooser, message);
+        this.msg = message;
+        this.serializer = message.getSerializer(chooser.getContext().getTlsContext());
     }
 
     @Override

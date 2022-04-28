@@ -16,10 +16,10 @@ import de.rub.nds.modifiablevariable.bool.ModifiableBoolean;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.handler.HandshakeMessageHandler;
@@ -27,7 +27,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.HandshakeMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.HandshakeMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.HandshakeMessageSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -81,15 +80,10 @@ public abstract class HandshakeMessage extends ProtocolMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger extensionsLength;
 
-    private ModifiableInteger messageSequence;
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
+    private ModifiableInteger messageSequence = null;
 
     public HandshakeMessage(HandshakeMessageType handshakeMessageType) {
-        super();
-        this.protocolMessageType = ProtocolMessageType.HANDSHAKE;
-        this.handshakeMessageType = handshakeMessageType;
-    }
-
-    public HandshakeMessage(Config tlsConfig, HandshakeMessageType handshakeMessageType) {
         super();
         this.protocolMessageType = ProtocolMessageType.HANDSHAKE;
         this.handshakeMessageType = handshakeMessageType;
@@ -283,16 +277,16 @@ public abstract class HandshakeMessage extends ProtocolMessage {
     }
 
     @Override
-    public abstract HandshakeMessageParser getParser(TlsContext context, InputStream stream);
+    public abstract HandshakeMessageParser getParser(TlsContext tlsContext, InputStream stream);
 
     @Override
-    public abstract HandshakeMessagePreparator getPreparator(TlsContext context);
+    public abstract HandshakeMessagePreparator getPreparator(TlsContext tlsContext);
 
     @Override
-    public abstract HandshakeMessageSerializer getSerializer(TlsContext context);
+    public abstract HandshakeMessageSerializer getSerializer(TlsContext tlsContext);
 
     @Override
-    public abstract HandshakeMessageHandler getHandler(TlsContext context);
+    public abstract HandshakeMessageHandler getHandler(TlsContext tlsContext);
 
     public ModifiableByteArray getMessageContent() {
         return messageContent;

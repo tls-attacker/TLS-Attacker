@@ -10,11 +10,11 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
@@ -26,10 +26,9 @@ public class EncryptedServerNameIndicationExtensionParser
     private static final Logger LOGGER = LogManager.getLogger();
     private final ConnectionEndType talkingConnectionEnd;
 
-    public EncryptedServerNameIndicationExtensionParser(InputStream stream, Config config,
-        ConnectionEndType talkingConnectionEnd) {
-        super(stream, config);
-        this.talkingConnectionEnd = talkingConnectionEnd;
+    public EncryptedServerNameIndicationExtensionParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
+        this.talkingConnectionEnd = tlsContext.getTalkingConnectionEndType();
     }
 
     @Override
@@ -63,7 +62,7 @@ public class EncryptedServerNameIndicationExtensionParser
     }
 
     private void parseKeyShareEntry(EncryptedServerNameIndicationExtensionMessage msg) {
-        KeyShareEntryParser parser = new KeyShareEntryParser(getStream());
+        KeyShareEntryParser parser = new KeyShareEntryParser(getStream(), false);
         KeyShareEntry keyShareEntry = new KeyShareEntry();
         parser.parse(keyShareEntry);
         msg.setKeyShareEntry(keyShareEntry);

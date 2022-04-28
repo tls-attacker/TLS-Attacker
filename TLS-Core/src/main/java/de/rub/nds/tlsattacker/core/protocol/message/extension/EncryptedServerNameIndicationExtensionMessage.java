@@ -14,14 +14,13 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.EncryptedServerNameIndicationExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.EncryptedServerNameIndicationExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EncryptedServerNameIndicationExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.EncryptedServerNameIndicationExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
@@ -30,8 +29,6 @@ import org.apache.logging.log4j.Logger;
 @XmlRootElement(name = "EncryptedServerNameIndicationExtension")
 public class EncryptedServerNameIndicationExtensionMessage
     extends ExtensionMessage<EncryptedServerNameIndicationExtensionMessage> {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     private EsniMessageType esniMessageTypeConfig;
 
@@ -66,13 +63,6 @@ public class EncryptedServerNameIndicationExtensionMessage
     private ModifiableByteArray serverNonce;
 
     public EncryptedServerNameIndicationExtensionMessage() {
-        super(ExtensionType.ENCRYPTED_SERVER_NAME_INDICATION);
-        this.keyShareEntry = new KeyShareEntry();
-        this.clientEsniInner = new ClientEsniInner();
-        this.encryptedSniComputation = new EncryptedSniComputation();
-    }
-
-    public EncryptedServerNameIndicationExtensionMessage(Config config) {
         super(ExtensionType.ENCRYPTED_SERVER_NAME_INDICATION);
         this.keyShareEntry = new KeyShareEntry();
         this.clientEsniInner = new ClientEsniInner();
@@ -198,14 +188,12 @@ public class EncryptedServerNameIndicationExtensionMessage
 
     @Override
     public EncryptedServerNameIndicationExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new EncryptedServerNameIndicationExtensionParser(stream, tlsContext.getConfig(),
-            tlsContext.getTalkingConnectionEndType());
+        return new EncryptedServerNameIndicationExtensionParser(stream, tlsContext);
     }
 
     @Override
     public EncryptedServerNameIndicationExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new EncryptedServerNameIndicationExtensionPreparator(tlsContext.getChooser(), this,
-            getSerializer(tlsContext));
+        return new EncryptedServerNameIndicationExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

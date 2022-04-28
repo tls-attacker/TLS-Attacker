@@ -13,7 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
@@ -69,8 +69,10 @@ public class DHClientKeyExchangeParserTest {
      */
     @Test
     public void testParse() {
+        TlsContext tlsContext = new TlsContext(config);
+        tlsContext.setSelectedProtocolVersion(version);
         DHClientKeyExchangeParser<DHClientKeyExchangeMessage> parser =
-            new DHClientKeyExchangeParser(new ByteArrayInputStream(message), version, new TlsContext(config));
+            new DHClientKeyExchangeParser(new ByteArrayInputStream(message), tlsContext);
         DHClientKeyExchangeMessage msg = new DHClientKeyExchangeMessage();
         parser.parse(msg);
         assertTrue(serializedKeyLength == msg.getPublicKeyLength().getValue());

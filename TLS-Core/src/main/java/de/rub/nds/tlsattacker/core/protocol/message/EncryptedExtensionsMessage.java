@@ -17,8 +17,9 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.RecordSizeLimitExt
 import de.rub.nds.tlsattacker.core.protocol.parser.EncryptedExtensionsParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.EncryptedExtensionsPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.EncryptedExtensionsSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
+import java.util.Objects;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "EncryptedExtensions")
@@ -29,7 +30,7 @@ public class EncryptedExtensionsMessage extends HandshakeMessage {
     }
 
     public EncryptedExtensionsMessage(Config config) {
-        super(config, HandshakeMessageType.ENCRYPTED_EXTENSIONS);
+        super(HandshakeMessageType.ENCRYPTED_EXTENSIONS);
         if (config.isAddRecordSizeLimitExtension()) {
             addExtension(new RecordSizeLimitExtensionMessage());
         }
@@ -56,13 +57,13 @@ public class EncryptedExtensionsMessage extends HandshakeMessage {
     }
 
     @Override
-    public EncryptedExtensionsHandler getHandler(TlsContext context) {
-        return new EncryptedExtensionsHandler(context);
+    public EncryptedExtensionsHandler getHandler(TlsContext tlsContext) {
+        return new EncryptedExtensionsHandler(tlsContext);
     }
 
     @Override
     public EncryptedExtensionsParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new EncryptedExtensionsParser(stream, tlsContext.getLastRecordVersion(), tlsContext);
+        return new EncryptedExtensionsParser(stream, tlsContext);
     }
 
     @Override
@@ -72,7 +73,30 @@ public class EncryptedExtensionsMessage extends HandshakeMessage {
 
     @Override
     public EncryptedExtensionsSerializer getSerializer(TlsContext tlsContext) {
-        return new EncryptedExtensionsSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new EncryptedExtensionsSerializer(this);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final EncryptedExtensionsMessage other = (EncryptedExtensionsMessage) obj;
+        if (!Objects.equals(this.getExtensions(), other.getExtensions())) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        return hash;
+    }
 }

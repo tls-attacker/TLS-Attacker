@@ -12,11 +12,11 @@ package de.rub.nds.tlsattacker.core.workflow.chooser;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ChooserType;
 import de.rub.nds.tlsattacker.core.exceptions.InvalidChooserTypeException;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 
 public class ChooserFactory {
 
-    public static Chooser getChooser(ChooserType type, TlsContext context, Config config) {
+    public static Chooser getChooser(ChooserType type, Context context, Config config) {
         switch (type) {
             case DEFAULT:
                 return new DefaultChooser(context, config);

@@ -12,6 +12,7 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
@@ -39,6 +40,7 @@ public class PaddingExtensionParserTest {
     private final byte[] expectedBytes;
     private PaddingExtensionParser parser;
     private PaddingExtensionMessage message;
+    private final Config config = Config.createConfig();
 
     public PaddingExtensionParserTest(byte[] extensionPayload, byte[] expectedBytes) {
         this.extensionPayload = extensionPayload;
@@ -47,7 +49,8 @@ public class PaddingExtensionParserTest {
 
     @Before
     public void setUp() {
-        parser = new PaddingExtensionParser(new ByteArrayInputStream(expectedBytes), Config.createConfig());
+        TlsContext tlsContext = new TlsContext(config);
+        parser = new PaddingExtensionParser(new ByteArrayInputStream(expectedBytes), tlsContext);
     }
 
     @Test

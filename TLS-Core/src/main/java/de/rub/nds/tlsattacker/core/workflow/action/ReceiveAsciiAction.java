@@ -11,8 +11,9 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.util.IllegalStringAdapter;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import java.io.IOException;
 import java.util.Objects;
@@ -41,6 +42,7 @@ public class ReceiveAsciiAction extends AsciiAction {
     @Override
     public void execute(State state) throws WorkflowExecutionException {
         TlsContext tlsContext = state.getTlsContext();
+        TcpContext tcpContext = state.getTcpContext();
 
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
@@ -48,7 +50,7 @@ public class ReceiveAsciiAction extends AsciiAction {
 
         try {
             LOGGER.debug("Receiving ASCII message...");
-            byte[] fetchData = tlsContext.getTransportHandler().fetchData();
+            byte[] fetchData = tcpContext.getTransportHandler().fetchData();
             receivedAsciiString = new String(fetchData, getEncoding());
             LOGGER.info("Received: " + receivedAsciiString);
 

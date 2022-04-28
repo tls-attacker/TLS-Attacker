@@ -11,10 +11,9 @@ package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
@@ -35,7 +34,6 @@ public class CertificateRequestTls13ParserTest {
     }
 
     private byte[] message;
-    private HandshakeMessageType type;
     private int certificateRequestContextLength;
     private byte[] certificateRequestContext;
     private int extensionLength;
@@ -53,8 +51,10 @@ public class CertificateRequestTls13ParserTest {
 
     @Test
     public void testParse() {
-        CertificateRequestParser parser = new CertificateRequestParser(new ByteArrayInputStream(message), version,
-            new TlsContext(new Config()), ConnectionEndType.SERVER);
+        TlsContext tlsContext = new TlsContext(new Config());
+        tlsContext.setTalkingConnectionEndType(ConnectionEndType.SERVER);
+        tlsContext.setLastRecordVersion(version);
+        CertificateRequestParser parser = new CertificateRequestParser(new ByteArrayInputStream(message), tlsContext);
         CertificateRequestMessage msg = new CertificateRequestMessage();
         parser.parse(msg);
         assertTrue(msg.getCertificateRequestContextLength().getValue() == certificateRequestContextLength);

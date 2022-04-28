@@ -24,10 +24,11 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAl
 import de.rub.nds.tlsattacker.core.protocol.parser.CertificateRequestParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateRequestPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateRequestSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -70,7 +71,7 @@ public class CertificateRequestMessage extends HandshakeMessage {
     }
 
     public CertificateRequestMessage(Config tlsConfig) {
-        super(tlsConfig, HandshakeMessageType.CERTIFICATE_REQUEST);
+        super(HandshakeMessageType.CERTIFICATE_REQUEST);
         if (tlsConfig.getHighestProtocolVersion().isTLS13()) {
             this.setExtensions(new LinkedList<ExtensionMessage>());
             this.addExtension(new SignatureAndHashAlgorithmsExtensionMessage());
@@ -238,14 +239,13 @@ public class CertificateRequestMessage extends HandshakeMessage {
     }
 
     @Override
-    public CertificateRequestHandler getHandler(TlsContext context) {
-        return new CertificateRequestHandler(context);
+    public CertificateRequestHandler getHandler(TlsContext tlsContext) {
+        return new CertificateRequestHandler(tlsContext);
     }
 
     @Override
     public CertificateRequestParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new CertificateRequestParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext,
-            tlsContext.getTalkingConnectionEndType());
+        return new CertificateRequestParser(stream, tlsContext);
     }
 
     @Override
@@ -256,6 +256,56 @@ public class CertificateRequestMessage extends HandshakeMessage {
     @Override
     public CertificateRequestSerializer getSerializer(TlsContext tlsContext) {
         return new CertificateRequestSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 61 * hash + Objects.hashCode(this.clientCertificateTypesCount);
+        hash = 61 * hash + Objects.hashCode(this.clientCertificateTypes);
+        hash = 61 * hash + Objects.hashCode(this.signatureHashAlgorithmsLength);
+        hash = 61 * hash + Objects.hashCode(this.signatureHashAlgorithms);
+        hash = 61 * hash + Objects.hashCode(this.distinguishedNamesLength);
+        hash = 61 * hash + Objects.hashCode(this.distinguishedNames);
+        hash = 61 * hash + Objects.hashCode(this.certificateRequestContextLength);
+        hash = 61 * hash + Objects.hashCode(this.certificateRequestContext);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final CertificateRequestMessage other = (CertificateRequestMessage) obj;
+        if (!Objects.equals(this.clientCertificateTypesCount, other.clientCertificateTypesCount)) {
+            return false;
+        }
+        if (!Objects.equals(this.clientCertificateTypes, other.clientCertificateTypes)) {
+            return false;
+        }
+        if (!Objects.equals(this.signatureHashAlgorithmsLength, other.signatureHashAlgorithmsLength)) {
+            return false;
+        }
+        if (!Objects.equals(this.signatureHashAlgorithms, other.signatureHashAlgorithms)) {
+            return false;
+        }
+        if (!Objects.equals(this.distinguishedNamesLength, other.distinguishedNamesLength)) {
+            return false;
+        }
+        if (!Objects.equals(this.distinguishedNames, other.distinguishedNames)) {
+            return false;
+        }
+        if (!Objects.equals(this.certificateRequestContextLength, other.certificateRequestContextLength)) {
+            return false;
+        }
+        return Objects.equals(this.certificateRequestContext, other.certificateRequestContext);
     }
 
 }

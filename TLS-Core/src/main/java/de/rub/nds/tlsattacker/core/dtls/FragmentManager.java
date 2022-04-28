@@ -33,11 +33,11 @@ public class FragmentManager {
     }
 
     public boolean addMessageFragment(DtlsHandshakeMessageFragment fragment) {
-        FragmentKey key = new FragmentKey(fragment.getMessageSeq().getValue(), fragment.getEpoch().getValue());
+        FragmentKey key = new FragmentKey(fragment.getMessageSequence().getValue(), fragment.getEpoch().getValue());
         FragmentCollector collector = fragments.get(key);
         if (collector == null) {
             collector = new FragmentCollector(config, fragment.getType().getValue(),
-                fragment.getMessageSeq().getValue(), fragment.getLength().getValue());
+                fragment.getMessageSequence().getValue(), fragment.getLength().getValue());
             fragments.put(key, collector);
         }
         if (collector.wouldAdd(fragment)) {

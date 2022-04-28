@@ -14,14 +14,13 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.AlpnExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.alpn.AlpnEntry;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.AlpnExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.AlpnExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.AlpnExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -41,10 +40,6 @@ public class AlpnExtensionMessage extends ExtensionMessage<AlpnExtensionMessage>
     private List<AlpnEntry> alpnEntryList;
 
     public AlpnExtensionMessage() {
-        super(ExtensionType.ALPN);
-    }
-
-    public AlpnExtensionMessage(Config config) {
         super(ExtensionType.ALPN);
     }
 
@@ -84,12 +79,12 @@ public class AlpnExtensionMessage extends ExtensionMessage<AlpnExtensionMessage>
 
     @Override
     public AlpnExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new AlpnExtensionParser(stream, tlsContext.getConfig());
+        return new AlpnExtensionParser(stream, tlsContext);
     }
 
     @Override
     public AlpnExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new AlpnExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new AlpnExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override
@@ -98,8 +93,8 @@ public class AlpnExtensionMessage extends ExtensionMessage<AlpnExtensionMessage>
     }
 
     @Override
-    public AlpnExtensionHandler getHandler(TlsContext context) {
-        return new AlpnExtensionHandler(context);
+    public AlpnExtensionHandler getHandler(TlsContext tlsContext) {
+        return new AlpnExtensionHandler(tlsContext);
     }
 
 }

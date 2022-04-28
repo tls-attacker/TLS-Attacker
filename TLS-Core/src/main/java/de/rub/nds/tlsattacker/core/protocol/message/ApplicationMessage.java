@@ -13,14 +13,13 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.handler.ApplicationMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.ApplicationMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ApplicationMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ApplicationMessageSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import java.util.Arrays;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -35,18 +34,13 @@ public class ApplicationMessage extends ProtocolMessage<ApplicationMessage> {
     @ModifiableVariableProperty
     private ModifiableByteArray data;
 
-    public ApplicationMessage(Config tlsConfig, byte[] dataConfig) {
+    public ApplicationMessage(byte[] dataConfig) {
         super();
         this.dataConfig = dataConfig;
         this.protocolMessageType = ProtocolMessageType.APPLICATION_DATA;
     }
 
     public ApplicationMessage() {
-        super();
-        this.protocolMessageType = ProtocolMessageType.APPLICATION_DATA;
-    }
-
-    public ApplicationMessage(Config tlsConfig) {
         super();
         this.protocolMessageType = ProtocolMessageType.APPLICATION_DATA;
     }
@@ -104,8 +98,7 @@ public class ApplicationMessage extends ProtocolMessage<ApplicationMessage> {
 
     @Override
     public ApplicationMessageParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new ApplicationMessageParser(stream, tlsContext.getChooser().getLastRecordVersion(),
-            tlsContext.getConfig());
+        return new ApplicationMessageParser(stream);
     }
 
     @Override
@@ -115,7 +108,7 @@ public class ApplicationMessage extends ProtocolMessage<ApplicationMessage> {
 
     @Override
     public ApplicationMessageSerializer getSerializer(TlsContext tlsContext) {
-        return new ApplicationMessageSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new ApplicationMessageSerializer(this);
     }
 
     @Override

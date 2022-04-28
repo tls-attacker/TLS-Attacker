@@ -13,16 +13,16 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.handler.AlertHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.AlertParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.AlertPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.AlertSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+
 import java.io.InputStream;
 import java.util.Objects;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -49,11 +49,6 @@ public class AlertMessage extends ProtocolMessage<AlertMessage> {
     ModifiableByte description;
 
     public AlertMessage() {
-        super();
-        this.protocolMessageType = ProtocolMessageType.ALERT;
-    }
-
-    public AlertMessage(Config tlsConfig) {
         super();
         this.protocolMessageType = ProtocolMessageType.ALERT;
     }
@@ -179,13 +174,13 @@ public class AlertMessage extends ProtocolMessage<AlertMessage> {
     }
 
     @Override
-    public AlertHandler getHandler(TlsContext context) {
-        return new AlertHandler(context);
+    public AlertHandler getHandler(TlsContext tlsContext) {
+        return new AlertHandler(tlsContext);
     }
 
     @Override
     public AlertParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new AlertParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext.getConfig());
+        return new AlertParser(stream);
     }
 
     @Override
@@ -195,7 +190,7 @@ public class AlertMessage extends ProtocolMessage<AlertMessage> {
 
     @Override
     public AlertSerializer getSerializer(TlsContext tlsContext) {
-        return new AlertSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new AlertSerializer(this);
     }
 
 }

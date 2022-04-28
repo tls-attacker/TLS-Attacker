@@ -47,17 +47,17 @@ public class MessageActionFactoryTest {
      */
     @Test
     public void testCreateActionOne() {
-        MessageAction action = MessageActionFactory.createAction(config, clientConnection, ConnectionEndType.CLIENT,
-            new AlertMessage(config));
+        MessageAction action = MessageActionFactory.createTLSAction(config, clientConnection, ConnectionEndType.CLIENT,
+            new AlertMessage());
         assertEquals(action.getClass(), SendAction.class);
-        action = MessageActionFactory.createAction(config, clientConnection, ConnectionEndType.SERVER,
-            new AlertMessage(config));
+        action = MessageActionFactory.createTLSAction(config, clientConnection, ConnectionEndType.SERVER,
+            new AlertMessage());
         assertEquals(action.getClass(), ReceiveAction.class);
-        action = MessageActionFactory.createAction(config, serverConnection, ConnectionEndType.CLIENT,
-            new AlertMessage(config));
+        action = MessageActionFactory.createTLSAction(config, serverConnection, ConnectionEndType.CLIENT,
+            new AlertMessage());
         assertEquals(action.getClass(), ReceiveAction.class);
-        action = MessageActionFactory.createAction(config, serverConnection, ConnectionEndType.SERVER,
-            new AlertMessage(config));
+        action = MessageActionFactory.createTLSAction(config, serverConnection, ConnectionEndType.SERVER,
+            new AlertMessage());
         assertEquals(action.getClass(), SendAction.class);
         assertTrue(action.messages.size() == 1);
     }
@@ -69,15 +69,15 @@ public class MessageActionFactoryTest {
     public void testCreateActionMultiple() {
         List<ProtocolMessage> messages = new LinkedList<>();
         messages.add(new ChangeCipherSpecMessage());
-        messages.add(new AlertMessage(config));
+        messages.add(new AlertMessage());
         MessageAction action =
-            MessageActionFactory.createAction(config, clientConnection, ConnectionEndType.CLIENT, messages);
+            MessageActionFactory.createTLSAction(config, clientConnection, ConnectionEndType.CLIENT, messages);
         assertEquals(action.getClass(), SendAction.class);
-        action = MessageActionFactory.createAction(config, clientConnection, ConnectionEndType.SERVER, messages);
+        action = MessageActionFactory.createTLSAction(config, clientConnection, ConnectionEndType.SERVER, messages);
         assertEquals(action.getClass(), ReceiveAction.class);
-        action = MessageActionFactory.createAction(config, serverConnection, ConnectionEndType.CLIENT, messages);
+        action = MessageActionFactory.createTLSAction(config, serverConnection, ConnectionEndType.CLIENT, messages);
         assertEquals(action.getClass(), ReceiveAction.class);
-        action = MessageActionFactory.createAction(config, serverConnection, ConnectionEndType.SERVER, messages);
+        action = MessageActionFactory.createTLSAction(config, serverConnection, ConnectionEndType.SERVER, messages);
         assertEquals(action.getClass(), SendAction.class);
         assertTrue(action.messages.size() == 2);
     }
@@ -87,13 +87,16 @@ public class MessageActionFactoryTest {
      */
     @Test
     public void testCreateAsciiAction() {
-        AsciiAction action = MessageActionFactory.createAsciiAction(clientConnection, ConnectionEndType.CLIENT, "", "");
-        assertEquals(action.getClass(), SendAsciiAction.class);
-        action = MessageActionFactory.createAsciiAction(clientConnection, ConnectionEndType.SERVER, "", "");
-        assertEquals(action.getClass(), GenericReceiveAsciiAction.class);
-        action = MessageActionFactory.createAsciiAction(serverConnection, ConnectionEndType.CLIENT, "", "");
-        assertEquals(action.getClass(), GenericReceiveAsciiAction.class);
-        action = MessageActionFactory.createAsciiAction(serverConnection, ConnectionEndType.SERVER, "", "");
-        assertEquals(action.getClass(), SendAsciiAction.class);
+        // TODO: fix for the new layer system since we removed ascii actions, leaving the old code for when this is
+        /*
+         * AsciiAction action = MessageActionFactory.createAsciiAction(clientConnection, ConnectionEndType.CLIENT, "",
+         * ""); assertEquals(action.getClass(), SendAsciiAction.class); action =
+         * MessageActionFactory.createAsciiAction(clientConnection, ConnectionEndType.SERVER, "", "");
+         * assertEquals(action.getClass(), GenericReceiveAsciiAction.class); action =
+         * MessageActionFactory.createAsciiAction(serverConnection, ConnectionEndType.CLIENT, "", "");
+         * assertEquals(action.getClass(), GenericReceiveAsciiAction.class); action =
+         * MessageActionFactory.createAsciiAction(serverConnection, ConnectionEndType.SERVER, "", "");
+         * assertEquals(action.getClass(), SendAsciiAction.class);
+         */
     }
 }

@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.constants.AuthzDataFormat;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientAuthzExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ClientAuthzExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.util.Arrays;
 import java.util.List;
 import static org.junit.Assert.assertArrayEquals;
@@ -36,8 +36,7 @@ public class ClientAuthzExtensionPreparatorTest {
         context.getConfig().setClientAuthzExtensionDataFormat(authzFormatList);
 
         msg = new ClientAuthzExtensionMessage();
-        preparator =
-            new ClientAuthzExtensionPreparator(context.getChooser(), msg, new ClientAuthzExtensionSerializer(msg));
+        preparator = new ClientAuthzExtensionPreparator(context.getChooser(), msg);
 
         preparator.prepare();
 

@@ -12,7 +12,6 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ECPointFormatExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ECPointFormatExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayOutputStream;
@@ -26,9 +25,8 @@ public class ECPointFormatExtensionPreparator extends ExtensionPreparator<ECPoin
 
     private final ECPointFormatExtensionMessage msg;
 
-    public ECPointFormatExtensionPreparator(Chooser chooser, ECPointFormatExtensionMessage message,
-        ECPointFormatExtensionSerializer serializer) {
-        super(chooser, message, serializer);
+    public ECPointFormatExtensionPreparator(Chooser chooser, ECPointFormatExtensionMessage message) {
+        super(chooser, message);
         this.msg = message;
     }
 

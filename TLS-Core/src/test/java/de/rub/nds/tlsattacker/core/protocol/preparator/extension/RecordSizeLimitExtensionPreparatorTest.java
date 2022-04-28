@@ -13,7 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RecordSizeLimitExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.RecordSizeLimitExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import static org.junit.Assert.assertArrayEquals;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,8 +30,7 @@ public class RecordSizeLimitExtensionPreparatorTest {
         config = Config.createConfig();
         context = new TlsContext(config);
         message = new RecordSizeLimitExtensionMessage();
-        preparator = new RecordSizeLimitExtensionPreparator(context.getChooser(), message,
-            new RecordSizeLimitExtensionSerializer(message));
+        preparator = new RecordSizeLimitExtensionPreparator(context.getChooser(), message);
     }
 
     /**

@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.UserMappingExtensionMessage;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.ByteArrayInputStream;
 import static org.junit.Assert.assertEquals;
 import org.junit.Before;
@@ -24,10 +25,12 @@ public class UserMappingExtensionParserTest {
     private final UserMappingExtensionHintType hintType = UserMappingExtensionHintType.UPN_DOMAIN_HINT;
     private UserMappingExtensionParser parser;
     private UserMappingExtensionMessage message;
+    private final Config config = Config.createConfig();
 
     @Before
     public void setUp() {
-        parser = new UserMappingExtensionParser(new ByteArrayInputStream(extensionBytes), Config.createConfig());
+        TlsContext tlsContext = new TlsContext(config);
+        parser = new UserMappingExtensionParser(new ByteArrayInputStream(extensionBytes), tlsContext);
     }
 
     @Test

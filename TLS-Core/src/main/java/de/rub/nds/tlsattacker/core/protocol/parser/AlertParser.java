@@ -9,9 +9,7 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.AlertByteLength;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import org.apache.logging.log4j.LogManager;
@@ -27,13 +25,9 @@ public class AlertParser extends ProtocolMessageParser<AlertMessage> {
      * Constructor for the Parser class
      *
      * @param stream
-     * @param version
-     *                Version of the Protocol
-     * @param config
-     *                A Config used in the current context
      */
-    public AlertParser(InputStream stream, ProtocolVersion version, Config config) {
-        super(stream, config);
+    public AlertParser(InputStream stream) {
+        super(stream);
     }
 
     @Override

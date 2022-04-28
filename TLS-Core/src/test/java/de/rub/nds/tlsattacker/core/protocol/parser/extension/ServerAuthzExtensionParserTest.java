@@ -12,6 +12,7 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerAuthzExtensionMessage;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
@@ -35,6 +36,7 @@ public class ServerAuthzExtensionParserTest {
     private final byte[] authzFormatList;
     private ServerAuthzExtensionParser parser;
     private ServerAuthzExtensionMessage msg;
+    private final Config config = Config.createConfig();
 
     public ServerAuthzExtensionParserTest(byte[] expectedBytes, int authzFormatListLength, byte[] authzFormatList) {
         this.expectedBytes = expectedBytes;
@@ -44,7 +46,8 @@ public class ServerAuthzExtensionParserTest {
 
     @Test
     public void testParse() {
-        parser = new ServerAuthzExtensionParser(new ByteArrayInputStream(expectedBytes), Config.createConfig());
+        TlsContext tlsContext = new TlsContext(config);
+        parser = new ServerAuthzExtensionParser(new ByteArrayInputStream(expectedBytes), tlsContext);
         msg = new ServerAuthzExtensionMessage();
         parser.parse(msg);
         assertEquals(authzFormatListLength, (long) msg.getAuthzFormatListLength().getValue());

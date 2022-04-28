@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
@@ -90,8 +90,10 @@ public class ServerHelloParserTest {
      */
     @Test
     public void verify() {
-        ServerHelloParser parser = new ServerHelloParser(new ByteArrayInputStream(message), version,
-            new TlsContext(config), ConnectionEndType.SERVER);
+        TlsContext tlsContext = new TlsContext(config);
+        tlsContext.setTalkingConnectionEndType(ConnectionEndType.SERVER);
+        tlsContext.setSelectedProtocolVersion(version);
+        ServerHelloParser parser = new ServerHelloParser(new ByteArrayInputStream(message), tlsContext);
         ServerHelloMessage helloMessage = new ServerHelloMessage();
         parser.parse(helloMessage);
         assertArrayEquals(helloMessage.getProtocolVersion().getValue(), protocolVersion);

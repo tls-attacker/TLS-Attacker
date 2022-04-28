@@ -14,13 +14,12 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bool.ModifiableBoolean;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ServerCertificateTypeExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ServerCertificateTypeExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ServerCertificateTypeExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ServerCertificateTypeExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -38,10 +37,6 @@ public class ServerCertificateTypeExtensionMessage extends ExtensionMessage<Serv
     private ModifiableBoolean isClientMessage;
 
     public ServerCertificateTypeExtensionMessage() {
-        super(ExtensionType.SERVER_CERTIFICATE_TYPE);
-    }
-
-    public ServerCertificateTypeExtensionMessage(Config config) {
         super(ExtensionType.SERVER_CERTIFICATE_TYPE);
     }
 
@@ -84,12 +79,12 @@ public class ServerCertificateTypeExtensionMessage extends ExtensionMessage<Serv
 
     @Override
     public ServerCertificateTypeExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new ServerCertificateTypeExtensionParser(stream, tlsContext.getConfig());
+        return new ServerCertificateTypeExtensionParser(stream, tlsContext);
     }
 
     @Override
     public ServerCertificateTypeExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new ServerCertificateTypeExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new ServerCertificateTypeExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

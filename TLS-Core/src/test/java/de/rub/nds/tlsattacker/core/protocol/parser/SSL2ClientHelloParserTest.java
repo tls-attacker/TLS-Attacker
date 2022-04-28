@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
@@ -75,8 +75,9 @@ public class SSL2ClientHelloParserTest {
      */
     @Test
     public void testParse() {
-        SSL2ClientHelloParser parser =
-            new SSL2ClientHelloParser(new ByteArrayInputStream(message), version, new TlsContext(config));
+        TlsContext tlsContext = new TlsContext(config);
+        tlsContext.setSelectedProtocolVersion(version);
+        SSL2ClientHelloParser parser = new SSL2ClientHelloParser(new ByteArrayInputStream(message), tlsContext);
         SSL2ClientHelloMessage msg = new SSL2ClientHelloMessage();
         parser.parse(msg);
         assertTrue(msg.getMessageLength().getValue() == messageLength);

@@ -9,14 +9,19 @@
 
 package de.rub.nds.tlsattacker.core.layer;
 
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+
+import de.rub.nds.tlsattacker.core.state.Context;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * Aggregates multiple layers into a protocol stack. Offers functionality for sending and receiving messages through the
+ * message stack. Can be created manually or using {@link LayerStackFactory}.
+ */
 public class LayerStack {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -28,10 +33,9 @@ public class LayerStack {
      * perfectly fine to leave the layer stack and plug another component in which does the rest of the processing
      */
     private final List<ProtocolLayer> layerList;
-    // TODO This should be a context, not a TLS context
-    private final TlsContext context;
+    private final Context context;
 
-    public LayerStack(TlsContext context, ProtocolLayer... layers) {
+    public LayerStack(Context context, ProtocolLayer... layers) {
         this.context = context;
         layerList = Arrays.asList(layers);
         for (int i = 0; i < layers.length; i++) {
@@ -62,11 +66,21 @@ public class LayerStack {
         return layerList.get(layerList.size() - 1);
     }
 
+    /**
+     * Sends data over the protocol stack based on the layer configurations provided in layerConfigurationList.
+     * 
+     * @param  layerConfigurationList
+     *                                Contains {@link DataContainer} to be sent through the protocol stack.
+     * @return                        LayerStackProcessingResult Contains information about the "send" execution. Does
+     *                                not contain any messages the peer sends back.
+     * @throws IOException
+     *                                If any layer fails to send its data.
+     */
     public LayerStackProcessingResult sendData(List<LayerConfiguration> layerConfigurationList) throws IOException {
         LOGGER.debug("Sending Data");
         if (layerList.size() != layerConfigurationList.size()) {
             throw new RuntimeException(
-                "Illegal LayerConfiguration list provided. Each layer needs a configuration entry (null is fine too if no explict configuration is desired). Expected "
+                "Illegal LayerConfiguration list provided. Each layer needs a configuration entry (null is fine too if no explicit configuration is desired). Expected "
                     + layerList.size() + " but found " + layerConfigurationList.size());
         }
 
@@ -75,7 +89,6 @@ public class LayerStack {
             ProtocolLayer layer = layerList.get(i);
             layer.clear();
             layer.setLayerConfiguration(layerConfigurationList.get(i));
-            i++;
         }
         context.setTalkingConnectionEndType(context.getConnection().getLocalConnectionEndType());
         // Send data
@@ -91,11 +104,22 @@ public class LayerStack {
         return new LayerStackProcessingResult(resultList);
     }
 
+    /**
+     * Receives messages pre-defined in the layerConfigurationList through the message stack. Timeouts if not all
+     * specified messages are received.
+     * 
+     * @param  layerConfigurationList
+     *                                Contains specific {@link DataContainer} to be received from the peer.
+     * @return                        LayerStackProcessingResult Contains information about the "send" execution. Does
+     *                                not contain any messages the peer sends back.
+     * @throws IOException
+     *                                If any layer fails to receive the specified data.
+     */
     public LayerStackProcessingResult receiveData(List<LayerConfiguration> layerConfigurationList) throws IOException {
         LOGGER.debug("Receiving Data");
         if (layerList.size() != layerConfigurationList.size()) {
             throw new RuntimeException(
-                "Illegal LayerConfiguration list provided. Each layer needs a configuration entry (null is fine too if no explict configuration is desired). Expected "
+                "Illegal LayerConfiguration list provided. Each layer needs a configuration entry (null is fine too if no explicit configuration is desired). Expected "
                     + layerList.size() + " but found " + layerConfigurationList.size());
         }
         // Prepare layer configuration and clear previous executions
@@ -116,6 +140,12 @@ public class LayerStack {
         return gatherResults();
     }
 
+    /**
+     * Manually gathers information about each layer's execution. E.g., whether the layer executed successfully and the
+     * peer's answers.
+     * 
+     * @return LayerStackProcessingResult Contains the execution results of each layer.
+     */
     public LayerStackProcessingResult gatherResults() {
         // Gather results
         List<LayerProcessingResult> resultList = new LinkedList<>();

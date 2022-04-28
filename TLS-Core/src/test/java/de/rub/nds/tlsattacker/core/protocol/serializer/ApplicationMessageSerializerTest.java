@@ -9,7 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.ApplicationMessageParserTest;
 import java.util.Collection;
@@ -40,7 +39,7 @@ public class ApplicationMessageSerializerTest {
         ApplicationMessage message = new ApplicationMessage();
         message.setData(this.message);
         message.setCompleteResultingMessage(this.message);
-        ApplicationMessageSerializer serializer = new ApplicationMessageSerializer(message, ProtocolVersion.TLS12);
+        ApplicationMessageSerializer serializer = new ApplicationMessageSerializer(message);
         assertArrayEquals(this.message, serializer.serialize());
     }
 }

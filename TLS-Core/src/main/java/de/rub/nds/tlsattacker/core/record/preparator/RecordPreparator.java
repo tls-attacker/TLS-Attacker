@@ -13,11 +13,11 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
-import de.rub.nds.tlsattacker.core.protocol.Preparator;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.compressor.RecordCompressor;
 import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
-import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -30,17 +30,20 @@ public class RecordPreparator extends Preparator<Record> {
 
     private final Record record;
     private final Encryptor encryptor;
+    private final TlsContext tlsContext;
     private final RecordCompressor compressor;
 
     private ProtocolMessageType type;
 
-    public RecordPreparator(Chooser chooser, Record record, Encryptor encryptor, ProtocolMessageType type,
+    public RecordPreparator(TlsContext tlsContext, Record record, Encryptor encryptor, ProtocolMessageType type,
         RecordCompressor compressor) {
-        super(chooser, record);
+        super(tlsContext.getChooser(), record);
         this.record = record;
         this.encryptor = encryptor;
+        this.tlsContext = tlsContext;
         this.compressor = compressor;
         this.type = type;
+
     }
 
     @Override
@@ -76,7 +79,7 @@ public class RecordPreparator extends Preparator<Record> {
 
     private void prepareProtocolVersion(Record record) {
         if (chooser.getSelectedProtocolVersion().isTLS13()
-            || chooser.getContext().getActiveKeySetTypeWrite() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
+            || tlsContext.getActiveKeySetTypeWrite() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
             record.setProtocolVersion(ProtocolVersion.TLS12.getValue());
         } else {
             record.setProtocolVersion(chooser.getSelectedProtocolVersion().getValue());

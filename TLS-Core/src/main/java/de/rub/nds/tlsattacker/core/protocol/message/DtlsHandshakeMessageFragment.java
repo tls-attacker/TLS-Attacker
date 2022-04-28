@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
-import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
@@ -19,18 +18,14 @@ import de.rub.nds.tlsattacker.core.protocol.handler.DtlsHandshakeMessageFragment
 import de.rub.nds.tlsattacker.core.protocol.parser.DtlsHandshakeMessageFragmentParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.DtlsHandshakeMessageFragmentPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.DtlsHandshakeMessageFragmentSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Objects;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "DtlsHandshakeMessageFragment")
 public class DtlsHandshakeMessageFragment extends HandshakeMessage {
-
-    @ModifiableVariableProperty
-    private ModifiableByteArray content;
-
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
-    private ModifiableInteger messageSeq = null;
 
     @ModifiableVariableProperty
     private ModifiableInteger fragmentOffset = null;
@@ -66,14 +61,14 @@ public class DtlsHandshakeMessageFragment extends HandshakeMessage {
     }
 
     public DtlsHandshakeMessageFragment(Config tlsConfig) {
-        super(tlsConfig, HandshakeMessageType.UNKNOWN);
+        super(HandshakeMessageType.UNKNOWN);
         isIncludeInDigestDefault = false;
         adjustContextDefault = false;
         this.maxFragmentLengthConfig = tlsConfig.getDtlsMaximumFragmentLength();
     }
 
     public DtlsHandshakeMessageFragment(Config tlsConfig, int maxFragmentLengthConfig) {
-        super(tlsConfig, HandshakeMessageType.UNKNOWN);
+        super(HandshakeMessageType.UNKNOWN);
         isIncludeInDigestDefault = false;
         adjustContextDefault = false;
         this.maxFragmentLengthConfig = maxFragmentLengthConfig;
@@ -86,14 +81,13 @@ public class DtlsHandshakeMessageFragment extends HandshakeMessage {
     }
 
     @Override
-    public DtlsHandshakeMessageFragmentHandler getHandler(TlsContext context) {
-        return new DtlsHandshakeMessageFragmentHandler(context);
+    public DtlsHandshakeMessageFragmentHandler getHandler(TlsContext tlsContext) {
+        return new DtlsHandshakeMessageFragmentHandler(tlsContext);
     }
 
     @Override
     public DtlsHandshakeMessageFragmentParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new DtlsHandshakeMessageFragmentParser(stream, tlsContext.getChooser().getLastRecordVersion(),
-            tlsContext);
+        return new DtlsHandshakeMessageFragmentParser(stream, tlsContext);
     }
 
     @Override
@@ -103,7 +97,7 @@ public class DtlsHandshakeMessageFragment extends HandshakeMessage {
 
     @Override
     public DtlsHandshakeMessageFragmentSerializer getSerializer(TlsContext tlsContext) {
-        return new DtlsHandshakeMessageFragmentSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new DtlsHandshakeMessageFragmentSerializer(this);
     }
 
     public HandshakeMessageType getHandshakeMessageTypeConfig() {
@@ -154,36 +148,12 @@ public class DtlsHandshakeMessageFragment extends HandshakeMessage {
         this.handshakeMessageLengthConfig = handshakeMessageLengthConfig;
     }
 
-    public ModifiableByteArray getContent() {
-        return content;
-    }
-
-    public void setContent(ModifiableByteArray content) {
-        this.content = content;
-    }
-
-    public void setContent(byte[] content) {
-        this.content = ModifiableVariableFactory.safelySetValue(this.content, content);
-    }
-
-    public ModifiableInteger getMessageSeq() {
-        return messageSeq;
-    }
-
     public ModifiableInteger getFragmentOffset() {
         return fragmentOffset;
     }
 
     public ModifiableInteger getFragmentLength() {
         return fragmentLength;
-    }
-
-    public void setMessageSeq(int messageSeq) {
-        this.messageSeq = ModifiableVariableFactory.safelySetValue(this.messageSeq, messageSeq);
-    }
-
-    public void setMessageSeq(ModifiableInteger messageSeq) {
-        this.messageSeq = messageSeq;
     }
 
     public void setFragmentOffset(int fragmentOffset) {
@@ -222,6 +192,60 @@ public class DtlsHandshakeMessageFragment extends HandshakeMessage {
     @Override
     public String toShortString() {
         return "DTLS_FRAG";
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 67 * hash + Objects.hashCode(this.fragmentOffset);
+        hash = 67 * hash + Objects.hashCode(this.fragmentLength);
+        hash = 67 * hash + Objects.hashCode(this.epoch);
+        hash = 67 * hash + Arrays.hashCode(this.fragmentContentConfig);
+        hash = 67 * hash + this.messageSequenceConfig;
+        hash = 67 * hash + this.offsetConfig;
+        hash = 67 * hash + this.handshakeMessageLengthConfig;
+        hash = 67 * hash + Objects.hashCode(this.handshakeMessageTypeConfig);
+        hash = 67 * hash + this.maxFragmentLengthConfig;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final DtlsHandshakeMessageFragment other = (DtlsHandshakeMessageFragment) obj;
+        if (this.messageSequenceConfig != other.messageSequenceConfig) {
+            return false;
+        }
+        if (this.offsetConfig != other.offsetConfig) {
+            return false;
+        }
+        if (this.handshakeMessageLengthConfig != other.handshakeMessageLengthConfig) {
+            return false;
+        }
+        if (this.maxFragmentLengthConfig != other.maxFragmentLengthConfig) {
+            return false;
+        }
+        if (!Objects.equals(this.fragmentOffset, other.fragmentOffset)) {
+            return false;
+        }
+        if (!Objects.equals(this.fragmentLength, other.fragmentLength)) {
+            return false;
+        }
+        if (!Objects.equals(this.epoch, other.epoch)) {
+            return false;
+        }
+        if (!Arrays.equals(this.fragmentContentConfig, other.fragmentContentConfig)) {
+            return false;
+        }
+        return this.handshakeMessageTypeConfig == other.handshakeMessageTypeConfig;
     }
 
 }

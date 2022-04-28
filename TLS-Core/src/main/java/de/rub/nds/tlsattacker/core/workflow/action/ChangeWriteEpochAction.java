@@ -9,7 +9,7 @@
 
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
@@ -25,7 +25,9 @@ public class ChangeWriteEpochAction extends ChangeEpochAction {
     @Override
     protected void changeEpoch(TlsContext tlsContext) {
         LOGGER.info("Changed write epoch");
-        tlsContext.setWriteEpoch(epoch);
+        if (tlsContext.getRecordLayer() != null) {
+            tlsContext.getRecordLayer().setWriteEpoch(epoch);
+        }
     }
 
 }

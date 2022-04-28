@@ -15,13 +15,12 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.handler.PskRsaClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.RSAClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.PskRsaClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.PskRsaClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.PskRsaClientKeyExchangeSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -36,10 +35,6 @@ public class PskRsaClientKeyExchangeMessage extends RSAClientKeyExchangeMessage 
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger identityLength;
-
-    public PskRsaClientKeyExchangeMessage(Config tlsConfig) {
-        super(tlsConfig);
-    }
 
     public PskRsaClientKeyExchangeMessage() {
         super();
@@ -89,13 +84,13 @@ public class PskRsaClientKeyExchangeMessage extends RSAClientKeyExchangeMessage 
     }
 
     @Override
-    public RSAClientKeyExchangeHandler<PskRsaClientKeyExchangeMessage> getHandler(TlsContext context) {
-        return new PskRsaClientKeyExchangeHandler(context);
+    public RSAClientKeyExchangeHandler<PskRsaClientKeyExchangeMessage> getHandler(TlsContext tlsContext) {
+        return new PskRsaClientKeyExchangeHandler(tlsContext);
     }
 
     @Override
     public PskRsaClientKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new PskRsaClientKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+        return new PskRsaClientKeyExchangeParser(stream, tlsContext);
     }
 
     @Override

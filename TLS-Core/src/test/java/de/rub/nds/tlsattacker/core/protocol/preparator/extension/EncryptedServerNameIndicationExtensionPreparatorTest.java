@@ -14,11 +14,15 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ChooserType;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import de.rub.nds.tlsattacker.core.layer.LayerStack;
+import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
+import de.rub.nds.tlsattacker.core.layer.constant.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.EncryptedServerNameIndicationExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
 import java.math.BigInteger;
@@ -41,9 +45,10 @@ public class EncryptedServerNameIndicationExtensionPreparatorTest {
     @Before
     public void setUp() {
         Security.addProvider(new BouncyCastleProvider());
-        Config config = Config.createConfig();
-        context = new TlsContext(config);
-        chooser = ChooserFactory.getChooser(ChooserType.DEFAULT, context, config);
+        Config config = new Config();
+        Context outerContext = new Context(config);
+        context = outerContext.getTlsContext();
+        chooser = ChooserFactory.getChooser(ChooserType.DEFAULT, outerContext, config);
     }
 
     @Test
@@ -74,7 +79,7 @@ public class EncryptedServerNameIndicationExtensionPreparatorTest {
         EncryptedServerNameIndicationExtensionSerializer serializer =
             new EncryptedServerNameIndicationExtensionSerializer(msg);
         EncryptedServerNameIndicationExtensionPreparator preparator =
-            new EncryptedServerNameIndicationExtensionPreparator(chooser, msg, serializer);
+            new EncryptedServerNameIndicationExtensionPreparator(chooser, msg);
 
         ServerNamePair pair = new ServerNamePair(nameTypeConfig, hostnameConfig.getBytes(StandardCharsets.UTF_8));
         msg.getClientEsniInner().getServerNameList().add(pair);

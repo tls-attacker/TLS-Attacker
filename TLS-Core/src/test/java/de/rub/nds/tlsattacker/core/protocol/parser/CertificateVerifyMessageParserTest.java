@@ -13,7 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
@@ -55,8 +55,9 @@ public class CertificateVerifyMessageParserTest {
      */
     @Test
     public void testParse() {
-        CertificateVerifyParser parser = new CertificateVerifyParser(new ByteArrayInputStream(message),
-            ProtocolVersion.TLS12, new TlsContext(config));
+        TlsContext tlsContext = new TlsContext(config);
+        tlsContext.setLastRecordVersion(ProtocolVersion.TLS12);
+        CertificateVerifyParser parser = new CertificateVerifyParser(new ByteArrayInputStream(message), tlsContext);
         CertificateVerifyMessage certVerifyMessage = new CertificateVerifyMessage();
         parser.parse(certVerifyMessage);
         assertArrayEquals(sigHashAlgo, certVerifyMessage.getSignatureHashAlgorithm().getValue());

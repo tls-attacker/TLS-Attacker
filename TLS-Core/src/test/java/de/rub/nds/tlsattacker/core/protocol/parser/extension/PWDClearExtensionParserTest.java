@@ -12,6 +12,7 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PWDClearExtensionMessage;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
@@ -31,6 +32,7 @@ public class PWDClearExtensionParserTest {
     private final byte[] expectedBytes;
     private final int usernameLength;
     private final String username;
+    private final Config config = Config.createConfig();
 
     public PWDClearExtensionParserTest(byte[] expectedBytes, int usernameLength, String username) {
         this.expectedBytes = expectedBytes;
@@ -40,8 +42,9 @@ public class PWDClearExtensionParserTest {
 
     @Test
     public void testParse() {
+        TlsContext tlsContext = new TlsContext(config);
         PWDClearExtensionParser parser =
-            new PWDClearExtensionParser(new ByteArrayInputStream(expectedBytes), Config.createConfig());
+            new PWDClearExtensionParser(new ByteArrayInputStream(expectedBytes), tlsContext);
         PWDClearExtensionMessage msg = new PWDClearExtensionMessage();
         parser.parse(msg);
         assertEquals(usernameLength, (long) msg.getUsernameLength().getValue());

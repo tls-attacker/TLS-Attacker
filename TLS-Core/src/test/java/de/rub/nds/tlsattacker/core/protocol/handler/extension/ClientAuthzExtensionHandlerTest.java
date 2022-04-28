@@ -11,8 +11,8 @@ package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AuthzDataFormat;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientAuthzExtensionMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.Arrays;
 import java.util.List;
 import static org.hamcrest.CoreMatchers.is;
@@ -26,12 +26,12 @@ public class ClientAuthzExtensionHandlerTest {
     private final List<AuthzDataFormat> authzFormatList = Arrays.asList(AuthzDataFormat.X509_ATTR_CERT,
         AuthzDataFormat.SAML_ASSERTION, AuthzDataFormat.X509_ATTR_CERT_URL, AuthzDataFormat.SAML_ASSERTION_URL);
     private ClientAuthzExtensionHandler handler;
-    private TlsContext context;
+    private TlsContext tlsContext;
 
     @Before
     public void setUp() {
-        context = new TlsContext();
-        handler = new ClientAuthzExtensionHandler(context);
+        tlsContext = new TlsContext();
+        handler = new ClientAuthzExtensionHandler(tlsContext);
     }
 
     @Test
@@ -41,6 +41,6 @@ public class ClientAuthzExtensionHandlerTest {
 
         handler.adjustContext(msg);
 
-        assertThat(authzFormatList, is(context.getClientAuthzDataFormatList()));
+        assertThat(authzFormatList, is(tlsContext.getClientAuthzDataFormatList()));
     }
 }

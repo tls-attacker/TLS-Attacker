@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.UserMappingExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.UserMappingExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,9 +20,8 @@ public class UserMappingExtensionPreparator extends ExtensionPreparator<UserMapp
 
     private final UserMappingExtensionMessage msg;
 
-    public UserMappingExtensionPreparator(Chooser chooser, UserMappingExtensionMessage message,
-        UserMappingExtensionSerializer serializer) {
-        super(chooser, message, serializer);
+    public UserMappingExtensionPreparator(Chooser chooser, UserMappingExtensionMessage message) {
+        super(chooser, message);
         msg = message;
     }
 

@@ -13,7 +13,6 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EllipticCurvesExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.EllipticCurvesExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import org.apache.logging.log4j.LogManager;
@@ -29,9 +28,8 @@ public class EllipticCurvesExtensionPreparator extends ExtensionPreparator<Ellip
 
     private final EllipticCurvesExtensionMessage msg;
 
-    public EllipticCurvesExtensionPreparator(Chooser chooser, EllipticCurvesExtensionMessage message,
-        EllipticCurvesExtensionSerializer serializer) {
-        super(chooser, message, serializer);
+    public EllipticCurvesExtensionPreparator(Chooser chooser, EllipticCurvesExtensionMessage message) {
+        super(chooser, message);
         msg = message;
     }
 

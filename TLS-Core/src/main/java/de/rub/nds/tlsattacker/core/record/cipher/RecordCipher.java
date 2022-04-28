@@ -16,8 +16,8 @@ import de.rub.nds.tlsattacker.core.crypto.cipher.DecryptionCipher;
 import de.rub.nds.tlsattacker.core.crypto.cipher.EncryptionCipher;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.record.Record;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -40,14 +40,14 @@ public abstract class RecordCipher {
     /**
      * TLS context
      */
-    private TlsContext context;
+    private TlsContext tlsContext;
     /**
      * cipher state
      */
     private CipherState state;
 
-    public RecordCipher(TlsContext context, CipherState state) {
-        this.context = context;
+    public RecordCipher(TlsContext tlsContext, CipherState state) {
+        this.tlsContext = tlsContext;
         this.state = state;
     }
 
@@ -129,23 +129,23 @@ public abstract class RecordCipher {
     }
 
     public ConnectionEndType getLocalConnectionEndType() {
-        return context.getConnection().getLocalConnectionEndType();
+        return tlsContext.getContext().getConnection().getLocalConnectionEndType();
     }
 
     public ConnectionEndType getConnectionEndType() {
-        return context.getChooser().getConnectionEndType();
+        return tlsContext.getChooser().getConnectionEndType();
     }
 
     public Integer getDefaultAdditionalPadding() {
-        return context.getConfig().getDefaultAdditionalPadding();
+        return tlsContext.getConfig().getDefaultAdditionalPadding();
     }
 
     public ConnectionEndType getTalkingConnectionEndType() {
-        return context.getTalkingConnectionEndType();
+        return tlsContext.getTalkingConnectionEndType();
     }
 
     public Random getRandom() {
-        return context.getRandom();
+        return tlsContext.getRandom();
     }
 
 }

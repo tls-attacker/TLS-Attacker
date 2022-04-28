@@ -156,13 +156,13 @@ public abstract class GOSTClientKeyExchangePreparator
     }
 
     private void preparePms() {
-        byte[] pms = chooser.getContext().getPreMasterSecret();
+        byte[] pms = chooser.getContext().getTlsContext().getPreMasterSecret();
         if (pms != null) {
             LOGGER.debug("Using preset PreMasterSecret from context.");
         } else {
             LOGGER.debug("Generating random PreMasterSecret.");
             pms = new byte[32];
-            chooser.getContext().getRandom().nextBytes(pms);
+            chooser.getContext().getTlsContext().getRandom().nextBytes(pms);
         }
 
         msg.getComputations().setPremasterSecret(pms);

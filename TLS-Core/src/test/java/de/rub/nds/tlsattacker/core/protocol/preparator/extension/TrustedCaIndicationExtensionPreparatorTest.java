@@ -12,7 +12,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TrustedCaIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.TrustedCaIndicationExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.util.Arrays;
 import java.util.List;
 import static org.junit.Assert.assertArrayEquals;
@@ -33,8 +33,7 @@ public class TrustedCaIndicationExtensionPreparatorTest {
     public void testPreparator() {
         context = new TlsContext();
         msg = new TrustedCaIndicationExtensionMessage();
-        preparator = new TrustedCaIndicationExtensionPreparator(context.getChooser(), msg,
-            new TrustedCaIndicationExtensionSerializer(msg));
+        preparator = new TrustedCaIndicationExtensionPreparator(context.getChooser(), msg);
 
         context.getConfig().setTrustedCaIndicationExtensionAuthorities(trustedAuthorities);
 

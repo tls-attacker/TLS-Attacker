@@ -9,15 +9,15 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerAuthzExtensionMessage;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 
 public class ServerAuthzExtensionParser extends ExtensionParser<ServerAuthzExtensionMessage> {
 
-    public ServerAuthzExtensionParser(InputStream stream, Config config) {
-        super(stream, config);
+    public ServerAuthzExtensionParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
     }
 
     @Override

@@ -9,22 +9,14 @@
 
 package de.rub.nds.tlsattacker.core.protocol;
 
-import de.rub.nds.tlsattacker.core.config.Config;
 import java.io.InputStream;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import de.rub.nds.tlsattacker.core.layer.data.Parser;
 
 public abstract class ProtocolMessageParser<Message extends ProtocolMessage> extends Parser<Message> {
 
-    private static final Logger LOGGER = LogManager.getLogger();
-    protected final Config config;
-
-    public ProtocolMessageParser(InputStream stream, Config config) {
+    public ProtocolMessageParser(InputStream stream) {
         super(stream);
-        this.config = config;
     }
 
-    protected Config getConfig() {
-        return config;
-    }
 }

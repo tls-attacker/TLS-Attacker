@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.PWDClientKeyExchangeMessage;
 import static org.junit.Assert.assertArrayEquals;
 import org.junit.Test;
@@ -44,7 +43,7 @@ public class PWDClientKeyExchangeSerializerTest {
         msg.setElementLength(65);
         msg.setScalar(scalar);
         msg.setScalarLength(32);
-        PWDClientKeyExchangeSerializer serializer = new PWDClientKeyExchangeSerializer(msg, ProtocolVersion.TLS12);
+        PWDClientKeyExchangeSerializer serializer = new PWDClientKeyExchangeSerializer(msg);
         assertArrayEquals(message, serializer.serializeHandshakeMessageContent());
     }
 

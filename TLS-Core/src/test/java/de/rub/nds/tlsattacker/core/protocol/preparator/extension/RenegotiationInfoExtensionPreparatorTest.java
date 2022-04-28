@@ -12,7 +12,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RenegotiationInfoExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.RenegotiationInfoExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import org.junit.Before;
@@ -31,8 +31,7 @@ public class RenegotiationInfoExtensionPreparatorTest {
     public void setUp() {
         context = new TlsContext();
         message = new RenegotiationInfoExtensionMessage();
-        preparator = new RenegotiationInfoExtensionPreparator(context.getChooser(), message,
-            new RenegotiationInfoExtensionSerializer(message));
+        preparator = new RenegotiationInfoExtensionPreparator(context.getChooser(), message);
 
     }
 

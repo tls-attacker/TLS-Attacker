@@ -13,9 +13,11 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.layer.LayerStack;
+import de.rub.nds.tlsattacker.core.layer.impl.DtlsFragmentLayer;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.state.session.TicketSession;
 import de.rub.nds.tlsattacker.util.FixedTimeProvider;
 import de.rub.nds.tlsattacker.util.TimeHelper;
@@ -85,6 +87,7 @@ public class ClientHelloPreparatorTest {
         context.getConfig().setHighestProtocolVersion(ProtocolVersion.DTLS10);
         context.getConfig().setDefaultClientSessionId(new byte[] { 0, 1, 2, 3 });
         context.setDtlsCookie(new byte[] { 7, 6, 5 });
+        context.getContext().setLayerStack(new LayerStack(context.getContext(), new DtlsFragmentLayer(context)));
         preparator.prepare();
         assertArrayEquals(ArrayConverter.hexStringToByteArray("009AC02B"), message.getCipherSuites().getValue());
         assertTrue(4 == message.getCipherSuiteLength().getValue());
@@ -93,37 +96,6 @@ public class ClientHelloPreparatorTest {
         assertArrayEquals(new byte[] { 7, 6, 5 }, message.getCookie().getValue());
         assertTrue(3 == message.getCookieLength().getValue());
         assertArrayEquals(message.getProtocolVersion().getValue(), ProtocolVersion.DTLS10.getValue());
-        assertArrayEquals(message.getSessionId().getValue(), new byte[] { 0, 1, 2, 3 });
-        assertTrue(4 == message.getSessionIdLength().getValue());
-        assertArrayEquals(ArrayConverter.longToUint32Bytes(12345678l), message.getUnixTime().getValue());
-        assertTrue(message.getExtensionsLength().getValue() == 0);
-        assertTrue(message.getExtensionBytes().getValue().length == 0);
-
-    }
-
-    @Test
-    public void testDtlsPrepareWithCookie() {
-        TimeHelper.setProvider(new FixedTimeProvider(12345678l));
-        List<CipherSuite> cipherSuiteList = new LinkedList<>();
-        cipherSuiteList.add(CipherSuite.TLS_DHE_RSA_WITH_SEED_CBC_SHA);
-        cipherSuiteList.add(CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256);
-        List<CompressionMethod> methodList = new LinkedList<>();
-        methodList.add(CompressionMethod.DEFLATE);
-        methodList.add(CompressionMethod.NULL);
-        context.getConfig().setDefaultClientSupportedCipherSuites(cipherSuiteList);
-        context.getConfig().setDefaultClientSupportedCompressionMethods(methodList);
-        context.getConfig().setHighestProtocolVersion(ProtocolVersion.DTLS12);
-        context.getConfig().setDefaultSelectedProtocolVersion(ProtocolVersion.DTLS12);
-        context.getConfig().setDefaultClientSessionId(new byte[] { 0, 1, 2, 3 });
-        context.setDtlsCookie(new byte[] { 7, 6, 5 });
-        preparator.prepare();
-        assertArrayEquals(ArrayConverter.hexStringToByteArray("009AC02B"), message.getCipherSuites().getValue());
-        assertTrue(4 == message.getCipherSuiteLength().getValue());
-        assertArrayEquals(ArrayConverter.hexStringToByteArray("0100"), message.getCompressions().getValue());
-        assertTrue(2 == message.getCompressionLength().getValue());
-        assertArrayEquals(new byte[] { 7, 6, 5 }, message.getCookie().getValue());
-        assertTrue(3 == message.getCookieLength().getValue());
-        assertArrayEquals(message.getProtocolVersion().getValue(), ProtocolVersion.DTLS12.getValue());
         assertArrayEquals(message.getSessionId().getValue(), new byte[] { 0, 1, 2, 3 });
         assertTrue(4 == message.getSessionIdLength().getValue());
         assertArrayEquals(ArrayConverter.longToUint32Bytes(12345678l), message.getUnixTime().getValue());

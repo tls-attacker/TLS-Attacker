@@ -10,14 +10,13 @@
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.EmptyClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.EmptyClientComputations;
 import de.rub.nds.tlsattacker.core.protocol.parser.EmptyClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.EmptyClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.EmptyClientKeyExchangeSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -30,10 +29,6 @@ public class EmptyClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     public EmptyClientKeyExchangeMessage() {
         super();
-    }
-
-    public EmptyClientKeyExchangeMessage(Config tlsConfig) {
-        super(tlsConfig);
     }
 
     @Override
@@ -49,13 +44,13 @@ public class EmptyClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     }
 
     @Override
-    public EmptyClientKeyExchangeHandler getHandler(TlsContext context) {
-        return new EmptyClientKeyExchangeHandler(context);
+    public EmptyClientKeyExchangeHandler getHandler(TlsContext tlsContext) {
+        return new EmptyClientKeyExchangeHandler(tlsContext);
     }
 
     @Override
     public EmptyClientKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new EmptyClientKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+        return new EmptyClientKeyExchangeParser(stream, tlsContext);
     }
 
     @Override
@@ -65,7 +60,7 @@ public class EmptyClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     @Override
     public EmptyClientKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
-        return new EmptyClientKeyExchangeSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new EmptyClientKeyExchangeSerializer(this);
     }
 
     @Override

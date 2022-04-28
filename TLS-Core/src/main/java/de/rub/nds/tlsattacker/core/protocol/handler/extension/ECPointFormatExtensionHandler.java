@@ -10,8 +10,8 @@
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ECPointFormatExtensionMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.LinkedList;
 import java.util.List;
@@ -38,10 +38,10 @@ public class ECPointFormatExtensionHandler extends ExtensionHandler<ECPointForma
                 LOGGER.warn("Unknown ECPointFormat:" + b);
             }
         }
-        if (context.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
-            context.setClientPointFormatsList(formatList);
+        if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
+            tlsContext.setClientPointFormatsList(formatList);
         } else {
-            context.setServerPointFormatsList(formatList);
+            tlsContext.setServerPointFormatsList(formatList);
         }
     }
 

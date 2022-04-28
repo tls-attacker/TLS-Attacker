@@ -68,11 +68,11 @@ public class ServerHelloSerializerTest {
     }
 
     /**
-     * Test of parse method, of class ServerHelloMessageParser.
+     * Test of serializeHandshakeMessageContent method, of class ServerHelloSerializer.
      */
     @Test
-    public void serialize() {
-        ServerHelloSerializer serializer = new ServerHelloSerializer(helloMessage, ProtocolVersion.TLS12);
+    public void testSerializeHandshakeMessageContent() {
+        ServerHelloSerializer serializer = new ServerHelloSerializer(helloMessage);
         byte[] serialised = serializer.serializeHandshakeMessageContent();
         assertArrayEquals(serialised, message);
     }

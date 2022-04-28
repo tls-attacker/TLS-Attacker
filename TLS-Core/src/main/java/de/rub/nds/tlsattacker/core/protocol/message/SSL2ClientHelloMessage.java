@@ -14,15 +14,15 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ClientHelloHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.SSL2ClientHelloParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.SSL2ClientHelloPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.SSL2ClientHelloSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
+import java.util.Objects;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @SuppressWarnings("serial")
@@ -51,10 +51,6 @@ public class SSL2ClientHelloMessage extends SSL2HandshakeMessage {
 
     public SSL2ClientHelloMessage() {
         super(HandshakeMessageType.SSL2_CLIENT_HELLO);
-    }
-
-    public SSL2ClientHelloMessage(Config config) {
-        this();
     }
 
     @Override
@@ -189,13 +185,13 @@ public class SSL2ClientHelloMessage extends SSL2HandshakeMessage {
     }
 
     @Override
-    public SSL2ClientHelloHandler getHandler(TlsContext context) {
-        return new SSL2ClientHelloHandler(context);
+    public SSL2ClientHelloHandler getHandler(TlsContext tlsContext) {
+        return new SSL2ClientHelloHandler(tlsContext);
     }
 
     @Override
     public SSL2ClientHelloParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new SSL2ClientHelloParser(stream, tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext);
+        return new SSL2ClientHelloParser(stream, tlsContext);
     }
 
     @Override
@@ -205,6 +201,53 @@ public class SSL2ClientHelloMessage extends SSL2HandshakeMessage {
 
     @Override
     public SSL2ClientHelloSerializer getSerializer(TlsContext tlsContext) {
-        return new SSL2ClientHelloSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new SSL2ClientHelloSerializer(this);
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 89 * hash + Objects.hashCode(this.protocolVersion);
+        hash = 89 * hash + Objects.hashCode(this.cipherSuiteLength);
+        hash = 89 * hash + Objects.hashCode(this.sessionIdLength);
+        hash = 89 * hash + Objects.hashCode(this.challengeLength);
+        hash = 89 * hash + Objects.hashCode(this.cipherSuites);
+        hash = 89 * hash + Objects.hashCode(this.sessionId);
+        hash = 89 * hash + Objects.hashCode(this.challenge);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final SSL2ClientHelloMessage other = (SSL2ClientHelloMessage) obj;
+        if (!Objects.equals(this.protocolVersion, other.protocolVersion)) {
+            return false;
+        }
+        if (!Objects.equals(this.cipherSuiteLength, other.cipherSuiteLength)) {
+            return false;
+        }
+        if (!Objects.equals(this.sessionIdLength, other.sessionIdLength)) {
+            return false;
+        }
+        if (!Objects.equals(this.challengeLength, other.challengeLength)) {
+            return false;
+        }
+        if (!Objects.equals(this.cipherSuites, other.cipherSuites)) {
+            return false;
+        }
+        if (!Objects.equals(this.sessionId, other.sessionId)) {
+            return false;
+        }
+        return Objects.equals(this.challenge, other.challenge);
+    }
+
 }

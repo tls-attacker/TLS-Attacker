@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,8 +26,8 @@ public class SignatureAndHashAlgorithmsExtensionHandler
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SignatureAndHashAlgorithmsExtensionHandler(TlsContext context) {
-        super(context);
+    public SignatureAndHashAlgorithmsExtensionHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override
@@ -48,7 +48,7 @@ public class SignatureAndHashAlgorithmsExtensionHandler
                 algoList.add(algo);
             }
         }
-        context.setClientSupportedSignatureAndHashAlgorithms(algoList);
+        tlsContext.setClientSupportedSignatureAndHashAlgorithms(algoList);
     }
 
 }

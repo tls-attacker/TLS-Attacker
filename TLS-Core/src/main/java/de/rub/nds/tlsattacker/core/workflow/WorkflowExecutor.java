@@ -9,6 +9,10 @@
 
 package de.rub.nds.tlsattacker.core.workflow;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.function.Function;
+
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
@@ -18,11 +22,11 @@ import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
-import de.rub.nds.tlsattacker.core.layer.constant.LayerStackType;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
+import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
@@ -31,9 +35,6 @@ import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;
 import de.rub.nds.tlsattacker.transport.socket.SocketState;
 import de.rub.nds.tlsattacker.transport.tcp.ClientTcpTransportHandler;
 import de.rub.nds.tlsattacker.transport.tcp.TcpTransportHandler;
-import java.io.IOException;
-import java.util.List;
-import java.util.function.Function;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -90,13 +91,17 @@ public abstract class WorkflowExecutor {
 
     public abstract void executeWorkflow() throws WorkflowExecutionException;
 
+    public void initProtocolStack(Context context) throws IOException {
+        context.setLayerStack(LayerStackFactory.createLayerStack(config.getDefaultLayerConfiguration(), context));
+    }
+
     /**
      * Initialize the context's transport handler.Start listening or connect to a server, depending on our connection
      * end type.
      *
      * @param context
      */
-    public void initTransportHandler(TlsContext context) {
+    public void initTransportHandler(Context context) {
 
         if (context.getTransportHandler() == null) {
             if (context.getConnection() == null) {
@@ -154,18 +159,18 @@ public abstract class WorkflowExecutor {
     }
 
     public void closeConnection() {
-        for (TlsContext ctx : state.getAllTlsContexts()) {
+        for (Context context : state.getAllContexts()) {
             try {
-                ctx.getTransportHandler().closeConnection();
+                context.getTransportHandler().closeConnection();
             } catch (IOException ex) {
-                LOGGER.warn("Could not close connection for context " + ctx);
+                LOGGER.warn("Could not close connection for context " + context);
                 LOGGER.debug(ex);
             }
         }
     }
 
     public void initAllLayer() throws IOException {
-        for (TlsContext ctx : state.getAllTlsContexts()) {
+        for (Context ctx : state.getAllContexts()) {
             initTransportHandler(ctx);
             initProtocolStack(ctx);
         }
@@ -181,14 +186,14 @@ public abstract class WorkflowExecutor {
     }
 
     public void setFinalSocketState() {
-        for (TlsContext ctx : state.getAllTlsContexts()) {
+        for (Context ctx : state.getAllContexts()) {
             TransportHandler handler = ctx.getTransportHandler();
             if (handler instanceof TcpTransportHandler) {
                 SocketState socketSt =
                     ((TcpTransportHandler) handler).getSocketState(config.isReceiveFinalTcpSocketStateWithTimeout());
-                ctx.setFinalSocketState(socketSt);
+                ctx.getTcpContext().setFinalSocketState(socketSt);
             } else {
-                ctx.setFinalSocketState(SocketState.UNAVAILABLE);
+                ctx.getTcpContext().setFinalSocketState(SocketState.UNAVAILABLE);
             }
         }
     }
@@ -197,8 +202,8 @@ public abstract class WorkflowExecutor {
      * Check if a at least one TLS context received a fatal alert.
      */
     public boolean isReceivedFatalAlert() {
-        for (TlsContext ctx : state.getAllTlsContexts()) {
-            if (ctx.isReceivedFatalAlert()) {
+        for (Context ctx : state.getAllContexts()) {
+            if (ctx.getTlsContext().isReceivedFatalAlert()) {
                 return true;
             }
         }
@@ -221,16 +226,11 @@ public abstract class WorkflowExecutor {
     }
 
     public boolean isIoException() {
-        for (TlsContext context : state.getAllTlsContexts()) {
-            if (context.isReceivedTransportHandlerException()) {
+        for (Context context : state.getAllContexts()) {
+            if (context.getTlsContext().isReceivedTransportHandlerException()) {
                 return true;
             }
         }
         return false;
-    }
-
-    private void initProtocolStack(TlsContext context) throws IOException {
-        context.setLayerStack(LayerStackFactory.createLayerStack(LayerStackType.TLS, context));
-
     }
 }

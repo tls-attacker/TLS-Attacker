@@ -14,14 +14,13 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.CertificateStatusRequestV2ExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.RequestItemV2;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.CertificateStatusRequestV2ExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.CertificateStatusRequestV2ExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.CertificateStatusRequestV2ExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -41,10 +40,6 @@ public class CertificateStatusRequestV2ExtensionMessage
     private ModifiableByteArray statusRequestBytes;
 
     public CertificateStatusRequestV2ExtensionMessage() {
-        super(ExtensionType.STATUS_REQUEST_V2);
-    }
-
-    public CertificateStatusRequestV2ExtensionMessage(Config config) {
         super(ExtensionType.STATUS_REQUEST_V2);
     }
 
@@ -83,13 +78,12 @@ public class CertificateStatusRequestV2ExtensionMessage
 
     @Override
     public CertificateStatusRequestV2ExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new CertificateStatusRequestV2ExtensionParser(stream, tlsContext.getConfig());
+        return new CertificateStatusRequestV2ExtensionParser(stream, tlsContext);
     }
 
     @Override
     public CertificateStatusRequestV2ExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new CertificateStatusRequestV2ExtensionPreparator(tlsContext.getChooser(), this,
-            getSerializer(tlsContext));
+        return new CertificateStatusRequestV2ExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

@@ -53,10 +53,10 @@ public class CertificateFetcher {
         WorkflowTrace trace = factory.createTlsEntryWorkflowTrace(config.getDefaultClientConnection());
         trace.addTlsAction(new SendAction(new ClientHelloMessage(config)));
         if (config.getHighestProtocolVersion().isDTLS()) {
-            trace.addTlsAction(new ReceiveAction(new HelloVerifyRequestMessage(config)));
+            trace.addTlsAction(new ReceiveAction(new HelloVerifyRequestMessage()));
             trace.addTlsAction(new SendAction(new ClientHelloMessage(config)));
         }
-        trace.addTlsAction(new ReceiveTillAction(new CertificateMessage(config)));
+        trace.addTlsAction(new ReceiveTillAction(new CertificateMessage()));
         State state = new State(config, trace);
 
         WorkflowExecutor workflowExecutor =
@@ -64,8 +64,8 @@ public class CertificateFetcher {
         try {
             workflowExecutor.executeWorkflow();
 
-            if (!state.getTlsContext().getTransportHandler().isClosed()) {
-                state.getTlsContext().getTransportHandler().closeConnection();
+            if (!state.getContext().getTransportHandler().isClosed()) {
+                state.getContext().getTransportHandler().closeConnection();
             }
         } catch (IOException | WorkflowExecutionException e) {
             LOGGER.warn("Could not fetch ServerCertificate");

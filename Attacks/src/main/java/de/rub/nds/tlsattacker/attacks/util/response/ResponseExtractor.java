@@ -53,9 +53,9 @@ public class ResponseExtractor {
     }
 
     private static SocketState extractSocketState(State state) {
-        if (state.getTlsContext().getTransportHandler() instanceof ClientTcpTransportHandler) {
+        if (state.getContext().getTransportHandler() instanceof ClientTcpTransportHandler) {
             SocketState socketState =
-                (((ClientTcpTransportHandler) (state.getTlsContext().getTransportHandler())).getSocketState());
+                (((ClientTcpTransportHandler) (state.getContext().getTransportHandler())).getSocketState());
             return socketState;
         } else {
             return null;

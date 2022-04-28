@@ -13,7 +13,7 @@ package de.rub.nds.tlsattacker.core.state.parser;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ClientAuthenticationType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.protocol.Parser;
+import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.state.StatePlaintext;
 import java.io.ByteArrayInputStream;
 import org.apache.logging.log4j.LogManager;

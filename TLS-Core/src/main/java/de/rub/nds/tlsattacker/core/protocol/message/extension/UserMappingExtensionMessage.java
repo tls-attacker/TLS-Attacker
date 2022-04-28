@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.UserMappingExtensi
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.UserMappingExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.UserMappingExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.UserMappingExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -45,12 +45,12 @@ public class UserMappingExtensionMessage extends ExtensionMessage<UserMappingExt
 
     @Override
     public UserMappingExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new UserMappingExtensionParser(stream, tlsContext.getConfig());
+        return new UserMappingExtensionParser(stream, tlsContext);
     }
 
     @Override
     public UserMappingExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new UserMappingExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new UserMappingExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override
@@ -59,8 +59,8 @@ public class UserMappingExtensionMessage extends ExtensionMessage<UserMappingExt
     }
 
     @Override
-    public UserMappingExtensionHandler getHandler(TlsContext context) {
-        return new UserMappingExtensionHandler(context);
+    public UserMappingExtensionHandler getHandler(TlsContext tlsContext) {
+        return new UserMappingExtensionHandler(tlsContext);
     }
 
 }

@@ -11,10 +11,8 @@ package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
@@ -24,30 +22,14 @@ public class ClientHelloParser extends HelloMessageParser<ClientHelloMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private ConnectionEndType talkingConnectionEndType;
-
     /**
      * Constructor for the Parser class
      *
      * @param stream
-     * @param version
-     *                Version of the Protocol
-     * @param config
-     *                A Config used in the current context
-     */
-    /**
-     * Constructor for the Parser class
-     *
-     * @param stream
-     * @param version
-     *                                 Version of the Protocol
      * @param tlsContext
-     * @param talkingConnectionEndType
      */
-    public ClientHelloParser(InputStream stream, ProtocolVersion version, TlsContext tlsContext,
-        ConnectionEndType talkingConnectionEndType) {
-        super(stream, HandshakeMessageType.CLIENT_HELLO, version, tlsContext);
-        this.talkingConnectionEndType = talkingConnectionEndType;
+    public ClientHelloParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
     }
 
     @Override
@@ -68,10 +50,10 @@ public class ClientHelloParser extends HelloMessageParser<ClientHelloMessage> {
         parseCipherSuites(msg);
         parseCompressionLength(msg);
         parseCompressions(msg);
-        if (hasExtensionLengthField(msg)) {
+        if (hasExtensionLengthField()) {
             parseExtensionLength(msg);
             if (hasExtensions(msg)) {
-                parseExtensionBytes(msg, getVersion(), talkingConnectionEndType, false);
+                parseExtensionBytes(msg, false);
 
             }
         }

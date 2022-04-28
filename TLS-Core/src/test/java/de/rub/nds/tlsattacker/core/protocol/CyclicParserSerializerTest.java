@@ -12,7 +12,7 @@ package de.rub.nds.tlsattacker.core.protocol;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 import de.rub.nds.tlsattacker.util.UnlimitedStrengthEnabler;
 import de.rub.nds.tlsattacker.util.tests.IntegrationTests;
@@ -78,22 +78,22 @@ public class CyclicParserSerializerTest {
                 }
 
                 try {
-                    TlsContext context = new TlsContext();
-                    context.setSelectedProtocolVersion(version);
-                    context.getConfig().setHighestProtocolVersion(version);
-                    context.getConfig().setDefaultHighestClientProtocolVersion(version);
-                    context.getConfig().setDefaultLastRecordProtocolVersion(version);
+                    TlsContext tlsContext = new TlsContext();
+                    tlsContext.setSelectedProtocolVersion(version);
+                    tlsContext.getConfig().setHighestProtocolVersion(version);
+                    tlsContext.getConfig().setDefaultHighestClientProtocolVersion(version);
+                    tlsContext.getConfig().setDefaultLastRecordProtocolVersion(version);
 
-                    ProtocolMessagePreparator preparator = message.getPreparator(context);
+                    ProtocolMessagePreparator preparator = message.getPreparator(tlsContext);
                     preparator.prepare();
-                    ProtocolMessageSerializer serializer = message.getSerializer(context);
-                    byte[] serializedMessage = serializer.serializeBytes();
+                    ProtocolMessageSerializer serializer = message.getSerializer(tlsContext);
+                    byte[] serializedMessage = serializer.serialize();
                     message =
                         (ProtocolMessage) getMessageConstructor(someMessageClass).newInstance(Config.createConfig());
                     ProtocolMessageParser parser =
-                        message.getParser(context, new ByteArrayInputStream(serializedMessage));
+                        message.getParser(tlsContext, new ByteArrayInputStream(serializedMessage));
                     parser.parse(message);
-                    byte[] serializedMessage2 = message.getSerializer(context).serializeBytes();
+                    byte[] serializedMessage2 = message.getSerializer(tlsContext).serialize();
                     Assert.assertArrayEquals(testName + " failed", serializedMessage, serializedMessage2);
                     CONSOLE.info("......." + testName + " - " + version.name() + " works as expected!");
                 } catch (UnsupportedOperationException ex) {

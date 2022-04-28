@@ -11,13 +11,12 @@ package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.EarlyDataExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.EarlyDataExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EarlyDataExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.EarlyDataExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -38,10 +37,6 @@ public class EarlyDataExtensionMessage extends ExtensionMessage<EarlyDataExtensi
     public EarlyDataExtensionMessage(boolean newSessionTicketExtension) {
         super(ExtensionType.EARLY_DATA);
         this.newSessionTicketExtension = newSessionTicketExtension;
-    }
-
-    public EarlyDataExtensionMessage(Config config) {
-        super(ExtensionType.EARLY_DATA);
     }
 
     /**
@@ -73,12 +68,12 @@ public class EarlyDataExtensionMessage extends ExtensionMessage<EarlyDataExtensi
 
     @Override
     public EarlyDataExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new EarlyDataExtensionParser(stream, tlsContext.getConfig());
+        return new EarlyDataExtensionParser(stream, tlsContext);
     }
 
     @Override
     public EarlyDataExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new EarlyDataExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new EarlyDataExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override
@@ -87,8 +82,8 @@ public class EarlyDataExtensionMessage extends ExtensionMessage<EarlyDataExtensi
     }
 
     @Override
-    public EarlyDataExtensionHandler getHandler(TlsContext context) {
-        return new EarlyDataExtensionHandler(context);
+    public EarlyDataExtensionHandler getHandler(TlsContext tlsContext) {
+        return new EarlyDataExtensionHandler(tlsContext);
     }
 
 }

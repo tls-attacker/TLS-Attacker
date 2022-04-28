@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CachedInfoExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.CachedObjectPreparator;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
@@ -40,27 +40,29 @@ public class CachedInfoExtensionParserTest {
                 ArrayConverter.hexStringToByteArray("000d01060102030405060203070809") } });
     }
 
-    private final ConnectionEndType connectionEndType;
     private final int cachedInfoLength;
     private final byte[] cachedInfoBytes;
     private final List<CachedObject> cachedObjectList;
     private final byte[] extensionBytes;
+    private final Config config = Config.createConfig();
+    private final ConnectionEndType talkingConnectionEndType;
 
-    public CachedInfoExtensionParserTest(ConnectionEndType connectionEndType, int cachedInfoLength,
+    public CachedInfoExtensionParserTest(ConnectionEndType talkingConnectionEndType, int cachedInfoLength,
         byte[] cachedInfoBytes, List<CachedObject> cachedObjectList, byte[] extensionBytes) {
-        this.connectionEndType = connectionEndType;
         this.cachedInfoLength = cachedInfoLength;
         this.cachedInfoBytes = cachedInfoBytes;
         this.cachedObjectList = cachedObjectList;
         this.extensionBytes = extensionBytes;
+        this.talkingConnectionEndType = talkingConnectionEndType;
     }
 
     @Test
     public void testParse() {
-        TlsContext context = new TlsContext();
+        TlsContext tlsContext = new TlsContext(config);
+        tlsContext.setTalkingConnectionEndType(talkingConnectionEndType);
 
         CachedInfoExtensionParser parser =
-            new CachedInfoExtensionParser(new ByteArrayInputStream(extensionBytes), Config.createConfig());
+            new CachedInfoExtensionParser(new ByteArrayInputStream(extensionBytes), tlsContext);
         CachedInfoExtensionMessage msg = new CachedInfoExtensionMessage();
         parser.parse(msg);
 

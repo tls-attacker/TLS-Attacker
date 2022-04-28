@@ -12,6 +12,7 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.GreaseExtensionMessage;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
@@ -31,6 +32,7 @@ public class GreaseExtensionParserTest {
 
     private final byte[] extension;
     private final byte[] randomData;
+    private final Config config = Config.createConfig();
 
     public GreaseExtensionParserTest(byte[] extension, byte[] randomData) {
         this.extension = extension;
@@ -38,12 +40,12 @@ public class GreaseExtensionParserTest {
     }
 
     /**
-     * Test of parseExtensionMessageContent method, of class HeartbeatExtensionParser.
+     * Test of parse method, of class HeartbeatExtensionParser.
      */
     @Test
     public void testParse() {
-        GreaseExtensionParser parser =
-            new GreaseExtensionParser(new ByteArrayInputStream(extension), Config.createConfig());
+        TlsContext tlsContext = new TlsContext(config);
+        GreaseExtensionParser parser = new GreaseExtensionParser(new ByteArrayInputStream(extension), tlsContext);
         GreaseExtensionMessage msg = new GreaseExtensionMessage();
         parser.parse(msg);
         assertArrayEquals(randomData, msg.getRandomData().getValue());

@@ -15,17 +15,19 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ClientMasterKeyHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.RSAClientComputations;
 import de.rub.nds.tlsattacker.core.protocol.parser.HandshakeMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.SSL2ClientMasterKeyPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.SSL2ClientMasterKeySerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.state.Context;
+
 import java.io.InputStream;
 import java.util.List;
+import java.util.Objects;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -62,18 +64,14 @@ public class SSL2ClientMasterKeyMessage extends SSL2HandshakeMessage {
         super(HandshakeMessageType.SSL2_CLIENT_MASTER_KEY);
     }
 
-    public SSL2ClientMasterKeyMessage(Config config) {
-        this();
-    }
-
     @Override
     public String toCompactString() {
         return "SSL2 ClientMasterKey Message";
     }
 
     @Override
-    public SSL2ClientMasterKeyHandler getHandler(TlsContext context) {
-        return new SSL2ClientMasterKeyHandler(context);
+    public SSL2ClientMasterKeyHandler getHandler(TlsContext tlsContext) {
+        return new SSL2ClientMasterKeyHandler(tlsContext);
     }
 
     @Override
@@ -218,6 +216,56 @@ public class SSL2ClientMasterKeyMessage extends SSL2HandshakeMessage {
             allModifiableVariableHolders.add(computations);
         }
         return allModifiableVariableHolders;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 29 * hash + Objects.hashCode(this.cipherKind);
+        hash = 29 * hash + Objects.hashCode(this.clearKeyLength);
+        hash = 29 * hash + Objects.hashCode(this.encryptedKeyLength);
+        hash = 29 * hash + Objects.hashCode(this.keyArgLength);
+        hash = 29 * hash + Objects.hashCode(this.clearKeyData);
+        hash = 29 * hash + Objects.hashCode(this.encryptedKeyData);
+        hash = 29 * hash + Objects.hashCode(this.keyArgData);
+        hash = 29 * hash + Objects.hashCode(this.computations);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final SSL2ClientMasterKeyMessage other = (SSL2ClientMasterKeyMessage) obj;
+        if (!Objects.equals(this.cipherKind, other.cipherKind)) {
+            return false;
+        }
+        if (!Objects.equals(this.clearKeyLength, other.clearKeyLength)) {
+            return false;
+        }
+        if (!Objects.equals(this.encryptedKeyLength, other.encryptedKeyLength)) {
+            return false;
+        }
+        if (!Objects.equals(this.keyArgLength, other.keyArgLength)) {
+            return false;
+        }
+        if (!Objects.equals(this.clearKeyData, other.clearKeyData)) {
+            return false;
+        }
+        if (!Objects.equals(this.encryptedKeyData, other.encryptedKeyData)) {
+            return false;
+        }
+        if (!Objects.equals(this.keyArgData, other.keyArgData)) {
+            return false;
+        }
+        return Objects.equals(this.computations, other.computations);
     }
 
 }

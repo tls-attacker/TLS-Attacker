@@ -12,7 +12,7 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.protocol.Parser;
+import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,18 +22,18 @@ import java.io.InputStream;
 public class KeyShareEntryParser extends Parser<KeyShareEntry> {
 
     private static final Logger LOGGER = LogManager.getLogger();
+    private final boolean helloRetryRequestForm;
 
-    private KeyShareEntry entry;
-
-    public KeyShareEntryParser(InputStream stream) {
+    public KeyShareEntryParser(InputStream stream, boolean helloRetryRequestForm) {
         super(stream);
+        this.helloRetryRequestForm = helloRetryRequestForm;
     }
 
     @Override
     public void parse(KeyShareEntry entry) {
         LOGGER.debug("Parsing KeyShareEntry");
         parseKeyShareGroup(entry);
-        if (getBytesLeft() > 0) {
+        if (!helloRetryRequestForm) {
             parseKeyShareLength(entry);
             parseKeyShare(entry);
         }

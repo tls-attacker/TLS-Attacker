@@ -20,7 +20,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import java.io.IOException;
@@ -48,7 +48,7 @@ public class SendDynamicServerCertificateAction extends MessageAction implements
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
-        TlsContext tlsContext = state.getTlsContext(connectionAlias);
+        TlsContext tlsContext = state.getContext(connectionAlias).getTlsContext();
 
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
@@ -67,7 +67,7 @@ public class SendDynamicServerCertificateAction extends MessageAction implements
         }
 
         try {
-            send(tlsContext, messages, records);
+            send(tlsContext, messages, fragments, records);
             setExecuted(true);
         } catch (IOException e) {
             tlsContext.setReceivedTransportHandlerException(true);
@@ -147,29 +147,7 @@ public class SendDynamicServerCertificateAction extends MessageAction implements
             }
         }
         for (ModifiableVariableHolder holder : holders) {
-            List<Field> fields = holder.getAllModifiableVariableFields();
-            for (Field f : fields) {
-                f.setAccessible(true);
-
-                ModifiableVariable mv = null;
-                try {
-                    mv = (ModifiableVariable) f.get(holder);
-                } catch (IllegalArgumentException | IllegalAccessException ex) {
-                    LOGGER.warn("Could not retrieve ModifiableVariables");
-                    LOGGER.debug(ex);
-                }
-                if (mv != null) {
-                    if (mv.getModification() != null || mv.isCreateRandomModification()) {
-                        mv.setOriginalValue(null);
-                    } else {
-                        try {
-                            f.set(holder, null);
-                        } catch (IllegalArgumentException | IllegalAccessException ex) {
-                            LOGGER.warn("Could not strip ModifiableVariable without Modification");
-                        }
-                    }
-                }
-            }
+            holder.reset();
         }
         setExecuted(null);
     }
@@ -219,11 +197,6 @@ public class SendDynamicServerCertificateAction extends MessageAction implements
         hash = 67 * hash + Objects.hashCode(this.records);
         hash = 67 * hash + Objects.hashCode(this.fragments);
         return hash;
-    }
-
-    @Override
-    public MessageActionDirection getMessageDirection() {
-        return MessageActionDirection.SENDING;
     }
 
     @Override

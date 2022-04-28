@@ -13,7 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
@@ -53,8 +53,9 @@ public class HelloVerifyRequestParserTest {
      */
     @Test
     public void testParse() {
-        HelloVerifyRequestParser parser = new HelloVerifyRequestParser(new ByteArrayInputStream(message),
-            ProtocolVersion.DTLS10, new TlsContext(config));
+        TlsContext tlsContext = new TlsContext(config);
+        tlsContext.setSelectedProtocolVersion(ProtocolVersion.DTLS10);
+        HelloVerifyRequestParser parser = new HelloVerifyRequestParser(new ByteArrayInputStream(message), tlsContext);
         HelloVerifyRequestMessage msg = new HelloVerifyRequestMessage();
         parser.parse(msg);
         assertArrayEquals(protocolVersion, msg.getProtocolVersion().getValue());

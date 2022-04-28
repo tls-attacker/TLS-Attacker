@@ -12,8 +12,8 @@ package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.MaxFragmentLengthExtensionMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,8 +21,8 @@ public class MaxFragmentLengthExtensionHandler extends ExtensionHandler<MaxFragm
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public MaxFragmentLengthExtensionHandler(TlsContext context) {
-        super(context);
+    public MaxFragmentLengthExtensionHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override
@@ -36,7 +36,7 @@ public class MaxFragmentLengthExtensionHandler extends ExtensionHandler<MaxFragm
             LOGGER.warn("Unknown MaxFragmentLength:" + ArrayConverter.bytesToHexString(maxFragmentLengthBytes));
         } else {
             LOGGER.debug("Setting MaxFragmentLength: " + length.getValue());
-            context.setMaxFragmentLength(length);
+            tlsContext.setMaxFragmentLength(length);
         }
     }
 

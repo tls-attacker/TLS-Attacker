@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.SSL2CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerVerifyMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
@@ -40,34 +40,34 @@ public class ServerVerifyChecker {
     private static final Logger LOGGER = LogManager.getLogger();
 
     /**
-     * Checks if the given message decrypts to the Client Random value from the given TLS context under the cipher suite
-     * from the TLS context.
+     * Checks if the given message decrypts to the Client Random value from the given TLS tlsContext under the cipher
+     * suite from the TLS tlsContext.
      *
      * @return True for successful decryption to the expected value
      */
-    public static boolean check(SSL2ServerVerifyMessage message, TlsContext context, boolean decreaseLogNoise) {
-        SSL2CipherSuite cipherSuite = context.getChooser().getSSL2CipherSuite();
+    public static boolean check(SSL2ServerVerifyMessage message, TlsContext tlsContext, boolean decreaseLogNoise) {
+        SSL2CipherSuite cipherSuite = tlsContext.getChooser().getSSL2CipherSuite();
         byte[] decryptedPart;
 
         switch (cipherSuite) {
             case SSL_CK_RC4_128_WITH_MD5:
             case SSL_CK_RC4_128_EXPORT40_WITH_MD5:
-                decryptedPart = decryptRC4(message, context);
+                decryptedPart = decryptRC4(message, tlsContext);
                 break;
             case SSL_CK_RC2_128_CBC_WITH_MD5:
             case SSL_CK_RC2_128_CBC_EXPORT40_WITH_MD5:
-                decryptedPart = decryptRC2(message, context);
+                decryptedPart = decryptRC2(message, tlsContext);
                 break;
             case SSL_CK_DES_64_CBC_WITH_MD5:
-                decryptedPart = decryptCbcDes(message, context);
+                decryptedPart = decryptCbcDes(message, tlsContext);
                 break;
             case SSL_CK_DES_192_EDE3_CBC_WITH_MD5:
-                decryptedPart = decryptCbcDesEde3(message, context);
+                decryptedPart = decryptCbcDesEde3(message, tlsContext);
                 break;
             default:
                 throw new UnsupportedOperationException("Check not implemented for the selected cipher suite");
         }
-        return compareDecrypted(decryptedPart, context.getClientRandom(), decreaseLogNoise);
+        return compareDecrypted(decryptedPart, tlsContext.getClientRandom(), decreaseLogNoise);
     }
 
     public static boolean compareDecrypted(byte[] decrypted, byte[] clientRandom, boolean silent) {
@@ -89,8 +89,8 @@ public class ServerVerifyChecker {
         return Arrays.equals(decryptedChallenge, clientRandom);
     }
 
-    private static byte[] decryptRC4(SSL2ServerVerifyMessage message, TlsContext context) {
-        byte[] clientReadKey = makeKeyMaterial(context, "0");
+    private static byte[] decryptRC4(SSL2ServerVerifyMessage message, TlsContext tlsContext) {
+        byte[] clientReadKey = makeKeyMaterial(tlsContext, "0");
         byte[] encrypted = message.getEncryptedPart().getValue();
 
         return decryptRC4(clientReadKey, encrypted);
@@ -107,9 +107,9 @@ public class ServerVerifyChecker {
         return decrypted;
     }
 
-    private static byte[] decryptRC2(SSL2ServerVerifyMessage message, TlsContext context) {
-        byte[] clientReadKey = makeKeyMaterial(context, "0");
-        byte[] iv = context.getSSL2Iv();
+    private static byte[] decryptRC2(SSL2ServerVerifyMessage message, TlsContext tlsContext) {
+        byte[] clientReadKey = makeKeyMaterial(tlsContext, "0");
+        byte[] iv = tlsContext.getSSL2Iv();
 
         return decryptRC2(clientReadKey, message.getEncryptedPart().getValue(), iv,
             message.getPaddingLength().getValue());
@@ -123,15 +123,15 @@ public class ServerVerifyChecker {
         return processEncryptedBlocks(cbcRc2, encrypted, paddingLength);
     }
 
-    private static byte[] decryptCbcDes(SSL2ServerVerifyMessage message, TlsContext context) {
+    private static byte[] decryptCbcDes(SSL2ServerVerifyMessage message, TlsContext tlsContext) {
         // The RFC draft tells us to not include an index, but (against OpenSSL)
         // it only works when using "0"
-        byte[] keyMaterial = makeKeyMaterial(context, "0");
+        byte[] keyMaterial = makeKeyMaterial(tlsContext, "0");
         byte[] clientReadKey = Arrays.copyOfRange(keyMaterial, 0, 8);
         // According to the RFC draft, DES keys must be parity-adjusted, though
         // it won't matter much in practice
         DESParameters.setOddParity(clientReadKey);
-        byte[] iv = context.getSSL2Iv();
+        byte[] iv = tlsContext.getSSL2Iv();
 
         CBCBlockCipher cbcDes = new CBCBlockCipher(new DESEngine());
         ParametersWithIV cbcDesParams = new ParametersWithIV(new DESParameters(clientReadKey), iv);
@@ -141,13 +141,13 @@ public class ServerVerifyChecker {
             message.getPaddingLength().getValue());
     }
 
-    private static byte[] decryptCbcDesEde3(SSL2ServerVerifyMessage message, TlsContext context) {
+    private static byte[] decryptCbcDesEde3(SSL2ServerVerifyMessage message, TlsContext tlsContext) {
         byte[] clientReadKey = new byte[24];
-        byte[] keyMaterial0 = makeKeyMaterial(context, "0");
+        byte[] keyMaterial0 = makeKeyMaterial(tlsContext, "0");
         System.arraycopy(keyMaterial0, 0, clientReadKey, 0, keyMaterial0.length);
-        byte[] keyMaterial1 = makeKeyMaterial(context, "1");
+        byte[] keyMaterial1 = makeKeyMaterial(tlsContext, "1");
         System.arraycopy(keyMaterial1, 0, clientReadKey, keyMaterial0.length, 8);
-        byte[] iv = context.getSSL2Iv();
+        byte[] iv = tlsContext.getSSL2Iv();
 
         CBCBlockCipher cbcDesEde = new CBCBlockCipher(new DESedeEngine());
         ParametersWithIV params = new ParametersWithIV(new KeyParameter(clientReadKey), iv);

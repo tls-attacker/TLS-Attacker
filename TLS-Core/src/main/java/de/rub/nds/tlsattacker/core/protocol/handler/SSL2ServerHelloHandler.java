@@ -13,7 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.util.CertificateUtils;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -25,8 +25,8 @@ public class SSL2ServerHelloHandler extends HandshakeMessageHandler<SSL2ServerHe
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SSL2ServerHelloHandler(TlsContext context) {
-        super(context);
+    public SSL2ServerHelloHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     private Certificate parseCertificate(int lengthBytes, byte[] bytesToParse) {

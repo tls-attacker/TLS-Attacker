@@ -112,7 +112,7 @@ public class ConnectivityChecker {
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
         WorkflowTrace trace = factory.createTlsEntryWorkflowTrace(config.getDefaultClientConnection());
         trace.addTlsAction(new SendAction(new ClientHelloMessage(config)));
-        ReceiveAction reveiceAction = new ReceiveAction(new HelloVerifyRequestMessage(config));
+        ReceiveAction reveiceAction = new ReceiveAction(new HelloVerifyRequestMessage());
         trace.addTlsAction(reveiceAction);
         State state = new State(config, trace);
         WorkflowExecutor executor =
@@ -135,23 +135,18 @@ public class ConnectivityChecker {
     }
 
     public boolean speaksStartTls(Config config) {
-        WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
-        WorkflowTrace trace = factory.createTlsEntryWorkflowTrace(config.getDefaultClientConnection());
-        State state = new State(config, trace);
-        WorkflowExecutor executor = WorkflowExecutorFactory.createWorkflowExecutor(WorkflowExecutorType.DEFAULT, state);
-        executor.executeWorkflow();
-        if (trace.allActionsExecuted()) {
-            for (TlsAction action : trace.getTlsActions()) {
-                if (action instanceof AsciiAction && !(action instanceof SendAsciiAction)) {
-                    AsciiAction asciiAction = (AsciiAction) action;
-                    if (asciiAction.getAsciiText() != null) {
-                        if (asciiAction.getAsciiText().contains(config.getStarttlsType().getNegotiatationString())) {
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
+        // TODO: still used in scanner, fix for new layer System
+        /*
+         * WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config); WorkflowTrace trace =
+         * factory.createTlsEntryWorkflowTrace(config.getDefaultClientConnection()); State state = new State(config,
+         * trace); WorkflowExecutor executor =
+         * WorkflowExecutorFactory.createWorkflowExecutor(WorkflowExecutorType.DEFAULT, state);
+         * executor.executeWorkflow(); if (trace.allActionsExecuted()) { for (TlsAction action : trace.getTlsActions())
+         * { if (action instanceof AsciiAction && !(action instanceof SendAsciiAction)) { AsciiAction asciiAction =
+         * (AsciiAction) action; if (asciiAction.getAsciiText() != null) { if
+         * (asciiAction.getAsciiText().contains(config.getStarttlsType().getNegotiatationString())) { return true; } } }
+         * } }
+         */
         return false;
     }
 }

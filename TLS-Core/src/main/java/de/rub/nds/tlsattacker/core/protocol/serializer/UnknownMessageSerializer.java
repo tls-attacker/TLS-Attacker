@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageSerializer;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import org.apache.logging.log4j.LogManager;
@@ -25,10 +24,8 @@ public class UnknownMessageSerializer extends ProtocolMessageSerializer<UnknownM
      *
      * @param message
      *                Message that should be serialized
-     * @param version
-     *                Version of the Protocol
      */
-    public UnknownMessageSerializer(UnknownMessage message, ProtocolVersion version) {
+    public UnknownMessageSerializer(UnknownMessage message) {
         super(message);
     }
 

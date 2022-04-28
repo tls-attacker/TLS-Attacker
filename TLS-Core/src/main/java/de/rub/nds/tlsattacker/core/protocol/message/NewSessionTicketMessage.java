@@ -22,9 +22,10 @@ import de.rub.nds.tlsattacker.core.protocol.parser.NewSessionTicketParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.NewSessionTicketPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.NewSessionTicketSerializer;
 import de.rub.nds.tlsattacker.core.state.SessionTicket;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Objects;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "NewSessionTicket")
@@ -41,13 +42,8 @@ public class NewSessionTicketMessage extends HandshakeMessage {
         ticket = new SessionTicket();
     }
 
-    public NewSessionTicketMessage(Config tlsConfig) {
-        super(tlsConfig, HandshakeMessageType.NEW_SESSION_TICKET);
-        ticket = new SessionTicket();
-    }
-
     public NewSessionTicketMessage(Config tlsConfig, boolean includeInDigest) {
-        super(tlsConfig, HandshakeMessageType.NEW_SESSION_TICKET);
+        super(HandshakeMessageType.NEW_SESSION_TICKET);
         isIncludeInDigestDefault = includeInDigest;
         ticket = new SessionTicket();
         if (tlsConfig.isAddEarlyDataExtension()) {
@@ -111,14 +107,13 @@ public class NewSessionTicketMessage extends HandshakeMessage {
     }
 
     @Override
-    public NewSessionTicketHandler getHandler(TlsContext context) {
-        return new NewSessionTicketHandler(context);
+    public NewSessionTicketHandler getHandler(TlsContext tlsContext) {
+        return new NewSessionTicketHandler(tlsContext);
     }
 
     @Override
     public NewSessionTicketParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new NewSessionTicketParser(stream, tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext,
-            tlsContext.getTalkingConnectionEndType());
+        return new NewSessionTicketParser(stream, tlsContext);
     }
 
     @Override
@@ -135,4 +130,31 @@ public class NewSessionTicketMessage extends HandshakeMessage {
     public String toShortString() {
         return "ST";
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 53 * hash + Objects.hashCode(this.ticketLifetimeHint);
+        hash = 53 * hash + Objects.hashCode(this.ticket);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final NewSessionTicketMessage other = (NewSessionTicketMessage) obj;
+        if (!Objects.equals(this.ticketLifetimeHint, other.ticketLifetimeHint)) {
+            return false;
+        }
+        return Objects.equals(this.ticket, other.ticket);
+    }
+
 }

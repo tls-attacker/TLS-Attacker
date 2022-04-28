@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.*;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.*;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -26,48 +26,49 @@ public class HandlerFactory {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private static ClientKeyExchangeHandler<? extends ClientKeyExchangeMessage>
-        getClientKeyExchangeHandler(TlsContext context) {
-        CipherSuite cs = context.getChooser().getSelectedCipherSuite();
+        getClientKeyExchangeHandler(TlsContext tlsContext) {
+        CipherSuite cs = tlsContext.getChooser().getSelectedCipherSuite();
         KeyExchangeAlgorithm algorithm = AlgorithmResolver.getKeyExchangeAlgorithm(cs);
         switch (algorithm) {
             case RSA:
-                return new RSAClientKeyExchangeHandler(context);
+                return new RSAClientKeyExchangeHandler(tlsContext);
             case ECDHE_ECDSA:
             case ECDH_ECDSA:
             case ECDH_RSA:
             case ECDHE_RSA:
-                return new ECDHClientKeyExchangeHandler(context);
+                return new ECDHClientKeyExchangeHandler(tlsContext);
             case DHE_DSS:
             case DHE_RSA:
             case DH_ANON:
             case DH_DSS:
             case DH_RSA:
-                return new DHClientKeyExchangeHandler(context);
+                return new DHClientKeyExchangeHandler(tlsContext);
             case DHE_PSK:
-                return new PskDhClientKeyExchangeHandler(context);
+                return new PskDhClientKeyExchangeHandler(tlsContext);
             case ECDHE_PSK:
-                return new PskEcDhClientKeyExchangeHandler(context);
+                return new PskEcDhClientKeyExchangeHandler(tlsContext);
             case PSK_RSA:
-                return new PskRsaClientKeyExchangeHandler(context);
+                return new PskRsaClientKeyExchangeHandler(tlsContext);
             case PSK:
-                return new PskClientKeyExchangeHandler(context);
+                return new PskClientKeyExchangeHandler(tlsContext);
             case SRP_SHA_DSS:
             case SRP_SHA_RSA:
             case SRP_SHA:
-                return new SrpClientKeyExchangeHandler(context);
+                return new SrpClientKeyExchangeHandler(tlsContext);
             case VKO_GOST01:
             case VKO_GOST12:
-                return new GOSTClientKeyExchangeHandler(context);
+                return new GOSTClientKeyExchangeHandler(tlsContext);
             case ECCPWD:
-                return new PWDClientKeyExchangeHandler(context);
+                return new PWDClientKeyExchangeHandler(tlsContext);
             default:
                 throw new UnsupportedOperationException("Algorithm " + algorithm + " NOT supported yet.");
         }
     }
 
-    private static HandshakeMessageHandler<? extends HandshakeMessage> getServerKeyExchangeHandler(TlsContext context) {
+    private static HandshakeMessageHandler<? extends HandshakeMessage>
+        getServerKeyExchangeHandler(TlsContext tlsContext) {
         // TODO: There should be a server KeyExchangeHandler
-        CipherSuite cs = context.getChooser().getSelectedCipherSuite();
+        CipherSuite cs = tlsContext.getChooser().getSelectedCipherSuite();
         KeyExchangeAlgorithm algorithm = AlgorithmResolver.getKeyExchangeAlgorithm(cs);
         switch (algorithm) {
             case ECDHE_ECDSA:
@@ -75,25 +76,25 @@ public class HandlerFactory {
             case ECDH_RSA:
             case ECDHE_RSA:
             case ECDH_ANON:
-                return new ECDHEServerKeyExchangeHandler<>(context);
+                return new ECDHEServerKeyExchangeHandler<>(tlsContext);
             case DHE_DSS:
             case DHE_RSA:
             case DH_ANON:
             case DH_DSS:
             case DH_RSA:
-                return new DHEServerKeyExchangeHandler(context);
+                return new DHEServerKeyExchangeHandler(tlsContext);
             case PSK:
-                return new PskServerKeyExchangeHandler(context);
+                return new PskServerKeyExchangeHandler(tlsContext);
             case DHE_PSK:
-                return new PskDheServerKeyExchangeHandler(context);
+                return new PskDheServerKeyExchangeHandler(tlsContext);
             case ECDHE_PSK:
-                return new PskEcDheServerKeyExchangeHandler(context);
+                return new PskEcDheServerKeyExchangeHandler(tlsContext);
             case SRP_SHA_DSS:
             case SRP_SHA_RSA:
             case SRP_SHA:
-                return new SrpServerKeyExchangeHandler(context);
+                return new SrpServerKeyExchangeHandler(tlsContext);
             case ECCPWD:
-                return new PWDServerKeyExchangeHandler(context);
+                return new PWDServerKeyExchangeHandler(tlsContext);
             default:
                 throw new UnsupportedOperationException("Algorithm " + algorithm + " NOT supported yet.");
         }

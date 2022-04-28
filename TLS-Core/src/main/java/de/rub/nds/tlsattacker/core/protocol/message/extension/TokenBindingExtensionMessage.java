@@ -13,13 +13,12 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.TokenBindingExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.TokenBindingExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.TokenBindingExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.TokenBindingExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -36,10 +35,6 @@ public class TokenBindingExtensionMessage extends ExtensionMessage<TokenBindingE
     private ModifiableInteger parameterListLength;
 
     public TokenBindingExtensionMessage() {
-        super(ExtensionType.TOKEN_BINDING);
-    }
-
-    public TokenBindingExtensionMessage(Config config) {
         super(ExtensionType.TOKEN_BINDING);
     }
 
@@ -84,12 +79,12 @@ public class TokenBindingExtensionMessage extends ExtensionMessage<TokenBindingE
 
     @Override
     public TokenBindingExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new TokenBindingExtensionParser(stream, tlsContext.getConfig());
+        return new TokenBindingExtensionParser(stream, tlsContext);
     }
 
     @Override
     public TokenBindingExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new TokenBindingExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new TokenBindingExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

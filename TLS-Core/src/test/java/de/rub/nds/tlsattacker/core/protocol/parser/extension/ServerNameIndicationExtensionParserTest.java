@@ -12,6 +12,7 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicationExtensionMessage;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
@@ -43,6 +44,7 @@ public class ServerNameIndicationExtensionParserTest {
     private final byte[] extension;
     private final int sniListLength;
     private final byte[] sniListBytes;
+    private final Config config = Config.createConfig();
 
     public ServerNameIndicationExtensionParserTest(byte[] extension, int sniListLength, byte[] sniListBytes) {
         this.extension = extension;
@@ -51,12 +53,13 @@ public class ServerNameIndicationExtensionParserTest {
     }
 
     /**
-     * Test of parseExtensionMessageContent method, of class ServerNameIndicationExtensionParser.
+     * Test of parse method, of class ServerNameIndicationExtensionParser.
      */
     @Test
     public void testParse() {
+        TlsContext tlsContext = new TlsContext(config);
         ServerNameIndicationExtensionParser parser =
-            new ServerNameIndicationExtensionParser(new ByteArrayInputStream(extension), Config.createConfig());
+            new ServerNameIndicationExtensionParser(new ByteArrayInputStream(extension), tlsContext);
         ServerNameIndicationExtensionMessage msg = new ServerNameIndicationExtensionMessage();
         parser.parse(msg);
         assertArrayEquals(msg.getServerNameListBytes().getValue(), sniListBytes);

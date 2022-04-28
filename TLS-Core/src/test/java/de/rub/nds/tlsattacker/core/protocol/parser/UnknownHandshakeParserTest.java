@@ -13,7 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownHandshakeMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
@@ -44,8 +44,9 @@ public class UnknownHandshakeParserTest {
      */
     @Test
     public void testParse() {
-        UnknownHandshakeParser parser = new UnknownHandshakeParser(new ByteArrayInputStream(message),
-            ProtocolVersion.TLS12, new TlsContext(config));
+        TlsContext tlsContext = new TlsContext(config);
+        tlsContext.setSelectedProtocolVersion(ProtocolVersion.TLS12);
+        UnknownHandshakeParser parser = new UnknownHandshakeParser(new ByteArrayInputStream(message), tlsContext);
         UnknownHandshakeMessage msg = new UnknownHandshakeMessage();
         parser.parse(msg);
         assertArrayEquals(message, msg.getData().getValue());

@@ -13,10 +13,12 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RecordSizeLimitExtensionMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import org.checkerframework.checker.units.qual.C;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -30,7 +32,7 @@ public class RecordSizeLimitExtensionHandlerTest {
     public void setUp() {
         Config config = Config.createConfig();
         config.setDefaultRunningMode(RunningModeType.SERVER);
-        context = new TlsContext(config);
+        context = new TlsContext(new Context(config));
         handler = new RecordSizeLimitExtensionHandler(context);
     }
 

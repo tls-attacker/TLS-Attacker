@@ -13,10 +13,14 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ChooserType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import de.rub.nds.tlsattacker.core.layer.LayerStack;
+import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
+import de.rub.nds.tlsattacker.core.layer.constant.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -32,14 +36,15 @@ import org.junit.Test;
 public class EncryptedServerNameIndicationExtensionParserTest {
 
     private Chooser chooser;
-    private TlsContext context;
+    private TlsContext tlsContext;
 
     @Before
     public void setUp() {
         Security.addProvider(new BouncyCastleProvider());
-        Config config = Config.createConfig();
-        context = new TlsContext(config);
-        chooser = ChooserFactory.getChooser(ChooserType.DEFAULT, context, config);
+        Config config = new Config();
+        Context outerContext = new Context(config);
+        tlsContext = outerContext.getTlsContext();
+        chooser = ChooserFactory.getChooser(ChooserType.DEFAULT, outerContext, config);
     }
 
     @Test
@@ -67,18 +72,18 @@ public class EncryptedServerNameIndicationExtensionParserTest {
         clientKeyShares.add(new KeyShareStoreEntry(clientKeyShareGroup1, clientKeySharePublicKey1));
         clientKeyShares.add(new KeyShareStoreEntry(clientKeyShareGroup2, clientKeySharePublicKey2));
 
-        context.setClientRandom(clientRandom);
+        tlsContext.setClientRandom(clientRandom);
 
-        context.setClientKeyShareStoreEntryList(clientKeyShares);
+        tlsContext.setClientKeyShareStoreEntryList(clientKeyShares);
         KeyShareEntry serverKeyShareEntry = new KeyShareEntry();
         serverKeyShareEntry.setGroup(namedGroup);
         serverKeyShareEntry.setPrivateKey(new BigInteger(serverPrivateKey));
         List<KeyShareEntry> serverKeyShareEntries = new LinkedList();
         serverKeyShareEntries.add(serverKeyShareEntry);
-        context.getConfig().setEsniServerKeyPairs(serverKeyShareEntries);
+        tlsContext.getConfig().setEsniServerKeyPairs(serverKeyShareEntries);
 
-        EncryptedServerNameIndicationExtensionParser parser = new EncryptedServerNameIndicationExtensionParser(
-            new ByteArrayInputStream(msgBytes), context.getConfig(), ConnectionEndType.CLIENT);
+        EncryptedServerNameIndicationExtensionParser parser =
+            new EncryptedServerNameIndicationExtensionParser(new ByteArrayInputStream(msgBytes), tlsContext);
         EncryptedServerNameIndicationExtensionMessage msg = new EncryptedServerNameIndicationExtensionMessage();
         parser.parse(msg);
     }

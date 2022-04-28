@@ -15,14 +15,13 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.PskClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.PSKPremasterComputations;
 import de.rub.nds.tlsattacker.core.protocol.parser.PskClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.PskClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.PskClientKeyExchangeSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
@@ -39,10 +38,6 @@ public class PskClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     private ModifiableByteArray identity;
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger identityLength;
-
-    public PskClientKeyExchangeMessage(Config tlsConfig) {
-        super(tlsConfig);
-    }
 
     public PskClientKeyExchangeMessage() {
         super();
@@ -97,13 +92,13 @@ public class PskClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     }
 
     @Override
-    public PskClientKeyExchangeHandler getHandler(TlsContext context) {
-        return new PskClientKeyExchangeHandler(context);
+    public PskClientKeyExchangeHandler getHandler(TlsContext tlsContext) {
+        return new PskClientKeyExchangeHandler(tlsContext);
     }
 
     @Override
     public PskClientKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new PskClientKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+        return new PskClientKeyExchangeParser(stream, tlsContext);
     }
 
     @Override
@@ -113,7 +108,7 @@ public class PskClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     @Override
     public PskClientKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
-        return new PskClientKeyExchangeSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new PskClientKeyExchangeSerializer(this);
     }
 
     @Override

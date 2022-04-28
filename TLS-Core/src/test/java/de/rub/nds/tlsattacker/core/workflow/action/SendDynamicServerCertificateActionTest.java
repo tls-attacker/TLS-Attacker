@@ -14,12 +14,10 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
-import de.rub.nds.tlsattacker.core.layer.constant.LayerStackType;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -34,7 +32,7 @@ public class SendDynamicServerCertificateActionTest {
 
     private State state;
     private Config config;
-    private TlsContext tlsContext;
+    private Context context;
 
     private SendDynamicServerCertificateAction action;
 
@@ -55,11 +53,9 @@ public class SendDynamicServerCertificateActionTest {
 
         state = new State(config, trace);
 
-        tlsContext = state.getTlsContext();
-        tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
-        tlsContext.setTransportHandler(new FakeTransportHandler(ConnectionEndType.SERVER));
-
-        tlsContext.setLayerStack(LayerStackFactory.createLayerStack(LayerStackType.TLS, tlsContext));
+        context = state.getContext();
+        context.getTlsContext().setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
+        context.getTcpContext().setTransportHandler(new FakeTransportHandler(ConnectionEndType.SERVER));
     }
 
     @Test(expected = WorkflowExecutionException.class)
@@ -155,7 +151,7 @@ public class SendDynamicServerCertificateActionTest {
     @Test
     public void testSendNoCertificate() {
         // Check if no certificate is sent with the corresponding cipher suite
-        tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DH_anon_EXPORT_WITH_RC4_40_MD5);
+        context.getTlsContext().setSelectedCipherSuite(CipherSuite.TLS_DH_anon_EXPORT_WITH_RC4_40_MD5);
         action.execute(state);
         assertTrue(action.getSendMessages().size() == 0 && action.getSendRecords().size() == 0);
     }

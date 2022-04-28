@@ -10,9 +10,9 @@
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.protocol.Handler;
+import de.rub.nds.tlsattacker.core.layer.data.Handler;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,10 +25,10 @@ public abstract class ExtensionHandler<MessageT extends ExtensionMessage> implem
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    protected final TlsContext context;
+    protected final TlsContext tlsContext;
 
-    public ExtensionHandler(TlsContext context) {
-        this.context = context;
+    public ExtensionHandler(TlsContext tlsContext) {
+        this.tlsContext = tlsContext;
     }
 
     /**
@@ -47,18 +47,18 @@ public abstract class ExtensionHandler<MessageT extends ExtensionMessage> implem
 
     /**
      * Tell the context that the extension was proposed/negotiated. Makes the extension type available in
-     * TlsContext.isExtension{Proposed,Negotiated}(extType).
+     * RecordContext.isExtension{Proposed,Negotiated}(extType).
      *
      * @param message
      */
     private void markExtensionInContext(MessageT message) {
         ExtensionType extType = message.getExtensionTypeConstant();
-        ConnectionEndType talkingConEndType = context.getTalkingConnectionEndType();
+        ConnectionEndType talkingConEndType = tlsContext.getTalkingConnectionEndType();
         if (talkingConEndType == ConnectionEndType.CLIENT) {
-            context.addProposedExtension(extType);
+            tlsContext.addProposedExtension(extType);
             LOGGER.debug("Marked extension '" + extType.name() + "' as proposed");
         } else if (talkingConEndType == ConnectionEndType.SERVER) {
-            context.addNegotiatedExtension(extType);
+            tlsContext.addNegotiatedExtension(extType);
             LOGGER.debug("Marked extension '" + extType.name() + "' as negotiated");
         }
     }

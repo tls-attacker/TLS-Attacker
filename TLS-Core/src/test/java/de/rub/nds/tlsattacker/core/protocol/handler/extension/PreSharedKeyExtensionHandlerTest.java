@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PreSharedKeyExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PSKIdentity;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.util.ArrayList;
 import java.util.List;
 import static org.junit.Assert.assertArrayEquals;
@@ -67,7 +67,7 @@ public class PreSharedKeyExtensionHandlerTest {
 
     @Test
     public void testadjustContextServerEndType() {
-        context.setConnection(new InboundConnection());
+        context.getContext().setConnection(new InboundConnection());
         PreSharedKeyExtensionMessage msg = new PreSharedKeyExtensionMessage();
 
         PSKIdentity id1 = new PSKIdentity();

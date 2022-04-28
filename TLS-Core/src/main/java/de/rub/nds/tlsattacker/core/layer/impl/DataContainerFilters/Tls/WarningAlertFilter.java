@@ -10,7 +10,7 @@
 package de.rub.nds.tlsattacker.core.layer.impl.DataContainerFilters.Tls;
 
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
-import de.rub.nds.tlsattacker.core.layer.DataContainer;
+import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.layer.DataContainerFilter;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 

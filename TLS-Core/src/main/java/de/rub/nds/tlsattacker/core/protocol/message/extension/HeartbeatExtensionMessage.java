@@ -12,14 +12,13 @@ package de.rub.nds.tlsattacker.core.protocol.message.extension;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.HeartbeatExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.HeartbeatExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.HeartbeatExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.HeartbeatExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -35,10 +34,6 @@ public class HeartbeatExtensionMessage extends ExtensionMessage<HeartbeatExtensi
     private ModifiableByteArray heartbeatMode;
 
     public HeartbeatExtensionMessage() {
-        super(ExtensionType.HEARTBEAT);
-    }
-
-    public HeartbeatExtensionMessage(Config config) {
         super(ExtensionType.HEARTBEAT);
     }
 
@@ -64,12 +59,12 @@ public class HeartbeatExtensionMessage extends ExtensionMessage<HeartbeatExtensi
 
     @Override
     public HeartbeatExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new HeartbeatExtensionParser(stream, tlsContext.getConfig());
+        return new HeartbeatExtensionParser(stream, tlsContext);
     }
 
     @Override
     public HeartbeatExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new HeartbeatExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new HeartbeatExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

@@ -25,11 +25,12 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair
 import de.rub.nds.tlsattacker.core.protocol.parser.ServerHelloParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ServerHelloPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ServerHelloSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Objects;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "ServerHello")
@@ -54,7 +55,7 @@ public class ServerHelloMessage extends HelloMessage {
     private Boolean autoSetHelloRetryModeInKeyShare = true;
 
     public ServerHelloMessage(Config tlsConfig) {
-        super(tlsConfig, HandshakeMessageType.SERVER_HELLO);
+        super(HandshakeMessageType.SERVER_HELLO);
         if (!tlsConfig.getHighestProtocolVersion().isSSL()
             || (tlsConfig.getHighestProtocolVersion().isSSL() && tlsConfig.isAddExtensionsInSSL())) {
             if (tlsConfig.isAddHeartbeatExtension()) {
@@ -105,7 +106,7 @@ public class ServerHelloMessage extends HelloMessage {
                 addExtension(new CertificateStatusRequestExtensionMessage());
             }
             if (tlsConfig.isAddAlpnExtension()) {
-                addExtension(new AlpnExtensionMessage(tlsConfig));
+                addExtension(new AlpnExtensionMessage());
             }
             if (tlsConfig.isAddSRPExtension()) {
                 addExtension(new SRPExtensionMessage());
@@ -270,8 +271,8 @@ public class ServerHelloMessage extends HelloMessage {
     }
 
     @Override
-    public ServerHelloHandler getHandler(TlsContext context) {
-        return new ServerHelloHandler(context);
+    public ServerHelloHandler getHandler(TlsContext tlsContext) {
+        return new ServerHelloHandler(tlsContext);
     }
 
     @Override
@@ -281,13 +282,12 @@ public class ServerHelloMessage extends HelloMessage {
 
     @Override
     public ServerHelloSerializer getSerializer(TlsContext tlsContext) {
-        return new ServerHelloSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new ServerHelloSerializer(this);
     }
 
     @Override
     public ServerHelloParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new ServerHelloParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext,
-            tlsContext.getTalkingConnectionEndType());
+        return new ServerHelloParser(stream, tlsContext);
     }
 
     public Boolean isAutoSetHelloRetryModeInKeyShare() {
@@ -312,4 +312,35 @@ public class ServerHelloMessage extends HelloMessage {
         }
         return "SH";
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 89 * hash + Objects.hashCode(this.selectedCipherSuite);
+        hash = 89 * hash + Objects.hashCode(this.selectedCompressionMethod);
+        hash = 89 * hash + Objects.hashCode(this.autoSetHelloRetryModeInKeyShare);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ServerHelloMessage other = (ServerHelloMessage) obj;
+        if (!Objects.equals(this.selectedCipherSuite, other.selectedCipherSuite)) {
+            return false;
+        }
+        if (!Objects.equals(this.selectedCompressionMethod, other.selectedCompressionMethod)) {
+            return false;
+        }
+        return Objects.equals(this.autoSetHelloRetryModeInKeyShare, other.autoSetHelloRetryModeInKeyShare);
+    }
+
 }

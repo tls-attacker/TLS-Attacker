@@ -13,12 +13,10 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
-import de.rub.nds.tlsattacker.core.layer.constant.LayerStackType;
 import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -35,7 +33,7 @@ import org.junit.Test;
 public class SendDynamicClientKeyExchangeActionTest {
 
     private State state;
-    private TlsContext tlsContext;
+    private Context context;
     private Config config;
 
     private SendDynamicClientKeyExchangeAction action;
@@ -46,17 +44,16 @@ public class SendDynamicClientKeyExchangeActionTest {
 
         // create Config to not overly rely on default values (aka. make sure
         // we're client)
-        config = Config.createConfig();
+        config = new Config();
         config.setDefaultRunningMode(RunningModeType.CLIENT);
 
         WorkflowTrace trace = new WorkflowTrace();
         trace.addTlsAction(action);
         state = new State(config, trace);
 
-        tlsContext = state.getTlsContext();
-        tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
-        tlsContext.setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
-        tlsContext.setLayerStack(LayerStackFactory.createLayerStack(LayerStackType.TLS, tlsContext));
+        context = state.getContext();
+        context.getTlsContext().setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
+        context.getTcpContext().setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
     }
 
     @Test

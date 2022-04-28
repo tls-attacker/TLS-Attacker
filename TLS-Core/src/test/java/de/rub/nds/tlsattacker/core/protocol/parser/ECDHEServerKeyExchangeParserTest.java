@@ -13,7 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
@@ -88,8 +88,10 @@ public class ECDHEServerKeyExchangeParserTest {
     @Test
     public void testParse() {// TODO make protocol version a parameter and test
         // for other versions too
+        TlsContext tlsContext = new TlsContext(config);
+        tlsContext.setLastRecordVersion(version);
         ECDHEServerKeyExchangeParser<ECDHEServerKeyExchangeMessage> parser =
-            new ECDHEServerKeyExchangeParser(new ByteArrayInputStream(message), version, new TlsContext(config));
+            new ECDHEServerKeyExchangeParser(new ByteArrayInputStream(message), tlsContext);
         ECDHEServerKeyExchangeMessage msg = new ECDHEServerKeyExchangeMessage();
         parser.parse(msg);
         assertTrue(curveType == msg.getGroupType().getValue());

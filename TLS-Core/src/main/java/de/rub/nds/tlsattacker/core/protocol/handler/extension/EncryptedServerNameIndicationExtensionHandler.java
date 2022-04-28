@@ -9,8 +9,8 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNameIndicationExtensionMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -26,10 +26,10 @@ public class EncryptedServerNameIndicationExtensionHandler
     @Override
     public void adjustTLSExtensionContext(EncryptedServerNameIndicationExtensionMessage message) {
         if (message.getClientEsniInner().getClientNonce() != null) {
-            context.setEsniClientNonce(message.getClientEsniInner().getClientNonce().getValue());
+            tlsContext.setEsniClientNonce(message.getClientEsniInner().getClientNonce().getValue());
         }
         if (message.getServerNonce() != null) {
-            context.setEsniServerNonce(message.getServerNonce().getValue());
+            tlsContext.setEsniServerNonce(message.getServerNonce().getValue());
         }
 
     }

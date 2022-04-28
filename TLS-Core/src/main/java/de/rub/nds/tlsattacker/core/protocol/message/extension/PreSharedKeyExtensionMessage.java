@@ -26,7 +26,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtensionPrepar
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PreSharedKeyExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PreSharedKeyExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.InputStream;
 import java.util.LinkedList;
@@ -206,13 +206,12 @@ public class PreSharedKeyExtensionMessage extends ExtensionMessage<PreSharedKeyE
 
     @Override
     public ExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new PreSharedKeyExtensionParser(stream, tlsContext.getConfig(),
-            tlsContext.getTalkingConnectionEndType());
+        return new PreSharedKeyExtensionParser(stream, tlsContext);
     }
 
     @Override
     public ExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new PreSharedKeyExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new PreSharedKeyExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

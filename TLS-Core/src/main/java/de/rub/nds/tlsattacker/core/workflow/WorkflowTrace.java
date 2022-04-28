@@ -119,6 +119,7 @@ public class WorkflowTrace implements Serializable {
         @XmlElement(type = ForwardDataAction.class, name = "ForwardData"),
         @XmlElement(type = GenericReceiveAction.class, name = "GenericReceive"),
         @XmlElement(type = ReceiveTillAction.class, name = "ReceiveTill"),
+        @XmlElement(type = TightReceiveAction.class, name = "TightReceive"),
         @XmlElement(type = MultiReceiveAction.class, name = "MultiReceive"),
         @XmlElement(type = PopAndSendAction.class, name = "PopAndSend"),
         @XmlElement(type = PopAndSendMessageAction.class, name = "PopAndSendMessage"),
@@ -144,10 +145,7 @@ public class WorkflowTrace implements Serializable {
         @XmlElement(type = SendRecordsFromLastFlightAction.class, name = "SendRecordsFromLastFlight"),
         @XmlElement(type = SetEncryptChangeCipherSpecConfigAction.class, name = "SetEncryptChangeCipherSpecConfig"),
         @XmlElement(type = WaitAction.class, name = "Wait"),
-        @XmlElement(type = SendAsciiAction.class, name = "SendAscii"),
-        @XmlElement(type = FlushSessionCacheAction.class, name = "FlushSessionCache"),
-        @XmlElement(type = GenericReceiveAsciiAction.class, name = "GenericReceiveAscii"),
-        @XmlElement(type = ReceiveAsciiAction.class, name = "ReceiveAscii") })
+        @XmlElement(type = FlushSessionCacheAction.class, name = "FlushSessionCache") })
     private List<TlsAction> tlsActions = new ArrayList<>();
 
     private String name = null;

@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -23,7 +23,7 @@ public class UnknownHandlerTest {
     @Before
     public void setUp() {
         context = new TlsContext();
-        handler = new UnknownMessageHandler(context, ProtocolMessageType.UNKNOWN);
+        handler = new UnknownMessageHandler(context);
     }
 
     /**
@@ -31,7 +31,7 @@ public class UnknownHandlerTest {
      */
     @Test
     public void testadjustContext() {
-        UnknownMessage message = new UnknownMessage(context.getConfig(), ProtocolMessageType.UNKNOWN);
+        UnknownMessage message = new UnknownMessage(ProtocolMessageType.UNKNOWN);
         handler.adjustContext(message);
     }
 

@@ -38,7 +38,7 @@ public class HeartbeatMessagePreparator extends ProtocolMessagePreparator<Heartb
             payloadLength = 65536;
         }
         byte[] payload = new byte[payloadLength];
-        chooser.getContext().getRandom().nextBytes(payload);
+        chooser.getContext().getTlsContext().getRandom().nextBytes(payload);
         return payload;
     }
 
@@ -52,7 +52,7 @@ public class HeartbeatMessagePreparator extends ProtocolMessagePreparator<Heartb
             paddingLength = 65536;
         }
         byte[] padding = new byte[paddingLength];
-        chooser.getContext().getRandom().nextBytes(padding);
+        chooser.getContext().getTlsContext().getRandom().nextBytes(padding);
         return padding;
     }
 

@@ -10,11 +10,11 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PreSharedKeyExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PSKBinder;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PSKIdentity;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -29,11 +29,11 @@ import org.apache.logging.log4j.Logger;
 public class PreSharedKeyExtensionParser extends ExtensionParser<PreSharedKeyExtensionMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    private ConnectionEndType talkingConnectionEndType;
+    private final ConnectionEndType talkingConnectionEndType;
 
-    public PreSharedKeyExtensionParser(InputStream stream, Config config, ConnectionEndType talkingConnectionEndType) {
-        super(stream, config);
-        this.talkingConnectionEndType = talkingConnectionEndType;
+    public PreSharedKeyExtensionParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
+        this.talkingConnectionEndType = tlsContext.getTalkingConnectionEndType();
     }
 
     @Override

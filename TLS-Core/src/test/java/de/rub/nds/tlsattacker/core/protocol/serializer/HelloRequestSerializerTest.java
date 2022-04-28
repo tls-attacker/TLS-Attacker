@@ -9,7 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.HelloRequestParserTest;
 import java.util.Collection;
@@ -38,7 +37,7 @@ public class HelloRequestSerializerTest {
     @Test
     public void testSerializeHandshakeMessageContent() {
         HelloRequestMessage msg = new HelloRequestMessage();
-        HelloRequestSerializer serializer = new HelloRequestSerializer(msg, ProtocolVersion.TLS12);
+        HelloRequestSerializer serializer = new HelloRequestSerializer(msg);
         assertArrayEquals(message, serializer.serializeHandshakeMessageContent());
     }
 

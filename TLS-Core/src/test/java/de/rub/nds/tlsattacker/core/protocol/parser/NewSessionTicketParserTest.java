@@ -13,7 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
@@ -76,8 +76,10 @@ public class NewSessionTicketParserTest {
 
     @Test
     public void testParse() {
-        NewSessionTicketParser parser = new NewSessionTicketParser(new ByteArrayInputStream(message), version,
-            new TlsContext(config), ConnectionEndType.SERVER);
+        TlsContext tlsContext = new TlsContext(config);
+        tlsContext.setTalkingConnectionEndType(ConnectionEndType.SERVER);
+        tlsContext.setLastRecordVersion(version);
+        NewSessionTicketParser parser = new NewSessionTicketParser(new ByteArrayInputStream(message), tlsContext);
         NewSessionTicketMessage msg = new NewSessionTicketMessage();
         parser.parse(msg);
         assertArrayEquals(identity, msg.getTicket().getIdentity().getValue());

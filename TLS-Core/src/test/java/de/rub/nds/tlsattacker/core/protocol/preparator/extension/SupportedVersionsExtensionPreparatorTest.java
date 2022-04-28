@@ -13,7 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SupportedVersionsExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SupportedVersionsExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.util.LinkedList;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;
@@ -33,8 +33,7 @@ public class SupportedVersionsExtensionPreparatorTest {
     public void setUp() {
         context = new TlsContext();
         message = new SupportedVersionsExtensionMessage();
-        preparator = new SupportedVersionsExtensionPreparator(context.getChooser(), message,
-            new SupportedVersionsExtensionSerializer(message));
+        preparator = new SupportedVersionsExtensionPreparator(context.getChooser(), message);
     }
 
     /**

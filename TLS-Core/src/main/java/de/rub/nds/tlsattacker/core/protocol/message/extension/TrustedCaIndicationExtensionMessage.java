@@ -14,14 +14,13 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.TrustedCaIndicationExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.TrustedCaIndicationExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.TrustedCaIndicationExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.TrustedCaIndicationExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -37,10 +36,6 @@ public class TrustedCaIndicationExtensionMessage extends ExtensionMessage<Truste
     private ModifiableByteArray trustedAuthoritiesBytes;
 
     public TrustedCaIndicationExtensionMessage() {
-        super(ExtensionType.TRUSTED_CA_KEYS);
-    }
-
-    public TrustedCaIndicationExtensionMessage(Config config) {
         super(ExtensionType.TRUSTED_CA_KEYS);
     }
 
@@ -80,12 +75,12 @@ public class TrustedCaIndicationExtensionMessage extends ExtensionMessage<Truste
 
     @Override
     public TrustedCaIndicationExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new TrustedCaIndicationExtensionParser(stream, tlsContext.getConfig());
+        return new TrustedCaIndicationExtensionParser(stream, tlsContext);
     }
 
     @Override
     public TrustedCaIndicationExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new TrustedCaIndicationExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new TrustedCaIndicationExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override

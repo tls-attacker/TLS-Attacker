@@ -14,10 +14,10 @@ import de.rub.nds.tlsattacker.core.crypto.cipher.CipherWrapper;
 import de.rub.nds.tlsattacker.core.crypto.mac.MacWrapper;
 import de.rub.nds.tlsattacker.core.crypto.mac.WrappedMac;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import de.rub.nds.tlsattacker.core.protocol.Parser;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.RecordCryptoComputations;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
 import java.security.NoSuchAlgorithmException;
@@ -42,8 +42,8 @@ public final class RecordBlockCipher extends RecordCipher {
      */
     private WrappedMac writeMac;
 
-    public RecordBlockCipher(TlsContext context, CipherState state) {
-        super(context, state);
+    public RecordBlockCipher(TlsContext tlsContext, CipherState state) {
+        super(tlsContext, state);
         try {
             encryptCipher = CipherWrapper.getEncryptionCipher(getState().getCipherSuite(), getLocalConnectionEndType(),
                 getState().getKeySet());
@@ -81,9 +81,9 @@ public final class RecordBlockCipher extends RecordCipher {
     /**
      * Takes correctly padded data and encrypts it
      *
-     * @param  request
-     *                 The RequestedEncryption operation
-     * @return         The EncryptionResult
+     * The RequestedEncryption operation
+     *
+     * @return The EncryptionResult
      */
     private byte[] encrypt(byte[] plaintext, byte[] iv) throws CryptoException {
         byte[] expandedPlaintext = this.expandToBlocksize(plaintext);

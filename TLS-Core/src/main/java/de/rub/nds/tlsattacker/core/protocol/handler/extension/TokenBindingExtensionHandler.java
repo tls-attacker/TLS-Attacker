@@ -12,26 +12,26 @@ package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TokenBindingExtensionMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.util.ArrayList;
 
 public class TokenBindingExtensionHandler extends ExtensionHandler<TokenBindingExtensionMessage> {
 
-    public TokenBindingExtensionHandler(TlsContext context) {
-        super(context);
+    public TokenBindingExtensionHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override
     public void adjustTLSExtensionContext(TokenBindingExtensionMessage message) {
-        context
+        tlsContext
             .setTokenBindingVersion(TokenBindingVersion.getExtensionType(message.getTokenbindingVersion().getValue()));
         ArrayList<TokenBindingKeyParameters> tokenbindingKeyParameters = new ArrayList<>();
         for (byte kp : message.getTokenbindingKeyParameters().getValue()) {
             tokenbindingKeyParameters.add(TokenBindingKeyParameters.getTokenBindingKeyParameter(kp));
         }
-        context.setTokenBindingKeyParameters(tokenbindingKeyParameters);
-        if (context.getTalkingConnectionEndType() == context.getChooser().getMyConnectionPeer()) {
-            context.setTokenBindingNegotiatedSuccessfully(true);
+        tlsContext.setTokenBindingKeyParameters(tokenbindingKeyParameters);
+        if (tlsContext.getTalkingConnectionEndType() == tlsContext.getChooser().getMyConnectionPeer()) {
+            tlsContext.setTokenBindingNegotiatedSuccessfully(true);
         }
     }
 }

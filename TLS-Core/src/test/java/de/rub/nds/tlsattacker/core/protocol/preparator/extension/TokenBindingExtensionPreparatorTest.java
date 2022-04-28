@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TokenBindingExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.TokenBindingExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.util.LinkedList;
 import java.util.List;
 import static org.junit.Assert.assertArrayEquals;
@@ -35,8 +35,7 @@ public class TokenBindingExtensionPreparatorTest {
     public void setUp() {
         context = new TlsContext();
         message = new TokenBindingExtensionMessage();
-        preparator = new TokenBindingExtensionPreparator(context.getChooser(), message,
-            new TokenBindingExtensionSerializer(message));
+        preparator = new TokenBindingExtensionPreparator(context.getChooser(), message);
         keyParameters = new LinkedList<>();
         keyParameters.add(TokenBindingKeyParameters.ECDSAP256);
     }

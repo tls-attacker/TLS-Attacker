@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.util.LinkedList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -40,8 +40,8 @@ public class GenericReceiveAction extends MessageAction implements ReceivingActi
             throw new WorkflowExecutionException("Action already executed!");
         }
         LOGGER.debug("Receiving Messages...");
-        TlsContext ctx = state.getTlsContext(getConnectionAlias());
-        receive(ctx, messages, records);
+        TlsContext ctx = state.getContext(getConnectionAlias()).getTlsContext();
+        receive(ctx, null, null, null);
 
         setExecuted(true);
         String received = getReadableString(messages);
@@ -87,8 +87,4 @@ public class GenericReceiveAction extends MessageAction implements ReceivingActi
         return fragments;
     }
 
-    @Override
-    public MessageActionDirection getMessageDirection() {
-        return MessageActionDirection.RECEIVING;
-    }
 }

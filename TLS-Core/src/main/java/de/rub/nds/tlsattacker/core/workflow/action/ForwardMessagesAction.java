@@ -26,7 +26,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.IOException;
 import java.util.*;
 import javax.xml.bind.annotation.*;
@@ -126,8 +126,8 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
 
         assertAliasesSetProperly();
 
-        TlsContext receiveFromCtx = state.getTlsContext(receiveFromAlias);
-        TlsContext forwardToCtx = state.getTlsContext(forwardToAlias);
+        TlsContext receiveFromCtx = state.getContext(receiveFromAlias).getTlsContext();
+        TlsContext forwardToCtx = state.getContext(forwardToAlias).getTlsContext();
 
         receiveMessages(receiveFromCtx);
         applyMessages(forwardToCtx);
@@ -140,6 +140,9 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
         LayerStack layerStack = receiveFromContext.getLayerStack();
         List<LayerConfiguration> layerConfigurationList = new LinkedList<>();
         layerConfigurationList.add(new SpecificReceiveLayerConfiguration(messages));
+        if (receiveFromContext.getChooser().getSelectedProtocolVersion().isDTLS()) {
+            layerConfigurationList.add(new SpecificReceiveLayerConfiguration((List) null));
+        }
         layerConfigurationList.add(new SpecificReceiveLayerConfiguration((List) null));
         layerConfigurationList.add(new SpecificReceiveLayerConfiguration((List) null));
         LayerStackProcessingResult processingResult;
@@ -147,6 +150,10 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
             processingResult = layerStack.receiveData(layerConfigurationList);
             receivedMessages =
                 new ArrayList<>(processingResult.getResultForLayer(ImplementedLayers.MESSAGE).getUsedContainers());
+            if (receiveFromContext.getChooser().getSelectedProtocolVersion().isDTLS()) {
+                receivedFragments = new ArrayList<>(
+                    processingResult.getResultForLayer(ImplementedLayers.DTLS_FRAGMENT).getUsedContainers());
+            }
             // index in result
             receivedRecords =
                 new ArrayList<>(processingResult.getResultForLayer(ImplementedLayers.RECORD).getUsedContainers());
@@ -165,8 +172,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
     /**
      * Apply the contents of the messages to the given TLS context.
      *
-     * @param protocolMessages
-     * @param tlsContext
+     * @param ctx
      */
     private void applyMessages(TlsContext ctx) {
         for (ProtocolMessage msg : receivedMessages) {
@@ -182,11 +188,18 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
             LayerStack layerStack = forwardToCtx.getLayerStack();
             List<LayerConfiguration> layerConfigurationList = new LinkedList<>();
             layerConfigurationList.add(new SpecificSendLayerConfiguration(receivedMessages));
+            if (forwardToCtx.getChooser().getSelectedProtocolVersion().isDTLS()) {
+                layerConfigurationList.add(new SpecificSendLayerConfiguration(receivedFragments));
+            }
             layerConfigurationList.add(new SpecificSendLayerConfiguration(receivedRecords));
             layerConfigurationList.add(new SpecificSendLayerConfiguration((List) null));
             LayerStackProcessingResult processingResult = layerStack.sendData(layerConfigurationList);
             sendMessages =
                 new ArrayList<>(processingResult.getResultForLayer(ImplementedLayers.MESSAGE).getUsedContainers());
+            if (forwardToCtx.getChooser().getSelectedProtocolVersion().isDTLS()) {
+                sendFragments = new ArrayList<>(
+                    processingResult.getResultForLayer(ImplementedLayers.DTLS_FRAGMENT).getUsedContainers());
+            }
             sendRecords =
                 new ArrayList<>(processingResult.getResultForLayer(ImplementedLayers.RECORD).getUsedContainers());
 

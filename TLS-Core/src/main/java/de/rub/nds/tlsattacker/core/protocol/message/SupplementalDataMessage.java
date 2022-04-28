@@ -22,10 +22,11 @@ import de.rub.nds.tlsattacker.core.protocol.message.supplementaldata.Supplementa
 import de.rub.nds.tlsattacker.core.protocol.parser.SupplementalDataParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.SupplementalDataPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.SupplementalDataSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "SupplementalData")
@@ -43,10 +44,6 @@ public class SupplementalDataMessage extends HandshakeMessage {
     public SupplementalDataMessage(Config config, LinkedList<SupplementalDataEntry> entries) {
         super(HandshakeMessageType.SUPPLEMENTAL_DATA);
         this.entries = new LinkedList<>(entries);
-    }
-
-    public SupplementalDataMessage(Config config) {
-        this();
     }
 
     public SupplementalDataMessage() {
@@ -89,13 +86,13 @@ public class SupplementalDataMessage extends HandshakeMessage {
     }
 
     @Override
-    public SupplementalDataHandler getHandler(TlsContext context) {
-        return new SupplementalDataHandler(context);
+    public SupplementalDataHandler getHandler(TlsContext tlsContext) {
+        return new SupplementalDataHandler(tlsContext);
     }
 
     @Override
     public SupplementalDataParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new SupplementalDataParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+        return new SupplementalDataParser(stream, tlsContext);
     }
 
     @Override
@@ -105,7 +102,7 @@ public class SupplementalDataMessage extends HandshakeMessage {
 
     @Override
     public SupplementalDataSerializer getSerializer(TlsContext tlsContext) {
-        return new SupplementalDataSerializer(this, tlsContext.getSelectedProtocolVersion());
+        return new SupplementalDataSerializer(this);
     }
 
     @Override
@@ -136,6 +133,36 @@ public class SupplementalDataMessage extends HandshakeMessage {
     @Override
     public String toShortString() {
         return "SDM";
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 29 * hash + Objects.hashCode(this.entries);
+        hash = 29 * hash + Objects.hashCode(this.supplementalDataLength);
+        hash = 29 * hash + Objects.hashCode(this.supplementalDataBytes);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final SupplementalDataMessage other = (SupplementalDataMessage) obj;
+        if (!Objects.equals(this.entries, other.entries)) {
+            return false;
+        }
+        if (!Objects.equals(this.supplementalDataLength, other.supplementalDataLength)) {
+            return false;
+        }
+        return Objects.equals(this.supplementalDataBytes, other.supplementalDataBytes);
     }
 
 }

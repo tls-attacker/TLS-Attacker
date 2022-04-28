@@ -98,7 +98,7 @@ public class SSL2ClientMasterKeyPreparator extends HandshakeMessagePreparator<SS
     private void prepareKeyArg(SSL2ClientMasterKeyMessage message) {
         // KEY-ARG-DATA contains the IV for block ciphers
         byte[] keyArgData = new byte[chooser.getSSL2CipherSuite().getBlockSize()];
-        chooser.getContext().getRandom().nextBytes(keyArgData);
+        chooser.getContext().getTlsContext().getRandom().nextBytes(keyArgData);
         message.setKeyArgData(keyArgData);
         LOGGER.debug("KeyArg: " + ArrayConverter.bytesToHexString(keyArgData));
     }
@@ -123,7 +123,7 @@ public class SSL2ClientMasterKeyPreparator extends HandshakeMessagePreparator<SS
      */
     private byte[] generatePremasterSecret() {
         byte[] tempPremasterSecret = new byte[chooser.getSSL2CipherSuite().getSecretKeyByteNumber()];
-        chooser.getContext().getRandom().nextBytes(tempPremasterSecret);
+        chooser.getContext().getTlsContext().getRandom().nextBytes(tempPremasterSecret);
         return tempPremasterSecret;
     }
 
@@ -170,7 +170,7 @@ public class SSL2ClientMasterKeyPreparator extends HandshakeMessagePreparator<SS
         } else {
             padding = new byte[0]; // randomByteLength could be negative
         }
-        chooser.getContext().getRandom().nextBytes(padding);
+        chooser.getContext().getTlsContext().getRandom().nextBytes(padding);
         ArrayConverter.makeArrayNonZero(padding);
         preparePadding(message);
 

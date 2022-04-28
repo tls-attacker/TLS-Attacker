@@ -71,14 +71,14 @@ public class EarlyFinishedAttacker extends Attacker<EarlyFinishedCommandConfig> 
         WorkflowTrace workflowTrace = workflowConfigurationFactory.createHelloWorkflow(connection);
         workflowTrace.addTlsAction(new SendDynamicClientKeyExchangeAction(connection.getAlias()));
         List<ProtocolMessage> messages = new LinkedList<>();
-        messages.add(new ChangeCipherSpecMessage(tlsConfig));
-        workflowTrace
-            .addTlsAction(MessageActionFactory.createAction(tlsConfig, connection, ConnectionEndType.CLIENT, messages));
+        messages.add(new ChangeCipherSpecMessage());
+        workflowTrace.addTlsAction(
+            MessageActionFactory.createTLSAction(tlsConfig, connection, ConnectionEndType.CLIENT, messages));
         messages = new LinkedList<>();
-        messages.add(new ChangeCipherSpecMessage(tlsConfig));
-        messages.add(new FinishedMessage(tlsConfig));
-        workflowTrace
-            .addTlsAction(MessageActionFactory.createAction(tlsConfig, connection, ConnectionEndType.SERVER, messages));
+        messages.add(new ChangeCipherSpecMessage());
+        messages.add(new FinishedMessage());
+        workflowTrace.addTlsAction(
+            MessageActionFactory.createTLSAction(tlsConfig, connection, ConnectionEndType.SERVER, messages));
 
         State state = new State(tlsConfig, workflowTrace);
         WorkflowExecutor workflowExecutor =

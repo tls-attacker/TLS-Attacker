@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.ContextHandlingException;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -34,7 +35,7 @@ public class StateTest {
         State s = new State();
         assertNotNull(s.getConfig());
         assertNotNull(s.getWorkflowTrace());
-        assertNotNull(s.getTlsContext());
+        assertNotNull(s.getContext());
         // TODO: assertThat(workflowTrace.getType(),
         // isEqual(config.getWorkflowTraceType());
     }
@@ -59,7 +60,7 @@ public class StateTest {
         assertNotNull(s.getConfig());
         assertEquals(s.getConfig(), config);
         assertNotNull(s.getWorkflowTrace());
-        assertNotNull(s.getTlsContext());
+        assertNotNull(s.getContext());
         assertEquals(config.getDefaultApplicationMessageData(), expected);
         // TODO: assertThat(workflowTrace.getType(),
         // isEqual(WorkflowTraceType.SHORT_HELLO));
@@ -77,9 +78,9 @@ public class StateTest {
         assertEquals(config.getDefaultApplicationMessageData(), expected);
 
         assertNotNull(s.getWorkflowTrace());
-        assertNotNull(s.getTlsContext());
+        assertNotNull(s.getContext());
 
-        assertEquals(s.getTlsContext().getConnection(), trace.getConnections().get(0));
+        assertEquals(s.getContext().getConnection(), trace.getConnections().get(0));
     }
 
     /**
@@ -108,8 +109,8 @@ public class StateTest {
         State s = new State(trace);
 
         exception.expect(ConfigurationException.class);
-        exception.expectMessage("getTlsContext requires an alias if multiple contexts are defined");
-        TlsContext c = s.getTlsContext();
+        exception.expectMessage("getContext requires an alias if multiple contexts are defined");
+        TlsContext c = s.getContext().getTlsContext();
     }
 
     @Test
@@ -135,8 +136,8 @@ public class StateTest {
         newCtx.setSelectedCipherSuite(CipherSuite.TLS_AES_128_CCM_SHA256);
 
         assertThat(state.getTlsContext().getSelectedCipherSuite(), equalTo(CipherSuite.TLS_FALLBACK_SCSV));
-        state.replaceTlsContext(newCtx);
-        assertNotSame(state.getTlsContext(), origCtx);
+        state.replaceContext(newCtx.getContext());
+        assertNotSame(state.getContext(), origCtx);
         assertThat(state.getTlsContext().getSelectedCipherSuite(), equalTo(CipherSuite.TLS_AES_128_CCM_SHA256));
     }
 
@@ -148,16 +149,17 @@ public class StateTest {
         trace.addConnection(new OutboundConnection(conAlias1));
         trace.addConnection(new InboundConnection(conAlias2));
         State state = new State(trace);
-        TlsContext origCtx1 = state.getTlsContext(conAlias1);
+        TlsContext origCtx1 = state.getContext(conAlias1).getTlsContext();
         TlsContext newCtx = new TlsContext();
         newCtx.setConnection(origCtx1.getConnection());
         origCtx1.setSelectedCipherSuite(CipherSuite.TLS_FALLBACK_SCSV);
         newCtx.setSelectedCipherSuite(CipherSuite.TLS_AES_128_CCM_SHA256);
 
-        assertThat(state.getTlsContext(conAlias1).getSelectedCipherSuite(), equalTo(CipherSuite.TLS_FALLBACK_SCSV));
-        state.replaceTlsContext(newCtx);
-        assertNotSame(state.getTlsContext(conAlias1), origCtx1);
-        assertThat(state.getTlsContext(conAlias1).getSelectedCipherSuite(),
+        assertThat(state.getContext(conAlias1).getTlsContext().getSelectedCipherSuite(),
+            equalTo(CipherSuite.TLS_FALLBACK_SCSV));
+        state.replaceContext(newCtx.getContext());
+        assertNotSame(state.getContext(conAlias1), origCtx1);
+        assertThat(state.getContext(conAlias1).getTlsContext().getSelectedCipherSuite(),
             equalTo(CipherSuite.TLS_AES_128_CCM_SHA256));
     }
 
@@ -169,8 +171,8 @@ public class StateTest {
         newCtx.setConnection(new InboundConnection("NewAlias"));
 
         exception.expect(ConfigurationException.class);
-        exception.expectMessage("No TlsContext to replace for alias");
-        state.replaceTlsContext(newCtx);
+        exception.expectMessage("No Context to replace for alias");
+        state.replaceContext(newCtx.getContext());
     }
 
     @Test
@@ -181,8 +183,7 @@ public class StateTest {
         newCtx.setConnection(new InboundConnection(origCtx.getConnection().getAlias(), 87311));
 
         exception.expect(ContextHandlingException.class);
-        exception
-            .expectMessage("Cannot replace TlsContext because the new TlsContext defines " + "another connection.");
-        state.replaceTlsContext(newCtx);
+        exception.expectMessage("Cannot replace Context because the new Context defines " + "another connection.");
+        state.replaceContext(newCtx.getContext());
     }
 }

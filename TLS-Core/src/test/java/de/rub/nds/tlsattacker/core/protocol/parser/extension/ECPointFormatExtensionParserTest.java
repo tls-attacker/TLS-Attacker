@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ECPointFormatExtensionMessage;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
@@ -38,6 +39,7 @@ public class ECPointFormatExtensionParserTest {
     private int extensionLength;
     private int pointFormatLength;
     private byte[] pointFormats;
+    private final Config config = Config.createConfig();
 
     public ECPointFormatExtensionParserTest(byte[] extension, byte[] completeExtension, ExtensionType type,
         int extensionLength, int pointFormatLength, byte[] pointFormats) {
@@ -50,12 +52,13 @@ public class ECPointFormatExtensionParserTest {
     }
 
     /**
-     * Test of parseExtensionMessageContent method, of class ECPointFormatExtensionParser.
+     * Test of parse method, of class ECPointFormatExtensionParser.
      */
     @Test
     public void testParse() {
+        TlsContext tlsContext = new TlsContext(config);
         ECPointFormatExtensionParser parser =
-            new ECPointFormatExtensionParser(new ByteArrayInputStream(extension), Config.createConfig());
+            new ECPointFormatExtensionParser(new ByteArrayInputStream(extension), tlsContext);
         ECPointFormatExtensionMessage msg = new ECPointFormatExtensionMessage();
         parser.parse(msg);
         assertArrayEquals(msg.getPointFormats().getValue(), pointFormats);

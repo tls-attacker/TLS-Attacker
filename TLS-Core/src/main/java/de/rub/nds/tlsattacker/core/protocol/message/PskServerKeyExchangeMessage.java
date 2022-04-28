@@ -15,15 +15,13 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.PskServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.PSKPremasterComputations;
 import de.rub.nds.tlsattacker.core.protocol.parser.PskServerKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.PskServerKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.PskServerKeyExchangeSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -41,10 +39,6 @@ public class PskServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     public PskServerKeyExchangeMessage() {
         super();
-    }
-
-    public PskServerKeyExchangeMessage(Config tlsConfig) {
-        super(tlsConfig, HandshakeMessageType.SERVER_KEY_EXCHANGE);
     }
 
     public ModifiableByteArray getIdentityHint() {
@@ -96,13 +90,13 @@ public class PskServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     }
 
     @Override
-    public PskServerKeyExchangeHandler getHandler(TlsContext context) {
-        return new PskServerKeyExchangeHandler(context);
+    public PskServerKeyExchangeHandler getHandler(TlsContext tlsContext) {
+        return new PskServerKeyExchangeHandler(tlsContext);
     }
 
     @Override
     public PskServerKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new PskServerKeyExchangeParser(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
+        return new PskServerKeyExchangeParser(stream, tlsContext);
     }
 
     @Override

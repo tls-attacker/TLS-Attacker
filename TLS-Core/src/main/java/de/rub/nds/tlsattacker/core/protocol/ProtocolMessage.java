@@ -14,11 +14,10 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bool.ModifiableBoolean;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.https.HttpsRequestMessage;
-import de.rub.nds.tlsattacker.core.https.HttpsResponseMessage;
-import de.rub.nds.tlsattacker.core.layer.DataContainer;
+import de.rub.nds.tlsattacker.core.layer.Message;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.*;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.util.List;
@@ -38,21 +37,14 @@ import javax.xml.bind.annotation.XmlTransient;
     ApplicationMessage.class, ChangeCipherSpecMessage.class, SSL2ClientHelloMessage.class,
     SSL2ClientMasterKeyMessage.class, SSL2HandshakeMessage.class, SSL2ServerHelloMessage.class,
     SSL2ServerVerifyMessage.class, UnknownMessage.class, UnknownHandshakeMessage.class, HelloRequestMessage.class,
-    HeartbeatMessage.class, SupplementalDataMessage.class, EncryptedExtensionsMessage.class, HttpsRequestMessage.class,
-    HttpsResponseMessage.class, PskClientKeyExchangeMessage.class, PskDhClientKeyExchangeMessage.class,
-    PskDheServerKeyExchangeMessage.class, PskEcDhClientKeyExchangeMessage.class, PskEcDheServerKeyExchangeMessage.class,
-    PskRsaClientKeyExchangeMessage.class, SrpClientKeyExchangeMessage.class, SrpServerKeyExchangeMessage.class,
-    EndOfEarlyDataMessage.class, DtlsHandshakeMessageFragment.class, PWDServerKeyExchangeMessage.class,
-    RSAServerKeyExchangeMessage.class, PWDClientKeyExchangeMessage.class, PskServerKeyExchangeMessage.class,
-    CertificateStatusMessage.class, EmptyClientKeyExchangeMessage.class })
-public abstract class ProtocolMessage<Self extends ProtocolMessage> extends ModifiableVariableHolder
-    implements DataContainer<Self> {
-
-    /**
-     * content type
-     */
-    @XmlTransient
-    protected ProtocolMessageType protocolMessageType;
+    HeartbeatMessage.class, SupplementalDataMessage.class, EncryptedExtensionsMessage.class,
+    PskClientKeyExchangeMessage.class, PskDhClientKeyExchangeMessage.class, PskDheServerKeyExchangeMessage.class,
+    PskEcDhClientKeyExchangeMessage.class, PskEcDheServerKeyExchangeMessage.class, PskRsaClientKeyExchangeMessage.class,
+    SrpClientKeyExchangeMessage.class, SrpServerKeyExchangeMessage.class, EndOfEarlyDataMessage.class,
+    DtlsHandshakeMessageFragment.class, PWDServerKeyExchangeMessage.class, RSAServerKeyExchangeMessage.class,
+    PWDClientKeyExchangeMessage.class, PskServerKeyExchangeMessage.class, CertificateStatusMessage.class,
+    EmptyClientKeyExchangeMessage.class })
+public abstract class ProtocolMessage<Self extends ProtocolMessage> extends Message<Self, TlsContext> {
 
     @XmlTransient
     protected boolean goingToBeSentDefault = true;
@@ -78,6 +70,16 @@ public abstract class ProtocolMessage<Self extends ProtocolMessage> extends Modi
     private ModifiableBoolean goingToBeSent;
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.BEHAVIOR_SWITCH)
     private ModifiableBoolean adjustContext;
+
+    /**
+     * content type
+     */
+    @XmlTransient
+    protected ProtocolMessageType protocolMessageType;
+
+    public boolean addToTypes(List<ProtocolMessageType> protocolMessageTypes) {
+        return protocolMessageTypes.add(getProtocolMessageType());
+    }
 
     @Override
     public boolean isRequired() {
@@ -147,35 +149,17 @@ public abstract class ProtocolMessage<Self extends ProtocolMessage> extends Modi
         this.adjustContext = ModifiableVariableFactory.safelySetValue(this.adjustContext, adjustContext);
     }
 
-    /**
-     * Returns a compact version of the protocol message still containing some additional information.
-     */
-    public abstract String toCompactString();
-
-    /**
-     * Returns the shortest possible string for the protocol message, mostly abbreviations.
-     */
-    public abstract String toShortString();
-
-    public boolean addToTypes(List<ProtocolMessageType> protocolMessageTypes) {
-        return protocolMessageTypes.add(getProtocolMessageType());
-    }
+    @Override
+    public abstract ProtocolMessageHandler<Self> getHandler(TlsContext tlsContext);
 
     @Override
-    public abstract ProtocolMessageHandler<Self> getHandler(TlsContext context);
+    public abstract ProtocolMessageSerializer<Self> getSerializer(TlsContext tlsContext);
 
     @Override
-    public abstract ProtocolMessageSerializer<Self> getSerializer(TlsContext context);
+    public abstract ProtocolMessagePreparator<Self> getPreparator(TlsContext tlsContext);
 
     @Override
-    public abstract ProtocolMessagePreparator<Self> getPreparator(TlsContext context);
-
-    @Override
-    public abstract ProtocolMessageParser<Self> getParser(TlsContext context, InputStream stream);
-
-    public ProtocolMessageType getProtocolMessageType() {
-        return protocolMessageType;
-    }
+    public abstract ProtocolMessageParser<Self> getParser(TlsContext tlsContext, InputStream stream);
 
     public boolean isHandshakeMessage() {
         return this instanceof HandshakeMessage;
@@ -183,5 +167,9 @@ public abstract class ProtocolMessage<Self extends ProtocolMessage> extends Modi
 
     public boolean isDtlsHandshakeMessageFragment() {
         return this instanceof DtlsHandshakeMessageFragment;
+    }
+
+    public ProtocolMessageType getProtocolMessageType() {
+        return protocolMessageType;
     }
 }

@@ -13,7 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
@@ -70,8 +70,9 @@ public class CertificateMessageParserTest {
      */
     @Test
     public void testParse() {
-        CertificateMessageParser parser = new CertificateMessageParser(new ByteArrayInputStream(message),
-            new TlsContext(config), version, ConnectionEndType.SERVER);
+        TlsContext tlsContext = new TlsContext(config);
+        tlsContext.setSelectedProtocolVersion(version);
+        CertificateMessageParser parser = new CertificateMessageParser(new ByteArrayInputStream(message), tlsContext);
         CertificateMessage certMessage = new CertificateMessage();
         parser.parse(certMessage);
         assertTrue(certMessage.getCertificatesListLength().getValue() == certificatesLength);

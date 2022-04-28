@@ -9,13 +9,12 @@
 
 package de.rub.nds.tlsattacker.core.protocol.message;
 
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.EndOfEarlyDataHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.EndOfEarlyDataParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.EndOfEarlyDataPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.EndOfEarlyDataSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -29,18 +28,14 @@ public class EndOfEarlyDataMessage extends HandshakeMessage {
         super(HandshakeMessageType.END_OF_EARLY_DATA);
     }
 
-    public EndOfEarlyDataMessage(Config config) {
-        super(config, HandshakeMessageType.END_OF_EARLY_DATA);
-    }
-
     @Override
-    public EndOfEarlyDataHandler getHandler(TlsContext context) {
-        return new EndOfEarlyDataHandler(context);
+    public EndOfEarlyDataHandler getHandler(TlsContext tlsContext) {
+        return new EndOfEarlyDataHandler(tlsContext);
     }
 
     @Override
     public EndOfEarlyDataParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new EndOfEarlyDataParser(stream, tlsContext.getLastRecordVersion(), tlsContext);
+        return new EndOfEarlyDataParser(stream, tlsContext);
     }
 
     @Override
@@ -50,7 +45,7 @@ public class EndOfEarlyDataMessage extends HandshakeMessage {
 
     @Override
     public EndOfEarlyDataSerializer getSerializer(TlsContext tlsContext) {
-        return new EndOfEarlyDataSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new EndOfEarlyDataSerializer(this);
     }
 
     @Override
@@ -58,4 +53,23 @@ public class EndOfEarlyDataMessage extends HandshakeMessage {
         return "EOED";
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        return hash;
+    }
 }

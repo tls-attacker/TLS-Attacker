@@ -206,8 +206,10 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
                 erroneousScans = true;
                 LOGGER.warn("Could not extract fingerprint for " + pair.toString());
             } else {
-                testedSuite = pair.getFingerPrintTask().getState().getTlsContext().getSelectedCipherSuite();
-                testedVersion = pair.getFingerPrintTask().getState().getTlsContext().getSelectedProtocolVersion();
+                testedSuite =
+                    pair.getFingerPrintTask().getState().getContext().getTlsContext().getSelectedCipherSuite();
+                testedVersion =
+                    pair.getFingerPrintTask().getState().getContext().getTlsContext().getSelectedProtocolVersion();
                 if (testedSuite == null || testedVersion == null) {
                     LOGGER.fatal("Could not find ServerHello after successful extraction");
                     throw new OracleUnstableException("Fatal Extraction error");

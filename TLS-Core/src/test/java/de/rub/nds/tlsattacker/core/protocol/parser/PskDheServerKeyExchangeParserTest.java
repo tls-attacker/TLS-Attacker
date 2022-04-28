@@ -13,7 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.PskDheServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
@@ -53,8 +53,10 @@ public class PskDheServerKeyExchangeParserTest {
      */
     @Test
     public void testParse() {
+        TlsContext tlsContext = new TlsContext(config);
+        tlsContext.setSelectedProtocolVersion(version);
         PskDheServerKeyExchangeParser parser =
-            new PskDheServerKeyExchangeParser(new ByteArrayInputStream(message), version, new TlsContext(config));
+            new PskDheServerKeyExchangeParser(new ByteArrayInputStream(message), tlsContext);
         PskDheServerKeyExchangeMessage msg = new PskDheServerKeyExchangeMessage();
         parser.parse(msg);
         assertTrue(PskIdentityHintLength == msg.getIdentityHintLength().getValue());

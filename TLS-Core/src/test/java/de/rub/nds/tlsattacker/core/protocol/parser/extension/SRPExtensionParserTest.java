@@ -12,6 +12,7 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SRPExtensionMessage;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
@@ -36,6 +37,7 @@ public class SRPExtensionParserTest {
     private final byte[] srpIdentifier;
     private SRPExtensionParser parser;
     private SRPExtensionMessage message;
+    private final Config config = Config.createConfig();
 
     public SRPExtensionParserTest(byte[] extensionBytes, int srpIdentifierLength, byte[] srpIdentifier) {
         this.extensionBytes = extensionBytes;
@@ -45,7 +47,8 @@ public class SRPExtensionParserTest {
 
     @Before
     public void setUp() {
-        parser = new SRPExtensionParser(new ByteArrayInputStream(extensionBytes), Config.createConfig());
+        TlsContext tlsContext = new TlsContext(config);
+        parser = new SRPExtensionParser(new ByteArrayInputStream(extensionBytes), tlsContext);
 
     }
 

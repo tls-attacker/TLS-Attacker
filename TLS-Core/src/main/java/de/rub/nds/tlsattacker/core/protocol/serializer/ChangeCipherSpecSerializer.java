@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageSerializer;
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
 import org.apache.logging.log4j.LogManager;
@@ -27,10 +26,8 @@ public class ChangeCipherSpecSerializer extends ProtocolMessageSerializer<Change
      *
      * @param message
      *                Message that should be serialized
-     * @param version
-     *                Version of the Protocol
      */
-    public ChangeCipherSpecSerializer(ChangeCipherSpecMessage message, ProtocolVersion version) {
+    public ChangeCipherSpecSerializer(ChangeCipherSpecMessage message) {
         super(message);
         this.msg = message;
     }
