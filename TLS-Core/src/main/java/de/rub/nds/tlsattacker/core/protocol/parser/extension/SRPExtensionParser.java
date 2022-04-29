@@ -25,7 +25,7 @@ public class SRPExtensionParser extends ExtensionParser<SRPExtensionMessage> {
     }
 
     @Override
-    public void parseExtensionMessageContent(SRPExtensionMessage msg) {
+    public void parse(SRPExtensionMessage msg) {
         msg.setSrpIdentifierLength(parseIntField(ExtensionByteLength.SRP_IDENTIFIER_LENGTH));
         msg.setSrpIdentifier(parseByteArrayField(msg.getSrpIdentifierLength().getValue()));
     }

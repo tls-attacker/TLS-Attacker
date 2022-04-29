@@ -43,10 +43,10 @@ public class HeartbeatExtensionParserTest {
     }
 
     /**
-     * Test of parseExtensionMessageContent method, of class HeartbeatExtensionParser.
+     * Test of parse method, of class HeartbeatExtensionParser.
      */
     @Test
-    public void testParseExtensionMessageContent() {
+    public void testParse() {
         TlsContext tlsContext = new TlsContext(config);
         HeartbeatExtensionParser parser = new HeartbeatExtensionParser(new ByteArrayInputStream(extension), tlsContext);
         HeartbeatExtensionMessage msg = new HeartbeatExtensionMessage();

@@ -31,18 +31,13 @@ public class HeartbeatMessageSerializer extends ProtocolMessageSerializer<Heartb
     }
 
     @Override
-    public byte[] serializeProtocolMessageContent() {
+    protected byte[] serializeBytes() {
         LOGGER.debug("Serializing HeartbeatMessage");
         writeHeartbeatMessageType();
         writePayloadLength();
         writePayload();
         writePadding();
         return getAlreadySerialized();
-    }
-
-    @Override
-    protected byte[] serializeBytes() {
-        return serializeProtocolMessageContent();
     }
 
     /**

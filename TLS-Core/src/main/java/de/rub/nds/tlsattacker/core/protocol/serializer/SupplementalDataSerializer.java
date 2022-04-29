@@ -27,7 +27,7 @@ public class SupplementalDataSerializer extends HandshakeMessageSerializer<Suppl
     }
 
     @Override
-    public byte[] serializeProtocolMessageContent() {
+    public byte[] serializeHandshakeMessageContent() {
         throw new UnsupportedOperationException("Not Implemented");
     }
 }

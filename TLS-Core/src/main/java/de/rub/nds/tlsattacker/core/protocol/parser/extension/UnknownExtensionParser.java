@@ -32,7 +32,7 @@ public class UnknownExtensionParser extends ExtensionParser<UnknownExtensionMess
     }
 
     @Override
-    public void parseExtensionMessageContent(UnknownExtensionMessage message) {
+    public void parse(UnknownExtensionMessage message) {
         parseExtensionData(message);
     }
 }

@@ -25,7 +25,7 @@ public class PaddingExtensionParser extends ExtensionParser<PaddingExtensionMess
     }
 
     @Override
-    public void parseExtensionMessageContent(PaddingExtensionMessage msg) {
+    public void parse(PaddingExtensionMessage msg) {
         msg.setPaddingBytes(parseByteArrayField(getBytesLeft()));
         LOGGER
             .debug("The padding extension parser parsed the padding bytes " + bytesToHexString(msg.getPaddingBytes()));

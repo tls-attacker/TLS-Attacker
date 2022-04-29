@@ -30,7 +30,7 @@ public class EncryptThenMacExtensionParserTest {
     }
 
     @Test
-    public void testParseExtensionMessageContent() {
+    public void testParse() {
         message = new EncryptThenMacExtensionMessage();
         parser.parse(message);
     }

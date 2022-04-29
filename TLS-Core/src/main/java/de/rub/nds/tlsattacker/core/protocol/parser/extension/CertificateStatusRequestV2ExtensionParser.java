@@ -26,7 +26,7 @@ public class CertificateStatusRequestV2ExtensionParser
     }
 
     @Override
-    public void parseExtensionMessageContent(CertificateStatusRequestV2ExtensionMessage msg) {
+    public void parse(CertificateStatusRequestV2ExtensionMessage msg) {
         msg.setStatusRequestListLength(parseIntField(ExtensionByteLength.CERTIFICATE_STATUS_REQUEST_V2_LIST));
 
         msg.setStatusRequestBytes(parseByteArrayField(msg.getStatusRequestListLength().getValue()));

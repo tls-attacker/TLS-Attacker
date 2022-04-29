@@ -34,7 +34,7 @@ public class DHEServerKeyExchangeParser<T extends DHEServerKeyExchangeMessage> e
     }
 
     @Override
-    protected void parseHandshakeMessageContent(DHEServerKeyExchangeMessage msg) {
+    public void parse(DHEServerKeyExchangeMessage msg) {
         LOGGER.debug("Parsing DHEServerKeyExchangeMessage");
         parsePLength(msg);
         parseP(msg);

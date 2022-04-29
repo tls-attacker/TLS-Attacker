@@ -32,15 +32,14 @@ public class ApplicationMessageSerializerTest {
     }
 
     /**
-     * Test of serializeProtocolMessageContent method, of class ApplicationMessageSerializer.
+     * Test of serializeBytes method, of class ApplicationMessageSerializer.
      */
     @Test
-    public void testSerializeProtocolMessageContent() {
+    public void testSerializeBytes() {
         ApplicationMessage message = new ApplicationMessage();
         message.setData(this.message);
         message.setCompleteResultingMessage(this.message);
         ApplicationMessageSerializer serializer = new ApplicationMessageSerializer(message);
         assertArrayEquals(this.message, serializer.serialize());
     }
-
 }

@@ -40,7 +40,8 @@ public class LayerStackFactory {
                     new RecordLayer(tlsContext), new UdpLayer(tlsContext));
             case OPEN_VPN:
             case QUIC:
-            case STARTTTLS:
+                throw new UnsupportedOperationException("Not implemented yet");
+            case STARTTLS:
                 throw new UnsupportedOperationException("Not implemented yet");
             case TLS:
                 /*
@@ -54,7 +55,8 @@ public class LayerStackFactory {
                 layerStack = new LayerStack(context, new HttpLayer(httpContext), new MessageLayer(tlsContext),
                     new RecordLayer(tlsContext), new TcpLayer(tcpContext));
                 return layerStack;
-
+            case SSL2:
+                throw new UnsupportedOperationException("Not implemented yet");
             default:
                 throw new RuntimeException("Unknown LayerStackType: " + type.name());
         }

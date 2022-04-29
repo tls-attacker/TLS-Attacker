@@ -38,16 +38,16 @@ public class HelloVerifyRequestSerializerTest {
     }
 
     /**
-     * Test of serializeProtocolMessageContent method, of class HelloVerifyRequestSerializer.
+     * Test of serializeHandshakeMessageContent method, of class HelloVerifyRequestSerializer.
      */
     @Test
-    public void testserializeProtocolMessageContent() {
+    public void testSerializeHandshakeMessageContent() {
         HelloVerifyRequestMessage msg = new HelloVerifyRequestMessage();
         msg.setProtocolVersion(protocolVersion);
         msg.setCookieLength(cookieLength);
         msg.setCookie(cookie);
         HelloVerifyRequestSerializer serializer = new HelloVerifyRequestSerializer(msg);
-        assertArrayEquals(message, serializer.serializeProtocolMessageContent());
+        assertArrayEquals(message, serializer.serializeHandshakeMessageContent());
     }
 
 }

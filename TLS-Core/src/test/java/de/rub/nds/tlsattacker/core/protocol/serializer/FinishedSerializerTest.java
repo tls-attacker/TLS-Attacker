@@ -38,15 +38,15 @@ public class FinishedSerializerTest {
     }
 
     /**
-     * Test of serializeProtocolMessageContent method, of class FinishedSerializer.
+     * Test of serializeHandshakeMessageContent method, of class FinishedSerializer.
      */
     @Test
-    public void testserializeProtocolMessageContent() {
+    public void testSerializeHandshakeMessageContent() {
         FinishedMessage msg = new FinishedMessage();
         msg.setVerifyData(verifyData);
         msg.setCompleteResultingMessage(expectedPart);
         FinishedSerializer serializer = new FinishedSerializer(msg);
-        assertArrayEquals(expectedPart, serializer.serializeProtocolMessageContent());
+        assertArrayEquals(expectedPart, serializer.serializeHandshakeMessageContent());
     }
 
 }

@@ -21,12 +21,7 @@ public class TokenBindingMessageSerializer extends ProtocolMessageSerializer<Tok
     }
 
     @Override
-    protected byte[] serializeBytes() {
-        return serializeProtocolMessageContent();
-    }
-
-    @Override
-    public byte[] serializeProtocolMessageContent() {
+    public byte[] serializeBytes() {
         appendInt(message.getTokenbindingsLength().getValue(), TokenBindingLength.TOKENBINDINGS);
         serializeBinding();
         return getAlreadySerialized();

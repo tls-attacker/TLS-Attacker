@@ -26,7 +26,7 @@ public class EllipticCurvesExtensionParser extends ExtensionParser<EllipticCurve
     }
 
     @Override
-    public void parseExtensionMessageContent(EllipticCurvesExtensionMessage msg) {
+    public void parse(EllipticCurvesExtensionMessage msg) {
         LOGGER.debug("Parsing EllipticCurvesExtensionMessage");
         parseSupportedGroupsLength(msg);
         parseSupportedGroups(msg);

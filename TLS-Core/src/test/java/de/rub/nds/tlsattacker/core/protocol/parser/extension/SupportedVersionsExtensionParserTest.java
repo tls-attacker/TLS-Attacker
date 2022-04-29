@@ -43,10 +43,10 @@ public class SupportedVersionsExtensionParserTest {
     }
 
     /**
-     * Test of parseExtensionMessageContent method, of class SupportedVersionsExtensionParser.
+     * Test of parse method, of class SupportedVersionsExtensionParser.
      */
     @Test
-    public void testParseExtensionMessageContent() {
+    public void testParse() {
         TlsContext tlsContext = new TlsContext(config);
         SupportedVersionsExtensionParser parser =
             new SupportedVersionsExtensionParser(new ByteArrayInputStream(extension), tlsContext);

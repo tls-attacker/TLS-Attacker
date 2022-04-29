@@ -46,7 +46,7 @@ public class ClientAuthzExtensionParserTest {
     }
 
     @Test
-    public void testParseExtensionMessageContent() {
+    public void testParse() {
         TlsContext tlsContext = new TlsContext(config);
         parser = new ClientAuthzExtensionParser(new ByteArrayInputStream(expectedBytes), tlsContext);
         msg = new ClientAuthzExtensionMessage();

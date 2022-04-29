@@ -28,7 +28,7 @@ public class HttpRequestSerializer extends HttpMessageSerializer<HttpRequestMess
     }
 
     @Override
-    public byte[] serializeHttpMessageContent() {
+    protected byte[] serializeBytes() {
         StringBuilder builder = new StringBuilder();
         builder.append(message.getRequestType().getValue()).append(" ").append(message.getRequestPath().getValue())
             .append(" ").append(message.getRequestProtocol().getValue()).append("\r\n");

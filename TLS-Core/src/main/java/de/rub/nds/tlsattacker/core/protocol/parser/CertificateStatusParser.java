@@ -26,7 +26,7 @@ public class CertificateStatusParser extends HandshakeMessageParser<CertificateS
     }
 
     @Override
-    protected void parseHandshakeMessageContent(CertificateStatusMessage message) {
+    public void parse(CertificateStatusMessage message) {
         LOGGER.debug("Parsing CertificateStatusMessage");
         CertificateStatusGenericParser parser =
             new CertificateStatusGenericParser(new ByteArrayInputStream(parseByteArrayField(getBytesLeft())));

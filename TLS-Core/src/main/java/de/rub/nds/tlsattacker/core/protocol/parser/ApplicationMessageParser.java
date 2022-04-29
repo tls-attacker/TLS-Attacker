@@ -30,7 +30,7 @@ public class ApplicationMessageParser extends ProtocolMessageParser<ApplicationM
     }
 
     @Override
-    protected void parseMessageContent(ApplicationMessage message) {
+    public void parse(ApplicationMessage message) {
         LOGGER.debug("Parsing ApplicationMessage");
         parseData(message);
         message.setCompleteResultingMessage(getAlreadyParsed());

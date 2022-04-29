@@ -35,7 +35,7 @@ public class PWDServerKeyExchangeSerializer extends ServerKeyExchangeSerializer<
     }
 
     @Override
-    public byte[] serializeProtocolMessageContent() {
+    public byte[] serializeHandshakeMessageContent() {
         LOGGER.debug("Serializing PWDServerKeyExchangeMessage");
         writeSaltLength(msg);
         writeSalt(msg);

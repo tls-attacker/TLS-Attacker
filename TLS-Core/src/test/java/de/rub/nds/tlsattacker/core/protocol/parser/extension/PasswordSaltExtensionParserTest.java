@@ -44,7 +44,7 @@ public class PasswordSaltExtensionParserTest {
     }
 
     @Test
-    public void testParseExtensionMessageContent() {
+    public void testParse() {
         TlsContext tlsContext = new TlsContext(config);
         PasswordSaltExtensionParser parser =
             new PasswordSaltExtensionParser(new ByteArrayInputStream(expectedBytes), tlsContext);

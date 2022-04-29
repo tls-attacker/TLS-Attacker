@@ -39,10 +39,10 @@ public class MaxFragmentLengthExtensionParserTest {
     }
 
     /**
-     * Test of parseExtensionMessageContent method, of class MaxFragmentLengthExtensionParser.
+     * Test of parse method, of class MaxFragmentLengthExtensionParser.
      */
     @Test
-    public void testParseExtensionMessageContent() {
+    public void testParse() {
         TlsContext tlsContext = new TlsContext(config);
         MaxFragmentLengthExtensionParser parser =
             new MaxFragmentLengthExtensionParser(new ByteArrayInputStream(extension), tlsContext);

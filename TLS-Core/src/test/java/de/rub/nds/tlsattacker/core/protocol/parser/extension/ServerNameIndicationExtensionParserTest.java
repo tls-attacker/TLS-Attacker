@@ -53,10 +53,10 @@ public class ServerNameIndicationExtensionParserTest {
     }
 
     /**
-     * Test of parseExtensionMessageContent method, of class ServerNameIndicationExtensionParser.
+     * Test of parse method, of class ServerNameIndicationExtensionParser.
      */
     @Test
-    public void testParseExtensionMessageContent() {
+    public void testParse() {
         TlsContext tlsContext = new TlsContext(config);
         ServerNameIndicationExtensionParser parser =
             new ServerNameIndicationExtensionParser(new ByteArrayInputStream(extension), tlsContext);

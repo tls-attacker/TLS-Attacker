@@ -32,14 +32,14 @@ public class UnknownHandshakeSerializerTest {
     }
 
     /**
-     * Test of serializeProtocolMessageContent method, of class UnknownHandshakeSerializer.
+     * Test of serializeHandshakeMessageContent method, of class UnknownHandshakeSerializer.
      */
     @Test
-    public void testserializeProtocolMessageContent() {
+    public void testSerializeHandshakeMessageContent() {
         UnknownHandshakeMessage msg = new UnknownHandshakeMessage();
         msg.setData(message);
         UnknownHandshakeSerializer serializer = new UnknownHandshakeSerializer(msg);
-        assertArrayEquals(message, serializer.serializeProtocolMessageContent());
+        assertArrayEquals(message, serializer.serializeHandshakeMessageContent());
     }
 
 }

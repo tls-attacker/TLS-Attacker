@@ -30,7 +30,7 @@ public class ApplicationMessageSerializer extends ProtocolMessageSerializer<Appl
     }
 
     @Override
-    public byte[] serializeProtocolMessageContent() {
+    protected byte[] serializeBytes() {
         LOGGER.debug("Serializing ApplicationMessage");
         writeData();
         return getAlreadySerialized();
@@ -42,10 +42,5 @@ public class ApplicationMessageSerializer extends ProtocolMessageSerializer<Appl
     private void writeData() {
         appendBytes(message.getData().getValue());
         LOGGER.debug("Data: " + ArrayConverter.bytesToHexString(message.getData().getValue()));
-    }
-
-    @Override
-    protected byte[] serializeBytes() {
-        return serializeProtocolMessageContent();
     }
 }

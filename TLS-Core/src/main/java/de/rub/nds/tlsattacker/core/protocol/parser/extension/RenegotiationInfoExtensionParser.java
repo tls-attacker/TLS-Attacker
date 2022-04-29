@@ -28,7 +28,7 @@ public class RenegotiationInfoExtensionParser extends ExtensionParser<Renegotiat
     }
 
     @Override
-    public void parseExtensionMessageContent(RenegotiationInfoExtensionMessage msg) {
+    public void parse(RenegotiationInfoExtensionMessage msg) {
         msg.setRenegotiationInfoLength(parseIntField(ExtensionByteLength.RENEGOTIATION_INFO));
         msg.setRenegotiationInfo(parseByteArrayField(msg.getRenegotiationInfoLength().getValue()));
         LOGGER.debug(

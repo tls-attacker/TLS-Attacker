@@ -25,7 +25,7 @@ public class AlpnExtensionParser extends ExtensionParser<AlpnExtensionMessage> {
     }
 
     @Override
-    public void parseExtensionMessageContent(AlpnExtensionMessage msg) {
+    public void parse(AlpnExtensionMessage msg) {
         msg.setProposedAlpnProtocolsLength(parseIntField(ExtensionByteLength.ALPN_EXTENSION_LENGTH));
         byte[] proposedProtocol = parseByteArrayField(msg.getProposedAlpnProtocolsLength().getValue());
         msg.setProposedAlpnProtocols(proposedProtocol);

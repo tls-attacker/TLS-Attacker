@@ -39,7 +39,7 @@ public class CertificateVerifySerializer extends HandshakeMessageSerializer<Cert
     }
 
     @Override
-    public byte[] serializeProtocolMessageContent() {
+    public byte[] serializeHandshakeMessageContent() {
         LOGGER.debug("Serializing CertificateVerifyMessage");
         if (version == ProtocolVersion.TLS12 || version == ProtocolVersion.DTLS12 || version.isTLS13()) {
             writeSignatureHashAlgorithm(msg);

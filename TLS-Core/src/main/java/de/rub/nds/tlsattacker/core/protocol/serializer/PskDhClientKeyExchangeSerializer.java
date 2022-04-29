@@ -33,7 +33,7 @@ public class PskDhClientKeyExchangeSerializer extends DHClientKeyExchangeSeriali
     }
 
     @Override
-    public byte[] serializeProtocolMessageContent() {
+    public byte[] serializeHandshakeMessageContent() {
         LOGGER.debug("Serializing PSKDHClientKeyExchangeMessage");
         writePSKIdentityLength(msg);
         writePSKIdentity(msg);

@@ -19,10 +19,4 @@ public abstract class HttpMessageParser<Message extends HttpMessage> extends Par
         super(stream);
     }
 
-    @Override
-    public final void parse(Message message) {
-        parseMessageContent(message);
-    }
-
-    protected abstract void parseMessageContent(Message message);
 }

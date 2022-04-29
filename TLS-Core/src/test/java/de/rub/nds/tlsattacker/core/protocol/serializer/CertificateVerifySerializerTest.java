@@ -39,16 +39,16 @@ public class CertificateVerifySerializerTest {
     }
 
     /**
-     * Test of serializeProtocolMessageContent method, of class CertificateVerifySerializer.
+     * Test of serializeHandshakeMessageContent method, of class CertificateVerifySerializer.
      */
     @Test
-    public void testserializeProtocolMessageContent() {
+    public void testSerializeHandshakeMessageContent() {
         CertificateVerifyMessage message = new CertificateVerifyMessage();
         message.setSignature(signature);
         message.setSignatureLength(signatureLength);
         message.setSignatureHashAlgorithm(sigHashAlgo);
         CertificateVerifySerializer serializer = new CertificateVerifySerializer(message, ProtocolVersion.TLS12);
-        assertArrayEquals(expectedPart, serializer.serializeProtocolMessageContent());
+        assertArrayEquals(expectedPart, serializer.serializeHandshakeMessageContent());
     }
 
 }

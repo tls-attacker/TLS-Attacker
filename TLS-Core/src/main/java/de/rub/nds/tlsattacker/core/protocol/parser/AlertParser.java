@@ -31,7 +31,7 @@ public class AlertParser extends ProtocolMessageParser<AlertMessage> {
     }
 
     @Override
-    protected void parseMessageContent(AlertMessage message) {
+    public void parse(AlertMessage message) {
         LOGGER.debug("Parsing AlertMessage");
         parseLevel(message);
         parseDescription(message);

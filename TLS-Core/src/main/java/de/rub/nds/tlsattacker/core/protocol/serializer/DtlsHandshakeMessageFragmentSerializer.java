@@ -24,7 +24,7 @@ public class DtlsHandshakeMessageFragmentSerializer extends HandshakeMessageSeri
     }
 
     @Override
-    public byte[] serializeProtocolMessageContent() {
+    public byte[] serializeHandshakeMessageContent() {
         writeContent();
         return getAlreadySerialized();
     }

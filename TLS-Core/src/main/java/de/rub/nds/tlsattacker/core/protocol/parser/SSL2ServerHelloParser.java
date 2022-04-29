@@ -26,13 +26,8 @@ public class SSL2ServerHelloParser extends SSL2HandshakeMessageParser<SSL2Server
     }
 
     @Override
-    protected void parseMessageContent(SSL2ServerHelloMessage message) {
+    public void parse(SSL2ServerHelloMessage message) {
         LOGGER.debug("Parsing SSL2ServerHello");
-        parseHandshakeMessageContent(message);
-    }
-
-    @Override
-    protected void parseHandshakeMessageContent(SSL2ServerHelloMessage message) {
         parseMessageLength(message);
         parseType(message);
         parseSessionIdHit(message);

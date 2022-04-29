@@ -25,7 +25,7 @@ public class TokenBindingMessageParser extends ProtocolMessageParser<TokenBindin
     }
 
     @Override
-    protected void parseMessageContent(TokenBindingMessage message) {
+    public void parse(TokenBindingMessage message) {
         message.setTokenbindingsLength(parseIntField(TokenBindingLength.TOKENBINDINGS));
         LOGGER.debug("TokenbindingLength:" + message.getTokenbindingsLength().getValue());
         message.setTokenbindingType(parseByteField(TokenBindingLength.BINDING_TYPE));

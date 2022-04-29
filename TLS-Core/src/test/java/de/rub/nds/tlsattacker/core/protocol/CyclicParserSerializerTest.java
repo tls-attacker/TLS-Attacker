@@ -87,13 +87,13 @@ public class CyclicParserSerializerTest {
                     ProtocolMessagePreparator preparator = message.getPreparator(tlsContext);
                     preparator.prepare();
                     ProtocolMessageSerializer serializer = message.getSerializer(tlsContext);
-                    byte[] serializedMessage = serializer.serializeProtocolMessageContent();
+                    byte[] serializedMessage = serializer.serialize();
                     message =
                         (ProtocolMessage) getMessageConstructor(someMessageClass).newInstance(Config.createConfig());
                     ProtocolMessageParser parser =
                         message.getParser(tlsContext, new ByteArrayInputStream(serializedMessage));
                     parser.parse(message);
-                    byte[] serializedMessage2 = message.getSerializer(tlsContext).serializeProtocolMessageContent();
+                    byte[] serializedMessage2 = message.getSerializer(tlsContext).serialize();
                     Assert.assertArrayEquals(testName + " failed", serializedMessage, serializedMessage2);
                     CONSOLE.info("......." + testName + " - " + version.name() + " works as expected!");
                 } catch (UnsupportedOperationException ex) {

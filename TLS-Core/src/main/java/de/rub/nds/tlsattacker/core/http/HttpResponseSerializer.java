@@ -28,7 +28,7 @@ public class HttpResponseSerializer extends HttpMessageSerializer<HttpResponseMe
     }
 
     @Override
-    public byte[] serializeHttpMessageContent() {
+    protected byte[] serializeBytes() {
         StringBuilder builder = new StringBuilder();
         builder.append(message.getResponseProtocol().getValue()).append(" ")
             .append(message.getResponseStatusCode().getValue()).append("\r\n");

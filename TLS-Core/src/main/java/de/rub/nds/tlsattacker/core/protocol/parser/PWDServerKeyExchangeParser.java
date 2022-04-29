@@ -26,7 +26,7 @@ public class PWDServerKeyExchangeParser extends ServerKeyExchangeParser<PWDServe
     }
 
     @Override
-    protected void parseHandshakeMessageContent(PWDServerKeyExchangeMessage msg) {
+    public void parse(PWDServerKeyExchangeMessage msg) {
         LOGGER.debug("Parsing PWDServerKeyExchangeMessage");
         parseSaltLength(msg);
         parseSalt(msg);

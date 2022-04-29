@@ -39,7 +39,7 @@ public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMe
     }
 
     @Override
-    public void parseExtensionMessageContent(KeyShareExtensionMessage msg) {
+    public void parse(KeyShareExtensionMessage msg) {
         if (helloRetryRequestHint) {
             parseHRRKeyShare(msg);
         } else {

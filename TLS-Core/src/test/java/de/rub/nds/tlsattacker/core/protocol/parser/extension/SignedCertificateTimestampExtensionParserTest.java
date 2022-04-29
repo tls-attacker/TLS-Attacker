@@ -57,7 +57,7 @@ public class SignedCertificateTimestampExtensionParserTest {
     }
 
     @Test
-    public void testParseExtensionMessageContent() {
+    public void testParse() {
         TlsContext tlsContext = new TlsContext(config);
         parser = new SignedCertificateTimestampExtensionParser(new ByteArrayInputStream(expectedBytes), tlsContext);
         message = new SignedCertificateTimestampExtensionMessage();

@@ -50,7 +50,7 @@ public class PWDProtectExtensionParserTest {
     }
 
     @Test
-    public void testParseExtensionMessageContent() {
+    public void testParse() {
         TlsContext tlsContext = new TlsContext(config);
         PWDProtectExtensionParser parser =
             new PWDProtectExtensionParser(new ByteArrayInputStream(expectedBytes), tlsContext);

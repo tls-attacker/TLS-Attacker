@@ -26,11 +26,11 @@ public class SSL2ClientMasterKeySerializer extends HandshakeMessageSerializer<SS
 
     @Override
     protected byte[] serializeBytes() {
-        return serializeProtocolMessageContent();
+        return serializeHandshakeMessageContent();
     }
 
     @Override
-    public byte[] serializeProtocolMessageContent() {
+    public byte[] serializeHandshakeMessageContent() {
         LOGGER.debug("Serializing SSL2ClientMasterKey");
         writeMessageLength();
         writeType();

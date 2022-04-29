@@ -28,7 +28,7 @@ public class HelloRequestSerializer extends HandshakeMessageSerializer<HelloRequ
     }
 
     @Override
-    public byte[] serializeProtocolMessageContent() {
+    public byte[] serializeHandshakeMessageContent() {
         LOGGER.debug("Serializing HelloRequestMessage");
         return getAlreadySerialized();
     }

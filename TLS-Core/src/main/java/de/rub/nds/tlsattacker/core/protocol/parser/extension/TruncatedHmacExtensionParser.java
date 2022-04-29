@@ -20,7 +20,7 @@ public class TruncatedHmacExtensionParser extends ExtensionParser<TruncatedHmacE
     }
 
     @Override
-    public void parseExtensionMessageContent(TruncatedHmacExtensionMessage msg) {
+    public void parse(TruncatedHmacExtensionMessage msg) {
         // nothing to parse here, it's a opt-in extension
     }
 }

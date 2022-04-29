@@ -49,7 +49,7 @@ public class KeyShareExtensionParserTest {
      * Test of parseExtensionMessageContent method, of class KeyShareExtensionParser.
      */
     @Test
-    public void testParseExtensionMessageContent() {
+    public void testParse() {
         Config config = Config.createConfig();
         TlsContext context = new TlsContext(config);
         context.setTalkingConnectionEndType(ConnectionEndType.CLIENT);

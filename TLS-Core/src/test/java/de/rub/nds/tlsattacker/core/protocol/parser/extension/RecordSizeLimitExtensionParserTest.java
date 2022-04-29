@@ -40,10 +40,10 @@ public class RecordSizeLimitExtensionParserTest {
     }
 
     /**
-     * Test of parseExtensionMessageContent method of class RecordSizeLimitExtensionParser.
+     * Test of parse method of class RecordSizeLimitExtensionParser.
      */
     @Test
-    public void testParseExtensionMessageContent() {
+    public void testParse() {
         TlsContext tlsContext = new TlsContext(config);
         RecordSizeLimitExtensionParser parser =
             new RecordSizeLimitExtensionParser(new ByteArrayInputStream(extension), tlsContext);

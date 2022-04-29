@@ -29,7 +29,7 @@ public class EmptyClientKeyExchangeSerializer<T extends EmptyClientKeyExchangeMe
     }
 
     @Override
-    public byte[] serializeProtocolMessageContent() {
+    public byte[] serializeHandshakeMessageContent() {
         LOGGER.debug("Serializing EmptyClientKeyExchangeMessage");
         return getAlreadySerialized();
     }

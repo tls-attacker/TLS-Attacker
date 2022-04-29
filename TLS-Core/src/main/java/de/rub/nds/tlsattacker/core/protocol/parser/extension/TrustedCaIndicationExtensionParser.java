@@ -26,7 +26,7 @@ public class TrustedCaIndicationExtensionParser extends ExtensionParser<TrustedC
     }
 
     @Override
-    public void parseExtensionMessageContent(TrustedCaIndicationExtensionMessage msg) {
+    public void parse(TrustedCaIndicationExtensionMessage msg) {
         msg.setTrustedAuthoritiesLength(parseIntField(ExtensionByteLength.TRUSTED_AUTHORITY_LIST_LENGTH));
         msg.setTrustedAuthoritiesBytes(parseByteArrayField(msg.getTrustedAuthoritiesLength().getValue()));
 

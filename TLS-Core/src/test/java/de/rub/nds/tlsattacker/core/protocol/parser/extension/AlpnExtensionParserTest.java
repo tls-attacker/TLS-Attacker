@@ -51,7 +51,7 @@ public class AlpnExtensionParserTest {
     }
 
     @Test
-    public void testParseExtensionMessageContent() {
+    public void testParse() {
         message = new AlpnExtensionMessage();
         parser.parse(message);
 

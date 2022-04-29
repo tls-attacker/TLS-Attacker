@@ -56,7 +56,7 @@ public class TokenBindingExtensionParserTest {
     }
 
     @Test
-    public void testParseExtensionMessageContent() {
+    public void testParse() {
         message = new TokenBindingExtensionMessage();
         parser.parse(message);
         assertArrayEquals(tokenbindingVersion.getByteValue(), message.getTokenbindingVersion().getValue());

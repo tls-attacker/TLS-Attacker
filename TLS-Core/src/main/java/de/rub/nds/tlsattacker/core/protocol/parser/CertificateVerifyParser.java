@@ -34,7 +34,7 @@ public class CertificateVerifyParser extends HandshakeMessageParser<CertificateV
     }
 
     @Override
-    protected void parseHandshakeMessageContent(CertificateVerifyMessage msg) {
+    public void parse(CertificateVerifyMessage msg) {
         LOGGER.debug("Parsing CertificateVerifyMessage");
         if (getVersion() == ProtocolVersion.TLS12 || getVersion() == ProtocolVersion.DTLS12 || getVersion().isTLS13()) {
             parseSignatureHashAlgorithm(msg);

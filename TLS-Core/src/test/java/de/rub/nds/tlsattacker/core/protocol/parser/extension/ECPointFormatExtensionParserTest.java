@@ -52,10 +52,10 @@ public class ECPointFormatExtensionParserTest {
     }
 
     /**
-     * Test of parseExtensionMessageContent method, of class ECPointFormatExtensionParser.
+     * Test of parse method, of class ECPointFormatExtensionParser.
      */
     @Test
-    public void testParseExtensionMessageContent() {
+    public void testParse() {
         TlsContext tlsContext = new TlsContext(config);
         ECPointFormatExtensionParser parser =
             new ECPointFormatExtensionParser(new ByteArrayInputStream(extension), tlsContext);

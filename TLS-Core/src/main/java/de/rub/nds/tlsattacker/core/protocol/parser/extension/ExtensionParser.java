@@ -28,14 +28,6 @@ public abstract class ExtensionParser<Extension extends ExtensionMessage> extend
         this.tlsContext = tlsContext;
     }
 
-    @Override
-    public final void parse(Extension extension) {
-        LOGGER.debug("Parsing ExtensionMessage");
-        parseExtensionMessageContent(extension);
-    }
-
-    public abstract void parseExtensionMessageContent(Extension extension);
-
     /**
      * Checks if the Extension has ExtensionData specified
      *

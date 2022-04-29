@@ -29,7 +29,7 @@ public class AlertSerializer extends ProtocolMessageSerializer<AlertMessage> {
     }
 
     @Override
-    public byte[] serializeProtocolMessageContent() {
+    protected byte[] serializeBytes() {
         LOGGER.debug("Serializing AlertMessage");
         writeLevel();
         writeDescription();
@@ -50,10 +50,5 @@ public class AlertSerializer extends ProtocolMessageSerializer<AlertMessage> {
     private void writeDescription() {
         appendByte(message.getDescription().getValue());
         LOGGER.debug("Description: " + message.getDescription().getValue());
-    }
-
-    @Override
-    protected byte[] serializeBytes() {
-        return serializeProtocolMessageContent();
     }
 }

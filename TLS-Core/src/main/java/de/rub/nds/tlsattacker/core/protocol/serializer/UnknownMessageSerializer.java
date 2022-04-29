@@ -31,11 +31,6 @@ public class UnknownMessageSerializer extends ProtocolMessageSerializer<UnknownM
 
     @Override
     protected byte[] serializeBytes() {
-        return serializeProtocolMessageContent();
-    }
-
-    @Override
-    public byte[] serializeProtocolMessageContent() {
         LOGGER.debug("Serializing UnknownMessage");
         writeCompleteResultingMessage();
         return getAlreadySerialized();

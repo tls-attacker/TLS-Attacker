@@ -25,7 +25,7 @@ public class RSAServerKeyExchangeParser<T extends RSAServerKeyExchangeMessage> e
     }
 
     @Override
-    protected void parseHandshakeMessageContent(RSAServerKeyExchangeMessage msg) {
+    public void parse(RSAServerKeyExchangeMessage msg) {
         LOGGER.debug("Parsing RSAServerKeyExchangeMessage");
         parseModulusLength(msg);
         parseModulus(msg);

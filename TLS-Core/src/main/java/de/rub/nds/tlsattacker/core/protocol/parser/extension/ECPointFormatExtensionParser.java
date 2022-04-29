@@ -26,7 +26,7 @@ public class ECPointFormatExtensionParser extends ExtensionParser<ECPointFormatE
     }
 
     @Override
-    public void parseExtensionMessageContent(ECPointFormatExtensionMessage msg) {
+    public void parse(ECPointFormatExtensionMessage msg) {
         LOGGER.debug("Parsing ECPointFormatExtensionMessage");
         parsePointFormatsLength(msg);
         parsePointFormat(msg);

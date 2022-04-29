@@ -34,7 +34,7 @@ public class SrpClientKeyExchangeParser extends ClientKeyExchangeParser<SrpClien
     }
 
     @Override
-    protected void parseHandshakeMessageContent(SrpClientKeyExchangeMessage msg) {
+    public void parse(SrpClientKeyExchangeMessage msg) {
         LOGGER.debug("Parsing SRPClientKeyExchangeMessage");
         parsePublicKeyLength(msg);
         parsePublicKey(msg);

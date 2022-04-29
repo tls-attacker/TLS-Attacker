@@ -30,7 +30,7 @@ public class ClientCertificateUrlExtensionParserTest {
     }
 
     @Test
-    public void testParseExtensionMessageContent() {
+    public void testParse() {
         message = new ClientCertificateUrlExtensionMessage();
         parser.parse(message);
     }

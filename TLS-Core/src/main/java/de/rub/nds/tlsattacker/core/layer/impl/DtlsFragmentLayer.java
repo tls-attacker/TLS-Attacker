@@ -202,7 +202,7 @@ public class DtlsFragmentLayer extends ProtocolLayer<RecordLayerHint, DtlsHandsh
         boolean goingToBeSent) {
         DtlsHandshakeMessageFragment fragment = new DtlsHandshakeMessageFragment();
         fragment.setHandshakeMessageTypeConfig(message.getHandshakeMessageType());
-        byte[] messageContent = message.getSerializer(context).serializeProtocolMessageContent();
+        byte[] messageContent = message.getSerializer(context).serializeHandshakeMessageContent();
         fragment.setFragmentContentConfig(messageContent);
         if (message.getMessageSequence() == null) {
             int messageSequence = goingToBeSent ? writeHandshakeMessageSequence : readHandshakeMessageSequence;

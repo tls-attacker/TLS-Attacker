@@ -32,7 +32,7 @@ public class UnknownHandshakeSerializer extends HandshakeMessageSerializer<Unkno
     }
 
     @Override
-    public byte[] serializeProtocolMessageContent() {
+    public byte[] serializeHandshakeMessageContent() {
         LOGGER.debug("Serializing UnknownHandshakeMessage");
         writeData(msg);
         return getAlreadySerialized();

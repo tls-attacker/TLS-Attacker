@@ -48,7 +48,7 @@ public class EllipticCurvesExtensionParserTest {
      * Test of parseExtensionMessageContent method, of class EllipticCurvesExtensionParser.
      */
     @Test
-    public void testParseExtensionMessageContent() {
+    public void testParse() {
         TlsContext tlsContext = new TlsContext(config);
         EllipticCurvesExtensionParser parser =
             new EllipticCurvesExtensionParser(new ByteArrayInputStream(extension), tlsContext);

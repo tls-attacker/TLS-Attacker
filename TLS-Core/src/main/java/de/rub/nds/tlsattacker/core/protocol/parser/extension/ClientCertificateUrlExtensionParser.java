@@ -20,7 +20,7 @@ public class ClientCertificateUrlExtensionParser extends ExtensionParser<ClientC
     }
 
     @Override
-    public void parseExtensionMessageContent(ClientCertificateUrlExtensionMessage msg) {
+    public void parse(ClientCertificateUrlExtensionMessage msg) {
         // nothing to parse here, it's an opt-in extension.
     }
 }

@@ -34,7 +34,7 @@ public class UserMappingExtensionParserTest {
     }
 
     @Test
-    public void testParseExtensionMessageContent() {
+    public void testParse() {
         message = new UserMappingExtensionMessage();
         parser.parse(message);
         assertEquals(hintType.getValue(), (long) message.getUserMappingType().getValue());

@@ -66,14 +66,6 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
         this(stream, tlsContext.getChooser().getLastRecordVersion(), tlsContext);
     }
 
-    @Override
-    protected void parseMessageContent(T message) {
-        // TODO Cleanup function mess
-        parseHandshakeMessageContent(message);
-    }
-
-    protected abstract void parseHandshakeMessageContent(T msg);
-
     /**
      * Reads the next bytes as the ExtensionLength and writes them in the message
      *

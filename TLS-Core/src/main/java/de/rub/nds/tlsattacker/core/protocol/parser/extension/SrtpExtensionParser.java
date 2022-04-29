@@ -26,7 +26,7 @@ public class SrtpExtensionParser extends ExtensionParser<SrtpExtensionMessage> {
     }
 
     @Override
-    public void parseExtensionMessageContent(SrtpExtensionMessage msg) {
+    public void parse(SrtpExtensionMessage msg) {
         msg.setSrtpProtectionProfilesLength(parseIntField(ExtensionByteLength.SRTP_PROTECTION_PROFILES_LENGTH));
         LOGGER
             .debug("Parsed the srtp protection profiles length of " + msg.getSrtpProtectionProfilesLength().getValue());

@@ -44,7 +44,7 @@ public class ExtendedMasterSecretExtensionParserTest {
     }
 
     @Test
-    public void testParseExtensionMessageContent() {
+    public void testParse() {
         message = new ExtendedMasterSecretExtensionMessage();
         parser.parse(message);
     }

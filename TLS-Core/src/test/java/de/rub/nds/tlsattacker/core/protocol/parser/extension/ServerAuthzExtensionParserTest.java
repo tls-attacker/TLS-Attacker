@@ -45,7 +45,7 @@ public class ServerAuthzExtensionParserTest {
     }
 
     @Test
-    public void testParseExtensionMessageContent() {
+    public void testParse() {
         TlsContext tlsContext = new TlsContext(config);
         parser = new ServerAuthzExtensionParser(new ByteArrayInputStream(expectedBytes), tlsContext);
         msg = new ServerAuthzExtensionMessage();

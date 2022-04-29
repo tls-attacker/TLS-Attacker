@@ -40,10 +40,10 @@ public class GreaseExtensionParserTest {
     }
 
     /**
-     * Test of parseExtensionMessageContent method, of class HeartbeatExtensionParser.
+     * Test of parse method, of class HeartbeatExtensionParser.
      */
     @Test
-    public void testParseExtensionMessageContent() {
+    public void testParse() {
         TlsContext tlsContext = new TlsContext(config);
         GreaseExtensionParser parser = new GreaseExtensionParser(new ByteArrayInputStream(extension), tlsContext);
         GreaseExtensionMessage msg = new GreaseExtensionMessage();

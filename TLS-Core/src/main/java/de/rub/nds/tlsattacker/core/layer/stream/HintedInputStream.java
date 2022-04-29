@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.layer.stream;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
+import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,6 +33,9 @@ public abstract class HintedInputStream extends InputStream {
     }
 
     public int readInt(int size) throws IOException {
+        if (size < 0 || size > 4) {
+            throw new ParserException("Cannot read Integer of size " + size);
+        }
         byte[] readChunk = readChunk(size);
         return ArrayConverter.bytesToInt(readChunk);
     }

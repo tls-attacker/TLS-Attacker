@@ -28,7 +28,7 @@ public class SupportedVersionsExtensionParser extends ExtensionParser<SupportedV
     }
 
     @Override
-    public void parseExtensionMessageContent(SupportedVersionsExtensionMessage msg) {
+    public void parse(SupportedVersionsExtensionMessage msg) {
         LOGGER.debug("Parsing SupportedVersionsExtensionMessage");
         if (getTlsContext().getTalkingConnectionEndType() == ConnectionEndType.SERVER) {
             msg.setSupportedVersions(parseByteArrayField(HandshakeByteLength.VERSION));

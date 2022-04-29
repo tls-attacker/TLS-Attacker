@@ -24,7 +24,7 @@ public class SSL2ClientHelloSerializer extends HandshakeMessageSerializer<SSL2Cl
     }
 
     @Override
-    public byte[] serializeProtocolMessageContent() {
+    public byte[] serializeHandshakeMessageContent() {
         LOGGER.debug("Serializing SSL2ClientHello");
         writeMessageLength();
         writeType();
@@ -40,7 +40,7 @@ public class SSL2ClientHelloSerializer extends HandshakeMessageSerializer<SSL2Cl
 
     @Override
     protected byte[] serializeBytes() {
-        return serializeProtocolMessageContent();
+        return serializeHandshakeMessageContent();
     }
 
     /**

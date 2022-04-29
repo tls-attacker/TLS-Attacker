@@ -34,7 +34,7 @@ public class SrpServerKeyExchangeParser extends ServerKeyExchangeParser<SrpServe
     }
 
     @Override
-    protected void parseHandshakeMessageContent(SrpServerKeyExchangeMessage msg) {
+    public void parse(SrpServerKeyExchangeMessage msg) {
         LOGGER.debug("Parsing SRPServerKeyExchangeMessage");
         parseModulusLength(msg);
         parseModulus(msg);

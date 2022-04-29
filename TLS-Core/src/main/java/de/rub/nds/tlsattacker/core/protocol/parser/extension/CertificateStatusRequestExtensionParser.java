@@ -33,7 +33,7 @@ public class CertificateStatusRequestExtensionParser extends ExtensionParser<Cer
     }
 
     @Override
-    public void parseExtensionMessageContent(CertificateStatusRequestExtensionMessage msg) {
+    public void parse(CertificateStatusRequestExtensionMessage msg) {
         if (!selectedVersion.isTLS13()) {
             msg.setCertificateStatusRequestType(
                 parseIntField(ExtensionByteLength.CERTIFICATE_STATUS_REQUEST_STATUS_TYPE));

@@ -29,7 +29,7 @@ public class EarlyDataExtensionParser extends ExtensionParser<EarlyDataExtension
     }
 
     @Override
-    public void parseExtensionMessageContent(EarlyDataExtensionMessage msg) {
+    public void parse(EarlyDataExtensionMessage msg) {
         LOGGER.debug("Parsing EarlyDataExtensionMessage");
         if (getTlsContext().getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
             parseMaxEarlyDataSize(msg);

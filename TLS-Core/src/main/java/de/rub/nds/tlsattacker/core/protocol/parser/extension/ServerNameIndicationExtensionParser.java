@@ -32,7 +32,7 @@ public class ServerNameIndicationExtensionParser extends ExtensionParser<ServerN
     }
 
     @Override
-    public void parseExtensionMessageContent(ServerNameIndicationExtensionMessage msg) {
+    public void parse(ServerNameIndicationExtensionMessage msg) {
         if (getBytesLeft() > 0) {
             parseServerNameListLength(msg);
             parseServerNameListBytes(msg);

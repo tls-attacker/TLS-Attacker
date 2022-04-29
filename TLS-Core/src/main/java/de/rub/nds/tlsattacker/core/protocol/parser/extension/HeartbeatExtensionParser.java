@@ -26,7 +26,7 @@ public class HeartbeatExtensionParser extends ExtensionParser<HeartbeatExtension
     }
 
     @Override
-    public void parseExtensionMessageContent(HeartbeatExtensionMessage msg) {
+    public void parse(HeartbeatExtensionMessage msg) {
         LOGGER.debug("Parsing HeartbeatExtensionMessage");
         parseHeartbeatMode(msg);
     }

@@ -44,10 +44,10 @@ public class SignatureAndHashAlgorithmsExtensionParserTest {
     }
 
     /**
-     * Test of parseExtensionMessageContent method, of class SignatureAndHashAlgorithmsExtensionParser.
+     * Test of parse method, of class SignatureAndHashAlgorithmsExtensionParser.
      */
     @Test
-    public void testParseExtensionMessageContent() {
+    public void testParse() {
         TlsContext tlsContext = new TlsContext(config);
         SignatureAndHashAlgorithmsExtensionParser parser =
             new SignatureAndHashAlgorithmsExtensionParser(new ByteArrayInputStream(extension), tlsContext);

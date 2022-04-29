@@ -27,7 +27,7 @@ public class HelloVerifyRequestParser extends HandshakeMessageParser<HelloVerify
     }
 
     @Override
-    protected void parseHandshakeMessageContent(HelloVerifyRequestMessage msg) {
+    public void parse(HelloVerifyRequestMessage msg) {
         LOGGER.debug("Parsing HelloVerifyRequestMessage");
         parseProtocolVersion(msg);
         parseCookieLength(msg);

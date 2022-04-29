@@ -53,10 +53,7 @@ public class HintedLayerInputStream extends HintedInputStream {
     public void extendStream(byte[] bytes) {
         try {
             ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-
-            byte[] data = new byte[stream.available()];
-            stream.read(data);
-            outStream.write(data);
+            stream.transferTo(outStream);
             outStream.write(bytes);
             stream = new ByteArrayInputStream(outStream.toByteArray());
         } catch (IOException ex) {

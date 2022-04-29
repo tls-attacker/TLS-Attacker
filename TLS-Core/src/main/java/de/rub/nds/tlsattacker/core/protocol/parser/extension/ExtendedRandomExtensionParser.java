@@ -30,7 +30,7 @@ public class ExtendedRandomExtensionParser extends ExtensionParser<ExtendedRando
     }
 
     @Override
-    public void parseExtensionMessageContent(ExtendedRandomExtensionMessage msg) {
+    public void parse(ExtendedRandomExtensionMessage msg) {
         parseExtendedRandomLength(msg);
         msg.setExtendedRandom(parseByteArrayField(msg.getExtendedRandomLength().getValue()));
         LOGGER.debug("The extended Random TLS parser parsed the value " + bytesToHexString(msg.getExtendedRandom()));

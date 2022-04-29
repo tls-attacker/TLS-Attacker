@@ -41,7 +41,7 @@ public class PWDClearExtensionParserTest {
     }
 
     @Test
-    public void testParseExtensionMessageContent() {
+    public void testParse() {
         TlsContext tlsContext = new TlsContext(config);
         PWDClearExtensionParser parser =
             new PWDClearExtensionParser(new ByteArrayInputStream(expectedBytes), tlsContext);

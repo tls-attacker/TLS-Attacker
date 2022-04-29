@@ -23,7 +23,7 @@ public class ServerCertificateTypeExtensionParser extends ExtensionParser<Server
     }
 
     @Override
-    public void parseExtensionMessageContent(ServerCertificateTypeExtensionMessage msg) {
+    public void parse(ServerCertificateTypeExtensionMessage msg) {
         if (getTlsContext().getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
             msg.setCertificateTypesLength(parseIntField(ExtensionByteLength.CERTIFICATE_TYPE_TYPE_LENGTH));
             msg.setCertificateTypes(parseByteArrayField(msg.getCertificateTypesLength().getValue()));

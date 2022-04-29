@@ -19,11 +19,4 @@ public abstract class HttpMessageSerializer<T extends HttpMessage> extends Seria
         this.message = message;
     }
 
-    @Override
-    public final byte[] serializeBytes() {
-        return serializeHttpMessageContent();
-    }
-
-    public abstract byte[] serializeHttpMessageContent();
-
 }

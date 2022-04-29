@@ -34,7 +34,7 @@ public class ECDHClientKeyExchangeSerializer<T extends ECDHClientKeyExchangeMess
     }
 
     @Override
-    public byte[] serializeProtocolMessageContent() {
+    public byte[] serializeHandshakeMessageContent() {
         LOGGER.debug("Serializing ECDHClientKeyExchangeMessage");
         writeSerializedPublicKeyLength(msg);
         writeSerializedPublicKey(msg);

@@ -21,7 +21,7 @@ public class ClientAuthzExtensionParser extends ExtensionParser<ClientAuthzExten
     }
 
     @Override
-    public void parseExtensionMessageContent(ClientAuthzExtensionMessage msg) {
+    public void parse(ClientAuthzExtensionMessage msg) {
         msg.setAuthzFormatListLength(parseIntField(ExtensionByteLength.CLIENT_AUTHZ_FORMAT_LIST_LENGTH));
         msg.setAuthzFormatList(parseByteArrayField(msg.getAuthzFormatListLength().getValue()));
     }

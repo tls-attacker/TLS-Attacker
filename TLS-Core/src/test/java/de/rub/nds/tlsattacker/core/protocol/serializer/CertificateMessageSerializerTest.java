@@ -40,14 +40,15 @@ public class CertificateMessageSerializerTest {
     }
 
     /**
-     * Test of serializeProtocolMessageContent method, of class CertificateMessageSerializer.
+     * Test of serializeHandshakeMessageContent method, of class CertificateMessageSerializer.
      */
     @Test
-    public void testserializeProtocolMessageContent() {
+    public void testSerializeHandshakeMessageContent() {
         CertificateMessage message = new CertificateMessage();
         message.setCertificatesListLength(certificatesLength);
         message.setCertificatesListBytes(certificateBytes);
         CertificateMessageSerializer serializer = new CertificateMessageSerializer(message, version);
-        assertArrayEquals(expectedPart, serializer.serializeProtocolMessageContent());
+        assertArrayEquals(expectedPart, serializer.serializeHandshakeMessageContent());
     }
+
 }

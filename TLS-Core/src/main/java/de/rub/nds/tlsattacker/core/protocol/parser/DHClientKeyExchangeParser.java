@@ -33,7 +33,7 @@ public class DHClientKeyExchangeParser<T extends DHClientKeyExchangeMessage> ext
     }
 
     @Override
-    protected void parseHandshakeMessageContent(T msg) {
+    public void parse(T msg) {
         LOGGER.debug("Parsing DHClientKeyExchangeMessage");
         parseSerializedPublicKeyLength(msg);
         parseSerializedPublicKey(msg);

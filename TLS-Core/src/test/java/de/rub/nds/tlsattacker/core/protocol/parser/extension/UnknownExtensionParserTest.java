@@ -54,7 +54,7 @@ public class UnknownExtensionParserTest {
         TlsContext tlsContext = new TlsContext(config);
         UnknownExtensionParser parser = new UnknownExtensionParser(new ByteArrayInputStream(message), tlsContext);
         UnknownExtensionMessage unknownMessage = new UnknownExtensionMessage();
-        parser.parseExtensionMessageContent(unknownMessage);
+        parser.parse(unknownMessage);
         assertArrayEquals(message, unknownMessage.getExtensionData().getValue());
 
     }
