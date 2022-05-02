@@ -803,6 +803,12 @@
     </supportedVersions>
     <heartbeatMode>PEER_ALLOWED_TO_SEND</heartbeatMode>
     <defaultAdditionalPadding>0</defaultAdditionalPadding>
+    <defaultSniHostnames>
+        <defaultSniHostnames>
+            <serverNameConfig>ZXhhbXBsZS5jb20=</serverNameConfig>
+            <serverNameTypeConfig>0</serverNameTypeConfig>
+        </defaultSniHostnames>
+    </defaultSniHostnames>
     <defaultSelectedNamedGroup>SECP256R1</defaultSelectedNamedGroup>
     <defaultKeySharePrivateKey>65535</defaultKeySharePrivateKey>
     <defaultClientKeyShareNamedGroups>

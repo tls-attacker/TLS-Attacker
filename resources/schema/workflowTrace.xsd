@@ -3324,6 +3324,13 @@
       </xs:element>
       <xs:element name="heartbeatMode" type="heartbeatMode" minOccurs="0"/>
       <xs:element name="defaultAdditionalPadding" type="xs:int" minOccurs="0"/>
+      <xs:element name="defaultSniHostnames" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="defaultSniHostnames" type="serverNamePair" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
       <xs:element name="defaultSelectedNamedGroup" type="namedGroup" minOccurs="0"/>
       <xs:element name="defaultKeySharePrivateKey" type="xs:integer" minOccurs="0"/>
       <xs:element name="defaultClientKeyShareNamedGroups" minOccurs="0">
