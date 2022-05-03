@@ -63,22 +63,24 @@ public class ClientDelegate extends Delegate {
         con.setPort(extractedPort);
         if (IPAddress.isValid(extractedHost)) {
             con.setIp(extractedHost);
-            con.setHostname(extractedHost);
+            setHostname(config, extractedHost, con);
             if (sniHostname != null) {
-                con.setHostname(sniHostname);
-                config.setDefaultSniHostnames(Arrays.asList(new ServerNamePair(config.getSniType().getValue(),
-                    sniHostname.getBytes(Charset.forName("ASCII")))));
+                setHostname(config, sniHostname, con);
             }
         } else {
             if (sniHostname != null) {
-                con.setHostname(sniHostname);
-                config.setDefaultSniHostnames(Arrays.asList(new ServerNamePair(config.getSniType().getValue(),
-                    sniHostname.getBytes(Charset.forName("ASCII")))));
+                setHostname(config, sniHostname, con);
             } else {
-                con.setHostname(extractedHost);
+                setHostname(config, extractedHost, con);
             }
             con.setIp(getIpForHost(extractedHost));
         }
+    }
+
+    public void setHostname(Config config, String hostname, OutboundConnection connection) {
+        connection.setHostname(hostname);
+        config.setDefaultSniHostnames(Arrays
+            .asList(new ServerNamePair(config.getSniType().getValue(), hostname.getBytes(Charset.forName("ASCII")))));
     }
 
     private void extractParameters() {
