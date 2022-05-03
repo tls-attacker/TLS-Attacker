@@ -62,6 +62,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedO
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.RequestItemV2;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
@@ -285,6 +286,11 @@ public class Config implements Serializable {
      * Padding length for TLS 1.3 messages
      */
     private Integer defaultAdditionalPadding = 0;
+
+    @XmlElement(name = "defaultSniHostname")
+    @XmlElementWrapper
+    private List<ServerNamePair> defaultSniHostnames = new LinkedList<>(Arrays
+        .asList(new ServerNamePair(NameType.HOST_NAME.getValue(), "example.com".getBytes(Charset.forName("ASCII")))));
 
     /**
      * Key type for KeyShareExtension
@@ -4114,6 +4120,14 @@ public class Config implements Serializable {
 
     public void setDefaultClientTicketResumptionSessionId(byte[] defaultClientTicketResumptionSessionId) {
         this.defaultClientTicketResumptionSessionId = defaultClientTicketResumptionSessionId;
+    }
+
+    public List<ServerNamePair> getDefaultSniHostnames() {
+        return defaultSniHostnames;
+    }
+
+    public void setDefaultSniHostnames(List<ServerNamePair> defaultSniHostnames) {
+        this.defaultSniHostnames = defaultSniHostnames;
     }
 
 }

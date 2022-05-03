@@ -14,11 +14,14 @@ import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
 import java.net.IDN;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
+import java.nio.charset.Charset;
+import java.util.Arrays;
 import org.bouncycastle.util.IPAddress;
 
 public class ClientDelegate extends Delegate {
@@ -63,10 +66,14 @@ public class ClientDelegate extends Delegate {
             con.setHostname(extractedHost);
             if (sniHostname != null) {
                 con.setHostname(sniHostname);
+                config.setDefaultSniHostnames(Arrays.asList(new ServerNamePair(config.getSniType().getValue(),
+                    sniHostname.getBytes(Charset.forName("ASCII")))));
             }
         } else {
             if (sniHostname != null) {
                 con.setHostname(sniHostname);
+                config.setDefaultSniHostnames(Arrays.asList(new ServerNamePair(config.getSniType().getValue(),
+                    sniHostname.getBytes(Charset.forName("ASCII")))));
             } else {
                 con.setHostname(extractedHost);
             }
