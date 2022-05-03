@@ -287,7 +287,7 @@ public class Config implements Serializable {
      */
     private Integer defaultAdditionalPadding = 0;
 
-    @XmlElement(name = "defaultSniHostnames")
+    @XmlElement(name = "defaultSniHostname")
     @XmlElementWrapper
     private List<ServerNamePair> defaultSniHostnames = new LinkedList<>(Arrays
         .asList(new ServerNamePair(NameType.HOST_NAME.getValue(), "example.com".getBytes(Charset.forName("ASCII")))));
