@@ -101,6 +101,14 @@ import org.bouncycastle.crypto.tls.Certificate;
 @XmlType(propOrder = {})
 public class Config implements Serializable {
 
+    public Integer getEnforcedMaxRecordData() {
+        return enforcedMaxRecordData;
+    }
+
+    public void setEnforcedMaxRecordData(Integer enforcedMaxRecordData) {
+        this.enforcedMaxRecordData = enforcedMaxRecordData;
+    }
+
     private static final Logger LOGGER = LogManager.getLogger();
 
     /**
@@ -1036,6 +1044,9 @@ public class Config implements Serializable {
     private MaxFragmentLength defaultMaxFragmentLength = MaxFragmentLength.TWO_12;
 
     private Integer defaultMaxRecordData = RecordSizeLimit.DEFAULT_MAX_RECORD_DATA_SIZE;
+
+    // Overrides any limit negotiated if set
+    private Integer enforcedMaxRecordData;
 
     private Integer inboundRecordSizeLimit = RecordSizeLimit.DEFAULT_MAX_RECORD_DATA_SIZE;
 
