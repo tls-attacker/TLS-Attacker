@@ -37,7 +37,7 @@ public class LocationHeaderPreparator extends Preparator<LocationHeader> {
         } else {
             LOGGER.debug("Request path was not set or interpreted during the connection, we use default value from the"
                 + " config instead");
-            header.setHeaderValue(chooser.getConfig().getDefaultHttpsRequestPath());
+            header.setHeaderValue(chooser.getConfig().getDefaultHttpsLocationPath());
         }
     }
 }

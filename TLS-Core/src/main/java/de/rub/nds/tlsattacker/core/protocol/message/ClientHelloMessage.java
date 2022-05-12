@@ -124,17 +124,6 @@ public class ClientHelloMessage extends HelloMessage {
             }
             if (tlsConfig.isAddServerNameIndicationExtension()) {
                 ServerNameIndicationExtensionMessage extension = new ServerNameIndicationExtensionMessage();
-                byte[] serverName;
-                if (tlsConfig.getDefaultClientConnection().getHostname() != null) {
-                    serverName =
-                        tlsConfig.getDefaultClientConnection().getHostname().getBytes(Charset.forName("ASCII"));
-                } else {
-                    LOGGER.warn("SNI not correctly configured!");
-                    serverName = new byte[0];
-                }
-                ServerNamePair pair = new ServerNamePair(tlsConfig.getSniType().getValue(), serverName);
-
-                extension.getServerNameList().add(pair);
                 addExtension(extension);
             }
             if (tlsConfig.isAddEncryptedServerNameIndicationExtension()) {

@@ -102,7 +102,7 @@ public class CertificateStatusParser {
 
                     // Optional revocation reason
                     if (revocationObjects.size() > 1) {
-                        if (revocationObjects.get(1) instanceof Asn1Explicit) {
+                        if (revocationObjects.get(1) instanceof Asn1Enumerated) {
                             revocationReason = ((Asn1Enumerated) revocationObjects.get(1)).getValue().intValue();
                         }
                     }

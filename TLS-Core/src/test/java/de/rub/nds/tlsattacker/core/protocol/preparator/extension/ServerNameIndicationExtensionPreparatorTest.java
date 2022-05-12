@@ -29,10 +29,11 @@ public class ServerNameIndicationExtensionPreparatorTest {
     private Chooser chooser;
     private ServerNameIndicationExtensionMessage message;
     private ServerNameIndicationExtensionSerializer serializer;
+    private Config config;
 
     @Before
     public void setUp() {
-        Config config = Config.createConfig();
+        config = Config.createConfig();
         chooser = ChooserFactory.getChooser(ChooserType.DEFAULT, new TlsContext(config), config);
         message = new ServerNameIndicationExtensionMessage();
     }
@@ -44,10 +45,8 @@ public class ServerNameIndicationExtensionPreparatorTest {
     public void testPrepareExtensionContentWithOnePair() {
         List<ServerNamePair> pairList = new LinkedList<>();
         ServerNamePair pair = new ServerNamePair((byte) 1, new byte[] { 0x01, 0x02 });
-        pair.setServerNameLength(2);
         pairList.add(pair);
-        message.setServerNameList(pairList);
-
+        config.setDefaultSniHostnames(pairList);
         ServerNameIndicationExtensionPreparator serverPrep =
             new ServerNameIndicationExtensionPreparator(chooser, message, serializer);
 
@@ -62,12 +61,10 @@ public class ServerNameIndicationExtensionPreparatorTest {
     public void testPrepareExtensionContentWithTwoPairs() {
         List<ServerNamePair> pairList = new LinkedList<>();
         ServerNamePair pair = new ServerNamePair((byte) 1, new byte[] { 0x01, 0x02 });
-        pair.setServerNameLength(2);
         pairList.add(pair);
         ServerNamePair pair2 = new ServerNamePair((byte) 2, new byte[] { 0x03, 0x04, 0x05, 0x06 });
-        pair2.setServerNameLength(4);
         pairList.add(pair2);
-        message.setServerNameList(pairList);
+        config.setDefaultSniHostnames(pairList);
 
         ServerNameIndicationExtensionPreparator serverPrep =
             new ServerNameIndicationExtensionPreparator(chooser, message, serializer);
