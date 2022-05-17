@@ -3613,6 +3613,7 @@
       <xs:element name="defaultHighestClientProtocolVersion" type="protocolVersion" minOccurs="0"/>
       <xs:element name="defaultMaxFragmentLength" type="maxFragmentLength" minOccurs="0"/>
       <xs:element name="defaultMaxRecordData" type="xs:int" minOccurs="0"/>
+      <xs:element name="enforcedMaxRecordData" type="xs:int" minOccurs="0"/>
       <xs:element name="inboundRecordSizeLimit" type="xs:int" minOccurs="0"/>
       <xs:element name="defaultHeartbeatMode" type="heartbeatMode" minOccurs="0"/>
       <xs:element name="defaultClientSupportedCompressionMethods" minOccurs="0">
@@ -5970,6 +5971,7 @@
   <xs:simpleType name="chooserType">
     <xs:restriction base="xs:string">
       <xs:enumeration value="DEFAULT"/>
+      <xs:enumeration value="SMART_RECORD_SIZE"/>
     </xs:restriction>
   </xs:simpleType>
 
