@@ -803,6 +803,12 @@
     </supportedVersions>
     <heartbeatMode>PEER_ALLOWED_TO_SEND</heartbeatMode>
     <defaultAdditionalPadding>0</defaultAdditionalPadding>
+    <defaultSniHostnames>
+        <defaultSniHostname>
+            <serverNameConfig>ZXhhbXBsZS5jb20=</serverNameConfig>
+            <serverNameTypeConfig>0</serverNameTypeConfig>
+        </defaultSniHostname>
+    </defaultSniHostnames>
     <defaultSelectedNamedGroup>SECP256R1</defaultSelectedNamedGroup>
     <defaultKeySharePrivateKey>65535</defaultKeySharePrivateKey>
     <defaultClientKeyShareNamedGroups>
@@ -1134,7 +1140,8 @@
     <useAllProvidedDtlsFragments>false</useAllProvidedDtlsFragments>
     <useAllProvidedRecords>false</useAllProvidedRecords>
     <httpsParsingEnabled>false</httpsParsingEnabled>
-    <defaultHttpsRequestPath>/</defaultHttpsRequestPath>
+    <defaultHttpsLocationPath>/</defaultHttpsLocationPath>
+    <defaultHttpsRequestPath>/robots.txt</defaultHttpsRequestPath>
     <starttlsType>NONE</starttlsType>
     <overrideSessionIdForTickets>true</overrideSessionIdForTickets>
     <sessionTicketLifetimeHint>7200</sessionTicketLifetimeHint>

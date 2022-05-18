@@ -62,6 +62,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedO
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.RequestItemV2;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
@@ -99,6 +100,14 @@ import org.bouncycastle.crypto.tls.Certificate;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(propOrder = {})
 public class Config implements Serializable {
+
+    public Integer getEnforcedMaxRecordData() {
+        return enforcedMaxRecordData;
+    }
+
+    public void setEnforcedMaxRecordData(Integer enforcedMaxRecordData) {
+        this.enforcedMaxRecordData = enforcedMaxRecordData;
+    }
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -285,6 +294,11 @@ public class Config implements Serializable {
      * Padding length for TLS 1.3 messages
      */
     private Integer defaultAdditionalPadding = 0;
+
+    @XmlElement(name = "defaultSniHostname")
+    @XmlElementWrapper
+    private List<ServerNamePair> defaultSniHostnames = new LinkedList<>(Arrays
+        .asList(new ServerNamePair(NameType.HOST_NAME.getValue(), "example.com".getBytes(Charset.forName("ASCII")))));
 
     /**
      * Key type for KeyShareExtension
@@ -1042,6 +1056,9 @@ public class Config implements Serializable {
 
     private Integer defaultMaxRecordData = RecordSizeLimit.DEFAULT_MAX_RECORD_DATA_SIZE;
 
+    // Overrides any limit negotiated if set
+    private Integer enforcedMaxRecordData;
+
     private Integer inboundRecordSizeLimit = RecordSizeLimit.DEFAULT_MAX_RECORD_DATA_SIZE;
 
     private HeartbeatMode defaultHeartbeatMode = HeartbeatMode.PEER_ALLOWED_TO_SEND;
@@ -1214,7 +1231,13 @@ public class Config implements Serializable {
      * or httpsParsing is disabled
      */
     @XmlJavaTypeAdapter(IllegalStringAdapter.class)
-    private String defaultHttpsRequestPath = "/";
+    private String defaultHttpsLocationPath = "/";
+
+    /**
+     * requestPath to use in https requests
+     */
+    @XmlJavaTypeAdapter(IllegalStringAdapter.class)
+    private String defaultHttpsRequestPath = "/robots.txt";
 
     private StarttlsType starttlsType = StarttlsType.NONE;
 
@@ -1662,6 +1685,14 @@ public class Config implements Serializable {
 
     public void setHttpsParsingEnabled(Boolean httpsParsingEnabled) {
         this.httpsParsingEnabled = httpsParsingEnabled;
+    }
+
+    public String getDefaultHttpsLocationPath() {
+        return defaultHttpsLocationPath;
+    }
+
+    public void setDefaultHttpsLocationPath(String defaultHttpsLocationPath) {
+        this.defaultHttpsLocationPath = defaultHttpsLocationPath;
     }
 
     public String getDefaultHttpsRequestPath() {
@@ -4127,6 +4158,14 @@ public class Config implements Serializable {
 
     public void setDefaultClientTicketResumptionSessionId(byte[] defaultClientTicketResumptionSessionId) {
         this.defaultClientTicketResumptionSessionId = defaultClientTicketResumptionSessionId;
+    }
+
+    public List<ServerNamePair> getDefaultSniHostnames() {
+        return defaultSniHostnames;
+    }
+
+    public void setDefaultSniHostnames(List<ServerNamePair> defaultSniHostnames) {
+        this.defaultSniHostnames = defaultSniHostnames;
     }
 
 }

@@ -593,7 +593,7 @@ public class ReceiveMessageHelper {
                     }
                 } catch (ParserException | AdjustmentException | UnsupportedOperationException exCorrectMsg) {
                     if (exCorrectMsg instanceof ParserException && !failedToReceiveMoreRecords) {
-                        throw new ParserException();
+                        throw new ParserException(exCorrectMsg);
                     }
                     LOGGER.warn("Could not parse Message as a CorrectMessage");
                     LOGGER.debug(exCorrectMsg);

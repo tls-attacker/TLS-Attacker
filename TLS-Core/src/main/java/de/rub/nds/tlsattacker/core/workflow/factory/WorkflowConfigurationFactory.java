@@ -366,10 +366,23 @@ public class WorkflowConfigurationFactory {
         return workflowTrace;
     }
 
+    /**
+     * Creates a short hello workflow for the default connection end defined in config.
+     *
+     * @return A ShortHelloWorkflow
+     */
     private WorkflowTrace createShortHelloWorkflow() {
-        AliasedConnection connection = getConnection();
-        WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
-        WorkflowTrace trace = factory.createTlsEntryWorkflowTrace(config.getDefaultClientConnection());
+        return createShortHelloWorkflow(getConnection());
+    }
+
+    /**
+     * Creates a short hello workflow for the given connection end.
+     *
+     * @param  connection
+     * @return
+     */
+    public WorkflowTrace createShortHelloWorkflow(AliasedConnection connection) {
+        WorkflowTrace trace = createTlsEntryWorkflowTrace(connection);
 
         trace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.CLIENT,
             new ClientHelloMessage(config)));

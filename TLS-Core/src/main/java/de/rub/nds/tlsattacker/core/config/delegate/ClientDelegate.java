@@ -14,11 +14,14 @@ import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
 import java.net.IDN;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
+import java.nio.charset.Charset;
+import java.util.Arrays;
 import org.bouncycastle.util.IPAddress;
 
 public class ClientDelegate extends Delegate {
@@ -60,18 +63,24 @@ public class ClientDelegate extends Delegate {
         con.setPort(extractedPort);
         if (IPAddress.isValid(extractedHost)) {
             con.setIp(extractedHost);
-            con.setHostname(extractedHost);
+            setHostname(config, extractedHost, con);
             if (sniHostname != null) {
-                con.setHostname(sniHostname);
+                setHostname(config, sniHostname, con);
             }
         } else {
             if (sniHostname != null) {
-                con.setHostname(sniHostname);
+                setHostname(config, sniHostname, con);
             } else {
-                con.setHostname(extractedHost);
+                setHostname(config, extractedHost, con);
             }
             con.setIp(getIpForHost(extractedHost));
         }
+    }
+
+    public void setHostname(Config config, String hostname, OutboundConnection connection) {
+        connection.setHostname(hostname);
+        config.setDefaultSniHostnames(Arrays
+            .asList(new ServerNamePair(config.getSniType().getValue(), hostname.getBytes(Charset.forName("ASCII")))));
     }
 
     private void extractParameters() {

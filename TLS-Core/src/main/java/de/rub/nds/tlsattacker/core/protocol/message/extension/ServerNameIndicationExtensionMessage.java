@@ -35,16 +35,14 @@ public class ServerNameIndicationExtensionMessage extends ExtensionMessage {
     private ModifiableByteArray serverNameListBytes;
 
     @HoldsModifiableVariable
-    private List<ServerNamePair> serverNameList;
+    private List<ServerNamePair> serverNameList = new LinkedList<>();
 
     public ServerNameIndicationExtensionMessage() {
         super(ExtensionType.SERVER_NAME_INDICATION);
-        serverNameList = new LinkedList<>();
     }
 
     public ServerNameIndicationExtensionMessage(Config config) {
         super(ExtensionType.SERVER_NAME_INDICATION);
-        serverNameList = new LinkedList<>();
     }
 
     public ModifiableInteger getServerNameListLength() {
@@ -82,13 +80,6 @@ public class ServerNameIndicationExtensionMessage extends ExtensionMessage {
     @Override
     public List<ModifiableVariableHolder> getAllModifiableVariableHolders() {
         List<ModifiableVariableHolder> holders = super.getAllModifiableVariableHolders();
-        if (serverNameList != null) {
-            for (ServerNamePair pair : serverNameList) {
-                if (pair != null) {
-                    holders.addAll(pair.getAllModifiableVariableHolders());
-                }
-            }
-        }
         return holders;
     }
 }
