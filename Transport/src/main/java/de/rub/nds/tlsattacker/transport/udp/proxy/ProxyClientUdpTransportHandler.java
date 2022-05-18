@@ -20,6 +20,11 @@ import java.io.OutputStream;
 import java.io.PushbackInputStream;
 import java.net.DatagramSocket;
 
+/**
+ * It establishes a control channel and data channel to the defined UDP proxy. The control channel can be used to
+ * transmit where the real server is and the data channel can be used to transmit the data to be sent. The UDP proxy
+ * should send the data to the real server and return the response over the data channel.
+ */
 public class ProxyClientUdpTransportHandler extends ClientUdpTransportHandler implements ProxyableTransportHandler {
 
     protected DatagramSocket controlSocket;
@@ -58,6 +63,7 @@ public class ProxyClientUdpTransportHandler extends ClientUdpTransportHandler im
         setStreams(new PushbackInputStream(new UdpInputStream(socket, true)),
             new UdpOutputStream(socket, proxyDataHostName, proxyDataPort));
 
+        /* tell the proxy where the real server is */
         controlOutStream.write((hostname + ":" + Integer.toString(port)).getBytes());
         controlOutStream.flush();
     }
