@@ -945,10 +945,21 @@ public class Config implements Serializable {
      * message bytes that wont fit are discarded
      */
     private Boolean createRecordsDynamically = true;
+
     /**
      * When "Null" records are defined to be send, every message will be sent in at least one individual record
      */
     private Boolean createIndividualRecords = true;
+
+    /**
+     * Every record will be sent in one individual transport packet
+     */
+    private Boolean createIndividualTransportPackets = false;
+
+    /**
+     * If we should wait after sending one transport packet
+     */
+    private Integer individualTransportPacketCooldown = 0;
 
     /**
      * Which recordLayer should be used
@@ -2434,6 +2445,22 @@ public class Config implements Serializable {
 
     public void setCreateRecordsDynamically(Boolean createRecordsDynamically) {
         this.createRecordsDynamically = createRecordsDynamically;
+    }
+
+    public Boolean isCreateIndividualTransportPackets() {
+        return createIndividualTransportPackets;
+    }
+
+    public void setCreateIndividualTransportPackets(Boolean createIndividualTransportPackets) {
+        this.createIndividualTransportPackets = createIndividualTransportPackets;
+    }
+
+    public Integer getIndividualTransportPacketCooldown() {
+        return individualTransportPacketCooldown;
+    }
+
+    public void setIndividualTransportPacketCooldown(Integer individualTransportPacketCooldown) {
+        this.individualTransportPacketCooldown = individualTransportPacketCooldown;
     }
 
     public Boolean isCreateIndividualRecords() {
