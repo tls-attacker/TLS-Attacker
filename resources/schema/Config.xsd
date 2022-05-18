@@ -1409,7 +1409,7 @@
       <xs:enumeration value="TLS13_DRAFT26"/>
       <xs:enumeration value="TLS13_DRAFT27"/>
       <xs:enumeration value="TLS13_DRAFT28"/>
-      <xs:enumeration value="DTLS_LEGACY"/>
+      <xs:enumeration value="DTLS10_DRAFT"/>
       <xs:enumeration value="DTLS10"/>
       <xs:enumeration value="DTLS12"/>
       <xs:enumeration value="GREASE_00"/>

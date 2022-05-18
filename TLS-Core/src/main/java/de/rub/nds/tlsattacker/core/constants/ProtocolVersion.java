@@ -42,7 +42,7 @@ public enum ProtocolVersion {
     TLS13_DRAFT26(new byte[] { (byte) 0x7F, (byte) 0x1A }),
     TLS13_DRAFT27(new byte[] { (byte) 0x7F, (byte) 0x1B }),
     TLS13_DRAFT28(new byte[] { (byte) 0x7F, (byte) 0x1C }),
-    DTLS_LEGACY(new byte[] { (byte) 0x01, (byte) 0x00 }),
+    DTLS10_DRAFT(new byte[] { (byte) 0x01, (byte) 0x00 }),
     DTLS10(new byte[] { (byte) 0xFE, (byte) 0xFF }),
     DTLS12(new byte[] { (byte) 0xFE, (byte) 0xFD }),
 
@@ -88,7 +88,7 @@ public enum ProtocolVersion {
     }
 
     public boolean isDTLS() {
-        return this == DTLS10 || this == DTLS12 || this == DTLS_LEGACY;
+        return this == DTLS10 || this == DTLS12 || this == DTLS10_DRAFT;
     }
 
     public static ProtocolVersion getProtocolVersion(byte[] value) {
@@ -215,7 +215,7 @@ public enum ProtocolVersion {
 
     public boolean usesExplicitIv() {
         return this == ProtocolVersion.TLS11 || this == ProtocolVersion.TLS12 || this == ProtocolVersion.DTLS10
-            || this == ProtocolVersion.DTLS12 || this == DTLS_LEGACY;
+            || this == ProtocolVersion.DTLS12 || this == DTLS10_DRAFT;
     }
 
     /**
@@ -298,7 +298,7 @@ public enum ProtocolVersion {
 
     public String toHumanReadable() {
         switch (this) {
-            case DTLS_LEGACY:
+            case DTLS10_DRAFT:
                 return "DTLS Legacy";
             case DTLS10:
                 return "DTLS 1.0";
