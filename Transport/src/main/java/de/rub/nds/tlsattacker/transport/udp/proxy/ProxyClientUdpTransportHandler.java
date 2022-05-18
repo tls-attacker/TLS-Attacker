@@ -86,9 +86,4 @@ public class ProxyClientUdpTransportHandler extends ClientUdpTransportHandler im
     public boolean isClosed() throws IOException {
         return socket.isClosed() || controlSocket.isClosed();
     }
-
-    @Override
-    public int getDstPort() {
-        return -1;
-    }
 }

@@ -3571,7 +3571,7 @@
       <xs:element name="createRecordsDynamically" type="xs:boolean" minOccurs="0"/>
       <xs:element name="createIndividualRecords" type="xs:boolean" minOccurs="0"/>
       <xs:element name="createIndividualTransportPackets" type="xs:boolean" minOccurs="0"/>
-      <xs:element name="waitTime" type="xs:int" minOccurs="0"/>
+      <xs:element name="individualTransportPacketCooldown" type="xs:int" minOccurs="0"/>
       <xs:element name="recordLayerType" type="recordLayerType" minOccurs="0"/>
       <xs:element name="resetWorkflowTracesBeforeSaving" type="xs:boolean" minOccurs="0"/>
       <xs:element name="quickReceive" type="xs:boolean" minOccurs="0"/>

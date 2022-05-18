@@ -21,7 +21,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.UnknownHandshakeMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -216,7 +215,7 @@ public class SendMessageHelper {
                 messageBytesCollector.appendRecordBytes(record.getRecordSerializer().serialize());
                 sendData(messageBytesCollector, context);
                 try {
-                    Thread.sleep(context.getConfig().getWaitTime());
+                    Thread.sleep(context.getConfig().getIndividualTransportPacketCooldown());
                 } catch (InterruptedException ex) {
                     LOGGER.warn("Could not wait before sending the next record");
                 }

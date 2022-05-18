@@ -959,7 +959,7 @@ public class Config implements Serializable {
     /**
      * If we should wait after sending one transport packet
      */
-    private Integer waitTime = 0;
+    private Integer individualTransportPacketCooldown = 0;
 
     /**
      * Which recordLayer should be used
@@ -2455,12 +2455,12 @@ public class Config implements Serializable {
         this.createIndividualTransportPackets = createIndividualTransportPackets;
     }
 
-    public Integer getWaitTime() {
-        return waitTime;
+    public Integer getIndividualTransportPacketCooldown() {
+        return individualTransportPacketCooldown;
     }
 
-    public void setWaitTime(Integer waitTime) {
-        this.waitTime = waitTime;
+    public void setIndividualTransportPacketCooldown(Integer individualTransportPacketCooldown) {
+        this.individualTransportPacketCooldown = individualTransportPacketCooldown;
     }
 
     public Boolean isCreateIndividualRecords() {
