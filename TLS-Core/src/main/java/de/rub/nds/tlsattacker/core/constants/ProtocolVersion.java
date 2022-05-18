@@ -215,7 +215,7 @@ public enum ProtocolVersion {
 
     public boolean usesExplicitIv() {
         return this == ProtocolVersion.TLS11 || this == ProtocolVersion.TLS12 || this == ProtocolVersion.DTLS10
-            || this == ProtocolVersion.DTLS12;
+            || this == ProtocolVersion.DTLS12 || this == DTLS_LEGACY;
     }
 
     /**
@@ -298,6 +298,8 @@ public enum ProtocolVersion {
 
     public String toHumanReadable() {
         switch (this) {
+            case DTLS_LEGACY:
+                return "DTLS Legacy";
             case DTLS10:
                 return "DTLS 1.0";
             case DTLS12:
