@@ -53,16 +53,8 @@ public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container 
 
     private LayerType layerType;
 
-    // holds Exceptions that came up during layer parsing
-    private final List<Exception> producedExceptions;
-
-    // TODO: is this really necessary? I would guess that only bytes at the end can be dangling, because we parse from front to back
-    private final byte[] danglingBytes;
-
     public ProtocolLayer(LayerType layerType) {
-        this.producedDataContainers = new LinkedList<>();
-        this.producedExceptions = new LinkedList<>();
-        this.danglingBytes = new byte[]{};
+        producedDataContainers = new LinkedList<>();
         this.layerType = layerType;
     }
 
@@ -99,7 +91,7 @@ public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container 
         if (getLayerConfiguration() != null) {
             isExecutedAsPlanned = getLayerConfiguration().executedAsPlanned(producedDataContainers);
         }
-        return new LayerProcessingResult(producedDataContainers, getLayerType(), isExecutedAsPlanned, producedExceptions, danglingBytes);
+        return new LayerProcessingResult(producedDataContainers, getLayerType(), isExecutedAsPlanned);
     }
 
     public void removeDrainedInputStream() {
