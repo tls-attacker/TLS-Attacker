@@ -1004,13 +1004,16 @@ public class WorkflowConfigurationFactory {
         if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
             if (config.getHighestProtocolVersion().isTLS13()) {
                 trace.addTlsAction(new ReceiveTillAction(new FinishedMessage()));
+                if (Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)) {
+                    trace.addTlsAction(new SendAction(new ChangeCipherSpecMessage(config)));
+                    trace.addTlsAction(new SendAction(new FinishedMessage(config)));
+                }
             } else {
                 trace.addTlsAction(new ReceiveTillAction(new ServerHelloDoneMessage()));
+                trace.addTlsAction(new SendDynamicClientKeyExchangeAction());
+                trace.addTlsAction(new SendAction(new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
+                trace.addTlsAction(new ReceiveAction(new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
             }
-            trace.addTlsAction(new SendDynamicClientKeyExchangeAction());
-            trace.addTlsAction(new SendAction(new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
-            trace.addTlsAction(new ReceiveAction(new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
-
         } else {
             List<ProtocolMessage> messages = new LinkedList<>();
             messages.add(new ServerHelloMessage(config));
