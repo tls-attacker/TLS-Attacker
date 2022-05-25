@@ -91,7 +91,6 @@
         <module>TLS-Client</module>
         <module>TLS-Server</module>
         <module>TLS-Mitm</module>
-        <module>Attacks</module>
         <module>TraceTool</module>
     </modules>
     <dependencies>
