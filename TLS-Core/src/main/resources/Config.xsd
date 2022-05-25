@@ -396,6 +396,8 @@
       <xs:element name="createFragmentsDynamically" type="xs:boolean" minOccurs="0"/>
       <xs:element name="createRecordsDynamically" type="xs:boolean" minOccurs="0"/>
       <xs:element name="createIndividualRecords" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="createIndividualTransportPackets" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="individualTransportPacketCooldown" type="xs:int" minOccurs="0"/>
       <xs:element name="recordLayerType" type="recordLayerType" minOccurs="0"/>
       <xs:element name="resetWorkflowTracesBeforeSaving" type="xs:boolean" minOccurs="0"/>
       <xs:element name="quickReceive" type="xs:boolean" minOccurs="0"/>
@@ -440,6 +442,7 @@
       <xs:element name="defaultHighestClientProtocolVersion" type="protocolVersion" minOccurs="0"/>
       <xs:element name="defaultMaxFragmentLength" type="maxFragmentLength" minOccurs="0"/>
       <xs:element name="defaultMaxRecordData" type="xs:int" minOccurs="0"/>
+      <xs:element name="enforcedMaxRecordData" type="xs:int" minOccurs="0"/>
       <xs:element name="inboundRecordSizeLimit" type="xs:int" minOccurs="0"/>
       <xs:element name="defaultHeartbeatMode" type="heartbeatMode" minOccurs="0"/>
       <xs:element name="defaultClientSupportedCompressionMethods" minOccurs="0">
@@ -787,6 +790,7 @@
       <xs:element name="firstTimeout" type="xs:int" minOccurs="0"/>
       <xs:element name="connectionTimeout" type="xs:int" minOccurs="0"/>
       <xs:element name="transportHandlerType" type="transportHandlerType" minOccurs="0"/>
+      <xs:element name="sourcePort" type="xs:int" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -1405,6 +1409,7 @@
       <xs:enumeration value="TLS13_DRAFT26"/>
       <xs:enumeration value="TLS13_DRAFT27"/>
       <xs:enumeration value="TLS13_DRAFT28"/>
+      <xs:enumeration value="DTLS10_DRAFT"/>
       <xs:enumeration value="DTLS10"/>
       <xs:enumeration value="DTLS12"/>
       <xs:enumeration value="GREASE_00"/>
@@ -1434,6 +1439,7 @@
       <xs:enumeration value="STREAM"/>
       <xs:enumeration value="TCP_TIMING"/>
       <xs:enumeration value="UDP_TIMING"/>
+      <xs:enumeration value="UDP_PROXY"/>
       <xs:enumeration value="TCP_PROXY_TIMING"/>
       <xs:enumeration value="TCP_NO_DELAY"/>
       <xs:enumeration value="TCP_FRAGMENTATION"/>
@@ -2192,6 +2198,7 @@
   <xs:simpleType name="chooserType">
     <xs:restriction base="xs:string">
       <xs:enumeration value="DEFAULT"/>
+      <xs:enumeration value="SMART_RECORD_SIZE"/>
     </xs:restriction>
   </xs:simpleType>
 

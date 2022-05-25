@@ -136,7 +136,11 @@ public class SendMessageHelper {
             TlsMessageHandler<TlsMessage> handler = lastMessage.getHandler(context);
             handler.adjustTlsContextAfterSerialize((TlsMessage) lastMessage);
         }
-        sendData(messageBytesCollector, context);
+        if (context.getConfig().isCreateIndividualTransportPackets()) {
+            sendRecords(records, context);
+        } else {
+            sendData(messageBytesCollector, context);
+        }
 
         if (context.getChooser().getSelectedProtocolVersion().isDTLS()
             && context.getConfig().isUseAllProvidedDtlsFragments() && fragmentPosition < fragments.size()) {
@@ -174,7 +178,11 @@ public class SendMessageHelper {
             Collections.singletonList((DtlsHandshakeMessageFragment) fragment), context);
         collector.appendProtocolMessageBytes(messageFragments.get(0).getCompleteResultingMessage().getValue());
         recordPosition = flushBytesToRecords(collector, lastType, records, recordPosition, context);
-        sendData(collector, context);
+        if (context.getConfig().isCreateIndividualTransportPackets()) {
+            sendRecords(records, context);
+        } else {
+            sendData(collector, context);
+        }
         return recordPosition;
     }
 
@@ -187,25 +195,38 @@ public class SendMessageHelper {
         emptyRecords.add(record);
         messageBytesCollector.appendRecordBytes(context.getRecordLayer().prepareRecords(
             messageBytesCollector.getProtocolMessageBytesStream(), record.getContentMessageType(), emptyRecords));
-        sendData(messageBytesCollector, context);
+        if (context.getConfig().isCreateIndividualTransportPackets()) {
+            sendRecords(emptyRecords, context);
+        } else {
+            sendData(messageBytesCollector, context);
+        }
     }
 
     public void sendRecords(List<AbstractRecord> records, TlsContext context) throws IOException {
-
         context.setTalkingConnectionEndType(context.getChooser().getConnectionEndType());
-
         if (records == null) {
             LOGGER.debug("No records specified, nothing to send");
             return;
         }
-
-        MessageBytesCollector messageBytesCollector = new MessageBytesCollector();
-
-        for (AbstractRecord record : records) {
-            messageBytesCollector.appendRecordBytes(record.getRecordSerializer().serialize());
-        }
         LOGGER.debug("Sending " + records.size() + "records");
-        sendData(messageBytesCollector, context);
+        if (context.getConfig().isCreateIndividualTransportPackets()) {
+            for (AbstractRecord record : records) {
+                MessageBytesCollector messageBytesCollector = new MessageBytesCollector();
+                messageBytesCollector.appendRecordBytes(record.getRecordSerializer().serialize());
+                sendData(messageBytesCollector, context);
+                try {
+                    Thread.sleep(context.getConfig().getIndividualTransportPacketCooldown());
+                } catch (InterruptedException ex) {
+                    LOGGER.warn("Could not wait before sending the next record");
+                }
+            }
+        } else {
+            MessageBytesCollector messageBytesCollector = new MessageBytesCollector();
+            for (AbstractRecord record : records) {
+                messageBytesCollector.appendRecordBytes(record.getRecordSerializer().serialize());
+            }
+            sendData(messageBytesCollector, context);
+        }
     }
 
     private int flushBytesToRecords(MessageBytesCollector collector, ProtocolMessageType type,

@@ -164,7 +164,9 @@ public class CertificateInformationExtractor {
                 }
             }
         }
-        x509ExtensionSequences = ((Asn1Sequence) x509Extensions.getChildren().get(0)).getChildren();
+        if (x509Extensions != null && !x509Extensions.getChildren().isEmpty()) {
+            x509ExtensionSequences = ((Asn1Sequence) x509Extensions.getChildren().get(0)).getChildren();
+        }
     }
 
     /**
@@ -311,6 +313,9 @@ public class CertificateInformationExtractor {
     private String parseOcspServerUrl() {
         if (x509ExtensionSequences == null) {
             extractX509Extensions();
+            if (x509ExtensionSequences == null) {
+                return null;
+            }
         }
         if (authorityInfoAccessEntities == null) {
             try {

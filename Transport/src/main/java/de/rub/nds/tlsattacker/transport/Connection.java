@@ -30,6 +30,7 @@ public abstract class Connection implements Serializable {
     protected Integer timeout = null;
     protected Integer firstTimeout = null;
     protected Integer connectionTimeout = null;
+    protected Integer sourcePort = null;
 
     public Connection() {
     }
@@ -55,6 +56,7 @@ public abstract class Connection implements Serializable {
         timeout = other.timeout;
         firstTimeout = other.firstTimeout;
         connectionTimeout = other.connectionTimeout;
+        sourcePort = other.sourcePort;
     }
 
     public String getIp() {
@@ -143,6 +145,14 @@ public abstract class Connection implements Serializable {
 
     public void setConnectionTimeout(Integer connectionTimeout) {
         this.connectionTimeout = connectionTimeout;
+    }
+
+    public Integer getSourcePort() {
+        return sourcePort;
+    }
+
+    public void setSourcePort(Integer sourcePort) {
+        this.sourcePort = sourcePort;
     }
 
     /**
