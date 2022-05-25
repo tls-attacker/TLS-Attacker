@@ -1006,8 +1006,8 @@ public class WorkflowConfigurationFactory {
                 trace.addTlsAction(new ReceiveTillAction(new FinishedMessage()));
                 if (Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)) {
                     trace.addTlsAction(new SendAction(new ChangeCipherSpecMessage(config)));
-                    trace.addTlsAction(new SendAction(new FinishedMessage(config)));
                 }
+                trace.addTlsAction(new SendAction(new FinishedMessage(config)));
             } else {
                 trace.addTlsAction(new ReceiveTillAction(new ServerHelloDoneMessage()));
                 trace.addTlsAction(new SendDynamicClientKeyExchangeAction());
