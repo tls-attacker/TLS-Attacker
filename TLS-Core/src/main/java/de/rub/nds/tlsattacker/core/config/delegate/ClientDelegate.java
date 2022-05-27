@@ -36,7 +36,7 @@ public class ClientDelegate extends Delegate {
 
     private String extractedHost = null;
 
-    private int extractedPort;
+    private int extractedPort = -1;
 
     public ClientDelegate() {
     }
@@ -142,10 +142,16 @@ public class ClientDelegate extends Delegate {
     }
 
     public String getExtractedHost() {
+        if (host != null && extractedHost == null) {
+            extractParameters();
+        }
         return extractedHost;
     }
 
     public int getExtractedPort() {
+        if (host != null && extractedPort == -1) {
+            extractParameters();
+        }
         return extractedPort;
     }
 }
