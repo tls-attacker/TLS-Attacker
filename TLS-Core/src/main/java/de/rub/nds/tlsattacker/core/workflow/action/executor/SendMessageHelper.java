@@ -260,6 +260,10 @@ public class SendMessageHelper {
             toFillList.add(record);
             if (record.getMaxRecordLengthConfig() == null) {
                 record.setMaxRecordLengthConfig(context.getChooser().getOutboundMaxRecordDataSize());
+                if (context.getChooser().getOutboundMaxRecordDataSize() == 0) {
+                    LOGGER.warn("OutboundMaxRecordDataSize is 0. This is an endless loop. Aborting");
+                    break;
+                }
             }
             recordLength += record.getMaxRecordLengthConfig();
             position++;

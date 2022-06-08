@@ -71,29 +71,6 @@ public class ClientDelegateTest {
         assertTrue(delegate.getHost().equals("123456"));
     }
 
-    /**
-     * Test of applyDelegate method, of class ClientDelegate.
-     */
-    @Test
-    public void testApplyDelegate() {
-        Config config = Config.createConfig();
-        args = new String[2];
-        args[0] = "-connect";
-        args[1] = "99.99.99.99:1448";
-
-        jcommander.parse(args);
-        delegate.applyDelegate(config);
-
-        AliasedConnection actual = config.getDefaultClientConnection();
-        assertNotNull(actual);
-        assertThat(actual.getHostname(), equalTo("99.99.99.99"));
-        assertThat(actual.getPort(), equalTo(1448));
-        assertThat(actual.getLocalConnectionEndType(), equalTo(ConnectionEndType.CLIENT));
-    }
-
-    /**
-     * Make sure that applying with host = null fails properly.
-     */
     @Test
     public void testApplyDelegateNullHost() {
         Config config = Config.createConfig();

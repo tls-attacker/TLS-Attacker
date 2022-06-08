@@ -12,6 +12,7 @@ package de.rub.nds.tlsattacker.core.protocol.message.extension;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -23,6 +24,10 @@ public class RecordSizeLimitExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty
     private ModifiableByteArray recordSizeLimit;
+
+    public RecordSizeLimitExtensionMessage(Config config) {
+        super(ExtensionType.RECORD_SIZE_LIMIT);
+    }
 
     public RecordSizeLimitExtensionMessage() {
         super(ExtensionType.RECORD_SIZE_LIMIT);
