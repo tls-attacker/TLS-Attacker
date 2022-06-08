@@ -50,6 +50,7 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
         encrypt();
     }
 
+    @Override
     public void encrypt() {
         LOGGER.debug("Encrypting Record");
         if (chooser.getSelectedProtocolVersion().isTLS13()

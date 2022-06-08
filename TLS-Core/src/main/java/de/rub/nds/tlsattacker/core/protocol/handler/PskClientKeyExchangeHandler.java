@@ -23,7 +23,7 @@ public class PskClientKeyExchangeHandler extends ClientKeyExchangeHandler<PskCli
 
     @Override
     public PskClientKeyExchangeParser getParser(byte[] message, int pointer) {
-        return new PskClientKeyExchangeParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
+        return new PskClientKeyExchangeParser(pointer, message, tlsContext.getChooser().getSelectedProtocolVersion(),
             tlsContext.getConfig());
     }
 

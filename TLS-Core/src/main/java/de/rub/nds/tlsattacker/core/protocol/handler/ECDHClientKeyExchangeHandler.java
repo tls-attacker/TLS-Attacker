@@ -30,7 +30,7 @@ public class ECDHClientKeyExchangeHandler<T extends ECDHClientKeyExchangeMessage
 
     @Override
     public ECDHClientKeyExchangeParser<T> getParser(byte[] message, int pointer) {
-        return new ECDHClientKeyExchangeParser<>(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
+        return new ECDHClientKeyExchangeParser<>(pointer, message, tlsContext.getChooser().getSelectedProtocolVersion(),
             tlsContext.getConfig());
     }
 

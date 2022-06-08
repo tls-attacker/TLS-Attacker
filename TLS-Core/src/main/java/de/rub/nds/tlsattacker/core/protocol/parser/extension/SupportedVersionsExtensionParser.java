@@ -31,6 +31,8 @@ public class SupportedVersionsExtensionParser extends ExtensionParser<SupportedV
         if (msg.getExtensionLength().getValue() == HandshakeByteLength.VERSION) {
             // This looks like a ServerProtocolVersionExtension
             msg.setSupportedVersions(parseByteArrayField(HandshakeByteLength.VERSION));
+            LOGGER
+                .debug("Supported version: " + ArrayConverter.bytesToHexString(msg.getSupportedVersions().getValue()));
         } else {
             // This looks like a ClientProtocolVersionExtension
             parseSupportedVersionLength(msg);

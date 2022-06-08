@@ -28,7 +28,7 @@ public class GOSTClientKeyExchangeHandler extends ClientKeyExchangeHandler<GOSTC
 
     @Override
     public GOSTClientKeyExchangeParser getParser(byte[] message, int pointer) {
-        return new GOSTClientKeyExchangeParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
+        return new GOSTClientKeyExchangeParser(pointer, message, tlsContext.getChooser().getSelectedProtocolVersion(),
             tlsContext.getConfig());
     }
 

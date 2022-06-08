@@ -23,7 +23,7 @@ public class PWDClientKeyExchangeHandler extends ClientKeyExchangeHandler<PWDCli
 
     @Override
     public PWDClientKeyExchangeParser getParser(byte[] message, int pointer) {
-        return new PWDClientKeyExchangeParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
+        return new PWDClientKeyExchangeParser(pointer, message, tlsContext.getChooser().getSelectedProtocolVersion(),
             AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite()),
             tlsContext.getConfig());
     }

@@ -23,7 +23,7 @@ public class RSAClientKeyExchangeHandler<T extends RSAClientKeyExchangeMessage> 
 
     @Override
     public RSAClientKeyExchangeParser<T> getParser(byte[] message, int pointer) {
-        return new RSAClientKeyExchangeParser<>(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
+        return new RSAClientKeyExchangeParser<>(pointer, message, tlsContext.getChooser().getSelectedProtocolVersion(),
             tlsContext.getConfig());
     }
 

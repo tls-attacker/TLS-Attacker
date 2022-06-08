@@ -36,7 +36,7 @@ public class CertificateRequestHandler extends HandshakeMessageHandler<Certifica
 
     @Override
     public CertificateRequestParser getParser(byte[] message, int pointer) {
-        return new CertificateRequestParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
+        return new CertificateRequestParser(pointer, message, tlsContext.getChooser().getSelectedProtocolVersion(),
             tlsContext.getConfig());
     }
 

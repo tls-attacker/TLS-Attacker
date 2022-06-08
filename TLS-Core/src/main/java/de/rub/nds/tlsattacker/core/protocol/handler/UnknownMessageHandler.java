@@ -27,7 +27,7 @@ public class UnknownMessageHandler extends TlsMessageHandler<UnknownMessage> {
 
     @Override
     public UnknownMessageParser getParser(byte[] message, int pointer) {
-        return new UnknownMessageParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
+        return new UnknownMessageParser(pointer, message, tlsContext.getChooser().getSelectedProtocolVersion(),
             recordContentMessageType, tlsContext.getConfig());
     }
 

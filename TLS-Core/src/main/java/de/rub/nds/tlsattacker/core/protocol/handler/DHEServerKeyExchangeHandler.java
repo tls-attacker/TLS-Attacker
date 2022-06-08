@@ -32,7 +32,7 @@ public class DHEServerKeyExchangeHandler<T extends DHEServerKeyExchangeMessage> 
 
     @Override
     public DHEServerKeyExchangeParser<T> getParser(byte[] message, int pointer) {
-        return new DHEServerKeyExchangeParser<T>(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
+        return new DHEServerKeyExchangeParser<T>(pointer, message, tlsContext.getChooser().getSelectedProtocolVersion(),
             AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite()),
             tlsContext.getConfig());
     }

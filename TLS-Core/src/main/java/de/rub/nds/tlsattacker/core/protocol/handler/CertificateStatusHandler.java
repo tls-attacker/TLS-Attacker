@@ -22,7 +22,7 @@ public class CertificateStatusHandler extends HandshakeMessageHandler<Certificat
 
     @Override
     public CertificateStatusParser getParser(byte[] message, int pointer) {
-        return new CertificateStatusParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
+        return new CertificateStatusParser(pointer, message, tlsContext.getChooser().getSelectedProtocolVersion(),
             tlsContext.getConfig());
     }
 

@@ -26,7 +26,7 @@ public class PWDServerKeyExchangeHandler extends ServerKeyExchangeHandler<PWDSer
 
     @Override
     public PWDServerKeyExchangeParser getParser(byte[] message, int pointer) {
-        return new PWDServerKeyExchangeParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
+        return new PWDServerKeyExchangeParser(pointer, message, tlsContext.getChooser().getSelectedProtocolVersion(),
             AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite()),
             tlsContext.getConfig());
     }

@@ -29,7 +29,7 @@ public class SrpServerKeyExchangeHandler extends ServerKeyExchangeHandler<SrpSer
 
     @Override
     public SrpServerKeyExchangeParser getParser(byte[] message, int pointer) {
-        return new SrpServerKeyExchangeParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
+        return new SrpServerKeyExchangeParser(pointer, message, tlsContext.getChooser().getSelectedProtocolVersion(),
             tlsContext.getConfig());
     }
 

@@ -23,8 +23,8 @@ public class PskEcDhClientKeyExchangeHandler extends ECDHClientKeyExchangeHandle
 
     @Override
     public PskEcDhClientKeyExchangeParser getParser(byte[] message, int pointer) {
-        return new PskEcDhClientKeyExchangeParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
-            tlsContext.getConfig());
+        return new PskEcDhClientKeyExchangeParser(pointer, message,
+            tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext.getConfig());
     }
 
     @Override

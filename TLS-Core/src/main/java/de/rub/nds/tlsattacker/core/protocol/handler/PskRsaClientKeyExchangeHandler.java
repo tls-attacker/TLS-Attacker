@@ -23,7 +23,7 @@ public class PskRsaClientKeyExchangeHandler extends RSAClientKeyExchangeHandler<
 
     @Override
     public PskRsaClientKeyExchangeParser getParser(byte[] message, int pointer) {
-        return new PskRsaClientKeyExchangeParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
+        return new PskRsaClientKeyExchangeParser(pointer, message, tlsContext.getChooser().getSelectedProtocolVersion(),
             tlsContext.getConfig());
     }
 

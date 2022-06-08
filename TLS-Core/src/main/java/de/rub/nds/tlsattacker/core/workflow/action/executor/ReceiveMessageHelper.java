@@ -29,7 +29,6 @@ import de.rub.nds.tlsattacker.core.protocol.ParserResult;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.CipherState;
-import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayOutputStream;
@@ -75,8 +74,8 @@ public class ReceiveMessageHelper {
             do {
                 receivedBytes = receiveByteArray(context);
                 receivedBytesLength += receivedBytes.length;
-                MessageActionResult tempResult = handleReceivedBytes(receivedBytes, context);
-                result = result.merge(tempResult);
+
+                result.merge(handleReceivedBytes(receivedBytes, context));
                 if (context.getConfig().isQuickReceive() && !expectedMessages.isEmpty()) {
                     shouldContinue =
                         testIfWeShouldContinueToReceive(expectedMessages, result.getMessageList(), context);
@@ -108,13 +107,13 @@ public class ReceiveMessageHelper {
             do {
                 receivedBytes = receiveByteArray(context);
                 receivedBytesLength += receivedBytes.length;
-                MessageActionResult tempResult = handleReceivedBytes(receivedBytes, context);
-                result = result.merge(tempResult);
-                boolean receivedFatalAlert = testIfReceivedFatalAlert(tempResult.getMessageList());
+
+                result.merge(handleReceivedBytes(receivedBytes, context));
+                boolean receivedFatalAlert = testIfReceivedFatalAlert(result.getMessageList());
                 if (receivedFatalAlert && context.getConfig().isStopReceivingAfterFatal()) {
                     break;
                 }
-                boolean receivedWarningAlert = testIfReceivedWarningAlert(tempResult.getMessageList());
+                boolean receivedWarningAlert = testIfReceivedWarningAlert(result.getMessageList());
                 if (receivedWarningAlert && context.getConfig().getStopReceivingAfterWarning()) {
                     break;
                 }
@@ -186,8 +185,7 @@ public class ReceiveMessageHelper {
             }
 
             try {
-                MessageActionResult tempResult = parseRecordGroup(recordGroups.get(groupIndex), context);
-                result = result.merge(tempResult);
+                result.merge(parseRecordGroup(recordGroups.get(groupIndex), context));
             } catch (ParserException parserException) {
                 List<AbstractRecord> additionalRecords = tryToFetchAdditionalRecords(context);
                 RecordGroup.mergeRecordsIntoGroups(recordGroups, additionalRecords);
@@ -566,8 +564,8 @@ public class ReceiveMessageHelper {
         if (cleanProtocolMessageBytes.length == 0 && typeFromRecord == ProtocolMessageType.APPLICATION_DATA) {
             receivedMessages.add(new ApplicationMessage());
         }
+        ParserResult result = null;
         while (dataPointer < cleanProtocolMessageBytes.length) {
-            ParserResult result = null;
             if (tryParseAsValid) {
                 try {
                     if (typeFromRecord != null) {
@@ -643,7 +641,11 @@ public class ReceiveMessageHelper {
                 dataPointer = result.getParserPosition();
                 LOGGER.debug("The following message was parsed: {}", result.getMessage().toString());
                 receivedMessages.add(result.getMessage());
+                result = null;
             }
+        }
+        if (result != null) {
+            receivedMessages.add(result.getMessage());
         }
         return receivedMessages;
     }
