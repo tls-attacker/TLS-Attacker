@@ -92,6 +92,7 @@
         <module>TLS-Server</module>
         <module>TLS-Mitm</module>
         <module>TraceTool</module>
+        <module>TLS-Proxy</module>
     </modules>
     <dependencies>
         <dependency>
