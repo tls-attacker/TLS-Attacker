@@ -13,14 +13,11 @@ import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.core.config.delegate.CipherSuiteDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.ConfigOutputDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.FilterDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ListDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.RunningModeDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.WorkflowInputDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.WorkflowOutputDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.WorkflowTypeDelegate;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import org.apache.logging.log4j.LogManager;
@@ -35,15 +32,9 @@ public class TraceToolCommandConfig extends TLSDelegateConfig {
     @ParametersDelegate
     private ProtocolVersionDelegate protocolVersionDelegate;
     @ParametersDelegate
-    private WorkflowInputDelegate workflowInputDelegate;
-    @ParametersDelegate
-    private WorkflowOutputDelegate workflowOutputDelegate;
-    @ParametersDelegate
     private WorkflowTypeDelegate workflowTypeDelegate;
     @ParametersDelegate
     private FilterDelegate filterDelegate;
-    @ParametersDelegate
-    private ConfigOutputDelegate configOutputDelegate;
     @ParametersDelegate
     private ListDelegate listDelegate;
     @ParametersDelegate
@@ -54,21 +45,15 @@ public class TraceToolCommandConfig extends TLSDelegateConfig {
     public TraceToolCommandConfig(GeneralDelegate delegate) {
         super(delegate);
         this.protocolVersionDelegate = new ProtocolVersionDelegate();
-        this.workflowOutputDelegate = new WorkflowOutputDelegate();
-        this.workflowInputDelegate = new WorkflowInputDelegate();
         this.workflowTypeDelegate = new WorkflowTypeDelegate();
         this.filterDelegate = new FilterDelegate();
-        this.configOutputDelegate = new ConfigOutputDelegate();
         this.listDelegate = new ListDelegate();
         this.ciphersuiteDelegate = new CipherSuiteDelegate();
         this.runningModeDelegate = new RunningModeDelegate();
         addDelegate(protocolVersionDelegate);
         addDelegate(ciphersuiteDelegate);
-        addDelegate(workflowInputDelegate);
-        addDelegate(workflowOutputDelegate);
         addDelegate(workflowTypeDelegate);
         addDelegate(filterDelegate);
-        addDelegate(configOutputDelegate);
         addDelegate(listDelegate);
         addDelegate(runningModeDelegate);
     }

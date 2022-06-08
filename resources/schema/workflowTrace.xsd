@@ -3446,9 +3446,6 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="workflowInput" type="xs:string" minOccurs="0"/>
-      <xs:element name="workflowOutput" type="xs:string" minOccurs="0"/>
-      <xs:element name="configOutput" type="xs:string" minOccurs="0"/>
       <xs:element name="workflowTraceType" type="workflowTraceType" minOccurs="0"/>
       <xs:element name="serverSendsApplicationData" type="xs:boolean" minOccurs="0"/>
       <xs:element name="addExtensionsInSSL" type="xs:boolean" minOccurs="0"/>

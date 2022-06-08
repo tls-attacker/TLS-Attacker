@@ -45,7 +45,6 @@ public class StateTest {
     @Test
     public void initWithoutWorkflowTraceFailsProperly() {
         Config config = Config.createConfig();
-        config.setWorkflowInput(null);
         config.setWorkflowTraceType(null);
         exception.expect(ConfigurationException.class);
         exception.expectMessage("Could not load workflow trace");

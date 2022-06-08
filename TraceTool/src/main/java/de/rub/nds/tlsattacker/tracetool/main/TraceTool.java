@@ -73,16 +73,9 @@ public class TraceTool {
         try {
             Config config = cmdConfig.createConfig();
             State state = new State(config);
-            if (config.getWorkflowOutput() == null || config.getWorkflowOutput().isEmpty()) {
-                WorkflowTrace filtered = state.getFilteredTraceCopy();
-                String xml = WorkflowTraceSerializer.write(filtered);
-                System.out.println(xml);
-            } else {
-                state.storeTrace();
-            }
-            if (config.getConfigOutput() != null) {
-                ConfigIO.write(config, new File(config.getConfigOutput()));
-            }
+            WorkflowTrace filtered = state.getFilteredTraceCopy();
+            String xml = WorkflowTraceSerializer.write(filtered);
+            System.out.println(xml);
         } catch (ConfigurationException ce) {
             LOGGER.error("Encountered a ConfigurationException aborting. " + ce.getLocalizedMessage()
                 + " - See debug messages for more details.");

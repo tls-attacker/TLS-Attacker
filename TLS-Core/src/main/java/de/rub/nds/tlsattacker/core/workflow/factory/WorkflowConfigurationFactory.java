@@ -121,6 +121,9 @@ public class WorkflowConfigurationFactory {
 
     public WorkflowTrace createWorkflowTrace(WorkflowTraceType type, RunningModeType mode) {
         this.mode = mode;
+        if (type == null) {
+            throw new RuntimeException("Cannot create WorkflowTrace from NULL type");
+        }
         switch (type) {
             case HELLO:
                 return createHelloWorkflow();

@@ -88,12 +88,6 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
             state.getWorkflowTrace().reset();
         }
 
-        state.storeTrace();
-
-        if (config.getConfigOutput() != null) {
-            ConfigIO.write(config, new File(config.getConfigOutput()));
-        }
-
         try {
             if (getAfterExecutionCallback() != null) {
                 getAfterExecutionCallback().apply(state);

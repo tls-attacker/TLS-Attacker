@@ -498,21 +498,6 @@ public class Config implements Serializable {
     private List<RequestItemV2> statusRequestV2RequestList;
 
     /**
-     * If we should use a workflow trace specified in File
-     */
-    private String workflowInput = null;
-
-    /**
-     * If set, save the workflow trace to this file after trace execution.
-     */
-    private String workflowOutput = null;
-
-    /**
-     * If set, save the actually used config to this file after trace execution.
-     */
-    private String configOutput = null;
-
-    /**
      * The Type of workflow trace that should be generated
      */
     private WorkflowTraceType workflowTraceType = null;
@@ -2641,30 +2626,6 @@ public class Config implements Serializable {
 
     public void setWorkflowTraceType(WorkflowTraceType workflowTraceType) {
         this.workflowTraceType = workflowTraceType;
-    }
-
-    public String getWorkflowOutput() {
-        return workflowOutput;
-    }
-
-    public void setWorkflowOutput(String workflowOutput) {
-        this.workflowOutput = workflowOutput;
-    }
-
-    public String getConfigOutput() {
-        return configOutput;
-    }
-
-    public void setConfigOutput(String configOutput) {
-        this.configOutput = configOutput;
-    }
-
-    public String getWorkflowInput() {
-        return workflowInput;
-    }
-
-    public void setWorkflowInput(String workflowInput) {
-        this.workflowInput = workflowInput;
     }
 
     public NamedGroup getDefaultSelectedNamedGroup() {
