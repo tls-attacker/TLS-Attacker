@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="https://maven.apache.org/POM/4.0.0" xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.rub.nds.tlsattacker</groupId>
     <artifactId>TLS-Attacker</artifactId>
@@ -215,7 +215,7 @@
                                         <destFileName>${project.build.finalName}.${project.packaging}</destFileName>
                                     </artifactItem>
                                 </artifactItems>
-                                <outputDirectory>${project.parent.basedir}/apps</outputDirectory>
+                                <outputDirectory>${maven.multiModuleProjectDirectory}/apps</outputDirectory>
                             </configuration>
                         </execution>
                         <execution>
@@ -225,7 +225,7 @@
                                 <goal>copy-dependencies</goal>
                             </goals>
                             <configuration>
-                                <outputDirectory>${project.parent.basedir}/apps/lib</outputDirectory>
+                                <outputDirectory>${maven.multiModuleProjectDirectory}/apps/lib</outputDirectory>
                                 <!--Ensures only runnable dependencies are included-->
                                 <includeScope>compile</includeScope>
                             </configuration>
@@ -336,7 +336,7 @@
                 <groupId>com.mycila</groupId>
                 <artifactId>license-maven-plugin</artifactId>
                 <configuration>
-                    <header>license_header_plain.txt</header>
+                    <header>${main.basedir}/license_header_plain.txt</header>
                     <strictCheck>true</strictCheck>
                     <includes>
                         <include>src/**/*.java</include>
@@ -463,7 +463,7 @@
                     </dependency>
                 </dependencies>
                 <configuration>
-                    <configLocation>checkstyle.xml</configLocation>
+                    <configLocation>${main.basedir}/checkstyle.xml</configLocation>
                     <violationSeverity>info</violationSeverity>
                     <failOnViolation>false</failOnViolation>
                 </configuration>
