@@ -18,7 +18,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macOS-latest, windows-latest]
-        java: [ 8, 11] 
+        java: [11] 
       fail-fast: false
       max-parallel: 4
     name: Test TLS-Attacker on JDK ${{ matrix.java }}, ${{ matrix.os }}
