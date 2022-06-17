@@ -35,4 +35,10 @@ jobs:
         run: mvn clean test
       
       - name: package
-        run: mvn clean package -Dmaven.javadoc.skip=true
+        run: |
+           if [[ ${{ matrix.os }} -eq "windows-latest" ]]
+            then
+              mvn clean package `-Dmaven`.javadoc`.skip=true
+            else
+                mvn clean package -Dmaven.javadoc.skip=true
+            fi        
