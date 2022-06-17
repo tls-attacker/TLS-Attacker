@@ -1,0 +1,39 @@
+name: TLS-Attacker 
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  test:
+    if: github.repository == 'tls-attacker/TLS-Attacker'
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macOS-latest, windows-latest]
+        java: [11] 
+      fail-fast: false
+      max-parallel: 4
+    name: Test TLS-Attacker on JDK ${{ matrix.java }}, ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK ${{ matrix.java }} ${{ matrix.os }}
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ matrix.java }}
+          distribution: 'zulu'
+          cache: 'maven'
+
+      - name: Test
+        run: mvn clean test
+      
+      - name: package
+        run: mvn clean package     
