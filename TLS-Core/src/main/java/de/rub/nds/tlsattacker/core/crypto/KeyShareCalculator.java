@@ -96,7 +96,7 @@ public class KeyShareCalculator {
             }
         } else {
             FFDHEGroup ffdheGroup = GroupFactory.getGroup(group);
-            BigInteger sharedElement = new BigInteger(publicKey).modPow(privateKey.abs(), ffdheGroup.getP().abs());
+            BigInteger sharedElement = new BigInteger(1, publicKey).modPow(privateKey.abs(), ffdheGroup.getP().abs());
             return ArrayConverter.bigIntegerToNullPaddedByteArray(sharedElement,
                 ffdheGroup.getP().bitLength() / Bits.IN_A_BYTE);
         }
