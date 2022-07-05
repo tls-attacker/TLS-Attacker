@@ -40,7 +40,7 @@ public enum CipherAlgorithm {
     ARIA_128_CBC(16, 16, 0, 16, "ARIA/CBC/NoPadding"), // not tested yet
     ARIA_256_CBC(32, 16, 0, 16, "ARIA/CBC/NoPadding"), // not tested yet
     ARIA_128_GCM(16, 16, 8, 16, "ARIA/GCM/NoPadding"), // not tested yet
-    ARIA_256_GCM(16, 16, 8, 16, "ARIA/GCM/NoPadding"), // not tested yet
+    ARIA_256_GCM(32, 16, 8, 16, "ARIA/GCM/NoPadding"), // not tested yet
     GOST_28147_CNT(32, 8, 0, 8, "GOST28147/ECB/NoPadding"),
     FORTEZZA_CBC(0, 0, 0, 0), // TODO
     AES_128_CTR(16, 16, 0, 0, "AES/CTR/NoPadding"),
