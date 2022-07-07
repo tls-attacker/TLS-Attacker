@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerCertificateTypeExtensionMessage;
+import java.util.Objects;
 
 public class ServerCertificateTypeExtensionSerializer
     extends ExtensionSerializer<ServerCertificateTypeExtensionMessage> {
@@ -24,12 +25,11 @@ public class ServerCertificateTypeExtensionSerializer
 
     @Override
     public byte[] serializeExtensionContent() {
-        if (msg.getCertificateTypesLength() != null) {
+        if (Objects.equals(msg.getIsClientMessage().getValue(), Boolean.TRUE)) {
             appendInt(msg.getCertificateTypesLength().getValue(), ExtensionByteLength.CERTIFICATE_TYPE_TYPE_LENGTH);
         }
         appendBytes(msg.getCertificateTypes().getValue());
 
         return getAlreadySerialized();
     }
-
 }
