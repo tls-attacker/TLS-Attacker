@@ -11,6 +11,9 @@ package de.rub.nds.tlsattacker.core.protocol.parser.cert;
 
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.record.Record;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.InputStream;
 import java.util.List;
 
@@ -20,11 +23,15 @@ import java.util.List;
  */
 public class CleanRecordByteSeperator extends Parser<List<Record>> {
 
-    private final int defaultMaxSize;
+    private static Logger LOGGER = LogManager.getLogger();
 
-    public CleanRecordByteSeperator(int defaultMaxSize, InputStream stream) {
+    private final int defaultMaxSize;
+    private final boolean createRecordsDynamically;
+
+    public CleanRecordByteSeperator(int defaultMaxSize, InputStream stream, boolean createRecordsDynamically) {
         super(stream);
         this.defaultMaxSize = defaultMaxSize;
+        this.createRecordsDynamically = createRecordsDynamically;
     }
 
     @Override
@@ -36,11 +43,13 @@ public class CleanRecordByteSeperator extends Parser<List<Record>> {
             }
             record.setCleanProtocolMessageBytes(parseArrayOrTillEnd(maxData));
         }
-        while (getBytesLeft() > 0) {
-            // There are still bytes left, we need to create additional records
-            Record record = new Record(defaultMaxSize);
-            record.setCleanProtocolMessageBytes(parseArrayOrTillEnd(defaultMaxSize));
-            records.add(record);
+        if (createRecordsDynamically) {
+            while (getBytesLeft() > 0) {
+                // There are still bytes left, we need to create additional records
+                Record record = new Record(defaultMaxSize);
+                record.setCleanProtocolMessageBytes(parseArrayOrTillEnd(defaultMaxSize));
+                records.add(record);
+            }
         }
     }
 

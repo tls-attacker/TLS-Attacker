@@ -67,8 +67,6 @@ public class PskBruteForcerAttackClientCommandConfig extends AttackConfig {
     @Override
     public Config createConfig() {
         Config config = super.createConfig();
-        config.setQuickReceive(true);
-        config.setEarlyStop(true);
 
         return config;
     }

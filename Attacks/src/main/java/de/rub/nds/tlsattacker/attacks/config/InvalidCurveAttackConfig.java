@@ -349,10 +349,8 @@ public class InvalidCurveAttackConfig extends AttackConfig {
             cipherSuites.add(CipherSuite.TLS_ECDH_RSA_WITH_AES_256_CBC_SHA384);
             config.setDefaultSelectedCipherSuite(CipherSuite.TLS_ECDH_RSA_WITH_AES_128_CBC_SHA);
         }
-        config.setQuickReceive(true);
         config.setStopActionsAfterFatal(true);
-        config.setStopReceivingAfterFatal(true);
-        config.setEarlyStop(true);
+        config.setStopReceivingAfterFatal(false);
         config.setStopActionsAfterIOException(true);
         config.setStopTraceAfterUnexpected(true);
         config.setAddECPointFormatExtension(true);

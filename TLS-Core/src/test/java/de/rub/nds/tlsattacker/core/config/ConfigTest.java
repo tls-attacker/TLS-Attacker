@@ -162,7 +162,6 @@ public class ConfigTest {
     public void generateHttpConfig() {
         Config config = new Config();
         stripConfig(config);
-        config.setHttpParsingEnabled(true);
         writeToConfig(config, "https.config");
     }
 
@@ -649,7 +648,6 @@ public class ConfigTest {
         config.setAddTokenBindingExtension(true);
         config.setAddExtendedMasterSecretExtension(true);
         config.setAddRenegotiationInfoExtension(true);
-        config.setHttpParsingEnabled(true);
 
         writeToConfig(config, "tokenbinding.config");
     }

@@ -96,8 +96,6 @@ public class Config implements Serializable {
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultHandshakeSecret = new byte[32];
 
-    private Boolean throwExceptionOnParserContextViolation = false;
-
     private CertificateKeyType preferredCertificateSignatureType = CertificateKeyType.RSA;
 
     private NamedGroup preferredCertificateSignatureGroup = NamedGroup.SECP256R1;
@@ -671,11 +669,6 @@ public class Config implements Serializable {
     private Boolean addCookieExtension = false;
 
     /**
-     * If set to true, timestamps will be updated upon execution of a workflowTrace
-     */
-    private Boolean updateTimestamps = true;
-
-    /**
      * PSKKeyExchangeModes to be used in 0-RTT (or TLS 1.3 resumption)
      */
     @XmlElement(name = "pskKeyExchangeMode")
@@ -744,11 +737,6 @@ public class Config implements Serializable {
     private byte[] distinguishedNames = new byte[0];
 
     private Boolean enforceSettings = false;
-
-    /**
-     * Stop as soon as all expected messages are received and don't wait for more
-     */
-    private Boolean earlyStop = false;
 
     /**
      * The maximum number of bytes that can be received during a receive process. Default: 2^24.
@@ -872,10 +860,6 @@ public class Config implements Serializable {
      * message bytes that wont fit are discarded
      */
     private Boolean createRecordsDynamically = true;
-    /**
-     * When "Null" records are defined to be send, every message will be sent in at least one individual record
-     */
-    private Boolean createIndividualRecords = true;
 
     /**
      * If this value is set the default workflowExecutor will remove all runtime values from the workflow trace and will
@@ -884,22 +868,16 @@ public class Config implements Serializable {
     private Boolean resetWorkflowTracesBeforeSaving = false;
 
     /**
-     * TLS-Attacker will not try to receive additional messages after the configured number of messages has been
-     * received
-     */
-    private Boolean quickReceive = true;
-
-    /**
      * If the WorkflowExecutor should take care of the connection opening
      */
     private Boolean workflowExecutorShouldOpen = true;
+
+    private Boolean stopReceivingAfterFatal = false;
 
     /**
      * If the WorkflowExecutor should take care of the connection closing
      */
     private Boolean workflowExecutorShouldClose = true;
-
-    private Boolean stopReceivingAfterFatal = false;
 
     private Boolean stopActionsAfterFatal = false;
 
@@ -923,8 +901,6 @@ public class Config implements Serializable {
      * How many retransmissions in DTLS should be executed during the handshake
      */
     private Integer maxDtlsRetransmissions = 3;
-
-    private Boolean stopReceivingAfterWarning = false;
 
     private Boolean stopActionsAfterWarning = false;
 
@@ -1132,8 +1108,6 @@ public class Config implements Serializable {
 
     private Boolean useAllProvidedRecords = false;
 
-    private Boolean httpParsingEnabled = false;
-
     /**
      * requestPath to use in LocationHeader if none is saved during the connection, e.g. no received HttpRequestMessage
      * or httpParsing is disabled
@@ -1245,12 +1219,6 @@ public class Config implements Serializable {
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultServerPWDSalt =
         ArrayConverter.hexStringToByteArray("963c77cdc13a2a8d75cdddd1e0449929843711c21d47ce6e6383cdda37e47da3");
-
-    /**
-     * TLS-Attacker will parse encrypted messages with invalid MAC or padding as unencrypted messages if this option is
-     * set.
-     */
-    private Boolean parseInvalidRecordsUnencrypted = false;
 
     private ECPointFormat defaultSelectedPointFormat = ECPointFormat.UNCOMPRESSED;
 
@@ -1440,20 +1408,12 @@ public class Config implements Serializable {
         this.defaultSelectedAlpnProtocol = defaultSelectedAlpnProtocol;
     }
 
-    public Boolean isThrowExceptionOnParserContextViolation() {
-        return throwExceptionOnParserContextViolation;
+    public Boolean getStopReceivingAfterFatal() {
+        return stopReceivingAfterFatal;
     }
 
-    public void setThrowExceptionOnParserContextViolation(Boolean throwExceptionOnParserContextViolation) {
-        this.throwExceptionOnParserContextViolation = throwExceptionOnParserContextViolation;
-    }
-
-    public Boolean getStopReceivingAfterWarning() {
-        return stopReceivingAfterWarning;
-    }
-
-    public void setStopReceivingAfterWarning(Boolean stopReceivingAfterWarning) {
-        this.stopReceivingAfterWarning = stopReceivingAfterWarning;
+    public void setStopReceivingAfterFatal(Boolean stopReceivingAfterFatal) {
+        this.stopReceivingAfterFatal = stopReceivingAfterFatal;
     }
 
     public Boolean getStopActionsAfterWarning() {
@@ -1582,14 +1542,6 @@ public class Config implements Serializable {
         this.clientAuthenticationType = clientAuthenticationType;
     }
 
-    public Boolean isHttpParsingEnabled() {
-        return httpParsingEnabled;
-    }
-
-    public void setHttpParsingEnabled(Boolean httpParsingEnabled) {
-        this.httpParsingEnabled = httpParsingEnabled;
-    }
-
     public String getDefaultHttpRequestPath() {
         return defaultHttpRequestPath;
     }
@@ -1636,14 +1588,6 @@ public class Config implements Serializable {
 
     public void setChooserType(ChooserType chooserType) {
         this.chooserType = chooserType;
-    }
-
-    public Boolean isEarlyStop() {
-        return earlyStop;
-    }
-
-    public void setEarlyStop(Boolean earlyStop) {
-        this.earlyStop = earlyStop;
     }
 
     public Boolean isStealthMode() {
@@ -1740,14 +1684,6 @@ public class Config implements Serializable {
 
     public void setWorkflowExecutorShouldClose(Boolean workflowExecutorShouldClose) {
         this.workflowExecutorShouldClose = workflowExecutorShouldClose;
-    }
-
-    public Boolean isStopReceivingAfterFatal() {
-        return stopReceivingAfterFatal;
-    }
-
-    public void setStopReceivingAfterFatal(Boolean stopReceivingAfterFatal) {
-        this.stopReceivingAfterFatal = stopReceivingAfterFatal;
     }
 
     public byte[] getDefaultPSKKey() {
@@ -2286,14 +2222,6 @@ public class Config implements Serializable {
         this.defaultSSL2CipherSuite = defaultSSL2CipherSuite;
     }
 
-    public Boolean isQuickReceive() {
-        return quickReceive;
-    }
-
-    public void setQuickReceive(Boolean quickReceive) {
-        this.quickReceive = quickReceive;
-    }
-
     public Integer getReceiveMaximumBytes() {
         return receiveMaximumBytes;
     }
@@ -2332,14 +2260,6 @@ public class Config implements Serializable {
 
     public void setCreateRecordsDynamically(Boolean createRecordsDynamically) {
         this.createRecordsDynamically = createRecordsDynamically;
-    }
-
-    public Boolean isCreateIndividualRecords() {
-        return createIndividualRecords;
-    }
-
-    public void setCreateIndividualRecords(Boolean createIndividualRecords) {
-        this.createIndividualRecords = createIndividualRecords;
     }
 
     public int getDefaultMaxRecordData() {
@@ -2488,14 +2408,6 @@ public class Config implements Serializable {
 
     public void setHighestProtocolVersion(ProtocolVersion highestProtocolVersion) {
         this.highestProtocolVersion = highestProtocolVersion;
-    }
-
-    public Boolean isUpdateTimestamps() {
-        return updateTimestamps;
-    }
-
-    public void setUpdateTimestamps(Boolean updateTimestamps) {
-        this.updateTimestamps = updateTimestamps;
     }
 
     public Boolean isServerSendsApplicationData() {
@@ -3623,14 +3535,6 @@ public class Config implements Serializable {
         this.defaultHandshakeSecret = defaultHandshakeSecret;
     }
 
-    public Boolean getParseInvalidRecordNormally() {
-        return parseInvalidRecordsUnencrypted;
-    }
-
-    public void setParseInvalidRecordNormally(Boolean parseInvalidRecordNormally) {
-        this.parseInvalidRecordsUnencrypted = parseInvalidRecordNormally;
-    }
-
     public String getDefaultClientPWDUsername() {
         return defaultClientPWDUsername;
     }
@@ -3935,7 +3839,7 @@ public class Config implements Serializable {
         this.limitPsksToOne = limitPsksToOne;
     }
 
-    public Boolean isPreserveMessageRecordRelation() {
+    public Boolean getPreserveMessageRecordRelation() {
         return preserveMessageRecordRelation;
     }
 

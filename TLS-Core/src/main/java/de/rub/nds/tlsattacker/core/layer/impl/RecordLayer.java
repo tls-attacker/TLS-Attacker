@@ -9,6 +9,7 @@
 
 package de.rub.nds.tlsattacker.core.layer.impl;
 
+import java.awt.*;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -75,6 +76,11 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
         LayerConfiguration<Record> configuration = getLayerConfiguration();
         if (configuration != null && configuration.getContainerList() != null) {
             for (Record record : configuration.getContainerList()) {
+                if (!context.getConfig().isUseAllProvidedRecords() && record.getCompleteRecordBytes() != null
+                    && record.getCompleteRecordBytes().getValue().length == 0) {
+                    // skip empty records if specified in config
+                    continue;
+                }
                 ProtocolMessageType contentType = record.getContentMessageType();
                 if (contentType == null) {
                     contentType = ProtocolMessageType.UNKNOWN;
@@ -108,10 +114,37 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
             LOGGER.warn("Sending record without a LayerProcessing hint. Using \"UNKNOWN\" as the type");
         }
 
-        CleanRecordByteSeperator separator = new CleanRecordByteSeperator(
-            context.getChooser().getOutboundMaxRecordDataSize(), new ByteArrayInputStream(data));
+        CleanRecordByteSeperator separator =
+            new CleanRecordByteSeperator(context.getChooser().getOutboundMaxRecordDataSize(),
+                new ByteArrayInputStream(data), context.getConfig().isCreateRecordsDynamically());
         List<Record> records = new LinkedList<>();
+
+        List<Record> givenRecords = getLayerConfiguration().getContainerList();
+
+        // if we are given records we should assign messages to them
+        if (getLayerConfiguration().getContainerList() != null && givenRecords.size() > 0) {
+            if (context.getConfig().getPreserveMessageRecordRelation()) {
+                // put this message into the first container of this layer
+                // also remove the container from the ones we want to send later
+                records.add(givenRecords.remove(0));
+            } else {
+                // assign as many records as we need for the message
+                int dataToBeSent = data.length;
+                while (givenRecords.size() > 0 && dataToBeSent > 0) {
+                    Record nextRecord = givenRecords.remove(0);
+                    records.add(nextRecord);
+                    int recordData = (nextRecord.getMaxRecordLengthConfig() != null
+                        ? nextRecord.getMaxRecordLengthConfig() : context.getChooser().getOutboundMaxRecordDataSize());
+                    dataToBeSent -= recordData;
+                }
+            }
+        }
+
         separator.parse(records);
+        if (separator.getBytesLeft() > 0) {
+            LOGGER.warn("Unsent bytes for message " + type
+                + ". Not enough records specified and disabled dynamic record creation in config.");
+        }
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
 
         for (Record record : records) {

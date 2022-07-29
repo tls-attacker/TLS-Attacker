@@ -93,11 +93,9 @@ public class HeartbleedCommandConfig extends AttackConfig {
         config.setAddRenegotiationInfoExtension(true);
         config.setAddServerNameIndicationExtension(true);
         config.setAddSignatureAndHashAlgorithmsExtension(true);
-        config.setQuickReceive(true);
         config.setStopActionsAfterFatal(true);
+        config.setStopReceivingAfterFatal(false);
         config.setStopActionsAfterIOException(true);
-        config.setStopReceivingAfterFatal(true);
-        config.setEarlyStop(true);
         boolean containsEc = false;
         for (CipherSuite suite : config.getDefaultClientSupportedCipherSuites()) {
             KeyExchangeAlgorithm keyExchangeAlgorithm = AlgorithmResolver.getKeyExchangeAlgorithm(suite);

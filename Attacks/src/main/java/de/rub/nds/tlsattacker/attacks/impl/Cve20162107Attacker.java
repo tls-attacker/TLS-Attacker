@@ -86,7 +86,6 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
         // have the modified padding
         List<Record> records = new LinkedList<>();
         Record record = createRecordWithBadPadding();
-        tlsConfig.setCreateIndividualRecords(true);
         records.add(new Record(tlsConfig));
         if (sendAction.getSendMessages().size() > 2) {
             records.add(new Record(tlsConfig));

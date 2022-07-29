@@ -70,10 +70,8 @@ public class EarlyCCSCommandConfig extends AttackConfig {
         config.setAddRenegotiationInfoExtension(true);
         config.setAddServerNameIndicationExtension(true);
         config.setAddSignatureAndHashAlgorithmsExtension(true);
-        config.setQuickReceive(true);
         config.setStopActionsAfterFatal(true);
-        config.setStopReceivingAfterFatal(true);
-        config.setEarlyStop(true);
+        config.setStopReceivingAfterFatal(false);
         boolean containsEc = false;
         for (CipherSuite suite : config.getDefaultClientSupportedCipherSuites()) {
             KeyExchangeAlgorithm keyExchangeAlgorithm = AlgorithmResolver.getKeyExchangeAlgorithm(suite);

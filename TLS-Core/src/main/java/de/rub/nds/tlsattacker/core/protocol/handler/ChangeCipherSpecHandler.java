@@ -33,6 +33,11 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
 
     @Override
     public void adjustContext(ChangeCipherSpecMessage message) {
+        if (tlsContext.getConfig().isIgnoreRetransmittedCcsInDtls()
+            && tlsContext.getDtlsReceivedChangeCipherSpecEpochs().size() > 0) {
+            // ignore retransmitted CCS
+            return;
+        }
         if (tlsContext.getTalkingConnectionEndType() != tlsContext.getChooser().getConnectionEndType()
             && tlsContext.getChooser().getSelectedProtocolVersion() != ProtocolVersion.TLS13) {
             LOGGER.debug("Adjusting decrypting cipher for " + tlsContext.getTalkingConnectionEndType());

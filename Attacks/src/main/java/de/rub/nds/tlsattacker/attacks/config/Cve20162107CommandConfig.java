@@ -96,10 +96,8 @@ public class Cve20162107CommandConfig extends AttackConfig {
         config.setAddRenegotiationInfoExtension(true);
         config.setAddServerNameIndicationExtension(true);
         config.setAddSignatureAndHashAlgorithmsExtension(true);
-        config.setQuickReceive(true);
         config.setStopActionsAfterFatal(true);
-        config.setStopReceivingAfterFatal(true);
-        config.setEarlyStop(true);
+        config.setStopReceivingAfterFatal(false);
         if (cipherSuiteDelegate.getCipherSuites() == null) {
             List<CipherSuite> cipherSuites = new LinkedList<>();
             cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);

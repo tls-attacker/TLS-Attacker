@@ -27,6 +27,7 @@ import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.hints.RecordLayerHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
+import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.DtlsHandshakeMessageFragmentParser;
@@ -63,6 +64,10 @@ public class DtlsFragmentLayer extends ProtocolLayer<RecordLayerHint, DtlsHandsh
         LayerConfiguration<DtlsHandshakeMessageFragment> configuration = getLayerConfiguration();
         if (configuration != null && configuration.getContainerList() != null) {
             for (DtlsHandshakeMessageFragment fragment : configuration.getContainerList()) {
+                if (!context.getConfig().isUseAllProvidedDtlsFragments()
+                    && fragment.getFragmentContentConfig().length == 0) {
+                    continue;
+                }
                 DtlsHandshakeMessageFragmentPreparator preparator = fragment.getPreparator(context);
                 preparator.prepare();
                 DtlsHandshakeMessageFragmentSerializer serializer = fragment.getSerializer(context);
@@ -79,7 +84,19 @@ public class DtlsFragmentLayer extends ProtocolLayer<RecordLayerHint, DtlsHandsh
     public LayerProcessingResult<DtlsHandshakeMessageFragment> sendData(RecordLayerHint hint, byte[] data)
         throws IOException {
         if (hint.getType() == ProtocolMessageType.HANDSHAKE) {
-            List<DtlsHandshakeMessageFragment> fragments = getEnoughFragments(context, data.length);
+            List<DtlsHandshakeMessageFragment> fragments = new LinkedList<>();
+            if (getLayerConfiguration().getContainerList() == null) {
+                fragments = getEnoughFragments(context, data.length);
+            } else {
+                // use the provided fragments
+                if (getLayerConfiguration().getContainerList().size() > 0) {
+                    fragments.add(getLayerConfiguration().getContainerList().remove(0));
+                    if (context.getConfig().isCreateFragmentsDynamically()) {
+                        fragments.addAll(
+                            getEnoughFragments(context, data.length - fragments.get(0).getMaxFragmentLengthConfig()));
+                    }
+                }
+            }
             fragments = wrapInFragments(
                 HandshakeMessageType.getMessageType(data[0]), Arrays.copyOfRange(data,
                     HandshakeByteLength.MESSAGE_TYPE + HandshakeByteLength.MESSAGE_LENGTH_FIELD, data.length),
@@ -155,6 +172,9 @@ public class DtlsFragmentLayer extends ProtocolLayer<RecordLayerHint, DtlsHandsh
                         receiveMoreDataForHint(desiredHint);
                     }
                 } else {
+                    if (tempHint.getType() == ProtocolMessageType.CHANGE_CIPHER_SPEC) {
+                        context.addDtlsReceivedChangeCipherSpecEpochs(tempHint.getEpoch());
+                    }
                     currentInputStream = new HintedLayerInputStream(tempHint, this);
                     currentInputStream.extendStream(dataStream.readChunk(dataStream.available()));
                 }
@@ -194,6 +214,10 @@ public class DtlsFragmentLayer extends ProtocolLayer<RecordLayerHint, DtlsHandsh
             fragment.setOffsetConfig(currentOffset);
             fragment.setHandshakeMessageLengthConfig(handshakeBytes.length);
             currentOffset += fragmentBytes.length;
+        }
+        if (currentOffset != handshakeBytes.length) {
+            LOGGER.warn("Unsent bytes for message " + type
+                + ". Not enough dtls fragments specified and disabled dynamic fragment creation in config.");
         }
         return fragments;
     }

@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.config.ConfigIO;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.workflow.action.ReceivingAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import java.io.File;
@@ -32,17 +33,25 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
     @Override
     public void executeWorkflow() throws WorkflowExecutionException {
 
-        try {
-            initAllLayer();
-        } catch (IOException ex) {
-            throw new WorkflowExecutionException(ex);
+        if (config.isWorkflowExecutorShouldOpen()) {
+            try {
+                initAllLayer();
+            } catch (IOException ex) {
+                throw new WorkflowExecutionException(ex);
+            }
         }
+
         state.getWorkflowTrace().reset();
         state.setStartTimestamp(System.currentTimeMillis());
         List<TlsAction> tlsActions = state.getWorkflowTrace().getTlsActions();
         for (TlsAction action : tlsActions) {
             if ((config.isStopActionsAfterFatal() && isReceivedFatalAlert())) {
                 LOGGER.debug("Skipping all Actions, received FatalAlert, StopActionsAfterFatal active");
+                break;
+            }
+            if ((config.getStopReceivingAfterFatal() && isReceivedFatalAlert()
+                && tlsActions instanceof ReceivingAction)) {
+                LOGGER.debug("Skipping all ReceiveActions, received FatalAlert, StopActionsAfterFatal active");
                 break;
             }
             if ((config.getStopActionsAfterWarning() && isReceivedWarningAlert())) {

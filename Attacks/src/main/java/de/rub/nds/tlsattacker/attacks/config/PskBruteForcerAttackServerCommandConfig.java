@@ -95,8 +95,6 @@ public class PskBruteForcerAttackServerCommandConfig extends AttackConfig {
             }
             config.setDefaultClientSupportedCipherSuites(cipherSuiteList);
         }
-        config.setQuickReceive(true);
-        config.setEarlyStop(true);
         config.setStopActionsAfterFatal(true);
         return config;
     }

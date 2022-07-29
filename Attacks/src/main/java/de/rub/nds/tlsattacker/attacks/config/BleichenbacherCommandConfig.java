@@ -123,8 +123,6 @@ public class BleichenbacherCommandConfig extends AttackConfig {
             }
             config.setDefaultClientSupportedCipherSuites(cipherSuites);
         }
-        config.setQuickReceive(true);
-        config.setEarlyStop(true);
         config.setStopActionsAfterIOException(true);
         config.setStopActionsAfterFatal(false);
         config.setStopReceivingAfterFatal(false);

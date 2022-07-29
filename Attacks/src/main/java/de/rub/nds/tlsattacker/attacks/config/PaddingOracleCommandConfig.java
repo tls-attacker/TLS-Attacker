@@ -140,14 +140,12 @@ public class PaddingOracleCommandConfig extends AttackConfig {
                 throw new ConfigurationException("This attack only works with CBC Cipher suites");
             }
         }
-        config.setQuickReceive(true);
         config.setAddRenegotiationInfoExtension(true);
         config.setAddServerNameIndicationExtension(true);
         config.setAddSignatureAndHashAlgorithmsExtension(true);
         config.setStopActionsAfterIOException(true);
         config.setStopActionsAfterFatal(false);
         config.setStopReceivingAfterFatal(false);
-        config.setEarlyStop(true);
         config.setWorkflowExecutorShouldClose(false);
         boolean containsEc = false;
         for (CipherSuite suite : config.getDefaultClientSupportedCipherSuites()) {
