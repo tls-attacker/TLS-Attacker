@@ -147,7 +147,7 @@ public class RecordAEADCipher extends RecordCipher {
                     record.getComputations().getPadding().getValue()));
             // For TLS1.3 we need the length beforehand to compute the
             // authenticatedMetaData
-            record.setLength(record.getComputations().getPlainRecordBytes().getValue().length + AEAD_TAG_LENGTH);
+            record.setLength(record.getComputations().getPlainRecordBytes().getValue().length + aeadTagLength);
             record.setContentType(ProtocolMessageType.APPLICATION_DATA.getValue());
         } else {
             record.getComputations().setPlainRecordBytes(record.getCleanProtocolMessageBytes().getValue());
