@@ -2544,12 +2544,12 @@ public class TlsContext {
         getRecordLayer().setReadEpoch(epoch);
     }
 
-    public void getWriteSequenceNumber(int epoch) {
-        getRecordLayer().getEncryptor().getRecordCipher(epoch).getState().getWriteSequenceNumber();
+    public long getWriteSequenceNumber(int epoch) {
+        return getRecordLayer().getEncryptor().getRecordCipher(epoch).getState().getWriteSequenceNumber();
     }
 
-    public void getReadSequenceNumber(int epoch) {
-        getRecordLayer().getDecryptor().getRecordCipher(epoch).getState().getReadSequenceNumber();
+    public long getReadSequenceNumber(int epoch) {
+        return getRecordLayer().getDecryptor().getRecordCipher(epoch).getState().getReadSequenceNumber();
     }
 
     public void setWriteSequenceNumber(int epoch, long sqn) {

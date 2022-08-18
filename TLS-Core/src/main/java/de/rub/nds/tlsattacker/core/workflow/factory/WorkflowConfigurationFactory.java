@@ -24,6 +24,8 @@ import de.rub.nds.tlsattacker.core.constants.StarttlsType;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.https.HttpsRequestMessage;
 import de.rub.nds.tlsattacker.core.https.HttpsResponseMessage;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
@@ -46,8 +48,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.PWDClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.PWDServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.PskClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.PskDhClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.PskDheServerKeyExchangeMessage;
@@ -195,10 +195,10 @@ public class WorkflowConfigurationFactory {
     }
 
     /**
-     * Creates an Empty - or almost Empty WorkflowTrace, depending on the StarTLS flag in the config
+     * Create an empty - or almost empty workflow trace, depending on the StartTLS flag in the config.
      *
      * @param  connection
-     * @return
+     * @return            An entry workflow trace
      */
     public WorkflowTrace createTlsEntryWorkflowTrace(AliasedConnection connection) {
         WorkflowTrace workflowTrace = new WorkflowTrace();
@@ -206,186 +206,32 @@ public class WorkflowConfigurationFactory {
         if (config.getStarttlsType() != StarttlsType.NONE) {
             addStartTlsActions(connection, config.getStarttlsType(), workflowTrace);
         }
-        return workflowTrace;
-    }
-
-    /**
-     * Create a hello workflow for the default connection end defined in config.
-     *
-     * @return A HelloWorkflow
-     */
-    private WorkflowTrace createHelloWorkflow() {
-        return createHelloWorkflow(getConnection());
-    }
-
-    /**
-     * Create a hello workflow for the given connection end.
-     *
-     * @param  connection
-     * @return
-     */
-    public WorkflowTrace createHelloWorkflow(AliasedConnection connection) {
-        WorkflowTrace workflowTrace = createTlsEntryWorkflowTrace(connection);
-        if (config.isAddEncryptedServerNameIndicationExtension()
-            && connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
-            workflowTrace.addTlsAction(new EsniKeyDnsRequestAction());
-        }
-
-        workflowTrace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.CLIENT,
-            new ClientHelloMessage(config)));
-
-        if (config.getHighestProtocolVersion().isDTLS() && config.isDtlsCookieExchange()) {
-            workflowTrace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.SERVER,
-                new HelloVerifyRequestMessage(config)));
-            workflowTrace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.CLIENT,
-                new ClientHelloMessage(config)));
-        }
-
-        List<ProtocolMessage> messages = new LinkedList<>();
-        messages.add(new ServerHelloMessage(config));
-        if (config.getHighestProtocolVersion().isTLS13()) {
-            if (Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)
-                || connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
-                ChangeCipherSpecMessage ccs = new ChangeCipherSpecMessage();
-                ccs.setRequired(false);
-                messages.add(ccs);
-            }
-            messages.add(new EncryptedExtensionsMessage(config));
-            if (config.isClientAuthentication()) {
-                messages.add(new CertificateRequestMessage(config));
-            }
-            CipherSuite selectedCipherSuite = config.getDefaultSelectedCipherSuite();
-            if (!selectedCipherSuite.isPWD()) {
-                if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
-                    messages.add(new CertificateMessage());
-                } else {
-                    messages.add(new CertificateMessage(config));
-                }
-
-                messages.add(new CertificateVerifyMessage(config));
-            }
-
-            messages.add(new FinishedMessage(config));
-        } else {
-            CipherSuite selectedCipherSuite = config.getDefaultSelectedCipherSuite();
-            if (shouldServerSendACertificate(selectedCipherSuite)) {
-                if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
-                    messages.add(new CertificateMessage());
-                } else {
-                    messages.add(new CertificateMessage(config));
-                }
-            }
-            if (selectedCipherSuite.isEphemeral() || selectedCipherSuite.isSrp()) {
-                addServerKeyExchangeMessage(messages);
-            }
-
-            if (config.isClientAuthentication()) {
-                messages.add(new CertificateRequestMessage(config));
-            }
-            messages.add(new ServerHelloDoneMessage(config));
-        }
-        workflowTrace
-            .addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.SERVER, messages));
-
-        return workflowTrace;
-    }
-
-    public boolean shouldServerSendACertificate(CipherSuite suite) {
-        return !suite.isSrpSha() && !suite.isPskOrDhPsk() && !suite.isAnon() && !suite.isPWD();
-
-    }
-
-    /**
-     * Create a handshake workflow for the default connection end defined in config.
-     *
-     * @return A HandshakeWorkflow
-     */
-    private WorkflowTrace createHandshakeWorkflow() {
-        return createHandshakeWorkflow(getConnection());
-    }
-
-    /**
-     * Create a handshake workflow for the given connection end.
-     */
-    private WorkflowTrace createHandshakeWorkflow(AliasedConnection connection) {
-
-        WorkflowTrace workflowTrace = this.createHelloWorkflow(connection);
-        List<ProtocolMessage> messages = new LinkedList<>();
-        if (config.getHighestProtocolVersion().isTLS13()) {
-            if (Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)
-                || connection.getLocalConnectionEndType() == ConnectionEndType.SERVER) {
-                ChangeCipherSpecMessage ccs = new ChangeCipherSpecMessage();
-                ccs.setRequired(false);
-                messages.add(ccs);
-            }
-            if (config.isClientAuthentication()) {
-                messages.add(new CertificateMessage(config));
-                messages.add(new CertificateVerifyMessage(config));
-            }
-        } else {
-            if (config.isClientAuthentication()) {
-                messages.add(new CertificateMessage(config));
-                addClientKeyExchangeMessage(messages);
-                messages.add(new CertificateVerifyMessage(config));
-            } else {
-                addClientKeyExchangeMessage(messages);
-            }
-            messages.add(new ChangeCipherSpecMessage(config));
-        }
-        messages.add(new FinishedMessage(config));
-        workflowTrace
-            .addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.CLIENT, messages));
-        if (!config.getHighestProtocolVersion().isTLS13()) {
-            workflowTrace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.SERVER,
-                new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
-        }
 
         return workflowTrace;
     }
 
     /**
-     * Creates an extended TLS workflow including an application data and heartbeat messages
+     * Create a short hello workflow for the default connection end defined in config.
      *
-     * @return A FullWorkflow with ApplicationMessages
-     */
-    private WorkflowTrace createFullWorkflow() {
-        AliasedConnection connection = getConnection();
-
-        WorkflowTrace workflowTrace = this.createHandshakeWorkflow(connection);
-        if (config.isServerSendsApplicationData()) {
-            workflowTrace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.SERVER,
-                new ApplicationMessage(config)));
-        }
-
-        if (config.isAddHeartbeatExtension()) {
-            workflowTrace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.CLIENT,
-                new ApplicationMessage(config), new HeartbeatMessage(config)));
-            workflowTrace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.SERVER,
-                new HeartbeatMessage(config)));
-        } else {
-            workflowTrace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.CLIENT,
-                new ApplicationMessage(config)));
-        }
-        return workflowTrace;
-    }
-
-    /**
-     * Creates a short hello workflow for the default connection end defined in config.
-     *
-     * @return A ShortHelloWorkflow
+     * @return A short hello workflow
      */
     private WorkflowTrace createShortHelloWorkflow() {
         return createShortHelloWorkflow(getConnection());
     }
 
     /**
-     * Creates a short hello workflow for the given connection end.
+     * Create a short hello workflow for the given connection end.
      *
      * @param  connection
-     * @return
+     * @return            A short hello workflow
      */
     public WorkflowTrace createShortHelloWorkflow(AliasedConnection connection) {
         WorkflowTrace trace = createTlsEntryWorkflowTrace(connection);
+
+        if (config.isAddEncryptedServerNameIndicationExtension()
+            && connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
+            trace.addTlsAction(new EsniKeyDnsRequestAction());
+        }
 
         trace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.CLIENT,
             new ClientHelloMessage(config)));
@@ -399,6 +245,146 @@ public class WorkflowConfigurationFactory {
 
         trace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.SERVER,
             new ServerHelloMessage(config)));
+
+        return trace;
+    }
+
+    /**
+     * Create a hello workflow for the default connection end defined in config.
+     *
+     * @return A hello workflow
+     */
+    private WorkflowTrace createHelloWorkflow() {
+        return createHelloWorkflow(getConnection());
+    }
+
+    /**
+     * Create a hello workflow for the given connection end.
+     *
+     * @param  connection
+     * @return            A hello workflow
+     */
+    public WorkflowTrace createHelloWorkflow(AliasedConnection connection) {
+        WorkflowTrace trace = createShortHelloWorkflow(connection);
+        trace.removeTlsAction(trace.getTlsActions().size() - 1);
+
+        CipherSuite selectedCipherSuite = config.getDefaultSelectedCipherSuite();
+        List<ProtocolMessage> messages = new LinkedList<>();
+        messages.add(new ServerHelloMessage(config));
+        if (config.getHighestProtocolVersion().isTLS13()) {
+            if (Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)
+                || connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
+                ChangeCipherSpecMessage ccs = new ChangeCipherSpecMessage();
+                ccs.setRequired(false);
+                messages.add(ccs);
+            }
+            messages.add(new EncryptedExtensionsMessage(config));
+            if (Objects.equals(config.isClientAuthentication(), Boolean.TRUE)) {
+                messages.add(new CertificateRequestMessage(config));
+            }
+            if (!selectedCipherSuite.isPWD()) {
+                messages.add(new CertificateMessage(config));
+                messages.add(new CertificateVerifyMessage(config));
+            }
+            messages.add(new FinishedMessage(config));
+        } else {
+            if (selectedCipherSuite.requiresServerCertificateMessage()) {
+                messages.add(new CertificateMessage(config));
+            }
+            addServerKeyExchangeMessage(messages);
+            if (Objects.equals(config.isClientAuthentication(), Boolean.TRUE)) {
+                messages.add(new CertificateRequestMessage(config));
+            }
+            messages.add(new ServerHelloDoneMessage(config));
+        }
+        trace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.SERVER, messages));
+
+        return trace;
+    }
+
+    /**
+     * Create a handshake workflow for the default connection end defined in config.
+     *
+     * @return A handshake workflow
+     */
+    private WorkflowTrace createHandshakeWorkflow() {
+        return createHandshakeWorkflow(getConnection());
+    }
+
+    /**
+     * Create a handshake workflow for the given connection end.
+     *
+     * @param  connection
+     * @return            A handshake workflow
+     */
+    public WorkflowTrace createHandshakeWorkflow(AliasedConnection connection) {
+        WorkflowTrace trace = createHelloWorkflow(connection);
+
+        List<ProtocolMessage> messages = new LinkedList<>();
+        if (config.getHighestProtocolVersion().isTLS13()) {
+            if (Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)
+                || connection.getLocalConnectionEndType() == ConnectionEndType.SERVER) {
+                ChangeCipherSpecMessage ccs = new ChangeCipherSpecMessage();
+                ccs.setRequired(false);
+                messages.add(ccs);
+            }
+            if (Objects.equals(config.isClientAuthentication(), Boolean.TRUE)) {
+                messages.add(new CertificateMessage(config));
+                messages.add(new CertificateVerifyMessage(config));
+            }
+        } else {
+            if (Objects.equals(config.isClientAuthentication(), Boolean.TRUE)) {
+                messages.add(new CertificateMessage(config));
+                addClientKeyExchangeMessage(messages);
+                messages.add(new CertificateVerifyMessage(config));
+            } else {
+                addClientKeyExchangeMessage(messages);
+            }
+            messages.add(new ChangeCipherSpecMessage(config));
+        }
+        messages.add(new FinishedMessage(config));
+        trace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.CLIENT, messages));
+
+        if (!config.getHighestProtocolVersion().isTLS13()) {
+            trace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.SERVER,
+                new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
+        }
+
+        return trace;
+    }
+
+    /**
+     * Create a full workflow for the default connection end defined in config.
+     *
+     * @return A full workflow
+     */
+    private WorkflowTrace createFullWorkflow() {
+        return createFullWorkflow(getConnection());
+    }
+
+    /**
+     * Create an extended TLS workflow including an application data and heartbeat messages.
+     *
+     * @param  connection
+     * @return            A full workflow with application messages
+     */
+    public WorkflowTrace createFullWorkflow(AliasedConnection connection) {
+        WorkflowTrace trace = createHandshakeWorkflow(connection);
+
+        if (config.isServerSendsApplicationData()) {
+            trace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.SERVER,
+                new ApplicationMessage(config)));
+        }
+
+        if (config.isAddHeartbeatExtension()) {
+            trace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.CLIENT,
+                new ApplicationMessage(config), new HeartbeatMessage(config)));
+            trace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.SERVER,
+                new HeartbeatMessage(config)));
+        } else {
+            trace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.CLIENT,
+                new ApplicationMessage(config)));
+        }
 
         return trace;
     }
@@ -469,28 +455,40 @@ public class WorkflowConfigurationFactory {
         return trace;
     }
 
+    /**
+     * Create a resumption workflow for the default connection end defined in config. This can be used as the follow up
+     * to a normal handshake to test session resumption capabilities.
+     *
+     * @return A resumption workflow
+     */
     private WorkflowTrace createResumptionWorkflow() {
-        AliasedConnection connection = getConnection();
-        WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
-        WorkflowTrace trace = factory.createTlsEntryWorkflowTrace(config.getDefaultClientConnection());
-        MessageAction action = MessageActionFactory.createAction(config, connection, ConnectionEndType.CLIENT,
-            new ClientHelloMessage(config));
-        trace.addTlsAction(action);
-        if (config.getHighestProtocolVersion().isDTLS() && config.isDtlsCookieExchange()) {
-            action = MessageActionFactory.createAction(config, connection, ConnectionEndType.SERVER,
-                new HelloVerifyRequestMessage(config));
-            trace.addTlsAction(action);
-            action = MessageActionFactory.createAction(config, connection, ConnectionEndType.CLIENT,
-                new ClientHelloMessage(config));
-            trace.addTlsAction(action);
+        return createResumptionWorkflow(getConnection());
+    }
 
+    /**
+     * Create a resumption workflow for the given connection end. This can be used as the follow up to a normal
+     * handshake to test session resumption capabilities.
+     *
+     * @param  connection
+     * @return            A resumption workflow
+     */
+    public WorkflowTrace createResumptionWorkflow(AliasedConnection connection) {
+        WorkflowTrace trace = createTlsEntryWorkflowTrace(connection);
+
+        trace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.CLIENT,
+            new ClientHelloMessage(config)));
+
+        if (config.getHighestProtocolVersion().isDTLS() && config.isDtlsCookieExchange()) {
+            trace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.SERVER,
+                new HelloVerifyRequestMessage(config)));
+            trace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.CLIENT,
+                new ClientHelloMessage(config)));
         }
-        action = MessageActionFactory.createAction(config, connection, ConnectionEndType.SERVER,
-            new ServerHelloMessage(config), new ChangeCipherSpecMessage(config), new FinishedMessage(config));
-        trace.addTlsAction(action);
-        action = MessageActionFactory.createAction(config, connection, ConnectionEndType.CLIENT,
-            new ChangeCipherSpecMessage(config), new FinishedMessage(config));
-        trace.addTlsAction(action);
+
+        trace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.SERVER,
+            new ServerHelloMessage(config), new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
+        trace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.CLIENT,
+            new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
 
         return trace;
     }
@@ -990,75 +988,121 @@ public class WorkflowConfigurationFactory {
         }
     }
 
-    private WorkflowTrace createDynamicHandshakeWorkflow() {
-        AliasedConnection connection = getConnection();
-        WorkflowTrace trace = new WorkflowTrace();
-        if (config.getStarttlsType() != StarttlsType.NONE) {
-            addStartTlsActions(connection, config.getStarttlsType(), trace);
-        }
-        if (config.getHighestProtocolVersion().isTLS13()) {
-            // For now, there are no dynamic actions for TLS 1.3
-            WorkflowTrace regularHandshake = createHandshakeWorkflow();
-            trace.addTlsActions(regularHandshake.getTlsActions());
-        } else {
-            trace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.CLIENT,
-                new ClientHelloMessage(config)));
-            if (config.getHighestProtocolVersion().isDTLS() && config.isDtlsCookieExchange()) {
-                trace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.SERVER,
-                    new HelloVerifyRequestMessage(config)));
-                trace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.CLIENT,
-                    new ClientHelloMessage(config)));
-            }
-            if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
-                trace.addTlsAction(new ReceiveTillAction(new ServerHelloDoneMessage()));
-                trace.addTlsAction(new SendDynamicClientKeyExchangeAction());
-                trace.addTlsAction(new SendAction(new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
-                trace.addTlsAction(new ReceiveAction(new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
-            } else {
-                List<ProtocolMessage> messages = new LinkedList<>();
-                messages.add(new ServerHelloMessage(config));
-
-                trace.addTlsAction(
-                    MessageActionFactory.createAction(config, connection, ConnectionEndType.SERVER, messages));
-                trace.addTlsAction(new SendDynamicServerCertificateAction());
-                trace.addTlsAction(new SendDynamicServerKeyExchangeAction());
-                messages = new LinkedList<>();
-
-                if (config.isClientAuthentication()) {
-                    CertificateRequestMessage certRequest = new CertificateRequestMessage(config);
-                    messages.add(certRequest);
-                }
-                messages.add(new ServerHelloDoneMessage(config));
-                trace.addTlsAction(
-                    MessageActionFactory.createAction(config, connection, ConnectionEndType.SERVER, messages));
-                trace.addTlsAction(new ReceiveTillAction(new FinishedMessage()));
-                trace.addTlsAction(new SendAction(new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
-            }
-        }
-
-        return trace;
+    /**
+     * Create a dynamic hello workflow for the default connection end defined in config.
+     *
+     * @return A dynamic hello workflow
+     */
+    private WorkflowTrace createDynamicHelloWorkflow() {
+        return createDynamicHelloWorkflow(getConnection());
     }
 
-    private WorkflowTrace createDynamicHelloWorkflow() {
-        AliasedConnection connection = getConnection();
-        WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
-        WorkflowTrace trace = factory.createTlsEntryWorkflowTrace(config.getDefaultClientConnection());
+    /**
+     * Create a dynamic hello workflow for the given connection end.
+     *
+     * @param  connection
+     * @return            A dynamic hello workflow
+     */
+    public WorkflowTrace createDynamicHelloWorkflow(AliasedConnection connection) {
+        WorkflowTrace trace = createTlsEntryWorkflowTrace(connection);
+
         trace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.CLIENT,
             new ClientHelloMessage(config)));
+
+        if (config.getHighestProtocolVersion().isDTLS() && config.isDtlsCookieExchange()) {
+            trace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.SERVER,
+                new HelloVerifyRequestMessage(config)));
+            trace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.CLIENT,
+                new ClientHelloMessage(config)));
+        }
+
         if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
             if (config.getHighestProtocolVersion().isTLS13()) {
                 trace.addTlsAction(new ReceiveTillAction(new FinishedMessage()));
-            } else if (config.getHighestProtocolVersion().isDTLS() && config.isDtlsCookieExchange()) {
-                trace.addTlsAction(new ReceiveAction(new HelloVerifyRequestMessage(config)));
-                trace.addTlsAction(new SendAction(new ClientHelloMessage(config)));
-                trace.addTlsAction(new ReceiveTillAction(new ServerHelloDoneMessage()));
             } else {
                 trace.addTlsAction(new ReceiveTillAction(new ServerHelloDoneMessage()));
             }
+            return trace;
         } else {
-            LOGGER.error("Not implemented for ConnectionEndType.SERVER");
+            if (config.getHighestProtocolVersion().isTLS13()) {
+                List<ProtocolMessage> tls13Messages = new LinkedList<>();
+                tls13Messages.add(new ServerHelloMessage(config));
+                if (Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)) {
+                    ChangeCipherSpecMessage ccs = new ChangeCipherSpecMessage();
+                    ccs.setRequired(false);
+                    tls13Messages.add(ccs);
+                }
+                tls13Messages.add(new EncryptedExtensionsMessage(config));
+                if (Objects.equals(config.isClientAuthentication(), Boolean.TRUE)) {
+                    tls13Messages.add(new CertificateRequestMessage(config));
+                }
+                tls13Messages.add(new CertificateMessage(config));
+                tls13Messages.add(new CertificateVerifyMessage(config));
+                tls13Messages.add(new FinishedMessage(config));
+                trace.addTlsAction(
+                    MessageActionFactory.createAction(config, connection, ConnectionEndType.SERVER, tls13Messages));
+            } else {
+                trace.addTlsAction(new SendAction(new ServerHelloMessage(config)));
+                trace.addTlsAction(new SendDynamicServerCertificateAction());
+                trace.addTlsAction(new SendDynamicServerKeyExchangeAction());
+                if (Objects.equals(config.isClientAuthentication(), Boolean.TRUE)) {
+                    trace.addTlsAction(new SendAction(new CertificateRequestMessage(config)));
+                }
+                trace.addTlsAction(new SendAction(new ServerHelloDoneMessage(config)));
+            }
+            return trace;
         }
-        return trace;
+    }
+
+    /**
+     * Create a dynamic handshake workflow for the default connection end defined in config.
+     *
+     * @return A dynamic handshake workflow
+     */
+    private WorkflowTrace createDynamicHandshakeWorkflow() {
+        return createDynamicHandshakeWorkflow(getConnection());
+    }
+
+    /**
+     * Create a dynamic handshake workflow for the given connection end.
+     *
+     * @param  connection
+     * @return            A dynamic handshake workflow
+     */
+    public WorkflowTrace createDynamicHandshakeWorkflow(AliasedConnection connection) {
+        WorkflowTrace trace = createDynamicHelloWorkflow(connection);
+        if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
+            if (config.getHighestProtocolVersion().isTLS13()) {
+                List<ProtocolMessage> tls13Messages = new LinkedList<>();
+                ChangeCipherSpecMessage ccs = new ChangeCipherSpecMessage();
+                ccs.setRequired(false);
+                tls13Messages.add(ccs);
+                if (Objects.equals(config.isClientAuthentication(), Boolean.TRUE)) {
+                    tls13Messages.add(new CertificateMessage(config));
+                    tls13Messages.add(new CertificateVerifyMessage(config));
+                }
+                tls13Messages.add(new FinishedMessage(config));
+                trace.addTlsAction(
+                    MessageActionFactory.createAction(config, connection, ConnectionEndType.CLIENT, tls13Messages));
+            } else {
+                if (Objects.equals(config.isClientAuthentication(), Boolean.TRUE)) {
+                    trace.addTlsAction(new SendAction(new CertificateMessage(config)));
+                    trace.addTlsAction(new SendDynamicClientKeyExchangeAction());
+                    trace.addTlsAction(new SendAction(new CertificateVerifyMessage(config)));
+                } else {
+                    trace.addTlsAction(new SendDynamicClientKeyExchangeAction());
+                }
+                trace.addTlsAction(new SendAction(new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
+                trace.addTlsAction(new ReceiveTillAction(new FinishedMessage(config)));
+            }
+            return trace;
+        } else {
+            trace.addTlsAction(new ReceiveTillAction(new FinishedMessage(config)));
+            if (!config.getHighestProtocolVersion().isTLS13()) {
+                trace.addTlsAction(new SendAction(new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
+            }
+            return trace;
+        }
     }
 
     private WorkflowTrace createDynamicClientRenegotiationWithoutResumption() {

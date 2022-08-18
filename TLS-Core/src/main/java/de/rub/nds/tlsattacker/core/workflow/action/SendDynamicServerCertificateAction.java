@@ -15,15 +15,14 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
-import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -54,31 +53,35 @@ public class SendDynamicServerCertificateAction extends MessageAction implements
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
         }
-        messages = new LinkedList<>();
-        WorkflowConfigurationFactory workflowFactory = new WorkflowConfigurationFactory(state.getConfig());
-        CipherSuite selectedCipherSuite = tlsContext.getSelectedCipherSuite();
-        if (workflowFactory.shouldServerSendACertificate(selectedCipherSuite)) {
-            messages.add(new CertificateMessage());
-        }
-        String sending = getReadableString(messages);
-        if (hasDefaultAlias()) {
-            LOGGER.info("Sending Dynamic Certificate: " + sending);
-        } else {
-            LOGGER.info("Sending Dynamic Certificate (" + connectionAlias + "): " + sending);
-        }
 
-        try {
-            MessageActionResult result = sendMessageHelper.sendMessages(messages, fragments, records, tlsContext);
-            messages = new ArrayList<>(result.getMessageList());
-            records = new ArrayList<>(result.getRecordList());
-            if (result.getMessageFragmentList() != null) {
-                fragments = new ArrayList<>(result.getMessageFragmentList());
+        messages = new LinkedList<>();
+        CipherSuite selectedCipherSuite = tlsContext.getChooser().getSelectedCipherSuite();
+        if (selectedCipherSuite.requiresServerCertificateMessage()) {
+            messages.add(new CertificateMessage(tlsContext.getConfig()));
+
+            String sending = getReadableString(messages);
+            if (hasDefaultAlias()) {
+                LOGGER.info("Sending Dynamic Certificate: " + sending);
+            } else {
+                LOGGER.info("Sending Dynamic Certificate (" + connectionAlias + "): " + sending);
             }
+
+            try {
+                MessageActionResult result = sendMessageHelper.sendMessages(messages, fragments, records, tlsContext);
+                messages = new ArrayList<>(result.getMessageList());
+                records = new ArrayList<>(result.getRecordList());
+                if (result.getMessageFragmentList() != null) {
+                    fragments = new ArrayList<>(result.getMessageFragmentList());
+                }
+                setExecuted(true);
+            } catch (IOException e) {
+                tlsContext.setReceivedTransportHandlerException(true);
+                LOGGER.debug(e);
+                setExecuted(getActionOptions().contains(ActionOption.MAY_FAIL));
+            }
+        } else {
+            LOGGER.info("Sending Dynamic Certificate: none");
             setExecuted(true);
-        } catch (IOException e) {
-            tlsContext.setReceivedTransportHandlerException(true);
-            LOGGER.debug(e);
-            setExecuted(getActionOptions().contains(ActionOption.MAY_FAIL));
         }
     }
 
@@ -122,16 +125,6 @@ public class SendDynamicServerCertificateAction extends MessageAction implements
     @Override
     public boolean executedAsPlanned() {
         return isExecuted();
-    }
-
-    @Override
-    public void setRecords(List<AbstractRecord> records) {
-        this.records = records;
-    }
-
-    @Override
-    public void setFragments(List<DtlsHandshakeMessageFragment> fragments) {
-        this.fragments = fragments;
     }
 
     @Override
@@ -190,6 +183,7 @@ public class SendDynamicServerCertificateAction extends MessageAction implements
         return records;
     }
 
+    @Override
     public List<DtlsHandshakeMessageFragment> getSendFragments() {
         return fragments;
     }
@@ -205,7 +199,7 @@ public class SendDynamicServerCertificateAction extends MessageAction implements
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final SendDynamicClientKeyExchangeAction other = (SendDynamicClientKeyExchangeAction) obj;
+        final SendDynamicServerCertificateAction other = (SendDynamicServerCertificateAction) obj;
         if (!Objects.equals(this.messages, other.messages)) {
             return false;
         }

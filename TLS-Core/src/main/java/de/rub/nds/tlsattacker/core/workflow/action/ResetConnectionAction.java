@@ -43,7 +43,11 @@ public class ResetConnectionAction extends ConnectionBoundAction {
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
-        TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
+        TlsContext tlsContext = state.getTlsContext(connectionAlias);
+
+        if (isExecuted()) {
+            throw new WorkflowExecutionException("Action already executed!");
+        }
 
         LOGGER.info("Terminating Connection");
         try {
@@ -51,6 +55,7 @@ public class ResetConnectionAction extends ConnectionBoundAction {
         } catch (IOException ex) {
             LOGGER.debug("Could not close client connection", ex);
         }
+
         if (resetContext) {
             LOGGER.info("Resetting Cipher");
             tlsContext.getRecordLayer().resetDecryptor();
@@ -83,6 +88,7 @@ public class ResetConnectionAction extends ConnectionBoundAction {
             tlsContext.setDtlsFragmentManager(new FragmentManager(state.getConfig()));
             tlsContext.getDtlsReceivedHandshakeMessageSequences().clear();
         }
+
         LOGGER.info("Reopening Connection");
         try {
             tlsContext.getTransportHandler().initialize();
@@ -91,6 +97,7 @@ public class ResetConnectionAction extends ConnectionBoundAction {
             LOGGER.debug("Could not initialize TransportHandler", ex);
             asPlanned = false;
         }
+
         setExecuted(true);
     }
 

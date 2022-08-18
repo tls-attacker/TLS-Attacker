@@ -33,14 +33,11 @@ public enum CipherAlgorithm {
     AES_256_CCM(32, 4, 8, 16, "AES/CCM/NoPadding"),
     CHACHA20_POLY1305(32, 12, 0, 0, "ChaCha20-Poly1305"),
     UNOFFICIAL_CHACHA20_POLY1305(32, 12, 0, 0, "ChaCha20-Poly1305"),
-    DES40_CBC(8, 8, 0, 8, "DES/CBC/NoPadding"), // currently
-    // uses
-    // des
-    // 56bit
-    ARIA_128_CBC(16, 16, 0, 16, "ARIA/CBC/NoPadding"), // not tested yet
-    ARIA_256_CBC(32, 16, 0, 16, "ARIA/CBC/NoPadding"), // not tested yet
-    ARIA_128_GCM(16, 16, 8, 16, "ARIA/GCM/NoPadding"), // not tested yet
-    ARIA_256_GCM(32, 16, 8, 16, "ARIA/GCM/NoPadding"), // not tested yet
+    DES40_CBC(8, 8, 0, 8, "DES/CBC/NoPadding"), // currently uses des 56bit
+    ARIA_128_CBC(16, 16, 0, 16, "ARIA/CBC/NoPadding"),
+    ARIA_256_CBC(32, 16, 0, 16, "ARIA/CBC/NoPadding"),
+    ARIA_128_GCM(16, 16, 8, 16, "ARIA/GCM/NoPadding"),
+    ARIA_256_GCM(32, 16, 8, 16, "ARIA/GCM/NoPadding"),
     GOST_28147_CNT(32, 8, 0, 8, "GOST28147/ECB/NoPadding"),
     FORTEZZA_CBC(0, 0, 0, 0), // TODO
     AES_128_CTR(16, 16, 0, 0, "AES/CTR/NoPadding"),

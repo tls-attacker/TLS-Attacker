@@ -21,6 +21,7 @@ import de.rub.nds.tlsattacker.core.workflow.filter.Filter;
 import de.rub.nds.tlsattacker.core.workflow.filter.FilterFactory;
 import de.rub.nds.tlsattacker.core.workflow.filter.FilterType;
 import de.rub.nds.tlsattacker.transport.tcp.ServerTcpTransportHandler;
+import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -63,6 +64,8 @@ public class State {
     private long endTimestamp;
     private Throwable executionException;
 
+    private LinkedList<Process> spawnedSubprocesses;
+
     public State() {
         this(Config.createConfig());
     }
@@ -74,6 +77,7 @@ public class State {
     public State(Config config) {
         this.config = config;
         runningMode = config.getDefaultRunningMode();
+        spawnedSubprocesses = new LinkedList<>();
         this.workflowTrace = loadWorkflowTrace();
         initState();
     }
@@ -81,6 +85,7 @@ public class State {
     public State(Config config, WorkflowTrace workflowTrace) {
         this.config = config;
         runningMode = config.getDefaultRunningMode();
+        spawnedSubprocesses = new LinkedList<>();
         this.workflowTrace = workflowTrace;
         initState();
     }
@@ -89,6 +94,7 @@ public class State {
         List<TlsContext> previousContexts = contextContainer.getAllContexts();
         contextContainer.clear();
         workflowTrace.reset();
+        killAllSpawnedSubprocesses();
         initState();
         retainServerTcpTransportHandlers(previousContexts);
     }
@@ -308,5 +314,28 @@ public class State {
 
     public void setExecutionException(Throwable executionException) {
         this.executionException = executionException;
+    }
+
+    /**
+     * Records a process that was spawned during this state execution.
+     *
+     * @param process
+     *                The process to record
+     */
+    public void addSpawnedSubprocess(Process process) {
+        if (process != null) {
+            spawnedSubprocesses.add(process);
+        }
+    }
+
+    /**
+     * Kills all recorded processes that have been spawned during this state execution.
+     */
+    public void killAllSpawnedSubprocesses() {
+        for (Process process : spawnedSubprocesses) {
+            process.destroy();
+        }
+
+        spawnedSubprocesses.clear();
     }
 }

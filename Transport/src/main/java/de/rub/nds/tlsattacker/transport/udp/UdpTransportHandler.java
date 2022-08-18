@@ -57,11 +57,6 @@ public abstract class UdpTransportHandler extends TransportHandler {
         return socket.isClosed();
     }
 
-    @Override
-    public void closeClientConnection() throws IOException {
-        closeConnection();
-    }
-
     public int getSrcPort() {
         if (socket == null) {
             // mimic socket.getLocalPort() behavior as if socket was closed
