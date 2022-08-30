@@ -151,6 +151,8 @@ public class WorkflowConfigurationFactory {
                 return createFullResumptionWorkflow();
             case SIMPLE_MITM_PROXY:
                 return createSimpleMitmProxyWorkflow();
+            case SIMPLE_FORWARDING_MITM_PROXY:
+                return createSimpleForwardingMitmProxyWorkflow();
             case TLS13_PSK:
                 return createTls13PskWorkflow(false);
             case FULL_TLS13_PSK:
@@ -611,6 +613,51 @@ public class WorkflowConfigurationFactory {
         p.setStringEncoding("US-ASCII");
         trace.addTlsAction(p);
 
+        return trace;
+    }
+
+    private WorkflowTrace createSimpleForwardingMitmProxyWorkflow() {
+
+        if (mode != RunningModeType.MITM) {
+            throw new ConfigurationException(
+                "This workflow trace can only be created when running" + " in MITM mode. Actual mode: " + mode);
+        }
+
+        AliasedConnection inboundConnection = config.getDefaultServerConnection();
+        AliasedConnection outboundConnection = config.getDefaultClientConnection();
+
+        if (outboundConnection == null || inboundConnection == null) {
+            throw new ConfigurationException("Could not find both necessary connection ends");
+        }
+
+        // client -> mitm
+        String clientToMitmAlias = inboundConnection.getAlias();
+        // mitm -> server
+        String mitmToServerAlias = outboundConnection.getAlias();
+
+        LOGGER.debug("Building mitm trace for: " + inboundConnection + ", " + outboundConnection);
+
+        WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
+        WorkflowTrace trace = factory.createTlsEntryWorkflowTrace(config.getDefaultClientConnection());
+
+        trace.addConnection(inboundConnection);
+        trace.addConnection(outboundConnection);
+
+        // <!-- CH-->
+        ForwardRecordsAction forwardRecordsAction = new ForwardRecordsAction(clientToMitmAlias, mitmToServerAlias);
+        trace.addTlsAction(forwardRecordsAction);
+
+        // <!-- SH, Cert, SHD-->
+        ForwardRecordsAction forwardRecordsAction2 = new ForwardRecordsAction(mitmToServerAlias, clientToMitmAlias);
+        trace.addTlsAction(forwardRecordsAction2);
+
+        // <!-- CKE, CCS, Fin -->
+        ForwardRecordsAction forwardRecordsAction3 = new ForwardRecordsAction(clientToMitmAlias, mitmToServerAlias);
+        trace.addTlsAction(forwardRecordsAction3);
+
+        // <!-- CCS, Fin -->
+        ForwardRecordsAction forwardRecordsAction4 = new ForwardRecordsAction(mitmToServerAlias, clientToMitmAlias);
+        trace.addTlsAction(forwardRecordsAction4);
         return trace;
     }
 
