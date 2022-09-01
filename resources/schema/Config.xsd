@@ -2026,6 +2026,7 @@
       <xs:enumeration value="DYNAMIC_HTTPS"/>
       <xs:enumeration value="SSL2_HELLO"/>
       <xs:enumeration value="SIMPLE_MITM_PROXY"/>
+      <xs:enumeration value="SIMPLE_FORWARDING_MITM_PROXY"/>
       <xs:enumeration value="TLS13_PSK"/>
       <xs:enumeration value="FULL_TLS13_PSK"/>
       <xs:enumeration value="ZERO_RTT"/>

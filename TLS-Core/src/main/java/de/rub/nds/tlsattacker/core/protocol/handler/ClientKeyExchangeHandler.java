@@ -18,12 +18,9 @@ import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
 import de.rub.nds.tlsattacker.core.crypto.SSLUtils;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.state.session.IdSession;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import java.security.NoSuchAlgorithmException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -94,18 +91,9 @@ public abstract class ClientKeyExchangeHandler<MessageT extends ClientKeyExchang
     protected void spawnNewSession() {
         if (tlsContext.getChooser().getServerSessionId().length != 0) {
             IdSession session =
-                new IdSession(tlsContext.getChooser().getServerSessionId(), tlsContext.getChooser().getMasterSecret());
+                new IdSession(tlsContext.getChooser().getMasterSecret(), tlsContext.getChooser().getServerSessionId());
             tlsContext.addNewSession(session);
             LOGGER.debug("Spawning new resumable Session");
-        }
-    }
-
-    private KeySet getKeySet(TlsContext context) {
-        try {
-            LOGGER.debug("Generating new KeySet");
-            return KeySetGenerator.generateKeySet(context);
-        } catch (NoSuchAlgorithmException | CryptoException ex) {
-            throw new UnsupportedOperationException("The specified Algorithm is not supported", ex);
         }
     }
 }
