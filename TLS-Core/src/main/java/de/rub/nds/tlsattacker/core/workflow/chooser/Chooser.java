@@ -36,6 +36,7 @@ import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.math.BigInteger;
+import java.util.Collection;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -73,6 +74,8 @@ public abstract class Chooser {
 
     public abstract List<SignatureAndHashAlgorithm> getClientSupportedSignatureAndHashAlgorithms();
 
+    public abstract List<SignatureAndHashAlgorithm> getClientSupportedCertificateSignAlgorithms();
+
     public abstract ProtocolVersion getLastRecordVersion();
 
     public abstract byte[] getDistinguishedNames();
@@ -92,6 +95,8 @@ public abstract class Chooser {
     public abstract List<CipherSuite> getClientSupportedCipherSuites();
 
     public abstract List<SignatureAndHashAlgorithm> getServerSupportedSignatureAndHashAlgorithms();
+
+    public abstract List<SignatureAndHashAlgorithm> getServerSupportedCertificateSignAlgorithms();
 
     public abstract ProtocolVersion getSelectedProtocolVersion();
 

@@ -19,7 +19,8 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.SignatureAndHashAlg
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SignatureAndHashAlgorithmsExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SignatureAndHashAlgorithmsExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.util.Arrays;
+
+import java.io.ByteArrayInputStream;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -36,23 +37,11 @@ public class SignatureAndHashAlgorithmsExtensionHandler
 
     @Override
     public void adjustTLSExtensionContext(SignatureAndHashAlgorithmsExtensionMessage message) {
-        List<SignatureAndHashAlgorithm> algoList = new LinkedList<>();
-        byte[] signatureAndHashBytes = message.getSignatureAndHashAlgorithms().getValue();
-        if (signatureAndHashBytes.length % HandshakeByteLength.SIGNATURE_HASH_ALGORITHM != 0) {
-            throw new AdjustmentException(
-                "Cannot adjust ClientSupportedSignature and Hash algorithms to a reasonable Value");
-        }
-        for (int i = 0; i < signatureAndHashBytes.length; i += HandshakeByteLength.SIGNATURE_HASH_ALGORITHM) {
-            byte[] algoBytes =
-                Arrays.copyOfRange(signatureAndHashBytes, i, i + HandshakeByteLength.SIGNATURE_HASH_ALGORITHM);
-            SignatureAndHashAlgorithm algo = SignatureAndHashAlgorithm.getSignatureAndHashAlgorithm(algoBytes);
-            if (algo == null || algo.getSignatureAlgorithm() == null || algo.getHashAlgorithm() == null) {
-                LOGGER.warn("Unknown SignatureAndHashAlgorithm:" + ArrayConverter.bytesToHexString(algoBytes));
-            } else {
-                algoList.add(algo);
-            }
-        }
+        byte[] algoBytes = message.getSignatureAndHashAlgorithms().getValue();
+        List<SignatureAndHashAlgorithm> algoList = SignatureAndHashAlgorithm.getSignatureAndHashAlgorithms(algoBytes);
         context.setClientSupportedSignatureAndHashAlgorithms(algoList);
+        LOGGER.debug("Client supported signatureAndHashAlgorithms: " + algoList);
+        adjustSelectedSignatureAndHashAlgorithm();
     }
 
     @Override
@@ -72,4 +61,14 @@ public class SignatureAndHashAlgorithmsExtensionHandler
         return new SignatureAndHashAlgorithmsExtensionSerializer(message);
     }
 
+    private void adjustSelectedSignatureAndHashAlgorithm() {
+        for (SignatureAndHashAlgorithm algo : context.getChooser().getClientSupportedSignatureAndHashAlgorithms()) {
+            if (context.getChooser().getServerSupportedSignatureAndHashAlgorithms().contains(algo)) {
+                context.setSelectedSignatureAndHashAlgorithm(algo);
+                LOGGER.debug("Adjusting selected signature and hash algorithm to: " + algo.name());
+                return;
+            }
+        }
+        LOGGER.warn("Client and Server have no signature and hash algorithm in common");
+    }
 }

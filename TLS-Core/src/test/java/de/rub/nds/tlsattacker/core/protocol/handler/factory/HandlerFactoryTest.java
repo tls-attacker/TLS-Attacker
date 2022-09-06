@@ -124,6 +124,8 @@ public class HandlerFactoryTest {
         assertTrue(HandlerFactory.getExtensionHandler(context,
             ExtensionType.SIGNATURE_AND_HASH_ALGORITHMS) instanceof SignatureAndHashAlgorithmsExtensionHandler);
         assertTrue(HandlerFactory.getExtensionHandler(context,
+            ExtensionType.SIGNATURE_ALGORITHMS_CERT) instanceof SignatureAlgorithmsCertExtensionHandler);
+        assertTrue(HandlerFactory.getExtensionHandler(context,
             ExtensionType.SIGNED_CERTIFICATE_TIMESTAMP) instanceof SignedCertificateTimestampExtensionHandler);
         assertTrue(HandlerFactory.getExtensionHandler(context, ExtensionType.SRP) instanceof SrpExtensionHandler);
         assertTrue(HandlerFactory.getExtensionHandler(context,

@@ -12,21 +12,7 @@ package de.rub.nds.tlsattacker.mitm.config;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.tlsattacker.core.config.TLSDelegateConfig;
-import de.rub.nds.tlsattacker.core.config.delegate.CertificateDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.CipherSuiteDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.ExecutorTypeDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.FilterDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.HeartbeatDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.ListDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.MaxFragmentLengthDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.MitmDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.MitmWorkflowTypeDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.NamedGroupsDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.SignatureAndHashAlgorithmDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.TimeoutDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.TransportHandlerDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -44,6 +30,8 @@ public class MitmCommandConfig extends TLSDelegateConfig {
     private MitmDelegate mitmDelegate;
     @ParametersDelegate
     private SignatureAndHashAlgorithmDelegate signatureAndHashAlgorithmDelegate;
+    @ParametersDelegate
+    private SignatureAlgorithmCertDelegate signatureAlgorithmCertDelegate;
     @ParametersDelegate
     private MitmWorkflowTypeDelegate mitmWorkflowTypeDelegate;
     @ParametersDelegate
@@ -77,6 +65,7 @@ public class MitmCommandConfig extends TLSDelegateConfig {
         this.protocolVersionDelegate = new ProtocolVersionDelegate();
         this.mitmDelegate = new MitmDelegate();
         this.signatureAndHashAlgorithmDelegate = new SignatureAndHashAlgorithmDelegate();
+        this.signatureAlgorithmCertDelegate = new SignatureAlgorithmCertDelegate();
         this.transportHandlerDelegate = new TransportHandlerDelegate();
         this.mitmWorkflowTypeDelegate = new MitmWorkflowTypeDelegate();
         this.maxFragmentLengthDelegate = new MaxFragmentLengthDelegate();
@@ -92,6 +81,7 @@ public class MitmCommandConfig extends TLSDelegateConfig {
         addDelegate(protocolVersionDelegate);
         addDelegate(mitmDelegate);
         addDelegate(signatureAndHashAlgorithmDelegate);
+        addDelegate(signatureAlgorithmCertDelegate);
         addDelegate(heartbeatDelegate);
         addDelegate(transportHandlerDelegate);
         addDelegate(certificateDelegate);

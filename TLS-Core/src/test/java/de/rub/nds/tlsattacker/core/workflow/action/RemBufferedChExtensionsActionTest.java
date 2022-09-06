@@ -74,6 +74,7 @@ public class RemBufferedChExtensionsActionTest {
         config.setAddExtendedMasterSecretExtension(true);
         config.setAddRenegotiationInfoExtension(false);
         config.setAddSignatureAndHashAlgorithmsExtension(false);
+        config.setAddSignatureAlgorithmsCertExtension(false);
         config.setDefaultClientNamedGroups(NamedGroup.SECP192R1, NamedGroup.SECP256R1, NamedGroup.SECP384R1,
             NamedGroup.SECP521R1);
         config.setDefaultServerNamedGroups(NamedGroup.SECP192R1, NamedGroup.SECP256R1, NamedGroup.SECP384R1,

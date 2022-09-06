@@ -270,6 +270,10 @@ public class TlsContext {
 
     private List<SignatureAndHashAlgorithm> clientSupportedSignatureAndHashAlgorithms;
 
+    private List<SignatureAndHashAlgorithm> clientSupportedCertificateSignAlgorithms;
+
+    private List<SignatureAndHashAlgorithm> serverSupportedCertificateSignAlgorithms;
+
     private HeartbeatMode heartbeatMode;
 
     private SignatureAndHashAlgorithm selectedSigHashAlgorithm;
@@ -1183,6 +1187,21 @@ public class TlsContext {
             new ArrayList(Arrays.asList(clientSupportedSignatureAndHashAlgorithms));
     }
 
+    public List<SignatureAndHashAlgorithm> getClientSupportedCertificateSignAlgorithms() {
+        return clientSupportedCertificateSignAlgorithms;
+    }
+
+    public void setClientSupportedCertificateSignAlgorithms(
+        List<SignatureAndHashAlgorithm> clientSupportedCertificateSignAlgorithms) {
+        this.clientSupportedCertificateSignAlgorithms = clientSupportedCertificateSignAlgorithms;
+    }
+
+    public void setClientSupportedCertificateSignAlgorithms(
+        SignatureAndHashAlgorithm... clientSupportedCertificateSignAlgorithms) {
+        this.clientSupportedCertificateSignAlgorithms =
+            new ArrayList(Arrays.asList(clientSupportedCertificateSignAlgorithms));
+    }
+
     public List<SNIEntry> getClientSNIEntryList() {
         return clientSNIEntryList;
     }
@@ -1328,6 +1347,21 @@ public class TlsContext {
         SignatureAndHashAlgorithm... serverSupportedSignatureAndHashAlgorithms) {
         this.serverSupportedSignatureAndHashAlgorithms =
             new ArrayList(Arrays.asList(serverSupportedSignatureAndHashAlgorithms));
+    }
+
+    public List<SignatureAndHashAlgorithm> getServerSupportedCertificateSignAlgorithms() {
+        return serverSupportedCertificateSignAlgorithms;
+    }
+
+    public void setServerSupportedSignatureAlgorithmsCert(
+        List<SignatureAndHashAlgorithm> serverSupportedCertificateSignAlgorithms) {
+        this.serverSupportedCertificateSignAlgorithms = serverSupportedCertificateSignAlgorithms;
+    }
+
+    public void setServerSupportedSignatureAlgorithmsCert(
+        SignatureAndHashAlgorithm... serverSupportedCertificateSignAlgorithms) {
+        this.serverSupportedCertificateSignAlgorithms =
+            new ArrayList(Arrays.asList(serverSupportedCertificateSignAlgorithms));
     }
 
     public ProtocolVersion getSelectedProtocolVersion() {

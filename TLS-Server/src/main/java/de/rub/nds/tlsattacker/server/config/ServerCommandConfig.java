@@ -13,21 +13,7 @@ import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.TLSDelegateConfig;
-import de.rub.nds.tlsattacker.core.config.delegate.CertificateDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.CipherSuiteDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.ExecutorTypeDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.FilterDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.HeartbeatDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.ListDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.MaxFragmentLengthDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.NamedGroupsDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.ServerDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.SignatureAndHashAlgorithmDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.StarttlsDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.TransportHandlerDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.WorkflowTypeDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.*;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 
 public class ServerCommandConfig extends TLSDelegateConfig {
@@ -44,6 +30,8 @@ public class ServerCommandConfig extends TLSDelegateConfig {
     private ServerDelegate serverDelegate;
     @ParametersDelegate
     private SignatureAndHashAlgorithmDelegate signatureAndHashAlgorithmDelegate;
+    @ParametersDelegate
+    private SignatureAlgorithmCertDelegate signatureAlgorithmCertDelegate;
     @ParametersDelegate
     private WorkflowTypeDelegate workflowTypeDelegate;
     @ParametersDelegate
@@ -77,6 +65,7 @@ public class ServerCommandConfig extends TLSDelegateConfig {
         this.protocolVersionDelegate = new ProtocolVersionDelegate();
         this.serverDelegate = new ServerDelegate();
         this.signatureAndHashAlgorithmDelegate = new SignatureAndHashAlgorithmDelegate();
+        this.signatureAlgorithmCertDelegate = new SignatureAlgorithmCertDelegate();
         this.transportHandlerDelegate = new TransportHandlerDelegate();
         this.workflowTypeDelegate = new WorkflowTypeDelegate();
         this.maxFragmentLengthDelegate = new MaxFragmentLengthDelegate();
@@ -91,6 +80,7 @@ public class ServerCommandConfig extends TLSDelegateConfig {
         addDelegate(protocolVersionDelegate);
         addDelegate(serverDelegate);
         addDelegate(signatureAndHashAlgorithmDelegate);
+        addDelegate(signatureAlgorithmCertDelegate);
         addDelegate(heartbeatDelegate);
         addDelegate(workflowTypeDelegate);
         addDelegate(transportHandlerDelegate);

@@ -147,6 +147,8 @@
 
   <xs:element name="SessionTicketTLSExtension" type="sessionTicketTLSExtensionMessage"/>
 
+  <xs:element name="SignatureAlgorithmsCertExtension" type="signatureAlgorithmsCertExtensionMessage"/>
+
   <xs:element name="SignatureAndHashAlgorithmsExtension" type="signatureAndHashAlgorithmsExtensionMessage"/>
 
   <xs:element name="SignedCertificateTimestampExtension" type="signedCertificateTimestampExtensionMessage"/>
@@ -1064,6 +1066,7 @@
                   <xs:element ref="ServerNameIndicationExtension"/>
                   <xs:element ref="SessionTicketTLSExtension"/>
                   <xs:element ref="SignatureAndHashAlgorithmsExtension"/>
+                  <xs:element ref="SignatureAlgorithmsCertExtension"/>
                   <xs:element ref="SignedCertificateTimestampExtension"/>
                   <xs:element ref="ExtendedRandomExtension"/>
                   <xs:element ref="TokenBindingExtension"/>
@@ -1433,6 +1436,17 @@
   </xs:complexType>
 
   <xs:complexType name="signatureAndHashAlgorithmsExtensionMessage">
+    <xs:complexContent>
+      <xs:extension base="extensionMessage">
+        <xs:sequence>
+          <xs:element name="signatureAndHashAlgorithms" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="signatureAndHashAlgorithmsLength" type="modifiableInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="signatureAlgorithmsCertExtensionMessage">
     <xs:complexContent>
       <xs:extension base="extensionMessage">
         <xs:sequence>
@@ -3111,6 +3125,8 @@
       <xs:element name="clientSupportedCompressions" type="compressionMethod" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="serverSupportedSignatureAndHashAlgorithms" type="signatureAndHashAlgorithm" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="clientSupportedSignatureAndHashAlgorithms" type="signatureAndHashAlgorithm" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="clientSupportedCertificateSignAlgorithms" type="signatureAndHashAlgorithm" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="serverSupportedCertificateSignAlgorithms" type="signatureAndHashAlgorithm" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="heartbeatMode" type="heartbeatMode" minOccurs="0"/>
       <xs:element name="selectedSigHashAlgorithm" type="signatureAndHashAlgorithm" minOccurs="0"/>
       <xs:element name="cachedInfoExtensionClientState" type="xs:boolean"/>
@@ -3288,6 +3304,13 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
+      <xs:element name="defaultClientSupportedCertificateSignAlgorithms" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="defaultClientSupportedCertificateSignAlgorithms" type="signatureAndHashAlgorithm" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
       <xs:element name="defaultClientSupportedCipherSuites" minOccurs="0">
         <xs:complexType>
           <xs:sequence>
@@ -3350,7 +3373,7 @@
       </xs:element>
       <xs:element name="defaultServerKeyShareEntry" type="keyShareStoreEntry" minOccurs="0"/>
       <xs:element name="sniType" type="nameType" minOccurs="0"/>
-      <xs:element name="prefferedCertRsaKeySize" type="xs:int" minOccurs="0"/>
+      <xs:element name="preferredCertRsaKeySize" type="xs:int" minOccurs="0"/>
       <xs:element name="prefferedCertDssKeySize" type="xs:int" minOccurs="0"/>
       <xs:element name="defaultKeyUpdateRequestMode" type="keyUpdateRequest" minOccurs="0"/>
       <xs:element name="encryptChangeCipherSpecTls13" type="xs:boolean" minOccurs="0"/>
@@ -3456,6 +3479,7 @@
       <xs:element name="addRecordSizeLimitExtension" type="xs:boolean" minOccurs="0"/>
       <xs:element name="addServerNameIndicationExtension" type="xs:boolean" minOccurs="0"/>
       <xs:element name="addSignatureAndHashAlgorithmsExtension" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="addSignatureAlgorithmsCertExtension" type="xs:boolean" minOccurs="0"/>
       <xs:element name="addSupportedVersionsExtension" type="xs:boolean" minOccurs="0"/>
       <xs:element name="addKeyShareExtension" type="xs:boolean" minOccurs="0"/>
       <xs:element name="addEarlyDataExtension" type="xs:boolean" minOccurs="0"/>
@@ -3607,7 +3631,15 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
+      <xs:element name="defaultServerSupportedCertificateSignAlgorithms" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="defaultServerSupportedCertificateSignAlgorithms" type="signatureAndHashAlgorithm" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
       <xs:element name="defaultSelectedSignatureAndHashAlgorithm" type="signatureAndHashAlgorithm" minOccurs="0"/>
+      <xs:element name="defaultSelectedSignatureAlgorithmCert" type="signatureAndHashAlgorithm" minOccurs="0"/>
       <xs:element name="defaultLastRecordProtocolVersion" type="protocolVersion" minOccurs="0"/>
       <xs:element name="defaultSelectedProtocolVersion" type="protocolVersion" minOccurs="0"/>
       <xs:element name="defaultHighestClientProtocolVersion" type="protocolVersion" minOccurs="0"/>
@@ -3780,6 +3812,7 @@
     <xs:sequence>
       <xs:element name="certPublicKeyType" type="certificateKeyType" minOccurs="0"/>
       <xs:element name="certSignatureType" type="certificateKeyType" minOccurs="0"/>
+      <xs:element name="signatureAndHashAlgorithm" type="signatureAndHashAlgorithm" minOccurs="0"/>
       <xs:element name="gostCurve" type="gostCurve" minOccurs="0"/>
       <xs:element name="certificateBytes" type="xs:string" minOccurs="0"/>
       <xs:choice minOccurs="0">
@@ -5575,6 +5608,66 @@
     </xs:restriction>
   </xs:simpleType>
 
+  <xs:simpleType name="signatureAndHashAlgorithm">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="ANONYMOUS_NONE"/>
+      <xs:enumeration value="ANONYMOUS_MD5"/>
+      <xs:enumeration value="ANONYMOUS_SHA1"/>
+      <xs:enumeration value="ANONYMOUS_SHA224"/>
+      <xs:enumeration value="ANONYMOUS_SHA256"/>
+      <xs:enumeration value="ANONYMOUS_SHA384"/>
+      <xs:enumeration value="ANONYMOUS_SHA512"/>
+      <xs:enumeration value="RSA_NONE"/>
+      <xs:enumeration value="RSA_MD5"/>
+      <xs:enumeration value="RSA_SHA1"/>
+      <xs:enumeration value="RSA_SHA224"/>
+      <xs:enumeration value="RSA_SHA256"/>
+      <xs:enumeration value="RSA_SHA384"/>
+      <xs:enumeration value="RSA_SHA512"/>
+      <xs:enumeration value="DSA_NONE"/>
+      <xs:enumeration value="DSA_MD5"/>
+      <xs:enumeration value="DSA_SHA1"/>
+      <xs:enumeration value="DSA_SHA224"/>
+      <xs:enumeration value="DSA_SHA256"/>
+      <xs:enumeration value="DSA_SHA384"/>
+      <xs:enumeration value="DSA_SHA512"/>
+      <xs:enumeration value="ECDSA_NONE"/>
+      <xs:enumeration value="ECDSA_MD5"/>
+      <xs:enumeration value="ECDSA_SHA1"/>
+      <xs:enumeration value="ECDSA_SHA224"/>
+      <xs:enumeration value="ECDSA_SHA256"/>
+      <xs:enumeration value="ECDSA_SHA384"/>
+      <xs:enumeration value="ECDSA_SHA512"/>
+      <xs:enumeration value="ED25519"/>
+      <xs:enumeration value="ED448"/>
+      <xs:enumeration value="RSA_PSS_RSAE_SHA256"/>
+      <xs:enumeration value="RSA_PSS_RSAE_SHA384"/>
+      <xs:enumeration value="RSA_PSS_RSAE_SHA512"/>
+      <xs:enumeration value="RSA_PSS_PSS_SHA256"/>
+      <xs:enumeration value="RSA_PSS_PSS_SHA384"/>
+      <xs:enumeration value="RSA_PSS_PSS_SHA512"/>
+      <xs:enumeration value="GOSTR34102001_GOSTR3411"/>
+      <xs:enumeration value="GOSTR34102012_256_GOSTR34112012_256"/>
+      <xs:enumeration value="GOSTR34102012_512_GOSTR34112012_512"/>
+      <xs:enumeration value="GREASE_00"/>
+      <xs:enumeration value="GREASE_01"/>
+      <xs:enumeration value="GREASE_02"/>
+      <xs:enumeration value="GREASE_03"/>
+      <xs:enumeration value="GREASE_04"/>
+      <xs:enumeration value="GREASE_05"/>
+      <xs:enumeration value="GREASE_06"/>
+      <xs:enumeration value="GREASE_07"/>
+      <xs:enumeration value="GREASE_08"/>
+      <xs:enumeration value="GREASE_09"/>
+      <xs:enumeration value="GREASE_10"/>
+      <xs:enumeration value="GREASE_11"/>
+      <xs:enumeration value="GREASE_12"/>
+      <xs:enumeration value="GREASE_13"/>
+      <xs:enumeration value="GREASE_14"/>
+      <xs:enumeration value="GREASE_15"/>
+    </xs:restriction>
+  </xs:simpleType>
+
   <xs:simpleType name="gostCurve">
     <xs:restriction base="xs:string">
       <xs:enumeration value="GostR3410_2001_CryptoPro_A"/>
@@ -5661,66 +5754,6 @@
       <xs:enumeration value="CLIENT"/>
       <xs:enumeration value="SERVER"/>
       <xs:enumeration value="MITM"/>
-    </xs:restriction>
-  </xs:simpleType>
-
-  <xs:simpleType name="signatureAndHashAlgorithm">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="ANONYMOUS_NONE"/>
-      <xs:enumeration value="ANONYMOUS_MD5"/>
-      <xs:enumeration value="ANONYMOUS_SHA1"/>
-      <xs:enumeration value="ANONYMOUS_SHA224"/>
-      <xs:enumeration value="ANONYMOUS_SHA256"/>
-      <xs:enumeration value="ANONYMOUS_SHA384"/>
-      <xs:enumeration value="ANONYMOUS_SHA512"/>
-      <xs:enumeration value="RSA_NONE"/>
-      <xs:enumeration value="RSA_MD5"/>
-      <xs:enumeration value="RSA_SHA1"/>
-      <xs:enumeration value="RSA_SHA224"/>
-      <xs:enumeration value="RSA_SHA256"/>
-      <xs:enumeration value="RSA_SHA384"/>
-      <xs:enumeration value="RSA_SHA512"/>
-      <xs:enumeration value="DSA_NONE"/>
-      <xs:enumeration value="DSA_MD5"/>
-      <xs:enumeration value="DSA_SHA1"/>
-      <xs:enumeration value="DSA_SHA224"/>
-      <xs:enumeration value="DSA_SHA256"/>
-      <xs:enumeration value="DSA_SHA384"/>
-      <xs:enumeration value="DSA_SHA512"/>
-      <xs:enumeration value="ECDSA_NONE"/>
-      <xs:enumeration value="ECDSA_MD5"/>
-      <xs:enumeration value="ECDSA_SHA1"/>
-      <xs:enumeration value="ECDSA_SHA224"/>
-      <xs:enumeration value="ECDSA_SHA256"/>
-      <xs:enumeration value="ECDSA_SHA384"/>
-      <xs:enumeration value="ECDSA_SHA512"/>
-      <xs:enumeration value="ED25519"/>
-      <xs:enumeration value="ED448"/>
-      <xs:enumeration value="RSA_PSS_RSAE_SHA256"/>
-      <xs:enumeration value="RSA_PSS_RSAE_SHA384"/>
-      <xs:enumeration value="RSA_PSS_RSAE_SHA512"/>
-      <xs:enumeration value="RSA_PSS_PSS_SHA256"/>
-      <xs:enumeration value="RSA_PSS_PSS_SHA384"/>
-      <xs:enumeration value="RSA_PSS_PSS_SHA512"/>
-      <xs:enumeration value="GOSTR34102001_GOSTR3411"/>
-      <xs:enumeration value="GOSTR34102012_256_GOSTR34112012_256"/>
-      <xs:enumeration value="GOSTR34102012_512_GOSTR34112012_512"/>
-      <xs:enumeration value="GREASE_00"/>
-      <xs:enumeration value="GREASE_01"/>
-      <xs:enumeration value="GREASE_02"/>
-      <xs:enumeration value="GREASE_03"/>
-      <xs:enumeration value="GREASE_04"/>
-      <xs:enumeration value="GREASE_05"/>
-      <xs:enumeration value="GREASE_06"/>
-      <xs:enumeration value="GREASE_07"/>
-      <xs:enumeration value="GREASE_08"/>
-      <xs:enumeration value="GREASE_09"/>
-      <xs:enumeration value="GREASE_10"/>
-      <xs:enumeration value="GREASE_11"/>
-      <xs:enumeration value="GREASE_12"/>
-      <xs:enumeration value="GREASE_13"/>
-      <xs:enumeration value="GREASE_14"/>
-      <xs:enumeration value="GREASE_15"/>
     </xs:restriction>
   </xs:simpleType>
 

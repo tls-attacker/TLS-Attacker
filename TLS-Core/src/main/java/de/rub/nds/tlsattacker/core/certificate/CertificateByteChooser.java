@@ -9,12 +9,7 @@
 
 package de.rub.nds.tlsattacker.core.certificate;
 
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
-import de.rub.nds.tlsattacker.core.constants.CertificateKeyType;
-import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.IOException;
 import java.security.PrivateKey;
@@ -22,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.tls.Certificate;
@@ -33,6 +29,10 @@ public class CertificateByteChooser {
     private static final String RESOURCE_PATH = "certs/";
 
     private static CertificateByteChooser instance;
+
+    private static final int WORST_CERTIFICATE_RATING = Integer.MAX_VALUE;
+    private static final int BEST_POSSIBLE_CERTIFICATE_RATING = 1;
+    private static final int INVALID_CERTIFICATE_RATING = 0;
 
     public static synchronized CertificateByteChooser getInstance() {
         if (instance == null) {
@@ -174,109 +174,71 @@ public class CertificateByteChooser {
             return chooser.getConfig().getDefaultExplicitCertificateKeyPair();
         }
 
-        NamedGroup namedGroup = chooser.getSelectedNamedGroup();
+        Integer bestRating = WORST_CERTIFICATE_RATING;
+        CertificateKeyPair bestKeyPair = null;
+        for (CertificateKeyPair keyPair : keyPairList) {
+            Integer newRating = rateKeyPair(keyPair, chooser);
+            if (newRating != INVALID_CERTIFICATE_RATING) {
+                if (newRating == BEST_POSSIBLE_CERTIFICATE_RATING) {
+                    bestKeyPair = keyPair;
+                    break;
+                }
+                if (newRating < bestRating) {
+                    bestRating = newRating;
+                    bestKeyPair = keyPair;
+                }
+            }
+        }
+        if (bestKeyPair != null) {
+            LOGGER.debug("Choosing Certificate: {}(Group:{}),{}", bestKeyPair.getCertPublicKeyType(),
+                bestKeyPair.getPublicKeyGroup(), bestKeyPair.getSignatureAndHashAlgorithm());
+            return bestKeyPair;
+        }
 
-        CertificateKeyType preferredSignatureCertSignatureType =
-            chooser.getConfig().getPreferredCertificateSignatureType();
+        LOGGER.warn("No appropriate Certificate Found. Using Default ({}; {}).",
+            chooser.getConfig().getDefaultExplicitCertificateKeyPair().getCertPublicKeyType(),
+            chooser.getConfig().getDefaultExplicitCertificateKeyPair().getSignatureAndHashAlgorithm());
+        return chooser.getConfig().getDefaultExplicitCertificateKeyPair();
+    }
 
-        CertificateKeyType neededPublicKeyType;
-        KeyExchangeAlgorithm keyExchangeAlgorithm =
-            AlgorithmResolver.getKeyExchangeAlgorithm(chooser.getSelectedCipherSuite());
-        if (chooser.getSelectedProtocolVersion().isTLS13() || keyExchangeAlgorithm == null) {
-            neededPublicKeyType = preferredSignatureCertSignatureType;
+    /**
+     * Determines a rating based on the position of offered algorithms in the respective ClientHello lists. A lower
+     * rating is better.
+     */
+    private Integer rateKeyPair(CertificateKeyPair keyPair, Chooser chooser) {
+        List<SignatureAndHashAlgorithm> clientSupportedAlgorithms =
+            chooser.getClientSupportedCertificateSignAlgorithms();
+        if (chooser.getContext().getClientSupportedCertificateSignAlgorithms() != null) {
+            clientSupportedAlgorithms = chooser.getClientSupportedSignatureAndHashAlgorithms();
+        }
+
+        if (keyPair.isCompatibleWithCipherSuite(chooser)) {
+            Integer sigAlgRating = 1;
+            if (!clientSupportedAlgorithms.isEmpty()) {
+                sigAlgRating = clientSupportedAlgorithms.indexOf(keyPair.getSignatureAndHashAlgorithm()) + 1;
+            }
+            Integer groupRating;
+            if (keyPair.getPublicKeyGroup() != null) {
+                groupRating = chooser.getClientSupportedNamedGroups().indexOf(keyPair.getPublicKeyGroup()) + 1;
+            } else {
+                if (isBadKeySize(keyPair, chooser)) {
+                    groupRating = chooser.getClientSupportedNamedGroups().size() + 1;
+                } else {
+                    groupRating = 1;
+                }
+            }
+            return sigAlgRating * groupRating;
         } else {
-            switch (keyExchangeAlgorithm) {
-                case DH_RSA:
-                case DHE_RSA:
-                case ECDH_RSA:
-                case ECDHE_RSA:
-                case RSA:
-                case SRP_SHA_RSA:
-                case PSK_RSA:
-                    if (preferredSignatureCertSignatureType != CertificateKeyType.RSA) {
-                        LOGGER.warn("PreferredSignatureType does not match Cipher suite - ignoring preference");
-                    }
-                    preferredSignatureCertSignatureType = CertificateKeyType.RSA;
-                    break;
-                case ECDHE_ECDSA:
-                case ECDH_ECDSA:
-                case ECMQV_ECDSA:
-                case CECPQ1_ECDSA:
-                    if (preferredSignatureCertSignatureType != CertificateKeyType.ECDSA) {
-                        LOGGER.warn("PreferredSignatureType does not match Cipher suite - ignoring preference");
-                    }
-                    preferredSignatureCertSignatureType = CertificateKeyType.ECDSA;
-                    break;
-                case DHE_DSS:
-                case DH_DSS:
-                case SRP_SHA_DSS:
-                    if (preferredSignatureCertSignatureType != CertificateKeyType.DSS) {
-                        LOGGER.warn("PreferredSignatureType does not match Cipher suite - ignoring preference");
-                    }
-                    preferredSignatureCertSignatureType = CertificateKeyType.DSS;
-                    break;
-                case VKO_GOST01:
-                    if (preferredSignatureCertSignatureType != CertificateKeyType.GOST01) {
-                        LOGGER.warn("PreferredSignatureType does not match Cipher suite - ignoring preference");
-                    }
-                    preferredSignatureCertSignatureType = CertificateKeyType.GOST01;
-                    break;
-                case VKO_GOST12:
-                    if (preferredSignatureCertSignatureType != CertificateKeyType.GOST01) {
-                        LOGGER.warn("PreferredSignatureType does not match Cipher suite - ignoring preference");
-                    }
-                    preferredSignatureCertSignatureType = CertificateKeyType.GOST12;
-                    break;
-                default:
-                    LOGGER.warn("CipherSuite does not specify a certificate kex. Using  RSA.");
-                    keyExchangeAlgorithm = KeyExchangeAlgorithm.RSA;
-            }
-            neededPublicKeyType = AlgorithmResolver.getCertificateKeyType(chooser.getSelectedCipherSuite());
+            return INVALID_CERTIFICATE_RATING;
         }
+    }
 
-        CertificateKeyPair nextBestChoice = null;
-        for (CertificateKeyPair pair : keyPairList) {
-            if (pair.isUsable(neededPublicKeyType, preferredSignatureCertSignatureType)) {
-
-                nextBestChoice = pair;
-                if (neededPublicKeyType == CertificateKeyType.ECDSA || neededPublicKeyType == CertificateKeyType.ECDH) {
-                    if (pair.getSignatureGroup() == null) {
-                        if (namedGroup == pair.getSignatureGroup()) {
-                            return pair;
-                        }
-                    }
-                    if (namedGroup != pair.getPublicKeyGroup()
-                        || pair.getSignatureGroup() != pair.getSignatureGroup()) {
-                        continue;
-                    }
-                }
-
-                SignatureAndHashAlgorithm sigHashAlgo = SignatureAndHashAlgorithm.forCertificateKeyPair(pair, chooser);
-                if (neededPublicKeyType == CertificateKeyType.RSA
-                    && sigHashAlgo.getSignatureAlgorithm().toString().startsWith("RSA_PSS")
-                    && sigHashAlgo.getHashAlgorithm() == HashAlgorithm.SHA512 && pair.getPublicKey().keySize() < 2048) {
-                    continue;
-                }
-                if (neededPublicKeyType == CertificateKeyType.RSA
-                    && pair.getPublicKey().keySize() != chooser.getConfig().getPrefferedCertRsaKeySize()) {
-                    continue;
-                } else if (neededPublicKeyType == CertificateKeyType.DSS
-                    && pair.getPublicKey().keySize() != chooser.getConfig().getPrefferedCertDssKeySize()) {
-                    continue;
-                }
-                return pair;
-            }
-
-        }
-        if (nextBestChoice != null) {
-            LOGGER.warn("Could not find a fitting Certificate - ignoring preferences...");
-            return nextBestChoice;
-        }
-        LOGGER.warn("Could not find a matching CertificateKeyPair - returning first in List");
-        if (keyPairList.isEmpty()) {
-            throw new RuntimeException("Key Pair list is empty!");
-        }
-        return keyPairList.get(0);
+    private Boolean isBadKeySize(CertificateKeyPair keyPair, Chooser chooser) {
+        Boolean badRsaKeySize = (keyPair.getCertPublicKeyType() == CertificateKeyType.RSA
+            && keyPair.getPublicKey().keySize() != chooser.getConfig().getPreferredCertRsaKeySize());
+        Boolean badDssKeySize = (keyPair.getCertPublicKeyType() == CertificateKeyType.DSS
+            && keyPair.getPublicKey().keySize() != chooser.getConfig().getPrefferedCertDssKeySize());
+        return badRsaKeySize || badDssKeySize;
     }
 
     private String resolveKeyfileFromCert(String certName) {

@@ -59,6 +59,9 @@ public class ExtensionParserFactory {
             case SIGNATURE_AND_HASH_ALGORITHMS:
                 parser = new SignatureAndHashAlgorithmsExtensionParser(pointer, extensionBytes, config);
                 break;
+            case SIGNATURE_ALGORITHMS_CERT:
+                parser = new SignatureAlgorithmsCertExtensionParser(pointer, extensionBytes, config);
+                break;
             case SUPPORTED_VERSIONS:
                 parser = new SupportedVersionsExtensionParser(pointer, extensionBytes, config);
                 break;
