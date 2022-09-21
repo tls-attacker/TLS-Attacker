@@ -9,34 +9,17 @@
 
 package de.rub.nds.tlsattacker.core.protocol.message;
 
-import org.junit.After;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.params.provider.Arguments;
 
-public class UnknownHandshakeMessageTest {
+import java.util.stream.Stream;
 
-    UnknownHandshakeMessage message;
+public class UnknownHandshakeMessageTest extends AbstractMessageTest<UnknownHandshakeMessage> {
 
-    @Before
-    public void setUp() {
-        message = new UnknownHandshakeMessage();
+    public UnknownHandshakeMessageTest() {
+        super(UnknownHandshakeMessage::new, "UnknownHandshakeMessage:\n" + "  Data: %s");
     }
 
-    @After
-    public void tearDown() {
+    public static Stream<Arguments> provideToStringTestVectors() {
+        return Stream.of(Arguments.of(new Object[] { null }, null));
     }
-
-    /**
-     * Test of toString method, of class UnknownHandshakeMessage.
-     */
-    @Test
-    public void testToString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("UnknownHandshakeMessage:");
-        sb.append("\n  Data: ").append("null");
-
-        assertEquals(message.toString(), sb.toString());
-    }
-
 }

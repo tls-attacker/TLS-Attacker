@@ -9,59 +9,51 @@
 
 package de.rub.nds.tlsattacker.core.crypto;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.security.NoSuchAlgorithmException;
-import java.security.Security;
-import java.util.Random;
-
 import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
-import mockit.Expectations;
-import mockit.Mocked;
 import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.crypto.tls.ProtocolVersion;
 import org.bouncycastle.crypto.tls.SecurityParameters;
 import org.bouncycastle.crypto.tls.TlsContext;
 import org.bouncycastle.crypto.tls.TlsUtils;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.security.Security;
+import java.util.Random;
+
+@ExtendWith(MockitoExtension.class)
 public class PseudoRandomFunctionTest {
+
+    @BeforeAll
+    public static void setUpClass() {
+        Security.addProvider(new BouncyCastleProvider());
+    }
 
     /**
      * Test of compute method, of class PseudoRandomFunction.
      *
-     * @param  mockedTlsContext
-     * @param  mockedParameters
      * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test
-    public void testComputeForTls12(@Mocked final TlsContext mockedTlsContext,
-        @Mocked final SecurityParameters mockedParameters) throws CryptoException {
-        // Record expectations if/as needed:
-        new Expectations() {
-            {
-                mockedTlsContext.getServerVersion();
-                result = ProtocolVersion.TLSv12;
-            }
-            {
-                mockedTlsContext.getSecurityParameters();
-                result = mockedParameters;
-            }
-            {
-                mockedParameters.getPrfAlgorithm();
-                result = 1;
-            }
-        };
+    public void testComputeForTls12() throws CryptoException {
+        TlsContext mockedTlsContext = mock(TlsContext.class);
+        SecurityParameters mockedParameters = mock(SecurityParameters.class);
+        // Stub method calls
+        when(mockedTlsContext.getServerVersion()).thenReturn(ProtocolVersion.TLSv12);
+        when(mockedTlsContext.getSecurityParameters()).thenReturn(mockedParameters);
+        when(mockedParameters.getPrfAlgorithm()).thenReturn(1);
 
         byte[] secret = new byte[48];
         String label = "master secret";
@@ -74,19 +66,14 @@ public class PseudoRandomFunctionTest {
         byte[] result2 = PseudoRandomFunction.compute(PRFAlgorithm.TLS_PRF_SHA256, secret, label, seed, size);
         assertArrayEquals(result1, result2);
 
-        new Expectations() {
-            {
-                mockedParameters.getPrfAlgorithm();
-                result = 2;
-            }
-        };
+        // Stub method calls
+        when(mockedParameters.getPrfAlgorithm()).thenReturn(2);
 
         result1 = TlsUtils.PRF(mockedTlsContext, secret, label, seed, size);
         result2 = PseudoRandomFunction.compute(PRFAlgorithm.TLS_PRF_SHA384, secret, label, seed, size);
 
         assertArrayEquals(result1, result2);
 
-        Security.addProvider(new BouncyCastleProvider());
         seed = ArrayConverter.hexStringToByteArray(
             "DD65AFF37A86CD3BECFAF84BE5C85787009FCE23DED71B513EC6F97BA44CF654C6891E4146BBE9DE33DFE9936917C47ED8810D90DDFA90CBDFFAEAD7");
         result1 = ArrayConverter.hexStringToByteArray(
@@ -136,7 +123,7 @@ public class PseudoRandomFunctionTest {
     }
 
     @Test
-    public void testComputeForSSL3() throws CryptoException, NoSuchAlgorithmException, IOException {
+    public void testComputeForSSL3() throws NoSuchAlgorithmException, IOException {
         byte[] master_secret = ArrayConverter.hexStringToByteArray(StringUtils.repeat("01", 48));
         byte[] client_random = ArrayConverter.hexStringToByteArray(StringUtils.repeat("02", 32));
         byte[] server_random = ArrayConverter.hexStringToByteArray(StringUtils.repeat("03", 32));

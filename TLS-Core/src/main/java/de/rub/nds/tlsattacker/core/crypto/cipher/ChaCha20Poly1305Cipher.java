@@ -6,11 +6,6 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-/**
- * TLS-AEAD-Cipher "Chacha20Poly1305", based on BouncyCastle's class
- * "BcChaCha20Poly1305".
- * See RFC7905 for further information.
- */
 
 package de.rub.nds.tlsattacker.core.crypto.cipher;
 
@@ -25,6 +20,10 @@ import org.bouncycastle.crypto.params.KeyParameter;
 import org.bouncycastle.crypto.params.ParametersWithIV;
 import org.bouncycastle.util.Arrays;
 
+/**
+ * TLS-AEAD-Cipher "Chacha20Poly1305", based on BouncyCastle's class "BcChaCha20Poly1305". See RFC7905 for further
+ * information.
+ */
 public abstract class ChaCha20Poly1305Cipher extends BaseCipher {
 
     private static final Logger LOGGER = LogManager.getLogger();

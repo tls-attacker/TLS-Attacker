@@ -9,35 +9,30 @@
 
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.PskClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertNotNull;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class PskClientKeyExchangePreparatorTest {
+public class PskClientKeyExchangePreparatorTest
+    extends AbstractTlsMessagePreparatorTest<PskClientKeyExchangeMessage, PskClientKeyExchangePreparator> {
 
     private final static String RANDOM = "CAFEBABECAFE";
     private final static byte[] PREMASTERSECRET = ArrayConverter.hexStringToByteArray("00040000000000041a2b3c4d");
-    private TlsContext context;
-    private PskClientKeyExchangeMessage message;
-    private PskClientKeyExchangePreparator preparator;
 
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        message = new PskClientKeyExchangeMessage();
-        preparator = new PskClientKeyExchangePreparator(context.getChooser(), message);
+    public PskClientKeyExchangePreparatorTest() {
+        super(PskClientKeyExchangeMessage::new, PskClientKeyExchangeMessage::new, PskClientKeyExchangePreparator::new);
     }
 
     /**
      * Test of prepareHandshakeMessageContents method, of class PskClientKeyExchangePreparator.
      */
     @Test
+    @Override
     public void testPrepare() {
         // prepare context
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);

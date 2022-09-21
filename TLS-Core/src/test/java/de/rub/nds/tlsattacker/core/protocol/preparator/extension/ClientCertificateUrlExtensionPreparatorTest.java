@@ -9,35 +9,29 @@
 
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateUrlExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ClientCertificateUrlExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class ClientCertificateUrlExtensionPreparatorTest {
-    private final ExtensionType extensionType = ExtensionType.CLIENT_CERTIFICATE_URL;
-    private final int extensionLength = 0;
-    private TlsContext context;
-    private ClientCertificateUrlExtensionMessage message;
-    private ClientCertificateUrlExtensionPreparator preparator;
+public class ClientCertificateUrlExtensionPreparatorTest
+    extends AbstractExtensionMessagePreparatorTest<ClientCertificateUrlExtensionMessage,
+        ClientCertificateUrlExtensionSerializer, ClientCertificateUrlExtensionPreparator> {
 
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        message = new ClientCertificateUrlExtensionMessage();
-        preparator = new ClientCertificateUrlExtensionPreparator(context.getChooser(), message,
-            new ClientCertificateUrlExtensionSerializer(message));
+    public ClientCertificateUrlExtensionPreparatorTest() {
+        super(ClientCertificateUrlExtensionMessage::new, ClientCertificateUrlExtensionMessage::new,
+            ClientCertificateUrlExtensionSerializer::new, ClientCertificateUrlExtensionPreparator::new);
     }
 
     @Test
-    public void testPreparator() {
+    @Override
+    public void testPrepare() {
         preparator.prepare();
 
-        assertArrayEquals(extensionType.getValue(), message.getExtensionType().getValue());
-        assertEquals(extensionLength, (long) message.getExtensionLength().getValue());
+        assertArrayEquals(ExtensionType.CLIENT_CERTIFICATE_URL.getValue(), message.getExtensionType().getValue());
+        assertEquals(0, (long) message.getExtensionLength().getValue());
     }
 }

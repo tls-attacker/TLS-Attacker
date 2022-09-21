@@ -9,23 +9,19 @@
 
 package de.rub.nds.tlsattacker.core.config.delegate;
 
-import com.beust.jcommander.JCommander;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import de.rub.nds.tlsattacker.core.config.Config;
 import org.apache.commons.lang3.builder.EqualsBuilder;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class ClientAuthenticationDelegateTest {
+public class ClientAuthenticationDelegateTest extends AbstractDelegateTest<ClientAuthenticationDelegate> {
 
-    private ClientAuthenticationDelegate delegate;
-    private JCommander jcommander;
-    private String[] args;
-
-    @Before
+    @BeforeEach
     public void setUp() {
-        delegate = new ClientAuthenticationDelegate();
-        jcommander = new JCommander(delegate);
+        super.setUp(new ClientAuthenticationDelegate());
     }
 
     /**
@@ -35,7 +31,7 @@ public class ClientAuthenticationDelegateTest {
     public void testIsClientAuthentication() {
         args = new String[1];
         args[0] = "-client_authentication";
-        assertTrue(delegate.isClientAuthentication() == null);
+        assertNull(delegate.isClientAuthentication());
         jcommander.parse(args);
         assertTrue(delegate.isClientAuthentication());
     }
@@ -45,7 +41,7 @@ public class ClientAuthenticationDelegateTest {
      */
     @Test
     public void testSetClientAuthentication() {
-        assertTrue(delegate.isClientAuthentication() == null);
+        assertNull(delegate.isClientAuthentication());
         delegate.setClientAuthentication(true);
         assertTrue(delegate.isClientAuthentication());
     }
@@ -62,7 +58,6 @@ public class ClientAuthenticationDelegateTest {
         jcommander.parse(args);
         delegate.applyDelegate(config);
         assertTrue(config.isClientAuthentication());
-
     }
 
     @Test
@@ -70,8 +65,6 @@ public class ClientAuthenticationDelegateTest {
         Config config = Config.createConfig();
         Config config2 = Config.createConfig();
         delegate.applyDelegate(config);
-        assertTrue(EqualsBuilder.reflectionEquals(config, config2, "keyStore", "ourCertificate"));// little
-        // ugly
+        assertTrue(EqualsBuilder.reflectionEquals(config, config2, "keyStore", "ourCertificate"));
     }
-
 }

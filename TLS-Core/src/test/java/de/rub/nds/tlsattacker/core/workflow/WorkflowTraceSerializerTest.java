@@ -9,6 +9,8 @@
 
 package de.rub.nds.tlsattacker.core.workflow;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import de.rub.nds.modifiablevariable.singlebyte.ByteExplicitValueModification;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -24,22 +26,16 @@ import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.LinkedList;
-import java.util.List;
-import javax.xml.bind.JAXBException;
+import jakarta.xml.bind.JAXBException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
+import java.io.*;
+import java.util.LinkedList;
+import java.util.List;
 
 public class WorkflowTraceSerializerTest {
 
@@ -48,10 +44,7 @@ public class WorkflowTraceSerializerTest {
     Config config;
     MessageAction action;
 
-    @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
-
-    @Before
+    @BeforeEach
     public void setUp() throws JAXBException {
         config = Config.createConfig();
         action = new SendAction(new ClientHelloMessage(Config.createConfig()));
@@ -80,34 +73,29 @@ public class WorkflowTraceSerializerTest {
 
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         WorkflowTraceSerializer.write(os, trace);
-        LOGGER.debug(new String(os.toByteArray()));
+        LOGGER.debug(os.toString());
 
-        String serializedWorkflow = new String(os.toByteArray());
+        String serializedWorkflow = os.toString();
 
         ByteArrayInputStream bis = new ByteArrayInputStream(serializedWorkflow.getBytes());
         WorkflowTrace wt = WorkflowTraceSerializer.secureRead(bis);
 
         os = new ByteArrayOutputStream();
         WorkflowTraceSerializer.write(os, wt);
-        LOGGER.debug(new String(os.toByteArray()));
+        LOGGER.debug(os.toString());
 
-        Assert.assertArrayEquals("The serialized workflows have to be equal", serializedWorkflow.getBytes(),
-            os.toByteArray());
+        assertArrayEquals(serializedWorkflow.getBytes(), os.toByteArray(), "The serialized workflows have to be equal");
     }
 
     @Test
-    public void testWrite() {
-        try {
-            WorkflowTrace trace = new WorkflowTrace();
-            action = new SendAction(new ClientHelloMessage(config));
-            trace.addTlsAction(action);
-            File f = folder.newFile();
-            WorkflowTraceSerializer.write(f, trace);
-            Assert.assertTrue(f.exists());
-        } catch (JAXBException | IOException ex) {
-            LOGGER.error(ex.getLocalizedMessage(), ex);
-            Assert.fail();
-        }
+    public void testWrite(@TempDir File tempDir) throws IOException, JAXBException {
+        WorkflowTrace trace = new WorkflowTrace();
+        action = new SendAction(new ClientHelloMessage(config));
+        trace.addTlsAction(action);
+        File f = new File(tempDir, "testWriteWorkflowTrace.xml");
+        assert f.exists() || f.createNewFile();
+        WorkflowTraceSerializer.write(f, trace);
+        assertTrue(f.exists());
     }
 
     /**
@@ -116,17 +104,15 @@ public class WorkflowTraceSerializerTest {
      * end should not appear in the serialized workflow trace.
      */
     @Test
-    public void serializeWithSingleConnectionTest() {
-        try {
+    public void serializeWithSingleConnectionTest() throws JAXBException, IOException {
+        WorkflowTrace trace = new WorkflowTrace();
+        action = new SendAction(new ClientHelloMessage(config));
+        trace.addTlsAction(action);
 
-            WorkflowTrace trace = new WorkflowTrace();
-            action = new SendAction(new ClientHelloMessage(config));
-            trace.addTlsAction(action);
-
-            // used PrintWriter and not StringBuilder as it offers
-            // OS-independent functionality for printing new lines
-            StringWriter sw = new StringWriter();
-            PrintWriter pw = new PrintWriter(sw);
+        // used PrintWriter and not StringBuilder as it offers
+        // OS-independent functionality for printing new lines
+        StringWriter sw = new StringWriter();
+        try (PrintWriter pw = new PrintWriter(sw)) {
             pw.println("<workflowTrace>");
             pw.println("    <Send>");
             pw.println("        <actionOptions/>");
@@ -142,36 +128,29 @@ public class WorkflowTraceSerializerTest {
             pw.println("        </messages>");
             pw.println("    </Send>");
             pw.println("</workflowTrace>");
-            pw.close();
-            String expected = sw.toString();
-
-            DefaultNormalizeFilter.normalizeAndFilter(trace, config);
-            String actual = WorkflowTraceSerializer.write(trace);
-            LOGGER.info(actual);
-            Assert.assertEquals(expected, actual);
-
-        } catch (JAXBException | IOException ex) {
-            LOGGER.error(ex.getLocalizedMessage(), ex);
-            Assert.fail();
         }
+        String expected = sw.toString();
+
+        DefaultNormalizeFilter.normalizeAndFilter(trace, config);
+        String actual = WorkflowTraceSerializer.write(trace);
+        LOGGER.info(actual);
+        assertEquals(expected, actual);
     }
 
     /**
      * Verify that serialized/XML representation with single custom connection end looks as expected.
      */
     @Test
-    public void serializeWithSingleCustomConnectionTest() {
-        try {
+    public void serializeWithSingleCustomConnectionTest() throws JAXBException, IOException {
+        WorkflowTrace trace = new WorkflowTrace();
+        AliasedConnection con = new OutboundConnection("theAlias", 1111, "host1111");
+        trace.addConnection(con);
+        action = new SendAction(new ClientHelloMessage(config));
+        action.setConnectionAlias(con.getAlias());
+        trace.addTlsAction(action);
 
-            WorkflowTrace trace = new WorkflowTrace();
-            AliasedConnection con = new OutboundConnection("theAlias", 1111, "host1111");
-            trace.addConnection(con);
-            action = new SendAction(new ClientHelloMessage(config));
-            action.setConnectionAlias(con.getAlias());
-            trace.addTlsAction(action);
-
-            StringWriter sw = new StringWriter();
-            PrintWriter pw = new PrintWriter(sw);
+        StringWriter sw = new StringWriter();
+        try (PrintWriter pw = new PrintWriter(sw)) {
             pw.println("<workflowTrace>");
             pw.println("    <OutboundConnection>");
             pw.println("        <alias>theAlias</alias>");
@@ -192,38 +171,31 @@ public class WorkflowTraceSerializerTest {
             pw.println("        </messages>");
             pw.println("    </Send>");
             pw.println("</workflowTrace>");
-            pw.close();
-            String expected = sw.toString();
-
-            DefaultNormalizeFilter.normalizeAndFilter(trace, config);
-            String actual = WorkflowTraceSerializer.write(trace);
-            Assert.assertEquals(expected, actual);
-
-        } catch (JAXBException | IOException ex) {
-            LOGGER.error(ex.getLocalizedMessage(), ex);
-            Assert.fail();
         }
+        String expected = sw.toString();
+
+        DefaultNormalizeFilter.normalizeAndFilter(trace, config);
+        String actual = WorkflowTraceSerializer.write(trace);
+        assertEquals(expected, actual);
     }
 
     /**
      * Verify that serialized/XML representation with multiple connection ends looks as expected.
      */
     @Test
-    public void serializeWithMultipleCustomConnectionTest() {
-        try {
+    public void serializeWithMultipleCustomConnectionTest() throws JAXBException, IOException {
+        WorkflowTrace trace = new WorkflowTrace();
+        AliasedConnection con1 = new OutboundConnection("alias1", 1111, "host1111");
+        AliasedConnection con2 = new OutboundConnection("alias2", 1122, "host2222");
+        AliasedConnection con3 = new InboundConnection("alias3", 1313);
+        trace.addConnection(con1);
+        trace.addConnection(con2);
+        trace.addConnection(con3);
+        action = new SendAction(con3.getAlias(), new ClientHelloMessage(config));
+        trace.addTlsAction(action);
 
-            WorkflowTrace trace = new WorkflowTrace();
-            AliasedConnection con1 = new OutboundConnection("alias1", 1111, "host1111");
-            AliasedConnection con2 = new OutboundConnection("alias2", 1122, "host2222");
-            AliasedConnection con3 = new InboundConnection("alias3", 1313);
-            trace.addConnection(con1);
-            trace.addConnection(con2);
-            trace.addConnection(con3);
-            action = new SendAction(con3.getAlias(), new ClientHelloMessage(config));
-            trace.addTlsAction(action);
-
-            StringWriter sw = new StringWriter();
-            PrintWriter pw = new PrintWriter(sw);
+        StringWriter sw = new StringWriter();
+        try (PrintWriter pw = new PrintWriter(sw)) {
             pw.println("<workflowTrace>");
             pw.println("    <OutboundConnection>");
             pw.println("        <alias>alias1</alias>");
@@ -254,16 +226,11 @@ public class WorkflowTraceSerializerTest {
             pw.println("        </messages>");
             pw.println("    </Send>");
             pw.println("</workflowTrace>");
-            pw.close();
-            String expected = sw.toString();
-
-            DefaultNormalizeFilter.normalizeAndFilter(trace, config);
-            String actual = WorkflowTraceSerializer.write(trace);
-            Assert.assertEquals(expected, actual);
-
-        } catch (JAXBException | IOException ex) {
-            LOGGER.error(ex.getLocalizedMessage(), ex);
-            Assert.fail();
         }
+        String expected = sw.toString();
+
+        DefaultNormalizeFilter.normalizeAndFilter(trace, config);
+        String actual = WorkflowTraceSerializer.write(trace);
+        assertEquals(expected, actual);
     }
 }

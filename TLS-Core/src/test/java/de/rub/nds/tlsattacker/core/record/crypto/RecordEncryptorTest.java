@@ -9,6 +9,8 @@
 
 package de.rub.nds.tlsattacker.core.record.crypto;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
@@ -16,24 +18,19 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.record.Record;
-import de.rub.nds.tlsattacker.core.record.cipher.CipherState;
-import de.rub.nds.tlsattacker.core.record.cipher.RecordAEADCipher;
-import de.rub.nds.tlsattacker.core.record.cipher.RecordBlockCipher;
-import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
-import de.rub.nds.tlsattacker.core.record.cipher.RecordStreamCipher;
+import de.rub.nds.tlsattacker.core.record.cipher.*;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.util.test.TestRandomData;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 import java.security.Security;
 import java.util.Random;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.bouncycastle.util.test.TestRandomData;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
 
 public class RecordEncryptorTest {
 
@@ -42,12 +39,13 @@ public class RecordEncryptorTest {
     private Record record;
     public RecordEncryptor encryptor;
 
-    public RecordEncryptorTest() {
+    @BeforeAll
+    public static void setUpClass() {
+        Security.addProvider(new BouncyCastleProvider());
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
-        Security.addProvider(new BouncyCastleProvider());
         context = new TlsContext();
         record = new Record();
         record.prepareComputations();
@@ -96,7 +94,7 @@ public class RecordEncryptorTest {
             record.getComputations().getPlainRecordBytes().getValue());
         assertArrayEquals(ArrayConverter.hexStringToByteArray("91A3B6AAA2B64D126E5583B04C113259"),
             record.getComputations().getCbcInitialisationVector().getValue());
-        assertTrue(0 == record.getComputations().getAdditionalPaddingLength().getValue());
+        assertEquals(0, record.getComputations().getAdditionalPaddingLength().getValue());
         assertArrayEquals(record.getProtocolMessageBytes().getValue(), ArrayConverter.hexStringToByteArray(
             "91A3B6AAA2B64D126E5583B04C1132591010FF2EE70446DA41EA4D83FE2DA55ADFAB9A17F5ACED2BA0068A95B30825119705383687AE8F0DC1BFC17E6D407CF9"));
     }

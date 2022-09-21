@@ -9,37 +9,33 @@
 
 package de.rub.nds.tlsattacker.core.workflow.action;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.util.LinkedList;
 import java.util.List;
-import org.junit.After;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
 
 public class MessageActionFactoryTest {
 
-    Config config;
-    AliasedConnection clientConnection;
-    AliasedConnection serverConnection;
+    private Config config;
+    private AliasedConnection clientConnection;
+    private AliasedConnection serverConnection;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         config = Config.createConfig();
         clientConnection = new OutboundConnection();
         serverConnection = new InboundConnection();
-    }
-
-    @After
-    public void tearDown() {
     }
 
     /**
@@ -49,17 +45,17 @@ public class MessageActionFactoryTest {
     public void testCreateActionOne() {
         MessageAction action = MessageActionFactory.createAction(config, clientConnection, ConnectionEndType.CLIENT,
             new AlertMessage(config));
-        assertEquals(action.getClass(), SendAction.class);
+        assertEquals(SendAction.class, action.getClass());
         action = MessageActionFactory.createAction(config, clientConnection, ConnectionEndType.SERVER,
             new AlertMessage(config));
-        assertEquals(action.getClass(), ReceiveAction.class);
+        assertEquals(ReceiveAction.class, action.getClass());
         action = MessageActionFactory.createAction(config, serverConnection, ConnectionEndType.CLIENT,
             new AlertMessage(config));
-        assertEquals(action.getClass(), ReceiveAction.class);
+        assertEquals(ReceiveAction.class, action.getClass());
         action = MessageActionFactory.createAction(config, serverConnection, ConnectionEndType.SERVER,
             new AlertMessage(config));
-        assertEquals(action.getClass(), SendAction.class);
-        assertTrue(action.messages.size() == 1);
+        assertEquals(SendAction.class, action.getClass());
+        assertEquals(1, action.messages.size());
     }
 
     /**
@@ -72,14 +68,14 @@ public class MessageActionFactoryTest {
         messages.add(new AlertMessage(config));
         MessageAction action =
             MessageActionFactory.createAction(config, clientConnection, ConnectionEndType.CLIENT, messages);
-        assertEquals(action.getClass(), SendAction.class);
+        assertEquals(SendAction.class, action.getClass());
         action = MessageActionFactory.createAction(config, clientConnection, ConnectionEndType.SERVER, messages);
-        assertEquals(action.getClass(), ReceiveAction.class);
+        assertEquals(ReceiveAction.class, action.getClass());
         action = MessageActionFactory.createAction(config, serverConnection, ConnectionEndType.CLIENT, messages);
-        assertEquals(action.getClass(), ReceiveAction.class);
+        assertEquals(ReceiveAction.class, action.getClass());
         action = MessageActionFactory.createAction(config, serverConnection, ConnectionEndType.SERVER, messages);
-        assertEquals(action.getClass(), SendAction.class);
-        assertTrue(action.messages.size() == 2);
+        assertEquals(SendAction.class, action.getClass());
+        assertEquals(2, action.messages.size());
     }
 
     /**
@@ -88,12 +84,12 @@ public class MessageActionFactoryTest {
     @Test
     public void testCreateAsciiAction() {
         AsciiAction action = MessageActionFactory.createAsciiAction(clientConnection, ConnectionEndType.CLIENT, "", "");
-        assertEquals(action.getClass(), SendAsciiAction.class);
+        assertEquals(SendAsciiAction.class, action.getClass());
         action = MessageActionFactory.createAsciiAction(clientConnection, ConnectionEndType.SERVER, "", "");
-        assertEquals(action.getClass(), GenericReceiveAsciiAction.class);
+        assertEquals(GenericReceiveAsciiAction.class, action.getClass());
         action = MessageActionFactory.createAsciiAction(serverConnection, ConnectionEndType.CLIENT, "", "");
-        assertEquals(action.getClass(), GenericReceiveAsciiAction.class);
+        assertEquals(GenericReceiveAsciiAction.class, action.getClass());
         action = MessageActionFactory.createAsciiAction(serverConnection, ConnectionEndType.SERVER, "", "");
-        assertEquals(action.getClass(), SendAsciiAction.class);
+        assertEquals(SendAsciiAction.class, action.getClass());
     }
 }

@@ -78,13 +78,12 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
                 throw new UnsupportedOperationException("We do not support OpenPGP keys");
             case RAW_PUBLIC_KEY:
                 LOGGER.debug("Adjusting context for RAW PUBLIC KEY certificate message");
-                try {
+                try (ASN1InputStream asn1Stream = new ASN1InputStream(message.getCertificatesListBytes().getValue())) {
                     // TODO Temporary parsing, we need to redo this once
                     // x509/asn1 attacker is integrated
-                    ASN1InputStream asn1Stream = new ASN1InputStream(message.getCertificatesListBytes().getValue());
                     DLSequence dlSeq = (DLSequence) asn1Stream.readObject();
                     DLSequence identifier = (DLSequence) dlSeq.getObjectAt(0);
-                    NamedGroup group = null;
+                    NamedGroup group;
                     ASN1ObjectIdentifier keyType = (ASN1ObjectIdentifier) identifier.getObjectAt(0);
                     if (keyType.getId().equals("1.2.840.10045.2.1")) {
                         ASN1ObjectIdentifier curveType = (ASN1ObjectIdentifier) identifier.getObjectAt(1);
@@ -108,8 +107,6 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
                         throw new UnsupportedOperationException(
                             "We currently do only support EC raw public keys. Sorry...");
                     }
-
-                    asn1Stream.close();
                 } catch (Exception e) {
                     LOGGER.warn("Could read RAW PublicKey. Not adjusting context", e);
 

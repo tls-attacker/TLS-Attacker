@@ -9,35 +9,28 @@
 
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptThenMacExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.EncryptThenMacExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class EncryptThenMacExtensionPreparatorTest {
-    private final ExtensionType extensionType = ExtensionType.ENCRYPT_THEN_MAC;
-    private final int extensionLength = 0;
-    private TlsContext context;
-    private EncryptThenMacExtensionMessage message;
-    private EncryptThenMacExtensionPreparator preparator;
+public class EncryptThenMacExtensionPreparatorTest extends AbstractExtensionMessagePreparatorTest<
+    EncryptThenMacExtensionMessage, EncryptThenMacExtensionSerializer, EncryptThenMacExtensionPreparator> {
 
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        message = new EncryptThenMacExtensionMessage();
-        preparator = new EncryptThenMacExtensionPreparator(context.getChooser(), message,
-            new EncryptThenMacExtensionSerializer(message));
+    public EncryptThenMacExtensionPreparatorTest() {
+        super(EncryptThenMacExtensionMessage::new, EncryptThenMacExtensionMessage::new,
+            EncryptThenMacExtensionSerializer::new, EncryptThenMacExtensionPreparator::new);
     }
 
     @Test
-    public void testPreparator() {
+    @Override
+    public void testPrepare() {
         preparator.prepare();
 
-        assertArrayEquals(extensionType.getValue(), message.getExtensionType().getValue());
-        assertEquals(extensionLength, (long) message.getExtensionLength().getValue());
+        assertArrayEquals(ExtensionType.ENCRYPT_THEN_MAC.getValue(), message.getExtensionType().getValue());
+        assertEquals(0, (long) message.getExtensionLength().getValue());
     }
 }

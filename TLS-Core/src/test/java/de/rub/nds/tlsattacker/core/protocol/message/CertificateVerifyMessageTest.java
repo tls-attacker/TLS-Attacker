@@ -9,32 +9,18 @@
 
 package de.rub.nds.tlsattacker.core.protocol.message;
 
-import org.junit.After;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.params.provider.Arguments;
 
-public class CertificateVerifyMessageTest {
+import java.util.stream.Stream;
 
-    CertificateVerifyMessage message;
+public class CertificateVerifyMessageTest extends AbstractMessageTest<CertificateVerifyMessage> {
 
-    @Before
-    public void setUp() {
-        message = new CertificateVerifyMessage();
+    public CertificateVerifyMessageTest() {
+        super(CertificateVerifyMessage::new, "CertificateVerifyMessage:\n" + "  SignatureAndHashAlgorithm: %s\n"
+            + "  Signature Length: %s\n" + "  Signature: %s");
     }
 
-    @After
-    public void tearDown() {
-    }
-
-    /**
-     * Test of toString method, of class CertificateVerifyMessage.
-     */
-    @Test
-    public void testToString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("CertificateVerifyMessage:").append("\n  SignatureAndHashAlgorithm: ").append("null")
-            .append("\n  Signature Length: ").append("null").append("\n  Signature: ").append("null");
-        assertEquals(message.toString(), sb.toString());
+    public static Stream<Arguments> provideToStringTestVectors() {
+        return Stream.of(Arguments.of(new Object[] { null, null, null }, null));
     }
 }

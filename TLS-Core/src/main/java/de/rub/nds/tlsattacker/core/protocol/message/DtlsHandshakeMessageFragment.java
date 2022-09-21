@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.DtlsHandshakeMessageFragmentHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "DtlsHandshakeMessageFragment")
 public class DtlsHandshakeMessageFragment extends HandshakeMessage {

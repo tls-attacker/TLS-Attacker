@@ -21,7 +21,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ServerHelloHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 @SuppressWarnings("serial")
 @XmlRootElement(name = "SSL2ServerHello")

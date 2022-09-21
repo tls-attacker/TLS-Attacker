@@ -9,25 +9,17 @@
 
 package de.rub.nds.tlsattacker.core.protocol.message;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.params.provider.Arguments;
 
-public class CertificateStatusMessageTest {
+import java.util.stream.Stream;
 
-    CertificateStatusMessage certificateStatusMessage;
+public class CertificateStatusMessageTest extends AbstractMessageTest<CertificateStatusMessage> {
 
-    @Before
-    public void setUp() {
-        certificateStatusMessage = new CertificateStatusMessage();
+    public CertificateStatusMessageTest() {
+        super(CertificateStatusMessage::new, "CertificateStatusMessage:\n" + " %s");
     }
 
-    @Test
-    public void testToString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("CertificateStatusMessage:").append("\n null");
-
-        String expectedString = sb.toString();
-        Assert.assertEquals(expectedString, certificateStatusMessage.toString());
+    public static Stream<Arguments> provideToStringTestVectors() {
+        return Stream.of(Arguments.of(new Object[] { null }, null));
     }
 }

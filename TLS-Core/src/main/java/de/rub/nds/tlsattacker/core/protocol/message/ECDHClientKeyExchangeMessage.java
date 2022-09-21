@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.ECDHClientKeyExchangeHandler
 import de.rub.nds.tlsattacker.core.protocol.message.computations.ECDHClientComputations;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.List;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "ECDHClientKeyExchange")
 public class ECDHClientKeyExchangeMessage extends ClientKeyExchangeMessage {

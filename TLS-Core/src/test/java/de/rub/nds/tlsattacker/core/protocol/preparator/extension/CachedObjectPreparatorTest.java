@@ -9,20 +9,29 @@
 
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class CachedObjectPreparatorTest {
-    private final byte cachedInfoType = 1;
-    private final int hashLength = 3;
-    private final byte[] hash = new byte[] { 0x01, 0x02, 0x03 };
+
+    private TlsContext context;
+
+    @BeforeEach
+    public void setUp() {
+        context = new TlsContext();
+    }
 
     @Test
     public void testPreparator() {
-        TlsContext context = new TlsContext();
+        int hashLength = 3;
+        byte cachedInfoType = 1;
+        byte[] hash = new byte[] { 0x01, 0x02, 0x03 };
+
         CachedObject object = new CachedObject(cachedInfoType, hashLength, hash);
         CachedObjectPreparator preparator = new CachedObjectPreparator(context.getChooser(), object);
 

@@ -9,6 +9,8 @@
 
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
@@ -16,38 +18,27 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.handler.CertificateMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.util.CertificateUtils;
+import org.bouncycastle.crypto.tls.Certificate;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.junit.jupiter.api.Test;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.Security;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.bouncycastle.crypto.tls.Certificate;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
 
-public class RSAClientKeyExchangePreparatorTest {
+public class RSAClientKeyExchangePreparatorTest extends AbstractTlsMessagePreparatorTest<RSAClientKeyExchangeMessage,
+    RSAClientKeyExchangePreparator<RSAClientKeyExchangeMessage>> {
 
-    private static final Logger LOGGER = LogManager.getLogger();
-
-    private TlsContext context;
-    private RSAClientKeyExchangePreparator preparator;
-    private RSAClientKeyExchangeMessage message;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        message = new RSAClientKeyExchangeMessage();
-        preparator = new RSAClientKeyExchangePreparator(context.getChooser(), message);
+    public RSAClientKeyExchangePreparatorTest() {
+        super(RSAClientKeyExchangeMessage::new, RSAClientKeyExchangeMessage::new, RSAClientKeyExchangePreparator::new);
     }
 
     /**
      * Test of prepareHandshakeMessageContents method, of class RSAClientKeyExchangePreparator.
      */
     @Test
+    @Override
     public void testPrepare() {
         // TODO
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA256);
@@ -82,8 +73,6 @@ public class RSAClientKeyExchangePreparatorTest {
                 ArrayConverter.intToBytes(lengthBytes, HandshakeByteLength.CERTIFICATES_LENGTH), bytesToParse));
             return Certificate.parse(stream);
         } catch (IOException E) {
-            LOGGER.warn("Could not parse Certificate bytes into Certificate object:"
-                + ArrayConverter.bytesToHexString(bytesToParse, false));
             return null;
         }
     }
@@ -107,23 +96,14 @@ public class RSAClientKeyExchangePreparatorTest {
             "1a4dc552ddd7e1e25dbaff38dd447b3a6fdc85120e2f760fefdab88e5adbbc710f3d0843f07c9f4f5ac01bc4cea02c4030c272074aa04b1b80a71123b73ea4efbe928b54a83fe4b39472bf66a953c7dc11cfb13ea08f92047996799ce702eb72a7c69bdfd98b91a09bcb836414752d93d3641740f8ed5cfff682225434052230";
         String keyEx =
             " 100000801a4dc552ddd7e1e25dbaff38dd447b3a6fdc85120e2f760fefdab88e5adbbc710f3d0843f07c9f4f5ac01bc4cea02c4030c272074aa04b1b80a71123b73ea4efbe928b54a83fe4b39472bf66a953c7dc11cfb13ea08f92047996799ce702eb72a7c69bdfd98b91a09bcb836414752d93d3641740f8ed5cfff682225434052230";
-        LOGGER.debug(keyEx.length());
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_NULL_MD5);
         context.setSelectedProtocolVersion(ProtocolVersion.SSL3);
         context.setClientRandom(
             ArrayConverter.hexStringToByteArray("405e2a60cefcb557edd6d41336a3fa4b2dfdae20f4ac7adacbb29c13456e2800"));
-        LOGGER.debug("405e2a60cefcb557edd6d41336a3fa4b2dfdae20f4ac7adacbb29c13456e2800".length());
         context.setServerRandom(
             ArrayConverter.hexStringToByteArray("a63cd22a46e4fc22b1f03d579c5f0e43cadfda01ef615fd52a9cdbaed3f6c6c2"));
-        // context.setRsaModulus(CertificateUtils.extractRSAModulus(cert));
 
         // Test
         preparator.prepareHandshakeMessageContents();
-        LOGGER.info(ArrayConverter.bytesToHexString(message.getComputations().getPlainPaddedPremasterSecret(), false));
-    }
-
-    @Test
-    public void testNoContextPrepare() {
-        preparator.prepare();
     }
 }

@@ -25,7 +25,7 @@ public class DefaultNormalizeFilter {
 
     /**
      * Normalized and filtered the given workflow trace.
-     * 
+     *
      * @param trace
      *               the workflow trace that should be normalized and filtered
      * @param config
@@ -54,7 +54,7 @@ public class DefaultNormalizeFilter {
      * Return a normalized and filtered copy of the given workflow trace.
      * <p>
      * This method does not modify the input trace.
-     * 
+     *
      * @param  trace
      *                the workflow trace that should be normalized and filtered
      * @param  config

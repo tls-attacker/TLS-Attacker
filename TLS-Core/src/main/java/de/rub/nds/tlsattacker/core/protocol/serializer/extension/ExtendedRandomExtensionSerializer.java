@@ -17,7 +17,7 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * Class which serializes the Extended Random Extension for Usage as in Handshake Messages, as defined as in
- * https://tools.ietf.org/html/draft-rescorla-tls-extended-random-02
+ * <a href="https://tools.ietf.org/html/draft-rescorla-tls-extended-random-02">draft-rescorla-tls-extended-random-02</a>
  */
 public class ExtendedRandomExtensionSerializer extends ExtensionSerializer<ExtendedRandomExtensionMessage> {
 

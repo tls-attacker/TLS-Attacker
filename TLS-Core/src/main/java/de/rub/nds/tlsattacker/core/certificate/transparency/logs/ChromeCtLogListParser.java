@@ -15,8 +15,10 @@ import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -33,12 +35,18 @@ public class ChromeCtLogListParser implements CtLogListParser {
 
         CtLogList ctLogList = new CtLogList();
 
-        InputStream inputStream = ChromeCtLogListParser.class.getClassLoader().getResourceAsStream(filename);
-        InputStreamReader streamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
-        BufferedReader bufferedReader = new BufferedReader(streamReader);
+        JSONObject jsonFile = null;
+        try (InputStream inputStream = ChromeCtLogListParser.class.getClassLoader().getResourceAsStream(filename)) {
+            assert inputStream != null;
+            InputStreamReader streamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
+            BufferedReader bufferedReader = new BufferedReader(streamReader);
+            jsonFile = (JSONObject) jsonParser.parse(bufferedReader);
+        } catch (IOException | ParseException e) {
+            LOGGER.warn("Could not parse Chrome CT log list from " + filename, e);
+        }
+        assert jsonFile != null;
 
         try {
-            JSONObject jsonFile = (JSONObject) jsonParser.parse(bufferedReader);
             JSONArray operators = (JSONArray) jsonFile.get("operators");
 
             for (Object operatorObj : operators) {

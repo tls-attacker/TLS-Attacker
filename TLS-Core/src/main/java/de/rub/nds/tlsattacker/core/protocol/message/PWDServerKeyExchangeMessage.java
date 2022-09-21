@@ -22,7 +22,7 @@ import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.protocol.handler.PWDServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.PWDComputations;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "PWDServerKeyExchange")
 public class PWDServerKeyExchangeMessage extends ServerKeyExchangeMessage {

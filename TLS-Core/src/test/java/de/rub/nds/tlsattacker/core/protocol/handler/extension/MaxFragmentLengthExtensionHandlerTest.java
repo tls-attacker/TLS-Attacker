@@ -9,39 +9,32 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+
 import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.MaxFragmentLengthExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.MaxFragmentLengthExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.MaxFragmentLengthExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.MaxFragmentLengthExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class MaxFragmentLengthExtensionHandlerTest {
+public class MaxFragmentLengthExtensionHandlerTest
+    extends AbstractExtensionMessageHandlerTest<MaxFragmentLengthExtensionMessage, MaxFragmentLengthExtensionHandler> {
 
-    private MaxFragmentLengthExtensionHandler handler;
-
-    private TlsContext context;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
+    public MaxFragmentLengthExtensionHandlerTest() {
+        super(MaxFragmentLengthExtensionMessage::new, MaxFragmentLengthExtensionHandler::new);
         context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
-        handler = new MaxFragmentLengthExtensionHandler(context);
     }
 
     /**
      * Test of adjustTLSContext method, of class MaxFragmentLengthExtensionHandler.
      */
     @Test
+    @Override
     public void testAdjustTLSContext() {
         MaxFragmentLengthExtensionMessage msg = new MaxFragmentLengthExtensionMessage();
         msg.setMaxFragmentLength(new byte[] { 1 });
         handler.adjustTLSContext(msg);
-        assertTrue(context.getMaxFragmentLength() == MaxFragmentLength.TWO_9);
+        assertSame(context.getMaxFragmentLength(), MaxFragmentLength.TWO_9);
     }
 
     @Test
@@ -51,32 +44,4 @@ public class MaxFragmentLengthExtensionHandlerTest {
         handler.adjustTLSContext(msg);
         assertNull(context.getMaxFragmentLength());
     }
-
-    /**
-     * Test of getParser method, of class MaxFragmentLengthExtensionHandler.
-     */
-    @Test
-    public void testGetParser() {
-        assertTrue(handler.getParser(new byte[] { 0, 1, 2, 3 }, 0,
-            context.getConfig()) instanceof MaxFragmentLengthExtensionParser);
-    }
-
-    /**
-     * Test of getPreparator method, of class MaxFragmentLengthExtensionHandler.
-     */
-    @Test
-    public void testGetPreparator() {
-        assertTrue(handler
-            .getPreparator(new MaxFragmentLengthExtensionMessage()) instanceof MaxFragmentLengthExtensionPreparator);
-    }
-
-    /**
-     * Test of getSerializer method, of class MaxFragmentLengthExtensionHandler.
-     */
-    @Test
-    public void testGetSerializer() {
-        assertTrue(handler
-            .getSerializer(new MaxFragmentLengthExtensionMessage()) instanceof MaxFragmentLengthExtensionSerializer);
-    }
-
 }

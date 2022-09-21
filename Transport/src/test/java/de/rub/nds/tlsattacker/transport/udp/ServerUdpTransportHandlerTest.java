@@ -9,32 +9,25 @@
 
 package de.rub.nds.tlsattacker.transport.udp;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 public class ServerUdpTransportHandlerTest {
-
-    public ServerUdpTransportHandlerTest() {
-    }
-
-    @Before
-    public void setUp() {
-    }
 
     /**
      * Test of closeConnection method, of class ServerUdpTransportHandler.
      */
     @Test
+    @Disabled("Not implemented")
     public void testCloseConnection() {
     }
 
     /**
      * Test of initialize method, of class ServerUdpTransportHandler.
-     *
-     * @throws java.lang.Exception
      */
     @Test
-    public void testInitialize() throws Exception {
+    @Disabled("Not implemented")
+    public void testInitialize() {
     }
 
 }

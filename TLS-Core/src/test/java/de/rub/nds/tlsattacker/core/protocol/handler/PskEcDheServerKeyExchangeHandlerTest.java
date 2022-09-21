@@ -9,66 +9,28 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.protocol.message.PskEcDheServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.PskEcDheServerKeyExchangeParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.PskEcDheServerKeyExchangePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.PskEcDheServerKeyExchangeSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import org.junit.jupiter.api.Test;
+
 import java.math.BigInteger;
-import org.junit.After;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
 
-public class PskEcDheServerKeyExchangeHandlerTest {
+public class PskEcDheServerKeyExchangeHandlerTest
+    extends AbstractTlsMessageHandlerTest<PskEcDheServerKeyExchangeMessage, PskEcDheServerKeyExchangeHandler> {
 
-    private PskEcDheServerKeyExchangeHandler handler;
-    private TlsContext context;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new PskEcDheServerKeyExchangeHandler(context);
-
-    }
-
-    @After
-    public void tearDown() {
-    }
-
-    /**
-     * Test of getParser method, of class PskEcDheServerKeyExchangeHandler.
-     */
-    @Test
-    public void testGetParser() {
-        assertTrue(handler.getParser(new byte[1], 0) instanceof PskEcDheServerKeyExchangeParser);
-    }
-
-    /**
-     * Test of getPreparator method, of class PskEcDheServerKeyExchangeHandler.
-     */
-    @Test
-    public void testGetPreparator() {
-        assertTrue(handler
-            .getPreparator(new PskEcDheServerKeyExchangeMessage()) instanceof PskEcDheServerKeyExchangePreparator);
-    }
-
-    /**
-     * Test of getSerializer method, of class PskEcDheServerKeyExchangeHandler.
-     */
-    @Test
-    public void testGetSerializer() {
-        assertTrue(handler
-            .getSerializer(new PskEcDheServerKeyExchangeMessage()) instanceof PskEcDheServerKeyExchangeSerializer);
+    public PskEcDheServerKeyExchangeHandlerTest() {
+        super(PskEcDheServerKeyExchangeMessage::new, PskEcDheServerKeyExchangeHandler::new);
     }
 
     /**
      * Test of adjustTLSContext method, of class PskEcDheServerKeyExchangeHandler.
      */
     @Test
+    @Override
     public void testAdjustTLSContext() {
         PskEcDheServerKeyExchangeMessage message = new PskEcDheServerKeyExchangeMessage();
         message.setCurveType(EllipticCurveType.NAMED_CURVE.getValue());

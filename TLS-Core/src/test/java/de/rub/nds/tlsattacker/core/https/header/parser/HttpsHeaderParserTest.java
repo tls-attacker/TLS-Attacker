@@ -9,46 +9,34 @@
 
 package de.rub.nds.tlsattacker.core.https.header.parser;
 
-import de.rub.nds.tlsattacker.core.https.header.HttpsHeader;
-import java.io.UnsupportedEncodingException;
-import java.util.Arrays;
-import java.util.Collection;
-import static org.junit.Assert.*;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@RunWith(Parameterized.class)
+import de.rub.nds.tlsattacker.core.https.header.HttpsHeader;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.nio.charset.StandardCharsets;
+import java.util.stream.Stream;
+
 public class HttpsHeaderParserTest {
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() throws UnsupportedEncodingException {
-        byte[] msg = "Host: rub.com\r\n".getBytes("ASCII");
-        return Arrays.asList(new Object[][] { { msg, 0, "Host", "rub.com" } });
-    }
-
-    private final byte[] message;
-    private final int start;
-    private final String headerName;
-    private final String headerValue;
-
-    public HttpsHeaderParserTest(byte[] message, int start, String headerName, String headerValue) {
-        this.message = message;
-        this.start = start;
-        this.headerName = headerName;
-        this.headerValue = headerValue;
+    public static Stream<Arguments> provideTestVectors() {
+        return Stream.of(Arguments.of("Host: rub.com\r\n".getBytes(StandardCharsets.US_ASCII), 0, "Host", "rub.com"));
     }
 
     /**
-     * Test of parse method, of class HttpsHeaderParser.
+     * Test of testParse method, of class HttpsHeaderParser.
      */
-    @Test
-    public void testParse() {
-        HttpsHeaderParser parser = new HttpsHeaderParser(start, message);
+    @ParameterizedTest
+    @MethodSource("provideTestVectors")
+    public void testParse(byte[] providedHeaderBytes, int providedStart, String expectedHeaderName,
+        String expectedHeaderValue) {
+        HttpsHeaderParser parser = new HttpsHeaderParser(providedStart, providedHeaderBytes);
         HttpsHeader header = parser.parse();
 
-        assertEquals(headerName, header.getHeaderName().getValue());
-        assertEquals(headerValue, header.getHeaderValue().getValue());
+        assertEquals(expectedHeaderName, header.getHeaderName().getValue());
+        assertEquals(expectedHeaderValue, header.getHeaderValue().getValue());
     }
 
 }

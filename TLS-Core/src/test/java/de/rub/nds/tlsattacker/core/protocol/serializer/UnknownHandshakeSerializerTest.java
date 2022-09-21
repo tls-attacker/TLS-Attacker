@@ -9,54 +9,22 @@
 
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownHandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.UnknownHandshakeParserTest;
-import java.util.Collection;
-import static org.junit.Assert.*;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class UnknownHandshakeSerializerTest {
+import java.util.List;
+import java.util.stream.Stream;
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return UnknownHandshakeParserTest.generateData();
+public class UnknownHandshakeSerializerTest
+    extends AbstractHandshakeMessageSerializerTest<UnknownHandshakeMessage, UnknownHandshakeSerializer> {
+
+    public UnknownHandshakeSerializerTest() {
+        super(UnknownHandshakeMessage::new, UnknownHandshakeSerializer::new,
+            List.of((msg, obj) -> msg.setData((byte[]) obj)));
     }
 
-    private byte[] message;
-    private int start;
-    private byte[] expectedPart;
-
-    private HandshakeMessageType type;
-    private int length;
-    private byte[] data;
-
-    public UnknownHandshakeSerializerTest(byte[] message, int start, byte[] expectedPart, HandshakeMessageType type,
-        int length, byte[] data) {
-        this.message = message;
-        this.start = start;
-        this.expectedPart = expectedPart;
-        this.type = type;
-        this.length = length;
-        this.data = data;
+    public static Stream<Arguments> provideTestVectors() {
+        return UnknownHandshakeParserTest.provideTestVectors();
     }
-
-    /**
-     * Test of serializeHandshakeMessageContent method, of class UnknownHandshakeSerializer.
-     */
-    @Test
-    public void testSerializeHandshakeMessageContent() {
-        UnknownHandshakeMessage msg = new UnknownHandshakeMessage();
-        msg.setCompleteResultingMessage(expectedPart);
-        msg.setType(type.getValue());
-        msg.setLength(length);
-        msg.setData(data);
-        UnknownHandshakeSerializer serializer = new UnknownHandshakeSerializer(msg, ProtocolVersion.TLS12);
-        assertArrayEquals(expectedPart, serializer.serialize());
-    }
-
 }

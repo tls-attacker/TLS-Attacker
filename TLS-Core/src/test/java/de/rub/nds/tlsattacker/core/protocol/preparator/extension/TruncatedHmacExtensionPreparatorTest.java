@@ -9,37 +9,28 @@
 
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TruncatedHmacExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.TruncatedHmacExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class TruncatedHmacExtensionPreparatorTest {
+public class TruncatedHmacExtensionPreparatorTest extends AbstractExtensionMessagePreparatorTest<
+    TruncatedHmacExtensionMessage, TruncatedHmacExtensionSerializer, TruncatedHmacExtensionPreparator> {
 
-    private final ExtensionType extensionType = ExtensionType.TRUNCATED_HMAC;
-    private final int extensionLength = 0;
-    private TlsContext context;
-    private TruncatedHmacExtensionMessage message;
-    private TruncatedHmacExtensionPreparator preparator;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        message = new TruncatedHmacExtensionMessage();
-        preparator = new TruncatedHmacExtensionPreparator(context.getChooser(), message,
-            new TruncatedHmacExtensionSerializer(message));
+    public TruncatedHmacExtensionPreparatorTest() {
+        super(TruncatedHmacExtensionMessage::new, TruncatedHmacExtensionMessage::new,
+            TruncatedHmacExtensionSerializer::new, TruncatedHmacExtensionPreparator::new);
     }
 
     @Test
-    public void testPreparator() {
+    @Override
+    public void testPrepare() {
         preparator.prepare();
 
-        assertArrayEquals(extensionType.getValue(), message.getExtensionType().getValue());
-        assertEquals(extensionLength, (long) message.getExtensionLength().getValue());
+        assertArrayEquals(ExtensionType.TRUNCATED_HMAC.getValue(), message.getExtensionType().getValue());
+        assertEquals(0, (long) message.getExtensionLength().getValue());
     }
-
 }

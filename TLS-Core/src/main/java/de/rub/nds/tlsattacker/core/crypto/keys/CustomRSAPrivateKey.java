@@ -15,8 +15,8 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.math.BigInteger;
 import java.security.interfaces.RSAPrivateKey;
 import java.util.Objects;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

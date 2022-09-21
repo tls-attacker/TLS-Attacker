@@ -14,7 +14,7 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.https.header.preparator.ContentLengthHeaderPreparator;
 import de.rub.nds.tlsattacker.core.protocol.Preparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import javax.xml.bind.annotation.XmlTransient;
+import jakarta.xml.bind.annotation.XmlTransient;
 
 public class ContentLengthHeader extends HttpsHeader {
 

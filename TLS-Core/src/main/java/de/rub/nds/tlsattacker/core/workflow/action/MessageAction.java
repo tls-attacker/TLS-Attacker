@@ -13,10 +13,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlElements;
-import javax.xml.bind.annotation.XmlTransient;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElementWrapper;
+import jakarta.xml.bind.annotation.XmlElements;
+import jakarta.xml.bind.annotation.XmlTransient;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.https.HttpsRequestMessage;
@@ -28,7 +28,7 @@ import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ReceiveMessageHelper;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.SendMessageHelper;
-import javax.xml.bind.annotation.XmlElementRef;
+import jakarta.xml.bind.annotation.XmlElementRef;
 
 public abstract class MessageAction extends ConnectionBoundAction {
 

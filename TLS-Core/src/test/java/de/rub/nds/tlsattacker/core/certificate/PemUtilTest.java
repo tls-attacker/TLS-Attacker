@@ -9,14 +9,15 @@
 
 package de.rub.nds.tlsattacker.core.certificate;
 
-import de.rub.nds.tlsattacker.core.crypto.keys.CustomECPrivateKey;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import de.rub.nds.tlsattacker.core.crypto.keys.CustomECPrivateKey;
 import de.rub.nds.tlsattacker.core.crypto.keys.CustomEcPublicKey;
+import org.junit.jupiter.api.Test;
+
 import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
-import org.junit.Test;
-import static org.junit.Assert.assertThat;
-import static org.hamcrest.CoreMatchers.containsString;
 
 public class PemUtilTest {
 
@@ -32,10 +33,10 @@ public class PemUtilTest {
         CustomECPrivateKey key = new CustomECPrivateKey(secret, NamedGroup.SECP256R1);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PemUtil.writePrivateKey(key.getEncoded(), baos);
-        String result = new String(baos.toByteArray());
-        assertThat(result, containsString("-----BEGIN PRIVATE KEY-----"));
-        assertThat(result, containsString("MEECAQAwEwYHKoZIzj0CAQYIKoZIzj0DAQcEJzAlAgEBBCBlhdBA2pVVpBpVqfWQ"));
-        assertThat(result, containsString("-----END PRIVATE KEY-----"));
+        String result = baos.toString();
+        assertTrue(result.contains("-----BEGIN PRIVATE KEY-----"));
+        assertTrue(result.contains("MEECAQAwEwYHKoZIzj0CAQYIKoZIzj0DAQcEJzAlAgEBBCBlhdBA2pVVpBpVqfWQ"));
+        assertTrue(result.contains("-----END PRIVATE KEY-----"));
     }
 
     @Test
@@ -43,9 +44,9 @@ public class PemUtilTest {
         CustomEcPublicKey key = new CustomEcPublicKey(BigInteger.ONE, BigInteger.TEN, NamedGroup.SECP256R1);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PemUtil.writePublicKey(key, baos);
-        String result = new String(baos.toByteArray());
-        assertThat(result, containsString("-----BEGIN PUBLIC KEY-----"));
-        assertThat(result, containsString("MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEAAAAAAAAAAAAAAAAAAAAAAAAAAAA"));
-        assertThat(result, containsString("-----END PUBLIC KEY-----"));
+        String result = baos.toString();
+        assertTrue(result.contains("-----BEGIN PUBLIC KEY-----"));
+        assertTrue(result.contains("MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEAAAAAAAAAAAAAAAAAAAAAAAAAAAA"));
+        assertTrue(result.contains("-----END PUBLIC KEY-----"));
     }
 }

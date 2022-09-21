@@ -9,45 +9,22 @@
 
 package de.rub.nds.tlsattacker.core.protocol.message;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import org.junit.After;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.params.provider.Arguments;
 
-public class ApplicationMessageTest {
+import java.util.function.BiConsumer;
+import java.util.stream.Stream;
 
-    ApplicationMessage message;
+public class ApplicationMessageTest extends AbstractMessageTest<ApplicationMessage> {
 
-    @Before
-    public void setUp() {
-        message = new ApplicationMessage();
+    public ApplicationMessageTest() {
+        super(ApplicationMessage::new, "ApplicationMessage:\n" + "  Data: %s");
     }
 
-    @After
-    public void tearDown() {
+    public static Stream<Arguments> provideToStringTestVectors() {
+        BiConsumer<ApplicationMessage, Object[]> messagePreparator = (message, values) -> {
+            message.setData((byte[]) values[0]);
+        };
+        return Stream.of(Arguments.of(new Object[] { null }, null),
+            Arguments.of(new Object[] { new byte[] { 123 } }, messagePreparator));
     }
-
-    /**
-     * Test of toString method, of class ApplicationMessage.
-     */
-    @Test
-    public void testToString() {
-
-        StringBuilder sb = new StringBuilder();
-        sb.append("ApplicationMessage:");
-        sb.append("\n  Data: ").append("null");
-
-        assertEquals(sb.toString(), message.toString());
-
-        byte[] data = { 123 };
-        message.setData(data);
-
-        sb.setLength(0);
-        sb.append("ApplicationMessage:");
-        sb.append("\n  Data: ").append(ArrayConverter.bytesToHexString(data));
-
-        assertEquals(sb.toString(), message.toString());
-    }
-
 }

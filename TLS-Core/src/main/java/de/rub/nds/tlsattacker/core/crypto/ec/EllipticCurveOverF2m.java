@@ -15,8 +15,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * An elliptic curve over a galois field F_{2^m}.<br />
- * Please notice that the coordinates of affine points are binary polynomials.<br />
+ * An elliptic curve over a galois field F_{2^m}.<br>
+ * Please notice that the coordinates of affine points are binary polynomials.<br>
  * They are represented by BigIntegers, where the i-th bit represents the i-th coefficient.
  */
 public class EllipticCurveOverF2m extends EllipticCurve {
@@ -27,7 +27,7 @@ public class EllipticCurveOverF2m extends EllipticCurve {
     private final FieldElementF2m curveB;
 
     /**
-     * Instantiates the curve y^2 + xy = x^3 + ax^2 + b over F_{2^m}.<br />
+     * Instantiates the curve y^2 + xy = x^3 + ax^2 + b over F_{2^m}.<br>
      *
      * @param a
      *                   A BigInteger representing the binary polynomial a in the equation of the curve.
@@ -44,8 +44,8 @@ public class EllipticCurveOverF2m extends EllipticCurve {
     }
 
     /**
-     * Instantiates the curve y^2 + xy = x^3 + ax^2 + b over F_{2^m}.<br />
-     * polynomial is the reduction polynomial of the field.<br />
+     * Instantiates the curve y^2 + xy = x^3 + ax^2 + b over F_{2^m}.<br>
+     * polynomial is the reduction polynomial of the field.<br>
      * With base point (x, y) and base point order q.
      *
      * @param a

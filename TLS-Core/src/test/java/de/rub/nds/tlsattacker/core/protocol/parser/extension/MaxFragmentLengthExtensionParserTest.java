@@ -9,53 +9,26 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.MaxFragmentLengthExtensionMessage;
-import java.util.Arrays;
-import java.util.Collection;
-import static org.junit.Assert.*;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Named;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class MaxFragmentLengthExtensionParserTest {
+import java.util.List;
+import java.util.stream.Stream;
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] {});// TODO collect a real
-        // maxFragmentLength extension
+public class MaxFragmentLengthExtensionParserTest
+    extends AbstractExtensionParserTest<MaxFragmentLengthExtensionMessage, MaxFragmentLengthExtensionParser> {
+
+    public MaxFragmentLengthExtensionParserTest() {
+        super(MaxFragmentLengthExtensionParser::new,
+            List.of(Named.of("MaxFragmentLengthExtensionMessage::getMaxFragmentLength",
+                MaxFragmentLengthExtensionMessage::getMaxFragmentLength)));
     }
 
-    private final byte[] extension;
-    private final int start;
-    private final byte[] completeExtension;
-    private final ExtensionType type;
-    private final int extensionLength;
-    private final byte[] maxFragmentLength;
-
-    public MaxFragmentLengthExtensionParserTest(byte[] extension, int start, byte[] completeExtension,
-        ExtensionType type, int extensionLength, byte[] maxFragmentLength) {
-        this.extension = extension;
-        this.start = start;
-        this.completeExtension = completeExtension;
-        this.type = type;
-        this.extensionLength = extensionLength;
-        this.maxFragmentLength = maxFragmentLength;
-    }
-
-    /**
-     * Test of parseExtensionMessageContent method, of class MaxFragmentLengthExtensionParser.
-     */
-    @Test
-    public void testParseExtensionMessageContent() {
-        MaxFragmentLengthExtensionParser parser =
-            new MaxFragmentLengthExtensionParser(start, extension, Config.createConfig());
-        MaxFragmentLengthExtensionMessage msg = parser.parse();
-        assertArrayEquals(msg.getExtensionBytes().getValue(), completeExtension);
-        assertArrayEquals(type.getValue(), msg.getExtensionType().getValue());
-        assertTrue(extensionLength == msg.getExtensionLength().getValue());
-        assertTrue(maxFragmentLength == msg.getMaxFragmentLength().getValue());
+    public static Stream<Arguments> provideTestVectors() {
+        return Stream.of(Arguments.of(ArrayConverter.hexStringToByteArray("0001000102"), List.of(),
+            ExtensionType.MAX_FRAGMENT_LENGTH, 1, List.of(new byte[] { 0x02 })));
     }
 }

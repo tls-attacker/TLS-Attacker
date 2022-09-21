@@ -9,25 +9,18 @@
 
 package de.rub.nds.tlsattacker.core.config.delegate;
 
-import com.beust.jcommander.JCommander;
+import static org.junit.jupiter.api.Assertions.*;
+
 import de.rub.nds.tlsattacker.core.config.Config;
 import org.apache.commons.lang3.builder.EqualsBuilder;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class TimeoutDelegateTest {
+public class TimeoutDelegateTest extends AbstractDelegateTest<TimeoutDelegate> {
 
-    private TimeoutDelegate delegate;
-    private JCommander jcommander;
-    private String[] args;
-
-    @Before
+    @BeforeEach
     public void setUp() {
-        this.delegate = new TimeoutDelegate();
-        this.jcommander = new JCommander(delegate);
+        super.setUp(new TimeoutDelegate());
     }
 
     /**
@@ -38,9 +31,9 @@ public class TimeoutDelegateTest {
         args = new String[2];
         args[0] = "-timeout";
         args[1] = "123";
-        assertTrue(delegate.getTimeout() == null);
+        assertNull(delegate.getTimeout());
         jcommander.parse(args);
-        assertTrue(delegate.getTimeout() == 123);
+        assertEquals(123, (int) delegate.getTimeout());
     }
 
     /**
@@ -48,9 +41,9 @@ public class TimeoutDelegateTest {
      */
     @Test
     public void testSetTimeout() {
-        assertTrue(delegate.getTimeout() == null);
+        assertNull(delegate.getTimeout());
         delegate.setTimeout(123);
-        assertTrue(delegate.getTimeout() == 123);
+        assertEquals(123, (int) delegate.getTimeout());
     }
 
     /**
@@ -69,8 +62,8 @@ public class TimeoutDelegateTest {
         jcommander.parse(args);
         delegate.applyDelegate(config);
 
-        assertThat(config.getDefaultClientConnection().getTimeout(), equalTo(expectedTimeout));
-        assertThat(config.getDefaultServerConnection().getTimeout(), equalTo(expectedTimeout));
+        assertEquals(expectedTimeout, config.getDefaultClientConnection().getTimeout().intValue());
+        assertEquals(expectedTimeout, config.getDefaultServerConnection().getTimeout().intValue());
     }
 
     @Test

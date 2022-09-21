@@ -9,40 +9,32 @@
 
 package de.rub.nds.tlsattacker.core.crypto.ffdh;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import org.junit.Before;
-import org.junit.Test;
+import de.rub.nds.tlsattacker.util.tests.TestCategories;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import java.math.BigInteger;
 
-import static org.junit.Assert.*;
-
 public class FFDHEGroupTest {
 
-    @Before
-    public void setUp() {
-    }
+    @ParameterizedTest
+    @EnumSource(value = NamedGroup.class, names = "^FFDHE[0-9]*", mode = EnumSource.Mode.MATCH_ANY)
+    @Tag(TestCategories.SLOW_TEST)
+    public void test(NamedGroup providedNamedGroup) {
+        FFDHEGroup group = GroupFactory.getGroup(providedNamedGroup);
+        BigInteger p = group.getP();
+        BigInteger g = group.getG();
 
-    @Test
-    public void test() {
-        int counter = 0;
-        int implemented = 5;
-        for (NamedGroup name : NamedGroup.values()) {
-            try {
-                FFDHEGroup group = GroupFactory.getGroup(name);
-                BigInteger p = group.getP();
-                BigInteger g = group.getG();
-
-                assertTrue(p.isProbablePrime(32));
-                BigInteger q = p.subtract(BigInteger.ONE).divide(BigInteger.TWO);
-                assertTrue(q.isProbablePrime(32));
-                assertEquals(BigInteger.ONE, g.modPow(q, p));
-
-                counter++;
-            } catch (UnsupportedOperationException e) {
-            }
-        }
-        assertEquals(implemented, counter);
+        assertTrue(p.isProbablePrime(32));
+        BigInteger q = p.subtract(BigInteger.ONE).divide(BigInteger.TWO);
+        assertTrue(q.isProbablePrime(32));
+        assertEquals(BigInteger.ONE, g.modPow(q, p));
     }
 
     @Test

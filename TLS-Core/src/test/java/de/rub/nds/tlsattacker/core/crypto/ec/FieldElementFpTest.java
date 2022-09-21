@@ -9,12 +9,12 @@
 
 package de.rub.nds.tlsattacker.core.crypto.ec;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.math.BigInteger;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.fail;
-import org.junit.Before;
-import org.junit.Test;
 
 public class FieldElementFpTest {
 
@@ -25,7 +25,7 @@ public class FieldElementFpTest {
     private FieldElementFp e4;
     private FieldElementFp zero;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         modulus = new BigInteger("113");
         e1 = new FieldElementFp(new BigInteger("57"), modulus);
@@ -94,11 +94,7 @@ public class FieldElementFpTest {
         result = new FieldElementFp(new BigInteger("1881"), modulus);
         assertEquals(result, tmp);
 
-        try {
-            e1.divide(zero);
-            fail();
-        } catch (ArithmeticException e) {
-        }
+        assertThrows(ArithmeticException.class, () -> e1.divide(zero));
     }
 
     @Test
@@ -114,11 +110,7 @@ public class FieldElementFpTest {
         FieldElementFp result = new FieldElementFp(new BigInteger("33"), modulus);
         assertEquals(result, tmp);
 
-        try {
-            zero.multInv();
-            fail();
-        } catch (ArithmeticException e) {
-        }
+        assertThrows(ArithmeticException.class, () -> zero.multInv());
     }
 
     @Test

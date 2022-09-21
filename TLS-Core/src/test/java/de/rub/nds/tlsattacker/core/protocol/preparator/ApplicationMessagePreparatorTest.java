@@ -9,37 +9,26 @@
 
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class ApplicationMessagePreparatorTest {
+public class ApplicationMessagePreparatorTest
+    extends AbstractTlsMessagePreparatorTest<ApplicationMessage, ApplicationMessagePreparator> {
 
-    private ApplicationMessage message;
-    private ApplicationMessagePreparator preparator;
-    private TlsContext context;
-
-    @Before
-    public void setUp() {
-        message = new ApplicationMessage();
-        context = new TlsContext();
-        preparator = new ApplicationMessagePreparator(context.getChooser(), message);
+    public ApplicationMessagePreparatorTest() {
+        super(ApplicationMessage::new, ApplicationMessage::new, ApplicationMessagePreparator::new);
     }
 
     /**
      * Test of prepareProtocolMessageContents method, of class ApplicationMessagePreparator.
      */
     @Test
+    @Override
     public void testPrepare() {
         context.getConfig().setDefaultApplicationMessageData("1234");
         preparator.prepare();
         assertArrayEquals(message.getData().getValue(), "1234".getBytes());
-    }
-
-    @Test
-    public void testNoContextPrepare() {
-        preparator.prepare();
     }
 }

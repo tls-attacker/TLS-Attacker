@@ -9,26 +9,26 @@
 
 package de.rub.nds.tlsattacker.transport.tcp;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import de.rub.nds.tlsattacker.util.FreePortFinder;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.io.IOException;
 import java.net.Socket;
-import java.util.concurrent.ExecutionException;
-import org.junit.After;
-import static org.junit.Assert.*;
-
-import org.junit.Before;
-import org.junit.Test;
 
 public class ServerTcpTransportHandlerTest {
 
     private ServerTcpTransportHandler handler;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         handler = new ServerTcpTransportHandler(100, 100, FreePortFinder.getPossiblyFreePort());
     }
 
-    @After
+    @AfterEach
     public void close() throws IOException {
         if (handler.isInitialized()) {
             handler.closeConnection();
@@ -37,82 +37,63 @@ public class ServerTcpTransportHandlerTest {
 
     /**
      * Test of closeConnection method, of class ServerTcpTransportHandler.
-     *
-     * @throws java.io.IOException
      */
-    @Test(expected = IOException.class)
-    public void testCloseConnection() throws IOException {
-        handler.closeConnection();
+    @Test
+    public void testCloseConnection() {
+        assertThrows(IOException.class, handler::closeConnection);
     }
 
     @Test
-    public void testCloseClientConnection() throws IOException, InterruptedException, ExecutionException {
-        handler.closeClientConnection(); // should do nothing
+    public void testCloseClientConnection() throws IOException, InterruptedException {
+        assertDoesNotThrow(handler::closeClientConnection);
 
-        // gives the server time to start
         handler.preInitialize();
-        Socket socket = new Socket("localhost", handler.getSrcPort());
-
-        handler.initialize();
-        assertTrue(handler.isInitialized());
-        assertNotNull(socket);
-        assertTrue(socket.isConnected());
-        try {
+        try (Socket socket = new Socket("localhost", handler.getSrcPort())) {
+            handler.initialize();
+            assertTrue(handler.isInitialized());
+            assertNotNull(socket);
+            assertTrue(socket.isConnected());
             socket.getOutputStream().write(123);
             socket.getOutputStream().flush();
-        } catch (IOException E) {
-            fail();
-        }
-
-        handler.closeServerSocket();
-        try {
+            handler.closeServerSocket();
             socket.getOutputStream().write(123);
             socket.getOutputStream().flush();
-        } catch (IOException E) {
-            fail();
-        }
-        handler.closeClientConnection();
-        Thread.sleep(50);
-        try {
-            socket.getOutputStream().write(123);
-            socket.getOutputStream().flush();
-            fail();
-        } catch (IOException E) {
-            // Should happen
+            handler.closeClientConnection();
+            Thread.sleep(50);
+            assertThrows(IOException.class, () -> {
+                socket.getOutputStream().write(123);
+                socket.getOutputStream().flush();
+            });
         }
     }
 
     /**
      * Test of initialize method, of class ServerTcpTransportHandler.
-     *
-     * @throws java.lang.Exception
      */
     @Test
-    public void testInitialize() throws Exception {
+    public void testInitialize() throws IOException {
         assertFalse(handler.isInitialized());
         handler.preInitialize();
-        Socket socket = new Socket("localhost", handler.getSrcPort());
-        assertFalse(handler.isInitialized());
-
-        handler.initialize();
-        assertTrue(handler.isInitialized());
+        try (Socket ignored = new Socket("localhost", handler.getSrcPort())) {
+            assertFalse(handler.isInitialized());
+            handler.initialize();
+            assertTrue(handler.isInitialized());
+        }
     }
 
     @Test
-    public void fullTest() throws IOException, InterruptedException, ExecutionException {
+    public void fullTest() throws IOException {
         handler.preInitialize();
-        Socket socket = new Socket("localhost", handler.getSrcPort());
-
-        handler.initialize();
-
-        assertTrue(handler.isInitialized());
-
-        socket.getOutputStream().write(new byte[] { 0, 1, 2, 3 });
-        assertArrayEquals(new byte[] { 0, 1, 2, 3 }, handler.fetchData());
-        handler.sendData(new byte[] { 4, 3, 2, 1 });
-        byte[] received = new byte[4];
-        socket.getInputStream().read(received);
-        assertArrayEquals(new byte[] { 4, 3, 2, 1 }, received);
+        try (Socket socket = new Socket("localhost", handler.getSrcPort())) {
+            handler.initialize();
+            assertTrue(handler.isInitialized());
+            socket.getOutputStream().write(new byte[] { 0, 1, 2, 3 });
+            assertArrayEquals(new byte[] { 0, 1, 2, 3 }, handler.fetchData());
+            handler.sendData(new byte[] { 4, 3, 2, 1 });
+            byte[] received = new byte[4];
+            assertEquals(4, socket.getInputStream().read(received));
+            assertArrayEquals(new byte[] { 4, 3, 2, 1 }, received);
+        }
     }
 
 }

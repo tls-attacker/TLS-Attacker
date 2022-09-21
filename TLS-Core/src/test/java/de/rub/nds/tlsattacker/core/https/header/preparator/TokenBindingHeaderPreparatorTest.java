@@ -9,24 +9,26 @@
 
 package de.rub.nds.tlsattacker.core.https.header.preparator;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.https.header.TokenBindingHeader;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.Test;
 
 public class TokenBindingHeaderPreparatorTest {
 
     private TokenBindingHeader header;
     private TokenBindingHeaderPreparator preparator;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         TlsContext context = new TlsContext();
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);

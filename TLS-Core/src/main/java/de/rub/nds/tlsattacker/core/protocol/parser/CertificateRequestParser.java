@@ -103,8 +103,8 @@ public class CertificateRequestParser extends HandshakeMessageParser<Certificate
     /**
      * Reads the next bytes as the SignatureHashAlgorithms and writes them in the message
      *
-     * @param message
-     *                Message to write in
+     * @param msg
+     *            Message to write in
      */
     private void parseSignatureHashAlgorithms(CertificateRequestMessage msg) {
         msg.setSignatureHashAlgorithms(parseByteArrayField(msg.getSignatureHashAlgorithmsLength().getValue()));

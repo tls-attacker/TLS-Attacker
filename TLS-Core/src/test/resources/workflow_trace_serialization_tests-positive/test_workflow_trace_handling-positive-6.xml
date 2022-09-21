@@ -18,17 +18,22 @@
 <workflowTrace>
     <OutboundConnection>
         <alias>client</alias>
+        <ip>localhost</ip>
         <port>443</port>
         <hostname>localhost</hostname>
         <timeout>44</timeout>
+        <firstTimeout>1000</firstTimeout>
+        <connectionTimeout>8000</connectionTimeout>
         <transportHandlerType>TCP</transportHandlerType>
     </OutboundConnection>
     <Send>
+        <actionOptions/>
         <connectionAlias>client</connectionAlias>
         <messages>
             <ClientHello/>
         </messages>
         <records/>
+        <fragments/>
     </Send>
 </workflowTrace>
 
@@ -38,6 +43,7 @@
         <timeout>44</timeout>
     </OutboundConnection>
     <Send>
+        <actionOptions/>
         <messages>
             <ClientHello/>
         </messages>

@@ -79,7 +79,9 @@ public class HttpsProxy {
         KeyStore keyStore = KeyStore.getInstance("JKS");
         char[] passphrase = proxyConfig.getPassword().toCharArray();
 
-        keyStore.load(new FileInputStream(proxyConfig.getServerCertificate()), passphrase);
+        try (FileInputStream fis = new FileInputStream(proxyConfig.getServerCertificate())) {
+            keyStore.load(fis, passphrase);
+        }
         keyManagerFactory.init(keyStore, passphrase);
 
         // We trust all clients - do not copy this code if you find it on github

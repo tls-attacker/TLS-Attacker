@@ -9,6 +9,8 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.factory;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
@@ -16,274 +18,196 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.*;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.*;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
 
 public class HandlerFactoryTest {
 
     private TlsContext context;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         context = new TlsContext();
     }
 
-    @Test
-    public void getHandler() {
-        assertTrue(HandlerFactory.getHandler(context, ProtocolMessageType.HANDSHAKE,
-            HandshakeMessageType.UNKNOWN) instanceof UnknownHandshakeHandler);
-        assertTrue(HandlerFactory.getHandler(context, ProtocolMessageType.CHANGE_CIPHER_SPEC,
-            null) instanceof ChangeCipherSpecHandler);
-        assertTrue(HandlerFactory.getHandler(context, ProtocolMessageType.ALERT, null) instanceof AlertHandler);
-        assertTrue(HandlerFactory.getHandler(context, ProtocolMessageType.APPLICATION_DATA,
-            null) instanceof ApplicationMessageHandler);
-        assertTrue(
-            HandlerFactory.getHandler(context, ProtocolMessageType.HEARTBEAT, null) instanceof HeartbeatMessageHandler);
-        assertTrue(
-            HandlerFactory.getHandler(context, ProtocolMessageType.UNKNOWN, null) instanceof UnknownMessageHandler);
+    public static Stream<Arguments> provideGetHandlerTestVectors() {
+        return Stream.of(
+            Arguments.of(ProtocolMessageType.HANDSHAKE, HandshakeMessageType.UNKNOWN, UnknownHandshakeHandler.class),
+            Arguments.of(ProtocolMessageType.CHANGE_CIPHER_SPEC, null, ChangeCipherSpecHandler.class),
+            Arguments.of(ProtocolMessageType.ALERT, null, AlertHandler.class),
+            Arguments.of(ProtocolMessageType.APPLICATION_DATA, null, ApplicationMessageHandler.class),
+            Arguments.of(ProtocolMessageType.HEARTBEAT, null, HeartbeatMessageHandler.class),
+            Arguments.of(ProtocolMessageType.UNKNOWN, null, UnknownMessageHandler.class));
     }
 
-    @Test
-    public void getHandshakeHandler() {
-        assertTrue(HandlerFactory.getHandshakeHandler(context,
-            HandshakeMessageType.CERTIFICATE) instanceof CertificateMessageHandler);
-        assertTrue(HandlerFactory.getHandshakeHandler(context,
-            HandshakeMessageType.CERTIFICATE_REQUEST) instanceof CertificateRequestHandler);
-        assertTrue(HandlerFactory.getHandshakeHandler(context,
-            HandshakeMessageType.CERTIFICATE_VERIFY) instanceof CertificateVerifyHandler);
-        assertTrue(HandlerFactory.getHandshakeHandler(context,
-            HandshakeMessageType.CLIENT_HELLO) instanceof ClientHelloHandler);
-        assertTrue(HandlerFactory.getHandshakeHandler(context,
-            HandshakeMessageType.ENCRYPTED_EXTENSIONS) instanceof EncryptedExtensionsHandler);
-        assertTrue(HandlerFactory.getHandshakeHandler(context,
-            HandshakeMessageType.END_OF_EARLY_DATA) instanceof EndOfEarlyDataHandler);
-        assertTrue(
-            HandlerFactory.getHandshakeHandler(context, HandshakeMessageType.FINISHED) instanceof FinishedHandler);
-        assertTrue(HandlerFactory.getHandshakeHandler(context,
-            HandshakeMessageType.HELLO_REQUEST) instanceof HelloRequestHandler);
-        assertTrue(HandlerFactory.getHandshakeHandler(context,
-            HandshakeMessageType.HELLO_VERIFY_REQUEST) instanceof HelloVerifyRequestHandler);
-        assertTrue(HandlerFactory.getHandshakeHandler(context,
-            HandshakeMessageType.NEW_SESSION_TICKET) instanceof NewSessionTicketHandler);
-        assertTrue(HandlerFactory.getHandshakeHandler(context,
-            HandshakeMessageType.SERVER_HELLO) instanceof ServerHelloHandler);
-        assertTrue(HandlerFactory.getHandshakeHandler(context,
-            HandshakeMessageType.SERVER_HELLO_DONE) instanceof ServerHelloDoneHandler);
-        assertTrue(HandlerFactory.getHandshakeHandler(context,
-            HandshakeMessageType.UNKNOWN) instanceof UnknownHandshakeHandler);
+    @ParameterizedTest
+    @MethodSource("provideGetHandlerTestVectors")
+    public void getHandler(ProtocolMessageType providedProtocolMessageType,
+        HandshakeMessageType providedHandshakeMessageType, Class<?> expectedHandlerClass) {
+        assertTrue(expectedHandlerClass
+            .isInstance(HandlerFactory.getHandler(context, providedProtocolMessageType, providedHandshakeMessageType)));
     }
 
-    @Test
-    public void getExtensionHandler() {
-        assertTrue(HandlerFactory.getExtensionHandler(context, ExtensionType.ALPN) instanceof AlpnExtensionHandler);
-        assertTrue(HandlerFactory.getExtensionHandler(context,
-            ExtensionType.CACHED_INFO) instanceof CachedInfoExtensionHandler);
-        assertTrue(HandlerFactory.getExtensionHandler(context,
-            ExtensionType.CERT_TYPE) instanceof CertificateTypeExtensionHandler);
-        assertTrue(HandlerFactory.getExtensionHandler(context,
-            ExtensionType.CLIENT_AUTHZ) instanceof ClientAuthzExtensionHandler);
-        assertTrue(HandlerFactory.getExtensionHandler(context,
-            ExtensionType.CLIENT_CERTIFICATE_TYPE) instanceof ClientCertificateTypeExtensionHandler);
-        assertTrue(HandlerFactory.getExtensionHandler(context,
-            ExtensionType.CLIENT_CERTIFICATE_URL) instanceof ClientCertificateUrlExtensionHandler);
-        assertTrue(
-            HandlerFactory.getExtensionHandler(context, ExtensionType.EARLY_DATA) instanceof EarlyDataExtensionHandler);
-        assertTrue(HandlerFactory.getExtensionHandler(context,
-            ExtensionType.EC_POINT_FORMATS) instanceof EcPointFormatExtensionHandler);
-        assertTrue(HandlerFactory.getExtensionHandler(context,
-            ExtensionType.ELLIPTIC_CURVES) instanceof EllipticCurvesExtensionHandler);
-        assertTrue(HandlerFactory.getExtensionHandler(context,
-            ExtensionType.ENCRYPT_THEN_MAC) instanceof EncryptThenMacExtensionHandler);
-        assertTrue(HandlerFactory.getExtensionHandler(context,
-            ExtensionType.EXTENDED_MASTER_SECRET) instanceof ExtendedMasterSecretExtensionHandler);
-        assertTrue(
-            HandlerFactory.getExtensionHandler(context, ExtensionType.HEARTBEAT) instanceof HeartbeatExtensionHandler);
-        assertTrue(HandlerFactory.getExtensionHandler(context,
-            ExtensionType.KEY_SHARE_OLD) instanceof KeyShareExtensionHandler);
-        assertTrue(
-            HandlerFactory.getExtensionHandler(context, ExtensionType.KEY_SHARE) instanceof KeyShareExtensionHandler);
-        assertTrue(HandlerFactory.getExtensionHandler(context,
-            ExtensionType.MAX_FRAGMENT_LENGTH) instanceof MaxFragmentLengthExtensionHandler);
-        assertTrue(
-            HandlerFactory.getExtensionHandler(context, ExtensionType.PADDING) instanceof PaddingExtensionHandler);
-        assertTrue(HandlerFactory.getExtensionHandler(context,
-            ExtensionType.PRE_SHARED_KEY) instanceof PreSharedKeyExtensionHandler);
-        assertTrue(HandlerFactory.getExtensionHandler(context,
-            ExtensionType.PSK_KEY_EXCHANGE_MODES) instanceof PSKKeyExchangeModesExtensionHandler);
-        assertTrue(HandlerFactory.getExtensionHandler(context,
-            ExtensionType.RENEGOTIATION_INFO) instanceof RenegotiationInfoExtensionHandler);
-        assertTrue(HandlerFactory.getExtensionHandler(context,
-            ExtensionType.SERVER_AUTHZ) instanceof ServerAuthzExtensionHandler);
-        assertTrue(HandlerFactory.getExtensionHandler(context,
-            ExtensionType.SERVER_CERTIFICATE_TYPE) instanceof ServerCertificateTypeExtensionHandler);
-        assertTrue(HandlerFactory.getExtensionHandler(context,
-            ExtensionType.SERVER_NAME_INDICATION) instanceof ServerNameIndicationExtensionHandler);
-        assertTrue(HandlerFactory.getExtensionHandler(context,
-            ExtensionType.SESSION_TICKET) instanceof SessionTicketTlsExtensionHandler);
-        assertTrue(HandlerFactory.getExtensionHandler(context,
-            ExtensionType.SIGNATURE_AND_HASH_ALGORITHMS) instanceof SignatureAndHashAlgorithmsExtensionHandler);
-        assertTrue(HandlerFactory.getExtensionHandler(context,
-            ExtensionType.SIGNATURE_ALGORITHMS_CERT) instanceof SignatureAlgorithmsCertExtensionHandler);
-        assertTrue(HandlerFactory.getExtensionHandler(context,
-            ExtensionType.SIGNED_CERTIFICATE_TIMESTAMP) instanceof SignedCertificateTimestampExtensionHandler);
-        assertTrue(HandlerFactory.getExtensionHandler(context, ExtensionType.SRP) instanceof SrpExtensionHandler);
-        assertTrue(HandlerFactory.getExtensionHandler(context,
-            ExtensionType.STATUS_REQUEST) instanceof CertificateStatusRequestExtensionHandler);
-        assertTrue(HandlerFactory.getExtensionHandler(context,
-            ExtensionType.STATUS_REQUEST_V2) instanceof CertificateStatusRequestV2ExtensionHandler);
-        assertTrue(HandlerFactory.getExtensionHandler(context,
-            ExtensionType.SUPPORTED_VERSIONS) instanceof SupportedVersionsExtensionHandler);
-        assertTrue(HandlerFactory.getExtensionHandler(context,
-            ExtensionType.TOKEN_BINDING) instanceof TokenBindingExtensionHandler);
-        assertTrue(HandlerFactory.getExtensionHandler(context,
-            ExtensionType.TRUNCATED_HMAC) instanceof TruncatedHmacExtensionHandler);
-        assertTrue(HandlerFactory.getExtensionHandler(context,
-            ExtensionType.TRUSTED_CA_KEYS) instanceof TrustedCaIndicationExtensionHandler);
-        assertTrue(
-            HandlerFactory.getExtensionHandler(context, ExtensionType.UNKNOWN) instanceof UnknownExtensionHandler);
-        assertTrue(HandlerFactory.getExtensionHandler(context,
-            ExtensionType.USER_MAPPING) instanceof UserMappingExtensionHandler);
-        assertTrue(HandlerFactory.getExtensionHandler(context, ExtensionType.USE_SRTP) instanceof SrtpExtensionHandler);
-        assertTrue(HandlerFactory.getExtensionHandler(context,
-            ExtensionType.PWD_PROTECT) instanceof PWDProtectExtensionHandler);
-        assertTrue(
-            HandlerFactory.getExtensionHandler(context, ExtensionType.PWD_CLEAR) instanceof PWDClearExtensionHandler);
-        assertTrue(HandlerFactory.getExtensionHandler(context,
-            ExtensionType.PASSWORD_SALT) instanceof PasswordSaltExtensionHandler);
-        assertTrue(HandlerFactory.getExtensionHandler(context,
-            ExtensionType.EXTENDED_RANDOM) instanceof ExtendedRandomExtensionHandler);
-        assertTrue(HandlerFactory.getExtensionHandler(context, ExtensionType.COOKIE) instanceof CookieExtensionHandler);
+    public static Stream<Arguments> provideGetHandshakeMessageHandlerTestVectors() {
+        return Stream.of(Arguments.of(HandshakeMessageType.CERTIFICATE, CertificateMessageHandler.class),
+            Arguments.of(HandshakeMessageType.CERTIFICATE_REQUEST, CertificateRequestHandler.class),
+            Arguments.of(HandshakeMessageType.CERTIFICATE_VERIFY, CertificateVerifyHandler.class),
+            Arguments.of(HandshakeMessageType.CLIENT_HELLO, ClientHelloHandler.class),
+            Arguments.of(HandshakeMessageType.ENCRYPTED_EXTENSIONS, EncryptedExtensionsHandler.class),
+            Arguments.of(HandshakeMessageType.END_OF_EARLY_DATA, EndOfEarlyDataHandler.class),
+            Arguments.of(HandshakeMessageType.FINISHED, FinishedHandler.class),
+            Arguments.of(HandshakeMessageType.HELLO_REQUEST, HelloRequestHandler.class),
+            Arguments.of(HandshakeMessageType.HELLO_VERIFY_REQUEST, HelloVerifyRequestHandler.class),
+            Arguments.of(HandshakeMessageType.NEW_SESSION_TICKET, NewSessionTicketHandler.class),
+            Arguments.of(HandshakeMessageType.SERVER_HELLO, ServerHelloHandler.class),
+            Arguments.of(HandshakeMessageType.SERVER_HELLO_DONE, ServerHelloDoneHandler.class),
+            Arguments.of(HandshakeMessageType.UNKNOWN, UnknownHandshakeHandler.class));
     }
 
-    @Test
-    public void getClientKeyExchangeHandler() {
-        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_NULL_MD5);
-        assertTrue(HandlerFactory.getHandshakeHandler(context,
-            HandshakeMessageType.CLIENT_KEY_EXCHANGE) instanceof RSAClientKeyExchangeHandler);
-
-        context.setSelectedCipherSuite(CipherSuite.TLS_ECDHE_RSA_WITH_NULL_SHA);
-        assertTrue(HandlerFactory.getHandshakeHandler(context,
-            HandshakeMessageType.CLIENT_KEY_EXCHANGE) instanceof ECDHClientKeyExchangeHandler);
-        context.setSelectedCipherSuite(CipherSuite.TLS_ECDH_RSA_WITH_NULL_SHA);
-        assertTrue(HandlerFactory.getHandshakeHandler(context,
-            HandshakeMessageType.CLIENT_KEY_EXCHANGE) instanceof ECDHClientKeyExchangeHandler);
-        context.setSelectedCipherSuite(CipherSuite.TLS_ECDH_ECDSA_WITH_NULL_SHA);
-        assertTrue(HandlerFactory.getHandshakeHandler(context,
-            HandshakeMessageType.CLIENT_KEY_EXCHANGE) instanceof ECDHClientKeyExchangeHandler);
-        context.setSelectedCipherSuite(CipherSuite.TLS_ECDHE_ECDSA_WITH_NULL_SHA);
-        assertTrue(HandlerFactory.getHandshakeHandler(context,
-            HandshakeMessageType.CLIENT_KEY_EXCHANGE) instanceof ECDHClientKeyExchangeHandler);
-
-        context.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
-        assertTrue(HandlerFactory.getHandshakeHandler(context,
-            HandshakeMessageType.CLIENT_KEY_EXCHANGE) instanceof DHClientKeyExchangeHandler);
-        context.setSelectedCipherSuite(CipherSuite.TLS_DHE_RSA_WITH_AES_128_CBC_SHA);
-        assertTrue(HandlerFactory.getHandshakeHandler(context,
-            HandshakeMessageType.CLIENT_KEY_EXCHANGE) instanceof DHClientKeyExchangeHandler);
-        context.setSelectedCipherSuite(CipherSuite.TLS_DH_anon_WITH_AES_128_CBC_SHA);
-        assertTrue(HandlerFactory.getHandshakeHandler(context,
-            HandshakeMessageType.CLIENT_KEY_EXCHANGE) instanceof DHClientKeyExchangeHandler);
-        context.setSelectedCipherSuite(CipherSuite.TLS_DH_DSS_WITH_AES_128_CBC_SHA);
-        assertTrue(HandlerFactory.getHandshakeHandler(context,
-            HandshakeMessageType.CLIENT_KEY_EXCHANGE) instanceof DHClientKeyExchangeHandler);
-        context.setSelectedCipherSuite(CipherSuite.TLS_DH_RSA_WITH_AES_128_CBC_SHA);
-        assertTrue(HandlerFactory.getHandshakeHandler(context,
-            HandshakeMessageType.CLIENT_KEY_EXCHANGE) instanceof DHClientKeyExchangeHandler);
-
-        context.setSelectedCipherSuite(CipherSuite.TLS_DHE_PSK_WITH_NULL_SHA);
-        assertTrue(HandlerFactory.getHandshakeHandler(context,
-            HandshakeMessageType.CLIENT_KEY_EXCHANGE) instanceof PskDhClientKeyExchangeHandler);
-
-        context.setSelectedCipherSuite(CipherSuite.TLS_ECDHE_PSK_WITH_NULL_SHA);
-        assertTrue(HandlerFactory.getHandshakeHandler(context,
-            HandshakeMessageType.CLIENT_KEY_EXCHANGE) instanceof PskEcDhClientKeyExchangeHandler);
-
-        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_PSK_WITH_NULL_SHA);
-        assertTrue(HandlerFactory.getHandshakeHandler(context,
-            HandshakeMessageType.CLIENT_KEY_EXCHANGE) instanceof PskRsaClientKeyExchangeHandler);
-
-        context.setSelectedCipherSuite(CipherSuite.TLS_PSK_WITH_NULL_SHA);
-        assertTrue(HandlerFactory.getHandshakeHandler(context,
-            HandshakeMessageType.CLIENT_KEY_EXCHANGE) instanceof PskClientKeyExchangeHandler);
-
-        context.setSelectedCipherSuite(CipherSuite.TLS_SRP_SHA_DSS_WITH_AES_128_CBC_SHA);
-        assertTrue(HandlerFactory.getHandshakeHandler(context,
-            HandshakeMessageType.CLIENT_KEY_EXCHANGE) instanceof SrpClientKeyExchangeHandler);
-        context.setSelectedCipherSuite(CipherSuite.TLS_SRP_SHA_RSA_WITH_AES_128_CBC_SHA);
-        assertTrue(HandlerFactory.getHandshakeHandler(context,
-            HandshakeMessageType.CLIENT_KEY_EXCHANGE) instanceof SrpClientKeyExchangeHandler);
-        context.setSelectedCipherSuite(CipherSuite.TLS_SRP_SHA_WITH_AES_128_CBC_SHA);
-        assertTrue(HandlerFactory.getHandshakeHandler(context,
-            HandshakeMessageType.CLIENT_KEY_EXCHANGE) instanceof SrpClientKeyExchangeHandler);
-
-        context.setSelectedCipherSuite(CipherSuite.TLS_GOSTR341001_WITH_28147_CNT_IMIT);
-        assertTrue(HandlerFactory.getHandshakeHandler(context,
-            HandshakeMessageType.CLIENT_KEY_EXCHANGE) instanceof GOSTClientKeyExchangeHandler);
-        context.setSelectedCipherSuite(CipherSuite.TLS_GOSTR341112_256_WITH_28147_CNT_IMIT);
-        assertTrue(HandlerFactory.getHandshakeHandler(context,
-            HandshakeMessageType.CLIENT_KEY_EXCHANGE) instanceof GOSTClientKeyExchangeHandler);
-
-        context.setSelectedCipherSuite(CipherSuite.TLS_ECCPWD_WITH_AES_128_GCM_SHA256);
-        assertTrue(HandlerFactory.getHandshakeHandler(context,
-            HandshakeMessageType.CLIENT_KEY_EXCHANGE) instanceof PWDClientKeyExchangeHandler);
+    @ParameterizedTest
+    @MethodSource("provideGetHandshakeMessageHandlerTestVectors")
+    public void testGetHandshakeMessageHandler(HandshakeMessageType providedHandshakeMessageType,
+        Class<?> expectedHandlerClass) {
+        assertTrue(
+            expectedHandlerClass.isInstance(HandlerFactory.getHandshakeHandler(context, providedHandshakeMessageType)));
     }
 
-    @Test
-    public void getServerKeyExchangeHandler() {
-        context.setSelectedCipherSuite(CipherSuite.TLS_ECDHE_RSA_WITH_NULL_SHA);
-        assertTrue(HandlerFactory.getHandshakeHandler(context,
-            HandshakeMessageType.SERVER_KEY_EXCHANGE) instanceof ECDHEServerKeyExchangeHandler);
-        context.setSelectedCipherSuite(CipherSuite.TLS_ECDH_RSA_WITH_NULL_SHA);
-        assertTrue(HandlerFactory.getHandshakeHandler(context,
-            HandshakeMessageType.SERVER_KEY_EXCHANGE) instanceof ECDHEServerKeyExchangeHandler);
-        context.setSelectedCipherSuite(CipherSuite.TLS_ECDH_ECDSA_WITH_NULL_SHA);
-        assertTrue(HandlerFactory.getHandshakeHandler(context,
-            HandshakeMessageType.SERVER_KEY_EXCHANGE) instanceof ECDHEServerKeyExchangeHandler);
-        context.setSelectedCipherSuite(CipherSuite.TLS_ECDHE_ECDSA_WITH_NULL_SHA);
-        assertTrue(HandlerFactory.getHandshakeHandler(context,
-            HandshakeMessageType.SERVER_KEY_EXCHANGE) instanceof ECDHEServerKeyExchangeHandler);
+    public static Stream<Arguments> provideGetExtensionHandlerTestVectors() {
+        return Stream.of(Arguments.of(ExtensionType.ALPN, AlpnExtensionHandler.class),
+            Arguments.of(ExtensionType.CACHED_INFO, CachedInfoExtensionHandler.class),
+            Arguments.of(ExtensionType.CERT_TYPE, CertificateTypeExtensionHandler.class),
+            Arguments.of(ExtensionType.CLIENT_AUTHZ, ClientAuthzExtensionHandler.class),
+            Arguments.of(ExtensionType.CLIENT_CERTIFICATE_TYPE, ClientCertificateTypeExtensionHandler.class),
+            Arguments.of(ExtensionType.CLIENT_CERTIFICATE_URL, ClientCertificateUrlExtensionHandler.class),
+            Arguments.of(ExtensionType.EARLY_DATA, EarlyDataExtensionHandler.class),
+            Arguments.of(ExtensionType.EC_POINT_FORMATS, EcPointFormatExtensionHandler.class),
+            Arguments.of(ExtensionType.ELLIPTIC_CURVES, EllipticCurvesExtensionHandler.class),
+            Arguments.of(ExtensionType.ENCRYPT_THEN_MAC, EncryptThenMacExtensionHandler.class),
+            Arguments.of(ExtensionType.EXTENDED_MASTER_SECRET, ExtendedMasterSecretExtensionHandler.class),
+            Arguments.of(ExtensionType.HEARTBEAT, HeartbeatExtensionHandler.class),
+            Arguments.of(ExtensionType.KEY_SHARE_OLD, KeyShareExtensionHandler.class),
+            Arguments.of(ExtensionType.KEY_SHARE, KeyShareExtensionHandler.class),
+            Arguments.of(ExtensionType.MAX_FRAGMENT_LENGTH, MaxFragmentLengthExtensionHandler.class),
+            Arguments.of(ExtensionType.PADDING, PaddingExtensionHandler.class),
+            Arguments.of(ExtensionType.PRE_SHARED_KEY, PreSharedKeyExtensionHandler.class),
+            Arguments.of(ExtensionType.PSK_KEY_EXCHANGE_MODES, PSKKeyExchangeModesExtensionHandler.class),
+            Arguments.of(ExtensionType.RENEGOTIATION_INFO, RenegotiationInfoExtensionHandler.class),
+            Arguments.of(ExtensionType.SERVER_AUTHZ, ServerAuthzExtensionHandler.class),
+            Arguments.of(ExtensionType.SERVER_CERTIFICATE_TYPE, ServerCertificateTypeExtensionHandler.class),
+            Arguments.of(ExtensionType.SERVER_NAME_INDICATION, ServerNameIndicationExtensionHandler.class),
+            Arguments.of(ExtensionType.SESSION_TICKET, SessionTicketTlsExtensionHandler.class),
+            Arguments.of(ExtensionType.SIGNATURE_AND_HASH_ALGORITHMS, SignatureAndHashAlgorithmsExtensionHandler.class),
+            Arguments.of(ExtensionType.SIGNATURE_ALGORITHMS_CERT, SignatureAlgorithmsCertExtensionHandler.class),
+            Arguments.of(ExtensionType.SIGNED_CERTIFICATE_TIMESTAMP, SignedCertificateTimestampExtensionHandler.class),
+            Arguments.of(ExtensionType.SRP, SrpExtensionHandler.class),
+            Arguments.of(ExtensionType.STATUS_REQUEST, CertificateStatusRequestExtensionHandler.class),
+            Arguments.of(ExtensionType.STATUS_REQUEST_V2, CertificateStatusRequestV2ExtensionHandler.class),
+            Arguments.of(ExtensionType.SUPPORTED_VERSIONS, SupportedVersionsExtensionHandler.class),
+            Arguments.of(ExtensionType.TOKEN_BINDING, TokenBindingExtensionHandler.class),
+            Arguments.of(ExtensionType.TRUNCATED_HMAC, TruncatedHmacExtensionHandler.class),
+            Arguments.of(ExtensionType.TRUSTED_CA_KEYS, TrustedCaIndicationExtensionHandler.class),
+            Arguments.of(ExtensionType.UNKNOWN, UnknownExtensionHandler.class),
+            Arguments.of(ExtensionType.USER_MAPPING, UserMappingExtensionHandler.class),
+            Arguments.of(ExtensionType.USE_SRTP, SrtpExtensionHandler.class),
+            Arguments.of(ExtensionType.PWD_PROTECT, PWDProtectExtensionHandler.class),
+            Arguments.of(ExtensionType.PWD_CLEAR, PWDClearExtensionHandler.class),
+            Arguments.of(ExtensionType.PASSWORD_SALT, PasswordSaltExtensionHandler.class),
+            Arguments.of(ExtensionType.EXTENDED_RANDOM, ExtendedRandomExtensionHandler.class),
+            Arguments.of(ExtensionType.COOKIE, CookieExtensionHandler.class));
+    }
 
-        context.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
-        assertTrue(HandlerFactory.getHandshakeHandler(context,
-            HandshakeMessageType.SERVER_KEY_EXCHANGE) instanceof DHEServerKeyExchangeHandler);
-        context.setSelectedCipherSuite(CipherSuite.TLS_DHE_RSA_WITH_AES_128_CBC_SHA);
-        assertTrue(HandlerFactory.getHandshakeHandler(context,
-            HandshakeMessageType.SERVER_KEY_EXCHANGE) instanceof DHEServerKeyExchangeHandler);
-        context.setSelectedCipherSuite(CipherSuite.TLS_DH_anon_WITH_AES_128_CBC_SHA);
-        assertTrue(HandlerFactory.getHandshakeHandler(context,
-            HandshakeMessageType.SERVER_KEY_EXCHANGE) instanceof DHEServerKeyExchangeHandler);
-        context.setSelectedCipherSuite(CipherSuite.TLS_DH_DSS_WITH_AES_128_CBC_SHA);
-        assertTrue(HandlerFactory.getHandshakeHandler(context,
-            HandshakeMessageType.SERVER_KEY_EXCHANGE) instanceof DHEServerKeyExchangeHandler);
-        context.setSelectedCipherSuite(CipherSuite.TLS_DH_RSA_WITH_AES_128_CBC_SHA);
-        assertTrue(HandlerFactory.getHandshakeHandler(context,
-            HandshakeMessageType.SERVER_KEY_EXCHANGE) instanceof DHEServerKeyExchangeHandler);
+    @ParameterizedTest
+    @MethodSource("provideGetExtensionHandlerTestVectors")
+    public void getExtensionHandler(ExtensionType providedExtensionType, Class<?> expectedHandlerClass) {
+        assertTrue(expectedHandlerClass.isInstance(HandlerFactory.getExtensionHandler(context, providedExtensionType)));
+    }
 
-        context.setSelectedCipherSuite(CipherSuite.TLS_DHE_PSK_WITH_NULL_SHA);
-        assertTrue(HandlerFactory.getHandshakeHandler(context,
-            HandshakeMessageType.SERVER_KEY_EXCHANGE) instanceof PskDheServerKeyExchangeHandler);
+    public static Stream<Arguments> provideGetKeyExchangeHandlerTestVectors() {
+        return Stream.of(
+            Arguments.of(CipherSuite.TLS_RSA_WITH_NULL_MD5, HandshakeMessageType.CLIENT_KEY_EXCHANGE,
+                RSAClientKeyExchangeHandler.class),
+            Arguments.of(CipherSuite.TLS_ECDHE_RSA_WITH_NULL_SHA, HandshakeMessageType.CLIENT_KEY_EXCHANGE,
+                ECDHClientKeyExchangeHandler.class),
+            Arguments.of(CipherSuite.TLS_ECDH_RSA_WITH_NULL_SHA, HandshakeMessageType.CLIENT_KEY_EXCHANGE,
+                ECDHClientKeyExchangeHandler.class),
+            Arguments.of(CipherSuite.TLS_ECDH_ECDSA_WITH_NULL_SHA, HandshakeMessageType.CLIENT_KEY_EXCHANGE,
+                ECDHClientKeyExchangeHandler.class),
+            Arguments.of(CipherSuite.TLS_ECDHE_ECDSA_WITH_NULL_SHA, HandshakeMessageType.CLIENT_KEY_EXCHANGE,
+                ECDHClientKeyExchangeHandler.class),
+            Arguments.of(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA, HandshakeMessageType.CLIENT_KEY_EXCHANGE,
+                DHClientKeyExchangeHandler.class),
+            Arguments.of(CipherSuite.TLS_DHE_RSA_WITH_AES_128_CBC_SHA, HandshakeMessageType.CLIENT_KEY_EXCHANGE,
+                DHClientKeyExchangeHandler.class),
+            Arguments.of(CipherSuite.TLS_DH_anon_WITH_AES_128_CBC_SHA, HandshakeMessageType.CLIENT_KEY_EXCHANGE,
+                DHClientKeyExchangeHandler.class),
+            Arguments.of(CipherSuite.TLS_DH_DSS_WITH_AES_128_CBC_SHA, HandshakeMessageType.CLIENT_KEY_EXCHANGE,
+                DHClientKeyExchangeHandler.class),
+            Arguments.of(CipherSuite.TLS_DH_RSA_WITH_AES_128_CBC_SHA, HandshakeMessageType.CLIENT_KEY_EXCHANGE,
+                DHClientKeyExchangeHandler.class),
+            Arguments.of(CipherSuite.TLS_DHE_PSK_WITH_NULL_SHA, HandshakeMessageType.CLIENT_KEY_EXCHANGE,
+                PskDhClientKeyExchangeHandler.class),
+            Arguments.of(CipherSuite.TLS_ECDHE_PSK_WITH_NULL_SHA, HandshakeMessageType.CLIENT_KEY_EXCHANGE,
+                PskEcDhClientKeyExchangeHandler.class),
+            Arguments.of(CipherSuite.TLS_RSA_PSK_WITH_NULL_SHA, HandshakeMessageType.CLIENT_KEY_EXCHANGE,
+                PskRsaClientKeyExchangeHandler.class),
+            Arguments.of(CipherSuite.TLS_PSK_WITH_NULL_SHA, HandshakeMessageType.CLIENT_KEY_EXCHANGE,
+                PskClientKeyExchangeHandler.class),
+            Arguments.of(CipherSuite.TLS_SRP_SHA_DSS_WITH_AES_128_CBC_SHA, HandshakeMessageType.CLIENT_KEY_EXCHANGE,
+                SrpClientKeyExchangeHandler.class),
+            Arguments.of(CipherSuite.TLS_SRP_SHA_RSA_WITH_AES_128_CBC_SHA, HandshakeMessageType.CLIENT_KEY_EXCHANGE,
+                SrpClientKeyExchangeHandler.class),
+            Arguments.of(CipherSuite.TLS_SRP_SHA_WITH_AES_128_CBC_SHA, HandshakeMessageType.CLIENT_KEY_EXCHANGE,
+                SrpClientKeyExchangeHandler.class),
+            Arguments.of(CipherSuite.TLS_GOSTR341001_WITH_28147_CNT_IMIT, HandshakeMessageType.CLIENT_KEY_EXCHANGE,
+                GOSTClientKeyExchangeHandler.class),
+            Arguments.of(CipherSuite.TLS_GOSTR341112_256_WITH_28147_CNT_IMIT, HandshakeMessageType.CLIENT_KEY_EXCHANGE,
+                GOSTClientKeyExchangeHandler.class),
+            Arguments.of(CipherSuite.TLS_ECCPWD_WITH_AES_128_GCM_SHA256, HandshakeMessageType.CLIENT_KEY_EXCHANGE,
+                PWDClientKeyExchangeHandler.class),
+            Arguments.of(CipherSuite.TLS_ECDHE_RSA_WITH_NULL_SHA, HandshakeMessageType.SERVER_KEY_EXCHANGE,
+                ECDHEServerKeyExchangeHandler.class),
+            Arguments.of(CipherSuite.TLS_ECDH_RSA_WITH_NULL_SHA, HandshakeMessageType.SERVER_KEY_EXCHANGE,
+                ECDHEServerKeyExchangeHandler.class),
+            Arguments.of(CipherSuite.TLS_ECDH_ECDSA_WITH_NULL_SHA, HandshakeMessageType.SERVER_KEY_EXCHANGE,
+                ECDHEServerKeyExchangeHandler.class),
+            Arguments.of(CipherSuite.TLS_ECDHE_ECDSA_WITH_NULL_SHA, HandshakeMessageType.SERVER_KEY_EXCHANGE,
+                ECDHEServerKeyExchangeHandler.class),
+            Arguments.of(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA, HandshakeMessageType.SERVER_KEY_EXCHANGE,
+                DHEServerKeyExchangeHandler.class),
+            Arguments.of(CipherSuite.TLS_DHE_RSA_WITH_AES_128_CBC_SHA, HandshakeMessageType.SERVER_KEY_EXCHANGE,
+                DHEServerKeyExchangeHandler.class),
+            Arguments.of(CipherSuite.TLS_DH_anon_WITH_AES_128_CBC_SHA, HandshakeMessageType.SERVER_KEY_EXCHANGE,
+                DHEServerKeyExchangeHandler.class),
+            Arguments.of(CipherSuite.TLS_DH_DSS_WITH_AES_128_CBC_SHA, HandshakeMessageType.SERVER_KEY_EXCHANGE,
+                DHEServerKeyExchangeHandler.class),
+            Arguments.of(CipherSuite.TLS_DH_RSA_WITH_AES_128_CBC_SHA, HandshakeMessageType.SERVER_KEY_EXCHANGE,
+                DHEServerKeyExchangeHandler.class),
+            Arguments.of(CipherSuite.TLS_DHE_PSK_WITH_NULL_SHA, HandshakeMessageType.SERVER_KEY_EXCHANGE,
+                PskDheServerKeyExchangeHandler.class),
+            Arguments.of(CipherSuite.TLS_ECDHE_PSK_WITH_NULL_SHA, HandshakeMessageType.SERVER_KEY_EXCHANGE,
+                PskEcDheServerKeyExchangeHandler.class),
+            Arguments.of(CipherSuite.TLS_PSK_WITH_NULL_SHA, HandshakeMessageType.SERVER_KEY_EXCHANGE,
+                PskServerKeyExchangeHandler.class),
+            Arguments.of(CipherSuite.TLS_SRP_SHA_DSS_WITH_AES_128_CBC_SHA, HandshakeMessageType.SERVER_KEY_EXCHANGE,
+                SrpServerKeyExchangeHandler.class),
+            Arguments.of(CipherSuite.TLS_SRP_SHA_RSA_WITH_AES_128_CBC_SHA, HandshakeMessageType.SERVER_KEY_EXCHANGE,
+                SrpServerKeyExchangeHandler.class),
+            Arguments.of(CipherSuite.TLS_SRP_SHA_WITH_AES_128_CBC_SHA, HandshakeMessageType.SERVER_KEY_EXCHANGE,
+                SrpServerKeyExchangeHandler.class),
+            Arguments.of(CipherSuite.TLS_ECCPWD_WITH_AES_128_GCM_SHA256, HandshakeMessageType.SERVER_KEY_EXCHANGE,
+                PWDServerKeyExchangeHandler.class));
+    }
 
-        context.setSelectedCipherSuite(CipherSuite.TLS_ECDHE_PSK_WITH_NULL_SHA);
-        assertTrue(HandlerFactory.getHandshakeHandler(context,
-            HandshakeMessageType.SERVER_KEY_EXCHANGE) instanceof PskEcDheServerKeyExchangeHandler);
-
-        context.setSelectedCipherSuite(CipherSuite.TLS_PSK_WITH_NULL_SHA);
-        assertTrue(HandlerFactory.getHandshakeHandler(context,
-            HandshakeMessageType.SERVER_KEY_EXCHANGE) instanceof PskServerKeyExchangeHandler);
-
-        context.setSelectedCipherSuite(CipherSuite.TLS_SRP_SHA_DSS_WITH_AES_128_CBC_SHA);
-        assertTrue(HandlerFactory.getHandshakeHandler(context,
-            HandshakeMessageType.SERVER_KEY_EXCHANGE) instanceof SrpServerKeyExchangeHandler);
-        context.setSelectedCipherSuite(CipherSuite.TLS_SRP_SHA_RSA_WITH_AES_128_CBC_SHA);
-        assertTrue(HandlerFactory.getHandshakeHandler(context,
-            HandshakeMessageType.SERVER_KEY_EXCHANGE) instanceof SrpServerKeyExchangeHandler);
-        context.setSelectedCipherSuite(CipherSuite.TLS_SRP_SHA_WITH_AES_128_CBC_SHA);
-        assertTrue(HandlerFactory.getHandshakeHandler(context,
-            HandshakeMessageType.SERVER_KEY_EXCHANGE) instanceof SrpServerKeyExchangeHandler);
-
-        context.setSelectedCipherSuite(CipherSuite.TLS_ECCPWD_WITH_AES_128_GCM_SHA256);
-        assertTrue(HandlerFactory.getHandshakeHandler(context,
-            HandshakeMessageType.SERVER_KEY_EXCHANGE) instanceof PWDServerKeyExchangeHandler);
+    @ParameterizedTest
+    @MethodSource("provideGetKeyExchangeHandlerTestVectors")
+    public void getKeyExchangeHandler(CipherSuite providedCipherSuite,
+        HandshakeMessageType providedHandshakeMessageType, Class<?> expectedHandlerClass) {
+        context.setSelectedCipherSuite(providedCipherSuite);
+        assertTrue(
+            expectedHandlerClass.isInstance(HandlerFactory.getHandshakeHandler(context, providedHandshakeMessageType)));
     }
 }

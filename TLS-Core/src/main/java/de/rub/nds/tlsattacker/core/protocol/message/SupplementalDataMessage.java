@@ -22,7 +22,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.supplementaldata.Supplementa
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.LinkedList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "SupplementalData")
 public class SupplementalDataMessage extends HandshakeMessage {

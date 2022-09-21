@@ -9,44 +9,40 @@
 
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
 import java.math.BigInteger;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.Security;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertNotNull;
-import org.junit.Before;
-import org.junit.Test;
 
-@SuppressWarnings("SpellCheckingInspection")
-public class ECDHClientKeyExchangePreparatorTest {
+public class ECDHClientKeyExchangePreparatorTest extends AbstractTlsMessagePreparatorTest<ECDHClientKeyExchangeMessage,
+    ECDHClientKeyExchangePreparator<ECDHClientKeyExchangeMessage>> {
 
     private final static String RANDOM = "CAFEBABECAFE";
     private final static byte[] PREMASTER_SECRET =
         ArrayConverter.hexStringToByteArray("273CF78A3DB2E37EE97935DEF45E3C82F126807C31A498E9");
-    private TlsContext context;
-    private ECDHClientKeyExchangeMessage message;
-    private ECDHClientKeyExchangePreparator preparator;
 
-    public ECDHClientKeyExchangePreparatorTest() {
+    @BeforeAll
+    public static void setUpClass() {
+        Security.addProvider(new BouncyCastleProvider());
     }
 
-    @Before
-    public void setUp() {
-        Security.addProvider(new BouncyCastleProvider());
-
-        context = new TlsContext();
-        message = new ECDHClientKeyExchangeMessage();
-        preparator = new ECDHClientKeyExchangePreparator(context.getChooser(), message);
+    public ECDHClientKeyExchangePreparatorTest() {
+        super(ECDHClientKeyExchangeMessage::new, ECDHClientKeyExchangeMessage::new,
+            ECDHClientKeyExchangePreparator::new);
     }
 
     /**
@@ -57,6 +53,7 @@ public class ECDHClientKeyExchangePreparatorTest {
      * @throws java.security.InvalidAlgorithmParameterException
      */
     @Test
+    @Override
     public void testPrepare()
         throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException {
         // prepare context
@@ -83,10 +80,5 @@ public class ECDHClientKeyExchangePreparatorTest {
             ArrayConverter.concatenate(ArrayConverter.hexStringToByteArray(RANDOM),
                 ArrayConverter.hexStringToByteArray(RANDOM)),
             message.getComputations().getClientServerRandom().getValue());
-    }
-
-    @Test
-    public void testNoContextPrepare() {
-        preparator.prepare();
     }
 }

@@ -19,16 +19,16 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import javax.xml.XMLConstants;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.ValidationEvent;
-import javax.xml.bind.ValidationEventHandler;
-import javax.xml.bind.util.JAXBSource;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Unmarshaller;
+import jakarta.xml.bind.ValidationEvent;
+import jakarta.xml.bind.ValidationEventHandler;
+import jakarta.xml.bind.util.JAXBSource;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -76,8 +76,9 @@ public class WorkflowTraceSerializer {
      *                               Is thrown if the Process doesn't have the rights to write to the File
      */
     public static void write(File file, WorkflowTrace trace) throws FileNotFoundException, JAXBException, IOException {
-        FileOutputStream fos = new FileOutputStream(file);
-        WorkflowTraceSerializer.write(fos, trace);
+        try (FileOutputStream fos = new FileOutputStream(file)) {
+            WorkflowTraceSerializer.write(fos, trace);
+        }
     }
 
     /**
@@ -94,7 +95,7 @@ public class WorkflowTraceSerializer {
     public static String write(WorkflowTrace trace) throws JAXBException, IOException {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         WorkflowTraceSerializer.write(bos, trace);
-        return bos.toString("UTF-8");
+        return bos.toString(StandardCharsets.UTF_8);
     }
 
     /**
@@ -116,14 +117,11 @@ public class WorkflowTraceSerializer {
             transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
             transformer.transform(new JAXBSource(context, workflowTrace), new StreamResult(xmlOutputStream));
 
-            String xml_text = xmlOutputStream.toString();
-            // and we modify all line separators to the system dependant line separator
-            xml_text = xml_text.replaceAll("\r?\n", System.lineSeparator());
-            outputStream.write(xml_text.getBytes());
+            outputStream.write(xmlOutputStream.toString().replaceAll("\r?\n", System.lineSeparator())
+                .getBytes(StandardCharsets.UTF_8));
         } catch (TransformerException E) {
             LOGGER.debug(E.getStackTrace());
         }
-        outputStream.close();
     }
 
     /**
@@ -142,20 +140,15 @@ public class WorkflowTraceSerializer {
         throws JAXBException, IOException, XMLStreamException {
         context = getJAXBContext();
         Unmarshaller unmarshaller = context.createUnmarshaller();
-        unmarshaller.setEventHandler(new ValidationEventHandler() {
-            @Override
-            public boolean handleEvent(ValidationEvent event) {
-                // raise an Exception also on Warnings
-                return false;
-            }
+        unmarshaller.setEventHandler(event -> {
+            // raise an Exception also on Warnings
+            return false;
         });
         XMLInputFactory xif = XMLInputFactory.newFactory();
         xif.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
         xif.setProperty(XMLInputFactory.SUPPORT_DTD, false);
         XMLStreamReader xsr = xif.createXMLStreamReader(inputStream);
-        WorkflowTrace wt = (WorkflowTrace) unmarshaller.unmarshal(xsr);
-        inputStream.close();
-        return wt;
+        return (WorkflowTrace) unmarshaller.unmarshal(xsr);
     }
 
     /**
@@ -173,8 +166,8 @@ public class WorkflowTraceSerializer {
                     continue;
                 }
                 WorkflowTrace trace;
-                try {
-                    trace = WorkflowTraceSerializer.insecureRead(new FileInputStream(file));
+                try (FileInputStream fis = new FileInputStream(file)) {
+                    trace = WorkflowTraceSerializer.insecureRead(fis);
                     trace.setName(file.getAbsolutePath());
                     list.add(trace);
                 } catch (JAXBException | IOException | XMLStreamException ex) {
@@ -222,10 +215,11 @@ public class WorkflowTraceSerializer {
             XMLStreamReader xsr = xif.createXMLStreamReader(inputStream);
 
             SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-            Schema workflowTraceSchema =
-                sf.newSchema(new StreamSource(WorkflowTraceSerializer.class.getResourceAsStream("/" + xsd_source)));
-            workflowTraceSchema.newValidator();
-            unmarshaller.setSchema(workflowTraceSchema);
+            try (InputStream schemaInputStream = WorkflowTraceSerializer.class.getResourceAsStream("/" + xsd_source)) {
+                Schema configSchema = sf.newSchema(new StreamSource(schemaInputStream));
+                configSchema.newValidator();
+                unmarshaller.setSchema(configSchema);
+            }
             WorkflowTrace wt = (WorkflowTrace) unmarshaller.unmarshal(xsr);
             ModvarHelper helper = new ModvarHelper();
             List<ModifiableVariableField> allSentFields = helper.getAllSentFields(wt);
@@ -236,7 +230,6 @@ public class WorkflowTraceSerializer {
                     break;
                 }
             }
-            inputStream.close();
             return wt;
         } catch (IllegalArgumentException | IllegalAccessException | SAXException ex) {
             throw new RuntimeException(ex);
@@ -258,8 +251,8 @@ public class WorkflowTraceSerializer {
                     continue;
                 }
                 WorkflowTrace trace;
-                try {
-                    trace = WorkflowTraceSerializer.secureRead(new FileInputStream(file));
+                try (FileInputStream fis = new FileInputStream(file)) {
+                    trace = WorkflowTraceSerializer.secureRead(fis);
                     trace.setName(file.getAbsolutePath());
                     list.add(trace);
                 } catch (JAXBException | IOException | XMLStreamException ex) {
@@ -271,11 +264,9 @@ public class WorkflowTraceSerializer {
         } else {
             throw new IllegalArgumentException("Cannot read Folder, because its not a Folder");
         }
-
     }
 
     private WorkflowTraceSerializer() {
-
     }
 
 }

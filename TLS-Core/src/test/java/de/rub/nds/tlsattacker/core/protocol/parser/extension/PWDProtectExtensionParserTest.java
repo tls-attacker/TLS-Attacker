@@ -10,57 +10,34 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PWDProtectExtensionMessage;
-import java.util.Arrays;
-import java.util.Collection;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Named;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class PWDProtectExtensionParserTest {
+import java.util.List;
+import java.util.stream.Stream;
+
+public class PWDProtectExtensionParserTest
+    extends AbstractExtensionParserTest<PWDProtectExtensionMessage, PWDProtectExtensionParser> {
+
+    public PWDProtectExtensionParserTest() {
+        super(PWDProtectExtensionParser::new,
+            List.of(
+                Named.of("PWDProtectExtensionMessage::getUsernameLength",
+                    PWDProtectExtensionMessage::getUsernameLength),
+                Named.of("PWDProtectExtensionMessage::getUsername", PWDProtectExtensionMessage::getUsername)));
+    }
 
     /**
      * Generate test data for the parser and serializer
-     *
+     * <p>
      * Note that the "username" is not actually an encrypted byte string in this test. The parser and serializer don't
      * really care about that. This is just to test if the field is extracted correctly. The actual
      * encryption/decryption is done by the handler/preparator.
      */
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { { ArrayConverter.hexStringToByteArray("001d00050466726564"), 0,
-            ExtensionType.PWD_PROTECT, 5, 4, ArrayConverter.hexStringToByteArray("66726564") } });
-    }
-
-    private final byte[] expectedBytes;
-    private final int start;
-    private final ExtensionType type;
-    private final int extensionLength;
-    private final int usernameLength;
-    private final byte[] username;
-
-    public PWDProtectExtensionParserTest(byte[] expectedBytes, int start, ExtensionType type, int extensionLength,
-        int usernameLength, byte[] username) {
-        this.expectedBytes = expectedBytes;
-        this.start = start;
-        this.type = type;
-        this.extensionLength = extensionLength;
-        this.usernameLength = usernameLength;
-        this.username = username;
-    }
-
-    @Test
-    public void testParseExtensionMessageContent() {
-        PWDProtectExtensionParser parser = new PWDProtectExtensionParser(start, expectedBytes, Config.createConfig());
-        PWDProtectExtensionMessage msg = parser.parse();
-        assertArrayEquals(type.getValue(), msg.getExtensionType().getValue());
-        assertEquals(extensionLength, (long) msg.getExtensionLength().getValue());
-        assertEquals(usernameLength, (long) msg.getUsernameLength().getValue());
-        assertArrayEquals(username, msg.getUsername().getValue());
+    public static Stream<Arguments> provideTestVectors() {
+        return Stream.of(Arguments.of(ArrayConverter.hexStringToByteArray("001d00050466726564"), List.of(),
+            ExtensionType.PWD_PROTECT, 5, List.of(4, ArrayConverter.hexStringToByteArray("66726564"))));
     }
 }

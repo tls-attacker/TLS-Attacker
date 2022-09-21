@@ -125,8 +125,8 @@ public class MitmDelegate extends Delegate {
 
     private int parsePort(String portStr) {
         int port = Integer.parseInt(portStr);
-        if (port < 0 || port > 65535) {
-            throw new ParameterException("port must be in interval [0,65535], but is " + port);
+        if (port < 1 || port > 65535) {
+            throw new ParameterException("port must be in interval [1,65535], but is " + port);
         }
         return port;
     }

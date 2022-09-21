@@ -9,8 +9,10 @@
 
 package de.rub.nds.tlsattacker.core.record.layer;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
@@ -21,19 +23,20 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
+import de.rub.nds.tlsattacker.util.tests.TestCategories;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+
 import java.util.LinkedList;
 import java.util.List;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
 
 public class RecordLayerTest {
 
     RecordLayer recordHandler;
 
-    @Before
+    @BeforeEach
     public void setUp() {
-
         Config config = Config.createConfig();
         config.setRecordLayerType(RecordLayerType.RECORD);
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
@@ -49,6 +52,7 @@ public class RecordLayerTest {
      * Test of prepare method, of class TlsRecordLayer.
      */
     @Test
+    @Tag(TestCategories.SLOW_TEST)
     public void testWrapData() {
         byte[] data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
         byte[] result;
@@ -89,7 +93,7 @@ public class RecordLayerTest {
         // TLS record bytes
         byte[] unparsedRecord =
             { 0x16, 0x03, 0x03, 0x00, 0x0A, 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09 };
-        // wrong length for payload in order to create ParserException and parse
+        // wrong length for payload in order to create ParserException and testParse
         // the bytes as Blob
         byte[] unparsedBlob =
             { 0x16, 0x03, 0x03, 0x00, 0x1A, 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09 };

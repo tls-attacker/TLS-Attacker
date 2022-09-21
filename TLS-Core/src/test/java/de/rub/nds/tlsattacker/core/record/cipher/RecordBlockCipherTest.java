@@ -9,52 +9,50 @@
 
 package de.rub.nds.tlsattacker.core.record.cipher;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
-import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.constants.CipherType;
-import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import de.rub.nds.tlsattacker.util.UnlimitedStrengthEnabler;
+import de.rub.nds.tlsattacker.util.tests.TestCategories;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.util.test.TestRandomData;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 import java.security.Security;
 import java.util.ArrayList;
 import java.util.List;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.bouncycastle.util.test.TestRandomData;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
 
 public class RecordBlockCipherTest {
 
     private TlsContext context;
     private RecordBlockCipher cipher;
 
-    public RecordBlockCipherTest() {
+    @BeforeAll
+    public static void setUpClass() {
+        Security.addProvider(new BouncyCastleProvider());
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         context = new TlsContext();
-        Security.addProvider(new BouncyCastleProvider());
-        UnlimitedStrengthEnabler.enable();
     }
 
     @Test
+    @Tag(TestCategories.SLOW_TEST)
     public void testConstructors() throws NoSuchAlgorithmException, CryptoException {
         // This test just checks that the init() method will not break
         List<AliasedConnection> mixedConnections = new ArrayList<>();
@@ -87,7 +85,7 @@ public class RecordBlockCipherTest {
     }
 
     @Test
-    public void testEncryptTls10Client() throws NoSuchAlgorithmException, CryptoException {
+    public void testEncryptTls10Client() throws CryptoException {
         context.setConnection(new OutboundConnection());
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS10);
@@ -149,7 +147,7 @@ public class RecordBlockCipherTest {
     }
 
     @Test
-    public void testDecryptTls10Client() throws NoSuchAlgorithmException, CryptoException {
+    public void testDecryptTls10Client() throws CryptoException {
         // This is effectively the testEncryptTls10() test in reverse
         context.setConnection(new InboundConnection());
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA);
@@ -219,7 +217,7 @@ public class RecordBlockCipherTest {
     }
 
     @Test
-    public void testEncryptTls11Client() throws NoSuchAlgorithmException, CryptoException {
+    public void testEncryptTls11Client() throws CryptoException {
         context.setConnection(new OutboundConnection());
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS11);
@@ -281,7 +279,7 @@ public class RecordBlockCipherTest {
     }
 
     @Test
-    public void testDecryptTls11Client() throws NoSuchAlgorithmException, CryptoException {
+    public void testDecryptTls11Client() throws CryptoException {
         // This is effectively the testEncryptTls11() test in reverse
         context.setConnection(new InboundConnection());
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA);
@@ -351,7 +349,7 @@ public class RecordBlockCipherTest {
     }
 
     @Test
-    public void testEncryptTls12Client() throws NoSuchAlgorithmException, CryptoException {
+    public void testEncryptTls12Client() throws CryptoException {
         context.setConnection(new OutboundConnection());
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
@@ -413,7 +411,7 @@ public class RecordBlockCipherTest {
     }
 
     @Test
-    public void testEncryptTls12ClientWithAddtionalPadding() throws NoSuchAlgorithmException, CryptoException {
+    public void testEncryptTls12ClientWithAddtionalPadding() throws CryptoException {
         context.setConnection(new OutboundConnection());
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
@@ -448,7 +446,7 @@ public class RecordBlockCipherTest {
     }
 
     @Test
-    public void testDecryptTls12Client() throws NoSuchAlgorithmException, CryptoException {
+    public void testDecryptTls12Client() throws CryptoException {
         // This is effectively the testEncryptTls12() test in reverse
         context.setConnection(new InboundConnection());
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA);
@@ -518,7 +516,7 @@ public class RecordBlockCipherTest {
     }
 
     @Test
-    public void testEncryptTls10Server() throws NoSuchAlgorithmException, CryptoException {
+    public void testEncryptTls10Server() throws CryptoException {
         context.setConnection(new InboundConnection());
         context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA);
@@ -587,7 +585,7 @@ public class RecordBlockCipherTest {
     }
 
     @Test
-    public void testDecryptTls10Server() throws NoSuchAlgorithmException, CryptoException {
+    public void testDecryptTls10Server() throws CryptoException {
         // This is effectively the testEncryptTls10() test in reverse
         context.setConnection(new OutboundConnection());
         context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
@@ -658,7 +656,7 @@ public class RecordBlockCipherTest {
     }
 
     @Test
-    public void testEncryptTls11Server() throws NoSuchAlgorithmException, CryptoException {
+    public void testEncryptTls11Server() throws CryptoException {
         context.setConnection(new InboundConnection());
         context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA);
@@ -721,7 +719,7 @@ public class RecordBlockCipherTest {
     }
 
     @Test
-    public void testDecryptTls11Server() throws NoSuchAlgorithmException, CryptoException {
+    public void testDecryptTls11Server() throws CryptoException {
         // This is effectively the testEncryptTls11() test in reverse
         context.setConnection(new OutboundConnection());
         context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
@@ -792,7 +790,7 @@ public class RecordBlockCipherTest {
     }
 
     @Test
-    public void testEncryptTls12Server() throws NoSuchAlgorithmException, CryptoException {
+    public void testEncryptTls12Server() throws CryptoException {
         context.setConnection(new InboundConnection());
         context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA);
@@ -855,7 +853,7 @@ public class RecordBlockCipherTest {
     }
 
     @Test
-    public void testDecryptTls12Server() throws NoSuchAlgorithmException, CryptoException {
+    public void testDecryptTls12Server() throws CryptoException {
         // This is effectively the testEncryptTls12() test in reverse
         context.setConnection(new OutboundConnection());
         context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
@@ -926,7 +924,7 @@ public class RecordBlockCipherTest {
     }
 
     @Test
-    public void testEncryptTls10WithEncryptThenMacClient() throws NoSuchAlgorithmException, CryptoException {
+    public void testEncryptTls10WithEncryptThenMacClient() throws CryptoException {
         context.setConnection(new OutboundConnection());
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS10);
@@ -996,7 +994,7 @@ public class RecordBlockCipherTest {
     }
 
     @Test
-    public void testDecryptTls10WithEncryptThenMacClient() throws NoSuchAlgorithmException, CryptoException {
+    public void testDecryptTls10WithEncryptThenMacClient() throws CryptoException {
         context.setConnection(new InboundConnection());
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS10);
@@ -1067,7 +1065,7 @@ public class RecordBlockCipherTest {
     }
 
     @Test
-    public void testEncryptTls11WithEncryptThenMacClient() throws NoSuchAlgorithmException, CryptoException {
+    public void testEncryptTls11WithEncryptThenMacClient() throws CryptoException {
         context.setConnection(new OutboundConnection());
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS11);
@@ -1137,7 +1135,7 @@ public class RecordBlockCipherTest {
     }
 
     @Test
-    public void testDecryptTls11WithEncryptThenMacClient() throws NoSuchAlgorithmException, CryptoException {
+    public void testDecryptTls11WithEncryptThenMacClient() throws CryptoException {
         context.setConnection(new InboundConnection());
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS11);
@@ -1206,7 +1204,7 @@ public class RecordBlockCipherTest {
     }
 
     @Test
-    public void testEncryptTls12WithEncryptThenMacClient() throws NoSuchAlgorithmException, CryptoException {
+    public void testEncryptTls12WithEncryptThenMacClient() throws CryptoException {
         context.setConnection(new OutboundConnection());
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
@@ -1276,7 +1274,7 @@ public class RecordBlockCipherTest {
     }
 
     @Test
-    public void testDecryptTls12WithEncryptThenMacClient() throws NoSuchAlgorithmException, CryptoException {
+    public void testDecryptTls12WithEncryptThenMacClient() throws CryptoException {
         context.setConnection(new InboundConnection());
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
@@ -1345,7 +1343,7 @@ public class RecordBlockCipherTest {
     }
 
     @Test
-    public void testEncryptTls10WithEncryptThenMacServer() throws NoSuchAlgorithmException, CryptoException {
+    public void testEncryptTls10WithEncryptThenMacServer() throws CryptoException {
         context.setConnection(new InboundConnection());
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS10);
@@ -1415,7 +1413,7 @@ public class RecordBlockCipherTest {
     }
 
     @Test
-    public void testDecryptTls10WithEncryptThenMacServer() throws NoSuchAlgorithmException, CryptoException {
+    public void testDecryptTls10WithEncryptThenMacServer() throws CryptoException {
         context.setConnection(new OutboundConnection());
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS10);
@@ -1486,7 +1484,7 @@ public class RecordBlockCipherTest {
     }
 
     @Test
-    public void testEncryptTls11WithEncryptThenMacServer() throws NoSuchAlgorithmException, CryptoException {
+    public void testEncryptTls11WithEncryptThenMacServer() throws CryptoException {
         context.setConnection(new InboundConnection());
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS11);
@@ -1556,7 +1554,7 @@ public class RecordBlockCipherTest {
     }
 
     @Test
-    public void testDecryptTls11WithEncryptThenMacServer() throws NoSuchAlgorithmException, CryptoException {
+    public void testDecryptTls11WithEncryptThenMacServer() throws CryptoException {
         context.setConnection(new OutboundConnection());
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS11);
@@ -1625,7 +1623,7 @@ public class RecordBlockCipherTest {
     }
 
     @Test
-    public void testEncryptTls12WithEncryptThenMacServer() throws NoSuchAlgorithmException, CryptoException {
+    public void testEncryptTls12WithEncryptThenMacServer() throws CryptoException {
         context.setConnection(new InboundConnection());
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
@@ -1695,7 +1693,7 @@ public class RecordBlockCipherTest {
     }
 
     @Test
-    public void testDecryptTls12WithEncryptThenMacServer() throws NoSuchAlgorithmException, CryptoException {
+    public void testDecryptTls12WithEncryptThenMacServer() throws CryptoException {
         context.setConnection(new OutboundConnection());
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);

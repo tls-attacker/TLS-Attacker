@@ -9,23 +9,16 @@
 
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class ChangeCipherSpecPreparatorTest {
+public class ChangeCipherSpecPreparatorTest
+    extends AbstractTlsMessagePreparatorTest<ChangeCipherSpecMessage, ChangeCipherSpecPreparator> {
 
-    private ChangeCipherSpecPreparator preparator;
-    private ChangeCipherSpecMessage message;
-    private TlsContext context;
-
-    @Before
-    public void setUp() {
-        this.context = new TlsContext();
-        this.message = new ChangeCipherSpecMessage();
-        preparator = new ChangeCipherSpecPreparator(context.getChooser(), message);
+    public ChangeCipherSpecPreparatorTest() {
+        super(ChangeCipherSpecMessage::new, ChangeCipherSpecMessage::new, ChangeCipherSpecPreparator::new);
     }
 
     /**
@@ -34,6 +27,6 @@ public class ChangeCipherSpecPreparatorTest {
     @Test
     public void testPrepare() {
         preparator.prepare();
-        assertTrue(message.getCcsProtocolType().getValue()[0] == 1);
+        assertEquals(1, message.getCcsProtocolType().getValue()[0]);
     }
 }

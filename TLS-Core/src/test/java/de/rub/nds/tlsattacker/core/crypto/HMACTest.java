@@ -9,18 +9,17 @@
 
 package de.rub.nds.tlsattacker.core.crypto;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
-import junit.framework.TestCase;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.Security;
 
-import static org.junit.Assert.assertArrayEquals;
-
-public class HMACTest extends TestCase {
+public class HMACTest {
 
     @Test
     public void testComputeMD5() throws NoSuchAlgorithmException {

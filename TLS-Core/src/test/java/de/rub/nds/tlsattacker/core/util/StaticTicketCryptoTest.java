@@ -9,29 +9,30 @@
 
 package de.rub.nds.tlsattacker.core.util;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import static org.junit.Assert.*;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+
+import java.util.Arrays;
 
 public class StaticTicketCryptoTest {
 
     private static final Logger LOGGER = LogManager.getLogger();
-
-    public StaticTicketCryptoTest() {
-    }
 
     /**
      * Test of encryptAES_128_CBC method, of class StaticTicketCrypto. Assuming that the key, iv and data has the
      * correct length.
      */
     @Test
+    @Disabled("Not implemented")
     public void testEncryptAES_128_CBC() {
         /*-
         PKCS7 is not used in the RFC test vectors
@@ -41,9 +42,10 @@ public class StaticTicketCryptoTest {
 
     /**
      * Test of decryptAES_128_CBC method, of class StaticTicketCrypto. Assuming that the key, iv and data has the
-     * correct length. Test vector from https://tools.ietf.org/html/rfc3602#section-4
+     * correct length. Test vector from <a href="https://tools.ietf.org/html/rfc3602#section-4">RFC 3602 Section 4</a>
      */
     @Test
+    @Disabled("Not implemented")
     public void testDecryptAES_128_CBC() {
         /*-
         PKCS7 is not used in the RFC test vectors
@@ -53,7 +55,7 @@ public class StaticTicketCryptoTest {
 
     /**
      * Test of random, wrong and used data.
-     * 
+     *
      * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test
@@ -69,7 +71,7 @@ public class StaticTicketCryptoTest {
 
         byte[] resultEnc = StaticTicketCrypto.encrypt(CipherAlgorithm.AES_128_CBC, plaintext, key128, iv128);
         byte[] resultDec = StaticTicketCrypto.decrypt(CipherAlgorithm.AES_128_CBC, resultEnc, key128, iv128);
-        assertFalse(resultDec.length == 0);
+        assertNotEquals(0, resultDec.length);
         assertArrayEquals(plaintext, resultDec);
 
         LOGGER.info("Check result for wrong data input.");
@@ -82,15 +84,15 @@ public class StaticTicketCryptoTest {
         key128 = ArrayConverter.hexStringToByteArray("536563757265535469636b65744b6579");
         resultEnc = StaticTicketCrypto.encrypt(CipherAlgorithm.AES_128_CBC, plaintext, key128, iv128);
         resultDec = StaticTicketCrypto.decrypt(CipherAlgorithm.AES_128_CBC, resultEnc, key128, iv128);
-        assertFalse(resultDec.length == 0);
+        assertNotEquals(0, resultDec.length);
         assertArrayEquals(plaintext, resultDec);
     }
 
     /**
      * Test of generateHMAC_SHA256 method, of class StaticTicketCrypto. Assuming that the key has the correct length.
-     * Test vector from https://tools.ietf.org/html/rfc4231#section-4.2
-     * 
-     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
+     * Test vector from <a href="https://tools.ietf.org/html/rfc4231#section-4.2">...</a>
+     *
+     * @throws CryptoException
      */
     @SuppressWarnings("SpellCheckingInspection")
     @Test
@@ -106,9 +108,9 @@ public class StaticTicketCryptoTest {
 
     /**
      * Test of verifyHMAC_SHA256 method, of class StaticTicketCrypto. Assuming that the key has the correct length. Test
-     * vector from https://tools.ietf.org/html/rfc4231#section-4.2
-     * 
-     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
+     * vector from <a href="https://tools.ietf.org/html/rfc4231#section-4.2">...</a>
+     *
+     * @throws CryptoException
      */
     @SuppressWarnings("SpellCheckingInspection")
     @Test
@@ -125,7 +127,7 @@ public class StaticTicketCryptoTest {
 
     /**
      * Test of random, wrong and used data.
-     * 
+     *
      * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test

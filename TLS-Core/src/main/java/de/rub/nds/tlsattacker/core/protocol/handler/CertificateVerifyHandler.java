@@ -16,7 +16,8 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateVerifySerializ
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
- * Handling of the CertificateVerify protocol message: http://tools.ietf.org/html/rfc5246#section-7.4.8
+ * Handling of the CertificateVerify protocol message: <a href="http://tools.ietf.org/html/rfc5246#section-7.4.8">RFC
+ * 5246 Section 7.4.8</a>
  *
  * The TLS spec as well as wireshark bring some nice confusions: - The TLS spec says the message consists of only
  * signature bytes - Wireshark says the message consists of the signature length and signature bytes

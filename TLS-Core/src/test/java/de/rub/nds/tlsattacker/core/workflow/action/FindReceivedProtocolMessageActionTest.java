@@ -9,6 +9,9 @@
 
 package de.rub.nds.tlsattacker.core.workflow.action;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import de.rub.nds.modifiablevariable.util.BadRandom;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
@@ -23,30 +26,19 @@ import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.util.FixedTimeProvider;
 import de.rub.nds.tlsattacker.util.TimeHelper;
-import de.rub.nds.tlsattacker.util.tests.IntegrationTests;
-import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.KeyManagementException;
-import java.security.KeyPair;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.SignatureException;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
-import java.util.Random;
+import de.rub.nds.tlsattacker.util.tests.TestCategories;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.After;
-import org.junit.AfterClass;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.operator.OperatorCreationException;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+import java.security.*;
+import java.security.cert.CertificateException;
+import java.util.Random;
 
 public class FindReceivedProtocolMessageActionTest {
 
@@ -54,35 +46,21 @@ public class FindReceivedProtocolMessageActionTest {
 
     private static final int SERVER_PORT = 48385;
 
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
     private final BadRandom random = new BadRandom(new Random(0), null);
 
-    public FindReceivedProtocolMessageActionTest() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
+    @BeforeAll
+    public static void setUpClass() {
+        Security.addProvider(new BouncyCastleProvider());
     }
 
     /**
      * Test of execute method, of class FindReceivedProtocolMessageAction.
-     *
-     * @throws java.lang.Exception
      */
     @Test
-    @Category(IntegrationTests.class)
-    public void testExecute() throws Exception {
+    @Tag(TestCategories.INTEGRATION_TEST)
+    public void testExecute() throws NoSuchAlgorithmException, CertificateException, IOException, KeyStoreException,
+        SignatureException, InvalidKeyException, NoSuchProviderException, OperatorCreationException,
+        UnrecoverableKeyException, KeyManagementException {
         Config config = Config.createConfig();
         config.getDefaultClientConnection().setPort(SERVER_PORT);
 
@@ -97,27 +75,22 @@ public class FindReceivedProtocolMessageActionTest {
 
         State state = new State(config, trace);
 
-        try {
-            TimeHelper.setProvider(new FixedTimeProvider(0));
-            KeyPair k = KeyStoreGenerator.createRSAKeyPair(1024, random);
-            KeyStore ks = KeyStoreGenerator.createKeyStore(k, random);
-            BasicTlsServer tlsServer = new BasicTlsServer(ks, KeyStoreGenerator.PASSWORD, "TLS", SERVER_PORT);
+        TimeHelper.setProvider(new FixedTimeProvider(0));
+        KeyPair k = KeyStoreGenerator.createRSAKeyPair(1024, random);
+        KeyStore ks = KeyStoreGenerator.createKeyStore(k, random);
+        BasicTlsServer tlsServer = new BasicTlsServer(ks, KeyStoreGenerator.PASSWORD, "TLS", SERVER_PORT);
 
-            LOGGER.info("Starting test server");
-            new Thread(tlsServer).start();
-            while (!tlsServer.isInitialized())
-                ;
+        LOGGER.info("Starting test server");
+        new Thread(tlsServer).start();
+        while (!tlsServer.isInitialized())
+            ;
 
-            WorkflowExecutor executor = new DefaultWorkflowExecutor(state);
-            executor.executeWorkflow();
+        WorkflowExecutor executor = new DefaultWorkflowExecutor(state);
+        executor.executeWorkflow();
 
-            LOGGER.info("Killing server...");
-            tlsServer.shutdown();
-            LOGGER.info("Done.");
-        } catch (NoSuchAlgorithmException | CertificateException | IOException | InvalidKeyException | KeyStoreException
-            | NoSuchProviderException | SignatureException | UnrecoverableKeyException | KeyManagementException ex) {
-            fail();
-        }
+        LOGGER.info("Killing server...");
+        tlsServer.shutdown();
+        LOGGER.info("Done.");
 
         assertTrue(action_find_handshake.isFound());
         assertFalse(action_find_app_data.isFound());

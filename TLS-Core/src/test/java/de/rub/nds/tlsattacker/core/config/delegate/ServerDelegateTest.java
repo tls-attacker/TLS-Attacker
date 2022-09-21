@@ -9,37 +9,20 @@
 
 package de.rub.nds.tlsattacker.core.config.delegate;
 
-import com.beust.jcommander.JCommander;
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.util.LinkedList;
-import java.util.List;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class ServerDelegateTest {
+public class ServerDelegateTest extends AbstractDelegateTest<ServerDelegate> {
 
-    @Rule
-    public final ExpectedException exception = ExpectedException.none();
-
-    private ServerDelegate delegate;
-    private JCommander jcommander;
-    private String[] args;
-
-    @Before
+    @BeforeEach
     public void setUp() {
-        this.delegate = new ServerDelegate();
-        this.jcommander = new JCommander(delegate);
+        super.setUp(new ServerDelegate());
     }
 
     /**
@@ -50,9 +33,9 @@ public class ServerDelegateTest {
         args = new String[2];
         args[0] = "-port";
         args[1] = "1234";
-        assertTrue(delegate.getPort() == null);
+        assertNull(delegate.getPort());
         jcommander.parse(args);
-        assertTrue(delegate.getPort() == 1234);
+        assertEquals(1234, (int) delegate.getPort());
     }
 
     /**
@@ -60,9 +43,9 @@ public class ServerDelegateTest {
      */
     @Test
     public void testSetPort() {
-        assertTrue(delegate.getPort() == null);
+        assertNull(delegate.getPort());
         delegate.setPort(1234);
-        assertTrue(delegate.getPort() == 1234);
+        assertEquals(1234, (int) delegate.getPort());
     }
 
     /**
@@ -80,9 +63,9 @@ public class ServerDelegateTest {
         delegate.applyDelegate(config);
         AliasedConnection actual = config.getDefaultServerConnection();
         assertNotNull(actual);
-        assertThat(actual.getPort(), equalTo(1234));
-        assertThat(actual.getLocalConnectionEndType(), equalTo(ConnectionEndType.SERVER));
-        assertThat(actual.getTimeout(), equalTo(expectedDefaultTimeout));
+        assertEquals(1234, actual.getPort().intValue());
+        assertSame(ConnectionEndType.SERVER, actual.getLocalConnectionEndType());
+        assertEquals(expectedDefaultTimeout, actual.getTimeout().intValue());
 
     }
 
@@ -92,9 +75,8 @@ public class ServerDelegateTest {
     @Test
     public void applyingEmptyDelegateThrowsException() {
         Config config = Config.createConfig();
-        exception.expect(ParameterException.class);
-        exception.expectMessage("Port must be set, but was not specified");
-        delegate.applyDelegate(config);
+        ParameterException exception = assertThrows(ParameterException.class, () -> delegate.applyDelegate(config));
+        assertTrue(exception.getMessage().startsWith("Port must be set, but was not specified"));
     }
 
     @Test
@@ -106,24 +88,6 @@ public class ServerDelegateTest {
         delegate.applyDelegate(config);
         AliasedConnection actual = config.getDefaultServerConnection();
         assertNotNull(actual);
-        assertThat(actual.getPort(), equalTo(expectedPort));
-    }
-
-    @Test
-    @Ignore
-    /**
-     * TODO: Does this test make sense? Rebuild
-     */
-    public void testNothingSetNothingChanges() {
-        Config config = Config.createConfig();
-        Config config2 = Config.createConfig();
-        delegate.applyDelegate(config);
-        List<String> excludeFields = new LinkedList<>();
-        excludeFields.add("keyStore");
-        excludeFields.add("ourCertificate");
-        // If the server delegate is chosen we change the connection end
-        excludeFields.add("connectionEnd");
-        // little ugly todo
-        assertTrue(EqualsBuilder.reflectionEquals(config, config2, excludeFields));
+        assertEquals(expectedPort, actual.getPort().intValue());
     }
 }

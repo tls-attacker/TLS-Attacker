@@ -10,58 +10,20 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.HeartbeatMessageParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.HeartbeatMessagePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.HeartbeatMessageSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import org.junit.After;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class HeartbeatMessageHandlerTest {
+public class HeartbeatMessageHandlerTest
+    extends AbstractTlsMessageHandlerTest<HeartbeatMessage, HeartbeatMessageHandler> {
 
-    private HeartbeatMessageHandler handler;
-    private TlsContext context;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new HeartbeatMessageHandler(context);
-    }
-
-    @After
-    public void tearDown() {
-    }
-
-    /**
-     * Test of getParser method, of class HeartbeatMessageHandler.
-     */
-    @Test
-    public void testGetParser() {
-        assertTrue(handler.getParser(new byte[1], 0) instanceof HeartbeatMessageParser);
-    }
-
-    /**
-     * Test of getPreparator method, of class HeartbeatMessageHandler.
-     */
-    @Test
-    public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new HeartbeatMessage()) instanceof HeartbeatMessagePreparator);
-    }
-
-    /**
-     * Test of getSerializer method, of class HeartbeatMessageHandler.
-     */
-    @Test
-    public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new HeartbeatMessage()) instanceof HeartbeatMessageSerializer);
+    public HeartbeatMessageHandlerTest() {
+        super(HeartbeatMessage::new, HeartbeatMessageHandler::new);
     }
 
     /**
      * Test of adjustTLSContext method, of class HeartbeatMessageHandler.
      */
     @Test
+    @Override
     public void testAdjustTLSContext() {
         HeartbeatMessage message = new HeartbeatMessage();
         handler.adjustTLSContext(message);

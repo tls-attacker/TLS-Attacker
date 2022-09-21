@@ -9,24 +9,9 @@
 
 package de.rub.nds.tlsattacker.core.unittest.helper;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.security.KeyFactory;
-import java.security.KeyPair;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.Security;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateParsingException;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.security.spec.X509EncodedKeySpec;
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
 import org.bouncycastle.cert.X509CertificateHolder;
@@ -35,9 +20,18 @@ import org.bouncycastle.crypto.tls.Certificate;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.jce.provider.X509CertificateObject;
 import org.bouncycastle.openssl.PEMParser;
-import org.junit.Assert;
-import static org.junit.Assert.assertNotNull;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.security.*;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateParsingException;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
+import java.util.Objects;
 
 public class TestCertificates {
 
@@ -51,18 +45,16 @@ public class TestCertificates {
         try {
             ByteArrayInputStream bin = new ByteArrayInputStream(cert1);
             ASN1InputStream ain = new ASN1InputStream(bin);
-            Certificate obj = Certificate.parse(ain);
-            return obj;
-        } catch (IOException ex) {
+            return Certificate.parse(ain);
+        } catch (IOException ignored) {
         }
         return null;
     }
 
     public static X509CertificateObject getTestCertificateObject() {
         try {
-            X509CertificateObject obj = new X509CertificateObject(getTestCertificate().getCertificateAt(0));
-            return obj;
-        } catch (CertificateParsingException ex) {
+            return new X509CertificateObject(Objects.requireNonNull(getTestCertificate()).getCertificateAt(0));
+        } catch (CertificateParsingException ignored) {
         }
         return null;
     }
@@ -82,25 +74,23 @@ public class TestCertificates {
 
     /**
      * Initialize a KeyStore from an ordinary OpenSSL RSA (cert,key) pair as generated with "openssl req -x509 -newkey
-     * rsa:4096 -keyout key.pem -out cert.pem" For a less hacky version check
-     * http://ludup.com/content/loading-pem-keys-and-certificates-from-java/
-     * 
+     * rsa:4096 -keyout key.pem -out cert.pem" For a less hacky version check <a href=
+     * "http://ludup.com/content/loading-pem-keys-and-certificates-from-java/">http://ludup.com/content/loading-pem-keys-and-certificates-from-java/</a>
+     *
      * @param  rawPemCert
-     *                                                    PEM certificate, i.e. the output of `cat cert.pem` as a simple
-     *                                                    String
+     *                                  PEM certificate, i.e. the output of `cat cert.pem` as a simple String
      * @param  rawPemKey
-     *                                                    Certificate key, i.e the output of `cat key.pem` as a simple
-     *                                                    String
+     *                                  Certificate key, i.e the output of `cat key.pem` as a simple String
      * @param  keyAlias
-     *                                                    Alias of the key in the returned KeyStore
+     *                                  Alias of the key in the returned KeyStore
      * @param  keyPass
-     *                                                    Password of the key in the returned KeyStore
+     *                                  Password of the key in the returned KeyStore
      * @return
-     * @throws java.io.IOException
-     * @throws java.security.NoSuchAlgorithmException
-     * @throws java.security.spec.InvalidKeySpecException
-     * @throws java.security.cert.CertificateException
-     * @throws java.security.KeyStoreException
+     * @throws IOException
+     * @throws NoSuchAlgorithmException
+     * @throws InvalidKeySpecException
+     * @throws CertificateException
+     * @throws KeyStoreException
      */
     public static KeyStore keyStoreFromRsaPem(byte[] rawPemCert, byte[] rawPemKey, String keyAlias, String keyPass)
         throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, CertificateException, KeyStoreException {
@@ -133,13 +123,10 @@ public class TestCertificates {
         return keyStoreFromRsaPem(rawPemCert, rawPemKey, keyStoreAlias, keyStorePass);
     }
 
-    public TestCertificates() {
-    }
-
     @Test
     public void testTestCertificates() {
-        Assert.assertNotNull(getTestCertificate());
-        Assert.assertNotNull(getTestCertificateObject());
+        assertNotNull(getTestCertificate());
+        assertNotNull(getTestCertificateObject());
 
     }
 }

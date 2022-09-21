@@ -18,7 +18,7 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import java.io.Serializable;
-import javax.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 @XmlSeeAlso({ EncryptedServerNameIndicationExtensionMessage.class, ECPointFormatExtensionMessage.class,
     EllipticCurvesExtensionMessage.class, EllipticCurvesExtensionMessage.class,

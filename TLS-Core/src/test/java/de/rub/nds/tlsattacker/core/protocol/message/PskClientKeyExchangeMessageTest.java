@@ -9,34 +9,18 @@
 
 package de.rub.nds.tlsattacker.core.protocol.message;
 
-import org.junit.After;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.params.provider.Arguments;
 
-public class PskClientKeyExchangeMessageTest {
+import java.util.stream.Stream;
 
-    PskClientKeyExchangeMessage message;
+public class PskClientKeyExchangeMessageTest extends AbstractMessageTest<PskClientKeyExchangeMessage> {
 
-    @Before
-    public void setUp() {
-        message = new PskClientKeyExchangeMessage();
+    public PskClientKeyExchangeMessageTest() {
+        super(PskClientKeyExchangeMessage::new,
+            "PskClientKeyExchangeMessage:\n" + "  PSKIdentity Length: %s\n" + "  PSKIdentity: %s");
     }
 
-    @After
-    public void tearDown() {
-    }
-
-    /**
-     * Test of toString method, of class PskClientKeyExchangeMessage.
-     */
-    @Test
-    public void testToString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("PskClientKeyExchangeMessage:");
-        sb.append("\n  PSKIdentity Length: ").append("null");
-        sb.append("\n  PSKIdentity: ").append("null");
-
-        assertEquals(message.toString(), sb.toString());
+    public static Stream<Arguments> provideToStringTestVectors() {
+        return Stream.of(Arguments.of(new Object[] { null, null }, null));
     }
 }

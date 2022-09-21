@@ -9,47 +9,24 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptThenMacExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.EncryptThenMacExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EncryptThenMacExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.EncryptThenMacExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class EncryptThenMacExtensionHandlerTest {
-    private EncryptThenMacExtensionHandler handler;
-    private TlsContext context;
+public class EncryptThenMacExtensionHandlerTest
+    extends AbstractExtensionMessageHandlerTest<EncryptThenMacExtensionMessage, EncryptThenMacExtensionHandler> {
 
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new EncryptThenMacExtensionHandler(context);
+    public EncryptThenMacExtensionHandlerTest() {
+        super(EncryptThenMacExtensionMessage::new, EncryptThenMacExtensionHandler::new);
     }
 
     @Test
+    @Override
     public void testAdjustTLSContext() {
         EncryptThenMacExtensionMessage message = new EncryptThenMacExtensionMessage();
         handler.adjustTLSContext(message);
         assertTrue(context.isExtensionProposed(ExtensionType.ENCRYPT_THEN_MAC));
-    }
-
-    @Test
-    public void testGetParser() {
-        assertTrue(handler.getParser(new byte[0], 0, context.getConfig()) instanceof EncryptThenMacExtensionParser);
-    }
-
-    @Test
-    public void testGetPreparator() {
-        assertTrue(
-            handler.getPreparator(new EncryptThenMacExtensionMessage()) instanceof EncryptThenMacExtensionPreparator);
-    }
-
-    @Test
-    public void testGetSerializer() {
-        assertTrue(
-            handler.getSerializer(new EncryptThenMacExtensionMessage()) instanceof EncryptThenMacExtensionSerializer);
     }
 }

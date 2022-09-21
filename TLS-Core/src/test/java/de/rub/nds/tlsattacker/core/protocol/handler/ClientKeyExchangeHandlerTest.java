@@ -9,39 +9,33 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import org.apache.commons.lang3.StringUtils;
+import org.junit.jupiter.api.Test;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import org.apache.commons.lang3.StringUtils;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
 
-/**
- *
- *
- *
- */
-public class ClientKeyExchangeHandlerTest {
+public class ClientKeyExchangeHandlerTest extends
+    AbstractTlsMessageHandlerTest<DHClientKeyExchangeMessage, DHClientKeyExchangeHandler<DHClientKeyExchangeMessage>> {
 
-    // Just use any Implementation for testing the non-overwritten protected
-    // methods in ClientKeyExchangeHandler
-    private ClientKeyExchangeHandler<DHClientKeyExchangeMessage> handler;
-    private TlsContext context;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new DHClientKeyExchangeHandler(context);
+    public ClientKeyExchangeHandlerTest() {
+        super(DHClientKeyExchangeMessage::new, DHClientKeyExchangeHandler::new);
     }
 
-    /*
+    @Test
+    @Override
+    public void testAdjustTLSContext() {
+    }
+
+    /**
      * From RFC 6101: 6.1. Asymmetric Cryptographic Computations The asymmetric algorithms are used in the handshake
      * protocol to authenticate parties and to generate shared keys and secrets. For Diffie-Hellman, RSA, and FORTEZZA,
      * the same algorithm is used to convert the pre_master_secret into the master_secret. The pre_master_secret should
@@ -50,8 +44,6 @@ public class ClientKeyExchangeHandlerTest {
      * pre_master_secret + ClientHello.random + ServerHello.random)) + MD5(pre_master_secret + SHA('CCC' +
      * pre_master_secret + ClientHello.random + ServerHello.random)); ..... It is hard to read how the Constants have to
      * be implemented. We will use the ASCII values.
-     * 
-     * @throws NoSuchAlgorithmException
      */
     @Test
     public void testMasterSecretCalculationSSL3() throws NoSuchAlgorithmException, CryptoException {
@@ -84,8 +76,7 @@ public class ClientKeyExchangeHandlerTest {
 
         byte[] calculatedMasterSecret = handler.calculateMasterSecret(message);
 
-        Assert.assertArrayEquals(expectedMasterSecret, calculatedMasterSecret);
-
+        assertArrayEquals(expectedMasterSecret, calculatedMasterSecret);
     }
 
 }

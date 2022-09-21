@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.nio.charset.Charset;
 import java.util.Objects;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -51,6 +51,10 @@ public class PrintLastHandledApplicationDataAction extends ConnectionBoundAction
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
+        if (isExecuted()) {
+            throw new WorkflowExecutionException("Action already executed!");
+        }
+
         byte[] rawBytes = state.getTlsContext(getConnectionAlias()).getLastHandledApplicationMessageData();
         if (rawBytes != null) {
             if (stringEncoding != null) {

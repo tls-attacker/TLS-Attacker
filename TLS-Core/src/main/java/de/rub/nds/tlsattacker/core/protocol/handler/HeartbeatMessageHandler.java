@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.HeartbeatMessageSerialize
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
- * Handler for Heartbeat messages: http://tools.ietf.org/html/rfc6520#page-4
+ * Handler for Heartbeat messages: <a href="http://tools.ietf.org/html/rfc6520#page-4">RFC 6520 Page 4</a>
  */
 public class HeartbeatMessageHandler extends TlsMessageHandler<HeartbeatMessage> {
 

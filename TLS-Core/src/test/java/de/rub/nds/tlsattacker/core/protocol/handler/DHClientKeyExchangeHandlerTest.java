@@ -9,66 +9,30 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.DHClientKeyExchangeParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.DHClientKeyExchangePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.DHClientKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import org.junit.jupiter.api.Test;
+
 import java.math.BigInteger;
-import org.junit.After;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
 
-@SuppressWarnings("SpellCheckingInspection")
-public class DHClientKeyExchangeHandlerTest {
+public class DHClientKeyExchangeHandlerTest extends
+    AbstractTlsMessageHandlerTest<DHClientKeyExchangeMessage, ClientKeyExchangeHandler<DHClientKeyExchangeMessage>> {
 
-    private DHClientKeyExchangeHandler handler;
-    private TlsContext context;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new DHClientKeyExchangeHandler(context);
-
-    }
-
-    @After
-    public void tearDown() {
-    }
-
-    /**
-     * Test of getParser method, of class DHClientKeyExchangeHandler.
-     */
-    @Test
-    public void testGetParser() {
-        assertTrue(handler.getParser(new byte[1], 0) instanceof DHClientKeyExchangeParser);
-    }
-
-    /**
-     * Test of getPreparator method, of class DHClientKeyExchangeHandler.
-     */
-    @Test
-    public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new DHClientKeyExchangeMessage()) instanceof DHClientKeyExchangePreparator);
-    }
-
-    /**
-     * Test of getSerializer method, of class DHClientKeyExchangeHandler.
-     */
-    @Test
-    public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new DHClientKeyExchangeMessage()) instanceof DHClientKeyExchangeSerializer);
+    public DHClientKeyExchangeHandlerTest() {
+        super(DHClientKeyExchangeMessage::new, DHClientKeyExchangeHandler::new);
     }
 
     /**
      * Test of adjustTLSContext method, of class DHClientKeyExchangeHandler.
      */
     @Test
+    @Override
     public void testAdjustTLSContext() {
         DHClientKeyExchangeMessage message = new DHClientKeyExchangeMessage();
         message.setPublicKey(new byte[] { 1 });
@@ -88,6 +52,6 @@ public class DHClientKeyExchangeHandlerTest {
             ArrayConverter.hexStringToByteArray(
                 "4a0a7f6a0598acb36684359e1a19d848ab03b3ba1167430471166d94dcf8315d1c4290c9d9e40c50ae834df7b4f4bdef"),
             context.getMasterSecret());
-        assertTrue(context.getClientDhPublicKey().equals(BigInteger.ONE));
+        assertEquals(context.getClientDhPublicKey(), BigInteger.ONE);
     }
 }

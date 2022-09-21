@@ -9,13 +9,15 @@
 
 package de.rub.nds.tlsattacker.transport.stream;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
 
 public class StreamTransportHandlerTest {
 
@@ -25,7 +27,7 @@ public class StreamTransportHandlerTest {
 
     private ByteArrayInputStream inputStream;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         outputStream = new ByteArrayOutputStream();
         inputStream = new ByteArrayInputStream(new byte[] { 4, 3, 2, 1 });
@@ -34,21 +36,17 @@ public class StreamTransportHandlerTest {
 
     /**
      * Test of closeConnection method, of class StreamTransportHandler.
-     *
-     * @throws java.io.IOException
      */
-    @Test(expected = IOException.class)
-    public void testCloseConnection() throws IOException {
-        handler.closeConnection();
+    @Test()
+    public void testCloseConnection() {
+        assertThrows(IOException.class, handler::closeConnection);
     }
 
     /**
      * Test of initialize method, of class StreamTransportHandler.
-     *
-     * @throws java.lang.Exception
      */
     @Test
-    public void testInitialize() throws Exception {
+    public void testInitialize() throws IOException {
         assertFalse(handler.isInitialized());
         handler.initialize();
         assertTrue(handler.isInitialized());
@@ -79,9 +77,9 @@ public class StreamTransportHandlerTest {
         assertArrayEquals(new byte[] { 4, 3, 2, 1 }, fetchData);
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testCloseClientConnection() throws IOException {
         handler.initialize();
-        handler.closeClientConnection();
+        assertThrows(UnsupportedOperationException.class, handler::closeClientConnection);
     }
 }

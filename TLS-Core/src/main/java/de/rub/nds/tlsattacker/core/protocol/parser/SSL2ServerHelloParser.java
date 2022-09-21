@@ -22,7 +22,7 @@ public class SSL2ServerHelloParser extends SSL2HandshakeMessageParser<SSL2Server
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SSL2ServerHelloParser(byte[] message, int pointer, ProtocolVersion selectedProtocolVersion, Config config) {
+    public SSL2ServerHelloParser(int pointer, byte[] message, ProtocolVersion selectedProtocolVersion, Config config) {
         super(pointer, message, HandshakeMessageType.SSL2_SERVER_HELLO, selectedProtocolVersion, config);
     }
 

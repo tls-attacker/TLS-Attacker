@@ -9,88 +9,63 @@
 
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.constants.*;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import static org.junit.jupiter.api.Assertions.*;
+
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
-import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import org.apache.commons.lang3.ObjectUtils;
-import org.bouncycastle.crypto.tls.CertificateStatus;
-import org.bouncycastle.crypto.tls.CertificateStatusRequest;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import jakarta.xml.bind.JAXBException;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
+public class SendDynamicServerCertificateActionTest extends AbstractActionTest<SendDynamicServerCertificateAction> {
 
-public class SendDynamicServerCertificateActionTest {
-    private State state;
-    private Config config;
-    private TlsContext tlsContext;
+    public SendDynamicServerCertificateActionTest() {
+        super(new SendDynamicServerCertificateAction(), SendDynamicServerCertificateAction.class);
 
-    private SendDynamicServerCertificateAction action;
-
-    @Before
-    public void setUp() throws Exception {
-        // Setup action
-        action = new SendDynamicServerCertificateAction();
-        // Setup Server configuration
-        config = Config.createConfig();
-        config.setDefaultRunningMode(RunningModeType.SERVER);
-        // see WorkflowConfigurationFactory.java
-        // Action will be added if highest protocol version is lower than TLS
-        // 1.3
-        config.setHighestProtocolVersion(ProtocolVersion.TLS12);
-
-        WorkflowTrace trace = new WorkflowTrace();
-        trace.addTlsAction(action);
-
-        state = new State(config, trace);
-
-        tlsContext = state.getTlsContext();
-        tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
-        tlsContext.setRecordLayer(new TlsRecordLayer(tlsContext));
-        tlsContext.setTransportHandler(new FakeTransportHandler(ConnectionEndType.SERVER));
+        TlsContext context = state.getTlsContext();
+        context.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
+        context.setRecordLayer(new TlsRecordLayer(context));
+        context.setTransportHandler(new FakeTransportHandler(ConnectionEndType.SERVER));
     }
 
-    @Test(expected = WorkflowExecutionException.class)
-    public void testExecute() {
-        action.execute(state);
-        assertTrue((action.executedAsPlanned()));
-        assertTrue(action.isExecuted());
-        // test if you can execute twice
-        action.execute(state);
-        // catch exception with expected annotation
+    @Override
+    protected void createWorkflowTraceAndState() {
+        config.setDefaultRunningMode(RunningModeType.SERVER);
+        config.setHighestProtocolVersion(ProtocolVersion.TLS12);
+        super.createWorkflowTraceAndState();
+    }
+
+    @Test
+    @Override
+    public void testExecute() throws Exception {
+        super.testExecute();
+
     }
 
     @Test
     public void testToString() {
-        assertTrue(action.toString().equals("Send Dynamic Certificate: (not executed)\n\tMessages:\n"));
+        assertEquals("Send Dynamic Certificate: (not executed)\n\tMessages:\n", action.toString());
         action.execute(state);
-        assertTrue(action.toString().equals("Send Dynamic Certificate Action:\n\tMessages:CERTIFICATE, \n"));
+        assertEquals("Send Dynamic Certificate Action:\n\tMessages:CERTIFICATE, \n", action.toString());
     }
 
     @Test
     public void testToCompactString() {
-        assertTrue(action.toCompactString().equals("SendDynamicServerCertificateAction [server] (no messages set)"));
+        assertEquals("SendDynamicServerCertificateAction [server] (no messages set)", action.toCompactString());
         action.execute(state);
-        assertTrue(action.toCompactString().equals("SendDynamicServerCertificateAction [server] (CERTIFICATE)"));
-    }
-
-    @Test
-    public void testExecutedAsPlanned() {
-        action.execute(state);
-        assertTrue(action.executedAsPlanned());
+        assertEquals("SendDynamicServerCertificateAction [server] (CERTIFICATE)", action.toCompactString());
     }
 
     @Test
@@ -99,21 +74,7 @@ public class SendDynamicServerCertificateActionTest {
         action.execute(state);
         List<AbstractRecord> testRecords = new ArrayList<>();
         action.setRecords(testRecords);
-        assertTrue(action.getSendRecords().equals(testRecords));
-    }
-
-    @Test
-    public void testReset() {
-        // execute action -> check if executed -> reset -> check if action not
-        // executed!
-        // -> check if you can execute action again
-        assertFalse(action.isExecuted());
-        action.execute(state);
-        assertTrue(action.isExecuted());
-        action.reset();
-        assertFalse(action.isExecuted());
-        action.execute(state);
-        assertTrue(action.isExecuted());
+        assertEquals(testRecords, action.getSendRecords());
     }
 
     @Test
@@ -121,8 +82,8 @@ public class SendDynamicServerCertificateActionTest {
         // check if the correct amount of messages have been sent
         assertTrue(action.getSendMessages().isEmpty());
         action.execute(state);
-        assertTrue(
-            action.getSendMessages().size() == 1 && action.getSendMessages().get(0) instanceof CertificateMessage);
+        assertEquals(1, action.getSendMessages().size());
+        assertTrue(action.getSendMessages().get(0) instanceof CertificateMessage);
     }
 
     @Test
@@ -130,34 +91,39 @@ public class SendDynamicServerCertificateActionTest {
         // check if send records contains the correct amount of sent records
         assertTrue(action.getSendRecords().isEmpty());
         action.execute(state);
-        assertTrue(action.getSendRecords().size() == 1 && action.getSendRecords().get(0) instanceof Record);
+        assertEquals(1, action.getSendRecords().size());
+        assertTrue(action.getSendRecords().get(0) instanceof Record);
     }
 
     @Test
     public void testEquals() {
-        SendDynamicClientKeyExchangeAction compareAction1 = new SendDynamicClientKeyExchangeAction();
-        SendDynamicClientKeyExchangeAction compareAction2 = new SendDynamicClientKeyExchangeAction();
-        // check if the action equals another action/class
-        assertFalse(action.equals(compareAction1));
-        assertTrue(compareAction1.equals(compareAction2) && compareAction2.equals(compareAction1));
+        assertEquals(action, action);
         // Null check
-        assertFalse(action.equals(null));
+        assertNotEquals(null, action);
         // check any other object
-        assertFalse(action.equals(new Object()));
+        assertNotEquals(action, new Object());
     }
 
     @Test
     public void testHashCode() {
-        SendDynamicClientKeyExchangeAction compareAction1 = new SendDynamicClientKeyExchangeAction();
-        SendDynamicClientKeyExchangeAction compareAction2 = new SendDynamicClientKeyExchangeAction();
-        assertTrue(compareAction1.hashCode() == compareAction2.hashCode());
+        SendDynamicServerCertificateAction compareAction1 = new SendDynamicServerCertificateAction();
+        SendDynamicServerCertificateAction compareAction2 = new SendDynamicServerCertificateAction();
+        assertEquals(compareAction1.hashCode(), compareAction2.hashCode());
     }
 
     @Test
     public void testSendNoCertificate() {
         // Check if no certificate is sent with the corresponding cipher suite
-        tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DH_anon_EXPORT_WITH_RC4_40_MD5);
+        state.getTlsContext().setSelectedCipherSuite(CipherSuite.TLS_DH_anon_EXPORT_WITH_RC4_40_MD5);
         action.execute(state);
-        assertTrue(action.getSendMessages().size() == 0 && action.getSendRecords().size() == 0);
+        assertEquals(0, action.getSendMessages().size());
+        assertEquals(0, action.getSendRecords().size());
+    }
+
+    @Test
+    @Disabled("Fix naming of SendDynamicServerCertificateAction in XML serialization")
+    @Override
+    public void testMarshalingEmptyActionYieldsMinimalOutput() throws JAXBException, IOException {
+        super.testMarshalingEmptyActionYieldsMinimalOutput();
     }
 }

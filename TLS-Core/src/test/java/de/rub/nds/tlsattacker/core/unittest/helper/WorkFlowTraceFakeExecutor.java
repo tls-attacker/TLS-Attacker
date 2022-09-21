@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.unittest.helper;
 
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
+
 import java.util.List;
 
 public class WorkFlowTraceFakeExecutor {

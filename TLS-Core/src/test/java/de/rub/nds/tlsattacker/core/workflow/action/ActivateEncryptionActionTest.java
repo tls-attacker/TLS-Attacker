@@ -9,70 +9,30 @@
 
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.config.Config;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
 import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
-import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.util.tests.SlowTests;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Test;
 
-public class ActivateEncryptionActionTest {
+public class ActivateEncryptionActionTest extends AbstractActionTest<ActivateEncryptionAction> {
 
-    private State state;
-    private TlsContext tlsContext;
-    private ActivateEncryptionAction action;
+    private final TlsContext context;
 
-    @Before
-    public void setUp() {
-        Config config = Config.createConfig();
-        action = new ActivateEncryptionAction();
-        WorkflowTrace trace = new WorkflowTrace();
-        trace.addTlsAction(action);
-        state = new State(config, trace);
-        tlsContext = state.getTlsContext();
-        tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
-        tlsContext.setRecordLayer(new TlsRecordLayer(tlsContext));
+    public ActivateEncryptionActionTest() {
+        super(new ActivateEncryptionAction(), ActivateEncryptionAction.class);
+        context = state.getTlsContext();
+        context.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
+        context.setRecordLayer(new TlsRecordLayer(context));
     }
 
     @Test
+    @Override
     public void testExecute() throws Exception {
-        action.execute(state);
-        assertTrue(action.isExecuted());
-        TlsRecordLayer layer = TlsRecordLayer.class.cast(tlsContext.getRecordLayer());
+        super.testExecute();
+        TlsRecordLayer layer = (TlsRecordLayer) context.getRecordLayer();
         assertFalse(layer.getEncryptorCipher() instanceof RecordNullCipher);
     }
-
-    @Test
-    public void testReset() throws Exception {
-        assertFalse(action.isExecuted());
-        action.execute(state);
-        assertTrue(action.isExecuted());
-        action.reset();
-        assertFalse(action.isExecuted());
-    }
-
-    @Test
-    @Category(SlowTests.class)
-    public void marshalingEmptyActionYieldsMinimalOutput() {
-        ActionTestUtils.marshalingEmptyActionYieldsMinimalOutput(ActivateEncryptionAction.class);
-    }
-
-    @Test
-    @Category(SlowTests.class)
-    public void marshalingAndUnmarshalingEmptyObjectYieldsEqualObject() {
-        ActionTestUtils.marshalingAndUnmarshalingEmptyObjectYieldsEqualObject(ActivateEncryptionAction.class);
-    }
-
-    @Test
-    @Category(SlowTests.class)
-    public void marshalingAndUnmarshalingFilledObjectYieldsEqualObject() {
-        ActionTestUtils.marshalingAndUnmarshalingFilledObjectYieldsEqualObject(action);
-    }
-
 }

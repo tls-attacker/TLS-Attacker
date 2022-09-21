@@ -9,29 +9,23 @@
 
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import org.junit.jupiter.api.Test;
+
 import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
 
-@SuppressWarnings("SpellCheckingInspection")
-public class DHEServerKeyExchangePreparatorTest {
+public class DHEServerKeyExchangePreparatorTest extends AbstractTlsMessagePreparatorTest<DHEServerKeyExchangeMessage,
+    DHEServerKeyExchangePreparator<DHEServerKeyExchangeMessage>> {
 
-    private TlsContext context;
-    private DHEServerKeyExchangePreparator preparator;
-    private DHEServerKeyExchangeMessage message;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        message = new DHEServerKeyExchangeMessage();
-        preparator = new DHEServerKeyExchangePreparator(context.getChooser(), message);
+    public DHEServerKeyExchangePreparatorTest() {
+        super(DHEServerKeyExchangeMessage::new, DHEServerKeyExchangeMessage::new, DHEServerKeyExchangePreparator::new);
     }
 
     /**
@@ -65,10 +59,5 @@ public class DHEServerKeyExchangePreparatorTest {
             message.getSignatureAndHashAlgorithm().getValue());
         assertNotNull(message.getSignature().getValue());
         assertNotNull(message.getSignatureLength().getValue());
-    }
-
-    @Test
-    public void testNoContextPrepare() {
-        preparator.prepare();
     }
 }

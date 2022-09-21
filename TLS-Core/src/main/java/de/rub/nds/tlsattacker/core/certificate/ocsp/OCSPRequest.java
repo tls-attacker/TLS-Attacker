@@ -138,11 +138,9 @@ public class OCSPRequest {
                 httpCon.setRequestProperty("Content-Type", "application/ocsp-request");
 
                 httpCon.setDoOutput(true);
-                OutputStream os = httpCon.getOutputStream();
-                os.write(encodedRequest);
-                os.flush();
-                os.close();
-
+                try (OutputStream os = httpCon.getOutputStream()) {
+                    os.write(encodedRequest);
+                }
             } else if (requestMethod.equals("GET")) {
                 byte[] encoded = Base64.getEncoder().encode(encodedRequest);
                 URL requestUrl = new URL(serverUrl.toExternalForm() + "/" + new String(encoded));

@@ -9,34 +9,30 @@
 
 package de.rub.nds.tlsattacker.core.workflow.filter;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class DefaultFilterTest {
 
-    @Rule
-    public final ExpectedException exception = ExpectedException.none();
+    private DefaultFilter filter;
 
-    private WorkflowTrace trace;
-    private final Config config;
-    private final DefaultFilter filter;
-
-    public DefaultFilterTest() {
-        config = Config.createConfig();
+    @BeforeEach
+    public void setUp() {
+        Config config = Config.createConfig();
         filter = new DefaultFilter(config);
     }
 
     @Test
-    public void filterUninitializedTraceFails() {
-        trace = new WorkflowTrace();
-
-        exception.expect(ConfigurationException.class);
-        exception.expectMessage("Workflow trace not well defined. Trace does not define any connections.");
-        filter.applyFilter(trace);
+    public void testFilterUninitializedTraceFails() {
+        WorkflowTrace trace = new WorkflowTrace();
+        ConfigurationException exception = assertThrows(ConfigurationException.class, () -> filter.applyFilter(trace));
+        assertEquals("Workflow trace not well defined. Trace does not define any connections.", exception.getMessage());
     }
 
 }

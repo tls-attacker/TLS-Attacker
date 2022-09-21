@@ -11,9 +11,9 @@ package de.rub.nds.tlsattacker.transport;
 
 import java.io.Serializable;
 import java.util.Objects;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlTransient;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlTransient;
 
 @XmlTransient
 @XmlAccessorType(XmlAccessType.FIELD)

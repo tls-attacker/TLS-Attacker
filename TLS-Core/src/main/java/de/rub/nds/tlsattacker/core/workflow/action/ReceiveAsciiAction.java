@@ -16,8 +16,8 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import java.io.IOException;
 import java.util.Objects;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -71,5 +71,22 @@ public class ReceiveAsciiAction extends AsciiAction {
     @Override
     public boolean executedAsPlanned() {
         return Objects.equals(receivedAsciiString, getAsciiText());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        if (!super.equals(o))
+            return false;
+        ReceiveAsciiAction that = (ReceiveAsciiAction) o;
+        return Objects.equals(receivedAsciiString, that.receivedAsciiString);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), receivedAsciiString);
     }
 }

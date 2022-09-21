@@ -9,38 +9,23 @@
 
 package de.rub.nds.tlsattacker.core.protocol.message;
 
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.params.provider.Arguments;
 
-public class AlertMessageTest {
+import java.util.function.BiConsumer;
+import java.util.stream.Stream;
 
-    private AlertMessage message;
+public class AlertMessageTest extends AbstractMessageTest<AlertMessage> {
 
-    @Before
-    public void setUp() {
-        message = new AlertMessage();
+    public AlertMessageTest() {
+        super(AlertMessage::new, "AlertMessage:\n" + "  Level: %s\n" + "  Description: %s");
     }
 
-    @Test
-    public void testToString() {
-        byte testBytes = (byte) 199;
-        StringBuilder sb = new StringBuilder();
-        sb.append("AlertMessage:");
-        sb.append("\n  Level: ").append("null");
-        sb.append("\n  Description: ").append("null");
-
-        assertEquals(sb.toString(), message.toString());
-
-        message.setDescription(testBytes);
-        message.setLevel(testBytes);
-
-        sb.setLength(0);
-        sb.append("AlertMessage:");
-        sb.append("\n  Level: ").append(testBytes);
-        sb.append("\n  Description: ").append(testBytes);
-
-        assertEquals(sb.toString(), message.toString());
+    public static Stream<Arguments> provideToStringTestVectors() {
+        BiConsumer<AlertMessage, Object[]> messagePreparator = (AlertMessage message, Object[] values) -> {
+            message.setDescription((byte) values[0]);
+            message.setLevel((byte) values[1]);
+        };
+        return Stream.of(Arguments.of(new Object[] { null, null }, null),
+            Arguments.of(new Object[] { (byte) 199, (byte) 199 }, messagePreparator));
     }
-
 }

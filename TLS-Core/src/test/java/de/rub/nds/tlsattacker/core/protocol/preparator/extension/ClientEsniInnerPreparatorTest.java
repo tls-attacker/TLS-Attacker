@@ -9,43 +9,35 @@
 
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-
-import java.nio.charset.StandardCharsets;
-
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.ChooserType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientEsniInner;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.nio.charset.StandardCharsets;
 
 public class ClientEsniInnerPreparatorTest {
 
-    private Chooser chooser;
     private TlsContext context;
 
-    @Before
+    @BeforeEach
     public void setUp() {
-        Config config = Config.createConfig();
-        context = new TlsContext(config);
-        chooser = ChooserFactory.getChooser(ChooserType.DEFAULT, context, config);
+        context = new TlsContext();
     }
 
     @Test
-    public void test() {
-
+    public void testPrepare() {
         String hostName = "baz.example.com";
         byte nameType = (byte) 0x00;
 
         ClientEsniInner clientEsniInner = new ClientEsniInner();
-        ClientEsniInnerPreparator clientEsniInnerPreparator = new ClientEsniInnerPreparator(chooser, clientEsniInner);
+        ClientEsniInnerPreparator clientEsniInnerPreparator =
+            new ClientEsniInnerPreparator(context.getChooser(), clientEsniInner);
         ServerNamePair pair = new ServerNamePair(nameType, hostName.getBytes(StandardCharsets.UTF_8));
         clientEsniInner.getServerNameList().add(pair);
         context.setEsniPaddedLength(260);

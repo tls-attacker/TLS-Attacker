@@ -28,13 +28,13 @@ public class TokenBindingExtensionPreparator extends ExtensionPreparator<TokenBi
     @Override
     public void prepareExtensionContent() {
 
-        message.setTokenbindingVersion(chooser.getConfig().getDefaultTokenBindingVersion().getByteValue());
+        message.setTokenBindingVersion(chooser.getConfig().getDefaultTokenBindingVersion().getByteValue());
         ByteArrayOutputStream tokenbindingKeyParameters = new ByteArrayOutputStream();
         for (TokenBindingKeyParameters kp : chooser.getConfig().getDefaultTokenBindingKeyParameters()) {
             tokenbindingKeyParameters.write(kp.getValue());
         }
-        message.setTokenbindingKeyParameters(tokenbindingKeyParameters.toByteArray());
-        message.setParameterListLength(message.getTokenbindingKeyParameters().getValue().length);
+        message.setTokenBindingKeyParameters(tokenbindingKeyParameters.toByteArray());
+        message.setParameterListLength(message.getTokenBindingKeyParameters().getValue().length);
     }
 
 }

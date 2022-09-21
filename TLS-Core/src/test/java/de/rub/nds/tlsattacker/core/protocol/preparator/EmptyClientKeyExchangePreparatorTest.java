@@ -9,6 +9,9 @@
 
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.certificate.CertificateKeyPair;
 import de.rub.nds.tlsattacker.core.certificate.PemUtil;
@@ -17,27 +20,20 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.protocol.message.EmptyClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import org.bouncycastle.crypto.tls.Certificate;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.security.Security;
 import java.security.cert.CertificateException;
 
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.bouncycastle.crypto.tls.Certificate;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.junit.Before;
-import org.junit.Assert;
-import org.junit.Test;
-
-/**
- *
- * @author
- */
-public class EmptyClientKeyExchangePreparatorTest {
+public class EmptyClientKeyExchangePreparatorTest extends AbstractTlsMessagePreparatorTest<
+    EmptyClientKeyExchangeMessage, EmptyClientKeyExchangePreparator<EmptyClientKeyExchangeMessage>> {
     /*
      * In case you need to re-create the certificates or PMS parameters, follow these instructions (execute them in the
      * OpenSSL ./demos/certs/ folder and execute `bash cert.sh` beforehand to generate the CA). 0) run `bash cert.sh` to
@@ -53,8 +49,6 @@ public class EmptyClientKeyExchangePreparatorTest {
      * -inkey ec_client_privkey.pem -peerkey ec_server_pubkey.pem -hexdump To get the actual key values that are needed
      * here, you can use this OpenSSL command: openssl pkey -in <file> -noout -text
      */
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     private final String RANDOM = "AABBCCDDEEFF";
 
@@ -110,35 +104,31 @@ public class EmptyClientKeyExchangePreparatorTest {
     private final byte[] EC_PREMASTER =
         ArrayConverter.hexStringToByteArray("26d7439f907fbd24408203579f7c712b04ee2aa55e62734adda2ecb904c6da0a");
 
-    private TlsContext context;
-    private EmptyClientKeyExchangePreparator preparator;
-    private EmptyClientKeyExchangeMessage message;
-
-    @Before
-    public void setUp() {
+    @BeforeAll
+    public static void setUpClass() {
         Security.addProvider(new BouncyCastleProvider());
+    }
 
-        context = new TlsContext();
+    public EmptyClientKeyExchangePreparatorTest() {
+        super(EmptyClientKeyExchangeMessage::new, EmptyClientKeyExchangeMessage::new,
+            EmptyClientKeyExchangePreparator::new);
         context.setHighestClientProtocolVersion(ProtocolVersion.TLS12);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         context.setClientRandom(ArrayConverter.hexStringToByteArray(RANDOM));
         context.setServerRandom(ArrayConverter.hexStringToByteArray(RANDOM));
-
-        message = new EmptyClientKeyExchangeMessage();
-        preparator = new EmptyClientKeyExchangePreparator(context.getChooser(), message);
     }
 
     @Test
-    public void testPrepareHandshakeMessageNoClientCertificate() {
+    public void testPrepare() {
         context.setClientCertificate(Certificate.EMPTY_CHAIN);
 
         preparator.prepareHandshakeMessageContents();
 
         // PMS SHOULD not be calculatable without client key information
-        Assert.assertNull(message.getComputations().getPremasterSecret());
+        assertNull(message.getComputations().getPremasterSecret());
 
         // check client and server random are correctly set and concatenated
-        Assert.assertArrayEquals(
+        assertArrayEquals(
             ArrayConverter.concatenate(ArrayConverter.hexStringToByteArray(RANDOM),
                 ArrayConverter.hexStringToByteArray(RANDOM)),
             message.getComputations().getClientServerRandom().getValue());
@@ -150,7 +140,7 @@ public class EmptyClientKeyExchangePreparatorTest {
         context.setSelectedCipherSuite(CipherSuite.TLS_DH_RSA_WITH_AES_256_CBC_SHA);
         context.setServerDhPublicKey(DH_SERVER_PUBLIC_KEY);
 
-        // parse and set client certificate
+        // testParse and set client certificate
         Certificate clientCertificate = PemUtil.readCertificate(new ByteArrayInputStream(DH_CLIENT_CERT.getBytes()));
         context.setClientCertificate(clientCertificate);
 
@@ -165,13 +155,13 @@ public class EmptyClientKeyExchangePreparatorTest {
         preparator.prepareHandshakeMessageContents();
 
         // check client and server random are correctly set and concatenated
-        Assert.assertArrayEquals(
+        assertArrayEquals(
             ArrayConverter.concatenate(ArrayConverter.hexStringToByteArray(RANDOM),
                 ArrayConverter.hexStringToByteArray(RANDOM)),
             message.getComputations().getClientServerRandom().getValue());
 
         // check PMS correctly calculated
-        Assert.assertArrayEquals(DH_PREMASTER, message.getComputations().getPremasterSecret().getValue());
+        assertArrayEquals(DH_PREMASTER, message.getComputations().getPremasterSecret().getValue());
     }
 
     @Test
@@ -179,12 +169,12 @@ public class EmptyClientKeyExchangePreparatorTest {
         // prepare message params
         context.setSelectedCipherSuite(CipherSuite.TLS_ECDH_RSA_WITH_AES_128_CBC_SHA256);
 
-        // parse and set client certificate
+        // testParse and set client certificate
         Point pubKey = PointFormatter.formatFromByteArray(context.getChooser().getSelectedNamedGroup(),
             EC_SERVER_PUBLIC_KEY_BYTES);
         context.setServerEcPublicKey(pubKey);
 
-        // parse and set client certificate
+        // testParse and set client certificate
         Certificate clientCertificate = PemUtil.readCertificate(new ByteArrayInputStream(EC_CLIENT_CERT.getBytes()));
         context.setClientCertificate(clientCertificate);
 
@@ -199,17 +189,12 @@ public class EmptyClientKeyExchangePreparatorTest {
         preparator.prepareHandshakeMessageContents();
 
         // check client and server random are correctly set and concatenated
-        Assert.assertArrayEquals(
+        assertArrayEquals(
             ArrayConverter.concatenate(ArrayConverter.hexStringToByteArray(RANDOM),
                 ArrayConverter.hexStringToByteArray(RANDOM)),
             message.getComputations().getClientServerRandom().getValue());
 
         // check PMS correctly calculated
-        Assert.assertArrayEquals(EC_PREMASTER, message.getComputations().getPremasterSecret().getValue());
-    }
-
-    @Test
-    public void testNoContextPrepare() {
-        preparator.prepare();
+        assertArrayEquals(EC_PREMASTER, message.getComputations().getPremasterSecret().getValue());
     }
 }

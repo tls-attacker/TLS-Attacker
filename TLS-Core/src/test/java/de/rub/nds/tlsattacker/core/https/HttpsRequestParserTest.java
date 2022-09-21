@@ -9,34 +9,35 @@
 
 package de.rub.nds.tlsattacker.core.https;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
-import java.nio.charset.Charset;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.nio.charset.StandardCharsets;
 
 public class HttpsRequestParserTest {
 
-    private final Config config = Config.createConfig();
+    private Config config;
 
-    public HttpsRequestParserTest() {
-    }
-
-    @Before
+    @BeforeEach
     public void setUp() {
+        config = Config.createConfig();
     }
 
     /**
      * Test of parseMessageContent method, of class HttpsRequestParser with an invalid request.
      */
-    @Test(expected = ParserException.class)
+    @Test
     public void testParseMessageContentFailed() {
         HttpsRequestParser parser = new HttpsRequestParser(0,
             ArrayConverter.hexStringToByteArray("AAAAAAAAAAAAAAAAAAAAAAAA"), ProtocolVersion.TLS12, config);
-        parser.parse();
+        assertThrows(ParserException.class, parser::parse);
     }
 
     /**
@@ -47,7 +48,7 @@ public class HttpsRequestParserTest {
         String message = "GET /index.html HTTP/1.1\r\nUser-Agent: Test\r\nHost: www.rub.de\r\n\r\n";
 
         HttpsRequestParser parser =
-            new HttpsRequestParser(0, message.getBytes(Charset.forName("UTF-8")), ProtocolVersion.TLS12, config);
+            new HttpsRequestParser(0, message.getBytes(StandardCharsets.UTF_8), ProtocolVersion.TLS12, config);
         HttpsRequestMessage parsedMessage = parser.parse();
 
         assertEquals(parsedMessage.getRequestType().getValue(), "GET");

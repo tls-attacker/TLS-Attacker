@@ -18,7 +18,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.handler.ECDHClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.PskEcDhClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "PskEcDhClientKeyExchange")
 public class PskEcDhClientKeyExchangeMessage extends ECDHClientKeyExchangeMessage {

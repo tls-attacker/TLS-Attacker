@@ -9,37 +9,19 @@
 
 package de.rub.nds.tlsattacker.core.protocol.message;
 
-import org.junit.After;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.params.provider.Arguments;
 
-public class DHEServerKeyExchangeMessageTest {
+import java.util.stream.Stream;
 
-    DHEServerKeyExchangeMessage message;
+public class DHEServerKeyExchangeMessageTest extends AbstractMessageTest<DHEServerKeyExchangeMessage> {
 
-    @Before
-    public void setUp() {
-        message = new DHEServerKeyExchangeMessage();
+    public DHEServerKeyExchangeMessageTest() {
+        super(DHEServerKeyExchangeMessage::new,
+            "DHEServerKeyExchangeMessage:\n" + "  Modulus p: %s\n" + "  Generator g: %s\n" + "  Public Key: %s\n"
+                + "  Signature and Hash Algorithm: %s\n" + "  Signature: %s");
     }
 
-    @After
-    public void tearDown() {
-    }
-
-    /**
-     * Test of toString method, of class DHEServerKeyExchangeMessage.
-     */
-    @Test
-    public void testToString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("DHEServerKeyExchangeMessage:");
-        sb.append("\n  Modulus p: ").append("null");
-        sb.append("\n  Generator g: ").append("null");
-        sb.append("\n  Public Key: ").append("null");
-        sb.append("\n  Signature and Hash Algorithm: ").append("null");
-        sb.append("\n  Signature: ").append("null");
-
-        assertEquals(message.toString(), sb.toString());
+    public static Stream<Arguments> provideToStringTestVectors() {
+        return Stream.of(Arguments.of(new Object[] { null, null, null, null, null }, null));
     }
 }

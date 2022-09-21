@@ -21,8 +21,8 @@ import de.rub.nds.tlsattacker.core.protocol.handler.AlertHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.TlsMessageHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.Objects;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 @XmlRootElement(name = "Alert")
 public class AlertMessage extends TlsMessage {

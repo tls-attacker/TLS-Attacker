@@ -84,13 +84,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElementWrapper;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.tls.Certificate;
@@ -126,8 +126,11 @@ public class Config implements Serializable {
         if (DEFAULT_CONFIG_CACHE != null) {
             return DEFAULT_CONFIG_CACHE.getCachedCopy();
         }
-        InputStream stream = Config.class.getResourceAsStream(DEFAULT_CONFIG_FILE);
-        return ConfigIO.read(stream);
+        try (InputStream stream = Config.class.getResourceAsStream(DEFAULT_CONFIG_FILE)) {
+            return ConfigIO.read(stream);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static Config createConfig(File f) {
@@ -135,14 +138,7 @@ public class Config implements Serializable {
     }
 
     public static Config createConfig(InputStream stream) {
-        Config config = ConfigIO.read(stream);
-        try {
-            stream.close();
-        } catch (IOException ex) {
-            LOGGER.warn("Could not close resource Stream!", ex);
-            return ConfigIO.read(stream);
-        }
-        return config;
+        return ConfigIO.read(stream);
     }
 
     public static Config createEmptyConfig() {

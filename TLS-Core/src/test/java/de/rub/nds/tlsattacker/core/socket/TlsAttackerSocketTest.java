@@ -9,6 +9,9 @@
 
 package de.rub.nds.tlsattacker.core.socket;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -18,11 +21,11 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.io.IOException;
-import java.nio.charset.Charset;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
+import java.nio.charset.StandardCharsets;
 
 public class TlsAttackerSocketTest {
 
@@ -35,7 +38,7 @@ public class TlsAttackerSocketTest {
     public TlsAttackerSocketTest() {
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         Config config = Config.createConfig();
         state = new State(config, new WorkflowTrace());
@@ -50,22 +53,18 @@ public class TlsAttackerSocketTest {
 
     /**
      * Test of sendRawBytes method, of class TlsAttackerSocket.
-     * 
-     * @throws java.lang.Exception
      */
     @Test
-    public void testSendRawBytes() throws Exception {
+    public void testSendRawBytes() throws IOException {
         socket.sendRawBytes(new byte[] { 1, 2, 3 });
         assertArrayEquals(new byte[] { 1, 2, 3 }, transportHandler.getSendByte());
     }
 
     /**
      * Test of receiveRawBytes method, of class TlsAttackerSocket.
-     * 
-     * @throws java.lang.Exception
      */
     @Test
-    public void testReceiveRawBytes() throws Exception {
+    public void testReceiveRawBytes() throws IOException {
         transportHandler.setFetchableByte(new byte[] { 1, 2, 3 });
         byte[] received = socket.receiveRawBytes();
         assertArrayEquals(new byte[] { 1, 2, 3 }, received);
@@ -73,22 +72,20 @@ public class TlsAttackerSocketTest {
 
     /**
      * Test of send method, of class TlsAttackerSocket.
-     *
-     * @throws java.io.IOException
      */
     @Test
-    public void testSend_String() throws IOException {
+    public void testSendString() {
         socket.send("test");
         byte[] sentBytes = transportHandler.getSendByte();
         assertArrayEquals(sentBytes, ArrayConverter.concatenate(new byte[] { 0x17, 0x03, 0x03, 0x00, 0x04 },
-            "test".getBytes(Charset.forName("ASCII"))));
+            "test".getBytes(StandardCharsets.US_ASCII)));
     }
 
     /**
      * Test of send method, of class TlsAttackerSocket.
      */
     @Test
-    public void testSend_byteArr() {
+    public void testSendByteArray() {
         socket.send(new byte[] { 0, 1, 2, 3 });
         byte[] sentBytes = transportHandler.getSendByte();
         assertArrayEquals(sentBytes, new byte[] { 0x17, 0x03, 0x03, 0x00, 0x04, 0, 1, 2, 3 });
@@ -96,11 +93,9 @@ public class TlsAttackerSocketTest {
 
     /**
      * Test of receiveBytes method, of class TlsAttackerSocket.
-     * 
-     * @throws java.lang.Exception
      */
     @Test
-    public void testReceiveBytes() throws Exception {
+    public void testReceiveBytes() throws IOException {
         transportHandler.setFetchableByte(new byte[] { 0x17, 0x03, 0x03, 0x00, 0x03, 8, 8, 8 });
         byte[] receivedBytes = socket.receiveBytes();
         assertArrayEquals(receivedBytes, new byte[] { 8, 8, 8 });
@@ -108,13 +103,11 @@ public class TlsAttackerSocketTest {
 
     /**
      * Test of receiveString method, of class TlsAttackerSocket.
-     * 
-     * @throws java.lang.Exception
      */
     @Test
-    public void testReceiveString() throws Exception {
+    public void testReceiveString() throws IOException {
         transportHandler.setFetchableByte(ArrayConverter.concatenate(new byte[] { 0x17, 0x03, 0x03, 0x00, 0x04 },
-            "test".getBytes(Charset.forName("ASCII"))));
+            "test".getBytes(StandardCharsets.US_ASCII)));
         String receivedString = socket.receiveString();
         assertEquals("test", receivedString);
     }

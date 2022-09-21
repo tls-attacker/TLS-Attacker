@@ -10,34 +10,22 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-public class ServerHelloDonePreparatorTest {
+public class ServerHelloDonePreparatorTest
+    extends AbstractTlsMessagePreparatorTest<ServerHelloDoneMessage, ServerHelloDonePreparator> {
 
-    private TlsContext context;
-    private ServerHelloDoneMessage message;
-    private ServerHelloDonePreparator preparator;
-
-    @Before
-    public void setUp() {
-        this.context = new TlsContext();
-        this.message = new ServerHelloDoneMessage();
-        this.preparator = new ServerHelloDonePreparator(context.getChooser(), message);
+    public ServerHelloDonePreparatorTest() {
+        super(ServerHelloDoneMessage::new, ServerHelloDoneMessage::new, ServerHelloDonePreparator::new);
     }
 
     /**
      * Test of prepareHandshakeMessageContents method, of class ServerHelloDonePreparator.
      */
     @Test
+    @Disabled("Not implemented")
+    @Override
     public void testPrepare() {
-
-        // just check that prepare does not throw an exception
-    }
-
-    @Test
-    public void testNoContextPrepare() {
-        preparator.prepare();
     }
 }

@@ -9,36 +9,18 @@
 
 package de.rub.nds.tlsattacker.core.protocol.message;
 
-import org.junit.After;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.params.provider.Arguments;
 
-public class PskEcDheServerKeyExchangeMessageTest {
+import java.util.stream.Stream;
 
-    PskEcDheServerKeyExchangeMessage message;
+public class PskEcDheServerKeyExchangeMessageTest extends AbstractMessageTest<PskEcDheServerKeyExchangeMessage> {
 
-    @Before
-    public void setUp() {
-        message = new PskEcDheServerKeyExchangeMessage();
+    public PskEcDheServerKeyExchangeMessageTest() {
+        super(PskEcDheServerKeyExchangeMessage::new,
+            "PskEcDheServerKeyExchangeMessage:\n" + "  Curve Type: %s\n" + "  Named Group: %s\n" + "  Public Key: %s");
     }
 
-    @After
-    public void tearDown() {
+    public static Stream<Arguments> provideToStringTestVectors() {
+        return Stream.of(Arguments.of(new Object[] { null, null, null }, null));
     }
-
-    /**
-     * Test of toString method, of class PskEcDheServerKeyExchangeMessage.
-     */
-    @Test
-    public void testToString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("PskEcDheServerKeyExchangeMessage:");
-        sb.append("\n  Curve Type: ").append("null");
-        sb.append("\n  Named Group: ").append("null");
-        sb.append("\n  Public Key: ").append("null");
-
-        assertEquals(message.toString(), sb.toString());
-    }
-
 }

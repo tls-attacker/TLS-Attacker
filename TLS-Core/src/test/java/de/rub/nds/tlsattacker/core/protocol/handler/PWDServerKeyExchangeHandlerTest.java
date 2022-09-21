@@ -9,55 +9,26 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.protocol.message.PWDServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.PWDServerKeyExchangeParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.PWDServerKeyExchangePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.PWDServerKeyExchangeSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import org.junit.jupiter.api.Test;
+
 import java.math.BigInteger;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
 
-public class PWDServerKeyExchangeHandlerTest {
+public class PWDServerKeyExchangeHandlerTest
+    extends AbstractTlsMessageHandlerTest<PWDServerKeyExchangeMessage, PWDServerKeyExchangeHandler> {
 
-    PWDServerKeyExchangeHandler handler;
-    private TlsContext context;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new PWDServerKeyExchangeHandler(context);
-    }
-
-    /**
-     * Test of getParser method, of class ECDHClientKeyExchangeHandler.
-     */
-    @Test
-    public void testGetParser() {
-        assertTrue(handler.getParser(new byte[1], 0) instanceof PWDServerKeyExchangeParser);
-    }
-
-    /**
-     * Test of getPreparator method, of class ECDHClientKeyExchangeHandler.
-     */
-    @Test
-    public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new PWDServerKeyExchangeMessage()) instanceof PWDServerKeyExchangePreparator);
-    }
-
-    /**
-     * Test of getSerializer method, of class ECDHClientKeyExchangeHandler.
-     */
-    @Test
-    public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new PWDServerKeyExchangeMessage()) instanceof PWDServerKeyExchangeSerializer);
+    public PWDServerKeyExchangeHandlerTest() {
+        super(PWDServerKeyExchangeMessage::new, PWDServerKeyExchangeHandler::new);
     }
 
     @Test
+    @Override
     public void testAdjustTLSContext() {
         PWDServerKeyExchangeMessage message = new PWDServerKeyExchangeMessage();
         message.setNamedGroup(NamedGroup.BRAINPOOLP256R1.getValue());

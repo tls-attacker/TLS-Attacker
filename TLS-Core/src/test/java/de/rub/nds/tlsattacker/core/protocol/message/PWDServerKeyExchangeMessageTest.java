@@ -9,28 +9,18 @@
 
 package de.rub.nds.tlsattacker.core.protocol.message;
 
-import static org.junit.Assert.*;
-import org.junit.Test;
+import org.junit.jupiter.params.provider.Arguments;
 
-public class PWDServerKeyExchangeMessageTest {
+import java.util.stream.Stream;
 
-    @Test
-    public void testToString() {
-        PWDServerKeyExchangeMessage message = new PWDServerKeyExchangeMessage();
-        StringBuilder sb = new StringBuilder();
-        sb.append("PWDServerKeyExchangeMessage:");
-        sb.append("\n  Salt: ");
-        sb.append("null");
-        sb.append("\n  Curve Type: ");
-        sb.append("null");
-        sb.append("\n  Named Curve: ");
-        sb.append("null");
-        sb.append("\n  Element: ");
-        sb.append("null");
-        sb.append("\n  Scalar: ");
-        sb.append("null");
+public class PWDServerKeyExchangeMessageTest extends AbstractMessageTest<PWDServerKeyExchangeMessage> {
 
-        assertEquals(sb.toString(), message.toString());
+    public PWDServerKeyExchangeMessageTest() {
+        super(PWDServerKeyExchangeMessage::new, "PWDServerKeyExchangeMessage:\n" + "  Salt: %s\n" + "  Curve Type: %s\n"
+            + "  Named Curve: %s\n" + "  Element: %s\n" + "  Scalar: %s");
     }
 
+    public static Stream<Arguments> provideToStringTestVectors() {
+        return Stream.of(Arguments.of(new Object[] { null, null, null, null, null }, null));
+    }
 }

@@ -9,44 +9,30 @@
 
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtendedMasterSecretExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class ExtendedMasterSecretExtensionPreparatorTest {
+public class ExtendedMasterSecretExtensionPreparatorTest
+    extends AbstractExtensionMessagePreparatorTest<ExtendedMasterSecretExtensionMessage,
+        ExtendedMasterSecretExtensionSerializer, ExtendedMasterSecretExtensionPreparator> {
 
-    private final int extensionLength = 0;
-    private TlsContext context;
-    private ExtendedMasterSecretExtensionMessage message;
-    private ExtendedMasterSecretExtensionPreparator preparator;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        message = new ExtendedMasterSecretExtensionMessage();
-        preparator = new ExtendedMasterSecretExtensionPreparator(context.getChooser(), message,
-            new ExtendedMasterSecretExtensionSerializer(message));
+    public ExtendedMasterSecretExtensionPreparatorTest() {
+        super(ExtendedMasterSecretExtensionMessage::new, ExtendedMasterSecretExtensionMessage::new,
+            ExtendedMasterSecretExtensionSerializer::new, ExtendedMasterSecretExtensionPreparator::new);
     }
 
     @Test
-    public void testPreparator() {
-
+    @Override
+    public void testPrepare() {
         context.getConfig().setAddExtendedMasterSecretExtension(true);
         preparator.prepare();
 
         assertArrayEquals(ExtensionType.EXTENDED_MASTER_SECRET.getValue(), message.getExtensionType().getValue());
-        assertEquals(extensionLength, (long) message.getExtensionLength().getValue());
-
+        assertEquals(0, (long) message.getExtensionLength().getValue());
     }
-
-    @Test
-    public void testNoContextPrepare() {
-        preparator.prepare();
-    }
-
 }

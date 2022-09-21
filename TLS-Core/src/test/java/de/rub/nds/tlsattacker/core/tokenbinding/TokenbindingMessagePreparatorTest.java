@@ -9,25 +9,15 @@
 
 package de.rub.nds.tlsattacker.core.tokenbinding;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
-import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
-import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.crypto.ECCUtilsBCWrapper;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
-import de.rub.nds.tlsattacker.core.protocol.Serializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.math.BigInteger;
-import java.security.Security;
-import java.util.Base64;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.ASN1Integer;
@@ -35,29 +25,37 @@ import org.bouncycastle.crypto.params.ECDomainParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.crypto.signers.ECDSASigner;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import static org.junit.Assert.assertNotNull;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigInteger;
+import java.security.Security;
+import java.util.Base64;
 
 public class TokenbindingMessagePreparatorTest {
 
     private final static Logger LOGGER = LogManager.getLogger();
 
-    private TlsContext context;
-
     private Config config;
-
-    private Chooser chooser;
 
     private TokenBindingMessage message;
 
     private TokenBindingMessagePreparator preparator;
 
-    @Before
+    @BeforeAll
+    public static void setUpClass() {
+        Security.addProvider(new BouncyCastleProvider());
+    }
+
+    @BeforeEach
     public void setUp() {
         config = Config.createConfig();
-        context = new TlsContext(config);
-        chooser = context.getChooser();
+        TlsContext context = new TlsContext(config);
+        Chooser chooser = context.getChooser();
         message = new TokenBindingMessage();
         preparator = new TokenBindingMessagePreparator(chooser, message);
         config.setDefaultSelectedSignatureAndHashAlgorithm(SignatureAndHashAlgorithm.ECDSA_SHA256);
@@ -69,16 +67,14 @@ public class TokenbindingMessagePreparatorTest {
             "3B4B7628B03375E582E1398DA34FB51A9526847151337029CC15689130EE879B65DC461EF9DAEBB33C4C0FF5885FCE73"));
         context.setSelectedCipherSuite(CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
-        Security.addProvider(new BouncyCastleProvider());
     }
 
     /**
      * Test of prepareProtocolMessageContents method, of class TokenBindingMessagePreparator.
      *
-     * @throws java.lang.Exception
      */
     @Test
-    public void testPrepareProtocolMessageContents() throws Exception {
+    public void testPrepareProtocolMessageContents() {
         preparator.prepare();
         TokenBindingMessageSerializer serializer = new TokenBindingMessageSerializer(message, ProtocolVersion.TLS12);
         byte[] serialize = serializer.serialize();

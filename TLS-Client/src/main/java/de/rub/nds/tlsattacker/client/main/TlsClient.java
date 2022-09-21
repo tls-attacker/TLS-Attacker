@@ -53,8 +53,9 @@ public class TlsClient {
                 WorkflowTrace trace = null;
                 if (config.getWorkflowInput() != null) {
                     LOGGER.debug("Reading workflow trace from " + config.getWorkflowInput());
-                    trace =
-                        WorkflowTraceSerializer.secureRead(new FileInputStream(new File(config.getWorkflowInput())));
+                    try (FileInputStream fis = new FileInputStream(config.getWorkflowInput())) {
+                        trace = WorkflowTraceSerializer.secureRead(fis);
+                    }
                 }
                 TlsClient client = new TlsClient();
                 State state = client.startTlsClient(tlsConfig, trace);

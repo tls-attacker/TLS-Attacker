@@ -9,66 +9,28 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.ECDHEServerKeyExchangeParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.ECDHEServerKeyExchangePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.ECDHEServerKeyExchangeSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import org.junit.jupiter.api.Test;
+
 import java.math.BigInteger;
-import org.junit.After;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
 
-public class ECDHEServerKeyExchangeHandlerTest {
+public class ECDHEServerKeyExchangeHandlerTest extends AbstractTlsMessageHandlerTest<ECDHEServerKeyExchangeMessage,
+    ServerKeyExchangeHandler<ECDHEServerKeyExchangeMessage>> {
 
-    private ECDHEServerKeyExchangeHandler handler;
-    private TlsContext context;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new ECDHEServerKeyExchangeHandler(context);
-
-    }
-
-    @After
-    public void tearDown() {
-    }
-
-    /**
-     * Test of getParser method, of class ECDHEServerKeyExchangeHandler.
-     */
-    @Test
-    public void testGetParser() {
-        assertTrue(handler.getParser(new byte[1], 0) instanceof ECDHEServerKeyExchangeParser);
-    }
-
-    /**
-     * Test of getPreparator method, of class ECDHEServerKeyExchangeHandler.
-     */
-    @Test
-    public void testGetPreparator() {
-        assertTrue(
-            handler.getPreparator(new ECDHEServerKeyExchangeMessage()) instanceof ECDHEServerKeyExchangePreparator);
-    }
-
-    /**
-     * Test of getSerializer method, of class ECDHEServerKeyExchangeHandler.
-     */
-    @Test
-    public void testGetSerializer() {
-        assertTrue(
-            handler.getSerializer(new ECDHEServerKeyExchangeMessage()) instanceof ECDHEServerKeyExchangeSerializer);
+    public ECDHEServerKeyExchangeHandlerTest() {
+        super(ECDHEServerKeyExchangeMessage::new, ECDHEServerKeyExchangeHandler::new);
     }
 
     /**
      * Test of adjustTLSContext method, of class ECDHEServerKeyExchangeHandler.
      */
     @Test
+    @Override
     public void testAdjustTLSContext() {
         ECDHEServerKeyExchangeMessage message = new ECDHEServerKeyExchangeMessage();
         message.setCurveType(EllipticCurveType.NAMED_CURVE.getValue());

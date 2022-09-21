@@ -9,48 +9,24 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TruncatedHmacExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.TruncatedHmacExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.TruncatedHmacExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.TruncatedHmacExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class TruncatedHmacExtensionHandlerTest {
+public class TruncatedHmacExtensionHandlerTest
+    extends AbstractExtensionMessageHandlerTest<TruncatedHmacExtensionMessage, TruncatedHmacExtensionHandler> {
 
-    private TruncatedHmacExtensionHandler handler;
-    private TlsContext context;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new TruncatedHmacExtensionHandler(context);
+    public TruncatedHmacExtensionHandlerTest() {
+        super(TruncatedHmacExtensionMessage::new, TruncatedHmacExtensionHandler::new);
     }
 
     @Test
+    @Override
     public void testAdjustTLSContext() {
         TruncatedHmacExtensionMessage message = new TruncatedHmacExtensionMessage();
         handler.adjustTLSContext(message);
         assertTrue(context.isExtensionProposed(ExtensionType.TRUNCATED_HMAC));
-    }
-
-    @Test
-    public void testGetParser() {
-        assertTrue(handler.getParser(new byte[0], 0, context.getConfig()) instanceof TruncatedHmacExtensionParser);
-    }
-
-    @Test
-    public void testGetPreparator() {
-        assertTrue(
-            handler.getPreparator(new TruncatedHmacExtensionMessage()) instanceof TruncatedHmacExtensionPreparator);
-    }
-
-    @Test
-    public void testGetSerializer() {
-        assertTrue(
-            handler.getSerializer(new TruncatedHmacExtensionMessage()) instanceof TruncatedHmacExtensionSerializer);
     }
 }

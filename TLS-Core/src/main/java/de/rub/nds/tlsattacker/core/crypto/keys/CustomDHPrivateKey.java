@@ -16,8 +16,8 @@ import java.math.BigInteger;
 import java.util.Objects;
 import javax.crypto.interfaces.DHPrivateKey;
 import javax.crypto.spec.DHParameterSpec;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

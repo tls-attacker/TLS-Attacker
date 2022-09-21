@@ -16,8 +16,8 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlType;
 
 /**
  * Copy the value of a given field from one context to another.
@@ -40,7 +40,7 @@ public abstract class CopyContextFieldAction extends TlsAction {
 
     /**
      * Invoked on action execution to perform the actual copy operation.
-     * 
+     *
      * @param srcContext
      *                   source context
      * @param dstContext
@@ -75,6 +75,7 @@ public abstract class CopyContextFieldAction extends TlsAction {
 
     @Override
     public void reset() {
+        setExecuted(false);
     }
 
     @Override

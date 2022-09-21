@@ -10,50 +10,26 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PWDClearExtensionMessage;
-import java.util.Arrays;
-import java.util.Collection;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Named;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class PWDClearExtensionParserTest {
+import java.util.List;
+import java.util.stream.Stream;
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] {
-            { ArrayConverter.hexStringToByteArray("001e00050466726564"), 0, ExtensionType.PWD_CLEAR, 5, 4, "fred" } });
+public class PWDClearExtensionParserTest
+    extends AbstractExtensionParserTest<PWDClearExtensionMessage, PWDClearExtensionParser> {
+
+    public PWDClearExtensionParserTest() {
+        super(PWDClearExtensionParser::new,
+            List.of(
+                Named.of("PWDClearExtensionMessage::getUsernameLength", PWDClearExtensionMessage::getUsernameLength),
+                Named.of("PWDClearExtensionMessage::getUsername", PWDClearExtensionMessage::getUsername)));
     }
 
-    private final byte[] expectedBytes;
-    private final int start;
-    private final ExtensionType type;
-    private final int extensionLength;
-    private final int usernameLength;
-    private final String username;
-
-    public PWDClearExtensionParserTest(byte[] expectedBytes, int start, ExtensionType type, int extensionLength,
-        int usernameLength, String username) {
-        this.expectedBytes = expectedBytes;
-        this.start = start;
-        this.type = type;
-        this.extensionLength = extensionLength;
-        this.usernameLength = usernameLength;
-        this.username = username;
-    }
-
-    @Test
-    public void testParseExtensionMessageContent() {
-        PWDClearExtensionParser parser = new PWDClearExtensionParser(start, expectedBytes, Config.createConfig());
-        PWDClearExtensionMessage msg = parser.parse();
-        assertArrayEquals(type.getValue(), msg.getExtensionType().getValue());
-        assertEquals(extensionLength, (long) msg.getExtensionLength().getValue());
-        assertEquals(usernameLength, (long) msg.getUsernameLength().getValue());
-        assertEquals(username, msg.getUsername().getValue());
+    public static Stream<Arguments> provideTestVectors() {
+        return Stream.of(Arguments.of(ArrayConverter.hexStringToByteArray("001e00050466726564"), List.of(),
+            ExtensionType.PWD_CLEAR, 5, List.of(4, "fred")));
     }
 }

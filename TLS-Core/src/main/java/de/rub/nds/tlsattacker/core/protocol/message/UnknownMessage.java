@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.TlsMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.UnknownMessageHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "UnknownMessage")
 public class UnknownMessage extends TlsMessage {

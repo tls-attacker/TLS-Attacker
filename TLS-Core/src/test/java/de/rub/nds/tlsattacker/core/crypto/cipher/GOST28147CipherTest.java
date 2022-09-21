@@ -9,19 +9,21 @@
 
 package de.rub.nds.tlsattacker.core.crypto.cipher;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import java.security.Security;
 import org.bouncycastle.jcajce.spec.GOST28147ParameterSpec;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import java.security.Security;
 
 public class GOST28147CipherTest {
 
-    @BeforeClass
-    public static void setUp() {
+    @BeforeAll
+    public static void setUpClass() {
         Security.addProvider(new BouncyCastleProvider());
     }
 
@@ -37,11 +39,11 @@ public class GOST28147CipherTest {
         GOST28147ParameterSpec spec = new GOST28147ParameterSpec("E-A");
         GOST28147Cipher cipher = new GOST28147Cipher(spec, key, iv);
         byte[] actual = cipher.encrypt(plaintext);
-        Assert.assertArrayEquals(expectedCiphertext, actual);
+        assertArrayEquals(expectedCiphertext, actual);
 
         cipher = new GOST28147Cipher(spec, key, iv);
         actual = cipher.decrypt(actual);
-        Assert.assertArrayEquals(plaintext, actual);
+        assertArrayEquals(plaintext, actual);
     }
 
 }

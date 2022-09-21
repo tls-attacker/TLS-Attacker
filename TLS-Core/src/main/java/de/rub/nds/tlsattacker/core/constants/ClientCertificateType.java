@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * http://tools.ietf.org/html/rfc5246#section-7.4.4
+ * <a href="http://tools.ietf.org/html/rfc5246#section-7.4.4">RFC 5246 Section 7.4.4</a>
  */
 public enum ClientCertificateType {
 

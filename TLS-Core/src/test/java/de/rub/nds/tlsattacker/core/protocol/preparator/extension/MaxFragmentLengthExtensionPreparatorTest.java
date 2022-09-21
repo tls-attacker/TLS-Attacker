@@ -9,20 +9,24 @@
 
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
-import org.junit.Before;
-import org.junit.Test;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.MaxFragmentLengthExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.MaxFragmentLengthExtensionSerializer;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-public class MaxFragmentLengthExtensionPreparatorTest {
+public class MaxFragmentLengthExtensionPreparatorTest extends AbstractExtensionMessagePreparatorTest<
+    MaxFragmentLengthExtensionMessage, MaxFragmentLengthExtensionSerializer, MaxFragmentLengthExtensionPreparator> {
 
-    @Before
-    public void setUp() {
+    public MaxFragmentLengthExtensionPreparatorTest() {
+        super(MaxFragmentLengthExtensionMessage::new, MaxFragmentLengthExtensionMessage::new,
+            MaxFragmentLengthExtensionSerializer::new, MaxFragmentLengthExtensionPreparator::new);
     }
 
     /**
      * Test of prepareExtensionContent method, of class MaxFragmentLengthExtensionPreparator.
      */
     @Test
-    public void testPrepareExtensionContent() {
+    @Disabled("Not implemented")
+    public void testPrepare() {
     }
-
 }

@@ -9,6 +9,8 @@
 
 package de.rub.nds.tlsattacker.core.workflow.action.executor;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
@@ -16,14 +18,15 @@ import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.stream.StreamTransportHandler;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Before;
-import org.junit.Test;
 
 public class SendMessageHelperTest {
 
@@ -33,7 +36,7 @@ public class SendMessageHelperTest {
 
     private SendMessageHelper helper;
 
-    @Before
+    @BeforeEach
     public void setUp() throws IOException {
         context = new TlsContext();
         transportHandler = new StreamTransportHandler(0, 0, ConnectionEndType.CLIENT,
@@ -46,11 +49,11 @@ public class SendMessageHelperTest {
 
     /**
      * Test of sendMessages method, of class SendMessageHelper.
-     * 
-     * @throws java.lang.Exception
+     *
      */
     @Test
-    public void testSendMessages() throws Exception {
+    @Disabled("Not implemented")
+    public void testSendMessages() {
     }
 
     @Test
@@ -62,7 +65,7 @@ public class SendMessageHelperTest {
         List<AbstractRecord> recordList = new LinkedList<>();
         recordList.add(r);
         helper.sendMessages(new LinkedList<>(), new LinkedList<>(), recordList, context);
-        assertArrayEquals(new byte[] { 22, 03, 03, 0, 0 },
+        assertArrayEquals(new byte[] { 22, 3, 3, 0, 0 },
             ((ByteArrayOutputStream) transportHandler.getOutputStream()).toByteArray());
 
     }

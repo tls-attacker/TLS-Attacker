@@ -9,20 +9,25 @@
 
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
-import org.junit.Before;
-import org.junit.Test;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.HeartbeatExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.HeartbeatExtensionSerializer;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-public class HeartbeatExtensionPreparatorTest {
+public class HeartbeatExtensionPreparatorTest extends AbstractExtensionMessagePreparatorTest<HeartbeatExtensionMessage,
+    HeartbeatExtensionSerializer, HeartbeatExtensionPreparator> {
 
-    @Before
-    public void setUp() {
+    public HeartbeatExtensionPreparatorTest() {
+        super(HeartbeatExtensionMessage::new, HeartbeatExtensionMessage::new, HeartbeatExtensionSerializer::new,
+            HeartbeatExtensionPreparator::new);
     }
 
     /**
      * Test of prepareExtensionContent method, of class HeartbeatExtensionPreparator.
      */
     @Test
-    public void testPrepareExtensionContent() {
+    @Disabled("Not implemented")
+    @Override
+    public void testPrepare() {
     }
-
 }

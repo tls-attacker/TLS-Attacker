@@ -9,37 +9,19 @@
 
 package de.rub.nds.tlsattacker.core.protocol.message;
 
-import org.junit.After;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.params.provider.Arguments;
 
-public class ECDHEServerKeyExchangeMessageTest {
+import java.util.stream.Stream;
 
-    ECDHEServerKeyExchangeMessage message;
+public class ECDHEServerKeyExchangeMessageTest extends AbstractMessageTest<ECDHEServerKeyExchangeMessage> {
 
-    @Before
-    public void setUp() {
-        message = new ECDHEServerKeyExchangeMessage();
+    public ECDHEServerKeyExchangeMessageTest() {
+        super(ECDHEServerKeyExchangeMessage::new,
+            "ECDHEServerKeyExchangeMessage:\n" + "  Curve Type: %s\n" + "  Named Curve: %s\n" + "  Public Key: %s\n"
+                + "  Signature and Hash Algorithm: %s\n" + "  Signature: %s");
     }
 
-    @After
-    public void tearDown() {
-    }
-
-    /**
-     * Test of toString method, of class ECDHEServerKeyExchangeMessage.
-     */
-    @Test
-    public void testToString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("ECDHEServerKeyExchangeMessage:");
-        sb.append("\n  Curve Type: ").append("null");
-        sb.append("\n  Named Curve: ").append("null");
-        sb.append("\n  Public Key: ").append("null");
-        sb.append("\n  Signature and Hash Algorithm: ").append("null");
-        sb.append("\n  Signature: ").append("null");
-
-        assertEquals(message.toString(), sb.toString());
+    public static Stream<Arguments> provideToStringTestVectors() {
+        return Stream.of(Arguments.of(new Object[] { null, null, null, null, null }, null));
     }
 }

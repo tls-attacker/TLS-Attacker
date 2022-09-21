@@ -9,61 +9,39 @@
 
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMessageType;
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.prng.FixedSecureRandom;
-import org.junit.After;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class HeartbeatMessagePreparatorTest {
+public class HeartbeatMessagePreparatorTest
+    extends AbstractTlsMessagePreparatorTest<HeartbeatMessage, HeartbeatMessagePreparator> {
 
-    private static final Logger LOGGER = LogManager.getLogger();
-
-    private TlsContext context;
-    private HeartbeatMessage message;
-    private HeartbeatMessagePreparator preparator;
-
-    @Before
-    public void setUp() {
-        this.context = new TlsContext();
-        this.message = new HeartbeatMessage();
-        this.preparator = new HeartbeatMessagePreparator(context.getChooser(), message);
-    }
-
-    @After
-    public void cleanUp() {
-        context.setRandom(null);
+    public HeartbeatMessagePreparatorTest() {
+        super(HeartbeatMessage::new, HeartbeatMessage::new, HeartbeatMessagePreparator::new);
     }
 
     /**
      * Test of prepareProtocolMessageContents method, of class HeartbeatMessagePreparator.
      */
     @Test
+    @Override
     public void testPrepare() {
         context.getConfig().setHeartbeatPayloadLength(11);
         context.getConfig().setHeartbeatPaddingLength(11);
         context.setRandom(
             new FixedSecureRandom(ArrayConverter.hexStringToByteArray("F6C92DA33AF01D4FB770AA60B420BB3851D9D47ACB93")));
         preparator.prepare();
-        assertTrue(HeartbeatMessageType.HEARTBEAT_REQUEST.getValue() == message.getHeartbeatMessageType().getValue());
-        LOGGER.info("padding: " + ArrayConverter.bytesToHexString(message.getPadding().getValue()));
-        LOGGER.info("payload: " + ArrayConverter.bytesToHexString(message.getPayload().getValue()));
+        assertEquals(HeartbeatMessageType.HEARTBEAT_REQUEST.getValue(),
+            (byte) message.getHeartbeatMessageType().getValue());
         assertArrayEquals(ArrayConverter.hexStringToByteArray("60B420BB3851D9D47ACB93"),
             message.getPadding().getValue());
         assertArrayEquals(ArrayConverter.hexStringToByteArray("F6C92DA33AF01D4FB770AA"),
             message.getPayload().getValue());
-        assertTrue(11 == message.getPayloadLength().getValue());
-    }
-
-    @Test
-    public void testNoContextPrepare() {
-        preparator.prepare();
+        assertEquals(11, (int) message.getPayloadLength().getValue());
     }
 }

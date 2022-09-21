@@ -19,8 +19,8 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.handler.PskRsaClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.RSAClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "PskRsaClientKeyExchange")
 public class PskRsaClientKeyExchangeMessage extends RSAClientKeyExchangeMessage {

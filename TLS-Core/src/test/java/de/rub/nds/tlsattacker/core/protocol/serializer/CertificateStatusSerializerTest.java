@@ -9,56 +9,24 @@
 
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateStatusMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.CertificateStatusMessageParserTest;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import de.rub.nds.tlsattacker.core.protocol.parser.CertificateStatusParserTest;
+import org.junit.jupiter.params.provider.Arguments;
 
-import java.util.Collection;
+import java.util.List;
+import java.util.stream.Stream;
 
-import static org.junit.Assert.assertArrayEquals;
+public class CertificateStatusSerializerTest
+    extends AbstractHandshakeMessageSerializerTest<CertificateStatusMessage, CertificateStatusSerializer> {
 
-@RunWith(Parameterized.class)
-public class CertificateStatusSerializerTest {
-
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return CertificateStatusMessageParserTest.generateData();
+    public CertificateStatusSerializerTest() {
+        super(CertificateStatusMessage::new, CertificateStatusSerializer::new,
+            List.of((msg, obj) -> msg.setCertificateStatusType((Integer) obj),
+                (msg, obj) -> msg.setOcspResponseLength((Integer) obj),
+                (msg, obj) -> msg.setOcspResponseBytes((byte[]) obj)));
     }
 
-    private byte[] message;
-    private HandshakeMessageType type;
-    private int length;
-    private int certificateStatusType;
-    private int ocspResponseLength;
-    private byte[] ocspResponseBytes;
-    private ProtocolVersion version;
-    private byte[] expectedPart;
-
-    public CertificateStatusSerializerTest(byte[] message, HandshakeMessageType type, int length,
-        int certificateStatusType, int ocspResponseLength, byte[] ocspResponseBytes, ProtocolVersion version) {
-        this.message = message;
-        this.expectedPart = message;
-        this.type = type;
-        this.length = length;
-        this.certificateStatusType = certificateStatusType;
-        this.ocspResponseLength = ocspResponseLength;
-        this.ocspResponseBytes = ocspResponseBytes;
-        this.version = version;
-    }
-
-    @Test
-    public void testSerializeHandshakeMessageContent() {
-        CertificateStatusMessage message = new CertificateStatusMessage();
-        message.setType(type.getValue());
-        message.setLength(length);
-        message.setCertificateStatusType(certificateStatusType);
-        message.setOcspResponseLength(ocspResponseLength);
-        message.setOcspResponseBytes(ocspResponseBytes);
-        CertificateStatusSerializer serializer = new CertificateStatusSerializer(message, version);
-        assertArrayEquals(expectedPart, serializer.serialize());
+    public static Stream<Arguments> provideTestVectors() {
+        return CertificateStatusParserTest.provideTestVectors();
     }
 }

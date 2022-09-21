@@ -10,79 +10,38 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.SSL2HandshakeMessage;
+import org.junit.jupiter.api.Named;
+import org.junit.jupiter.params.provider.Arguments;
+
 import java.util.Arrays;
-import java.util.Collection;
-import static org.junit.Assert.*;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import java.util.List;
+import java.util.stream.Stream;
 
-@RunWith(Parameterized.class)
-public class SSL2ClientHelloParserTest {
+public class SSL2ClientHelloParserTest
+    extends AbstractHandshakeMessageParserTest<SSL2ClientHelloMessage, SSL2ClientHelloParser> {
 
-    /*
-     * Constructing a SSL2 ClientHelloMessage, captured from www.aspray24.com
-     */
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { {
+    public SSL2ClientHelloParserTest() {
+        super(SSL2ClientHelloParser::new,
+            List.of(Named.of("SSL2HandshakeMessage::getMessageLength", SSL2HandshakeMessage::getMessageLength),
+                Named.of("SSL2ClientHelloMessage::getProtocolVersion", SSL2ClientHelloMessage::getProtocolVersion),
+                Named.of("SSL2ClientHelloMessage::getCipherSuiteLength", SSL2ClientHelloMessage::getCipherSuiteLength),
+                Named.of("SSL2ClientHelloMessage::getSessionIdLength", SSL2ClientHelloMessage::getSessionIdLength),
+                Named.of("SSL2ClientHelloMessage::getChallengeLength", SSL2ClientHelloMessage::getChallengeLength),
+                Named.of("SSL2ClientHelloMessage::getCipherSuites", SSL2ClientHelloMessage::getCipherSuites),
+                Named.of("SSL2ClientHelloMessage::getSessionId", SSL2ClientHelloMessage::getSessionId),
+                Named.of("SSL2ClientHelloMessage::getChallenge", SSL2ClientHelloMessage::getChallenge)));
+    }
+
+    public static Stream<Arguments> provideTestVectors() {
+        return Stream.of(Arguments.of(ProtocolVersion.SSL2,
             ArrayConverter.hexStringToByteArray(
                 "802b0100020012000000100100800700c0030080060040020080040080bc4c7de14f6fc8bff4428f159fb24f2b"),
-            ProtocolVersion.SSL2, 43, HandshakeMessageType.CLIENT_HELLO, ProtocolVersion.SSL2.getValue(),
-            18/* 0x0012 */, 0, 16/* 0x0010 */,
-            ArrayConverter.hexStringToByteArray("0100800700c0030080060040020080040080"), new byte[0],
-            ArrayConverter.hexStringToByteArray("bc4c7de14f6fc8bff4428f159fb24f2b") } });
-    }
-
-    private final byte[] message;
-    private final ProtocolVersion version;
-    private final int messageLength;
-    private final HandshakeMessageType type;
-    private final byte[] protocolVersion;
-    private final int cipherSuiteLength;
-    private final int sessionIdLength;
-    private final int challengeLength;
-    private final byte[] cipherSuites;
-    private final byte[] sessionId;
-    private final byte[] challenge;
-    private final Config config = Config.createConfig();
-
-    public SSL2ClientHelloParserTest(byte[] message, ProtocolVersion version, int messageLength,
-        HandshakeMessageType type, byte[] protocolVersion, int cipherSuiteLength, int sessionIdLength,
-        int challengeLength, byte[] cipherSuites, byte[] sessionId, byte[] challenge) {
-        this.message = message;
-        this.version = version;
-        this.messageLength = messageLength;
-        this.type = type;
-        this.protocolVersion = protocolVersion;
-        this.cipherSuiteLength = cipherSuiteLength;
-        this.sessionIdLength = sessionIdLength;
-        this.challengeLength = challengeLength;
-        this.cipherSuites = cipherSuites;
-        this.sessionId = sessionId;
-        this.challenge = challenge;
-    }
-
-    /**
-     * Test of parse method, of class SSL2ClientHelloParser.
-     */
-    @Test
-    public void testParse() {
-        SSL2ClientHelloParser parser = new SSL2ClientHelloParser(0, message, version, config);
-        SSL2ClientHelloMessage msg = parser.parse();
-        assertArrayEquals(message, msg.getCompleteResultingMessage().getValue());
-        assertTrue(msg.getMessageLength().getValue() == messageLength);
-        assertTrue(msg.getType().getValue() == type.getValue());
-        assertArrayEquals(protocolVersion, msg.getProtocolVersion().getValue());
-        assertTrue(msg.getCipherSuiteLength().getValue() == cipherSuiteLength);
-        assertTrue(msg.getSessionIdLength().getValue() == sessionIdLength);
-        assertTrue(msg.getChallengeLength().getValue() == challengeLength);
-        assertArrayEquals(cipherSuites, msg.getCipherSuites().getValue());
-        assertArrayEquals(sessionId, msg.getSessionId().getValue());
-        assertArrayEquals(challenge, msg.getChallenge().getValue());
+            Arrays.asList(HandshakeMessageType.CLIENT_HELLO.getValue(), null, 43, ProtocolVersion.SSL2.getValue(), 18,
+                0, 16, ArrayConverter.hexStringToByteArray("0100800700c0030080060040020080040080"), new byte[0],
+                ArrayConverter.hexStringToByteArray("bc4c7de14f6fc8bff4428f159fb24f2b"))));
     }
 }

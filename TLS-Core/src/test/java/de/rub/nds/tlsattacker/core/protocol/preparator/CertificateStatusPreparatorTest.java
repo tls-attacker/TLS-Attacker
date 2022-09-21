@@ -10,31 +10,20 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateStatusMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-public class CertificateStatusPreparatorTest {
+public class CertificateStatusPreparatorTest
+    extends AbstractTlsMessagePreparatorTest<CertificateStatusMessage, CertificateStatusPreparator> {
 
-    private CertificateStatusMessage message;
-    private CertificateStatusPreparator preparator;
-    private TlsContext context;
-
-    @Before
-    public void setUp() {
-        message = new CertificateStatusMessage();
-        context = new TlsContext();
-        preparator = new CertificateStatusPreparator(context.getChooser(), message);
+    public CertificateStatusPreparatorTest() {
+        super(CertificateStatusMessage::new, CertificateStatusMessage::new, CertificateStatusPreparator::new);
     }
 
     // TODO: Preparator is a stub so far, so no special tests here so far.
     @Test
+    @Disabled("Not implemented")
+    @Override
     public void testPrepare() {
-        preparator.prepare();
-    }
-
-    @Test
-    public void testNoContextPrepare() {
-        preparator.prepare();
     }
 }

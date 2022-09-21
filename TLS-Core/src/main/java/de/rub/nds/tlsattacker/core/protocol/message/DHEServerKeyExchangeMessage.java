@@ -22,7 +22,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.DHEServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.DHEServerComputations;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.List;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "DHEClientKeyExchange")
 public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {

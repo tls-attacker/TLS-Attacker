@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.unittest.helper;
 
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
-import java.io.IOException;
 
 public class FakeTransportHandler extends TransportHandler {
     /**
@@ -44,29 +43,29 @@ public class FakeTransportHandler extends TransportHandler {
     }
 
     @Override
-    public byte[] fetchData() throws IOException {
+    public byte[] fetchData() {
         byte[] answer = fetchableByte;
         fetchableByte = new byte[0];
         return answer;
     }
 
     @Override
-    public void sendData(byte[] data) throws IOException {
+    public void sendData(byte[] data) {
         sendByte = data;
     }
 
     @Override
-    public void initialize() throws IOException {
+    public void initialize() {
         opened = true;
     }
 
     @Override
-    public boolean isClosed() throws IOException {
+    public boolean isClosed() {
         return !opened;
     }
 
     @Override
-    public void closeClientConnection() throws IOException {
+    public void closeClientConnection() {
         if (!isClosed())
             opened = false;
     }
@@ -77,7 +76,7 @@ public class FakeTransportHandler extends TransportHandler {
     }
 
     @Override
-    public void preInitialize() throws IOException {
+    public void preInitialize() {
     }
 
 }

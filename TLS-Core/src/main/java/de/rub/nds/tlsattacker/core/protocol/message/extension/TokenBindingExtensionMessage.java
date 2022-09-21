@@ -15,7 +15,7 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * This extension is defined in draft-ietf-tokbind-negotiation
@@ -24,9 +24,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class TokenBindingExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty
-    private ModifiableByteArray tokenbindingVersion;
+    private ModifiableByteArray tokenBindingVersion;
     @ModifiableVariableProperty
-    private ModifiableByteArray tokenbindingKeyParameters;
+    private ModifiableByteArray tokenBindingKeyParameters;
     private ModifiableInteger parameterListLength;
 
     public TokenBindingExtensionMessage() {
@@ -37,30 +37,30 @@ public class TokenBindingExtensionMessage extends ExtensionMessage {
         super(ExtensionType.TOKEN_BINDING);
     }
 
-    public ModifiableByteArray getTokenbindingVersion() {
-        return tokenbindingVersion;
+    public ModifiableByteArray getTokenBindingVersion() {
+        return tokenBindingVersion;
     }
 
-    public void setTokenbindingVersion(ModifiableByteArray tokenbindingVersion) {
-        this.tokenbindingVersion = tokenbindingVersion;
+    public void setTokenBindingVersion(ModifiableByteArray tokenBindingVersion) {
+        this.tokenBindingVersion = tokenBindingVersion;
     }
 
-    public void setTokenbindingVersion(byte[] tokenbindingVersion) {
-        this.tokenbindingVersion =
-            ModifiableVariableFactory.safelySetValue(this.tokenbindingVersion, tokenbindingVersion);
+    public void setTokenBindingVersion(byte[] tokenBindingVersion) {
+        this.tokenBindingVersion =
+            ModifiableVariableFactory.safelySetValue(this.tokenBindingVersion, tokenBindingVersion);
     }
 
-    public ModifiableByteArray getTokenbindingKeyParameters() {
-        return tokenbindingKeyParameters;
+    public ModifiableByteArray getTokenBindingKeyParameters() {
+        return tokenBindingKeyParameters;
     }
 
-    public void setTokenbindingKeyParameters(ModifiableByteArray tokenbindingKeyParameters) {
-        this.tokenbindingKeyParameters = tokenbindingKeyParameters;
+    public void setTokenBindingKeyParameters(ModifiableByteArray tokenBindingKeyParameters) {
+        this.tokenBindingKeyParameters = tokenBindingKeyParameters;
     }
 
-    public void setTokenbindingKeyParameters(byte[] tokenbindingParameters) {
-        this.tokenbindingKeyParameters =
-            ModifiableVariableFactory.safelySetValue(this.tokenbindingKeyParameters, tokenbindingParameters);
+    public void setTokenBindingKeyParameters(byte[] tokenBindingParameters) {
+        this.tokenBindingKeyParameters =
+            ModifiableVariableFactory.safelySetValue(this.tokenBindingKeyParameters, tokenBindingParameters);
     }
 
     public ModifiableInteger getParameterListLength() {

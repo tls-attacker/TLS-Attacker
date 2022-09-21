@@ -13,7 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import java.io.ByteArrayInputStream;
 import java.security.cert.CertificateFactory;
 import java.util.Collection;
-import javax.xml.bind.annotation.adapters.XmlAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.crypto.tls.TlsUtils;
 import org.bouncycastle.jce.provider.X509CertificateObject;

@@ -9,68 +9,37 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.CertificateMessageParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateMessagePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateMessageSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.security.Security;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.junit.After;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-@SuppressWarnings("SpellCheckingInspection")
-public class CertificateMessageHandlerTest {
+import java.security.Security;
 
-    private CertificateMessageHandler handler;
-    private TlsContext context;
+public class CertificateMessageHandlerTest
+    extends AbstractTlsMessageHandlerTest<CertificateMessage, CertificateMessageHandler> {
 
-    @Before
-    public void setUp() {
+    CertificateMessageHandlerTest() {
+        super(CertificateMessage::new, CertificateMessageHandler::new);
+    }
+
+    @BeforeAll
+    public static void setUpClass() {
         Security.addProvider(new BouncyCastleProvider());
-        context = new TlsContext();
-        handler = new CertificateMessageHandler(context);
-    }
-
-    @After
-    public void tearDown() {
-    }
-
-    /**
-     * Test of getParser method, of class CertificateMessageHandler.
-     */
-    @Test
-    public void testGetParser() {
-        assertTrue(handler.getParser(new byte[1], 0) instanceof CertificateMessageParser);
-    }
-
-    /**
-     * Test of getPreparator method, of class CertificateMessageHandler.
-     */
-    @Test
-    public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new CertificateMessage()) instanceof CertificateMessagePreparator);
-    }
-
-    /**
-     * Test of getSerializer method, of class CertificateMessageHandler.
-     */
-    @Test
-    public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new CertificateMessage()) instanceof CertificateMessageSerializer);
     }
 
     /**
      * Test of adjustTLSContext method, of class CertificateMessageHandler.
      */
     @Test
+    @Override
     public void testAdjustTLSContext() {
         for (ProtocolVersion version : new ProtocolVersion[] { ProtocolVersion.TLS12 }) {
             context.setTalkingConnectionEndType(ConnectionEndType.CLIENT);

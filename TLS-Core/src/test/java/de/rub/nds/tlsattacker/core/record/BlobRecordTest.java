@@ -9,6 +9,8 @@
 
 package de.rub.nds.tlsattacker.core.record;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -21,9 +23,9 @@ import de.rub.nds.tlsattacker.core.record.preparator.BlobRecordPreparator;
 import de.rub.nds.tlsattacker.core.record.serializer.BlobRecordSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 public class BlobRecordTest {
 
@@ -32,7 +34,7 @@ public class BlobRecordTest {
     private Encryptor encryptor;
     private RecordCompressor compressor;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         Config config = Config.createConfig();
         record = new BlobRecord(config);
@@ -75,7 +77,7 @@ public class BlobRecordTest {
      * Test of adjustContext method, of class BlobRecord.
      */
     @Test
+    @Disabled("Not implemented")
     public void testAdjustContext() {
     }
-
 }

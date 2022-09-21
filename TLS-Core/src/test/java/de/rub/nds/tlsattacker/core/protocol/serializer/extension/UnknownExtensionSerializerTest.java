@@ -9,20 +9,25 @@
 
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import org.junit.Before;
-import org.junit.Test;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.UnknownExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.UnknownExtensionParserTest;
+import org.junit.jupiter.params.provider.Arguments;
 
-public class UnknownExtensionSerializerTest {
+import java.util.List;
+import java.util.stream.Stream;
 
-    @Before
-    public void setUp() {
+public class UnknownExtensionSerializerTest
+    extends AbstractExtensionMessageSerializerTest<UnknownExtensionMessage, UnknownExtensionSerializer> {
+
+    public UnknownExtensionSerializerTest() {
+        super(UnknownExtensionMessage::new, UnknownExtensionSerializer::new, List.of((msg, obj) -> {
+            if (obj != null) {
+                msg.setExtensionData((byte[]) obj);
+            }
+        }));
     }
 
-    /**
-     * Test of serializeExtensionContent method, of class UnknownExtensionSerializer.
-     */
-    @Test
-    public void testSerializeExtensionContent() {
+    public static Stream<Arguments> provideTestVectors() {
+        return UnknownExtensionParserTest.provideTestVectors();
     }
-
 }

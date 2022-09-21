@@ -9,30 +9,19 @@
 
 package de.rub.nds.tlsattacker.core.config.delegate;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.beust.jcommander.JCommander;
 import de.rub.nds.tlsattacker.core.config.Config;
 import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.junit.After;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class GeneralDelegateTest {
+public class GeneralDelegateTest extends AbstractDelegateTest<GeneralDelegate> {
 
-    private GeneralDelegate delegate;
-    private JCommander jcommander;
-    private String[] args;
-
-    @Before
+    @BeforeEach
     public void setUp() {
-        this.delegate = new GeneralDelegate();
-        this.jcommander = new JCommander(delegate);
-    }
-
-    @After
-    public void tearDown() {
-        this.delegate.setDebug(false);
-        delegate.applyDelegate(Config.createConfig());
+        super.setUp(new GeneralDelegate());
     }
 
     /**
@@ -149,7 +138,6 @@ public class GeneralDelegateTest {
         Config config = Config.createConfig();
         Config config2 = Config.createConfig();
         delegate.applyDelegate(config);
-        assertTrue(EqualsBuilder.reflectionEquals(config, config2, "keyStore", "ourCertificate"));// little
-        // ugly
+        assertTrue(EqualsBuilder.reflectionEquals(config, config2, "keyStore", "ourCertificate"));
     }
 }

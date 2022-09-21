@@ -9,65 +9,27 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.PskRsaClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.PskRsaClientKeyExchangeParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.PskRsaClientKeyExchangePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.PskRsaClientKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import org.junit.After;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class PskRsaClientKeyExchangeHandlerTest {
+public class PskRsaClientKeyExchangeHandlerTest
+    extends AbstractTlsMessageHandlerTest<PskRsaClientKeyExchangeMessage, PskRsaClientKeyExchangeHandler> {
 
-    private PskRsaClientKeyExchangeHandler handler;
-    private TlsContext context;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new PskRsaClientKeyExchangeHandler(context);
-    }
-
-    @After
-    public void tearDown() {
-    }
-
-    /**
-     * Test of getParser method, of class PskRsaClientKeyExchangeHandler.
-     */
-    @Test
-    public void testGetParser() {
-        assertTrue(handler.getParser(new byte[1], 0) instanceof PskRsaClientKeyExchangeParser);
-    }
-
-    /**
-     * Test of getPreparator method, of class PskRsaClientKeyExchangeHandler.
-     */
-    @Test
-    public void testGetPreparator() {
-        assertTrue(
-            handler.getPreparator(new PskRsaClientKeyExchangeMessage()) instanceof PskRsaClientKeyExchangePreparator);
-    }
-
-    /**
-     * Test of getSerializer method, of class PskRsaClientKeyExchangeHandler.
-     */
-    @Test
-    public void testGetSerializer() {
-        assertTrue(
-            handler.getSerializer(new PskRsaClientKeyExchangeMessage()) instanceof PskRsaClientKeyExchangeSerializer);
+    public PskRsaClientKeyExchangeHandlerTest() {
+        super(PskRsaClientKeyExchangeMessage::new, PskRsaClientKeyExchangeHandler::new);
     }
 
     /**
      * Test of adjustTLSContext method, of class PskRsaClientKeyExchangeHandler.
      */
     @Test
+    @Override
     public void testAdjustTLSContext() {
         PskRsaClientKeyExchangeMessage message = new PskRsaClientKeyExchangeMessage();
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_PSK_WITH_AES_128_CBC_SHA);

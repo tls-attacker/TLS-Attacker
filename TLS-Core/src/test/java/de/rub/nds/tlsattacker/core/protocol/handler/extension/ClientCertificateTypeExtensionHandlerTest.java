@@ -9,57 +9,32 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateTypeExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.ClientCertificateTypeExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ClientCertificateTypeExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ClientCertificateTypeExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import org.junit.jupiter.api.Test;
+
 import java.util.Arrays;
 import java.util.List;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
 
-public class ClientCertificateTypeExtensionHandlerTest {
+public class ClientCertificateTypeExtensionHandlerTest extends
+    AbstractExtensionMessageHandlerTest<ClientCertificateTypeExtensionMessage, ClientCertificateTypeExtensionHandler> {
     private final List<CertificateType> certList =
         Arrays.asList(CertificateType.OPEN_PGP, CertificateType.X509, CertificateType.RAW_PUBLIC_KEY);
-    private ClientCertificateTypeExtensionHandler handler;
-    private TlsContext context;
 
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new ClientCertificateTypeExtensionHandler(context);
+    public ClientCertificateTypeExtensionHandlerTest() {
+        super(ClientCertificateTypeExtensionMessage::new, ClientCertificateTypeExtensionHandler::new);
     }
 
     @Test
+    @Override
     public void testAdjustTLSContext() {
         ClientCertificateTypeExtensionMessage msg = new ClientCertificateTypeExtensionMessage();
         msg.setCertificateTypes(CertificateType.toByteArray(certList));
 
         handler.adjustTLSContext(msg);
 
-        assertThat(certList, is(context.getClientCertificateTypeDesiredTypes()));
-    }
-
-    @Test
-    public void testGetParser() {
-        assertTrue(
-            handler.getParser(new byte[0], 0, context.getConfig()) instanceof ClientCertificateTypeExtensionParser);
-    }
-
-    @Test
-    public void testGetPreparator() {
-        assertTrue(handler.getPreparator(
-            new ClientCertificateTypeExtensionMessage()) instanceof ClientCertificateTypeExtensionPreparator);
-    }
-
-    @Test
-    public void testGetSerializer() {
-        assertTrue(handler.getSerializer(
-            new ClientCertificateTypeExtensionMessage()) instanceof ClientCertificateTypeExtensionSerializer);
+        assertEquals(certList, context.getClientCertificateTypeDesiredTypes());
     }
 }

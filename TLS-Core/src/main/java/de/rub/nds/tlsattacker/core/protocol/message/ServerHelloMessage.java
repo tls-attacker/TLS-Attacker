@@ -60,7 +60,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Date;
-import javax.xml.bind.annotation.*;
+import jakarta.xml.bind.annotation.*;
 
 @XmlRootElement(name = "ServerHello")
 public class ServerHelloMessage extends HelloMessage {

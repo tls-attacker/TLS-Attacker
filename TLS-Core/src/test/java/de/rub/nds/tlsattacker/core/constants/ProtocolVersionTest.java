@@ -9,39 +9,30 @@
 
 package de.rub.nds.tlsattacker.core.constants;
 
-import java.util.LinkedList;
+import static org.junit.jupiter.api.Assertions.assertSame;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
+
 import java.util.List;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
 
 public class ProtocolVersionTest {
 
-    public ProtocolVersionTest() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @Test
-    public void testGetFromValue() {
-        ProtocolVersion version = ProtocolVersion.getProtocolVersion(new byte[] { 03, 03 });
-        assertTrue(version == ProtocolVersion.TLS12);
+    @ParameterizedTest
+    @EnumSource(ProtocolVersion.class)
+    public void testGetFromValue(ProtocolVersion providedProtocolVersion) {
+        assertSame(providedProtocolVersion, ProtocolVersion.getProtocolVersion(providedProtocolVersion.getValue()));
     }
 
     /**
      * Test of gethighestProtocolVersion method, of class ProtocolVersion.
      */
     @Test
-    public void testGethighestProtocolVersion() {
-        List<ProtocolVersion> versions = new LinkedList<>();
-        versions.add(ProtocolVersion.TLS10);
-        versions.add(ProtocolVersion.TLS11);
-        versions.add(ProtocolVersion.TLS12);
-        versions.add(ProtocolVersion.TLS13);
+    public void testGetHighestProtocolVersion() {
+        List<ProtocolVersion> versions =
+            List.of(ProtocolVersion.TLS10, ProtocolVersion.TLS11, ProtocolVersion.TLS12, ProtocolVersion.TLS13);
         ProtocolVersion highestProtocolVersion = ProtocolVersion.getHighestProtocolVersion(versions);
-        assertArrayEquals(ProtocolVersion.TLS13.getValue(), highestProtocolVersion.getValue());
+        assertSame(ProtocolVersion.TLS13, highestProtocolVersion);
     }
 }

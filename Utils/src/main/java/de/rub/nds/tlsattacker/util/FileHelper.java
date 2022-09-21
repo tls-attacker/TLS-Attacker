@@ -29,22 +29,19 @@ public class FileHelper {
                 if (f.isDirectory()) {
                     deleteFolder(f);
                 } else {
-                    f.delete();
+                    assert f.delete();
                 }
             }
         }
-        folder.delete();
+        assert folder.delete();
     }
 
     public static String getResourceAsString(Class currentClass, String resourceFilePath) {
-        InputStream is;
         if (!resourceFilePath.startsWith("/")) {
-            is = currentClass.getResourceAsStream("/" + resourceFilePath);
-        } else {
-            is = currentClass.getResourceAsStream(resourceFilePath);
+            resourceFilePath = "/" + resourceFilePath;
         }
-        String contents = null;
-        try {
+        String contents;
+        try (InputStream is = currentClass.getResourceAsStream(resourceFilePath)) {
             contents = inputStreamToString(is);
         } catch (IOException ex) {
             LOGGER.error("Unable to load resource file " + resourceFilePath);
@@ -61,7 +58,7 @@ public class FileHelper {
             bos.write((byte) result);
             result = bis.read();
         }
-        return bos.toString(StandardCharsets.UTF_8.name());
+        return bos.toString(StandardCharsets.UTF_8);
     }
 
     private FileHelper() {

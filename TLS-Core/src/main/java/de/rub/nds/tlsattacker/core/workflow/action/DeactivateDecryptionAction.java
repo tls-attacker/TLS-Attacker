@@ -12,7 +12,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import static de.rub.nds.tlsattacker.core.workflow.action.DeactivateCryptoAction.LOGGER;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class DeactivateDecryptionAction extends DeactivateCryptoAction {

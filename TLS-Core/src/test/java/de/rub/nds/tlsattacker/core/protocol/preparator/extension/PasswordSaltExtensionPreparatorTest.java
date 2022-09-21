@@ -9,37 +9,32 @@
 
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PasswordSaltExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PasswordSaltExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class PasswordSaltExtensionPreparatorTest {
+public class PasswordSaltExtensionPreparatorTest extends AbstractExtensionMessagePreparatorTest<
+    PasswordSaltExtensionMessage, PasswordSaltExtensionSerializer, PasswordSaltExtensionPreparator> {
 
-    private TlsContext context;
-    private PasswordSaltExtensionMessage message;
-    private PasswordSaltExtensionPreparator preparator;
-    private byte[] salt = ArrayConverter.hexStringToByteArray("00aaff");
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        message = new PasswordSaltExtensionMessage();
-        preparator = new PasswordSaltExtensionPreparator(context.getChooser(), message,
-            new PasswordSaltExtensionSerializer(message));
+    public PasswordSaltExtensionPreparatorTest() {
+        super(PasswordSaltExtensionMessage::new, PasswordSaltExtensionMessage::new,
+            PasswordSaltExtensionSerializer::new, PasswordSaltExtensionPreparator::new);
     }
 
     @Test
-    public void testPreparator() {
+    @Override
+    public void testPrepare() {
+        byte[] salt = ArrayConverter.hexStringToByteArray("00aaff");
         context.getConfig().setDefaultServerPWDSalt(salt);
         preparator.prepare();
 
         assertArrayEquals(ExtensionType.PASSWORD_SALT.getValue(), message.getExtensionType().getValue());
-        assertEquals(3 + 2, (long) message.getExtensionLength().getValue());
+        assertEquals(5, message.getExtensionLength().getValue());
         assertArrayEquals(salt, message.getSalt().getValue());
 
     }

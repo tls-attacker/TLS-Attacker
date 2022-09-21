@@ -19,8 +19,8 @@ import de.rub.nds.tlsattacker.core.protocol.handler.ApplicationMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.TlsMessageHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.Arrays;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 @XmlRootElement(name = "Application")
 public class ApplicationMessage extends TlsMessage {

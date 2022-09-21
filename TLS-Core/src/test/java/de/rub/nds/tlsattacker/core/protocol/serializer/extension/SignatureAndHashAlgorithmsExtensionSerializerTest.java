@@ -9,20 +9,23 @@
 
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import org.junit.Before;
-import org.junit.Test;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.SignatureAndHashAlgorithmsExtensionParserTest;
+import org.junit.jupiter.params.provider.Arguments;
 
-public class SignatureAndHashAlgorithmsExtensionSerializerTest {
+import java.util.List;
+import java.util.stream.Stream;
 
-    @Before
-    public void setUp() {
+public class SignatureAndHashAlgorithmsExtensionSerializerTest extends AbstractExtensionMessageSerializerTest<
+    SignatureAndHashAlgorithmsExtensionMessage, SignatureAndHashAlgorithmsExtensionSerializer> {
+
+    public SignatureAndHashAlgorithmsExtensionSerializerTest() {
+        super(SignatureAndHashAlgorithmsExtensionMessage::new, SignatureAndHashAlgorithmsExtensionSerializer::new,
+            List.of((msg, obj) -> msg.setSignatureAndHashAlgorithmsLength((Integer) obj),
+                (msg, obj) -> msg.setSignatureAndHashAlgorithms((byte[]) obj)));
     }
 
-    /**
-     * Test of serializeExtensionContent method, of class SignatureAndHashAlgorithmsExtensionSerializer.
-     */
-    @Test
-    public void testSerializeExtensionContent() {
+    public static Stream<Arguments> provideTestVectors() {
+        return SignatureAndHashAlgorithmsExtensionParserTest.provideTestVectors();
     }
-
 }

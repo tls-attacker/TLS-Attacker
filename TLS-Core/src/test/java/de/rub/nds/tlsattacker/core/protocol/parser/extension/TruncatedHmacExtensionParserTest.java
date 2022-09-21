@@ -9,32 +9,23 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TruncatedHmacExtensionMessage;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.params.provider.Arguments;
 
-public class TruncatedHmacExtensionParserTest {
+import java.util.List;
+import java.util.stream.Stream;
 
-    private final ExtensionType extensionType = ExtensionType.TRUNCATED_HMAC;
-    private final byte[] expectedBytes = new byte[] { 0x00, 0x04, 0x00, 0x00 };
-    private final int extensionLength = 0;
-    private TruncatedHmacExtensionParser parser;
-    private TruncatedHmacExtensionMessage message;
+public class TruncatedHmacExtensionParserTest
+    extends AbstractExtensionParserTest<TruncatedHmacExtensionMessage, TruncatedHmacExtensionParser> {
 
-    @Before
-    public void setUp() {
-        parser = new TruncatedHmacExtensionParser(0, expectedBytes, Config.createConfig());
+    public TruncatedHmacExtensionParserTest() {
+        super(TruncatedHmacExtensionParser::new);
     }
 
-    @Test
-    public void testParseExtensionMessageContent() {
-        message = parser.parse();
-
-        assertArrayEquals(extensionType.getValue(), message.getExtensionType().getValue());
-        assertEquals(extensionLength, (long) message.getExtensionLength().getValue());
+    public static Stream<Arguments> provideTestVectors() {
+        return Stream.of(Arguments.of(ArrayConverter.hexStringToByteArray("00040000"), List.of(),
+            ExtensionType.TRUNCATED_HMAC, 0, List.of()));
     }
 }

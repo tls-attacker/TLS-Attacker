@@ -9,40 +9,50 @@
 
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.protocol.message.GOSTClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.math.BigInteger;
-import java.security.Security;
 import org.bouncycastle.crypto.tls.Certificate;
 import org.bouncycastle.jcajce.provider.asymmetric.ecgost12.BCECGOST3410_2012PublicKey;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.jce.spec.ECNamedCurveSpec;
 import org.bouncycastle.math.ec.ECPoint;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-public class GOSTClientKeyExchangePreparatorTest {
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.math.BigInteger;
+import java.security.Security;
+
+public class GOSTClientKeyExchangePreparatorTest
+    extends AbstractTlsMessagePreparatorTest<GOSTClientKeyExchangeMessage, GOSTClientKeyExchangePreparator> {
+
+    @BeforeAll
+    public static void setUpClass() {
+        Security.addProvider(new BouncyCastleProvider());
+    }
+
+    public GOSTClientKeyExchangePreparatorTest() {
+        super(GOSTClientKeyExchangeMessage::new, GOSTClientKeyExchangeMessage::new,
+            GOST12ClientKeyExchangePreparator::new);
+    }
 
     @Test
-    @Ignore("Robert: Test is currently off because I broke the GOST code 19.6.2019")
-    public void testCekGeneration() throws IOException {
-        Security.addProvider(new BouncyCastleProvider());
-
-        TlsContext tlsContext = new TlsContext();
-        tlsContext.setSelectedCipherSuite(CipherSuite.TLS_GOSTR341112_256_WITH_28147_CNT_IMIT);
-        tlsContext.setClientRandom(
+    @Disabled("Robert: Test is currently off because I broke the GOST code 19.6.2019")
+    public void testPrepare() throws IOException {
+        context.setSelectedCipherSuite(CipherSuite.TLS_GOSTR341112_256_WITH_28147_CNT_IMIT);
+        context.setClientRandom(
             ArrayConverter.hexStringToByteArray("52E78EFE6E681041EC766E3DE0B54F243AE4C48C5CE47EEE84FBDA38F5C50D64"));
-        tlsContext.setServerRandom(
+        context.setServerRandom(
             ArrayConverter.hexStringToByteArray("52E78EFE1B11A86ACE9CF0CD6D9E814E5C025DF53361A984A711C9D5CE078CEE"));
-        tlsContext.setPreMasterSecret(
+        context.setPreMasterSecret(
             ArrayConverter.hexStringToByteArray("26DBE1DAA8757A2FFD12E2BB1ABA62CCA69C37B180C12B7D8FEF63AC17723A25"));
 
         byte[] serverCert = ArrayConverter.hexStringToByteArray(
@@ -50,12 +60,12 @@ public class GOSTClientKeyExchangePreparatorTest {
         ByteArrayInputStream inputStream = new ByteArrayInputStream(serverCert);
         Certificate tlsCert = Certificate.parse(inputStream);
         org.bouncycastle.asn1.x509.Certificate cert = tlsCert.getCertificateAt(0);
-        tlsContext.getConfig().setDefaultSelectedGostCurve(GOSTCurve.Tc26_Gost_3410_12_256_paramSetA);
+        context.getConfig().setDefaultSelectedGostCurve(GOSTCurve.Tc26_Gost_3410_12_256_paramSetA);
         BCECGOST3410_2012PublicKey publicKey =
             (BCECGOST3410_2012PublicKey) new JcaPEMKeyConverter().getPublicKey(cert.getSubjectPublicKeyInfo());
         GOSTCurve curve = GOSTCurve.fromNamedSpec((ECNamedCurveSpec) publicKey.getParams());
-        tlsContext.setSelectedGostCurve(curve);
-        tlsContext.setClientEcPublicKey(Point.createPoint(new BigInteger(
+        context.setSelectedGostCurve(curve);
+        context.setClientEcPublicKey(Point.createPoint(new BigInteger(
             "10069287008658366627190983283629950164812876811521243982114767082045824150473125516608530551778844996599072529376320668260150663514143959293374556657645673"),
             new BigInteger(
                 "4228377264366878847378418012458228511431314506811669878991142841071421303960493802009018251089924600277704518780058414193146250040620726620722848816814410"),
@@ -63,16 +73,14 @@ public class GOSTClientKeyExchangePreparatorTest {
         ECPoint q = publicKey.getQ();
         Point ecPoint = Point.createPoint(q.getRawXCoord().toBigInteger(), q.getRawYCoord().toBigInteger(), curve);
 
-        tlsContext.setServerEcPublicKey(ecPoint);
+        context.setServerEcPublicKey(ecPoint);
 
         BigInteger s = new BigInteger(
             "9E861AD6F9061ADC8D94634E3C27DADF415EAE3FEA8AF1BAA803DDD4DAA20E1D57BAA0B9F48B664A9C17C778478238FA936B0DC331328EB6BB76E057CB2FE24C",
             16);
-        tlsContext.setClientEcPrivateKey(s);
+        context.setClientEcPrivateKey(s);
 
-        GOSTClientKeyExchangeMessage message = new GOSTClientKeyExchangeMessage(tlsContext.getConfig());
-        GOSTClientKeyExchangePreparator preparator =
-            new GOST12ClientKeyExchangePreparator(tlsContext.getChooser(), message);
+        createNewMessageAndPreparator(true);
         preparator.prepare();
 
         byte[] expected =
@@ -84,5 +92,4 @@ public class GOSTClientKeyExchangePreparatorTest {
         actual = message.getComputations().getMacKey().getValue();
         assertArrayEquals(expected, actual);
     }
-
 }

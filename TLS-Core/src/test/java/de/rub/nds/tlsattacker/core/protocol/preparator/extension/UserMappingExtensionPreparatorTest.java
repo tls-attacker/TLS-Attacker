@@ -9,40 +9,32 @@
 
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.UserMappingExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.UserMappingExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class UserMappingExtensionPreparatorTest {
-    private static final int EXTENSION_LENGTH = 1;
+public class UserMappingExtensionPreparatorTest extends AbstractExtensionMessagePreparatorTest<
+    UserMappingExtensionMessage, UserMappingExtensionSerializer, UserMappingExtensionPreparator> {
 
-    private TlsContext context;
-    private UserMappingExtensionPreparator preparator;
-    private UserMappingExtensionMessage msg;
-    private final UserMappingExtensionHintType hintType = UserMappingExtensionHintType.UPN_DOMAIN_HINT;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        msg = new UserMappingExtensionMessage();
-        preparator =
-            new UserMappingExtensionPreparator(context.getChooser(), msg, new UserMappingExtensionSerializer(msg));
+    public UserMappingExtensionPreparatorTest() {
+        super(UserMappingExtensionMessage::new, cfg -> new UserMappingExtensionMessage(),
+            UserMappingExtensionSerializer::new, UserMappingExtensionPreparator::new);
     }
 
     @Test
-    public void testPreparator() {
-        context.getConfig().setUserMappingExtensionHintType(hintType);
+    @Override
+    public void testPrepare() {
+        context.getConfig().setUserMappingExtensionHintType(UserMappingExtensionHintType.UPN_DOMAIN_HINT);
 
         preparator.prepare();
 
-        assertArrayEquals(ExtensionType.USER_MAPPING.getValue(), msg.getExtensionType().getValue());
-        assertEquals(EXTENSION_LENGTH, (long) msg.getExtensionLength().getValue());
-        assertEquals(hintType.getValue(), (long) msg.getUserMappingType().getValue());
+        assertArrayEquals(ExtensionType.USER_MAPPING.getValue(), message.getExtensionType().getValue());
+        assertEquals(1, message.getExtensionLength().getValue());
+        assertEquals(UserMappingExtensionHintType.UPN_DOMAIN_HINT.getValue(), message.getUserMappingType().getValue());
     }
 }

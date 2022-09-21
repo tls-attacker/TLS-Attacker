@@ -9,18 +9,14 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignedCertificateTimestampExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.SignedCertificateTimestampExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SignedCertificateTimestampExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SignedCertificateTimestampExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class SignedCertificateTimestampExtensionHandlerTest {
+public class SignedCertificateTimestampExtensionHandlerTest extends AbstractExtensionMessageHandlerTest<
+    SignedCertificateTimestampExtensionMessage, SignedCertificateTimestampExtensionHandler> {
 
     private final int lengthFirstPackage = 0;
     private final byte[] firstTimestamp = new byte[0];
@@ -32,16 +28,13 @@ public class SignedCertificateTimestampExtensionHandlerTest {
         + "0000015b8fdb0fa30000040300473045" + "02210093ede0f0c9b7b1bed787c3a865" + "e35829ab2c9d2cb748afe4181406a689"
         + "897b4d0220593100bd6728a322a8d440" + "40f2a950c7b99ed4f866ce847bc52606" + "7ef710d303");
     private final int lengthSecondPackage = 241;
-    private TlsContext context;
-    private SignedCertificateTimestampExtensionHandler handler;
 
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new SignedCertificateTimestampExtensionHandler(context);
+    public SignedCertificateTimestampExtensionHandlerTest() {
+        super(SignedCertificateTimestampExtensionMessage::new, SignedCertificateTimestampExtensionHandler::new);
     }
 
     @Test
+    @Override
     public void testAdjustTLSContext() {
         SignedCertificateTimestampExtensionMessage messageOne = new SignedCertificateTimestampExtensionMessage();
         messageOne.setSignedTimestamp(firstTimestamp);
@@ -56,23 +49,5 @@ public class SignedCertificateTimestampExtensionHandlerTest {
         handler.adjustTLSContext(messageTwo);
 
         assertArrayEquals(secondTimestamp, context.getSignedCertificateTimestamp());
-    }
-
-    @Test
-    public void testGetParser() {
-        assertTrue(handler.getParser(firstExpectedBytes, 0,
-            context.getConfig()) instanceof SignedCertificateTimestampExtensionParser);
-    }
-
-    @Test
-    public void testGetPreparator() {
-        assertTrue(handler.getPreparator(
-            new SignedCertificateTimestampExtensionMessage()) instanceof SignedCertificateTimestampExtensionPreparator);
-    }
-
-    @Test
-    public void testGetSerializer() {
-        assertTrue(handler.getSerializer(
-            new SignedCertificateTimestampExtensionMessage()) instanceof SignedCertificateTimestampExtensionSerializer);
     }
 }

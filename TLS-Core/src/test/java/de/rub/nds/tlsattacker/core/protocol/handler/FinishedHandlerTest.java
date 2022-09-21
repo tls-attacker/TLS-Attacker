@@ -9,6 +9,9 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
@@ -17,63 +20,22 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.FinishedParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.FinishedPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.FinishedSerializer;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerFactory;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import org.junit.After;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class FinishedHandlerTest {
+public class FinishedHandlerTest extends AbstractTlsMessageHandlerTest<FinishedMessage, FinishedHandler> {
 
-    private FinishedHandler handler;
-    private TlsContext context;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new FinishedHandler(context);
-    }
-
-    @After
-    public void tearDown() {
-    }
-
-    /**
-     * Test of getParser method, of class FinishedHandler.
-     */
-    @Test
-    public void testGetParser() {
-        assertTrue(handler.getParser(new byte[1], 0) instanceof FinishedParser);
-    }
-
-    /**
-     * Test of getPreparator method, of class FinishedHandler.
-     */
-    @Test
-    public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new FinishedMessage()) instanceof FinishedPreparator);
-    }
-
-    /**
-     * Test of getSerializer method, of class FinishedHandler.
-     */
-    @Test
-    public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new FinishedMessage()) instanceof FinishedSerializer);
+    public FinishedHandlerTest() {
+        super(FinishedMessage::new, FinishedHandler::new);
     }
 
     /**
      * Test of adjustTLSContext method, of class FinishedHandler.
      */
     @Test
+    @Override
     public void testAdjustTLSContext() {
         FinishedMessage message = new FinishedMessage();
         message.setVerifyData(new byte[] { 0, 1, 2, 3, 4 });

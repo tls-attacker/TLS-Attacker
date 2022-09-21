@@ -9,15 +9,15 @@
 
 package de.rub.nds.tlsattacker.core.https;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import java.nio.charset.Charset;
-
-import static org.junit.Assert.*;
+import java.nio.charset.StandardCharsets;
 
 public class HttpsRequestPreparatorTest {
 
@@ -26,13 +26,13 @@ public class HttpsRequestPreparatorTest {
     private HttpsRequestPreparator preparator;
     private final Config config = Config.createConfig();
 
-    @Before
+    @BeforeEach
     public void setUp() {
         context = new TlsContext();
 
         String rawMessage = "GET /index.html HTTP/1.1\r\nUser-Agent: Test\r\nHost: www.rub.de\r\n\r\n";
         HttpsRequestParser parser =
-            new HttpsRequestParser(0, rawMessage.getBytes(Charset.forName("UTF-8")), ProtocolVersion.TLS12, config);
+            new HttpsRequestParser(0, rawMessage.getBytes(StandardCharsets.UTF_8), ProtocolVersion.TLS12, config);
         message = parser.parse();
 
         preparator = new HttpsRequestPreparator(context.getChooser(), message);

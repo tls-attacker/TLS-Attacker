@@ -9,18 +9,18 @@
 
 package de.rub.nds.tlsattacker.core.protocol;
 
-import java.math.BigInteger;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-import de.rub.nds.tlsattacker.core.protocol.Serializer;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.math.BigInteger;
 
 public class SerializerTest {
 
     private SerializerImpl serializer;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         serializer = new SerializerImpl();
     }
@@ -85,7 +85,7 @@ public class SerializerTest {
         assertArrayEquals(result, new byte[] { 0, 1, 2, 3 });
     }
 
-    public static class SerializerImpl extends Serializer {
+    public static class SerializerImpl extends Serializer<Object> {
 
         public SerializerImpl() {
             super();

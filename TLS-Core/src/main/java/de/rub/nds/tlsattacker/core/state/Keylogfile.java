@@ -13,7 +13,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import javax.xml.bind.DatatypeConverter;
+import jakarta.xml.bind.DatatypeConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -50,15 +50,12 @@ public class Keylogfile {
 
             try {
                 File f = new File(this.path);
-                if (!f.exists()) {
-                    f.getParentFile().mkdirs();
-                    f.createNewFile();
+                assert f.getParentFile().exists() || f.getParentFile().mkdirs();
+                assert f.exists() || f.createNewFile();
+                try (FileWriter fw = new FileWriter(this.path, true)) {
+                    fw.write(identifier + " " + DatatypeConverter.printHexBinary(context.getClientRandom()) + " "
+                        + DatatypeConverter.printHexBinary(key) + "\n");
                 }
-
-                FileWriter fw = new FileWriter(this.path, true);
-                fw.write(identifier + " " + DatatypeConverter.printHexBinary(context.getClientRandom()) + " "
-                    + DatatypeConverter.printHexBinary(key) + "\n");
-                fw.close();
             } catch (Exception e) {
                 LOGGER.error(e);
             }

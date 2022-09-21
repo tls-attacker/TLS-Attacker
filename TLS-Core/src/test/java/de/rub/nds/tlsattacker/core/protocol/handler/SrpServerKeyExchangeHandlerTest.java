@@ -9,50 +9,19 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.protocol.message.SrpServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.SrpServerKeyExchangeParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.SrpServerKeyExchangePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.SrpServerKeyExchangeSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import org.junit.jupiter.api.Test;
+
 import java.math.BigInteger;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
 
-public class SrpServerKeyExchangeHandlerTest {
+public class SrpServerKeyExchangeHandlerTest
+    extends AbstractTlsMessageHandlerTest<SrpServerKeyExchangeMessage, SrpServerKeyExchangeHandler> {
 
-    private SrpServerKeyExchangeHandler handler;
-    private TlsContext context;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new SrpServerKeyExchangeHandler(context);
-    }
-
-    /**
-     * Test of getParser method, of class SrpServerKeyExchangeHandler.
-     */
-    @Test
-    public void testGetParser() {
-        assertTrue(handler.getParser(new byte[1], 0) instanceof SrpServerKeyExchangeParser);
-    }
-
-    /**
-     * Test of getPreparator method, of class SrpServerKeyExchangeHandler.
-     */
-    @Test
-    public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new SrpServerKeyExchangeMessage()) instanceof SrpServerKeyExchangePreparator);
-    }
-
-    /**
-     * Test of getSerializer method, of class SrpServerKeyExchangeHandler.
-     */
-    @Test
-    public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new SrpServerKeyExchangeMessage()) instanceof SrpServerKeyExchangeSerializer);
+    public SrpServerKeyExchangeHandlerTest() {
+        super(SrpServerKeyExchangeMessage::new, SrpServerKeyExchangeHandler::new);
     }
 
     /**
@@ -60,6 +29,7 @@ public class SrpServerKeyExchangeHandlerTest {
      */
 
     @Test
+    @Override
     public void testAdjustTLSContext() {
         SrpServerKeyExchangeMessage message = new SrpServerKeyExchangeMessage();
         message.setModulus(BigInteger.TEN.toByteArray());

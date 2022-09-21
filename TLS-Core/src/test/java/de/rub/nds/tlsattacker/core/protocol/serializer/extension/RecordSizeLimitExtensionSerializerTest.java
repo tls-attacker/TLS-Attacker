@@ -9,34 +9,22 @@
 
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
-import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RecordSizeLimitExtensionMessage;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.RecordSizeLimitExtensionParserTest;
+import org.junit.jupiter.params.provider.Arguments;
 
-public class RecordSizeLimitExtensionSerializerTest {
+import java.util.List;
+import java.util.stream.Stream;
 
-    private RecordSizeLimitExtensionSerializer serializer;
-    private RecordSizeLimitExtensionMessage message;
+public class RecordSizeLimitExtensionSerializerTest extends
+    AbstractExtensionMessageSerializerTest<RecordSizeLimitExtensionMessage, RecordSizeLimitExtensionSerializer> {
 
-    @Before
-    public void setUp() {
+    public RecordSizeLimitExtensionSerializerTest() {
+        super(RecordSizeLimitExtensionMessage::new, RecordSizeLimitExtensionSerializer::new,
+            List.of((msg, obj) -> msg.setRecordSizeLimit((byte[]) obj)));
     }
 
-    /**
-     * Test of serializeExtensionContent method of class RecordSizeLimitExtensionSerializer.
-     */
-    @Test
-    public void testSerializeBytes() {
-        message = new RecordSizeLimitExtensionMessage();
-        message.setExtensionType(ExtensionType.RECORD_SIZE_LIMIT.getValue());
-        message.setExtensionLength(ExtensionByteLength.RECORD_SIZE_LIMIT_LENGTH);
-        message.setRecordSizeLimit(new byte[] { 0x20, 0x00 });
-        serializer = new RecordSizeLimitExtensionSerializer(message);
-        byte[] result = serializer.serialize();
-        assertArrayEquals(ArrayConverter.hexStringToByteArray("001C00022000"), result);
+    public static Stream<Arguments> provideTestVectors() {
+        return RecordSizeLimitExtensionParserTest.provideTestVectors();
     }
 }

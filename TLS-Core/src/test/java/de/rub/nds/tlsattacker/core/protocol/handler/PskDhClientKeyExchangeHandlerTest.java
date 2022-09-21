@@ -9,65 +9,27 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.PskDhClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.PskDhClientKeyExchangeParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.PskDhClientKeyExchangePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.PskDhClientKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import org.junit.After;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class PskDhClientKeyExchangeHandlerTest {
+public class PskDhClientKeyExchangeHandlerTest
+    extends AbstractTlsMessageHandlerTest<PskDhClientKeyExchangeMessage, PskDhClientKeyExchangeHandler> {
 
-    private PskDhClientKeyExchangeHandler handler;
-    private TlsContext context;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new PskDhClientKeyExchangeHandler(context);
-    }
-
-    @After
-    public void tearDown() {
-    }
-
-    /**
-     * Test of getParser method, of class PskDhClientKeyExchangeHandler.
-     */
-    @Test
-    public void testGetParser() {
-        assertTrue(handler.getParser(new byte[1], 0) instanceof PskDhClientKeyExchangeParser);
-    }
-
-    /**
-     * Test of getPreparator method, of class PskDhClientKeyExchangeHandler.
-     */
-    @Test
-    public void testGetPreparator() {
-        assertTrue(
-            handler.getPreparator(new PskDhClientKeyExchangeMessage()) instanceof PskDhClientKeyExchangePreparator);
-    }
-
-    /**
-     * Test of getSerializer method, of class PskDhClientKeyExchangeHandler.
-     */
-    @Test
-    public void testGetSerializer() {
-        assertTrue(
-            handler.getSerializer(new PskDhClientKeyExchangeMessage()) instanceof PskDhClientKeyExchangeSerializer);
+    public PskDhClientKeyExchangeHandlerTest() {
+        super(PskDhClientKeyExchangeMessage::new, PskDhClientKeyExchangeHandler::new);
     }
 
     /**
      * Test of adjustTLSContext method, of class PskDhClientKeyExchangeHandler.
      */
     @Test
+    @Override
     public void testAdjustTLSContext() {
         PskDhClientKeyExchangeMessage message = new PskDhClientKeyExchangeMessage();
         context.setSelectedCipherSuite(CipherSuite.TLS_DHE_PSK_WITH_AES_128_CBC_SHA);

@@ -9,6 +9,8 @@
 
 package de.rub.nds.tlsattacker.core.protocol.message.computations;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
@@ -18,14 +20,14 @@ import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import org.junit.jupiter.api.Test;
+
 import java.math.BigInteger;
-import static org.junit.Assert.*;
-import org.junit.Test;
 
 public class PWDComputationsTest {
 
     @Test
-    public void computePE() throws CryptoException {
+    public void testComputePasswordElement() throws CryptoException {
         TlsContext context = new TlsContext();
         context.setSelectedCipherSuite(CipherSuite.TLS_ECCPWD_WITH_AES_128_GCM_SHA256);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);

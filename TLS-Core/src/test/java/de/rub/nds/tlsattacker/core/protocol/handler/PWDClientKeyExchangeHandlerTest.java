@@ -9,58 +9,29 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.protocol.message.PWDClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.PWDClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.PWDClientKeyExchangePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.PWDClientKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import org.junit.jupiter.api.Test;
+
 import java.math.BigInteger;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
 
-public class PWDClientKeyExchangeHandlerTest {
+public class PWDClientKeyExchangeHandlerTest
+    extends AbstractTlsMessageHandlerTest<PWDClientKeyExchangeMessage, PWDClientKeyExchangeHandler> {
 
-    PWDClientKeyExchangeHandler handler;
-    private TlsContext context;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new PWDClientKeyExchangeHandler(context);
-    }
-
-    /**
-     * Test of getParser method, of class ECDHClientKeyExchangeHandler.
-     */
-    @Test
-    public void testGetParser() {
-        assertTrue(handler.getParser(new byte[1], 0) instanceof PWDClientKeyExchangeParser);
-    }
-
-    /**
-     * Test of getPreparator method, of class ECDHClientKeyExchangeHandler.
-     */
-    @Test
-    public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new PWDClientKeyExchangeMessage()) instanceof PWDClientKeyExchangePreparator);
-    }
-
-    /**
-     * Test of getSerializer method, of class ECDHClientKeyExchangeHandler.
-     */
-    @Test
-    public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new PWDClientKeyExchangeMessage()) instanceof PWDClientKeyExchangeSerializer);
+    public PWDClientKeyExchangeHandlerTest() {
+        super(PWDClientKeyExchangeMessage::new, PWDClientKeyExchangeHandler::new);
     }
 
     @Test
+    @Override
     public void testAdjustTLSContext() {
         context.setSelectedCipherSuite(CipherSuite.TLS_ECCPWD_WITH_AES_128_GCM_SHA256);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);

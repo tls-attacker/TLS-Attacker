@@ -9,38 +9,30 @@
 
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SRPExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SRPExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class SRPExtensionPreparatorTest {
+public class SRPExtensionPreparatorTest extends
+    AbstractExtensionMessagePreparatorTest<SRPExtensionMessage, SRPExtensionSerializer, SRPExtensionPreparator> {
 
-    private TlsContext context;
-    private SRPExtensionPreparator preparator;
-    private SRPExtensionMessage message;
-    private final byte[] srpIdentifier = new byte[] { 0x00, 0x01, 0x02, 0x03, 0x04 };
-    private final int srpIdentifierLength = 5;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        message = new SRPExtensionMessage();
-        preparator = new SRPExtensionPreparator(context.getChooser(), message, new SRPExtensionSerializer(message));
+    public SRPExtensionPreparatorTest() {
+        super(SRPExtensionMessage::new, SRPExtensionMessage::new, SRPExtensionSerializer::new,
+            SRPExtensionPreparator::new);
     }
 
     @Test
-    public void testPreparator() {
+    @Override
+    public void testPrepare() {
+        byte[] srpIdentifier = new byte[] { 0x00, 0x01, 0x02, 0x03, 0x04 };
         context.getConfig().setSecureRemotePasswordExtensionIdentifier(srpIdentifier);
 
         preparator.prepare();
 
         assertArrayEquals(srpIdentifier, message.getSrpIdentifier().getValue());
-        assertEquals(srpIdentifierLength, (long) message.getSrpIdentifierLength().getValue());
-
+        assertEquals(5, message.getSrpIdentifierLength().getValue());
     }
-
 }

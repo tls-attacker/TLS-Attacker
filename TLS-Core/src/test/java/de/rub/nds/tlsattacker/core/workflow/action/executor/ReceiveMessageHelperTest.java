@@ -9,20 +9,21 @@
 
 package de.rub.nds.tlsattacker.core.workflow.action.executor;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.io.IOException;
-import org.junit.Assert;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.Test;
 
 public class ReceiveMessageHelperTest {
 
@@ -30,7 +31,7 @@ public class ReceiveMessageHelperTest {
     private FakeTransportHandler transportHandler;
     private ReceiveMessageHelper receiver;
 
-    @Before
+    @BeforeEach
     public void setUp() throws IOException {
         context = new TlsContext();
         context.getConfig().setDefaultSelectedProtocolVersion(ProtocolVersion.DTLS12);
@@ -40,13 +41,13 @@ public class ReceiveMessageHelperTest {
         receiver = new ReceiveMessageHelper();
     }
 
-    private void checkFragment(DtlsHandshakeMessageFragment fragment, int msgSeq, int fragOffset, int fragLength) {
+    private void assertFragment(DtlsHandshakeMessageFragment fragment, int msgSeq, int fragOffset, int fragLength) {
         assertEquals(msgSeq, fragment.getMessageSeq().getValue().intValue());
         assertEquals(fragOffset, fragment.getFragmentOffset().getValue().intValue());
         assertEquals(fragLength, fragment.getFragmentLength().getValue().intValue());
     }
 
-    private void checkMessage(ProtocolMessage message, byte[] expectedMessage) {
+    private void assertMessage(ProtocolMessage message, byte[] expectedMessage) {
         assertArrayEquals(expectedMessage, message.getCompleteResultingMessage().getOriginalValue());
     }
 
@@ -62,7 +63,7 @@ public class ReceiveMessageHelperTest {
         assertEquals(result.getMessageFragmentList().size(), 1);
         assertEquals(result.getMessageList().size(), 0);
         DtlsHandshakeMessageFragment fragment = (DtlsHandshakeMessageFragment) result.getMessageFragmentList().get(0);
-        checkFragment(fragment, 1, 0, 75);
+        assertFragment(fragment, 1, 0, 75);
     }
 
     @Test
@@ -71,9 +72,9 @@ public class ReceiveMessageHelperTest {
             DTLS.REC_SERVER_HELLO_F2, DTLS.REC_SERVER_HELLO_DONE);
         assertEquals(4, result.getMessageFragmentList().size());
         assertEquals(2, result.getMessageList().size());
-        checkMessage(result.getMessageList().get(1), DTLS.MSG_SERVER_HELLO_ASSEMBLED);
+        assertMessage(result.getMessageList().get(1), DTLS.MSG_SERVER_HELLO_ASSEMBLED);
         DtlsHandshakeMessageFragment fragment = (DtlsHandshakeMessageFragment) result.getMessageFragmentList().get(3);
-        checkFragment(fragment, 4, 0, 0);
+        assertFragment(fragment, 4, 0, 0);
     }
 
     @Test
@@ -82,9 +83,9 @@ public class ReceiveMessageHelperTest {
             DTLS.REC_SERVER_HELLO_DONE, DTLS.REC_SERVER_HELLO_F2);
         assertEquals(4, result.getMessageFragmentList().size());
         assertEquals(2, result.getMessageList().size());
-        checkMessage(result.getMessageList().get(1), DTLS.MSG_SERVER_HELLO_ASSEMBLED);
+        assertMessage(result.getMessageList().get(1), DTLS.MSG_SERVER_HELLO_ASSEMBLED);
         DtlsHandshakeMessageFragment fragment = (DtlsHandshakeMessageFragment) result.getMessageFragmentList().get(3);
-        checkFragment(fragment, 4, 0, 0);
+        assertFragment(fragment, 4, 0, 0);
     }
 
     @Test
@@ -102,8 +103,8 @@ public class ReceiveMessageHelperTest {
         result = receive(DTLS.REC_SERVER_HELLO_F2);
         assertEquals(1, result.getMessageFragmentList().size());
         assertEquals(1, result.getMessageList().size());
-        checkMessage(result.getMessageList().get(0), DTLS.MSG_SERVER_HELLO_ASSEMBLED);
-        Assert.assertArrayEquals(ArrayConverter.concatenate(DTLS.MSG_SERVER_HELLO_SINGLE_FRAGMENT),
+        assertMessage(result.getMessageList().get(0), DTLS.MSG_SERVER_HELLO_ASSEMBLED);
+        assertArrayEquals(ArrayConverter.concatenate(DTLS.MSG_SERVER_HELLO_SINGLE_FRAGMENT),
             context.getDigest().getRawBytes());
     }
 

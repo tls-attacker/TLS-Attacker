@@ -25,7 +25,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.nio.charset.Charset;
 import java.util.Date;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

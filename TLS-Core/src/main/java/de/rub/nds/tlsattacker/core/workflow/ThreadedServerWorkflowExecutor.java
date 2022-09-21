@@ -183,9 +183,8 @@ public class ThreadedServerWorkflowExecutor extends WorkflowExecutor {
 
         try {
             LOGGER.debug("Closing server socket ");
-            if (serverSocket != null) {
+            if (serverSocket != null && !serverSocket.isClosed()) {
                 serverSocket.close();
-                serverSocket = null;
             }
         } catch (IOException ex) {
             LOGGER.debug("Failed to close server socket.");

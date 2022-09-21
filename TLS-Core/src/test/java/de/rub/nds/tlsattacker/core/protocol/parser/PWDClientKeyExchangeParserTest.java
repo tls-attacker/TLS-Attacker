@@ -10,47 +10,40 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.protocol.message.ClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.PWDClientKeyExchangeMessage;
-import static org.junit.Assert.*;
-import org.junit.Test;
+import org.junit.jupiter.api.Named;
+import org.junit.jupiter.params.provider.Arguments;
 
-public class PWDClientKeyExchangeParserTest {
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Stream;
 
-    private final Config config = Config.createConfig();
+public class PWDClientKeyExchangeParserTest
+    extends AbstractHandshakeMessageParserTest<PWDClientKeyExchangeMessage, PWDClientKeyExchangeParser> {
 
     public PWDClientKeyExchangeParserTest() {
+        super(PWDClientKeyExchangeParser::new,
+            List.of(
+                Named.of("PWDClientKeyExchangeMessage::getElementLength",
+                    PWDClientKeyExchangeMessage::getElementLength),
+                Named.of("PWDClientKeyExchangeMessage::getElement", PWDClientKeyExchangeMessage::getElement),
+                Named.of("PWDClientKeyExchangeMessage::getScalarLength", PWDClientKeyExchangeMessage::getScalarLength),
+                Named.of("PWDClientKeyExchangeMessage::getScalar", PWDClientKeyExchangeMessage::getScalar),
+                Named.of("ClientKeyExchangeMessage::getPublicKeyLength", ClientKeyExchangeMessage::getPublicKeyLength),
+                Named.of("ClientKeyExchangeMessage::getPublicKey", ClientKeyExchangeMessage::getPublicKey)));
     }
 
-    @Test
-    public void testParse() {
-        byte[] message = ArrayConverter.hexStringToByteArray(
-            ("10 00 00 63 41 04 a0 c6 9b 45 0b\n" + "     85 ae e3 9f 64 6b 6e 64 d3 c1 08 39 5f 4b a1 19\n"
-                + "     2d bf eb f0 de c5 b1 89 13 1f 59 5d d4 ba cd bd\n"
-                + "     d6 83 8d 92 19 fd 54 29 91 b2 c0 b0 e4 c4 46 bf\n"
-                + "     e5 8f 3c 03 39 f7 56 e8 9e fd a0 20 66 92 44\n"
-                + "     aa 67 cb 00 ea 72 c0 9b 84 a9 db 5b b8 24 fc 39\n"
-                + "     82 42 8f cd 40 69 63 ae 08 0e 67 7a 48").replaceAll("\\s+", ""));
-
-        byte[] element = ArrayConverter.hexStringToByteArray(("04 a0 c6 9b 45 0b 85 ae e3 9f 64 6b 6e 64 d3 c1\n"
-            + "             08 39 5f 4b a1 19 2d bf eb f0 de c5 b1 89 13 1f\n"
-            + "             59 5d d4 ba cd bd d6 83 8d 92 19 fd 54 29 91 b2\n"
-            + "             c0 b0 e4 c4 46 bf e5 8f 3c 03 39 f7 56 e8 9e fd\n" + "             a0").replaceAll("\\s+",
-                ""));
-
-        byte[] scalar = ArrayConverter.hexStringToByteArray(("66 92 44 aa 67 cb 00 ea 72 c0 9b 84 a9 db 5b b8\n"
-            + "             24 fc 39 82 42 8f cd 40 69 63 ae 08 0e 67 7a 48").replaceAll("\\s+", ""));
-        PWDClientKeyExchangeParser parser = new PWDClientKeyExchangeParser(0, message, ProtocolVersion.TLS12, config);
-        PWDClientKeyExchangeMessage msg = parser.parse();
-        assertArrayEquals(message, msg.getCompleteResultingMessage().getValue());
-        assertEquals(99, (long) msg.getLength().getValue());
-        assertEquals(HandshakeMessageType.CLIENT_KEY_EXCHANGE.getValue(), (long) msg.getType().getValue());
-        assertEquals(65, (long) msg.getElementLength().getValue());
-        assertArrayEquals(element, msg.getElement().getValue());
-        assertEquals(32, (long) msg.getScalarLength().getValue());
-        assertArrayEquals(scalar, msg.getScalar().getValue());
+    public static Stream<Arguments> provideTestVectors() {
+        return Stream.of(Arguments.of(ProtocolVersion.TLS12, ArrayConverter.hexStringToByteArray(
+            "100000634104a0c69b450b85aee39f646b6e64d3c108395f4ba1192dbfebf0dec5b189131f595dd4bacdbdd6838d9219fd542991b2c0b0e4c446bfe58f3c0339f756e89efda020669244aa67cb00ea72c09b84a9db5bb824fc3982428fcd406963ae080e677a48"),
+            Arrays.asList(HandshakeMessageType.CLIENT_KEY_EXCHANGE.getValue(), 99, 65,
+                ArrayConverter.hexStringToByteArray(
+                    "04a0c69b450b85aee39f646b6e64d3c108395f4ba1192dbfebf0dec5b189131f595dd4bacdbdd6838d9219fd542991b2c0b0e4c446bfe58f3c0339f756e89efda0"),
+                32,
+                ArrayConverter.hexStringToByteArray("669244aa67cb00ea72c09b84a9db5bb824fc3982428fcd406963ae080e677a48"),
+                null, null)));
     }
-
 }

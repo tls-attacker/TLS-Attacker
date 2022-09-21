@@ -22,7 +22,7 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
 import de.rub.nds.tlsattacker.tracetool.config.TraceToolCommandConfig;
 import java.io.File;
 import java.io.IOException;
-import javax.xml.bind.JAXBException;
+import jakarta.xml.bind.JAXBException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

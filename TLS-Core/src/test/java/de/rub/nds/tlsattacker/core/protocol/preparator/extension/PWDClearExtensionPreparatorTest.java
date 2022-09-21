@@ -9,36 +9,29 @@
 
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PWDClearExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PWDClearExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class PWDClearExtensionPreparatorTest {
+public class PWDClearExtensionPreparatorTest extends AbstractExtensionMessagePreparatorTest<PWDClearExtensionMessage,
+    PWDClearExtensionSerializer, PWDClearExtensionPreparator> {
 
-    private TlsContext context;
-    private PWDClearExtensionMessage message;
-    private PWDClearExtensionPreparator preparator;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        message = new PWDClearExtensionMessage();
-        preparator =
-            new PWDClearExtensionPreparator(context.getChooser(), message, new PWDClearExtensionSerializer(message));
+    public PWDClearExtensionPreparatorTest() {
+        super(PWDClearExtensionMessage::new, PWDClearExtensionMessage::new, PWDClearExtensionSerializer::new,
+            PWDClearExtensionPreparator::new);
     }
 
     @Test
-    public void testPreparator() {
+    @Override
+    public void testPrepare() {
         context.setClientPWDUsername("Bob");
         preparator.prepare();
 
         assertArrayEquals(ExtensionType.PWD_CLEAR.getValue(), message.getExtensionType().getValue());
         assertEquals(3 + 1, (long) message.getExtensionLength().getValue());
-
     }
-
 }

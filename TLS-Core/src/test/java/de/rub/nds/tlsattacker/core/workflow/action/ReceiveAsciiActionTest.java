@@ -9,74 +9,31 @@
 
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class ReceiveAsciiActionTest {
+import java.nio.charset.StandardCharsets;
 
-    private State state;
-    private TlsContext tlsContext;
+public class ReceiveAsciiActionTest extends AbstractActionTest<ReceiveAsciiAction> {
 
-    private ReceiveAsciiAction action;
+    private final TlsContext context;
 
-    @Before
-    public void setUp() {
-        action = new ReceiveAsciiAction("test", "US-ASCII");
-
-        WorkflowTrace trace = new WorkflowTrace();
-        trace.addTlsAction(action);
-        state = new State(trace);
-
-        tlsContext = state.getTlsContext();
-        tlsContext.setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
+    public ReceiveAsciiActionTest() {
+        super(new ReceiveAsciiAction("STARTTLS", "US-ASCII"), ReceiveAsciiAction.class);
+        context = state.getTlsContext();
+        context.setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
     }
 
     /**
      * Test of execute method, of class ReceiveAsciiAction.
-     *
-     * @throws java.lang.Exception
      */
     @Test
+    @Override
     public void testExecute() throws Exception {
-        ((FakeTransportHandler) tlsContext.getTransportHandler())
-            .setFetchableByte(new byte[] { 0x15, 0x03, 0x02, 0x01 });
-
-        action.execute(state);
-        assertTrue(action.isExecuted());
-    }
-
-    /**
-     * Test of WorkflowExecutionException of execute method, of class ReceiveAsciiAction.
-     */
-    @Test(expected = WorkflowExecutionException.class)
-    public void testExecuteWorkflowExecutionException() {
-        action.execute(state);
-        action.execute(state);
-    }
-
-    /**
-     * Test of reset method, of class ReceiveAsciiAction.
-     */
-    @Test
-    public void testReset() {
-        action.reset();
-        assertFalse(action.isExecuted());
-    }
-
-    /**
-     * Test of executedAsPlanned method, of class ReceiveAsciiAction.
-     */
-    @Test
-    public void testExecutedAsPlanned() {
-        assertFalse(action.executedAsPlanned());
-        // TODO add assertTrue after execute
+        ((FakeTransportHandler) context.getTransportHandler())
+            .setFetchableByte("STARTTLS".getBytes(StandardCharsets.US_ASCII));
+        super.testExecute();
     }
 }

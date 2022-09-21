@@ -22,8 +22,8 @@ import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ClientMasterKeyHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.RSAClientComputations;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.List;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 @SuppressWarnings("serial")
 @XmlRootElement(name = "SSL2ClientMasterKey")

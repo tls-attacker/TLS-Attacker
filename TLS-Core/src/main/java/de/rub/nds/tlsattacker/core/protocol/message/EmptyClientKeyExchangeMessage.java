@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.TlsMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.EmptyClientComputations;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.List;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "EmptyClientKeyExchange")
 public class EmptyClientKeyExchangeMessage extends ClientKeyExchangeMessage {

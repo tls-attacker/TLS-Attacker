@@ -20,7 +20,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.PWDClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.PWDComputations;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.List;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "PWDClientKeyExchange")
 public class PWDClientKeyExchangeMessage extends ClientKeyExchangeMessage {

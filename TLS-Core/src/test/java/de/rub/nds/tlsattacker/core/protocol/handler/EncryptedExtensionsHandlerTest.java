@@ -9,61 +9,28 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.EncryptedExtensionsMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicationExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.EncryptedExtensionsParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.EncryptedExtensionsPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.EncryptedExtensionsSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class EncryptedExtensionsHandlerTest {
+public class EncryptedExtensionsHandlerTest
+    extends AbstractTlsMessageHandlerTest<EncryptedExtensionsMessage, EncryptedExtensionsHandler> {
 
-    private EncryptedExtensionsHandler handler;
-    private TlsContext context;
-
-    @Before
-    public void setUp() throws Exception {
-        context = new TlsContext();
-        // Encrypted extensions can only be sent by a server
+    public EncryptedExtensionsHandlerTest() {
+        super(EncryptedExtensionsMessage::new, EncryptedExtensionsHandler::new);
         context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
-
-        handler = new EncryptedExtensionsHandler(context);
-    }
-
-    /**
-     * Test of getParser method, of class EncryptedExtensionsHandler.
-     */
-    @Test
-    public void testGetParser() {
-        assertTrue(handler.getParser(new byte[1], 0) instanceof EncryptedExtensionsParser);
-    }
-
-    /**
-     * Test of getPreparator method, of class EncryptedExtensionsHandler.
-     */
-    @Test
-    public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new EncryptedExtensionsMessage()) instanceof EncryptedExtensionsPreparator);
-    }
-
-    /**
-     * Test of getSerializer method, of class EncryptedExtensionsHandler.
-     */
-    @Test
-    public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new EncryptedExtensionsMessage()) instanceof EncryptedExtensionsSerializer);
     }
 
     /**
      * Test of adjustTLSContext method, of class EncryptedExtensionsHandler.
      */
     @Test
-    public void testAdjustTLSContextWithoutExtensions() {
+    @Override
+    public void testAdjustTLSContext() {
         EncryptedExtensionsMessage message = new EncryptedExtensionsMessage();
         handler.adjustTLSContext(message);
 

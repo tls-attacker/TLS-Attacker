@@ -10,66 +10,28 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedRandomExtensionMessage;
-import org.junit.Before;
-import static org.junit.Assert.*;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Named;
+import org.junit.jupiter.params.provider.Arguments;
 
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.List;
+import java.util.stream.Stream;
 
-@RunWith(Parameterized.class)
-public class ExtendedRandomExtensionParserTest {
+public class ExtendedRandomExtensionParserTest
+    extends AbstractExtensionParserTest<ExtendedRandomExtensionMessage, ExtendedRandomExtensionParser> {
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { { ExtensionType.EXTENDED_RANDOM, 3,
-            ArrayConverter.hexStringToByteArray("AB"), ArrayConverter.hexStringToByteArray("002800030001AB"), 0 } });
+    public ExtendedRandomExtensionParserTest() {
+        super(ExtendedRandomExtensionParser::new,
+            List.of(
+                Named.of("ExtendedRandomExtensionMessage::getExtendedRandomLength",
+                    ExtendedRandomExtensionMessage::getExtendedRandomLength),
+                Named.of("ExtendedRandomExtensionMessage::getExtendedRandom",
+                    ExtendedRandomExtensionMessage::getExtendedRandom)));
     }
 
-    private final ExtensionType extensionType;
-    private final int extensionLength;
-    private final byte[] extendedRandom;
-    private final byte[] expectedBytes;
-    private final int startParsing;
-    private ExtendedRandomExtensionParser parser;
-    private ExtendedRandomExtensionMessage message;
-
-    /**
-     * Constructor for parameterized setup.
-     *
-     * @param extensionType
-     * @param extensionLength
-     * @param extendedRandom
-     * @param expectedBytes
-     * @param startParsing
-     */
-    public ExtendedRandomExtensionParserTest(ExtensionType extensionType, int extensionLength, byte[] extendedRandom,
-        byte[] expectedBytes, int startParsing) {
-        this.extensionType = extensionType;
-        this.extensionLength = extensionLength;
-        this.extendedRandom = extendedRandom;
-        this.expectedBytes = expectedBytes;
-        this.startParsing = startParsing;
+    public static Stream<Arguments> provideTestVectors() {
+        return Stream.of(Arguments.of(ArrayConverter.hexStringToByteArray("002800030001AB"), List.of(),
+            ExtensionType.EXTENDED_RANDOM, 3, List.of(1, ArrayConverter.hexStringToByteArray("AB"))));
     }
-
-    @Before
-    public void setUp() {
-        parser = new ExtendedRandomExtensionParser(startParsing, expectedBytes, Config.createConfig());
-    }
-
-    @Test
-    public void testParseExtensionMessageContent() {
-        message = parser.parse();
-
-        assertArrayEquals(ExtensionType.EXTENDED_RANDOM.getValue(), message.getExtensionType().getValue());
-        assertEquals(extensionLength, (long) message.getExtensionLength().getValue());
-        assertArrayEquals(extendedRandom, message.getExtendedRandom().getValue());
-
-    }
-
 }

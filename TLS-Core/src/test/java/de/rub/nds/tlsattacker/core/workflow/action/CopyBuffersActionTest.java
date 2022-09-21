@@ -9,76 +9,38 @@
 
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
+import static org.junit.jupiter.api.Assertions.*;
+
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.Set;
-import static org.junit.Assert.*;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class CopyBuffersActionTest {
+public class CopyBuffersActionTest extends AbstractCopyActionTest<CopyBuffersAction> {
 
-    @Test
-    public void testGetSrcContextAlias() {
-        CopyBuffersAction a = new CopyBuffersAction("src", "dst");
-        assertEquals(a.getSrcContextAlias(), "src");
+    public CopyBuffersActionTest() {
+        super(new CopyBuffersAction("src", "dst"), CopyBuffersAction.class);
     }
 
     @Test
-    public void testGetDstContextAlias() {
-        CopyBuffersAction a = new CopyBuffersAction("src", "dst");
-        assertEquals(a.getDstContextAlias(), "dst");
-    }
-
-    @Test
-    public void testGetAllAliases() {
-        CopyBuffersAction a = new CopyBuffersAction("src", "dst");
-        Set<String> expected = new LinkedHashSet<>(Arrays.asList("dst", "src"));
-        assertEquals(a.getAllAliases(), expected);
-    }
-
-    @Test
-    public void testExecute() {
-        CopyBuffersAction a = new CopyBuffersAction("src", "dst");
-        WorkflowTrace trace = new WorkflowTrace();
-        trace.addConnection(new OutboundConnection("src"));
-        trace.addConnection(new OutboundConnection("dst"));
-        trace.addTlsAction(a);
-        State state = new State(trace);
-        TlsContext src = state.getTlsContext("src");
-        TlsContext dst = state.getTlsContext("dst");
-        assertNotSame(src.getMessageBuffer(), dst.getMessageBuffer());
-        assertNotSame(src.getRecordBuffer(), dst.getRecordBuffer());
-
-        a.execute(state);
-        assertSame(src.getMessageBuffer(), dst.getMessageBuffer());
-        assertSame(src.getRecordBuffer(), dst.getRecordBuffer());
-        assertTrue(a.isExecuted());
-        assertTrue(a.executedAsPlanned());
-    }
-
-    @Test
-    public void reset() {
-        CopyBuffersAction a = new CopyBuffersAction("src", "dst");
-        a.setExecuted(true);
-        assertTrue(a.isExecuted());
-        a.reset();
-        assertFalse(a.isExecuted());
-    }
-
-    @Test(expected = WorkflowExecutionException.class)
+    @Override
     public void testAliasesSetProperlyErrorSrc() {
         CopyBuffersAction a = new CopyBuffersAction(null, "dst");
-        a.assertAliasesSetProperly();
+        assertThrows(WorkflowExecutionException.class, a::assertAliasesSetProperly);
     }
 
-    @Test(expected = WorkflowExecutionException.class)
+    @Test
+    @Override
     public void testAliasesSetProperlyErrorDst() {
         CopyBuffersAction a = new CopyBuffersAction("src", null);
-        a.assertAliasesSetProperly();
+        assertThrows(WorkflowExecutionException.class, a::assertAliasesSetProperly);
+    }
+
+    @Test
+    @Override
+    public void testExecute() throws Exception {
+        assertNotSame(src.getMessageBuffer(), dst.getMessageBuffer());
+        assertNotSame(src.getRecordBuffer(), dst.getRecordBuffer());
+        super.testExecute();
+        assertSame(src.getMessageBuffer(), dst.getMessageBuffer());
+        assertSame(src.getRecordBuffer(), dst.getRecordBuffer());
     }
 }

@@ -9,43 +9,35 @@
 
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.util.FixedTimeProvider;
 import de.rub.nds.tlsattacker.util.TimeHelper;
+import org.junit.jupiter.api.Test;
+
 import java.util.LinkedList;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
 
-public class ServerHelloPreparatorTest {
+public class ServerHelloPreparatorTest
+    extends AbstractTlsMessagePreparatorTest<ServerHelloMessage, ServerHelloPreparator> {
 
-    private static final Logger LOGGER = LogManager.getLogger();
-
-    private ServerHelloMessage message;
-    private TlsContext context;
-    private ServerHelloPreparator preparator;
-
-    @Before
-    public void setUp() {
-        this.message = new ServerHelloMessage();
-        this.context = new TlsContext();
-        this.preparator = new ServerHelloPreparator(context.getChooser(), message);
+    public ServerHelloPreparatorTest() {
+        super(ServerHelloMessage::new, ServerHelloMessage::new, ServerHelloPreparator::new);
     }
 
     /**
      * Test of prepareHandshakeMessageContents method, of class ServerHelloPreparator.
      */
     @Test
+    @Override
     public void testPrepare() {
-        TimeHelper.setProvider(new FixedTimeProvider(12345l));
+        TimeHelper.setProvider(new FixedTimeProvider(12345L));
         List<CipherSuite> suiteList = new LinkedList<>();
         context.getConfig().setHighestProtocolVersion(ProtocolVersion.TLS12);
         suiteList.add(CipherSuite.TLS_DHE_DSS_WITH_AES_256_CBC_SHA256);
@@ -66,20 +58,14 @@ public class ServerHelloPreparatorTest {
         context.getConfig().setDefaultServerSessionId(new byte[] { 0, 1, 2, 3, 4, 5 });
         preparator.prepare();
         assertArrayEquals(ProtocolVersion.TLS11.getValue(), message.getProtocolVersion().getValue());
-        assertArrayEquals(ArrayConverter.longToUint32Bytes(12345l), message.getUnixTime().getValue());
-        LOGGER.info(ArrayConverter.bytesToHexString(message.getRandom().getValue()));
+        assertArrayEquals(ArrayConverter.longToUint32Bytes(12345L), message.getUnixTime().getValue());
         assertArrayEquals(
-            ArrayConverter.concatenate(ArrayConverter.longToUint32Bytes(12345l),
+            ArrayConverter.concatenate(ArrayConverter.longToUint32Bytes(12345L),
                 ArrayConverter.hexStringToByteArray("60B420BB3851D9D47ACB933DBE70399BF6C92DA33AF01D4FB770E98C")),
             message.getRandom().getValue());
         assertArrayEquals(ArrayConverter.hexStringToByteArray("000102030405"), message.getSessionId().getValue());
-        assertTrue(6 == message.getSessionIdLength().getValue());
-        assertTrue(message.getExtensionBytes().getValue().length == 0);
-        assertTrue(0 == message.getExtensionsLength().getValue());
-    }
-
-    @Test
-    public void testNoContextPrepare() {
-        preparator.prepare();
+        assertEquals(6, (int) message.getSessionIdLength().getValue());
+        assertEquals(0, message.getExtensionBytes().getValue().length);
+        assertEquals(0, (int) message.getExtensionsLength().getValue());
     }
 }

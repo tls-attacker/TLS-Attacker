@@ -9,19 +9,19 @@
 
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.math.BigInteger;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertNotNull;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-@SuppressWarnings("SpellCheckingInspection")
-public class DHClientKeyExchangePreparatorTest {
+import java.math.BigInteger;
+
+public class DHClientKeyExchangePreparatorTest extends AbstractTlsMessagePreparatorTest<DHClientKeyExchangeMessage,
+    DHClientKeyExchangePreparator<DHClientKeyExchangeMessage>> {
 
     private final static String DH_G =
         "a51883e9ac0539859df3d25c716437008bb4bd8ec4786eb4bc643299daef5e3e5af5863a6ac40a597b83a27583f6a658d408825105b16d31b6ed088fc623f648fd6d95e9cefcb0745763cddf564c87bcf4ba7928e74fd6a3080481f588d535e4c026b58a21e1e5ec412ff241b436043e29173f1dc6cb943c09742de989547288";
@@ -32,25 +32,20 @@ public class DHClientKeyExchangePreparatorTest {
         "49437715717798893754105488735114516682455843745607681454511055039168584592490468625265408270895845434581657576902999182876198939742286450124559319006108449708689975897919447736149482114339733412256412716053305356946744588719383899737036630001856916051516306568909530334115858523077759833807187583559767008031");
     private final static byte[] PREMASTERSECRET = ArrayConverter.hexStringToByteArray(
         "3CDCE99BB99CCE256355C696A39E4B5BE3726FCC5F104EE36DD05CB68EA1102DAAEA515EB51F519E656EA8E2B4E2604CC9D4E017EE44B3854D133F5418688AC251D88196651611E5D91F5297B1C68989A208641F8C54AECBF4F360F2222FF692936F74803696E7627D7B2710A08CC21220042649277049ABA23FEA6422C3BE1C");
-    private TlsContext context;
-    private DHClientKeyExchangeMessage message;
-    private DHClientKeyExchangePreparator preparator;
 
-    @Before
-    public void setUp() {
-        context = new TlsContext();
+    public DHClientKeyExchangePreparatorTest() {
+        super(DHClientKeyExchangeMessage::new, DHClientKeyExchangeMessage::new, DHClientKeyExchangePreparator::new);
         context.getConfig().setDefaultServerDhGenerator(new BigInteger(DH_G, 16));
         context.getConfig().setDefaultServerDhModulus(new BigInteger(DH_M, 16));
         context.getConfig()
             .setDefaultClientDhPrivateKey(new BigInteger("1234567891234567889123546712839632542648746452354265471"));
-        message = new DHClientKeyExchangeMessage();
-        preparator = new DHClientKeyExchangePreparator(context.getChooser(), message);
     }
 
     /**
      * Test of prepareHandshakeMessageContents method, of class DHClientKeyExchangePreparator.
      */
     @Test
+    @Override
     public void testPrepare() {
         // prepare context
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
@@ -74,11 +69,6 @@ public class DHClientKeyExchangePreparatorTest {
                 ArrayConverter.hexStringToByteArray(RANDOM)),
             message.getComputations().getClientServerRandom().getValue());
 
-    }
-
-    @Test
-    public void testNoContextPrepare() {
-        preparator.prepare();
     }
 
     @Test

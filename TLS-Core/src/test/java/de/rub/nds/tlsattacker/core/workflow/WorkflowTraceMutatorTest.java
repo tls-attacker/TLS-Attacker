@@ -9,17 +9,17 @@
 
 package de.rub.nds.tlsattacker.core.workflow;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.core.workflow.action.*;
-
-import static org.junit.Assert.*;
-
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
@@ -38,7 +38,7 @@ public class WorkflowTraceMutatorTest {
     private SendAction sClientHello;
     private SendAction sFinishedMessage;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         config = Config.createConfig();
         trace = new WorkflowTrace();

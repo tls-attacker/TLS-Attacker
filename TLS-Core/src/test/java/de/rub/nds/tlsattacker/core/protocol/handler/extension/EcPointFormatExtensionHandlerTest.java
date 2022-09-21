@@ -9,72 +9,40 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ECPointFormatExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.ECPointFormatExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ECPointFormatExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ECPointFormatExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class EcPointFormatExtensionHandlerTest {
+public class EcPointFormatExtensionHandlerTest
+    extends AbstractExtensionMessageHandlerTest<ECPointFormatExtensionMessage, EcPointFormatExtensionHandler> {
 
-    private EcPointFormatExtensionHandler handler;
-    private TlsContext context;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new EcPointFormatExtensionHandler(context);
+    public EcPointFormatExtensionHandlerTest() {
+        super(ECPointFormatExtensionMessage::new, EcPointFormatExtensionHandler::new);
     }
 
     /**
      * Test of adjustTLSContext method, of class EcPointFormatExtensionHandler.
      */
     @Test
+    @Override
     public void testAdjustTLSContext() {
         ECPointFormatExtensionMessage msg = new ECPointFormatExtensionMessage();
         msg.setPointFormats(new byte[] { 0, 1 });
         handler.adjustTLSContext(msg);
-        assertTrue(context.getClientPointFormatsList().size() == 2);
+        assertEquals(2, context.getClientPointFormatsList().size());
         assertTrue(context.getClientPointFormatsList().contains(ECPointFormat.UNCOMPRESSED));
         assertTrue(context.getClientPointFormatsList().contains(ECPointFormat.ANSIX962_COMPRESSED_PRIME));
     }
 
+    @Test
     public void testUnadjustableMessage() {
         ECPointFormatExtensionMessage msg = new ECPointFormatExtensionMessage();
         msg.setPointFormats(new byte[] { 5 });
         handler.adjustTLSContext(msg);
         assertTrue(context.getClientPointFormatsList().isEmpty());
-    }
-
-    /**
-     * Test of getParser method, of class EcPointFormatExtensionHandler.
-     */
-    @Test
-    public void testGetParser() {
-        assertTrue(
-            handler.getParser(new byte[] { 123 }, 0, context.getConfig()) instanceof ECPointFormatExtensionParser);
-    }
-
-    /**
-     * Test of getPreparator method, of class EcPointFormatExtensionHandler.
-     */
-    @Test
-    public void testGetPreparator() {
-        assertTrue(
-            handler.getPreparator(new ECPointFormatExtensionMessage()) instanceof ECPointFormatExtensionPreparator);
-    }
-
-    /**
-     * Test of getSerializer method, of class EcPointFormatExtensionHandler.
-     */
-    @Test
-    public void testGetSerializer() {
-        assertTrue(
-            handler.getSerializer(new ECPointFormatExtensionMessage()) instanceof ECPointFormatExtensionSerializer);
     }
 
 }

@@ -10,52 +10,20 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.PskServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.PskServerKeyExchangeParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.PskServerKeyExchangePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.PskServerKeyExchangeSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import org.junit.After;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-public class PskServerKeyExchangeHandlerTest {
+public class PskServerKeyExchangeHandlerTest
+    extends AbstractTlsMessageHandlerTest<PskServerKeyExchangeMessage, PskServerKeyExchangeHandler> {
 
-    private PskServerKeyExchangeHandler handler;
-    private TlsContext context;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new PskServerKeyExchangeHandler(context);
-
+    public PskServerKeyExchangeHandlerTest() {
+        super(PskServerKeyExchangeMessage::new, PskServerKeyExchangeHandler::new);
     }
 
-    @After
-    public void tearDown() {
-    }
-
-    /**
-     * Test of getParser method, of class PskServerKeyExchangeHandler.
-     */
     @Test
-    public void testGetParser() {
-        assertTrue(handler.getParser(new byte[1], 0) instanceof PskServerKeyExchangeParser);
-    }
+    @Disabled("Not implemented")
+    @Override
+    public void testAdjustTLSContext() {
 
-    /**
-     * Test of getPreparator method, of class PskServerKeyExchangeHandler.
-     */
-    @Test
-    public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new PskServerKeyExchangeMessage()) instanceof PskServerKeyExchangePreparator);
-    }
-
-    /**
-     * Test of getSerializer method, of class PskServerKeyExchangeHandler.
-     */
-    @Test
-    public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new PskServerKeyExchangeMessage()) instanceof PskServerKeyExchangeSerializer);
     }
 }

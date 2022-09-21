@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>de.rub.nds.tlsattacker</groupId>
         <artifactId>TLS-Attacker</artifactId>
         <version>3.9.1-SNAPSHOT</version>
     </parent>
+
+    <name>TLS-Core</name>
     <artifactId>TLS-Core</artifactId>
     <packaging>jar</packaging>
+
     <dependencies>
+        <!-- scope: compile -->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>Transport</artifactId>
@@ -20,29 +26,19 @@
             <version>${project.version}</version>
         </dependency>
     </dependencies>
-    <name>TLS-Core</name>
+
     <build>
-        <plugins>         
+        <plugins>
+            <!--################## clean lifecycle plugins ##################-->
             <plugin>
-                <!-- Build an executable JAR -->
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.2.0</version>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <addClasspath>true</addClasspath>
-                            <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>de.rub.nds.tlsattacker.tls.Main</mainClass>
-                            <useUniqueVersions>false</useUniqueVersions>
-                        </manifest>
-                    </archive>
-                </configuration>
+                <artifactId>maven-clean-plugin</artifactId>
             </plugin>
+            <!--################# default lifecycle plugins #################-->
+            <!-- Record unit test coverage with JaCoCo -->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.6</version>
                 <executions>
                     <execution>
                         <id>jacoco-initialize</id>
@@ -50,35 +46,54 @@
                             <goal>prepare-agent</goal>
                         </goals>
                     </execution>
-                    <execution>
-                        <id>post-unit-test</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>report</goal>
-                        </goals>
-                    </execution>
                 </executions>
             </plugin>
+            <!-- Copy project resources to output directory -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-failsafe-plugin</artifactId>
+                <artifactId>maven-resources-plugin</artifactId>
             </plugin>
+            <!-- Compile source files -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <!-- Execute unit tests -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
             </plugin>
+            <!-- Build jar file -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+            </plugin>
+            <!-- Compile javadoc -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+            </plugin>
+            <!-- Pack source files to jar archive -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+            </plugin>
+            <!-- Execute integration tests -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+            </plugin>
         </plugins>
     </build>
+
     <reporting>
         <plugins>
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.4</version>
                 <reportSets>
                     <reportSet>
                         <reports>
-                            <!-- select non-aggregate reports -->
                             <report>report</report>
                         </reports>
                     </reportSet>
@@ -86,6 +101,7 @@
             </plugin>
         </plugins>
     </reporting>
+
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>
     </properties>

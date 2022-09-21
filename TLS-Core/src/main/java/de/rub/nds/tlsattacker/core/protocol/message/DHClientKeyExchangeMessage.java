@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.DHClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.DHClientComputations;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.List;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "DHClientKeyExchange")
 public class DHClientKeyExchangeMessage extends ClientKeyExchangeMessage {

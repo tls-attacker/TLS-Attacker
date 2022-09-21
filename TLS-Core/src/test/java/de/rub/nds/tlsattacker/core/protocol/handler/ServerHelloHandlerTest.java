@@ -9,70 +9,31 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
-import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
-import de.rub.nds.tlsattacker.core.protocol.parser.ServerHelloParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.ServerHelloPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.ServerHelloSerializer;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerFactory;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import org.junit.jupiter.api.Test;
+
 import java.math.BigInteger;
-import org.junit.After;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
 
-public class ServerHelloHandlerTest {
+public class ServerHelloHandlerTest extends AbstractTlsMessageHandlerTest<ServerHelloMessage, ServerHelloHandler> {
 
-    private ServerHelloHandler handler;
-    private TlsContext context;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new ServerHelloHandler(context);
-    }
-
-    @After
-    public void tearDown() {
-    }
-
-    /**
-     * Test of getPreparator method, of class ServerHelloHandler.
-     */
-    @Test
-    public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new ServerHelloMessage()) instanceof ServerHelloPreparator);
-    }
-
-    /**
-     * Test of getSerializer method, of class ServerHelloHandler.
-     */
-    @Test
-    public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new ServerHelloMessage()) instanceof ServerHelloSerializer);
-    }
-
-    /**
-     * Test of getParser method, of class ServerHelloHandler.
-     */
-    @Test
-    public void testGetParser() {
-        assertTrue(handler.getParser(new byte[1], 0) instanceof ServerHelloParser);
+    public ServerHelloHandlerTest() {
+        super(ServerHelloMessage::new, ServerHelloHandler::new);
     }
 
     /**
      * Test of adjustTLSContext method, of class ServerHelloHandler.
      */
     @Test
+    @Override
     public void testAdjustTLSContext() {
         ServerHelloMessage message = new ServerHelloMessage();
         message.setUnixTime(new byte[] { 0, 1, 2 });
@@ -82,12 +43,12 @@ public class ServerHelloHandlerTest {
         message.setSessionId(new byte[] { 6, 6, 6 });
         message.setProtocolVersion(ProtocolVersion.TLS12.getValue());
         handler.adjustTLSContext(message);
-        assertArrayEquals(context.getServerRandom(), new byte[] { 0, 1, 2, 3, 4, 5 });
-        assertTrue(context.getSelectedCompressionMethod() == CompressionMethod.DEFLATE);
-        assertArrayEquals(context.getServerSessionId(), new byte[] { 6, 6, 6 });
-        assertArrayEquals(context.getSelectedCipherSuite().getByteValue(),
-            CipherSuite.TLS_CECPQ1_ECDSA_WITH_AES_256_GCM_SHA384.getByteValue());
-        assertArrayEquals(context.getSelectedProtocolVersion().getValue(), ProtocolVersion.TLS12.getValue());
+        assertArrayEquals(new byte[] { 0, 1, 2, 3, 4, 5 }, context.getServerRandom());
+        assertSame(CompressionMethod.DEFLATE, context.getSelectedCompressionMethod());
+        assertArrayEquals(new byte[] { 6, 6, 6 }, context.getServerSessionId());
+        assertArrayEquals(CipherSuite.TLS_CECPQ1_ECDSA_WITH_AES_256_GCM_SHA384.getByteValue(),
+            context.getSelectedCipherSuite().getByteValue());
+        assertArrayEquals(ProtocolVersion.TLS12.getValue(), context.getSelectedProtocolVersion().getValue());
     }
 
     @Test

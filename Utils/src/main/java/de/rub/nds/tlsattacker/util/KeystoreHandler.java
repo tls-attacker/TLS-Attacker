@@ -22,7 +22,9 @@ public class KeystoreHandler {
     public static KeyStore loadKeyStore(final String keyStorePath, final String keyStorePassword)
         throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException {
         KeyStore ks = KeyStore.getInstance("JKS");
-        ks.load(new FileInputStream(keyStorePath), keyStorePassword.toCharArray());
+        try (FileInputStream fis = new FileInputStream(keyStorePath)) {
+            ks.load(fis, keyStorePassword.toCharArray());
+        }
 
         return ks;
     }

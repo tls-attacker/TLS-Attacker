@@ -9,51 +9,22 @@
 
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.GreaseExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.GreaseExtensionParserTest;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.provider.Arguments;
 
-import java.util.Collection;
+import java.util.List;
+import java.util.stream.Stream;
 
-import static org.junit.Assert.assertArrayEquals;
+public class GreaseExtensionSerializerTest
+    extends AbstractExtensionMessageSerializerTest<GreaseExtensionMessage, GreaseExtensionSerializer> {
 
-@RunWith(Parameterized.class)
-public class GreaseExtensionSerializerTest {
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return GreaseExtensionParserTest.generateData();
+    public GreaseExtensionSerializerTest() {
+        super(GreaseExtensionMessage::new, GreaseExtensionSerializer::new,
+            List.of((msg, obj) -> msg.setRandomData((byte[]) obj)));
     }
 
-    private final byte[] extension;
-    private final int start;
-    private final byte[] completeExtension;
-    private final ExtensionType type;
-    private final int extensionLength;
-    private final byte[] randomData;
-
-    public GreaseExtensionSerializerTest(byte[] extension, int start, byte[] completeExtension, ExtensionType type,
-        int extensionLength, byte[] randomData) {
-        this.extension = extension;
-        this.start = start;
-        this.completeExtension = completeExtension;
-        this.type = type;
-        this.extensionLength = extensionLength;
-        this.randomData = randomData;
-    }
-
-    /**
-     * Test of serializeExtensionContent method, of class KeyShareExtensionSerializerTest.
-     */
-    @Test
-    public void testSerializeExtensionContent() {
-        GreaseExtensionMessage msg = new GreaseExtensionMessage();
-        msg.setExtensionType(type.getValue());
-        msg.setRandomData(randomData);
-        msg.setExtensionLength(randomData.length);
-        GreaseExtensionSerializer serializer = new GreaseExtensionSerializer(msg);
-        assertArrayEquals(completeExtension, serializer.serialize());
+    public static Stream<Arguments> provideTestVectors() {
+        return GreaseExtensionParserTest.provideTestVectors();
     }
 }

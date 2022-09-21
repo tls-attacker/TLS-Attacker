@@ -10,68 +10,20 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.ApplicationMessageParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.ApplicationMessagePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.ApplicationMessageSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import org.junit.After;
-import org.junit.AfterClass;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class ApplicationMessageHandlerTest {
+public class ApplicationMessageHandlerTest
+    extends AbstractTlsMessageHandlerTest<ApplicationMessage, ApplicationMessageHandler> {
 
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
-
-    private ApplicationMessageHandler handler;
-    private TlsContext context;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new ApplicationMessageHandler(context);
-    }
-
-    @After
-    public void tearDown() {
-    }
-
-    /**
-     * Test of getParser method, of class ApplicationMessageHandler.
-     */
-    @Test
-    public void testGetParser() {
-        assertTrue(handler.getParser(new byte[1], 0) instanceof ApplicationMessageParser);
-    }
-
-    /**
-     * Test of getPreparator method, of class ApplicationMessageHandler.
-     */
-    @Test
-    public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new ApplicationMessage()) instanceof ApplicationMessagePreparator);
-    }
-
-    /**
-     * Test of getSerializer method, of class ApplicationMessageHandler.
-     */
-    @Test
-    public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new ApplicationMessage()) instanceof ApplicationMessageSerializer);
+    ApplicationMessageHandlerTest() {
+        super(ApplicationMessage::new, ApplicationMessageHandler::new);
     }
 
     /**
      * Test of adjustTLSContext method, of class ApplicationMessageHandler.
      */
     @Test
+    @Override
     public void testAdjustTLSContext() {
         ApplicationMessage message = new ApplicationMessage();
         message.setData(new byte[] { 0, 1, 2, 3, 4, 5, 6 });

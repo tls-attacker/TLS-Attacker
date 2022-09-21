@@ -10,58 +10,20 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.ServerHelloDoneParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.ServerHelloDonePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.ServerHelloDoneSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import org.junit.After;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class ServerHelloDoneHandlerTest {
+public class ServerHelloDoneHandlerTest
+    extends AbstractTlsMessageHandlerTest<ServerHelloDoneMessage, ServerHelloDoneHandler> {
 
-    private ServerHelloDoneHandler handler;
-    private TlsContext context;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new ServerHelloDoneHandler(context);
-    }
-
-    @After
-    public void tearDown() {
-    }
-
-    /**
-     * Test of getParser method, of class ServerHelloDoneHandler.
-     */
-    @Test
-    public void testGetParser() {
-        assertTrue(handler.getParser(new byte[1], 0) instanceof ServerHelloDoneParser);
-    }
-
-    /**
-     * Test of getPreparator method, of class ServerHelloDoneHandler.
-     */
-    @Test
-    public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new ServerHelloDoneMessage()) instanceof ServerHelloDonePreparator);
-    }
-
-    /**
-     * Test of getSerializer method, of class ServerHelloDoneHandler.
-     */
-    @Test
-    public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new ServerHelloDoneMessage()) instanceof ServerHelloDoneSerializer);
+    public ServerHelloDoneHandlerTest() {
+        super(ServerHelloDoneMessage::new, ServerHelloDoneHandler::new);
     }
 
     /**
      * Test of adjustTLSContext method, of class ServerHelloDoneHandler.
      */
     @Test
+    @Override
     public void testAdjustTLSContext() {
         ServerHelloDoneMessage message = new ServerHelloDoneMessage();
         handler.adjustTLSContext(message);

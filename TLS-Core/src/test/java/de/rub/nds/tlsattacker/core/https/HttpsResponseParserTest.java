@@ -9,35 +9,33 @@
 
 package de.rub.nds.tlsattacker.core.https;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
-import java.nio.charset.Charset;
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import java.nio.charset.StandardCharsets;
 
 public class HttpsResponseParserTest {
 
-    private final Config config = Config.createConfig();
+    private Config config;
 
-    public HttpsResponseParserTest() {
-    }
-
-    @Before
     public void setUp() {
-
+        config = Config.createConfig();
     }
 
     /**
      * Test of parseMessageContent method, of class HttpsResponseParser with an invalid response.
      */
-    @Test(expected = ParserException.class)
+    @Test
     public void testParseMessageContentFailed() {
         HttpsResponseParser parser = new HttpsResponseParser(0,
             ArrayConverter.hexStringToByteArray("AAAAAAAAAAAAAAAAAAAAAAAA"), ProtocolVersion.TLS12, config);
-        parser.parse();
+        assertThrows(ParserException.class, parser::parse);
     }
 
     /**
@@ -49,7 +47,7 @@ public class HttpsResponseParserTest {
             + "Last-Modified: Wed, 22 Jul 2009 19:15:56 GMT\r\nContent-Length: 88\r\nContent-Type: text/html\r\nConnection: Closed\r\n\r\ntest";
 
         HttpsResponseParser parser =
-            new HttpsResponseParser(0, message.getBytes(Charset.forName("UTF-8")), ProtocolVersion.TLS12, config);
+            new HttpsResponseParser(0, message.getBytes(StandardCharsets.UTF_8), ProtocolVersion.TLS12, config);
         HttpsResponseMessage parsedMessage = parser.parse();
 
         assertEquals(parsedMessage.getResponseStatusCode().getValue(), "200 OK");

@@ -9,10 +9,13 @@
 
 package de.rub.nds.tlsattacker.client.config;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 public class ClientCommandConfigTest {
 
@@ -20,35 +23,20 @@ public class ClientCommandConfigTest {
      * Test config command line parsing
      */
     @Test
+    @Disabled("Not implemented")
     public void testCommandLineParsing() {
-        JCommander jc = new JCommander(new GeneralDelegate());
-        // TODO
-        //
-        // ServerCommandConfig server = new ServerCommandConfig();
-        // jc.addCommand(ServerCommandConfig.COMMAND, server);
-        // ClientCommandConfig client = new ClientCommandConfig();
-        // jc.addCommand(ClientCommandConfig.COMMAND, client);
-        //
-        // jc.parse("client", "-connect", "localhost:443", "-keystore",
-        // "test.pem", "-password", "password",
-        // "-workflow_trace_type", "FULL");
-        //
-        // assertEquals("client", jc.getParsedCommand());
-        // assertEquals("localhost:443", client.getConnect());
-        // assertEquals("test.pem", client.getKeystore());
-        // assertEquals("password", client.getPassword());
     }
 
     /**
      * Test invalid config without connect parameter
      */
-    @Test(expected = ParameterException.class)
+    @Test
     public void testInvalidCommandLineParsing() {
         JCommander jc = new JCommander();
 
         ClientCommandConfig client = new ClientCommandConfig(new GeneralDelegate());
         jc.addCommand(ClientCommandConfig.COMMAND, client);
 
-        jc.parse("client", "-connect");
+        assertThrows(ParameterException.class, () -> jc.parse("client", "-connect"));
     }
 }

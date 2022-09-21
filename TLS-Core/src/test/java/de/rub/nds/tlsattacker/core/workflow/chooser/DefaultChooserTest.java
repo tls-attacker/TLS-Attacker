@@ -9,21 +9,11 @@
 
 package de.rub.nds.tlsattacker.core.workflow.chooser;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
-import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
-import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
-import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
-import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
-import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
-import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
-import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
+import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.state.session.Session;
@@ -31,34 +21,24 @@ import de.rub.nds.tlsattacker.core.state.session.TicketSession;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.tcp.ClientTcpTransportHandler;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
 
-@SuppressWarnings("SpellCheckingInspection")
 public class DefaultChooserTest {
 
     private Chooser chooser;
     private TlsContext context;
     private Config config;
-    private Random random;
 
-    public DefaultChooserTest() {
-    }
-
-    @Before
+    @BeforeEach
     public void setUp() {
         context = new TlsContext();
         chooser = context.getChooser();
         config = chooser.getConfig();
-        random = new Random(0);
     }
 
     /**
@@ -76,8 +56,8 @@ public class DefaultChooserTest {
         formatList.add(ECPointFormat.UNCOMPRESSED);
         formatList.add(ECPointFormat.UNCOMPRESSED);
         config.setDefaultClientSupportedPointFormats(formatList);
-        assertTrue(config.getDefaultClientSupportedPointFormats().size() == 8);
-        assertTrue(chooser.getClientSupportedPointFormats().size() == 8);
+        assertEquals(8, config.getDefaultClientSupportedPointFormats().size());
+        assertEquals(8, chooser.getClientSupportedPointFormats().size());
         context.setClientPointFormatsList(new LinkedList<ECPointFormat>());
         assertTrue(chooser.getClientSupportedPointFormats().isEmpty());
     }
@@ -105,8 +85,8 @@ public class DefaultChooserTest {
         curveList.add(NamedGroup.ECDH_X448);
         curveList.add(NamedGroup.SECP160K1);
         config.setDefaultClientNamedGroups(curveList);
-        assertTrue(config.getDefaultClientNamedGroups().size() == 3);
-        assertTrue(chooser.getClientSupportedNamedGroups().size() == 3);
+        assertEquals(3, config.getDefaultClientNamedGroups().size());
+        assertEquals(3, chooser.getClientSupportedNamedGroups().size());
         context.setClientNamedGroupsList(new LinkedList<NamedGroup>());
         assertTrue(chooser.getClientSupportedNamedGroups().isEmpty());
 
@@ -127,8 +107,8 @@ public class DefaultChooserTest {
         formatList.add(ECPointFormat.UNCOMPRESSED);
         formatList.add(ECPointFormat.UNCOMPRESSED);
         config.setDefaultServerSupportedPointFormats(formatList);
-        assertTrue(config.getDefaultServerSupportedPointFormats().size() == 8);
-        assertTrue(chooser.getServerSupportedPointFormats().size() == 8);
+        assertEquals(8, config.getDefaultServerSupportedPointFormats().size());
+        assertEquals(8, chooser.getServerSupportedPointFormats().size());
         context.setServerPointFormatsList(new LinkedList<ECPointFormat>());
         assertTrue(chooser.getServerSupportedPointFormats().isEmpty());
     }
@@ -141,8 +121,8 @@ public class DefaultChooserTest {
         List<SignatureAndHashAlgorithm> algoList = new LinkedList<>();
         algoList.add(SignatureAndHashAlgorithm.DSA_MD5);
         config.setDefaultClientSupportedSignatureAndHashAlgorithms(algoList);
-        assertTrue(config.getDefaultClientSupportedSignatureAndHashAlgorithms().size() == 1);
-        assertTrue(chooser.getClientSupportedSignatureAndHashAlgorithms().size() == 1);
+        assertEquals(1, config.getDefaultClientSupportedSignatureAndHashAlgorithms().size());
+        assertEquals(1, chooser.getClientSupportedSignatureAndHashAlgorithms().size());
         context.setClientSupportedSignatureAndHashAlgorithms(new LinkedList<SignatureAndHashAlgorithm>());
         assertTrue(chooser.getClientSupportedSignatureAndHashAlgorithms().isEmpty());
     }
@@ -166,11 +146,11 @@ public class DefaultChooserTest {
     public void testGetDistinguishedNames() {
         byte[] namelist = { (byte) 0, (byte) 1 };
         config.setDistinguishedNames(namelist);
-        assertTrue(config.getDistinguishedNames().length == 2);
-        assertTrue(chooser.getDistinguishedNames().length == 2);
+        assertEquals(2, config.getDistinguishedNames().length);
+        assertEquals(2, chooser.getDistinguishedNames().length);
         byte[] namelist2 = { (byte) 0, (byte) 1, (byte) 3 };
         context.setDistinguishedNames(namelist2);
-        assertTrue(chooser.getDistinguishedNames().length == 3);
+        assertEquals(3, chooser.getDistinguishedNames().length);
     }
 
     /**
@@ -187,8 +167,8 @@ public class DefaultChooserTest {
         typeList.add(ClientCertificateType.RSA_FIXED_DH);
         typeList.add(ClientCertificateType.RSA_SIGN);
         config.setClientCertificateTypes(typeList);
-        assertTrue(config.getClientCertificateTypes().size() == 7);
-        assertTrue(chooser.getClientCertificateTypes().size() == 7);
+        assertEquals(7, config.getClientCertificateTypes().size());
+        assertEquals(7, chooser.getClientCertificateTypes().size());
         context.setClientCertificateTypes(new LinkedList<ClientCertificateType>());
         assertTrue(chooser.getClientCertificateTypes().isEmpty());
 
@@ -223,9 +203,9 @@ public class DefaultChooserTest {
      */
     @Test
     public void testIsUseExtendedMasterSecret() {
-        assertEquals(false, chooser.isUseExtendedMasterSecret());
+        assertFalse(chooser.isUseExtendedMasterSecret());
         context.setUseExtendedMasterSecret(true);
-        assertEquals(true, chooser.isUseExtendedMasterSecret());
+        assertTrue(chooser.isUseExtendedMasterSecret());
     }
 
     /**
@@ -321,7 +301,7 @@ public class DefaultChooserTest {
         context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
         assertEquals(ConnectionEndType.SERVER, chooser.getTalkingConnectionEnd());
         context.setTalkingConnectionEndType(null);
-        assertEquals(null, chooser.getTalkingConnectionEnd());
+        assertNull(chooser.getTalkingConnectionEnd());
     }
 
     /**
@@ -837,11 +817,11 @@ public class DefaultChooserTest {
     public void testGetInboundRecordSizeLimit() {
         config.setDefaultMaxRecordData(1337);
         config.setInboundRecordSizeLimit(null);
-        assertTrue(config.getDefaultMaxRecordData() == 1337);
+        assertEquals(1337, config.getDefaultMaxRecordData());
         assertNull(config.getInboundRecordSizeLimit());
-        assertTrue(chooser.getInboundRecordSizeLimit() == 1337);
+        assertEquals(1337, (int) chooser.getInboundRecordSizeLimit());
         config.setInboundRecordSizeLimit(42);
-        assertTrue(chooser.getInboundRecordSizeLimit() == 42);
+        assertEquals(42, (int) chooser.getInboundRecordSizeLimit());
     }
 
     /**
@@ -850,10 +830,10 @@ public class DefaultChooserTest {
     @Test
     public void testGetOutboundRecordSizeLimit() {
         config.setDefaultMaxRecordData(1337);
-        assertTrue(config.getDefaultMaxRecordData() == 1337);
+        assertEquals(1337, config.getDefaultMaxRecordData());
         assertNull(context.getOutboundRecordSizeLimit());
-        assertTrue(chooser.getOutboundRecordSizeLimit() == 1337);
+        assertEquals(1337, (int) chooser.getOutboundRecordSizeLimit());
         context.setOutboundRecordSizeLimit(1234);
-        assertTrue(chooser.getOutboundRecordSizeLimit() == 1234);
+        assertEquals(1234, (int) chooser.getOutboundRecordSizeLimit());
     }
 }

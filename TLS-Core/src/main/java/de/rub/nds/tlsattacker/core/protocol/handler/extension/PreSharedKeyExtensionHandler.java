@@ -15,18 +15,16 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PreSharedKeyExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PSKIdentity;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.PreSharedKeyExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PreSharedKeyExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PreSharedKeyExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.util.Arrays;
-import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * RFC draft-ietf-tls-tls13-21
@@ -40,17 +38,17 @@ public class PreSharedKeyExtensionHandler extends ExtensionHandler<PreSharedKeyE
     }
 
     @Override
-    public ExtensionParser getParser(byte[] message, int pointer, Config config) {
+    public PreSharedKeyExtensionParser getParser(byte[] message, int pointer, Config config) {
         return new PreSharedKeyExtensionParser(pointer, message, config);
     }
 
     @Override
-    public ExtensionPreparator getPreparator(PreSharedKeyExtensionMessage message) {
+    public PreSharedKeyExtensionPreparator getPreparator(PreSharedKeyExtensionMessage message) {
         return new PreSharedKeyExtensionPreparator(context.getChooser(), message, getSerializer(message));
     }
 
     @Override
-    public ExtensionSerializer getSerializer(PreSharedKeyExtensionMessage message) {
+    public PreSharedKeyExtensionSerializer getSerializer(PreSharedKeyExtensionMessage message) {
         return new PreSharedKeyExtensionSerializer(message, context.getChooser().getConnectionEndType());
     }
 

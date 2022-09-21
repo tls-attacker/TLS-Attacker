@@ -9,30 +9,25 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PWDProtectExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.PWDProtectExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PWDProtectExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PWDProtectExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class PWDProtectExtensionHandlerTest {
-    private PWDProtectExtensionHandler handler;
-    private TlsContext context;
+public class PWDProtectExtensionHandlerTest
+    extends AbstractExtensionMessageHandlerTest<PWDProtectExtensionMessage, PWDProtectExtensionHandler> {
 
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new PWDProtectExtensionHandler(context);
+    public PWDProtectExtensionHandlerTest() {
+        super(PWDProtectExtensionMessage::new, PWDProtectExtensionHandler::new);
         context.setConnection(new InboundConnection());
     }
 
     @Test
+    @Override
     public void testAdjustTLSContext() {
         PWDProtectExtensionMessage message = new PWDProtectExtensionMessage();
         message.setUsername(ArrayConverter.hexStringToByteArray(
@@ -41,20 +36,4 @@ public class PWDProtectExtensionHandlerTest {
         assertTrue(context.isExtensionProposed(ExtensionType.PWD_PROTECT));
         assertEquals("jens", context.getClientPWDUsername());
     }
-
-    @Test
-    public void testGetParser() {
-        assertTrue(handler.getParser(new byte[0], 0, context.getConfig()) instanceof PWDProtectExtensionParser);
-    }
-
-    @Test
-    public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new PWDProtectExtensionMessage()) instanceof PWDProtectExtensionPreparator);
-    }
-
-    @Test
-    public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new PWDProtectExtensionMessage()) instanceof PWDProtectExtensionSerializer);
-    }
-
 }

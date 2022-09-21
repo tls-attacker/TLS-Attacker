@@ -43,9 +43,9 @@ public class TokenBindingExtensionHandler extends ExtensionHandler<TokenBindingE
     @Override
     public void adjustTLSExtensionContext(TokenBindingExtensionMessage message) {
         context
-            .setTokenBindingVersion(TokenBindingVersion.getExtensionType(message.getTokenbindingVersion().getValue()));
+            .setTokenBindingVersion(TokenBindingVersion.getExtensionType(message.getTokenBindingVersion().getValue()));
         ArrayList<TokenBindingKeyParameters> tokenbindingKeyParameters = new ArrayList<>();
-        for (byte kp : message.getTokenbindingKeyParameters().getValue()) {
+        for (byte kp : message.getTokenBindingKeyParameters().getValue()) {
             tokenbindingKeyParameters.add(TokenBindingKeyParameters.getTokenBindingKeyParameter(kp));
         }
         context.setTokenBindingKeyParameters(tokenbindingKeyParameters);

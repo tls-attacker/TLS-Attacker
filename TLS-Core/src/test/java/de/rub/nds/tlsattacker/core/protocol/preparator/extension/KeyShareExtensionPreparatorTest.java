@@ -9,6 +9,9 @@
 
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
@@ -16,36 +19,26 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.KeyShareExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import org.junit.jupiter.api.Test;
+
 import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
 
-public class KeyShareExtensionPreparatorTest {
-
-    private KeyShareExtensionPreparator preparator;
-    private KeyShareExtensionMessage message;
-    private TlsContext context;
+public class KeyShareExtensionPreparatorTest extends AbstractExtensionMessagePreparatorTest<KeyShareExtensionMessage,
+    KeyShareExtensionSerializer, KeyShareExtensionPreparator> {
 
     public KeyShareExtensionPreparatorTest() {
-    }
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        message = new KeyShareExtensionMessage();
-        preparator = new KeyShareExtensionPreparator(context.getChooser(), message,
-            new KeyShareExtensionSerializer(message, ConnectionEndType.CLIENT));
+        super(KeyShareExtensionMessage::new, KeyShareExtensionMessage::new,
+            msg -> new KeyShareExtensionSerializer(msg, ConnectionEndType.CLIENT), KeyShareExtensionPreparator::new);
     }
 
     /**
      * Test of prepare method, of class KeyShareExtensionPreparator.
      */
     @Test
+    @Override
     public void testPrepare() {
         List<KeyShareEntry> keyShareList = new LinkedList<>();
         KeyShareEntry entry = new KeyShareEntry(NamedGroup.ECDH_X25519,
@@ -55,7 +48,7 @@ public class KeyShareExtensionPreparatorTest {
         preparator.prepare();
         assertArrayEquals(message.getKeyShareListBytes().getValue(), ArrayConverter
             .hexStringToByteArray("001D00202a981db6cdd02a06c1763102c9e741365ac4e6f72b3176a6bd6a3523d3ec0f4c"));
-        assertTrue(message.getKeyShareListLength().getValue() == 36);
+        assertEquals(36, (int) message.getKeyShareListLength().getValue());
     }
 
     /**
@@ -80,10 +73,4 @@ public class KeyShareExtensionPreparatorTest {
                 + "84 A9 DB 5B B8 24 FC 39  82 42 8F CD 40 69 63 AE\n" + "08 0E 67 7A 48").replaceAll("\\s+", "")),
             message.getKeyShareListBytes().getValue());
     }
-
-    @Test
-    public void testNoContextPrepare() {
-        preparator.prepare();
-    }
-
 }

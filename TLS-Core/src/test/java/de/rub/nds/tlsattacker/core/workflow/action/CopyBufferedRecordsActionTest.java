@@ -9,31 +9,41 @@
 
 package de.rub.nds.tlsattacker.core.workflow.action;
 
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.LinkedList;
 
-import static org.junit.Assert.*;
+public class CopyBufferedRecordsActionTest extends AbstractCopyActionTest<CopyBufferedRecordsAction> {
 
-public class CopyBufferedRecordsActionTest {
-
-    private CopyBufferedRecordsAction action;
-
-    @Before
-    public void setUp() {
-        action = new CopyBufferedRecordsAction("src", "dst");
+    public CopyBufferedRecordsActionTest() {
+        super(new CopyBufferedRecordsAction("src", "dst"), CopyBufferedRecordsAction.class);
     }
 
     @Test
-    public void testCopyField() {
-        TlsContext src = new TlsContext();
-        TlsContext dst = new TlsContext();
+    @Override
+    public void testAliasesSetProperlyErrorSrc() {
+        CopyBufferedRecordsAction a = new CopyBufferedRecordsAction(null, "dst");
+        assertThrows(WorkflowExecutionException.class, a::assertAliasesSetProperly);
+    }
+
+    @Test
+    @Override
+    public void testAliasesSetProperlyErrorDst() {
+        CopyBufferedRecordsAction a = new CopyBufferedRecordsAction("src", null);
+        assertThrows(WorkflowExecutionException.class, a::assertAliasesSetProperly);
+    }
+
+    @Test
+    @Override
+    public void testExecute() throws Exception {
         ModifiableByteArray byteArray = new ModifiableByteArray();
         AbstractRecord record = new Record();
         LinkedList<AbstractRecord> recordBuffer = new LinkedList<>();
@@ -46,23 +56,7 @@ public class CopyBufferedRecordsActionTest {
         recordBuffer.add(record);
         src.setRecordBuffer(recordBuffer);
 
-        action.copyField(src, dst);
+        super.testExecute();
         assertSame(src.getRecordBuffer(), dst.getRecordBuffer());
     }
-
-    @Test
-    public void testExecutedAsPlanned() {
-        action.setExecuted(true);
-        assertTrue(action.executedAsPlanned());
-        action.setExecuted(false);
-        assertFalse(action.executedAsPlanned());
-    }
-
-    @Test
-    public void testReset() {
-        action.setExecuted(true);
-        action.reset();
-        assertFalse(action.isExecuted());
-    }
-
 }

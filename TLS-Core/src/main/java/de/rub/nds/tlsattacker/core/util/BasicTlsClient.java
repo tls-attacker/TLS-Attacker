@@ -91,15 +91,12 @@ public class BasicTlsClient extends Thread {
             LOGGER.info("Closing session with " + serverPrettyName);
             socket.close();
             LOGGER.info("Closed (" + serverPrettyName + ")");
-        } catch (InterruptedException | IOException ex) {
-            LOGGER.error(ex);
         } catch (Exception ex) {
             LOGGER.error(ex);
         } finally {
             try {
-                if (socket != null) {
+                if (socket != null && !socket.isClosed()) {
                     socket.close();
-                    socket = null;
                 }
             } catch (IOException e) {
                 LOGGER.debug(e);

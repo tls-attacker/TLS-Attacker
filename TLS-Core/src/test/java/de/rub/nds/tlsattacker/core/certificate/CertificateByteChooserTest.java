@@ -9,8 +9,8 @@
 
 package de.rub.nds.tlsattacker.core.certificate;
 
-import java.security.Security;
-import java.util.List;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import de.rub.nds.tlsattacker.core.constants.CertificateKeyType;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
@@ -21,48 +21,31 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import java.security.Security;
+import java.util.List;
 
-/**
- *
- *
- */
 public class CertificateByteChooserTest {
 
     private final static Logger LOGGER = LogManager.getLogger();
 
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
     private CertificateByteChooser byteChooser;
     private Chooser defaultChooser;
 
-    public CertificateByteChooserTest() {
+    @BeforeAll
+    public static void setUpClass() {
+        Security.addProvider(new BouncyCastleProvider());
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
-        Security.addProvider(new BouncyCastleProvider());
         byteChooser = CertificateByteChooser.getInstance();
 
-        TlsContext context = new TlsContext();
-        defaultChooser = context.getChooser();
-    }
-
-    @After
-    public void tearDown() {
+        TlsContext tlsContext = new TlsContext();
+        defaultChooser = tlsContext.getChooser();
     }
 
     @Test
@@ -74,7 +57,7 @@ public class CertificateByteChooserTest {
             LOGGER.debug("Cert signature type: " + pair.getCertSignatureType());
             LOGGER.debug("Cert signatureAndHashAlgo: " + pair.getSignatureAndHashAlgorithm());
             LOGGER.debug("PublicKeyGroup: " + pair.getPublicKeyGroup());
-            assertNotEquals(pair.getSignatureAndHashAlgorithm(), SignatureAndHashAlgorithm.ANONYMOUS_NONE);
+            assertNotEquals(SignatureAndHashAlgorithm.ANONYMOUS_NONE, pair.getSignatureAndHashAlgorithm());
         }
     }
 
@@ -89,5 +72,4 @@ public class CertificateByteChooserTest {
         assertEquals(NamedGroup.SECP256R1, selectedKeyPair.getPublicKeyGroup());
         assertEquals(SignatureAndHashAlgorithm.RSA_SHA256, selectedKeyPair.getSignatureAndHashAlgorithm());
     }
-
 }

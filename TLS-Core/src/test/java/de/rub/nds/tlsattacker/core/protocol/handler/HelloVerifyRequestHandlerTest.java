@@ -9,59 +9,23 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
 import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.HelloVerifyRequestParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.HelloVerifyRequestPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.HelloVerifyRequestSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import org.junit.After;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class HelloVerifyRequestHandlerTest {
+public class HelloVerifyRequestHandlerTest
+    extends AbstractTlsMessageHandlerTest<HelloVerifyRequestMessage, HelloVerifyRequestHandler> {
 
-    private HelloVerifyRequestHandler handler;
-    private TlsContext context;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new HelloVerifyRequestHandler(context);
-    }
-
-    @After
-    public void tearDown() {
-    }
-
-    /**
-     * Test of getParser method, of class HelloVerifyRequestHandler.
-     */
-    @Test
-    public void testGetParser() {
-        assertTrue(handler.getParser(new byte[1], 0) instanceof HelloVerifyRequestParser);
-    }
-
-    /**
-     * Test of getPreparator method, of class HelloVerifyRequestHandler.
-     */
-    @Test
-    public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new HelloVerifyRequestMessage()) instanceof HelloVerifyRequestPreparator);
-    }
-
-    /**
-     * Test of getSerializer method, of class HelloVerifyRequestHandler.
-     */
-    @Test
-    public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new HelloVerifyRequestMessage()) instanceof HelloVerifyRequestSerializer);
+    public HelloVerifyRequestHandlerTest() {
+        super(HelloVerifyRequestMessage::new, HelloVerifyRequestHandler::new);
     }
 
     /**
      * Test of adjustTLSContext method, of class HelloVerifyRequestHandler.
      */
     @Test
+    @Override
     public void testAdjustTLSContext() {
         HelloVerifyRequestMessage message = new HelloVerifyRequestMessage();
         message.setCookie(new byte[] { 0, 1, 2, 3 });
