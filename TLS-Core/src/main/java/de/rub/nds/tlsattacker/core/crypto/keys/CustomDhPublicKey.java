@@ -38,7 +38,7 @@ public class CustomDhPublicKey extends CustomPublicKey implements DHPublicKey {
         this.publicKey = publicKey;
     }
 
-    private CustomDhPublicKey() {
+    public CustomDhPublicKey() {
         modulus = null;
         generator = null;
         publicKey = null;
