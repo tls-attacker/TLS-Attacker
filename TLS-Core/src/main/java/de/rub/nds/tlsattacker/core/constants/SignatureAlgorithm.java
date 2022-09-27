@@ -37,4 +37,26 @@ public enum SignatureAlgorithm {
         return javaName != null ? javaName : toString();
     }
 
+    public CertificateKeyType getRequiredCertificateKeyType() {
+        switch (this) {
+            case RSA:
+            case RSA_PSS_PSS:
+            case RSA_PSS_RSAE:
+                return CertificateKeyType.RSA;
+            case DSA:
+                return CertificateKeyType.DSS;
+            case ECDSA:
+            case ED25519:
+            case ED448:
+                return CertificateKeyType.ECDSA;
+            case GOSTR34102001:
+                return CertificateKeyType.GOST01;
+            case GOSTR34102012_256:
+            case GOSTR34102012_512:
+                return CertificateKeyType.GOST12;
+            default:
+                return null;
+        }
+    }
+
 }

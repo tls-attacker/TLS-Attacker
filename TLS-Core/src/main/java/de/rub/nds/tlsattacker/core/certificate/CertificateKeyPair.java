@@ -458,7 +458,8 @@ public class CertificateKeyPair implements Serializable {
         }
         context.setEcCertificateSignatureCurve(signatureGroup);
         if (context.getConfig().getAutoAdjustSignatureAndHashAlgorithm()) {
-            SignatureAndHashAlgorithm sigHashAlgo = this.getSignatureAndHashAlgorithm();
+            SignatureAndHashAlgorithm sigHashAlgo =
+                SignatureAndHashAlgorithm.forCertificateKeyPair(this, context.getChooser());
 
             if (sigHashAlgo == SignatureAndHashAlgorithm.GOSTR34102012_512_GOSTR34112012_512
                 || sigHashAlgo == SignatureAndHashAlgorithm.GOSTR34102012_256_GOSTR34112012_256
