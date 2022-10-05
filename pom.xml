@@ -610,6 +610,7 @@
         <maven.compiler.target>11</maven.compiler.target>
         <maven.build.timestamp.format>yyyy</maven.build.timestamp.format>
         <main.basedir>${project.basedir}</main.basedir>
+        <license.basedir>${main.basedir}</license.basedir>
         <!-- We redefine the signature generation process, which is enabled by default,
         but cannot be performed by typical users. Enable it using -Dskip.signature=false -->
         <skip.signature>true</skip.signature>
