@@ -3,9 +3,14 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>de.rub.nds</groupId>
+        <artifactId>protocol-toolkit-bom</artifactId>
+        <version>1.1.0</version>
+    </parent>
 
-    <groupId>de.rub.nds.tlsattacker</groupId>
-    <artifactId>TLS-Attacker</artifactId>
+    <groupId>de.rub.nds.tls.attacker</groupId>
+    <artifactId>tls-attacker</artifactId>
     <version>3.9.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
@@ -21,18 +26,6 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
-
-    <distributionManagement>
-        <snapshotRepository>
-            <id>rub-nexus</id>
-            <name>TLS-Attacker Internal Repository</name>
-            <url>https://hydrogen.cloud.nds.rub.de/nexus/repository/maven-snapshots/</url>
-        </snapshotRepository>
-        <repository>
-            <id>ossrh</id>
-            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-    </distributionManagement>
 
     <developers>
         <developer>
@@ -99,87 +92,123 @@
         <module>TLS-Proxy</module>
     </modules>
 
+    <!-- Override dependency versions from BOM for all submodules to match parent version -->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>de.rub.nds.tls.attacker</groupId>
+                <artifactId>tls-attacker</artifactId>
+                <version>${project.version}</version>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>de.rub.nds.tls.attacker</groupId>
+                <artifactId>tls-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.rub.nds.tls.attacker</groupId>
+                <artifactId>tls-client</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.rub.nds.tls.attacker</groupId>
+                <artifactId>tls-mitm</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.rub.nds.tls.attacker</groupId>
+                <artifactId>tls-proxy</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.rub.nds.tls.attacker</groupId>
+                <artifactId>tls-server</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.rub.nds.tls.attacker</groupId>
+                <artifactId>trace-tool</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.rub.nds.tls.attacker</groupId>
+                <artifactId>transport</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.rub.nds.tls.attacker</groupId>
+                <artifactId>utils</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
         <!-- scope: compile -->
         <dependency>
             <groupId>de.rub.nds</groupId>
-            <artifactId>X509Attacker</artifactId>
-            <version>1.4.0-SNAPSHOT</version>
+            <artifactId>x509-attacker</artifactId>
         </dependency>
         <dependency>
             <groupId>de.rub.nds</groupId>
-            <artifactId>Asn1Tool</artifactId>
-            <version>1.5.0-SNAPSHOT</version>
+            <artifactId>asn1-tool</artifactId>
         </dependency>
         <dependency>
             <groupId>de.rub.nds</groupId>
-            <artifactId>ModifiableVariable</artifactId>
-            <version>3.6.0-SNAPSHOT</version>
+            <artifactId>modifiable-variable</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
-            <version>2.19.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
-            <version>2.19.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-slf4j-impl</artifactId>
-            <version>2.19.0</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish.jaxb</groupId>
             <artifactId>jaxb-runtime</artifactId>
-            <version>4.0.0</version>
         </dependency>
         <dependency>
             <groupId>jakarta.xml.bind</groupId>
             <artifactId>jakarta.xml.bind-api</artifactId>
-            <version>4.0.0</version>
         </dependency>
         <dependency>
             <groupId>dnsjava</groupId>
             <artifactId>dnsjava</artifactId>
-            <version>3.5.1</version>
         </dependency>
         <dependency>
             <groupId>com.beust</groupId>
             <artifactId>jcommander</artifactId>
-            <version>1.82</version>
         </dependency>
         <dependency>
             <groupId>com.googlecode.json-simple</groupId>
             <artifactId>json-simple</artifactId>
-            <version>1.1.1</version>
         </dependency>
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcpkix-jdk15on</artifactId>
-            <version>1.64</version>
         </dependency>
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-jdk15on</artifactId>
-            <version>1.64</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.12.0</version>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>31.1-jre</version>
         </dependency>
         <dependency>
             <groupId>org.reflections</groupId>
             <artifactId>reflections</artifactId>
-            <version>0.10.2</version>
         </dependency>
         <dependency>
             <groupId>org.cryptomator</groupId>
@@ -190,25 +219,21 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>5.9.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>4.8.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-junit-jupiter</artifactId>
-            <version>4.8.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.openpojo</groupId>
             <artifactId>openpojo</artifactId>
-            <version>0.9.1</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -216,30 +241,11 @@
     <build>
         <pluginManagement>
             <plugins>
-                <!--################## clean lifecycle plugins ##################-->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-clean-plugin</artifactId>
-                    <version>3.2.0</version>
-                </plugin>
                 <!--################# default lifecycle plugins #################-->
-                <!-- Plugin to record unit test coverage -->
-                <plugin>
-                    <groupId>org.jacoco</groupId>
-                    <artifactId>jacoco-maven-plugin</artifactId>
-                    <version>0.8.8</version>
-                </plugin>
-                <!-- Plugin to copy project resources to output directory -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-resources-plugin</artifactId>
-                    <version>3.3.0</version>
-                </plugin>
                 <!-- Plugin to compile source files -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.10.1</version>
                     <configuration>
                         <source>${maven.compiler.source}</source>
                         <target>${maven.compiler.target}</target>
@@ -249,7 +255,6 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>3.0.0-M7</version>
                     <configuration>
                         <trimStackTrace>false</trimStackTrace>
                         <includes>
@@ -280,17 +285,10 @@
                         </execution>
                     </executions>
                 </plugin>
-                <!-- Plugin to build jar file -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-jar-plugin</artifactId>
-                    <version>3.3.0</version>
-                </plugin>
                 <!-- Plugin to compile javadoc -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>3.4.1</version>
                     <configuration>
                         <source>${maven.compiler.source}</source>
                         <javadocExecutable>
@@ -310,7 +308,6 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
-                    <version>3.2.1</version>
                     <executions>
                         <execution>
                             <id>attach-sources</id>
@@ -324,7 +321,6 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
-                    <version>3.3.0</version>
                     <executions>
                         <execution>
                             <id>copy</id>
@@ -363,7 +359,6 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-failsafe-plugin</artifactId>
-                    <version>3.0.0-M7</version>
                     <configuration>
                         <!-- By default, the Failsafe plugin excludes various files. We have to override that. -->
                         <includes>
@@ -396,7 +391,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-clean-plugin</artifactId>
-                <version>3.2.0</version>
                 <executions>
                     <execution>
                         <id>default-clean</id>
@@ -431,35 +425,10 @@
                 </executions>
             </plugin>
             <!--################# default lifecycle plugins #################-->
-            <!-- Enforce maven and java version -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-enforcer-plugin</artifactId>
-                <version>3.1.0</version>
-                <executions>
-                    <execution>
-                        <id>enforce-versions</id>
-                        <goals>
-                            <goal>enforce</goal>
-                        </goals>
-                        <configuration>
-                            <rules>
-                                <requireMavenVersion>
-                                    <version>3.6</version>
-                                </requireMavenVersion>
-                                <requireJavaVersion>
-                                    <version>${maven.compiler.source}</version>
-                                </requireJavaVersion>
-                            </rules>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
             <!-- Formatting -->
             <plugin>
                 <groupId>net.revelc.code.formatter</groupId>
                 <artifactId>formatter-maven-plugin</artifactId>
-                <version>2.20.0</version>
                 <configuration>
                     <configFile>${main.basedir}/maven-eclipse-codestyle.xml</configFile>
                 </configuration>
@@ -475,7 +444,6 @@
             <plugin>
                 <groupId>com.mycila</groupId>
                 <artifactId>license-maven-plugin</artifactId>
-                <version>4.1</version>
                 <configuration>
                     <header>${main.basedir}/license_header_plain.txt</header>
                     <strictCheck>true</strictCheck>
@@ -505,67 +473,35 @@
                     </execution>
                 </executions>
             </plugin>
-            <!-- Sign artifacts -->
+            <!-- Flatten pom.xml before install / deploy phases -->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-gpg-plugin</artifactId>
-                <version>3.0.1</version>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <configuration>
+                    <flattenMode>ossrh</flattenMode>
+                </configuration>
                 <executions>
                     <execution>
-                        <id>sign-artifacts</id>
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
                         <goals>
-                            <goal>sign</goal>
+                            <goal>flatten</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>flatten-clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
                         </goals>
                     </execution>
                 </executions>
-                <configuration>
-                    <skip>${skip.signature}</skip>
-                </configuration>
-            </plugin>
-            <!-- Install module to local Maven repository -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-install-plugin</artifactId>
-                <version>3.0.1</version>
-            </plugin>
-            <!-- Artifact deployment to OSSRH -->
-            <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>1.6.13</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <serverId>ossrh</serverId>
-                    <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
-                    <!-- deploy with the following command: mvn nexus-staging:release -->
-                    <autoReleaseAfterClose>false</autoReleaseAfterClose>
-                </configuration>
-            </plugin>
-            <!--################## site lifecycle plugins ###################-->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-site-plugin</artifactId>
-                <version>4.0.0-M3</version>
             </plugin>
             <!--############ plugins without lifecycle bindings #############-->
-            <!-- Dependency version management -->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>versions-maven-plugin</artifactId>
-                <version>2.12.0</version>
-            </plugin>
             <!-- Codestyle -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>3.2.0</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>com.puppycrawl.tools</groupId>
-                        <artifactId>checkstyle</artifactId>
-                        <version>10.3.3</version>
-                    </dependency>
-                </dependencies>
                 <configuration>
                     <configLocation>${main.basedir}/checkstyle.xml</configLocation>
                     <violationSeverity>info</violationSeverity>
@@ -580,17 +516,14 @@
             <plugin>
                 <groupId>com.github.spotbugs</groupId>
                 <artifactId>spotbugs-maven-plugin</artifactId>
-                <version>4.7.2.0</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-pmd-plugin</artifactId>
-                <version>3.19.0</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jxr-plugin</artifactId>
-                <version>3.3.0</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -611,8 +544,5 @@
         <maven.build.timestamp.format>yyyy</maven.build.timestamp.format>
         <main.basedir>${project.basedir}</main.basedir>
         <license.basedir>${main.basedir}</license.basedir>
-        <!-- We redefine the signature generation process, which is enabled by default,
-        but cannot be performed by typical users. Enable it using -Dskip.signature=false -->
-        <skip.signature>true</skip.signature>
     </properties>
 </project>
