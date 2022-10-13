@@ -24,40 +24,38 @@ public class ServerTcpTransportHandler extends TcpTransportHandler {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private ServerSocket serverSocket;
-    private int port;
-    /**
-     * If true, don't create a new ServerSocket and just use the given socket. Useful for spawning server
-     * TransportHandler from an externally managed ServerSocket.
-     */
-    private boolean externalServerSocket = false;
+    private SocketManagement socketManagement = SocketManagement.DEFAULT;
 
     public ServerTcpTransportHandler(Connection con) {
         super(con);
-        this.port = con.getPort();
+        this.srcPort = con.getPort();
     }
 
     public ServerTcpTransportHandler(long firstTimeout, long timeout, int port) {
         super(firstTimeout, timeout, ConnectionEndType.SERVER);
-        this.port = port;
+        this.srcPort = port;
     }
 
     public ServerTcpTransportHandler(long firstTimeout, long timeout, ServerSocket serverSocket) throws IOException {
         super(firstTimeout, timeout, ConnectionEndType.SERVER);
-        this.port = serverSocket.getLocalPort();
+        this.srcPort = serverSocket.getLocalPort();
         this.serverSocket = serverSocket;
+        socketManagement = SocketManagement.EXTERNAL_SERVER_SOCKET;
     }
 
     public ServerTcpTransportHandler(Connection con, Socket socket) throws IOException {
         super(con);
-        this.port = socket.getLocalPort();
+        this.srcPort = socket.getLocalPort();
         this.socket = socket;
         socket.setSoTimeout((int) timeout);
-        externalServerSocket = true;
+        socketManagement = SocketManagement.EXTERNAL_SOCKET;
     }
 
     public void closeServerSocket() throws IOException {
         if (serverSocket != null) {
             serverSocket.close();
+        } else {
+            throw new IOException("TransportHandler not initialized");
         }
     }
 
@@ -66,16 +64,14 @@ public class ServerTcpTransportHandler extends TcpTransportHandler {
         if (socket != null) {
             socket.close();
         }
-        if (serverSocket != null) {
-            serverSocket.close();
-        } else if (!externalServerSocket) {
-            throw new IOException("TransportHandler not initialized");
+        if (socketManagement == SocketManagement.DEFAULT) {
+            closeServerSocket();
         }
     }
 
     @Override
     public void initialize() throws IOException {
-        if (!externalServerSocket) {
+        if (socketManagement != SocketManagement.EXTERNAL_SOCKET) {
             if (serverSocket == null || serverSocket.isClosed()) {
                 throw new IOException("TransportHandler not preinitialized");
             }
@@ -90,11 +86,11 @@ public class ServerTcpTransportHandler extends TcpTransportHandler {
 
     @Override
     public void preInitialize() throws IOException {
-        if (!externalServerSocket) {
+        if (socketManagement != SocketManagement.EXTERNAL_SOCKET) {
             if (serverSocket == null || serverSocket.isClosed()) {
-                serverSocket = new ServerSocket(port);
-                srcPort = serverSocket.getLocalPort();
+                serverSocket = new ServerSocket(srcPort);
             }
+            srcPort = serverSocket.getLocalPort();
         }
     }
 
@@ -102,13 +98,13 @@ public class ServerTcpTransportHandler extends TcpTransportHandler {
     public boolean isClosed() throws IOException {
         if (isInitialized()) {
             if (socket != null && (socket.isClosed() || socket.isInputShutdown())) {
-                if (externalServerSocket) {
+                if (socketManagement != SocketManagement.DEFAULT) {
                     return true;
                 } else if (serverSocket.isClosed()) {
                     return true;
                 }
             } else if (socket == null) {
-                if (externalServerSocket) {
+                if (socketManagement != SocketManagement.DEFAULT) {
                     return true;
                 } else if (serverSocket.isClosed()) {
                     return true;
@@ -136,7 +132,7 @@ public class ServerTcpTransportHandler extends TcpTransportHandler {
         if (isInitialized()) {
             return socket.getLocalPort();
         } else {
-            return port;
+            return srcPort;
         }
     }
 
@@ -145,7 +141,7 @@ public class ServerTcpTransportHandler extends TcpTransportHandler {
         if (isInitialized()) {
             throw new RuntimeException("Cannot change server port of uninitialized TransportHandler");
         } else {
-            this.port = port;
+            this.srcPort = port;
         }
     }
 
@@ -161,5 +157,16 @@ public class ServerTcpTransportHandler extends TcpTransportHandler {
     @Override
     public void setDstPort(int port) {
         throw new RuntimeException("A ServerTransportHandler cannot set the client port");
+    }
+
+    /**
+     * Defines to which extent the TransportHandler manages the socket(s) DEFAULT - manage connection sockets and the
+     * ServerSocket EXTERNAL_SERVER_SOCKET - create connection sockets individually but do not manage ServerSocket
+     * EXTERNAL_SOCKET - only manage a specific given connection socket
+     */
+    private enum SocketManagement {
+        DEFAULT,
+        EXTERNAL_SERVER_SOCKET,
+        EXTERNAL_SOCKET;
     }
 }

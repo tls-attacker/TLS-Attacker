@@ -14,6 +14,7 @@ target/
 # Netbeans
 nbproject/
 nbactions.xml.project
+nbactions.xml
 
 # IntelliJ
 .idea/

@@ -654,12 +654,12 @@ public enum CipherSuite {
         }
 
         if (this.name().endsWith("256") || this.name().endsWith("384") || this.isCCM() || this.isCCM_8()) {
-            return (version == ProtocolVersion.TLS12);
+            return ((version == ProtocolVersion.TLS12) || (version == ProtocolVersion.DTLS12));
         }
-        if ((this.name().contains("IDEA") || this.name().contains("_DES") || this.isExportSymmetricCipher())
-            && version == ProtocolVersion.TLS12) {
-            return false;
+        if (this.name().contains("IDEA") || this.name().contains("_DES") || this.isExportSymmetricCipher()) {
+            return !((version == ProtocolVersion.TLS12) || (version == ProtocolVersion.DTLS12));
         }
+
         return true;
     }
 
