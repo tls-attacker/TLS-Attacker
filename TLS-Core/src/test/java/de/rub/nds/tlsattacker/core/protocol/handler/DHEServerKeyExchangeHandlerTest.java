@@ -11,13 +11,13 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.crypto.ffdh.FFDHEGroup;
 import de.rub.nds.tlsattacker.core.crypto.ffdh.GroupFactory;
 import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.math.BigInteger;
 import org.junit.After;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -49,7 +49,7 @@ public class DHEServerKeyExchangeHandlerTest {
         context.setSelectedCipherSuite(CipherSuite.TLS_DHE_RSA_WITH_AES_128_CBC_SHA);
         message.prepareComputations();
         message.getComputations().setPrivateKey(BigInteger.ZERO);
-        handler.adjustTLSContext(message);
+        handler.adjustContext(message);
         assertEquals(BigInteger.TEN, context.getServerDhModulus());
         assertEquals(BigInteger.ONE, context.getServerDhGenerator());
         assertArrayEquals(new byte[] { 1, 2, 3 }, context.getServerDhPublicKey().toByteArray());
@@ -61,7 +61,7 @@ public class DHEServerKeyExchangeHandlerTest {
         message.setModulus(BigInteger.TEN.toByteArray());
         message.setGenerator(BigInteger.ONE.toByteArray());
         message.setPublicKey(new byte[] { 1, 2, 3 });
-        handler.adjustTLSContext(message);
+        handler.adjustContext(message);
         assertEquals(BigInteger.TEN, context.getServerDhModulus());
         assertEquals(BigInteger.ONE, context.getServerDhGenerator());
         assertArrayEquals(new byte[] { 1, 2, 3 }, context.getServerDhPublicKey().toByteArray());
@@ -76,7 +76,7 @@ public class DHEServerKeyExchangeHandlerTest {
                 message.setModulus(group.getP().toByteArray());
                 message.setGenerator(group.getG().toByteArray());
                 message.setPublicKey(new byte[] { 1, 2, 3 });
-                handler.adjustTLSContext(message);
+                handler.adjustContext(message);
                 assertEquals(group.getG(), context.getServerDhGenerator());
                 assertEquals(group.getP(), context.getServerDhModulus());
                 assertArrayEquals(new byte[] { 1, 2, 3 }, context.getServerDhPublicKey().toByteArray());

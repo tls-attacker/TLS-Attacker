@@ -99,19 +99,22 @@ public class State {
     }
 
     public void reset() {
-        List<TlsContext> previousContexts = contextContainer.getAllContexts();
+        List<Context> previousContexts = contextContainer.getAllContexts();
         contextContainer.clear();
         workflowTrace.reset();
         initState();
         retainServerTcpTransportHandlers(previousContexts);
     }
 
-    private void retainServerTcpTransportHandlers(List<TlsContext> previousContexts) {
+    private void retainServerTcpTransportHandlers(List<Context> previousContexts) {
         previousContexts.forEach(oldContext -> {
             if (oldContext.getTransportHandler() != null
                 && oldContext.getTransportHandler() instanceof ServerTcpTransportHandler) {
-                contextContainer.getTlsContext(oldContext.getConnection().getAlias())
-                    .setTransportHandler(oldContext.getTransportHandler());
+                for (Context context : contextContainer.getAllContexts()) {
+                    if (context.getConnection().getAlias().equals(oldContext.getConnection().getAlias())) {
+                        context.setTransportHandler(oldContext.getTransportHandler());
+                    }
+                }
             }
         });
     }
