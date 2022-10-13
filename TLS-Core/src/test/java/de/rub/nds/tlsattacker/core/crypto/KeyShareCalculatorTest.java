@@ -12,9 +12,11 @@ package de.rub.nds.tlsattacker.core.crypto;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -57,6 +59,11 @@ public class KeyShareCalculatorTest {
         for (BigInteger bigInt : somePrivateKeyList) {
             for (NamedGroup group : NamedGroup.getImplemented()) {
                 KeyShareCalculator.createPublicKey(group, bigInt, ECPointFormat.UNCOMPRESSED);
+            }
+
+            for (NamedGroup greaseGroup : Arrays.asList(NamedGroup.values()).stream().filter(NamedGroup::isGrease)
+                .collect(Collectors.toList())) {
+                KeyShareCalculator.createPublicKey(greaseGroup, bigInt, ECPointFormat.UNCOMPRESSED);
             }
         }
     }

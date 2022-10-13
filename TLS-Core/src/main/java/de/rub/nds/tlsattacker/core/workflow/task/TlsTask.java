@@ -11,6 +11,8 @@ package de.rub.nds.tlsattacker.core.workflow.task;
 
 import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
 import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import java.util.concurrent.Callable;
 import java.util.function.Function;
 import org.apache.logging.log4j.LogManager;
@@ -146,5 +148,23 @@ public abstract class TlsTask implements ITask, Callable<ITask> {
 
     public void setAfterExecutionCallback(Function<State, Integer> afterExecutionCallback) {
         this.afterExecutionCallback = afterExecutionCallback;
+    }
+
+    public WorkflowExecutor getExecutor(State state) {
+        WorkflowExecutor executor =
+            WorkflowExecutorFactory.createWorkflowExecutor(state.getConfig().getWorkflowExecutorType(), state);
+        if (beforeTransportPreInitCallback != null && executor.getBeforeTransportPreInitCallback() == null) {
+            executor.setBeforeTransportPreInitCallback(beforeTransportPreInitCallback);
+        }
+        if (beforeTransportInitCallback != null && executor.getBeforeTransportInitCallback() == null) {
+            executor.setBeforeTransportInitCallback(beforeTransportInitCallback);
+        }
+        if (afterTransportInitCallback != null && executor.getAfterTransportInitCallback() == null) {
+            executor.setAfterTransportInitCallback(afterTransportInitCallback);
+        }
+        if (afterExecutionCallback != null && executor.getAfterExecutionCallback() == null) {
+            executor.setAfterExecutionCallback(afterExecutionCallback);
+        }
+        return executor;
     }
 }

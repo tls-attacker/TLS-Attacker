@@ -3836,9 +3836,6 @@
           <xs:element name="modulus" type="xs:integer" minOccurs="0"/>
           <xs:element name="publicExponent" type="xs:integer" minOccurs="0"/>
           <xs:element name="privateExponent" type="xs:integer" minOccurs="0"/>
-          <xs:element name="oldModulus" type="xs:integer" minOccurs="0"/>
-          <xs:element name="oldPublicExponent" type="xs:integer" minOccurs="0"/>
-          <xs:element name="oldPrivateExponent" type="xs:integer" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>

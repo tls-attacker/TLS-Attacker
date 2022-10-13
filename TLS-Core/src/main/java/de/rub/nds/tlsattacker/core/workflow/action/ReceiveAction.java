@@ -255,6 +255,34 @@ public class ReceiveAction extends CommonReceiveAction implements ReceivingActio
         }
     }
 
+    private static boolean receivedMessageCanBeIgnored(ProtocolMessage msg, Set<ActionOption> actionOptions) {
+        if (actionOptions.contains(ActionOption.IGNORE_UNEXPECTED_WARNINGS) && msg instanceof AlertMessage) {
+            AlertMessage alert = (AlertMessage) msg;
+            if (alert.getLevel().getOriginalValue() == AlertLevel.WARNING.getValue()) {
+                return true;
+            }
+        } else if (actionOptions.contains(ActionOption.IGNORE_UNEXPECTED_NEW_SESSION_TICKETS)
+            && msg instanceof NewSessionTicketMessage) {
+            return true;
+        } else if (actionOptions.contains(ActionOption.IGNORE_UNEXPECTED_KEY_UPDATE_MESSAGES)
+            && msg instanceof KeyUpdateMessage) {
+            return true;
+        } else if (actionOptions.contains(ActionOption.IGNORE_UNEXPECTED_APP_DATA)
+            && msg instanceof ApplicationMessage) {
+            return true;
+        } else if (actionOptions.contains(ActionOption.IGNORE_UNEXPECTED_HTTPS_MESSAGES)
+            && (msg instanceof HttpsResponseMessage || msg instanceof HttpsRequestMessage)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public MessageActionDirection getMessageDirection() {
+        return MessageActionDirection.RECEIVING;
+    }
+
     @Override
     public List<ProtocolMessageType> getGoingToReceiveProtocolMessageTypes() {
         List<ProtocolMessageType> protocolMessageTypes = new ArrayList<>();
