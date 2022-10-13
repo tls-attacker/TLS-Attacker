@@ -14,6 +14,10 @@ import java.util.List;
 
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 
+/**
+ * ReceiveConfiguration that receives a specific list of DataContainers. Any additional received containers are marked
+ * as such.
+ */
 public class SpecificReceiveLayerConfiguration<Container extends DataContainer>
     extends ReceiveLayerConfiguration<Container> {
 

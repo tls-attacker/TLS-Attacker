@@ -94,6 +94,9 @@ public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container 
         return new LayerProcessingResult(producedDataContainers, getLayerType(), isExecutedAsPlanned);
     }
 
+    /**
+     * Sets input stream to null if empty. Throws an exception otherwise.
+     */
     public void removeDrainedInputStream() {
         try {
             if (currentInputStream != null && currentInputStream.available() > 0) {

@@ -23,6 +23,10 @@ import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * The UDP layer is a wrapper around an underlying UDP socket. It forwards the sockets InputStream for reading and sends
+ * any data over the UDP layer without modifications.
+ */
 public class UdpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> {// TODO change types
 
     private static Logger LOGGER = LogManager.getLogger();
@@ -45,6 +49,9 @@ public class UdpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> 
         return getLayerResult();
     }
 
+    /**
+     * Sends data over the UDP socket.
+     */
     @Override
     public LayerProcessingResult sendData(LayerProcessingHint hint, byte[] data) throws IOException {
         UdpTransportHandler handler = getTransportHandler();
@@ -63,6 +70,9 @@ public class UdpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> 
         return new HintedInputStreamAdapterStream(null, getTransportHandler().getInputStream());
     }
 
+    /**
+     * Returns the InputStream associated with the UDP socket.
+     */
     @Override
     public LayerProcessingResult receiveData() throws IOException {
         return new LayerProcessingResult(null, getLayerType(), true);

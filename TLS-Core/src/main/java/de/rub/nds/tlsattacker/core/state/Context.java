@@ -30,6 +30,10 @@ import de.rub.nds.tlsattacker.transport.TransportHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * Contains runtime information about a connection. With the introduction of the layer system all layer-specific
+ * variables have been moved to the respective layer-context (e.g. {@link HttpContext}.
+ */
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Context {
 

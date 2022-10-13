@@ -14,15 +14,21 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlSeeAlso;
-import javax.xml.bind.annotation.XmlTransient;
 
-import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.http.HttpMessage;
 import de.rub.nds.tlsattacker.core.layer.context.LayerContext;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 
+/**
+ * Abstract class for different messages the TLS-Attacker can send. This includes but is not limited to TLS-Messages.
+ * 
+ * @param <Self>
+ *                  The message class itself
+ * @param <Context>
+ *                  The type of context this message needs to use, relates to the messages' layer.
+ */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlSeeAlso({ Message.class, ProtocolMessage.class, HttpMessage.class })
 public abstract class Message<Self extends Message, Context extends LayerContext> extends ModifiableVariableHolder

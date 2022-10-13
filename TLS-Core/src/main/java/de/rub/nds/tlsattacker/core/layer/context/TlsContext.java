@@ -49,6 +49,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.tls.Certificate;
 
+/**
+ * Holds all runtime variables of the TLSLayer.
+ */
 @XmlAccessorType(XmlAccessType.FIELD)
 public class TlsContext extends LayerContext {
 

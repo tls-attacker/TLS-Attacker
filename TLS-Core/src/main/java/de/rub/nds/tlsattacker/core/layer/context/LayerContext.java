@@ -17,6 +17,9 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 
+/**
+ * A LayerContext holds all runtime variables of a layer during a connection.
+ */
 public abstract class LayerContext {
 
     private Context context;

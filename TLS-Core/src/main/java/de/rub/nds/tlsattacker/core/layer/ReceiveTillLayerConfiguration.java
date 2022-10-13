@@ -22,10 +22,19 @@ public class ReceiveTillLayerConfiguration<Container extends DataContainer>
         super(Arrays.asList(expectedContainer));
     }
 
+    /**
+     * Checks whether no other containers than the ones specified were received.
+     * 
+     * @param  list
+     *              The list of DataContainers
+     * @return
+     */
     @Override
     public boolean executedAsPlanned(List<Container> list) {
+        // holds containers we expect
         List<Class<? extends DataContainer>> missingExpectedContainers =
             getContainerList().stream().map(DataContainer::getClass).collect(Collectors.toList());
+        // for each container we received remove it from the expected ones to be left with any additional containers
         if (list != null) {
             list.forEach(receivedContainer -> missingExpectedContainers.remove(receivedContainer.getClass()));
         }

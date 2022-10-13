@@ -16,6 +16,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * The HintedLayerInputStream is assigned to a layer. When reading data from it, the stream tries to receive more data
+ * using the layer it is assigned to.
+ */
 public class HintedLayerInputStream extends HintedInputStream {
 
     private final ProtocolLayer layer;
@@ -27,6 +31,9 @@ public class HintedLayerInputStream extends HintedInputStream {
         this.layer = layer;
     }
 
+    /**
+     * Return data from the underlaying stream. If none is present, write more data into the stream using the layer.
+     */
     @Override
     public int read() throws IOException {
         if (stream.available() > 0) {
@@ -49,6 +56,9 @@ public class HintedLayerInputStream extends HintedInputStream {
         return stream;
     }
 
+    /**
+     * Extends the current data in the stream with the given data.
+     */
     @Override
     public void extendStream(byte[] bytes) {
         try {

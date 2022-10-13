@@ -17,7 +17,6 @@ import de.rub.nds.tlsattacker.core.layer.context.LayerContext;
  * All protocol messages are abstracted with the DataContainer interface. For TLS-Attacker to work with data it only
  * needs to know how to parse, prepare, serialize and handle the message. All messages must therefore provide this
  * functionality.
- *
  */
 public interface DataContainer<Container extends DataContainer, Context extends LayerContext> {
 

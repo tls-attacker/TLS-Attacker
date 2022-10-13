@@ -38,6 +38,9 @@ import de.rub.nds.tlsattacker.core.protocol.message.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * The MessageLayer handles TLS Handshake messages. The encapsulation into records happens in the {@link RecordLayer}.
+ */
 public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -49,6 +52,13 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
         this.context = context;
     }
 
+    /**
+     * Sends the given handshake messages using the lower layer.
+     * 
+     * @return             LayerProcessingResult A result object containing information about the sent data.
+     * @throws IOException
+     *                     When the data cannot be sent.
+     */
     @Override
     public LayerProcessingResult sendConfiguration() throws IOException {
         LayerConfiguration<ProtocolMessage> configuration = getLayerConfiguration();
@@ -82,6 +92,13 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
         // Tools | Templates.
     }
 
+    /**
+     * Receives handshake message from the lower layer.
+     * 
+     * @return             LayerProcessingResult A result object containing information about the received data.
+     * @throws IOException
+     *                     When no data can be received
+     */
     @Override
     public LayerProcessingResult receiveData() throws IOException {
         try {
@@ -96,6 +113,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
                 } else if (tempHint instanceof RecordLayerHint) {
                     RecordLayerHint hint = (RecordLayerHint) dataStream.getHint();
                     switch (hint.getType()) {
+                        // use correct parser for the message
                         case ALERT:
                             readAlertProtocolData();
                             break;
@@ -119,6 +137,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
                             break;
                     }
                 }
+                // receive until the layer configuration is satisfied or no data is left
             } while (shouldContinueProcessing());
         } catch (TimeoutException ex) {
             LOGGER.debug(ex);
@@ -145,6 +164,12 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
         readDataContainer(message, context);
     }
 
+    /**
+     * Parses the handshake layer header from the given message and parses the encapsulated message using the correct
+     * parser.
+     * 
+     * @throws IOException
+     */
     private void readHandshakeProtocolData() throws IOException {
         HintedInputStream handshakeStream = getLowerLayer().getDataStream();
         byte type = handshakeStream.readByte();

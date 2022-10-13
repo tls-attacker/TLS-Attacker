@@ -10,7 +10,8 @@
 package de.rub.nds.tlsattacker.core.layer.constant;
 
 /**
- * Pre-defined
+ * Pre-defined configurations for the Layer Stack. E.g., DTLS would add the UDP-, Record-, Fragmentation-, and Message-
+ * Layer to the LayerStack. Custom LayerStack have to be created manually.
  */
 public enum LayerConfiguration {
     TLS,

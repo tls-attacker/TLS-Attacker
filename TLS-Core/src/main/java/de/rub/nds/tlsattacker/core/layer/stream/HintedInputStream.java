@@ -16,6 +16,9 @@ import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * InputStream that contains a LayerProcessingHint. Also provides methods useful when parsing data from byteArrays.
+ */
 public abstract class HintedInputStream extends InputStream {
 
     private LayerProcessingHint hint;

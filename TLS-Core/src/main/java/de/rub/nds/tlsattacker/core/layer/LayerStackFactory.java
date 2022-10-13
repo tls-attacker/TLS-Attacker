@@ -23,7 +23,8 @@ import de.rub.nds.tlsattacker.core.state.Context;
 
 /**
  * Creates a layerStack based on pre-defined configurations. E.g., to send TLS messages with TLS-Attacker, we have to
- * produce a layerStack that contains the MessageLayer, RecordLayer, and TcpLayer. All share the same context.
+ * produce a layerStack that contains the MessageLayer, RecordLayer, and TcpLayer. Each layer is assigned a different
+ * context.
  */
 public class LayerStackFactory {
 
@@ -35,18 +36,15 @@ public class LayerStackFactory {
         HttpContext httpContext = context.getHttpContext();
 
         switch (type) {
+            case OPEN_VPN:
+            case QUIC:
+            case SSL2:
+            case STARTTLS:
+                throw new UnsupportedOperationException("Not implemented yet");
             case DTLS:
                 return new LayerStack(context, new MessageLayer(tlsContext), new DtlsFragmentLayer(tlsContext),
                     new RecordLayer(tlsContext), new UdpLayer(tlsContext));
-            case OPEN_VPN:
-            case QUIC:
-                throw new UnsupportedOperationException("Not implemented yet");
-            case STARTTLS:
-                throw new UnsupportedOperationException("Not implemented yet");
             case TLS:
-                /*
-                 * initialize layer contexts
-                 */
                 layerStack = new LayerStack(context, new MessageLayer(tlsContext), new RecordLayer(tlsContext),
                     new TcpLayer(tcpContext));
                 context.setLayerStack(layerStack);
@@ -55,8 +53,6 @@ public class LayerStackFactory {
                 layerStack = new LayerStack(context, new HttpLayer(httpContext), new MessageLayer(tlsContext),
                     new RecordLayer(tlsContext), new TcpLayer(tcpContext));
                 return layerStack;
-            case SSL2:
-                throw new UnsupportedOperationException("Not implemented yet");
             default:
                 throw new RuntimeException("Unknown LayerStackType: " + type.name());
         }

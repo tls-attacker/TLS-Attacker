@@ -13,6 +13,11 @@ import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * HintedInputStream, that wraps around another Stream (used in the
+ * {@link de.rub.nds.tlsattacker.core.layer.impl.TcpLayer} and the
+ * {@link de.rub.nds.tlsattacker.core.layer.impl.UdpLayer}
+ */
 public class HintedInputStreamAdapterStream extends HintedInputStream {
 
     private InputStream stream;

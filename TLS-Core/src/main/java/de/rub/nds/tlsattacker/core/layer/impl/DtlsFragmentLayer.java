@@ -42,6 +42,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.util.Arrays;
 
+/**
+ * The DtlsFragmentLayer handles DTLS fragmentation between the message and record layer.
+ */
 public class DtlsFragmentLayer extends ProtocolLayer<RecordLayerHint, DtlsHandshakeMessageFragment> {
 
     private static Logger LOGGER = LogManager.getLogger();
@@ -59,6 +62,13 @@ public class DtlsFragmentLayer extends ProtocolLayer<RecordLayerHint, DtlsHandsh
         this.fragmentManager = new FragmentManager(context.getConfig());
     }
 
+    /**
+     * Sends all fragments of this layer using the lower layer.
+     * 
+     * @return             LayerProcessingResult A result object storing information about sending the data
+     * @throws IOException
+     *                     When the data cannot be sent
+     */
     @Override
     public LayerProcessingResult sendConfiguration() throws IOException {
         LayerConfiguration<DtlsHandshakeMessageFragment> configuration = getLayerConfiguration();
@@ -80,10 +90,22 @@ public class DtlsFragmentLayer extends ProtocolLayer<RecordLayerHint, DtlsHandsh
         return getLayerResult();
     }
 
+    /**
+     * Sends a byte array using the lower layer. Produces fragments from the byte array and sends each.
+     * 
+     * @param  hint
+     *                     RecordLayerHint for the RecordLayer
+     * @param  data
+     *                     The data to send in bytes
+     * @return             LayerProcessingResult A result object storing information about sending the data
+     * @throws IOException
+     *                     When the data cannot be sent
+     */
     @Override
     public LayerProcessingResult<DtlsHandshakeMessageFragment> sendData(RecordLayerHint hint, byte[] data)
         throws IOException {
         if (hint.getType() == ProtocolMessageType.HANDSHAKE) {
+            // produce enough fragments from the given data
             List<DtlsHandshakeMessageFragment> fragments = new LinkedList<>();
             if (getLayerConfiguration().getContainerList() == null) {
                 fragments = getEnoughFragments(context, data.length);
@@ -102,6 +124,7 @@ public class DtlsFragmentLayer extends ProtocolLayer<RecordLayerHint, DtlsHandsh
                     HandshakeByteLength.MESSAGE_TYPE + HandshakeByteLength.MESSAGE_LENGTH_FIELD, data.length),
                 fragments);
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            // send the fragments
             for (DtlsHandshakeMessageFragment fragment : fragments) {
                 fragment.getPreparator(context).prepare();
                 try {
@@ -127,6 +150,14 @@ public class DtlsFragmentLayer extends ProtocolLayer<RecordLayerHint, DtlsHandsh
         // Tools | Templates.
     }
 
+    /**
+     * Tries to receive more data from the lower layer for the upper layer to process.
+     * 
+     * @param  desiredHint
+     *                     This hint from the calling layer specifies which data its wants to read.
+     * @throws IOException
+     *                     When the layer cannot read more data.
+     */
     @Override
     public void receiveMoreDataForHint(LayerProcessingHint desiredHint) throws IOException {
         try {
@@ -149,6 +180,7 @@ public class DtlsFragmentLayer extends ProtocolLayer<RecordLayerHint, DtlsHandsh
                     fragmentManager.addMessageFragment(fragment);
                     List<DtlsHandshakeMessageFragment> uninterpretedMessageFragments =
                         fragmentManager.getOrderedCombinedUninterpretedMessageFragments(true, false);
+                    // run until we received a complete fragment
                     if (!uninterpretedMessageFragments.isEmpty()) {
                         DtlsHandshakeMessageFragment uninterpretedMessageFragment =
                             uninterpretedMessageFragments.get(0);
@@ -186,6 +218,15 @@ public class DtlsFragmentLayer extends ProtocolLayer<RecordLayerHint, DtlsHandsh
         }
     }
 
+    /**
+     * Returns enough fragments to contain the given amount of data.
+     * 
+     * @param  context
+     *                 TlsContext containing information such as maximum Fragment Length
+     * @param  length
+     *                 The length of the data that should fit into the generated fragments
+     * @return         A list of Fragments
+     */
     private List<DtlsHandshakeMessageFragment> getEnoughFragments(TlsContext context, int length) {
         List<DtlsHandshakeMessageFragment> toFillList = new LinkedList<>();
         int fragmentLength = 0;
@@ -197,6 +238,18 @@ public class DtlsFragmentLayer extends ProtocolLayer<RecordLayerHint, DtlsHandsh
         return toFillList;
     }
 
+    /**
+     * Puts the given bytes of a message into the given fragments. Assumes the fragments have enough space for the given
+     * data.
+     * 
+     * @param  type
+     *                        Handshake message type of the message to be put into fragments.
+     * @param  handshakeBytes
+     *                        The bytes of the message to be put into fragments
+     * @param  fragments
+     *                        The fragments that should contain the handshakBytes
+     * @return                A list of the fragments that contain the given bytes
+     */
     private List<DtlsHandshakeMessageFragment> wrapInFragments(HandshakeMessageType type, byte[] handshakeBytes,
         List<DtlsHandshakeMessageFragment> fragments) {
         int currentOffset = 0;
@@ -222,6 +275,18 @@ public class DtlsFragmentLayer extends ProtocolLayer<RecordLayerHint, DtlsHandsh
         return fragments;
     }
 
+    /**
+     * Puts the given bytes of a message into the given fragment. Assumes the fragment has enough space for the given
+     * data.
+     * 
+     * @param  context
+     *                       The context of the TLS connection
+     * @param  message
+     *                       The message to put into a fragment.
+     * @param  goingToBeSent
+     *                       Whether the message will be sent or was received. Used for determining sequence number.
+     * @return               DtlsHandshakeMessageFragment The fragment containing the message
+     */
     public DtlsHandshakeMessageFragment wrapInSingleFragment(TlsContext context, HandshakeMessage message,
         boolean goingToBeSent) {
         DtlsHandshakeMessageFragment fragment = new DtlsHandshakeMessageFragment();

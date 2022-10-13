@@ -24,6 +24,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
+/**
+ * The HTTPLayer handles HTTP data. Currently WIP
+ */
 public class HttpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> {
 
     private final HttpContext context;

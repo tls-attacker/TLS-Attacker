@@ -12,8 +12,14 @@ package de.rub.nds.tlsattacker.core.layer.context;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
+/**
+ * Holds all runtime variables of the HTTPLayer.
+ */
 public class HttpContext extends LayerContext {
 
+    /**
+     * Request path we queried before.
+     */
     private String lastRequestPath;
 
     /**

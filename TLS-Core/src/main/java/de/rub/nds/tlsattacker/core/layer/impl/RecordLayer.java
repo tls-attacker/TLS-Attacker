@@ -47,6 +47,10 @@ import de.rub.nds.tlsattacker.core.record.serializer.RecordSerializer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * The record layer encrypts and encapsulates payload or handshake messages into TLS records. It sends the records using
+ * the lower layer.
+ */
 public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -71,6 +75,13 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
         decompressor = new RecordDecompressor(context);
     }
 
+    /**
+     * Sends the records given in the LayerConfiguration using the lower layer.
+     * 
+     * @return             LayerProcessingResult A result object containing information about the sent records
+     * @throws IOException
+     *                     When the data cannot be sent
+     */
     @Override
     public LayerProcessingResult sendConfiguration() throws IOException {
         LayerConfiguration<Record> configuration = getLayerConfiguration();
@@ -105,6 +116,17 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
         return getLayerResult();
     }
 
+    /**
+     * Sends data from an upper layer using the lower layer. Puts the given bytes into records and sends those.
+     * 
+     * @param  hint
+     *                     Contains information about the message to be sent, including the message type.
+     * @param  data
+     *                     The data to send
+     * @return             LayerProcessingResult A result object containing information about the sent records
+     * @throws IOException
+     *                     When the data cannot be sent
+     */
     @Override
     public LayerProcessingResult<Record> sendData(RecordLayerHint hint, byte[] data) throws IOException {
         ProtocolMessageType type = ProtocolMessageType.UNKNOWN;
@@ -114,6 +136,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
             LOGGER.warn("Sending record without a LayerProcessing hint. Using \"UNKNOWN\" as the type");
         }
 
+        // Generate records
         CleanRecordByteSeperator separator =
             new CleanRecordByteSeperator(context.getChooser().getOutboundMaxRecordDataSize(),
                 new ByteArrayInputStream(data), context.getConfig().isCreateRecordsDynamically());
@@ -147,6 +170,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
         }
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
 
+        // prepare, serialize, and send records
         for (Record record : records) {
             ProtocolMessageType contentType = record.getContentMessageType();
             if (contentType == null) {
@@ -171,10 +195,19 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
         return new LayerProcessingResult<>(records, getLayerType(), true);
     }
 
+    /**
+     * Receive more data for the upper layer using the lower layer.
+     * 
+     * @param  desiredHint
+     *                     This hint from the calling layer specifies which data its wants to read.
+     * @throws IOException
+     *                     When no data can be read
+     */
     @Override
     public void receiveMoreDataForHint(LayerProcessingHint desiredHint) throws IOException {
         InputStream dataStream = getLowerLayer().getDataStream();
         try {
+            // parse a record from the lower layer
             RecordParser parser = new RecordParser(dataStream, getDecryptorCipher().getState().getVersion());
             Record record = new Record();
             parser.parse(record);
@@ -186,12 +219,14 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
             decompressor.decompress(record);
             addProducedContainer(record);
             RecordLayerHint currentHint;
+            // extract the type of the message we just read
             if (context.getChooser().getSelectedProtocolVersion().isDTLS()) {
                 currentHint = new RecordLayerHint(record.getContentMessageType(), record.getEpoch().getValue(),
                     record.getSequenceNumber().getValue().intValue());
             } else {
                 currentHint = new RecordLayerHint(record.getContentMessageType());
             }
+            // only set the currentInputStream when we received the expected message
             if (desiredHint == null || currentHint.equals(desiredHint)) {
                 currentInputStream = new HintedLayerInputStream(currentHint, this);
                 currentInputStream.extendStream(record.getCleanProtocolMessageBytes().getValue());
@@ -242,6 +277,13 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
         readEpoch++;
     }
 
+    /**
+     * Re-encrypts already send record bytes in DTLS retransmission.
+     * 
+     * @param  records
+     *                 Records to send
+     * @return         byte array of the encrypted records.
+     */
     public byte[] reencrypt(List<Record> records) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         for (Record record : records) {

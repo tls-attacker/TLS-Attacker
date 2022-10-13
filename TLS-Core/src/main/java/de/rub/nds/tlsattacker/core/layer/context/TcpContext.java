@@ -13,6 +13,9 @@ import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.socket.SocketState;
 
+/**
+ * Holds all runtime variables of the TCPLayer.
+ */
 public class TcpContext extends LayerContext {
 
     private SocketState finalSocketState;

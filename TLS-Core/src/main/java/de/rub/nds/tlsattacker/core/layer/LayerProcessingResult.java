@@ -14,10 +14,26 @@ import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 
 import java.util.List;
 
+/**
+ * Contains information about a layers actions, both after sending and receiving data.
+ * 
+ * @param <T>
+ */
 public class LayerProcessingResult<T extends DataContainer> {
 
+    /**
+     * List of containers that were sent or received
+     */
     private List<T> usedContainers;
+
+    /**
+     * Type of layer that produced this result.
+     */
     private LayerType layerType;
+
+    /**
+     * Whether the layer could send or receive bytes as planned.
+     */
     private boolean executedAsPlanned;
 
     public LayerProcessingResult(List<T> usedContainers, LayerType layerType, boolean executedAsPlanned) {

@@ -23,6 +23,10 @@ import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * The TCP layer is a wrapper around an underlying TCP socket. It forwards the sockets InputStream for reading and sends
+ * any data over the TCP socket without modifications.
+ */
 public class TcpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> {
 
     private static Logger LOGGER = LogManager.getLogger();
@@ -45,6 +49,9 @@ public class TcpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> 
         return getLayerResult();
     }
 
+    /**
+     * Sends data over the TCP socket.
+     */
     @Override
     public LayerProcessingResult sendData(LayerProcessingHint hint, byte[] data) throws IOException {
         TcpTransportHandler handler = getTransportHandler();
@@ -58,6 +65,9 @@ public class TcpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> 
         // or not
     }
 
+    /**
+     * Returns the inputStream associated with the TCP socket.
+     */
     @Override
     public HintedInputStream getDataStream() {
         currentInputStream = new HintedInputStreamAdapterStream(null, getTransportHandler().getInputStream());

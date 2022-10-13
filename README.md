@@ -176,6 +176,11 @@ Given this XML structure is located in TLS-Attacker/apps/workflow.xml, you would
 ```bash
 $ java -jar TLS-Client.jar -connect [host]:[port] -workflow_input workflow.xml
 ```
+## Protocol-Attacker/Layer System
+Originally designed to attack the TLS protocol, TLS-Attacker is capable of supporting arbitrary protocols. To this end, TLS-Attacker assigns a layer stack to each connection. This layer stack consists of the different protocol layers the user wants to utilize. With the layer stack, the user can add layers like DTLS, or HTTP (more are WIP) in an arbitrary order.
+
+To send and receive arbitrary messages using a layer stack, the user can define configurations for each layer. These configurations specifiy which messages to send or receive. This also allows the user to specify the layer specific messages/data containers for each layer. For example, one could specify the TLS messages and records TLS-Attacker should send. TLS-Attacker would encapsulate the given TLS messages into the records automatically.
+
 ## Modifiable Variables
 TLS-Attacker uses the concept of Modifiable Variables to allow runtime modifications to predefined Workflows. Modifiable variables allow one to set modifications to basic types after or before their values are actually set. When their actual values are determined and one tries to access the value via getters the original value will be returned in a modified form accordingly. More details on this concept can be found at https://github.com/tls-attacker/ModifiableVariable. 
 

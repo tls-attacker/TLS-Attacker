@@ -12,6 +12,10 @@ package de.rub.nds.tlsattacker.core.layer.hints;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import java.util.Objects;
 
+/**
+ * The Record Layer/Fragment layer need information about the messages they're sending. This class holds information
+ * about the messages such as their message type.
+ */
 public class RecordLayerHint implements LayerProcessingHint {
 
     private final ProtocolMessageType type;
