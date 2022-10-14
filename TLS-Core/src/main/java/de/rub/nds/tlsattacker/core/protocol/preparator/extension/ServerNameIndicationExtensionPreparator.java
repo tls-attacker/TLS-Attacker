@@ -20,6 +20,9 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.Arrays;
+import java.util.LinkedList;
 
 public class ServerNameIndicationExtensionPreparator extends ExtensionPreparator<ServerNameIndicationExtensionMessage> {
 
@@ -37,18 +40,51 @@ public class ServerNameIndicationExtensionPreparator extends ExtensionPreparator
     public void prepareExtensionContent() {
         LOGGER.debug("Preparing ServerNameIndicationExtensionMessage");
         stream = new ByteArrayOutputStream();
-        for (ServerNamePair pair : msg.getServerNameList()) {
-            ServerNamePairPreparator preparator = new ServerNamePairPreparator(chooser, pair);
-            preparator.prepare();
-            ServerNamePairSerializer serializer = new ServerNamePairSerializer(pair);
-            try {
-                stream.write(serializer.serialize());
-            } catch (IOException ex) {
-                throw new PreparationException("Could not write byte[] from ServerNamePair", ex);
-            }
-        }
+        prepareEntryList();
         prepareServerNameListBytes(msg);
         prepareServerNameListLength(msg);
+    }
+
+    public void prepareEntryList() {
+        if (chooser.getConfig().getDefaultSniHostnames().isEmpty()) {
+            if (chooser.getConnection().getHostname() == null) {
+                prepareEmptyEntry();
+            } else {
+                prepareFromConnection();
+            }
+        } else {
+            msg.setServerNameList(chooser.getConfig().getDefaultSniHostnames());
+        }
+
+        for (ServerNamePair pair : msg.getServerNameList()) {
+            prepareEntry(chooser, pair);
+        }
+    }
+
+    public void prepareEmptyEntry() {
+        LOGGER.warn("Using emtpy list for SNI extension since no entries have been specified");
+        byte[] emptyName = new byte[0];
+        ServerNamePair emptyPair = new ServerNamePair(chooser.getConfig().getSniType().getValue(), emptyName);
+        msg.setServerNameList(new LinkedList<>(Arrays.asList(emptyPair)));
+        prepareEntry(chooser, emptyPair);
+    }
+
+    private void prepareFromConnection() {
+        byte[] serverName = chooser.getConnection().getHostname().getBytes(Charset.forName("ASCII"));
+        ServerNamePair namePair = new ServerNamePair(chooser.getConfig().getSniType().getValue(), serverName);
+        msg.setServerNameList(new LinkedList<>(Arrays.asList(namePair)));
+        prepareEntry(chooser, namePair);
+    }
+
+    private void prepareEntry(Chooser chooser, ServerNamePair namePair) {
+        ServerNamePairPreparator namePairPreparator = new ServerNamePairPreparator(chooser, namePair);
+        namePairPreparator.prepare();
+        ServerNamePairSerializer serializer = new ServerNamePairSerializer(namePair);
+        try {
+            stream.write(serializer.serialize());
+        } catch (IOException ex) {
+            throw new PreparationException("Could not write byte[] from ServerNamePair", ex);
+        }
     }
 
     private void prepareServerNameListBytes(ServerNameIndicationExtensionMessage msg) {

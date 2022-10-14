@@ -9,9 +9,12 @@
 
 package de.rub.nds.tlsattacker.core.workflow;
 
+import de.rub.nds.modifiablevariable.util.ModifiableVariableField;
+import de.rub.nds.tlsattacker.core.workflow.modifiableVariable.ModvarHelper;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import javax.xml.XMLConstants;
 import javax.xml.bind.*;
 import javax.xml.bind.util.JAXBSource;
@@ -205,15 +208,25 @@ public class WorkflowTraceSerializer {
             xif.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
             xif.setProperty(XMLInputFactory.SUPPORT_DTD, false);
             XMLStreamReader xsr = xif.createXMLStreamReader(inputStream);
+
             SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
             Schema workflowTraceSchema =
                 sf.newSchema(new StreamSource(WorkflowTraceSerializer.class.getResourceAsStream("/" + xsd_source)));
             workflowTraceSchema.newValidator();
             unmarshaller.setSchema(workflowTraceSchema);
             WorkflowTrace wt = (WorkflowTrace) unmarshaller.unmarshal(xsr);
+            ModvarHelper helper = new ModvarHelper();
+            List<ModifiableVariableField> allSentFields = helper.getAllSentFields(wt);
+            for (ModifiableVariableField field : allSentFields) {
+                if (field.getModifiableVariable() != null && field.getModifiableVariable().getOriginalValue() != null) {
+                    LOGGER.warn(
+                        "Your WorkflowTrace still contains original values. These values will be deleted by TLS-Attacker and ignored for any computations. Use Modifications and/or the Config to change the contet of messages");
+                    break;
+                }
+            }
             inputStream.close();
             return wt;
-        } catch (SAXException ex) {
+        } catch (IllegalArgumentException | IllegalAccessException | SAXException ex) {
             throw new RuntimeException(ex);
         }
     }

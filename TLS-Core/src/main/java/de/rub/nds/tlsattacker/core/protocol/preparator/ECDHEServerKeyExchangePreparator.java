@@ -140,6 +140,12 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
                 }
             }
         }
+        if (!namedGroup.isCurve() || namedGroup.isGost()) {
+            NamedGroup previousNamedGroup = namedGroup;
+            namedGroup = NamedGroup.SECP256R1;
+            LOGGER.warn("NamedGroup {} is not suitable for ECDHEServerKeyExchange message. Using {} instead.",
+                previousNamedGroup, namedGroup);
+        }
         return namedGroup;
     }
 

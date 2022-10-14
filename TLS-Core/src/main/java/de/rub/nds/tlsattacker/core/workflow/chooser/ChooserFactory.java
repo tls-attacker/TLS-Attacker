@@ -20,6 +20,8 @@ public class ChooserFactory {
         switch (type) {
             case DEFAULT:
                 return new DefaultChooser(context, config);
+            case SMART_RECORD_SIZE:
+                return new SmartRecordSizeChooser(context, config);
             default:
                 throw new InvalidChooserTypeException("ChooserType \"" + type + "\" not supported");
         }

@@ -28,7 +28,13 @@ public class ResetConnectionAction extends ConnectionBoundAction {
 
     private Boolean asPlanned;
 
+    private Boolean resetContext = true;
+
     public ResetConnectionAction() {
+    }
+
+    public ResetConnectionAction(boolean resetContext) {
+        this.resetContext = resetContext;
     }
 
     public ResetConnectionAction(String connectionAlias) {
@@ -46,40 +52,47 @@ public class ResetConnectionAction extends ConnectionBoundAction {
         } catch (IOException ex) {
             LOGGER.debug("Could not close client connection", ex);
         }
-        LOGGER.info("Resetting Cipher");
-        if (tlsContext.getRecordLayer() != null) {
-            tlsContext.getRecordLayer().resetDecryptor();
-            tlsContext.getRecordLayer().resetEncryptor();
-            tlsContext.getRecordLayer().updateDecryptionCipher(RecordCipherFactory.getNullCipher(tlsContext));
-            tlsContext.getRecordLayer().updateEncryptionCipher(RecordCipherFactory.getNullCipher(tlsContext));
-            tlsContext.getRecordLayer().setWriteEpoch(0);
-            tlsContext.getRecordLayer().setReadEpoch(0);
+        if (resetContext) {
+            LOGGER.info("Resetting Cipher");
+            if (tlsContext.getRecordLayer() != null) {
+                tlsContext.getRecordLayer().resetDecryptor();
+                tlsContext.getRecordLayer().resetEncryptor();
+                tlsContext.getRecordLayer().updateDecryptionCipher(RecordCipherFactory.getNullCipher(tlsContext));
+                tlsContext.getRecordLayer().updateEncryptionCipher(RecordCipherFactory.getNullCipher(tlsContext));
+                tlsContext.getRecordLayer().setWriteEpoch(0);
+                tlsContext.getRecordLayer().setReadEpoch(0);
+            }
+            LOGGER.info("Resetting SecureRenegotiation");
+            tlsContext.setLastClientVerifyData(null);
+            tlsContext.setLastServerVerifyData(null);
+            LOGGER.info("Resetting MessageDigest");
+            tlsContext.getDigest().reset();
+            LOGGER.info("Resetting ActiveKeySets");
+            tlsContext.setActiveClientKeySetType(Tls13KeySetType.NONE);
+            tlsContext.setActiveServerKeySetType(Tls13KeySetType.NONE);
+            LOGGER.info("Resetting TLS 1.3 HRR and PSK values");
+            tlsContext.setExtensionCookie(null);
+            tlsContext.setLastClientHello(null);
+            tlsContext.setPsk(null);
+            tlsContext.setEarlyDataPSKIdentity(null);
+            tlsContext.setEarlyDataPsk(null);
+            tlsContext.setEarlySecret(null);
+            tlsContext.setEarlyDataCipherSuite(null);
+            LOGGER.info("Resetting DTLS numbers and cookie");
+            tlsContext.setDtlsCookie(null);
+            tlsContext.getDtlsReceivedChangeCipherSpecEpochs().clear();
+            tlsContext.getDtlsReceivedHandshakeMessageSequences().clear();
+            tlsContext.getDtlsReceivedChangeCipherSpecEpochs().clear();
+            tlsContext.getDtlsReceivedHandshakeMessageSequences().clear();
+            tlsContext.setDtlsCookie(null);
+            if (tlsContext.getDtlsFragmentLayer() != null) {
+                tlsContext.getDtlsFragmentLayer().resetFragmentManager(state.getConfig());
+                tlsContext.getDtlsFragmentLayer().setReadHandshakeMessageSequence(0);
+                tlsContext.getDtlsFragmentLayer().setWriteHandshakeMessageSequence(0);
+
+            }
         }
-        LOGGER.info("Resetting SecureRenegotiation");
-        tlsContext.setLastClientVerifyData(null);
-        tlsContext.setLastServerVerifyData(null);
-        LOGGER.info("Resetting MessageDigest");
-        tlsContext.getDigest().reset();
-        LOGGER.info("Resetting ActiveKeySets");
-        tlsContext.setActiveClientKeySetType(Tls13KeySetType.NONE);
-        tlsContext.setActiveServerKeySetType(Tls13KeySetType.NONE);
-        LOGGER.info("Resetting TLS 1.3 HRR and PSK values");
-        tlsContext.setExtensionCookie(null);
-        tlsContext.setLastClientHello(null);
-        tlsContext.setPsk(null);
-        tlsContext.setEarlyDataPSKIdentity(null);
-        tlsContext.setEarlyDataPsk(null);
-        tlsContext.setEarlySecret(null);
-        tlsContext.setEarlyDataCipherSuite(null);
-        LOGGER.info("Resetting DTLS numbers and cookie");
-        tlsContext.setDtlsCookie(null);
-        if (tlsContext.getDtlsFragmentLayer() != null) {
-            tlsContext.getDtlsFragmentLayer().setReadHandshakeMessageSequence(0);
-            tlsContext.getDtlsFragmentLayer().setWriteHandshakeMessageSequence(0);
-            tlsContext.getDtlsFragmentLayer().resetFragmentManager(state.getConfig());
-        }
-        tlsContext.getDtlsReceivedChangeCipherSpecEpochs().clear();
-        tlsContext.getDtlsReceivedHandshakeMessageSequences().clear();
+
         LOGGER.info("Reopening Connection");
         try {
             tcpContext.getTransportHandler().initialize();

@@ -26,7 +26,7 @@ public class HttpRequestPreparator extends HttpMessagePreparator<HttpRequestMess
 
     @Override
     public void prepareHttpMessageContents() {
-        message.setRequestPath("/");
+        message.setRequestPath(httpContext.getChooser().getConfig().getDefaultHttpsRequestPath());
         message.setRequestProtocol("HTTP/1.1");
         message.setRequestType("GET");
         for (HttpHeader header : message.getHeader()) {

@@ -23,6 +23,7 @@
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
                             <mainClass>de.rub.nds.tlsattacker.client.main.TlsClient</mainClass>
+                            <useUniqueVersions>false</useUniqueVersions>
                         </manifest>
                     </archive>
                 </configuration>
@@ -33,7 +34,7 @@
                 <configuration>
                     <filesets>
                         <fileset>
-                            <directory>${main.basedir}/apps</directory>
+                            <directory>${maven.multiModuleProjectDirectory}/apps</directory>
                         </fileset>
                     </filesets>
                 </configuration>

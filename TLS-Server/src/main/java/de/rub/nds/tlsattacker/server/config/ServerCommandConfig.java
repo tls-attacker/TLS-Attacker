@@ -9,6 +9,7 @@
 
 package de.rub.nds.tlsattacker.server.config;
 
+import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.TLSDelegateConfig;
@@ -30,10 +31,6 @@ public class ServerCommandConfig extends TLSDelegateConfig {
     @ParametersDelegate
     private SignatureAndHashAlgorithmDelegate signatureAndHashAlgorithmDelegate;
     @ParametersDelegate
-    private WorkflowInputDelegate workflowInputDelegate;
-    @ParametersDelegate
-    private WorkflowOutputDelegate workflowOutputDelegate;
-    @ParametersDelegate
     private WorkflowTypeDelegate workflowTypeDelegate;
     @ParametersDelegate
     private TransportHandlerDelegate transportHandlerDelegate;
@@ -48,11 +45,15 @@ public class ServerCommandConfig extends TLSDelegateConfig {
     @ParametersDelegate
     private ListDelegate listDelegate;
     @ParametersDelegate
-    private ConfigOutputDelegate configOutputDelegate;
-    @ParametersDelegate
     private ExecutorTypeDelegate executorTypeDelegate;
     @ParametersDelegate
     private StarttlsDelegate starttlsDelegate;
+
+    @Parameter(names = "-workflow_input", description = "A path to a workflow trace that should be exeucted")
+    private String workflowInput = null;
+    @Parameter(names = "-workflow_output",
+        description = "A path in which the executed workflow trace should be stored in")
+    private String workflowOutput = null;
 
     public ServerCommandConfig(GeneralDelegate delegate) {
         super(delegate);
@@ -63,14 +64,11 @@ public class ServerCommandConfig extends TLSDelegateConfig {
         this.serverDelegate = new ServerDelegate();
         this.signatureAndHashAlgorithmDelegate = new SignatureAndHashAlgorithmDelegate();
         this.transportHandlerDelegate = new TransportHandlerDelegate();
-        this.workflowInputDelegate = new WorkflowInputDelegate();
-        this.workflowOutputDelegate = new WorkflowOutputDelegate();
         this.workflowTypeDelegate = new WorkflowTypeDelegate();
         this.maxFragmentLengthDelegate = new MaxFragmentLengthDelegate();
         this.certificateDelegate = new CertificateDelegate();
         this.filterDelegate = new FilterDelegate();
         this.listDelegate = new ListDelegate();
-        this.configOutputDelegate = new ConfigOutputDelegate();
         this.executorTypeDelegate = new ExecutorTypeDelegate();
         this.starttlsDelegate = new StarttlsDelegate();
         addDelegate(maxFragmentLengthDelegate);
@@ -80,14 +78,11 @@ public class ServerCommandConfig extends TLSDelegateConfig {
         addDelegate(serverDelegate);
         addDelegate(signatureAndHashAlgorithmDelegate);
         addDelegate(heartbeatDelegate);
-        addDelegate(workflowInputDelegate);
-        addDelegate(workflowOutputDelegate);
         addDelegate(workflowTypeDelegate);
         addDelegate(transportHandlerDelegate);
         addDelegate(certificateDelegate);
         addDelegate(filterDelegate);
         addDelegate(listDelegate);
-        addDelegate(configOutputDelegate);
         addDelegate(executorTypeDelegate);
         addDelegate(starttlsDelegate);
     }
@@ -100,5 +95,13 @@ public class ServerCommandConfig extends TLSDelegateConfig {
             config.setWorkflowTraceType(WorkflowTraceType.HANDSHAKE);
         }
         return config;
+    }
+
+    public String getWorkflowInput() {
+        return workflowInput;
+    }
+
+    public String getWorkflowOutput() {
+        return workflowOutput;
     }
 }

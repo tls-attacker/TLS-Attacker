@@ -306,6 +306,16 @@ public class ServerHelloMessage extends HelloMessage {
     }
 
     @Override
+    public String toCompactString() {
+        Boolean isHrr = isTls13HelloRetryRequest();
+        String compactString = super.toCompactString();
+        if (isHrr != null && isHrr == true) {
+            compactString += "(HRR)";
+        }
+        return compactString;
+    }
+
+    @Override
     public String toShortString() {
         if (isTls13HelloRetryRequest()) {
             return "HRR";

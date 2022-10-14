@@ -11,4 +11,5 @@ package de.rub.nds.tlsattacker.core.constants;
 
 public enum ChooserType {
     DEFAULT,
+    SMART_RECORD_SIZE,
 }

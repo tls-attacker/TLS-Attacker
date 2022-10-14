@@ -47,6 +47,9 @@ public class WorkflowConfigurationFactory {
 
     public WorkflowTrace createWorkflowTrace(WorkflowTraceType type, RunningModeType mode) {
         this.mode = mode;
+        if (type == null) {
+            throw new RuntimeException("Cannot create WorkflowTrace from NULL type");
+        }
         switch (type) {
             case HELLO:
                 return createHelloWorkflow();
@@ -906,46 +909,28 @@ public class WorkflowConfigurationFactory {
         if (config.getStarttlsType() != StarttlsType.NONE) {
             addStartTlsActions(connection, config.getStarttlsType(), trace);
         }
-        trace.addTlsAction(MessageActionFactory.createTLSAction(config, connection, ConnectionEndType.CLIENT,
-            new ClientHelloMessage(config)));
-        if (config.getHighestProtocolVersion().isDTLS() && config.isDtlsCookieExchange()) {
-            trace.addTlsAction(MessageActionFactory.createTLSAction(config, connection, ConnectionEndType.SERVER,
-                new HelloVerifyRequestMessage()));
+        if (config.getHighestProtocolVersion().isTLS13()) {
+            // For now, there are no dynamic actions for TLS 1.3
+            WorkflowTrace regularHandshake = createHandshakeWorkflow();
+            trace.addTlsActions(regularHandshake.getTlsActions());
+        } else {
             trace.addTlsAction(MessageActionFactory.createTLSAction(config, connection, ConnectionEndType.CLIENT,
                 new ClientHelloMessage(config)));
-        }
-        if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
-            if (config.getHighestProtocolVersion().isTLS13()) {
-                trace.addTlsAction(new ReceiveTillAction(new FinishedMessage()));
-            } else {
-                trace.addTlsAction(new ReceiveTillAction(new ServerHelloDoneMessage()));
+            if (config.getHighestProtocolVersion().isDTLS() && config.isDtlsCookieExchange()) {
+                trace.addTlsAction(MessageActionFactory.createTLSAction(config, connection, ConnectionEndType.SERVER,
+                    new HelloVerifyRequestMessage()));
+                trace.addTlsAction(MessageActionFactory.createTLSAction(config, connection, ConnectionEndType.CLIENT,
+                    new ClientHelloMessage(config)));
             }
-            trace.addTlsAction(new SendDynamicClientKeyExchangeAction());
-            trace.addTlsAction(new SendAction(new ChangeCipherSpecMessage(), new FinishedMessage()));
-            trace.addTlsAction(new ReceiveAction(new ChangeCipherSpecMessage(), new FinishedMessage()));
-
-        } else {
-            List<ProtocolMessage> messages = new LinkedList<>();
-            messages.add(new ServerHelloMessage(config));
-
-            if (config.getHighestProtocolVersion().isTLS13()) {
-                if (Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)) {
-                    ChangeCipherSpecMessage ccs = new ChangeCipherSpecMessage();
-                    ccs.setRequired(false);
-                    messages.add(ccs);
-                }
-                messages.add(new EncryptedExtensionsMessage(config));
-                if (config.isClientAuthentication()) {
-                    CertificateRequestMessage certRequest = new CertificateRequestMessage(config);
-                    messages.add(certRequest);
-                }
-                messages.add(new CertificateMessage());
-                messages.add(new CertificateVerifyMessage());
-                messages.add(new FinishedMessage());
-                trace.addTlsAction(
-                    MessageActionFactory.createTLSAction(config, connection, ConnectionEndType.SERVER, messages));
-
+            if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
+                trace.addTlsAction(new ReceiveTillAction(new ServerHelloDoneMessage()));
+                trace.addTlsAction(new SendDynamicClientKeyExchangeAction());
+                trace.addTlsAction(new SendAction(new ChangeCipherSpecMessage(), new FinishedMessage()));
+                trace.addTlsAction(new ReceiveAction(new ChangeCipherSpecMessage(), new FinishedMessage()));
             } else {
+                List<ProtocolMessage> messages = new LinkedList<>();
+                messages.add(new ServerHelloMessage(config));
+
                 trace.addTlsAction(
                     MessageActionFactory.createTLSAction(config, connection, ConnectionEndType.SERVER, messages));
                 trace.addTlsAction(new SendDynamicServerCertificateAction());
@@ -963,6 +948,7 @@ public class WorkflowConfigurationFactory {
                 trace.addTlsAction(new SendAction(new ChangeCipherSpecMessage(), new FinishedMessage()));
             }
         }
+
         return trace;
     }
 

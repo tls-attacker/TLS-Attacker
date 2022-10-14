@@ -26,6 +26,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedO
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.RequestItemV2;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
@@ -225,6 +226,11 @@ public class Config implements Serializable {
      */
     private Integer defaultAdditionalPadding = 0;
 
+    @XmlElement(name = "defaultSniHostname")
+    @XmlElementWrapper
+    private List<ServerNamePair> defaultSniHostnames = new LinkedList<>(Arrays
+        .asList(new ServerNamePair(NameType.HOST_NAME.getValue(), "example.com".getBytes(Charset.forName("ASCII")))));
+
     /**
      * Key type for KeyShareExtension
      */
@@ -421,21 +427,6 @@ public class Config implements Serializable {
     @XmlElement(name = "statusRequestV2Request")
     @XmlElementWrapper
     private List<RequestItemV2> statusRequestV2RequestList;
-
-    /**
-     * If we should use a workflow trace specified in File
-     */
-    private String workflowInput = null;
-
-    /**
-     * If set, save the workflow trace to this file after trace execution.
-     */
-    private String workflowOutput = null;
-
-    /**
-     * If set, save the actually used config to this file after trace execution.
-     */
-    private String configOutput = null;
 
     /**
      * The Type of workflow trace that should be generated
@@ -862,6 +853,16 @@ public class Config implements Serializable {
     private Boolean createRecordsDynamically = true;
 
     /**
+     * Every record will be sent in one individual transport packet [ADD FOR LAYER!]
+     */
+    private Boolean createIndividualTransportPackets = false;
+
+    /**
+     * If we should wait after sending one transport packet
+     */
+    private Integer individualTransportPacketCooldown = 0;
+
+    /**
      * If this value is set the default workflowExecutor will remove all runtime values from the workflow trace and will
      * only keep the relevant information
      */
@@ -942,6 +943,9 @@ public class Config implements Serializable {
     private MaxFragmentLength defaultMaxFragmentLength = MaxFragmentLength.TWO_12;
 
     private Integer defaultMaxRecordData = RecordSizeLimit.DEFAULT_MAX_RECORD_DATA_SIZE;
+
+    // Overrides any limit negotiated if set
+    private Integer enforcedMaxRecordData;
 
     private Integer inboundRecordSizeLimit = RecordSizeLimit.DEFAULT_MAX_RECORD_DATA_SIZE;
 
@@ -1113,7 +1117,13 @@ public class Config implements Serializable {
      * or httpParsing is disabled
      */
     @XmlJavaTypeAdapter(IllegalStringAdapter.class)
-    private String defaultHttpRequestPath = "/";
+    private String defaultHttpsLocationPath = "/";
+
+    /**
+     * requestPath to use in https requests
+     */
+    @XmlJavaTypeAdapter(IllegalStringAdapter.class)
+    private String defaultHttpsRequestPath = "/robots.txt";
 
     private StarttlsType starttlsType = StarttlsType.NONE;
 
@@ -1542,12 +1552,20 @@ public class Config implements Serializable {
         this.clientAuthenticationType = clientAuthenticationType;
     }
 
-    public String getDefaultHttpRequestPath() {
-        return defaultHttpRequestPath;
+    public String getDefaultHttpsLocationPath() {
+        return defaultHttpsLocationPath;
     }
 
-    public void setDefaultHttpRequestPath(String defaultHttpRequestPath) {
-        this.defaultHttpRequestPath = defaultHttpRequestPath;
+    public void setDefaultHttpsLocationPath(String defaultHttpsLocationPath) {
+        this.defaultHttpsLocationPath = defaultHttpsLocationPath;
+    }
+
+    public String getDefaultHttpsRequestPath() {
+        return defaultHttpsRequestPath;
+    }
+
+    public void setDefaultHttpsRequestPath(String defaultHttpsRequestPath) {
+        this.defaultHttpsRequestPath = defaultHttpsRequestPath;
     }
 
     public Boolean isUseFreshRandom() {
@@ -2262,6 +2280,22 @@ public class Config implements Serializable {
         this.createRecordsDynamically = createRecordsDynamically;
     }
 
+    public Boolean isCreateIndividualTransportPackets() {
+        return createIndividualTransportPackets;
+    }
+
+    public void setCreateIndividualTransportPackets(Boolean createIndividualTransportPackets) {
+        this.createIndividualTransportPackets = createIndividualTransportPackets;
+    }
+
+    public Integer getIndividualTransportPacketCooldown() {
+        return individualTransportPacketCooldown;
+    }
+
+    public void setIndividualTransportPacketCooldown(Integer individualTransportPacketCooldown) {
+        this.individualTransportPacketCooldown = individualTransportPacketCooldown;
+    }
+
     public int getDefaultMaxRecordData() {
         return defaultMaxRecordData;
     }
@@ -2424,30 +2458,6 @@ public class Config implements Serializable {
 
     public void setWorkflowTraceType(WorkflowTraceType workflowTraceType) {
         this.workflowTraceType = workflowTraceType;
-    }
-
-    public String getWorkflowOutput() {
-        return workflowOutput;
-    }
-
-    public void setWorkflowOutput(String workflowOutput) {
-        this.workflowOutput = workflowOutput;
-    }
-
-    public String getConfigOutput() {
-        return configOutput;
-    }
-
-    public void setConfigOutput(String configOutput) {
-        this.configOutput = configOutput;
-    }
-
-    public String getWorkflowInput() {
-        return workflowInput;
-    }
-
-    public void setWorkflowInput(String workflowInput) {
-        this.workflowInput = workflowInput;
     }
 
     public NamedGroup getDefaultSelectedNamedGroup() {
@@ -3935,11 +3945,27 @@ public class Config implements Serializable {
         this.defaultClientTicketResumptionSessionId = defaultClientTicketResumptionSessionId;
     }
 
+    public List<ServerNamePair> getDefaultSniHostnames() {
+        return defaultSniHostnames;
+    }
+
+    public void setDefaultSniHostnames(List<ServerNamePair> defaultSniHostnames) {
+        this.defaultSniHostnames = defaultSniHostnames;
+    }
+
     public LayerConfiguration getDefaultLayerConfiguration() {
         return defaultLayerConfiguration;
     }
 
     public void setDefaultLayerConfiguration(LayerConfiguration defaultLayerConfiguration) {
         this.defaultLayerConfiguration = defaultLayerConfiguration;
+    }
+
+    public Integer getEnforcedMaxRecordData() {
+        return enforcedMaxRecordData;
+    }
+
+    public void setEnforcedMaxRecordData(Integer enforcedMaxRecordData) {
+        this.enforcedMaxRecordData = enforcedMaxRecordData;
     }
 }

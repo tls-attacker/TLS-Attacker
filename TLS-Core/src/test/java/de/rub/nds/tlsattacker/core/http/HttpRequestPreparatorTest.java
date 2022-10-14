@@ -41,7 +41,7 @@ public class HttpRequestPreparatorTest {
     public void testPrepareProtocolMessageContents() {
         preparator.prepareHttpMessageContents();
 
-        assertEquals("/", message.getRequestPath().getOriginalValue());
+        assertEquals(context.getConfig().getDefaultHttpsRequestPath(), message.getRequestPath().getOriginalValue());
         assertEquals("HTTP/1.1", message.getRequestProtocol().getOriginalValue());
         assertEquals("GET", message.getRequestType().getOriginalValue());
         assertEquals(2, message.getHeader().size());

@@ -15,8 +15,8 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.layer.hints.RecordLayerHint;
 import de.rub.nds.tlsattacker.core.protocol.handler.ClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
@@ -56,7 +56,12 @@ public class EarlyCcsAction extends TlsAction {
     public void execute(State state) {
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(state.getConfig());
         ClientKeyExchangeMessage message = factory.createClientKeyExchangeMessage(
-            AlgorithmResolver.getKeyExchangeAlgorithm(state.getContext().getChooser().getSelectedCipherSuite()));
+            AlgorithmResolver.getKeyExchangeAlgorithm(state.getTlsContext().getChooser().getSelectedCipherSuite()));
+        if (message == null) {
+            // the factory will fail to provide a CKE message in some cases
+            // e.g for TLS_CECPQ1 cipher suites
+            message = new RSAClientKeyExchangeMessage();
+        }
         if (!targetOpenssl100) {
             message.setIncludeInDigest(Modifiable.explicit(false));
         }

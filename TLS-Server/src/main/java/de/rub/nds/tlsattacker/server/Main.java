@@ -14,8 +14,12 @@ import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ListDelegate;
-import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
 import de.rub.nds.tlsattacker.server.config.ServerCommandConfig;
+import java.io.File;
+import java.io.FileInputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -41,11 +45,21 @@ public class Main {
             Config tlsConfig = null;
             try {
                 tlsConfig = config.createConfig();
+                WorkflowTrace trace = null;
+                if (config.getWorkflowInput() != null) {
+                    LOGGER.debug("Reading workflow trace from " + config.getWorkflowInput());
+                    trace =
+                        WorkflowTraceSerializer.secureRead(new FileInputStream(new File(config.getWorkflowInput())));
+                }
                 TlsServer server = new TlsServer();
-                server.run(tlsConfig);
-            } catch (ConfigurationException e) {
-                LOGGER.warn("Encountered a ConfigurationException aborting. Try -debug for more info");
-                LOGGER.debug(e);
+                State state = server.execute(tlsConfig, trace);
+                if (config.getWorkflowOutput() != null) {
+                    trace = state.getWorkflowTrace();
+                    LOGGER.debug("Writing workflow trace to " + config.getWorkflowOutput());
+                    WorkflowTraceSerializer.write(new File(config.getWorkflowOutput()), trace);
+                }
+            } catch (Exception e) {
+                LOGGER.warn("Encountered a ConfigurationException aborting. Try -debug for more info", e);
                 commander.usage();
             }
         } catch (ParameterException e) {

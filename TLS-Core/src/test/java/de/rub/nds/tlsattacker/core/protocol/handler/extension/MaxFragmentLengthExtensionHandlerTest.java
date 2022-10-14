@@ -12,6 +12,7 @@ package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.MaxFragmentLengthExtensionMessage;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
@@ -26,6 +27,7 @@ public class MaxFragmentLengthExtensionHandlerTest {
     @Before
     public void setUp() {
         context = new TlsContext();
+        context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
         handler = new MaxFragmentLengthExtensionHandler(context);
     }
 
