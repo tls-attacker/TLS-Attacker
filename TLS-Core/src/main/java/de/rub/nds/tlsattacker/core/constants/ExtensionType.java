@@ -156,6 +156,7 @@ public enum ExtensionType {
         list.add(SERVER_NAME_INDICATION);
         list.add(SESSION_TICKET);
         list.add(SIGNATURE_AND_HASH_ALGORITHMS);
+        list.add(SIGNATURE_ALGORITHMS_CERT);
         list.add(SIGNED_CERTIFICATE_TIMESTAMP);
         list.add(SRP);
         list.add(STATUS_REQUEST);
@@ -197,6 +198,7 @@ public enum ExtensionType {
         list.add(SERVER_NAME_INDICATION);
         list.add(SESSION_TICKET);
         list.add(SIGNATURE_AND_HASH_ALGORITHMS);
+        list.add(SIGNATURE_ALGORITHMS_CERT);
         list.add(SIGNED_CERTIFICATE_TIMESTAMP);
         list.add(SRP);
         list.add(STATUS_REQUEST);
@@ -225,6 +227,7 @@ public enum ExtensionType {
         list.add(PSK_KEY_EXCHANGE_MODES);
         list.add(SERVER_NAME_INDICATION);
         list.add(SIGNATURE_AND_HASH_ALGORITHMS);
+        list.add(SIGNATURE_ALGORITHMS_CERT);
         list.add(SUPPORTED_VERSIONS);
         list.add(TOKEN_BINDING);
         list.add(RENEGOTIATION_INFO);

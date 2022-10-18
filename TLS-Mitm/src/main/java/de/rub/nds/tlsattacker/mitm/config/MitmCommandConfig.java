@@ -31,6 +31,8 @@ public class MitmCommandConfig extends TLSDelegateConfig {
     @ParametersDelegate
     private SignatureAndHashAlgorithmDelegate signatureAndHashAlgorithmDelegate;
     @ParametersDelegate
+    private SignatureAlgorithmCertDelegate signatureAlgorithmCertDelegate;
+    @ParametersDelegate
     private MitmWorkflowTypeDelegate mitmWorkflowTypeDelegate;
     @ParametersDelegate
     private TransportHandlerDelegate transportHandlerDelegate;
@@ -63,6 +65,7 @@ public class MitmCommandConfig extends TLSDelegateConfig {
         this.protocolVersionDelegate = new ProtocolVersionDelegate();
         this.mitmDelegate = new MitmDelegate();
         this.signatureAndHashAlgorithmDelegate = new SignatureAndHashAlgorithmDelegate();
+        this.signatureAlgorithmCertDelegate = new SignatureAlgorithmCertDelegate();
         this.transportHandlerDelegate = new TransportHandlerDelegate();
         this.mitmWorkflowTypeDelegate = new MitmWorkflowTypeDelegate();
         this.maxFragmentLengthDelegate = new MaxFragmentLengthDelegate();
@@ -78,6 +81,7 @@ public class MitmCommandConfig extends TLSDelegateConfig {
         addDelegate(protocolVersionDelegate);
         addDelegate(mitmDelegate);
         addDelegate(signatureAndHashAlgorithmDelegate);
+        addDelegate(signatureAlgorithmCertDelegate);
         addDelegate(heartbeatDelegate);
         addDelegate(transportHandlerDelegate);
         addDelegate(certificateDelegate);

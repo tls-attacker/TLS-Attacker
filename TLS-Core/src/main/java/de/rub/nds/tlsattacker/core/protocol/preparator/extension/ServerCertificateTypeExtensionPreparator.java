@@ -36,5 +36,4 @@ public class ServerCertificateTypeExtensionPreparator
             msg.setIsClientMessage(false);
         }
     }
-
 }

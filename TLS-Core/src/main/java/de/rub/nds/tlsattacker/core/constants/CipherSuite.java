@@ -1111,4 +1111,7 @@ public enum CipherSuite {
         return this.isExport() || this.isExportSymmetricCipher() || this.isAnon() || this.isNull();
     }
 
+    public boolean requiresServerCertificateMessage() {
+        return !this.isSrpSha() && !this.isPskOrDhPsk() && !this.isAnon() && !this.isPWD();
+    }
 }

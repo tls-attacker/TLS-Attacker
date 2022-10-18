@@ -9,7 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
@@ -24,7 +23,6 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -53,17 +51,19 @@ public class SendDynamicClientKeyExchangeAction extends MessageAction implements
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
         }
+
         messages = new LinkedList<>();
         ClientKeyExchangeMessage clientKeyExchangeMessage =
             new WorkflowConfigurationFactory(state.getConfig()).createClientKeyExchangeMessage(
                 AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite()));
         if (clientKeyExchangeMessage != null) {
             messages.add(clientKeyExchangeMessage);
+
             String sending = getReadableString(messages);
             if (hasDefaultAlias()) {
-                LOGGER.info("Sending DynamicKeyExchange: " + sending);
+                LOGGER.info("Sending Dynamic Key Exchange: " + sending);
             } else {
-                LOGGER.info("Sending DynamicKeyExchange (" + connectionAlias + "): " + sending);
+                LOGGER.info("Sending Dynamic Key Exchange (" + connectionAlias + "): " + sending);
             }
 
             try {
@@ -75,7 +75,8 @@ public class SendDynamicClientKeyExchangeAction extends MessageAction implements
                 setExecuted(getActionOptions().contains(ActionOption.MAY_FAIL));
             }
         } else {
-            LOGGER.info("Sending DynamicKeyExchange: none");
+            LOGGER.info("Sending Dynamic Key Exchange: none");
+            setExecuted(true);
         }
     }
 
@@ -119,11 +120,6 @@ public class SendDynamicClientKeyExchangeAction extends MessageAction implements
     @Override
     public boolean executedAsPlanned() {
         return isExecuted();
-    }
-
-    @Override
-    public void setFragments(List<DtlsHandshakeMessageFragment> fragments) {
-        this.fragments = fragments;
     }
 
     @Override

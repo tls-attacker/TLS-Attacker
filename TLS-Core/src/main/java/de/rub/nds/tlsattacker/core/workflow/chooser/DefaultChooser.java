@@ -102,6 +102,15 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
+    public List<SignatureAndHashAlgorithm> getClientSupportedCertificateSignAlgorithms() {
+        if (context.getTlsContext().getClientSupportedCertificateSignAlgorithms() != null) {
+            return context.getTlsContext().getClientSupportedCertificateSignAlgorithms();
+        } else {
+            return config.getDefaultClientSupportedCertificateSignAlgorithms();
+        }
+    }
+
+    @Override
     public ProtocolVersion getLastRecordVersion() {
         if (context.getTlsContext().getLastRecordVersion() != null) {
             return context.getTlsContext().getLastRecordVersion();
@@ -175,6 +184,15 @@ public class DefaultChooser extends Chooser {
             return context.getTlsContext().getServerSupportedSignatureAndHashAlgorithms();
         } else {
             return config.getDefaultServerSupportedSignatureAndHashAlgorithms();
+        }
+    }
+
+    @Override
+    public List<SignatureAndHashAlgorithm> getServerSupportedCertificateSignAlgorithms() {
+        if (context.getTlsContext().getServerSupportedCertificateSignAlgorithms() != null) {
+            return context.getTlsContext().getServerSupportedCertificateSignAlgorithms();
+        } else {
+            return config.getDefaultServerSupportedCertificateSignAlgorithms();
         }
     }
 

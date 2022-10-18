@@ -35,6 +35,8 @@ public class ClientCommandConfig extends TLSDelegateConfig {
     @ParametersDelegate
     private SignatureAndHashAlgorithmDelegate signatureAndHashAlgorithmDelegate;
     @ParametersDelegate
+    private SignatureAlgorithmCertDelegate signatureAlgorithmCertDelegate;
+    @ParametersDelegate
     private TransportHandlerDelegate transportHandlerDelegate;
     @ParametersDelegate
     private TimeoutDelegate timeoutDelegate;
@@ -65,6 +67,7 @@ public class ClientCommandConfig extends TLSDelegateConfig {
         this.protocolVersionDelegate = new ProtocolVersionDelegate();
         this.clientDelegate = new ClientDelegate();
         this.signatureAndHashAlgorithmDelegate = new SignatureAndHashAlgorithmDelegate();
+        this.signatureAlgorithmCertDelegate = new SignatureAlgorithmCertDelegate();
         this.transportHandlerDelegate = new TransportHandlerDelegate();
         this.timeoutDelegate = new TimeoutDelegate();
         this.workflowTypeDelegate = new WorkflowTypeDelegate();
@@ -83,6 +86,7 @@ public class ClientCommandConfig extends TLSDelegateConfig {
         addDelegate(protocolVersionDelegate);
         addDelegate(clientDelegate);
         addDelegate(signatureAndHashAlgorithmDelegate);
+        addDelegate(signatureAlgorithmCertDelegate);
         addDelegate(workflowTypeDelegate);
         addDelegate(transportHandlerDelegate);
         addDelegate(timeoutDelegate);

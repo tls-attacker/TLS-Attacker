@@ -43,6 +43,9 @@ public class ResetConnectionAction extends ConnectionBoundAction {
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
+        if (isExecuted()) {
+            throw new WorkflowExecutionException("Action already executed!");
+        }
         TlsContext tlsContext = state.getContext(getConnectionAlias()).getTlsContext();
         TcpContext tcpContext = state.getContext(getConnectionAlias()).getTcpContext();
 
@@ -101,6 +104,7 @@ public class ResetConnectionAction extends ConnectionBoundAction {
             LOGGER.debug("Could not initialize TransportHandler", ex);
             asPlanned = false;
         }
+
         setExecuted(true);
     }
 

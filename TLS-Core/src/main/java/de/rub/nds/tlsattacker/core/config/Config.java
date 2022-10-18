@@ -182,6 +182,13 @@ public class Config implements Serializable {
     private List<SignatureAndHashAlgorithm> defaultClientSupportedSignatureAndHashAlgorithms;
 
     /**
+     * Which Signature and Hash algorithms we support for Certificates
+     */
+    @XmlElement(name = "defaultClientSupportedCertificateSignAlgorithms")
+    @XmlElementWrapper
+    private List<SignatureAndHashAlgorithm> defaultClientSupportedCertificateSignAlgorithms;
+
+    /**
      * Which Cipher suites we support by default
      */
     @XmlElement(name = "defaultClientSupportedCipherSuite")
@@ -250,7 +257,7 @@ public class Config implements Serializable {
 
     private NameType sniType = NameType.HOST_NAME;
 
-    private Integer prefferedCertRsaKeySize = 2048;
+    private Integer preferredCertRsaKeySize = 2048;
 
     private Integer prefferedCertDssKeySize = 2048;
 
@@ -477,6 +484,11 @@ public class Config implements Serializable {
      * If we generate ClientHello with the SignatureAndHashAlgorithm extension
      */
     private Boolean addSignatureAndHashAlgorithmsExtension = true;
+
+    /**
+     * If we generate ClientHello with the SignatureAlgorithmCert extension
+     */
+    private Boolean addSignatureAlgorithmsCertExtension = false;
 
     /**
      * If we generate ClientHello with the SupportedVersion extension
@@ -928,7 +940,13 @@ public class Config implements Serializable {
     @XmlElementWrapper
     private List<SignatureAndHashAlgorithm> defaultServerSupportedSignatureAndHashAlgorithms;
 
+    @XmlElement(name = "defaultServerSupportedCertificateSignAlgorithms")
+    @XmlElementWrapper
+    private List<SignatureAndHashAlgorithm> defaultServerSupportedCertificateSignAlgorithms;
+
     private SignatureAndHashAlgorithm defaultSelectedSignatureAndHashAlgorithm = SignatureAndHashAlgorithm.RSA_SHA1;
+
+    private SignatureAndHashAlgorithm defaultSelectedSignatureAlgorithmCert = SignatureAndHashAlgorithm.RSA_SHA1;
 
     private ProtocolVersion defaultLastRecordProtocolVersion = ProtocolVersion.TLS10;
 
@@ -1314,6 +1332,9 @@ public class Config implements Serializable {
         defaultEsniServerCipherSuites.add(CipherSuite.TLS_AES_128_GCM_SHA256);
         defaultClientSupportedSignatureAndHashAlgorithms = new LinkedList<>();
         defaultClientSupportedSignatureAndHashAlgorithms.addAll(SignatureAndHashAlgorithm.getImplemented());
+        defaultClientSupportedCertificateSignAlgorithms = new LinkedList<>();
+        defaultClientSupportedCertificateSignAlgorithms
+            .addAll(SignatureAndHashAlgorithm.getImplementedTls13SignatureAndHashAlgorithms());
         defaultClientSupportedCompressionMethods = new LinkedList<>();
         defaultClientSupportedCompressionMethods.add(CompressionMethod.NULL);
         defaultServerSupportedCompressionMethods = new LinkedList<>();
@@ -1334,6 +1355,9 @@ public class Config implements Serializable {
         defaultTokenBindingKeyParameters.add(TokenBindingKeyParameters.RSA2048_PSS);
         defaultServerSupportedSignatureAndHashAlgorithms = new LinkedList<>();
         defaultServerSupportedSignatureAndHashAlgorithms.addAll(SignatureAndHashAlgorithm.getImplemented());
+        defaultServerSupportedCertificateSignAlgorithms = new LinkedList<>();
+        defaultServerSupportedCertificateSignAlgorithms
+            .addAll(SignatureAndHashAlgorithm.getImplementedTls13SignatureAndHashAlgorithms());
         defaultServerSupportedPointFormats = new LinkedList<>();
         defaultClientSupportedPointFormats = new LinkedList<>();
         defaultServerSupportedPointFormats.add(ECPointFormat.UNCOMPRESSED);
@@ -2108,6 +2132,21 @@ public class Config implements Serializable {
             new ArrayList(Arrays.asList(defaultServerSupportedSignatureAndHashAlgorithms));
     }
 
+    public List<SignatureAndHashAlgorithm> getDefaultServerSupportedCertificateSignAlgorithms() {
+        return defaultServerSupportedCertificateSignAlgorithms;
+    }
+
+    public void setDefaultServerSupportedCertificateSignAlgorithms(
+        List<SignatureAndHashAlgorithm> defaultServerSupportedCertificateSignAlgorithms) {
+        this.defaultServerSupportedCertificateSignAlgorithms = defaultServerSupportedCertificateSignAlgorithms;
+    }
+
+    public void setDefaultServerSupportedCertificateSignAlgorithms(
+        SignatureAndHashAlgorithm... defaultServerSupportedCertificateSignAlgorithms) {
+        this.defaultServerSupportedCertificateSignAlgorithms =
+            new ArrayList(Arrays.asList(defaultServerSupportedCertificateSignAlgorithms));
+    }
+
     public List<CipherSuite> getDefaultServerSupportedCipherSuites() {
         return defaultServerSupportedCipherSuites;
     }
@@ -2166,6 +2205,15 @@ public class Config implements Serializable {
     public void setDefaultSelectedSignatureAndHashAlgorithm(
         SignatureAndHashAlgorithm defaultSelectedSignatureAndHashAlgorithm) {
         this.defaultSelectedSignatureAndHashAlgorithm = defaultSelectedSignatureAndHashAlgorithm;
+    }
+
+    public SignatureAndHashAlgorithm getDefaultSelectedSignatureAlgorithmCert() {
+        return defaultSelectedSignatureAlgorithmCert;
+    }
+
+    public void
+        setDefaultSelectedSignatureAlgorithmCert(SignatureAndHashAlgorithm defaultSelectedSignatureAlgorithmCert) {
+        this.defaultSelectedSignatureAlgorithmCert = defaultSelectedSignatureAlgorithmCert;
     }
 
     public List<ECPointFormat> getDefaultClientSupportedPointFormats() {
@@ -2519,6 +2567,21 @@ public class Config implements Serializable {
             new ArrayList(Arrays.asList(supportedSignatureAndHashAlgorithms));
     }
 
+    public List<SignatureAndHashAlgorithm> getDefaultClientSupportedCertificateSignAlgorithms() {
+        return defaultClientSupportedCertificateSignAlgorithms;
+    }
+
+    public void setDefaultClientSupportedCertificateSignAlgorithms(
+        List<SignatureAndHashAlgorithm> defaultClientSupportedCertificateSignAlgorithms) {
+        this.defaultClientSupportedCertificateSignAlgorithms = defaultClientSupportedCertificateSignAlgorithms;
+    }
+
+    public final void setDefaultClientSupportedCertificateSignAlgorithms(
+        SignatureAndHashAlgorithm... supportedSignatureAndHashAlgorithms) {
+        this.defaultClientSupportedCertificateSignAlgorithms =
+            new ArrayList(Arrays.asList(supportedSignatureAndHashAlgorithms));
+    }
+
     public List<ProtocolVersion> getSupportedVersions() {
         return supportedVersions;
     }
@@ -2601,6 +2664,14 @@ public class Config implements Serializable {
 
     public void setAddSignatureAndHashAlgorithmsExtension(Boolean addSignatureAndHashAlgorithmsExtension) {
         this.addSignatureAndHashAlgorithmsExtension = addSignatureAndHashAlgorithmsExtension;
+    }
+
+    public Boolean isAddSignatureAlgorithmsCertExtension() {
+        return addSignatureAlgorithmsCertExtension;
+    }
+
+    public void setAddSignatureAlgorithmsCertExtension(Boolean addSignatureAlgorithmsCertExtension) {
+        this.addSignatureAlgorithmsCertExtension = addSignatureAlgorithmsCertExtension;
     }
 
     public Boolean isAddSupportedVersionsExtension() {
@@ -3873,12 +3944,12 @@ public class Config implements Serializable {
         this.defaultLastClientHello = defaultLastClientHello;
     }
 
-    public int getPrefferedCertRsaKeySize() {
-        return prefferedCertRsaKeySize;
+    public int getPreferredCertRsaKeySize() {
+        return preferredCertRsaKeySize;
     }
 
-    public void setPrefferedCertRsaKeySize(int prefferedCertRsaKeySize) {
-        this.prefferedCertRsaKeySize = prefferedCertRsaKeySize;
+    public void setPreferredCertRsaKeySize(int preferredCertRsaKeySize) {
+        this.preferredCertRsaKeySize = preferredCertRsaKeySize;
     }
 
     public int getPrefferedCertDssKeySize() {

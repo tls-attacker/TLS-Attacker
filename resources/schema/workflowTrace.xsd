@@ -147,6 +147,8 @@
 
   <xs:element name="SessionTicketTLSExtension" type="sessionTicketTLSExtensionMessage"/>
 
+  <xs:element name="SignatureAlgorithmsCertExtension" type="signatureAlgorithmsCertExtensionMessage"/>
+
   <xs:element name="SignatureAndHashAlgorithmsExtension" type="signatureAndHashAlgorithmsExtensionMessage"/>
 
   <xs:element name="SignedCertificateTimestampExtension" type="signedCertificateTimestampExtensionMessage"/>
@@ -1057,6 +1059,7 @@
                   <xs:element ref="ServerNameIndicationExtension"/>
                   <xs:element ref="SessionTicketTLSExtension"/>
                   <xs:element ref="SignatureAndHashAlgorithmsExtension"/>
+                  <xs:element ref="SignatureAlgorithmsCertExtension"/>
                   <xs:element ref="SignedCertificateTimestampExtension"/>
                   <xs:element ref="ExtendedRandomExtension"/>
                   <xs:element ref="TokenBindingExtension"/>
@@ -1426,6 +1429,17 @@
   </xs:complexType>
 
   <xs:complexType name="signatureAndHashAlgorithmsExtensionMessage">
+    <xs:complexContent>
+      <xs:extension base="extensionMessage">
+        <xs:sequence>
+          <xs:element name="signatureAndHashAlgorithms" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="signatureAndHashAlgorithmsLength" type="modifiableInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="signatureAlgorithmsCertExtensionMessage">
     <xs:complexContent>
       <xs:extension base="extensionMessage">
         <xs:sequence>
@@ -2929,6 +2943,8 @@
           <xs:element name="clientSupportedCompressions" type="compressionMethod" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
           <xs:element name="serverSupportedSignatureAndHashAlgorithms" type="signatureAndHashAlgorithm" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
           <xs:element name="clientSupportedSignatureAndHashAlgorithms" type="signatureAndHashAlgorithm" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="clientSupportedCertificateSignAlgorithms" type="signatureAndHashAlgorithm" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="serverSupportedCertificateSignAlgorithms" type="signatureAndHashAlgorithm" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
           <xs:element name="heartbeatMode" type="heartbeatMode" minOccurs="0"/>
           <xs:element name="selectedSigHashAlgorithm" type="signatureAndHashAlgorithm" minOccurs="0"/>
           <xs:element name="cachedInfoExtensionClientState" type="xs:boolean"/>
@@ -3178,6 +3194,13 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
+      <xs:element name="defaultClientSupportedCertificateSignAlgorithms" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="defaultClientSupportedCertificateSignAlgorithms" type="signatureAndHashAlgorithm" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
       <xs:element name="defaultClientSupportedCipherSuites" minOccurs="0">
         <xs:complexType>
           <xs:sequence>
@@ -3240,7 +3263,7 @@
       </xs:element>
       <xs:element name="defaultServerKeyShareEntry" type="keyShareStoreEntry" minOccurs="0"/>
       <xs:element name="sniType" type="nameType" minOccurs="0"/>
-      <xs:element name="prefferedCertRsaKeySize" type="xs:int" minOccurs="0"/>
+      <xs:element name="preferredCertRsaKeySize" type="xs:int" minOccurs="0"/>
       <xs:element name="prefferedCertDssKeySize" type="xs:int" minOccurs="0"/>
       <xs:element name="defaultKeyUpdateRequestMode" type="keyUpdateRequest" minOccurs="0"/>
       <xs:element name="encryptChangeCipherSpecTls13" type="xs:boolean" minOccurs="0"/>
@@ -3346,6 +3369,7 @@
       <xs:element name="addRecordSizeLimitExtension" type="xs:boolean" minOccurs="0"/>
       <xs:element name="addServerNameIndicationExtension" type="xs:boolean" minOccurs="0"/>
       <xs:element name="addSignatureAndHashAlgorithmsExtension" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="addSignatureAlgorithmsCertExtension" type="xs:boolean" minOccurs="0"/>
       <xs:element name="addSupportedVersionsExtension" type="xs:boolean" minOccurs="0"/>
       <xs:element name="addKeyShareExtension" type="xs:boolean" minOccurs="0"/>
       <xs:element name="addEarlyDataExtension" type="xs:boolean" minOccurs="0"/>
@@ -3491,7 +3515,15 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
+      <xs:element name="defaultServerSupportedCertificateSignAlgorithms" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="defaultServerSupportedCertificateSignAlgorithms" type="signatureAndHashAlgorithm" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
       <xs:element name="defaultSelectedSignatureAndHashAlgorithm" type="signatureAndHashAlgorithm" minOccurs="0"/>
+      <xs:element name="defaultSelectedSignatureAlgorithmCert" type="signatureAndHashAlgorithm" minOccurs="0"/>
       <xs:element name="defaultLastRecordProtocolVersion" type="protocolVersion" minOccurs="0"/>
       <xs:element name="defaultSelectedProtocolVersion" type="protocolVersion" minOccurs="0"/>
       <xs:element name="defaultHighestClientProtocolVersion" type="protocolVersion" minOccurs="0"/>
@@ -3662,6 +3694,7 @@
     <xs:sequence>
       <xs:element name="certPublicKeyType" type="certificateKeyType" minOccurs="0"/>
       <xs:element name="certSignatureType" type="certificateKeyType" minOccurs="0"/>
+      <xs:element name="signatureAndHashAlgorithm" type="signatureAndHashAlgorithm" minOccurs="0"/>
       <xs:element name="gostCurve" type="gostCurve" minOccurs="0"/>
       <xs:element name="certificateBytes" type="xs:string" minOccurs="0"/>
       <xs:choice minOccurs="0">
@@ -5689,6 +5722,7 @@
       <xs:enumeration value="DYNAMIC_HTTPS"/>
       <xs:enumeration value="SSL2_HELLO"/>
       <xs:enumeration value="SIMPLE_MITM_PROXY"/>
+      <xs:enumeration value="SIMPLE_FORWARDING_MITM_PROXY"/>
       <xs:enumeration value="TLS13_PSK"/>
       <xs:enumeration value="FULL_TLS13_PSK"/>
       <xs:enumeration value="ZERO_RTT"/>

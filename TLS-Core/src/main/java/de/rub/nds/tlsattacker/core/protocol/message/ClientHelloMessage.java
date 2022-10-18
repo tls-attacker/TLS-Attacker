@@ -108,6 +108,9 @@ public class ClientHelloMessage extends HelloMessage {
             if (tlsConfig.isAddSignatureAndHashAlgorithmsExtension()) {
                 addExtension(new SignatureAndHashAlgorithmsExtensionMessage());
             }
+            if (tlsConfig.isAddSignatureAlgorithmsCertExtension()) {
+                addExtension(new SignatureAlgorithmsCertExtensionMessage());
+            }
             if (tlsConfig.isAddSupportedVersionsExtension()) {
                 addExtension(new SupportedVersionsExtensionMessage());
             }

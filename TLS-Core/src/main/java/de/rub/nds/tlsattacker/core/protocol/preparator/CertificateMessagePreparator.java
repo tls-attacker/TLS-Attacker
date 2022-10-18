@@ -102,13 +102,8 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
             case X509:
                 List<CertificatePair> pairList = msg.getCertificateListConfig();
                 if (pairList == null) {
-                    CertificateKeyPair selectedCertificateKeyPair;
-                    if (chooser.getConfig().isAutoSelectCertificate()) {
-                        selectedCertificateKeyPair =
-                            CertificateByteChooser.getInstance().chooseCertificateKeyPair(chooser);
-                    } else {
-                        selectedCertificateKeyPair = chooser.getConfig().getDefaultExplicitCertificateKeyPair();
-                    }
+                    CertificateKeyPair selectedCertificateKeyPair =
+                        CertificateByteChooser.getInstance().chooseCertificateKeyPair(chooser);
                     msg.setCertificateKeyPair(selectedCertificateKeyPair);
                     byte[] certBytes = selectedCertificateKeyPair.getCertificateBytes();
                     if (certBytes.length >= 3 && selectedCertificateKeyPair.isCertificateParsable()) {

@@ -31,6 +31,8 @@ public class ServerCommandConfig extends TLSDelegateConfig {
     @ParametersDelegate
     private SignatureAndHashAlgorithmDelegate signatureAndHashAlgorithmDelegate;
     @ParametersDelegate
+    private SignatureAlgorithmCertDelegate signatureAlgorithmCertDelegate;
+    @ParametersDelegate
     private WorkflowTypeDelegate workflowTypeDelegate;
     @ParametersDelegate
     private TransportHandlerDelegate transportHandlerDelegate;
@@ -63,6 +65,7 @@ public class ServerCommandConfig extends TLSDelegateConfig {
         this.protocolVersionDelegate = new ProtocolVersionDelegate();
         this.serverDelegate = new ServerDelegate();
         this.signatureAndHashAlgorithmDelegate = new SignatureAndHashAlgorithmDelegate();
+        this.signatureAlgorithmCertDelegate = new SignatureAlgorithmCertDelegate();
         this.transportHandlerDelegate = new TransportHandlerDelegate();
         this.workflowTypeDelegate = new WorkflowTypeDelegate();
         this.maxFragmentLengthDelegate = new MaxFragmentLengthDelegate();
@@ -77,6 +80,7 @@ public class ServerCommandConfig extends TLSDelegateConfig {
         addDelegate(protocolVersionDelegate);
         addDelegate(serverDelegate);
         addDelegate(signatureAndHashAlgorithmDelegate);
+        addDelegate(signatureAlgorithmCertDelegate);
         addDelegate(heartbeatDelegate);
         addDelegate(workflowTypeDelegate);
         addDelegate(transportHandlerDelegate);

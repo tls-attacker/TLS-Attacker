@@ -60,4 +60,8 @@ public class ClientUdpTransportHandler extends UdpTransportHandler {
             new UdpOutputStream(socket, hostname, port));
     }
 
+    @Override
+    public void closeClientConnection() throws IOException {
+        closeConnection();
+    }
 }

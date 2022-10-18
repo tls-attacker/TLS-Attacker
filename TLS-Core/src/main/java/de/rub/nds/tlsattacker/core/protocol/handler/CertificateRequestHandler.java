@@ -9,7 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import com.google.common.collect.Sets;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -17,7 +16,6 @@ import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -118,21 +116,6 @@ public class CertificateRequestHandler extends HandshakeMessageHandler<Certifica
             list.add(algo);
         }
         return list;
-    }
-
-    private void adjustSelectedSignatureAndHashAlgorithm() {
-        if (Collections.disjoint(tlsContext.getChooser().getClientSupportedSignatureAndHashAlgorithms(),
-            tlsContext.getChooser().getServerSupportedSignatureAndHashAlgorithms())) {
-            LOGGER.warn("Client and Server have no signature and hash algorithm in common");
-        } else {
-            Sets.SetView<SignatureAndHashAlgorithm> intersection = Sets.intersection(
-                Sets.newHashSet(tlsContext.getChooser().getClientSupportedSignatureAndHashAlgorithms()),
-                Sets.newHashSet(tlsContext.getChooser().getServerSupportedSignatureAndHashAlgorithms()));
-            SignatureAndHashAlgorithm algo = (SignatureAndHashAlgorithm) intersection.toArray()[0];
-            tlsContext.setSelectedSignatureAndHashAlgorithm(algo);
-            LOGGER.debug("Adjusting selected signature and hash algorithm to: " + algo.name());
-
-        }
     }
 
     private void adjustCertificateRequestContext(CertificateRequestMessage msg) {

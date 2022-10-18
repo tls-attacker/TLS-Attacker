@@ -9,13 +9,17 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class SignatureAndHashAlgorithmsExtensionHandlerTest {
 
@@ -34,12 +38,16 @@ public class SignatureAndHashAlgorithmsExtensionHandlerTest {
     @Test
     public void testadjustContext() {
         SignatureAndHashAlgorithmsExtensionMessage msg = new SignatureAndHashAlgorithmsExtensionMessage();
-        msg.setSignatureAndHashAlgorithms(new byte[] { 0, 0 });
+        byte[] algoBytes = ArrayConverter.concatenate(SignatureAndHashAlgorithm.DSA_SHA1.getByteValue(),
+            SignatureAndHashAlgorithm.RSA_SHA512.getByteValue());
+        msg.setSignatureAndHashAlgorithms(algoBytes);
+        context.setServerSupportedSignatureAndHashAlgorithms(SignatureAndHashAlgorithm.RSA_SHA512);
         handler.adjustContext(msg);
-        assertTrue(context.getClientSupportedSignatureAndHashAlgorithms().size() == 1);
+        assertTrue(context.getClientSupportedSignatureAndHashAlgorithms().size() == 2);
         assertTrue(
-            context.getClientSupportedSignatureAndHashAlgorithms().get(0).getHashAlgorithm() == HashAlgorithm.NONE);
+            context.getClientSupportedSignatureAndHashAlgorithms().get(0).getHashAlgorithm() == HashAlgorithm.SHA1);
         assertTrue(context.getClientSupportedSignatureAndHashAlgorithms().get(0).getSignatureAlgorithm()
-            == SignatureAlgorithm.ANONYMOUS);
+            == SignatureAlgorithm.DSA);
+        assertEquals(SignatureAndHashAlgorithm.RSA_SHA512, context.getSelectedSignatureAndHashAlgorithm());
     }
 }
