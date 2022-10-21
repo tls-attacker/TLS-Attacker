@@ -9,15 +9,15 @@
 
 package de.rub.nds.tlsattacker.core.tokenbinding;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import org.junit.After;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * s_client -keymatexport “label” -keymatexportlen 20
@@ -26,21 +26,14 @@ public class TokenCalculatorTest {
 
     private TlsContext context;
 
-    public TokenCalculatorTest() {
-    }
-
-    @Before
+    @BeforeEach
     public void setUp() {
         context = new TlsContext();
     }
 
-    @After
-    public void tearDown() {
-    }
-
     /**
      * Test of calculateEKM method, of class TokenCalculator.
-     * 
+     *
      * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test
@@ -59,7 +52,7 @@ public class TokenCalculatorTest {
 
     /**
      * Test of calculateEKM method, of class TokenCalculator.
-     * 
+     *
      * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test

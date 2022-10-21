@@ -9,14 +9,17 @@
 
 package de.rub.nds.tlsattacker.core.util;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import de.rub.nds.modifiablevariable.util.ModifiableVariableAnalyzer;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+
 import java.lang.reflect.Field;
 import java.util.List;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import org.junit.Test;
 
 public class ModifiableVariableAnalyzerTest {
 
@@ -40,6 +43,7 @@ public class ModifiableVariableAnalyzerTest {
      * Test of getRandomModifiableVariableField method, of class ModifiableVariableAnalyzer.
      */
     @Test
+    @Disabled("Not implemented")
     public void testGetRandomModifiableVariableField() {
     }
 

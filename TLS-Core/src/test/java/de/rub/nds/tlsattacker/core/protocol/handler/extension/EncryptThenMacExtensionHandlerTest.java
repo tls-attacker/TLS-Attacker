@@ -9,26 +9,23 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptThenMacExtensionMessage;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class EncryptThenMacExtensionHandlerTest {
+public class EncryptThenMacExtensionHandlerTest
+    extends AbstractExtensionMessageHandlerTest<EncryptThenMacExtensionMessage, EncryptThenMacExtensionHandler> {
 
-    private EncryptThenMacExtensionHandler handler;
-    private TlsContext context;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new EncryptThenMacExtensionHandler(context);
+    public EncryptThenMacExtensionHandlerTest() {
+        super(EncryptThenMacExtensionMessage::new, EncryptThenMacExtensionHandler::new);
     }
 
     @Test
-    public void testadjustContext() {
+    @Override
+    public void testadjustTLSExtensionContext() {
         EncryptThenMacExtensionMessage message = new EncryptThenMacExtensionMessage();
         handler.adjustContext(message);
         assertTrue(context.isExtensionProposed(ExtensionType.ENCRYPT_THEN_MAC));

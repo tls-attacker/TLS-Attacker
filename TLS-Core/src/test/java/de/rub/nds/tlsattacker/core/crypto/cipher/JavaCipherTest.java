@@ -9,71 +9,29 @@
 
 package de.rub.nds.tlsattacker.core.crypto.cipher;
 
-import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
-import de.rub.nds.tlsattacker.util.UnlimitedStrengthEnabler;
-import java.security.Security;
-import java.util.LinkedList;
-import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.junit.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-/**
- *
- *
- */
+import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
+
+import java.security.Security;
+
 public class JavaCipherTest {
 
-    private final static Logger LOGGER = LogManager.getLogger();
-
-    @BeforeClass
+    @BeforeAll
     public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    public JavaCipherTest() {
-    }
-
-    @Before
-    public void setUp() {
         Security.addProvider(new BouncyCastleProvider());
-        UnlimitedStrengthEnabler.enable();
     }
 
-    @After
-    public void tearDown() {
-    }
-
-    @Test
-    public void generalTest() {
-        List<CipherAlgorithm> algos = new LinkedList<>();
-        algos.add(CipherAlgorithm.AES_128_CBC);
-        algos.add(CipherAlgorithm.AES_128_CCM);
-        algos.add(CipherAlgorithm.AES_128_GCM);
-        algos.add(CipherAlgorithm.AES_256_CBC);
-        algos.add(CipherAlgorithm.AES_256_CCM);
-        algos.add(CipherAlgorithm.AES_256_GCM);
-        algos.add(CipherAlgorithm.ARIA_128_CBC);
-        algos.add(CipherAlgorithm.ARIA_128_GCM);
-        algos.add(CipherAlgorithm.ARIA_256_CBC);
-        algos.add(CipherAlgorithm.ARIA_256_GCM);
-        algos.add(CipherAlgorithm.CAMELLIA_128_CBC);
-        algos.add(CipherAlgorithm.CAMELLIA_128_GCM);
-        algos.add(CipherAlgorithm.CAMELLIA_256_CBC);
-        algos.add(CipherAlgorithm.CAMELLIA_256_GCM);
-        algos.add(CipherAlgorithm.DES_CBC);
-        algos.add(CipherAlgorithm.DES_EDE_CBC);
-        algos.add(CipherAlgorithm.IDEA_128);
-        algos.add(CipherAlgorithm.RC2_128);
-        algos.add(CipherAlgorithm.RC4_128);
-        algos.add(CipherAlgorithm.SEED_CBC);
-        for (CipherAlgorithm algo : algos) {
-            byte[] key = new byte[algo.getKeySize()];
-            JavaCipher cipher = new JavaCipher(algo, key, false);
-        }
+    @ParameterizedTest
+    @EnumSource(value = CipherAlgorithm.class,
+        names = { "(AES|ARIA|CAMELLIA)_(128|256)_(CBC|GCM)", "DES_(EDE_)?CBC", "(IDEA|RC2|RC4)_128", "SEED_CBC" },
+        mode = EnumSource.Mode.MATCH_ANY)
+    public void testInstantiationDoesNotThrow(CipherAlgorithm providedCipherAlgorithm) {
+        byte[] key = new byte[providedCipherAlgorithm.getKeySize()];
+        assertDoesNotThrow(() -> new JavaCipher(providedCipherAlgorithm, key, false));
     }
 }

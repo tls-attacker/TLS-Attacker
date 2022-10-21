@@ -14,7 +14,11 @@ import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Objects;
-import javax.xml.bind.annotation.*;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElements;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * Can be used to store a point of an elliptic curve.

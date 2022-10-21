@@ -9,33 +9,31 @@
 
 package de.rub.nds.tlsattacker.core.config.delegate;
 
-import com.beust.jcommander.JCommander;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import de.rub.nds.tlsattacker.core.config.Config;
 import org.apache.commons.lang3.builder.EqualsBuilder;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-public class DynamicWorkflowDelegateTest {
+public class DynamicWorkflowDelegateTest extends AbstractDelegateTest<DynamicWorkflowDelegate> {
 
-    private DynamicWorkflowDelegate delegate;
-    private JCommander jcommander;
-    private String[] args;
-
-    @Before
+    @BeforeEach
     public void setUp() {
-        this.delegate = new DynamicWorkflowDelegate();
-        this.jcommander = new JCommander(delegate);
+        super.setUp(new DynamicWorkflowDelegate());
     }
 
     /**
      * Test of isDynamicWorkflow method, of class DynamicWorkflowDelegate.
      */
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
+    @Disabled("Dynamic workflow not implemented")
     public void testIsDynamicWorkflow() {
         args = new String[1];
         args[0] = "-dynamic_workflow";
-        assertTrue(delegate.isDynamicWorkflow() == null);
+        assertNull(delegate.isDynamicWorkflow());
         jcommander.parse(args);
         assertTrue(delegate.isDynamicWorkflow());
     }
@@ -43,9 +41,10 @@ public class DynamicWorkflowDelegateTest {
     /**
      * Test of setDynamicWorkflow method, of class DynamicWorkflowDelegate.
      */
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
+    @Disabled("Dynamic workflow not implemented")
     public void testSetDynamicWorkflow() {
-        assertTrue(delegate.isDynamicWorkflow() == null);
+        assertNull(delegate.isDynamicWorkflow());
         delegate.setDynamicWorkflow(true);
         assertTrue(delegate.isDynamicWorkflow());
     }
@@ -53,7 +52,8 @@ public class DynamicWorkflowDelegateTest {
     /**
      * Test of applyDelegate method, of class DynamicWorkflowDelegate.
      */
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
+    @Disabled("Dynamic workflow not implemented")
     public void testApplyDelegate() {
         Config config = Config.createConfig();
         config.setDynamicWorkflow(false);
@@ -64,12 +64,12 @@ public class DynamicWorkflowDelegateTest {
         assertTrue(config.isDynamicWorkflow());
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
+    @Disabled("Dynamic workflow not implemented")
     public void testNothingSetNothingChanges() {
         Config config = Config.createConfig();
         Config config2 = Config.createConfig();
         delegate.applyDelegate(config);
-        assertTrue(EqualsBuilder.reflectionEquals(config, config2, "keyStore", "ourCertificate"));// little
-        // ugly
+        assertTrue(EqualsBuilder.reflectionEquals(config, config2, "keyStore", "ourCertificate"));
     }
 }

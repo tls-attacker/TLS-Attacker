@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.HeartbeatByteLength;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
 import java.io.InputStream;
+import javax.swing.text.StyleConstants;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -37,6 +38,7 @@ public class HeartbeatMessageParser extends ProtocolMessageParser<HeartbeatMessa
         parsePayloadLength(message);
         parsePayload(message);
         parsePadding(message);
+        message.setCompleteResultingMessage(getAlreadyParsed());
     }
 
     /**

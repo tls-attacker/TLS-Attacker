@@ -9,15 +9,17 @@
 
 package de.rub.nds.tlsattacker.core.config.converters;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import com.beust.jcommander.ParameterException;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ByteArrayConverterTest {
     private ByteArrayConverter converter;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         converter = new ByteArrayConverter();
     }
@@ -32,8 +34,8 @@ public class ByteArrayConverterTest {
         assertArrayEquals(new byte[] { (byte) 0xff, (byte) 0xff }, converter.convert(testString));
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertError() {
-        converter.convert("hello world");
+        assertThrows(ParameterException.class, () -> converter.convert("hello world"));
     }
 }

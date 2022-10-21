@@ -9,20 +9,16 @@
 
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 public class ExtensionSerializerFactoryTest {
-
-    @Before
-    public void setUp() {
-    }
 
     /**
      * Test of getExtensionSerializer method, of class ExtensionSerializerFactory.
      */
     @Test
+    @Disabled("Not implemented")
     public void testGetExtensionSerializer() {
     }
-
 }

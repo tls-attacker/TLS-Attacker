@@ -77,7 +77,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
 
     /**
      * Sends the records given in the LayerConfiguration using the lower layer.
-     * 
+     *
      * @return             LayerProcessingResult A result object containing information about the sent records
      * @throws IOException
      *                     When the data cannot be sent
@@ -118,7 +118,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
 
     /**
      * Sends data from an upper layer using the lower layer. Puts the given bytes into records and sends those.
-     * 
+     *
      * @param  hint
      *                     Contains information about the message to be sent, including the message type.
      * @param  data
@@ -197,7 +197,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
 
     /**
      * Receive more data for the upper layer using the lower layer.
-     * 
+     *
      * @param  desiredHint
      *                     This hint from the calling layer specifies which data its wants to read.
      * @throws IOException
@@ -279,7 +279,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
 
     /**
      * Re-encrypts already send record bytes in DTLS retransmission.
-     * 
+     *
      * @param  records
      *                 Records to send
      * @return         byte array of the encrypted records.

@@ -9,32 +9,23 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
 import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import org.junit.After;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class HelloVerifyRequestHandlerTest {
+public class HelloVerifyRequestHandlerTest
+    extends AbstractTlsMessageHandlerTest<HelloVerifyRequestMessage, HelloVerifyRequestHandler> {
 
-    private HelloVerifyRequestHandler handler;
-    private TlsContext context;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new HelloVerifyRequestHandler(context);
-    }
-
-    @After
-    public void tearDown() {
+    public HelloVerifyRequestHandlerTest() {
+        super(HelloVerifyRequestMessage::new, HelloVerifyRequestHandler::new);
     }
 
     /**
      * Test of adjustContext method, of class HelloVerifyRequestHandler.
      */
     @Test
+    @Override
     public void testadjustContext() {
         HelloVerifyRequestMessage message = new HelloVerifyRequestMessage();
         message.setCookie(new byte[] { 0, 1, 2, 3 });

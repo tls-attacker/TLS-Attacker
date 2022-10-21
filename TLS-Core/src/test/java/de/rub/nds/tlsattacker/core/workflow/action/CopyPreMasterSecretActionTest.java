@@ -9,67 +9,42 @@
 
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
-import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class CopyPreMasterSecretActionTest {
-    private State state;
-    private TlsContext tlsContextServer1;
-    private TlsContext tlsContextServer2;
-    private CopyPreMasterSecretAction action;
+import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import org.junit.jupiter.api.Test;
 
-    @Before
-    public void setUp() {
-        Config config = Config.createConfig();
-        action = new CopyPreMasterSecretAction("server1", "server2");
-        WorkflowTrace trace = new WorkflowTrace();
-        trace.addTlsAction(action);
-        trace.addConnection(new OutboundConnection("server1", 444, "localhost"));
-        trace.addConnection(new OutboundConnection("server2", 445, "localhost"));
+public class CopyPreMasterSecretActionTest extends AbstractCopyActionTest<CopyPreMasterSecretAction> {
 
-        state = new State(config, trace);
-        tlsContextServer1 = state.getContext("server1").getTlsContext();
-        tlsContextServer2 = state.getContext("server2").getTlsContext();
-        tlsContextServer1.setPreMasterSecret(new byte[] { 1, 2 });
-        tlsContextServer2.setPreMasterSecret(new byte[] { 3, 4 });
+    public CopyPreMasterSecretActionTest() {
+        super(new CopyPreMasterSecretAction("src", "dst"), CopyPreMasterSecretAction.class);
+        src.setPreMasterSecret(new byte[] { 1, 2 });
+        dst.setPreMasterSecret(new byte[] { 3, 4 });
+    }
+
+    @Test
+    @Override
+    public void testAliasesSetProperlyErrorSrc() {
+        CopyPreMasterSecretAction action = new CopyPreMasterSecretAction(null, "dst");
+        assertThrows(WorkflowExecutionException.class, action::assertAliasesSetProperly);
+    }
+
+    @Test
+    @Override
+    public void testAliasesSetProperlyErrorDst() {
+        CopyPreMasterSecretAction action = new CopyPreMasterSecretAction("src", null);
+        assertThrows(WorkflowExecutionException.class, action::assertAliasesSetProperly);
     }
 
     /**
      * Test of execute method, of class CopyPreMasterSecretActionTest.
      */
     @Test
-    public void testExecute() {
-        action.execute(state);
-        assertArrayEquals(tlsContextServer1.getPreMasterSecret(), tlsContextServer2.getPreMasterSecret());
-        assertArrayEquals(tlsContextServer1.getPreMasterSecret(), new byte[] { 1, 2 });
-        assertArrayEquals(tlsContextServer2.getPreMasterSecret(), new byte[] { 1, 2 });
-        assertTrue(action.isExecuted());
-    }
-
-    /**
-     * Test of getSrc/DstContextAlias methods, of class CopyPreMasterSecretAction
-     */
-    @Test
-    public void testGetAlias() {
-        assertEquals(action.getSrcContextAlias(), "server1");
-        assertEquals(action.getDstContextAlias(), "server2");
-    }
-
-    /**
-     * Test of getAllAliases method, of class ChangeClientRandomAction.
-     */
-    @Test
-    public void testGetAllAliases() {
-        String[] aliases = action.getAllAliases().toArray(new String[2]);
-        assertTrue(aliases[0].equals("server1") || aliases[0].equals("server2"));
-        assertTrue(aliases[1].equals("server1") || aliases[1].equals("server2"));
-        assertNotEquals(aliases[0], aliases[1]);
+    @Override
+    public void testExecute() throws Exception {
+        super.testExecute();
+        assertArrayEquals(src.getPreMasterSecret(), dst.getPreMasterSecret());
+        assertArrayEquals(new byte[] { 1, 2 }, src.getPreMasterSecret());
     }
 
     /**
@@ -78,8 +53,8 @@ public class CopyPreMasterSecretActionTest {
     @Test
     public void testEquals() {
         assertEquals(action, action);
-        assertNotEquals(action, new CopyPreMasterSecretAction("server1", "null"));
-        assertNotEquals(action, new CopyPreMasterSecretAction("null", "server2"));
+        assertNotEquals(action, new CopyPreMasterSecretAction("src", "null"));
+        assertNotEquals(action, new CopyPreMasterSecretAction("null", "dst"));
         assertNotEquals(action, new CopyPreMasterSecretAction("null", "null"));
     }
 }

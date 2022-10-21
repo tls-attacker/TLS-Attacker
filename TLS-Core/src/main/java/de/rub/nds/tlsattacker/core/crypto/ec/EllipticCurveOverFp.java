@@ -24,7 +24,7 @@ public class EllipticCurveOverFp extends EllipticCurve {
     private final FieldElementFp fieldB;
 
     /**
-     * Instantiates the curve y^2 = x^3 + ax + b over F_p. p must be prime.<br />
+     * Instantiates the curve y^2 = x^3 + ax + b over F_p. p must be prime.<br>
      *
      * @param a
      *          The coefficient a in the equation of the curve.
@@ -40,7 +40,7 @@ public class EllipticCurveOverFp extends EllipticCurve {
     }
 
     /**
-     * Instantiates the curve y^2 = x^3 + ax + b over F_p.<br />
+     * Instantiates the curve y^2 = x^3 + ax + b over F_p.<br>
      * With base point (x,y) and base point order q. p must be prime.
      *
      * @param a

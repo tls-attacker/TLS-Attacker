@@ -9,39 +9,18 @@
 
 package de.rub.nds.tlsattacker.core.protocol.message;
 
-import org.junit.After;
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.params.provider.Arguments;
 
-public class SSL2ServerHelloMessageTest {
+import java.util.stream.Stream;
 
-    SSL2ServerHelloMessage message;
+public class SSL2ServerHelloMessageTest extends AbstractMessageTest<SSL2ServerHelloMessage> {
 
-    @Before
-    public void setUp() {
-        message = new SSL2ServerHelloMessage();
+    public SSL2ServerHelloMessageTest() {
+        super(SSL2ServerHelloMessage::new, "SSL2ServerHelloMessage:\n" + "  Protocol Version: %s\n" + "  Type: %s\n"
+            + "  Supported CipherSuites: %s\n" + "  SessionIdHit: %s\n" + "  Certificate: %s\n" + "  SessionID: %s");
     }
 
-    @After
-    public void tearDown() {
+    public static Stream<Arguments> provideToStringTestVectors() {
+        return Stream.of(Arguments.of(new Object[] { null, null, null, null, null, null }, null));
     }
-
-    /**
-     * Test of toString method, of class SSL2ServerHelloMessage.
-     */
-    @Test
-    public void testToString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("SSL2ServerHelloMessage:");
-        sb.append("\n  Protocol Version: ").append("null");
-        sb.append("\n  Type: ").append("null");
-        sb.append("\n  Supported CipherSuites: ").append("null");
-        sb.append("\n  SessionIdHit: ").append("null");
-        sb.append("\n  Certificate: ").append("null");
-        sb.append("\n  SessionID: ").append("null");
-
-        assertEquals(message.toString(), sb.toString());
-    }
-
 }

@@ -10,73 +10,39 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestExtensionMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import java.io.ByteArrayInputStream;
-import java.util.Arrays;
-import java.util.Collection;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Named;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class CertificateStatusRequestExtensionParserTest {
-    /**
-     * Parameterized set up of the test vector.
-     *
-     * @return test vector (extensionType, extensionLength, extensionPayload, expectedBytes)
-     */
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return Arrays.asList(
-            new Object[][] { { ArrayConverter.hexStringToByteArray("0100000000"), 1, 0, new byte[0], 0, new byte[0] },
-                { ArrayConverter.hexStringToByteArray("01000102000103"), 1, 1, new byte[] { 0x02 }, 1,
-                    new byte[] { 0x03 } } });
+import java.util.List;
+import java.util.stream.Stream;
+
+public class CertificateStatusRequestExtensionParserTest extends
+    AbstractExtensionParserTest<CertificateStatusRequestExtensionMessage, CertificateStatusRequestExtensionParser> {
+
+    public CertificateStatusRequestExtensionParserTest() {
+        super(CertificateStatusRequestExtensionMessage.class,
+            (stream, context) -> new CertificateStatusRequestExtensionParser(stream, ProtocolVersion.TLS12, context),
+            List.of(
+                Named.of("CertificateStatusRequestExtensionMessage::getCertificateStatusRequestType",
+                    CertificateStatusRequestExtensionMessage::getCertificateStatusRequestType),
+                Named.of("CertificateStatusRequestExtensionMessage::getResponderIDListLength",
+                    CertificateStatusRequestExtensionMessage::getResponderIDListLength),
+                Named.of("CertificateStatusRequestExtensionMessage::getResponderIDList",
+                    CertificateStatusRequestExtensionMessage::getResponderIDList),
+                Named.of("CertificateStatusRequestExtensionMessage::getRequestExtensionLength",
+                    CertificateStatusRequestExtensionMessage::getRequestExtensionLength),
+                Named.of("CertificateStatusRequestExtensionMessage::getRequestExtension",
+                    CertificateStatusRequestExtensionMessage::getRequestExtension)));
     }
 
-    private final byte[] expectedBytes;
-    private final int certificateStatusRequestType;
-    private final int responderIDListLength;
-    private final byte[] responderIDList;
-    private final int requestExtensionLength;
-    private final byte[] requestExtension;
-    private CertificateStatusRequestExtensionParser parser;
-    private CertificateStatusRequestExtensionMessage message;
-    private final Config config = Config.createConfig();
-
-    public CertificateStatusRequestExtensionParserTest(byte[] expectedBytes, int certificateStatusRequestType,
-        int responderIDListLength, byte[] responderIDList, int requestExtensionLength, byte[] requestExtension) {
-        this.expectedBytes = expectedBytes;
-        this.certificateStatusRequestType = certificateStatusRequestType;
-        this.responderIDListLength = responderIDListLength;
-        this.responderIDList = responderIDList;
-        this.requestExtensionLength = requestExtensionLength;
-        this.requestExtension = requestExtension;
-    }
-
-    @Before
-    public void setUp() {
-        TlsContext tlsContext = new TlsContext(config);
-        parser = new CertificateStatusRequestExtensionParser(new ByteArrayInputStream(expectedBytes),
-            ProtocolVersion.TLS12, tlsContext);
-    }
-
-    @Test
-    public void testParse() {
-        message = new CertificateStatusRequestExtensionMessage();
-        parser.parse(message);
-
-        assertEquals(certificateStatusRequestType, (long) message.getCertificateStatusRequestType().getValue());
-
-        assertEquals(responderIDListLength, (long) message.getResponderIDListLength().getValue());
-        assertArrayEquals(responderIDList, message.getResponderIDList().getValue());
-
-        assertEquals(requestExtensionLength, (long) message.getRequestExtensionLength().getValue());
-        assertArrayEquals(requestExtension, message.getRequestExtension().getValue());
+    public static Stream<Arguments> provideTestVectors() {
+        return Stream.of(
+            Arguments.of(ArrayConverter.hexStringToByteArray("000500050100000000"), List.of(),
+                ExtensionType.STATUS_REQUEST, 5, List.of(1, 0, new byte[0], 0, new byte[0])),
+            Arguments.of(ArrayConverter.hexStringToByteArray("0005000701000102000103"), List.of(),
+                ExtensionType.STATUS_REQUEST, 7, List.of(1, 1, new byte[] { 0x02 }, 1, new byte[] { 0x03 })));
     }
 }

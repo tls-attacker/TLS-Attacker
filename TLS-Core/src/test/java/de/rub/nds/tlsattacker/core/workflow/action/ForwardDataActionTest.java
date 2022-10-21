@@ -9,11 +9,14 @@
 
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.config.Config;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
@@ -22,41 +25,21 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
 import de.rub.nds.tlsattacker.core.workflow.filter.DefaultFilter;
 import de.rub.nds.tlsattacker.core.workflow.filter.Filter;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import jakarta.xml.bind.JAXBException;
+import org.junit.jupiter.api.Test;
+
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.StringReader;
 import java.io.StringWriter;
-import javax.xml.bind.JAXB;
-import javax.xml.bind.JAXBException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import static org.hamcrest.CoreMatchers.equalTo;
-import org.junit.Assert;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
 
-public class ForwardDataActionTest {
+public class ForwardDataActionTest extends AbstractActionTest<ForwardDataAction> {
 
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final String ctx1Alias = "ctx1";
+    private static final String ctx2Alias = "ctx2";
 
-    private State state;
-    private Config config;
-    private final String ctx1Alias = "ctx1";
-    private final String ctx2Alias = "ctx2";
-    private ForwardDataAction action;
-    private WorkflowTrace trace;
+    public ForwardDataActionTest() {
+        super(new ForwardDataAction(ctx1Alias, ctx2Alias), ForwardDataAction.class);
 
-    @Before
-    public void setUp() throws Exception {
-        config = new Config();
-
-        trace = new WorkflowTrace();
-        trace.addConnection(new OutboundConnection(ctx1Alias));
-        trace.addConnection(new InboundConnection(ctx2Alias));
-
-        state = new State(config, trace);
         Context context = state.getContext(ctx1Alias);
         Context context2 = state.getContext(ctx2Alias);
 
@@ -69,44 +52,34 @@ public class ForwardDataActionTest {
         context2.getTlsContext().setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
     }
 
+    @Override
+    protected void createWorkflowTraceAndState() {
+        trace = new WorkflowTrace();
+        trace.addTlsAction(action);
+        trace.addConnection(new OutboundConnection(ctx1Alias));
+        trace.addConnection(new InboundConnection(ctx2Alias));
+        state = new State(config, trace);
+    }
+
     @Test
-    public void executingSetsExecutionFlagsCorrectly() throws Exception {
-        action = new ForwardDataAction(ctx1Alias, ctx2Alias);
-        action.execute(state);
-        assertTrue(action.isExecuted());
-        assertTrue(action.executedAsPlanned());
-    }
-
-    @Test(expected = WorkflowExecutionException.class)
-    public void executingTwiceThrowsException() throws Exception {
-        action = new ForwardDataAction(ctx1Alias, ctx2Alias);
-        action.execute(state);
-        assertTrue(action.isExecuted());
-        action.execute(state);
-    }
-
-    @Test(expected = WorkflowExecutionException.class)
     public void executingWithNullAliasThrowsException() throws Exception {
-        action = new ForwardDataAction(null, ctx2Alias);
-        action.execute(state);
-    }
-
-    @Test(expected = WorkflowExecutionException.class)
-    public void executingWithEmptyAliasThrowsException() throws Exception {
-        action = new ForwardDataAction("", ctx2Alias);
-        action.execute(state);
+        ForwardRecordsAction action = new ForwardRecordsAction(null, ctx2Alias);
+        assertThrows(WorkflowExecutionException.class, () -> action.execute(state));
     }
 
     @Test
-    public void marshalingEmptyActionYieldsMinimalOutput() {
-        try {
-            action = new ForwardDataAction(ctx1Alias, ctx2Alias);
-            trace.addTlsAction(action);
+    public void executingWithEmptyAliasThrowsException() throws Exception {
+        ForwardRecordsAction action = new ForwardRecordsAction("", ctx2Alias);
+        assertThrows(WorkflowExecutionException.class, () -> action.execute(state));
+    }
 
-            // used PrintWriter and not StringBuilder as it offers
-            // OS-independent functionality for printing new lines
-            StringWriter sw = new StringWriter();
-            PrintWriter pw = new PrintWriter(sw);
+    @Test
+    @Override
+    public void testMarshalingEmptyActionYieldsMinimalOutput() throws JAXBException, IOException {
+        // used PrintWriter and not StringBuilder as it offers
+        // OS-independent functionality for printing new lines
+        StringWriter sw = new StringWriter();
+        try (PrintWriter pw = new PrintWriter(sw)) {
             pw.println("<workflowTrace>");
             pw.println("    <OutboundConnection>");
             pw.println("        <alias>ctx1</alias>");
@@ -120,28 +93,13 @@ public class ForwardDataActionTest {
             pw.println("        <to>ctx2</to>");
             pw.println("    </ForwardData>");
             pw.println("</workflowTrace>");
-            pw.close();
-            String expected = sw.toString();
-
-            Filter filter = new DefaultFilter(config);
-            filter.applyFilter(trace);
-            filter.postFilter(trace, state.getOriginalWorkflowTrace());
-            String actual = WorkflowTraceSerializer.write(trace);
-            LOGGER.info(actual);
-            Assert.assertThat(actual, equalTo(expected));
-
-        } catch (JAXBException | IOException ex) {
-            LOGGER.error(ex.getLocalizedMessage(), ex);
-            Assert.fail();
         }
-    }
+        String expected = sw.toString();
 
-    @Test
-    public void marshalingAndUnmarshalingYieldsEqualObject() {
-        action = new ForwardDataAction(ctx1Alias, ctx2Alias);
-        StringWriter writer = new StringWriter();
-        JAXB.marshal(action, writer);
-        TlsAction actual = JAXB.unmarshal(new StringReader(writer.getBuffer().toString()), ForwardDataAction.class);
-        assertEquals(action, actual);
+        Filter filter = new DefaultFilter(config);
+        filter.applyFilter(trace);
+        filter.postFilter(trace, state.getOriginalWorkflowTrace());
+        String actual = WorkflowTraceSerializer.write(trace);
+        assertEquals(expected, actual);
     }
 }

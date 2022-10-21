@@ -19,7 +19,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.UserMappingExte
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.UserMappingExtensionSerializer;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class UserMappingExtensionMessage extends ExtensionMessage<UserMappingExtensionMessage> {

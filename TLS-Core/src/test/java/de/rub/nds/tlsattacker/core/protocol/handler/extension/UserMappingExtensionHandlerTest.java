@@ -9,28 +9,25 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.UserMappingExtensionMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class UserMappingExtensionHandlerTest {
+public class UserMappingExtensionHandlerTest
+    extends AbstractExtensionMessageHandlerTest<UserMappingExtensionMessage, UserMappingExtensionHandler> {
     private final UserMappingExtensionHintType hintType = UserMappingExtensionHintType.UPN_DOMAIN_HINT;
-    private UserMappingExtensionHandler handler;
-    private TlsContext context;
 
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new UserMappingExtensionHandler(context);
+    public UserMappingExtensionHandlerTest() {
+        super(UserMappingExtensionMessage::new, UserMappingExtensionHandler::new);
     }
 
     @Test
-    public void testadjustContext() {
+    @Override
+    public void testadjustTLSExtensionContext() {
         UserMappingExtensionMessage msg = new UserMappingExtensionMessage();
         msg.setUserMappingType(hintType.getValue());
         handler.adjustContext(msg);

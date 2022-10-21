@@ -9,39 +9,29 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import org.junit.After;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class AlertHandlerTest {
+public class AlertHandlerTest extends AbstractTlsMessageHandlerTest<AlertMessage, AlertHandler> {
 
-    private AlertHandler handler;
-    private TlsContext context;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new AlertHandler(context);
-    }
-
-    @After
-    public void tearDown() {
+    public AlertHandlerTest() {
+        super(AlertMessage::new, AlertHandler::new);
     }
 
     /**
      * Test of adjustContext method, of class AlertHandler.
      */
     @Test
+    @Override
     public void testadjustContext() {
-        context.getContext().setConnection(new OutboundConnection());
+        context.setConnection(new OutboundConnection());
         context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
         AlertMessage message = new AlertMessage();
         message.setDescription(AlertDescription.ACCESS_DENIED.getValue());

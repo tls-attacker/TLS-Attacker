@@ -10,47 +10,24 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.HeartbeatExtensionMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import java.io.ByteArrayInputStream;
-import java.util.Arrays;
-import java.util.Collection;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Named;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class HeartbeatExtensionParserTest {
+import java.util.List;
+import java.util.stream.Stream;
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { { ArrayConverter.hexStringToByteArray("01"), new byte[] { 1 } } }); // is
-        // the
-        // same for
-        // TLS10 and
-        // TLS11
+public class HeartbeatExtensionParserTest
+    extends AbstractExtensionParserTest<HeartbeatExtensionMessage, HeartbeatExtensionParser> {
+
+    public HeartbeatExtensionParserTest() {
+        super(HeartbeatExtensionMessage.class, HeartbeatExtensionParser::new, List
+            .of(Named.of("HeartbeatExtensionMessage::getHeartbeatMode", HeartbeatExtensionMessage::getHeartbeatMode)));
     }
 
-    private final byte[] extension;
-    private final byte[] heartbeatMode;
-    private final Config config = Config.createConfig();
-
-    public HeartbeatExtensionParserTest(byte[] extension, byte[] heartbeatMode) {
-        this.extension = extension;
-        this.heartbeatMode = heartbeatMode;
-    }
-
-    /**
-     * Test of parse method, of class HeartbeatExtensionParser.
-     */
-    @Test
-    public void testParse() {
-        TlsContext tlsContext = new TlsContext(config);
-        HeartbeatExtensionParser parser = new HeartbeatExtensionParser(new ByteArrayInputStream(extension), tlsContext);
-        HeartbeatExtensionMessage msg = new HeartbeatExtensionMessage();
-        parser.parse(msg);
-        assertArrayEquals(heartbeatMode, msg.getHeartbeatMode().getValue());
+    public static Stream<Arguments> provideTestVectors() {
+        return Stream.of(Arguments.of(ArrayConverter.hexStringToByteArray("000f000101"), List.of(),
+            ExtensionType.HEARTBEAT, 1, List.of(new byte[] { 1 })));
     }
 }

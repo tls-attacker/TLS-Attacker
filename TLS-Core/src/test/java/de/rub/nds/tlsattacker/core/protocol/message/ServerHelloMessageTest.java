@@ -9,42 +9,20 @@
 
 package de.rub.nds.tlsattacker.core.protocol.message;
 
-import org.junit.After;
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.params.provider.Arguments;
 
-public class ServerHelloMessageTest {
+import java.util.stream.Stream;
 
-    ServerHelloMessage message;
+public class ServerHelloMessageTest extends AbstractMessageTest<ServerHelloMessage> {
 
-    @Before
-    public void setUp() {
-        message = new ServerHelloMessage();
+    public ServerHelloMessageTest() {
+        super(ServerHelloMessage::new,
+            "HandshakeMessage:\n" + "  Type: %s\n" + "  Length: %s\n" + "  Protocol Version: %s\n"
+                + "  Server Unix Time: %s\n" + "  Server Random: %s\n" + "  Session ID: %s\n"
+                + "  Selected Cipher Suite: %s\n" + "  Selected Compression Method: %s\n" + "  Extensions: %s");
     }
 
-    @After
-    public void tearDown() {
+    public static Stream<Arguments> provideToStringTestVectors() {
+        return Stream.of(Arguments.of(new Object[] { null, null, null, null, null, null, null, null, null }, null));
     }
-
-    /**
-     * Test of toString method, of class ServerHelloMessage.
-     */
-    @Test
-    public void testToString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("HandshakeMessage:");
-        sb.append("\n  Type: ").append("null");
-        sb.append("\n  Length: ").append("null");
-        sb.append("\n  Protocol Version: ").append("null");
-        sb.append("\n  Server Unix Time: ").append("null");
-        sb.append("\n  Server Random: ").append("null");
-        sb.append("\n  Session ID: ").append("null");
-        sb.append("\n  Selected Cipher Suite: ").append("null");
-        sb.append("\n  Selected Compression Method: ").append("null");
-        sb.append("\n  Extensions: ").append("null");
-
-        assertEquals(sb.toString(), message.toString());
-    }
-
 }

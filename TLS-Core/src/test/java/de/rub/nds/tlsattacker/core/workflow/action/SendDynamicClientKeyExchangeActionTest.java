@@ -9,67 +9,30 @@
 
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.config.Config;
+import static org.junit.jupiter.api.Assertions.*;
+
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import org.junit.jupiter.api.Test;
+
 import java.util.ArrayList;
 import java.util.List;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
 
-/**
- *
- * @author mario
- */
-public class SendDynamicClientKeyExchangeActionTest {
+public class SendDynamicClientKeyExchangeActionTest extends AbstractActionTest<SendDynamicClientKeyExchangeAction> {
 
-    private State state;
-    private Context context;
-    private Config config;
-
-    private SendDynamicClientKeyExchangeAction action;
-
-    @Before
-    public void setUp() {
-        action = new SendDynamicClientKeyExchangeAction();
-
-        // create Config to not overly rely on default values (aka. make sure
-        // we're client)
-        config = new Config();
-        config.setDefaultRunningMode(RunningModeType.CLIENT);
-
-        WorkflowTrace trace = new WorkflowTrace();
-        trace.addTlsAction(action);
-        state = new State(config, trace);
-
-        context = state.getContext();
-        context.getTlsContext().setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
-        context.getTcpContext().setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
-    }
-
-    @Test
-    public void testExecute() {
-        action.execute(state);
-        assertTrue(action.executedAsPlanned());
-        assertTrue(action.isExecuted());
-        try {
-            action.execute(state);
-            fail(); // Code shouldn't be reached at all
-        } catch (WorkflowExecutionException e) {
-            assertTrue(e.getMessage().equals("Action already executed!"));
-        } catch (Exception e) {
-            // any other Exception than what should have been thrown appeared
-            fail();
-        }
+    public SendDynamicClientKeyExchangeActionTest() {
+        super(new SendDynamicClientKeyExchangeAction(), SendDynamicClientKeyExchangeAction.class);
+        state.getConfig().setDefaultRunningMode(RunningModeType.CLIENT);
+        TlsContext context = state.getTlsContext();
+        context.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
+        context.setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
     }
 
     @Test
@@ -84,8 +47,7 @@ public class SendDynamicClientKeyExchangeActionTest {
     public void testGetSendRecords() {
         assertTrue(action.getSendRecords() instanceof ArrayList && action.getSendRecords().isEmpty());
         action.execute(state);
-        assertTrue(action.getSendRecords() instanceof ArrayList && action.getSendRecords().size() == 1
-            && action.getSendRecords().get(0) instanceof Record);
+        assertTrue(action.getSendRecords() instanceof ArrayList && action.getSendRecords().size() == 1);
     }
 
     @Test
@@ -93,34 +55,23 @@ public class SendDynamicClientKeyExchangeActionTest {
         action.execute(state);
         List<Record> expectedRecords = new ArrayList<>();
         action.setRecords(expectedRecords);
-        assertTrue(action.getSendRecords().equals(expectedRecords));
-    }
-
-    @Test
-    public void testReset() {
-        assertFalse(action.isExecuted());
-        action.execute(state);
-        assertTrue(action.isExecuted());
-        action.reset();
-        assertFalse(action.isExecuted());
-        action.execute(state);
-        assertTrue(action.isExecuted());
+        assertEquals(expectedRecords, action.getSendRecords());
     }
 
     @Test
     public void testEquals() {
-        assertTrue(action.equals(action));
-        assertFalse(action.equals(null));
-        assertFalse(action.equals(new Object()));
+        assertEquals(action, action);
+        assertNotEquals(null, action);
+        assertNotEquals(new Object(), action);
     }
 
     @Test
     public void testToString() {
-        assertTrue(action.toString().equals("Send Dynamic Client Key Exchange Action: (not executed)\n\tMessages:\n"));
+        assertEquals("Send Dynamic Client Key Exchange Action: (not executed)\n\tMessages:\n", action.toString());
     }
 
     @Test
     public void testToCompactString() {
-        assertTrue(action.toCompactString().equals("SendDynamicClientKeyExchangeAction [client] (no messages set)"));
+        assertEquals("SendDynamicClientKeyExchangeAction [client] (no messages set)", action.toCompactString());
     }
 }

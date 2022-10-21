@@ -9,21 +9,23 @@
 
 package de.rub.nds.tlsattacker.core.workflow;
 
-import java.security.Security;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.junit.After;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.security.Security;
 
 public class BouncyCastleProviderCheckerTest {
-    @Before
+    @BeforeEach
     public void setUp() {
         Security.removeProvider("BC");
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         Security.addProvider(new BouncyCastleProvider());
     }

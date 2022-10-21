@@ -10,53 +10,28 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.AlpnExtensionMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import java.io.ByteArrayInputStream;
-import java.util.Arrays;
-import java.util.Collection;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Named;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class AlpnExtensionParserTest {
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { { ArrayConverter.hexStringToByteArray("000c02683208687474702f312e31"), 12,
-            ArrayConverter.hexStringToByteArray("02683208687474702f312e31") } });
+import java.util.List;
+import java.util.stream.Stream;
+
+public class AlpnExtensionParserTest extends AbstractExtensionParserTest<AlpnExtensionMessage, AlpnExtensionParser> {
+
+    public AlpnExtensionParserTest() {
+        super(AlpnExtensionMessage.class, AlpnExtensionParser::new,
+            List.of(
+                Named.of("AlpnExtensionMessage::getProposedAlpnProtocolsLength",
+                    AlpnExtensionMessage::getProposedAlpnProtocolsLength),
+                Named.of("AlpnExtensionMessage::getProposedAlpnProtocols",
+                    AlpnExtensionMessage::getProposedAlpnProtocols)));
     }
 
-    private final byte[] expectedBytes;
-    private final int proposedAlpnProtocolsLength;
-    private final byte[] proposedAlpnProtocols;
-    private AlpnExtensionParser parser;
-    private AlpnExtensionMessage message;
-    private final Config config = Config.createConfig();
-
-    public AlpnExtensionParserTest(byte[] expectedBytes, int alpnProtocolsLength, byte[] alpnAnnouncedProtocols) {
-        this.expectedBytes = expectedBytes;
-        this.proposedAlpnProtocolsLength = alpnProtocolsLength;
-        this.proposedAlpnProtocols = alpnAnnouncedProtocols;
+    public static Stream<Arguments> provideTestVectors() {
+        return Stream
+            .of(Arguments.of(ArrayConverter.hexStringToByteArray("0010000e000c02683208687474702f312e31"), List.of(),
+                ExtensionType.ALPN, 14, List.of(12, ArrayConverter.hexStringToByteArray("02683208687474702f312e31"))));
     }
-
-    @Before
-    public void setUp() {
-        TlsContext tlsContext = new TlsContext(config);
-        parser = new AlpnExtensionParser(new ByteArrayInputStream(expectedBytes), tlsContext);
-    }
-
-    @Test
-    public void testParse() {
-        message = new AlpnExtensionMessage();
-        parser.parse(message);
-
-        assertEquals(proposedAlpnProtocolsLength, (long) message.getProposedAlpnProtocolsLength().getValue());
-        assertArrayEquals(proposedAlpnProtocols, message.getProposedAlpnProtocols().getValue());
-    }
-
 }

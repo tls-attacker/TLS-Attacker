@@ -13,8 +13,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * https://tools.ietf.org/html/rfc5077#section-4
- * 
+ * <a href="https://tools.ietf.org/html/rfc5077#section-4">RFC 5077 Section 4</a>
+ *
  */
 public enum ClientAuthenticationType {
     ANONYMOUS((byte) 0x00),

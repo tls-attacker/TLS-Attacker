@@ -9,41 +9,29 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import org.junit.jupiter.api.Test;
+
 import java.math.BigInteger;
-import org.junit.After;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
 
-public class ServerHelloHandlerTest {
+public class ServerHelloHandlerTest extends AbstractTlsMessageHandlerTest<ServerHelloMessage, ServerHelloHandler> {
 
-    private ServerHelloHandler handler;
-    private TlsContext context;
-
-    @Before
-    public void setUp() {
-        Context outerContext = new Context(new Config());
-        context = outerContext.getTlsContext();
-        handler = new ServerHelloHandler(context);
-    }
-
-    @After
-    public void tearDown() {
+    public ServerHelloHandlerTest() {
+        super(ServerHelloMessage::new, ServerHelloHandler::new);
     }
 
     /**
      * Test of adjustContext method, of class ServerHelloHandler.
      */
     @Test
+    @Override
     public void testadjustContext() {
         ServerHelloMessage message = new ServerHelloMessage();
         message.setUnixTime(new byte[] { 0, 1, 2 });
@@ -53,12 +41,12 @@ public class ServerHelloHandlerTest {
         message.setSessionId(new byte[] { 6, 6, 6 });
         message.setProtocolVersion(ProtocolVersion.TLS12.getValue());
         handler.adjustContext(message);
-        assertArrayEquals(context.getServerRandom(), new byte[] { 0, 1, 2, 3, 4, 5 });
-        assertTrue(context.getSelectedCompressionMethod() == CompressionMethod.DEFLATE);
-        assertArrayEquals(context.getServerSessionId(), new byte[] { 6, 6, 6 });
-        assertArrayEquals(context.getSelectedCipherSuite().getByteValue(),
-            CipherSuite.TLS_CECPQ1_ECDSA_WITH_AES_256_GCM_SHA384.getByteValue());
-        assertArrayEquals(context.getSelectedProtocolVersion().getValue(), ProtocolVersion.TLS12.getValue());
+        assertArrayEquals(new byte[] { 0, 1, 2, 3, 4, 5 }, context.getServerRandom());
+        assertSame(CompressionMethod.DEFLATE, context.getSelectedCompressionMethod());
+        assertArrayEquals(new byte[] { 6, 6, 6 }, context.getServerSessionId());
+        assertArrayEquals(CipherSuite.TLS_CECPQ1_ECDSA_WITH_AES_256_GCM_SHA384.getByteValue(),
+            context.getSelectedCipherSuite().getByteValue());
+        assertArrayEquals(ProtocolVersion.TLS12.getValue(), context.getSelectedProtocolVersion().getValue());
     }
 
     @Test

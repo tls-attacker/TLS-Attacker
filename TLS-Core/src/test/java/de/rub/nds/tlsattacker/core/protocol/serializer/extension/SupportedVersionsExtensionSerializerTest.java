@@ -11,39 +11,21 @@ package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SupportedVersionsExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.SupportedVersionsExtensionParserTest;
-import java.util.Collection;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class SupportedVersionsExtensionSerializerTest {
+import java.util.List;
+import java.util.stream.Stream;
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return SupportedVersionsExtensionParserTest.generateData();
+public class SupportedVersionsExtensionSerializerTest extends
+    AbstractExtensionMessageSerializerTest<SupportedVersionsExtensionMessage, SupportedVersionsExtensionSerializer> {
+
+    public SupportedVersionsExtensionSerializerTest() {
+        super(SupportedVersionsExtensionMessage::new, SupportedVersionsExtensionSerializer::new,
+            List.of((msg, obj) -> msg.setSupportedVersionsLength((Integer) obj),
+                (msg, obj) -> msg.setSupportedVersions((byte[]) obj)));
     }
 
-    private final byte[] extension;
-    private final int versionListLength;
-    private final byte[] versionList;
-
-    public SupportedVersionsExtensionSerializerTest(byte[] extension, int versionListLength, byte[] versionList) {
-        this.extension = extension;
-        this.versionListLength = versionListLength;
-        this.versionList = versionList;
-    }
-
-    /**
-     * Test of serializeExtensionContent method, of class SupportedVersionsExtensionSerializer.
-     */
-    @Test
-    public void testSerializeExtensionContent() {
-        SupportedVersionsExtensionMessage msg = new SupportedVersionsExtensionMessage();
-        msg.setSupportedVersions(versionList);
-        msg.setSupportedVersionsLength(versionListLength);
-        SupportedVersionsExtensionSerializer serializer = new SupportedVersionsExtensionSerializer(msg);
-        assertArrayEquals(extension, serializer.serializeExtensionContent());
+    public static Stream<Arguments> provideTestVectors() {
+        return SupportedVersionsExtensionParserTest.provideTestVectors();
     }
 }

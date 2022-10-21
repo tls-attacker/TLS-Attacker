@@ -9,52 +9,22 @@
 
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import de.rub.nds.tlsattacker.core.layer.LayerStack;
-import de.rub.nds.tlsattacker.core.layer.impl.RecordLayer;
-import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.util.tests.SlowTests;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import javax.crypto.NoSuchPaddingException;
-import org.junit.After;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Test;
 
-public class ChangeCompressionActionTest {
+public class ChangeCompressionActionTest extends AbstractChangeActionTest<ChangeCompressionAction> {
 
-    private State state;
-    private TlsContext tlsContext;
-    private ChangeCompressionAction action;
-
-    @Before
-    public void setUp() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
-        InvalidAlgorithmParameterException, CryptoException {
-        Config config = Config.createConfig();
-        action = new ChangeCompressionAction(CompressionMethod.LZS);
-        WorkflowTrace trace = new WorkflowTrace();
-        trace.addTlsAction(action);
-        state = new State(config, trace);
-        tlsContext = state.getTlsContext();
-        tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
-    }
-
-    @After
-    public void tearDown() {
+    public ChangeCompressionActionTest() {
+        super(new ChangeCompressionAction(CompressionMethod.LZS), ChangeCompressionAction.class);
     }
 
     /**
      * Test of setNewValue method, of class ChangeCompressionAction.
      */
     @Test
+    @Override
     public void testSetNewValue() {
         assertEquals(action.getNewValue(), CompressionMethod.LZS);
         action.setNewValue(CompressionMethod.DEFLATE);
@@ -65,6 +35,7 @@ public class ChangeCompressionActionTest {
      * Test of getNewValue method, of class ChangeCompressionAction.
      */
     @Test
+    @Override
     public void testGetNewValue() {
         assertEquals(action.getNewValue(), CompressionMethod.LZS);
     }
@@ -73,8 +44,9 @@ public class ChangeCompressionActionTest {
      * Test of getOldValue method, of class ChangeCompressionAction.
      */
     @Test
+    @Override
     public void testGetOldValue() {
-        tlsContext.setSelectedCompressionMethod(CompressionMethod.NULL);
+        context.setSelectedCompressionMethod(CompressionMethod.NULL);
         action.execute(state);
         assertEquals(action.getOldValue(), CompressionMethod.NULL);
     }
@@ -83,45 +55,12 @@ public class ChangeCompressionActionTest {
      * Test of execute method, of class ChangeCompressionAction.
      */
     @Test
-    public void testExecute() {
-        tlsContext.setSelectedCompressionMethod(CompressionMethod.NULL);
-        action.execute(state);
+    @Override
+    public void testExecute() throws Exception {
+        context.setSelectedCompressionMethod(CompressionMethod.NULL);
+        super.testExecute();
         assertEquals(action.getOldValue(), CompressionMethod.NULL);
         assertEquals(action.getNewValue(), CompressionMethod.LZS);
-        assertEquals(tlsContext.getSelectedCompressionMethod(), CompressionMethod.LZS);
-        assertTrue(action.isExecuted());
+        assertEquals(context.getSelectedCompressionMethod(), CompressionMethod.LZS);
     }
-
-    /**
-     * Test of reset method, of class ChangeCompressionAction.
-     */
-    @Test
-    public void testReset() {
-        assertFalse(action.isExecuted());
-        action.execute(state);
-        assertTrue(action.isExecuted());
-        action.reset();
-        assertFalse(action.isExecuted());
-        action.execute(state);
-        assertTrue(action.isExecuted());
-    }
-
-    @Test
-    @Category(SlowTests.class)
-    public void marshalingEmptyActionYieldsMinimalOutput() {
-        ActionTestUtils.marshalingEmptyActionYieldsMinimalOutput(ChangeCompressionAction.class);
-    }
-
-    @Test
-    @Category(SlowTests.class)
-    public void marshalingAndUnmarshalingEmptyObjectYieldsEqualObject() {
-        ActionTestUtils.marshalingAndUnmarshalingEmptyObjectYieldsEqualObject(ChangeCompressionAction.class);
-    }
-
-    @Test
-    @Category(SlowTests.class)
-    public void marshalingAndUnmarshalingFilledObjectYieldsEqualObject() {
-        ActionTestUtils.marshalingAndUnmarshalingFilledObjectYieldsEqualObject(action);
-    }
-
 }

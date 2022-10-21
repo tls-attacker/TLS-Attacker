@@ -9,27 +9,24 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PasswordSaltExtensionMessage;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class PasswordSaltExtensionHandlerTest {
+public class PasswordSaltExtensionHandlerTest
+    extends AbstractExtensionMessageHandlerTest<PasswordSaltExtensionMessage, PasswordSaltExtensionHandler> {
 
-    private PasswordSaltExtensionHandler handler;
-    private TlsContext context;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new PasswordSaltExtensionHandler(context);
+    public PasswordSaltExtensionHandlerTest() {
+        super(PasswordSaltExtensionMessage::new, PasswordSaltExtensionHandler::new);
     }
 
     @Test
-    public void testadjustContext() {
+    @Override
+    public void testadjustTLSExtensionContext() {
         PasswordSaltExtensionMessage message = new PasswordSaltExtensionMessage();
         message.setSalt(new byte[32]);
         handler.adjustContext(message);

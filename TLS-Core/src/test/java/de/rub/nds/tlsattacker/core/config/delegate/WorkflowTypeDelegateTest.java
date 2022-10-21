@@ -9,25 +9,19 @@
 
 package de.rub.nds.tlsattacker.core.config.delegate;
 
-import com.beust.jcommander.JCommander;
+import static org.junit.jupiter.api.Assertions.*;
+
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import org.apache.commons.lang3.builder.EqualsBuilder;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class WorkflowTypeDelegateTest {
+public class WorkflowTypeDelegateTest extends AbstractDelegateTest<WorkflowTypeDelegate> {
 
-    private WorkflowTypeDelegate delegate;
-    private JCommander jcommander;
-    private String[] args;
-
-    @Before
+    @BeforeEach
     public void setUp() {
-        this.delegate = new WorkflowTypeDelegate();
-        this.jcommander = new JCommander(delegate);
+        super.setUp(new WorkflowTypeDelegate());
     }
 
     /**
@@ -38,9 +32,9 @@ public class WorkflowTypeDelegateTest {
         args = new String[2];
         args[0] = "-workflow_trace_type";
         args[1] = "HANDSHAKE";
-        assertFalse(WorkflowTraceType.HANDSHAKE.equals(delegate.getWorkflowTraceType()));
+        assertNotEquals(WorkflowTraceType.HANDSHAKE, delegate.getWorkflowTraceType());
         jcommander.parse(args);
-        assertTrue(delegate.getWorkflowTraceType().equals(WorkflowTraceType.HANDSHAKE));
+        assertEquals(WorkflowTraceType.HANDSHAKE, delegate.getWorkflowTraceType());
     }
 
     /**
@@ -48,9 +42,9 @@ public class WorkflowTypeDelegateTest {
      */
     @Test
     public void testSetWorkflowTraceType() {
-        assertFalse(WorkflowTraceType.HANDSHAKE.equals(delegate.getWorkflowTraceType()));
+        assertNotEquals(WorkflowTraceType.HANDSHAKE, delegate.getWorkflowTraceType());
         delegate.setWorkflowTraceType(WorkflowTraceType.HANDSHAKE);
-        assertTrue(delegate.getWorkflowTraceType().equals(WorkflowTraceType.HANDSHAKE));
+        assertEquals(WorkflowTraceType.HANDSHAKE, delegate.getWorkflowTraceType());
     }
 
     /**
@@ -63,9 +57,9 @@ public class WorkflowTypeDelegateTest {
         args[0] = "-workflow_trace_type";
         args[1] = "FULL";
         jcommander.parse(args);
-        assertFalse(WorkflowTraceType.FULL.equals(config.getWorkflowTraceType()));
+        assertNotEquals(WorkflowTraceType.FULL, config.getWorkflowTraceType());
         delegate.applyDelegate(config);
-        assertTrue(WorkflowTraceType.FULL.equals(config.getWorkflowTraceType()));
+        assertEquals(WorkflowTraceType.FULL, config.getWorkflowTraceType());
     }
 
     @Test

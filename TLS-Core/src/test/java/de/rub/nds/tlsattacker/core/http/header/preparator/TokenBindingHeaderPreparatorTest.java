@@ -9,26 +9,27 @@
 
 package de.rub.nds.tlsattacker.core.http.header.preparator;
 
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
-
 import de.rub.nds.tlsattacker.core.config.Config;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.http.header.TokenBindingHeader;
 import de.rub.nds.tlsattacker.core.layer.constant.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
 import de.rub.nds.tlsattacker.core.state.Context;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TokenBindingHeaderPreparatorTest {
 
     private TokenBindingHeader header;
     private TokenBindingHeaderPreparator preparator;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         Config config = new Config();
         config.setDefaultLayerConfiguration(LayerConfiguration.HTTPS);

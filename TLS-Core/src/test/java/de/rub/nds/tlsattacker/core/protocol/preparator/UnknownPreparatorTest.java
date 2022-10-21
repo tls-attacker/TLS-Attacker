@@ -9,24 +9,15 @@
 
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class UnknownPreparatorTest {
+public class UnknownPreparatorTest extends AbstractTlsMessagePreparatorTest<UnknownMessage, UnknownMessagePreparator> {
 
-    private TlsContext context;
-    private UnknownMessage message;
-    private UnknownMessagePreparator preparator;
-
-    @Before
-    public void setUp() {
-        this.context = new TlsContext();
-        this.message = new UnknownMessage(ProtocolMessageType.UNKNOWN);
-        this.preparator = new UnknownMessagePreparator(context.getChooser(), message);
+    public UnknownPreparatorTest() {
+        super(UnknownMessage::new, UnknownMessagePreparator::new);
     }
 
     /**
@@ -37,10 +28,5 @@ public class UnknownPreparatorTest {
         message.setDataConfig(new byte[] { 6, 6, 6 });
         preparator.prepare();
         assertArrayEquals(new byte[] { 6, 6, 6 }, message.getCompleteResultingMessage().getValue());
-    }
-
-    @Test
-    public void testNoContextPrepare() {
-        preparator.prepare();
     }
 }

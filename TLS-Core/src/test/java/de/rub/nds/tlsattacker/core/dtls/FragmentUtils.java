@@ -9,17 +9,18 @@
 
 package de.rub.nds.tlsattacker.core.dtls;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import org.bouncycastle.util.Arrays;
-import static org.junit.Assert.*;
 
 public class FragmentUtils {
 
     public static final int DEFAULT_MESSAGE_LENGTH = 10;
 
     public static DtlsHandshakeMessageFragment fragment(int messageSeq, int fragmentOffset, int fragmentLength,
-        byte content[], int epoch) {
+        byte[] content, int epoch) {
         DtlsHandshakeMessageFragment fragment = new DtlsHandshakeMessageFragment();
         fragment.setFragmentOffset(fragmentOffset);
         fragment.setFragmentLength(fragmentLength);
@@ -37,12 +38,12 @@ public class FragmentUtils {
     }
 
     public static DtlsHandshakeMessageFragment fragmentOfMsg(int messageSeq, int fragmentOffset, int fragmentLength,
-        byte msgContent[], int epoch) {
-        byte content[] = Arrays.copyOfRange(msgContent, fragmentOffset, fragmentOffset + fragmentLength);
+        byte[] msgContent, int epoch) {
+        byte[] content = Arrays.copyOfRange(msgContent, fragmentOffset, fragmentOffset + fragmentLength);
         return fragment(messageSeq, fragmentOffset, fragmentLength, content, epoch);
     }
 
-    public static void checkFragment(DtlsHandshakeMessageFragment fragment, int expectedOffset, int expectedLength,
+    public static void assertFragment(DtlsHandshakeMessageFragment fragment, int expectedOffset, int expectedLength,
         byte[] expectedContent) {
         assertNotNull(fragment);
         assertEquals(expectedOffset, fragment.getFragmentOffset().getValue().intValue());

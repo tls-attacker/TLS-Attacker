@@ -87,11 +87,8 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
                         new DERBitString(PointFormatter.formatToByteArray(NamedGroup.SECP256R1, ecPointToEncode,
                             ECPointFormat.UNCOMPRESSED)) }));
                     asn1OutputStream.flush();
-                    asn1OutputStream.close();
                     msg.setCertificatesListBytes(byteArrayOutputStream.toByteArray());
                     msg.setCertificatesListLength(msg.getCertificatesListBytes().getValue().length);
-
-                    byteArrayOutputStream.close();
                 } catch (Exception e) {
                     LOGGER.warn("Could write RAW PublicKey. Not writing anything", e);
                     msg.setCertificatesListBytes(new byte[0]);

@@ -11,43 +11,20 @@ package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PasswordSaltExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.PasswordSaltExtensionParserTest;
-import java.util.Collection;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class PasswordSaltExtensionSerializerTest {
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return PasswordSaltExtensionParserTest.generateData();
+import java.util.List;
+import java.util.stream.Stream;
+
+public class PasswordSaltExtensionSerializerTest
+    extends AbstractExtensionMessageSerializerTest<PasswordSaltExtensionMessage, PasswordSaltExtensionSerializer> {
+
+    public PasswordSaltExtensionSerializerTest() {
+        super(PasswordSaltExtensionMessage::new, PasswordSaltExtensionSerializer::new,
+            List.of((msg, obj) -> msg.setSaltLength((Integer) obj), (msg, obj) -> msg.setSalt((byte[]) obj)));
     }
 
-    private final byte[] expectedBytes;
-    private final int saltLength;
-    private final byte[] salt;
-    private PasswordSaltExtensionSerializer serializer;
-    private PasswordSaltExtensionMessage msg;
-
-    public PasswordSaltExtensionSerializerTest(byte[] expectedBytes, int saltLength, byte[] salt) {
-        this.expectedBytes = expectedBytes;
-        this.saltLength = saltLength;
-        this.salt = salt;
-    }
-
-    @Before
-    public void setUp() {
-        msg = new PasswordSaltExtensionMessage();
-        serializer = new PasswordSaltExtensionSerializer(msg);
-    }
-
-    @Test
-    public void testSerializeExtensionContent() {
-        msg.setSalt(salt);
-        msg.setSaltLength(saltLength);
-
-        assertArrayEquals(expectedBytes, serializer.serializeExtensionContent());
+    public static Stream<Arguments> provideTestVectors() {
+        return PasswordSaltExtensionParserTest.provideTestVectors();
     }
 }

@@ -9,51 +9,34 @@
 
 package de.rub.nds.tlsattacker.core.crypto.keys;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
+
 import java.math.BigInteger;
 import java.security.Security;
 import java.security.spec.ECParameterSpec;
-import java.util.ArrayList;
-import java.util.List;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import static org.junit.Assert.assertNotNull;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ErrorCollector;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameter;
-import org.junit.runners.Parameterized.Parameters;
 
-@RunWith(Parameterized.class)
 public class CustomECPrivateKeyTest {
 
-    @Parameters
-    public static Iterable<Object[]> createParameters() {
-        List<Object[]> testValues = new ArrayList<>();
-        for (NamedGroup curve : NamedGroup.getImplemented()) {
-            if (curve.isStandardCurve() && !curve.name().contains("BRAIN")) {
-                // TODO do not skip brainpool once asn1 tool is integrated
-                testValues.add(new Object[] { curve });
-
-            }
-        }
-        return testValues;
+    @BeforeAll
+    public static void setUpClass() {
+        Security.addProvider(new BouncyCastleProvider());
     }
-
-    @Parameter(0)
-    public NamedGroup curve;
-
-    @Rule
-    public ErrorCollector collector = new ErrorCollector();
 
     /**
      * Test of getParams method, of class CustomECPrivateKey.
      */
-    @Test
-    public void testGetParams() {
-        Security.addProvider(new BouncyCastleProvider());
-        CustomECPrivateKey key = new CustomECPrivateKey(BigInteger.TEN, curve);
+    @ParameterizedTest
+    @EnumSource(value = NamedGroup.class,
+        // TODO: Add BRAINPOOL curves once ASN.1-Tool is integrated
+        names = { "^(SECT|SECP).*" }, mode = EnumSource.Mode.MATCH_ANY)
+    public void testGetParams(NamedGroup providedNamedGroup) {
+        CustomECPrivateKey key = new CustomECPrivateKey(BigInteger.TEN, providedNamedGroup);
         ECParameterSpec params = key.getParams();
         assertNotNull(params);
     }

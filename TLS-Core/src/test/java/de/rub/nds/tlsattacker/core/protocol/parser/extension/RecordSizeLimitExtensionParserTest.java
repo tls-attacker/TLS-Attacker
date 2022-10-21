@@ -10,45 +10,25 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RecordSizeLimitExtensionMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import java.io.ByteArrayInputStream;
-import java.util.Arrays;
-import java.util.Collection;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Named;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class RecordSizeLimitExtensionParserTest {
+import java.util.List;
+import java.util.stream.Stream;
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] {
-            { ArrayConverter.hexStringToByteArray("2000"), ArrayConverter.hexStringToByteArray("2000") } });
+public class RecordSizeLimitExtensionParserTest
+    extends AbstractExtensionParserTest<RecordSizeLimitExtensionMessage, RecordSizeLimitExtensionParser> {
+
+    public RecordSizeLimitExtensionParserTest() {
+        super(RecordSizeLimitExtensionMessage.class, RecordSizeLimitExtensionParser::new,
+            List.of(Named.of("RecordSizeLimitExtensionMessage::getRecordSizeLimit",
+                RecordSizeLimitExtensionMessage::getRecordSizeLimit)));
     }
 
-    private final byte[] extension;
-    private final byte[] recordSizeLimit;
-    private final Config config = Config.createConfig();
-
-    public RecordSizeLimitExtensionParserTest(byte[] extension, byte[] recordSizeLimit) {
-        this.extension = extension;
-        this.recordSizeLimit = recordSizeLimit;
-    }
-
-    /**
-     * Test of parse method of class RecordSizeLimitExtensionParser.
-     */
-    @Test
-    public void testParse() {
-        TlsContext tlsContext = new TlsContext(config);
-        RecordSizeLimitExtensionParser parser =
-            new RecordSizeLimitExtensionParser(new ByteArrayInputStream(extension), tlsContext);
-        RecordSizeLimitExtensionMessage message = new RecordSizeLimitExtensionMessage();
-        parser.parse(message);
-        assertArrayEquals(recordSizeLimit, message.getRecordSizeLimit().getValue());
+    public static Stream<Arguments> provideTestVectors() {
+        return Stream.of(Arguments.of(ArrayConverter.hexStringToByteArray("001C00022000"), List.of(),
+            ExtensionType.RECORD_SIZE_LIMIT, 2, List.of(ArrayConverter.hexStringToByteArray("2000"))));
     }
 }

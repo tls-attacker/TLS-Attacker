@@ -25,7 +25,7 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.extension.CachedInfoExten
 import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * RFC7924

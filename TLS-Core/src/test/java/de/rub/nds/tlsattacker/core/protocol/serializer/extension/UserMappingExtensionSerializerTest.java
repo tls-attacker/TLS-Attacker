@@ -9,29 +9,22 @@
 
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.UserMappingExtensionMessage;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Before;
-import org.junit.Test;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.UserMappingExtensionParserTest;
+import org.junit.jupiter.params.provider.Arguments;
 
-public class UserMappingExtensionSerializerTest {
-    private final byte[] extensionBytes = ArrayConverter.hexStringToByteArray("40");
-    private final UserMappingExtensionHintType hintType = UserMappingExtensionHintType.UPN_DOMAIN_HINT;
-    private UserMappingExtensionSerializer serializer;
-    private UserMappingExtensionMessage msg;
+import java.util.List;
+import java.util.stream.Stream;
 
-    @Before
-    public void setUp() {
-        msg = new UserMappingExtensionMessage();
-        serializer = new UserMappingExtensionSerializer(msg);
+public class UserMappingExtensionSerializerTest
+    extends AbstractExtensionMessageSerializerTest<UserMappingExtensionMessage, UserMappingExtensionSerializer> {
+
+    public UserMappingExtensionSerializerTest() {
+        super(UserMappingExtensionMessage::new, UserMappingExtensionSerializer::new,
+            List.of((msg, obj) -> msg.setUserMappingType((Byte) obj)));
     }
 
-    @Test
-    public void testSerializeExtensionContent() {
-        msg.setUserMappingType(hintType.getValue());
-
-        assertArrayEquals(extensionBytes, serializer.serializeExtensionContent());
+    public static Stream<Arguments> provideTestVectors() {
+        return UserMappingExtensionParserTest.provideTestVectors();
     }
 }

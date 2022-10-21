@@ -64,7 +64,7 @@ public class DtlsFragmentLayer extends ProtocolLayer<RecordLayerHint, DtlsHandsh
 
     /**
      * Sends all fragments of this layer using the lower layer.
-     * 
+     *
      * @return             LayerProcessingResult A result object storing information about sending the data
      * @throws IOException
      *                     When the data cannot be sent
@@ -92,7 +92,7 @@ public class DtlsFragmentLayer extends ProtocolLayer<RecordLayerHint, DtlsHandsh
 
     /**
      * Sends a byte array using the lower layer. Produces fragments from the byte array and sends each.
-     * 
+     *
      * @param  hint
      *                     RecordLayerHint for the RecordLayer
      * @param  data
@@ -152,7 +152,7 @@ public class DtlsFragmentLayer extends ProtocolLayer<RecordLayerHint, DtlsHandsh
 
     /**
      * Tries to receive more data from the lower layer for the upper layer to process.
-     * 
+     *
      * @param  desiredHint
      *                     This hint from the calling layer specifies which data its wants to read.
      * @throws IOException
@@ -220,7 +220,7 @@ public class DtlsFragmentLayer extends ProtocolLayer<RecordLayerHint, DtlsHandsh
 
     /**
      * Returns enough fragments to contain the given amount of data.
-     * 
+     *
      * @param  context
      *                 TlsContext containing information such as maximum Fragment Length
      * @param  length
@@ -241,7 +241,7 @@ public class DtlsFragmentLayer extends ProtocolLayer<RecordLayerHint, DtlsHandsh
     /**
      * Puts the given bytes of a message into the given fragments. Assumes the fragments have enough space for the given
      * data.
-     * 
+     *
      * @param  type
      *                        Handshake message type of the message to be put into fragments.
      * @param  handshakeBytes
@@ -278,7 +278,7 @@ public class DtlsFragmentLayer extends ProtocolLayer<RecordLayerHint, DtlsHandsh
     /**
      * Puts the given bytes of a message into the given fragment. Assumes the fragment has enough space for the given
      * data.
-     * 
+     *
      * @param  context
      *                       The context of the TLS connection
      * @param  message

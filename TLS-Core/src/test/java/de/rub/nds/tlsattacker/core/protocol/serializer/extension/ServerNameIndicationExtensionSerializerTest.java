@@ -9,20 +9,23 @@
 
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import org.junit.Before;
-import org.junit.Test;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicationExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.ServerNameIndicationExtensionParserTest;
+import org.junit.jupiter.params.provider.Arguments;
 
-public class ServerNameIndicationExtensionSerializerTest {
+import java.util.List;
+import java.util.stream.Stream;
 
-    @Before
-    public void setUp() {
+public class ServerNameIndicationExtensionSerializerTest extends AbstractExtensionMessageSerializerTest<
+    ServerNameIndicationExtensionMessage, ServerNameIndicationExtensionSerializer> {
+
+    public ServerNameIndicationExtensionSerializerTest() {
+        super(ServerNameIndicationExtensionMessage::new, ServerNameIndicationExtensionSerializer::new,
+            List.of((msg, obj) -> msg.setServerNameListLength((Integer) obj),
+                (msg, obj) -> msg.setServerNameListBytes((byte[]) obj)));
     }
 
-    /**
-     * Test of serializeExtensionContent method, of class ServerNameIndicationExtensionSerializer.
-     */
-    @Test
-    public void testSerializeExtensionContent() {
+    public static Stream<Arguments> provideTestVectors() {
+        return ServerNameIndicationExtensionParserTest.provideTestVectors();
     }
-
 }

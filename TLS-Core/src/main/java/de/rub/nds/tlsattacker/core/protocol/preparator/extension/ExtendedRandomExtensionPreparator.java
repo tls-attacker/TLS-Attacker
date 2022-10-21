@@ -20,7 +20,7 @@ import java.util.Random;
 
 /**
  * Class which prepares an Extended Random Extension Message for handshake messages, as defined as in
- * https://tools.ietf.org/html/draft-rescorla-tls-extended-random-02
+ * <a href="https://tools.ietf.org/html/draft-rescorla-tls-extended-random-02">draft-rescorla-tls-extended-random-02</a>
  */
 public class ExtendedRandomExtensionPreparator extends ExtensionPreparator<ExtendedRandomExtensionMessage> {
 

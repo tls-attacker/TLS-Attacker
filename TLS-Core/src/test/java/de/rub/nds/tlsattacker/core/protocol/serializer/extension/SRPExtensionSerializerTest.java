@@ -11,45 +11,20 @@ package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SRPExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.SRPExtensionParserTest;
-import java.util.Collection;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class SRPExtensionSerializerTest {
+import java.util.List;
+import java.util.stream.Stream;
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return SRPExtensionParserTest.generateData();
+public class SRPExtensionSerializerTest
+    extends AbstractExtensionMessageSerializerTest<SRPExtensionMessage, SRPExtensionSerializer> {
+
+    public SRPExtensionSerializerTest() {
+        super(SRPExtensionMessage::new, SRPExtensionSerializer::new, List.of(
+            (msg, obj) -> msg.setSrpIdentifierLength((Integer) obj), (msg, obj) -> msg.setSrpIdentifier((byte[]) obj)));
     }
 
-    private final byte[] extensionBytes;
-    private final int srpIdentifierLength;
-    private final byte[] srpIdentifier;
-    private SRPExtensionSerializer serializer;
-    private SRPExtensionMessage message;
-
-    public SRPExtensionSerializerTest(byte[] extensionBytes, int srpIdentifierLength, byte[] srpIdentifier) {
-        this.extensionBytes = extensionBytes;
-        this.srpIdentifierLength = srpIdentifierLength;
-        this.srpIdentifier = srpIdentifier;
+    public static Stream<Arguments> provideTestVectors() {
+        return SRPExtensionParserTest.provideTestVectors();
     }
-
-    @Before
-    public void setUp() {
-        message = new SRPExtensionMessage();
-        serializer = new SRPExtensionSerializer(message);
-    }
-
-    @Test
-    public void testSerializeExtensionContent() {
-        message.setSrpIdentifierLength(srpIdentifierLength);
-        message.setSrpIdentifier(srpIdentifier);
-
-        assertArrayEquals(extensionBytes, serializer.serializeExtensionContent());
-    }
-
 }

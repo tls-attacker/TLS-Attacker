@@ -9,65 +9,42 @@
 
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
-import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import org.junit.After;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class CopyServerRandomActionTest {
-    private State state;
-    private TlsContext tlsContextServer1;
-    private TlsContext tlsContextServer2;
-    private CopyServerRandomAction action;
+import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import org.junit.jupiter.api.Test;
 
-    @Before
-    public void setUp() {
+public class CopyServerRandomActionTest extends AbstractCopyActionTest<CopyServerRandomAction> {
 
-        Config config = Config.createConfig();
-        action = new CopyServerRandomAction("server1", "server2");
-        WorkflowTrace trace = new WorkflowTrace();
-        trace.addTlsAction(action);
-        trace.addConnection(new OutboundConnection("server1", 444, "localhost"));
-        trace.addConnection(new OutboundConnection("server2", 445, "localhost"));
-
-        // TLS-Contexts are created during state initialization
-        state = new State(config, trace);
-        tlsContextServer1 = state.getContext("server1").getTlsContext();
-        tlsContextServer2 = state.getContext("server2").getTlsContext();
-
-        tlsContextServer1.setServerRandom(new byte[] { 1, 2 });
-        tlsContextServer2.setServerRandom(new byte[] { 0, 0 });
+    public CopyServerRandomActionTest() {
+        super(new CopyServerRandomAction("src", "dst"), CopyServerRandomAction.class);
+        src.setServerRandom(new byte[] { 1, 2 });
+        dst.setServerRandom(new byte[] { 0, 0 });
     }
 
-    @After
-    public void tearDown() {
+    @Test
+    @Override
+    public void testAliasesSetProperlyErrorSrc() {
+        CopyServerRandomAction a = new CopyServerRandomAction(null, "dst");
+        assertThrows(WorkflowExecutionException.class, a::assertAliasesSetProperly);
+    }
 
+    @Test
+    @Override
+    public void testAliasesSetProperlyErrorDst() {
+        CopyServerRandomAction a = new CopyServerRandomAction("src", null);
+        assertThrows(WorkflowExecutionException.class, a::assertAliasesSetProperly);
     }
 
     /**
      * Test of execute method, of class ChangeServerRandomAction.
      */
     @Test
-    public void testExecute() {
-        action.execute(state);
-
-        assertArrayEquals(tlsContextServer1.getServerRandom(), tlsContextServer2.getServerRandom());
-        assertArrayEquals(tlsContextServer2.getServerRandom(), new byte[] { 1, 2 });
-        assertTrue(action.isExecuted());
-    }
-
-    /**
-     * Test of getSrc/DstContextAlias methods, of class ChangeServerRandomAction.
-     */
-    @Test
-    public void testGetAlias() {
-        assertEquals(action.getSrcContextAlias(), "server1");
-        assertEquals(action.getDstContextAlias(), "server2");
+    @Override
+    public void testExecute() throws Exception {
+        super.testExecute();
+        assertArrayEquals(src.getServerRandom(), dst.getServerRandom());
+        assertArrayEquals(new byte[] { 1, 2 }, src.getServerRandom());
     }
 
     /**
@@ -76,23 +53,8 @@ public class CopyServerRandomActionTest {
     @Test
     public void testEquals() {
         assertEquals(action, action);
-        assertNotEquals(action, new CopyClientRandomAction("server1", "null"));
-        assertNotEquals(action, new CopyClientRandomAction("null", "server2"));
-        assertNotEquals(action, new CopyClientRandomAction("null", "null"));
+        assertNotEquals(action, new CopyServerRandomAction("src", "null"));
+        assertNotEquals(action, new CopyServerRandomAction("null", "dst"));
+        assertNotEquals(action, new CopyServerRandomAction("null", "null"));
     }
-
-    /**
-     * Test of getAllAliases method, of class ChangeServerRandomAction.
-     */
-    @Test
-    public void testGetAllAliases() {
-        String[] aliases = action.getAllAliases().toArray(new String[2]);
-
-        assertEquals(aliases.length, 2);
-        assertTrue(aliases[0].equals("server1") || aliases[0].equals("server2"));
-        assertTrue(aliases[1].equals("server1") || aliases[1].equals("server2"));
-        assertNotEquals(aliases[0], aliases[1]);
-
-    }
-
 }

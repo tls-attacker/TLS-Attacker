@@ -20,11 +20,11 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtendedRandomExten
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtendedRandomExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtendedRandomExtensionSerializer;
 import java.io.InputStream;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * Class representing a Extended Random Extension Message, as defined as in
- * https://tools.ietf.org/html/draft-rescorla-tls-extended-random-02
+ * <a href="https://tools.ietf.org/html/draft-rescorla-tls-extended-random-02">draft-rescorla-tls-extended-random-02</a>
  */
 @XmlRootElement(name = "ExtendedRandomExtension")
 public class ExtendedRandomExtensionMessage extends ExtensionMessage<ExtendedRandomExtensionMessage> {

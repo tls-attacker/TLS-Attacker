@@ -10,73 +10,40 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.protocol.message.ClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import java.io.ByteArrayInputStream;
-import java.util.Arrays;
-import java.util.Collection;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertTrue;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Named;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class ECDHClientKeyExchangeParserTest {
+import java.util.List;
+import java.util.stream.Stream;
 
-    @SuppressWarnings("SpellCheckingInspection")
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { { ArrayConverter.hexStringToByteArray(
-            "4104ccc0a7227daa353a64e0ba56cd98080c17901b744d9c747b12605874456d891200085d057014786df407ca391ada49c753f6c61486ad35eaf354580968dd991c"),
-            65,
-            ArrayConverter.hexStringToByteArray(
-                "04ccc0a7227daa353a64e0ba56cd98080c17901b744d9c747b12605874456d891200085d057014786df407ca391ada49c753f6c61486ad35eaf354580968dd991c"),
-            ProtocolVersion.TLS12 },
-            { ArrayConverter.hexStringToByteArray(
-                "4104b4b5b76d94709ec280af4f806b13e20e227e60d98a65204935e804076c829cd33ca5b7ff016584aeccc42a0b6db366cbb64a20af8c03ba6311a59552b3fad23e"),
-                65,
-                ArrayConverter.hexStringToByteArray(
-                    "04b4b5b76d94709ec280af4f806b13e20e227e60d98a65204935e804076c829cd33ca5b7ff016584aeccc42a0b6db366cbb64a20af8c03ba6311a59552b3fad23e"),
-                ProtocolVersion.TLS11 },
-            { ArrayConverter.hexStringToByteArray(
-                "41043775fe5c151587cc5b28958ea43b62ed642e02df9d6d58a17ac91756cbc8638ff5d22490ffc3e3abc144a5ecc5b54e84a576e7cd0df6863b35a55464e5038777"),
-                65,
-                ArrayConverter.hexStringToByteArray(
-                    "043775fe5c151587cc5b28958ea43b62ed642e02df9d6d58a17ac91756cbc8638ff5d22490ffc3e3abc144a5ecc5b54e84a576e7cd0df6863b35a55464e5038777"),
-                ProtocolVersion.TLS10 } });
+public class ECDHClientKeyExchangeParserTest extends AbstractHandshakeMessageParserTest<ECDHClientKeyExchangeMessage,
+    ECDHClientKeyExchangeParser<ECDHClientKeyExchangeMessage>> {
+
+    public ECDHClientKeyExchangeParserTest() {
+        super(ECDHClientKeyExchangeMessage.class, ECDHClientKeyExchangeParser::new,
+            List.of(
+                Named.of("ClientKeyExchangeMessage::getPublicKeyLength", ClientKeyExchangeMessage::getPublicKeyLength),
+                Named.of("ClientKeyExchangeMessage::getPublicKey", ClientKeyExchangeMessage::getPublicKey)));
     }
 
-    private byte[] message;
-
-    private int serializedKeyLength;
-    private byte[] serializedKey;
-    private ProtocolVersion version;
-    private final Config config = Config.createConfig();
-
-    public ECDHClientKeyExchangeParserTest(byte[] message, int serializedKeyLength, byte[] serializedKey,
-        ProtocolVersion version) {
-        this.message = message;
-        this.serializedKeyLength = serializedKeyLength;
-        this.serializedKey = serializedKey;
-        this.version = version;
+    public static Stream<Arguments> provideTestVectors() {
+        return Stream.of(Arguments.of(ProtocolVersion.TLS12, ArrayConverter.hexStringToByteArray(
+            "100000424104ccc0a7227daa353a64e0ba56cd98080c17901b744d9c747b12605874456d891200085d057014786df407ca391ada49c753f6c61486ad35eaf354580968dd991c"),
+            List.of(HandshakeMessageType.CLIENT_KEY_EXCHANGE.getValue(), 66, 65, ArrayConverter.hexStringToByteArray(
+                "04ccc0a7227daa353a64e0ba56cd98080c17901b744d9c747b12605874456d891200085d057014786df407ca391ada49c753f6c61486ad35eaf354580968dd991c"))),
+            Arguments.of(ProtocolVersion.TLS11, ArrayConverter.hexStringToByteArray(
+                "100000424104b4b5b76d94709ec280af4f806b13e20e227e60d98a65204935e804076c829cd33ca5b7ff016584aeccc42a0b6db366cbb64a20af8c03ba6311a59552b3fad23e"),
+                List.of(HandshakeMessageType.CLIENT_KEY_EXCHANGE.getValue(), 66, 65,
+                    ArrayConverter.hexStringToByteArray(
+                        "04b4b5b76d94709ec280af4f806b13e20e227e60d98a65204935e804076c829cd33ca5b7ff016584aeccc42a0b6db366cbb64a20af8c03ba6311a59552b3fad23e"))),
+            Arguments.of(ProtocolVersion.TLS10, ArrayConverter.hexStringToByteArray(
+                "1000004241043775fe5c151587cc5b28958ea43b62ed642e02df9d6d58a17ac91756cbc8638ff5d22490ffc3e3abc144a5ecc5b54e84a576e7cd0df6863b35a55464e5038777"),
+                List.of(HandshakeMessageType.CLIENT_KEY_EXCHANGE.getValue(), 66, 65,
+                    ArrayConverter.hexStringToByteArray(
+                        "043775fe5c151587cc5b28958ea43b62ed642e02df9d6d58a17ac91756cbc8638ff5d22490ffc3e3abc144a5ecc5b54e84a576e7cd0df6863b35a55464e5038777"))));
     }
-
-    /**
-     * Test of parse method, of class ECDHClientKeyExchangeParser.
-     */
-    @Test
-    public void testParse() {
-        TlsContext tlsContext = new TlsContext(config);
-        tlsContext.setSelectedProtocolVersion(version);
-        ECDHClientKeyExchangeParser<ECDHClientKeyExchangeMessage> parser =
-            new ECDHClientKeyExchangeParser(new ByteArrayInputStream(message), tlsContext);
-        ECDHClientKeyExchangeMessage msg = new ECDHClientKeyExchangeMessage();
-        parser.parse(msg);
-        assertTrue(serializedKeyLength == msg.getPublicKeyLength().getValue());
-        assertArrayEquals(serializedKey, msg.getPublicKey().getValue());
-    }
-
 }

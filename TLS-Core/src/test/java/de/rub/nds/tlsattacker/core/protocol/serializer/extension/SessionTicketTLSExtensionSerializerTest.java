@@ -9,65 +9,28 @@
 
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import de.rub.nds.modifiablevariable.util.Modifiable;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.SessionTicketTLSExtensionParserTest;
+import java.util.Arrays;
+import org.junit.jupiter.params.provider.Arguments;
 
-import java.util.Collection;
+import java.util.List;
+import java.util.stream.Stream;
 
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+public class SessionTicketTLSExtensionSerializerTest extends
+    AbstractExtensionMessageSerializerTest<SessionTicketTLSExtensionMessage, SessionTicketTLSExtensionSerializer> {
 
-@RunWith(Parameterized.class)
-public class SessionTicketTLSExtensionSerializerTest {
-
-    /**
-     * Gets the test vectors of the SessionTicketTLSExtensionHandlerTest class.
-     *
-     * @return Collection of the parameters
-     */
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return java.util.Arrays
-            .asList(new Object[][] { { ExtensionType.SESSION_TICKET, 0, new byte[0], new byte[0] } });
+    public SessionTicketTLSExtensionSerializerTest() {
+        super(SessionTicketTLSExtensionMessage::new, SessionTicketTLSExtensionSerializer::new,
+            List.of((msg, obj) -> msg.getSessionTicket().setIdentity((byte[]) obj)));
     }
 
-    private final ExtensionType extensionType;
-    private final int extensionLength;
-    private final byte[] sessionTicket;
-    private final byte[] expectedBytes;
-    private SessionTicketTLSExtensionMessage message;
-
-    /**
-     * Constructor for parameterized setup.
-     *
-     * @param extensionType
-     * @param extensionLength
-     * @param sessionTicket
-     * @param expectedBytes
-     */
-    public SessionTicketTLSExtensionSerializerTest(ExtensionType extensionType, int extensionLength,
-        byte[] sessionTicket, byte[] expectedBytes) {
-        this.extensionType = extensionType;
-        this.extensionLength = extensionLength;
-        this.sessionTicket = sessionTicket;
-        this.expectedBytes = expectedBytes;
+    public static Stream<Arguments> provideTestVectors() {
+        return Stream.of(Arguments.of(ArrayConverter.hexStringToByteArray(
+            "002300A07710f36a53b83f7b298b0cbf7863cfb14c26f9189edce8cf0ad181ddf706e2c358034c1d59c4c80e85ea2cda9de6f6373db1f7a95d4ce2941646a282de1b6ad9122605cf6579d04c1bd145192a0fecf9f617620d5c4c0fe00fdc9b7ae2a2350e1ca22a88b6233cef19c846c92349417e5a841d2d75b42767d1b589cd7509740a94c83b23a268ecc6ff526fc5b199a3784d7b1b800913aceea695c499fb238896"),
+            List.of(), ExtensionType.SESSION_TICKET, 160, Arrays.asList(ArrayConverter.hexStringToByteArray(
+                "7710f36a53b83f7b298b0cbf7863cfb14c26f9189edce8cf0ad181ddf706e2c358034c1d59c4c80e85ea2cda9de6f6373db1f7a95d4ce2941646a282de1b6ad9122605cf6579d04c1bd145192a0fecf9f617620d5c4c0fe00fdc9b7ae2a2350e1ca22a88b6233cef19c846c92349417e5a841d2d75b42767d1b589cd7509740a94c83b23a268ecc6ff526fc5b199a3784d7b1b800913aceea695c499fb238896"))));
     }
-
-    /**
-     * Tests the serializeExtensionContent method of the SessionTicketTLSExtensionSerializer class
-     */
-    @Test
-    public void testSerializeExtensionContent() {
-        message = new SessionTicketTLSExtensionMessage();
-        message.setExtensionType(extensionType.getValue());
-        message.setExtensionLength(extensionLength);
-        message.getSessionTicket().setIdentity(Modifiable.explicit(sessionTicket));
-        SessionTicketTLSExtensionSerializer serializer = new SessionTicketTLSExtensionSerializer(message);
-
-        assertArrayEquals(expectedBytes, serializer.serializeExtensionContent());
-    }
-
 }

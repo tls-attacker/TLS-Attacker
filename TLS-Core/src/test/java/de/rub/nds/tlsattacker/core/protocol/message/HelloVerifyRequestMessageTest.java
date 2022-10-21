@@ -9,36 +9,18 @@
 
 package de.rub.nds.tlsattacker.core.protocol.message;
 
-import org.junit.After;
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.params.provider.Arguments;
 
-public class HelloVerifyRequestMessageTest {
+import java.util.stream.Stream;
 
-    HelloVerifyRequestMessage message;
+public class HelloVerifyRequestMessageTest extends AbstractMessageTest<HelloVerifyRequestMessage> {
 
-    @Before
-    public void setUp() {
-        message = new HelloVerifyRequestMessage();
+    public HelloVerifyRequestMessageTest() {
+        super(HelloVerifyRequestMessage::new,
+            "HelloVerifyRequestMessage:\n" + "  ProtocolVersion: %s\n" + "  Cookie Length: %s\n" + "  Cookie: %s");
     }
 
-    @After
-    public void tearDown() {
+    public static Stream<Arguments> provideToStringTestVectors() {
+        return Stream.of(Arguments.of(new Object[] { null, null, null }, null));
     }
-
-    /**
-     * Test of toString method, of class HelloVerifyRequestMessage.
-     */
-    @Test
-    public void testToString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("HelloVerifyRequestMessage:");
-        sb.append("\n  ProtocolVersion: ").append("null");
-        sb.append("\n  Cookie Length: ").append("null");
-        sb.append("\n  Cookie: ").append("null");
-
-        assertEquals(message.toString(), sb.toString());
-    }
-
 }

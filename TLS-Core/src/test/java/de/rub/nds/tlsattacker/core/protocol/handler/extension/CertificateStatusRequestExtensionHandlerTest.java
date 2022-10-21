@@ -9,31 +9,28 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestType;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestExtensionMessage;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class CertificateStatusRequestExtensionHandlerTest {
-
+public class CertificateStatusRequestExtensionHandlerTest extends AbstractExtensionMessageHandlerTest<
+    CertificateStatusRequestExtensionMessage, CertificateStatusRequestExtensionHandler> {
     private final CertificateStatusRequestType certificateStatusRequestExtensionRequestType =
         CertificateStatusRequestType.OCSP;
     private final byte[] certificateStatusRequestExtensionResponderIDList = new byte[] { 0x01 };
     private final byte[] certificateStatusRequestExtensionRequestExtension = new byte[] { 0x02 };
-    private TlsContext context;
-    private CertificateStatusRequestExtensionHandler handler;
 
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new CertificateStatusRequestExtensionHandler(context);
+    public CertificateStatusRequestExtensionHandlerTest() {
+        super(CertificateStatusRequestExtensionMessage::new, CertificateStatusRequestExtensionHandler::new);
     }
 
     @Test
-    public void testadjustContext() {
+    @Override
+    public void testadjustTLSExtensionContext() {
         CertificateStatusRequestExtensionMessage message = new CertificateStatusRequestExtensionMessage();
         message.setCertificateStatusRequestType(
             certificateStatusRequestExtensionRequestType.getCertificateStatusRequestValue());

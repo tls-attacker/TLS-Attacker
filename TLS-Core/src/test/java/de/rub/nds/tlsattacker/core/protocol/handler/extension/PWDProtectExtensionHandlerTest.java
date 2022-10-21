@@ -9,30 +9,26 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PWDProtectExtensionMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class PWDProtectExtensionHandlerTest {
+public class PWDProtectExtensionHandlerTest
+    extends AbstractExtensionMessageHandlerTest<PWDProtectExtensionMessage, PWDProtectExtensionHandler> {
 
-    private PWDProtectExtensionHandler handler;
-    private TlsContext context;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new PWDProtectExtensionHandler(context);
-        context.getContext().setConnection(new InboundConnection());
+    public PWDProtectExtensionHandlerTest() {
+        super(PWDProtectExtensionMessage::new, PWDProtectExtensionHandler::new);
+        context.setConnection(new InboundConnection());
     }
 
     @Test
-    public void testadjustContext() {
+    @Override
+    public void testadjustTLSExtensionContext() {
         PWDProtectExtensionMessage message = new PWDProtectExtensionMessage();
         message.setUsername(ArrayConverter.hexStringToByteArray(
             "DA87739AC04C2A6D222FC15E31C471451DE3FE7E78B6E3485CA21E12BFE1CB4C4191D4CD9257145CBFA26DFCA1839C1588D0F1F6"));

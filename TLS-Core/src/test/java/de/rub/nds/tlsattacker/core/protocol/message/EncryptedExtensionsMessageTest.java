@@ -9,34 +9,17 @@
 
 package de.rub.nds.tlsattacker.core.protocol.message;
 
-import org.junit.After;
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.params.provider.Arguments;
 
-public class EncryptedExtensionsMessageTest {
+import java.util.stream.Stream;
 
-    EncryptedExtensionsMessage message;
+public class EncryptedExtensionsMessageTest extends AbstractMessageTest<EncryptedExtensionsMessage> {
 
-    @Before
-    public void setUp() {
-        message = new EncryptedExtensionsMessage();
+    public EncryptedExtensionsMessageTest() {
+        super(EncryptedExtensionsMessage::new, "EncryptedExtensionMessage:\n" + "  Extensions: %s");
     }
 
-    @After
-    public void tearDown() {
+    public static Stream<Arguments> provideToStringTestVectors() {
+        return Stream.of(Arguments.of(new Object[] { null }, null));
     }
-
-    /**
-     * Test of toString method, of class EncryptedExtensionsMessage.
-     */
-    @Test
-    public void testToString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("EncryptedExtensionMessage:");
-        sb.append("\n  Extensions: ").append("null");
-
-        assertEquals(message.toString(), sb.toString());
-    }
-
 }

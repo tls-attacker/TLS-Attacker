@@ -13,8 +13,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.http.header.preparator.ContentLengthHeaderPreparator;
 import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
-
-import javax.xml.bind.annotation.XmlTransient;
+import jakarta.xml.bind.annotation.XmlTransient;
 
 public class ContentLengthHeader extends HttpHeader {
 

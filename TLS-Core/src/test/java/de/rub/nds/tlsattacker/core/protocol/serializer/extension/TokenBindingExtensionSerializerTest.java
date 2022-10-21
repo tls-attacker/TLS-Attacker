@@ -9,48 +9,24 @@
 
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TokenBindingExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.TokenBindingExtensionParserTest;
-import java.util.Collection;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class TokenBindingExtensionSerializerTest {
+import java.util.List;
+import java.util.stream.Stream;
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return TokenBindingExtensionParserTest.generateData();
+public class TokenBindingExtensionSerializerTest
+    extends AbstractExtensionMessageSerializerTest<TokenBindingExtensionMessage, TokenBindingExtensionSerializer> {
+
+    public TokenBindingExtensionSerializerTest() {
+        super(TokenBindingExtensionMessage::new, TokenBindingExtensionSerializer::new,
+            List.of((msg, obj) -> msg.setTokenBindingVersion((byte[]) obj),
+                (msg, obj) -> msg.setParameterListLength((Integer) obj),
+                (msg, obj) -> msg.setTokenBindingKeyParameters((byte[]) obj)));
     }
 
-    private final byte[] extensionBytes;
-    private final TokenBindingVersion tokenbindingVersion;
-    private final int parameterLength;
-    private final byte[] keyParameter;
-    private TokenBindingExtensionMessage message;
-
-    public TokenBindingExtensionSerializerTest(byte[] extensionBytes, TokenBindingVersion tokenbindingVersion,
-        int parameterLength, byte[] keyParameter) {
-        this.extensionBytes = extensionBytes;
-        this.tokenbindingVersion = tokenbindingVersion;
-        this.parameterLength = parameterLength;
-        this.keyParameter = keyParameter;
+    public static Stream<Arguments> provideTestVectors() {
+        return TokenBindingExtensionParserTest.provideTestVectors();
     }
-
-    @Test
-    public void testSerializeExtensionContent() {
-        message = new TokenBindingExtensionMessage();
-        message.setTokenbindingVersion(tokenbindingVersion.getByteValue());
-        message.setParameterListLength(parameterLength);
-        message.setTokenbindingKeyParameters(keyParameter);
-
-        TokenBindingExtensionSerializer serializer = new TokenBindingExtensionSerializer(message);
-
-        assertArrayEquals(extensionBytes, serializer.serializeExtensionContent());
-
-    }
-
 }

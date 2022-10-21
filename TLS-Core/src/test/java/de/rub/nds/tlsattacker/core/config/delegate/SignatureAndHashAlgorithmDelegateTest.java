@@ -9,28 +9,23 @@
 
 package de.rub.nds.tlsattacker.core.config.delegate;
 
-import com.beust.jcommander.JCommander;
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.util.LinkedList;
 import java.util.List;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
 
-public class SignatureAndHashAlgorithmDelegateTest {
+public class SignatureAndHashAlgorithmDelegateTest extends AbstractDelegateTest<SignatureAndHashAlgorithmDelegate> {
 
-    private SignatureAndHashAlgorithmDelegate delegate;
-    private JCommander jcommander;
-    private String[] args;
-
-    @Before
+    @BeforeEach
     public void setUp() {
-        this.delegate = new SignatureAndHashAlgorithmDelegate();
-        this.jcommander = new JCommander(delegate);
+        super.setUp(new SignatureAndHashAlgorithmDelegate());
     }
 
     /**
@@ -47,12 +42,12 @@ public class SignatureAndHashAlgorithmDelegateTest {
         assertTrue(delegate.getSignatureAndHashAlgorithms().contains(SignatureAndHashAlgorithm.DSA_SHA512));
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testGetInvalidSignatureHashAlgorithms() {
         args = new String[2];
         args[0] = "-signature_hash_algo";
         args[1] = "RSA_STSDHA512,DsdfsdSA_SHA512";
-        jcommander.parse(args);
+        assertThrows(ParameterException.class, () -> jcommander.parse(args));
     }
 
     /**

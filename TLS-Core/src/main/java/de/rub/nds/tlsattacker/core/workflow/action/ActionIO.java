@@ -9,18 +9,19 @@
 
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import java.io.*;
-import java.util.Set;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
+import jakarta.xml.bind.Unmarshaller;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.reflections.Reflections;
+
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import java.io.*;
+import java.util.Set;
 
 public class ActionIO {
 
@@ -28,7 +29,7 @@ public class ActionIO {
 
     private static JAXBContext context;
 
-    private static synchronized JAXBContext getJAXBContext() throws JAXBException, IOException {
+    private static synchronized JAXBContext getJAXBContext() throws JAXBException {
         if (context == null) {
             Reflections reflections = new Reflections("de.rub.nds.tlsattacker.core.workflow.action");
             Set<Class<? extends TlsAction>> classes = reflections.getSubTypesOf(TlsAction.class);
@@ -38,12 +39,11 @@ public class ActionIO {
         return context;
     }
 
-    public static void write(File file, TlsAction action) throws FileNotFoundException, JAXBException, IOException {
-        if (!file.exists()) {
-            file.createNewFile();
+    public static void write(File file, TlsAction action) throws JAXBException, IOException {
+        assert file.exists() || file.createNewFile();
+        try (FileOutputStream fos = new FileOutputStream(file)) {
+            ActionIO.write(fos, action);
         }
-        FileOutputStream fos = new FileOutputStream(file);
-        ActionIO.write(fos, action);
     }
 
     public static void write(OutputStream outputStream, TlsAction action) throws JAXBException, IOException {
@@ -51,7 +51,6 @@ public class ActionIO {
         Marshaller m = context.createMarshaller();
         m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         m.marshal(action, outputStream);
-        outputStream.close();
     }
 
     public static TlsAction read(InputStream inputStream) throws JAXBException, IOException, XMLStreamException {
@@ -61,17 +60,14 @@ public class ActionIO {
         xif.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
         xif.setProperty(XMLInputFactory.SUPPORT_DTD, false);
         XMLStreamReader xsr = xif.createXMLStreamReader(inputStream);
-        TlsAction action = (TlsAction) m.unmarshal(xsr);
-        inputStream.close();
-        return action;
+        return (TlsAction) m.unmarshal(xsr);
     }
 
     public static TlsAction copyTlsAction(TlsAction tlsAction) throws JAXBException, IOException, XMLStreamException {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         ActionIO.write(stream, tlsAction);
         stream.flush();
-        TlsAction copiedAction = ActionIO.read(new ByteArrayInputStream(stream.toByteArray()));
-        return copiedAction;
+        return ActionIO.read(new ByteArrayInputStream(stream.toByteArray()));
     }
 
     private ActionIO() {

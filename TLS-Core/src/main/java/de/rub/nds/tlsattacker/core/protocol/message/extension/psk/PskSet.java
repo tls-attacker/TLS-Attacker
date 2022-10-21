@@ -15,9 +15,9 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Objects;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
  * Contains (TLS 1.3) PSK-related values

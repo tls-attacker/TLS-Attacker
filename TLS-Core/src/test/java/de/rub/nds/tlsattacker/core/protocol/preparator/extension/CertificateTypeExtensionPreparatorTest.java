@@ -9,44 +9,38 @@
 
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateTypeExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.CertificateTypeExtensionSerializer;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import org.junit.jupiter.api.Test;
+
 import java.util.Arrays;
 import java.util.List;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.Test;
 
-public class CertificateTypeExtensionPreparatorTest {
+public class CertificateTypeExtensionPreparatorTest extends AbstractExtensionMessagePreparatorTest<
+    CertificateTypeExtensionMessage, CertificateTypeExtensionSerializer, CertificateTypeExtensionPreparator> {
 
-    private TlsContext context;
-    private CertificateTypeExtensionPreparator preparator;
-    private CertificateTypeExtensionMessage msg;
-    private final List<CertificateType> certList = Arrays.asList(CertificateType.OPEN_PGP, CertificateType.X509);
-    private final int extensionLength = 3;
-    private final int cerListLength = 2;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        msg = new CertificateTypeExtensionMessage();
-        preparator = new CertificateTypeExtensionPreparator(context.getChooser(), msg);
+    public CertificateTypeExtensionPreparatorTest() {
+        super(CertificateTypeExtensionMessage::new, CertificateTypeExtensionSerializer::new,
+            CertificateTypeExtensionPreparator::new);
     }
 
     @Test
-    public void testPreparator() {
+    @Override
+    public void testPrepare() {
+        List<CertificateType> certList = Arrays.asList(CertificateType.OPEN_PGP, CertificateType.X509);
         context.getConfig().setCertificateTypeDesiredTypes(certList);
 
         preparator.prepare();
 
-        assertArrayEquals(ExtensionType.CERT_TYPE.getValue(), msg.getExtensionType().getValue());
-        assertEquals(extensionLength, (long) msg.getExtensionLength().getValue());
-        assertArrayEquals(CertificateType.toByteArray(certList), msg.getCertificateTypes().getValue());
-        assertEquals(cerListLength, (long) msg.getCertificateTypesLength().getValue());
+        assertArrayEquals(ExtensionType.CERT_TYPE.getValue(), message.getExtensionType().getValue());
+        assertEquals(3, message.getExtensionLength().getValue());
+        assertArrayEquals(CertificateType.toByteArray(certList), message.getCertificateTypes().getValue());
+        assertEquals(2, message.getCertificateTypesLength().getValue());
     }
 
 }

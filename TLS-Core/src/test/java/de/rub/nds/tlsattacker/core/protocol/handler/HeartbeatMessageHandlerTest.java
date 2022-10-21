@@ -10,30 +10,20 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class HeartbeatMessageHandlerTest {
+public class HeartbeatMessageHandlerTest
+    extends AbstractTlsMessageHandlerTest<HeartbeatMessage, HeartbeatMessageHandler> {
 
-    private HeartbeatMessageHandler handler;
-    private TlsContext context;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new HeartbeatMessageHandler(context);
-    }
-
-    @After
-    public void tearDown() {
+    public HeartbeatMessageHandlerTest() {
+        super(HeartbeatMessage::new, HeartbeatMessageHandler::new);
     }
 
     /**
      * Test of adjustContext method, of class HeartbeatMessageHandler.
      */
     @Test
+    @Override
     public void testadjustContext() {
         HeartbeatMessage message = new HeartbeatMessage();
         handler.adjustContext(message);

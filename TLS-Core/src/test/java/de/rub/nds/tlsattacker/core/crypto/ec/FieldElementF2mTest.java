@@ -9,10 +9,12 @@
 
 package de.rub.nds.tlsattacker.core.crypto.ec;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.math.BigInteger;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
 
 public class FieldElementF2mTest {
 
@@ -24,7 +26,7 @@ public class FieldElementF2mTest {
     private FieldElementF2m p5;
     private FieldElementF2m zero;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         /*
          * x^3 + x + 1 has no roots over F_2 and it's degree is less than 4. This implies that it is irreducible over
@@ -86,11 +88,7 @@ public class FieldElementF2mTest {
         FieldElementF2m result = new FieldElementF2m(new BigInteger("101", 2), modulus);
         assertEquals(result, tmp);
 
-        try {
-            p4.divide(zero);
-            fail();
-        } catch (ArithmeticException e) {
-        }
+        assertThrows(ArithmeticException.class, () -> p4.divide(zero));
     }
 
     @Test
@@ -112,11 +110,7 @@ public class FieldElementF2mTest {
         result = new FieldElementF2m(new BigInteger("110", 2), modulus);
         assertEquals(result, tmp);
 
-        try {
-            zero.multInv();
-            fail();
-        } catch (ArithmeticException e) {
-        }
+        assertThrows(ArithmeticException.class, () -> zero.multInv());
     }
 
     @Test

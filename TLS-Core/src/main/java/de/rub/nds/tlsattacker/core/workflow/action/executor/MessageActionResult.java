@@ -52,7 +52,7 @@ public class MessageActionResult {
 
     /**
      * Merger this with other results, forming a new result.
-     * 
+     *
      * @param other
      */
     public MessageActionResult merge(MessageActionResult... other) {

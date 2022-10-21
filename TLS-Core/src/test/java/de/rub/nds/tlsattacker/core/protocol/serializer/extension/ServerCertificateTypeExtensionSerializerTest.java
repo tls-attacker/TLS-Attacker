@@ -9,58 +9,27 @@
 
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import de.rub.nds.tlsattacker.core.constants.CertificateType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerCertificateTypeExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ServerCertificateTypeExtensionParserTest;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.util.Collection;
+import org.junit.jupiter.params.provider.Arguments;
+
 import java.util.List;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertNull;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import java.util.stream.Stream;
 
-@RunWith(Parameterized.class)
-public class ServerCertificateTypeExtensionSerializerTest {
+public class ServerCertificateTypeExtensionSerializerTest extends AbstractExtensionMessageSerializerTest<
+    ServerCertificateTypeExtensionMessage, ServerCertificateTypeExtensionSerializer> {
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return ServerCertificateTypeExtensionParserTest.generateData();
+    public ServerCertificateTypeExtensionSerializerTest() {
+        super(ServerCertificateTypeExtensionMessage::new, ServerCertificateTypeExtensionSerializer::new,
+            List.of((msg, obj) -> {
+                if (obj != null) {
+                    msg.setCertificateTypesLength((Integer) obj);
+                }
+            }, (msg, obj) -> msg.setCertificateTypes((byte[]) obj),
+                (msg, obj) -> msg.setIsClientMessage((Boolean) obj)));
     }
 
-    private final byte[] expectedBytes;
-    private final Integer certificateTypesLength;
-    private final List<CertificateType> certificateTypes;
-    private final ConnectionEndType connectionEndType;
-    private ServerCertificateTypeExtensionSerializer serializer;
-    private ServerCertificateTypeExtensionMessage msg;
-
-    public ServerCertificateTypeExtensionSerializerTest(byte[] expectedBytes, Integer certificateTypesLength,
-        List<CertificateType> certificateTypes, ConnectionEndType connectionEndType) {
-        this.expectedBytes = expectedBytes;
-        this.certificateTypesLength = certificateTypesLength;
-        this.certificateTypes = certificateTypes;
-        this.connectionEndType = connectionEndType;
-    }
-
-    @Before
-    public void setUp() {
-        msg = new ServerCertificateTypeExtensionMessage();
-        serializer = new ServerCertificateTypeExtensionSerializer(msg);
-    }
-
-    @Test
-    public void testSerializeExtensionContent() {
-        msg.setCertificateTypes(CertificateType.toByteArray(certificateTypes));
-        if (certificateTypesLength != null) {
-            msg.setCertificateTypesLength(certificateTypesLength);
-        } else {
-            assertNull(certificateTypesLength);
-        }
-        msg.setIsClientMessage(connectionEndType == ConnectionEndType.CLIENT);
-
-        assertArrayEquals(expectedBytes, serializer.serializeExtensionContent());
+    public static Stream<Arguments> provideTestVectors() {
+        return ServerCertificateTypeExtensionParserTest.provideTestVectors();
     }
 }

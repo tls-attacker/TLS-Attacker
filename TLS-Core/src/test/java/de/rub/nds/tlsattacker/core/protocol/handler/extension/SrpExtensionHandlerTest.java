@@ -9,33 +9,29 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-import de.rub.nds.tlsattacker.core.protocol.message.extension.SRPExtensionMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-public class SrpExtensionHandlerTest {
+import de.rub.nds.tlsattacker.core.protocol.message.extension.SRPExtensionMessage;
+import org.junit.jupiter.api.Test;
+
+public class SrpExtensionHandlerTest
+    extends AbstractExtensionMessageHandlerTest<SRPExtensionMessage, SRPExtensionHandler> {
 
     private static final byte[] SRP_IDENTIFIER = new byte[] { 0x00, 0x01, 0x02, 0x03 };
     private static final int SRP_IDENTIFIER_LENGTH = 4;
-    private SRPExtensionHandler handler;
-    private TlsContext context;
 
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new SRPExtensionHandler(context);
+    public SrpExtensionHandlerTest() {
+        super(SRPExtensionMessage::new, SRPExtensionHandler::new);
     }
 
     @Test
-    public void testadjustContext() {
+    @Override
+    public void testadjustTLSExtensionContext() {
         SRPExtensionMessage msg = new SRPExtensionMessage();
         msg.setSrpIdentifier(SRP_IDENTIFIER);
         msg.setSrpIdentifierLength(SRP_IDENTIFIER_LENGTH);
-
-        handler.adjustContext(msg);
-
+        handler.adjustTLSExtensionContext(msg);
         assertArrayEquals(SRP_IDENTIFIER, context.getSecureRemotePasswordExtensionIdentifier());
     }
+
 }

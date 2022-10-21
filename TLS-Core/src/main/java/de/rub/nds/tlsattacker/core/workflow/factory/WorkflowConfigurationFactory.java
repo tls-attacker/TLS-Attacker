@@ -914,7 +914,6 @@ public class WorkflowConfigurationFactory {
     public WorkflowTrace addStartTlsActions(AliasedConnection connection, StarttlsType type,
         WorkflowTrace workflowTrace) {
         // TODO: fix for the new layer system since we removed ascii actions, leaving the old code for when this is
-        // fixes
         /*
          * switch (type) { case FTP: { workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection,
          * ConnectionEndType.SERVER, StarttlsMessage.FTP_S_CONNECTED.getStarttlsMessage(), "US-ASCII"));

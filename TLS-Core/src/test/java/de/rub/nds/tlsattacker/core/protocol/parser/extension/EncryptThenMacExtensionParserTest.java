@@ -9,29 +9,22 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptThenMacExtensionMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import java.io.ByteArrayInputStream;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.params.provider.Arguments;
 
-public class EncryptThenMacExtensionParserTest {
+import java.util.List;
+import java.util.stream.Stream;
 
-    private final byte[] expectedBytes = new byte[0];
-    private EncryptThenMacExtensionParser parser;
-    private EncryptThenMacExtensionMessage message;
-    private final Config config = Config.createConfig();
+public class EncryptThenMacExtensionParserTest
+    extends AbstractExtensionParserTest<EncryptThenMacExtensionMessage, EncryptThenMacExtensionParser> {
 
-    @Before
-    public void setUp() {
-        TlsContext tlsContext = new TlsContext(config);
-        parser = new EncryptThenMacExtensionParser(new ByteArrayInputStream(expectedBytes), tlsContext);
+    public EncryptThenMacExtensionParserTest() {
+        super(EncryptThenMacExtensionMessage.class, EncryptThenMacExtensionParser::new);
     }
 
-    @Test
-    public void testParse() {
-        message = new EncryptThenMacExtensionMessage();
-        parser.parse(message);
+    public static Stream<Arguments> provideTestVectors() {
+        return Stream.of(Arguments.of(new byte[] { 0x00, 0x16, 0x00, 0x00 }, List.of(), ExtensionType.ENCRYPT_THEN_MAC,
+            0, List.of()));
     }
 }

@@ -9,35 +9,26 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import org.junit.After;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class RSAClientKeyExchangeHandlerTest {
+public class RSAClientKeyExchangeHandlerTest extends AbstractTlsMessageHandlerTest<RSAClientKeyExchangeMessage,
+    RSAClientKeyExchangeHandler<RSAClientKeyExchangeMessage>> {
 
-    private RSAClientKeyExchangeHandler handler;
-    private TlsContext context;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new RSAClientKeyExchangeHandler(context);
-    }
-
-    @After
-    public void tearDown() {
+    public RSAClientKeyExchangeHandlerTest() {
+        super(RSAClientKeyExchangeMessage::new, RSAClientKeyExchangeHandler::new);
     }
 
     /**
      * Test of adjustContext method, of class RSAClientKeyExchangeHandler.
      */
     @Test
+    @Override
     public void testadjustContext() {
         RSAClientKeyExchangeMessage message = new RSAClientKeyExchangeMessage();
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);

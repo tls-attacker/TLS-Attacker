@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.util.Objects;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -31,7 +31,7 @@ public class WaitAction extends TlsAction {
     /**
      * Time to waiting in milliseconds.
      */
-    private Long time = new Long(-1);
+    private Long time = (long) -1;
 
     public WaitAction(long time) {
         assertValidTime(time);
@@ -43,6 +43,10 @@ public class WaitAction extends TlsAction {
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
+        if (isExecuted()) {
+            throw new WorkflowExecutionException("Action already executed!");
+        }
+
         LOGGER.info("Waiting " + time + "ms...");
         try {
             Thread.sleep(time);

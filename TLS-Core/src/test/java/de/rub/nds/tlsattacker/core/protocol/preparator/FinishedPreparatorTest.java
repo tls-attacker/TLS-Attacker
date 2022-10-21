@@ -9,6 +9,9 @@
 
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
@@ -16,16 +19,9 @@ import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class FinishedPreparatorTest {
-
-    private static final Logger LOGGER = LogManager.getLogger();
+public class FinishedPreparatorTest extends AbstractTlsMessagePreparatorTest<FinishedMessage, FinishedPreparator> {
 
     private static void registerPreviousMessages(TlsContext context, String... handshakeMessageHex) {
         for (String hex : handshakeMessageHex) {
@@ -34,15 +30,8 @@ public class FinishedPreparatorTest {
         }
     }
 
-    private FinishedMessage message;
-    private TlsContext context;
-    private FinishedPreparator preparator;
-
-    @Before
-    public void setUp() {
-        message = new FinishedMessage();
-        context = new TlsContext();
-        preparator = new FinishedPreparator(context.getChooser(), message);
+    public FinishedPreparatorTest() {
+        super(FinishedMessage::new, FinishedPreparator::new);
     }
 
     /**
@@ -55,7 +44,6 @@ public class FinishedPreparatorTest {
         context.setMasterSecret(ArrayConverter.hexStringToByteArray("AABBCCDDEEFF"));
         context.setPrfAlgorithm(PRFAlgorithm.TLS_PRF_SHA256);
         preparator.prepare();
-        LOGGER.info(ArrayConverter.bytesToHexString(message.getVerifyData().getValue(), false));
         // TODO Did not check if this is calculated correctly, just made sure it
         // is set
         assertArrayEquals(ArrayConverter.hexStringToByteArray("232A2CCB976E313AAA8E0F7A"),
@@ -86,7 +74,7 @@ public class FinishedPreparatorTest {
 
         preparator.prepare();
 
-        Assert.assertArrayEquals(ArrayConverter.hexStringToByteArray(finishedHex), message.getVerifyData().getValue());
+        assertArrayEquals(ArrayConverter.hexStringToByteArray(finishedHex), message.getVerifyData().getValue());
     }
 
     @Test
@@ -112,7 +100,7 @@ public class FinishedPreparatorTest {
 
         preparator.prepare();
 
-        Assert.assertArrayEquals(ArrayConverter.hexStringToByteArray(finishedHex), message.getVerifyData().getValue());
+        assertArrayEquals(ArrayConverter.hexStringToByteArray(finishedHex), message.getVerifyData().getValue());
     }
 
     /**
@@ -129,11 +117,6 @@ public class FinishedPreparatorTest {
         preparator.prepare();
         assertArrayEquals(message.getVerifyData().getValue(),
             ArrayConverter.hexStringToByteArray("B4AB5C21316FD38E3605D62C9022062DA84D83214EBC7BCD4BE6B3DB1971AFCA"));
-    }
-
-    @Test
-    public void testNoContextPrepare() {
-        preparator.prepare();
     }
 
 }

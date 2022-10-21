@@ -9,37 +9,33 @@
 
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedRandomExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtendedRandomExtensionSerializer;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class ExtendedRandomExtensionPreparatorTest {
+public class ExtendedRandomExtensionPreparatorTest extends AbstractExtensionMessagePreparatorTest<
+    ExtendedRandomExtensionMessage, ExtendedRandomExtensionSerializer, ExtendedRandomExtensionPreparator> {
 
-    private final byte[] extendedRandomShort = new byte[0];
-    private final byte[] extendedRandom =
+    private static final byte[] extendedRandomShort = new byte[0];
+    private static final byte[] extendedRandom =
         ArrayConverter.hexStringToByteArray("AABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABB");
-    private final byte[] extendedRandomLong =
+    private static final byte[] extendedRandomLong =
         ArrayConverter.hexStringToByteArray("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
             + "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-    private TlsContext context;
-    private ExtendedRandomExtensionMessage message;
-    private ExtendedRandomExtensionPreparator preparator;
 
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        message = new ExtendedRandomExtensionMessage();
-        preparator = new ExtendedRandomExtensionPreparator(context.getChooser(), message);
+    public ExtendedRandomExtensionPreparatorTest() {
+        super(ExtendedRandomExtensionMessage::new, ExtendedRandomExtensionSerializer::new,
+            ExtendedRandomExtensionPreparator::new);
     }
 
     @Test
-    public void testPreparator() {
+    @Override
+    public void testPrepare() {
         context.getConfig().setAddExtendedRandomExtension(true);
         context.getConfig().setDefaultClientExtendedRandom(extendedRandom);
         context.getConfig().setDefaultServerExtendedRandom(extendedRandom);
@@ -51,7 +47,7 @@ public class ExtendedRandomExtensionPreparatorTest {
     }
 
     @Test
-    public void testPreparatorShort() {
+    public void testPrepareShort() {
         context.getConfig().setAddExtendedRandomExtension(true);
         context.getConfig().setDefaultClientExtendedRandom(extendedRandomShort);
         context.getConfig().setDefaultServerExtendedRandom(extendedRandomShort);
@@ -63,7 +59,7 @@ public class ExtendedRandomExtensionPreparatorTest {
     }
 
     @Test
-    public void testPreparatorLong() {
+    public void testPrepareLong() {
         context.getConfig().setAddExtendedRandomExtension(true);
         context.getConfig().setDefaultClientExtendedRandom(extendedRandomLong);
         context.getConfig().setDefaultServerExtendedRandom(extendedRandomLong);
@@ -75,7 +71,7 @@ public class ExtendedRandomExtensionPreparatorTest {
     }
 
     @Test
-    public void testPreparatorDefault() {
+    public void testPrepareDefault() {
         context.getConfig().setAddExtendedRandomExtension(true);
         preparator.prepare();
 
@@ -95,10 +91,5 @@ public class ExtendedRandomExtensionPreparatorTest {
         assertArrayEquals(ExtensionType.EXTENDED_RANDOM.getValue(), message.getExtensionType().getValue());
         assertEquals(message.getExtendedRandomLength().getValue().intValue(),
             context.getConfig().getDefaultClientExtendedRandom().length);
-    }
-
-    @Test
-    public void testNoContextPrepare() {
-        preparator.prepare();
     }
 }

@@ -23,7 +23,7 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.SSL2ClientHelloSerializer
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import java.util.Objects;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 @SuppressWarnings("serial")
 @XmlRootElement(name = "SSL2ClientHello")

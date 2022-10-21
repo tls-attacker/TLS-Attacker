@@ -42,8 +42,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import javax.xml.bind.annotation.*;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElementWrapper;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.tls.Certificate;
@@ -66,14 +71,7 @@ public class Config implements Serializable {
     }
 
     public static Config createConfig(InputStream stream) {
-        Config config = ConfigIO.read(stream);
-        try {
-            stream.close();
-        } catch (IOException ex) {
-            LOGGER.warn("Could not close resource Stream!", ex);
-            return ConfigIO.read(stream);
-        }
-        return config;
+        return ConfigIO.read(stream);
     }
 
     public static Config createEmptyConfig() {

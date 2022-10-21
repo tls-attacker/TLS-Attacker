@@ -65,7 +65,9 @@ public class TlsMitm implements Runnable {
             WorkflowTrace trace = null;
             if (cmdConfig.getWorkflowInput() != null) {
                 LOGGER.debug("Reading workflow trace from " + cmdConfig.getWorkflowInput());
-                trace = WorkflowTraceSerializer.secureRead(new FileInputStream(new File(cmdConfig.getWorkflowInput())));
+                try (FileInputStream fis = new FileInputStream(cmdConfig.getWorkflowInput())) {
+                    trace = WorkflowTraceSerializer.secureRead(fis);
+                }
             }
             State state = executeMitmWorkflow(config, trace);
             if (cmdConfig.getWorkflowOutput() != null) {

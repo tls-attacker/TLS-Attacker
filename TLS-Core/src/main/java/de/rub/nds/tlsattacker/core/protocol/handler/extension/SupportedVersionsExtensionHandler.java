@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * This handler processes the SupportedVersions extensions, as defined in
- * https://tools.ietf.org/html/draft-ietf-tls-tls13-21#section-4.2.1
+ * <a href="https://tools.ietf.org/html/draft-ietf-tls-tls13-21#section-4.2.1">draft-ietf-tls13-21 Section 4.2.1</a>
  */
 public class SupportedVersionsExtensionHandler extends ExtensionHandler<SupportedVersionsExtensionMessage> {
 

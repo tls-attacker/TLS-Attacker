@@ -10,34 +10,23 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class CertificateVerifyHandlerTest {
+public class CertificateVerifyHandlerTest
+    extends AbstractTlsMessageHandlerTest<CertificateVerifyMessage, CertificateVerifyHandler> {
 
-    private CertificateVerifyHandler handler;
-    private TlsContext tlsContext;
-
-    @Before
-    public void setUp() {
-        tlsContext = new TlsContext();
-        handler = new CertificateVerifyHandler(tlsContext);
-    }
-
-    @After
-    public void tearDown() {
+    public CertificateVerifyHandlerTest() {
+        super(CertificateVerifyMessage::new, CertificateVerifyHandler::new);
     }
 
     /**
      * Test of adjustContext method, of class CertificateVerifyHandler.
      */
     @Test
+    @Override
     public void testadjustContext() {
         CertificateVerifyMessage message = new CertificateVerifyMessage();
         handler.adjustContext(message);
         // TODO make sure that nothing changed
     }
-
 }

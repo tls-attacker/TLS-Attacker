@@ -11,46 +11,21 @@ package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.AlpnExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.AlpnExtensionParserTest;
-import java.util.Collection;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class AlpnExtensionSerializerTest {
+import java.util.List;
+import java.util.stream.Stream;
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return AlpnExtensionParserTest.generateData();
+public class AlpnExtensionSerializerTest
+    extends AbstractExtensionMessageSerializerTest<AlpnExtensionMessage, AlpnExtensionSerializer> {
+
+    public AlpnExtensionSerializerTest() {
+        super(AlpnExtensionMessage::new, AlpnExtensionSerializer::new,
+            List.of((msg, obj) -> msg.setProposedAlpnProtocolsLength((Integer) obj),
+                (msg, obj) -> msg.setProposedAlpnProtocols((byte[]) obj)));
     }
 
-    private final byte[] expectedBytes;
-    private final int proposedAlpnProtocolsLength;
-    private final byte[] proposedAlpnProtocols;
-    private AlpnExtensionSerializer serializer;
-    private AlpnExtensionMessage message;
-
-    public AlpnExtensionSerializerTest(byte[] expectedBytes, int proposedAlpnProtocolsLength,
-        byte[] proposedAlpnProtocols) {
-        this.expectedBytes = expectedBytes;
-        this.proposedAlpnProtocolsLength = proposedAlpnProtocolsLength;
-        this.proposedAlpnProtocols = proposedAlpnProtocols;
+    public static Stream<Arguments> provideTestVectors() {
+        return AlpnExtensionParserTest.provideTestVectors();
     }
-
-    @Before
-    public void setUp() {
-        message = new AlpnExtensionMessage();
-        serializer = new AlpnExtensionSerializer(message);
-    }
-
-    @Test
-    public void testSerializeExtensionContent() {
-        message.setProposedAlpnProtocolsLength(proposedAlpnProtocolsLength);
-        message.setProposedAlpnProtocols(proposedAlpnProtocols);
-
-        assertArrayEquals(expectedBytes, serializer.serializeExtensionContent());
-    }
-
 }

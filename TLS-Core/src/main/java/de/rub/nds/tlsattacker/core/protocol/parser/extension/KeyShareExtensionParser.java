@@ -60,7 +60,8 @@ public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMe
                 entryList.add(entry);
             }
         } else {
-            byte[] keyShareBytes = parseByteArrayField(msg.getExtensionLength().getValue());
+            byte[] keyShareBytes = parseByteArrayField(getBytesLeft());
+            msg.setKeyShareListBytes(keyShareBytes);
             entryList.add(parseKeyShareEntry(new ByteArrayInputStream(keyShareBytes)));
         }
 

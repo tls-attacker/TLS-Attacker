@@ -9,20 +9,21 @@
 
 package de.rub.nds.tlsattacker.core.dtls;
 
+import static de.rub.nds.tlsattacker.core.dtls.FragmentUtils.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
-import static de.rub.nds.tlsattacker.core.dtls.FragmentUtils.*;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class FragmentCollectorTest {
 
     private FragmentCollector collector;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         collector = new FragmentCollector(Config.createConfig(), (byte) 0, 0, 10);
     }
@@ -38,6 +39,7 @@ public class FragmentCollectorTest {
     /**
      * Test that adding the same fragment twice is not a problem.
      */
+    @Test
     public void testAddFalse() {
         DtlsHandshakeMessageFragment frag = fragment(0, 0, 10, 0);
         collector.addFragment(frag);
@@ -136,7 +138,7 @@ public class FragmentCollectorTest {
         collector.addFragment(fragmentOfMsg(0, 3, 5, original, 0));
         collector.addFragment(fragmentOfMsg(0, 8, 2, original, 0));
         DtlsHandshakeMessageFragment fragment = collector.buildCombinedFragment();
-        checkFragment(fragment, 0, 10, original);
+        assertFragment(fragment, 0, 10, original);
     }
 
     /**
@@ -149,7 +151,7 @@ public class FragmentCollectorTest {
         collector.addFragment(fragmentOfMsg(0, 0, 3, original, 0));
         collector.addFragment(fragmentOfMsg(0, 2, 4, original, 0));
         DtlsHandshakeMessageFragment fragment = collector.buildCombinedFragment();
-        checkFragment(fragment, 0, 10, original);
+        assertFragment(fragment, 0, 10, original);
     }
 
     /**
@@ -162,7 +164,7 @@ public class FragmentCollectorTest {
         collector.addFragment(fragmentOfMsg(0, 6, 4, original, 0));
         DtlsHandshakeMessageFragment fragment = collector.buildCombinedFragment();
         byte[] expected = ArrayConverter.hexStringToByteArray("123456789A3456789A");
-        checkFragment(fragment, 0, 10, expected);
+        assertFragment(fragment, 0, 10, expected);
     }
 
     /**
@@ -180,6 +182,6 @@ public class FragmentCollectorTest {
         collector.addFragment(unfitting);
         DtlsHandshakeMessageFragment fragment = collector.buildCombinedFragment();
         byte[] expected = ArrayConverter.hexStringToByteArray("123456789A3456789A");
-        checkFragment(fragment, 0, 10, expected);
+        assertFragment(fragment, 0, 10, expected);
     }
 }

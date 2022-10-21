@@ -9,22 +9,17 @@
 
 package de.rub.nds.tlsattacker.core.protocol.message;
 
-import static org.junit.Assert.assertEquals;
-import org.junit.Test;
+import org.junit.jupiter.params.provider.Arguments;
 
-public class PWDClientKeyExchangeMessageTest {
+import java.util.stream.Stream;
 
-    @Test
-    public void testToString() {
-        PWDClientKeyExchangeMessage message = new PWDClientKeyExchangeMessage();
-        StringBuilder sb = new StringBuilder();
-        sb.append("PWDClientKeyExchangeMessage:");
-        sb.append("\n  Element: ");
-        sb.append("null");
-        sb.append("\n  Scalar: ");
-        sb.append("null");
+public class PWDClientKeyExchangeMessageTest extends AbstractMessageTest<PWDClientKeyExchangeMessage> {
 
-        assertEquals(sb.toString(), message.toString());
+    public PWDClientKeyExchangeMessageTest() {
+        super(PWDClientKeyExchangeMessage::new, "PWDClientKeyExchangeMessage:\n" + "  Element: %s\n" + "  Scalar: %s");
     }
 
+    public static Stream<Arguments> provideToStringTestVectors() {
+        return Stream.of(Arguments.of(new Object[] { null, null }, null));
+    }
 }

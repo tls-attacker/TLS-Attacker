@@ -9,11 +9,9 @@
 
 package de.rub.nds.tlsattacker.core.layer;
 
-import java.util.List;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 import de.rub.nds.tlsattacker.core.http.HttpMessage;
 import de.rub.nds.tlsattacker.core.layer.context.LayerContext;
@@ -23,7 +21,7 @@ import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 
 /**
  * Abstract class for different messages the TLS-Attacker can send. This includes but is not limited to TLS-Messages.
- * 
+ *
  * @param <Self>
  *                  The message class itself
  * @param <Context>

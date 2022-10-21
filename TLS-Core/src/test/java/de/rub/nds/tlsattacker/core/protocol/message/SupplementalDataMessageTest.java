@@ -9,35 +9,18 @@
 
 package de.rub.nds.tlsattacker.core.protocol.message;
 
-import org.junit.After;
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.params.provider.Arguments;
 
-public class SupplementalDataMessageTest {
+import java.util.stream.Stream;
 
-    SupplementalDataMessage message;
+public class SupplementalDataMessageTest extends AbstractMessageTest<SupplementalDataMessage> {
 
-    @Before
-    public void setUp() {
-        message = new SupplementalDataMessage();
+    public SupplementalDataMessageTest() {
+        super(SupplementalDataMessage::new,
+            "SupplementalDataMessage:\n" + "  Supplemental Data Length: %s\n" + "  SupplementalDataEntries:\n" + "%s");
     }
 
-    @After
-    public void tearDown() {
+    public static Stream<Arguments> provideToStringTestVectors() {
+        return Stream.of(Arguments.of(new Object[] { null, null }, null));
     }
-
-    /**
-     * Test of toString method, of class SupplementalDataMessage.
-     */
-    @Test
-    public void testToString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("SupplementalDataMessage:");
-        sb.append("\n  Supplemental Data Length: ").append("null");
-        sb.append("\n  SupplementalDataEntries:\n").append("null");
-
-        assertEquals(message.toString(), sb.toString());
-    }
-
 }

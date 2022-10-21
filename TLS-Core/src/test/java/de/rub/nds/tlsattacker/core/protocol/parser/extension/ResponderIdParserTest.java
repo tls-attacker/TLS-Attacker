@@ -9,27 +9,33 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.ResponderId;
 import java.io.ByteArrayInputStream;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
 
 public class ResponderIdParserTest {
 
-    private final Integer idLength = 6;
-    private final byte[] id = new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06 };
-    private final byte[] payloadBytes = new byte[] { 0x00, 0x06, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06 };
-    private ResponderIdParser parser;
-    private ResponderId parsedId;
+    public static Stream<Arguments> provideTestVectors() {
+        return Stream.of(Arguments.of(ArrayConverter.hexStringToByteArray("0006010203040506"), 6,
+            ArrayConverter.hexStringToByteArray("010203040506")));
+    }
 
-    @Test
-    public void testParser() {
-        parser = new ResponderIdParser(new ByteArrayInputStream(payloadBytes));
-        parsedId = new ResponderId();
+    @ParameterizedTest
+    @MethodSource("provideTestVectors")
+    public void testParse(byte[] providedResponderIdBytes, int expectedIdLength, byte[] expectedId) {
+        ResponderIdParser parser = new ResponderIdParser(new ByteArrayInputStream(providedResponderIdBytes));
+        ResponderId parsedId = new ResponderId();
         parser.parse(parsedId);
 
-        assertEquals(idLength, parsedId.getIdLength().getValue());
-        assertArrayEquals(id, parsedId.getId().getValue());
+        assertEquals(expectedIdLength, (long) parsedId.getIdLength().getValue());
+        assertArrayEquals(expectedId, parsedId.getId().getValue());
     }
 }

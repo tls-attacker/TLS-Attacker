@@ -21,7 +21,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.PskDheServerKeyExchangePr
 import de.rub.nds.tlsattacker.core.protocol.serializer.PskDheServerKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "PskDheServerKeyExchange")
 public class PskDheServerKeyExchangeMessage extends DHEServerKeyExchangeMessage {

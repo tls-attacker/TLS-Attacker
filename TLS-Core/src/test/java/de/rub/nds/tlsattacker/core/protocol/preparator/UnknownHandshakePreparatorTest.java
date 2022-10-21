@@ -9,23 +9,16 @@
 
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownHandshakeMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class UnknownHandshakePreparatorTest {
+public class UnknownHandshakePreparatorTest
+    extends AbstractTlsMessagePreparatorTest<UnknownHandshakeMessage, UnknownHandshakePreparator> {
 
-    private TlsContext context;
-    private UnknownHandshakeMessage message;
-    private UnknownHandshakePreparator preparator;
-
-    @Before
-    public void setUp() {
-        this.context = new TlsContext();
-        this.message = new UnknownHandshakeMessage();
-        this.preparator = new UnknownHandshakePreparator(context.getChooser(), message);
+    public UnknownHandshakePreparatorTest() {
+        super(UnknownHandshakeMessage::new, UnknownHandshakePreparator::new);
     }
 
     /**
@@ -36,10 +29,5 @@ public class UnknownHandshakePreparatorTest {
         message.setDataConfig(new byte[] { 6, 6, 6 });
         preparator.prepare();
         assertArrayEquals(new byte[] { 6, 6, 6 }, message.getData().getValue());
-    }
-
-    @Test
-    public void testNoContextPrepare() {
-        preparator.prepare();
     }
 }

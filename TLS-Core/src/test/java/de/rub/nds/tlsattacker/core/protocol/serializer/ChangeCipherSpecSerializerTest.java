@@ -9,44 +9,22 @@
 
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.ChangeCipherSpecParserTest;
-import java.util.Collection;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class ChangeCipherSpecSerializerTest {
+import java.util.List;
+import java.util.stream.Stream;
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return ChangeCipherSpecParserTest.generateData();
+public class ChangeCipherSpecSerializerTest
+    extends AbstractTlsMessageSerializerTest<ChangeCipherSpecMessage, ChangeCipherSpecSerializer> {
+
+    public ChangeCipherSpecSerializerTest() {
+        super(ChangeCipherSpecMessage::new, ChangeCipherSpecSerializer::new,
+            List.of((msg, obj) -> msg.setCcsProtocolType((byte[]) obj)));
     }
 
-    private final byte[] expectedPart;
-    private final ProtocolVersion version;
-
-    private final byte ccsType;
-
-    public ChangeCipherSpecSerializerTest(byte[] message, byte ccsType, ProtocolVersion version) {
-        this.expectedPart = message;
-        this.ccsType = ccsType;
-        this.version = version;
+    public static Stream<Arguments> provideTestVectors() {
+        return ChangeCipherSpecParserTest.provideTestVectors();
     }
-
-    /**
-     * Test of serializeBytes method, of class ChangeCipherSpecSerializer.
-     */
-    @Test
-    public void testSerializeBytes() {
-        ChangeCipherSpecMessage msg = new ChangeCipherSpecMessage();
-        msg.setCcsProtocolType(new byte[] { ccsType });
-        msg.setCompleteResultingMessage(expectedPart);
-        ChangeCipherSpecSerializer serializer = new ChangeCipherSpecSerializer(msg);
-        assertArrayEquals(expectedPart, serializer.serialize());
-    }
-
 }

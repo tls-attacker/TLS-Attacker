@@ -10,56 +10,25 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SRPExtensionMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import java.io.ByteArrayInputStream;
-import java.util.Arrays;
-import java.util.Collection;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Named;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class SRPExtensionParserTest {
+import java.util.List;
+import java.util.stream.Stream;
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] {
-            { new byte[] { 0x04, 0x01, 0x02, 0x03, 0x04 }, 4, ArrayConverter.hexStringToByteArray("01020304") } });
+public class SRPExtensionParserTest extends AbstractExtensionParserTest<SRPExtensionMessage, SRPExtensionParser> {
+
+    public SRPExtensionParserTest() {
+        super(SRPExtensionMessage.class, SRPExtensionParser::new,
+            List.of(
+                Named.of("SRPExtensionMessage::getSrpIdentifierLength", SRPExtensionMessage::getSrpIdentifierLength),
+                Named.of("SRPExtensionMessage::getSrpIdentifier", SRPExtensionMessage::getSrpIdentifier)));
     }
 
-    private final byte[] extensionBytes;
-    private final int srpIdentifierLength;
-    private final byte[] srpIdentifier;
-    private SRPExtensionParser parser;
-    private SRPExtensionMessage message;
-    private final Config config = Config.createConfig();
-
-    public SRPExtensionParserTest(byte[] extensionBytes, int srpIdentifierLength, byte[] srpIdentifier) {
-        this.extensionBytes = extensionBytes;
-        this.srpIdentifierLength = srpIdentifierLength;
-        this.srpIdentifier = srpIdentifier;
+    public static Stream<Arguments> provideTestVectors() {
+        return Stream.of(Arguments.of(new byte[] { 0x00, 0x0C, 0x00, 0x05, 0x04, 0x01, 0x02, 0x03, 0x04 }, List.of(),
+            ExtensionType.SRP, 5, List.of(4, ArrayConverter.hexStringToByteArray("01020304"))));
     }
-
-    @Before
-    public void setUp() {
-        TlsContext tlsContext = new TlsContext(config);
-        parser = new SRPExtensionParser(new ByteArrayInputStream(extensionBytes), tlsContext);
-
-    }
-
-    @Test
-    public void testParse() {
-        message = new SRPExtensionMessage();
-        parser.parse(message);
-
-        assertEquals(srpIdentifierLength, (long) message.getSrpIdentifierLength().getValue());
-        assertArrayEquals(srpIdentifier, message.getSrpIdentifier().getValue());
-
-    }
-
 }

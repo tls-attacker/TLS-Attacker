@@ -11,31 +11,21 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class ChangeCipherSpecHandlerTest {
+public class ChangeCipherSpecHandlerTest
+    extends AbstractTlsMessageHandlerTest<ChangeCipherSpecMessage, ChangeCipherSpecHandler> {
 
-    private ChangeCipherSpecHandler handler;
-    private TlsContext context;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new ChangeCipherSpecHandler(context);
-    }
-
-    @After
-    public void tearDown() {
+    public ChangeCipherSpecHandlerTest() {
+        super(ChangeCipherSpecMessage::new, ChangeCipherSpecHandler::new);
     }
 
     /**
      * Test of adjustContext method, of class ChangeCipherSpecHandler.
      */
     @Test
+    @Override
     public void testadjustContext() {
         ChangeCipherSpecMessage message = new ChangeCipherSpecMessage();
         context.setSelectedCipherSuite(CipherSuite.getImplemented().get(0));

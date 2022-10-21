@@ -9,39 +9,31 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SupportedVersionsExtensionMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class SupportedVersionsExtensionHandlerTest {
-
-    private SupportedVersionsExtensionHandler handler;
-    private TlsContext context;
+public class SupportedVersionsExtensionHandlerTest
+    extends AbstractExtensionMessageHandlerTest<SupportedVersionsExtensionMessage, SupportedVersionsExtensionHandler> {
 
     public SupportedVersionsExtensionHandlerTest() {
-    }
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new SupportedVersionsExtensionHandler(context);
+        super(SupportedVersionsExtensionMessage::new, SupportedVersionsExtensionHandler::new);
     }
 
     /**
      * Test of adjustContext method, of class SupportedVersionsExtensionHandler.
      */
     @Test
-    public void testadjustContext() {
+    @Override
+    public void testadjustTLSExtensionContext() {
         SupportedVersionsExtensionMessage msg = new SupportedVersionsExtensionMessage();
         msg.setSupportedVersions(
             ArrayConverter.concatenate(ProtocolVersion.TLS12.getValue(), ProtocolVersion.TLS13.getValue()));
-        handler.adjustContext(msg);
-        assertTrue(context.getClientSupportedProtocolVersions().size() == 2);
+        handler.adjustTLSExtensionContext(msg);
+        assertEquals(2, context.getClientSupportedProtocolVersions().size());
         assertEquals(context.getHighestClientProtocolVersion().getValue(), ProtocolVersion.TLS13.getValue());
     }
 
@@ -49,8 +41,8 @@ public class SupportedVersionsExtensionHandlerTest {
     public void testadjustContextBadVersions() {
         SupportedVersionsExtensionMessage msg = new SupportedVersionsExtensionMessage();
         msg.setSupportedVersions(new byte[] { 0, 1, 2, 3, 3, 3 });
-        handler.adjustContext(msg);
-        assertTrue(context.getClientSupportedProtocolVersions().size() == 1);
+        handler.adjustTLSExtensionContext(msg);
+        assertEquals(1, context.getClientSupportedProtocolVersions().size());
         assertEquals(context.getHighestClientProtocolVersion().getValue(), ProtocolVersion.TLS12.getValue());
     }
 }

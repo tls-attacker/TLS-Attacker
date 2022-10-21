@@ -26,7 +26,7 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerial
 
 import java.io.InputStream;
 import java.io.Serializable;
-import javax.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 @XmlSeeAlso({ EncryptedServerNameIndicationExtensionMessage.class, ECPointFormatExtensionMessage.class,
     EllipticCurvesExtensionMessage.class, EllipticCurvesExtensionMessage.class,

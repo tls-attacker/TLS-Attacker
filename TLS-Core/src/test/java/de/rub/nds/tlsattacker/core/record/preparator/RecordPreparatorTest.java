@@ -14,9 +14,11 @@ import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.compressor.RecordCompressor;
 import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import java.security.Security;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.security.Security;
 
 public class RecordPreparatorTest {
 
@@ -27,13 +29,14 @@ public class RecordPreparatorTest {
     public RecordPreparator preparator;
     private RecordCompressor compressor;
 
-    public RecordPreparatorTest() {
+    @BeforeAll
+    public static void setUpClass() {
+        Security.addProvider(new BouncyCastleProvider());
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         context = new TlsContext();
         record = new Record();
-        Security.addProvider(new BouncyCastleProvider());
     }
 }

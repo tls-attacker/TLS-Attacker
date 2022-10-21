@@ -9,72 +9,27 @@
 
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
-import java.util.Arrays;
-import java.util.Collection;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import de.rub.nds.tlsattacker.core.protocol.parser.ServerHelloParserTest;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class ServerHelloSerializerTest {
+import java.util.List;
+import java.util.stream.Stream;
 
-    // TODO should reuse parser tests
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { { ArrayConverter.hexStringToByteArray(
-            "0303378f93cbcafda4c9ba43dafb49ab847ba1ae86a29d2679e7b9aac8e25c207e01200919fe8a189912807ee0621a45f4e6440a297f13574d2229fdbc96427b0e2d10002f000000"),
-            ProtocolVersion.TLS12.getValue(), new byte[] { (byte) 0x37, (byte) 0x8f, (byte) 0x93, (byte) 0xcb },
-            ArrayConverter.hexStringToByteArray("378f93cbcafda4c9ba43dafb49ab847ba1ae86a29d2679e7b9aac8e25c207e01"), 32,
-            ArrayConverter.hexStringToByteArray("0919fe8a189912807ee0621a45f4e6440a297f13574d2229fdbc96427b0e2d10"),
-            CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA.getByteValue(), CompressionMethod.NULL.getValue(), 0 },
-            { ArrayConverter.hexStringToByteArray(
-                "0303378f93cbcafda4c9ba43dafb49ab847ba1ae86a29d2679e7b9aac8e25c207e01200919fe8a189912807ee0621a45f4e6440a297f13574d2229fdbc96427b0e2d10002f00"),
-                ProtocolVersion.TLS12.getValue(), new byte[] { (byte) 0x37, (byte) 0x8f, (byte) 0x93, (byte) 0xcb },
-                ArrayConverter.hexStringToByteArray("378f93cbcafda4c9ba43dafb49ab847ba1ae86a29d2679e7b9aac8e25c207e01"),
-                32,
-                ArrayConverter.hexStringToByteArray("0919fe8a189912807ee0621a45f4e6440a297f13574d2229fdbc96427b0e2d10"),
-                CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA.getByteValue(), CompressionMethod.NULL.getValue(), null } });
+public class ServerHelloSerializerTest
+    extends AbstractHandshakeMessageSerializerTest<ServerHelloMessage, ServerHelloSerializer> {
+
+    public ServerHelloSerializerTest() {
+        super(ServerHelloMessage::new, ServerHelloSerializer::new,
+            List.of((msg, obj) -> msg.setProtocolVersion((byte[]) obj), (msg, obj) -> msg.setUnixTime((byte[]) obj),
+                (msg, obj) -> msg.setRandom((byte[]) obj), (msg, obj) -> msg.setSessionIdLength((Integer) obj),
+                (msg, obj) -> msg.setSessionId((byte[]) obj), (msg, obj) -> msg.setSelectedCipherSuite((byte[]) obj),
+                (msg, obj) -> msg.setSelectedCompressionMethod((Byte) obj),
+                (msg, obj) -> msg.setExtensionsLength((Integer) obj),
+                (msg, obj) -> msg.setExtensionBytes((byte[]) obj)));
     }
 
-    private ServerHelloMessage helloMessage;
-    private byte[] message;
-
-    public ServerHelloSerializerTest(byte[] message, byte[] protocolVersion, byte[] unixTime, byte[] random,
-        int sessionIdLength, byte[] sessionID, byte[] selectedCiphersuite, byte selectedCompression,
-        Integer extensionLength) {
-        this.message = message;
-        helloMessage = new ServerHelloMessage();
-        helloMessage.setProtocolVersion(protocolVersion);
-        helloMessage.setUnixTime(unixTime);
-        helloMessage.setRandom(random);
-        helloMessage.setSessionIdLength(sessionIdLength);
-        helloMessage.setSessionId(sessionID);
-        helloMessage.setSelectedCipherSuite(selectedCiphersuite);
-        helloMessage.setSelectedCompressionMethod(selectedCompression);
-        if (extensionLength != null) {
-            helloMessage.setExtensionsLength(extensionLength);
-        }
+    public static Stream<Arguments> provideTestVectors() {
+        return ServerHelloParserTest.provideTestVectors();
     }
-
-    @Before
-    public void setUp() {
-    }
-
-    /**
-     * Test of serializeHandshakeMessageContent method, of class ServerHelloSerializer.
-     */
-    @Test
-    public void testSerializeHandshakeMessageContent() {
-        ServerHelloSerializer serializer = new ServerHelloSerializer(helloMessage);
-        byte[] serialised = serializer.serializeHandshakeMessageContent();
-        assertArrayEquals(serialised, message);
-    }
-
 }

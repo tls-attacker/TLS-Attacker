@@ -12,6 +12,7 @@ package de.rub.nds.tlsattacker.core.certificate;
 import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.PrivateKey;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -148,12 +149,14 @@ public class CertificateByteChooser {
         try {
             for (String file : getResourceFiles()) {
                 if (file.endsWith("cert.pem")) {
-                    try {
-                        Certificate readCertificate = PemUtil.readCertificate(
-                            this.getClass().getClassLoader().getResourceAsStream(RESOURCE_PATH + file));
-                        String keyName = resolveKeyfileFromCert(file);
-                        PrivateKey privateKey = PemUtil.readPrivateKey(
-                            this.getClass().getClassLoader().getResourceAsStream(RESOURCE_PATH + keyName));
+                    String keyName = resolveKeyfileFromCert(file);
+                    try (
+                        InputStream certInputStream =
+                            this.getClass().getClassLoader().getResourceAsStream(RESOURCE_PATH + file);
+                        InputStream keyInputStream =
+                            this.getClass().getClassLoader().getResourceAsStream(RESOURCE_PATH + keyName)) {
+                        Certificate readCertificate = PemUtil.readCertificate(certInputStream);
+                        PrivateKey privateKey = PemUtil.readPrivateKey(keyInputStream);
                         keyPairList.add(new CertificateKeyPair(readCertificate, privateKey));
                     } catch (Exception e) {
                         LOGGER.warn("Could not load: " + file, e);

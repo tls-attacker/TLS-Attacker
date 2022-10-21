@@ -9,20 +9,24 @@
 
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
-import org.junit.Before;
-import org.junit.Test;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.UnknownExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.UnknownExtensionSerializer;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-public class UnknownExtensionPreparatorTest {
+public class UnknownExtensionPreparatorTest extends AbstractExtensionMessagePreparatorTest<UnknownExtensionMessage,
+    UnknownExtensionSerializer, UnknownExtensionPreparator> {
 
-    @Before
-    public void setUp() {
+    public UnknownExtensionPreparatorTest() {
+        super(UnknownExtensionMessage::new, UnknownExtensionSerializer::new, UnknownExtensionPreparator::new);
     }
 
     /**
      * Test of prepareExtensionContent method, of class UnknownExtensionPreparator.
      */
     @Test
-    public void testPrepareExtensionContent() {
+    @Disabled("Not implemented")
+    @Override
+    public void testPrepare() {
     }
-
 }

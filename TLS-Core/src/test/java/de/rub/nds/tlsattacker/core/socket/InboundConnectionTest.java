@@ -9,23 +9,24 @@
 
 package de.rub.nds.tlsattacker.core.socket;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
-import java.io.StringReader;
-import java.io.StringWriter;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
+import jakarta.xml.bind.Unmarshaller;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.io.StringReader;
+import java.io.StringWriter;
 
 public class InboundConnectionTest {
 
@@ -36,7 +37,7 @@ public class InboundConnectionTest {
     private Marshaller m;
     private Unmarshaller um;
 
-    @Before
+    @BeforeEach
     public void setUp() throws JAXBException {
         writer = new StringWriter();
         context = JAXBContext.newInstance(TestXmlRoot.class);
@@ -94,12 +95,9 @@ public class InboundConnectionTest {
         String xmlString = writer.toString();
         LOGGER.debug(xmlString);
 
-        StringBuilder sb = new StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
-        sb.append("<testXmlRoot>\n");
-        sb.append("    <alias>TestMe</alias>\n");
-        sb.append("    <port>4444</port>\n");
-        sb.append("</testXmlRoot>\n");
-        assertEquals(sb.toString(), xmlString);
+        String sb = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" + "<testXmlRoot>\n"
+            + "    <alias>TestMe</alias>\n" + "    <port>4444</port>\n" + "</testXmlRoot>\n";
+        assertEquals(sb, xmlString);
 
         Unmarshaller um = context.createUnmarshaller();
         TestXmlRoot actual = (TestXmlRoot) um.unmarshal(new StringReader(xmlString));
@@ -109,7 +107,7 @@ public class InboundConnectionTest {
     }
 
     @Test
-    public void mixInDefaultsFromReference() throws Exception {
+    public void mixInDefaultsFromReference() {
 
         TestXmlRoot con = new TestXmlRoot();
         InboundConnection defaultCon = new InboundConnection();
@@ -127,15 +125,15 @@ public class InboundConnectionTest {
         assertNull(con.getPort());
 
         con.normalize(defaultCon);
-        assertThat(con.getTimeout(), equalTo(2300));
-        assertThat(con.getTransportHandlerType(), equalTo(TransportHandlerType.EAP_TLS));
-        assertThat(con.getHostname(), equalTo("testDefaultHost"));
-        assertThat(con.getAlias(), equalTo("testDefaultAlias"));
-        assertThat(con.getPort(), equalTo(9772));
+        assertEquals(2300, con.getTimeout().intValue());
+        assertSame(TransportHandlerType.EAP_TLS, con.getTransportHandlerType());
+        assertEquals("testDefaultHost", con.getHostname());
+        assertEquals("testDefaultAlias", con.getAlias());
+        assertEquals(9772, con.getPort().intValue());
     }
 
     @Test
-    public void mixInDefaultsFromEmptyReference() throws Exception {
+    public void mixInDefaultsFromEmptyReference() {
         TestXmlRoot con = new TestXmlRoot();
         InboundConnection defaultCon = new InboundConnection();
 
@@ -146,15 +144,15 @@ public class InboundConnectionTest {
         assertNull(con.getPort());
 
         con.normalize(null);
-        assertThat(con.getTimeout(), equalTo(InboundConnection.DEFAULT_TIMEOUT));
-        assertThat(con.getTransportHandlerType(), equalTo(InboundConnection.DEFAULT_TRANSPORT_HANDLER_TYPE));
-        assertThat(con.getHostname(), equalTo(InboundConnection.DEFAULT_HOSTNAME));
-        assertThat(con.getAlias(), equalTo(InboundConnection.DEFAULT_CONNECTION_ALIAS));
-        assertThat(con.getPort(), equalTo(InboundConnection.DEFAULT_PORT));
+        assertEquals(InboundConnection.DEFAULT_TIMEOUT, con.getTimeout());
+        assertSame(InboundConnection.DEFAULT_TRANSPORT_HANDLER_TYPE, con.getTransportHandlerType());
+        assertEquals(InboundConnection.DEFAULT_HOSTNAME, con.getHostname());
+        assertEquals(InboundConnection.DEFAULT_CONNECTION_ALIAS, con.getAlias());
+        assertEquals(InboundConnection.DEFAULT_PORT, con.getPort());
     }
 
     @Test
-    public void stripDefaultsReversesMixInEmptyDefaults() throws Exception {
+    public void stripDefaultsReversesMixInEmptyDefaults() {
         TestXmlRoot con = new TestXmlRoot();
         InboundConnection defaultCon = new InboundConnection();
 
@@ -165,11 +163,11 @@ public class InboundConnectionTest {
         assertNull(con.getPort());
 
         con.normalize(null);
-        assertThat(con.getTimeout(), equalTo(InboundConnection.DEFAULT_TIMEOUT));
-        assertThat(con.getTransportHandlerType(), equalTo(InboundConnection.DEFAULT_TRANSPORT_HANDLER_TYPE));
-        assertThat(con.getHostname(), equalTo(InboundConnection.DEFAULT_HOSTNAME));
-        assertThat(con.getAlias(), equalTo(InboundConnection.DEFAULT_CONNECTION_ALIAS));
-        assertThat(con.getPort(), equalTo(InboundConnection.DEFAULT_PORT));
+        assertEquals(InboundConnection.DEFAULT_TIMEOUT, con.getTimeout());
+        assertSame(InboundConnection.DEFAULT_TRANSPORT_HANDLER_TYPE, con.getTransportHandlerType());
+        assertEquals(InboundConnection.DEFAULT_HOSTNAME, con.getHostname());
+        assertEquals(InboundConnection.DEFAULT_CONNECTION_ALIAS, con.getAlias());
+        assertEquals(InboundConnection.DEFAULT_PORT, con.getPort());
 
         con.filter(null);
         assertNull(con.getTimeout());
@@ -180,7 +178,7 @@ public class InboundConnectionTest {
     }
 
     @Test
-    public void stripDefaultsReversesMixInDefaults() throws Exception {
+    public void stripDefaultsReversesMixInDefaults() {
 
         TestXmlRoot con = new TestXmlRoot();
         InboundConnection defaultCon = new InboundConnection();
@@ -198,11 +196,11 @@ public class InboundConnectionTest {
         assertNull(con.getPort());
 
         con.normalize(defaultCon);
-        assertThat(con.getTimeout(), equalTo(2300));
-        assertThat(con.getTransportHandlerType(), equalTo(TransportHandlerType.EAP_TLS));
-        assertThat(con.getHostname(), equalTo("testDefaultHost"));
-        assertThat(con.getAlias(), equalTo("testDefaultAlias"));
-        assertThat(con.getPort(), equalTo(9772));
+        assertEquals(2300, con.getTimeout().intValue());
+        assertSame(TransportHandlerType.EAP_TLS, con.getTransportHandlerType());
+        assertEquals("testDefaultHost", con.getHostname());
+        assertEquals("testDefaultAlias", con.getAlias());
+        assertEquals(9772, con.getPort().intValue());
 
         con.filter(defaultCon);
         assertNull(con.getTimeout());
@@ -212,73 +210,6 @@ public class InboundConnectionTest {
         assertNull(con.getPort());
     }
 
-    // /**
-    // * Verify that ClientConnectionEnd does not include default values in
-    // * serialization output.
-    // *
-    // * @throws Exception
-    // */
-    // @Test
-    // public void testSerializeDefaultFields() throws Exception {
-    //
-    // InboundConnectionTest.TestXmlRoot expected = new
-    // InboundConnectionTest.TestXmlRoot();
-    // expected.setDefaultTimeout(2300);
-    // expected.setDefaultTransportHandlerType(TransportHandlerType.EAP_TLS);
-    //
-    // m.marshal(expected, writer);
-    // String xmlString = writer.toString();
-    // LOGGER.debug(xmlString);
-    //
-    // assertEquals("<testXmlRoot/>", xmlString.split("\\n")[1]);
-    //
-    // Unmarshaller um = context.createUnmarshaller();
-    // InboundConnectionTest.TestXmlRoot actual =
-    // (InboundConnectionTest.TestXmlRoot) um
-    // .unmarshal(new StringReader(xmlString));
-    //
-    // // Default values are not marshaled
-    // assertNotEquals(expected, actual);
-    //
-    // // Default values need to be set again after un-marshaling
-    // actual.setDefaultTimeout(2300);
-    // actual.setDefaultTransportHandlerType(TransportHandlerType.EAP_TLS);
-    // assertEquals(expected, actual);
-    // assertNotSame(expected, actual);
-    // }
-    //
-    // /**
-    // * Verify that ServerConnectionEnd includes overridden defaults in
-    // * serialization output.
-    // *
-    // * @throws Exception
-    // */
-    // @Test
-    // public void testSerializeOverriddenDefaultFields() throws Exception {
-    //
-    // TestXmlRoot expected = new TestXmlRoot();
-    // expected.setTimeout(40);
-    // expected.setTransportHandlerType(TransportHandlerType.UDP);
-    // m.marshal(expected, writer);
-    //
-    // String xmlString = writer.toString();
-    // LOGGER.debug(xmlString);
-    //
-    // StringBuilder sb = new
-    // StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
-    // sb.append("<testXmlRoot>\n");
-    // sb.append(" <transportHandlerType>UDP</transportHandlerType>\n");
-    // sb.append(" <timeout>40</timeout>\n");
-    // sb.append("</testXmlRoot>\n");
-    // assertEquals(sb.toString(), xmlString);
-    //
-    // Unmarshaller um = context.createUnmarshaller();
-    // TestXmlRoot actual = (TestXmlRoot) um.unmarshal(new
-    // StringReader(xmlString));
-    //
-    // assertEquals(expected, actual);
-    // assertNotSame(expected, actual);
-    // }
     @XmlRootElement
     @XmlAccessorType(XmlAccessType.FIELD)
     private static class TestXmlRoot extends InboundConnection {

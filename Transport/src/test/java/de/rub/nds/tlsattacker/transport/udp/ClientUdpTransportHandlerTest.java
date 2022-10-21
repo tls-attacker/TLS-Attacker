@@ -6,27 +6,19 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-/**
- * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
- * <p>Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
- *
- * <p>Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
- */
 
 package de.rub.nds.tlsattacker.transport.udp;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
 
 public class ClientUdpTransportHandlerTest {
 
@@ -48,8 +40,8 @@ public class ClientUdpTransportHandlerTest {
             udpTH.sendData(txData);
             testSocket.receive(rxPacket);
 
-            assertEquals("Confirm size of the sent data", txData.length, rxPacket.getLength());
-            assertArrayEquals("Confirm sent data equals received data", txData, rxPacket.getData());
+            assertEquals(txData.length, rxPacket.getLength(), "Confirm size of the sent data");
+            assertArrayEquals(txData, rxPacket.getData(), "Confirm sent data equals received data");
 
             udpTH.closeConnection();
         }
@@ -81,8 +73,8 @@ public class ClientUdpTransportHandlerTest {
                 rxData = udpTH.fetchData();
                 allReceivedData = ArrayConverter.concatenate(allReceivedData, rxData);
             }
-            assertEquals("Confirm size of the received data", allSentData.length, allReceivedData.length);
-            assertArrayEquals("Confirm received data equals sent data", allSentData, allReceivedData);
+            assertEquals(allSentData.length, allReceivedData.length, "Confirm size of the received data");
+            assertArrayEquals(allSentData, allReceivedData, "Confirm received data equals sent data");
 
             udpTH.closeConnection();
         }

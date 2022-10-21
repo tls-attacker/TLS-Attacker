@@ -9,20 +9,22 @@
 
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import org.junit.Before;
-import org.junit.Test;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.HeartbeatExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.HeartbeatExtensionParserTest;
+import org.junit.jupiter.params.provider.Arguments;
 
-public class HeartbeatExtensionSerializerTest {
+import java.util.List;
+import java.util.stream.Stream;
 
-    @Before
-    public void setUp() {
+public class HeartbeatExtensionSerializerTest
+    extends AbstractExtensionMessageSerializerTest<HeartbeatExtensionMessage, HeartbeatExtensionSerializer> {
+
+    public HeartbeatExtensionSerializerTest() {
+        super(HeartbeatExtensionMessage::new, HeartbeatExtensionSerializer::new,
+            List.of((msg, obj) -> msg.setHeartbeatMode((byte[]) obj)));
     }
 
-    /**
-     * Test of serializeExtensionContent method, of class HeartbeatExtensionSerializer.
-     */
-    @Test
-    public void testSerializeExtensionContent() {
+    public static Stream<Arguments> provideTestVectors() {
+        return HeartbeatExtensionParserTest.provideTestVectors();
     }
-
 }

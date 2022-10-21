@@ -99,11 +99,6 @@ public class FragmentStream {
         return stream.toByteArray();
     }
 
-    /**
-     *
-     * @param  fillingByte
-     * @return
-     */
     public byte[] getCompleteTruncatedStream() {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         int skipCounter = 0;

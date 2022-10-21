@@ -9,50 +9,22 @@
 
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.util.tests.SlowTests;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import javax.crypto.NoSuchPaddingException;
-import org.junit.After;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Test;
 
-public class ChangeProtocolVersionActionTest {
+public class ChangeProtocolVersionActionTest extends AbstractChangeActionTest<ChangeProtocolVersionAction> {
 
-    private State state;
-    private TlsContext tlsContext;
-    private ChangeProtocolVersionAction action;
-
-    @Before
-    public void setUp() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
-        InvalidAlgorithmParameterException, CryptoException {
-        Config config = new Config();
-        action = new ChangeProtocolVersionAction(ProtocolVersion.SSL2);
-        WorkflowTrace trace = new WorkflowTrace();
-        trace.addTlsAction(action);
-        state = new State(config, trace);
-        tlsContext = state.getTlsContext();
-        tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
-    }
-
-    @After
-    public void tearDown() {
+    public ChangeProtocolVersionActionTest() {
+        super(new ChangeProtocolVersionAction(ProtocolVersion.SSL2), ChangeProtocolVersionAction.class);
     }
 
     /**
      * Test of setNewValue method, of class ChangeCompressionAction.
      */
     @Test
+    @Override
     public void testSetNewValue() {
         assertEquals(action.getNewValue(), ProtocolVersion.SSL2);
         action.setNewValue(ProtocolVersion.TLS11);
@@ -63,6 +35,7 @@ public class ChangeProtocolVersionActionTest {
      * Test of getNewValue method, of class ChangeCompressionAction.
      */
     @Test
+    @Override
     public void testGetNewValue() {
         assertEquals(action.getNewValue(), ProtocolVersion.SSL2);
     }
@@ -71,8 +44,9 @@ public class ChangeProtocolVersionActionTest {
      * Test of getOldValue method, of class ChangeCompressionAction.
      */
     @Test
+    @Override
     public void testGetOldValue() {
-        tlsContext.setSelectedProtocolVersion(ProtocolVersion.TLS12);
+        context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         action.execute(state);
         assertEquals(action.getOldValue(), ProtocolVersion.TLS12);
     }
@@ -81,45 +55,12 @@ public class ChangeProtocolVersionActionTest {
      * Test of execute method, of class ChangeCompressionAction.
      */
     @Test
-    public void testExecute() {
-        tlsContext.setSelectedProtocolVersion(ProtocolVersion.TLS12);
-        action.execute(state);
+    @Override
+    public void testExecute() throws Exception {
+        context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
+        super.testExecute();
         assertEquals(action.getOldValue(), ProtocolVersion.TLS12);
         assertEquals(action.getNewValue(), ProtocolVersion.SSL2);
-        assertEquals(tlsContext.getSelectedProtocolVersion(), ProtocolVersion.SSL2);
-        assertTrue(action.isExecuted());
+        assertEquals(context.getSelectedProtocolVersion(), ProtocolVersion.SSL2);
     }
-
-    /**
-     * Test of reset method, of class ChangeCompressionAction.
-     */
-    @Test
-    public void testReset() {
-        assertFalse(action.isExecuted());
-        action.execute(state);
-        assertTrue(action.isExecuted());
-        action.reset();
-        assertFalse(action.isExecuted());
-        action.execute(state);
-        assertTrue(action.isExecuted());
-    }
-
-    @Test
-    @Category(SlowTests.class)
-    public void marshalingEmptyActionYieldsMinimalOutput() {
-        ActionTestUtils.marshalingEmptyActionYieldsMinimalOutput(ChangeProtocolVersionAction.class);
-    }
-
-    @Test
-    @Category(SlowTests.class)
-    public void marshalingAndUnmarshalingEmptyObjectYieldsEqualObject() {
-        ActionTestUtils.marshalingAndUnmarshalingEmptyObjectYieldsEqualObject(ChangeProtocolVersionAction.class);
-    }
-
-    @Test
-    @Category(SlowTests.class)
-    public void marshalingAndUnmarshalingFilledObjectYieldsEqualObject() {
-        ActionTestUtils.marshalingAndUnmarshalingFilledObjectYieldsEqualObject(action);
-    }
-
 }

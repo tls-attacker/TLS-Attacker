@@ -9,14 +9,16 @@
 
 package de.rub.nds.tlsattacker.core.crypto.gost;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import java.io.IOException;
 import org.bouncycastle.asn1.cryptopro.Gost2814789EncryptedKey;
 import org.bouncycastle.asn1.cryptopro.GostR3410KeyTransport;
 import org.bouncycastle.asn1.cryptopro.GostR3410TransportParameters;
 import org.bouncycastle.asn1.rosstandart.RosstandartObjectIdentifiers;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
 
 public class TLSGostKeyTransportBlobTest {
 
@@ -36,7 +38,7 @@ public class TLSGostKeyTransportBlobTest {
     }
 
     @Test
-    public void createInstance() throws IOException {
+    public void testCreateInstance() throws IOException {
         byte[] key =
             ArrayConverter.hexStringToByteArray("83BE410A078B313050F47E89124DE9DCEC591B770D0AB638712E6F8412A874BA");
         byte[] mac = ArrayConverter.hexStringToByteArray("6EE7685F");

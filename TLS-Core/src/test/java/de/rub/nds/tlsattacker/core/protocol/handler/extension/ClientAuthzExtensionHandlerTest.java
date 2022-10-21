@@ -9,38 +9,36 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AuthzDataFormat;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientAuthzExtensionMessage;
+import org.junit.jupiter.api.Test;
+
 import java.util.Arrays;
 import java.util.List;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import org.junit.Before;
-import org.junit.Test;
 
-public class ClientAuthzExtensionHandlerTest {
+public class ClientAuthzExtensionHandlerTest
+    extends AbstractExtensionMessageHandlerTest<ClientAuthzExtensionMessage, ClientAuthzExtensionHandler> {
 
     private final byte[] authzFormatListAsBytes = ArrayConverter.hexStringToByteArray("00010203");
     private final List<AuthzDataFormat> authzFormatList = Arrays.asList(AuthzDataFormat.X509_ATTR_CERT,
         AuthzDataFormat.SAML_ASSERTION, AuthzDataFormat.X509_ATTR_CERT_URL, AuthzDataFormat.SAML_ASSERTION_URL);
-    private ClientAuthzExtensionHandler handler;
-    private TlsContext tlsContext;
 
-    @Before
-    public void setUp() {
-        tlsContext = new TlsContext();
-        handler = new ClientAuthzExtensionHandler(tlsContext);
+    public ClientAuthzExtensionHandlerTest() {
+        super(ClientAuthzExtensionMessage::new, ClientAuthzExtensionHandler::new);
     }
 
     @Test
-    public void testadjustContext() {
+    @Override
+    public void testadjustTLSExtensionContext() {
         ClientAuthzExtensionMessage msg = new ClientAuthzExtensionMessage();
         msg.setAuthzFormatList(authzFormatListAsBytes);
 
         handler.adjustContext(msg);
 
-        assertThat(authzFormatList, is(tlsContext.getClientAuthzDataFormatList()));
+        assertEquals(authzFormatList, context.getClientAuthzDataFormatList());
     }
 }

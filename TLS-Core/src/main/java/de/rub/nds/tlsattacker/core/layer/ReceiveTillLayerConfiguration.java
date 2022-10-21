@@ -24,7 +24,7 @@ public class ReceiveTillLayerConfiguration<Container extends DataContainer>
 
     /**
      * Checks whether no other containers than the ones specified were received.
-     * 
+     *
      * @param  list
      *              The list of DataContainers
      * @return

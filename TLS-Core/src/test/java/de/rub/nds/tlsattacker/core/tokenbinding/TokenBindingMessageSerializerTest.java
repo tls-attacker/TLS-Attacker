@@ -10,20 +10,16 @@
 package de.rub.nds.tlsattacker.core.tokenbinding;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class TokenBindingMessageSerializerTest {
 
     private TokenBindingMessageSerializer serializer;
 
-    private ProtocolVersion version;
-
-    private TokenBindingMessage message;
-
-    @Before
+    @BeforeEach
     public void setUp() {
-        message = new TokenBindingMessage();
+        TokenBindingMessage message = new TokenBindingMessage();
         message.setExtensionBytes(new byte[0]);
         message.setExtensionLength(0);
         message.setKeyLength(0);
@@ -39,7 +35,7 @@ public class TokenBindingMessageSerializerTest {
         message.setSignature(new byte[0]);
         message.setSignatureLength(0);
         message.setPointLength(0);
-        version = ProtocolVersion.TLS12;
+        ProtocolVersion version = ProtocolVersion.TLS12;
 
         serializer = new TokenBindingMessageSerializer(message);
     }
@@ -51,5 +47,4 @@ public class TokenBindingMessageSerializerTest {
     public void testSerializeBytes() {
         serializer.serialize();
     }
-
 }

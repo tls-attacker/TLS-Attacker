@@ -23,7 +23,7 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * This handler processes the KeyShare extensions in ClientHello and ServerHello messages, as defined in
- * https://tools.ietf.org/html/draft-ietf-tls-tls13-21#section-4.2.7
+ * <a href="https://tools.ietf.org/html/draft-ietf-tls-tls13-21#section-4.2.7">draft-ietf-tls-tls13-21 Section 4.2.7</a>
  */
 public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtensionMessage> {
 

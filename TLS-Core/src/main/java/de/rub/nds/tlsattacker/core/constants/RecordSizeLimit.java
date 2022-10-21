@@ -14,7 +14,7 @@ public class RecordSizeLimit {
     public static final Integer MIN_RECORD_SIZE_LIMIT = 64;
     /**
      * RecordSizeLimit is uint16. TODO: decide if it would be interesting to go out of bounds here. that would also need
-     * some tweaking around the basic classes as they have to support byte lengths > 2
+     * some tweaking around the basic classes as they have to support byte lengths &gt; 2
      */
     public static final Integer MAX_RECORD_SIZE_LIMIT = 65535;
     /**

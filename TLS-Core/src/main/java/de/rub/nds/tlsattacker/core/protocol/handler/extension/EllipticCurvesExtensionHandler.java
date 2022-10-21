@@ -23,11 +23,12 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * This handler processes the EllipticCurves extensions, as defined in
- * https://tools.ietf.org/search/rfc4492#section-5.1.1
+ * <a href="https://tools.ietf.org/search/rfc4492#section-5.1.1">RFC 4492 Section 5.1.1</a>
  *
  * But in TLS 1.3 this extensions renamed to SupportedGroups.
  *
- * See: https://tools.ietf.org/html/draft-ietf-tls-tls13-21#section-4.2.6
+ * See: <a href="https://tools.ietf.org/html/draft-ietf-tls-tls13-21#section-4.2.6">draft-ietf-tls-tls13-21 Section
+ * 4.2.6</a>
  */
 public class EllipticCurvesExtensionHandler extends ExtensionHandler<EllipticCurvesExtensionMessage> {
 

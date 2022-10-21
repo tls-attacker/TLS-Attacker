@@ -9,45 +9,39 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+public class SignatureAndHashAlgorithmsExtensionHandlerTest extends AbstractExtensionMessageHandlerTest<
+    SignatureAndHashAlgorithmsExtensionMessage, SignatureAndHashAlgorithmsExtensionHandler> {
 
-public class SignatureAndHashAlgorithmsExtensionHandlerTest {
-
-    private SignatureAndHashAlgorithmsExtensionHandler handler;
-    private TlsContext context;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new SignatureAndHashAlgorithmsExtensionHandler(context);
+    public SignatureAndHashAlgorithmsExtensionHandlerTest() {
+        super(SignatureAndHashAlgorithmsExtensionMessage::new, SignatureAndHashAlgorithmsExtensionHandler::new);
     }
 
     /**
      * Test of adjustContext method, of class SignatureAndHashAlgorithmsExtensionHandler.
      */
     @Test
-    public void testadjustContext() {
+    @Override
+    public void testadjustTLSExtensionContext() {
         SignatureAndHashAlgorithmsExtensionMessage msg = new SignatureAndHashAlgorithmsExtensionMessage();
         byte[] algoBytes = ArrayConverter.concatenate(SignatureAndHashAlgorithm.DSA_SHA1.getByteValue(),
             SignatureAndHashAlgorithm.RSA_SHA512.getByteValue());
         msg.setSignatureAndHashAlgorithms(algoBytes);
         context.setServerSupportedSignatureAndHashAlgorithms(SignatureAndHashAlgorithm.RSA_SHA512);
-        handler.adjustContext(msg);
-        assertTrue(context.getClientSupportedSignatureAndHashAlgorithms().size() == 2);
-        assertTrue(
-            context.getClientSupportedSignatureAndHashAlgorithms().get(0).getHashAlgorithm() == HashAlgorithm.SHA1);
-        assertTrue(context.getClientSupportedSignatureAndHashAlgorithms().get(0).getSignatureAlgorithm()
-            == SignatureAlgorithm.DSA);
+        handler.adjustTLSExtensionContext(msg);
+        assertEquals(2, context.getClientSupportedSignatureAndHashAlgorithms().size());
+        assertSame(HashAlgorithm.SHA1,
+            context.getClientSupportedSignatureAndHashAlgorithms().get(0).getHashAlgorithm());
+        assertSame(SignatureAlgorithm.DSA,
+            context.getClientSupportedSignatureAndHashAlgorithms().get(0).getSignatureAlgorithm());
         assertEquals(SignatureAndHashAlgorithm.RSA_SHA512, context.getSelectedSignatureAndHashAlgorithm());
     }
 }

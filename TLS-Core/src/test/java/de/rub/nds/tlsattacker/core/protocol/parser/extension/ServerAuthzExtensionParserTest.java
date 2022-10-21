@@ -10,47 +10,28 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerAuthzExtensionMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import java.io.ByteArrayInputStream;
-import java.util.Arrays;
-import java.util.Collection;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Named;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class ServerAuthzExtensionParserTest {
+import java.util.List;
+import java.util.stream.Stream;
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { { ArrayConverter.hexStringToByteArray("0400010203"), 4,
-            ArrayConverter.hexStringToByteArray("00010203") } });
+public class ServerAuthzExtensionParserTest
+    extends AbstractExtensionParserTest<ServerAuthzExtensionMessage, ServerAuthzExtensionParser> {
+
+    public ServerAuthzExtensionParserTest() {
+        super(ServerAuthzExtensionMessage.class, ServerAuthzExtensionParser::new,
+            List.of(
+                Named.of("ServerAuthzExtensionMessage::getAuthzFormatListLength",
+                    ServerAuthzExtensionMessage::getAuthzFormatListLength),
+                Named.of("ServerAuthzExtensionMessage::getAuthzFormatList",
+                    ServerAuthzExtensionMessage::getAuthzFormatList)));
     }
 
-    private final byte[] expectedBytes;
-    private final int authzFormatListLength;
-    private final byte[] authzFormatList;
-    private ServerAuthzExtensionParser parser;
-    private ServerAuthzExtensionMessage msg;
-    private final Config config = Config.createConfig();
-
-    public ServerAuthzExtensionParserTest(byte[] expectedBytes, int authzFormatListLength, byte[] authzFormatList) {
-        this.expectedBytes = expectedBytes;
-        this.authzFormatListLength = authzFormatListLength;
-        this.authzFormatList = authzFormatList;
-    }
-
-    @Test
-    public void testParse() {
-        TlsContext tlsContext = new TlsContext(config);
-        parser = new ServerAuthzExtensionParser(new ByteArrayInputStream(expectedBytes), tlsContext);
-        msg = new ServerAuthzExtensionMessage();
-        parser.parse(msg);
-        assertEquals(authzFormatListLength, (long) msg.getAuthzFormatListLength().getValue());
-        assertArrayEquals(authzFormatList, msg.getAuthzFormatList().getValue());
+    public static Stream<Arguments> provideTestVectors() {
+        return Stream.of(Arguments.of(ArrayConverter.hexStringToByteArray("000800050400010203"), List.of(),
+            ExtensionType.SERVER_AUTHZ, 5, List.of(4, ArrayConverter.hexStringToByteArray("00010203"))));
     }
 }

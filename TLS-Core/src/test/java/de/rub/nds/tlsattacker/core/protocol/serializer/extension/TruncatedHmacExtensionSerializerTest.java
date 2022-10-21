@@ -10,25 +10,19 @@
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TruncatedHmacExtensionMessage;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Before;
-import org.junit.Test;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.TruncatedHmacExtensionParserTest;
+import org.junit.jupiter.params.provider.Arguments;
 
-public class TruncatedHmacExtensionSerializerTest {
+import java.util.stream.Stream;
 
-    private final byte[] expectedBytes = new byte[0];
-    private TruncatedHmacExtensionMessage message;
-    private TruncatedHmacExtensionSerializer serializer;
+public class TruncatedHmacExtensionSerializerTest
+    extends AbstractExtensionMessageSerializerTest<TruncatedHmacExtensionMessage, TruncatedHmacExtensionSerializer> {
 
-    @Before
-    public void setUp() {
-        message = new TruncatedHmacExtensionMessage();
-        serializer = new TruncatedHmacExtensionSerializer(message);
+    public TruncatedHmacExtensionSerializerTest() {
+        super(TruncatedHmacExtensionMessage::new, TruncatedHmacExtensionSerializer::new);
     }
 
-    @Test
-    public void testSerializeExtensionContent() {
-
-        assertArrayEquals(expectedBytes, serializer.serializeExtensionContent());
+    public static Stream<Arguments> provideTestVectors() {
+        return TruncatedHmacExtensionParserTest.provideTestVectors();
     }
 }

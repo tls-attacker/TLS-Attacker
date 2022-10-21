@@ -16,7 +16,7 @@ import java.util.List;
 
 /**
  * Contains information about a layers actions, both after sending and receiving data.
- * 
+ *
  * @param <T>
  */
 public class LayerProcessingResult<T extends DataContainer> {

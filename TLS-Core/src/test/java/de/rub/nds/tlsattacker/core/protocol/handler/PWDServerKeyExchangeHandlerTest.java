@@ -9,29 +9,26 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.protocol.message.PWDServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import org.junit.jupiter.api.Test;
+
 import java.math.BigInteger;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.Test;
 
-public class PWDServerKeyExchangeHandlerTest {
+public class PWDServerKeyExchangeHandlerTest
+    extends AbstractTlsMessageHandlerTest<PWDServerKeyExchangeMessage, PWDServerKeyExchangeHandler> {
 
-    PWDServerKeyExchangeHandler handler;
-    private TlsContext context;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new PWDServerKeyExchangeHandler(context);
+    public PWDServerKeyExchangeHandlerTest() {
+        super(PWDServerKeyExchangeMessage::new, PWDServerKeyExchangeHandler::new);
     }
 
     @Test
+    @Override
     public void testadjustContext() {
         PWDServerKeyExchangeMessage message = new PWDServerKeyExchangeMessage();
         message.setNamedGroup(NamedGroup.BRAINPOOLP256R1.getValue());

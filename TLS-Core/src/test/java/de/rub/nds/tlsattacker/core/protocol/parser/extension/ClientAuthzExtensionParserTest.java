@@ -10,48 +10,28 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientAuthzExtensionMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import java.io.ByteArrayInputStream;
-import java.util.Arrays;
-import java.util.Collection;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Named;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class ClientAuthzExtensionParserTest {
+import java.util.List;
+import java.util.stream.Stream;
 
-    private final Config config = Config.createConfig();
+public class ClientAuthzExtensionParserTest
+    extends AbstractExtensionParserTest<ClientAuthzExtensionMessage, ClientAuthzExtensionParser> {
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { { ArrayConverter.hexStringToByteArray("0400010203"), 4,
-            ArrayConverter.hexStringToByteArray("00010203") } });
+    public ClientAuthzExtensionParserTest() {
+        super(ClientAuthzExtensionMessage.class, ClientAuthzExtensionParser::new,
+            List.of(
+                Named.of("ClientAuthzExtensionMessage::getAuthzFormatListLength",
+                    ClientAuthzExtensionMessage::getAuthzFormatListLength),
+                Named.of("ClientAuthzExtensionMessage::getAuthzFormatList",
+                    ClientAuthzExtensionMessage::getAuthzFormatList)));
     }
 
-    private final byte[] expectedBytes;
-    private final int authzFormatListLength;
-    private final byte[] authzFormatList;
-    private ClientAuthzExtensionParser parser;
-    private ClientAuthzExtensionMessage msg;
-
-    public ClientAuthzExtensionParserTest(byte[] expectedBytes, int authzFormatListLength, byte[] authzFormatList) {
-        this.expectedBytes = expectedBytes;
-        this.authzFormatListLength = authzFormatListLength;
-        this.authzFormatList = authzFormatList;
-    }
-
-    @Test
-    public void testParse() {
-        TlsContext tlsContext = new TlsContext(config);
-        parser = new ClientAuthzExtensionParser(new ByteArrayInputStream(expectedBytes), tlsContext);
-        msg = new ClientAuthzExtensionMessage();
-        parser.parse(msg);
-        assertEquals(authzFormatListLength, (long) msg.getAuthzFormatListLength().getValue());
-        assertArrayEquals(authzFormatList, msg.getAuthzFormatList().getValue());
+    public static Stream<Arguments> provideTestVectors() {
+        return Stream.of(Arguments.of(ArrayConverter.hexStringToByteArray("000700050400010203"), List.of(),
+            ExtensionType.CLIENT_AUTHZ, 5, List.of(4, ArrayConverter.hexStringToByteArray("00010203"))));
     }
 }

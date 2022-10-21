@@ -11,39 +11,21 @@ package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientAuthzExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ClientAuthzExtensionParserTest;
-import java.util.Collection;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class ClientAuthzExtensionSerializerTest {
+import java.util.List;
+import java.util.stream.Stream;
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return ClientAuthzExtensionParserTest.generateData();
+public class ClientAuthzExtensionSerializerTest
+    extends AbstractExtensionMessageSerializerTest<ClientAuthzExtensionMessage, ClientAuthzExtensionSerializer> {
+
+    public ClientAuthzExtensionSerializerTest() {
+        super(ClientAuthzExtensionMessage::new, ClientAuthzExtensionSerializer::new,
+            List.of((msg, obj) -> msg.setAuthzFormatListLength((Integer) obj),
+                (msg, obj) -> msg.setAuthzFormatList((byte[]) obj)));
     }
 
-    private final byte[] expectedBytes;
-    private final int authzFormatListLength;
-    private final byte[] authzFormatList;
-    private ClientAuthzExtensionMessage msg;
-    private ClientAuthzExtensionSerializer serializer;
-
-    public ClientAuthzExtensionSerializerTest(byte[] expectedBytes, int authzFormatListLength, byte[] authzFormatList) {
-        this.expectedBytes = expectedBytes;
-        this.authzFormatListLength = authzFormatListLength;
-        this.authzFormatList = authzFormatList;
-    }
-
-    @Test
-    public void testSerializeExtensionContent() {
-        msg = new ClientAuthzExtensionMessage();
-        serializer = new ClientAuthzExtensionSerializer(msg);
-        msg.setAuthzFormatListLength(authzFormatListLength);
-        msg.setAuthzFormatList(authzFormatList);
-
-        assertArrayEquals(expectedBytes, serializer.serializeExtensionContent());
+    public static Stream<Arguments> provideTestVectors() {
+        return ClientAuthzExtensionParserTest.provideTestVectors();
     }
 }

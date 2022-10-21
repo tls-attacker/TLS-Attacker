@@ -9,35 +9,26 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.PskRsaClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import org.junit.After;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class PskRsaClientKeyExchangeHandlerTest {
+public class PskRsaClientKeyExchangeHandlerTest
+    extends AbstractTlsMessageHandlerTest<PskRsaClientKeyExchangeMessage, PskRsaClientKeyExchangeHandler> {
 
-    private PskRsaClientKeyExchangeHandler handler;
-    private TlsContext context;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new PskRsaClientKeyExchangeHandler(context);
-    }
-
-    @After
-    public void tearDown() {
+    public PskRsaClientKeyExchangeHandlerTest() {
+        super(PskRsaClientKeyExchangeMessage::new, PskRsaClientKeyExchangeHandler::new);
     }
 
     /**
      * Test of adjustContext method, of class PskRsaClientKeyExchangeHandler.
      */
     @Test
+    @Override
     public void testadjustContext() {
         PskRsaClientKeyExchangeMessage message = new PskRsaClientKeyExchangeMessage();
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_PSK_WITH_AES_128_CBC_SHA);

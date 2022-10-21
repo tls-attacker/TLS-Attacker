@@ -10,53 +10,28 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RenegotiationInfoExtensionMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import java.io.ByteArrayInputStream;
-import java.util.Arrays;
-import java.util.Collection;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Named;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class RenegotiationInfoExtensionParserTest {
+import java.util.List;
+import java.util.stream.Stream;
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { { 0, new byte[] {}, ArrayConverter.hexStringToByteArray("00") } });
+public class RenegotiationInfoExtensionParserTest
+    extends AbstractExtensionParserTest<RenegotiationInfoExtensionMessage, RenegotiationInfoExtensionParser> {
+
+    public RenegotiationInfoExtensionParserTest() {
+        super(RenegotiationInfoExtensionMessage.class, RenegotiationInfoExtensionParser::new,
+            List.of(
+                Named.of("RenegotiationInfoExtensionMessage::getRenegotiationInfoLength",
+                    RenegotiationInfoExtensionMessage::getRenegotiationInfoLength),
+                Named.of("RenegotiationInfoExtensionMessage::getRenegotiationInfo",
+                    RenegotiationInfoExtensionMessage::getRenegotiationInfo)));
     }
 
-    private final int extensionPayloadLength;
-    private final byte[] extensionPayload;
-    private final byte[] expectedBytes;
-    private RenegotiationInfoExtensionParser parser;
-    private RenegotiationInfoExtensionMessage message;
-    private final Config config = Config.createConfig();
-
-    public RenegotiationInfoExtensionParserTest(int extensionPayloadLength, byte[] extensionPayload,
-        byte[] expectedBytes) {
-        this.extensionPayload = extensionPayload;
-        this.expectedBytes = expectedBytes;
-        this.extensionPayloadLength = extensionPayloadLength;
+    public static Stream<Arguments> provideTestVectors() {
+        return Stream.of(Arguments.of(ArrayConverter.hexStringToByteArray("ff01000100"), List.of(),
+            ExtensionType.RENEGOTIATION_INFO, 1, List.of(0, new byte[0])));
     }
-
-    @Before
-    public void setUp() {
-        TlsContext tlsContext = new TlsContext(config);
-        parser = new RenegotiationInfoExtensionParser(new ByteArrayInputStream(expectedBytes), tlsContext);
-    }
-
-    @Test
-    public void testParse() {
-        message = new RenegotiationInfoExtensionMessage();
-        parser.parse(message);
-        assertEquals(extensionPayloadLength, (long) message.getRenegotiationInfoLength().getValue());
-        assertArrayEquals(extensionPayload, message.getRenegotiationInfo().getValue());
-    }
-
 }

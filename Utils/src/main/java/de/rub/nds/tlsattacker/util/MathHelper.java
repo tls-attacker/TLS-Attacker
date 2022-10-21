@@ -87,7 +87,7 @@ public class MathHelper {
 
     /**
      * Computes Chinese Reminder Theorem: x == congs[i] mod moduli[i]
-     * 
+     *
      * @param  congs
      *                A BigInteger[] of congestions
      * @param  moduli
@@ -117,7 +117,7 @@ public class MathHelper {
 
     /**
      * Computes Chinese Reminder Theorem: x == congs[i] mod moduli[i]
-     * 
+     *
      * @param  congs
      *                A BigInteger[] of congestions
      * @param  moduli
@@ -131,9 +131,10 @@ public class MathHelper {
     }
 
     /**
-     * Computes BigInteger sqrt root of a number (floor value). From: http://stackoverflow
-     * .com/questions/4407839/how-can-i-find-the-square-root- of-a-java-biginteger
-     * 
+     * Computes BigInteger sqrt root of a number (floor value). From:
+     * <a href="http://stackoverflow.com/questions/4407839/how-can-i-find-the-square-root-of-a-java-biginteger">
+     * http://stackoverflow.com/questions/4407839/how-can-i-find-the-square-root-of-a-java-biginteger </a>
+     *
      * @param  x
      *                                  The x Value
      * @return                          BigInteger sqrt root of a number
@@ -160,9 +161,10 @@ public class MathHelper {
     } // end bigIntSqRootFloor
 
     /**
-     * Computes BigInteger sqrt root of a number (ceil value). From: http://stackoverflow
-     * .com/questions/4407839/how-can-i-find-the-square-root- of-a-java-biginteger
-     * 
+     * Computes BigInteger sqrt root of a number (ceil value). From:
+     * <a href="http://stackoverflow.com/questions/4407839/how-can-i-find-the-square-root-of-a-java-biginteger">
+     * http://stackoverflow.com/questions/4407839/how-can-i-find-the-square-root-of-a-java-biginteger</a>
+     *
      * @param  x
      *                                  The x Value
      * @return                          BigInteger sqrt root of a number (ceil value)

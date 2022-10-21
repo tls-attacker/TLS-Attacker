@@ -9,34 +9,32 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CachedInfoExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.CachedInfoExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.CachedInfoExtensionSerializer;
+import org.junit.jupiter.api.Test;
+
 import java.util.Arrays;
 import java.util.List;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.Test;
 
-public class CachedInfoExtensionHandlerTest {
+public class CachedInfoExtensionHandlerTest
+    extends AbstractExtensionMessageHandlerTest<CachedInfoExtensionMessage, CachedInfoExtensionHandler> {
 
     private final List<CachedObject> cachedObjects =
         Arrays.asList(new CachedObject((byte) 1, 2, new byte[] { 0x01, 0x02 }),
             new CachedObject((byte) 2, 3, new byte[] { 0x01, 0x02, 0x03 }));
-    private CachedInfoExtensionHandler handler;
-    private TlsContext context;
 
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new CachedInfoExtensionHandler(context);
+    public CachedInfoExtensionHandlerTest() {
+        super(CachedInfoExtensionMessage::new, CachedInfoExtensionHandler::new);
     }
 
     @Test
-    public void testadjustContext() {
+    @Override
+    public void testadjustTLSExtensionContext() {
         CachedInfoExtensionMessage msg = new CachedInfoExtensionMessage();
         msg.setCachedInfo(cachedObjects);
         CachedInfoExtensionPreparator preparator = new CachedInfoExtensionPreparator(context.getChooser(), msg);

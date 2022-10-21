@@ -9,45 +9,33 @@
 
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.AlpnExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.AlpnExtensionSerializer;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class AlpnExtensionPreparatorTest {
+public class AlpnExtensionPreparatorTest extends
+    AbstractExtensionMessagePreparatorTest<AlpnExtensionMessage, AlpnExtensionSerializer, AlpnExtensionPreparator> {
 
-    private TlsContext context;
-    private AlpnExtensionPreparator preparator;
-    private AlpnExtensionMessage msg;
-    private final String announcedProtocols = "h2";
-    private final byte proposedAlpnProtocolLength = 2;
-    private final int ALPNExtensionLength = 3;
-    private byte[] protocolsWithLength;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        msg = new AlpnExtensionMessage();
-        preparator = new AlpnExtensionPreparator(context.getChooser(), msg);
-        protocolsWithLength =
-            ArrayConverter.concatenate(new byte[] { proposedAlpnProtocolLength }, announcedProtocols.getBytes());
+    public AlpnExtensionPreparatorTest() {
+        super(AlpnExtensionMessage::new, AlpnExtensionSerializer::new, AlpnExtensionPreparator::new);
+        createNewMessageAndPreparator(false);
     }
 
     @Test
-    public void testPreparator() {
+    @Override
+    public void testPrepare() {
+        String announcedProtocols = "h2";
+        byte[] protocolsWithLength = ArrayConverter.concatenate(new byte[] { 0x02 }, announcedProtocols.getBytes());
 
-        context.getConfig().setDefaultProposedAlpnProtocols(new String[] { announcedProtocols });
-
+        context.getConfig().setDefaultProposedAlpnProtocols(announcedProtocols);
         preparator.prepare();
-
-        assertArrayEquals(ExtensionType.ALPN.getValue(), msg.getExtensionType().getValue());
-        assertEquals(ALPNExtensionLength, (long) msg.getProposedAlpnProtocolsLength().getValue());
-        assertArrayEquals(protocolsWithLength, msg.getProposedAlpnProtocols().getValue());
+        assertArrayEquals(ExtensionType.ALPN.getValue(), message.getExtensionType().getValue());
+        assertEquals(3, message.getProposedAlpnProtocolsLength().getValue());
+        assertArrayEquals(protocolsWithLength, message.getProposedAlpnProtocols().getValue());
     }
-
 }

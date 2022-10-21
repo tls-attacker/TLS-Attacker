@@ -14,46 +14,36 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.T
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.TrustedCaIndicationExtensionParserTest;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.TrustedAuthorityPreparator;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import java.util.Collection;
+import org.junit.jupiter.params.provider.Arguments;
+
 import java.util.List;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import java.util.stream.Stream;
 
-@RunWith(Parameterized.class)
-public class TrustedCaIndicationExtensionSerializerTest {
+public class TrustedCaIndicationExtensionSerializerTest extends AbstractExtensionMessageSerializerTest<
+    TrustedCaIndicationExtensionMessage, TrustedCaIndicationExtensionSerializer> {
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return TrustedCaIndicationExtensionParserTest.generateData();
+    private TlsContext context;
+
+    public TrustedCaIndicationExtensionSerializerTest() {
+        // noinspection unchecked
+        super(TrustedCaIndicationExtensionMessage::new, TrustedCaIndicationExtensionSerializer::new,
+            List.of((msg, obj) -> msg.setTrustedAuthoritiesLength((Integer) obj),
+                (msg, obj) -> msg.setTrustedAuthorities((List<TrustedAuthority>) obj)));
+        context = new TlsContext();
     }
 
-    private final byte[] extensionBytes;
-    private final List<TrustedAuthority> trustedAuthoritiesList;
-    private final int trustedAuthoritiesLength;
-
-    public TrustedCaIndicationExtensionSerializerTest(byte[] extensionBytes,
-        List<TrustedAuthority> trustedAuthoritiesList, int trustedAuthoritiesLength) {
-        this.extensionBytes = extensionBytes;
-        this.trustedAuthoritiesList = trustedAuthoritiesList;
-        this.trustedAuthoritiesLength = trustedAuthoritiesLength;
+    public static Stream<Arguments> provideTestVectors() {
+        return TrustedCaIndicationExtensionParserTest.provideTestVectors();
     }
 
-    @Test
-    public void testSerializeBytes() {
-        TrustedCaIndicationExtensionMessage msg = new TrustedCaIndicationExtensionMessage();
-        for (TrustedAuthority item : trustedAuthoritiesList) {
-            TrustedAuthorityPreparator preparator = new TrustedAuthorityPreparator(new TlsContext().getChooser(), item);
-            preparator.prepare();
+    @Override
+    protected void setExtensionMessageSpecific(List<Object> providedAdditionalValues,
+        List<Object> providedMessageSpecificValues) {
+        @SuppressWarnings("unchecked")
+        List<TrustedAuthority> trustedAuthorities = (List<TrustedAuthority>) providedMessageSpecificValues.get(1);
+        for (TrustedAuthority trustedAuthority : trustedAuthorities) {
+            new TrustedAuthorityPreparator(context.getChooser(), trustedAuthority).prepare();
         }
-
-        msg.setTrustedAuthoritiesLength(trustedAuthoritiesLength);
-        msg.setTrustedAuthorities(trustedAuthoritiesList);
-
-        TrustedCaIndicationExtensionSerializer serializer = new TrustedCaIndicationExtensionSerializer(msg);
-        byte[] test = serializer.serializeExtensionContent();
-        assertArrayEquals(extensionBytes, test);
+        super.setExtensionMessageSpecific(providedAdditionalValues, providedMessageSpecificValues);
     }
-
 }

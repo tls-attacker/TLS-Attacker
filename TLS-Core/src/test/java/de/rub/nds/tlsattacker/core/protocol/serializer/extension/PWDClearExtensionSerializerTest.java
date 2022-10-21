@@ -11,45 +11,20 @@ package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PWDClearExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.PWDClearExtensionParserTest;
-import java.util.Collection;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class PWDClearExtensionSerializerTest {
+import java.util.List;
+import java.util.stream.Stream;
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return PWDClearExtensionParserTest.generateData();
+public class PWDClearExtensionSerializerTest
+    extends AbstractExtensionMessageSerializerTest<PWDClearExtensionMessage, PWDClearExtensionSerializer> {
+
+    public PWDClearExtensionSerializerTest() {
+        super(PWDClearExtensionMessage::new, PWDClearExtensionSerializer::new,
+            List.of((msg, obj) -> msg.setUsernameLength((Integer) obj), (msg, obj) -> msg.setUsername((String) obj)));
     }
 
-    private final byte[] expectedBytes;
-    private final int usernameLength;
-    private final String username;
-    private PWDClearExtensionMessage message;
-    private PWDClearExtensionSerializer serializer;
-
-    public PWDClearExtensionSerializerTest(byte[] expectedBytes, int usernameLength, String username) {
-        this.expectedBytes = expectedBytes;
-        this.usernameLength = usernameLength;
-        this.username = username;
+    public static Stream<Arguments> provideTestVectors() {
+        return PWDClearExtensionParserTest.provideTestVectors();
     }
-
-    @Before
-    public void setUp() {
-        message = new PWDClearExtensionMessage();
-        serializer = new PWDClearExtensionSerializer(message);
-    }
-
-    @Test
-    public void testSerializeExtensionContent() {
-        message.setUsername(username);
-        message.setUsernameLength(usernameLength);
-
-        assertArrayEquals(expectedBytes, serializer.serializeExtensionContent());
-    }
-
 }

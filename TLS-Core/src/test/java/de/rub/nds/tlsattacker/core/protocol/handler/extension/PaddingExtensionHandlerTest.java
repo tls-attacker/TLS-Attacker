@@ -9,36 +9,29 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-public class PaddingExtensionHandlerTest {
+import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
+import org.junit.jupiter.api.Test;
+
+public class PaddingExtensionHandlerTest
+    extends AbstractExtensionMessageHandlerTest<PaddingExtensionMessage, PaddingExtensionHandler> {
 
     private final byte[] extensionPayload = new byte[] { 0, 0, 0, 0, 0, 0 };
-    private TlsContext context;
-    private PaddingExtensionHandler handler;
 
-    /**
-     * Some initial set up.
-     */
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new PaddingExtensionHandler(context);
+    public PaddingExtensionHandlerTest() {
+        super(PaddingExtensionMessage::new, PaddingExtensionHandler::new);
     }
 
     /**
      * Test of adjustContext method, of class PaddingExtensionHandler.
      */
     @Test
-    public void testadjustContext() {
+    @Override
+    public void testadjustTLSExtensionContext() {
         PaddingExtensionMessage msg = new PaddingExtensionMessage();
         msg.setPaddingBytes(extensionPayload);
         handler.adjustContext(msg);
         assertArrayEquals(context.getPaddingExtensionBytes(), extensionPayload);
     }
-
 }

@@ -9,50 +9,25 @@
 
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.CertificateRequestTls13ParserTest;
-import java.util.Collection;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class CertificateRequestTls13SerializerTest {
+import java.util.List;
+import java.util.stream.Stream;
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return CertificateRequestTls13ParserTest.generateData();
+public class CertificateRequestTls13SerializerTest
+    extends AbstractHandshakeMessageSerializerTest<CertificateRequestMessage, CertificateRequestSerializer> {
+
+    public CertificateRequestTls13SerializerTest() {
+        super(CertificateRequestMessage::new, CertificateRequestSerializer::new,
+            List.of((msg, obj) -> msg.setCertificateRequestContextLength((Integer) obj),
+                (msg, obj) -> msg.setCertificateRequestContext((byte[]) obj),
+                (msg, obj) -> msg.setExtensionsLength((Integer) obj),
+                (msg, obj) -> msg.setExtensionBytes((byte[]) obj)));
     }
 
-    private byte[] message;
-    private int certificateRequestContextLength;
-    private byte[] certificateRequestContext;
-    private byte[] extensionBytes;
-    private ProtocolVersion version;
-
-    public CertificateRequestTls13SerializerTest(byte[] message, int certificateRequestContextLength,
-        byte[] certificateRequestContext, byte[] extensionBytes, ProtocolVersion version) {
-        this.message = message;
-        this.certificateRequestContextLength = certificateRequestContextLength;
-        this.certificateRequestContext = certificateRequestContext;
-        this.extensionBytes = extensionBytes;
-        this.version = version;
+    public static Stream<Arguments> provideTestVectors() {
+        return CertificateRequestTls13ParserTest.provideTestVectors();
     }
-
-    /**
-     * Test of serializeHandshakeMessageContent method, of class CertificateRequestSerializer.
-     */
-    @Test
-    public void testSerializeHandshakeMessageContent() {
-        CertificateRequestMessage msg = new CertificateRequestMessage();
-        msg.setCertificateRequestContext(certificateRequestContext);
-        msg.setCertificateRequestContextLength(certificateRequestContextLength);
-        msg.setExtensionBytes(extensionBytes);
-        msg.setExtensionsLength(msg.getExtensionBytes().getValue().length);
-        CertificateRequestSerializer serializer = new CertificateRequestSerializer(msg, version);
-        assertArrayEquals(this.message, serializer.serializeHandshakeMessageContent());
-    }
-
 }

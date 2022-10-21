@@ -11,51 +11,22 @@ package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SrtpExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.SrtpExtensionParserTest;
-import java.util.Collection;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class SrtpExtensionSerializerTest {
+import java.util.List;
+import java.util.stream.Stream;
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return SrtpExtensionParserTest.generateData();
+public class SrtpExtensionSerializerTest
+    extends AbstractExtensionMessageSerializerTest<SrtpExtensionMessage, SrtpExtensionSerializer> {
+
+    public SrtpExtensionSerializerTest() {
+        super(SrtpExtensionMessage::new, SrtpExtensionSerializer::new,
+            List.of((msg, obj) -> msg.setSrtpProtectionProfilesLength((Integer) obj),
+                (msg, obj) -> msg.setSrtpProtectionProfiles((byte[]) obj),
+                (msg, obj) -> msg.setSrtpMkiLength((Integer) obj), (msg, obj) -> msg.setSrtpMki((byte[]) obj)));
     }
 
-    private final byte[] expectedBytes;
-    private final int srtpProtectionProfilesLength;
-    private final byte[] srtpProtectionProfiles;
-    private final int srtpMkiLength;
-    private final byte[] srtpMki;
-    private SrtpExtensionSerializer serializer;
-    private SrtpExtensionMessage msg;
-
-    public SrtpExtensionSerializerTest(byte[] expectedBytes, int srtpProtectionProfilesLength,
-        byte[] srtpProtectionProfiles, int srtpMkiLength, byte[] srtpMki) {
-        this.expectedBytes = expectedBytes;
-        this.srtpProtectionProfilesLength = srtpProtectionProfilesLength;
-        this.srtpProtectionProfiles = srtpProtectionProfiles;
-        this.srtpMkiLength = srtpMkiLength;
-        this.srtpMki = srtpMki;
+    public static Stream<Arguments> provideTestVectors() {
+        return SrtpExtensionParserTest.provideTestVectors();
     }
-
-    @Before
-    public void setUp() {
-        msg = new SrtpExtensionMessage();
-        serializer = new SrtpExtensionSerializer(msg);
-    }
-
-    @Test
-    public void testSerializeExtensionContent() {
-        msg.setSrtpProtectionProfilesLength(srtpProtectionProfilesLength);
-        msg.setSrtpProtectionProfiles(srtpProtectionProfiles);
-        msg.setSrtpMkiLength(srtpMkiLength);
-        msg.setSrtpMki(srtpMki);
-        assertArrayEquals(expectedBytes, serializer.serializeExtensionContent());
-    }
-
 }

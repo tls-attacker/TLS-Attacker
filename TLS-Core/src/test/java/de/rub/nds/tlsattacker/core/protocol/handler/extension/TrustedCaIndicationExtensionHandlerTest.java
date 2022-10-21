@@ -9,29 +9,26 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TrustedCaIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.TrustedAuthorityPreparator;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import org.junit.jupiter.api.Test;
+
 import java.util.Arrays;
 import java.util.List;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.Test;
 
-public class TrustedCaIndicationExtensionHandlerTest {
+public class TrustedCaIndicationExtensionHandlerTest extends
+    AbstractExtensionMessageHandlerTest<TrustedCaIndicationExtensionMessage, TrustedCaIndicationExtensionHandler> {
 
     private final List<TrustedAuthority> trustedAuthorities =
         Arrays.asList(new TrustedAuthority((byte) 0, new byte[] {}, 0, new byte[] {}),
             new TrustedAuthority((byte) 2, new byte[] {}, 5, new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05 }));
-    private TrustedCaIndicationExtensionHandler handler;
-    private TlsContext context;
 
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new TrustedCaIndicationExtensionHandler(context);
+    public TrustedCaIndicationExtensionHandlerTest() {
+        super(TrustedCaIndicationExtensionMessage::new, TrustedCaIndicationExtensionHandler::new);
         for (TrustedAuthority ta : trustedAuthorities) {
             TrustedAuthorityPreparator preparator = new TrustedAuthorityPreparator(context.getChooser(), ta);
             preparator.prepare();
@@ -39,13 +36,11 @@ public class TrustedCaIndicationExtensionHandlerTest {
     }
 
     @Test
-    public void testadjustContext() {
+    @Override
+    public void testadjustTLSExtensionContext() {
         TrustedCaIndicationExtensionMessage msg = new TrustedCaIndicationExtensionMessage();
-
         msg.setTrustedAuthorities(trustedAuthorities);
-
-        handler.adjustContext(msg);
-
+        handler.adjustTLSExtensionContext(msg);
         assertTrustedAuthorityList(trustedAuthorities, context.getTrustedCaIndicationExtensionCas());
     }
 

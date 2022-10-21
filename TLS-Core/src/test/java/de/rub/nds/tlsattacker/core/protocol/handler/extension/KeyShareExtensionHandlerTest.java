@@ -9,42 +9,39 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import org.junit.jupiter.api.Test;
+
 import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
 
-public class KeyShareExtensionHandlerTest {
-
-    private TlsContext context;
-    private KeyShareExtensionHandler handler;
+public class KeyShareExtensionHandlerTest
+    extends AbstractExtensionMessageHandlerTest<KeyShareExtensionMessage, KeyShareExtensionHandler> {
 
     public KeyShareExtensionHandlerTest() {
-    }
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new KeyShareExtensionHandler(context);
+        super(KeyShareExtensionMessage::new, (TlsContext context) -> new KeyShareExtensionHandler(context));
     }
 
     /**
      * Test of adjustContext method, of class KeyShareExtensionHandler. Group: ECDH_X25519
      */
     @Test
-    public void testadjustContext() {
-        context.getContext().setConnection(new OutboundConnection());
+    @Override
+    public void testadjustTLSExtensionContext() {
+        context.setConnection(new OutboundConnection());
         context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
         context.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
         KeyShareExtensionMessage msg = new KeyShareExtensionMessage();
@@ -62,6 +59,6 @@ public class KeyShareExtensionHandlerTest {
         assertArrayEquals(
             ArrayConverter.hexStringToByteArray("9c1b0a7421919a73cb57b3a0ad9d6805861a9c47e11df8639d25323b79ce201c"),
             entry.getPublicKey());
-        assertTrue(entry.getGroup() == NamedGroup.ECDH_X25519);
+        assertSame(NamedGroup.ECDH_X25519, entry.getGroup());
     }
 }

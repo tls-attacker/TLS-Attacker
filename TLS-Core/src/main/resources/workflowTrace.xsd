@@ -1476,8 +1476,8 @@
       <xs:extension base="extensionMessage">
         <xs:sequence>
           <xs:element name="parameterListLength" type="modifiableInteger" minOccurs="0"/>
-          <xs:element name="tokenbindingKeyParameters" type="modifiableByteArray" minOccurs="0"/>
-          <xs:element name="tokenbindingVersion" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="tokenBindingKeyParameters" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="tokenBindingVersion" type="modifiableByteArray" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>

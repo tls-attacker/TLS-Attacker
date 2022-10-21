@@ -9,26 +9,34 @@
 
 package de.rub.nds.tlsattacker.core.layer.data;
 
+import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
+import static org.junit.jupiter.api.Assertions.*;
+
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import java.io.ByteArrayInputStream;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.math.BigInteger;
 import java.nio.charset.Charset;
-import static org.junit.Assert.*;
-import de.rub.nds.tlsattacker.core.layer.data.Parser;
-import org.junit.Before;
-import org.junit.Test;
 
 public class ParserTest {
 
-    private Parser parser;
+    private Parser<Object> parser;
+    private Parser<Object> middleParser;
 
-    public ParserTest() {
-    }
-
-    @Before
+    @BeforeEach
     public void setUp() {
         byte[] bytesToParse = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
+        byte[] bytesToParseMiddle = new byte[] { 3, 4, 5, 6, 7, 8 };
         parser = new ParserImpl(bytesToParse);
+        middleParser = new ParserImpl(bytesToParseMiddle);
+    }
+
+    @Test
+    public void testParseFailure() {
+        parser.parseByteArrayField(9);
+        assertThrows(EndOfStreamException.class, () -> parser.parseByteField(1));
     }
 
     /**
@@ -57,9 +65,13 @@ public class ParserTest {
     @Test
     public void testParseIntField() {
         int result = parser.parseIntField(1);
-        assertTrue(result == 0);
+        assertEquals(0, result);
         result = parser.parseIntField(2);
-        assertTrue(result == 0x0102);
+        assertEquals(0x0102, result);
+        result = middleParser.parseIntField(1);
+        assertEquals(3, result);
+        result = middleParser.parseIntField(2);
+        assertEquals(0x0405, result);
     }
 
     /**
@@ -68,38 +80,43 @@ public class ParserTest {
     @Test
     public void testParseBigIntField() {
         BigInteger result = parser.parseBigIntField(1);
-        assertTrue(result.intValue() == 0);
+        assertEquals(0, result.intValue());
         result = parser.parseBigIntField(2);
-        assertTrue(result.intValue() == 0x0102);
+        assertEquals(0x0102, result.intValue());
+        result = middleParser.parseBigIntField(1);
+        assertEquals(3, result.intValue());
+        result = middleParser.parseBigIntField(2);
+        assertEquals(0x0405, result.intValue());
     }
 
-    @Test(expected = ParserException.class)
+    @Test
     public void testParseIntFieldNegative() {
-        parser.parseIntField(-123);
+        assertThrows(ParserException.class, () -> parser.parseIntField(-123));
     }
 
-    @Test(expected = ParserException.class)
+    @Test
     public void testParseIntFieldZero() {
-        parser.parseIntField(0);
+        assertThrows(ParserException.class, () -> parser.parseIntField(0));
     }
 
+    @Test
     public void testParseByteFieldZero() {
-        assertTrue(parser.parseByteArrayField(0).length == 0);
+        assertEquals(0, parser.parseByteArrayField(0).length);
     }
 
-    @Test(expected = ParserException.class)
+    @Test
     public void testParseByteFieldNegative() {
-        parser.parseByteArrayField(-123);
+        assertThrows(ParserException.class, () -> parser.parseByteArrayField(-123));
     }
 
-    @Test(expected = ParserException.class)
+    @Test
     public void testParseSingleByteFieldNegative() {
-        parser.parseByteField(-123);
+        assertThrows(ParserException.class, () -> parser.parseByteField(-123));
     }
 
-    @Test(expected = ParserException.class)
+    @Test
     public void testParseSingleByteFieldZero() {
-        assertNull(parser.parseByteField(0));
+        assertThrows(ParserException.class, () -> parser.parseByteField(0));
     }
 
     @Test
@@ -109,6 +126,15 @@ public class ParserTest {
         assertArrayEquals(parser.getAlreadyParsed(), new byte[] { 0 });
         parser.parseIntField(3);
         assertArrayEquals(parser.getAlreadyParsed(), new byte[] { 0, 1, 2, 3 });
+    }
+
+    @Test
+    public void testAlreadyParsedMiddle() {
+        assertArrayEquals(middleParser.getAlreadyParsed(), new byte[0]);
+        middleParser.parseIntField(1);
+        assertArrayEquals(middleParser.getAlreadyParsed(), new byte[] { 3 });
+        middleParser.parseIntField(3);
+        assertArrayEquals(middleParser.getAlreadyParsed(), new byte[] { 3, 4, 5, 6 });
     }
 
     @Test
@@ -125,11 +151,11 @@ public class ParserTest {
 
     @Test
     public void testBytesLeft() {
-        assertTrue(parser.getBytesLeft() == 9);
+        assertEquals(9, parser.getBytesLeft());
         parser.parseByteArrayField(2);
-        assertTrue(parser.getBytesLeft() == 7);
+        assertEquals(7, parser.getBytesLeft());
         parser.parseByteArrayField(7);
-        assertTrue(parser.getBytesLeft() == 0);
+        assertEquals(0, parser.getBytesLeft());
     }
 
     @Test
@@ -139,7 +165,7 @@ public class ParserTest {
         assertEquals("This is a test\t\n", parser.parseStringTill((byte) 0x0A));
     }
 
-    public static class ParserImpl extends Parser {
+    public static class ParserImpl extends Parser<Object> {
 
         public ParserImpl(byte[] a) {
             super(new ByteArrayInputStream(a));

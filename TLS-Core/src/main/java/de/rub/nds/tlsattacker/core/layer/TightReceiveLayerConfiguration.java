@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 /**
  * Very similar to {@link SpecificReceiveLayerConfiguration} but does not continue receiving containers when the
  * specified containers have been received.
- * 
+ *
  * @param <Container>
  */
 public class TightReceiveLayerConfiguration<Container extends DataContainer>

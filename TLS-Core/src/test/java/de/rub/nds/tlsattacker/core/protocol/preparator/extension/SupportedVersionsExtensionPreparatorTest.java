@@ -9,37 +9,30 @@
 
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SupportedVersionsExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SupportedVersionsExtensionSerializer;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import org.junit.jupiter.api.Test;
+
 import java.util.LinkedList;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
 
-public class SupportedVersionsExtensionPreparatorTest {
-
-    private SupportedVersionsExtensionPreparator preparator;
-    private SupportedVersionsExtensionMessage message;
-    private TlsContext context;
+public class SupportedVersionsExtensionPreparatorTest extends AbstractExtensionMessagePreparatorTest<
+    SupportedVersionsExtensionMessage, SupportedVersionsExtensionSerializer, SupportedVersionsExtensionPreparator> {
 
     public SupportedVersionsExtensionPreparatorTest() {
-    }
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        message = new SupportedVersionsExtensionMessage();
-        preparator = new SupportedVersionsExtensionPreparator(context.getChooser(), message);
+        super(SupportedVersionsExtensionMessage::new, SupportedVersionsExtensionSerializer::new,
+            SupportedVersionsExtensionPreparator::new);
     }
 
     /**
      * Test of prepare method, of class SupportedVersionsExtensionPreparator.
      */
     @Test
+    @Override
     public void testPrepare() {
         LinkedList<ProtocolVersion> supportedVersions = new LinkedList<>();
         supportedVersions.add(ProtocolVersion.TLS13);
@@ -48,12 +41,6 @@ public class SupportedVersionsExtensionPreparatorTest {
         preparator.prepare();
         assertArrayEquals(message.getSupportedVersions().getValue(),
             ArrayConverter.concatenate(ProtocolVersion.TLS13.getValue(), ProtocolVersion.TLS12.getValue()));
-        assertTrue(message.getSupportedVersionsLength().getValue() == 4);
+        assertEquals(4, message.getSupportedVersionsLength().getValue());
     }
-
-    @Test
-    public void testNoContextPrepare() {
-        preparator.prepare();
-    }
-
 }

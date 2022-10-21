@@ -11,35 +11,20 @@ package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownHandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.UnknownHandshakeParserTest;
-import java.util.Collection;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class UnknownHandshakeSerializerTest {
+import java.util.List;
+import java.util.stream.Stream;
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return UnknownHandshakeParserTest.generateData();
+public class UnknownHandshakeSerializerTest
+    extends AbstractHandshakeMessageSerializerTest<UnknownHandshakeMessage, UnknownHandshakeSerializer> {
+
+    public UnknownHandshakeSerializerTest() {
+        super(UnknownHandshakeMessage::new, UnknownHandshakeSerializer::new,
+            List.of((msg, obj) -> msg.setData((byte[]) obj)));
     }
 
-    private byte[] message;
-
-    public UnknownHandshakeSerializerTest(byte[] message) {
-        this.message = message;
+    public static Stream<Arguments> provideTestVectors() {
+        return UnknownHandshakeParserTest.provideTestVectors();
     }
-
-    /**
-     * Test of serializeHandshakeMessageContent method, of class UnknownHandshakeSerializer.
-     */
-    @Test
-    public void testSerializeHandshakeMessageContent() {
-        UnknownHandshakeMessage msg = new UnknownHandshakeMessage();
-        msg.setData(message);
-        UnknownHandshakeSerializer serializer = new UnknownHandshakeSerializer(msg);
-        assertArrayEquals(message, serializer.serializeHandshakeMessageContent());
-    }
-
 }
