@@ -11,14 +11,14 @@ package de.rub.nds.tlsattacker.core.layer.impl;
 
 import de.rub.nds.tlsattacker.core.http.HttpRequestMessage;
 import de.rub.nds.tlsattacker.core.http.HttpResponseMessage;
+import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
-import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
+import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
 import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
-import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

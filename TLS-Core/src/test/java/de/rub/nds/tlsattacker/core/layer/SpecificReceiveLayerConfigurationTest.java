@@ -9,6 +9,7 @@
 
 package de.rub.nds.tlsattacker.core.layer;
 
+import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
@@ -33,7 +34,8 @@ public class SpecificReceiveLayerConfigurationTest {
     public void testExecutedAsPlanned() {
         List<ProtocolMessage> expectedMessages = Arrays.asList(new ProtocolMessage[] { new ServerHelloMessage(),
             new CertificateMessage(), new ECDHEServerKeyExchangeMessage(), new ServerHelloDoneMessage() });
-        LayerConfiguration receiveConfig = new SpecificReceiveLayerConfiguration(expectedMessages);
+        LayerConfiguration receiveConfig =
+            new SpecificReceiveLayerConfiguration(ImplementedLayers.MESSAGE, expectedMessages);
         assertTrue(receiveConfig.executedAsPlanned(expectedMessages));
 
         List<ProtocolMessage> missingLastMessage = new ArrayList(expectedMessages);
@@ -64,7 +66,8 @@ public class SpecificReceiveLayerConfigurationTest {
         List<ProtocolMessage> expectedMessages =
             Arrays.asList(new ProtocolMessage[] { new ServerHelloMessage(), optionalChangeCipherSpec,
                 new CertificateMessage(), new CertificateVerifyMessage(), new FinishedMessage() });
-        LayerConfiguration receiveConfig = new SpecificReceiveLayerConfiguration(expectedMessages);
+        LayerConfiguration receiveConfig =
+            new SpecificReceiveLayerConfiguration(ImplementedLayers.MESSAGE, expectedMessages);
         assertTrue(receiveConfig.executedAsPlanned(expectedMessages));
 
         List<ProtocolMessage> missingOptional = new ArrayList(expectedMessages);
@@ -96,7 +99,8 @@ public class SpecificReceiveLayerConfigurationTest {
     public void testFailedEarly() {
         List<ProtocolMessage> expectedMessages = Arrays.asList(new ProtocolMessage[] { new ServerHelloMessage(),
             new CertificateMessage(), new ECDHEServerKeyExchangeMessage(), new ServerHelloDoneMessage() });
-        LayerConfiguration receiveConfig = new SpecificReceiveLayerConfiguration(expectedMessages);
+        LayerConfiguration receiveConfig =
+            new SpecificReceiveLayerConfiguration(ImplementedLayers.MESSAGE, expectedMessages);
 
         List<ProtocolMessage> buildingReceived = new LinkedList<>();
         for (ProtocolMessage message : expectedMessages) {

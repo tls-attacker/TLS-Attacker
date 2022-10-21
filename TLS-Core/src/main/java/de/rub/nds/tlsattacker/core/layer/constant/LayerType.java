@@ -14,6 +14,7 @@ package de.rub.nds.tlsattacker.core.layer.constant;
  * this interface.
  */
 public interface LayerType {
+
     public String getName();
 
     public default boolean equals(LayerType other) {

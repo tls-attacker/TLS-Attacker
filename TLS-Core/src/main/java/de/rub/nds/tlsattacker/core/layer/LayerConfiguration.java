@@ -12,6 +12,7 @@ package de.rub.nds.tlsattacker.core.layer;
 import java.util.Arrays;
 import java.util.List;
 
+import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 
 /**
@@ -25,12 +26,16 @@ public abstract class LayerConfiguration<Container extends DataContainer> {
 
     private final List<Container> containerList;
 
-    public LayerConfiguration(List<Container> containerList) {
+    private final LayerType layerType;
+
+    public LayerConfiguration(LayerType layerType, List<Container> containerList) {
         this.containerList = containerList;
+        this.layerType = layerType;
     }
 
-    public LayerConfiguration(Container... containers) {
+    public LayerConfiguration(LayerType layerType, Container... containers) {
         this.containerList = Arrays.asList(containers);
+        this.layerType = layerType;
     }
 
     public List<Container> getContainerList() {
@@ -58,5 +63,9 @@ public abstract class LayerConfiguration<Container extends DataContainer> {
 
     public boolean successRequiresMoreContainers(List<Container> list) {
         return !failedEarly(list) && !executedAsPlanned(list);
+    }
+
+    public LayerType getLayerType() {
+        return layerType;
     }
 }

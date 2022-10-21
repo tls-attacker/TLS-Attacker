@@ -9,9 +9,15 @@
 
 package de.rub.nds.tlsattacker.core.layer;
 
+import java.util.LinkedList;
 import java.util.List;
 
+import de.rub.nds.tlsattacker.core.http.HttpMessage;
+import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
+import de.rub.nds.tlsattacker.core.record.Record;
 
 /**
  * Send configuration that sends a list of containers to the recipient.
@@ -20,12 +26,12 @@ import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
  */
 public class SpecificSendLayerConfiguration<Container extends DataContainer> extends LayerConfiguration<Container> {
 
-    public SpecificSendLayerConfiguration(List<Container> containerList) {
-        super(containerList);
+    public SpecificSendLayerConfiguration(LayerType layerType, List<Container> containerList) {
+        super(layerType, containerList);
     }
 
-    public SpecificSendLayerConfiguration(Container... containers) {
-        super(containers);
+    public SpecificSendLayerConfiguration(LayerType layerType, Container... containers) {
+        super(layerType, containers);
     }
 
     @Override

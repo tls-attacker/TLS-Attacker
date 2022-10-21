@@ -13,13 +13,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 
 public class ReceiveTillLayerConfiguration<Container extends DataContainer>
     extends ReceiveLayerConfiguration<Container> {
 
-    public ReceiveTillLayerConfiguration(Container expectedContainer) {
-        super(Arrays.asList(expectedContainer));
+    public ReceiveTillLayerConfiguration(LayerType layerType, Container expectedContainer) {
+        super(layerType, Arrays.asList(expectedContainer));
     }
 
     /**

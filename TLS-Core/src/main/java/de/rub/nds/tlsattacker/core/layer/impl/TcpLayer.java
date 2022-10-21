@@ -9,11 +9,12 @@
 
 package de.rub.nds.tlsattacker.core.layer.impl;
 
+import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
-import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
+import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
 import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
