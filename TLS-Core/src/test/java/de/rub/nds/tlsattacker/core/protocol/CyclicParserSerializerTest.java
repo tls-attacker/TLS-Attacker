@@ -171,17 +171,7 @@ public class CyclicParserSerializerTest {
             fail("Could not create message instance for test " + testName);
         }
 
-        /*
-         * Constructor<? extends ProtocolMessagePreparator> preparatorConstructor = getConstructor(preparatorClass, 2);
-         * if (preparatorConstructor == null) {
-         * fail("Could not find preparator constructor with two arguments for test " + testName); }
-         */
         preparator = message.getPreparator(context);
-        /*
-         * try { preparator = preparatorConstructor.newInstance(context.getChooser(), message); } catch
-         * (InstantiationException | InvocationTargetException | IllegalAccessException e) {
-         * fail("Could not create preparator instance for test " + testName); }
-         */
 
         // Skip test if preparation is not supported yet
         try {
@@ -191,23 +181,9 @@ public class CyclicParserSerializerTest {
             throw new TestAbortedException("Preparator for test " + testName + " is not yet supported");
         }
 
-        /*
-         * Constructor<? extends ProtocolMessageSerializer> serializerConstructor = getConstructor(serializerClass, 1);
-         * if (serializerConstructor == null) {
-         * fail("Could not find serializer constructor with two arguments for test " + testName); } try { serializer =
-         * serializerConstructor.newInstance(message); } catch (InstantiationException | InvocationTargetException |
-         * IllegalAccessException e) { fail("Could not create serializer instance for test " + testName); }
-         */
         serializer = message.getSerializer(context);
         byte[] serializedMessage = serializer.serialize();
 
-        /*
-         * Constructor<? extends ProtocolMessageParser> parserConstructor = getConstructor(parserClass, 2); if
-         * (parserConstructor == null) { fail("Could not find parser constructor with two arguments for test " +
-         * testName); } try { parser = parserConstructor.newInstance(new ByteArrayInputStream(serializedMessage),
-         * context); } catch (InstantiationException | InvocationTargetException | IllegalAccessException e) {
-         * fail("Could not create parser instance for test " + testName); }
-         */
         byte[] handshakeHeader = null;
         if (message.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE
             && !(message instanceof SSL2HandshakeMessage)) {
@@ -224,11 +200,6 @@ public class CyclicParserSerializerTest {
         }
 
         serializer = message.getSerializer(context);
-        /*
-         * try { serializer = serializerConstructor.newInstance(message); } catch (InstantiationException |
-         * InvocationTargetException | IllegalAccessException e) { fail("Could not create serializer instance for test "
-         * + testName); }
-         */
         if (message.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE
             && !(message instanceof SSL2HandshakeMessage)) {
             assertArrayEquals(ArrayConverter.concatenate(handshakeHeader, serializedMessage), serializer.serialize());
@@ -303,13 +274,4 @@ public class CyclicParserSerializerTest {
         return null;
     }
 
-    private static Constructor getConstructor(Class someClass, int numberOfArguments) {
-        for (Constructor c : someClass.getConstructors()) {
-            if (c.getParameterCount() == numberOfArguments) {
-                return c;
-            }
-        }
-        LOGGER.warn("Could not find Constructor: " + someClass.getSimpleName());
-        return null;
-    }
 }

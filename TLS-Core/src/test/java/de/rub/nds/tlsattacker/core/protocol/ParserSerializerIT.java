@@ -13,15 +13,10 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.*;
-import de.rub.nds.tlsattacker.core.protocol.parser.*;
-import de.rub.nds.tlsattacker.core.protocol.preparator.HandshakeMessagePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.*;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
 import java.io.ByteArrayInputStream;
 import java.lang.reflect.InvocationTargetException;
@@ -31,7 +26,6 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.Random;
-import org.junit.jupiter.api.Disabled;
 
 public class ParserSerializerIT extends GenericParserSerializerTest {
 
