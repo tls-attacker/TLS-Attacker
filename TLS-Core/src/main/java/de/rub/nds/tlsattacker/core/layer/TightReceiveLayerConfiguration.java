@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.layer;
 
 import java.util.List;
 
+import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 
 /**
@@ -22,12 +23,12 @@ import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 public class TightReceiveLayerConfiguration<Container extends DataContainer>
     extends SpecificReceiveLayerConfiguration<Container> {
 
-    public TightReceiveLayerConfiguration(List<Container> containerList) {
-        super(containerList);
+    public TightReceiveLayerConfiguration(LayerType layerType, List<Container> containerList) {
+        super(layerType, containerList);
     }
 
-    public TightReceiveLayerConfiguration(Container... containers) {
-        super(containers);
+    public TightReceiveLayerConfiguration(LayerType layerType, Container... containers) {
+        super(layerType, containers);
     }
 
     @Override

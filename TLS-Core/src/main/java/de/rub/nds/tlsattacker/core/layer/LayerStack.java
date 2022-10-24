@@ -9,15 +9,18 @@
 
 package de.rub.nds.tlsattacker.core.layer;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-
+import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
+import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.state.Context;
-import java.util.Collections;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Aggregates multiple layers into a protocol stack. Offers functionality for sending and receiving messages through the
@@ -156,6 +159,16 @@ public class LayerStack {
         return new LayerStackProcessingResult(resultList);
     }
 
+    /**
+     * Returns the layers of this LayerStack by type.
+     */
+    public List<LayerType> getLayersInStack() {
+        return layerList.stream().map(ProtocolLayer::getLayerType).collect(Collectors.toList());
+    }
+
+    /**
+     * Returns the layer list.
+     */
     public List<ProtocolLayer> getLayerList() {
         return Collections.unmodifiableList(layerList);
     }

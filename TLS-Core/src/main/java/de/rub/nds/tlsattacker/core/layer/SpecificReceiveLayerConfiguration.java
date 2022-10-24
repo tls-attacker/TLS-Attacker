@@ -12,6 +12,7 @@ package de.rub.nds.tlsattacker.core.layer;
 import java.util.Arrays;
 import java.util.List;
 
+import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 
 /**
@@ -25,12 +26,12 @@ public class SpecificReceiveLayerConfiguration<Container extends DataContainer>
 
     private boolean allowTrailingContainers = false;
 
-    public SpecificReceiveLayerConfiguration(List<Container> containerList) {
-        super(containerList);
+    public SpecificReceiveLayerConfiguration(LayerType layerType, List<Container> containerList) {
+        super(layerType, containerList);
     }
 
-    public SpecificReceiveLayerConfiguration(Container... containers) {
-        super(containers);
+    public SpecificReceiveLayerConfiguration(LayerType layerType, Container... containers) {
+        super(layerType, containers);
     }
 
     @Override

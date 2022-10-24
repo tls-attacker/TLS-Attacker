@@ -116,9 +116,9 @@ public class ForwardRecordsAction extends TlsAction implements ReceivingAction, 
                 configList.add(null);
             } else {
                 if (sending) {
-                    configList.add(new SpecificSendLayerConfiguration(receivedRecords));
+                    configList.add(new SpecificSendLayerConfiguration(ImplementedLayers.RECORD, receivedRecords));
                 } else {
-                    configList.add(new ReceiveTillLayerConfiguration(new Record()));
+                    configList.add(new ReceiveTillLayerConfiguration(ImplementedLayers.RECORD, new Record()));
                 }
             }
         });

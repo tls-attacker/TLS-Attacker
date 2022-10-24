@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.layer;
 
 import java.util.List;
 
+import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 
 /**
@@ -21,12 +22,12 @@ import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
  */
 public abstract class ReceiveLayerConfiguration<Container extends DataContainer> extends LayerConfiguration<Container> {
 
-    public ReceiveLayerConfiguration(List<Container> containerList) {
-        super(containerList);
+    public ReceiveLayerConfiguration(LayerType layerType, List<Container> containerList) {
+        super(layerType, containerList);
     }
 
-    public ReceiveLayerConfiguration(Container... containers) {
-        super(containers);
+    public ReceiveLayerConfiguration(LayerType layerType, Container... containers) {
+        super(layerType, containers);
     }
 
     public abstract boolean isProcessTrailingContainers();
