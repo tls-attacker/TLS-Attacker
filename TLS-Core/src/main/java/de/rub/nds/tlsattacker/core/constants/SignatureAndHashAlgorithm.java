@@ -331,6 +331,11 @@ public enum SignatureAndHashAlgorithm {
     }
 
     public static SignatureAndHashAlgorithm forCertificateKeyPair(CertificateKeyPair keyPair, Chooser chooser) {
+        return forCertificateKeyPair(keyPair, chooser, false);
+    }
+
+    public static SignatureAndHashAlgorithm forCertificateKeyPair(CertificateKeyPair keyPair, Chooser chooser,
+        boolean selectingCertificate) {
         Sets.SetView<SignatureAndHashAlgorithm> intersection =
             Sets.intersection(Sets.newHashSet(chooser.getClientSupportedSignatureAndHashAlgorithms()),
                 Sets.newHashSet(chooser.getServerSupportedSignatureAndHashAlgorithms()));
@@ -396,7 +401,7 @@ public enum SignatureAndHashAlgorithm {
             }
         }
 
-        if (sigHashAlgo == null) {
+        if (sigHashAlgo == null && !selectingCertificate) {
             LOGGER.warn(
                 "Could not auto select SignatureAndHashAlgorithm for certPublicKeyType={}, setting default value",
                 certPublicKeyType);

@@ -538,8 +538,10 @@ public class CertificateKeyPair implements Serializable {
 
     public boolean isCompatibleWithCipherSuite(Chooser chooser) {
         CipherSuite cipherSuite = chooser.getSelectedCipherSuite();
-        if (cipherSuite.isTLS13() || !cipherSuite.isRealCipherSuite()) {
+        if (!cipherSuite.isRealCipherSuite() || (cipherSuite.isTLS13() && !combinationUnsuitedForTls13(chooser))) {
             return true;
+        } else if (cipherSuite.isTLS13() && combinationUnsuitedForTls13(chooser)) {
+            return false;
         }
 
         CertificateKeyType neededKeyType = AlgorithmResolver.getCertificateKeyType(cipherSuite);
@@ -556,5 +558,10 @@ public class CertificateKeyPair implements Serializable {
             }
         }
         return false;
+    }
+
+    public boolean combinationUnsuitedForTls13(Chooser chooser) {
+        return SignatureAndHashAlgorithm.forCertificateKeyPair(this, chooser, true) == null
+            || !SignatureAndHashAlgorithm.forCertificateKeyPair(this, chooser, true).suitedForSigningTls13Messages();
     }
 }
