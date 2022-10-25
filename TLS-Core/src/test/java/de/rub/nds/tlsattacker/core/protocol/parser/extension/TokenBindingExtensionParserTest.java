@@ -9,59 +9,33 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TokenBindingExtensionMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import java.io.ByteArrayInputStream;
-import java.util.Arrays;
-import java.util.Collection;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Named;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class TokenBindingExtensionParserTest {
+import java.util.List;
+import java.util.stream.Stream;
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { { new byte[] { 0x00, 0x0d, 0x01, 0x02 }, TokenBindingVersion.DRAFT_13, 1,
-            new byte[] { TokenBindingKeyParameters.ECDSAP256.getValue() } } });
+public class TokenBindingExtensionParserTest
+    extends AbstractExtensionParserTest<TokenBindingExtensionMessage, TokenBindingExtensionParser> {
+
+    public TokenBindingExtensionParserTest() {
+        super(TokenBindingExtensionMessage.class, TokenBindingExtensionParser::new,
+            List.of(
+                Named.of("TokenBindingExtensionMessage::getTokenBindingVersion",
+                    TokenBindingExtensionMessage::getTokenBindingVersion),
+                Named.of("TokenBindingExtensionMessage::getParameterListLength",
+                    TokenBindingExtensionMessage::getParameterListLength),
+                Named.of("TokenBindingExtensionMessage::getTokenBindingKeyParameters",
+                    TokenBindingExtensionMessage::getTokenBindingKeyParameters)));
     }
 
-    private final byte[] extensionBytes;
-    private final TokenBindingVersion tokenbindingVersion;
-    private final int parameterLength;
-    private final byte[] keyParameter;
-    private TokenBindingExtensionParser parser;
-    private TokenBindingExtensionMessage message;
-    private final Config config = Config.createConfig();
-
-    public TokenBindingExtensionParserTest(byte[] extensionBytes, TokenBindingVersion tokenbindingVersion,
-        int parameterLength, byte[] keyParameter) {
-        this.extensionBytes = extensionBytes;
-        this.tokenbindingVersion = tokenbindingVersion;
-        this.parameterLength = parameterLength;
-        this.keyParameter = keyParameter;
+    public static Stream<Arguments> provideTestVectors() {
+        return Stream.of(Arguments.of(new byte[] { 0x00, 0x18, 0x00, 0x04, 0x00, 0x0d, 0x01, 0x02 }, List.of(),
+            ExtensionType.TOKEN_BINDING, 4, List.of(TokenBindingVersion.DRAFT_13.getByteValue(), 1,
+                new byte[] { TokenBindingKeyParameters.ECDSAP256.getValue() })));
     }
-
-    @Before
-    public void setUp() {
-        TlsContext tlsContext = new TlsContext(config);
-        parser = new TokenBindingExtensionParser(new ByteArrayInputStream(extensionBytes), tlsContext);
-    }
-
-    @Test
-    public void testParse() {
-        message = new TokenBindingExtensionMessage();
-        parser.parse(message);
-        assertArrayEquals(tokenbindingVersion.getByteValue(), message.getTokenbindingVersion().getValue());
-        assertEquals(parameterLength, (long) message.getParameterListLength().getValue());
-        assertArrayEquals(keyParameter, message.getTokenbindingKeyParameters().getValue());
-    }
-
 }

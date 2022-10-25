@@ -9,47 +9,46 @@
 
 package de.rub.nds.tlsattacker.core.http;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
 import de.rub.nds.tlsattacker.core.config.Config;
-
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import java.io.ByteArrayInputStream;
-import java.io.UnsupportedEncodingException;
-import java.util.Arrays;
-import java.util.Collection;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-@RunWith(Parameterized.class)
+import java.nio.charset.StandardCharsets;
+import java.util.stream.Stream;
+
 public class HttpResponseSerializerTest {
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() throws UnsupportedEncodingException {
-        byte[] msg = "HTTP/1.1 200 OK\r\nHost: rub.com\r\nContent-Type: text/html\r\n\r\ndata\r\n".getBytes("ASCII");
+    private Config config;
 
-        return Arrays.asList(new Object[][] { { msg, msg } });
+    @BeforeEach
+    public void setUp() {
+        config = Config.createConfig();
     }
 
-    private final byte[] msg;
-    private final byte[] expPart;
-    private final Config config = Config.createConfig();
-
-    public HttpResponseSerializerTest(byte[] msg, byte[] expPart) {
-        this.msg = msg;
-        this.expPart = expPart;
+    public static Stream<Arguments> provideTestVectors() {
+        return Stream.of(Arguments.of("HTTP/1.1 200 OK\r\nHost: rub.com\r\nContent-Type: text/html\r\n\r\ndata\r\n"
+            .getBytes(StandardCharsets.US_ASCII), ProtocolVersion.TLS12));
     }
 
     /**
-     * Test of serializeBytes method, of class HttpsResponseSerializer.
+     * Test of serializeProtocolMessageContent method, of class HttpsResponseSerializer.
      */
-    @Test
-    public void testSerializeBytes() {
-        HttpResponseParser parser = new HttpResponseParser(new ByteArrayInputStream(msg));
+    @ParameterizedTest
+    @MethodSource("provideTestVectors")
+    public void testSerializeProtocolMessageContent(byte[] providedMessageBytes,
+        ProtocolVersion providedProtocolVersion) {
+        HttpResponseParser parser = new HttpResponseParser(new ByteArrayInputStream(providedMessageBytes));
         HttpResponseMessage parsedMsg = new HttpResponseMessage();
         parser.parse(parsedMsg);
         HttpResponseSerializer serializer = new HttpResponseSerializer(parsedMsg);
 
-        assertArrayEquals(expPart, serializer.serialize());
+        assertArrayEquals(providedMessageBytes, serializer.serialize());
     }
 
 }

@@ -9,29 +9,23 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TruncatedHmacExtensionMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import java.io.ByteArrayInputStream;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.params.provider.Arguments;
 
-public class TruncatedHmacExtensionParserTest {
+import java.util.List;
+import java.util.stream.Stream;
 
-    private final byte[] expectedBytes = new byte[0];
-    private TruncatedHmacExtensionParser parser;
-    private TruncatedHmacExtensionMessage message;
-    private final Config config = Config.createConfig();
+public class TruncatedHmacExtensionParserTest
+    extends AbstractExtensionParserTest<TruncatedHmacExtensionMessage, TruncatedHmacExtensionParser> {
 
-    @Before
-    public void setUp() {
-        TlsContext tlsContext = new TlsContext(config);
-        parser = new TruncatedHmacExtensionParser(new ByteArrayInputStream(expectedBytes), tlsContext);
+    public TruncatedHmacExtensionParserTest() {
+        super(TruncatedHmacExtensionMessage.class, TruncatedHmacExtensionParser::new);
     }
 
-    @Test
-    public void testParse() {
-        message = new TruncatedHmacExtensionMessage();
-        parser.parse(message);
+    public static Stream<Arguments> provideTestVectors() {
+        return Stream.of(Arguments.of(ArrayConverter.hexStringToByteArray("00040000"), List.of(),
+            ExtensionType.TRUNCATED_HMAC, 0, List.of()));
     }
 }

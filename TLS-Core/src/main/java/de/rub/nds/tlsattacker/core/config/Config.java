@@ -26,6 +26,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedO
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.RequestItemV2;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
@@ -41,8 +42,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import javax.xml.bind.annotation.*;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElementWrapper;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.tls.Certificate;
@@ -65,14 +71,7 @@ public class Config implements Serializable {
     }
 
     public static Config createConfig(InputStream stream) {
-        Config config = ConfigIO.read(stream);
-        try {
-            stream.close();
-        } catch (IOException ex) {
-            LOGGER.warn("Could not close resource Stream!", ex);
-            return ConfigIO.read(stream);
-        }
-        return config;
+        return ConfigIO.read(stream);
     }
 
     public static Config createEmptyConfig() {
@@ -181,6 +180,13 @@ public class Config implements Serializable {
     private List<SignatureAndHashAlgorithm> defaultClientSupportedSignatureAndHashAlgorithms;
 
     /**
+     * Which Signature and Hash algorithms we support for Certificates
+     */
+    @XmlElement(name = "defaultClientSupportedCertificateSignAlgorithms")
+    @XmlElementWrapper
+    private List<SignatureAndHashAlgorithm> defaultClientSupportedCertificateSignAlgorithms;
+
+    /**
      * Which Cipher suites we support by default
      */
     @XmlElement(name = "defaultClientSupportedCipherSuite")
@@ -225,6 +231,11 @@ public class Config implements Serializable {
      */
     private Integer defaultAdditionalPadding = 0;
 
+    @XmlElement(name = "defaultSniHostname")
+    @XmlElementWrapper
+    private List<ServerNamePair> defaultSniHostnames = new LinkedList<>(Arrays
+        .asList(new ServerNamePair(NameType.HOST_NAME.getValue(), "example.com".getBytes(Charset.forName("ASCII")))));
+
     /**
      * Key type for KeyShareExtension
      */
@@ -244,7 +255,7 @@ public class Config implements Serializable {
 
     private NameType sniType = NameType.HOST_NAME;
 
-    private Integer prefferedCertRsaKeySize = 2048;
+    private Integer preferredCertRsaKeySize = 2048;
 
     private Integer prefferedCertDssKeySize = 2048;
 
@@ -423,21 +434,6 @@ public class Config implements Serializable {
     private List<RequestItemV2> statusRequestV2RequestList;
 
     /**
-     * If we should use a workflow trace specified in File
-     */
-    private String workflowInput = null;
-
-    /**
-     * If set, save the workflow trace to this file after trace execution.
-     */
-    private String workflowOutput = null;
-
-    /**
-     * If set, save the actually used config to this file after trace execution.
-     */
-    private String configOutput = null;
-
-    /**
      * The Type of workflow trace that should be generated
      */
     private WorkflowTraceType workflowTraceType = null;
@@ -486,6 +482,11 @@ public class Config implements Serializable {
      * If we generate ClientHello with the SignatureAndHashAlgorithm extension
      */
     private Boolean addSignatureAndHashAlgorithmsExtension = true;
+
+    /**
+     * If we generate ClientHello with the SignatureAlgorithmCert extension
+     */
+    private Boolean addSignatureAlgorithmsCertExtension = false;
 
     /**
      * If we generate ClientHello with the SupportedVersion extension
@@ -862,6 +863,16 @@ public class Config implements Serializable {
     private Boolean createRecordsDynamically = true;
 
     /**
+     * Every record will be sent in one individual transport packet [ADD FOR LAYER!]
+     */
+    private Boolean createIndividualTransportPackets = false;
+
+    /**
+     * If we should wait after sending one transport packet
+     */
+    private Integer individualTransportPacketCooldown = 0;
+
+    /**
      * If this value is set the default workflowExecutor will remove all runtime values from the workflow trace and will
      * only keep the relevant information
      */
@@ -927,7 +938,13 @@ public class Config implements Serializable {
     @XmlElementWrapper
     private List<SignatureAndHashAlgorithm> defaultServerSupportedSignatureAndHashAlgorithms;
 
+    @XmlElement(name = "defaultServerSupportedCertificateSignAlgorithms")
+    @XmlElementWrapper
+    private List<SignatureAndHashAlgorithm> defaultServerSupportedCertificateSignAlgorithms;
+
     private SignatureAndHashAlgorithm defaultSelectedSignatureAndHashAlgorithm = SignatureAndHashAlgorithm.RSA_SHA1;
+
+    private SignatureAndHashAlgorithm defaultSelectedSignatureAlgorithmCert = SignatureAndHashAlgorithm.RSA_SHA1;
 
     private ProtocolVersion defaultLastRecordProtocolVersion = ProtocolVersion.TLS10;
 
@@ -942,6 +959,9 @@ public class Config implements Serializable {
     private MaxFragmentLength defaultMaxFragmentLength = MaxFragmentLength.TWO_12;
 
     private Integer defaultMaxRecordData = RecordSizeLimit.DEFAULT_MAX_RECORD_DATA_SIZE;
+
+    // Overrides any limit negotiated if set
+    private Integer enforcedMaxRecordData;
 
     private Integer inboundRecordSizeLimit = RecordSizeLimit.DEFAULT_MAX_RECORD_DATA_SIZE;
 
@@ -1113,7 +1133,13 @@ public class Config implements Serializable {
      * or httpParsing is disabled
      */
     @XmlJavaTypeAdapter(IllegalStringAdapter.class)
-    private String defaultHttpRequestPath = "/";
+    private String defaultHttpsLocationPath = "/";
+
+    /**
+     * requestPath to use in https requests
+     */
+    @XmlJavaTypeAdapter(IllegalStringAdapter.class)
+    private String defaultHttpsRequestPath = "/robots.txt";
 
     private StarttlsType starttlsType = StarttlsType.NONE;
 
@@ -1304,6 +1330,9 @@ public class Config implements Serializable {
         defaultEsniServerCipherSuites.add(CipherSuite.TLS_AES_128_GCM_SHA256);
         defaultClientSupportedSignatureAndHashAlgorithms = new LinkedList<>();
         defaultClientSupportedSignatureAndHashAlgorithms.addAll(SignatureAndHashAlgorithm.getImplemented());
+        defaultClientSupportedCertificateSignAlgorithms = new LinkedList<>();
+        defaultClientSupportedCertificateSignAlgorithms
+            .addAll(SignatureAndHashAlgorithm.getImplementedTls13SignatureAndHashAlgorithms());
         defaultClientSupportedCompressionMethods = new LinkedList<>();
         defaultClientSupportedCompressionMethods.add(CompressionMethod.NULL);
         defaultServerSupportedCompressionMethods = new LinkedList<>();
@@ -1324,6 +1353,9 @@ public class Config implements Serializable {
         defaultTokenBindingKeyParameters.add(TokenBindingKeyParameters.RSA2048_PSS);
         defaultServerSupportedSignatureAndHashAlgorithms = new LinkedList<>();
         defaultServerSupportedSignatureAndHashAlgorithms.addAll(SignatureAndHashAlgorithm.getImplemented());
+        defaultServerSupportedCertificateSignAlgorithms = new LinkedList<>();
+        defaultServerSupportedCertificateSignAlgorithms
+            .addAll(SignatureAndHashAlgorithm.getImplementedTls13SignatureAndHashAlgorithms());
         defaultServerSupportedPointFormats = new LinkedList<>();
         defaultClientSupportedPointFormats = new LinkedList<>();
         defaultServerSupportedPointFormats.add(ECPointFormat.UNCOMPRESSED);
@@ -1542,12 +1574,20 @@ public class Config implements Serializable {
         this.clientAuthenticationType = clientAuthenticationType;
     }
 
-    public String getDefaultHttpRequestPath() {
-        return defaultHttpRequestPath;
+    public String getDefaultHttpsLocationPath() {
+        return defaultHttpsLocationPath;
     }
 
-    public void setDefaultHttpRequestPath(String defaultHttpRequestPath) {
-        this.defaultHttpRequestPath = defaultHttpRequestPath;
+    public void setDefaultHttpsLocationPath(String defaultHttpsLocationPath) {
+        this.defaultHttpsLocationPath = defaultHttpsLocationPath;
+    }
+
+    public String getDefaultHttpsRequestPath() {
+        return defaultHttpsRequestPath;
+    }
+
+    public void setDefaultHttpsRequestPath(String defaultHttpsRequestPath) {
+        this.defaultHttpsRequestPath = defaultHttpsRequestPath;
     }
 
     public Boolean isUseFreshRandom() {
@@ -2090,6 +2130,21 @@ public class Config implements Serializable {
             new ArrayList(Arrays.asList(defaultServerSupportedSignatureAndHashAlgorithms));
     }
 
+    public List<SignatureAndHashAlgorithm> getDefaultServerSupportedCertificateSignAlgorithms() {
+        return defaultServerSupportedCertificateSignAlgorithms;
+    }
+
+    public void setDefaultServerSupportedCertificateSignAlgorithms(
+        List<SignatureAndHashAlgorithm> defaultServerSupportedCertificateSignAlgorithms) {
+        this.defaultServerSupportedCertificateSignAlgorithms = defaultServerSupportedCertificateSignAlgorithms;
+    }
+
+    public void setDefaultServerSupportedCertificateSignAlgorithms(
+        SignatureAndHashAlgorithm... defaultServerSupportedCertificateSignAlgorithms) {
+        this.defaultServerSupportedCertificateSignAlgorithms =
+            new ArrayList(Arrays.asList(defaultServerSupportedCertificateSignAlgorithms));
+    }
+
     public List<CipherSuite> getDefaultServerSupportedCipherSuites() {
         return defaultServerSupportedCipherSuites;
     }
@@ -2148,6 +2203,15 @@ public class Config implements Serializable {
     public void setDefaultSelectedSignatureAndHashAlgorithm(
         SignatureAndHashAlgorithm defaultSelectedSignatureAndHashAlgorithm) {
         this.defaultSelectedSignatureAndHashAlgorithm = defaultSelectedSignatureAndHashAlgorithm;
+    }
+
+    public SignatureAndHashAlgorithm getDefaultSelectedSignatureAlgorithmCert() {
+        return defaultSelectedSignatureAlgorithmCert;
+    }
+
+    public void
+        setDefaultSelectedSignatureAlgorithmCert(SignatureAndHashAlgorithm defaultSelectedSignatureAlgorithmCert) {
+        this.defaultSelectedSignatureAlgorithmCert = defaultSelectedSignatureAlgorithmCert;
     }
 
     public List<ECPointFormat> getDefaultClientSupportedPointFormats() {
@@ -2260,6 +2324,22 @@ public class Config implements Serializable {
 
     public void setCreateRecordsDynamically(Boolean createRecordsDynamically) {
         this.createRecordsDynamically = createRecordsDynamically;
+    }
+
+    public Boolean isCreateIndividualTransportPackets() {
+        return createIndividualTransportPackets;
+    }
+
+    public void setCreateIndividualTransportPackets(Boolean createIndividualTransportPackets) {
+        this.createIndividualTransportPackets = createIndividualTransportPackets;
+    }
+
+    public Integer getIndividualTransportPacketCooldown() {
+        return individualTransportPacketCooldown;
+    }
+
+    public void setIndividualTransportPacketCooldown(Integer individualTransportPacketCooldown) {
+        this.individualTransportPacketCooldown = individualTransportPacketCooldown;
     }
 
     public int getDefaultMaxRecordData() {
@@ -2426,30 +2506,6 @@ public class Config implements Serializable {
         this.workflowTraceType = workflowTraceType;
     }
 
-    public String getWorkflowOutput() {
-        return workflowOutput;
-    }
-
-    public void setWorkflowOutput(String workflowOutput) {
-        this.workflowOutput = workflowOutput;
-    }
-
-    public String getConfigOutput() {
-        return configOutput;
-    }
-
-    public void setConfigOutput(String configOutput) {
-        this.configOutput = configOutput;
-    }
-
-    public String getWorkflowInput() {
-        return workflowInput;
-    }
-
-    public void setWorkflowInput(String workflowInput) {
-        this.workflowInput = workflowInput;
-    }
-
     public NamedGroup getDefaultSelectedNamedGroup() {
         return defaultSelectedNamedGroup;
     }
@@ -2506,6 +2562,21 @@ public class Config implements Serializable {
     public final void setDefaultClientSupportedSignatureAndHashAlgorithms(
         SignatureAndHashAlgorithm... supportedSignatureAndHashAlgorithms) {
         this.defaultClientSupportedSignatureAndHashAlgorithms =
+            new ArrayList(Arrays.asList(supportedSignatureAndHashAlgorithms));
+    }
+
+    public List<SignatureAndHashAlgorithm> getDefaultClientSupportedCertificateSignAlgorithms() {
+        return defaultClientSupportedCertificateSignAlgorithms;
+    }
+
+    public void setDefaultClientSupportedCertificateSignAlgorithms(
+        List<SignatureAndHashAlgorithm> defaultClientSupportedCertificateSignAlgorithms) {
+        this.defaultClientSupportedCertificateSignAlgorithms = defaultClientSupportedCertificateSignAlgorithms;
+    }
+
+    public final void setDefaultClientSupportedCertificateSignAlgorithms(
+        SignatureAndHashAlgorithm... supportedSignatureAndHashAlgorithms) {
+        this.defaultClientSupportedCertificateSignAlgorithms =
             new ArrayList(Arrays.asList(supportedSignatureAndHashAlgorithms));
     }
 
@@ -2591,6 +2662,14 @@ public class Config implements Serializable {
 
     public void setAddSignatureAndHashAlgorithmsExtension(Boolean addSignatureAndHashAlgorithmsExtension) {
         this.addSignatureAndHashAlgorithmsExtension = addSignatureAndHashAlgorithmsExtension;
+    }
+
+    public Boolean isAddSignatureAlgorithmsCertExtension() {
+        return addSignatureAlgorithmsCertExtension;
+    }
+
+    public void setAddSignatureAlgorithmsCertExtension(Boolean addSignatureAlgorithmsCertExtension) {
+        this.addSignatureAlgorithmsCertExtension = addSignatureAlgorithmsCertExtension;
     }
 
     public Boolean isAddSupportedVersionsExtension() {
@@ -3863,12 +3942,12 @@ public class Config implements Serializable {
         this.defaultLastClientHello = defaultLastClientHello;
     }
 
-    public int getPrefferedCertRsaKeySize() {
-        return prefferedCertRsaKeySize;
+    public int getPreferredCertRsaKeySize() {
+        return preferredCertRsaKeySize;
     }
 
-    public void setPrefferedCertRsaKeySize(int prefferedCertRsaKeySize) {
-        this.prefferedCertRsaKeySize = prefferedCertRsaKeySize;
+    public void setPreferredCertRsaKeySize(int preferredCertRsaKeySize) {
+        this.preferredCertRsaKeySize = preferredCertRsaKeySize;
     }
 
     public int getPrefferedCertDssKeySize() {
@@ -3935,11 +4014,27 @@ public class Config implements Serializable {
         this.defaultClientTicketResumptionSessionId = defaultClientTicketResumptionSessionId;
     }
 
+    public List<ServerNamePair> getDefaultSniHostnames() {
+        return defaultSniHostnames;
+    }
+
+    public void setDefaultSniHostnames(List<ServerNamePair> defaultSniHostnames) {
+        this.defaultSniHostnames = defaultSniHostnames;
+    }
+
     public LayerConfiguration getDefaultLayerConfiguration() {
         return defaultLayerConfiguration;
     }
 
     public void setDefaultLayerConfiguration(LayerConfiguration defaultLayerConfiguration) {
         this.defaultLayerConfiguration = defaultLayerConfiguration;
+    }
+
+    public Integer getEnforcedMaxRecordData() {
+        return enforcedMaxRecordData;
+    }
+
+    public void setEnforcedMaxRecordData(Integer enforcedMaxRecordData) {
+        this.enforcedMaxRecordData = enforcedMaxRecordData;
     }
 }

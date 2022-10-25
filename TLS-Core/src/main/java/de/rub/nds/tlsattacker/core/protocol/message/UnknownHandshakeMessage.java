@@ -22,7 +22,7 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Objects;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "UnknownHandshakeMessage")
 public class UnknownHandshakeMessage extends HandshakeMessage {

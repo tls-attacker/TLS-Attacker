@@ -9,20 +9,22 @@
 
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import org.junit.Before;
-import org.junit.Test;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ECPointFormatExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.ECPointFormatExtensionParserTest;
+import org.junit.jupiter.params.provider.Arguments;
 
-public class ECPointFormatExtensionSerializerTest {
+import java.util.List;
+import java.util.stream.Stream;
 
-    @Before
-    public void setUp() {
+public class ECPointFormatExtensionSerializerTest
+    extends AbstractExtensionMessageSerializerTest<ECPointFormatExtensionMessage, ECPointFormatExtensionSerializer> {
+
+    public ECPointFormatExtensionSerializerTest() {
+        super(ECPointFormatExtensionMessage::new, ECPointFormatExtensionSerializer::new, List.of(
+            (msg, obj) -> msg.setPointFormatsLength((Integer) obj), (msg, obj) -> msg.setPointFormats((byte[]) obj)));
     }
 
-    /**
-     * Test of serializeExtensionContent method, of class ECPointFormatExtensionSerializer.
-     */
-    @Test
-    public void testSerializeExtensionContent() {
+    public static Stream<Arguments> provideTestVectors() {
+        return ECPointFormatExtensionParserTest.provideTestVectors();
     }
-
 }

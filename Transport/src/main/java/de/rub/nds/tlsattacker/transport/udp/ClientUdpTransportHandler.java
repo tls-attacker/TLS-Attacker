@@ -24,12 +24,15 @@ public class ClientUdpTransportHandler extends UdpTransportHandler {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final String hostname;
+    protected final String hostname;
+
+    protected Integer sourcePort;
 
     public ClientUdpTransportHandler(Connection connection) {
         super(connection.getFirstTimeout(), connection.getTimeout(), ConnectionEndType.CLIENT);
         this.hostname = connection.getHostname();
         this.port = connection.getPort();
+        this.sourcePort = connection.getSourcePort();
     }
 
     public ClientUdpTransportHandler(long firstTimeout, long timeout, String hostname, int port) {
@@ -46,11 +49,19 @@ public class ClientUdpTransportHandler extends UdpTransportHandler {
     @Override
     public void initialize() throws IOException {
         LOGGER.debug("Initializing ClientUdpTransportHandler host: {}, port: {}", hostname, port);
-        socket = new DatagramSocket();
+        if (sourcePort == null) {
+            socket = new DatagramSocket();
+        } else {
+            socket = new DatagramSocket(sourcePort);
+        }
         socket.setSoTimeout((int) timeout);
         cachedSocketState = null;
         setStreams(new PushbackInputStream(new UdpInputStream(socket, true)),
             new UdpOutputStream(socket, hostname, port));
     }
 
+    @Override
+    public void closeClientConnection() throws IOException {
+        closeConnection();
+    }
 }

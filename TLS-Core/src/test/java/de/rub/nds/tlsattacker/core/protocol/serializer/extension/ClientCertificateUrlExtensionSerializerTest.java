@@ -10,23 +10,19 @@
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateUrlExtensionMessage;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Before;
-import org.junit.Test;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.ClientCertificateUrlExtensionParserTest;
+import org.junit.jupiter.params.provider.Arguments;
 
-public class ClientCertificateUrlExtensionSerializerTest {
-    private final byte[] expectedBytes = new byte[] {};
-    private ClientCertificateUrlExtensionMessage message;
-    private ClientCertificateUrlExtensionSerializer serializer;
+import java.util.stream.Stream;
 
-    @Before
-    public void setUp() {
-        message = new ClientCertificateUrlExtensionMessage();
-        serializer = new ClientCertificateUrlExtensionSerializer(message);
+public class ClientCertificateUrlExtensionSerializerTest extends AbstractExtensionMessageSerializerTest<
+    ClientCertificateUrlExtensionMessage, ClientCertificateUrlExtensionSerializer> {
+
+    public ClientCertificateUrlExtensionSerializerTest() {
+        super(ClientCertificateUrlExtensionMessage::new, ClientCertificateUrlExtensionSerializer::new);
     }
 
-    @Test
-    public void testSerializeExtensionContent() {
-        assertArrayEquals(expectedBytes, serializer.serializeExtensionContent());
+    public static Stream<Arguments> provideTestVectors() {
+        return ClientCertificateUrlExtensionParserTest.provideTestVectors();
     }
 }

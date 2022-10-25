@@ -9,35 +9,31 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.HeartbeatExtensionMessage;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import org.junit.jupiter.api.Test;
 
-public class HeartbeatExtensionHandlerTest {
+public class HeartbeatExtensionHandlerTest
+    extends AbstractExtensionMessageHandlerTest<HeartbeatExtensionMessage, HeartbeatExtensionHandler> {
 
-    private HeartbeatExtensionHandler handler;
-
-    private TlsContext context;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new HeartbeatExtensionHandler(context);
+    public HeartbeatExtensionHandlerTest() {
+        super(HeartbeatExtensionMessage::new, HeartbeatExtensionHandler::new);
     }
 
     /**
      * Test of adjustContext method, of class HeartbeatExtensionHandler.
      */
     @Test
-    public void testadjustContext() {
+    @Override
+    public void testadjustTLSExtensionContext() {
         HeartbeatExtensionMessage msg = new HeartbeatExtensionMessage();
         msg.setHeartbeatMode(new byte[] { 1 });
-        handler.adjustContext(msg);
-        assertTrue(context.getHeartbeatMode() == HeartbeatMode.PEER_ALLOWED_TO_SEND);
+        handler.adjustTLSExtensionContext(msg);
+        assertSame(HeartbeatMode.PEER_ALLOWED_TO_SEND, context.getHeartbeatMode());
     }
 
     @Test
@@ -47,4 +43,5 @@ public class HeartbeatExtensionHandlerTest {
         handler.adjustContext(msg);
         assertNull(context.getHeartbeatMode());
     }
+
 }

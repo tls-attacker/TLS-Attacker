@@ -9,39 +9,31 @@
 
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestType;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.CertificateStatusRequestExtensionSerializer;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class CertificateStatusRequestExtensionPreparatorTest {
+public class CertificateStatusRequestExtensionPreparatorTest
+    extends AbstractExtensionMessagePreparatorTest<CertificateStatusRequestExtensionMessage,
+        CertificateStatusRequestExtensionSerializer, CertificateStatusRequestExtensionPreparator> {
 
-    private final CertificateStatusRequestType certificateStatusRequestExtensionRequestType =
-        CertificateStatusRequestType.OCSP;
-    private final byte[] certificateStatusRequestExtensionResponderIDList = new byte[] { 0x01 };
-    private final int responderIDListLength = 1;
-    private final byte[] certificateStatusRequestExtensionRequestExtension = new byte[] { 0x02 };
-    private final int requestExtensionLength = 1;
-    private TlsContext context;
-    private CertificateStatusRequestExtensionMessage msg;
-    private CertificateStatusRequestExtensionPreparator preparator;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        msg = new CertificateStatusRequestExtensionMessage();
-        preparator = new CertificateStatusRequestExtensionPreparator(context.getChooser(), msg);
+    public CertificateStatusRequestExtensionPreparatorTest() {
+        super(CertificateStatusRequestExtensionMessage::new, CertificateStatusRequestExtensionSerializer::new,
+            CertificateStatusRequestExtensionPreparator::new);
     }
 
     @Test
-    public void testPreparator() {
-        context.getConfig()
-            .setCertificateStatusRequestExtensionRequestType(certificateStatusRequestExtensionRequestType);
+    @Override
+    public void testPrepare() {
+        byte[] certificateStatusRequestExtensionResponderIDList = new byte[] { 0x01 };
+        byte[] certificateStatusRequestExtensionRequestExtension = new byte[] { 0x02 };
+
+        context.getConfig().setCertificateStatusRequestExtensionRequestType(CertificateStatusRequestType.OCSP);
         context.getConfig()
             .setCertificateStatusRequestExtensionResponderIDList(certificateStatusRequestExtensionResponderIDList);
         context.getConfig()
@@ -49,12 +41,12 @@ public class CertificateStatusRequestExtensionPreparatorTest {
 
         preparator.prepare();
 
-        assertArrayEquals(ExtensionType.STATUS_REQUEST.getValue(), msg.getExtensionType().getValue());
-        assertEquals(certificateStatusRequestExtensionRequestType.getCertificateStatusRequestValue(),
-            (long) msg.getCertificateStatusRequestType().getValue());
-        assertEquals(responderIDListLength, (long) msg.getResponderIDListLength().getValue());
-        assertArrayEquals(certificateStatusRequestExtensionResponderIDList, msg.getResponderIDList().getValue());
-        assertEquals(requestExtensionLength, (long) msg.getRequestExtensionLength().getValue());
-        assertArrayEquals(certificateStatusRequestExtensionRequestExtension, msg.getRequestExtension().getValue());
+        assertArrayEquals(ExtensionType.STATUS_REQUEST.getValue(), message.getExtensionType().getValue());
+        assertEquals(CertificateStatusRequestType.OCSP.getCertificateStatusRequestValue(),
+            message.getCertificateStatusRequestType().getValue());
+        assertEquals(1, message.getResponderIDListLength().getValue());
+        assertArrayEquals(certificateStatusRequestExtensionResponderIDList, message.getResponderIDList().getValue());
+        assertEquals(1, message.getRequestExtensionLength().getValue());
+        assertArrayEquals(certificateStatusRequestExtensionRequestExtension, message.getRequestExtension().getValue());
     }
 }

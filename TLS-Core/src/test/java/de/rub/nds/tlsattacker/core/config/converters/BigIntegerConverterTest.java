@@ -9,21 +9,23 @@
 
 package de.rub.nds.tlsattacker.core.config.converters;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import com.beust.jcommander.ParameterException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.math.BigInteger;
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.Test;
 
 public class BigIntegerConverterTest {
     private BigIntegerConverter converter;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    public void setUpClass() {
         converter = new BigIntegerConverter();
     }
 
-    @SuppressWarnings("SpellCheckingInspection")
     @Test
     public void testConvert() {
         String testString = "0";
@@ -36,8 +38,8 @@ public class BigIntegerConverterTest {
         assertEquals(new BigInteger("FFFFFFFFFFFFFFFF", 16), converter.convert(testString));
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testConvertError() {
-        converter.convert("hello world");
+        assertThrows(ParameterException.class, () -> converter.convert("hello world"));
     }
 }

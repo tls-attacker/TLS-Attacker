@@ -26,7 +26,7 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerial
 
 import java.io.InputStream;
 import java.io.Serializable;
-import javax.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 @XmlSeeAlso({ EncryptedServerNameIndicationExtensionMessage.class, ECPointFormatExtensionMessage.class,
     EllipticCurvesExtensionMessage.class, EllipticCurvesExtensionMessage.class,
@@ -34,9 +34,9 @@ import javax.xml.bind.annotation.XmlSeeAlso;
     MaxFragmentLengthExtensionMessage.class, RecordSizeLimitExtensionMessage.class, PaddingExtensionMessage.class,
     RenegotiationInfoExtensionMessage.class, ServerNameIndicationExtensionMessage.class,
     SessionTicketTLSExtensionMessage.class, SignatureAndHashAlgorithmsExtensionMessage.class,
-    SignedCertificateTimestampExtensionMessage.class, ExtendedRandomExtensionMessage.class,
-    TokenBindingExtensionMessage.class, KeyShareExtensionMessage.class, SupportedVersionsExtensionMessage.class,
-    AlpnExtensionMessage.class, CertificateStatusRequestExtensionMessage.class,
+    SignatureAlgorithmsCertExtensionMessage.class, SignedCertificateTimestampExtensionMessage.class,
+    ExtendedRandomExtensionMessage.class, TokenBindingExtensionMessage.class, KeyShareExtensionMessage.class,
+    SupportedVersionsExtensionMessage.class, AlpnExtensionMessage.class, CertificateStatusRequestExtensionMessage.class,
     CertificateStatusRequestV2ExtensionMessage.class, CertificateTypeExtensionMessage.class,
     ClientCertificateUrlExtensionMessage.class, ClientCertificateTypeExtensionMessage.class,
     ClientAuthzExtensionMessage.class, EncryptThenMacExtensionMessage.class, ServerAuthzExtensionMessage.class,

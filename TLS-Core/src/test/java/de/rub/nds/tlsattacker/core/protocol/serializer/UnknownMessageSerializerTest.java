@@ -9,30 +9,23 @@
 
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Before;
-import org.junit.Test;
+import de.rub.nds.tlsattacker.core.protocol.parser.UnknownMessageParserTest;
+import org.junit.jupiter.params.provider.Arguments;
 
-public class UnknownMessageSerializerTest {
+import java.util.List;
+import java.util.stream.Stream;
 
-    private UnknownMessage msg;
-    private UnknownMessageSerializer serializer;
+public class UnknownMessageSerializerTest
+    extends AbstractTlsMessageSerializerTest<UnknownMessage, UnknownMessageSerializer> {
 
-    @Before
-    public void setUp() {
-        msg = new UnknownMessage(ProtocolMessageType.UNKNOWN);
-        serializer = new UnknownMessageSerializer(msg);
+    public UnknownMessageSerializerTest() {
+        super(UnknownMessage::new, UnknownMessageSerializer::new,
+            List.of((msg, obj) -> msg.setCompleteResultingMessage((byte[]) obj)));
     }
 
-    /**
-     * Test of serializeBytes method, of class UnknownSerializer.
-     */
-    @Test
-    public void testSerializeBytes() {
-        msg.setCompleteResultingMessage(new byte[] { 1, 2, 3 });
-        assertArrayEquals(new byte[] { 1, 2, 3 }, serializer.serialize());
+    public static Stream<Arguments> provideTestVectors() {
+        return UnknownMessageParserTest.provideTestVectors();
     }
 
 }

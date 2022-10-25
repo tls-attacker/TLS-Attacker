@@ -10,30 +10,19 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.HelloRequestMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class HelloRequestHandlerTest {
+public class HelloRequestHandlerTest extends AbstractTlsMessageHandlerTest<HelloRequestMessage, HelloRequestHandler> {
 
-    private HelloRequestHandler handler;
-    private TlsContext context;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new HelloRequestHandler(context);
-    }
-
-    @After
-    public void tearDown() {
+    public HelloRequestHandlerTest() {
+        super(HelloRequestMessage::new, HelloRequestHandler::new);
     }
 
     /**
      * Test of adjustContext method, of class HelloRequestHandler.
      */
     @Test
+    @Override
     public void testadjustContext() {
         HelloRequestMessage message = new HelloRequestMessage();
         handler.adjustContext(message);

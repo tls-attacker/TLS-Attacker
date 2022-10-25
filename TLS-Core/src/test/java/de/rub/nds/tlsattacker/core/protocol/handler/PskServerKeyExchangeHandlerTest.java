@@ -9,24 +9,21 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import org.junit.After;
-import org.junit.Before;
+import de.rub.nds.tlsattacker.core.protocol.message.PskServerKeyExchangeMessage;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-public class PskServerKeyExchangeHandlerTest {
+public class PskServerKeyExchangeHandlerTest
+    extends AbstractTlsMessageHandlerTest<PskServerKeyExchangeMessage, PskServerKeyExchangeHandler> {
 
-    private PskServerKeyExchangeHandler handler;
-    private TlsContext context;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new PskServerKeyExchangeHandler(context);
-
+    public PskServerKeyExchangeHandlerTest() {
+        super(PskServerKeyExchangeMessage::new, PskServerKeyExchangeHandler::new);
     }
 
-    @After
-    public void tearDown() {
-    }
+    @Test
+    @Disabled("Not implemented")
+    @Override
+    public void testadjustContext() {
 
+    }
 }

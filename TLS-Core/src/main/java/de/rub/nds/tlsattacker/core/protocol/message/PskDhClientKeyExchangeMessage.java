@@ -21,7 +21,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.PskDhClientKeyExchangePre
 import de.rub.nds.tlsattacker.core.protocol.serializer.PskDhClientKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "PskDhClientKeyExchange")
 public class PskDhClientKeyExchangeMessage extends DHClientKeyExchangeMessage {

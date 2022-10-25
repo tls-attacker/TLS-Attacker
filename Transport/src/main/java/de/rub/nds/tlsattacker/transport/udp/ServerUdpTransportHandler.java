@@ -13,7 +13,6 @@ import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.udp.stream.UdpInputStream;
 import de.rub.nds.tlsattacker.transport.udp.stream.UdpOutputStream;
-
 import java.io.IOException;
 import java.io.PushbackInputStream;
 import java.net.DatagramSocket;
@@ -57,5 +56,10 @@ public class ServerUdpTransportHandler extends UdpTransportHandler {
         socket = new DatagramSocket(port);
         setStreams(new PushbackInputStream(new UdpInputStream(socket, true)), new UdpOutputStream(socket));
         cachedSocketState = null;
+    }
+
+    @Override
+    public void closeClientConnection() throws IOException {
+        closeConnection();
     }
 }

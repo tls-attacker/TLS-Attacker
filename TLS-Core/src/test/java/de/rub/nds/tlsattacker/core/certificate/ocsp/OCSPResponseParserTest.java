@@ -9,6 +9,8 @@
 
 package de.rub.nds.tlsattacker.core.certificate.ocsp;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.google.common.io.ByteStreams;
 import de.rub.nds.asn1.Asn1Encodable;
 import de.rub.nds.asn1.model.Asn1ObjectIdentifier;
@@ -19,46 +21,52 @@ import de.rub.nds.asn1.parser.ParserException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-import org.bouncycastle.crypto.tls.Certificate;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class OCSPResponseParserTest {
 
-    private OCSPResponse response;
-    private OCSPResponse responseWithNonce;
+    private static OCSPResponse response;
+    private static OCSPResponse responseWithNonce;
 
-    @Before
-    public void setUp() throws IOException, ParserException {
+    @BeforeAll
+    public static void setUpClass() throws IOException, ParserException {
         // Response uses DN for identification, no extensions, does not contain
         // certificate
-        InputStream stream = getClass().getClassLoader().getResourceAsStream("ocsp/ocsp-response.bin");
-        byte[] responseBytes = ByteStreams.toByteArray(stream);
+        byte[] responseBytes;
+        try (InputStream stream =
+            OCSPResponseParserTest.class.getClassLoader().getResourceAsStream("ocsp/ocsp-response.bin")) {
+            assertNotNull(stream);
+            responseBytes = ByteStreams.toByteArray(stream);
+        }
         response = OCSPResponseParser.parseResponse(responseBytes);
-        Assert.assertArrayEquals(responseBytes, response.getEncodedResponse());
+        assertNotNull(response);
+        assertArrayEquals(responseBytes, response.getEncodedResponse());
 
         // Response uses key for identification, contains nonce extensions,
         // contains certificate
-        stream = getClass().getClassLoader().getResourceAsStream("ocsp/ocsp-response-nonce.bin");
-        responseBytes = ByteStreams.toByteArray(stream);
+        try (InputStream stream =
+            OCSPResponseParserTest.class.getClassLoader().getResourceAsStream("ocsp/ocsp-response-nonce.bin")) {
+            assertNotNull(stream);
+            responseBytes = ByteStreams.toByteArray(stream);
+        }
         responseWithNonce = OCSPResponseParser.parseResponse(responseBytes);
-        Assert.assertArrayEquals(responseBytes, responseWithNonce.getEncodedResponse());
+        assertNotNull(responseWithNonce);
+        assertArrayEquals(responseBytes, responseWithNonce.getEncodedResponse());
     }
 
     @Test
     public void testParseResponse() {
-
-        Assert.assertEquals(new Integer(0), response.getResponseStatus());
-        Assert.assertNull(response.getResponseDataVersion());
-        Assert.assertNull(response.getNonce()); // Response contains no nonce
-        Assert.assertEquals("20200615155900Z", response.getProducedAt());
-        Assert.assertEquals("1.3.6.1.5.5.7.48.1.1", response.getResponseTypeIdentifier());
-        Assert.assertEquals("1.2.840.113549.1.1.11", response.getSignatureAlgorithmIdentifier());
-        Assert.assertTrue(response.getCertificateStatusList().get(0) instanceof CertificateStatus);
+        assertEquals(Integer.valueOf(0), response.getResponseStatus());
+        assertNull(response.getResponseDataVersion());
+        assertNull(response.getNonce()); // Response contains no nonce
+        assertEquals("20200615155900Z", response.getProducedAt());
+        assertEquals("1.3.6.1.5.5.7.48.1.1", response.getResponseTypeIdentifier());
+        assertEquals("1.2.840.113549.1.1.11", response.getSignatureAlgorithmIdentifier());
+        assertNotNull(response.getCertificateStatusList().get(0));
 
         // Response contains no certificate
-        Assert.assertNull(response.getCertificate());
+        assertNull(response.getCertificate());
         byte[] expectedSignature = { -101, -64, -19, -21, 28, -104, 57, 92, -27, 69, -5, -88, -102, 28, 71, 66, -37,
             -110, -24, 73, 65, 35, 92, -1, -27, -34, -28, -77, -44, 40, -25, 36, -4, -87, -128, -92, -127, -74, 61, -54,
             90, -36, -113, 24, -83, 50, -117, -77, -77, 111, 112, 47, -95, -119, 116, -123, 34, 13, 98, 62, 86, 6, 107,
@@ -72,45 +80,44 @@ public class OCSPResponseParserTest {
             29, 94, 99, -29, -127, -58, -13, 33, 14, 115, -114, 57, 12, -75, 33, 57, 119, -64, 17, 68, 27, 27, -8, 20,
             29, 107, -101, -32, 94, -68 };
 
-        Assert.assertArrayEquals(expectedSignature, response.getSignature());
+        assertArrayEquals(expectedSignature, response.getSignature());
     }
 
     @Test
     public void testParseResponseNonceExtension() {
-        Assert.assertEquals(1337, responseWithNonce.getNonce().intValue());
+        assertEquals(1337, responseWithNonce.getNonce().intValue());
     }
 
     @Test
     public void testParseResponseResponderDn() {
-        Assert.assertNull(response.getResponderKey());
+        assertNull(response.getResponderKey());
 
         // Check for Distinguished Name Structure
         List<Asn1Encodable> dnCountry =
             (((Asn1Sequence) ((Asn1Set) response.getResponderName().get(0)).getChildren().get(0)).getChildren());
-        Assert.assertEquals("2.5.4.6", ((Asn1ObjectIdentifier) dnCountry.get(0)).getValue());
-        Assert.assertEquals("US", ((Asn1PrimitivePrintableString) dnCountry.get(1)).getValue());
+        assertEquals("2.5.4.6", ((Asn1ObjectIdentifier) dnCountry.get(0)).getValue());
+        assertEquals("US", ((Asn1PrimitivePrintableString) dnCountry.get(1)).getValue());
         List<Asn1Encodable> dnOrganization =
             (((Asn1Sequence) ((Asn1Set) response.getResponderName().get(1)).getChildren().get(0)).getChildren());
-        Assert.assertEquals("2.5.4.10", ((Asn1ObjectIdentifier) dnOrganization.get(0)).getValue());
-        Assert.assertEquals("Let's Encrypt", ((Asn1PrimitivePrintableString) dnOrganization.get(1)).getValue());
+        assertEquals("2.5.4.10", ((Asn1ObjectIdentifier) dnOrganization.get(0)).getValue());
+        assertEquals("Let's Encrypt", ((Asn1PrimitivePrintableString) dnOrganization.get(1)).getValue());
         List<Asn1Encodable> dnCommonName =
             (((Asn1Sequence) ((Asn1Set) response.getResponderName().get(2)).getChildren().get(0)).getChildren());
-        Assert.assertEquals("2.5.4.3", ((Asn1ObjectIdentifier) dnCommonName.get(0)).getValue());
-        Assert.assertEquals("Let's Encrypt Authority X3",
-            ((Asn1PrimitivePrintableString) dnCommonName.get(1)).getValue());
+        assertEquals("2.5.4.3", ((Asn1ObjectIdentifier) dnCommonName.get(0)).getValue());
+        assertEquals("Let's Encrypt Authority X3", ((Asn1PrimitivePrintableString) dnCommonName.get(1)).getValue());
     }
 
     @Test
     public void testParseResponseResponderKey() {
-        Assert.assertNull(responseWithNonce.getResponderName());
+        assertNull(responseWithNonce.getResponderName());
 
         byte[] expectedResponderKey =
             { -100, 77, 0, -103, 0, 14, -117, -80, 1, -127, 117, -95, -70, -16, -48, 37, -41, -96, 28, 71 };
-        Assert.assertArrayEquals(expectedResponderKey, responseWithNonce.getResponderKey());
+        assertArrayEquals(expectedResponderKey, responseWithNonce.getResponderKey());
     }
 
     @Test
     public void testParseResponseCertificate() {
-        Assert.assertTrue(responseWithNonce.getCertificate() instanceof Certificate);
+        assertNotNull(responseWithNonce.getCertificate());
     }
 }

@@ -10,56 +10,31 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.io.ByteArrayInputStream;
-import java.util.Arrays;
-import java.util.Collection;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertTrue;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Named;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class CertificateRequestTls13ParserTest {
+import java.util.List;
+import java.util.stream.Stream;
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { { ArrayConverter.hexStringToByteArray("01020000"), 1,
-            ArrayConverter.hexStringToByteArray("02"), new byte[0], ProtocolVersion.TLS13 } });
+public class CertificateRequestTls13ParserTest
+    extends AbstractHandshakeMessageParserTest<CertificateRequestMessage, CertificateRequestParser> {
+
+    public CertificateRequestTls13ParserTest() {
+        super(CertificateRequestMessage.class, CertificateRequestParser::new, List.of(
+            Named.of("CertificateRequestMessage::getCertificateRequestContextLength",
+                CertificateRequestMessage::getCertificateRequestContextLength),
+            Named.of("CertificateRequestMessage::getCertificateRequestContext",
+                CertificateRequestMessage::getCertificateRequestContext),
+            Named.of("CertificateRequestMessage::getExtensionsLength", CertificateRequestMessage::getExtensionsLength),
+            Named.of("CertificateRequestMessage::getExtensionBytes", CertificateRequestMessage::getExtensionBytes)));
     }
 
-    private byte[] message;
-    private int certificateRequestContextLength;
-    private byte[] certificateRequestContext;
-    private int extensionLength;
-    private byte[] extensionBytes;
-    private ProtocolVersion version;
-
-    public CertificateRequestTls13ParserTest(byte[] message, int certificateRequestContextLength,
-        byte[] certificateRequestContext, byte[] extensionBytes, ProtocolVersion version) {
-        this.message = message;
-        this.certificateRequestContextLength = certificateRequestContextLength;
-        this.certificateRequestContext = certificateRequestContext;
-        this.extensionBytes = extensionBytes;
-        this.version = version;
-    }
-
-    @Test
-    public void testParse() {
-        TlsContext tlsContext = new TlsContext(new Config());
-        tlsContext.setTalkingConnectionEndType(ConnectionEndType.SERVER);
-        tlsContext.setLastRecordVersion(version);
-        CertificateRequestParser parser = new CertificateRequestParser(new ByteArrayInputStream(message), tlsContext);
-        CertificateRequestMessage msg = new CertificateRequestMessage();
-        parser.parse(msg);
-        assertTrue(msg.getCertificateRequestContextLength().getValue() == certificateRequestContextLength);
-        assertArrayEquals(msg.getCertificateRequestContext().getValue(), certificateRequestContext);
-        assertTrue(msg.getExtensionsLength().getValue() == extensionLength);
-        assertArrayEquals(msg.getExtensionBytes().getValue(), extensionBytes);
+    public static Stream<Arguments> provideTestVectors() {
+        return Stream.of(Arguments.of(ProtocolVersion.TLS13, ArrayConverter.hexStringToByteArray("0d00000401020000"),
+            List.of(HandshakeMessageType.CERTIFICATE_REQUEST.getValue(), 4, 1,
+                ArrayConverter.hexStringToByteArray("02"), 0, new byte[0])));
     }
 }

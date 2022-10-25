@@ -9,6 +9,8 @@
 
 package de.rub.nds.tlsattacker.core.workflow;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
@@ -20,31 +22,20 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.HeartbeatExtension
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
+import jakarta.xml.bind.JAXBException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
-import javax.xml.bind.JAXBException;
-import javax.xml.stream.XMLStreamException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.junit.*;
-import static org.junit.Assert.*;
-import org.junit.rules.ExpectedException;
 
 public class WorkflowTraceUtilTest {
 
     private static final Logger LOGGER = LogManager.getLogger();
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Rule
-    public final ExpectedException exception = ExpectedException.none();
 
     private WorkflowTrace trace;
     private Config config;
@@ -71,12 +62,9 @@ public class WorkflowTraceUtilTest {
     private SendAction sHeartbeatExtension;
     private SendAction sEncryptThenMacExtension;
 
-    public WorkflowTraceUtilTest() {
-    }
-
-    @Before
+    @BeforeEach
     public void setUp() {
-        config = config.createConfig();
+        config = Config.createConfig();
         trace = new WorkflowTrace();
 
         rcvHeartbeat = new ReceiveAction();
@@ -122,10 +110,6 @@ public class WorkflowTraceUtilTest {
         sFinishedMessage.setMessages(new FinishedMessage());
         sHeartbeatExtension.setMessages(msgServerHelloWithHeartbeatExtension);
         sEncryptThenMacExtension.setMessages(msgServerHelloWithEncryptThenMacExtension);
-    }
-
-    @After
-    public void tearDown() {
     }
 
     @Test
@@ -346,61 +330,19 @@ public class WorkflowTraceUtilTest {
     }
 
     @Test
-    public void handleDefaultsOfGoodTraceWithDefaultAliasSucceeds() throws JAXBException, IOException {
-        InputStream stream = Config.class.getResourceAsStream("/test_good_workflow_trace_default_alias.xml");
-
-        try {
-            trace = WorkflowTraceSerializer.secureRead(stream);
-        } catch (JAXBException | IOException | XMLStreamException ex) {
-            fail();
+    public void handleDefaultsOfGoodTraceWithDefaultAliasSucceeds()
+        throws JAXBException, IOException, XMLStreamException {
+        try (InputStream is = Config.class.getResourceAsStream("/test_good_workflow_trace_default_alias.xml")) {
+            trace = WorkflowTraceSerializer.secureRead(is);
         }
         assertNotNull(trace);
         pwf("after load:", trace);
 
         WorkflowTraceNormalizer n = new WorkflowTraceNormalizer();
         n.normalize(trace, config);
-        // StringBuilder sb = new
-        // StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
-        // sb.append("<workflowTrace>\n");
-        // sb.append(" <Send>\n");
-        // sb.append(" <messages>\n");
-        // sb.append(" <ClientHello>\n");
-        // sb.append(" <extensions>\n");
-        // sb.append(" <ECPointFormat/>\n");
-        // sb.append(" <EllipticCurves/>\n");
-        // sb.append(" </extensions>\n");
-        // sb.append(" </ClientHello>\n");
-        // sb.append(" </messages>\n");
-        // sb.append(" <records/>\n");
-        // sb.append(" </Send>\n");
-        // sb.append("</workflowTrace>\n");
-        // String expected = sb.toString();
         String actual = WorkflowTraceSerializer.write(trace);
         LOGGER.info(actual);
-        // Assert.assertThat(actual, equalTo(expected));
-        //
-        // Filter filter =
-        // FilterFactory.createWorkflowTraceFilter(FilterType.DEFAULT, config);
-        // WorkflowTrace filteredTrace = filter.filteredCopy(trace, config);
-        // filteredTrace.setConnections(state.getOriginalWorkflowTrace().getConnections());
-        // StringBuilder sb = new
-        // StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
-        // sb.append("<workflowTrace>\n");
-        // sb.append(" <Send>\n");
-        // sb.append(" <messages>\n");
-        // sb.append(" <ClientHello>\n");
-        // sb.append(" <extensions>\n");
-        // sb.append(" <ECPointFormat/>\n");
-        // sb.append(" <EllipticCurves/>\n");
-        // sb.append(" </extensions>\n");
-        // sb.append(" </ClientHello>\n");
-        // sb.append(" </messages>\n");
-        // sb.append(" </Send>\n");
-        // sb.append("</workflowTrace>\n");
-        // String expected = sb.toString();
         actual = WorkflowTraceSerializer.write(trace);
         LOGGER.info(actual);
-        // Assert.assertThat(actual, equalTo(expected));
-
     }
 }

@@ -9,35 +9,32 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EllipticCurvesExtensionMessage;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class EllipticCurvesExtensionHandlerTest {
+public class EllipticCurvesExtensionHandlerTest
+    extends AbstractExtensionMessageHandlerTest<EllipticCurvesExtensionMessage, EllipticCurvesExtensionHandler> {
 
-    private EllipticCurvesExtensionHandler handler;
-    private TlsContext context;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new EllipticCurvesExtensionHandler(context);
+    public EllipticCurvesExtensionHandlerTest() {
+        super(EllipticCurvesExtensionMessage::new, EllipticCurvesExtensionHandler::new);
     }
 
     /**
      * Test of adjustContext method, of class EllipticCurvesExtensionHandler.
      */
     @Test
-    public void testadjustContext() {
+    @Override
+    public void testadjustTLSExtensionContext() {
         EllipticCurvesExtensionMessage msg = new EllipticCurvesExtensionMessage();
         msg.setSupportedGroups(new byte[] { 0, 1, 0, 2 });
-        handler.adjustContext(msg);
-        assertTrue(context.getClientNamedGroupsList().size() == 2);
-        assertTrue(context.getClientNamedGroupsList().get(0) == NamedGroup.SECT163K1);
-        assertTrue(context.getClientNamedGroupsList().get(1) == NamedGroup.SECT163R1);
+        handler.adjustTLSExtensionContext(msg);
+        assertEquals(2, context.getClientNamedGroupsList().size());
+        assertSame(NamedGroup.SECT163K1, context.getClientNamedGroupsList().get(0));
+        assertSame(NamedGroup.SECT163R1, context.getClientNamedGroupsList().get(1));
     }
 
     @Test

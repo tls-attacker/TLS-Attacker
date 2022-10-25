@@ -9,37 +9,28 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import org.junit.jupiter.api.Test;
+
 import java.math.BigInteger;
-import org.junit.After;
-import static org.junit.Assert.assertNull;
-import org.junit.Before;
-import org.junit.Test;
 
-public class ECDHEServerKeyExchangeHandlerTest {
+public class ECDHEServerKeyExchangeHandlerTest extends AbstractTlsMessageHandlerTest<ECDHEServerKeyExchangeMessage,
+    ServerKeyExchangeHandler<ECDHEServerKeyExchangeMessage>> {
 
-    private ECDHEServerKeyExchangeHandler handler;
-    private TlsContext context;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new ECDHEServerKeyExchangeHandler(context);
-
-    }
-
-    @After
-    public void tearDown() {
+    public ECDHEServerKeyExchangeHandlerTest() {
+        super(ECDHEServerKeyExchangeMessage::new, ECDHEServerKeyExchangeHandler::new);
     }
 
     /**
      * Test of adjustContext method, of class ECDHEServerKeyExchangeHandler.
      */
     @Test
+    @Override
     public void testadjustContext() {
         ECDHEServerKeyExchangeMessage message = new ECDHEServerKeyExchangeMessage();
         message.setCurveType(EllipticCurveType.NAMED_CURVE.getValue());

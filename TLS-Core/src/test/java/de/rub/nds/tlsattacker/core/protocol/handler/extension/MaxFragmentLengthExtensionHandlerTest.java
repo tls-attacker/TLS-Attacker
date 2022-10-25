@@ -9,35 +9,33 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+
 import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.MaxFragmentLengthExtensionMessage;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import org.junit.jupiter.api.Test;
 
-public class MaxFragmentLengthExtensionHandlerTest {
+public class MaxFragmentLengthExtensionHandlerTest
+    extends AbstractExtensionMessageHandlerTest<MaxFragmentLengthExtensionMessage, MaxFragmentLengthExtensionHandler> {
 
-    private MaxFragmentLengthExtensionHandler handler;
-
-    private TlsContext context;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new MaxFragmentLengthExtensionHandler(context);
+    public MaxFragmentLengthExtensionHandlerTest() {
+        super(MaxFragmentLengthExtensionMessage::new, MaxFragmentLengthExtensionHandler::new);
+        context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
     }
 
     /**
      * Test of adjustContext method, of class MaxFragmentLengthExtensionHandler.
      */
     @Test
-    public void testadjustContext() {
+    @Override
+    public void testadjustTLSExtensionContext() {
         MaxFragmentLengthExtensionMessage msg = new MaxFragmentLengthExtensionMessage();
         msg.setMaxFragmentLength(new byte[] { 1 });
-        handler.adjustContext(msg);
-        assertTrue(context.getMaxFragmentLength() == MaxFragmentLength.TWO_9);
+        handler.adjustTLSExtensionContext(msg);
+        assertSame(context.getMaxFragmentLength(), MaxFragmentLength.TWO_9);
     }
 
     @Test

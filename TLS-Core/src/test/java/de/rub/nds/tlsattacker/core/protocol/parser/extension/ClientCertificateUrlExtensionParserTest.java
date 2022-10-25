@@ -9,29 +9,22 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateUrlExtensionMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import java.io.ByteArrayInputStream;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.params.provider.Arguments;
 
-public class ClientCertificateUrlExtensionParserTest {
+import java.util.List;
+import java.util.stream.Stream;
 
-    private final byte[] expectedBytes = new byte[0];
-    private ClientCertificateUrlExtensionParser parser;
-    private ClientCertificateUrlExtensionMessage message;
-    private final Config config = Config.createConfig();
+public class ClientCertificateUrlExtensionParserTest
+    extends AbstractExtensionParserTest<ClientCertificateUrlExtensionMessage, ClientCertificateUrlExtensionParser> {
 
-    @Before
-    public void setUp() {
-        TlsContext tlsContext = new TlsContext(config);
-        parser = new ClientCertificateUrlExtensionParser(new ByteArrayInputStream(expectedBytes), tlsContext);
+    public ClientCertificateUrlExtensionParserTest() {
+        super(ClientCertificateUrlExtensionMessage.class, ClientCertificateUrlExtensionParser::new);
     }
 
-    @Test
-    public void testParse() {
-        message = new ClientCertificateUrlExtensionMessage();
-        parser.parse(message);
+    public static Stream<Arguments> provideTestVectors() {
+        return Stream.of(Arguments.of(new byte[] { 0x00, 0x02, 0x00, 0x00 }, List.of(),
+            ExtensionType.CLIENT_CERTIFICATE_URL, 0, List.of()));
     }
 }

@@ -9,44 +9,23 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import java.io.ByteArrayInputStream;
-import java.util.Arrays;
-import java.util.Collection;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class ExtendedMasterSecretExtensionParserTest {
+import java.util.List;
+import java.util.stream.Stream;
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { { new byte[0] } });
+public class ExtendedMasterSecretExtensionParserTest
+    extends AbstractExtensionParserTest<ExtendedMasterSecretExtensionMessage, ExtendedMasterSecretExtensionParser> {
+
+    public ExtendedMasterSecretExtensionParserTest() {
+        super(ExtendedMasterSecretExtensionMessage.class, ExtendedMasterSecretExtensionParser::new);
     }
 
-    private final byte[] expectedBytes;
-    private ExtendedMasterSecretExtensionParser parser;
-    private ExtendedMasterSecretExtensionMessage message;
-    private final Config config = Config.createConfig();
-
-    public ExtendedMasterSecretExtensionParserTest(byte[] expectedBytes) {
-        this.expectedBytes = expectedBytes;
+    public static Stream<Arguments> provideTestVectors() {
+        return Stream.of(Arguments.of(ArrayConverter.hexStringToByteArray("00170000"), List.of(),
+            ExtensionType.EXTENDED_MASTER_SECRET, 0, List.of()));
     }
-
-    @Before
-    public void setUp() {
-        TlsContext tlsContext = new TlsContext(config);
-        parser = new ExtendedMasterSecretExtensionParser(new ByteArrayInputStream(expectedBytes), tlsContext);
-    }
-
-    @Test
-    public void testParse() {
-        message = new ExtendedMasterSecretExtensionMessage();
-        parser.parse(message);
-    }
-
 }

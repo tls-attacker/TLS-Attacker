@@ -9,50 +9,34 @@
 
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PaddingExtensionSerializer;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class PaddingExtensionPreparatorTest {
+public class PaddingExtensionPreparatorTest extends AbstractExtensionMessagePreparatorTest<PaddingExtensionMessage,
+    PaddingExtensionSerializer, PaddingExtensionPreparator> {
 
-    private final int extensionLength = 6;
-    private final byte[] extensionPayload = new byte[] { 0, 0, 0, 0, 0, 0 };
-    private TlsContext context;
-    private PaddingExtensionMessage message;
-    private PaddingExtensionPreparator preparator;
-
-    /**
-     * Some initial set up.
-     */
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        message = new PaddingExtensionMessage();
-        preparator = new PaddingExtensionPreparator(context.getChooser(), message);
+    public PaddingExtensionPreparatorTest() {
+        super(PaddingExtensionMessage::new, PaddingExtensionSerializer::new, PaddingExtensionPreparator::new);
     }
 
     /**
      * Tests the preparator of the padding extension message.
      */
     @Test
-    public void testPreparator() {
+    @Override
+    public void testPrepare() {
+        byte[] extensionPayload = new byte[] { 0, 0, 0, 0, 0, 0 };
         context.getConfig().setDefaultPaddingExtensionBytes(extensionPayload);
         preparator.prepare();
 
         assertArrayEquals(ExtensionType.PADDING.getValue(), message.getExtensionType().getValue());
-        assertEquals(extensionLength, (long) message.getExtensionLength().getValue());
+        assertEquals(6, message.getExtensionLength().getValue());
         assertArrayEquals(extensionPayload, message.getPaddingBytes().getValue());
 
     }
-
-    @Test
-    public void testNoContextPrepare() {
-        preparator.prepare();
-    }
-
 }

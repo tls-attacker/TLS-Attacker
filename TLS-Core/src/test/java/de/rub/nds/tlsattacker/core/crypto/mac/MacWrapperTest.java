@@ -9,22 +9,24 @@
 
 package de.rub.nds.tlsattacker.core.crypto.mac;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
 import java.security.NoSuchAlgorithmException;
 import java.security.Security;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 public class MacWrapperTest {
 
-    @BeforeClass
-    public static void setUp() {
+    @BeforeAll
+    public static void setUpClass() {
         Security.addProvider(new BouncyCastleProvider());
     }
 
@@ -32,8 +34,8 @@ public class MacWrapperTest {
     public void testSha1() throws NoSuchAlgorithmException {
         WrappedMac mac =
             MacWrapper.getMac(ProtocolVersion.TLS10, CipherSuite.TLS_PSK_WITH_AES_128_CBC_SHA, new byte[20]);
-
         assertEquals(MacAlgorithm.HMAC_SHA1.getSize(), mac.getMacLength());
+
         byte[] actual = mac.calculateMac("Test data".getBytes());
         byte[] expected = ArrayConverter.hexStringToByteArray("2C667D86C1F63F00E86310B3A32F2D44DF34A316");
         assertArrayEquals(expected, actual);

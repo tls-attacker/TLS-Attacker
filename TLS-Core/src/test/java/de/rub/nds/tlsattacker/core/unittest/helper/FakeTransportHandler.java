@@ -10,8 +10,13 @@
 package de.rub.nds.tlsattacker.core.unittest.helper;
 
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.tcp.TcpTransportHandler;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 public class FakeTransportHandler extends TcpTransportHandler {
 
@@ -55,17 +60,17 @@ public class FakeTransportHandler extends TcpTransportHandler {
     }
 
     @Override
-    public void initialize() throws IOException {
+    public void initialize() {
         opened = true;
     }
 
     @Override
-    public boolean isClosed() throws IOException {
+    public boolean isClosed() {
         return !opened;
     }
 
     @Override
-    public void closeClientConnection() throws IOException {
+    public void closeClientConnection() {
         if (!isClosed()) {
             opened = false;
         }
@@ -77,7 +82,7 @@ public class FakeTransportHandler extends TcpTransportHandler {
     }
 
     @Override
-    public void preInitialize() throws IOException {
+    public void preInitialize() {
     }
 
     @Override

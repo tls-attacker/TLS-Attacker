@@ -26,6 +26,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareE
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.SNIEntry;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.RequestItemV2;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
 import de.rub.nds.tlsattacker.core.record.Record;
@@ -41,10 +42,9 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
 import java.math.BigInteger;
 import java.util.*;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-
-import de.rub.nds.tlsattacker.transport.TransportHandler;
+import de.rub.nds.tlsattacker.transport.socket.SocketState;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.tls.Certificate;
@@ -229,6 +229,10 @@ public class TlsContext extends LayerContext {
     private List<SignatureAndHashAlgorithm> serverSupportedSignatureAndHashAlgorithms;
 
     private List<SignatureAndHashAlgorithm> clientSupportedSignatureAndHashAlgorithms;
+
+    private List<SignatureAndHashAlgorithm> clientSupportedCertificateSignAlgorithms;
+
+    private List<SignatureAndHashAlgorithm> serverSupportedCertificateSignAlgorithms;
 
     private HeartbeatMode heartbeatMode;
 
@@ -1076,6 +1080,21 @@ public class TlsContext extends LayerContext {
             new ArrayList(Arrays.asList(clientSupportedSignatureAndHashAlgorithms));
     }
 
+    public List<SignatureAndHashAlgorithm> getClientSupportedCertificateSignAlgorithms() {
+        return clientSupportedCertificateSignAlgorithms;
+    }
+
+    public void setClientSupportedCertificateSignAlgorithms(
+        List<SignatureAndHashAlgorithm> clientSupportedCertificateSignAlgorithms) {
+        this.clientSupportedCertificateSignAlgorithms = clientSupportedCertificateSignAlgorithms;
+    }
+
+    public void setClientSupportedCertificateSignAlgorithms(
+        SignatureAndHashAlgorithm... clientSupportedCertificateSignAlgorithms) {
+        this.clientSupportedCertificateSignAlgorithms =
+            new ArrayList(Arrays.asList(clientSupportedCertificateSignAlgorithms));
+    }
+
     public List<SNIEntry> getClientSNIEntryList() {
         return clientSNIEntryList;
     }
@@ -1213,6 +1232,21 @@ public class TlsContext extends LayerContext {
         SignatureAndHashAlgorithm... serverSupportedSignatureAndHashAlgorithms) {
         this.serverSupportedSignatureAndHashAlgorithms =
             new ArrayList(Arrays.asList(serverSupportedSignatureAndHashAlgorithms));
+    }
+
+    public List<SignatureAndHashAlgorithm> getServerSupportedCertificateSignAlgorithms() {
+        return serverSupportedCertificateSignAlgorithms;
+    }
+
+    public void setServerSupportedSignatureAlgorithmsCert(
+        List<SignatureAndHashAlgorithm> serverSupportedCertificateSignAlgorithms) {
+        this.serverSupportedCertificateSignAlgorithms = serverSupportedCertificateSignAlgorithms;
+    }
+
+    public void setServerSupportedSignatureAlgorithmsCert(
+        SignatureAndHashAlgorithm... serverSupportedCertificateSignAlgorithms) {
+        this.serverSupportedCertificateSignAlgorithms =
+            new ArrayList(Arrays.asList(serverSupportedCertificateSignAlgorithms));
     }
 
     public ProtocolVersion getSelectedProtocolVersion() {
@@ -2337,5 +2371,37 @@ public class TlsContext extends LayerContext {
         }
 
         return maxRecordDataSize;
+    }
+
+    public int getWriteEpoch() {
+        return getRecordLayer().getWriteEpoch();
+    }
+
+    public int getReadEpoch() {
+        return getRecordLayer().getReadEpoch();
+    }
+
+    public void setWriteEpoch(int epoch) {
+        getRecordLayer().setWriteEpoch(epoch);
+    }
+
+    public void setReadEpoch(int epoch) {
+        getRecordLayer().setReadEpoch(epoch);
+    }
+
+    public long getWriteSequenceNumber(int epoch) {
+        return getRecordLayer().getEncryptor().getRecordCipher(epoch).getState().getWriteSequenceNumber();
+    }
+
+    public long getReadSequenceNumber(int epoch) {
+        return getRecordLayer().getDecryptor().getRecordCipher(epoch).getState().getReadSequenceNumber();
+    }
+
+    public void setWriteSequenceNumber(int epoch, long sqn) {
+        getRecordLayer().getEncryptor().getRecordCipher(epoch).getState().setWriteSequenceNumber(sqn);
+    }
+
+    public void setReadSequenceNumber(int epoch, long sqn) {
+        getRecordLayer().getDecryptor().getRecordCipher(epoch).getState().setReadSequenceNumber(sqn);
     }
 }

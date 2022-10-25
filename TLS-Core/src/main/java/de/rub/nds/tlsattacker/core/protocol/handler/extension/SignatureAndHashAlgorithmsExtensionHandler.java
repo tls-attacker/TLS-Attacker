@@ -9,14 +9,9 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
-import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,23 +27,21 @@ public class SignatureAndHashAlgorithmsExtensionHandler
 
     @Override
     public void adjustTLSExtensionContext(SignatureAndHashAlgorithmsExtensionMessage message) {
-        List<SignatureAndHashAlgorithm> algoList = new LinkedList<>();
-        byte[] signatureAndHashBytes = message.getSignatureAndHashAlgorithms().getValue();
-        if (signatureAndHashBytes.length % HandshakeByteLength.SIGNATURE_HASH_ALGORITHM != 0) {
-            throw new AdjustmentException(
-                "Cannot adjust ClientSupportedSignature and Hash algorithms to a reasonable Value");
-        }
-        for (int i = 0; i < signatureAndHashBytes.length; i += HandshakeByteLength.SIGNATURE_HASH_ALGORITHM) {
-            byte[] algoBytes =
-                Arrays.copyOfRange(signatureAndHashBytes, i, i + HandshakeByteLength.SIGNATURE_HASH_ALGORITHM);
-            SignatureAndHashAlgorithm algo = SignatureAndHashAlgorithm.getSignatureAndHashAlgorithm(algoBytes);
-            if (algo == null || algo.getSignatureAlgorithm() == null || algo.getHashAlgorithm() == null) {
-                LOGGER.warn("Unknown SignatureAndHashAlgorithm:" + ArrayConverter.bytesToHexString(algoBytes));
-            } else {
-                algoList.add(algo);
-            }
-        }
+        byte[] algoBytes = message.getSignatureAndHashAlgorithms().getValue();
+        List<SignatureAndHashAlgorithm> algoList = SignatureAndHashAlgorithm.getSignatureAndHashAlgorithms(algoBytes);
         tlsContext.setClientSupportedSignatureAndHashAlgorithms(algoList);
+        LOGGER.debug("Client supported signatureAndHashAlgorithms: " + algoList);
+        adjustSelectedSignatureAndHashAlgorithm();
     }
 
+    private void adjustSelectedSignatureAndHashAlgorithm() {
+        for (SignatureAndHashAlgorithm algo : tlsContext.getChooser().getClientSupportedSignatureAndHashAlgorithms()) {
+            if (tlsContext.getChooser().getServerSupportedSignatureAndHashAlgorithms().contains(algo)) {
+                tlsContext.setSelectedSignatureAndHashAlgorithm(algo);
+                LOGGER.debug("Adjusting selected signature and hash algorithm to: " + algo.name());
+                return;
+            }
+        }
+        LOGGER.warn("Client and Server have no signature and hash algorithm in common");
+    }
 }

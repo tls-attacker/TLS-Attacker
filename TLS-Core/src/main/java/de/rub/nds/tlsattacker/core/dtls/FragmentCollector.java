@@ -132,8 +132,7 @@ public class FragmentCollector {
     }
 
     /**
-     * Assembles collected fragments into a combined fragment. Note that missing bytes are replaced by 0. Throws an
-     * exception if the collector {@link #isEmpty()}.
+     * Assembles collected fragments into a combined fragment. Note that missing bytes are replaced by 0.
      */
     public DtlsHandshakeMessageFragment buildCombinedFragment() {
         if (!isMessageComplete()) {

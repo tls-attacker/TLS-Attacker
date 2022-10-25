@@ -10,50 +10,29 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SupportedVersionsExtensionMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import java.io.ByteArrayInputStream;
-import java.util.Arrays;
-import java.util.Collection;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertTrue;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Named;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class SupportedVersionsExtensionParserTest {
+import java.util.List;
+import java.util.stream.Stream;
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { { ArrayConverter.hexStringToByteArray("0C000203000301030203037F14"), 12,
-            ArrayConverter.hexStringToByteArray("000203000301030203037F14") } });
+public class SupportedVersionsExtensionParserTest
+    extends AbstractExtensionParserTest<SupportedVersionsExtensionMessage, SupportedVersionsExtensionParser> {
+
+    public SupportedVersionsExtensionParserTest() {
+        super(SupportedVersionsExtensionMessage.class, SupportedVersionsExtensionParser::new,
+            List.of(
+                Named.of("SupportedVersionsExtensionMessage::getSupportedVersionsLength",
+                    SupportedVersionsExtensionMessage::getSupportedVersionsLength),
+                Named.of("SupportedVersionsExtensionMessage::getSupportedVersions",
+                    SupportedVersionsExtensionMessage::getSupportedVersions)));
     }
 
-    private final byte[] extension;
-    private final int versionListLength;
-    private final byte[] versionList;
-    private final Config config = Config.createConfig();
-
-    public SupportedVersionsExtensionParserTest(byte[] extension, int versionListLength, byte[] versionList) {
-        this.extension = extension;
-        this.versionListLength = versionListLength;
-        this.versionList = versionList;
+    public static Stream<Arguments> provideTestVectors() {
+        return Stream.of(Arguments.of(ArrayConverter.hexStringToByteArray("002B000D0C000203000301030203037F14"),
+            List.of(), ExtensionType.SUPPORTED_VERSIONS, 13,
+            List.of(12, ArrayConverter.hexStringToByteArray("000203000301030203037F14"))));
     }
-
-    /**
-     * Test of parse method, of class SupportedVersionsExtensionParser.
-     */
-    @Test
-    public void testParse() {
-        TlsContext tlsContext = new TlsContext(config);
-        SupportedVersionsExtensionParser parser =
-            new SupportedVersionsExtensionParser(new ByteArrayInputStream(extension), tlsContext);
-        SupportedVersionsExtensionMessage msg = new SupportedVersionsExtensionMessage();
-        parser.parse(msg);
-        assertArrayEquals(msg.getSupportedVersions().getValue(), versionList);
-        assertTrue(versionListLength == msg.getSupportedVersionsLength().getValue());
-    }
-
 }

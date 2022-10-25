@@ -11,45 +11,20 @@ package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PWDProtectExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.PWDProtectExtensionParserTest;
-import java.util.Collection;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class PWDProtectExtensionSerializerTest {
+import java.util.List;
+import java.util.stream.Stream;
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return PWDProtectExtensionParserTest.generateData();
+public class PWDProtectExtensionSerializerTest
+    extends AbstractExtensionMessageSerializerTest<PWDProtectExtensionMessage, PWDProtectExtensionSerializer> {
+
+    public PWDProtectExtensionSerializerTest() {
+        super(PWDProtectExtensionMessage::new, PWDProtectExtensionSerializer::new,
+            List.of((msg, obj) -> msg.setUsernameLength((Integer) obj), (msg, obj) -> msg.setUsername((byte[]) obj)));
     }
 
-    private final byte[] expectedBytes;
-    private final int usernameLength;
-    private final byte[] username;
-    private PWDProtectExtensionMessage message;
-    private PWDProtectExtensionSerializer serializer;
-
-    public PWDProtectExtensionSerializerTest(byte[] expectedBytes, int usernameLength, byte[] username) {
-        this.expectedBytes = expectedBytes;
-        this.usernameLength = usernameLength;
-        this.username = username;
+    public static Stream<Arguments> provideTestVectors() {
+        return PWDProtectExtensionParserTest.provideTestVectors();
     }
-
-    @Before
-    public void setUp() {
-        message = new PWDProtectExtensionMessage();
-        serializer = new PWDProtectExtensionSerializer(message);
-    }
-
-    @Test
-    public void testSerializeExtensionContent() {
-        message.setUsername(username);
-        message.setUsernameLength(usernameLength);
-
-        assertArrayEquals(expectedBytes, serializer.serializeExtensionContent());
-    }
-
 }

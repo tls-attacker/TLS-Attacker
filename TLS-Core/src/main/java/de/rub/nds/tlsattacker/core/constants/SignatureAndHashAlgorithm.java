@@ -12,8 +12,12 @@ package de.rub.nds.tlsattacker.core.constants;
 import com.google.common.collect.Sets;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.certificate.CertificateKeyPair;
+import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
+import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.exceptions.UnknownSignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+
+import java.io.ByteArrayInputStream;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.Signature;
 import java.security.spec.MGF1ParameterSpec;
@@ -131,6 +135,8 @@ public enum SignatureAndHashAlgorithm {
         algos.add(SignatureAndHashAlgorithm.RSA_PSS_RSAE_SHA256);
         algos.add(SignatureAndHashAlgorithm.RSA_PSS_RSAE_SHA384);
         algos.add(SignatureAndHashAlgorithm.RSA_PSS_RSAE_SHA512);
+        algos.add(SignatureAndHashAlgorithm.ED448);
+        algos.add(SignatureAndHashAlgorithm.ED25519);
         return algos;
     }
 
@@ -165,20 +171,22 @@ public enum SignatureAndHashAlgorithm {
         }
     }
 
-    public static List<SignatureAndHashAlgorithm> getSignatureAndHashAlgorithms(byte[] values) {
-        List<SignatureAndHashAlgorithm> sigHashAlgoList = new LinkedList<>();
-        int pointer = 0;
-        if (values.length % 2 != 0) {
-            throw new UnknownSignatureAndHashAlgorithm("ByteArray is not divisible by 2!");
+    public static List<SignatureAndHashAlgorithm> getSignatureAndHashAlgorithms(byte[] signatureAndHashBytes) {
+        List<SignatureAndHashAlgorithm> algoList = new LinkedList<>();
+        if (signatureAndHashBytes.length % HandshakeByteLength.SIGNATURE_HASH_ALGORITHM != 0) {
+            throw new ParserException("Error while parsing signatureAndHashAlgorithm Bytes");
         }
-        while (pointer < values.length) {
-            byte[] sigHashAlgo = new byte[2];
-            sigHashAlgo[0] = values[pointer];
-            sigHashAlgo[1] = values[pointer + 1];
-            sigHashAlgoList.add(getSignatureAndHashAlgorithm(sigHashAlgo));
-            pointer += 2;
+        ByteArrayInputStream algorithmsStream = new ByteArrayInputStream(signatureAndHashBytes);
+        byte[] algoBytes = new byte[HandshakeByteLength.SIGNATURE_HASH_ALGORITHM];
+        while (algorithmsStream.read(algoBytes, 0, HandshakeByteLength.SIGNATURE_HASH_ALGORITHM) != -1) {
+            SignatureAndHashAlgorithm algo = SignatureAndHashAlgorithm.getSignatureAndHashAlgorithm(algoBytes);
+            if (algo == null || algo.getSignatureAlgorithm() == null || algo.getHashAlgorithm() == null) {
+                LOGGER.warn("Unknown SignatureAndHashAlgorithm:" + ArrayConverter.bytesToHexString(algoBytes));
+            } else {
+                algoList.add(algo);
+            }
         }
-        return sigHashAlgoList;
+        return algoList;
     }
 
     public static SignatureAndHashAlgorithm getSignatureAndHashAlgorithm(byte[] value) {
@@ -323,6 +331,11 @@ public enum SignatureAndHashAlgorithm {
     }
 
     public static SignatureAndHashAlgorithm forCertificateKeyPair(CertificateKeyPair keyPair, Chooser chooser) {
+        return forCertificateKeyPair(keyPair, chooser, false);
+    }
+
+    public static SignatureAndHashAlgorithm forCertificateKeyPair(CertificateKeyPair keyPair, Chooser chooser,
+        boolean selectingCertificate) {
         Sets.SetView<SignatureAndHashAlgorithm> intersection =
             Sets.intersection(Sets.newHashSet(chooser.getClientSupportedSignatureAndHashAlgorithms()),
                 Sets.newHashSet(chooser.getServerSupportedSignatureAndHashAlgorithms()));
@@ -388,7 +401,7 @@ public enum SignatureAndHashAlgorithm {
             }
         }
 
-        if (sigHashAlgo == null) {
+        if (sigHashAlgo == null && !selectingCertificate) {
             LOGGER.warn(
                 "Could not auto select SignatureAndHashAlgorithm for certPublicKeyType={}, setting default value",
                 certPublicKeyType);

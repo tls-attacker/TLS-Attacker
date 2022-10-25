@@ -9,56 +9,25 @@
 
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import de.rub.nds.tlsattacker.core.constants.CertificateType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateTypeExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.CertificateTypeExtensionParserTest;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.util.Collection;
+import org.junit.jupiter.params.provider.Arguments;
+
 import java.util.List;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import java.util.stream.Stream;
 
-@RunWith(Parameterized.class)
-public class CertificateTypeExtensionSerializerTest {
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return CertificateTypeExtensionParserTest.generateData();
+public class CertificateTypeExtensionSerializerTest extends
+    AbstractExtensionMessageSerializerTest<CertificateTypeExtensionMessage, CertificateTypeExtensionSerializer> {
+
+    public CertificateTypeExtensionSerializerTest() {
+        super(CertificateTypeExtensionMessage::new, CertificateTypeExtensionSerializer::new, List.of((msg, obj) -> {
+            if (obj != null) {
+                msg.setCertificateTypesLength((Integer) obj);
+            }
+        }, (msg, obj) -> msg.setCertificateTypes((byte[]) obj), (msg, obj) -> msg.setIsClientMessage((Boolean) obj)));
     }
 
-    private final byte[] expectedBytes;
-    private final Integer certificateTypesLength;
-    private final List<CertificateType> certificateTypes;
-    private final ConnectionEndType connectionEndType;
-    private CertificateTypeExtensionSerializer serializer;
-    private CertificateTypeExtensionMessage msg;
-
-    public CertificateTypeExtensionSerializerTest(byte[] expectedBytes, Integer certificateTypesLength,
-        List<CertificateType> certificateTypes, ConnectionEndType connectionEndType) {
-        this.expectedBytes = expectedBytes;
-        this.certificateTypesLength = certificateTypesLength;
-        this.certificateTypes = certificateTypes;
-        this.connectionEndType = connectionEndType;
-    }
-
-    @Before
-    public void setUp() {
-        msg = new CertificateTypeExtensionMessage();
-        serializer = new CertificateTypeExtensionSerializer(msg);
-    }
-
-    @Test
-    public void testSerializeExtensionContent() {
-        msg.setCertificateTypes(CertificateType.toByteArray(certificateTypes));
-        if (certificateTypesLength != null) {
-            msg.setCertificateTypesLength(certificateTypesLength);
-        } else {
-            msg.setCertificateTypesLength(null);
-        }
-        msg.setIsClientMessage(connectionEndType == ConnectionEndType.CLIENT);
-
-        assertArrayEquals(expectedBytes, serializer.serializeExtensionContent());
+    public static Stream<Arguments> provideTestVectors() {
+        return CertificateTypeExtensionParserTest.provideTestVectors();
     }
 }

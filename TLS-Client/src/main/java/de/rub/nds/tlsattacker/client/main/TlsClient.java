@@ -19,6 +19,10 @@ import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
+import java.io.File;
+import java.io.FileInputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -46,20 +50,36 @@ public class TlsClient {
 
             try {
                 Config tlsConfig = config.createConfig();
+                WorkflowTrace trace = null;
+                if (config.getWorkflowInput() != null) {
+                    LOGGER.debug("Reading workflow trace from " + config.getWorkflowInput());
+                    try (FileInputStream fis = new FileInputStream(config.getWorkflowInput())) {
+                        trace = WorkflowTraceSerializer.secureRead(fis);
+                    }
+                }
                 TlsClient client = new TlsClient();
-                client.startTlsClient(tlsConfig);
+                State state = client.startTlsClient(tlsConfig, trace);
+                if (config.getWorkflowOutput() != null) {
+                    trace = state.getWorkflowTrace();
+                    LOGGER.debug("Writing workflow trace to " + config.getWorkflowOutput());
+                    WorkflowTraceSerializer.write(new File(config.getWorkflowOutput()), trace);
+                }
             } catch (Exception e) {
                 LOGGER.error("Encountered an uncaught Exception aborting. See debug for more info.", e);
             }
         } catch (ParameterException e) {
-            LOGGER.error("Could not parse provided parameters. " + e.getLocalizedMessage());
-            LOGGER.debug(e);
+            LOGGER.error("Could not parse provided parameters. " + e.getLocalizedMessage(), e);
             commander.usage();
         }
     }
 
-    public void startTlsClient(Config config) {
-        State state = new State(config);
+    public State startTlsClient(Config config, WorkflowTrace trace) {
+        State state;
+        if (trace == null) {
+            state = new State(config);
+        } else {
+            state = new State(config, trace);
+        }
         WorkflowExecutor workflowExecutor =
             WorkflowExecutorFactory.createWorkflowExecutor(config.getWorkflowExecutorType(), state);
 
@@ -70,5 +90,6 @@ public class TlsClient {
                 "The TLS protocol flow was not executed completely, follow the debug messages for more information.");
             LOGGER.debug(ex.getLocalizedMessage(), ex);
         }
+        return state;
     }
 }

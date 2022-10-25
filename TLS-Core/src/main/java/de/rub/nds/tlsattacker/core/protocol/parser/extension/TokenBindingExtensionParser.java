@@ -26,14 +26,14 @@ public class TokenBindingExtensionParser extends ExtensionParser<TokenBindingExt
 
     @Override
     public void parse(TokenBindingExtensionMessage msg) {
-        msg.setTokenbindingVersion(parseByteArrayField(ExtensionByteLength.TOKENBINDING_VERSION));
+        msg.setTokenBindingVersion(parseByteArrayField(ExtensionByteLength.TOKENBINDING_VERSION));
         LOGGER
-            .debug("The token binding extension parser parsed the version: " + msg.getTokenbindingVersion().toString());
+            .debug("The token binding extension parser parsed the version: " + msg.getTokenBindingVersion().toString());
         msg.setParameterListLength(parseByteField(ExtensionByteLength.TOKENBINDING_KEYPARAMETER_LENGTH));
         LOGGER.debug(
             "The token binding extension parser parsed the KeyParameterLength : " + msg.getParameterListLength());
-        msg.setTokenbindingKeyParameters(parseByteArrayField(msg.getParameterListLength().getValue()));
+        msg.setTokenBindingKeyParameters(parseByteArrayField(msg.getParameterListLength().getValue()));
         LOGGER.debug("The token binding extension parser parsed the KeyParameters : "
-            + msg.getTokenbindingKeyParameters().toString());
+            + msg.getTokenBindingKeyParameters().toString());
     }
 }

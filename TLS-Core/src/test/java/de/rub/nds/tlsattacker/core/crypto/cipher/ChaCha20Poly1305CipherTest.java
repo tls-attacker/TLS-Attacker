@@ -9,18 +9,13 @@
 
 package de.rub.nds.tlsattacker.core.crypto.cipher;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-@SuppressWarnings("SpellCheckingInspection")
 public class ChaCha20Poly1305CipherTest {
-
-    @BeforeClass
-    public static void setUp() {
-    }
 
     @Test
     public void testEncrypt() {
@@ -35,7 +30,7 @@ public class ChaCha20Poly1305CipherTest {
         ChaCha20Poly1305Cipher encryptCipher = new StandardizedChaCha20Poly1305Cipher(key);
         byte[] calculatedCiphertext = encryptCipher.encrypt(iv, 16 * 8, aad, plaintext);
 
-        Assert.assertArrayEquals(expectedCiphertext, calculatedCiphertext);
+        assertArrayEquals(expectedCiphertext, calculatedCiphertext);
     }
 
     @Test
@@ -52,7 +47,7 @@ public class ChaCha20Poly1305CipherTest {
             ChaCha20Poly1305Cipher decryptCipher = new StandardizedChaCha20Poly1305Cipher(key);
             byte[] calculatedPlaintext = decryptCipher.decrypt(iv, 16 * 8, aad, ciphertext);
 
-            Assert.assertArrayEquals(expectedPlaintext, calculatedPlaintext);
+            assertArrayEquals(expectedPlaintext, calculatedPlaintext);
         } catch (CryptoException ex) {
             throw new AssertionError("CryptoException: " + ex.getMessage());
         }
@@ -71,7 +66,7 @@ public class ChaCha20Poly1305CipherTest {
 
             ChaCha20Poly1305Cipher decryptCipher = new UnofficialChaCha20Poly1305Cipher(key);
             byte[] calculatedPlaintext = decryptCipher.decrypt(iv, 16 * 8, aad, ciphertext);
-            Assert.assertArrayEquals(expectedPlaintext, calculatedPlaintext);
+            assertArrayEquals(expectedPlaintext, calculatedPlaintext);
         } catch (CryptoException ex) {
             throw new AssertionError("CryptoException: " + ex.getMessage());
         }
@@ -89,7 +84,7 @@ public class ChaCha20Poly1305CipherTest {
 
         ChaCha20Poly1305Cipher encryptCipher = new UnofficialChaCha20Poly1305Cipher(key);
         byte[] calculatedCiphertext = encryptCipher.encrypt(iv, 16 * 8, aad, plaintext);
-        Assert.assertArrayEquals(expectedCiphertext, calculatedCiphertext);
+        assertArrayEquals(expectedCiphertext, calculatedCiphertext);
     }
 
 }

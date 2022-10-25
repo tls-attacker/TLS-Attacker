@@ -19,7 +19,11 @@ import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
 import de.rub.nds.tlsattacker.mitm.config.MitmCommandConfig;
+import java.io.File;
+import java.io.FileInputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -58,7 +62,19 @@ public class TlsMitm implements Runnable {
 
         try {
             Config config = cmdConfig.createConfig();
-            executeMitmWorkflow(config);
+            WorkflowTrace trace = null;
+            if (cmdConfig.getWorkflowInput() != null) {
+                LOGGER.debug("Reading workflow trace from " + cmdConfig.getWorkflowInput());
+                try (FileInputStream fis = new FileInputStream(cmdConfig.getWorkflowInput())) {
+                    trace = WorkflowTraceSerializer.secureRead(fis);
+                }
+            }
+            State state = executeMitmWorkflow(config, trace);
+            if (cmdConfig.getWorkflowOutput() != null) {
+                trace = state.getWorkflowTrace();
+                LOGGER.debug("Writing workflow trace to " + cmdConfig.getWorkflowOutput());
+                WorkflowTraceSerializer.write(new File(cmdConfig.getWorkflowOutput()), trace);
+            }
         } catch (WorkflowExecutionException wee) {
             LOGGER.error("The TLS protocol flow was not executed completely. " + wee.getLocalizedMessage()
                 + " - See debug messages for more details.");
@@ -74,14 +90,24 @@ public class TlsMitm implements Runnable {
             LOGGER.error("Could not parse provided parameters. " + pe.getLocalizedMessage());
             LOGGER.info("Try -help");
             throw pe;
+        } catch (Exception E) {
+            LOGGER.error(E);
         }
     }
 
-    public void executeMitmWorkflow(Config config) throws ConfigurationException, WorkflowExecutionException {
+    public State executeMitmWorkflow(Config config, WorkflowTrace trace)
+        throws ConfigurationException, WorkflowExecutionException {
         LOGGER.debug("Creating and launching mitm.");
-        State state = new State(config);
+        State state;
+
+        if (trace == null) {
+            state = new State(config);
+        } else {
+            state = new State(config, trace);
+        }
         WorkflowExecutor workflowExecutor =
             WorkflowExecutorFactory.createWorkflowExecutor(config.getWorkflowExecutorType(), state);
         workflowExecutor.executeWorkflow();
+        return state;
     }
 }

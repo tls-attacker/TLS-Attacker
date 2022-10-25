@@ -12,14 +12,14 @@ package de.rub.nds.tlsattacker.core.crypto.ec;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Objects;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 
 /**
- * Can be used to store elements of a galois field.<br />
- * The attribute data should contain some BigInteger representing the element.<br />
+ * Can be used to store elements of a galois field.<br>
+ * The attribute data should contain some BigInteger representing the element.<br>
  * The attribute modulus should contain some BigInteger that may be used to identify the field (and for
- * calculations).<br />
+ * calculations).<br>
  *
  * All arithmetic operations are performed within the laws of the specified field.
  */
@@ -47,7 +47,7 @@ public abstract class FieldElement implements Serializable {
     public abstract FieldElement add(FieldElement f);
 
     /**
-     * Returns this - f. <br />
+     * Returns this - f.
      *
      * @param f
      *          An element of the field, which this is an element of.
@@ -58,7 +58,7 @@ public abstract class FieldElement implements Serializable {
     }
 
     /**
-     * Returns this * f.<br />
+     * Returns this * f.
      *
      * @param f
      *          An element of the field, which this is an element of.
@@ -66,7 +66,7 @@ public abstract class FieldElement implements Serializable {
     public abstract FieldElement mult(FieldElement f);
 
     /**
-     * Returns this * f^-1.<br />
+     * Returns this * f^-1.
      *
      * @param f
      *          An element of the field, which this is an element of.

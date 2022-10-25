@@ -20,8 +20,8 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.UnknownExtensio
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.UnknownExtensionSerializer;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 @XmlRootElement(name = "UnknownExtension")
 public class UnknownExtensionMessage extends ExtensionMessage<UnknownExtensionMessage> {

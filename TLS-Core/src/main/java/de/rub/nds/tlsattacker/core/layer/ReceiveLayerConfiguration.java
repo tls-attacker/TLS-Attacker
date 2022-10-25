@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 /**
  * Abstracts different ReceiveConfigurations. A ReceiveLayerConfiguration always specifies a list of containers the
  * layer should receive.
- * 
+ *
  * @param <Container>
  */
 public abstract class ReceiveLayerConfiguration<Container extends DataContainer> extends LayerConfiguration<Container> {

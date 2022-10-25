@@ -10,54 +10,33 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.io.ByteArrayInputStream;
 import java.util.Arrays;
-import java.util.Collection;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertTrue;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Named;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class KeyShareExtensionParserTest {
+import java.util.List;
+import java.util.stream.Stream;
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { {
-            ArrayConverter
-                .hexStringToByteArray("0024001D00202a981db6cdd02a06c1763102c9e741365ac4e6f72b3176a6bd6a3523d3ec0f4c"),
-            36, ArrayConverter
-                .hexStringToByteArray("001D00202a981db6cdd02a06c1763102c9e741365ac4e6f72b3176a6bd6a3523d3ec0f4c") } });
+public class KeyShareExtensionParserTest
+    extends AbstractExtensionParserTest<KeyShareExtensionMessage, KeyShareExtensionParser> {
+
+    public KeyShareExtensionParserTest() {
+        super(KeyShareExtensionMessage.class, KeyShareExtensionParser::new,
+            List.of(
+                Named.of("KeyShareExtensionMessage::getKeyShareListLength",
+                    KeyShareExtensionMessage::getKeyShareListLength),
+                Named.of("KeyShareExtensionMessage::getKeyShareListBytes",
+                    KeyShareExtensionMessage::getKeyShareListBytes)));
     }
 
-    private byte[] extension;
-    private int ksListLength;
-    private byte[] ksListBytes;
-
-    public KeyShareExtensionParserTest(byte[] extension, int ksListLength, byte[] ksListBytes) {
-        this.extension = extension;
-        this.ksListLength = ksListLength;
-        this.ksListBytes = ksListBytes;
+    public static Stream<Arguments> provideTestVectors() {
+        return Stream.of(Arguments.of(
+            ArrayConverter.hexStringToByteArray(
+                "00330024001D00202a981db6cdd02a06c1763102c9e741365ac4e6f72b3176a6bd6a3523d3ec0f4c"),
+            List.of(ConnectionEndType.SERVER), ExtensionType.KEY_SHARE, 38, Arrays.asList(null, ArrayConverter
+                .hexStringToByteArray("001D00202a981db6cdd02a06c1763102c9e741365ac4e6f72b3176a6bd6a3523d3ec0f4c"))));
     }
-
-    /**
-     * Test of parseExtensionMessageContent method, of class KeyShareExtensionParser.
-     */
-    @Test
-    public void testParse() {
-        Config config = Config.createConfig();
-        TlsContext context = new TlsContext(config);
-        context.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
-        KeyShareExtensionParser parser = new KeyShareExtensionParser(new ByteArrayInputStream(extension), context);
-        KeyShareExtensionMessage msg = new KeyShareExtensionMessage();
-        parser.parse(msg);
-        assertArrayEquals(msg.getKeyShareListBytes().getValue(), ksListBytes);
-        assertTrue(ksListLength == msg.getKeyShareListLength().getValue());
-    }
-
 }

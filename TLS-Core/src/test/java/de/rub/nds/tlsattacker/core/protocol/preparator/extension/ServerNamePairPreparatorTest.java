@@ -9,25 +9,24 @@
 
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ServerNamePairPreparatorTest {
 
-    private TlsContext context;
     private ServerNamePair pair;
     private ServerNamePairPreparator preparator;
     private final byte[] serverName = new byte[] { 0x01, 0x02 };
     private final byte serverNameType = 1;
-    private final int serverNameLength = 2;
 
-    @Before
+    @BeforeEach
     public void setUp() {
-        context = new TlsContext();
+        TlsContext context = new TlsContext();
         pair = new ServerNamePair(serverNameType, serverName);
         preparator = new ServerNamePairPreparator(context.getChooser(), pair);
     }
@@ -40,8 +39,8 @@ public class ServerNamePairPreparatorTest {
         preparator.prepare();
 
         assertArrayEquals(serverName, pair.getServerName().getValue());
-        assertEquals(serverNameType, (long) pair.getServerNameType().getValue());
-        assertEquals(serverNameLength, (long) pair.getServerNameLength().getValue());
+        assertEquals(serverNameType, pair.getServerNameType().getValue());
+        assertEquals(2, pair.getServerNameLength().getValue());
     }
 
 }

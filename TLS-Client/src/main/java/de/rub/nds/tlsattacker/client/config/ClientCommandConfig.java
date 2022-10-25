@@ -9,6 +9,7 @@
 
 package de.rub.nds.tlsattacker.client.config;
 
+import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.TLSDelegateConfig;
@@ -34,13 +35,11 @@ public class ClientCommandConfig extends TLSDelegateConfig {
     @ParametersDelegate
     private SignatureAndHashAlgorithmDelegate signatureAndHashAlgorithmDelegate;
     @ParametersDelegate
+    private SignatureAlgorithmCertDelegate signatureAlgorithmCertDelegate;
+    @ParametersDelegate
     private TransportHandlerDelegate transportHandlerDelegate;
     @ParametersDelegate
     private TimeoutDelegate timeoutDelegate;
-    @ParametersDelegate
-    private WorkflowInputDelegate workflowInputDelegate;
-    @ParametersDelegate
-    private WorkflowOutputDelegate workflowOutputDelegate;
     @ParametersDelegate
     private WorkflowTypeDelegate workflowTypeDelegate;
     @ParametersDelegate
@@ -50,11 +49,15 @@ public class ClientCommandConfig extends TLSDelegateConfig {
     @ParametersDelegate
     private FilterDelegate filterDelegate;
     @ParametersDelegate
-    private ConfigOutputDelegate configOutputDelegate;
-    @ParametersDelegate
     private ListDelegate listDelegate;
     @ParametersDelegate
     private StarttlsDelegate starttlsDelegate;
+
+    @Parameter(names = "-workflow_input", description = "A path to a workflow trace that should be exeucted")
+    private String workflowInput = null;
+    @Parameter(names = "-workflow_output",
+        description = "A path in which the executed workflow trace should be stored in")
+    private String workflowOutput = null;
 
     public ClientCommandConfig(GeneralDelegate delegate) {
         super(delegate);
@@ -64,15 +67,13 @@ public class ClientCommandConfig extends TLSDelegateConfig {
         this.protocolVersionDelegate = new ProtocolVersionDelegate();
         this.clientDelegate = new ClientDelegate();
         this.signatureAndHashAlgorithmDelegate = new SignatureAndHashAlgorithmDelegate();
+        this.signatureAlgorithmCertDelegate = new SignatureAlgorithmCertDelegate();
         this.transportHandlerDelegate = new TransportHandlerDelegate();
         this.timeoutDelegate = new TimeoutDelegate();
-        this.workflowInputDelegate = new WorkflowInputDelegate();
-        this.workflowOutputDelegate = new WorkflowOutputDelegate();
         this.workflowTypeDelegate = new WorkflowTypeDelegate();
         this.heartbeatDelegate = new HeartbeatDelegate();
         this.certificateDelegate = new CertificateDelegate();
         this.filterDelegate = new FilterDelegate();
-        this.configOutputDelegate = new ConfigOutputDelegate();
         this.listDelegate = new ListDelegate();
         this.starttlsDelegate = new StarttlsDelegate();
         this.compressionDelegate = new CompressionDelegate();
@@ -85,14 +86,12 @@ public class ClientCommandConfig extends TLSDelegateConfig {
         addDelegate(protocolVersionDelegate);
         addDelegate(clientDelegate);
         addDelegate(signatureAndHashAlgorithmDelegate);
-        addDelegate(workflowInputDelegate);
-        addDelegate(workflowOutputDelegate);
+        addDelegate(signatureAlgorithmCertDelegate);
         addDelegate(workflowTypeDelegate);
         addDelegate(transportHandlerDelegate);
         addDelegate(timeoutDelegate);
         addDelegate(certificateDelegate);
         addDelegate(filterDelegate);
-        addDelegate(configOutputDelegate);
         addDelegate(starttlsDelegate);
     }
 
@@ -105,4 +104,13 @@ public class ClientCommandConfig extends TLSDelegateConfig {
         }
         return config;
     }
+
+    public String getWorkflowInput() {
+        return workflowInput;
+    }
+
+    public String getWorkflowOutput() {
+        return workflowOutput;
+    }
+
 }

@@ -16,8 +16,8 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.SchemaOutputResolver;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.SchemaOutputResolver;
 import javax.xml.transform.Result;
 import javax.xml.transform.stream.StreamResult;
 import org.apache.commons.lang3.StringUtils;
@@ -30,28 +30,23 @@ public class WorkflowTraceSchemaGenerator {
 
     public static void main(String[] args) {
         try {
-            new File(args[0]).mkdirs();
-            generateSchema(args[0]);
+            File outputDirectory = new File(args[0]);
+            assert outputDirectory.exists() || outputDirectory.mkdirs();
+            generateSchema(outputDirectory);
         } catch (IOException | JAXBException e) {
             e.printStackTrace();
         }
     }
 
-    private static void generateSchema(String path) throws IOException, JAXBException {
+    private static void generateSchema(File outputDirectory) throws IOException, JAXBException {
         AccumulatingSchemaOutputResolver sor = new AccumulatingSchemaOutputResolver();
         WorkflowTraceSerializer.getJAXBContext().generateSchema(sor);
         for (Entry<String, StringWriter> e : sor.getSchemaWriters().entrySet()) {
             String systemId = sor.getSystemIds().get(e.getKey());
-            FileWriter w = null;
-            try {
-                File f = new File(path, systemId);
-                w = new FileWriter(f);
-                System.out.println(String.format("Writing %s to %s", e.getKey(), f.getAbsolutePath()));
-                w.write(e.getValue().toString());
-            } finally {
-                if (w != null) {
-                    w.close();
-                }
+            File f = new File(outputDirectory, systemId);
+            try (FileWriter w = new FileWriter(f)) {
+                System.out.printf("Writing %s to %s%n", e.getKey(), f.getAbsolutePath());
+                w.write(e.getValue().toString().replaceAll("\r?\n", System.lineSeparator()));
             }
         }
     }

@@ -6,17 +6,10 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-/**
- /**
- * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
- * <p>Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
- *
- * <p>Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
- */
 
 package de.rub.nds.tlsattacker.core.record;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ChooserType;
@@ -31,19 +24,18 @@ import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
 import java.io.ByteArrayInputStream;
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class RecordTest {
 
-    Record record;
-    Chooser chooser;
-    Encryptor encryptor;
-    RecordCompressor compressor;
-    Context context;
+    private Record record;
+    private Chooser chooser;
+    private Encryptor encryptor;
+    private RecordCompressor compressor;
+    private Context context;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         record = new Record();
         Config config = Config.createConfig();
@@ -83,5 +75,4 @@ public class RecordTest {
     public void testGetRecordSerializer() {
         assertEquals(record.getRecordSerializer().getClass(), RecordSerializer.class);
     }
-
 }

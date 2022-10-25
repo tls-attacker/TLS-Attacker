@@ -10,46 +10,24 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.GreaseExtensionMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import java.io.ByteArrayInputStream;
-import java.util.Arrays;
-import java.util.Collection;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Named;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class GreaseExtensionParserTest {
+import java.util.List;
+import java.util.stream.Stream;
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { { ArrayConverter.hexStringToByteArray("0102030405060708090a"),
-            new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 } } });
+public class GreaseExtensionParserTest
+    extends AbstractExtensionParserTest<GreaseExtensionMessage, GreaseExtensionParser> {
+
+    public GreaseExtensionParserTest() {
+        super(GreaseExtensionMessage.class, GreaseExtensionParser::new,
+            List.of(Named.of("GreaseExtensionMessage::getData", GreaseExtensionMessage::getData)));
     }
 
-    private final byte[] extension;
-    private final byte[] randomData;
-    private final Config config = Config.createConfig();
-
-    public GreaseExtensionParserTest(byte[] extension, byte[] randomData) {
-        this.extension = extension;
-        this.randomData = randomData;
+    public static Stream<Arguments> provideTestVectors() {
+        return Stream.of(Arguments.of(ArrayConverter.hexStringToByteArray("1a1a000a0102030405060708090a"), List.of(),
+            ExtensionType.GREASE_01, 10, List.of(new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 })));
     }
-
-    /**
-     * Test of parse method, of class HeartbeatExtensionParser.
-     */
-    @Test
-    public void testParse() {
-        TlsContext tlsContext = new TlsContext(config);
-        GreaseExtensionParser parser = new GreaseExtensionParser(new ByteArrayInputStream(extension), tlsContext);
-        GreaseExtensionMessage msg = new GreaseExtensionMessage();
-        parser.parse(msg);
-        assertArrayEquals(randomData, msg.getRandomData().getValue());
-        assertArrayEquals(randomData, msg.getData());
-    }
-
 }

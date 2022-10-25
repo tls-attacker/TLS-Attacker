@@ -21,7 +21,7 @@ import de.rub.nds.tlsattacker.core.record.Record;
 
 /**
  * Send configuration that sends a list of containers to the recipient.
- * 
+ *
  * @param <Container>
  */
 public class SpecificSendLayerConfiguration<Container extends DataContainer> extends LayerConfiguration<Container> {

@@ -16,9 +16,12 @@ Test custom connection in workflow trace
 <workflowTrace>
     <OutboundConnection>
         <alias>custom</alias>
+        <ip>localhost</ip>
         <port>443</port>
         <hostname>localhost</hostname>
         <timeout>44</timeout>
+        <firstTimeout>1000</firstTimeout>
+        <connectionTimeout>8000</connectionTimeout>
         <transportHandlerType>TCP</transportHandlerType>
     </OutboundConnection>
 </workflowTrace>

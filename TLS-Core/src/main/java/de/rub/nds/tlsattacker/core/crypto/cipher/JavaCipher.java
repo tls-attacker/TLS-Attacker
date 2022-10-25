@@ -63,8 +63,8 @@ class JavaCipher extends BaseCipher {
         } catch (IllegalStateException | IllegalBlockSizeException | BadPaddingException | NoSuchAlgorithmException
             | InvalidAlgorithmParameterException | InvalidKeyException | NoSuchPaddingException
             | IllegalArgumentException ex) {
-            throw new CryptoException("Could not initialize JavaCipher. "
-                + "Did you forget to use UnlimitedStrengthEnabler/add BouncyCastleProvider?", ex);
+            throw new CryptoException("Could not initialize JavaCipher. Did you forget to add BouncyCastleProvider?",
+                ex);
         }
     }
 

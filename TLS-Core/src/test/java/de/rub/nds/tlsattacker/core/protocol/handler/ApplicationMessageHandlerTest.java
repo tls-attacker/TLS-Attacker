@@ -10,36 +10,20 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import org.junit.*;
+import org.junit.jupiter.api.Test;
 
-public class ApplicationMessageHandlerTest {
+public class ApplicationMessageHandlerTest
+    extends AbstractTlsMessageHandlerTest<ApplicationMessage, ApplicationMessageHandler> {
 
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
-
-    private ApplicationMessageHandler handler;
-    private TlsContext context;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new ApplicationMessageHandler(context);
-    }
-
-    @After
-    public void tearDown() {
+    ApplicationMessageHandlerTest() {
+        super(ApplicationMessage::new, ApplicationMessageHandler::new);
     }
 
     /**
      * Test of adjustContext method, of class ApplicationMessageHandler.
      */
     @Test
+    @Override
     public void testadjustContext() {
         ApplicationMessage message = new ApplicationMessage();
         message.setData(new byte[] { 0, 1, 2, 3, 4, 5, 6 });

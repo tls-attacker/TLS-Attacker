@@ -11,36 +11,20 @@ package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignedCertificateTimestampExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.SignedCertificateTimestampExtensionParserTest;
-import java.util.Collection;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class SignedCertificateTimestampExtensionSerializerTest {
+import java.util.List;
+import java.util.stream.Stream;
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return SignedCertificateTimestampExtensionParserTest.generateData();
+public class SignedCertificateTimestampExtensionSerializerTest extends AbstractExtensionMessageSerializerTest<
+    SignedCertificateTimestampExtensionMessage, SignedCertificateTimestampExtensionSerializer> {
+
+    public SignedCertificateTimestampExtensionSerializerTest() {
+        super(SignedCertificateTimestampExtensionMessage::new, SignedCertificateTimestampExtensionSerializer::new,
+            List.of((msg, obj) -> msg.setSignedTimestamp((byte[]) obj)));
     }
 
-    private final byte[] timestamp;
-    private final byte[] expectedBytes;
-    private SignedCertificateTimestampExtensionMessage message;
-
-    public SignedCertificateTimestampExtensionSerializerTest(byte[] timestamp, byte[] expectedBytes) {
-        this.timestamp = timestamp;
-        this.expectedBytes = expectedBytes;
-    }
-
-    @Test
-    public void testSerializeExtensionContent() {
-        message = new SignedCertificateTimestampExtensionMessage();
-        message.setSignedTimestamp(timestamp);
-
-        SignedCertificateTimestampExtensionSerializer serializer =
-            new SignedCertificateTimestampExtensionSerializer(message);
-        assertArrayEquals(expectedBytes, serializer.serializeExtensionContent());
+    public static Stream<Arguments> provideTestVectors() {
+        return SignedCertificateTimestampExtensionParserTest.provideTestVectors();
     }
 }

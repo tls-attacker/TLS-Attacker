@@ -32,6 +32,8 @@ public class SupportedVersionsExtensionParser extends ExtensionParser<SupportedV
         LOGGER.debug("Parsing SupportedVersionsExtensionMessage");
         if (getTlsContext().getTalkingConnectionEndType() == ConnectionEndType.SERVER) {
             msg.setSupportedVersions(parseByteArrayField(HandshakeByteLength.VERSION));
+            LOGGER
+                .debug("Supported version: " + ArrayConverter.bytesToHexString(msg.getSupportedVersions().getValue()));
         } else {
             parseSupportedVersionLength(msg);
             parseSupportedVersion(msg);

@@ -12,6 +12,7 @@ package de.rub.nds.tlsattacker.core.protocol.message.extension;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.RecordSizeLimitExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.RecordSizeLimitExtensionParser;
@@ -19,7 +20,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.RecordSizeLimit
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.RecordSizeLimitExtensionSerializer;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * Record Size Limit Extension described in RFC 8449
@@ -29,6 +30,10 @@ public class RecordSizeLimitExtensionMessage extends ExtensionMessage<RecordSize
 
     @ModifiableVariableProperty
     private ModifiableByteArray recordSizeLimit;
+
+    public RecordSizeLimitExtensionMessage(Config config) {
+        super(ExtensionType.RECORD_SIZE_LIMIT);
+    }
 
     public RecordSizeLimitExtensionMessage() {
         super(ExtensionType.RECORD_SIZE_LIMIT);

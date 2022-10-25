@@ -125,7 +125,7 @@ public class SignedCertificateTimestampSignature {
     /**
      * Converts an end-entity certificate into a precertificate used to verify precertificate SCT signatures. See RFC
      * 6962 Section 3.2 for more information on how to construct a precertificate entry:
-     * https://tools.ietf.org/html/rfc6962#section-3.2
+     * <a href="https://tools.ietf.org/html/rfc6962#section-3.2">RFC 6962 Section 3.2</a>
      *
      * @param  leafCertificate
      *                           The leaf certificate

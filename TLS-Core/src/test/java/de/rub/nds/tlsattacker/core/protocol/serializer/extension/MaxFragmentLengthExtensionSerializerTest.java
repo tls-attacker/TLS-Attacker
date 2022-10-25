@@ -9,20 +9,22 @@
 
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import org.junit.Before;
-import org.junit.Test;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.MaxFragmentLengthExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.MaxFragmentLengthExtensionParserTest;
+import org.junit.jupiter.params.provider.Arguments;
 
-public class MaxFragmentLengthExtensionSerializerTest {
+import java.util.List;
+import java.util.stream.Stream;
 
-    @Before
-    public void setUp() {
+public class MaxFragmentLengthExtensionSerializerTest extends
+    AbstractExtensionMessageSerializerTest<MaxFragmentLengthExtensionMessage, MaxFragmentLengthExtensionSerializer> {
+
+    public MaxFragmentLengthExtensionSerializerTest() {
+        super(MaxFragmentLengthExtensionMessage::new, MaxFragmentLengthExtensionSerializer::new,
+            List.of((msg, obj) -> msg.setMaxFragmentLength((byte[]) obj)));
     }
 
-    /**
-     * Test of serializeExtensionContent method, of class MaxFragmentLengthExtensionSerializer.
-     */
-    @Test
-    public void testSerializeExtensionContent() {
+    public static Stream<Arguments> provideTestVectors() {
+        return MaxFragmentLengthExtensionParserTest.provideTestVectors();
     }
-
 }

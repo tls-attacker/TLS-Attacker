@@ -10,54 +10,24 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import java.io.ByteArrayInputStream;
-import java.util.Arrays;
-import java.util.Collection;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Named;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class PaddingExtensionParserTest {
+import java.util.List;
+import java.util.stream.Stream;
 
-    /**
-     * Parameterized set up of the test vector.
-     *
-     * @return test vector (extensionType, extensionLength, extensionPayload, expectedBytes)
-     */
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] {
-            { new byte[] { 0, 0, 0, 0, 0, 0 }, ArrayConverter.hexStringToByteArray("000000000000") } });
+public class PaddingExtensionParserTest
+    extends AbstractExtensionParserTest<PaddingExtensionMessage, PaddingExtensionParser> {
+
+    public PaddingExtensionParserTest() {
+        super(PaddingExtensionMessage.class, PaddingExtensionParser::new,
+            List.of(Named.of("PaddingExtensionMessage::getPaddingBytes", PaddingExtensionMessage::getPaddingBytes)));
     }
 
-    private final byte[] extensionPayload;
-    private final byte[] expectedBytes;
-    private PaddingExtensionParser parser;
-    private PaddingExtensionMessage message;
-    private final Config config = Config.createConfig();
-
-    public PaddingExtensionParserTest(byte[] extensionPayload, byte[] expectedBytes) {
-        this.extensionPayload = extensionPayload;
-        this.expectedBytes = expectedBytes;
+    public static Stream<Arguments> provideTestVectors() {
+        return Stream.of(Arguments.of(ArrayConverter.hexStringToByteArray("00150006000000000000"), List.of(),
+            ExtensionType.PADDING, 6, List.of(new byte[] { 0, 0, 0, 0, 0, 0 })));
     }
-
-    @Before
-    public void setUp() {
-        TlsContext tlsContext = new TlsContext(config);
-        parser = new PaddingExtensionParser(new ByteArrayInputStream(expectedBytes), tlsContext);
-    }
-
-    @Test
-    public void testParse() {
-        message = new PaddingExtensionMessage();
-        parser.parse(message);
-        assertArrayEquals(extensionPayload, message.getPaddingBytes().getValue());
-    }
-
 }

@@ -9,41 +9,25 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
-import java.io.ByteArrayInputStream;
-import java.util.Arrays;
-import java.util.Collection;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Named;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class ApplicationMessageParserTest {
+import java.util.List;
+import java.util.stream.Stream;
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return Arrays
-            .asList(new Object[][] { { new byte[] { 0, 1, 2, 3, 4, 5, 6 } }, { new byte[] { 2, 3, 4, 5, 6 } } });
+public class ApplicationMessageParserTest
+    extends AbstractTlsMessageParserTest<ApplicationMessage, ApplicationMessageParser> {
+
+    public ApplicationMessageParserTest() {
+        super(ApplicationMessage.class, ApplicationMessageParser::new,
+            List.of(Named.of("ApplicationMessage::getData", ApplicationMessage::getData)));
     }
 
-    private final byte[] message;
-
-    public ApplicationMessageParserTest(byte[] message) {
-        this.message = message;
+    public static Stream<Arguments> provideTestVectors() {
+        return Stream.of(Arguments.of(ProtocolVersion.TLS12, ArrayConverter.hexStringToByteArray("00010203040506"),
+            List.of(ArrayConverter.hexStringToByteArray("00010203040506"))));
     }
-
-    /**
-     * Test of parse method, of class ApplicationMessageParser.
-     */
-    @Test
-    public void testParse() {
-        ApplicationMessageParser parser = new ApplicationMessageParser(new ByteArrayInputStream(message));
-        ApplicationMessage applicationMessage = new ApplicationMessage();
-        parser.parse(applicationMessage);
-        assertArrayEquals(applicationMessage.getCompleteResultingMessage().getValue(), message);
-        assertArrayEquals(applicationMessage.getData().getValue(), message);
-    }
-
 }

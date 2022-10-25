@@ -9,46 +9,27 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
-import java.io.ByteArrayInputStream;
-import java.util.Arrays;
-import java.util.Collection;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertTrue;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Named;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class AlertParserTest {
+import java.util.List;
+import java.util.stream.Stream;
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { { new byte[] { 1, 2 }, (byte) 1, (byte) 2 },
-            { new byte[] { 4, 3 }, (byte) 4, (byte) 3 } });
+public class AlertParserTest extends AbstractTlsMessageParserTest<AlertMessage, AlertParser> {
+
+    public AlertParserTest() {
+        super(AlertMessage.class, AlertParser::new, List.of(Named.of("AlertMessage::getLevel", AlertMessage::getLevel),
+            Named.of("AlertMessage::getDescription", AlertMessage::getDescription)));
     }
 
-    private final byte[] message;
-    private final byte level;
-    private final byte description;
-
-    public AlertParserTest(byte[] message, byte level, byte description) {
-        this.message = message;
-        this.level = level;
-        this.description = description;
-    }
-
-    /**
-     * Test of parse method, of class AlertParser.
-     */
-    @Test
-    public void testParse() {
-        AlertParser parser = new AlertParser(new ByteArrayInputStream(message));
-        AlertMessage alert = new AlertMessage();
-        parser.parse(alert);
-        assertArrayEquals(message, alert.getCompleteResultingMessage().getValue());
-        assertTrue(level == alert.getLevel().getValue());
-        assertTrue(description == alert.getDescription().getValue());
+    public static Stream<Arguments> provideTestVectors() {
+        return Stream.of(
+            Arguments.of(ProtocolVersion.TLS12, ArrayConverter.hexStringToByteArray("0102"),
+                List.of((byte) 0x01, (byte) 0x02)),
+            Arguments.of(ProtocolVersion.TLS12, ArrayConverter.hexStringToByteArray("0403"),
+                List.of((byte) 0x04, (byte) 0x03)));
     }
 }

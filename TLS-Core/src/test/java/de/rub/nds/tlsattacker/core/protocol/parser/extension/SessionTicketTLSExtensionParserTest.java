@@ -13,76 +13,26 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import java.io.ByteArrayInputStream;
 import java.util.Arrays;
-import java.util.Collection;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Named;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class SessionTicketTLSExtensionParserTest {
+import java.util.List;
+import java.util.stream.Stream;
 
-    /**
-     * Gets the test vectors of the SessionTicketTLSExtensionHandlerTest class.
-     *
-     * @return Collection of the parameters
-     */
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] {
-            { ExtensionType.SESSION_TICKET, 0, new byte[0], ArrayConverter.hexStringToByteArray("00350000"), 0 } });
+public class SessionTicketTLSExtensionParserTest
+    extends AbstractExtensionParserTest<SessionTicketTLSExtensionMessage, SessionTicketTLSExtensionParser> {
+
+    public SessionTicketTLSExtensionParserTest() {
+        super(SessionTicketTLSExtensionMessage.class,
+            (stream, context) -> new SessionTicketTLSExtensionParser(stream, new Config(), context),
+            List.of(Named.of("SessionTicketTLSExtensionMessage::getSessionTicket::getIdentity",
+                msg -> msg.getSessionTicket().getIdentity())));
     }
 
-    private final ExtensionType extensionType;
-    private final int extensionLength;
-    private final byte[] sessionTicket;
-    private final byte[] expectedBytes;
-    private final int startParsing;
-    private SessionTicketTLSExtensionParser parser;
-    private SessionTicketTLSExtensionMessage message;
-    private final Config config = Config.createConfig();
-
-    /**
-     * Constructor for parameterized setup.
-     *
-     * @param extensionType
-     * @param extensionLength
-     * @param sessionTicket
-     * @param expectedBytes
-     * @param startParsing
-     */
-    public SessionTicketTLSExtensionParserTest(ExtensionType extensionType, int extensionLength, byte[] sessionTicket,
-        byte[] expectedBytes, int startParsing) {
-        this.extensionType = extensionType;
-        this.extensionLength = extensionLength;
-        this.sessionTicket = sessionTicket;
-        this.expectedBytes = expectedBytes;
-        this.startParsing = startParsing;
+    public static Stream<Arguments> provideTestVectors() {
+        byte[] nullArray = null;
+        return Stream.of(Arguments.of(ArrayConverter.hexStringToByteArray("00230000"), List.of(),
+            ExtensionType.SESSION_TICKET, 0, Arrays.asList(nullArray)));
     }
-
-    /**
-     * Some initial setup.
-     */
-    @Before
-    public void setUp() {
-        TlsContext tlsContext = new TlsContext(config);
-        parser = new SessionTicketTLSExtensionParser(new ByteArrayInputStream(expectedBytes), Config.createConfig(),
-            tlsContext);
-        message = new SessionTicketTLSExtensionMessage();
-        message.setExtensionLength(0);
-    }
-
-    /**
-     * Tests the parse method of the SessionTicketTLSExtensionParser.
-     */
-    @Test
-    public void testParse() {
-        parser.parse(message);
-        assertNull(message.getSessionTicket().getIdentity());
-    }
-
 }

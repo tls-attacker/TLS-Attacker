@@ -21,8 +21,9 @@ nbactions.xml
 *.iml
 
 # Maven
-pom.xml.*
-release.properties
+**/pom.xml.*
+**/release.properties
+**/.flattened-pom.xml
 
 # VS Code
 .factorypath

@@ -9,30 +9,22 @@
 
 package de.rub.nds.tlsattacker.core.config;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import javax.xml.bind.JAXBException;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.*;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.rules.TemporaryFolder;
 
 public class TlsConfigIOTest {
 
-    @Rule
-    public final ExpectedException exception = ExpectedException.none();
-
-    @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
-
     @Test
-    public void testReadWriteRead() throws IOException, JAXBException {
-        File f = folder.newFile();
+    public void testReadWriteRead(@TempDir File tempDir) {
+        File f = new File(tempDir, "read_write_test.config");
         Config config = Config.createConfig();
         ConfigIO.write(config, f);
         config = ConfigIO.read(f);
@@ -40,45 +32,51 @@ public class TlsConfigIOTest {
     }
 
     @Test
-    public void testEmptyConfig() {
-        InputStream stream = Config.class.getResourceAsStream("/test_empty_config.xml");
-        exception.expect(IllegalArgumentException.class);
-        exception.expectMessage("Stream cannot be null");
-        Config config = Config.createConfig(stream);
+    public void testEmptyConfig() throws IOException {
+        try (InputStream stream = Config.class.getResourceAsStream("/test_empty_config.xml")) {
+            IllegalArgumentException exception =
+                assertThrows(IllegalArgumentException.class, () -> Config.createConfig(stream));
+            assertTrue(exception.getMessage().startsWith("Stream cannot be null"));
+        }
     }
 
     @Test
-    public void testIncompleteConfig() {
-        InputStream stream = Config.class.getResourceAsStream("/test_incomplete_config.xml");
-        Config config = Config.createConfig(stream);
+    public void testIncompleteConfig() throws IOException {
+        Config config;
+        try (InputStream stream = Config.class.getResourceAsStream("/test_incomplete_config.xml")) {
+            config = Config.createConfig(stream);
+        }
         assertNotNull(config);
-        assertTrue(config.getDefaultClientSupportedCipherSuites().size() == 1);
+        assertEquals(1, config.getDefaultClientSupportedCipherSuites().size());
     }
 
     @Test
-    public void testReadCustomClientConnection() throws IOException, JAXBException {
+    public void testReadCustomClientConnection() throws IOException {
         OutboundConnection expected = new OutboundConnection("testConnection", 8002, "testHostname");
 
-        InputStream stream = Config.class.getResourceAsStream("/test_config_custom_client_connection.xml");
-        Config config = Config.createConfig(stream);
+        Config config;
+        try (InputStream stream = Config.class.getResourceAsStream("/test_config_custom_client_connection.xml")) {
+            config = Config.createConfig(stream);
+        }
         assertNotNull(config);
 
         OutboundConnection con = config.getDefaultClientConnection();
         assertNotNull(con);
-        assertThat(con, equalTo(expected));
+        assertEquals(expected, con);
     }
 
     @Test
-    public void testReadCustomServerConnection() throws IOException, JAXBException {
-        InputStream stream = Config.class.getResourceAsStream("/test_config_custom_server_connection.xml");
-
-        InboundConnection expected = new InboundConnection("testConnection", 8004);
-        Config config = Config.createConfig(stream);
+    public void testReadCustomServerConnection() throws IOException {
+        Config config;
+        try (InputStream stream = Config.class.getResourceAsStream("/test_config_custom_server_connection.xml")) {
+            config = Config.createConfig(stream);
+        }
         assertNotNull(config);
 
+        InboundConnection expected = new InboundConnection("testConnection", 8004);
         InboundConnection con = config.getDefaultServerConnection();
         assertNotNull(con);
-        assertThat(con, equalTo(expected));
+        assertEquals(expected, con);
     }
 
 }

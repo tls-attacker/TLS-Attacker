@@ -9,23 +9,38 @@
 
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
 import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.ResponderId;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.ResponderIdParserTest;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ResponderIdPreparator;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
 
 public class ResponderIdSerializerTest {
 
-    private final byte[] expectedBytes = new byte[] { 0x00, 0x05, 0x01, 0x02, 0x03, 0x04, 0x05 };
-    private final ResponderId id = new ResponderId(5, new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05 });
+    private TlsContext context;
 
-    @Test
-    public void testSerializer() {
-        ResponderIdPreparator preparator = new ResponderIdPreparator(new TlsContext().getChooser(), id);
-        preparator.prepare();
-        ResponderIdSerializer serializer = new ResponderIdSerializer(id);
+    @BeforeEach
+    public void setUp() {
+        context = new TlsContext();
+    }
 
-        assertArrayEquals(expectedBytes, serializer.serialize());
+    public static Stream<Arguments> provideTestVectors() {
+        return ResponderIdParserTest.provideTestVectors();
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideTestVectors")
+    public void testSerialize(byte[] expectedResponderIdBytes, int providedIdLength, byte[] providedId) {
+        ResponderId id = new ResponderId(providedIdLength, providedId);
+        new ResponderIdPreparator(context.getChooser(), id).prepare();
+        byte[] actualBytes = new ResponderIdSerializer(id).serialize();
+        assertArrayEquals(expectedResponderIdBytes, actualBytes);
     }
 }

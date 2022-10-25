@@ -9,6 +9,8 @@
 
 package de.rub.nds.tlsattacker.core.record.cipher;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
@@ -19,14 +21,16 @@ import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.util.UnlimitedStrengthEnabler;
+import de.rub.nds.tlsattacker.util.tests.TestCategories;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 import java.security.Security;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Before;
-import org.junit.Test;
 
 public class RecordStreamCipherTest {
 
@@ -34,24 +38,24 @@ public class RecordStreamCipherTest {
     private KeySet keySet;
     private byte[] data;
 
-    public RecordStreamCipherTest() {
+    @BeforeAll
+    public static void setUpClass() {
+        Security.addProvider(new BouncyCastleProvider());
+    }
+
+    @BeforeEach
+    public void setUp() {
+        context = new TlsContext();
         keySet = generateKeySet(ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
             ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"), new byte[1],
             ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"));
-
         data = ArrayConverter.hexStringToByteArray("01010101010101010101010101010101");
-    }
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        Security.addProvider(new BouncyCastleProvider());
-        UnlimitedStrengthEnabler.enable();
     }
 
     // TODO check why cipher.contains("WITH_NULL") in
     // AlgorithmResolver.getCipherType(suite) is always associated with STREAM
     @Test
+    @Tag(TestCategories.SLOW_TEST)
     public void testConstructors() throws NoSuchAlgorithmException, CryptoException {
         // This test just checks that the init() method will not break
         context.setClientRandom(new byte[] { 0 });

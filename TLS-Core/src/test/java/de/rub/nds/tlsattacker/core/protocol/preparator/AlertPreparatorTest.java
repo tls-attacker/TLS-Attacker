@@ -9,39 +9,29 @@
 
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class AlertPreparatorTest {
-
-    private AlertMessage message;
-    private TlsContext context;
-    private AlertPreparator preparator;
+public class AlertPreparatorTest extends AbstractTlsMessagePreparatorTest<AlertMessage, AlertPreparator> {
 
     public AlertPreparatorTest() {
-    }
-
-    @Before
-    public void setUp() {
-        message = new AlertMessage();
-        context = new TlsContext();
-        preparator = new AlertPreparator(context.getChooser(), message);
+        super(AlertMessage::new, AlertPreparator::new);
     }
 
     /**
      * Test of prepareProtocolMessageContents method, of class AlertPreparator.
      */
     @Test
+    @Override
     public void testPrepare() {
         message.setConfig(AlertLevel.FATAL, AlertDescription.DECRYPT_ERROR);
         preparator.prepare();
-        assertTrue(message.getLevel().getValue() == AlertLevel.FATAL.getValue());
-        assertTrue(message.getDescription().getValue() == AlertDescription.DECRYPT_ERROR.getValue());
+        assertEquals(AlertLevel.FATAL.getValue(), (byte) message.getLevel().getValue());
+        assertEquals(AlertDescription.DECRYPT_ERROR.getValue(), (byte) message.getDescription().getValue());
     }
 
     @Test
@@ -49,13 +39,7 @@ public class AlertPreparatorTest {
         context.getConfig().setDefaultAlertDescription(AlertDescription.BAD_CERTIFICATE);
         context.getConfig().setDefaultAlertLevel(AlertLevel.FATAL);
         preparator.prepare();
-        assertTrue(message.getDescription().getValue() == AlertDescription.BAD_CERTIFICATE.getValue());
-        assertTrue(message.getLevel().getValue() == AlertLevel.FATAL.getValue());
+        assertEquals(AlertDescription.BAD_CERTIFICATE.getValue(), (byte) message.getDescription().getValue());
+        assertEquals(AlertLevel.FATAL.getValue(), (byte) message.getLevel().getValue());
     }
-
-    @Test
-    public void testNoContextPrepare() {
-        preparator.prepare();
-    }
-
 }

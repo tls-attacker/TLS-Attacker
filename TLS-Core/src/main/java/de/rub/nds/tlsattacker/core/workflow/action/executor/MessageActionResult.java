@@ -22,7 +22,7 @@ public class MessageActionResult {
 
     private final List<ProtocolMessage> messageList;
 
-    private final List<DtlsHandshakeMessageFragment> messageFragmentList;
+    private List<DtlsHandshakeMessageFragment> messageFragmentList;
 
     public MessageActionResult(List<Record> recordList, List<ProtocolMessage> messageList,
         List<DtlsHandshakeMessageFragment> messageFragmentList) {
@@ -52,6 +52,8 @@ public class MessageActionResult {
 
     /**
      * Merger this with other results, forming a new result.
+     *
+     * @param other
      */
     public MessageActionResult merge(MessageActionResult... other) {
         LinkedList<MessageActionResult> results = new LinkedList<MessageActionResult>(Arrays.asList(other));
@@ -60,7 +62,7 @@ public class MessageActionResult {
         List<DtlsHandshakeMessageFragment> messageFragmentList = null;
         List<ProtocolMessage> messageList = new LinkedList<>();
 
-        for (MessageActionResult result : results) {
+        for (MessageActionResult result : other) {
             recordList.addAll(result.getRecordList());
             if (result.getMessageFragmentList() != null) {
                 if (messageFragmentList == null) {
@@ -70,7 +72,6 @@ public class MessageActionResult {
             }
             messageList.addAll(result.getMessageList());
         }
-
         return new MessageActionResult(recordList, messageList, messageFragmentList);
     }
 }

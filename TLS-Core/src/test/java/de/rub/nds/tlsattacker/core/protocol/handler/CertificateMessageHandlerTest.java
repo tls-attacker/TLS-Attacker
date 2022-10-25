@@ -9,40 +9,37 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.security.Security;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.junit.After;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-@SuppressWarnings("SpellCheckingInspection")
-public class CertificateMessageHandlerTest {
+import java.security.Security;
 
-    private CertificateMessageHandler handler;
-    private TlsContext context;
+public class CertificateMessageHandlerTest
+    extends AbstractTlsMessageHandlerTest<CertificateMessage, CertificateMessageHandler> {
 
-    @Before
-    public void setUp() {
-        Security.addProvider(new BouncyCastleProvider());
-        context = new TlsContext();
-        handler = new CertificateMessageHandler(context);
+    CertificateMessageHandlerTest() {
+        super(CertificateMessage::new, CertificateMessageHandler::new);
     }
 
-    @After
-    public void tearDown() {
+    @BeforeAll
+    public static void setUpClass() {
+        Security.addProvider(new BouncyCastleProvider());
     }
 
     /**
      * Test of adjustContext method, of class CertificateMessageHandler.
      */
     @Test
+    @Override
     public void testadjustContext() {
         for (ProtocolVersion version : new ProtocolVersion[] { ProtocolVersion.TLS12 }) {
             context.setTalkingConnectionEndType(ConnectionEndType.CLIENT);

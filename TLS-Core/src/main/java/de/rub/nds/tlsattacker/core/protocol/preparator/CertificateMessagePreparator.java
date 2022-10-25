@@ -87,11 +87,8 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
                         new DERBitString(PointFormatter.formatToByteArray(NamedGroup.SECP256R1, ecPointToEncode,
                             ECPointFormat.UNCOMPRESSED)) }));
                     asn1OutputStream.flush();
-                    asn1OutputStream.close();
                     msg.setCertificatesListBytes(byteArrayOutputStream.toByteArray());
                     msg.setCertificatesListLength(msg.getCertificatesListBytes().getValue().length);
-
-                    byteArrayOutputStream.close();
                 } catch (Exception e) {
                     LOGGER.warn("Could write RAW PublicKey. Not writing anything", e);
                     msg.setCertificatesListBytes(new byte[0]);
@@ -102,13 +99,8 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
             case X509:
                 List<CertificatePair> pairList = msg.getCertificateListConfig();
                 if (pairList == null) {
-                    CertificateKeyPair selectedCertificateKeyPair;
-                    if (chooser.getConfig().isAutoSelectCertificate()) {
-                        selectedCertificateKeyPair =
-                            CertificateByteChooser.getInstance().chooseCertificateKeyPair(chooser);
-                    } else {
-                        selectedCertificateKeyPair = chooser.getConfig().getDefaultExplicitCertificateKeyPair();
-                    }
+                    CertificateKeyPair selectedCertificateKeyPair =
+                        CertificateByteChooser.getInstance().chooseCertificateKeyPair(chooser);
                     msg.setCertificateKeyPair(selectedCertificateKeyPair);
                     byte[] certBytes = selectedCertificateKeyPair.getCertificateBytes();
                     if (certBytes.length >= 3 && selectedCertificateKeyPair.isCertificateParsable()) {

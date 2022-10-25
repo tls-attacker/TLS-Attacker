@@ -95,18 +95,9 @@ public abstract class ClientKeyExchangeHandler<MessageT extends ClientKeyExchang
     protected void spawnNewSession() {
         if (tlsContext.getChooser().getServerSessionId().length != 0) {
             IdSession session =
-                new IdSession(tlsContext.getChooser().getServerSessionId(), tlsContext.getChooser().getMasterSecret());
+                new IdSession(tlsContext.getChooser().getMasterSecret(), tlsContext.getChooser().getServerSessionId());
             tlsContext.addNewSession(session);
             LOGGER.debug("Spawning new resumable Session");
-        }
-    }
-
-    private KeySet getKeySet(TlsContext tlsContext) {
-        try {
-            LOGGER.debug("Generating new KeySet");
-            return KeySetGenerator.generateKeySet(tlsContext);
-        } catch (NoSuchAlgorithmException | CryptoException ex) {
-            throw new UnsupportedOperationException("The specified Algorithm is not supported", ex);
         }
     }
 }

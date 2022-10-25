@@ -9,51 +9,47 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PreSharedKeyExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PSKIdentity;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import org.junit.jupiter.api.Test;
+
 import java.util.ArrayList;
 import java.util.List;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.Test;
 
-public class PreSharedKeyExtensionHandlerTest {
+public class PreSharedKeyExtensionHandlerTest
+    extends AbstractExtensionMessageHandlerTest<PreSharedKeyExtensionMessage, PreSharedKeyExtensionHandler> {
 
-    private PreSharedKeyExtensionHandler handler;
-    private TlsContext context;
-    private PskSet pskSet1;
-    private PskSet pskSet2;
+    private final PskSet pskSet1;
+    private final PskSet pskSet2;
 
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-
+    public PreSharedKeyExtensionHandlerTest() {
+        super(PreSharedKeyExtensionMessage::new, PreSharedKeyExtensionHandler::new);
         pskSet1 = new PskSet(new byte[] { 0x00 }, new byte[] { 0x00 }, "0", new byte[] { 0x00 }, new byte[] { 0x00 },
             CipherSuite.TLS_DHE_PSK_WITH_AES_128_CBC_SHA);
         pskSet2 = new PskSet(new byte[] { 0x01 }, new byte[] { 0x01 }, "1", new byte[] { 0x01 }, new byte[] { 0x01 },
             CipherSuite.TLS_DHE_PSK_WITH_3DES_EDE_CBC_SHA);
-        List<PskSet> pskSetList = new ArrayList<PskSet>();
+        List<PskSet> pskSetList = new ArrayList<>();
         pskSetList.add(pskSet1);
         pskSetList.add(pskSet2);
         context.setPskSets(pskSetList);
-
-        handler = new PreSharedKeyExtensionHandler(context);
     }
 
     @Test
-    public void testadjustContext() {
+    @Override
+    public void testadjustTLSExtensionContext() {
         int selectedIdentity = 1;
         PreSharedKeyExtensionMessage msg = new PreSharedKeyExtensionMessage();
         msg.setSelectedIdentity(selectedIdentity);
         handler.adjustContext(msg);
 
-        assertArrayEquals(context.getPsk(), pskSet2.getPreSharedKey());
-        assertEquals(context.getSelectedIdentityIndex(), selectedIdentity);
+        assertArrayEquals(pskSet2.getPreSharedKey(), context.getPsk());
+        assertEquals(selectedIdentity, context.getSelectedIdentityIndex());
     }
 
     @Test
@@ -61,8 +57,8 @@ public class PreSharedKeyExtensionHandlerTest {
         PreSharedKeyExtensionMessage msg = new PreSharedKeyExtensionMessage();
         handler.adjustContext(msg);
 
-        assertArrayEquals(context.getEarlyDataPSKIdentity(), pskSet1.getPreSharedKeyIdentity());
-        assertArrayEquals(context.getEarlyDataCipherSuite().getByteValue(), pskSet1.getCipherSuite().getByteValue());
+        assertArrayEquals(pskSet1.getPreSharedKeyIdentity(), context.getEarlyDataPSKIdentity());
+        assertArrayEquals(pskSet1.getCipherSuite().getByteValue(), context.getEarlyDataCipherSuite().getByteValue());
     }
 
     @Test
@@ -75,15 +71,15 @@ public class PreSharedKeyExtensionHandlerTest {
         id1.setIdentity(new byte[] { 0x03 });
         id2.setIdentity(new byte[] { 0x01 });
 
-        List<PSKIdentity> identityList = new ArrayList<PSKIdentity>();
+        List<PSKIdentity> identityList = new ArrayList<>();
         identityList.add(id1);
         identityList.add(id2);
         msg.setIdentities(identityList);
 
         handler.adjustContext(msg);
 
-        assertArrayEquals(context.getPsk(), pskSet2.getPreSharedKey());
-        assertArrayEquals(context.getEarlyDataCipherSuite().getByteValue(), pskSet2.getCipherSuite().getByteValue());
-        assertEquals(context.getSelectedIdentityIndex(), 1);
+        assertArrayEquals(pskSet2.getPreSharedKey(), context.getPsk());
+        assertArrayEquals(pskSet2.getCipherSuite().getByteValue(), context.getEarlyDataCipherSuite().getByteValue());
+        assertEquals(1, context.getSelectedIdentityIndex());
     }
 }

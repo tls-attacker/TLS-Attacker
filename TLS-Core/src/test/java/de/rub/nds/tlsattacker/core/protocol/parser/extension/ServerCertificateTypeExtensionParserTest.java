@@ -10,68 +10,39 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerCertificateTypeExtensionMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.io.ByteArrayInputStream;
+import org.junit.jupiter.api.Named;
+import org.junit.jupiter.params.provider.Arguments;
+
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import java.util.stream.Stream;
 
-@RunWith(Parameterized.class)
-public class ServerCertificateTypeExtensionParserTest {
+public class ServerCertificateTypeExtensionParserTest
+    extends AbstractExtensionParserTest<ServerCertificateTypeExtensionMessage, ServerCertificateTypeExtensionParser> {
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] {
-            { ArrayConverter.hexStringToByteArray("00"), null, Arrays.asList(CertificateType.X509),
-                ConnectionEndType.SERVER },
-            { ArrayConverter.hexStringToByteArray("0100"), 1, Arrays.asList(CertificateType.X509),
-                ConnectionEndType.CLIENT },
-            { ArrayConverter.hexStringToByteArray("020100"), 2,
-                Arrays.asList(CertificateType.OPEN_PGP, CertificateType.X509), ConnectionEndType.CLIENT } });
+    public ServerCertificateTypeExtensionParserTest() {
+        super(ServerCertificateTypeExtensionMessage.class, ServerCertificateTypeExtensionParser::new,
+            List.of(
+                Named.of("ServerCertificateTypeExtensionMessage::getCertificateTypesLength",
+                    ServerCertificateTypeExtensionMessage::getCertificateTypesLength),
+                Named.of("ServerCertificateTypeExtensionMessage::getCertificateTypes",
+                    ServerCertificateTypeExtensionMessage::getCertificateTypes)));
     }
 
-    private final byte[] expectedBytes;
-    private final Integer certificateTypesLength;
-    private final List<CertificateType> certificateTypes;
-    private final ConnectionEndType talkingConnectionEndType;
-    private ServerCertificateTypeExtensionParser parser;
-    private ServerCertificateTypeExtensionMessage msg;
-    private final Config config = Config.createConfig();
-
-    public ServerCertificateTypeExtensionParserTest(byte[] expectedBytes, Integer certificateTypesLength,
-        List<CertificateType> certificateTypes, ConnectionEndType talkingConnectionEndType) {
-        this.expectedBytes = expectedBytes;
-        this.certificateTypesLength = certificateTypesLength;
-        this.certificateTypes = certificateTypes;
-        this.talkingConnectionEndType = talkingConnectionEndType;
-    }
-
-    @Before
-    public void setUp() {
-        TlsContext tlsContext = new TlsContext(config);
-        tlsContext.setTalkingConnectionEndType(talkingConnectionEndType);
-        parser = new ServerCertificateTypeExtensionParser(new ByteArrayInputStream(expectedBytes), tlsContext);
-    }
-
-    @Test
-    public void testParse() {
-        msg = new ServerCertificateTypeExtensionMessage();
-        parser.parse(msg);
-
-        if (talkingConnectionEndType == ConnectionEndType.CLIENT) {
-            assertEquals(certificateTypesLength, msg.getCertificateTypesLength().getValue());
-        } else {
-            assertNull(msg.getCertificateTypesLength());
-        }
-        assertArrayEquals(CertificateType.toByteArray(certificateTypes), msg.getCertificateTypes().getValue());
+    public static Stream<Arguments> provideTestVectors() {
+        return Stream.of(
+            Arguments.of(ArrayConverter.hexStringToByteArray("0014000100"), List.of(ConnectionEndType.SERVER),
+                ExtensionType.SERVER_CERTIFICATE_TYPE, 1,
+                Arrays.asList(null, CertificateType.toByteArray(List.of(CertificateType.X509)), false)),
+            Arguments.of(ArrayConverter.hexStringToByteArray("001400020100"), List.of(ConnectionEndType.CLIENT),
+                ExtensionType.SERVER_CERTIFICATE_TYPE, 2,
+                List.of(1, CertificateType.toByteArray(List.of(CertificateType.X509)), true)),
+            Arguments.of(ArrayConverter.hexStringToByteArray("00140003020100"), List.of(ConnectionEndType.CLIENT),
+                ExtensionType.SERVER_CERTIFICATE_TYPE, 3, List.of(2,
+                    CertificateType.toByteArray(List.of(CertificateType.OPEN_PGP, CertificateType.X509)), true)));
     }
 }

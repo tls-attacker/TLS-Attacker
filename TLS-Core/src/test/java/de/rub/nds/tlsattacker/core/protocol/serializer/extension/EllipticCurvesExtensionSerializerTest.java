@@ -9,20 +9,23 @@
 
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import org.junit.Before;
-import org.junit.Test;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.EllipticCurvesExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.EllipticCurvesExtensionParserTest;
+import org.junit.jupiter.params.provider.Arguments;
 
-public class EllipticCurvesExtensionSerializerTest {
+import java.util.List;
+import java.util.stream.Stream;
 
-    @Before
-    public void setUp() {
+public class EllipticCurvesExtensionSerializerTest
+    extends AbstractExtensionMessageSerializerTest<EllipticCurvesExtensionMessage, EllipticCurvesExtensionSerializer> {
+
+    public EllipticCurvesExtensionSerializerTest() {
+        super(EllipticCurvesExtensionMessage::new, EllipticCurvesExtensionSerializer::new,
+            List.of((msg, obj) -> msg.setSupportedGroupsLength((Integer) obj),
+                (msg, obj) -> msg.setSupportedGroups((byte[]) obj)));
     }
 
-    /**
-     * Test of serializeExtensionContent method, of class EllipticCurvesExtensionSerializer.
-     */
-    @Test
-    public void testSerializeExtensionContent() {
+    public static Stream<Arguments> provideTestVectors() {
+        return EllipticCurvesExtensionParserTest.provideTestVectors();
     }
-
 }

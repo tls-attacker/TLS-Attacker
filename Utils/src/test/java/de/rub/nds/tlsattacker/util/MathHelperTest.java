@@ -9,19 +9,20 @@
 
 package de.rub.nds.tlsattacker.util;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+
 import java.math.BigInteger;
-import static org.junit.Assert.assertEquals;
-import org.junit.Test;
 
 public class MathHelperTest {
-
-    public MathHelperTest() {
-    }
 
     /**
      * Test of intfloordiv method, of class MathHelper.
      */
     @Test
+    @Disabled("Not implemented")
     public void testIntfloordiv_BigInteger_BigInteger() {
     }
 
@@ -29,6 +30,7 @@ public class MathHelperTest {
      * Test of intceildiv method, of class MathHelper.
      */
     @Test
+    @Disabled("Not implemented")
     public void testIntceildiv_BigInteger_BigInteger() {
     }
 
@@ -36,6 +38,7 @@ public class MathHelperTest {
      * Test of intfloordiv method, of class MathHelper.
      */
     @Test
+    @Disabled("Not implemented")
     public void testIntfloordiv_int_int() {
     }
 
@@ -43,6 +46,7 @@ public class MathHelperTest {
      * Test of intceildiv method, of class MathHelper.
      */
     @Test
+    @Disabled("Not implemented")
     public void testIntceildiv_int_int() {
     }
 
@@ -50,6 +54,7 @@ public class MathHelperTest {
      * Test of extendedEuclid method, of class MathHelper.
      */
     @Test
+    @Disabled("Not implemented")
     public void testExtendedEuclid() {
     }
 
@@ -57,6 +62,7 @@ public class MathHelperTest {
      * Test of gcd method, of class MathHelper.
      */
     @Test
+    @Disabled("Not implemented")
     public void testGcd() {
     }
 
@@ -64,6 +70,7 @@ public class MathHelperTest {
      * Test of inverseMod method, of class MathHelper.
      */
     @Test
+    @Disabled("Not implemented")
     public void testInverseMod() {
     }
 

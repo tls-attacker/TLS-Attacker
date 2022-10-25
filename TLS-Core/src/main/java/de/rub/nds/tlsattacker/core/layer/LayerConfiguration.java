@@ -19,7 +19,7 @@ import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
  * Contains a list of {@link DataContainer} with additional information about how to send and receive them and whether
  * they were sent/received correctly. See {@link SpecificContainerLayerConfiguration} and
  * {@link TillContainerLayerConfiguration} for implementations.
- * 
+ *
  * @param <Container>
  */
 public abstract class LayerConfiguration<Container extends DataContainer> {
@@ -44,7 +44,7 @@ public abstract class LayerConfiguration<Container extends DataContainer> {
 
     /**
      * Determines if the LayerConfiguration, based on the final list of DataContainers, is satisfied
-     * 
+     *
      * @param  list
      *              The list of DataContainers
      * @return      The final evaluation result
@@ -54,7 +54,7 @@ public abstract class LayerConfiguration<Container extends DataContainer> {
     /**
      * Determines if the LayerConfiguration, based on the current list of DataContainers, can possibly still be
      * satisfied
-     * 
+     *
      * @param  list
      *              The list of DataContainers
      * @return      The evaluation result based on the current DataContainers

@@ -11,35 +11,20 @@ package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.ApplicationMessageParserTest;
-import java.util.Collection;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class ApplicationMessageSerializerTest {
+import java.util.List;
+import java.util.stream.Stream;
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return ApplicationMessageParserTest.generateData();
+public class ApplicationMessageSerializerTest
+    extends AbstractTlsMessageSerializerTest<ApplicationMessage, ApplicationMessageSerializer> {
+
+    public ApplicationMessageSerializerTest() {
+        super(ApplicationMessage::new, ApplicationMessageSerializer::new,
+            List.of((msg, obj) -> msg.setData((byte[]) obj)));
     }
 
-    private byte[] message;
-
-    public ApplicationMessageSerializerTest(byte[] message) {
-        this.message = message;
-    }
-
-    /**
-     * Test of serializeBytes method, of class ApplicationMessageSerializer.
-     */
-    @Test
-    public void testSerializeBytes() {
-        ApplicationMessage message = new ApplicationMessage();
-        message.setData(this.message);
-        message.setCompleteResultingMessage(this.message);
-        ApplicationMessageSerializer serializer = new ApplicationMessageSerializer(message);
-        assertArrayEquals(this.message, serializer.serialize());
+    public static Stream<Arguments> provideTestVectors() {
+        return ApplicationMessageParserTest.provideTestVectors();
     }
 }

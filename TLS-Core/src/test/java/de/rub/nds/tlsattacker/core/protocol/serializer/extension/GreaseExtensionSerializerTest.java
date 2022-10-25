@@ -11,36 +11,20 @@ package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.GreaseExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.GreaseExtensionParserTest;
-import java.util.Collection;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class GreaseExtensionSerializerTest {
+import java.util.List;
+import java.util.stream.Stream;
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return GreaseExtensionParserTest.generateData();
+public class GreaseExtensionSerializerTest
+    extends AbstractExtensionMessageSerializerTest<GreaseExtensionMessage, GreaseExtensionSerializer> {
+
+    public GreaseExtensionSerializerTest() {
+        super(GreaseExtensionMessage::new, GreaseExtensionSerializer::new,
+            List.of((msg, obj) -> msg.setRandomData((byte[]) obj)));
     }
 
-    private final byte[] extension;
-    private final byte[] randomData;
-
-    public GreaseExtensionSerializerTest(byte[] extension, byte[] randomData) {
-        this.extension = extension;
-        this.randomData = randomData;
-    }
-
-    /**
-     * Test of serializeExtensionContent method, of class KeyShareExtensionSerializerTest.
-     */
-    @Test
-    public void testSerializeExtensionContent() {
-        GreaseExtensionMessage msg = new GreaseExtensionMessage();
-        msg.setRandomData(randomData);
-        GreaseExtensionSerializer serializer = new GreaseExtensionSerializer(msg);
-        assertArrayEquals(extension, serializer.serializeExtensionContent());
+    public static Stream<Arguments> provideTestVectors() {
+        return GreaseExtensionParserTest.provideTestVectors();
     }
 }

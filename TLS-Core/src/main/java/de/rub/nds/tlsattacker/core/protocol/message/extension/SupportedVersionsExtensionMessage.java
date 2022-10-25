@@ -20,7 +20,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SupportedVersio
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SupportedVersionsExtensionSerializer;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "SupportedVersions")
 public class SupportedVersionsExtensionMessage extends ExtensionMessage<SupportedVersionsExtensionMessage> {

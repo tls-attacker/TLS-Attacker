@@ -31,6 +31,7 @@ public abstract class HandshakeMessageHandler<HandshakeMessageT extends Handshak
     }
 
     protected void adjustExtensions(HandshakeMessageT message) {
+        LOGGER.debug("Adjusting context for extensions");
         if (message.getExtensions() != null) {
             for (ExtensionMessage extension : message.getExtensions()) {
                 Handler handler = extension.getHandler(tlsContext);

@@ -9,46 +9,22 @@
 
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.ECDHClientKeyExchangeParserTest;
-import java.util.Collection;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class ECDHClientKeyExchangeSerializerTest {
+import java.util.List;
+import java.util.stream.Stream;
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return ECDHClientKeyExchangeParserTest.generateData();
+public class ECDHClientKeyExchangeSerializerTest extends AbstractHandshakeMessageSerializerTest<
+    ECDHClientKeyExchangeMessage, ECDHClientKeyExchangeSerializer<ECDHClientKeyExchangeMessage>> {
+
+    public ECDHClientKeyExchangeSerializerTest() {
+        super(ECDHClientKeyExchangeMessage::new, ECDHClientKeyExchangeSerializer::new,
+            List.of((msg, obj) -> msg.setPublicKeyLength((Integer) obj), (msg, obj) -> msg.setPublicKey((byte[]) obj)));
     }
 
-    private byte[] message;
-    private int serializedKeyLength;
-    private byte[] serializedKey;
-    private ProtocolVersion version;
-
-    public ECDHClientKeyExchangeSerializerTest(byte[] message, int serializedKeyLength, byte[] serializedKey,
-        ProtocolVersion version) {
-        this.message = message;
-        this.serializedKeyLength = serializedKeyLength;
-        this.serializedKey = serializedKey;
-        this.version = version;
+    public static Stream<Arguments> provideTestVectors() {
+        return ECDHClientKeyExchangeParserTest.provideTestVectors();
     }
-
-    /**
-     * Test of serializeHandshakeMessageContent method, of class ECDHClientKeyExchangeSerializer.
-     */
-    @Test
-    public void testSerializeHandshakeMessageContent() {
-        ECDHClientKeyExchangeMessage msg = new ECDHClientKeyExchangeMessage();
-        msg.setPublicKey(serializedKey);
-        msg.setPublicKeyLength(serializedKeyLength);
-        ECDHClientKeyExchangeSerializer serializer = new ECDHClientKeyExchangeSerializer(msg);
-        assertArrayEquals(this.message, serializer.serializeHandshakeMessageContent());
-    }
-
 }

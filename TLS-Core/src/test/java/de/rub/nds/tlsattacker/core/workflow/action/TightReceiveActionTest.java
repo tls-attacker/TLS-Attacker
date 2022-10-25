@@ -22,15 +22,15 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import de.rub.nds.tlsattacker.util.tests.SlowTests;
+import de.rub.nds.tlsattacker.util.tests.TestCategories;
 import java.io.StringReader;
 import java.io.StringWriter;
-import javax.xml.bind.JAXB;
+import jakarta.xml.bind.JAXB;
 import static org.hamcrest.CoreMatchers.equalTo;
 import org.junit.After;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Tag;
 
 public class TightReceiveActionTest {
 
@@ -147,19 +147,19 @@ public class TightReceiveActionTest {
     }
 
     @Test
-    @Category(SlowTests.class)
+    @Tag(TestCategories.INTEGRATION_TEST)
     public void marshalingEmptyActionYieldsMinimalOutput() {
         ActionTestUtils.marshalingEmptyActionYieldsMinimalOutput(TightReceiveAction.class);
     }
 
     @Test
-    @Category(SlowTests.class)
+    @Tag(TestCategories.INTEGRATION_TEST)
     public void marshalingAndUnmarshalingEmptyObjectYieldsEqualObject() {
         ActionTestUtils.marshalingAndUnmarshalingEmptyObjectYieldsEqualObject(TightReceiveAction.class);
     }
 
     @Test
-    @Category(SlowTests.class)
+    @Tag(TestCategories.INTEGRATION_TEST)
     public void marshalingAndUnmarshalingFilledObjectYieldsEqualObject() {
         ActionTestUtils.marshalingAndUnmarshalingFilledObjectYieldsEqualObject(action);
     }

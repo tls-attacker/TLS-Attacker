@@ -9,30 +9,20 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import de.rub.nds.tlsattacker.core.protocol.message.UnknownHandshakeMessage;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-public class UnknownHandshakeHandlerTest {
+public class UnknownHandshakeHandlerTest
+    extends AbstractTlsMessageHandlerTest<UnknownHandshakeMessage, UnknownHandshakeHandler> {
 
-    private UnknownHandshakeHandler handler;
-    private TlsContext context;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new UnknownHandshakeHandler(context);
+    public UnknownHandshakeHandlerTest() {
+        super(UnknownHandshakeMessage::new, UnknownHandshakeHandler::new);
     }
 
-    @After
-    public void tearDown() {
-    }
-
-    /**
-     * Test of adjustContext method, of class UnknownHandshakeHandler.
-     */
     @Test
+    @Disabled("Not implemented")
+    @Override
     public void testadjustContext() {
     }
 }

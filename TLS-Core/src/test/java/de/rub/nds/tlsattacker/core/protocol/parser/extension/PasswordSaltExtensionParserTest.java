@@ -10,48 +10,28 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PasswordSaltExtensionMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import java.io.ByteArrayInputStream;
-import java.util.Arrays;
-import java.util.Collection;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Named;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class PasswordSaltExtensionParserTest {
+import java.util.List;
+import java.util.stream.Stream;
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return Arrays
-            .asList(new Object[][] { { ArrayConverter.hexStringToByteArray("0010843711c21d47ce6e6383cdda37e47da3"), 16,
-                ArrayConverter.hexStringToByteArray("843711c21d47ce6e6383cdda37e47da3") } });
+public class PasswordSaltExtensionParserTest
+    extends AbstractExtensionParserTest<PasswordSaltExtensionMessage, PasswordSaltExtensionParser> {
+
+    public PasswordSaltExtensionParserTest() {
+        super(PasswordSaltExtensionMessage.class, PasswordSaltExtensionParser::new,
+            List.of(
+                Named.of("PasswordSaltExtensionMessage::getSaltLength", PasswordSaltExtensionMessage::getSaltLength),
+                Named.of("PasswordSaltExtensionMessage::getSalt", PasswordSaltExtensionMessage::getSalt)));
     }
 
-    private final byte[] expectedBytes;
-    private final int saltLength;
-    private final byte[] salt;
-    private final Config config = Config.createConfig();
-
-    public PasswordSaltExtensionParserTest(byte[] expectedBytes, int saltLength, byte[] salt) {
-        this.expectedBytes = expectedBytes;
-        this.saltLength = saltLength;
-        this.salt = salt;
+    public static Stream<Arguments> provideTestVectors() {
+        return Stream
+            .of(Arguments.of(ArrayConverter.hexStringToByteArray("001f00120010843711c21d47ce6e6383cdda37e47da3"),
+                List.of(), ExtensionType.PASSWORD_SALT, 18,
+                List.of(16, ArrayConverter.hexStringToByteArray("843711c21d47ce6e6383cdda37e47da3"))));
     }
-
-    @Test
-    public void testParse() {
-        TlsContext tlsContext = new TlsContext(config);
-        PasswordSaltExtensionParser parser =
-            new PasswordSaltExtensionParser(new ByteArrayInputStream(expectedBytes), tlsContext);
-        PasswordSaltExtensionMessage msg = new PasswordSaltExtensionMessage();
-        parser.parse(msg);
-        assertEquals(saltLength, (long) msg.getSaltLength().getValue());
-        assertArrayEquals(salt, msg.getSalt().getValue());
-    }
-
 }

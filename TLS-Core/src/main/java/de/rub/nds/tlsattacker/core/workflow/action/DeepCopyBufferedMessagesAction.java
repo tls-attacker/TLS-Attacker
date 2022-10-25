@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import java.io.*;
 import java.util.LinkedList;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -48,15 +48,13 @@ public class DeepCopyBufferedMessagesAction extends CopyContextFieldAction {
 
     private void deepCopyMessages(TlsContext src, TlsContext dst) {
         LinkedList<ProtocolMessage> messageBuffer = new LinkedList<>();
-        ObjectOutputStream outStream;
         ObjectInputStream inStream;
+        ObjectOutputStream outStream;
         try {
             for (ProtocolMessage message : src.getMessageBuffer()) {
-
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 outStream = new ObjectOutputStream(stream);
                 outStream.writeObject(message);
-                outStream.close();
                 inStream = new ObjectInputStream(new ByteArrayInputStream(stream.toByteArray()));
                 ProtocolMessage messageCopy = (ProtocolMessage) inStream.readObject();
 
@@ -68,7 +66,6 @@ public class DeepCopyBufferedMessagesAction extends CopyContextFieldAction {
             LOGGER.error("Error while creating deep copy of messageBuffer");
             throw new WorkflowExecutionException(ex.toString());
         }
-
         dst.setMessageBuffer(messageBuffer);
     }
 }

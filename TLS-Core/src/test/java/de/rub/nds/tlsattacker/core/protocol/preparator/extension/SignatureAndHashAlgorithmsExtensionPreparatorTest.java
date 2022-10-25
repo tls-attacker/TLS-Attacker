@@ -9,20 +9,26 @@
 
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
-import org.junit.Before;
-import org.junit.Test;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SignatureAndHashAlgorithmsExtensionSerializer;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-public class SignatureAndHashAlgorithmsExtensionPreparatorTest {
+public class SignatureAndHashAlgorithmsExtensionPreparatorTest
+    extends AbstractExtensionMessagePreparatorTest<SignatureAndHashAlgorithmsExtensionMessage,
+        SignatureAndHashAlgorithmsExtensionSerializer, SignatureAndHashAlgorithmsExtensionPreparator> {
 
-    @Before
-    public void setUp() {
+    public SignatureAndHashAlgorithmsExtensionPreparatorTest() {
+        super(SignatureAndHashAlgorithmsExtensionMessage::new, SignatureAndHashAlgorithmsExtensionSerializer::new,
+            SignatureAndHashAlgorithmsExtensionPreparator::new);
     }
 
     /**
      * Test of prepareExtensionContent method, of class SignatureAndHashAlgorithmsExtensionPreparator.
      */
     @Test
-    public void testPrepareExtensionContent() {
+    @Disabled("Not implemented")
+    @Override
+    public void testPrepare() {
     }
-
 }

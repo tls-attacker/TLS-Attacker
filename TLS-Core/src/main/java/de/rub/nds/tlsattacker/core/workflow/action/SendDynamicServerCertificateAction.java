@@ -9,7 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
@@ -22,14 +21,12 @@ import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
-import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -53,26 +50,27 @@ public class SendDynamicServerCertificateAction extends MessageAction implements
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
         }
-        messages = new LinkedList<>();
-        WorkflowConfigurationFactory workflowFactory = new WorkflowConfigurationFactory(state.getConfig());
-        CipherSuite selectedCipherSuite = tlsContext.getSelectedCipherSuite();
-        if (workflowFactory.shouldServerSendACertificate(selectedCipherSuite)) {
-            messages.add(new CertificateMessage());
-        }
-        String sending = getReadableString(messages);
-        if (hasDefaultAlias()) {
-            LOGGER.info("Sending Dynamic Certificate: " + sending);
-        } else {
-            LOGGER.info("Sending Dynamic Certificate (" + connectionAlias + "): " + sending);
-        }
 
-        try {
-            send(tlsContext, messages, fragments, records);
-            setExecuted(true);
-        } catch (IOException e) {
-            tlsContext.setReceivedTransportHandlerException(true);
-            LOGGER.debug(e);
-            setExecuted(getActionOptions().contains(ActionOption.MAY_FAIL));
+        messages = new LinkedList<>();
+        CipherSuite selectedCipherSuite = tlsContext.getChooser().getSelectedCipherSuite();
+        if (selectedCipherSuite.requiresServerCertificateMessage()) {
+            messages.add(new CertificateMessage());
+
+            String sending = getReadableString(messages);
+            if (hasDefaultAlias()) {
+                LOGGER.info("Sending Dynamic Certificate: " + sending);
+            } else {
+                LOGGER.info("Sending Dynamic Certificate (" + connectionAlias + "): " + sending);
+            }
+
+            try {
+                send(tlsContext, messages, fragments, records);
+                setExecuted(true);
+            } catch (IOException e) {
+                tlsContext.setReceivedTransportHandlerException(true);
+                LOGGER.debug(e);
+                setExecuted(getActionOptions().contains(ActionOption.MAY_FAIL));
+            }
         }
     }
 
@@ -119,16 +117,6 @@ public class SendDynamicServerCertificateAction extends MessageAction implements
     }
 
     @Override
-    public void setRecords(List<Record> records) {
-        this.records = records;
-    }
-
-    @Override
-    public void setFragments(List<DtlsHandshakeMessageFragment> fragments) {
-        this.fragments = fragments;
-    }
-
-    @Override
     public void reset() {
         List<ModifiableVariableHolder> holders = new LinkedList<>();
         if (messages != null) {
@@ -162,6 +150,7 @@ public class SendDynamicServerCertificateAction extends MessageAction implements
         return records;
     }
 
+    @Override
     public List<DtlsHandshakeMessageFragment> getSendFragments() {
         return fragments;
     }
@@ -177,7 +166,7 @@ public class SendDynamicServerCertificateAction extends MessageAction implements
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final SendDynamicClientKeyExchangeAction other = (SendDynamicClientKeyExchangeAction) obj;
+        final SendDynamicServerCertificateAction other = (SendDynamicServerCertificateAction) obj;
         if (!Objects.equals(this.messages, other.messages)) {
             return false;
         }

@@ -12,7 +12,7 @@ package de.rub.nds.tlsattacker.core.protocol.message.extension;
 import java.io.InputStream;
 import java.util.Random;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;

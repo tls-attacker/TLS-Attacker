@@ -31,7 +31,7 @@ import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Objects;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "ServerHello")
 public class ServerHelloMessage extends HelloMessage {
@@ -303,6 +303,16 @@ public class ServerHelloMessage extends HelloMessage {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public String toCompactString() {
+        Boolean isHrr = isTls13HelloRetryRequest();
+        String compactString = super.toCompactString();
+        if (isHrr != null && isHrr == true) {
+            compactString += "(HRR)";
+        }
+        return compactString;
     }
 
     @Override

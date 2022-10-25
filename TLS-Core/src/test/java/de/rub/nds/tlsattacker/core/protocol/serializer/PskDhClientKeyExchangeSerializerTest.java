@@ -9,51 +9,23 @@
 
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.PskDhClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.PskDhClientKeyExchangeParserTest;
-import java.util.Collection;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class PskDhClientKeyExchangeSerializerTest {
+import java.util.List;
+import java.util.stream.Stream;
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return PskDhClientKeyExchangeParserTest.generateData();
+public class PskDhClientKeyExchangeSerializerTest
+    extends AbstractHandshakeMessageSerializerTest<PskDhClientKeyExchangeMessage, PskDhClientKeyExchangeSerializer> {
+
+    public PskDhClientKeyExchangeSerializerTest() {
+        super(PskDhClientKeyExchangeMessage::new, PskDhClientKeyExchangeSerializer::new,
+            List.of((msg, obj) -> msg.setIdentityLength((Integer) obj), (msg, obj) -> msg.setIdentity((byte[]) obj),
+                (msg, obj) -> msg.setPublicKeyLength((Integer) obj), (msg, obj) -> msg.setPublicKey((byte[]) obj)));
     }
 
-    private final byte[] expectedPart;
-
-    private int serializedPskIdentityLength;
-    private byte[] serializedPskIdentity;
-    private ProtocolVersion version;
-
-    public PskDhClientKeyExchangeSerializerTest(byte[] message, int serializedPskIdentityLength,
-        byte[] serializedPskIdentity, ProtocolVersion version) {
-        this.expectedPart = message;
-        this.serializedPskIdentityLength = serializedPskIdentityLength;
-        this.serializedPskIdentity = serializedPskIdentity;
-        this.version = version;
+    public static Stream<Arguments> provideTestVectors() {
+        return PskDhClientKeyExchangeParserTest.provideTestVectors();
     }
-
-    /**
-     * Test of serializeHandshakeMessageContent method, of class PskDhClientKeyExchangeSerializer.
-     */
-    @Test
-    public void testSerializeHandshakeMessageContent() {
-        PskDhClientKeyExchangeMessage msg = new PskDhClientKeyExchangeMessage();
-        msg.setIdentity(serializedPskIdentity);
-        msg.setIdentityLength(serializedPskIdentityLength);
-        msg.setPublicKey(ArrayConverter.hexStringToByteArray(
-            "32d08c13c3c7ef291e4bc7854eed91ddef2737260c09573aa8def5ce79e964a5598797470501ee6ff8be72cd8c3bbaf46ab55b77851029db3cfb38a12040a15bc8512dba290d9cae345ecf24f347e1c80c65b230e265e13c8a571e0842539536d062a6141de09017d27ac2d64c0d29cbaa19d5e55c3c6c5035c87788ac776177"));
-        msg.setPublicKeyLength(128);
-        PskDhClientKeyExchangeSerializer serializer = new PskDhClientKeyExchangeSerializer(msg);
-        assertArrayEquals(expectedPart, serializer.serializeHandshakeMessageContent());
-    }
-
 }

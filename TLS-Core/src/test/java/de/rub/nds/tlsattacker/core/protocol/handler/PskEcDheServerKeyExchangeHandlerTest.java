@@ -9,37 +9,28 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.protocol.message.PskEcDheServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import org.junit.jupiter.api.Test;
+
 import java.math.BigInteger;
-import org.junit.After;
-import static org.junit.Assert.assertNull;
-import org.junit.Before;
-import org.junit.Test;
 
-public class PskEcDheServerKeyExchangeHandlerTest {
+public class PskEcDheServerKeyExchangeHandlerTest
+    extends AbstractTlsMessageHandlerTest<PskEcDheServerKeyExchangeMessage, PskEcDheServerKeyExchangeHandler> {
 
-    private PskEcDheServerKeyExchangeHandler handler;
-    private TlsContext context;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new PskEcDheServerKeyExchangeHandler(context);
-
-    }
-
-    @After
-    public void tearDown() {
+    public PskEcDheServerKeyExchangeHandlerTest() {
+        super(PskEcDheServerKeyExchangeMessage::new, PskEcDheServerKeyExchangeHandler::new);
     }
 
     /**
      * Test of adjustContext method, of class PskEcDheServerKeyExchangeHandler.
      */
     @Test
+    @Override
     public void testadjustContext() {
         PskEcDheServerKeyExchangeMessage message = new PskEcDheServerKeyExchangeMessage();
         message.setCurveType(EllipticCurveType.NAMED_CURVE.getValue());

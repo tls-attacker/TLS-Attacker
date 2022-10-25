@@ -9,36 +9,21 @@
 
 package de.rub.nds.tlsattacker.core.protocol.message;
 
-import org.junit.After;
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.params.provider.Arguments;
 
-public class CertificateRequestMessageTest {
-    CertificateRequestMessage message;
+import java.util.stream.Stream;
 
-    @Before
-    public void setUp() {
-        message = new CertificateRequestMessage();
+public class CertificateRequestMessageTest extends AbstractMessageTest<CertificateRequestMessage> {
+
+    public CertificateRequestMessageTest() {
+        super(CertificateRequestMessage::new,
+            "CertificateRequestMessage:\n" + "  Certificate Types Count: %s\n" + "  Certificate Types: %s\n"
+                + "  Signature Hash Algorithms Length: %s\n" + "  Signature Hash Algorithms: %s\n"
+                + "  Distinguished Names Length: %s");
     }
 
-    @After
-    public void tearDown() {
-    }
-
-    /**
-     * Test of toString method, of class CertificateRequestMessage.
-     */
-    @Test
-    public void testToString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("CertificateRequestMessage:");
-        sb.append("\n  Certificate Types Count: ").append("null");
-        sb.append("\n  Certificate Types: ").append("null");
-        sb.append("\n  Signature Hash Algorithms Length: ").append("null");
-        sb.append("\n  Signature Hash Algorithms: ").append("null");
-        sb.append("\n  Distinguished Names Length: ").append("null");
-        assertEquals(message.toString(), sb.toString());
+    public static Stream<Arguments> provideToStringTestVectors() {
+        return Stream.of(Arguments.of(new Object[] { null, null, null, null, null }, null));
     }
 
 }

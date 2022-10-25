@@ -18,9 +18,13 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.ByteBuffer;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class TimingProxyClientTcpTransportHandler extends ClientTcpTransportHandler
     implements ProxyableTransportHandler, TimeableTransportHandler {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     protected Socket controlSocket;
     protected String proxyDataHostName = "127.0.0.1";
@@ -51,7 +55,6 @@ public class TimingProxyClientTcpTransportHandler extends ClientTcpTransportHand
                 throw new IOException("Should return 64 bit unsigned int");
             }
             measurement = ByteBuffer.wrap(controlData).getLong();
-
         }
         return data;
     }
@@ -83,12 +86,13 @@ public class TimingProxyClientTcpTransportHandler extends ClientTcpTransportHand
         controlSocket = new Socket();
         controlSocket.connect(new InetSocketAddress(proxyControlHostName, proxyControlPort), (int) connectionTimeout);
         cachedSocketState = null;
-        super.initialize();
-
         /* tell the proxy where the real server is */
         controlSocket.getOutputStream().write((hostname + "\n").getBytes());
         controlSocket.getOutputStream().write((Integer.toString(dstPort) + "\n").getBytes());
         controlSocket.getOutputStream().flush();
+        hostname = proxyDataHostName;
+        dstPort = proxyDataPort;
+        super.initialize();
     }
 
     @Override

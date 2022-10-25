@@ -9,39 +9,20 @@
 
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.ServerHelloDoneParserTest;
-import java.util.Collection;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class ServerHelloDoneSerializerTest {
+import java.util.stream.Stream;
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return ServerHelloDoneParserTest.generateData();
+public class ServerHelloDoneSerializerTest
+    extends AbstractHandshakeMessageSerializerTest<ServerHelloDoneMessage, ServerHelloDoneSerializer> {
+
+    public ServerHelloDoneSerializerTest() {
+        super(ServerHelloDoneMessage::new, ServerHelloDoneSerializer::new);
     }
 
-    private byte[] message;
-    private ProtocolVersion version;
-
-    public ServerHelloDoneSerializerTest(byte[] message, ProtocolVersion version) {
-        this.message = message;
-        this.version = version;
+    public static Stream<Arguments> provideTestVectors() {
+        return ServerHelloDoneParserTest.provideTestVectors();
     }
-
-    /**
-     * Test of serializeHandshakeMessageContent method, of class ServerHelloDoneSerializer.
-     */
-    @Test
-    public void testSerializeHandshakeMessageContent() {
-        ServerHelloDoneMessage msg = new ServerHelloDoneMessage();
-        ServerHelloDoneSerializer serializer = new ServerHelloDoneSerializer(msg);
-        assertArrayEquals(message, serializer.serializeHandshakeMessageContent());
-    }
-
 }

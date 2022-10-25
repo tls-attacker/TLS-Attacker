@@ -9,49 +9,38 @@
 
 package de.rub.nds.tlsattacker.core.config.delegate;
 
-import com.beust.jcommander.JCommander;
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.modifiablevariable.util.BadRandom;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.util.KeyStoreGenerator;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.operator.OperatorCreationException;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.*;
 import java.security.cert.CertificateException;
 import java.util.Random;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.bouncycastle.operator.OperatorCreationException;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.rules.TemporaryFolder;
 
-public class CertificateDelegateTest {
+public class CertificateDelegateTest extends AbstractDelegateTest<CertificateDelegate> {
 
-    private CertificateDelegate delegate;
-    private JCommander jcommander;
-    private String args[];
-    private BadRandom random;
-
-    @Rule
-    public final ExpectedException exception = ExpectedException.none();
-
-    @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
-
-    @Before
-    public void setUp() {
-        delegate = new CertificateDelegate();
-        jcommander = new JCommander(delegate);
-        random = new BadRandom(new Random(0), null);
+    @BeforeAll
+    public static void setUpClass() {
         Security.addProvider(new BouncyCastleProvider());
+    }
 
+    @BeforeEach
+    public void setUp() {
+        super.setUp(new CertificateDelegate());
     }
 
     /**
@@ -64,7 +53,7 @@ public class CertificateDelegateTest {
         args[0] = "-keystore";
         args[1] = "testkeystore";
         jcommander.parse(args);
-        assertTrue("Keystore parameter gets not parsed correctly", delegate.getKeystore().equals(args[1]));
+        assertEquals(args[1], delegate.getKeystore(), "Keystore parameter gets not parsed correctly");
     }
 
     /**
@@ -73,7 +62,7 @@ public class CertificateDelegateTest {
     @Test
     public void testSetKeystore() {
         delegate.setKeystore("testKey");
-        assertTrue("Keystore setter is not working correctly", delegate.getKeystore().equals("testKey"));
+        assertEquals("testKey", delegate.getKeystore(), "Keystore setter is not working correctly");
     }
 
     /**
@@ -86,7 +75,7 @@ public class CertificateDelegateTest {
         args[0] = "-password";
         args[1] = "testpassword";
         jcommander.parse(args);
-        assertTrue("Password parameter gets not parsed correctly", delegate.getPassword().equals(args[1]));
+        assertEquals(args[1], delegate.getPassword(), "Password parameter gets not parsed correctly");
     }
 
     /**
@@ -95,7 +84,7 @@ public class CertificateDelegateTest {
     @Test
     public void testSetPassword() {
         delegate.setPassword("mypassword");
-        assertTrue("Password setter is not working correctly", delegate.getPassword().equals("mypassword"));
+        assertEquals("mypassword", delegate.getPassword(), "Password setter is not working correctly");
     }
 
     /**
@@ -107,7 +96,7 @@ public class CertificateDelegateTest {
         args[0] = "-alias";
         args[1] = "testalias";
         jcommander.parse(args);
-        assertTrue("Alias parameter gets not parsed correctly", delegate.getAlias().equals(args[1]));
+        assertEquals(args[1], delegate.getAlias(), "Alias parameter gets not parsed correctly");
     }
 
     /**
@@ -116,12 +105,12 @@ public class CertificateDelegateTest {
     @Test
     public void testSetAlias() {
         delegate.setAlias("myTestAlias");
-        assertTrue("Alias setter is not working correctly", delegate.getAlias().equals("myTestAlias"));
+        assertEquals("myTestAlias", delegate.getAlias(), "Alias setter is not working correctly");
     }
 
     /**
      * Test of applyDelegate method, of class CertificateDelegate.
-     * 
+     *
      * @throws org.bouncycastle.operator.OperatorCreationException
      * @throws java.security.cert.CertificateException
      * @throws java.security.SignatureException
@@ -131,11 +120,15 @@ public class CertificateDelegateTest {
      * @throws java.security.KeyStoreException
      */
     @Test
-    public void testApplyDelegate() throws NoSuchAlgorithmException, CertificateException, IOException,
-        InvalidKeyException, KeyStoreException, NoSuchProviderException, SignatureException, OperatorCreationException {
+    public void testApplyDelegate(@TempDir File tempDir)
+        throws NoSuchAlgorithmException, CertificateException, IOException, InvalidKeyException, KeyStoreException,
+        NoSuchProviderException, SignatureException, OperatorCreationException {
+        BadRandom random = new BadRandom(new Random(0), null);
         KeyStore store = KeyStoreGenerator.createKeyStore(KeyStoreGenerator.createRSAKeyPair(1024, random), random);
-        File keyStoreFile = folder.newFile("key.store");
-        store.store(new FileOutputStream(keyStoreFile), "password".toCharArray());
+        File keyStoreFile = new File(tempDir, "key.store");
+        try (FileOutputStream fos = new FileOutputStream(keyStoreFile)) {
+            store.store(fos, "password".toCharArray());
+        }
         args = new String[6];
         args[0] = "-keystore";
         args[1] = keyStoreFile.getAbsolutePath();
@@ -144,13 +137,13 @@ public class CertificateDelegateTest {
         args[4] = "-alias";
         args[5] = "alias";
         jcommander.parse(args);
-        assertTrue("Keystore parameter gets not parsed correctly", delegate.getKeystore().equals(args[1]));
-        assertTrue("Password parameter gets not parsed correctly", delegate.getPassword().equals(args[3]));
-        assertTrue("Alias parameter gets not parsed correctly", delegate.getAlias().equals(args[5]));
+        assertEquals(args[1], delegate.getKeystore(), "Keystore parameter gets not parsed correctly");
+        assertEquals(args[3], delegate.getPassword(), "Password parameter gets not parsed correctly");
+        assertEquals(args[5], delegate.getAlias(), "Alias parameter gets not parsed correctly");
         Config config = Config.createConfig();
         config.setDefaultExplicitCertificateKeyPair(null);
         delegate.applyDelegate(config);
-        assertNotNull("Certificate could not be loaded", config.getDefaultExplicitCertificateKeyPair());
+        assertNotNull(config.getDefaultExplicitCertificateKeyPair(), "Certificate could not be loaded");
     }
 
     @Test
@@ -161,17 +154,16 @@ public class CertificateDelegateTest {
         args[2] = "-alias";
         args[3] = "default";
         jcommander.parse(args);
-        assertTrue("Password parameter gets not parsed correctly", delegate.getPassword().equals(args[1]));
-        assertTrue("Alias parameter gets not parsed correctly", delegate.getAlias().equals(args[3]));
+        assertEquals(args[1], delegate.getPassword(), "Password parameter gets not parsed correctly");
+        assertEquals(args[3], delegate.getAlias(), "Alias parameter gets not parsed correctly");
         Config config = Config.createConfig();
         config.setDefaultExplicitCertificateKeyPair(null);
 
-        exception.expect(ParameterException.class);
-        exception.expectMessage("The following parameters are required for loading a keystore:");
-        delegate.applyDelegate(config);
+        ParameterException exception = assertThrows(ParameterException.class, () -> delegate.applyDelegate(config));
+        assertTrue(exception.getMessage().startsWith("The following parameters are required for loading a keystore:"));
     }
 
-    @Test(expected = ConfigurationException.class)
+    @Test
     public void testApplyDelegateInvalidPassword() {
         args = new String[6];
         args[0] = "-keystore";
@@ -182,10 +174,10 @@ public class CertificateDelegateTest {
         args[5] = "default";
         jcommander.parse(args);
         Config config = Config.createConfig();
-        delegate.applyDelegate(config);
+        assertThrows(ConfigurationException.class, () -> delegate.applyDelegate(config));
     }
 
-    @Test(expected = ConfigurationException.class)
+    @Test
     public void testApplyDelegateInvalidAlias() {
         args = new String[6];
         args[0] = "-keystore";
@@ -196,10 +188,10 @@ public class CertificateDelegateTest {
         args[5] = "notthecorrectalias";
         jcommander.parse(args);
         Config config = Config.createConfig();
-        delegate.applyDelegate(config);
+        assertThrows(ConfigurationException.class, () -> delegate.applyDelegate(config));
     }
 
-    @Test(expected = ConfigurationException.class)
+    @Test
     public void testApplyDelegateInvalidJKS() {
         args = new String[6];
         args[0] = "-keystore";
@@ -210,7 +202,7 @@ public class CertificateDelegateTest {
         args[5] = "default";
         jcommander.parse(args);
         Config config = Config.createConfig();
-        delegate.applyDelegate(config);
+        assertThrows(ConfigurationException.class, () -> delegate.applyDelegate(config));
     }
 
     @Test
@@ -218,7 +210,6 @@ public class CertificateDelegateTest {
         Config config = Config.createConfig();
         Config config2 = Config.createConfig();
         delegate.applyDelegate(config);
-        assertTrue(EqualsBuilder.reflectionEquals(config, config2));// little
-        // ugly
+        assertTrue(EqualsBuilder.reflectionEquals(config, config2));
     }
 }

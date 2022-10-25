@@ -9,20 +9,24 @@
 
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
-import org.junit.Before;
-import org.junit.Test;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.EllipticCurvesExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.EllipticCurvesExtensionSerializer;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-public class EllipticCurvesExtensionPreparatorTest {
+public class EllipticCurvesExtensionPreparatorTest extends AbstractExtensionMessagePreparatorTest<
+    EllipticCurvesExtensionMessage, EllipticCurvesExtensionSerializer, EllipticCurvesExtensionPreparator> {
 
-    @Before
-    public void setUp() {
+    public EllipticCurvesExtensionPreparatorTest() {
+        super(EllipticCurvesExtensionMessage::new, EllipticCurvesExtensionSerializer::new,
+            EllipticCurvesExtensionPreparator::new);
     }
 
     /**
      * Test of prepareExtensionContent method, of class EllipticCurvesExtensionPreparator.
      */
     @Test
-    public void testPrepareExtensionContent() {
+    @Disabled("Not implemented")
+    public void testPrepare() {
     }
-
 }

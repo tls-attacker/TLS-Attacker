@@ -9,7 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.layer;
 
-import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.state.Context;
@@ -18,6 +17,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -54,7 +54,7 @@ public class LayerStack {
     }
 
     public final ProtocolLayer getLayer(Class<? extends ProtocolLayer> layerClass) {
-        for (ProtocolLayer layer : layerList) {
+        for (ProtocolLayer layer : getLayerList()) {
             if (layer.getClass().equals(layerClass)) {
                 return layer;
             }
@@ -63,16 +63,16 @@ public class LayerStack {
     }
 
     public ProtocolLayer getHighestLayer() {
-        return layerList.get(0);
+        return getLayerList().get(0);
     }
 
     public ProtocolLayer getLowestLayer() {
-        return layerList.get(layerList.size() - 1);
+        return getLayerList().get(getLayerList().size() - 1);
     }
 
     /**
      * Sends data over the protocol stack based on the layer configurations provided in layerConfigurationList.
-     * 
+     *
      * @param  layerConfigurationList
      *                                Contains {@link DataContainer} to be sent through the protocol stack.
      * @return                        LayerStackProcessingResult Contains information about the "send" execution. Does
@@ -82,27 +82,27 @@ public class LayerStack {
      */
     public LayerStackProcessingResult sendData(List<LayerConfiguration> layerConfigurationList) throws IOException {
         LOGGER.debug("Sending Data");
-        if (layerList.size() != layerConfigurationList.size()) {
+        if (getLayerList().size() != layerConfigurationList.size()) {
             throw new RuntimeException(
                 "Illegal LayerConfiguration list provided. Each layer needs a configuration entry (null is fine too if no explicit configuration is desired). Expected "
-                    + layerList.size() + " but found " + layerConfigurationList.size());
+                    + getLayerList().size() + " but found " + layerConfigurationList.size());
         }
 
         // Prepare layer configuration and clear previous executions
-        for (int i = 0; i < layerList.size(); i++) {
-            ProtocolLayer layer = layerList.get(i);
+        for (int i = 0; i < getLayerList().size(); i++) {
+            ProtocolLayer layer = getLayerList().get(i);
             layer.clear();
             layer.setLayerConfiguration(layerConfigurationList.get(i));
         }
         context.setTalkingConnectionEndType(context.getConnection().getLocalConnectionEndType());
         // Send data
-        for (ProtocolLayer layer : layerList) {
+        for (ProtocolLayer layer : getLayerList()) {
             layer.sendConfiguration();
         }
 
         // Gather results
         List<LayerProcessingResult> resultList = new LinkedList<>();
-        layerList.forEach(layer -> {
+        getLayerList().forEach(layer -> {
             resultList.add(layer.getLayerResult());
         });
         return new LayerStackProcessingResult(resultList);
@@ -111,7 +111,7 @@ public class LayerStack {
     /**
      * Receives messages pre-defined in the layerConfigurationList through the message stack. Timeouts if not all
      * specified messages are received.
-     * 
+     *
      * @param  layerConfigurationList
      *                                Contains specific {@link DataContainer} to be received from the peer.
      * @return                        LayerStackProcessingResult Contains information about the "send" execution. Does
@@ -121,22 +121,22 @@ public class LayerStack {
      */
     public LayerStackProcessingResult receiveData(List<LayerConfiguration> layerConfigurationList) throws IOException {
         LOGGER.debug("Receiving Data");
-        if (layerList.size() != layerConfigurationList.size()) {
+        if (getLayerList().size() != layerConfigurationList.size()) {
             throw new RuntimeException(
                 "Illegal LayerConfiguration list provided. Each layer needs a configuration entry (null is fine too if no explicit configuration is desired). Expected "
-                    + layerList.size() + " but found " + layerConfigurationList.size());
+                    + getLayerList().size() + " but found " + layerConfigurationList.size());
         }
         // Prepare layer configuration and clear previous executions
-        for (int i = 0; i < layerList.size(); i++) {
-            ProtocolLayer layer = layerList.get(i);
+        for (int i = 0; i < getLayerList().size(); i++) {
+            ProtocolLayer layer = getLayerList().get(i);
             layer.clear();
             layer.setLayerConfiguration(layerConfigurationList.get(i));
         }
         context.setTalkingConnectionEndType(context.getConnection().getLocalConnectionEndType().getPeer());
-        layerList.get(0).receiveData();
+        getLayerList().get(0).receiveData();
         // reverse order
-        for (int i = layerList.size() - 1; i <= 0; i--) {
-            ProtocolLayer layer = layerList.get(i);
+        for (int i = getLayerList().size() - 1; i <= 0; i--) {
+            ProtocolLayer layer = getLayerList().get(i);
             if (layer.getLayerConfiguration() != null && !layer.getLayerConfiguration().executedAsPlanned(layerList)) {
                 layer.receiveData();
             }
@@ -147,13 +147,13 @@ public class LayerStack {
     /**
      * Manually gathers information about each layer's execution. E.g., whether the layer executed successfully and the
      * peer's answers.
-     * 
+     *
      * @return LayerStackProcessingResult Contains the execution results of each layer.
      */
     public LayerStackProcessingResult gatherResults() {
         // Gather results
         List<LayerProcessingResult> resultList = new LinkedList<>();
-        layerList.forEach(tempLayer -> {
+        getLayerList().forEach(tempLayer -> {
             resultList.add(tempLayer.getLayerResult());
         });
         return new LayerStackProcessingResult(resultList);
@@ -164,5 +164,12 @@ public class LayerStack {
      */
     public List<LayerType> getLayersInStack() {
         return layerList.stream().map(ProtocolLayer::getLayerType).collect(Collectors.toList());
+    }
+
+    /**
+     * Returns the layer list.
+     */
+    public List<ProtocolLayer> getLayerList() {
+        return Collections.unmodifiableList(layerList);
     }
 }

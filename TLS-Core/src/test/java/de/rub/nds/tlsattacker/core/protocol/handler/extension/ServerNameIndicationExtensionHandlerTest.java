@@ -9,34 +9,30 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import de.rub.nds.tlsattacker.core.constants.NameType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.SNIEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import org.junit.jupiter.api.Test;
+
 import java.util.LinkedList;
 import java.util.List;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
 
-public class ServerNameIndicationExtensionHandlerTest {
+public class ServerNameIndicationExtensionHandlerTest extends
+    AbstractExtensionMessageHandlerTest<ServerNameIndicationExtensionMessage, ServerNameIndicationExtensionHandler> {
 
-    private TlsContext context;
-    private ServerNameIndicationExtensionHandler handler;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new ServerNameIndicationExtensionHandler(context);
+    public ServerNameIndicationExtensionHandlerTest() {
+        super(ServerNameIndicationExtensionMessage::new, ServerNameIndicationExtensionHandler::new);
     }
 
     /**
      * Test of adjustContext method, of class ServerNameIndicationExtensionHandler.
      */
     @Test
-    public void testadjustContext() {
+    @Override
+    public void testadjustTLSExtensionContext() {
         ServerNameIndicationExtensionMessage msg = new ServerNameIndicationExtensionMessage();
         List<ServerNamePair> pairList = new LinkedList<>();
         ServerNamePair pair = new ServerNamePair(NameType.HOST_NAME.getValue(), "localhost".getBytes());
@@ -44,11 +40,11 @@ public class ServerNameIndicationExtensionHandlerTest {
         pair.setServerNameType(pair.getServerNameTypeConfig());
         pairList.add(pair);
         msg.setServerNameList(pairList);
-        handler.adjustContext(msg);
-        assertTrue(context.getClientSNIEntryList().size() == 1);
+        handler.adjustTLSExtensionContext(msg);
+        assertEquals(1, context.getClientSNIEntryList().size());
         SNIEntry entry = context.getClientSNIEntryList().get(0);
         assertEquals("localhost", entry.getName());
-        assertTrue(entry.getType() == NameType.HOST_NAME);
+        assertSame(NameType.HOST_NAME, entry.getType());
     }
 
     @Test

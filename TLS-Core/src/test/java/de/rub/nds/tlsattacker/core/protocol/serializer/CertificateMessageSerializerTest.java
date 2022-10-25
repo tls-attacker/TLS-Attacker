@@ -9,46 +9,24 @@
 
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.CertificateMessageParserTest;
-import java.util.Collection;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class CertificateMessageSerializerTest {
+import java.util.List;
+import java.util.stream.Stream;
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return CertificateMessageParserTest.generateData();
+public class CertificateMessageSerializerTest
+    extends AbstractHandshakeMessageSerializerTest<CertificateMessage, CertificateMessageSerializer> {
+
+    public CertificateMessageSerializerTest() {
+        super(CertificateMessage::new, CertificateMessageSerializer::new,
+            List.of((msg, obj) -> msg.setCertificatesListLength((int) obj),
+                (msg, obj) -> msg.setCertificatesListBytes((byte[]) obj)));
     }
 
-    private byte[] expectedPart;
-    private int certificatesLength;
-    private byte[] certificateBytes;
-    private ProtocolVersion version;
-
-    public CertificateMessageSerializerTest(byte[] message, int certificatesLength, byte[] certificateBytes,
-        ProtocolVersion version) {
-        this.expectedPart = message;
-        this.certificatesLength = certificatesLength;
-        this.certificateBytes = certificateBytes;
-        this.version = version;
-    }
-
-    /**
-     * Test of serializeHandshakeMessageContent method, of class CertificateMessageSerializer.
-     */
-    @Test
-    public void testSerializeHandshakeMessageContent() {
-        CertificateMessage message = new CertificateMessage();
-        message.setCertificatesListLength(certificatesLength);
-        message.setCertificatesListBytes(certificateBytes);
-        CertificateMessageSerializer serializer = new CertificateMessageSerializer(message, version);
-        assertArrayEquals(expectedPart, serializer.serializeHandshakeMessageContent());
+    public static Stream<Arguments> provideTestVectors() {
+        return CertificateMessageParserTest.provideTestVectors();
     }
 
 }

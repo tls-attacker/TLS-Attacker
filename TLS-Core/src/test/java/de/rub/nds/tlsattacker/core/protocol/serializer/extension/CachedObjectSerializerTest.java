@@ -9,39 +9,43 @@
 
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
+import de.rub.nds.tlsattacker.core.constants.CachedInfoType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.CachedObjectParserTest;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.CachedObjectPreparator;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Before;
-import org.junit.Test;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
 
 public class CachedObjectSerializerTest {
 
-    private CachedObjectSerializer serializer;
-    private CachedObject object;
-    private CachedObjectPreparator preparator;
     private TlsContext context;
 
-    @Before
+    @BeforeEach
     public void setUp() {
-
+        context = new TlsContext();
     }
 
-    @Test
-    public void testSerializeBytes() {
-        context = new TlsContext();
-        object = new CachedObject((byte) 1, null, null);
-        preparator = new CachedObjectPreparator(context.getChooser(), object);
+    public static Stream<Arguments> provideTestVectors() {
+        return CachedObjectParserTest.provideTestVectors();
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideTestVectors")
+    public void testSerialize(byte[] expectedCachedObjectBytes, ConnectionEndType providedSpeakingEndType,
+        CachedInfoType providedCachedInfoType, Integer providedHashLength, byte[] providedHash) {
+        CachedObject object = new CachedObject(providedCachedInfoType.getValue(), providedHashLength, providedHash);
+        CachedObjectPreparator preparator = new CachedObjectPreparator(context.getChooser(), object);
         preparator.prepare();
 
-        serializer = new CachedObjectSerializer(object);
-        assertArrayEquals(new byte[] { (byte) 1 }, serializer.serialize());
-
-        object = new CachedObject((byte) 2, 3, new byte[] { 0x01, 0x02, 0x03 });
-        preparator = new CachedObjectPreparator(context.getChooser(), object);
-        preparator.prepare();
-        serializer = new CachedObjectSerializer(object);
-        assertArrayEquals(new byte[] { 0x02, 0x03, 0x01, 0x02, 0x03 }, serializer.serialize());
+        CachedObjectSerializer serializer = new CachedObjectSerializer(object);
+        assertArrayEquals(expectedCachedObjectBytes, serializer.serialize());
     }
 }

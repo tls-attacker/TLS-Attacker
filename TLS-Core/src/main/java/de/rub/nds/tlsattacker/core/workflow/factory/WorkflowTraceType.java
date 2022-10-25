@@ -26,6 +26,7 @@ public enum WorkflowTraceType {
     DYNAMIC_HTTPS,
     SSL2_HELLO,
     SIMPLE_MITM_PROXY,
+    SIMPLE_FORWARDING_MITM_PROXY,
     TLS13_PSK,
     FULL_TLS13_PSK,
     ZERO_RTT,

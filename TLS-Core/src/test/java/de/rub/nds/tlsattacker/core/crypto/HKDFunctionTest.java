@@ -9,29 +9,21 @@
 
 package de.rub.nds.tlsattacker.core.crypto;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class HKDFunctionTest {
 
-    public HKDFunctionTest() {
-
-    }
-
-    @Before
-    public void setUp() {
-    }
-
     /**
      * Test of extract and expand method, of class HKDFunction. Test cases from:
-     * https://tools.ietf.org/html/rfc5869#appendix-A
+     * <a href="https://tools.ietf.org/html/rfc5869#appendix-A">RFC 5869 Appendix A</a>
      *
-     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
+     * @throws CryptoException
      */
     @Test
     public void testExtractAndExpand() throws CryptoException {

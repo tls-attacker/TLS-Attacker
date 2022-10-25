@@ -11,34 +11,18 @@ package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.tlsattacker.core.protocol.message.HelloRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.HelloRequestParserTest;
-import java.util.Collection;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class HelloRequestSerializerTest {
+import java.util.stream.Stream;
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return HelloRequestParserTest.generateData();
+public class HelloRequestSerializerTest
+    extends AbstractHandshakeMessageSerializerTest<HelloRequestMessage, HelloRequestSerializer> {
+
+    public HelloRequestSerializerTest() {
+        super(HelloRequestMessage::new, HelloRequestSerializer::new);
     }
 
-    private final byte[] message;
-
-    public HelloRequestSerializerTest(byte[] message) {
-        this.message = message;
+    public static Stream<Arguments> provideTestVectors() {
+        return HelloRequestParserTest.provideTestVectors();
     }
-
-    /**
-     * Test of serializeHandshakeMessageContent method, of class HelloRequestSerializer.
-     */
-    @Test
-    public void testSerializeHandshakeMessageContent() {
-        HelloRequestMessage msg = new HelloRequestMessage();
-        HelloRequestSerializer serializer = new HelloRequestSerializer(msg);
-        assertArrayEquals(message, serializer.serializeHandshakeMessageContent());
-    }
-
 }

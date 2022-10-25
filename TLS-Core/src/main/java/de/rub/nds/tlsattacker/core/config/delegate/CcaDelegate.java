@@ -12,7 +12,7 @@ package de.rub.nds.tlsattacker.core.config.delegate;
 import com.beust.jcommander.Parameter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
@@ -39,19 +39,15 @@ public class CcaDelegate extends Delegate {
     }
 
     public byte[] getClientCertificate() {
-        FileInputStream fileInputStream = null;
         X509Certificate x509Certificate = null;
         if (this.clientCertificatePath == null) {
             LOGGER.debug("Certificate path not supplied.");
         } else {
-            try {
-
+            try (FileInputStream fis = new FileInputStream(this.clientCertificatePath)) {
                 CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
-                fileInputStream = new FileInputStream(this.clientCertificatePath);
-                x509Certificate = (X509Certificate) certificateFactory.generateCertificate(fileInputStream);
-
-            } catch (FileNotFoundException e) {
-                LOGGER.error("Couldn't find client certificate." + e);
+                x509Certificate = (X509Certificate) certificateFactory.generateCertificate(fis);
+            } catch (IOException e) {
+                LOGGER.error("Couldn't read client certificate." + e);
             } catch (CertificateException ce) {
                 LOGGER.error("Error while generating certificate from clientCertificatePath input." + ce);
             }

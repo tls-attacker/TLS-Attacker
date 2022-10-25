@@ -11,32 +11,18 @@ package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtendedMasterSecretExtensionParserTest;
-import java.util.Collection;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class ExtendedMasterSecretExtensionSerializerTest {
+import java.util.stream.Stream;
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return ExtendedMasterSecretExtensionParserTest.generateData();
+public class ExtendedMasterSecretExtensionSerializerTest extends AbstractExtensionMessageSerializerTest<
+    ExtendedMasterSecretExtensionMessage, ExtendedMasterSecretExtensionSerializer> {
+
+    public ExtendedMasterSecretExtensionSerializerTest() {
+        super(ExtendedMasterSecretExtensionMessage::new, ExtendedMasterSecretExtensionSerializer::new);
     }
 
-    private final byte[] expectedBytes;
-    private ExtendedMasterSecretExtensionMessage message;
-
-    public ExtendedMasterSecretExtensionSerializerTest(byte[] expectedBytes) {
-        this.expectedBytes = expectedBytes;
-    }
-
-    @Test
-    public void testSerializeExtensionContent() {
-        message = new ExtendedMasterSecretExtensionMessage();
-        ExtendedMasterSecretExtensionSerializer serializer = new ExtendedMasterSecretExtensionSerializer(message);
-
-        assertArrayEquals(expectedBytes, serializer.serializeExtensionContent());
+    public static Stream<Arguments> provideTestVectors() {
+        return ExtendedMasterSecretExtensionParserTest.provideTestVectors();
     }
 }

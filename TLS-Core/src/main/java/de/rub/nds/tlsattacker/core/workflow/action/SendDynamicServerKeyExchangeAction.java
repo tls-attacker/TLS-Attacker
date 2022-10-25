@@ -11,7 +11,9 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
@@ -29,7 +31,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -53,27 +55,29 @@ public class SendDynamicServerKeyExchangeAction extends MessageAction implements
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
         }
-        messages = new LinkedList<>();
-        ServerKeyExchangeMessage msg =
-            new WorkflowConfigurationFactory(state.getConfig()).createServerKeyExchangeMessage(
-                AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite()));
-        if (msg != null) {
-            messages.add(msg);
-        }
-        String sending = getReadableString(messages);
-        if (hasDefaultAlias()) {
-            LOGGER.info("Sending DynamicKeyExchange: " + sending);
-        } else {
-            LOGGER.info("Sending DynamicKeyExchange (" + connectionAlias + "): " + sending);
-        }
 
-        try {
-            send(tlsContext, messages, fragments, records);
-            setExecuted(true);
-        } catch (IOException e) {
-            tlsContext.setReceivedTransportHandlerException(true);
-            LOGGER.debug(e);
-            setExecuted(getActionOptions().contains(ActionOption.MAY_FAIL));
+        messages = new LinkedList<>();
+        CipherSuite selectedCipherSuite = tlsContext.getChooser().getSelectedCipherSuite();
+        ServerKeyExchangeMessage serverKeyExchangeMessage = new WorkflowConfigurationFactory(state.getConfig())
+            .createServerKeyExchangeMessage(AlgorithmResolver.getKeyExchangeAlgorithm(selectedCipherSuite));
+        if (serverKeyExchangeMessage != null) {
+            messages.add(serverKeyExchangeMessage);
+
+            String sending = getReadableString(messages);
+            if (hasDefaultAlias()) {
+                LOGGER.info("Sending Dynamic Key Exchange: " + sending);
+            } else {
+                LOGGER.info("Sending Dynamic Key Exchange (" + connectionAlias + "): " + sending);
+            }
+
+            try {
+                send(tlsContext, messages, fragments, records);
+                setExecuted(true);
+            } catch (IOException e) {
+                tlsContext.setReceivedTransportHandlerException(true);
+                LOGGER.debug(e);
+                setExecuted(getActionOptions().contains(ActionOption.MAY_FAIL));
+            }
         }
     }
 
@@ -117,16 +121,6 @@ public class SendDynamicServerKeyExchangeAction extends MessageAction implements
     @Override
     public boolean executedAsPlanned() {
         return isExecuted();
-    }
-
-    @Override
-    public void setRecords(List<Record> records) {
-        this.records = records;
-    }
-
-    @Override
-    public void setFragments(List<DtlsHandshakeMessageFragment> fragments) {
-        this.fragments = fragments;
     }
 
     @Override

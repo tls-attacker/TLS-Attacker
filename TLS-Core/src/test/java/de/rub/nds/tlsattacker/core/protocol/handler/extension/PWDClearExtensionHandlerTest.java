@@ -9,25 +9,23 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PWDClearExtensionMessage;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class PWDClearExtensionHandlerTest {
-    private PWDClearExtensionHandler handler;
-    private TlsContext context;
+public class PWDClearExtensionHandlerTest
+    extends AbstractExtensionMessageHandlerTest<PWDClearExtensionMessage, PWDClearExtensionHandler> {
 
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new PWDClearExtensionHandler(context);
+    public PWDClearExtensionHandlerTest() {
+        super(PWDClearExtensionMessage::new, PWDClearExtensionHandler::new);
     }
 
     @Test
-    public void testadjustContext() {
+    @Override
+    public void testadjustTLSExtensionContext() {
         PWDClearExtensionMessage message = new PWDClearExtensionMessage();
         message.setUsername("jens");
         handler.adjustContext(message);

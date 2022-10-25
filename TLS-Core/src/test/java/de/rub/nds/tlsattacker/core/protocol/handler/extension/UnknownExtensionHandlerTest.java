@@ -10,26 +10,21 @@
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.UnknownExtensionMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class UnknownExtensionHandlerTest {
+public class UnknownExtensionHandlerTest
+    extends AbstractExtensionMessageHandlerTest<UnknownExtensionMessage, UnknownExtensionHandler> {
 
-    private UnknownExtensionHandler handler;
-    private TlsContext context;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new UnknownExtensionHandler(context);
+    public UnknownExtensionHandlerTest() {
+        super(UnknownExtensionMessage::new, UnknownExtensionHandler::new);
     }
 
     /**
      * Test of adjustContext method, of class UnknownExtensionHandler.
      */
     @Test
-    public void testadjustContext() {
+    @Override
+    public void testadjustTLSExtensionContext() {
         UnknownExtensionMessage msg = new UnknownExtensionMessage();
         handler.adjustContext(msg);
         // TODO Check that context does not change

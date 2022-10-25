@@ -9,35 +9,25 @@
 
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+
 import de.rub.nds.tlsattacker.core.protocol.message.HelloRequestMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class HelloRequestPreparatorTest {
+public class HelloRequestPreparatorTest
+    extends AbstractTlsMessagePreparatorTest<HelloRequestMessage, HelloRequestPreparator> {
 
-    private TlsContext context;
-    private HelloRequestMessage message;
-    private HelloRequestPreparator preparator;
-
-    @Before
-    public void setUp() {
-        this.context = new TlsContext();
-        this.message = new HelloRequestMessage();
-        this.preparator = new HelloRequestPreparator(context.getChooser(), message);
+    public HelloRequestPreparatorTest() {
+        super(HelloRequestMessage::new, HelloRequestPreparator::new);
     }
 
     /**
      * Test of prepareHandshakeMessageContents method, of class HelloRequestPreparator.
      */
     @Test
+    @Override
     public void testPrepare() {
-        preparator.prepare();
+        assertDoesNotThrow(preparator::prepare);
         // Just check that preparation did not throw an exception
-    }
-
-    @Test
-    public void testNoContextPrepare() {
-        preparator.prepare();
     }
 }

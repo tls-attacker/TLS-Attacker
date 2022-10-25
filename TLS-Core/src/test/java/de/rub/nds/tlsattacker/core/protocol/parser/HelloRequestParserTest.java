@@ -9,44 +9,24 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloRequestMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import java.io.ByteArrayInputStream;
-import java.util.Arrays;
-import java.util.Collection;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class HelloRequestParserTest {
+import java.util.List;
+import java.util.stream.Stream;
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] {}); // TODO add Testcases!
+public class HelloRequestParserTest
+    extends AbstractHandshakeMessageParserTest<HelloRequestMessage, HelloRequestParser> {
+
+    public HelloRequestParserTest() {
+        super(HelloRequestMessage.class, HelloRequestParser::new);
     }
 
-    // TODO get a true message
-    private final byte[] message;
-
-    private final Config config = Config.createConfig();
-
-    public HelloRequestParserTest(byte[] message) {
-        this.message = message;
+    public static Stream<Arguments> provideTestVectors() {
+        return Stream.of(Arguments.of(ProtocolVersion.TLS12, ArrayConverter.hexStringToByteArray("00000000"),
+            List.of(HandshakeMessageType.HELLO_REQUEST.getValue(), 0)));
     }
-
-    /**
-     * Test of parse method, of class HelloRequestParser.
-     */
-    @Test
-    public void testParse() {
-        TlsContext tlsContext = new TlsContext(config);
-        tlsContext.setSelectedProtocolVersion(ProtocolVersion.TLS12);
-        HelloRequestParser parser = new HelloRequestParser(new ByteArrayInputStream(message), tlsContext);
-        HelloRequestMessage msg = new HelloRequestMessage();
-        parser.parse(msg);
-    }
-
 }

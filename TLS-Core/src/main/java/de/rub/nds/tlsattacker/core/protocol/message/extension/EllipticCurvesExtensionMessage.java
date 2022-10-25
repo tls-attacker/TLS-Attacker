@@ -20,7 +20,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.EllipticCurvesExten
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EllipticCurvesExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.EllipticCurvesExtensionSerializer;
 import java.io.InputStream;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * This extension is defined in RFC-ietf-tls-rfc4492bis-17 Also known as "supported_groups" extension

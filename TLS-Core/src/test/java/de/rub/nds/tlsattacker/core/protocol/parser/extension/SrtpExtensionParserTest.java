@@ -10,61 +10,34 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SrtpExtensionMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import java.io.ByteArrayInputStream;
-import java.util.Arrays;
-import java.util.Collection;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Named;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class SrtpExtensionParserTest {
+import java.util.List;
+import java.util.stream.Stream;
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] {
-            { ArrayConverter.hexStringToByteArray("000400010006020102"), 4,
-                ArrayConverter.hexStringToByteArray("00010006"), 2, new byte[] { 0x01, 0x02 } },
-            { ArrayConverter.hexStringToByteArray("00040001000600"), 4, ArrayConverter.hexStringToByteArray("00010006"),
-                0, new byte[0] } });
+public class SrtpExtensionParserTest extends AbstractExtensionParserTest<SrtpExtensionMessage, SrtpExtensionParser> {
+
+    public SrtpExtensionParserTest() {
+        super(SrtpExtensionMessage.class, SrtpExtensionParser::new,
+            List.of(
+                Named.of("SrtpExtensionMessage::getSrtpProtectionProfilesLength",
+                    SrtpExtensionMessage::getSrtpProtectionProfilesLength),
+                Named.of("SrtpExtensionMessage::getSrtpProtectionProfiles",
+                    SrtpExtensionMessage::getSrtpProtectionProfiles),
+                Named.of("SrtpExtensionMessage::getSrtpMkiLength", SrtpExtensionMessage::getSrtpMkiLength),
+                Named.of("SrtpExtensionMessage::getSrtpMki", SrtpExtensionMessage::getSrtpMki)));
     }
 
-    private final byte[] expectedBytes;
-    private final int srtpProtectionProfilesLength;
-    private final byte[] srtpProtectionProfiles;
-    private final int srtpMkiLength;
-    private final byte[] srtpMki;
-    private SrtpExtensionParser parser;
-    private final Config config = Config.createConfig();
-
-    public SrtpExtensionParserTest(byte[] expectedBytes, int srtpProtectionProfilesLength,
-        byte[] srtpProtectionProfiles, int srtpMkiLength, byte[] srtpMki) {
-        this.expectedBytes = expectedBytes;
-        this.srtpProtectionProfilesLength = srtpProtectionProfilesLength;
-        this.srtpProtectionProfiles = srtpProtectionProfiles;
-        this.srtpMkiLength = srtpMkiLength;
-        this.srtpMki = srtpMki;
-    }
-
-    @Before
-    public void setUp() {
-        TlsContext tlsContext = new TlsContext(config);
-        parser = new SrtpExtensionParser(new ByteArrayInputStream(expectedBytes), tlsContext);
-    }
-
-    @Test
-    public void testParse() {
-        SrtpExtensionMessage msg = new SrtpExtensionMessage();
-        parser.parse(msg);
-        assertArrayEquals(srtpProtectionProfiles, msg.getSrtpProtectionProfiles().getValue());
-        assertEquals(srtpProtectionProfilesLength, (long) msg.getSrtpProtectionProfilesLength().getValue());
-        assertEquals(srtpMkiLength, (long) msg.getSrtpMkiLength().getValue());
-        assertArrayEquals(srtpMki, msg.getSrtpMki().getValue());
+    public static Stream<Arguments> provideTestVectors() {
+        return Stream.of(
+            Arguments.of(ArrayConverter.hexStringToByteArray("000e0009000400010006020102"), List.of(),
+                ExtensionType.USE_SRTP, 9,
+                List.of(4, ArrayConverter.hexStringToByteArray("00010006"), 2, new byte[] { 0x01, 0x02 })),
+            Arguments.of(ArrayConverter.hexStringToByteArray("000e000900040001000600"), List.of(),
+                ExtensionType.USE_SRTP, 9,
+                List.of(4, ArrayConverter.hexStringToByteArray("00010006"), 0, new byte[0])));
     }
 }

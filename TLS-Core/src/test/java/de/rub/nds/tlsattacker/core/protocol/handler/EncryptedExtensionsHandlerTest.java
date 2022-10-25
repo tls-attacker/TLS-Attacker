@@ -9,34 +9,28 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.EncryptedExtensionsMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicationExtensionMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class EncryptedExtensionsHandlerTest {
+public class EncryptedExtensionsHandlerTest
+    extends AbstractTlsMessageHandlerTest<EncryptedExtensionsMessage, EncryptedExtensionsHandler> {
 
-    private EncryptedExtensionsHandler handler;
-    private TlsContext context;
-
-    @Before
-    public void setUp() throws Exception {
-        context = new TlsContext();
-        // Encrypted extensions can only be sent by a server
+    public EncryptedExtensionsHandlerTest() {
+        super(EncryptedExtensionsMessage::new, EncryptedExtensionsHandler::new);
         context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
-
-        handler = new EncryptedExtensionsHandler(context);
     }
 
     /**
      * Test of adjustContext method, of class EncryptedExtensionsHandler.
      */
     @Test
-    public void testadjustContextWithoutExtensions() {
+    @Override
+    public void testadjustContext() {
         EncryptedExtensionsMessage message = new EncryptedExtensionsMessage();
         handler.adjustContext(message);
 

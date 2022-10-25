@@ -15,8 +15,8 @@ import de.rub.nds.tlsattacker.core.state.State;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlTransient;
 
 /**
  * This action allows the declaration of multiple actions, the right one will selected at runtime. The usage of two

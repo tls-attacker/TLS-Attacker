@@ -410,6 +410,45 @@ public class AlgorithmResolver {
         }
     }
 
+    /**
+     * Returns the signature algorithm required for the authentication type specified by cipher suite.
+     *
+     * @param  cipherSuite
+     *                     The Cipher suite for which the signature algorithm should be returned
+     * @return             The required signature algorithm.
+     */
+    public static SignatureAlgorithm getRequiredSignatureAlgorithm(CipherSuite cipherSuite) {
+        KeyExchangeAlgorithm keyExchangeAlgorithm = getKeyExchangeAlgorithm(cipherSuite);
+        if (keyExchangeAlgorithm == null) {
+            return null;
+        }
+        switch (keyExchangeAlgorithm) {
+            case DH_RSA:
+            case DHE_RSA:
+            case ECDH_RSA:
+            case ECDHE_RSA:
+            case RSA:
+            case SRP_SHA_RSA:
+            case PSK_RSA:
+                return SignatureAlgorithm.RSA;
+            case ECDHE_ECDSA:
+            case ECDH_ECDSA:
+            case ECMQV_ECDSA:
+            case CECPQ1_ECDSA:
+                return SignatureAlgorithm.ECDSA;
+            case DHE_DSS:
+            case DH_DSS:
+            case SRP_SHA_DSS:
+                return SignatureAlgorithm.DSA;
+            case VKO_GOST01:
+                return SignatureAlgorithm.GOSTR34102001;
+            case VKO_GOST12:
+                return SignatureAlgorithm.GOSTR34102012_256;
+            default:
+                return null;
+        }
+    }
+
     private AlgorithmResolver() {
     }
 }

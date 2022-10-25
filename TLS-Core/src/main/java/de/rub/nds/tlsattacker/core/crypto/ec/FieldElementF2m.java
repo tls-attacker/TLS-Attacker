@@ -15,9 +15,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * An element of a galois field F_{2^m}.<br />
+ * An element of a galois field F_{2^m}.<br>
  * Please notice that every element in the field (and the reduction polynomial that defines the field) is represented by
- * a binary polynomial.<br />
+ * a binary polynomial.<br>
  * These polynomials are represented by BigInteger bit-strings, where the i-th bit represents the i-th coefficient.
  */
 public class FieldElementF2m extends FieldElement implements Serializable {
@@ -28,7 +28,7 @@ public class FieldElementF2m extends FieldElement implements Serializable {
      * Instantiates an element of a galois field F{2^m}.
      *
      * @param data
-     *                The binary polynomial representing the element.<br />
+     *                The binary polynomial representing the element.<br>
      *                The degree must be smaller than the reduction polynomial's degree.
      * @param modulus
      *                The binary reduction polynomial defining the field.

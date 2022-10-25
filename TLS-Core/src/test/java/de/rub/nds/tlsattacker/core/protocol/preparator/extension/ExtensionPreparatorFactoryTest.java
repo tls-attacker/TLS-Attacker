@@ -9,20 +9,15 @@
 
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 public class ExtensionPreparatorFactoryTest {
-
-    @Before
-    public void setUp() {
-    }
-
     /**
      * Test of getExtensionPreparator method, of class ExtensionPreparatorFactory.
      */
     @Test
+    @Disabled("Not implemented")
     public void testGetExtensionPreparator() {
     }
-
 }

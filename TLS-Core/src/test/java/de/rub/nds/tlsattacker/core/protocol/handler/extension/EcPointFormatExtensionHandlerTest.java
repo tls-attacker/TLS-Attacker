@@ -9,44 +9,40 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-import de.rub.nds.tlsattacker.core.config.Config;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ECPointFormatExtensionMessage;
-import static org.junit.Assert.assertTrue;
-import de.rub.nds.tlsattacker.core.state.Context;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class EcPointFormatExtensionHandlerTest {
+public class EcPointFormatExtensionHandlerTest
+    extends AbstractExtensionMessageHandlerTest<ECPointFormatExtensionMessage, ECPointFormatExtensionHandler> {
 
-    private ECPointFormatExtensionHandler handler;
-    private TlsContext context;
-
-    @Before
-    public void setUp() {
-        Context outerContext = new Context(new Config());
-        context = outerContext.getTlsContext();
-        handler = new ECPointFormatExtensionHandler(context);
+    public EcPointFormatExtensionHandlerTest() {
+        super(ECPointFormatExtensionMessage::new, ECPointFormatExtensionHandler::new);
     }
 
     /**
      * Test of adjustContext method, of class EcPointFormatExtensionHandler.
      */
     @Test
-    public void testadjustContext() {
+    @Override
+    public void testadjustTLSExtensionContext() {
         ECPointFormatExtensionMessage msg = new ECPointFormatExtensionMessage();
         msg.setPointFormats(new byte[] { 0, 1 });
-        handler.adjustContext(msg);
-        assertTrue(context.getClientPointFormatsList().size() == 2);
+        handler.adjustTLSExtensionContext(msg);
+        assertEquals(2, context.getClientPointFormatsList().size());
         assertTrue(context.getClientPointFormatsList().contains(ECPointFormat.UNCOMPRESSED));
         assertTrue(context.getClientPointFormatsList().contains(ECPointFormat.ANSIX962_COMPRESSED_PRIME));
     }
 
+    @Test
     public void testUnadjustableMessage() {
         ECPointFormatExtensionMessage msg = new ECPointFormatExtensionMessage();
         msg.setPointFormats(new byte[] { 5 });
         handler.adjustContext(msg);
         assertTrue(context.getClientPointFormatsList().isEmpty());
     }
+
 }

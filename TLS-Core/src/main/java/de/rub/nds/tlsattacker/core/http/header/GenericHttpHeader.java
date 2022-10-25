@@ -12,10 +12,9 @@ package de.rub.nds.tlsattacker.core.http.header;
 import de.rub.nds.modifiablevariable.util.IllegalStringAdapter;
 import de.rub.nds.tlsattacker.core.http.header.preparator.GenericHttpHeaderPreparator;
 import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class GenericHttpHeader extends HttpHeader {

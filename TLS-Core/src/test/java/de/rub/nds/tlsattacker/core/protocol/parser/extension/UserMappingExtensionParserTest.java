@@ -10,33 +10,25 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.UserMappingExtensionMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import java.io.ByteArrayInputStream;
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Named;
+import org.junit.jupiter.params.provider.Arguments;
 
-public class UserMappingExtensionParserTest {
+import java.util.List;
+import java.util.stream.Stream;
 
-    private final byte[] extensionBytes = ArrayConverter.hexStringToByteArray("40");
-    private final UserMappingExtensionHintType hintType = UserMappingExtensionHintType.UPN_DOMAIN_HINT;
-    private UserMappingExtensionParser parser;
-    private UserMappingExtensionMessage message;
-    private final Config config = Config.createConfig();
+public class UserMappingExtensionParserTest
+    extends AbstractExtensionParserTest<UserMappingExtensionMessage, UserMappingExtensionParser> {
 
-    @Before
-    public void setUp() {
-        TlsContext tlsContext = new TlsContext(config);
-        parser = new UserMappingExtensionParser(new ByteArrayInputStream(extensionBytes), tlsContext);
+    public UserMappingExtensionParserTest() {
+        super(UserMappingExtensionMessage.class, UserMappingExtensionParser::new, List.of(Named
+            .of("UserMappingExtensionMessage::getUserMappingType", UserMappingExtensionMessage::getUserMappingType)));
     }
 
-    @Test
-    public void testParse() {
-        message = new UserMappingExtensionMessage();
-        parser.parse(message);
-        assertEquals(hintType.getValue(), (long) message.getUserMappingType().getValue());
+    public static Stream<Arguments> provideTestVectors() {
+        return Stream.of(Arguments.of(ArrayConverter.hexStringToByteArray("0006000140"), List.of(),
+            ExtensionType.USER_MAPPING, 1, List.of(UserMappingExtensionHintType.UPN_DOMAIN_HINT.getValue())));
     }
 }

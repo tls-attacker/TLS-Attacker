@@ -54,7 +54,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
 
     /**
      * Sends the given handshake messages using the lower layer.
-     * 
+     *
      * @return             LayerProcessingResult A result object containing information about the sent data.
      * @throws IOException
      *                     When the data cannot be sent.
@@ -94,7 +94,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
 
     /**
      * Receives handshake message from the lower layer.
-     * 
+     *
      * @return             LayerProcessingResult A result object containing information about the received data.
      * @throws IOException
      *                     When no data can be received
@@ -167,7 +167,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
     /**
      * Parses the handshake layer header from the given message and parses the encapsulated message using the correct
      * parser.
-     * 
+     *
      * @throws IOException
      */
     private void readHandshakeProtocolData() throws IOException {

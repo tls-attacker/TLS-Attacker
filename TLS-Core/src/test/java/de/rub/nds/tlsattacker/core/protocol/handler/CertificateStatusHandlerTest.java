@@ -10,22 +10,17 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateStatusMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class CertificateStatusHandlerTest {
+public class CertificateStatusHandlerTest
+    extends AbstractTlsMessageHandlerTest<CertificateStatusMessage, CertificateStatusHandler> {
 
-    private CertificateStatusHandler handler;
-    private TlsContext context;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new CertificateStatusHandler(context);
+    public CertificateStatusHandlerTest() {
+        super(CertificateStatusMessage::new, CertificateStatusHandler::new);
     }
 
     @Test
+    @Override
     public void testadjustContext() {
         CertificateStatusMessage message = new CertificateStatusMessage();
         handler.adjustContext(message);

@@ -9,32 +9,17 @@
 
 package de.rub.nds.tlsattacker.core.protocol.message;
 
-import org.junit.After;
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.params.provider.Arguments;
 
-public class ChangeCipherSpecMessageTest {
-    ChangeCipherSpecMessage message;
+import java.util.stream.Stream;
 
-    @Before
-    public void setUp() {
-        message = new ChangeCipherSpecMessage();
+public class ChangeCipherSpecMessageTest extends AbstractMessageTest<ChangeCipherSpecMessage> {
+
+    public ChangeCipherSpecMessageTest() {
+        super(ChangeCipherSpecMessage::new, "ChangeCipherSpecMessage:\n" + "  CCS ProtocolType: %s");
     }
 
-    @After
-    public void tearDown() {
-    }
-
-    /**
-     * Test of toString method, of class ChangeCipherSpecMessage.
-     */
-    @Test
-    public void testToString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("ChangeCipherSpecMessage:");
-        sb.append("\n  CCS ProtocolType: ").append("null");
-
-        assertEquals(sb.toString(), message.toString());
+    public static Stream<Arguments> provideToStringTestVectors() {
+        return Stream.of(Arguments.of(new Object[] { null }, null));
     }
 }

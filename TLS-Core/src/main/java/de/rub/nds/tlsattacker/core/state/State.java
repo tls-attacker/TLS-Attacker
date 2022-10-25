@@ -21,20 +21,13 @@ import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceNormalizer;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.core.workflow.filter.Filter;
 import de.rub.nds.tlsattacker.core.workflow.filter.FilterFactory;
 import de.rub.nds.tlsattacker.core.workflow.filter.FilterType;
 import de.rub.nds.tlsattacker.transport.tcp.ServerTcpTransportHandler;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
-import javax.xml.bind.JAXBException;
-import javax.xml.stream.XMLStreamException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -76,6 +69,8 @@ public class State {
     private long endTimestamp;
     private Throwable executionException;
 
+    private LinkedList<Process> spawnedSubprocesses;
+
     public State() {
         this(new Config());
     }
@@ -87,6 +82,7 @@ public class State {
     public State(Config config) {
         this.config = config;
         runningMode = config.getDefaultRunningMode();
+        spawnedSubprocesses = new LinkedList<>();
         this.workflowTrace = loadWorkflowTrace();
         initState();
     }
@@ -94,6 +90,7 @@ public class State {
     public State(Config config, WorkflowTrace workflowTrace) {
         this.config = config;
         runningMode = config.getDefaultRunningMode();
+        spawnedSubprocesses = new LinkedList<>();
         this.workflowTrace = workflowTrace;
         initState();
     }
@@ -102,6 +99,7 @@ public class State {
         List<Context> previousContexts = contextContainer.getAllContexts();
         contextContainer.clear();
         workflowTrace.reset();
+        killAllSpawnedSubprocesses();
         initState();
         retainServerTcpTransportHandlers(previousContexts);
     }
@@ -141,24 +139,14 @@ public class State {
     }
 
     private WorkflowTrace loadWorkflowTrace() {
-        WorkflowTrace trace = null;
-
-        if (config.getWorkflowInput() != null) {
-            try {
-                trace = WorkflowTraceSerializer.secureRead(new FileInputStream(new File(config.getWorkflowInput())));
-                LOGGER.debug("Loaded workflow trace from " + config.getWorkflowInput());
-            } catch (FileNotFoundException ex) {
-                LOGGER.warn("Could not read workflow trace. File not found: " + config.getWorkflowInput());
-                LOGGER.debug(ex);
-            } catch (JAXBException | IOException | XMLStreamException ex) {
-                LOGGER.warn("Could not read workflow trace: " + config.getWorkflowInput());
-                LOGGER.debug(ex);
-            }
-        } else if (config.getWorkflowTraceType() != null) {
-            WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
-            trace = factory.createWorkflowTrace(config.getWorkflowTraceType(), runningMode);
-            LOGGER.debug("Created new " + config.getWorkflowTraceType() + " workflow trace");
+        if (config.getWorkflowTraceType() == null) {
+            throw new ConfigurationException("Could not load workflow trace, type is null");
         }
+        WorkflowTrace trace;
+
+        WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
+        trace = factory.createWorkflowTrace(config.getWorkflowTraceType(), runningMode);
+        LOGGER.debug("Created new " + config.getWorkflowTraceType() + " workflow trace");
 
         if (trace == null) {
             throw new ConfigurationException("Could not load workflow trace");
@@ -326,34 +314,6 @@ public class State {
         }
     }
 
-    /**
-     * Serialize and write states workflow trace to file.
-     */
-    public void storeTrace() {
-        assertWorkflowTraceNotNull("storeTrace");
-
-        Random random = new Random();
-        if (config.getWorkflowOutput() != null && !config.getWorkflowOutput().isEmpty()) {
-            try {
-                File f = new File(config.getWorkflowOutput());
-                if (f.isDirectory()) {
-                    f = new File(config.getWorkflowOutput() + "trace-" + random.nextInt());
-                }
-                WorkflowTrace filteredTrace;
-                if (config.isApplyFiltersInPlace()) {
-                    filteredTrace = workflowTrace;
-                    filterTrace(filteredTrace);
-                } else {
-                    filteredTrace = getFilteredTraceCopy(workflowTrace);
-                }
-                WorkflowTraceSerializer.write(f, filteredTrace);
-            } catch (JAXBException | IOException ex) {
-                LOGGER.info("Could not serialize WorkflowTrace.");
-                LOGGER.debug(ex);
-            }
-        }
-    }
-
     private void assertWorkflowTraceNotNull(String operationName) {
         if (workflowTrace != null) {
             return;
@@ -388,5 +348,28 @@ public class State {
 
     public void setExecutionException(Throwable executionException) {
         this.executionException = executionException;
+    }
+
+    /**
+     * Records a process that was spawned during this state execution.
+     *
+     * @param process
+     *                The process to record
+     */
+    public void addSpawnedSubprocess(Process process) {
+        if (process != null) {
+            spawnedSubprocesses.add(process);
+        }
+    }
+
+    /**
+     * Kills all recorded processes that have been spawned during this state execution.
+     */
+    public void killAllSpawnedSubprocesses() {
+        for (Process process : spawnedSubprocesses) {
+            process.destroy();
+        }
+
+        spawnedSubprocesses.clear();
     }
 }

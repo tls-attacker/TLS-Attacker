@@ -9,28 +9,25 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class ExtendedMasterSecretExtensionHandlerTest {
+public class ExtendedMasterSecretExtensionHandlerTest extends
+    AbstractExtensionMessageHandlerTest<ExtendedMasterSecretExtensionMessage, ExtendedMasterSecretExtensionHandler> {
 
-    private TlsContext context;
-    private ExtendedMasterSecretExtensionHandler handler;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new ExtendedMasterSecretExtensionHandler(context);
+    public ExtendedMasterSecretExtensionHandlerTest() {
+        super(ExtendedMasterSecretExtensionMessage::new, ExtendedMasterSecretExtensionHandler::new);
     }
 
     @Test
-    public void testadjustContext() {
+    @Override
+    public void testadjustTLSExtensionContext() {
         ExtendedMasterSecretExtensionMessage msg = new ExtendedMasterSecretExtensionMessage();
         context.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
         handler.adjustContext(msg);

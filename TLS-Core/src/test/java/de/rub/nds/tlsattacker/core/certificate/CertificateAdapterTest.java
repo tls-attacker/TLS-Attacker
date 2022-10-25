@@ -9,13 +9,10 @@
 
 package de.rub.nds.tlsattacker.core.certificate;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.math.BigInteger;
-import java.security.*;
-import java.util.Date;
-import javax.security.auth.x500.X500Principal;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.X509v1CertificateBuilder;
 import org.bouncycastle.cert.jcajce.JcaX509v1CertificateBuilder;
@@ -23,9 +20,15 @@ import org.bouncycastle.crypto.tls.Certificate;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
-import static org.junit.Assert.assertEquals;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import javax.security.auth.x500.X500Principal;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.math.BigInteger;
+import java.security.*;
+import java.util.Date;
 
 public class CertificateAdapterTest {
 
@@ -38,8 +41,8 @@ public class CertificateAdapterTest {
      * @throws OperatorCreationException
      * @throws java.io.IOException
      */
-    @BeforeClass
-    public static void setUpClass() throws NoSuchAlgorithmException, OperatorCreationException, IOException, Exception {
+    @BeforeAll
+    public static void setUpClass() throws NoSuchAlgorithmException, OperatorCreationException, IOException {
 
         // Generate 2048 Bit RSA Keypair
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
@@ -50,7 +53,7 @@ public class CertificateAdapterTest {
 
         // Set validity to one year
         Date startDate = new Date(System.currentTimeMillis());
-        Date endDate = new Date(System.currentTimeMillis() + 365 * 24 * 60 * 60 * 1000);
+        Date endDate = new Date(System.currentTimeMillis() + 365L * 24 * 60 * 60 * 1000);
 
         // Initialize certificate generating objects
         X509v1CertificateBuilder certificateBuilder = new JcaX509v1CertificateBuilder(new X500Principal("CN=Test"),
@@ -72,7 +75,7 @@ public class CertificateAdapterTest {
      * @throws Exception
      */
     @Test
-    public void testCorrectMarshal() throws IOException, Exception {
+    public void testCorrectMarshal() throws Exception {
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
         certificate.encode(outStream);
         String correctCertificateString = ArrayConverter.bytesToHexString(outStream.toByteArray());
@@ -82,22 +85,18 @@ public class CertificateAdapterTest {
 
     /**
      * Tests if unmarshal() correctly throws an exception on an invalid input string.
-     *
-     * @throws Exception
      */
-    @Test(expected = Exception.class)
-    public void testUnmarshalException() throws Exception {
-        certificateAdapter.unmarshal("Not a certificate String.");
+    @Test
+    public void testUnmarshalException() {
+        assertThrows(Exception.class, () -> certificateAdapter.unmarshal("Not a certificate String."));
     }
 
     /**
      * Tests if marshal() correctly throws an exception on an invalid input certificate.
-     *
-     * @throws Exception
      */
-    @Test(expected = Exception.class)
-    public void testMarshalException() throws Exception {
-        certificateAdapter.marshal(null);
+    @Test
+    public void testMarshalException() {
+        assertThrows(Exception.class, () -> certificateAdapter.marshal(null));
     }
 
     /**

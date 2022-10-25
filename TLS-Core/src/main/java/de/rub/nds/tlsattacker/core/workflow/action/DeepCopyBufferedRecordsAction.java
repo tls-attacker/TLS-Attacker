@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import java.io.*;
 import java.util.LinkedList;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -57,7 +57,6 @@ public class DeepCopyBufferedRecordsAction extends CopyContextFieldAction {
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 outStream = new ObjectOutputStream(stream);
                 outStream.writeObject(record);
-                outStream.close();
                 inStream = new ObjectInputStream(new ByteArrayInputStream(stream.toByteArray()));
                 Record recordCopy = (Record) inStream.readObject();
 

@@ -9,25 +9,16 @@
 
 package de.rub.nds.tlsattacker.core.protocol;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 public class ParserResultTest {
-
-    @Before
-    public void setUp() {
-
-    }
-
-    @After
-    public void tearDown() {
-    }
 
     /**
      * Test of getMessage method, of class ParserResult.
      */
     @Test
+    @Disabled("Not implemented")
     public void testGetMessage() {
     }
 
@@ -35,6 +26,7 @@ public class ParserResultTest {
      * Test of setMessage method, of class ParserResult.
      */
     @Test
+    @Disabled("Not implemented")
     public void testSetMessage() {
     }
 
@@ -42,6 +34,7 @@ public class ParserResultTest {
      * Test of getParserPosition method, of class ParserResult.
      */
     @Test
+    @Disabled("Not implemented")
     public void testGetParserPosition() {
     }
 
@@ -49,6 +42,7 @@ public class ParserResultTest {
      * Test of setParserPosition method, of class ParserResult.
      */
     @Test
+    @Disabled("Not implemented")
     public void testSetParserPosition() {
     }
 

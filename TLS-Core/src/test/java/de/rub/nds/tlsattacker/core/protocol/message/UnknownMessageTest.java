@@ -9,35 +9,17 @@
 
 package de.rub.nds.tlsattacker.core.protocol.message;
 
-import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import org.junit.After;
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.params.provider.Arguments;
 
-public class UnknownMessageTest {
+import java.util.stream.Stream;
 
-    UnknownMessage message;
+public class UnknownMessageTest extends AbstractMessageTest<UnknownMessage> {
 
-    @Before
-    public void setUp() {
-        message = new UnknownMessage(ProtocolMessageType.UNKNOWN);
+    public UnknownMessageTest() {
+        super(UnknownMessage::new, "UnknownMessage:\n" + "  Data: %s");
     }
 
-    @After
-    public void tearDown() {
+    public static Stream<Arguments> provideToStringTestVectors() {
+        return Stream.of(Arguments.of(new Object[] { null }, null));
     }
-
-    /**
-     * Test of toString method, of class UnknownMessage.
-     */
-    @Test
-    public void testToString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("UnknownMessage:");
-        sb.append("\n  Data: ").append("null");
-
-        assertEquals(message.toString(), sb.toString());
-    }
-
 }

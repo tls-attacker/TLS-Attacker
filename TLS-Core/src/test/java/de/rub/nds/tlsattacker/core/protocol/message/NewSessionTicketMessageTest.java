@@ -10,36 +10,18 @@
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.tlsattacker.core.state.SessionTicket;
-import org.junit.After;
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.params.provider.Arguments;
 
-public class NewSessionTicketMessageTest {
+import java.util.stream.Stream;
 
-    NewSessionTicketMessage message;
+public class NewSessionTicketMessageTest extends AbstractMessageTest<NewSessionTicketMessage> {
 
-    @Before
-    public void setUp() {
-        message = new NewSessionTicketMessage();
+    public NewSessionTicketMessageTest() {
+        super(NewSessionTicketMessage::new,
+            "NewSessionTicketMessage:\n" + "  TicketLifeTimeHint: %s\n" + "  TicketLength: %s\n" + "  Ticket: %s");
     }
 
-    @After
-    public void tearDown() {
+    public static Stream<Arguments> provideToStringTestVectors() {
+        return Stream.of(Arguments.of(new Object[] { null, null, new SessionTicket() }, null));
     }
-
-    /**
-     * Test of toString method, of class NewSessionTicketMessage.
-     */
-    @Test
-    public void testToString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("NewSessionTicketMessage:");
-        sb.append("\n  TicketLifeTimeHint: ").append("null");
-        sb.append("\n  TicketLength: ").append("null");
-        sb.append("\n  Ticket: ").append(new SessionTicket().toString());
-
-        assertEquals(message.toString(), sb.toString());
-    }
-
 }

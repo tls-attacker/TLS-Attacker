@@ -9,25 +9,19 @@
 
 package de.rub.nds.tlsattacker.core.config.delegate;
 
-import com.beust.jcommander.JCommander;
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.config.Config;
 import org.apache.commons.lang3.builder.EqualsBuilder;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class SessionResumptionDelegateTest {
+public class SessionResumptionDelegateTest extends AbstractDelegateTest<SessionResumptionDelegate> {
 
-    private SessionResumptionDelegate delegate;
-    private JCommander jcommander;
-    private String[] args;
-
-    @Before
+    @BeforeEach
     public void setUp() {
-        this.delegate = new SessionResumptionDelegate();
-        this.jcommander = new JCommander(delegate);
+        super.setUp(new SessionResumptionDelegate());
     }
 
     /**
@@ -46,12 +40,12 @@ public class SessionResumptionDelegateTest {
         assertArrayEquals(delegate.getSessionId(), expected);
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testGetInvalidSessionId() {
         args = new String[2];
         args[0] = "-session_id";
         args[1] = "NOTAHEXSTRING";
-        jcommander.parse(args);
+        assertThrows(ParameterException.class, () -> jcommander.parse(args));
     }
 
     /**
@@ -91,7 +85,6 @@ public class SessionResumptionDelegateTest {
         Config config = Config.createConfig();
         Config config2 = Config.createConfig();
         delegate.applyDelegate(config);
-        assertTrue(EqualsBuilder.reflectionEquals(config, config2, "keyStore", "ourCertificate"));// little
-        // ugly
+        assertTrue(EqualsBuilder.reflectionEquals(config, config2, "keyStore", "ourCertificate"));
     }
 }

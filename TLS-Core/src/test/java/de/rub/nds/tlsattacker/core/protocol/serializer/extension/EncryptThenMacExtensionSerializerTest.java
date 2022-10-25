@@ -10,23 +10,19 @@
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptThenMacExtensionMessage;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Before;
-import org.junit.Test;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.EncryptThenMacExtensionParserTest;
+import org.junit.jupiter.params.provider.Arguments;
 
-public class EncryptThenMacExtensionSerializerTest {
-    private final byte[] expectedBytes = new byte[0];
-    private EncryptThenMacExtensionMessage message;
-    private EncryptThenMacExtensionSerializer serializer;
+import java.util.stream.Stream;
 
-    @Before
-    public void setUp() {
-        message = new EncryptThenMacExtensionMessage();
-        serializer = new EncryptThenMacExtensionSerializer(message);
+public class EncryptThenMacExtensionSerializerTest
+    extends AbstractExtensionMessageSerializerTest<EncryptThenMacExtensionMessage, EncryptThenMacExtensionSerializer> {
+
+    public EncryptThenMacExtensionSerializerTest() {
+        super(EncryptThenMacExtensionMessage::new, EncryptThenMacExtensionSerializer::new);
     }
 
-    @Test
-    public void testSerializeExtensionContent() {
-        assertArrayEquals(expectedBytes, serializer.serializeExtensionContent());
+    public static Stream<Arguments> provideTestVectors() {
+        return EncryptThenMacExtensionParserTest.provideTestVectors();
     }
 }

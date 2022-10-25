@@ -9,6 +9,7 @@
 
 package de.rub.nds.tlsattacker.mitm.config;
 
+import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.tlsattacker.core.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.core.config.delegate.*;
@@ -18,8 +19,6 @@ import org.apache.logging.log4j.Logger;
 public class MitmCommandConfig extends TLSDelegateConfig {
 
     private static final Logger LOGGER = LogManager.getLogger();
-
-    public static final String COMMAND = "mitm";
 
     @ParametersDelegate
     private CipherSuiteDelegate ciphersuiteDelegate;
@@ -32,9 +31,7 @@ public class MitmCommandConfig extends TLSDelegateConfig {
     @ParametersDelegate
     private SignatureAndHashAlgorithmDelegate signatureAndHashAlgorithmDelegate;
     @ParametersDelegate
-    private WorkflowInputDelegate workflowInputDelegate;
-    @ParametersDelegate
-    private WorkflowOutputDelegate workflowOutputDelegate;
+    private SignatureAlgorithmCertDelegate signatureAlgorithmCertDelegate;
     @ParametersDelegate
     private MitmWorkflowTypeDelegate mitmWorkflowTypeDelegate;
     @ParametersDelegate
@@ -50,11 +47,15 @@ public class MitmCommandConfig extends TLSDelegateConfig {
     @ParametersDelegate
     private ListDelegate listDelegate;
     @ParametersDelegate
-    private ConfigOutputDelegate configOutputDelegate;
-    @ParametersDelegate
     private TimeoutDelegate timeoutDelegate;
     @ParametersDelegate
     private ExecutorTypeDelegate executorTypeDelegate;
+
+    @Parameter(names = "-workflow_input", description = "A path to a workflow trace that should be exeucted")
+    private String workflowInput = null;
+    @Parameter(names = "-workflow_output",
+        description = "A path in which the executed workflow trace should be stored in")
+    private String workflowOutput = null;
 
     public MitmCommandConfig(GeneralDelegate delegate) {
         super(delegate);
@@ -64,15 +65,13 @@ public class MitmCommandConfig extends TLSDelegateConfig {
         this.protocolVersionDelegate = new ProtocolVersionDelegate();
         this.mitmDelegate = new MitmDelegate();
         this.signatureAndHashAlgorithmDelegate = new SignatureAndHashAlgorithmDelegate();
+        this.signatureAlgorithmCertDelegate = new SignatureAlgorithmCertDelegate();
         this.transportHandlerDelegate = new TransportHandlerDelegate();
-        this.workflowOutputDelegate = new WorkflowOutputDelegate();
-        this.workflowInputDelegate = new WorkflowInputDelegate();
         this.mitmWorkflowTypeDelegate = new MitmWorkflowTypeDelegate();
         this.maxFragmentLengthDelegate = new MaxFragmentLengthDelegate();
         this.certificateDelegate = new CertificateDelegate();
         this.filterDelegate = new FilterDelegate();
         this.listDelegate = new ListDelegate();
-        this.configOutputDelegate = new ConfigOutputDelegate();
         this.timeoutDelegate = new TimeoutDelegate();
         this.executorTypeDelegate = new ExecutorTypeDelegate();
 
@@ -82,16 +81,23 @@ public class MitmCommandConfig extends TLSDelegateConfig {
         addDelegate(protocolVersionDelegate);
         addDelegate(mitmDelegate);
         addDelegate(signatureAndHashAlgorithmDelegate);
+        addDelegate(signatureAlgorithmCertDelegate);
         addDelegate(heartbeatDelegate);
         addDelegate(transportHandlerDelegate);
         addDelegate(certificateDelegate);
-        addDelegate(workflowInputDelegate);
-        addDelegate(workflowOutputDelegate);
         addDelegate(mitmWorkflowTypeDelegate);
         addDelegate(filterDelegate);
         addDelegate(listDelegate);
-        addDelegate(configOutputDelegate);
         addDelegate(timeoutDelegate);
         addDelegate(executorTypeDelegate);
     }
+
+    public String getWorkflowInput() {
+        return workflowInput;
+    }
+
+    public String getWorkflowOutput() {
+        return workflowOutput;
+    }
+
 }

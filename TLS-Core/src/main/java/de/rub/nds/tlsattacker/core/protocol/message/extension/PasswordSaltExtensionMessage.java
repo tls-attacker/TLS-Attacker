@@ -20,7 +20,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.PasswordSaltExtensi
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PasswordSaltExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PasswordSaltExtensionSerializer;
 import java.io.InputStream;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * This extension is defined in RFC8492, used for the HelloRetryRequest

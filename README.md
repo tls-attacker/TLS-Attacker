@@ -13,7 +13,7 @@ In order to compile and use TLS-Attacker, you need to have Java and Maven instal
 ```bash
 $ sudo apt-get install maven
 ```
-TLS-Attacker currently needs Java JDK 8 to run.
+TLS-Attacker currently needs Java JDK 11 to run.
 
 If you have the correct Java version you can run the maven command from the TLS-Attacker directory:
 ```bash
@@ -31,9 +31,9 @@ If you want to use this project as a dependency, you do not have to compile it y
 .xml as follows.
 ```xml
 <dependency>
-    <groupId>de.rub.nds.tlsattacker</groupId>
-    <artifactId>TLS-Attacker</artifactId>
-    <version>3.7.0</version>
+    <groupId>de.rub.nds.tls.attacker</groupId>
+    <artifactId>tls-attacker</artifactId>
+    <version>4.0.0</version>
     <type>pom</type>
 </dependency>
 ```
@@ -60,12 +60,12 @@ Although these example applications are very powerful in itself, TLS-Attacker un
 
 ## Code Structure
 TLS-Attacker consists of several (maven) projects:
-- Attacks: Implementation of some well-known attacks and vulnerability tests
 - TLS-Client: The client example application
 - TLS-Core: The protocol stack and heart of TLS-Attacker
-- TLS-Forensic: Forensic analysis of TLS traffic
 - TLS-Mitm: A prototype for MitM workflows
 - TLS-Server: The server example application
+- TLS-Proxy: Use TLS-Attacker for SSLSockets
+- TraceTool: Inspection and modification of TLS-Attacker workflow traces
 - Transport: Transport utilities for lower layers
 - Utils: A collection of utility classes
 
@@ -110,11 +110,6 @@ $ java -jar TLS-Client.jar -connect localhost:4433
 You can use a different cipher suite, TLS version, or connect to a different port with the following parameters:
 ```bash
 $ java -jar TLS-Client.jar -connect localhost:4433 -cipher TLS_RSA_WITH_AES_256_CBC_SHA -version TLS11
-```
-
-The Attack's module contains some attacks, you can for example test for the padding oracle vulnerabilities:
-```bash
-$ java -jar Attacks.jar padding_oracle -connect localhost:4433 
 ```
 
 In case you are a more experienced developer, you can create your own TLS message flow by writing Java code. For example:

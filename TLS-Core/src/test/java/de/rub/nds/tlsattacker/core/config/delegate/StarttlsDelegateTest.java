@@ -9,26 +9,19 @@
 
 package de.rub.nds.tlsattacker.core.config.delegate;
 
-import com.beust.jcommander.JCommander;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertSame;
+
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.StarttlsType;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class StarttlsDelegateTest {
-    private StarttlsDelegate delegate;
-    private JCommander jcommander;
-    private String[] args;
+public class StarttlsDelegateTest extends AbstractDelegateTest<StarttlsDelegate> {
 
-    public StarttlsDelegateTest() {
-    }
-
-    @Before
+    @BeforeEach
     public void setUp() {
-        delegate = new StarttlsDelegate();
-        jcommander = new JCommander(delegate);
+        super.setUp(new StarttlsDelegate());
     }
 
     /**
@@ -40,9 +33,9 @@ public class StarttlsDelegateTest {
         args[0] = "-starttls";
         args[1] = "POP3";
         delegate.setStarttlsType(null);
-        assertFalse(delegate.getStarttlsType() == StarttlsType.NONE);
+        assertNotSame(StarttlsType.NONE, delegate.getStarttlsType());
         jcommander.parse(args);
-        assertTrue(delegate.getStarttlsType() == StarttlsType.POP3);
+        assertSame(StarttlsType.POP3, delegate.getStarttlsType());
     }
 
     /**
@@ -50,9 +43,9 @@ public class StarttlsDelegateTest {
      */
     @Test
     public void testSetStarttlsType() {
-        assertTrue(delegate.getStarttlsType() == StarttlsType.NONE);
+        assertSame(StarttlsType.NONE, delegate.getStarttlsType());
         delegate.setStarttlsType(StarttlsType.POP3);
-        assertTrue(delegate.getStarttlsType() == StarttlsType.POP3);
+        assertSame(StarttlsType.POP3, delegate.getStarttlsType());
     }
 
     /**
@@ -68,7 +61,7 @@ public class StarttlsDelegateTest {
         jcommander.parse(args);
         delegate.applyDelegate(config);
 
-        assertTrue(config.getStarttlsType() == StarttlsType.POP3);
+        assertSame(StarttlsType.POP3, config.getStarttlsType());
     }
 
 }

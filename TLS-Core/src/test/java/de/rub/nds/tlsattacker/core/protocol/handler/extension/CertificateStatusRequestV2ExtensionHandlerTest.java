@@ -14,25 +14,22 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusR
 import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.RequestItemV2;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.ResponderId;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.CertificateStatusRequestV2ExtensionParserTest;
-import java.util.Arrays;
+import org.junit.jupiter.api.Test;
+
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
 
-public class CertificateStatusRequestV2ExtensionHandlerTest {
-    private final List<RequestItemV2> itemList = Arrays.asList(new RequestItemV2(1, 1, 1, 0, new byte[] { 0x02 }));
-    private final List<ResponderId> idList = Arrays.asList(new ResponderId(1, new byte[] { 0x01 }));
-    private CertificateStatusRequestV2ExtensionHandler handler;
-    private TlsContext context;
+public class CertificateStatusRequestV2ExtensionHandlerTest extends AbstractExtensionMessageHandlerTest<
+    CertificateStatusRequestV2ExtensionMessage, CertificateStatusRequestV2ExtensionHandler> {
+    private final List<RequestItemV2> itemList = List.of(new RequestItemV2(1, 1, 1, 0, new byte[] { 0x02 }));
+    private final List<ResponderId> idList = List.of(new ResponderId(1, new byte[] { 0x01 }));
 
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new CertificateStatusRequestV2ExtensionHandler(context);
+    public CertificateStatusRequestV2ExtensionHandlerTest() {
+        super(CertificateStatusRequestV2ExtensionMessage::new, CertificateStatusRequestV2ExtensionHandler::new);
     }
 
     @Test
-    public void testadjustContext() {
+    @Override
+    public void testadjustTLSExtensionContext() {
         itemList.get(0).setResponderIdList(idList);
         CertificateStatusRequestV2ExtensionMessage msg = new CertificateStatusRequestV2ExtensionMessage();
         msg.setStatusRequestList(itemList);

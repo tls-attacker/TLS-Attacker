@@ -9,27 +9,18 @@
 
 package de.rub.nds.tlsattacker.core.dtls;
 
-import org.junit.After;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
-/**
- *
- *
- * @author ic0ns
- */
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 public class FragmentStreamTest {
 
     private FragmentStream stream;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         stream = new FragmentStream(10);
-    }
-
-    @After
-    public void tearDown() {
     }
 
     /**
@@ -81,9 +72,9 @@ public class FragmentStreamTest {
         assertTrue(stream.isComplete(0));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testIsCompleteNegativeValue() {
         stream.insertByteArray(new byte[] { 1, 2, 3 }, 0);
-        stream.isComplete(-4);
+        assertThrows(IllegalArgumentException.class, () -> stream.isComplete(-4));
     }
 }

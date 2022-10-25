@@ -9,13 +9,15 @@
 
 package de.rub.nds.tlsattacker.core.util;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import de.rub.nds.modifiablevariable.util.BadRandom;
+import org.junit.jupiter.api.Test;
+
 import java.security.KeyPair;
 import java.security.KeyStore;
 import java.util.Random;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import org.junit.Test;
 
 public class KeyStoreGeneratorTest {
 
@@ -23,7 +25,7 @@ public class KeyStoreGeneratorTest {
 
     /**
      * Test of createRSAKeyPair method, of class KeyStoreGenerator.
-     * 
+     *
      * @throws java.lang.Exception
      */
     @Test
@@ -35,7 +37,7 @@ public class KeyStoreGeneratorTest {
 
     /**
      * Test of createECKeyPair method, of class KeyStoreGenerator.
-     * 
+     *
      * @throws java.lang.Exception
      */
     @Test
@@ -47,7 +49,7 @@ public class KeyStoreGeneratorTest {
 
     /**
      * Test of createKeyStore method, of class KeyStoreGenerator.
-     * 
+     *
      * @throws java.lang.Exception
      */
     @Test

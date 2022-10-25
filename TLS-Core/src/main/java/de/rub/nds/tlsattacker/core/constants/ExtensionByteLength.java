@@ -303,6 +303,12 @@ public class ExtensionByteLength {
      */
     public static final int RECORD_SIZE_LIMIT_LENGTH = 2;
 
+    /**
+     * SignatureAlgorithmsCert Extension Fields
+     */
+    public static final int SIGNATURE_ALGORITHMS_CERT_LENGTH = 2;
+    public static final int SIGNATURE_ALGORITHMS_CERT = 2;
+
     private ExtensionByteLength() {
     }
 }

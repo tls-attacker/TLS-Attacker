@@ -9,20 +9,24 @@
 
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
-import org.junit.Before;
-import org.junit.Test;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ECPointFormatExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ECPointFormatExtensionSerializer;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-public class ECPointFormatExtensionPreparatorTest {
+public class ECPointFormatExtensionPreparatorTest extends AbstractExtensionMessagePreparatorTest<
+    ECPointFormatExtensionMessage, ECPointFormatExtensionSerializer, ECPointFormatExtensionPreparator> {
 
-    @Before
-    public void setUp() {
+    public ECPointFormatExtensionPreparatorTest() {
+        super(ECPointFormatExtensionMessage::new, ECPointFormatExtensionSerializer::new,
+            ECPointFormatExtensionPreparator::new);
     }
 
     /**
      * Test of prepareExtensionContent method, of class ECPointFormatExtensionPreparator.
      */
     @Test
-    public void testPrepareExtensionContent() {
+    @Disabled("Not implemented")
+    public void testPrepare() {
     }
-
 }

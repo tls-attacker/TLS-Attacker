@@ -9,17 +9,17 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedRandomExtensionMessage;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class ExtendedRandomExtensionHandlerTest {
-
+public class ExtendedRandomExtensionHandlerTest
+    extends AbstractExtensionMessageHandlerTest<ExtendedRandomExtensionMessage, ExtendedRandomExtensionHandler> {
     private final byte[] EXTENDED_RANDOM_SHORT = new byte[0];
     private final byte[] EXTENDED_RANDOM_DEFAULT =
         ArrayConverter.hexStringToByteArray("AABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABB");
@@ -29,17 +29,13 @@ public class ExtendedRandomExtensionHandlerTest {
     private final byte[] EXTENDED_RANDOM_CLIENT = ArrayConverter.hexStringToByteArray("AABBCCDDEEFF");
     private final byte[] EXTENDED_RANDOM_SERVER = ArrayConverter.hexStringToByteArray("112233445566");
 
-    private TlsContext context;
-    private ExtendedRandomExtensionHandler handler;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new ExtendedRandomExtensionHandler(context);
+    public ExtendedRandomExtensionHandlerTest() {
+        super(ExtendedRandomExtensionMessage::new, ExtendedRandomExtensionHandler::new);
     }
 
     @Test
-    public void testadjustContext() {
+    @Override
+    public void testadjustTLSExtensionContext() {
         // Short Extended Random Test
         ExtendedRandomExtensionMessage message = new ExtendedRandomExtensionMessage();
         message.setExtendedRandom(EXTENDED_RANDOM_SHORT);
@@ -116,5 +112,4 @@ public class ExtendedRandomExtensionHandlerTest {
         assertArrayEquals(concatClientRandom, context.getClientRandom());
         assertArrayEquals(concatServerRandom, context.getServerRandom());
     }
-
 }

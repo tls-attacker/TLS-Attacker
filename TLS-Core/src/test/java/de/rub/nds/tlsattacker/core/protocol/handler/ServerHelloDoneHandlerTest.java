@@ -10,30 +10,20 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class ServerHelloDoneHandlerTest {
+public class ServerHelloDoneHandlerTest
+    extends AbstractTlsMessageHandlerTest<ServerHelloDoneMessage, ServerHelloDoneHandler> {
 
-    private ServerHelloDoneHandler handler;
-    private TlsContext context;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new ServerHelloDoneHandler(context);
-    }
-
-    @After
-    public void tearDown() {
+    public ServerHelloDoneHandlerTest() {
+        super(ServerHelloDoneMessage::new, ServerHelloDoneHandler::new);
     }
 
     /**
      * Test of adjustContext method, of class ServerHelloDoneHandler.
      */
     @Test
+    @Override
     public void testadjustContext() {
         ServerHelloDoneMessage message = new ServerHelloDoneMessage();
         handler.adjustContext(message);

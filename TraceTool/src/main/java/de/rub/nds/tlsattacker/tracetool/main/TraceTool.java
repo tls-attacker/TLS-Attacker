@@ -22,7 +22,7 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
 import de.rub.nds.tlsattacker.tracetool.config.TraceToolCommandConfig;
 import java.io.File;
 import java.io.IOException;
-import javax.xml.bind.JAXBException;
+import jakarta.xml.bind.JAXBException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -73,16 +73,9 @@ public class TraceTool {
         try {
             Config config = cmdConfig.createConfig();
             State state = new State(config);
-            if (config.getWorkflowOutput() == null || config.getWorkflowOutput().isEmpty()) {
-                WorkflowTrace filtered = state.getFilteredTraceCopy();
-                String xml = WorkflowTraceSerializer.write(filtered);
-                System.out.println(xml);
-            } else {
-                state.storeTrace();
-            }
-            if (config.getConfigOutput() != null) {
-                ConfigIO.write(config, new File(config.getConfigOutput()));
-            }
+            WorkflowTrace filtered = state.getFilteredTraceCopy();
+            String xml = WorkflowTraceSerializer.write(filtered);
+            System.out.println(xml);
         } catch (ConfigurationException ce) {
             LOGGER.error("Encountered a ConfigurationException aborting. " + ce.getLocalizedMessage()
                 + " - See debug messages for more details.");

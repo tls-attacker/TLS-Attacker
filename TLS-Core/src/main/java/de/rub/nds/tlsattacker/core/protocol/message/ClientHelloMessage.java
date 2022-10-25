@@ -28,7 +28,7 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.Objects;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -88,17 +88,6 @@ public class ClientHelloMessage extends HelloMessage {
             }
             if (tlsConfig.isAddServerNameIndicationExtension()) {
                 ServerNameIndicationExtensionMessage extension = new ServerNameIndicationExtensionMessage();
-                byte[] serverName;
-                if (tlsConfig.getDefaultClientConnection().getHostname() != null) {
-                    serverName =
-                        tlsConfig.getDefaultClientConnection().getHostname().getBytes(Charset.forName("ASCII"));
-                } else {
-                    LOGGER.warn("SNI not correctly configured!");
-                    serverName = new byte[0];
-                }
-                ServerNamePair pair = new ServerNamePair(tlsConfig.getSniType().getValue(), serverName);
-
-                extension.getServerNameList().add(pair);
                 addExtension(extension);
             }
             if (tlsConfig.isAddEncryptedServerNameIndicationExtension()) {
@@ -118,6 +107,9 @@ public class ClientHelloMessage extends HelloMessage {
             }
             if (tlsConfig.isAddSignatureAndHashAlgorithmsExtension()) {
                 addExtension(new SignatureAndHashAlgorithmsExtensionMessage());
+            }
+            if (tlsConfig.isAddSignatureAlgorithmsCertExtension()) {
+                addExtension(new SignatureAlgorithmsCertExtensionMessage());
             }
             if (tlsConfig.isAddSupportedVersionsExtension()) {
                 addExtension(new SupportedVersionsExtensionMessage());

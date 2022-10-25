@@ -9,35 +9,25 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import org.junit.After;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class ClientHelloHandlerTest {
+public class ClientHelloHandlerTest extends AbstractTlsMessageHandlerTest<ClientHelloMessage, ClientHelloHandler> {
 
-    private ClientHelloHandler handler;
-    private TlsContext context;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new ClientHelloHandler(context);
-    }
-
-    @After
-    public void tearDown() {
+    public ClientHelloHandlerTest() {
+        super(ClientHelloMessage::new, ClientHelloHandler::new);
     }
 
     /**
      * Test of adjustContext method, of class ClientHelloHandler.
      */
     @Test
+    @Override
     public void testadjustContext() {
         ClientHelloMessage message = new ClientHelloMessage();
         message.setCompleteResultingMessage(new byte[0]);
@@ -52,9 +42,9 @@ public class ClientHelloHandlerTest {
         assertArrayEquals(context.getClientRandom(), new byte[] { 0, 1, 2, 3, 4, 5 });
         assertTrue(context.getClientSupportedCompressions().contains(CompressionMethod.DEFLATE));
         assertTrue(context.getClientSupportedCompressions().contains(CompressionMethod.NULL));
-        assertTrue(context.getClientSupportedCompressions().size() == 2);
+        assertEquals(2, context.getClientSupportedCompressions().size());
         assertArrayEquals(context.getClientSessionId(), new byte[] { 6, 6, 6 });
-        assertTrue(context.getClientSupportedCipherSuites().size() == 2);
+        assertEquals(2, context.getClientSupportedCipherSuites().size());
         assertTrue(context.getClientSupportedCipherSuites().contains(CipherSuite.TLS_RSA_WITH_NULL_SHA));
         assertTrue(context.getClientSupportedCipherSuites().contains(CipherSuite.TLS_RSA_WITH_NULL_MD5));
         assertNull(context.getDtlsCookie());
@@ -76,9 +66,9 @@ public class ClientHelloHandlerTest {
         assertArrayEquals(context.getClientRandom(), new byte[] { 0, 1, 2, 3, 4, 5 });
         assertTrue(context.getClientSupportedCompressions().contains(CompressionMethod.DEFLATE));
         assertTrue(context.getClientSupportedCompressions().contains(CompressionMethod.NULL));
-        assertTrue(context.getClientSupportedCompressions().size() == 2);
+        assertEquals(2, context.getClientSupportedCompressions().size());
         assertArrayEquals(context.getClientSessionId(), new byte[] { 6, 6, 6 });
-        assertTrue(context.getClientSupportedCipherSuites().size() == 2);
+        assertEquals(2, context.getClientSupportedCipherSuites().size());
         assertTrue(context.getClientSupportedCipherSuites().contains(CipherSuite.TLS_RSA_WITH_NULL_SHA));
         assertTrue(context.getClientSupportedCipherSuites().contains(CipherSuite.TLS_RSA_WITH_NULL_MD5));
         assertArrayEquals(context.getDtlsCookie(), new byte[] { 2, 2, 3 });

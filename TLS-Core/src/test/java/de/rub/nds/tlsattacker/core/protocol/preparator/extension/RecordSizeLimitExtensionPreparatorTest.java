@@ -9,41 +9,34 @@
 
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RecordSizeLimitExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.RecordSizeLimitExtensionSerializer;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class RecordSizeLimitExtensionPreparatorTest {
+public class RecordSizeLimitExtensionPreparatorTest extends AbstractExtensionMessagePreparatorTest<
+    RecordSizeLimitExtensionMessage, RecordSizeLimitExtensionSerializer, RecordSizeLimitExtensionPreparator> {
 
-    private Config config;
-    private TlsContext context;
-    private RecordSizeLimitExtensionMessage message;
-    private RecordSizeLimitExtensionPreparator preparator;
-
-    @Before
-    public void setUp() {
-        config = Config.createConfig();
-        context = new TlsContext(config);
-        message = new RecordSizeLimitExtensionMessage();
-        preparator = new RecordSizeLimitExtensionPreparator(context.getChooser(), message);
+    public RecordSizeLimitExtensionPreparatorTest() {
+        super(RecordSizeLimitExtensionMessage::new, RecordSizeLimitExtensionSerializer::new,
+            RecordSizeLimitExtensionPreparator::new);
     }
 
     /**
      * Test of prepare method, of class RecordSizeLimitExtensionPreparator.
      */
     @Test
-    public void testPreparator() {
-        config.setInboundRecordSizeLimit(1337);
+    @Override
+    public void testPrepare() {
+        context.getConfig().setInboundRecordSizeLimit(1337);
 
         preparator.prepare();
 
         assertArrayEquals(new byte[] { (byte) 0x05, (byte) 0x39 }, message.getRecordSizeLimit().getValue());
-        assertArrayEquals(ArrayConverter.intToBytes(config.getInboundRecordSizeLimit(), 2),
+        assertArrayEquals(ArrayConverter.intToBytes(context.getConfig().getInboundRecordSizeLimit(), 2),
             message.getRecordSizeLimit().getValue());
     }
 }

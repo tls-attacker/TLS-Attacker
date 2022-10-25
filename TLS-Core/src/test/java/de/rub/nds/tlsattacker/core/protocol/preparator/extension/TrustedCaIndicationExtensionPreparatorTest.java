@@ -9,38 +9,38 @@
 
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TrustedCaIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.TrustedCaIndicationExtensionSerializer;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import org.junit.jupiter.api.Test;
+
 import java.util.Arrays;
 import java.util.List;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import org.junit.Test;
 
-public class TrustedCaIndicationExtensionPreparatorTest {
+public class TrustedCaIndicationExtensionPreparatorTest
+    extends AbstractExtensionMessagePreparatorTest<TrustedCaIndicationExtensionMessage,
+        TrustedCaIndicationExtensionSerializer, TrustedCaIndicationExtensionPreparator> {
 
-    private TlsContext context;
-    private TrustedCaIndicationExtensionMessage msg;
-    private TrustedCaIndicationExtensionPreparator preparator;
-    private final int authoritiesLength = 8;
-    private final List<TrustedAuthority> trustedAuthorities =
-        Arrays.asList(new TrustedAuthority((byte) 0, new byte[] {}, 0, new byte[] {}),
-            new TrustedAuthority((byte) 2, new byte[] {}, 5, new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05 }));
+    public TrustedCaIndicationExtensionPreparatorTest() {
+        super(TrustedCaIndicationExtensionMessage::new, TrustedCaIndicationExtensionSerializer::new,
+            TrustedCaIndicationExtensionPreparator::new);
+    }
 
     @Test
-    public void testPreparator() {
-        context = new TlsContext();
-        msg = new TrustedCaIndicationExtensionMessage();
-        preparator = new TrustedCaIndicationExtensionPreparator(context.getChooser(), msg);
-
+    @Override
+    public void testPrepare() {
+        List<TrustedAuthority> trustedAuthorities =
+            Arrays.asList(new TrustedAuthority((byte) 0, new byte[] {}, 0, new byte[] {}),
+                new TrustedAuthority((byte) 2, new byte[] {}, 5, new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05 }));
         context.getConfig().setTrustedCaIndicationExtensionAuthorities(trustedAuthorities);
 
         preparator.prepare();
 
-        assertEquals(authoritiesLength, (long) msg.getTrustedAuthoritiesLength().getValue());
-        assertTrustedAuthorityList(trustedAuthorities, msg.getTrustedAuthorities());
+        assertEquals(8, message.getTrustedAuthoritiesLength().getValue());
+        assertTrustedAuthorityList(trustedAuthorities, message.getTrustedAuthorities());
     }
 
     public void assertTrustedAuthorityList(List<TrustedAuthority> expected, List<TrustedAuthority> actual) {
@@ -56,5 +56,4 @@ public class TrustedCaIndicationExtensionPreparatorTest {
                 actualObject.getDistinguishedName().getValue());
         }
     }
-
 }

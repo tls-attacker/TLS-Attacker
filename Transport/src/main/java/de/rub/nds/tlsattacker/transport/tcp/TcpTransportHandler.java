@@ -65,10 +65,8 @@ public abstract class TcpTransportHandler extends TransportHandler {
             }
 
             int read = inStream.read();
-            socket.setSoTimeout((int) getTimeout());
-
+            inStream.unread(read);
             if (read == -1) {
-                inStream.unread(-1);
                 return SocketState.CLOSED;
             } else {
                 return SocketState.DATA_AVAILABLE;

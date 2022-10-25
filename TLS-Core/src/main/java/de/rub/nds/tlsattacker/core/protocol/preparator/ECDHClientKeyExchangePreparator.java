@@ -84,7 +84,7 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
     public void prepareAfterParse(boolean clientMode) {
         msg.prepareComputations();
         prepareClientServerRandom(msg);
-        NamedGroup usedGroup = chooser.getSelectedNamedGroup();
+        NamedGroup usedGroup = getSuitableNamedGroup();
         LOGGER.debug("PMS used Group: " + usedGroup.name());
         if (msg.getComputations().getPrivateKey() == null) {
             setComputationPrivateKey(msg, clientMode);
@@ -102,7 +102,7 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
     }
 
     private void setSerializedPublicKey() {
-        NamedGroup usedGroup = chooser.getSelectedNamedGroup();
+        NamedGroup usedGroup = getSuitableNamedGroup();
         LOGGER.debug("PublicKey used Group: " + usedGroup.name());
         ECPointFormat pointFormat = chooser.getConfig().getDefaultSelectedPointFormat();
         LOGGER.debug("EC Point format: " + pointFormat.name());
@@ -122,6 +122,16 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
             publicKeyBytes = PointFormatter.formatToByteArray(usedGroup, publicKey, pointFormat);
         }
         msg.setPublicKey(publicKeyBytes);
+    }
+
+    private NamedGroup getSuitableNamedGroup() {
+        NamedGroup usedGroup = chooser.getSelectedNamedGroup();
+        if (!usedGroup.isCurve() || usedGroup.isGost()) {
+            usedGroup = NamedGroup.SECP256R1;
+            LOGGER.warn("Selected NamedGroup {} is not suitable for ECDHClientKeyExchange message. Using {} instead.",
+                chooser.getSelectedNamedGroup(), usedGroup);
+        }
+        return usedGroup;
     }
 
     protected void setComputationPrivateKey(T msg, boolean clientMode) {

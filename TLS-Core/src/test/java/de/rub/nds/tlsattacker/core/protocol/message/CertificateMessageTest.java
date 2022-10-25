@@ -9,46 +9,24 @@
 
 package de.rub.nds.tlsattacker.core.protocol.message;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import org.junit.After;
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.params.provider.Arguments;
 
-public class CertificateMessageTest {
-    CertificateMessage message;
+import java.util.function.BiConsumer;
+import java.util.stream.Stream;
 
-    @Before
-    public void setUp() {
-        message = new CertificateMessage();
+public class CertificateMessageTest extends AbstractMessageTest<CertificateMessage> {
+
+    public CertificateMessageTest() {
+        super(CertificateMessage::new,
+            "CertificateMessage:\n" + "  Certificates Length: %s\n" + "  Certificate:\n" + "%s");
     }
 
-    @After
-    public void tearDown() {
-    }
-
-    /**
-     * Test of toString method, of class CertificateMessage.
-     */
-    @Test
-    public void testToString() {
-        StringBuilder sb = new StringBuilder();
-
-        sb.append("CertificateMessage:");
-        sb.append("\n  Certificates Length: ").append("null");
-        sb.append("\n  Certificate:\n").append("null");
-        assertEquals(sb.toString(), message.toString());
-
-        byte testBytes = 120;
-        byte[] testArray = { 120 };
-
-        sb.setLength(0);
-        sb.append("CertificateMessage:");
-        sb.append("\n  Certificates Length: ").append(testBytes);
-        sb.append("\n  Certificate:\n").append(ArrayConverter.bytesToHexString(testArray));
-
-        message.setCertificatesListLength(testBytes);
-        message.setCertificatesListBytes(testArray);
-        assertEquals(sb.toString(), message.toString());
+    public static Stream<Arguments> provideToStringTestVectors() {
+        BiConsumer<CertificateMessage, Object[]> messagePreparator = (message, values) -> {
+            message.setCertificatesListLength((byte) values[0]);
+            message.setCertificatesListBytes((byte[]) values[1]);
+        };
+        return Stream.of(Arguments.of(new Object[] { null, null }, null),
+            Arguments.of(new Object[] { (byte) 120, new byte[] { 120 } }, messagePreparator));
     }
 }

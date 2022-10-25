@@ -9,33 +9,39 @@
 
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Before;
-import org.junit.Test;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.ServerNamePairParserTest;
+import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ServerNamePairPreparator;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
 
 public class ServerNamePairSerializerTest {
 
-    private ServerNamePairSerializer serializer;
-    private ServerNamePair pair;
+    private TlsContext context;
 
-    @Before
+    @BeforeEach
     public void setUp() {
+        context = new TlsContext();
     }
 
-    /**
-     * Test of serializeBytes method, of class ServerNamePairSerializer.
-     */
-    @Test
-    public void testSerializeBytes() {
-        pair = new ServerNamePair((byte) 3, null);
-        pair.setServerNameLength(123);
-        pair.setServerNameType((byte) 3);
-        pair.setServerName(new byte[] { 1, 2, 3, 4, });
-        serializer = new ServerNamePairSerializer(pair);
-        byte[] result = serializer.serialize();
-        assertArrayEquals(ArrayConverter.hexStringToByteArray("03007B01020304"), result);
+    public static Stream<Arguments> provideTestVectors() {
+        return ServerNamePairParserTest.provideTestVectors();
     }
 
+    @ParameterizedTest
+    @MethodSource("provideTestVectors")
+    public void testSerialize(byte[] expectedServerNamePairBytes, byte providedServerNameType,
+        int providedServerNameLength, byte[] providedServerName) {
+        ServerNamePair pair = new ServerNamePair(providedServerNameType, providedServerName);
+        new ServerNamePairPreparator(context.getChooser(), pair).prepare();
+        byte[] actualBytes = new ServerNamePairSerializer(pair).serialize();
+        assertArrayEquals(expectedServerNamePairBytes, actualBytes);
+    }
 }

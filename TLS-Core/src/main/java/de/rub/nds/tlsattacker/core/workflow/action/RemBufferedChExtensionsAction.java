@@ -22,9 +22,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElements;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElements;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -77,7 +77,12 @@ public class RemBufferedChExtensionsAction extends ConnectionBoundAction {
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
-        TlsContext ctx = state.getContext(connectionAlias).getTlsContext();
+        TlsContext ctx = state.getTlsContext(connectionAlias);
+
+        if (isExecuted()) {
+            throw new WorkflowExecutionException("Action already executed!");
+        }
+
         ClientHelloMessage ch = (ClientHelloMessage) ctx.getMessageBuffer().getFirst();
 
         removeExtensions(ctx, ch);

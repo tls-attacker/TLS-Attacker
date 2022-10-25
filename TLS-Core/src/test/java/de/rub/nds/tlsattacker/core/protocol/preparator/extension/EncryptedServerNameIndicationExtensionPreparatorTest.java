@@ -9,9 +9,10 @@
 
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.ChooserType;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.layer.LayerStack;
@@ -22,37 +23,33 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareS
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.EncryptedServerNameIndicationExtensionSerializer;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.state.Context;
-import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.Security;
 import java.util.LinkedList;
 import java.util.List;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.Test;
 
-@SuppressWarnings("SpellCheckingInspection")
 public class EncryptedServerNameIndicationExtensionPreparatorTest {
 
-    private Chooser chooser;
     private TlsContext context;
 
-    @Before
-    public void setUp() {
+    @BeforeAll
+    public static void setUpClass() {
         Security.addProvider(new BouncyCastleProvider());
-        Config config = new Config();
-        Context outerContext = new Context(config);
-        context = outerContext.getTlsContext();
-        chooser = ChooserFactory.getChooser(ChooserType.DEFAULT, outerContext, config);
+    }
+
+    @BeforeEach
+    public void setUp() {
+        context = new TlsContext();
     }
 
     @Test
-    public void test() {
+    public void testPrepare() {
         CipherSuite cipherSuite = CipherSuite.TLS_AES_128_GCM_SHA256;
         NamedGroup namedGroup = NamedGroup.ECDH_X25519;
 
@@ -79,7 +76,7 @@ public class EncryptedServerNameIndicationExtensionPreparatorTest {
         EncryptedServerNameIndicationExtensionSerializer serializer =
             new EncryptedServerNameIndicationExtensionSerializer(msg);
         EncryptedServerNameIndicationExtensionPreparator preparator =
-            new EncryptedServerNameIndicationExtensionPreparator(chooser, msg);
+            new EncryptedServerNameIndicationExtensionPreparator(context.getChooser(), msg);
 
         ServerNamePair pair = new ServerNamePair(nameTypeConfig, hostnameConfig.getBytes(StandardCharsets.UTF_8));
         msg.getClientEsniInner().getServerNameList().add(pair);

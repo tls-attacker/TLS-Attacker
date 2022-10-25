@@ -9,24 +9,26 @@
 
 package de.rub.nds.tlsattacker.core.workflow;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.workflow.action.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+
 import java.util.LinkedList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
 
 public class WorkflowTraceTest {
 
     private WorkflowTrace trace;
     private Config config;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         config = Config.createConfig();
         trace = new WorkflowTrace();
@@ -36,6 +38,7 @@ public class WorkflowTraceTest {
      * Test of makeGeneric method, of class WorkflowTrace.
      */
     @Test
+    @Disabled("Not implemented")
     public void testMakeGeneric() {
     }
 
@@ -43,6 +46,7 @@ public class WorkflowTraceTest {
      * Test of strip method, of class WorkflowTrace.
      */
     @Test
+    @Disabled("Not implemented")
     public void testStrip() {
     }
 
@@ -50,6 +54,7 @@ public class WorkflowTraceTest {
      * Test of reset method, of class WorkflowTrace.
      */
     @Test
+    @Disabled("Not implemented")
     public void testReset() {
     }
 
@@ -79,9 +84,9 @@ public class WorkflowTraceTest {
         trace.addTlsAction(new SendAction());
         trace.addTlsAction(new SendAction());
         trace.addTlsAction(new SendAction());
-        assertTrue(trace.getTlsActions().size() == 3);
+        assertEquals(3, trace.getTlsActions().size());
         trace.addTlsAction(new ReceiveAction());
-        assertTrue(trace.getTlsActions().get(3).equals(new ReceiveAction()));
+        assertEquals(new ReceiveAction(), trace.getTlsActions().get(3));
     }
 
     /**
@@ -92,9 +97,9 @@ public class WorkflowTraceTest {
         trace.addTlsAction(new SendAction());
         trace.addTlsAction(new SendAction());
         trace.addTlsAction(new SendAction());
-        assertTrue(trace.getTlsActions().size() == 3);
+        assertEquals(3, trace.getTlsActions().size());
         trace.addTlsAction(0, new ReceiveAction());
-        assertTrue(trace.getTlsActions().get(0).equals(new ReceiveAction()));
+        assertEquals(new ReceiveAction(), trace.getTlsActions().get(0));
     }
 
     /**
@@ -105,9 +110,9 @@ public class WorkflowTraceTest {
         trace.addTlsAction(new SendAction());
         trace.addTlsAction(new SendAction());
         trace.addTlsAction(new SendAction());
-        assertTrue(trace.getTlsActions().size() == 3);
+        assertEquals(3, trace.getTlsActions().size());
         trace.removeTlsAction(0);
-        assertTrue(trace.getTlsActions().size() == 2);
+        assertEquals(2, trace.getTlsActions().size());
     }
 
     /**
@@ -117,9 +122,9 @@ public class WorkflowTraceTest {
     public void testGetTLSActions() {
         trace.addTlsAction(new SendAction());
         trace.addTlsAction(new ReceiveAction());
-        assertTrue(trace.getTlsActions().size() == 2);
-        assertEquals(trace.getTlsActions().get(0), new SendAction());
-        assertEquals(trace.getTlsActions().get(1), new ReceiveAction());
+        assertEquals(2, trace.getTlsActions().size());
+        assertEquals(new SendAction(), trace.getTlsActions().get(0));
+        assertEquals(new ReceiveAction(), trace.getTlsActions().get(1));
     }
 
     /**
@@ -131,9 +136,9 @@ public class WorkflowTraceTest {
         actionList.add(new SendAction());
         actionList.add(new ReceiveAction());
         trace.setTlsActions(actionList);
-        assertTrue(trace.getTlsActions().size() == 2);
-        assertEquals(trace.getTlsActions().get(0), new SendAction());
-        assertEquals(trace.getTlsActions().get(1), new ReceiveAction());
+        assertEquals(2, trace.getTlsActions().size());
+        assertEquals(new SendAction(), trace.getTlsActions().get(0));
+        assertEquals(new ReceiveAction(), trace.getTlsActions().get(1));
 
     }
 
@@ -145,9 +150,9 @@ public class WorkflowTraceTest {
         trace.addTlsAction(new SendAction());
         trace.addTlsAction(new ReceiveAction());
         trace.addTlsAction(new ChangeClientRandomAction());
-        assertTrue(trace.getMessageActions().size() == 2);
-        assertEquals(trace.getMessageActions().get(0), new SendAction());
-        assertEquals(trace.getMessageActions().get(1), new ReceiveAction());
+        assertEquals(2, trace.getMessageActions().size());
+        assertEquals(new SendAction(), trace.getMessageActions().get(0));
+        assertEquals(new ReceiveAction(), trace.getMessageActions().get(1));
     }
 
     /**
@@ -158,8 +163,8 @@ public class WorkflowTraceTest {
         trace.addTlsAction(new SendAction());
         trace.addTlsAction(new ReceiveAction());
         trace.addTlsAction(new ChangeClientRandomAction());
-        assertTrue(trace.getReceivingActions().size() == 1);
-        assertEquals(trace.getReceivingActions().get(0), new ReceiveAction());
+        assertEquals(1, trace.getReceivingActions().size());
+        assertEquals(new ReceiveAction(), trace.getReceivingActions().get(0));
     }
 
     /**
@@ -170,8 +175,8 @@ public class WorkflowTraceTest {
         trace.addTlsAction(new SendAction());
         trace.addTlsAction(new ReceiveAction());
         trace.addTlsAction(new ChangeClientRandomAction());
-        assertTrue(trace.getSendingActions().size() == 1);
-        assertEquals(trace.getSendingActions().get(0), new SendAction());
+        assertEquals(1, trace.getSendingActions().size());
+        assertEquals(new SendAction(), trace.getSendingActions().get(0));
     }
 
     /**
@@ -212,6 +217,7 @@ public class WorkflowTraceTest {
      * Test of executedAsPlanned method, of class WorkflowTrace.
      */
     @Test
+    @Disabled("Not implemented")
     public void testConfiguredLooksLikeActual() {
     }
 
