@@ -11,17 +11,30 @@ package de.rub.nds.tlsattacker.core.layer;
 
 import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
- * Wrapper class for {@link LayerProcessingResult}. Makes results of multiple layers avilable for a {@link LayerStack}.
+ * Wrapper class for {@link LayerProcessingResult}. Makes results of multiple layers available for a {@link LayerStack}.
  */
 public class LayerStackProcessingResult {
 
     private final List<LayerProcessingResult> layerProcessingResultList;
 
+    // whether any layer has unreadBytes
+    private boolean hasUnreadBytes;
+
+    // layers with unread bytes
+    private List<LayerType> layersWithUnreadBytes;
+
     public LayerStackProcessingResult(List<LayerProcessingResult> layerProcessingResultList) {
         this.layerProcessingResultList = layerProcessingResultList;
+        for (LayerProcessingResult layerProcessingResult : layerProcessingResultList) {
+            if (layerProcessingResult.getUnreadBytes().length != 0) {
+                layersWithUnreadBytes.add(layerProcessingResult.getLayerType());
+                hasUnreadBytes = true;
+            }
+        }
     }
 
     public List<LayerProcessingResult> getLayerProcessingResultList() {
@@ -37,5 +50,13 @@ public class LayerStackProcessingResult {
             }
         }
         return null;
+    }
+
+    public boolean hasUnreadBytes() {
+        return hasUnreadBytes;
+    }
+
+    public List<LayerType> getLayersWithUnreadBytes() {
+        return layersWithUnreadBytes;
     }
 }

@@ -249,16 +249,9 @@ public abstract class MessageAction extends ConnectionBoundAction {
 
     private void getReceiveResult(LayerStack layerStack, List<LayerConfiguration> layerConfigurationList) {
         LayerStackProcessingResult processingResult;
-        try {
-            processingResult = layerStack.receiveData(layerConfigurationList);
-            setContainers(processingResult);
-            setLayerStackProcessingResult(processingResult);
-        } catch (IOException ex) {
-            LOGGER.warn("Received an IOException", ex);
-            LayerStackProcessingResult reconstructedResult = layerStack.gatherResults();
-            setContainers(reconstructedResult);
-            setLayerStackProcessingResult(reconstructedResult);
-        }
+        processingResult = layerStack.receiveData(layerConfigurationList);
+        setContainers(processingResult);
+        setLayerStackProcessingResult(processingResult);
     }
 
     private void setContainers(LayerStackProcessingResult processingResults) {

@@ -76,7 +76,7 @@ public class TcpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> 
     }
 
     @Override
-    public LayerProcessingResult receiveData() throws IOException {
+    public LayerProcessingResult receiveData() {
         return new LayerProcessingResult(null, getLayerType(), true);
     }
 

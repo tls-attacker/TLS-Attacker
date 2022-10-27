@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
@@ -76,20 +76,20 @@ public class RemBufferedChCiphersAction extends ConnectionBoundAction {
     }
 
     @Override
-    public void execute(State state) throws WorkflowExecutionException {
+    public void execute(State state) throws ActionExecutionException {
         TlsContext ctx = state.getTlsContext(connectionAlias);
 
         if (isExecuted()) {
-            throw new WorkflowExecutionException("Action already executed!");
+            throw new ActionExecutionException("Action already executed!");
         }
 
         ClientHelloMessage ch = (ClientHelloMessage) ctx.getMessageBuffer().getFirst();
 
-        removeCiphers(ctx, ch);
+        removeCiphers(ch);
         setExecuted(true);
     }
 
-    private void removeCiphers(TlsContext ctx, ClientHelloMessage ch) {
+    private void removeCiphers(ClientHelloMessage ch) throws ActionExecutionException {
         String msgName = ch.toCompactString();
 
         if (ch.getCipherSuites() == null) {
@@ -112,7 +112,7 @@ public class RemBufferedChCiphersAction extends ConnectionBoundAction {
                 try {
                     newCiphersBytes.write(cs.getByteValue());
                 } catch (IOException ex) {
-                    throw new WorkflowExecutionException("Could not write CipherSuite value to byte[]", ex);
+                    throw new ActionExecutionException("Could not write CipherSuite value to byte[]", ex);
                 }
             }
         }
@@ -199,9 +199,6 @@ public class RemBufferedChCiphersAction extends ConnectionBoundAction {
     }
 
     private void initEmptyLists() {
-        if (removeCiphers == null) {
-            removeCiphers = new ArrayList<>();
-        }
         if (removeCiphers == null) {
             removeCiphers = new ArrayList<>();
         }

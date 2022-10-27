@@ -17,8 +17,7 @@ import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 
 /**
  * Contains a list of {@link DataContainer} with additional information about how to send and receive them and whether
- * they were sent/received correctly. See {@link SpecificContainerLayerConfiguration} and
- * {@link TillContainerLayerConfiguration} for implementations.
+ * they were sent/received correctly.
  *
  * @param <Container>
  */

@@ -9,7 +9,7 @@
 
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 
 /**
@@ -27,7 +27,7 @@ public class SetEncryptChangeCipherSpecConfigAction extends ConnectionBoundActio
     }
 
     @Override
-    public void execute(State state) throws WorkflowExecutionException {
+    public void execute(State state) throws ActionExecutionException {
         state.getConfig().setEncryptChangeCipherSpec(setting);
         setExecuted(true);
     }

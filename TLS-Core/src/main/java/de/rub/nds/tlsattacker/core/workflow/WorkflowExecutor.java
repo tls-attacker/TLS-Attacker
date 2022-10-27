@@ -17,17 +17,14 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.exceptions.BouncyCastleNotLoadedException;
-import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.exceptions.*;
 import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
+import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
@@ -77,7 +74,7 @@ public abstract class WorkflowExecutor {
         this.config = state.getConfig();
     }
 
-    public abstract void executeWorkflow() throws WorkflowExecutionException;
+    public abstract void executeWorkflow();
 
     public void initProtocolStack(Context context) throws IOException {
         context.setLayerStack(LayerStackFactory.createLayerStack(config.getDefaultLayerConfiguration(), context));
@@ -119,6 +116,30 @@ public abstract class WorkflowExecutor {
         } catch (Exception ex) {
             throw new TransportHandlerConnectException(
                 "Unable to initialize the transport handler with: " + context.getConnection().toString(), ex);
+        }
+    }
+
+    /**
+     * Executes the given action with the given state. Catches and handles exceptions. Throws: SkipActionException If
+     * the action should be skipped
+     */
+    protected void executeAction(TlsAction action, State state) throws SkipActionException {
+        try {
+            action.execute(state);
+        } catch (WorkflowExecutionException ex) {
+            LOGGER.error("Fatal error during action execution, stopping execution: ", ex);
+            state.setExecutionException(ex);
+            throw ex;
+        } catch (UnsupportedOperationException | PreparationException | ActionExecutionException ex) {
+            state.setExecutionException(ex);
+            LOGGER.warn("Not fatal error during action execution, skipping action: " + action, ex);
+            throw new SkipActionException(ex);
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected fatal error during action execution, stopping execution: ", ex);
+            state.setExecutionException(ex);
+            throw new WorkflowExecutionException(ex);
+        } finally {
+            state.setEndTimestamp(System.currentTimeMillis());
         }
     }
 

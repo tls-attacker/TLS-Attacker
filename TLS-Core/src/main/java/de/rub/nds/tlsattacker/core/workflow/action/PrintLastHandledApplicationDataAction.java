@@ -10,7 +10,7 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 import java.nio.charset.Charset;
@@ -49,9 +49,9 @@ public class PrintLastHandledApplicationDataAction extends ConnectionBoundAction
     }
 
     @Override
-    public void execute(State state) throws WorkflowExecutionException {
+    public void execute(State state) throws ActionExecutionException {
         if (isExecuted()) {
-            throw new WorkflowExecutionException("Action already executed!");
+            throw new ActionExecutionException("Action already executed!");
         }
 
         byte[] rawBytes = state.getTlsContext(getConnectionAlias()).getLastHandledApplicationMessageData();

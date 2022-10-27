@@ -12,7 +12,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import static org.junit.jupiter.api.Assertions.*;
 
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
@@ -53,9 +53,9 @@ abstract class AbstractActionTest<T extends TlsAction> {
     }
 
     @Test
-    public void testDoubleExecuteThrowsWorkflowExecutionException() {
+    public void testDoubleExecuteThrowsActionExecutionException() {
         action.execute(state);
-        assertThrows(WorkflowExecutionException.class, () -> action.execute(state));
+        assertThrows(ActionExecutionException.class, () -> action.execute(state));
     }
 
     @Test

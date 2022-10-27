@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.record.Record;
 import org.junit.jupiter.api.Test;
 
@@ -30,14 +30,14 @@ public class CopyBufferedRecordsActionTest extends AbstractCopyActionTest<CopyBu
     @Override
     public void testAliasesSetProperlyErrorSrc() {
         CopyBufferedRecordsAction a = new CopyBufferedRecordsAction(null, "dst");
-        assertThrows(WorkflowExecutionException.class, a::assertAliasesSetProperly);
+        assertThrows(ActionExecutionException.class, a::assertAliasesSetProperly);
     }
 
     @Test
     @Override
     public void testAliasesSetProperlyErrorDst() {
         CopyBufferedRecordsAction a = new CopyBufferedRecordsAction("src", null);
-        assertThrows(WorkflowExecutionException.class, a::assertAliasesSetProperly);
+        assertThrows(ActionExecutionException.class, a::assertAliasesSetProperly);
     }
 
     @Test

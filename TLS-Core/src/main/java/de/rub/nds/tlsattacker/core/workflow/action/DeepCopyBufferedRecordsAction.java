@@ -9,7 +9,7 @@
 
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
@@ -66,7 +66,7 @@ public class DeepCopyBufferedRecordsAction extends CopyContextFieldAction {
         } catch (IOException | ClassNotFoundException ex) {
             setExecuted(getActionOptions().contains(ActionOption.MAY_FAIL));
             LOGGER.error("Error while creating deep copy of recordBuffer");
-            throw new WorkflowExecutionException(ex.toString());
+            throw new ActionExecutionException(ex.toString());
         }
 
         dst.setRecordBuffer(recordBuffer);

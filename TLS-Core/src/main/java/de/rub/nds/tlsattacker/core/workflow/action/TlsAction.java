@@ -10,9 +10,11 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.connection.Aliasable;
+import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.layer.*;
+import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.LayerStack;
+import de.rub.nds.tlsattacker.core.layer.SpecificReceiveLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -84,7 +86,7 @@ public abstract class TlsAction implements Serializable, Aliasable {
         this.singleConnectionWorkflow = singleConnectionWorkflow;
     }
 
-    public abstract void execute(State state) throws WorkflowExecutionException;
+    public abstract void execute(State state) throws ActionExecutionException;
 
     public abstract void reset();
 

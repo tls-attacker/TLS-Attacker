@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -76,20 +76,19 @@ public class RemBufferedChExtensionsAction extends ConnectionBoundAction {
     }
 
     @Override
-    public void execute(State state) throws WorkflowExecutionException {
+    public void execute(State state) throws ActionExecutionException {
         TlsContext ctx = state.getTlsContext(connectionAlias);
+        ClientHelloMessage ch = (ClientHelloMessage) ctx.getMessageBuffer().getFirst();
 
         if (isExecuted()) {
-            throw new WorkflowExecutionException("Action already executed!");
+            throw new ActionExecutionException("Action already executed!");
         }
-
-        ClientHelloMessage ch = (ClientHelloMessage) ctx.getMessageBuffer().getFirst();
 
         removeExtensions(ctx, ch);
         setExecuted(true);
     }
 
-    private void removeExtensions(TlsContext ctx, ClientHelloMessage ch) {
+    private void removeExtensions(TlsContext ctx, ClientHelloMessage ch) throws ActionExecutionException {
 
         if (ch.getExtensions() == null) {
             return;
@@ -118,7 +117,7 @@ public class RemBufferedChExtensionsAction extends ConnectionBoundAction {
                     newExtensionBytes.write(ext.getExtensionBytes().getValue());
                 }
             } catch (IOException ex) {
-                throw new WorkflowExecutionException("Could not write ExtensionBytes to byte[]", ex);
+                throw new ActionExecutionException("Could not write ExtensionBytes to byte[]", ex);
             }
         }
         ch.setExtensionBytes(newExtensionBytes.toByteArray());

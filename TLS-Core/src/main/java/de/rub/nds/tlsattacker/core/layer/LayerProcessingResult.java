@@ -12,6 +12,8 @@ package de.rub.nds.tlsattacker.core.layer;
 import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -36,10 +38,22 @@ public class LayerProcessingResult<T extends DataContainer> {
      */
     private boolean executedAsPlanned;
 
+    // holds any bytes which are unread in the layer after parsing
+    private byte[] unreadBytes;
+
+    public LayerProcessingResult(List<T> usedContainers, LayerType layerType, boolean executedAsPlanned,
+        byte[] unreadBytes) {
+        this.usedContainers = usedContainers;
+        this.layerType = layerType;
+        this.executedAsPlanned = executedAsPlanned;
+        this.unreadBytes = unreadBytes;
+    }
+
     public LayerProcessingResult(List<T> usedContainers, LayerType layerType, boolean executedAsPlanned) {
         this.usedContainers = usedContainers;
         this.layerType = layerType;
         this.executedAsPlanned = executedAsPlanned;
+        this.unreadBytes = new byte[0];
     }
 
     public List<T> getUsedContainers() {
@@ -64,5 +78,13 @@ public class LayerProcessingResult<T extends DataContainer> {
 
     public void setLayerType(LayerType layerType) {
         this.layerType = layerType;
+    }
+
+    public byte[] getUnreadBytes() {
+        return unreadBytes;
+    }
+
+    public void setUnreadBytes(byte[] unreadBytes) {
+        this.unreadBytes = unreadBytes;
     }
 }

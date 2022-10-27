@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceivingAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendingAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
@@ -453,6 +454,25 @@ public class WorkflowTraceUtil {
             return (TlsAction) rcvActions.get(rcvActions.size() - 1);
         }
         return null;
+    }
+
+    /**
+     * Returns all Messages of the WorkflowTrace that contain unread bytes. They can be accessed over the
+     * {@link de.rub.nds.tlsattacker.core.layer.LayerProcessingResult}
+     */
+    public static List<MessageAction> getMessageActionsWithUnreadBytes(@Nonnull WorkflowTrace trace) {
+        List<MessageAction> messageActionsWithUnreadBytes = new LinkedList<>();
+        for (TlsAction action : trace.getTlsActions()) {
+            if (action instanceof MessageAction && action instanceof ReceivingAction
+                && ((MessageAction) action).getLayerStackProcessingResult().hasUnreadBytes()) {
+                messageActionsWithUnreadBytes.add((MessageAction) action);
+            }
+        }
+        return messageActionsWithUnreadBytes;
+    }
+
+    public static boolean hasUnreadBytes(@Nonnull WorkflowTrace trace) {
+        return (getMessageActionsWithUnreadBytes(trace).isEmpty());
     }
 
     private WorkflowTraceUtil() {

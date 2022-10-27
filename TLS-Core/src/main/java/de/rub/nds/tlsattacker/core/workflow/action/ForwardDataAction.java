@@ -9,8 +9,8 @@
 
 package de.rub.nds.tlsattacker.core.workflow.action;
 
+import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.layer.LayerStack;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -54,9 +54,9 @@ public class ForwardDataAction extends TlsAction {
     }
 
     @Override
-    public void execute(State state) throws WorkflowExecutionException {
+    public void execute(State state) throws ActionExecutionException {
         if (isExecuted()) {
-            throw new WorkflowExecutionException("Action already executed!");
+            throw new ActionExecutionException("Action already executed!");
         }
 
         assertAliasesSetProperly();
@@ -159,11 +159,11 @@ public class ForwardDataAction extends TlsAction {
     @Override
     public void assertAliasesSetProperly() throws ConfigurationException {
         if ((receiveFromAlias == null) || (receiveFromAlias.isEmpty())) {
-            throw new WorkflowExecutionException("Can't execute " + this.getClass().getSimpleName()
+            throw new ActionExecutionException("Can't execute " + this.getClass().getSimpleName()
                 + " with empty receive alias (if using XML: add <from/>)");
         }
         if ((forwardToAlias == null) || (forwardToAlias.isEmpty())) {
-            throw new WorkflowExecutionException("Can't execute " + this.getClass().getSimpleName()
+            throw new ActionExecutionException("Can't execute " + this.getClass().getSimpleName()
                 + " with empty forward alis (if using XML: add <to/>)");
         }
     }

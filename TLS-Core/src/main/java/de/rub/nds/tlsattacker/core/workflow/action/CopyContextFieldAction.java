@@ -9,8 +9,8 @@
 
 package de.rub.nds.tlsattacker.core.workflow.action;
 
+import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.util.LinkedHashSet;
@@ -49,13 +49,13 @@ public abstract class CopyContextFieldAction extends TlsAction {
     protected abstract void copyField(TlsContext srcContext, TlsContext dstContext);
 
     @Override
-    public void execute(State state) throws WorkflowExecutionException {
+    public void execute(State state) throws ActionExecutionException {
         if (isExecuted()) {
-            throw new WorkflowExecutionException("Action already executed!");
+            throw new ActionExecutionException("Action already executed!");
         }
 
         if ((srcConnectionAlias == null) || (dstConnectionAlias == null)) {
-            throw new WorkflowExecutionException("Cannot execute at least one context alias is null!");
+            throw new ActionExecutionException("Cannot execute, at least one context alias is null!");
         }
 
         TlsContext src = state.getContext(srcConnectionAlias).getTlsContext();
@@ -115,11 +115,11 @@ public abstract class CopyContextFieldAction extends TlsAction {
     @Override
     public void assertAliasesSetProperly() throws ConfigurationException {
         if ((srcConnectionAlias == null) || (srcConnectionAlias.isEmpty())) {
-            throw new WorkflowExecutionException("Can't execute " + this.getClass().getSimpleName()
+            throw new ActionExecutionException("Can't execute " + this.getClass().getSimpleName()
                 + " with empty src alias (if using XML: add <from/>)");
         }
         if ((dstConnectionAlias == null) || (dstConnectionAlias.isEmpty())) {
-            throw new WorkflowExecutionException(
+            throw new ActionExecutionException(
                 "Can't execute " + this.getClass().getSimpleName() + " with empty dst alias (if using XML: add <to/>)");
         }
     }

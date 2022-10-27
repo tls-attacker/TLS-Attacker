@@ -146,7 +146,7 @@ public class DtlsFragmentLayer extends ProtocolLayer<RecordLayerHint, DtlsHandsh
     }
 
     @Override
-    public LayerProcessingResult receiveData() throws IOException {
+    public LayerProcessingResult receiveData() {
         throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
         // Tools | Templates.
     }

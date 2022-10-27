@@ -50,7 +50,7 @@ public class SendAsciiActionTest extends AbstractActionTest<SendAsciiAction> {
 
     @Override
     @Disabled("ASCI Actions are notfully implemented for layer system")
-    public void testDoubleExecuteThrowsWorkflowExecutionException() {
+    public void testDoubleExecuteThrowsActionExecutionException() {
     }
 
     @Override
