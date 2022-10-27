@@ -9,7 +9,7 @@
 
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import org.apache.logging.log4j.LogManager;
@@ -31,11 +31,11 @@ public abstract class ChangeEpochAction extends ConnectionBoundAction {
     protected abstract void changeEpoch(TlsContext tlsContext);
 
     @Override
-    public void execute(State state) throws WorkflowExecutionException {
+    public void execute(State state) throws ActionExecutionException {
         TlsContext tlsContext = state.getContext(getConnectionAlias()).getTlsContext();
 
         if (isExecuted()) {
-            throw new WorkflowExecutionException("Action already executed!");
+            throw new ActionExecutionException("Action already executed!");
         }
         changeEpoch(tlsContext);
         setExecuted(true);

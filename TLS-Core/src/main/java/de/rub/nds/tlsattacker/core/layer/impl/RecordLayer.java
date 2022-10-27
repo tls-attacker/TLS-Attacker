@@ -207,9 +207,9 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
     @Override
     public void receiveMoreDataForHint(LayerProcessingHint desiredHint) throws IOException {
         InputStream dataStream = getLowerLayer().getDataStream();
+        RecordParser parser = new RecordParser(dataStream, getDecryptorCipher().getState().getVersion());
         try {
             // parse a record from the lower layer
-            RecordParser parser = new RecordParser(dataStream, getDecryptorCipher().getState().getVersion());
             Record record = new Record();
             parser.parse(record);
             // TODO it would be good to have a record handler here
@@ -236,6 +236,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
                 nextInputStream.extendStream(record.getCleanProtocolMessageBytes().getValue());
             }
         } catch (ParserException e) {
+            setUnreadBytes(parser.getAlreadyParsed());
             LOGGER.warn("Could not parse Record as a Record. Passing data to upper layer as unknown data", e);
             HintedInputStream tempStream =
                 new HintedLayerInputStream(new RecordLayerHint(ProtocolMessageType.UNKNOWN), this);
@@ -246,6 +247,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
                 nextInputStream = tempStream;
             }
         } catch (EndOfStreamException ex) {
+            setUnreadBytes(parser.getAlreadyParsed());
             LOGGER.warn("Reached end of stream, cannot parse more records", ex);
         }
     }
@@ -351,7 +353,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
     }
 
     @Override
-    public LayerProcessingResult receiveData() throws IOException {
+    public LayerProcessingResult receiveData() {
         throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
         // Tools | Templates.
     }

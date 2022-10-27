@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import org.junit.jupiter.api.Test;
 
 public class CopyBuffersActionTest extends AbstractCopyActionTest<CopyBuffersAction> {
@@ -24,14 +24,14 @@ public class CopyBuffersActionTest extends AbstractCopyActionTest<CopyBuffersAct
     @Override
     public void testAliasesSetProperlyErrorSrc() {
         CopyBuffersAction action = new CopyBuffersAction(null, "dst");
-        assertThrows(WorkflowExecutionException.class, action::assertAliasesSetProperly);
+        assertThrows(ActionExecutionException.class, action::assertAliasesSetProperly);
     }
 
     @Test
     @Override
     public void testAliasesSetProperlyErrorDst() {
         CopyBuffersAction action = new CopyBuffersAction("src", null);
-        assertThrows(WorkflowExecutionException.class, action::assertAliasesSetProperly);
+        assertThrows(ActionExecutionException.class, action::assertAliasesSetProperly);
     }
 
     @Test

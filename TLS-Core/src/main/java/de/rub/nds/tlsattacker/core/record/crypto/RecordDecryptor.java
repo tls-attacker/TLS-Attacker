@@ -37,7 +37,7 @@ public class RecordDecryptor extends Decryptor {
     }
 
     @Override
-    public void decrypt(Record record) {
+    public void decrypt(Record record) throws ParserException {
         LOGGER.debug("Decrypting Record");
         RecordCipher recordCipher;
         if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS() && record.getEpoch() != null
@@ -61,13 +61,8 @@ public class RecordDecryptor extends Decryptor {
                 LOGGER.debug("Skipping decryption for legacy CCS");
                 new RecordNullCipher(tlsContext, recordCipher.getState()).decrypt(record);
             }
-        } catch (CryptoException | ParserException ex) {
-            LOGGER.warn("Could not decrypt Record. Using NullCipher instead", ex);
-            try {
-                nullCipher.decrypt(record);
-            } catch (CryptoException ex1) {
-                LOGGER.warn("Could not decrypt Record with null cipher", ex1);
-            }
+        } catch (CryptoException ex) {
+            throw new ParserException(ex);
         }
     }
 }

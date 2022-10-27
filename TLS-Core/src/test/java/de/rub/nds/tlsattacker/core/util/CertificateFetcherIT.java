@@ -30,6 +30,7 @@ import java.security.PublicKey;
 import java.security.Security;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
+import java.security.cert.CertificateParsingException;
 import java.util.Random;
 
 public class CertificateFetcherIT {
@@ -80,7 +81,13 @@ public class CertificateFetcherIT {
     @Test
     @Tag(TestCategories.INTEGRATION_TEST)
     public void testFetchServerPublicKey() {
-        PublicKey actual = CertificateFetcher.fetchServerPublicKey(config);
+        PublicKey actual;
+        try {
+            actual = CertificateFetcher.fetchServerPublicKey(config);
+        } catch (CertificateParsingException ex) {
+            LOGGER.warn("Could not parse certificate: ", ex);
+            actual = null;
+        }
         assertNotNull(actual);
         assertEquals(expectedPublicKey, actual);
     }

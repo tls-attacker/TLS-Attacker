@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import org.junit.jupiter.api.Test;
 
 public class CopyClientRandomActionTest extends AbstractCopyActionTest<CopyClientRandomAction> {
@@ -26,14 +26,14 @@ public class CopyClientRandomActionTest extends AbstractCopyActionTest<CopyClien
     @Override
     public void testAliasesSetProperlyErrorSrc() {
         CopyClientRandomAction action = new CopyClientRandomAction(null, "dst");
-        assertThrows(WorkflowExecutionException.class, action::assertAliasesSetProperly);
+        assertThrows(ActionExecutionException.class, action::assertAliasesSetProperly);
     }
 
     @Test
     @Override
     public void testAliasesSetProperlyErrorDst() {
         CopyClientRandomAction action = new CopyClientRandomAction("src", null);
-        assertThrows(WorkflowExecutionException.class, action::assertAliasesSetProperly);
+        assertThrows(ActionExecutionException.class, action::assertAliasesSetProperly);
     }
 
     /**

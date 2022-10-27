@@ -10,7 +10,7 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -30,7 +30,7 @@ public class PrintSecretsAction extends ConnectionBoundAction {
     }
 
     @Override
-    public void execute(State state) throws WorkflowExecutionException {
+    public void execute(State state) throws ActionExecutionException {
         TlsContext ctx = state.getContext(connectionAlias).getTlsContext();
         StringBuilder sb = new StringBuilder("\n\nContext: " + ctx);
         sb.append("\n  (Record Layer) ");

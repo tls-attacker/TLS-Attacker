@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
@@ -95,13 +95,12 @@ public class ForwardMessagesActionTest extends AbstractActionTest<ForwardMessage
     @Test
     public void testExecuteWithNullAliasThrowsException() {
         final ForwardMessagesAction action1 = new ForwardMessagesAction(null, ctx2Alias, alert);
-        WorkflowExecutionException exception =
-            assertThrows(WorkflowExecutionException.class, () -> action1.execute(state));
+        ActionExecutionException exception = assertThrows(ActionExecutionException.class, () -> action1.execute(state));
         assertTrue(exception.getMessage()
             .startsWith("Can't execute ForwardMessagesAction with empty receive alias (if using XML: add <from/>"));
 
         final ForwardMessagesAction action2 = new ForwardMessagesAction(ctx1Alias, null, alert);
-        exception = assertThrows(WorkflowExecutionException.class, () -> action2.execute(state));
+        exception = assertThrows(ActionExecutionException.class, () -> action2.execute(state));
         assertTrue(exception.getMessage()
             .startsWith("Can't execute ForwardMessagesAction with empty forward alias (if using XML: add <to/>"));
     }
@@ -109,13 +108,12 @@ public class ForwardMessagesActionTest extends AbstractActionTest<ForwardMessage
     @Test
     public void testExecuteWithEmptyAliasThrowsException() throws Exception {
         final ForwardMessagesAction action1 = new ForwardMessagesAction("", ctx2Alias, alert);
-        WorkflowExecutionException exception =
-            assertThrows(WorkflowExecutionException.class, () -> action1.execute(state));
+        ActionExecutionException exception = assertThrows(ActionExecutionException.class, () -> action1.execute(state));
         assertTrue(exception.getMessage()
             .startsWith("Can't execute ForwardMessagesAction with empty receive alias (if using XML: add <from/>"));
 
         final ForwardMessagesAction action2 = new ForwardMessagesAction(ctx1Alias, "", alert);
-        exception = assertThrows(WorkflowExecutionException.class, () -> action2.execute(state));
+        exception = assertThrows(ActionExecutionException.class, () -> action2.execute(state));
         assertTrue(exception.getMessage()
             .startsWith("Can't execute ForwardMessagesAction with empty forward alias (if using XML: add <to/>"));
     }

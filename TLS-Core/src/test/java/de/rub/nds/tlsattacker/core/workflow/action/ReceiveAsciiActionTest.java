@@ -49,7 +49,7 @@ public class ReceiveAsciiActionTest extends AbstractActionTest<ReceiveAsciiActio
 
     @Override
     @Disabled("ASCI Actions are notfully implemented for layer system")
-    public void testDoubleExecuteThrowsWorkflowExecutionException() {
+    public void testDoubleExecuteThrowsActionExecutionException() {
     }
 
     @Override

@@ -75,7 +75,7 @@ public class UdpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> 
      * Returns the InputStream associated with the UDP socket.
      */
     @Override
-    public LayerProcessingResult receiveData() throws IOException {
+    public LayerProcessingResult receiveData() {
         return new LayerProcessingResult(null, getLayerType(), true);
     }
 

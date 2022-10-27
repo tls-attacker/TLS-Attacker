@@ -171,7 +171,7 @@ public class ReceiveAction extends CommonReceiveAction implements ReceivingActio
         messages = null;
         records = null;
         fragments = null;
-        setExecuted(null);
+        setExecuted(false);
     }
 
     @Override

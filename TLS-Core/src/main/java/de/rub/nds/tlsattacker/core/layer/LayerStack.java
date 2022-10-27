@@ -115,11 +115,10 @@ public class LayerStack {
      * @param  layerConfigurationList
      *                                Contains specific {@link DataContainer} to be received from the peer.
      * @return                        LayerStackProcessingResult Contains information about the "send" execution. Does
-     *                                not contain any messages the peer sends back.
-     * @throws IOException
-     *                                If any layer fails to receive the specified data.
+     *                                not contain any messages the peer sends back. If any layer fails to receive the
+     *                                specified data.
      */
-    public LayerStackProcessingResult receiveData(List<LayerConfiguration> layerConfigurationList) throws IOException {
+    public LayerStackProcessingResult receiveData(List<LayerConfiguration> layerConfigurationList) {
         LOGGER.debug("Receiving Data");
         if (getLayerList().size() != layerConfigurationList.size()) {
             throw new RuntimeException(
@@ -135,10 +134,16 @@ public class LayerStack {
         context.setTalkingConnectionEndType(context.getConnection().getLocalConnectionEndType().getPeer());
         getLayerList().get(0).receiveData();
         // reverse order
-        for (int i = getLayerList().size() - 1; i <= 0; i--) {
+        for (int i = getLayerList().size() - 1; i >= 0; i--) {
             ProtocolLayer layer = getLayerList().get(i);
-            if (layer.getLayerConfiguration() != null && !layer.getLayerConfiguration().executedAsPlanned(layerList)) {
-                layer.receiveData();
+            if (layer.getLayerConfiguration() != null
+                && !layer.getLayerConfiguration().executedAsPlanned(layer.getLayerConfiguration().getContainerList())) {
+                try {
+                    layer.receiveData();
+                } catch (UnsupportedOperationException e) {
+                    // most layers dont know how to receive data themselves
+                    LOGGER.debug("Skipping layer " + layer.getLayerType() + ". Does not support direct data read.");
+                }
             }
         }
         return gatherResults();
@@ -153,9 +158,7 @@ public class LayerStack {
     public LayerStackProcessingResult gatherResults() {
         // Gather results
         List<LayerProcessingResult> resultList = new LinkedList<>();
-        getLayerList().forEach(tempLayer -> {
-            resultList.add(tempLayer.getLayerResult());
-        });
+        getLayerList().forEach(tempLayer -> resultList.add(tempLayer.getLayerResult()));
         return new LayerStackProcessingResult(resultList);
     }
 

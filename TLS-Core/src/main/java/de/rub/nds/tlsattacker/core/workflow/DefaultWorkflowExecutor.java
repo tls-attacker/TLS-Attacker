@@ -10,7 +10,9 @@
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.tlsattacker.core.config.ConfigIO;
+import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
+import de.rub.nds.tlsattacker.core.exceptions.SkipActionException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceivingAction;
@@ -37,7 +39,8 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
             try {
                 initAllLayer();
             } catch (IOException ex) {
-                throw new WorkflowExecutionException(ex);
+                throw new WorkflowExecutionException("Workflow not executed, could not initialize transport handler: ",
+                    ex);
             }
         }
 
@@ -64,19 +67,9 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
             }
 
             try {
-                action.execute(state);
-            } catch (UnsupportedOperationException E) {
-                LOGGER.warn("Unsupported operation!", E);
-                state.setExecutionException(E);
-            } catch (PreparationException | WorkflowExecutionException ex) {
-                state.setExecutionException(ex);
-                throw new WorkflowExecutionException("Problem while executing Action:" + action.toString(), ex);
-            } catch (Exception e) {
-                LOGGER.error("", e);
-                state.setExecutionException(e);
-                throw e;
-            } finally {
-                state.setEndTimestamp(System.currentTimeMillis());
+                this.executeAction(action, state);
+            } catch (SkipActionException ex) {
+                continue;
             }
 
             if (config.isStopTraceAfterUnexpected() && !action.executedAsPlanned()) {

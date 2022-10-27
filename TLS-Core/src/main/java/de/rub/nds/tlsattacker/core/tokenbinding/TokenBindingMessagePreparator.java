@@ -19,7 +19,6 @@ import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessagePreparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayInputStream;
@@ -65,11 +64,11 @@ public class TokenBindingMessagePreparator extends ProtocolMessagePreparator<Tok
                     new BadRandom(new Random(0), new byte[0]));
             ECDSASigner signer = new ECDSASigner();
             signer.init(true, params);
-            MessageDigest dig = null;
+            MessageDigest dig;
             try {
                 dig = MessageDigest.getInstance("SHA-256");
             } catch (NoSuchAlgorithmException ex) {
-                throw new WorkflowExecutionException("Could not create SHA-256 digest", ex);
+                throw new PreparationException("Could not create SHA-256 digest", ex);
             }
             dig.update(generateToBeSigned());
             BigInteger[] signature = signer.generateSignature(dig.digest());

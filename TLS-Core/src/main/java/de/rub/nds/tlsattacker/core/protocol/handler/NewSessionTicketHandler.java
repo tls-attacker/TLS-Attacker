@@ -16,7 +16,6 @@ import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
@@ -117,7 +116,7 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
 
         } catch (NoSuchAlgorithmException | CryptoException ex) {
             LOGGER.error("DigestAlgorithm for psk derivation unknown");
-            throw new WorkflowExecutionException(ex);
+            return new byte[0];
         }
     }
 }

@@ -64,7 +64,7 @@ public class GenericReceiveAsciiActionTest extends AbstractActionTest<GenericRec
 
     @Override
     @Disabled("ASCI Actions are notfully implemented for layer system")
-    public void testDoubleExecuteThrowsWorkflowExecutionException() {
+    public void testDoubleExecuteThrowsActionExecutionException() {
     }
 
     @Override

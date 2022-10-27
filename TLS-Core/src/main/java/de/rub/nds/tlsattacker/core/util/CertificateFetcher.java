@@ -34,16 +34,12 @@ public class CertificateFetcher {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public static PublicKey fetchServerPublicKey(Config config) {
+    public static PublicKey fetchServerPublicKey(Config config) throws CertificateParsingException {
         X509CertificateObject cert;
-        try {
-            Certificate fetchedServerCertificate = fetchServerCertificate(config);
-            if (fetchedServerCertificate != null && fetchedServerCertificate.getLength() > 0) {
-                cert = new X509CertificateObject(fetchedServerCertificate.getCertificateAt(0));
-                return cert.getPublicKey();
-            }
-        } catch (CertificateParsingException ex) {
-            throw new WorkflowExecutionException("Could not get public key from server certificate", ex);
+        Certificate fetchedServerCertificate = fetchServerCertificate(config);
+        if (fetchedServerCertificate != null && fetchedServerCertificate.getLength() > 0) {
+            cert = new X509CertificateObject(fetchedServerCertificate.getCertificateAt(0));
+            return cert.getPublicKey();
         }
         return null;
     }

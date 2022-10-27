@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import org.junit.jupiter.api.Test;
 
 public class CopyPreMasterSecretActionTest extends AbstractCopyActionTest<CopyPreMasterSecretAction> {
@@ -26,14 +26,14 @@ public class CopyPreMasterSecretActionTest extends AbstractCopyActionTest<CopyPr
     @Override
     public void testAliasesSetProperlyErrorSrc() {
         CopyPreMasterSecretAction action = new CopyPreMasterSecretAction(null, "dst");
-        assertThrows(WorkflowExecutionException.class, action::assertAliasesSetProperly);
+        assertThrows(ActionExecutionException.class, action::assertAliasesSetProperly);
     }
 
     @Test
     @Override
     public void testAliasesSetProperlyErrorDst() {
         CopyPreMasterSecretAction action = new CopyPreMasterSecretAction("src", null);
-        assertThrows(WorkflowExecutionException.class, action::assertAliasesSetProperly);
+        assertThrows(ActionExecutionException.class, action::assertAliasesSetProperly);
     }
 
     /**

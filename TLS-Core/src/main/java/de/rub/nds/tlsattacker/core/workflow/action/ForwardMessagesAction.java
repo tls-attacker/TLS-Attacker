@@ -12,8 +12,9 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
+import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.layer.*;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
@@ -128,9 +129,9 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
     }
 
     @Override
-    public void execute(State state) throws WorkflowExecutionException {
+    public void execute(State state) throws ActionExecutionException {
         if (isExecuted()) {
-            throw new WorkflowExecutionException("Action already executed!");
+            throw new ActionExecutionException("Action already executed!");
         }
 
         assertAliasesSetProperly();
@@ -153,21 +154,15 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
 
         List<LayerConfiguration> layerConfigurationList = sortLayerConfigurations(layerStack, messageConfiguration);
         LayerStackProcessingResult processingResult;
-        try {
-            processingResult = layerStack.receiveData(layerConfigurationList);
-            receivedMessages =
-                new ArrayList<>(processingResult.getResultForLayer(ImplementedLayers.MESSAGE).getUsedContainers());
-            if (receiveFromContext.getChooser().getSelectedProtocolVersion().isDTLS()) {
-                receivedFragments = new ArrayList<>(
-                    processingResult.getResultForLayer(ImplementedLayers.DTLS_FRAGMENT).getUsedContainers());
-            }
-            // index in result
-            receivedRecords =
-                new ArrayList<>(processingResult.getResultForLayer(ImplementedLayers.RECORD).getUsedContainers());
-            // index in result
-        } catch (IOException ex) {
-            LOGGER.warn("Received an IOException", ex);
+        processingResult = layerStack.receiveData(layerConfigurationList);
+        receivedMessages =
+            new ArrayList<>(processingResult.getResultForLayer(ImplementedLayers.MESSAGE).getUsedContainers());
+        if (receiveFromContext.getChooser().getSelectedProtocolVersion().isDTLS()) {
+            receivedFragments = new ArrayList<>(
+                processingResult.getResultForLayer(ImplementedLayers.DTLS_FRAGMENT).getUsedContainers());
         }
+        receivedRecords =
+            new ArrayList<>(processingResult.getResultForLayer(ImplementedLayers.RECORD).getUsedContainers());
         String expected = getReadableString(receivedMessages);
         LOGGER.debug("Receive Expected (" + receiveFromAlias + "): " + expected);
         String received = getReadableString(receivedMessages);
@@ -398,11 +393,11 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
     @Override
     public void assertAliasesSetProperly() throws ConfigurationException {
         if ((receiveFromAlias == null) || (receiveFromAlias.isEmpty())) {
-            throw new WorkflowExecutionException("Can't execute " + this.getClass().getSimpleName()
+            throw new ActionExecutionException("Can't execute " + this.getClass().getSimpleName()
                 + " with empty receive alias (if using XML: add <from/>)");
         }
         if ((forwardToAlias == null) || (forwardToAlias.isEmpty())) {
-            throw new WorkflowExecutionException("Can't execute " + this.getClass().getSimpleName()
+            throw new ActionExecutionException("Can't execute " + this.getClass().getSimpleName()
                 + " with empty forward alias (if using XML: add <to/>)");
         }
     }

@@ -514,4 +514,12 @@ public class WorkflowTrace implements Serializable {
             return (T) messageList.get(messageList.size() - 1);
         }
     }
+
+    public List<MessageAction> getMessageActionsWithUnreadBytes() {
+        return WorkflowTraceUtil.getMessageActionsWithUnreadBytes(this);
+    }
+
+    public boolean hasUnreadByte() {
+        return WorkflowTraceUtil.hasUnreadBytes(this);
+    }
 }

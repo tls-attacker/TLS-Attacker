@@ -53,9 +53,12 @@ public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container 
 
     private LayerType layerType;
 
+    private byte[] unreadBytes;
+
     public ProtocolLayer(LayerType layerType) {
         producedDataContainers = new LinkedList<>();
         this.layerType = layerType;
+        this.unreadBytes = new byte[0];
     }
 
     public ProtocolLayer getHigherLayer() {
@@ -91,7 +94,7 @@ public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container 
         if (getLayerConfiguration() != null) {
             isExecutedAsPlanned = getLayerConfiguration().executedAsPlanned(producedDataContainers);
         }
-        return new LayerProcessingResult(producedDataContainers, getLayerType(), isExecutedAsPlanned);
+        return new LayerProcessingResult(producedDataContainers, getLayerType(), isExecutedAsPlanned, getUnreadBytes());
     }
 
     /**
@@ -124,11 +127,9 @@ public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container 
     /**
      * A receive call which tries to read till either a timeout occurs or the configuration is fullfilled
      *
-     * @return             LayerProcessingResult Contains information about the execution of the receive action.
-     * @throws IOException
-     *                     Some layers might produce IOExceptions when sending or receiving data over sockets etc.
+     * @return LayerProcessingResult Contains information about the execution of the receive action.
      */
-    public abstract LayerProcessingResult receiveData() throws IOException;
+    public abstract LayerProcessingResult receiveData();
 
     /**
      * Tries to fill up the current Stream with more data, if instead unprocessable data (for the calling layer) is
@@ -174,20 +175,25 @@ public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container 
     /**
      * Evaluates if more data can be retrieved for parsing immediately, i.e without receiving on the lowest layer.
      *
-     * @return             true if more data is available in any receive buffer
-     * @throws IOException
+     * @return true if more data is available in any receive buffer
      */
-    public boolean isDataBuffered() throws IOException {
-        if ((currentInputStream != null && currentInputStream.available() > 0)
-            || nextInputStream != null && nextInputStream.available() > 0) {
-            return true;
-        } else if (getLowerLayer() != null) {
-            return getLowerLayer().isDataBuffered();
+    public boolean isDataBuffered() {
+        try {
+            if ((currentInputStream != null && currentInputStream.available() > 0)
+                || nextInputStream != null && nextInputStream.available() > 0) {
+                return true;
+            } else if (getLowerLayer() != null) {
+                return getLowerLayer().isDataBuffered();
+            }
+            return false;
+        } catch (IOException e) {
+            // with exceptions on reading our inputStreams we can not read more data
+            LOGGER.error("No more data can be read from the inputStreams with Exception: ", e);
+            return false;
         }
-        return false;
     }
 
-    public boolean shouldContinueProcessing() throws IOException {
+    public boolean shouldContinueProcessing() {
         if (layerConfiguration != null) {
             return layerConfiguration.successRequiresMoreContainers(getLayerResult().getUsedContainers())
                 || (isDataBuffered() && ((ReceiveLayerConfiguration) layerConfiguration).isProcessTrailingContainers());
@@ -196,27 +202,46 @@ public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container 
         }
     }
 
+    public LayerType getLayerType() {
+        return layerType;
+    }
+
     /**
      * Parses and handles content from a container.
      *
-     * @param  container
-     *                     The container to handle.
-     * @param  context
-     *                     The context of the connection. Keeps parsed and handled values.
-     * @throws IOException
-     *                     Should a lower layer not be able to return a data stream.
+     * @param container
+     *                  The container to handle.
+     * @param context
+     *                  The context of the connection. Keeps parsed and handled values.
      */
-    protected void readDataContainer(Container container, TlsContext context) throws IOException {
-        Parser parser = container.getParser(context, getLowerLayer().getDataStream());
-        parser.parse(container);
-        Preparator preparator = container.getPreparator(context);
-        preparator.prepareAfterParse(false);// TODO REMOVE THIS CLIENTMODE FLAG
-        Handler handler = container.getHandler(context);
-        handler.adjustContext(container);
-        addProducedContainer(container);
+    protected void readDataContainer(Container container, TlsContext context) {
+        HintedInputStream inputStream;
+        try {
+            inputStream = getLowerLayer().getDataStream();
+        } catch (IOException e) {
+            LOGGER.warn("The lower layer did not produce a data stream: ", e);
+            return;
+        }
+
+        Parser parser = container.getParser(context, inputStream);
+
+        try {
+            parser.parse(container);
+            Preparator preparator = container.getPreparator(context);
+            preparator.prepareAfterParse(false);// TODO REMOVE THIS CLIENTMODE FLAG
+            Handler handler = container.getHandler(context);
+            handler.adjustContext(container);
+            addProducedContainer(container);
+        } catch (RuntimeException ex) {
+            setUnreadBytes(parser.getAlreadyParsed());
+        }
     }
 
-    public LayerType getLayerType() {
-        return layerType;
+    public byte[] getUnreadBytes() {
+        return unreadBytes;
+    }
+
+    public void setUnreadBytes(byte[] unreadBytes) {
+        this.unreadBytes = unreadBytes;
     }
 }

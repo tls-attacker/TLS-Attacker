@@ -49,7 +49,7 @@ public class EndOfEarlyDataHandler extends HandshakeMessageHandler<EndOfEarlyDat
             tlsContext.getRecordLayer().updateDecryptionCipher(recordCipherClient);
         } catch (CryptoException | NoSuchAlgorithmException ex) {
             LOGGER.error("Generating KeySet failed", ex);
-            throw new WorkflowExecutionException(ex.toString());
+            throw new WorkflowExecutionException(ex);
         }
     }
 }
