@@ -29,6 +29,13 @@ public class ServerUdpTransportHandler extends UdpTransportHandler {
         this.port = port;
     }
 
+    public ServerUdpTransportHandler(long firstTimeout, long timeout, DatagramSocket socket) {
+        super(firstTimeout, timeout, ConnectionEndType.SERVER);
+        this.socket = socket;
+        setStreams(new PushbackInputStream(new UdpInputStream(socket, true)), new UdpOutputStream(socket));
+        cachedSocketState = null;
+    }
+
     @Override
     public void initialize() throws IOException {
         // this could be made an option

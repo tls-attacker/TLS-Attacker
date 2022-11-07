@@ -41,6 +41,16 @@ public class ClientUdpTransportHandler extends UdpTransportHandler {
         this.port = port;
     }
 
+    public ClientUdpTransportHandler(long firstTimeout, long timeout, DatagramSocket socket, String hostname,
+        int port) {
+        super(firstTimeout, timeout, ConnectionEndType.CLIENT);
+        this.socket = socket;
+        this.hostname = hostname;
+        this.port = port;
+        setStreams(new PushbackInputStream(new UdpInputStream(socket, false)),
+            new UdpOutputStream(socket, hostname, port));
+    }
+
     @Override
     public void preInitialize() throws IOException {
         // Nothing to do here
