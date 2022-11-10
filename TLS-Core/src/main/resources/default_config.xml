@@ -405,6 +405,11 @@
         <defaultClientSupportedCipherSuite>UNOFFICIAL_TLS_PSK_WITH_CHACHA20_POLY1305_OLD</defaultClientSupportedCipherSuite>
         <defaultClientSupportedCipherSuite>UNOFFICIAL_TLS_ECDHE_PSK_WITH_CHACHA20_POLY1305_OLD</defaultClientSupportedCipherSuite>
         <defaultClientSupportedCipherSuite>UNOFFICIAL_TLS_RSA_PSK_WITH_CHACHA20_POLY1305_OLD</defaultClientSupportedCipherSuite>
+        <defaultClientSupportedCipherSuite>TLS_RSA_EXPORT_WITH_RC4_40_MD5</defaultClientSupportedCipherSuite>
+        <defaultClientSupportedCipherSuite>TLS_RSA_EXPORT_WITH_DES40_CBC_SHA</defaultClientSupportedCipherSuite>
+        <defaultClientSupportedCipherSuite>TLS_RSA_EXPORT_WITH_RC2_CBC_40_MD5</defaultClientSupportedCipherSuite>
+        <defaultClientSupportedCipherSuite>TLS_DHE_RSA_EXPORT_WITH_DES40_CBC_SHA</defaultClientSupportedCipherSuite>
+        <defaultClientSupportedCipherSuite>TLS_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA</defaultClientSupportedCipherSuite>
         <defaultClientSupportedCipherSuite>TLS_NULL_WITH_NULL_NULL</defaultClientSupportedCipherSuite>
     </defaultClientSupportedCipherSuites>
     <defaultServerSupportedCipherSuites>
@@ -734,6 +739,11 @@
         <defaultServerSupportedCipherSuite>UNOFFICIAL_TLS_PSK_WITH_CHACHA20_POLY1305_OLD</defaultServerSupportedCipherSuite>
         <defaultServerSupportedCipherSuite>UNOFFICIAL_TLS_ECDHE_PSK_WITH_CHACHA20_POLY1305_OLD</defaultServerSupportedCipherSuite>
         <defaultServerSupportedCipherSuite>UNOFFICIAL_TLS_RSA_PSK_WITH_CHACHA20_POLY1305_OLD</defaultServerSupportedCipherSuite>
+        <defaultServerSupportedCipherSuite>TLS_RSA_EXPORT_WITH_RC4_40_MD5</defaultServerSupportedCipherSuite>
+        <defaultServerSupportedCipherSuite>TLS_RSA_EXPORT_WITH_DES40_CBC_SHA</defaultServerSupportedCipherSuite>
+        <defaultServerSupportedCipherSuite>TLS_RSA_EXPORT_WITH_RC2_CBC_40_MD5</defaultServerSupportedCipherSuite>
+        <defaultServerSupportedCipherSuite>TLS_DHE_RSA_EXPORT_WITH_DES40_CBC_SHA</defaultServerSupportedCipherSuite>
+        <defaultServerSupportedCipherSuite>TLS_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA</defaultServerSupportedCipherSuite>
         <defaultServerSupportedCipherSuite>TLS_NULL_WITH_NULL_NULL</defaultServerSupportedCipherSuite>
     </defaultServerSupportedCipherSuites>
     <defaultClientNamedGroups>
@@ -1144,6 +1154,13 @@
     <defaultServerHandshakeTrafficSecret>00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00</defaultServerHandshakeTrafficSecret>
     <defaultClientApplicationTrafficSecret>00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00</defaultClientApplicationTrafficSecret>
     <defaultServerApplicationTrafficSecret>00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00</defaultServerApplicationTrafficSecret>
+    <defaultServerRSAExportModulus>11838421084139012243790489256743727573398401683349611650543303131496663277705050869267897283488023074801502778535969080304229735189316422280243740191775231</defaultServerRSAExportModulus>
+    <defaultServerRSAExportPublicKey>65537</defaultServerRSAExportPublicKey>
+    <defaultServerRSAExportPrivateKey>2560171231907200825964609369300225077403230954393915588494289260764182196849269894214933373518726734824913574301148026981972884962310420791437116390568961</defaultServerRSAExportPrivateKey>
+    <defaultServerDhExportGenerator>2</defaultServerDhExportGenerator>
+    <defaultServerDhExportModulus>7589077968601820060540991786439868697986271220298406228423710038694172091264114534255982297966215299771100550345080396812096626420684498145220897615574627</defaultServerDhExportModulus>
+    <defaultServerDhExportPublicKey>1947769812316722956942502270961628560781878279119180311065706257459242499108995730080341275676634590017283742522134408715163494613906580433613803090981008</defaultServerDhExportPublicKey>
+    <defaultServerDhExportPrivateKey>3960821616031502689855620579115095198084356670009560296902533615717813424827212091115363523411769938461090188394614744580516205448249610251051151740774502</defaultServerDhExportPrivateKey>
     <defaultTokenBindingType>PROVIDED_TOKEN_BINDING</defaultTokenBindingType>
     <defaultTokenBindingECPublicKey>
         <xFieldElementFp>

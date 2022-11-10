@@ -1,16 +1,12 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.preparator;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
@@ -19,9 +15,11 @@ import de.rub.nds.tlsattacker.core.crypto.SignatureCalculator;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class RSAServerKeyExchangePreparator<T extends RSAServerKeyExchangeMessage>
-    extends ServerKeyExchangePreparator<T> {
+        extends ServerKeyExchangePreparator<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -53,9 +51,18 @@ public class RSAServerKeyExchangePreparator<T extends RSAServerKeyExchangeMessag
 
     protected void setRsaParams() {
         msg.prepareComputations();
-        msg.getComputations().setPrivateKey(chooser.getServerRSAPrivateKey());
-        msg.getComputations().setModulus(chooser.getServerRsaModulus());
-        msg.getComputations().setPublicExponent(chooser.getServerRSAPublicKey());
+        if (chooser.getSelectedCipherSuite().isExport()) {
+            msg.getComputations()
+                    .setPrivateKey(chooser.getConfig().getDefaultServerRSAExportPrivateKey());
+            msg.getComputations()
+                    .setModulus(chooser.getConfig().getDefaultServerRSAExportModulus());
+            msg.getComputations()
+                    .setPublicExponent(chooser.getConfig().getDefaultServerRSAExportPublicKey());
+        } else {
+            msg.getComputations().setPrivateKey(chooser.getServerRSAPrivateKey());
+            msg.getComputations().setModulus(chooser.getServerRsaModulus());
+            msg.getComputations().setPublicExponent(chooser.getServerRSAPublicKey());
+        }
     }
 
     protected void prepareRsaParams() {
@@ -69,13 +76,18 @@ public class RSAServerKeyExchangePreparator<T extends RSAServerKeyExchangeMessag
     }
 
     protected byte[] generateToBeSigned() {
-        byte[] rsaParams = ArrayConverter.concatenate(
-            ArrayConverter.intToBytes(msg.getModulusLength().getValue(), HandshakeByteLength.RSA_MODULUS_LENGTH),
-            msg.getModulus().getValue(),
-            ArrayConverter.intToBytes(msg.getPublicKeyLength().getValue(), HandshakeByteLength.RSA_MODULUS_LENGTH),
-            msg.getPublicKey().getValue());
-        return ArrayConverter.concatenate(msg.getComputations().getClientServerRandom().getValue(), rsaParams);
-
+        byte[] rsaParams =
+                ArrayConverter.concatenate(
+                        ArrayConverter.intToBytes(
+                                msg.getModulusLength().getValue(),
+                                HandshakeByteLength.RSA_MODULUS_LENGTH),
+                        msg.getModulus().getValue(),
+                        ArrayConverter.intToBytes(
+                                msg.getPublicKeyLength().getValue(),
+                                HandshakeByteLength.RSA_MODULUS_LENGTH),
+                        msg.getPublicKey().getValue());
+        return ArrayConverter.concatenate(
+                msg.getComputations().getClientServerRandom().getValue(), rsaParams);
     }
 
     protected byte[] generateSignature(SignatureAndHashAlgorithm algorithm) throws CryptoException {
@@ -85,14 +97,20 @@ public class RSAServerKeyExchangePreparator<T extends RSAServerKeyExchangeMessag
     protected void prepareSignatureAndHashAlgorithm(T msg) {
         msg.setSignatureAndHashAlgorithm(selectedSignatureHashAlgo.getByteValue());
         LOGGER.debug(
-            "SignatureAlgorithm: " + ArrayConverter.bytesToHexString(msg.getSignatureAndHashAlgorithm().getValue()));
+                "SignatureAlgorithm: "
+                        + ArrayConverter.bytesToHexString(
+                                msg.getSignatureAndHashAlgorithm().getValue()));
     }
 
     protected void prepareClientServerRandom(T msg) {
         msg.getComputations()
-            .setClientServerRandom(ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom()));
-        LOGGER.debug("ClientServerRandom: "
-            + ArrayConverter.bytesToHexString(msg.getComputations().getClientServerRandom().getValue()));
+                .setClientServerRandom(
+                        ArrayConverter.concatenate(
+                                chooser.getClientRandom(), chooser.getServerRandom()));
+        LOGGER.debug(
+                "ClientServerRandom: "
+                        + ArrayConverter.bytesToHexString(
+                                msg.getComputations().getClientServerRandom().getValue()));
     }
 
     protected void prepareSignature(T msg) {
@@ -104,5 +122,4 @@ public class RSAServerKeyExchangePreparator<T extends RSAServerKeyExchangeMessag
         msg.setSignatureLength(msg.getSignature().getValue().length);
         LOGGER.debug("SignatureLength: " + msg.getSignatureLength().getValue());
     }
-
 }

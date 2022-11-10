@@ -1,22 +1,21 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.constants;
 
 public enum KeyExchangeAlgorithm {
-
     NULL,
     DHE_DSS,
     DHE_RSA,
     DHE_PSK,
     DH_ANON,
     RSA,
+    RSA_EXPORT,
     PSK_RSA,
     DH_DSS,
     DH_RSA,
@@ -41,7 +40,13 @@ public enum KeyExchangeAlgorithm {
     ECCPWD;
 
     public boolean isKeyExchangeRsa() {
-        return this.equals(this.RSA);
+        switch (this) {
+            case RSA:
+            case RSA_EXPORT:
+                return true;
+            default:
+                return false;
+        }
     }
 
     public boolean isKeyExchangeDh() {
@@ -90,5 +95,9 @@ public enum KeyExchangeAlgorithm {
 
     public boolean isAnon() {
         return this.name().contains("ANON");
+    }
+
+    public boolean isExport() {
+        return this.name().contains("EXPORT");
     }
 }

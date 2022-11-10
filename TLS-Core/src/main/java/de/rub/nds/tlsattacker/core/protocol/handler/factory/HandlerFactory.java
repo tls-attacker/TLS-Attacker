@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.handler.factory;
 
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
@@ -16,50 +15,10 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.handler.AlertHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.ApplicationMessageHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.CertificateMessageHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.CertificateRequestHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.CertificateStatusHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.CertificateVerifyHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.ChangeCipherSpecHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.ClientHelloHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.ClientKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.DHClientKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.DHEServerKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.ECDHClientKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.ECDHEServerKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.EncryptedExtensionsHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.EndOfEarlyDataHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.FinishedHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.GOSTClientKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.HandshakeMessageHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.HeartbeatMessageHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.HelloRequestHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.HelloVerifyRequestHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.KeyUpdateHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.NewSessionTicketHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.PWDClientKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.PWDServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.PskClientKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.PskDhClientKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.PskDheServerKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.PskEcDhClientKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.PskEcDheServerKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.PskRsaClientKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.PskServerKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.RSAClientKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.ServerHelloDoneHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.ServerHelloHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.SrpClientKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.SrpServerKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.SupplementalDataHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.UnknownHandshakeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.UnknownMessageHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.*;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.*;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
@@ -70,15 +29,18 @@ public class HandlerFactory {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public static ProtocolMessageHandler<? extends ProtocolMessage> getHandler(TlsContext context,
-        ProtocolMessageType protocolType, HandshakeMessageType handshakeType) {
+    public static ProtocolMessageHandler<? extends ProtocolMessage> getHandler(
+            TlsContext context,
+            ProtocolMessageType protocolType,
+            HandshakeMessageType handshakeType) {
         if (protocolType == null) {
             throw new RuntimeException("Cannot retrieve Handler, ProtocolMessageType is null");
         }
         try {
             switch (protocolType) {
                 case HANDSHAKE:
-                    HandshakeMessageType hmt = HandshakeMessageType.getMessageType(handshakeType.getValue());
+                    HandshakeMessageType hmt =
+                            HandshakeMessageType.getMessageType(handshakeType.getValue());
                     return HandlerFactory.getHandshakeHandler(context, hmt);
                 case CHANGE_CIPHER_SPEC:
                     return new ChangeCipherSpecHandler(context);
@@ -98,8 +60,8 @@ public class HandlerFactory {
         }
     }
 
-    public static HandshakeMessageHandler<? extends HandshakeMessage> getHandshakeHandler(TlsContext context,
-        HandshakeMessageType type) {
+    public static HandshakeMessageHandler<? extends HandshakeMessage> getHandshakeHandler(
+            TlsContext context, HandshakeMessageType type) {
         try {
             switch (type) {
                 case CERTIFICATE:
@@ -141,7 +103,8 @@ public class HandlerFactory {
                     return new UnknownHandshakeHandler(context);
             }
         } catch (UnsupportedOperationException e) {
-            LOGGER.debug("Could not retrieve correct Handler, returning UnknownHandshakeHandler", e);
+            LOGGER.debug(
+                    "Could not retrieve correct Handler, returning UnknownHandshakeHandler", e);
         }
         return new UnknownHandshakeHandler(context);
     }
@@ -149,14 +112,12 @@ public class HandlerFactory {
     /**
      * Returns the correct extension Handler for a specified ExtensionType in a HandshakeMessage
      *
-     * @param  context
-     *                 Current TlsContext
-     * @param  type
-     *                 Type of the Extension
-     * @return         Correct ExtensionHandler
+     * @param context Current TlsContext
+     * @param type Type of the Extension
+     * @return Correct ExtensionHandler
      */
-    public static ExtensionHandler<? extends ExtensionMessage> getExtensionHandler(TlsContext context,
-        ExtensionType type) {
+    public static ExtensionHandler<? extends ExtensionMessage> getExtensionHandler(
+            TlsContext context, ExtensionType type) {
         try {
             switch (type) {
                 case ALPN:
@@ -262,21 +223,24 @@ public class HandlerFactory {
                 case GREASE_15:
                     return new GreaseExtensionHandler(context);
                 default:
-                    throw new UnsupportedOperationException(type.name() + " Extension are not supported yet");
+                    throw new UnsupportedOperationException(
+                            type.name() + " Extension are not supported yet");
             }
 
         } catch (UnsupportedOperationException e) {
-            LOGGER.debug("Could not retrieve correct Handler, returning UnknownExtensionHandler", e);
+            LOGGER.debug(
+                    "Could not retrieve correct Handler, returning UnknownExtensionHandler", e);
         }
         return new UnknownExtensionHandler(context);
     }
 
     private static ClientKeyExchangeHandler<? extends ClientKeyExchangeMessage>
-        getClientKeyExchangeHandler(TlsContext context) {
+            getClientKeyExchangeHandler(TlsContext context) {
         CipherSuite cs = context.getChooser().getSelectedCipherSuite();
         KeyExchangeAlgorithm algorithm = AlgorithmResolver.getKeyExchangeAlgorithm(cs);
         switch (algorithm) {
             case RSA:
+            case RSA_EXPORT:
                 return new RSAClientKeyExchangeHandler(context);
             case ECDHE_ECDSA:
             case ECDH_ECDSA:
@@ -307,11 +271,13 @@ public class HandlerFactory {
             case ECCPWD:
                 return new PWDClientKeyExchangeHandler(context);
             default:
-                throw new UnsupportedOperationException("Algorithm " + algorithm + " NOT supported yet.");
+                throw new UnsupportedOperationException(
+                        "Algorithm " + algorithm + " NOT supported yet.");
         }
     }
 
-    private static HandshakeMessageHandler<? extends HandshakeMessage> getServerKeyExchangeHandler(TlsContext context) {
+    private static HandshakeMessageHandler<? extends HandshakeMessage> getServerKeyExchangeHandler(
+            TlsContext context) {
         // TODO: There should be a server KeyExchangeHandler
         CipherSuite cs = context.getChooser().getSelectedCipherSuite();
         KeyExchangeAlgorithm algorithm = AlgorithmResolver.getKeyExchangeAlgorithm(cs);
@@ -340,11 +306,13 @@ public class HandlerFactory {
                 return new SrpServerKeyExchangeHandler(context);
             case ECCPWD:
                 return new PWDServerKeyExchangeHandler(context);
+            case RSA_EXPORT:
+                return new RSAServerKeyExchangeHandler(context);
             default:
-                throw new UnsupportedOperationException("Algorithm " + algorithm + " NOT supported yet.");
+                throw new UnsupportedOperationException(
+                        "Algorithm " + algorithm + " NOT supported yet.");
         }
     }
 
-    private HandlerFactory() {
-    }
+    private HandlerFactory() {}
 }
